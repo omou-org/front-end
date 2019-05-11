@@ -1,0 +1,18 @@
+/*Navigation Styling*/
+.Navigation{
+  /*App Bar Styling*/
+  .OmouBar {
+    z-index: 10000 !important;
+  }
+  /*Drawer Styling*/
+  $drawerWidth: 240;
+
+  .OmouDrawer{
+    width: $drawerWidth;
+    flex-shrink: 0;
+    //padding-top:4%;
+  }
+  .DrawerList{
+    padding-top:45%;
+  }
+}

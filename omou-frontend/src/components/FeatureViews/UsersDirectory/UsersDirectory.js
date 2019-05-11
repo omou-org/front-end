@@ -1,18 +1,18 @@
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as stuffActions from '../../actions/stuffActions';
+import * as stuffActions from '../../../actions/stuffActions';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 
-class Dashboard extends Component {
+class UsersDirectory extends Component {
     render(){
         return (<div className="">
-            <h1>Home</h1>
+            <h1>UsersDirectory</h1>
         </div>)
     }
 }
 
-Dashboard.propTypes = {
+UsersDirectory.propTypes = {
     stuffActions: PropTypes.object,
     stuffs: PropTypes.array
 };
@@ -32,4 +32,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Dashboard);
+)(UsersDirectory);
