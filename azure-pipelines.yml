@@ -1,0 +1,52 @@
+
+# Build a Node.js project that uses React.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+# Build on update to Stage
+trigger:
+- stage
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+  displayName: 'Install Node.js'
+
+# Node.js with React
+- task: Npm@1
+  inputs:
+    command: 'install'
+    workingDir: 'omou-frontend'
+  displayName: 'NPM Install Dependencies'
+
+# Node.js with React
+- task: Npm@1
+  inputs:
+    command: 'custom'
+    workingDir: 'omou-frontend'
+    customCommand: 'run build'
+  displayName: 'NPM Build'
+
+# Package as zip
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: 'omou-frontend/build'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+  displayName: 'Package Build'
+
+# Deploy to Azure
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'Pay-As-You-Go Dev/Test(d31a6f5e-a7f4-4e7a-8b66-af18b13dd77f)'
+    appType: 'webApp'
+    appName: 'omou-dev'
+    package: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    deploymentMethod: 'auto'
+  displayName: 'Deploy to Azure'
