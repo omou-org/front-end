@@ -14,9 +14,12 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import List from "@material-ui/core/List";
 import Hidden from "@material-ui/core/Hidden";
+import CustomTheme from "../../theme/muiTheme"
 
 //Local Component Imports
 import './Navigation.scss'
+import {MuiThemeProviderOld} from "@material-ui/core/es/styles/MuiThemeProvider";
+import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
 
 
 
@@ -58,55 +61,57 @@ class Navigation extends Component {
         );
 
         return (
-            <div className={`Navigation`}>
-                <AppBar position="relative" className="OmouBar"
-                        // className={classes.appBar}
-                >
-                    <Toolbar>
-                        <Hidden smUp>
-                            <IconButton
-                                color="inherit"
-                                aria-label="Open Drawer"
-                                onClick={this.handleDrawerToggle.bind(this)}
-                                // className={classes.menuButton}
+            <MuiThemeProvider theme={CustomTheme}>
+                <div className={`Navigation`}>
+                    <AppBar position="relative" className="OmouBar"
+                            // className={classes.appBar}
+                    >
+                        <Toolbar>
+                            <Hidden smUp>
+                                <IconButton
+                                    color="inherit"
+                                    aria-label="Open Drawer"
+                                    onClick={this.handleDrawerToggle.bind(this)}
+                                    // className={classes.menuButton}
+                                >
+                                    <MenuIcon/>
+                                </IconButton>
+                            </Hidden>
+                            <NavLink to="/">
+                                <Typography variant="title" color="inherit">
+                                    Omou
+                                </Typography>
+                            </NavLink>
+                        </Toolbar>
+                    </AppBar>
+                    <nav
+                        // className={classes.drawer}
+                    >
+                        <Hidden smUp implementation="css">
+                            <Drawer
+                                container={this.props.container}
+                                variant="temporary"
+                                // anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+                                open={this.state.mobileOpen}
+                                onClose={this.handleDrawerToggle}
                             >
-                                <MenuIcon/>
-                            </IconButton>
+                                {drawer}
+                            </Drawer>
                         </Hidden>
-                        <NavLink to="/">
-                            <Typography variant="title" color="inherit">
-                                Omou
-                            </Typography>
-                        </NavLink>
-                    </Toolbar>
-                </AppBar>
-                <nav
-                    // className={classes.drawer}
-                >
-                    <Hidden smUp implementation="css">
-                        <Drawer
-                            container={this.props.container}
-                            variant="temporary"
-                            // anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-                            open={this.state.mobileOpen}
-                            onClose={this.handleDrawerToggle}
-                        >
-                            {drawer}
-                        </Drawer>
-                    </Hidden>
-                    <Hidden xsDown implementation="css">
-                        <Drawer
-                            classes={{
-                                // paper: classes.drawerPaper,
-                            }}
-                            variant="permanent"
-                            open
-                        >
-                            {drawer}
-                        </Drawer>
-                    </Hidden>
-                </nav>
-            </div>
+                        <Hidden xsDown implementation="css">
+                            <Drawer
+                                classes={{
+                                    // paper: classes.drawerPaper,
+                                }}
+                                variant="permanent"
+                                open
+                            >
+                                {drawer}
+                            </Drawer>
+                        </Hidden>
+                    </nav>
+                </div>
+            </MuiThemeProvider>
         )
     }
 }
