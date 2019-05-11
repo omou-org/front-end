@@ -5,6 +5,7 @@
 
 # Build on update to Stage
 trigger:
+- master
 - stage
 
 pool:
