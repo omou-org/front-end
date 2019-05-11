@@ -14,13 +14,13 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import List from "@material-ui/core/List";
 import Hidden from "@material-ui/core/Hidden";
+import Routes from '../Routes/rootRoutes'
 import CustomTheme from "../../theme/muiTheme"
 
 //Local Component Imports
 import './Navigation.scss'
 import {MuiThemeProviderOld} from "@material-ui/core/es/styles/MuiThemeProvider";
 import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
-
 
 
 class Navigation extends Component {
@@ -80,7 +80,7 @@ class Navigation extends Component {
                             </Typography>
                         </Toolbar>
                     </AppBar>
-                    <nav
+                    <nav className="OmouDrawer"
                         // className={classes.drawer}
                     >
                         <Hidden smUp implementation="css">
@@ -106,6 +106,10 @@ class Navigation extends Component {
                             </Drawer>
                         </Hidden>
                     </nav>
+                    <main className="OmouMain">
+                        <Routes/>
+                    </main>
+
                 </div>
             </MuiThemeProvider>
         )

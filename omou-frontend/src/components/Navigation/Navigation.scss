@@ -5,13 +5,18 @@
     z-index: 10000 !important;
   }
   /*Drawer Styling*/
-  $drawerWidth: 240;
+  $drawerWidth: 240px;
 
   .OmouDrawer{
     width: $drawerWidth;
     flex-shrink: 0;
     //padding-top:4%;
   }
+
+  .OmouMain {
+    margin-left: $drawerWidth;
+  }
+  
   .DrawerList{
     padding-top:45%;
   }
