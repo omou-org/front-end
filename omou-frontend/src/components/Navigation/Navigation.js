@@ -50,11 +50,9 @@ class Navigation extends Component {
                 />
                 <List>
                     {NavList.map((NavItem, index) => (
-                        <NavLink to={NavItem.link}>
-                            <ListItem button key={index}>
-                                <ListItemText primary={NavItem.name} />
-                            </ListItem>
-                        </NavLink>
+                        <ListItem button key={index} component={NavLink} to={NavItem.link}>
+                            <ListItemText primary={NavItem.name} />
+                        </ListItem>
                     ))}
                 </List>
             </div>
@@ -77,11 +75,9 @@ class Navigation extends Component {
                                     <MenuIcon/>
                                 </IconButton>
                             </Hidden>
-                            <NavLink to="/">
-                                <Typography variant="title" color="inherit">
-                                    Omou
-                                </Typography>
-                            </NavLink>
+                            <Typography component={NavLink} to="/" variant="title" color="inherit">
+                                Omou
+                            </Typography>
                         </Toolbar>
                     </AppBar>
                     <nav
