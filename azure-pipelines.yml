@@ -3,8 +3,9 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
+# Build on update to Stage
 trigger:
-- master
+- stage
 
 pool:
   vmImage: 'ubuntu-latest'
