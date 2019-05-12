@@ -1,31 +1,99 @@
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as stuffActions from '../../../actions/stuffActions';
+import * as registrationActions from '../../../actions/registrationActions';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 
+//Material UI Imports
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import Paper from "@material-ui/core/Paper";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+
+const rowHeadings = [
+    {id:'Grade', number:false, disablePadding: true,},
+    {id:'Course', numberic:false, disablePadding: true},
+    {id:'Dates', numberic:false, disablePadding: true},
+    {id:'Day(s)', numberic:false, disablePadding: true},
+    {id:'Time', numberic:false, disablePadding: true},
+    {id:'Tuition', numberic:false, disablePadding: true},
+    {id:'Space Left', numberic:false, disablePadding: true},
+    {id:'Register', numberic:false, disablePadding: true}
+];
+
+let TableToolbar = props =>{
+    return (<TableHead>
+        <TableRow>
+            {rowHeadings.map(
+                row => (
+                    <TableCell
+                        key={row.id}
+                        align={row.numberic ? 'right':'left'}
+                        padding={row.disablePadding ? 'none':'default'}
+                    >
+                        {row.id}
+                    </TableCell>
+                )
+            )}
+        </TableRow>
+    </TableHead>);
+};
+
 class Registration extends Component {
+    componentDidMount(){
+
+    }
+
     render(){
-        return (<div className="">
-            <h1>Registration</h1>
-        </div>)
+        return (
+            <div className="">
+                <h1>Registration</h1>
+                {
+                    // console.log(this.props.courses)
+                }
+                <Paper>
+                    <div>
+                        <Table>
+                            <TableToolbar/>
+                            <TableBody>
+                                {
+                                    this.props.courses.map((course)=>{
+                                        return <TableRow key={course.id} hover>
+                                            <TableCell align="right">{course.grade}</TableCell>
+                                            <TableCell align="right">{course.course_title}</TableCell>
+                                            <TableCell align="right">{course.dates}</TableCell>
+                                            <TableCell align="right">{course.days}</TableCell>
+                                            <TableCell align="right">{course.time}</TableCell>
+                                            <TableCell align="right">{course.tuition}</TableCell>
+                                            <TableCell align="right">{course.capacity - course.filled}</TableCell>
+                                        </TableRow>
+                                    })
+                                }
+                            </TableBody>
+                        </Table>
+                    </div>
+                </Paper>
+            </div>
+        )
     }
 }
 
 Registration.propTypes = {
     stuffActions: PropTypes.object,
-    stuffs: PropTypes.array
+    RegistrationForms: PropTypes.array
 };
 
 function mapStateToProps(state) {
     return {
-        stuffs: state.stuff
+        courses: state.Registration["course_list"]
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        stuffActions: bindActionCreators(stuffActions, dispatch)
+        registrationActions: bindActionCreators(registrationActions, dispatch)
     };
 }
 

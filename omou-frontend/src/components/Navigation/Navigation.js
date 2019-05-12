@@ -21,6 +21,7 @@ import CustomTheme from "../../theme/muiTheme"
 import './Navigation.scss'
 import {MuiThemeProviderOld} from "@material-ui/core/es/styles/MuiThemeProvider";
 import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
+import Grid from "@material-ui/core/Grid";
 
 
 class Navigation extends Component {
@@ -108,6 +109,9 @@ class Navigation extends Component {
                     </nav>
                     <main className="OmouMain">
                         <Routes/>
+                        {/*<Grid container spacing={16}>*/}
+                            {/**/}
+                        {/*</Grid>*/}
                     </main>
 
                 </div>
