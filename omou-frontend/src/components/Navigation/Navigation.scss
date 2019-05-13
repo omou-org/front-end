@@ -1,3 +1,6 @@
+@import '../../theme/colors';
+@import '../../theme/sizes';
+
 /*Navigation Styling*/
 .Navigation{
   /*App Bar Styling*/
@@ -5,18 +8,33 @@
     z-index: 10000 !important;
   }
   /*Drawer Styling*/
-  $drawerWidth: 240px;
+
 
   .OmouDrawer{
     //width: $drawerWidth;
   }
 
   .OmouMain {
-    margin-left: $drawerWidth;
+    @include respond-to(handhelds){ margin-left:0;}
+    @include respond-to(medium-up-screens){ margin-left:$drawerWidth; }
+    padding:0 3% 0 3%;
   }
   
   .DrawerList{
-    width: $drawerWidth;
-    padding-top:45%;
+    @include respond-to(handhelds){ width:0;}
+    @include respond-to(medium-up-screens){ width:$drawerWidth; }
+
+    padding-top: 45%;
+
+    .list .listItem .text > span{
+      font-weight:500;
+      font-size: $navigationSize;
+      color: $secondaryFontColor;
+    }
+    .listItem.active{
+      border-radius: 0px 15px 15px 0px;
+      background-color:$secondaryHighlightColor;
+      .text > span{color:$secondaryHighlightFontColor;}
+    }
   }
 }
