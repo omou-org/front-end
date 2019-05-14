@@ -8,6 +8,12 @@ import React, {Component} from 'react';
 import FullRegistration from "./FullRegistration";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import MobileRegistration from "./MobileRegistration";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import Paper from "@material-ui/core/Paper";
+import NewUser from "@material-ui/icons/PersonAdd";
+import NewTutor from "@material-ui/icons/Group";
+import NewCourse from "@material-ui/icons/School";
 
 const rowHeadings = [
     {id:'Grade', number:false, disablePadding: true,},
@@ -28,6 +34,35 @@ class Registration extends Component {
     render(){
         return (
             <div className="">
+                <Grid item xs={12}>
+                    <Paper className={"paper"}>
+                        <Grid item lg={12}>
+                            <Grid container
+                                  direction={"row"}
+                                  justify={"flex-start"}
+                                  className={"registration-action-control"}>
+                                <Grid item>
+                                    <Button variant="outlined" color="secondary" className={"button"}>
+                                        <NewUser className={"icon"}/>
+                                        New Student
+                                    </Button>
+                                </Grid>
+                                <Grid item>
+                                    <Button variant="outlined" color="secondary" className={"button"}>
+                                        <NewTutor className={"icon"}/>
+                                        New Tutoring Registration
+                                    </Button>
+                                </Grid>
+                                <Grid item>
+                                    <Button variant="outlined" color="secondary" className={"button"}>
+                                        <NewCourse className={"icon"}/>
+                                        New Course Registration
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                </Grid>
                 <Hidden smDown>
                     <FullRegistration courses={this.props.courses}/>
                 </Hidden>

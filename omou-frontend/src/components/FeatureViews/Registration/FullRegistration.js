@@ -13,9 +13,6 @@ import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import Button from '@material-ui/core/Button';
 import Grid from "@material-ui/core/Grid";
-import NewUser from "@material-ui/icons/PersonAdd";
-import NewTutor from "@material-ui/icons/Group";
-import NewCourse from "@material-ui/icons/School";
 
 //Local Component Imports
 import './registration.scss'
@@ -58,39 +55,11 @@ class FullRegistration extends Component {
     }
 
     render(){
+        console.log(this.props);
         return (
             <div className="">
-                {/*<h1>Full Registration</h1>*/}
-                <Grid container spacing={20}>
-                    <Grid item xs={12}>
-                        <Paper className={"paper"}>
-                            <Grid item lg={12}>
-                                <Grid container
-                                    direction={"row"}
-                                    justify={"flex-start"}
-                                    className={"registration-action-control"}>
-                                    <Grid item>
-                                        <Button variant="outlined" color="secondary" className={"button"}>
-                                            <NewUser className={"icon"}/>
-                                            New Student
-                                        </Button>
-                                    </Grid>
-                                    <Grid item>
-                                        <Button variant="outlined" color="secondary" className={"button"}>
-                                            <NewTutor className={"icon"}/>
-                                            New Tutoring Registration
-                                        </Button>
-                                    </Grid>
-                                    <Grid item>
-                                        <Button variant="outlined" color="secondary" className={"button"}>
-                                            <NewCourse className={"icon"}/>
-                                            New Course Registration
-                                        </Button>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Paper>
-                    </Grid>
+                <Grid container>
+                    {/*{RegistrationActionsBar.bind(this)()}*/}
                     <Grid item xs={12}>
                         <Paper className={"paper"}>
                             <Table>
