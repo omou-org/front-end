@@ -1,18 +1,27 @@
 @import '../../../theme/colors';
+@import '../../../theme/sizes';
 /*Registration*/
 
 //Full Registration styles
 .paper{
-  margin: 3% 0 1% 0;
+  margin: 3% 0 0 0;
 }
 .registration-action-control{
   padding: 1%;
 
   .button{
-    margin-right:30px;
 
-    height: 46px;
-    width: 145px;
+
+    @include respond-to(medium-up-screens){
+      margin-right:30px;
+      height: 46px;
+      width: 145px;
+    }
+    @include respond-to(handhelds){
+      margin-right:4px;
+      height: 46px;
+      width: 105px;
+    }
 
     color:$primaryFontColor;
     font-size:12px;
@@ -27,6 +36,9 @@
     .icon{
       margin-right:4px;
       color:$secondaryFontColor;
+      @include respond-to(handhelds){
+        font-size:1.5em;
+      }
     }
   }
 }
