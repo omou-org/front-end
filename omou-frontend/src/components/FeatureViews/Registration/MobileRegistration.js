@@ -5,9 +5,12 @@ import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 
 //Material UI Imports
-import FullRegistration from "./FullRegistration";
-import Hidden from "@material-ui/core/es/Hidden/Hidden";
-import MobileRegistration from "./MobileRegistration";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import Paper from "@material-ui/core/Paper";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
 
 const rowHeadings = [
     {id:'Grade', number:false, disablePadding: true,},
@@ -20,7 +23,25 @@ const rowHeadings = [
     {id:'Register', numberic:false, disablePadding: true}
 ];
 
-class Registration extends Component {
+let TableToolbar = props =>{
+    return (<TableHead>
+        <TableRow>
+            {rowHeadings.map(
+                row => (
+                    <TableCell
+                        key={row.id}
+                        align={row.numberic ? 'right':'left'}
+                        padding={row.disablePadding ? 'none':'default'}
+                    >
+                        {row.id}
+                    </TableCell>
+                )
+            )}
+        </TableRow>
+    </TableHead>);
+};
+
+class MobileRegistration extends Component {
     componentDidMount(){
 
     }
@@ -28,25 +49,20 @@ class Registration extends Component {
     render(){
         return (
             <div className="">
-                <Hidden smDown>
-                    <FullRegistration courses={this.props.courses}/>
-                </Hidden>
-                <Hidden mdUp>
-                    <MobileRegistration courses={this.props.courses}/>
-                </Hidden>
+                <h1>Mobile Registration</h1>
             </div>
         )
     }
 }
 
-Registration.propTypes = {
+MobileRegistration.propTypes = {
     stuffActions: PropTypes.object,
-    RegistrationForms: PropTypes.array
+    MobileRegistrationForms: PropTypes.array
 };
 
 function mapStateToProps(state) {
     return {
-        courses: state.Registration["course_list"]
+        // courses: state.MobileRegistration["course_list"]
     };
 }
 
@@ -59,4 +75,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Registration);
+)(MobileRegistration);

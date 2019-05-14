@@ -1,0 +1,32 @@
+@import '../../../theme/colors';
+/*Registration*/
+
+//Full Registration styles
+.paper{
+  margin: 3% 0 1% 0;
+}
+.registration-action-control{
+  padding: 1%;
+
+  .button{
+    margin-right:30px;
+
+    height: 46px;
+    width: 145px;
+
+    color:$primaryFontColor;
+    font-size:12px;
+    font-weight:400;
+    line-height:12px;
+    text-transform: none;
+
+    border: 1px solid #DBD7D7;
+    box-sizing: border-box;
+    border-radius: 7px;
+
+    .icon{
+      margin-right:4px;
+      color:$secondaryFontColor;
+    }
+  }
+}
