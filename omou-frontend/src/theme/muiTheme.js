@@ -4,10 +4,17 @@ import { createMuiTheme } from '@material-ui/core/styles';
 const theme = createMuiTheme({
     palette: {
         primary: { main: '#FAFAFA' },
-        secondary: { main: '#29abd6' },
+        secondary: { main: '#0d9dd6' },
     },
     typography: {
         useNextVariants: true
+    },
+    overrides: {
+        MuiButton: { // Name of the component ⚛️ / style sheet
+            text: { // Name of the rule
+                color: 'white;', // Some CSS
+            },
+        },
     },
 
 });
