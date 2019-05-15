@@ -1,5 +1,6 @@
 @import '../../theme/colors';
 @import '../../theme/sizes';
+@import url('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700');
 
 /*Navigation Styling*/
 .Navigation{
@@ -7,9 +8,17 @@
   .OmouBar {
     z-index: 10000 !important;
   }
+
+  .title{
+    font-family: 'Roboto Slab', serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 26px;
+    text-decoration: none;
+  }
+
   /*Drawer Styling*/
-
-
   .OmouDrawer{
     //width: $drawerWidth;
   }

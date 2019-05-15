@@ -84,7 +84,7 @@ class Navigation extends Component {
                                     <MenuIcon/>
                                 </IconButton>
                             </Hidden>
-                            <Typography component={NavLink} to="/" color="secondary">
+                            <Typography component={NavLink} to="/" color="secondary" className={"title"}>
                                 omou
                             </Typography>
                         </Toolbar>
