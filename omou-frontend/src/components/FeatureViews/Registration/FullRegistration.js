@@ -21,9 +21,12 @@ import {Typography} from "@material-ui/core";
 import CardActions from "@material-ui/core/CardActions";
 import ForwardIcon from "@material-ui/icons/ArrowForward";
 import BackIcon from "@material-ui/icons/ArrowBack";
+import ExpandIcon from "@material-ui/icons/ExpandMore";
+import ShrinkIcon from "@material-ui/icons/ExpandLess";
 
 //Local Component Imports
 import './registration.scss'
+import Grow from "@material-ui/core/Grow";
 
 
 const rowHeadings = [
@@ -60,15 +63,16 @@ class FullRegistration extends Component {
     constructor(){
         super();
         this.state = {
-            maxCategory: 3,
+            maxCategory: 2,
             minCategory: 0,
+            expandCategory: false,
         };
 
     }
 
     forwardCategories(){
-        // console.log(this.props.categories)
         this.setState((oldState)=>{
+            console.log(oldState.minCategory, oldState.maxCategory);
             if(oldState.maxCategory + 1 < this.props.categories.length){
                 return {
                     maxCategory: oldState.maxCategory+1,
@@ -79,9 +83,9 @@ class FullRegistration extends Component {
     }
 
     backCategories(){
-
         this.setState((oldState)=>{
-            if(oldState.minCategory - 1 > 0){
+            console.log(oldState.minCategory, oldState.maxCategory);
+            if(oldState.minCategory - 1 >= 0){
                 return {
                     maxCategory: oldState.maxCategory-1,
                     minCategory: oldState.minCategory-1
@@ -90,47 +94,80 @@ class FullRegistration extends Component {
         });
     }
 
+    expandCategories(){
+        console.log( this.state.expandCategory);
+        let newMaxCategory = 0;
+        let newMinCategory = 0;
+        if(this.state.maxCategory === this.props.courses.length-1){
+            newMaxCategory = 2;
+            newMinCategory = 0;
+        } else {
+            newMaxCategory = this.props.courses.length - 1;
+            newMinCategory = 0;
+        }
+        this.setState( (old)=>{
+            return {
+                maxCategory: newMaxCategory,
+                minCategory: newMinCategory,
+                expandCategory: !old.expandCategory
+            }
+        });
+    }
+
     render(){
-        console.log(this.props);
         return (
             <div className="">
                 <Grid container>
                     <Grid item xs={12}>
                         <Grid container className={"course-categories"} spacing={16}>
-                            <BackIcon className={`control back ${this.state.minCategory !== 0 ? "visible" : ""}`}
+                            <div className={this.state.minCategory !== 0 ? "visible" : ""}>
+                            <BackIcon className={`control back `}
                                       onClick={(e)=>{e.preventDefault(); this.backCategories.bind(this)()}}/>
+                            </div>
                             {
                                 this.props.categories.map((category,i)=>{
-                                    if(this.state.minCategory <= i && i < this.state.maxCategory){
-                                        return <Grid item xs={4} key={category.id}>
-                                            <Card className={"category-card"}>
-                                                <CardMedia
-                                                    className={"media"}
-                                                    image={"https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwjBz-2K9ZviAhWiGDQIHdopCZYQjRx6BAgBEAU&url=https%3A%2F%2Fwww.losdschools.org%2Fdomain%2F1704&psig=AOvVaw0GpyRGZMw9QDj5zOLnmw85&ust=1557954002247055"}
-                                                    title={"AP Test Logo"}/>
-                                                <CardContent className={"text"}>
-                                                    <Typography gutterBottom variant={"h6"} component={"h2"}>
-                                                        {category.cat_title}
-                                                    </Typography>
-                                                    <Typography component="p">
-                                                        Lizards are a widespread group of squamate reptiles, with over 6,000 species.
-                                                    </Typography>
-                                                </CardContent>
-                                                <CardActions>
-                                                    <Button size={"small"} color={"secondary"}>
-                                                        Explore
-                                                    </Button>
-                                                    <Button size={"small"} color={"secondary"}>
-                                                        Learn More
-                                                    </Button>
-                                                </CardActions>
-                                            </Card>
-                                        </Grid>
+                                    if(this.state.minCategory <= i && i <= this.state.maxCategory){
+                                        return <Grow in={this.state.minCategory <= i && i <= this.state.maxCategory}>
+                                            <Grid item xs={4} key={category.id}>
+                                                <Card className={"category-card"}>
+                                                    <CardMedia
+                                                        className={"media"}
+                                                        image={"https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwjBz-2K9ZviAhWiGDQIHdopCZYQjRx6BAgBEAU&url=https%3A%2F%2Fwww.losdschools.org%2Fdomain%2F1704&psig=AOvVaw0GpyRGZMw9QDj5zOLnmw85&ust=1557954002247055"}
+                                                        title={"AP Test Logo"}/>
+                                                    <CardContent className={"text"}>
+                                                        <Typography gutterBottom variant={"h6"} component={"h2"}>
+                                                            {category.cat_title}
+                                                        </Typography>
+                                                        <Typography component="p">
+                                                            Lizards are a widespread group of squamate reptiles, with over 6,000 species.
+                                                        </Typography>
+                                                    </CardContent>
+                                                    <CardActions>
+                                                        <Button size={"small"} color={"secondary"}>
+                                                            Explore
+                                                        </Button>
+                                                        <Button size={"small"} color={"secondary"}>
+                                                            Learn More
+                                                        </Button>
+                                                    </CardActions>
+                                                </Card>
+                                            </Grid>
+                                        </Grow>
                                     }
                                 })
                             }
-                            <ForwardIcon className={`control forward ${this.state.maxCategory !== this.props.categories.length-1 ? "visible":""}`}
+                            <div className={this.state.maxCategory !==this.props.courses.length-1 ? "visible" : ""}>
+                                <ForwardIcon className={`control forward`}
                                          onClick={(e)=>{e.preventDefault(); this.forwardCategories.bind(this)()}}/>
+                            </div>
+                            <div className={this.state.expandCategory ? "" : "visible"}>
+                                <ExpandIcon className={`control expand`}
+                                        onClick={(e)=>{e.preventDefault(); this.expandCategories.bind(this)()}}/>
+                            </div>
+                            <div className={this.state.expandCategory ? "visible" : ""}>
+                                <ShrinkIcon className={`control shrink`}
+                                        onClick={(e)=>{e.preventDefault(); this.expandCategories.bind(this)()}}/>
+                            </div>
                         </Grid>
                     </Grid>
                     <Grid item xs={12}>
