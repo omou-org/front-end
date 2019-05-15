@@ -1,7 +1,3 @@
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import * as registrationActions from '../../../actions/registrationActions';
-import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 
 //Material UI Imports
@@ -67,7 +63,11 @@ class FullRegistration extends Component {
             minCategory: 0,
             expandCategory: false,
         };
+    }
 
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        console.log(this.state.props);
+        return true;
     }
 
     forwardCategories(){
@@ -115,6 +115,7 @@ class FullRegistration extends Component {
     }
 
     render(){
+        // console.log('full registration!', this.props);
         return (
             <div className="">
                 <Grid container>
@@ -127,8 +128,8 @@ class FullRegistration extends Component {
                             {
                                 this.props.categories.map((category,i)=>{
                                     if(this.state.minCategory <= i && i <= this.state.maxCategory){
-                                        return <Grow in={this.state.minCategory <= i && i <= this.state.maxCategory}>
-                                            <Grid item xs={4} key={category.id}>
+                                        return <Grow in={this.state.minCategory <= i && i <= this.state.maxCategory} key={category.id}>
+                                            <Grid item xs={4} >
                                                 <Card className={"category-card"}>
                                                     <CardMedia
                                                         className={"media"}
@@ -172,33 +173,35 @@ class FullRegistration extends Component {
                     </Grid>
                     <Grid item xs={12}>
                         <Paper className={"paper"}>
-                            <Table>
-                                <TableToolbar/>
-                                <TableBody className={"table"}>
-                                    {
-                                        this.props.courses.map((course)=>{
-                                            return <TableRow key={course.id} hover>
-                                                <Hidden mdDown>
-                                                    <TableCell align="right">{course.grade}</TableCell>
-                                                </Hidden>
-                                                <TableCell align="right">{course.course_title}</TableCell>
-                                                <TableCell align="right">{course.dates}</TableCell>
-                                                <TableCell align="right">{course.days}</TableCell>
-                                                <TableCell align="right">{course.time}</TableCell>
-                                                <Hidden mdDown>
-                                                    <TableCell align="right">{course.tuition}</TableCell>
-                                                </Hidden>
-                                                <Hidden mdDown>
-                                                    <TableCell align="right">{course.capacity - course.filled}</TableCell>
-                                                </Hidden>
-                                                <TableCell align="right">
-                                                    <Button variant="contained" color="secondary" className={"button"}>REGISTER</Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        })
-                                    }
-                                </TableBody>
-                            </Table>
+                            <Grow in={true}>
+                                <Table>
+                                    <TableToolbar/>
+                                    <TableBody className={"table"}>
+                                        {
+                                            this.props.courses.map((course,i)=>{
+                                                return <TableRow key={i} hover>
+                                                    <Hidden mdDown>
+                                                        <TableCell align="right">{course.grade}</TableCell>
+                                                    </Hidden>
+                                                    <TableCell align="right">{course.course_title}</TableCell>
+                                                    <TableCell align="right">{course.dates}</TableCell>
+                                                    <TableCell align="right">{course.days}</TableCell>
+                                                    <TableCell align="right">{course.time}</TableCell>
+                                                    <Hidden mdDown>
+                                                        <TableCell align="right">{course.tuition}</TableCell>
+                                                    </Hidden>
+                                                    <Hidden mdDown>
+                                                        <TableCell align="right">{course.capacity - course.filled}</TableCell>
+                                                    </Hidden>
+                                                    <TableCell align="right">
+                                                        <Button variant="contained" color="secondary" className={"button"}>REGISTER</Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            })
+                                        }
+                                    </TableBody>
+                                </Table>
+                            </Grow>
                         </Paper>
                     </Grid>
                 </Grid>
@@ -207,24 +210,4 @@ class FullRegistration extends Component {
     }
 }
 
-FullRegistration.propTypes = {
-    stuffActions: PropTypes.object,
-    FullRegistrationForms: PropTypes.array
-};
-
-function mapStateToProps(state) {
-    return {
-        // courses: state.FullRegistration["course_list"]
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        registrationActions: bindActionCreators(registrationActions, dispatch)
-    };
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(FullRegistration);
+export default FullRegistration;

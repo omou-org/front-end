@@ -14,6 +14,8 @@ import Paper from "@material-ui/core/Paper";
 import NewUser from "@material-ui/icons/PersonAdd";
 import NewTutor from "@material-ui/icons/Group";
 import NewCourse from "@material-ui/icons/School";
+import Categories from "@material-ui/icons/Category";
+import CourseList from "@material-ui/icons/List";
 
 const rowHeadings = [
     {id:'Grade', number:false, disablePadding: true,},
@@ -27,8 +29,46 @@ const rowHeadings = [
 ];
 
 class Registration extends Component {
-    componentDidMount(){
+    constructor(){
+        super();
+        this.state = {
+            mobileViewToggle: true,
+            mobileView: false,
+        }
+    }
 
+    componentDidMount() {
+        window.addEventListener("resize", this.resize.bind(this));
+        this.resize();
+    }
+
+    resize() {
+        let currentHideNav = (window.innerWidth <= 760);
+        if (currentHideNav !== this.state.mobileView) {
+            this.setState({mobileView: !this.state.mobileView});
+        }
+    }
+
+    toggleMainView(){
+        if(this.state.mobileView){
+            return <MobileRegistration
+                courses={this.props.courses}
+                categories = {this.props.courseCategories}
+                categoriesViewToggle = {this.state.mobileViewToggle}/>;
+         }
+        else {
+            return <FullRegistration
+                courses={this.props.courses}
+                categories = {this.props.courseCategories}/>;
+        }
+    }
+
+    toggleMobileView(){
+        this.setState((oldState)=>{
+            return{
+                mobileViewToggle: !oldState.mobileViewToggle,
+            }
+        })
     }
 
     render(){
@@ -50,25 +90,45 @@ class Registration extends Component {
                                 <Grid item>
                                     <Button variant="outlined" color="secondary" className={"button"}>
                                         <NewTutor className={"icon"}/>
-                                        New Tutoring Registration
+                                        New Tutoring
                                     </Button>
                                 </Grid>
                                 <Grid item>
                                     <Button variant="outlined" color="secondary" className={"button"}>
                                         <NewCourse className={"icon"}/>
-                                        New Course Registration
+                                        New Course
                                     </Button>
                                 </Grid>
+                                <Hidden smUp>
+                                    <Grid item>
+                                        {
+                                            this.state.mobileViewToggle ?
+                                                <Button onClick={(e)=>{e.preventDefault(); this.toggleMobileView();}}
+                                                        variant="outlined"
+                                                        color="secondary"
+                                                        className={"button"}>
+                                                    <CourseList className={"icon"}/>
+                                                    Courses
+                                                </Button>:
+                                                <Button
+                                                    onClick={(e)=>{e.preventDefault(); this.toggleMobileView();}}
+                                                    variant="outlined"
+                                                    color="secondary"
+                                                    className={"button"}>
+                                                    <Categories className={"icon"}/>
+                                                    Categories
+                                                </Button>
+
+                                        }
+                                    </Grid>
+                                </Hidden>
                             </Grid>
                         </Grid>
                     </Paper>
                 </Grid>
-                <Hidden smDown>
-                    <FullRegistration courses={this.props.courses} categories = {this.props.courseCategories}/>
-                </Hidden>
-                <Hidden mdUp>
-                    <MobileRegistration courses={this.props.courses}/>
-                </Hidden>
+                {
+                    this.toggleMainView.bind(this)()
+                }
             </div>
         )
     }
