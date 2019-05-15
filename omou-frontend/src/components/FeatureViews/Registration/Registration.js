@@ -64,7 +64,7 @@ class Registration extends Component {
                     </Paper>
                 </Grid>
                 <Hidden smDown>
-                    <FullRegistration courses={this.props.courses}/>
+                    <FullRegistration courses={this.props.courses} categories = {this.props.courseCategories}/>
                 </Hidden>
                 <Hidden mdUp>
                     <MobileRegistration courses={this.props.courses}/>
@@ -81,7 +81,8 @@ Registration.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        courses: state.Registration["course_list"]
+        courses: state.Registration["course_list"],
+        courseCategories: state.Registration["categories"],
     };
 }
 

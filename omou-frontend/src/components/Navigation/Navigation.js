@@ -70,7 +70,7 @@ class Navigation extends Component {
         return (
             <MuiThemeProvider theme={CustomTheme}>
                 <div className={`Navigation`}>
-                    <AppBar position="relative" className="OmouBar"
+                    <AppBar position="fixed" className="OmouBar"
                             // className={classes.appBar}
                     >
                         <Toolbar>
@@ -84,7 +84,7 @@ class Navigation extends Component {
                                     <MenuIcon/>
                                 </IconButton>
                             </Hidden>
-                            <Typography component={NavLink} to="/" variant="title" color="#29abd6">
+                            <Typography component={NavLink} to="/" color="secondary">
                                 omou
                             </Typography>
                         </Toolbar>

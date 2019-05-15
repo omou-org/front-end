@@ -2,16 +2,10 @@
 @import '../../../theme/sizes';
 /*Registration*/
 
-//Full Registration styles
-.paper{
-  margin: 3% 0 0 0;
-}
 .registration-action-control{
   padding: 1%;
 
   .button{
-
-
     @include respond-to(medium-up-screens){
       margin-right:30px;
       height: 46px;
@@ -39,6 +33,55 @@
       @include respond-to(handhelds){
         font-size:1.5em;
       }
+    }
+  }
+}
+
+//Full Registration styles
+.paper{
+  margin: 3% 0 2% 0;
+}
+.course-categories{
+  position:relative;
+  //Controls
+  .control{
+    display:none;
+    position:absolute;
+    top:40%;
+    border: $lightPrimaryFontColor solid 1px;
+    border-radius:100%;
+    color: $lightPrimaryFontColor;
+    font-size:2.5em;
+    opacity:1;
+  }
+  .forward{
+    right:10px;
+  }
+  .back{
+    left:10px;
+  }
+  .visible{
+    display:block;
+  }
+
+  .control:hover{
+    display:block;
+    background-color:white;
+    color:black;
+    cursor:pointer;
+    opacity:100;
+  }
+
+  //Card
+  .category-card{
+    margin-left:7%;
+    width:87%;
+    .media{
+      height:100px;
+    }
+    .text *{
+      text-align:left;
+      text-overflow:ellipsis;
     }
   }
 }
