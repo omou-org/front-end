@@ -5,8 +5,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import configureStore from './store/configureStore';
 import Provider from "react-redux/es/components/Provider";
-import BrowserRouter from "react-router-dom/BrowserRouter";
-import Route from "react-router-dom/es/Route";
+import {BrowserRouter }from "react-router-dom";
 
 const store = configureStore();
 
