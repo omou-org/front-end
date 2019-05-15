@@ -39,7 +39,7 @@
 
 //Full Registration styles
 .paper{
-  margin: 3% 0 2% 0;
+  margin: 4% 0 2% 0;
 }
 .course-categories{
   position:relative;
@@ -47,20 +47,27 @@
   .control{
     display:none;
     position:absolute;
-    top:40%;
     border: $lightPrimaryFontColor solid 1px;
     border-radius:100%;
     color: $lightPrimaryFontColor;
-    font-size:2.5em;
+    font-size:1.4em;
     opacity:1;
+    z-index:10000;
+  }
+  .forward, .back{
+    top:40%;
   }
   .forward{
-    right:10px;
+    right:4px;
   }
   .back{
-    left:10px;
+    left:8px;
   }
-  .visible{
+  .expand, .shrink{
+    bottom:-25px;
+    left:47%
+  }
+  .visible *{
     display:block;
   }
 
