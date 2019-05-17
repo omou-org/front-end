@@ -92,3 +92,68 @@
     }
   }
 }
+
+/*Registration Form Styles*/
+.exit-popup{
+  @include respond-to(handhelds){
+    top:35%;
+    left:12%;
+  }
+  @include respond-to(medium-up-screens){
+    top:35%;
+    left:37%;
+  }
+
+  padding:2%;
+  height:176px;
+  position:absolute;
+  outline:none;
+  background-color:white;
+  border-radius:8px;
+
+  .button{
+    margin:15% 5px 0 0;
+  }
+  .button.primary{
+    background-color:$secondaryColor;
+    color:white;
+  }
+  .button.primary:hover{
+    background-color:$secondaryDarkenColor;
+  }
+}
+
+.registration-form{
+  position:relative;
+  border-radius: 16px;
+  padding:2%;
+  margin-top: 4%;
+
+  .control{
+    cursor:pointer;
+    position: absolute;
+    color:$lightPrimaryFontColor;
+
+    .icon, .back, .label{
+      display:inline-block;
+    }
+    .label{
+      position:relative;
+      top:-7px;
+      font-style: normal;
+      font-weight: bold;
+      line-height: 13px;
+    }
+  }
+
+  .heading{
+    margin-top:50px;
+    text-transform: capitalize;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 36px;
+    line-height: 42px;
+    display: flex;
+    align-items: center;
+  }
+}

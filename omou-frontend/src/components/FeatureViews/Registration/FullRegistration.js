@@ -23,6 +23,7 @@ import ShrinkIcon from "@material-ui/icons/ExpandLess";
 //Local Component Imports
 import './registration.scss'
 import Grow from "@material-ui/core/Grow";
+import {NavLink} from "react-router-dom";
 
 
 const rowHeadings = [
@@ -61,13 +62,7 @@ class FullRegistration extends Component {
         this.state = {
             maxCategory: 2,
             minCategory: 0,
-            expandCategory: false,
         };
-    }
-
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
-        console.log(this.state.props);
-        return true;
     }
 
     forwardCategories(){
@@ -194,7 +189,10 @@ class FullRegistration extends Component {
                                                         <TableCell align="right">{course.capacity - course.filled}</TableCell>
                                                     </Hidden>
                                                     <TableCell align="right">
-                                                        <Button variant="contained" color="secondary" className={"button"}>REGISTER</Button>
+                                                        <Button component={NavLink} to={'/registration/form/course'}
+                                                            variant="contained"
+                                                            color="secondary"
+                                                            className={"button"}>REGISTER</Button>
                                                     </TableCell>
                                                 </TableRow>
                                             })
