@@ -16,6 +16,7 @@ import NewTutor from "@material-ui/icons/Group";
 import NewCourse from "@material-ui/icons/School";
 import Categories from "@material-ui/icons/Category";
 import CourseList from "@material-ui/icons/List";
+import {NavLink} from "react-router-dom";
 
 const rowHeadings = [
     {id:'Grade', number:false, disablePadding: true,},
@@ -82,19 +83,28 @@ class Registration extends Component {
                                   justify={"flex-start"}
                                   className={"registration-action-control"}>
                                 <Grid item>
-                                    <Button variant="outlined" color="secondary" className={"button"}>
+                                    <Button component={NavLink} to={'/registration/form/student'}
+                                        variant="outlined"
+                                        color="secondary"
+                                        className={"button"}>
                                         <NewUser className={"icon"}/>
                                         New Student
                                     </Button>
                                 </Grid>
                                 <Grid item>
-                                    <Button variant="outlined" color="secondary" className={"button"}>
+                                    <Button component={NavLink} to={'/registration/form/tutoring'}
+                                        variant="outlined"
+                                        color="secondary"
+                                        className={"button"}>
                                         <NewTutor className={"icon"}/>
                                         New Tutoring
                                     </Button>
                                 </Grid>
                                 <Grid item>
-                                    <Button variant="outlined" color="secondary" className={"button"}>
+                                    <Button component={NavLink} to={'/registration/form/course'}
+                                        variant="outlined"
+                                        color="secondary"
+                                        className={"button"}>
                                         <NewCourse className={"icon"}/>
                                         New Course
                                     </Button>
