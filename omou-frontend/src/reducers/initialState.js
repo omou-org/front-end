@@ -154,6 +154,70 @@ function initRegistrationForm(){
               cat_title: "BYU Online"
           },
       ],
-      registration_form:[]
+      registration_form:{
+          student: {
+              section_titles:["Basic Information", "Parent Information"],
+              0:[
+                  {
+                      field: "Name",
+                      type: "string",
+                  },
+                  {
+                      field: "Grade",
+                      type: "int",
+                  },
+                  {
+                      field: "Age",
+                      type: "int",
+                  },
+                  {
+                      field: "School",
+                      type: "string",
+                  },
+                  {
+                      field: "Email",
+                      type: "string",
+                  },
+                  {
+                      field: "Phone Number",
+                      type: "string",
+                  }
+              ],
+              1: [
+                  {
+                      field: "Name",
+                      type: "string",
+                  },
+                  {
+                      field: "Relationship to Student",
+                      type: "string",
+                  },
+                  {
+                      field: "Email",
+                      type: "int",
+                  },
+                  {
+                      field: "Phone Number",
+                      type: "string",
+                  },
+                  {
+                      field: "Address",
+                      type: "string",
+                  },
+                  {
+                      field: "City",
+                      type: "string",
+                  },
+                  {
+                      field: "State",
+                      type: "string",
+                  },
+                  {
+                      field: "Zip Code",
+                      type: "string",
+                  },
+              ]
+          }
+      }
    };
 }
