@@ -161,6 +161,12 @@
     text-align:left;
   }
 
+  .error{
+    color:red;
+    border: red solid 1px;
+    border-radius: 5px;
+  }
+
   .controls{
     position:relative;
     left:80%;

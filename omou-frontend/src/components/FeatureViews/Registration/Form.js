@@ -35,9 +35,37 @@ class Form extends Component {
     }
 
     componentWillMount() {
-        // console.log(this.props.match.params.type);
-        this.setState({
-            form:this.props.match.params.type
+        this.setState((oldState)=>{
+            let formType = this.props.match.params.type;
+            let formContents = this.props.registrationForm[formType];
+
+            let NewState = {...oldState,
+                form: formType,
+            };
+
+            formContents.section_titles.forEach((title,i)=>{
+               // create blank fields based on form type
+               NewState[title] = {};
+               formContents[i].forEach((field)=>{
+                   switch(field.type){
+                       case "string":
+                           NewState[title][field.field] = "";
+                           break;
+                       case "int":
+                           NewState[title][field.field] = 0;
+                           break;
+                       default:
+                           NewState[title][field.field] = "";
+                   }
+               });
+
+               // create validated state for each field
+               NewState[title + "_validated"] = {};
+                formContents[i].forEach((field)=>{
+                    NewState[title+"_validated"][field.field] = true;
+                });
+            });
+            return NewState;
         })
     }
 
@@ -71,8 +99,26 @@ class Form extends Component {
         this.setState({activeStep:0});
     }
 
+    handleFieldUpdate(sectionTitle, field, fieldValue){
+        this.setState((oldState)=>{
+            oldState[sectionTitle][field.field] = fieldValue;
+            return oldState;
+        });
+    }
+
+    validateField(sectionTitle, field, fieldValue){
+        if(fieldValue === 0 || fieldValue === ""){
+            this.setState((oldState)=>{
+                console.log(sectionTitle+"_validated",field.field);
+               oldState[sectionTitle+"_validated"][field.field] = false;
+               // console.log(oldState[sectionTitle+"_validated"][fieldTitle]);
+               return oldState;
+            });
+        }
+    }
+
     render(){
-        console.log(this.props.registrationForm[this.state.form][this.state.activeStep]);
+        console.log(this.state);
         let steps = this.props.registrationForm[this.state.form]["section_titles"];
         return (
             <Grid container className="">
@@ -116,10 +162,20 @@ class Form extends Component {
                                                   return <div>
                                                       <TextField
                                                           key={i}
-                                                          label={field.field}
+                                                          label={(field.required ? "* " : "") + field.field}
                                                           multiline
-                                                          // className={classes.textField}
+                                                          className={this.state[label+"_validated"][field.field] ? "": "error"}
                                                           margin="normal"
+                                                          value={this.state[field.field]}
+                                                          type={field.type === "int" ? "number": ""}
+                                                          onChange={(e)=>{
+                                                              e.preventDefault();
+                                                              this.handleFieldUpdate.bind(this)(label ,field, e.target.value);
+                                                          }}
+                                                          onBlur={(e)=>{
+                                                              e.preventDefault();
+                                                              this.validateField.bind(this)(label, field, e.target.value);
+                                                          }}
                                                       /> <br/>
                                                   </div>
                                               })

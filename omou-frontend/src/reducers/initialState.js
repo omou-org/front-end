@@ -161,26 +161,32 @@ function initRegistrationForm(){
                   {
                       field: "Name",
                       type: "string",
+                      required: true,
                   },
                   {
                       field: "Grade",
                       type: "int",
+                      required: true,
                   },
                   {
                       field: "Age",
                       type: "int",
+                      required: false,
                   },
                   {
                       field: "School",
                       type: "string",
+                      required: true,
                   },
                   {
                       field: "Email",
                       type: "string",
+                      required: true,
                   },
                   {
                       field: "Phone Number",
                       type: "string",
+                      required: false,
                   }
               ],
               1: [
