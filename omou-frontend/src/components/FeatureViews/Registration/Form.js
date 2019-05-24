@@ -107,12 +107,17 @@ class Form extends Component {
     }
 
     validateField(sectionTitle, field, fieldValue){
-        if(fieldValue === 0 || fieldValue === ""){
+        if((fieldValue === 0 || fieldValue === "") && field.required){
             this.setState((oldState)=>{
                 console.log(sectionTitle+"_validated",field.field);
                oldState[sectionTitle+"_validated"][field.field] = false;
-               // console.log(oldState[sectionTitle+"_validated"][fieldTitle]);
                return oldState;
+            });
+        } else {
+            this.setState((oldState)=>{
+                console.log(sectionTitle+"_validated",field.field);
+                oldState[sectionTitle+"_validated"][field.field] = true;
+                return oldState;
             });
         }
     }
@@ -159,14 +164,14 @@ class Form extends Component {
                                       <StepContent>
                                           {
                                               this.props.registrationForm[this.state.form][this.state.activeStep].map((field,i)=>{
-                                                  return <div>
+                                                  return <div key={i}>
                                                       <TextField
-                                                          key={i}
                                                           label={(field.required ? "* " : "") + field.field}
                                                           multiline
-                                                          className={this.state[label+"_validated"][field.field] ? "": "error"}
+                                                          // className={this.state[label+"_validated"][field.field] ? "": "error"}
                                                           margin="normal"
                                                           value={this.state[field.field]}
+                                                          error={!this.state[label+"_validated"][field.field]}
                                                           type={field.type === "int" ? "number": ""}
                                                           onChange={(e)=>{
                                                               e.preventDefault();
