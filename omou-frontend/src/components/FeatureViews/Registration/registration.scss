@@ -125,7 +125,7 @@
 
 .registration-form{
   position:relative;
-  border-radius: 16px;
+  border-radius: 32px !important;
   padding:2%;
   margin-top: 4%;
 
@@ -155,5 +155,19 @@
     line-height: 42px;
     display: flex;
     align-items: center;
+  }
+
+  .form-section{
+    text-align:left;
+  }
+
+  .controls{
+    position:relative;
+    left:80%;
+    width:28%;
+
+    .button{
+      margin:5px;
+    }
   }
 }
