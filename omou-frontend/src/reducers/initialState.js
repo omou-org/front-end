@@ -162,31 +162,37 @@ function initRegistrationForm(){
                       field: "Name",
                       type: "string",
                       required: true,
+                      full: true,
                   },
                   {
                       field: "Grade",
                       type: "int",
                       required: true,
+                      full: false,
                   },
                   {
                       field: "Age",
                       type: "int",
                       required: false,
+                      full: false,
                   },
                   {
                       field: "School",
                       type: "string",
                       required: true,
+                      full: true,
                   },
                   {
                       field: "Email",
                       type: "string",
                       required: true,
+                      full: true,
                   },
                   {
                       field: "Phone Number",
                       type: "string",
                       required: false,
+                      full: true,
                   }
               ],
               1: [
