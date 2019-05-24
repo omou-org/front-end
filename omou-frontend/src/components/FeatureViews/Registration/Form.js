@@ -166,13 +166,15 @@ class Form extends Component {
                                               this.props.registrationForm[this.state.form][this.state.activeStep].map((field,i)=>{
                                                   return <div key={i}>
                                                       <TextField
-                                                          label={(field.required ? "* " : "") + field.field}
+                                                          label={field.field}
                                                           multiline
                                                           // className={this.state[label+"_validated"][field.field] ? "": "error"}
                                                           margin="normal"
-                                                          value={this.state[field.field]}
+                                                          value={this.state[label][field.field]}
                                                           error={!this.state[label+"_validated"][field.field]}
                                                           type={field.type === "int" ? "number": ""}
+                                                          required={field.required}
+                                                          fullWidth={field.full}
                                                           onChange={(e)=>{
                                                               e.preventDefault();
                                                               this.handleFieldUpdate.bind(this)(label ,field, e.target.value);
