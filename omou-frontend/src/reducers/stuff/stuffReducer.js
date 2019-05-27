@@ -14,6 +14,7 @@ export default function stuff(state = initialState.stuff, {payload, type}) {
         case actions.ALERT:
             newState = payload;
             console.log('RECEIVE_STUFF Action');
+            break;
         default:
             // console.log('reducer state: ', state);
             return state;

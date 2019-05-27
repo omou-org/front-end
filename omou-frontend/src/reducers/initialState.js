@@ -160,37 +160,37 @@ function initRegistrationForm(){
               0:[
                   {
                       field: "Name",
-                      type: "string",
+                      type: "short text",
                       required: true,
                       full: true,
                   },
                   {
                       field: "Grade",
-                      type: "int",
+                      type: "number",
                       required: true,
                       full: false,
                   },
                   {
                       field: "Age",
-                      type: "int",
+                      type: "number",
                       required: false,
                       full: false,
                   },
                   {
                       field: "School",
-                      type: "string",
+                      type: "short text",
                       required: true,
                       full: true,
                   },
                   {
                       field: "Email",
-                      type: "string",
+                      type: "email",
                       required: true,
                       full: true,
                   },
                   {
                       field: "Phone Number",
-                      type: "string",
+                      type: "phone number",
                       required: false,
                       full: true,
                   }
@@ -198,31 +198,43 @@ function initRegistrationForm(){
               1: [
                   {
                       field: "Name",
-                      type: "string",
+                      type: "short text",
                   },
                   {
                       field: "Relationship to Student",
-                      type: "string",
+                      type: "short text",
                   },
                   {
                       field: "Email",
-                      type: "int",
+                      type: "email",
                   },
                   {
                       field: "Phone Number",
-                      type: "string",
+                      type: "phone number",
                   },
                   {
                       field: "Address",
-                      type: "string",
+                      type: "address",
                   },
                   {
                       field: "City",
-                      type: "string",
+                      type: "short text",
                   },
                   {
                       field: "State",
-                      type: "string",
+                      type: "short text",
+                      suggestions: [{label:"AL"}, {label:"AK"}, {label:"AZ"}, {label:"AR"}, {label:"CA"}, {label:"CO"},
+                          {label:"CT"}, {label:"DE"}, {label:"FL"}, {label:"GA"}, {label:"HI"}, {label:"ID"},
+                          {label:"IL"}, {label:"IN"}, {label:"IA"}, {label:"KS"},
+                          {label:"KY"}, {label:"KY"}, {label:"LA"}, {label:"ME"}, {label:"MD"}, {label:"MA"}, {label:"MI"},
+                          {label:"MS"}, {label:"MO"}, {label:"MT"}, {label:"NE"}, {label:"NV"}, {label:"NH"}, {label:"NJ"},
+                          {label:"NM"}, {label:"NY"}, {label:"NC"}, {label:"ND"},
+                          {label:"OH"}, {label:"OK"}, {label:"OR"}, {label:"PA"}, {label:"RI"}, {label:"SC"}, {label:"SD"},
+                          {label:"TN"}, {label:"TX"}, {label:"UT"}, {label:"VT"}, {label:"VA"}, {label:"WA"}, {label:"WV"},{label:"WI"},
+                          {label:"WY"}].map(suggestion => ({
+                              value: suggestion.label,
+                              label: suggestion.label,
+                      }))
                   },
                   {
                       field: "Zip Code",

@@ -11,7 +11,6 @@ import {NavLink} from "react-router-dom";
 //TODO: import each component individually (i.e. '@material-ui/core/AppBar') to reduce bundle size
 import {AppBar, Drawer, IconButton, Toolbar, Typography} from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
-import MailIcon from '@material-ui/icons/Mail';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import EventIcon from '@material-ui/icons/Event';
 import CourseIcon from '@material-ui/icons/School'
@@ -29,7 +28,6 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 
 //Local Component Imports
 import './Navigation.scss'
-import {MuiThemeProviderOld} from "@material-ui/core/es/styles/MuiThemeProvider";
 import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
 
 
@@ -84,7 +82,7 @@ class Navigation extends Component {
                                     <MenuIcon/>
                                 </IconButton>
                             </Hidden>
-                            <Typography component={NavLink} to="/" color="secondary" className={"title"}>
+                            <Typography component={NavLink} to="/" className={"title"}>
                                 omou
                             </Typography>
                         </Toolbar>

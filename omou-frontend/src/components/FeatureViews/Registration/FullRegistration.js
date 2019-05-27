@@ -62,6 +62,7 @@ class FullRegistration extends Component {
         this.state = {
             maxCategory: 2,
             minCategory: 0,
+            coursePopup: false,
         };
     }
 
@@ -110,7 +111,7 @@ class FullRegistration extends Component {
     }
 
     render(){
-        // console.log('full registration!', this.props);
+
         return (
             <div className="">
                 <Grid container>
@@ -150,6 +151,7 @@ class FullRegistration extends Component {
                                             </Grid>
                                         </Grow>
                                     }
+                                    return '';
                                 })
                             }
                             <div className={this.state.maxCategory !==this.props.courses.length-1 ? "visible" : ""}>
@@ -174,7 +176,8 @@ class FullRegistration extends Component {
                                     <TableBody className={"table"}>
                                         {
                                             this.props.courses.map((course,i)=>{
-                                                return <TableRow key={i} hover>
+                                                return <TableRow key={i}
+                                                                 hover>
                                                     <Hidden mdDown>
                                                         <TableCell align="right">{course.grade}</TableCell>
                                                     </Hidden>
@@ -189,9 +192,9 @@ class FullRegistration extends Component {
                                                         <TableCell align="right">{course.capacity - course.filled}</TableCell>
                                                     </Hidden>
                                                     <TableCell align="right">
-                                                        <Button component={NavLink} to={'/registration/form/course'}
+                                                        <Button component={NavLink} to={'/registration/form/'+ course.course_title.split(" ").join("-")}
                                                             variant="contained"
-                                                            color="secondary"
+                                                            color="primary"
                                                             className={"button"}>REGISTER</Button>
                                                     </TableCell>
                                                 </TableRow>
