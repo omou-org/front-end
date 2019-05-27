@@ -14,6 +14,7 @@ export default function registration(state = initialState.RegistrationForms, {pa
         case actions.GET_REGISTRATION_FORM:
             newState = payload;
             console.log('RECEIVE_REGISTRATION Action');
+            break;
         default:
             // console.log('reducer state: ', state);
             return state;

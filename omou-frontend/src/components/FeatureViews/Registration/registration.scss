@@ -151,7 +151,7 @@
     text-transform: capitalize;
     font-style: normal;
     font-weight: normal;
-    font-size: 36px;
+    font-size: 42px;
     line-height: 42px;
     display: flex;
     align-items: center;
@@ -175,5 +175,17 @@
     .button{
       margin:5px;
     }
+    .hide{
+      opacity:0;
+    }
+    .label{
+      font-style:italic;
+      color:red;
+    }
   }
+}
+
+.label{
+  margin-left:5px;
+  margin-right:5px;
 }

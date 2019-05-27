@@ -18,17 +18,6 @@ import Categories from "@material-ui/icons/Category";
 import CourseList from "@material-ui/icons/List";
 import {NavLink} from "react-router-dom";
 
-const rowHeadings = [
-    {id:'Grade', number:false, disablePadding: true,},
-    {id:'Course', numberic:false, disablePadding: true},
-    {id:'Dates', numberic:false, disablePadding: true},
-    {id:'Day(s)', numberic:false, disablePadding: true},
-    {id:'Time', numberic:false, disablePadding: true},
-    {id:'Tuition', numberic:false, disablePadding: true},
-    {id:'Space Left', numberic:false, disablePadding: true},
-    {id:'Register', numberic:false, disablePadding: true}
-];
-
 class Registration extends Component {
     constructor(){
         super();
