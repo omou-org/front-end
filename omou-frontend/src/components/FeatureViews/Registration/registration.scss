@@ -136,6 +136,14 @@
 
     .icon, .back, .label{
       display:inline-block;
+      @include respond-to(handhelds){
+        margin-top:15px;
+      }
+    }
+    .icon{
+      @include respond-to(handhelds){
+        margin-left:10px;
+      }
     }
     .label{
       position:relative;
@@ -155,6 +163,10 @@
     line-height: 42px;
     display: flex;
     align-items: center;
+
+    @include respond-to(handhelds){
+      margin-left:3%;
+    }
   }
 
   .form-section{
