@@ -57,8 +57,8 @@ let TableToolbar = props =>{
 };
 
 class FullRegistration extends Component {
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state = {
             maxCategory: 2,
             minCategory: 0,
@@ -68,7 +68,6 @@ class FullRegistration extends Component {
 
     forwardCategories(){
         this.setState((oldState)=>{
-            console.log(oldState.minCategory, oldState.maxCategory);
             if(oldState.maxCategory + 1 < this.props.categories.length){
                 return {
                     maxCategory: oldState.maxCategory+1,
@@ -80,7 +79,6 @@ class FullRegistration extends Component {
 
     backCategories(){
         this.setState((oldState)=>{
-            console.log(oldState.minCategory, oldState.maxCategory);
             if(oldState.minCategory - 1 >= 0){
                 return {
                     maxCategory: oldState.maxCategory-1,
@@ -91,7 +89,6 @@ class FullRegistration extends Component {
     }
 
     expandCategories(){
-        console.log( this.state.expandCategory);
         let newMaxCategory = 0;
         let newMinCategory = 0;
         if(this.state.maxCategory === this.props.courses.length-1){
