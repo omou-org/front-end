@@ -35,6 +35,8 @@ class Form extends Component {
     componentWillMount() {
         let prevState = sessionStorage.getItem("form");
         let formType = this.props.match.params.type;
+        let course = this.props.match.params.course;
+        console.log(this.props.match.params);
         if(!prevState || formType !== prevState.form){
             if (this.props.registrationForm[formType]){
                 this.setState((oldState)=>{
@@ -63,6 +65,12 @@ class Form extends Component {
                             });
                         }
                     });
+
+                    // fill out any fields from course route
+                    if(course){
+                        NewState["Course Selection"]["Course Title"] = course.split("-").join(" ");
+                    }
+
                     return NewState;
                 })
             }
@@ -322,8 +330,9 @@ class Form extends Component {
                                 </Button>
                             </div>
                         </Modal>
-                        <Typography className={"heading"}>
-                            {this.props.match.params.type.split("-").join(" ")} Registration
+                        <Typography className={"heading"} align={"left"}>
+                            {this.props.match.params.course ? this.props.match.params.course.split("-").join(" ") + " " : ""}
+                            {this.props.match.params.type} Registration
                         </Typography>
                         {
                             this.props.registrationForm[this.state.form] ? this.renderForm.bind(this)() :
