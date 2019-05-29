@@ -97,14 +97,15 @@
 .exit-popup{
   @include respond-to(handhelds){
     top:35%;
-    left:12%;
+    left:5%;
+    width:90%;
   }
   @include respond-to(medium-up-screens){
     top:35%;
     left:37%;
   }
 
-  padding:2%;
+  padding:3%;
   height:176px;
   position:absolute;
   outline:none;
@@ -112,7 +113,14 @@
   border-radius:8px;
 
   .button{
-    margin:15% 5px 0 0;
+    text-align:center;
+    @include respond-to(handhelds){
+      margin:10% 15px 0 0;
+      width:45%;
+    }
+    @include respond-to(medium-up-screens){
+      margin:15% 5px 0 0;
+    }
   }
   .button.primary{
     background-color:$secondaryColor;
