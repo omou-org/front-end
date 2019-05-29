@@ -19,60 +19,59 @@ import StepContent from "@material-ui/core/StepContent";
 import TextField from "@material-ui/core/TextField";
 import {InputValidation, NumberValidation} from "./Validations";
 
-// const handleChange = name => event => {
-//     setValues({ ...values, [name]: event.target.value });
-// };
-
 class Form extends Component {
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state = {
             exitPopup:false,
             nextSection:false,
             activeStep: 0,
+            activeSection: "",
             form:"",
+            formObject: {},
         }
     }
 
     componentWillMount() {
         let prevState = sessionStorage.getItem("form");
-
-        if(!prevState){
-            let formType = this.props.match.params.type;
+        let formType = this.props.match.params.type;
+        if(!prevState || formType !== prevState.form){
             if (this.props.registrationForm[formType]){
                 this.setState((oldState)=>{
-                    let formContents = this.props.registrationForm[formType];
+                    let formContents = JSON.parse(JSON.stringify(this.props.registrationForm[formType]));
 
                     let NewState = {...oldState,
+                        activeSection:formContents.section_titles[0],
                         form: formType,
+                        formObject: formContents,
                     };
 
                     formContents.section_titles.forEach((title,i)=>{
                         // create blank fields based on form type
                         NewState[title] = {};
-                        formContents[i].forEach((field)=>{
-                            NewState[title][field.field] = undefined;
-                        });
 
+                        if(Array.isArray(formContents[title])){
+                            formContents[title].forEach((field)=>{
+                                NewState[title][field.field] = undefined;
+                            });
+                        }
                         // create validated state for each field
                         NewState[title + "_validated"] = {};
-                        formContents[i].forEach((field)=>{
-                            NewState[title+"_validated"][field.field] = true;
-                        });
+                        if(Array.isArray(formContents[title])){
+                            formContents[title].forEach((field)=>{
+                                NewState[title+"_validated"][field.field] = true;
+                            });
+                        }
                     });
                     return NewState;
                 })
             }
-        } else {
+        } else if(prevState && formType === prevState.form){
             this.setState(()=>{return JSON.parse(prevState);})
         }
     }
 
-    componentWillUnmount() {
-        // console.log('component unmounting');
-        // sessionStorage.setItem()
-    }
-
+    // return to main registration page, trigger exit popup
     backToggler(){
         this.setState({exitPopup:!this.state.exitPopup});
     }
@@ -83,11 +82,11 @@ class Form extends Component {
 
 
     validateSection(){
-        let formType = this.props.match.params.type;
-        let formContents = this.props.registrationForm[formType];
+        let formContents = this.state.formObject;
         let currSectionTitle = formContents.section_titles[this.state.activeStep];
+
         for(let [field_key] of Object.entries(this.state[currSectionTitle+"_validated"])){
-            let fields = this.props.registrationForm[this.state.form][this.state.activeStep];
+            let fields = this.state.formObject[this.state.activeSection];
             let required = fields.filter(fieldObj => {
                return fieldObj.field === field_key;
             })[0].required;
@@ -99,12 +98,60 @@ class Form extends Component {
         return true;
     }
 
+    getNextSection(){
+        let formType = this.props.match.params.type;
+        let formContents = this.props.registrationForm[formType];
+        let currSectionTitle = this.state.activeSection;
+        let currentSection = this.state.activeSection;
+        let nextSectionInput;
+
+        if(Array.isArray(formContents[currentSection])){
+            formContents[currentSection].some((field)=>{
+                if(field.conditional){
+                    nextSectionInput = this.state[currSectionTitle][field.field];
+                    return field.conditional;
+                }
+            });
+        }
+
+        // set next section
+        this.setState((oldState)=>{
+            let NewState = oldState;
+
+            // if there was a selection for the next type of section
+            if(nextSectionInput){
+                // set-up fields for the next section
+                oldState.formObject.section_titles.forEach((title,i)=>{
+                    // for conditional sections,
+                    if(formContents[title] instanceof Object && nextSectionInput in formContents[title]){
+                        formContents[title][nextSectionInput].forEach((field)=>{
+                            NewState[title][field.field] = undefined;
+                        });
+
+                        // create validated state for each field
+                        NewState[title + "_validated"] = {};
+
+                        formContents[title][nextSectionInput].forEach((field)=>{
+                            NewState[title+"_validated"][field.field] = true;
+                        });
+
+                        // set conditional section to the user selected section
+                        NewState.formObject[title] = formContents[title][nextSectionInput];
+                    }
+                });
+            }
+            return NewState;
+        });
+    }
+
     // Progresses to next section in registration form
     handleNext(){
         this.setState((oldState)=>{
             if(this.validateSection()){
+                this.getNextSection();
                 return{
                     activeStep: oldState.activeStep + 1,
+                    activeSection: oldState.formObject.section_titles[oldState.activeStep + 1],
                     nextSection: true,
                 }
             }
@@ -113,11 +160,33 @@ class Form extends Component {
 
     // Regresses to previous section in registration form
     handleBack(){
-        this.setState((oldState)=>{
-            return{
-                activeStep: oldState.activeStep - 1,
-            }
-        });
+        if(this.state.activeStep !== 0 && this.state.activeSection){
+            this.setState((oldState)=>{
+                if(oldState.activeStep !== 0 && oldState.activeSection){
+                    let NewState = oldState;
+                    let SectionTitles = oldState.formObject.section_titles;
+                    let ConditionalSectionTitle;
+
+                    SectionTitles.forEach((title,stepIndex)=>{
+                        if(Array.isArray(oldState.formObject[title])){
+                            oldState.formObject[title].forEach((field)=>{
+                                // check if a conditional field is the previous section
+                                if(field.conditional && oldState.activeStep - 1 === stepIndex){
+                                    ConditionalSectionTitle = SectionTitles[oldState.activeStep];
+                                    // NewState[ConditionalSectionTitle] = this.props.registrationForm[oldState.form][ConditionalSectionTitle];
+                                    NewState.formObject[ConditionalSectionTitle] = this.props.registrationForm[oldState.form][ConditionalSectionTitle];
+                                    return true;
+                                }
+                            });
+                        }
+                    });
+                    NewState.activeStep = oldState.activeStep - 1;
+                    NewState.activeSection = oldState.formObject.section_titles[NewState.activeStep];
+
+                    return NewState;
+                }
+            });
+        }
     }
 
     handleReset(){
@@ -159,6 +228,7 @@ class Form extends Component {
     // http://localhost:3000/registration/form/student
     renderForm(){
         // console.log(this.props.match.params);
+        // console.log(this.state.formObject);
         let steps = this.props.registrationForm[this.state.form]["section_titles"];
         return <Stepper activeStep={this.state.activeStep} orientation={"vertical"} className={"form-section"}>
             {
@@ -167,7 +237,7 @@ class Form extends Component {
                         <StepLabel>{label}</StepLabel>
                         <StepContent>
                             {
-                                this.props.registrationForm[this.state.form][this.state.activeStep].map((field,i)=>{
+                                this.state.formObject[this.state.activeSection].map((field,i)=>{
                                     return <div key={i}>
                                         <TextField
                                             label={field.field}
@@ -193,9 +263,6 @@ class Form extends Component {
                                 })
                             }
                             <div className={"controls"}>
-                                <Typography className={`${!this.state.nextSection ? "hide" : ""} label`}>
-                                    Please complete this section
-                                </Typography>
                                 <Button
                                     disabled={this.state.activeStep === 0}
                                     color={"secondary"}
@@ -242,7 +309,7 @@ class Form extends Component {
                                 </Typography>
                                 <Button component={NavLink} to={"/registration"}
                                         color={"secondary"}
-                                    className={"button secondary"}>
+                                        className={"button secondary"}>
                                     No, discard changes
                                 </Button>
                                 <Button color={"secondary"} className={"button primary"}>
@@ -250,10 +317,6 @@ class Form extends Component {
                                 </Button>
                             </div>
                         </Modal>
-                        {/*<Chip*/}
-                            {/*label={"New"}*/}
-                            {/*color="primary"*/}
-                            {/*className={"label"}/>*/}
                         <Typography className={"heading"}>
                             {this.props.match.params.type.split("-").join(" ")} Registration
                         </Typography>

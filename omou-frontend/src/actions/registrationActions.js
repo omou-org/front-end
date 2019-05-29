@@ -17,3 +17,4 @@ export function fetchStudents() {
 export function getRegistrationForm(){
     return {type: types.ALERT, payload: 'alert stuff'}
 }
+
