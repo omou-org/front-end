@@ -164,13 +164,13 @@
 
   .heading{
     margin-top:50px;
+    margin-left:2%;
     text-transform: capitalize;
     font-style: normal;
     font-weight: normal;
     font-size: 42px;
     line-height: 42px;
     display: flex;
-    align-items: center;
 
     @include respond-to(handhelds){
       margin-left:3%;

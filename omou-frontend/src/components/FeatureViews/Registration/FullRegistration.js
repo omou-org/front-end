@@ -192,7 +192,7 @@ class FullRegistration extends Component {
                                                         <TableCell align="right">{course.capacity - course.filled}</TableCell>
                                                     </Hidden>
                                                     <TableCell align="right">
-                                                        <Button component={NavLink} to={'/registration/form/'+ course.course_title.split(" ").join("-")}
+                                                        <Button component={NavLink} to={'/registration/form/course/'+ course.course_title.split(" ").join("-")}
                                                             variant="contained"
                                                             color="primary"
                                                             className={"button"}>REGISTER</Button>
