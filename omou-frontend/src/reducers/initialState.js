@@ -361,6 +361,70 @@ function initRegistrationForm(){
                       full: true,
                   },
               ]
+          },
+          course: {
+              form_type:"course",
+              section_titles:["Student","Student Information", "Course Selection", ],
+              "Student":[{
+                  field: "Student Name",
+                  type: "short text",
+                  conditional: false,
+                  required: true,
+                  full: false,
+              }],
+              "Student Information":[
+                  {
+                      field: "Current Teacher in School",
+                      type: "short text",
+                      conditional: false,
+                      required: false,
+                      full: true,
+                  },
+                  {
+                      field: "Textbook Used",
+                      type: "short text",
+                      conditional: false,
+                      required: false,
+                      full: true,
+                  },
+                  {
+                      field: "Current Grade in Class",
+                      type: "short text",
+                      conditional: false,
+                      required: false,
+                      full: false,
+                  },
+                  {
+                      field: "Current Topic in School / Topic of Interest",
+                      type: "short text",
+                      conditional: false,
+                      required: false,
+                      full: true,
+                  },
+                  {
+                      field: "Student Strengths",
+                      type: "short text",
+                      conditional: false,
+                      required: false,
+                      full: true,
+                  },
+                  {
+                      field: "Student Weaknesses",
+                      type: "short text",
+                      conditional: false,
+                      required: false,
+                      full: true,
+                  },
+              ],
+              "Course Selection":[
+                  {
+                      field: "Course Title",
+                      type: "short text",
+                      conditional: false,
+                      required: false,
+                      full: true,
+                  },
+              ]
           }
       }
    };
