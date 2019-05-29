@@ -263,17 +263,24 @@ function initRegistrationForm(){
                   full: false,
                   }],
                   "Small Group":[{
-                      field: "Student Name",
+                      field: "Student 1 Name",
                       type: "short text",
                       conditional: false,
                       required: true,
                       full: false,
                   },
                       {
-                          field: "Student Name",
+                          field: "Student 2 Name",
                           type: "short text",
                           conditional: false,
                           required: true,
+                          full: false,
+                      },
+                      {
+                          field: "Student 3 Name",
+                          type: "short text",
+                          conditional: false,
+                          required: false,
                           full: false,
                       },
                   ]
