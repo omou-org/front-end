@@ -73,6 +73,8 @@ class Form extends Component {
 
     // return to main registration page, trigger exit popup
     backToggler(){
+        // clear session storage
+        sessionStorage.setItem("form","");
         this.setState({exitPopup:!this.state.exitPopup});
     }
 
@@ -98,23 +100,25 @@ class Form extends Component {
         return true;
     }
 
-    getNextSection(){
-        let formType = this.props.match.params.type;
-        let formContents = this.props.registrationForm[formType];
+    getConditionalFieldFromCurrentSection(){
+        let nextSectionInput = false;
         let currSectionTitle = this.state.activeSection;
-        let currentSection = this.state.activeSection;
-        let nextSectionInput;
-
-        if(Array.isArray(formContents[currentSection])){
-            formContents[currentSection].some((field)=>{
+        // Get input from the conditional field
+        if(Array.isArray(this.state.formObject[currSectionTitle])){
+            this.state.formObject[currSectionTitle].some((field)=>{
                 if(field.conditional){
                     nextSectionInput = this.state[currSectionTitle][field.field];
                     return field.conditional;
                 }
             });
         }
+        return nextSectionInput;
+    }
 
-        // set next section
+    setNextConditionalSection(nextSectionInput){
+        let formContents = this.state.formObject;
+
+        // set the next conditional section
         this.setState((oldState)=>{
             let NewState = oldState;
 
@@ -148,7 +152,10 @@ class Form extends Component {
     handleNext(){
         this.setState((oldState)=>{
             if(this.validateSection()){
-                this.getNextSection();
+                let conditionalField = this.getConditionalFieldFromCurrentSection();
+                if(conditionalField){
+                    this.setNextConditionalSection(conditionalField);
+                }
                 return{
                     activeStep: oldState.activeStep + 1,
                     activeSection: oldState.formObject.section_titles[oldState.activeStep + 1],
@@ -160,33 +167,31 @@ class Form extends Component {
 
     // Regresses to previous section in registration form
     handleBack(){
-        if(this.state.activeStep !== 0 && this.state.activeSection){
-            this.setState((oldState)=>{
-                if(oldState.activeStep !== 0 && oldState.activeSection){
-                    let NewState = oldState;
-                    let SectionTitles = oldState.formObject.section_titles;
-                    let ConditionalSectionTitle;
+        this.setState((oldState)=>{
+            if(oldState.activeStep !== 0 && oldState.activeSection){
+                let NewState = oldState;
+                let SectionTitles = oldState.formObject.section_titles;
+                let ConditionalSectionTitle;
 
-                    SectionTitles.forEach((title,stepIndex)=>{
-                        if(Array.isArray(oldState.formObject[title])){
-                            oldState.formObject[title].forEach((field)=>{
-                                // check if a conditional field is the previous section
-                                if(field.conditional && oldState.activeStep - 1 === stepIndex){
-                                    ConditionalSectionTitle = SectionTitles[oldState.activeStep];
-                                    // NewState[ConditionalSectionTitle] = this.props.registrationForm[oldState.form][ConditionalSectionTitle];
-                                    NewState.formObject[ConditionalSectionTitle] = this.props.registrationForm[oldState.form][ConditionalSectionTitle];
-                                    return true;
-                                }
-                            });
-                        }
-                    });
-                    NewState.activeStep = oldState.activeStep - 1;
-                    NewState.activeSection = oldState.formObject.section_titles[NewState.activeStep];
+                // Reset the conditional section
+                SectionTitles.some((title,stepIndex)=>{
+                    if(Array.isArray(oldState.formObject[title])){
+                        return oldState.formObject[title].some((field)=>{
+                            // check if a conditional field is the previous section
+                            if(field.conditional && oldState.activeStep - 1 === stepIndex){
+                                ConditionalSectionTitle = SectionTitles[oldState.activeStep];
+                                NewState.formObject[ConditionalSectionTitle] = this.props.registrationForm[oldState.form][ConditionalSectionTitle];
+                                return true;
+                            }
+                        });
+                    }
+                });
+                NewState.activeStep = oldState.activeStep - 1;
+                NewState.activeSection = oldState.formObject.section_titles[NewState.activeStep];
 
-                    return NewState;
-                }
-            });
-        }
+                return NewState;
+            }
+        });
     }
 
     handleReset(){
