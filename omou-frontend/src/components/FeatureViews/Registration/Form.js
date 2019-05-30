@@ -18,6 +18,10 @@ import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
 import TextField from "@material-ui/core/TextField";
 import {InputValidation, NumberValidation} from "./Validations";
+import Select from "@material-ui/core/Select";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
+import MenuItem from "@material-ui/core/MenuItem";
 
 class Form extends Component {
     constructor(props){
@@ -238,7 +242,63 @@ class Form extends Component {
             });
         }
     }
-    // http://localhost:3000/registration/form/student
+
+    onSelectChange(value,label,fieldTitle){
+        this.setState((OldState)=>{
+            let NewState = OldState;
+            NewState[label][fieldTitle] = value;
+            console.log(NewState);
+            return NewState;
+        });
+    }
+
+    renderField(field, label){
+        switch(field.type){
+            case "select":
+                let fieldTitle = field.field;
+                return <FormControl className={"form-control"}>
+                    <InputLabel htmlFor={fieldTitle}>{fieldTitle}</InputLabel>
+                    <Select
+                        value={this.state[label][fieldTitle]}
+                        onChange={(e)=>{this.onSelectChange.bind(this)(e.target.value,label,fieldTitle)}}
+                        inputProps={{
+                            name: {fieldTitle},
+                            id: {fieldTitle},
+                        }}
+                    >
+                        {
+                            field.options.map((option,i)=>{
+                              return  <MenuItem value={option} key={i}>
+                                  <em>{option}</em>
+                              </MenuItem>
+                            })
+                        }
+                    </Select>
+                </FormControl>;
+            default:
+                return <TextField
+                    label={field.field}
+                    multiline
+                    // className={this.state[label+"_validated"][field.field] ? "": "error"}
+                    margin="normal"
+                    value={this.state[label][field.field]}
+                    error={!this.state[label+"_validated"][field.field]}
+                    helperText={!this.state[label+"_validated"][field.field] ? field.field + " invalid": ""}
+                    type={field.type === "int" ? "Number": "text"}
+                    required={field.required}
+                    fullWidth={field.full}
+                    onChange={(e)=>{
+                        e.preventDefault();
+                        this.handleFieldUpdate.bind(this)(label ,field, e.target.value);
+                    }}
+                    onBlur={(e)=>{
+                        e.preventDefault();
+                        this.validateField.bind(this)(label, field, e.target.value);
+                    }}
+                />
+        }
+    }
+
     renderForm(){
         // console.log(this.props.match.params);
         // console.log(this.state.formObject);
@@ -252,26 +312,28 @@ class Form extends Component {
                             {
                                 this.state.formObject[this.state.activeSection].map((field,i)=>{
                                     return <div key={i}>
-                                        <TextField
-                                            label={field.field}
-                                            multiline
-                                            // className={this.state[label+"_validated"][field.field] ? "": "error"}
-                                            margin="normal"
-                                            value={this.state[label][field.field]}
-                                            error={!this.state[label+"_validated"][field.field]}
-                                            helperText={!this.state[label+"_validated"][field.field] ? field.field + " invalid": ""}
-                                            type={field.type === "int" ? "Number": "text"}
-                                            required={field.required}
-                                            fullWidth={field.full}
-                                            onChange={(e)=>{
-                                                e.preventDefault();
-                                                this.handleFieldUpdate.bind(this)(label ,field, e.target.value);
-                                            }}
-                                            onBlur={(e)=>{
-                                                e.preventDefault();
-                                                this.validateField.bind(this)(label, field, e.target.value);
-                                            }}
-                                        /> <br/>
+                                        {/*<TextField*/}
+                                            {/*label={field.field}*/}
+                                            {/*multiline*/}
+                                            {/*// className={this.state[label+"_validated"][field.field] ? "": "error"}*/}
+                                            {/*margin="normal"*/}
+                                            {/*value={this.state[label][field.field]}*/}
+                                            {/*error={!this.state[label+"_validated"][field.field]}*/}
+                                            {/*helperText={!this.state[label+"_validated"][field.field] ? field.field + " invalid": ""}*/}
+                                            {/*type={field.type === "int" ? "Number": "text"}*/}
+                                            {/*required={field.required}*/}
+                                            {/*fullWidth={field.full}*/}
+                                            {/*onChange={(e)=>{*/}
+                                                {/*e.preventDefault();*/}
+                                                {/*this.handleFieldUpdate.bind(this)(label ,field, e.target.value);*/}
+                                            {/*}}*/}
+                                            {/*onBlur={(e)=>{*/}
+                                                {/*e.preventDefault();*/}
+                                                {/*this.validateField.bind(this)(label, field, e.target.value);*/}
+                                            {/*}}*/}
+                                        {/*/> */}
+                                            {this.renderField(field,label)}
+                                        <br/>
                                     </div>
                                 })
                             }
