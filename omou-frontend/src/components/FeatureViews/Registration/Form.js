@@ -40,7 +40,7 @@ class Form extends Component {
         let prevState = sessionStorage.getItem("form");
         let formType = this.props.match.params.type;
         let course = this.props.match.params.course;
-        console.log(this.props.match.params);
+        // console.log(this.props.match.params);
         if(!prevState || formType !== prevState.form){
             if (this.props.registrationForm[formType]){
                 this.setState((oldState)=>{
@@ -275,6 +275,27 @@ class Form extends Component {
                         }
                     </Select>
                 </FormControl>;
+            case "course":
+                return <TextField
+                    label={field.field}
+                    multiline
+                    // className={this.state[label+"_validated"][field.field] ? "": "error"}
+                    margin="normal"
+                    value={this.state[label][field.field]}
+                    error={!this.state[label+"_validated"][field.field]}
+                    helperText={!this.state[label+"_validated"][field.field] ? field.field + " invalid": ""}
+                    type={field.type === "int" ? "Number": "text"}
+                    required={field.required}
+                    fullWidth={field.full}
+                    onChange={(e)=>{
+                        e.preventDefault();
+                        this.handleFieldUpdate.bind(this)(label ,field, e.target.value);
+                    }}
+                    onBlur={(e)=>{
+                        e.preventDefault();
+                        this.validateField.bind(this)(label, field, e.target.value);
+                    }}
+                />
             default:
                 return <TextField
                     label={field.field}
