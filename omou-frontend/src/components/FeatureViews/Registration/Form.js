@@ -254,11 +254,10 @@ class Form extends Component {
             return NewState;
         });
     }
-
     renderField(field, label){
+        let fieldTitle = field.field;
         switch(field.type){
             case "select":
-                let fieldTitle = field.field;
                 return <FormControl className={"form-control"}>
                     <InputLabel htmlFor={fieldTitle}>{fieldTitle}</InputLabel>
                     <Select
@@ -283,10 +282,25 @@ class Form extends Component {
                 courseList = courseList.map((course)=>{
                     return {
                         value: course.course_id.toString()+": "+course.course_title,
-                        label: course.course_title,
+                        label: course.course_id.toString()+": "+course.course_title,
                     }
                 });
-                return <SearchSelect options={courseList}/>;
+                return <SearchSelect
+                    onChange={(value)=>{ this.onSelectChange.bind(this)(value,label,fieldTitle)}}
+                    options={courseList}
+                    className={"search-options"}/>;
+            case "teacher":
+                let teacherList = this.props.teachers;
+                teacherList = teacherList.map((teacher)=>{
+                    return {
+                        value: teacher.id.toString()+": "+teacher.name,
+                        label: teacher.id.toString()+": "+teacher.name,
+                    }
+                });
+                return <SearchSelect
+                    onChange={(value)=>{ this.onSelectChange.bind(this)(value,label,fieldTitle)}}
+                    options={teacherList}
+                    className={"search-options"}/>;
             default:
                 return <TextField
                     label={field.field}
@@ -410,7 +424,8 @@ function mapStateToProps(state) {
     return {
         courses: state.Registration["course_list"],
         courseCategories: state.Registration["categories"],
-        registrationForm: state.Registration["registration_form"]
+        registrationForm: state.Registration["registration_form"],
+        teachers: state.Registration["teacher_list"],
     };
 }
 
