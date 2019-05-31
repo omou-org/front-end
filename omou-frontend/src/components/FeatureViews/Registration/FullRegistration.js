@@ -27,10 +27,10 @@ import {NavLink} from "react-router-dom";
 
 
 const rowHeadings = [
-    {id:'Grade', number:false, disablePadding: false,},
     {id:'Course', numberic:false, disablePadding: false},
+    {id:'Grade', number:false, disablePadding: false,},
     {id:'Dates', numberic:false, disablePadding: false},
-    {id:'Day(s)', numberic:false, disablePadding: false},
+    // {id:'Day(s)', numberic:false, disablePadding: false},
     {id:'Time', numberic:false, disablePadding: false},
     {id:'Tuition', numberic:false, disablePadding: false},
     {id:'Space Left', numberic:false, disablePadding: false},
@@ -166,6 +166,9 @@ class FullRegistration extends Component {
                         </Grid>
                     </Grid>
                     <Grid item xs={12}>
+                        <Typography className={"popular-courses"} align={"left"}>
+                            Popular Courses
+                        </Typography>
                         <Paper className={"paper"}>
                             <Grow in={true}>
                                 <Table>
@@ -175,18 +178,17 @@ class FullRegistration extends Component {
                                             this.props.courses.map((course,i)=>{
                                                 return <TableRow key={i}
                                                                  hover>
+                                                    <TableCell align="left" className={"course-title"}>{course.course_title}</TableCell>
                                                     <Hidden mdDown>
                                                         <TableCell align="right">{course.grade}</TableCell>
                                                     </Hidden>
-                                                    <TableCell align="right">{course.course_title}</TableCell>
-                                                    <TableCell align="right">{course.dates}</TableCell>
-                                                    <TableCell align="right">{course.days}</TableCell>
-                                                    <TableCell align="right">{course.time}</TableCell>
+                                                    <TableCell align="left">{course.dates}</TableCell>
+                                                    <TableCell align="center">{course.time}</TableCell>
                                                     <Hidden mdDown>
                                                         <TableCell align="right">{course.tuition}</TableCell>
                                                     </Hidden>
                                                     <Hidden mdDown>
-                                                        <TableCell align="right">{course.capacity - course.filled}</TableCell>
+                                                        <TableCell align="center">{course.capacity - course.filled}</TableCell>
                                                     </Hidden>
                                                     <TableCell align="right">
                                                         <Button component={NavLink} to={'/registration/form/course/'+ course.course_title.split(" ").join("-")}

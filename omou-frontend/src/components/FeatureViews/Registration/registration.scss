@@ -41,6 +41,7 @@
 .paper{
   margin: 4% 0 2% 0;
 }
+
 .course-categories{
   position:relative;
   //Controls
@@ -91,6 +92,11 @@
       text-overflow:ellipsis;
     }
   }
+}
+
+.course-title{
+  font-weight:500 !important;
+  color: #404040 !important;
 }
 
 /*Registration Form Styles*/
@@ -208,6 +214,13 @@
       color:red;
     }
   }
+}
+
+.popular-courses{
+  font-weight:bold !important;
+  margin-top:50px !important;
+  margin-bottom:-35px !important;
+  color:$lightPrimaryFontColor !important;
 }
 
 .label{
