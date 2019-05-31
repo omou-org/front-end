@@ -23,6 +23,9 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 
+//Outside React Component
+import SearchSelect from 'react-select';
+
 class Form extends Component {
     constructor(props){
         super(props);
@@ -276,26 +279,14 @@ class Form extends Component {
                     </Select>
                 </FormControl>;
             case "course":
-                return <TextField
-                    label={field.field}
-                    multiline
-                    // className={this.state[label+"_validated"][field.field] ? "": "error"}
-                    margin="normal"
-                    value={this.state[label][field.field]}
-                    error={!this.state[label+"_validated"][field.field]}
-                    helperText={!this.state[label+"_validated"][field.field] ? field.field + " invalid": ""}
-                    type={field.type === "int" ? "Number": "text"}
-                    required={field.required}
-                    fullWidth={field.full}
-                    onChange={(e)=>{
-                        e.preventDefault();
-                        this.handleFieldUpdate.bind(this)(label ,field, e.target.value);
-                    }}
-                    onBlur={(e)=>{
-                        e.preventDefault();
-                        this.validateField.bind(this)(label, field, e.target.value);
-                    }}
-                />
+                let courseList = this.props.courses;
+                courseList = courseList.map((course)=>{
+                    return {
+                        value: course.course_id.toString()+": "+course.course_title,
+                        label: course.course_title,
+                    }
+                });
+                return <SearchSelect options={courseList}/>;
             default:
                 return <TextField
                     label={field.field}
@@ -333,26 +324,6 @@ class Form extends Component {
                             {
                                 this.state.formObject[this.state.activeSection].map((field,i)=>{
                                     return <div key={i}>
-                                        {/*<TextField*/}
-                                            {/*label={field.field}*/}
-                                            {/*multiline*/}
-                                            {/*// className={this.state[label+"_validated"][field.field] ? "": "error"}*/}
-                                            {/*margin="normal"*/}
-                                            {/*value={this.state[label][field.field]}*/}
-                                            {/*error={!this.state[label+"_validated"][field.field]}*/}
-                                            {/*helperText={!this.state[label+"_validated"][field.field] ? field.field + " invalid": ""}*/}
-                                            {/*type={field.type === "int" ? "Number": "text"}*/}
-                                            {/*required={field.required}*/}
-                                            {/*fullWidth={field.full}*/}
-                                            {/*onChange={(e)=>{*/}
-                                                {/*e.preventDefault();*/}
-                                                {/*this.handleFieldUpdate.bind(this)(label ,field, e.target.value);*/}
-                                            {/*}}*/}
-                                            {/*onBlur={(e)=>{*/}
-                                                {/*e.preventDefault();*/}
-                                                {/*this.validateField.bind(this)(label, field, e.target.value);*/}
-                                            {/*}}*/}
-                                        {/*/> */}
                                             {this.renderField(field,label)}
                                         <br/>
                                     </div>
@@ -384,7 +355,6 @@ class Form extends Component {
     }
 
     render(){
-        // console.log(this.state);
         return (
             <Grid container className="">
                 <Grid item xs={12}>
