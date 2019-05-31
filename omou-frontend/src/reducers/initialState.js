@@ -116,6 +116,28 @@ function initRegistrationForm(){
           },
       ],
       student_list:[],
+      teacher_list:[
+          {
+              id: 1,
+              name: "Daniel Huang",
+              email: "daniel.huang@gmail.com",
+          },
+          {
+              id: 2,
+              name: "Jerry Li",
+              email: "jerrylinew@gmail.com",
+          },
+          {
+              id: 3,
+              name: "Albert Deng",
+              email: "albert@omou.com",
+          },
+          {
+              id: 4,
+              name: "Katie Ho",
+              email: "katie@omou.com",
+          },
+      ],
       categories:[
           {
               id: 1,
@@ -332,7 +354,7 @@ function initRegistrationForm(){
               "Tutor Selection": [
                   {
                       field: "Teacher",
-                      type: "short text",
+                      type: "teacher",
                       conditional: false,
                       required: true,
                       full: true,
