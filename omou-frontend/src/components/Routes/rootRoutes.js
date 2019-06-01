@@ -33,6 +33,7 @@ class rootRoutes extends Component {
 
             {/*Registration Routes*/}
             <Route path={"/registration/form/:type/:course?"} render={(props)=> <RegistrationForm {...props}/>}/>
+            {/*<Route path={"/registration/course/:courseTitle?"} render={(props)=> {}}/>*/}
         </Switch>
         )
     }

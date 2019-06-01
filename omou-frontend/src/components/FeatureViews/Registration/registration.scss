@@ -206,14 +206,20 @@
     .button{
       margin:5px;
     }
-    .hide{
-      opacity:0;
-    }
     .label{
       font-style:italic;
       color:red;
     }
   }
+}
+
+.hide{
+  opacity:0;
+}
+
+.add-student{
+  margin-top:25px !important;
+  margin-bottom: 25px !important;
 }
 
 .popular-courses{

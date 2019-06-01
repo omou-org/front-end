@@ -15,8 +15,23 @@ export default function registration(state = initialState.RegistrationForms, {pa
             newState = payload;
             console.log('RECEIVE_REGISTRATION Action');
             break;
+        case actions.ADD_STUDENT_FIELD:
+            newState = addAStudentField(state);
+            return newState;
         default:
             // console.log('reducer state: ', state);
             return state;
     }
+}
+
+function addAStudentField(prevState){
+    let SmallGroupList = prevState.registration_form.tutoring["Student(s)"]["Small Group"];
+    let NewStudentField = {
+        ... SmallGroupList[0],
+        field: "Student " + (SmallGroupList.length+1).toString() + " Name",
+        required: false,
+    };
+    SmallGroupList.push(NewStudentField);
+    prevState.registration_form.tutoring["Student(s)"]["Small Group"] = SmallGroupList;
+    return prevState;
 }

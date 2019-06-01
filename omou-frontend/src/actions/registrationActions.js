@@ -18,3 +18,6 @@ export function getRegistrationForm(){
     return {type: types.ALERT, payload: 'alert stuff'}
 }
 
+export function addStudentField(){
+    return {type: types.ADD_STUDENT_FIELD, payload: 'alert stuff'}
+}

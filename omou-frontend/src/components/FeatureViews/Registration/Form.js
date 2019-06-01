@@ -254,6 +254,7 @@ class Form extends Component {
             return NewState;
         });
     }
+
     renderField(field, label){
         let fieldTitle = field.field;
         switch(field.type){
@@ -325,6 +326,19 @@ class Form extends Component {
         }
     }
 
+    addStudentField(){
+        this.props.registrationActions.addStudentField.bind(this)();
+        this.setState((oldState)=>{
+            let NewState = oldState;
+            NewState.formObject["Student(s)"] = this.props.registrationForm.tutoring["Student(s)"]["Small Group"];
+            let StudentsFieldList = NewState.formObject["Student(s)"];
+            let NewStudentField = StudentsFieldList[StudentsFieldList.length-1].field;
+            NewState["Student(s)"] = StudentsFieldList;
+            NewState["Student(s)_validated"][NewStudentField] = true;
+            return NewState;
+        });
+    }
+
     renderForm(){
         // console.log(this.props.match.params);
         // console.log(this.state.formObject);
@@ -343,6 +357,11 @@ class Form extends Component {
                                     </div>
                                 })
                             }
+                            <Button
+                                color={"primary"}
+                                className={`button add-student ${this.state.activeSection === "Student(s)" ? "": "hide"}`}
+                                onClick={(e)=>{e.preventDefault(); this.addStudentField()}}
+                            >Add Student</Button>
                             <div className={"controls"}>
                                 <Button
                                     disabled={this.state.activeStep === 0}
@@ -414,11 +433,6 @@ class Form extends Component {
         )
     }
 }
-
-Form.propTypes = {
-    stuffActions: PropTypes.object,
-    FormForms: PropTypes.array
-};
 
 function mapStateToProps(state) {
     return {
