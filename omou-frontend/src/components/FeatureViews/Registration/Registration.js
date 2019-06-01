@@ -19,8 +19,8 @@ import CourseList from "@material-ui/icons/List";
 import {NavLink} from "react-router-dom";
 
 class Registration extends Component {
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state = {
             mobileViewToggle: true,
             mobileView: false,
