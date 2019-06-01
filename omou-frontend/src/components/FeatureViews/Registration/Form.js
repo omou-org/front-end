@@ -328,17 +328,81 @@ class Form extends Component {
         }
     }
 
-    addStudentField(){
-        this.props.registrationActions.addStudentField.bind(this)();
+    getPath(obj, value) {
+        if(obj.constructor !== Object) {
+            throw new TypeError('getPath() can only operate on object with Object as constructor');
+        }
+        let path = [];
+        let found = false;
+
+        function search(haystack) {
+            for (let key in haystack) {
+                path.push(key);
+                if(haystack[key] === value) {
+                    found = true;
+                    break;
+                }
+                if(haystack[key].constructor === Object) {
+                    search(haystack[key]);
+                    if(found) break;
+                }
+                path.pop();
+            }
+        }
+
+        search(obj);
+        return path;
+        /*
+        Or alternately if you want to keep mixed return
+        return found ? path : false;
+        */
+    }
+
+    addField(field,fieldIndex){
+        // console.log(this.getPath(this.props.registrationForm,field),field, this.props.registrationForm);
+        this.props.registrationActions.addField([this.state.form, "Student(s)", "Small Group",fieldIndex]);
         this.setState((oldState)=>{
             let NewState = oldState;
-            NewState.formObject["Student(s)"] = this.props.registrationForm.tutoring["Student(s)"]["Small Group"];
+            NewState.formObject["Student(s)"] = this.props.registrationForm[this.state.form]["Student(s)"]["Small Group"];
+            console.log(this.props.registrationForm[this.state.form]["Student(s)"]["Small Group"]);
             let StudentsFieldList = NewState.formObject["Student(s)"];
             let NewStudentField = StudentsFieldList[StudentsFieldList.length-1].field;
             NewState["Student(s)"] = StudentsFieldList;
             NewState["Student(s)_validated"][NewStudentField] = true;
             return NewState;
         });
+        // switch(field){
+        //     case "Student Name":
+        //         this.props.registrationActions.addField([this.state.form, "Student(s)", "Small Group",fieldIndex]);
+        //         this.setState((oldState)=>{
+        //             let NewState = oldState;
+        //             NewState.formObject["Student(s)"] = this.props.registrationForm[this.state.form]["Student(s)"]["Small Group"];
+        //             console.log(this.props.registrationForm[this.state.form]["Student(s)"]["Small Group"]);
+        //             let StudentsFieldList = NewState.formObject["Student(s)"];
+        //             let NewStudentField = StudentsFieldList[StudentsFieldList.length-1].field;
+        //             NewState["Student(s)"] = StudentsFieldList;
+        //             NewState["Student(s)_validated"][NewStudentField] = true;
+        //             // console.log(NewState);
+        //             return NewState;
+        //         });
+        //         break;
+        //     case "Course Title":
+        //         this.props.registrationActions.addField([this.state.form, "Course Selection", fieldIndex]);
+        //         this.setState((oldState)=>{
+        //             let NewState = oldState;
+        //             NewState.formObject["Course Selection"] = this.props.registrationForm[this.state.form]["Course Selection"];
+        //             let CourseFieldList = NewState.formObject["Course Selection"];
+        //             let NewStudentField = CourseFieldList[CourseFieldList.length-1].field;
+        //             NewState["Course Selection"] = CourseFieldList;
+        //             NewState["Course Selection_validated"][NewStudentField] = true;
+        //             return NewState;
+        //         });
+        //         break;
+        //     default:
+        //         break;
+        // }
+        // this.props.registrationActions.addStudentField();
+
     }
 
     renderForm(){
@@ -356,16 +420,16 @@ class Form extends Component {
                                     return <div key={i} className={"fields-wrapper"}>
                                             {this.renderField(field,label)}
                                         <br/>
+                                        <Fab color="primary" aria-label="Add" variant={"extended"}
+                                             className={`button add-student`}
+                                             onClick={(e)=>{e.preventDefault(); this.addField(field.field,i)}}
+                                        >
+                                            <AddIcon />
+                                            Add {field.field}
+                                        </Fab>
                                     </div>
                                 })
                             }
-                            <Fab color="primary" aria-label="Add" variant={"extended"}
-                                 className={`button add-student ${this.state.activeSection === "Student(s)" ? "": "hide"}`}
-                                 onClick={(e)=>{e.preventDefault(); this.addStudentField()}}
-                            >
-                                <AddIcon />
-                                Add Student
-                            </Fab>
                             <div className={"controls"}>
                                 <Button
                                     disabled={this.state.activeStep === 0}
@@ -392,6 +456,7 @@ class Form extends Component {
     }
 
     render(){
+        this.props.registrationActions.addField([this.state.form, "Student(s)", "Small Group",0]);
         return (
             <Grid container className="">
                 <Grid item xs={12}>
