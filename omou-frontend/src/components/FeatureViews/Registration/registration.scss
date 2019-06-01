@@ -137,11 +137,31 @@
   }
 }
 
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  
+  99% {
+    opacity: .5;
+  }
+  
+  100%{
+    opacity: 1;
+  }
+}
+
 .registration-form{
   position:relative;
   border-radius: 32px !important;
   padding:2%;
   margin-top: 4%;
+
+  .fields-wrapper{
+    //-webkit-animation: 1s ease 1 fade-in;
+    //-o-animation: 1s ease 1 fade-in;
+    //animation: 1s ease 1 fade-in;
+  }
 
   .control{
     cursor:pointer;

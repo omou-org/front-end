@@ -22,6 +22,8 @@ import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
+import Fab from "@material-ui/core/Fab";
+import AddIcon from "@material-ui/icons/Add"
 
 //Outside React Component
 import SearchSelect from 'react-select';
@@ -351,17 +353,19 @@ class Form extends Component {
                         <StepContent>
                             {
                                 this.state.formObject[this.state.activeSection].map((field,i)=>{
-                                    return <div key={i}>
+                                    return <div key={i} className={"fields-wrapper"}>
                                             {this.renderField(field,label)}
                                         <br/>
                                     </div>
                                 })
                             }
-                            <Button
-                                color={"primary"}
-                                className={`button add-student ${this.state.activeSection === "Student(s)" ? "": "hide"}`}
-                                onClick={(e)=>{e.preventDefault(); this.addStudentField()}}
-                            >Add Student</Button>
+                            <Fab color="primary" aria-label="Add" variant={"extended"}
+                                 className={`button add-student ${this.state.activeSection === "Student(s)" ? "": "hide"}`}
+                                 onClick={(e)=>{e.preventDefault(); this.addStudentField()}}
+                            >
+                                <AddIcon />
+                                Add Student
+                            </Fab>
                             <div className={"controls"}>
                                 <Button
                                     disabled={this.state.activeStep === 0}
