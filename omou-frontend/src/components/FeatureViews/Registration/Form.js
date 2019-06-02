@@ -74,7 +74,8 @@ class Form extends Component {
                     });
 
                     // fill out any fields from course route
-                    if(course){
+                    if(course && NewState.form === "course"){
+                        console.log(NewState);
                         NewState["Course Selection"]["Course Title"] = course.split("-").join(" ");
                     }
 
@@ -244,12 +245,8 @@ class Form extends Component {
                 return <FormControl className={"form-control"}>
                     <InputLabel htmlFor={fieldTitle}>{fieldTitle}</InputLabel>
                     <Select
-                        value={this.state[label][fieldTitle]}
+                        value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : "Private Tutoring"}
                         onChange={(e)=>{this.onSelectChange.bind(this)(e.target.value,label,fieldTitle)}}
-                        inputProps={{
-                            name: {fieldTitle},
-                            id: {fieldTitle},
-                        }}
                     >
                         {
                             field.options.map((option,i)=>{
