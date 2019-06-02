@@ -23,7 +23,8 @@ import ShrinkIcon from "@material-ui/icons/ExpandLess";
 //Local Component Imports
 import './registration.scss'
 import Grow from "@material-ui/core/Grow";
-import {NavLink} from "react-router-dom";
+import {NavLink, Redirect} from "react-router-dom";
+import {withRouter} from 'react-router'
 
 
 const rowHeadings = [
@@ -107,6 +108,10 @@ class FullRegistration extends Component {
         });
     }
 
+    goToRoute(route){
+        this.props.history.push(route);
+    }
+
     render(){
 
         return (
@@ -177,6 +182,8 @@ class FullRegistration extends Component {
                                         {
                                             this.props.courses.map((course,i)=>{
                                                 return <TableRow key={i}
+                                                                 onClick={(e)=>{e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
+                                                                 style={{ textDecoration: 'none', cursor: 'pointer' }}
                                                                  hover>
                                                     <TableCell align="left" className={"course-title"}>{course.course_title}</TableCell>
                                                     <Hidden mdDown>
@@ -198,7 +205,7 @@ class FullRegistration extends Component {
                                                     </TableCell>
                                                 </TableRow>
                                             })
-                                        }
+                            }
                                     </TableBody>
                                 </Table>
                             </Grow>
@@ -210,4 +217,4 @@ class FullRegistration extends Component {
     }
 }
 
-export default FullRegistration;
+export default withRouter(FullRegistration);

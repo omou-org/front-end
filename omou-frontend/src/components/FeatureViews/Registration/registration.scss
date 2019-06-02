@@ -41,6 +41,9 @@
 .paper{
   margin: 4% 0 2% 0;
 }
+.paper.content{
+  padding:2%;
+}
 
 .course-categories{
   position:relative;
@@ -151,6 +154,40 @@
   }
 }
 
+.control{
+  cursor:pointer;
+  position: absolute;
+  color:$lightPrimaryFontColor;
+  text-decoration: none;
+
+  .icon, .back, .label{
+    display:inline-block;
+    @include respond-to(handhelds){
+      margin-top:15px;
+    }
+  }
+  .icon{
+    @include respond-to(handhelds){
+      margin-left:10px;
+    }
+  }
+  .label{
+    position:relative;
+    top:-7px;
+    font-style: normal;
+    font-weight: bold;
+    line-height: 13px;
+  }
+}
+
+// the back button on the course registration page
+.course.control{
+  position: relative;
+  text-align: left;
+  display: block;
+  margin-bottom: 30px;
+}
+
 .registration-form{
   position:relative;
   border-radius: 32px !important;
@@ -163,37 +200,12 @@
     //animation: 1s ease 1 fade-in;
   }
 
-  .control{
-    cursor:pointer;
-    position: absolute;
-    color:$lightPrimaryFontColor;
-
-    .icon, .back, .label{
-      display:inline-block;
-      @include respond-to(handhelds){
-        margin-top:15px;
-      }
-    }
-    .icon{
-      @include respond-to(handhelds){
-        margin-left:10px;
-      }
-    }
-    .label{
-      position:relative;
-      top:-7px;
-      font-style: normal;
-      font-weight: bold;
-      line-height: 13px;
-    }
-  }
-
   .heading{
     margin-top:50px;
     margin-left:2%;
     text-transform: capitalize;
     font-style: normal;
-    font-weight: normal;
+    font-weight: 500;
     font-size: 42px;
     line-height: 42px;
     display: flex;
@@ -256,4 +268,50 @@
 .label{
   margin-left:5px;
   margin-right:5px;
+}
+
+
+/*Course Registration Page*/
+.text{ font-size: 18px !important;}
+.course-heading{
+
+  .info{
+    margin: 25px 0 15px 0;
+
+    .first-line {
+      text-align: left;
+      .text{
+        font-weight: 500;
+        margin:10px 0 5px 5px;
+      }
+    }
+    .first-line > *, .second-line > *{
+      display:inline-block;
+    }
+
+    .second-line{
+      margin-left:2%;
+      text-align:left;
+      .text, .chip{
+        margin:3px 55px 3px 0;
+      }
+      .chip{
+        width:auto;
+        display: inline-flex;
+      }
+    }
+  }
+
+}
+
+.description{
+  padding:2% 1% 1% 1%;
+  @include respond-to(medium-up-screens){
+    width:60%;
+    line-height: 1.8 !important;
+  }
+  @include respond-to(handheld){
+    width:100%;
+  }
+
 }
