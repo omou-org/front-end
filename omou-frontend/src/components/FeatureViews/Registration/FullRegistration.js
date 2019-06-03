@@ -13,7 +13,7 @@ import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import Card from "@material-ui/core/Card";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
-import {Typography} from "@material-ui/core";
+import {CircularProgress, Typography} from "@material-ui/core";
 import CardActions from "@material-ui/core/CardActions";
 import ForwardIcon from "@material-ui/icons/ArrowForward";
 import BackIcon from "@material-ui/icons/ArrowBack";
@@ -29,10 +29,6 @@ import {withRouter} from 'react-router'
 
 const rowHeadings = [
     {id:'Course', numberic:false, disablePadding: false},
-    {id:'Grade', number:false, disablePadding: false,},
-    {id:'Dates', numberic:false, disablePadding: false},
-    // {id:'Day(s)', numberic:false, disablePadding: false},
-    {id:'Time', numberic:false, disablePadding: false},
     {id:'Tuition', numberic:false, disablePadding: false},
     {id:'Space Left', numberic:false, disablePadding: false},
     {id:'Register', numberic:false, disablePadding: false}
@@ -43,14 +39,13 @@ let TableToolbar = props =>{
         <TableRow>
             {rowHeadings.map(
                 (row, i) => (
-                    <Hidden key={i} mdDown={row.id === 'Grade' || row.id === "Tuition" || row.id === "Space Left"}>
-                        <TableCell
-                            align={row.numberic ? 'right':'left'}
-                            padding={row.disablePadding ? 'none':'default'}
-                        >
-                            {row.id}
-                        </TableCell>
-                    </Hidden>
+                    <TableCell
+                        key={i}
+                        align={row.numberic ? 'right':'left'}
+                        padding={row.disablePadding ? 'none':'default'}
+                    >
+                        {row.id}
+                    </TableCell>
                 )
             )}
         </TableRow>
@@ -113,7 +108,7 @@ class FullRegistration extends Component {
     }
 
     render(){
-
+        // console.log(this.props.categories)
         return (
             <div className="">
                 <Grid container>
@@ -129,24 +124,21 @@ class FullRegistration extends Component {
                                         return <Grow in={this.state.minCategory <= i && i <= this.state.maxCategory} key={category.id}>
                                             <Grid item xs={4} >
                                                 <Card className={"category-card"}>
-                                                    <CardMedia
-                                                        className={"media"}
-                                                        image={"https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwjBz-2K9ZviAhWiGDQIHdopCZYQjRx6BAgBEAU&url=https%3A%2F%2Fwww.losdschools.org%2Fdomain%2F1704&psig=AOvVaw0GpyRGZMw9QDj5zOLnmw85&ust=1557954002247055"}
-                                                        title={"AP Test Logo"}/>
+                                                    {/*<CardMedia*/}
+                                                        {/*className={"media"}*/}
+                                                        {/*image={"https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwjBz-2K9ZviAhWiGDQIHdopCZYQjRx6BAgBEAU&url=https%3A%2F%2Fwww.losdschools.org%2Fdomain%2F1704&psig=AOvVaw0GpyRGZMw9QDj5zOLnmw85&ust=1557954002247055"}*/}
+                                                        {/*title={"AP Test Logo"}/>*/}
                                                     <CardContent className={"text"}>
                                                         <Typography gutterBottom variant={"h6"} component={"h2"}>
                                                             {category.cat_title}
                                                         </Typography>
                                                         <Typography component="p">
-                                                            Lizards are a widespread group of squamate reptiles, with over 6,000 species.
+                                                            category description
                                                         </Typography>
                                                     </CardContent>
                                                     <CardActions>
                                                         <Button size={"small"} color={"secondary"}>
                                                             Explore
-                                                        </Button>
-                                                        <Button size={"small"} color={"secondary"}>
-                                                            Learn More
                                                         </Button>
                                                     </CardActions>
                                                 </Card>
@@ -178,26 +170,34 @@ class FullRegistration extends Component {
                             <Grow in={true}>
                                 <Table>
                                     <TableToolbar/>
-                                    <TableBody className={"table"}>
+                                    <TableBody className={"pop-courses-table"}>
                                         {
                                             this.props.courses.map((course,i)=>{
                                                 return <TableRow key={i}
-                                                                 onClick={(e)=>{e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
-                                                                 style={{ textDecoration: 'none', cursor: 'pointer' }}
+                                                                 className={"row"}
                                                                  hover>
-                                                    <TableCell align="left" className={"course-title"}>{course.course_title}</TableCell>
-                                                    <Hidden mdDown>
-                                                        <TableCell align="right">{course.grade}</TableCell>
-                                                    </Hidden>
-                                                    <TableCell align="left">{course.dates}</TableCell>
-                                                    <TableCell align="center">{course.time}</TableCell>
-                                                    <Hidden mdDown>
-                                                        <TableCell align="right">{course.tuition}</TableCell>
-                                                    </Hidden>
-                                                    <Hidden mdDown>
-                                                        <TableCell align="center">{course.capacity - course.filled}</TableCell>
-                                                    </Hidden>
-                                                    <TableCell align="right">
+                                                    <TableCell
+                                                        onClick={(e)=>{e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
+                                                        style={{ textDecoration: 'none', cursor: 'pointer' }}
+                                                        align="left"
+                                                        className={"course-title"}>{course.course_title}</TableCell>
+                                                    <TableCell
+                                                        onClick={(e)=>{e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
+                                                        style={{ textDecoration: 'none', cursor: 'pointer' }}
+                                                        align="left">{course.tuition}</TableCell>
+                                                    <TableCell
+                                                        onClick={(e)=>{e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
+                                                        style={{ textDecoration: 'none', cursor: 'pointer' }}
+                                                        align="left">
+                                                        <CircularProgress
+                                                            className={'space-left-progress'}
+                                                            size={30}
+                                                            thickness={5}
+                                                            value={((course.capacity - course.filled)/course.capacity)*100}
+                                                            variant={'static'}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell align="left">
                                                         <Button component={NavLink} to={'/registration/form/course/'+ course.course_title.split(" ").join("-")}
                                                             variant="contained"
                                                             color="primary"
