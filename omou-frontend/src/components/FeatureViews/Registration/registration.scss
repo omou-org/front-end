@@ -27,6 +27,8 @@
     box-sizing: border-box;
     border-radius: 7px;
 
+    z-index:1001;
+
     .icon{
       margin-right:4px;
       color:$secondaryFontColor;
@@ -100,6 +102,36 @@
 .course-title{
   font-weight:500 !important;
   color: #404040 !important;
+  font-size: 1em !important;
+}
+
+.pop-courses-table{
+  .row td{
+    height: 56px;
+  }
+}
+
+.actions{
+  cursor:pointer;
+  color:$lightPrimaryFontColor;
+}
+.actions > *{
+  margin:5px;
+  color:$lightPrimaryFontColor;
+  text-decoration: none;
+}
+.actions > * :hover{
+  color:$darkenPrimaryFontColor;
+  text-decoration: none;
+}
+
+.bold{
+  font-weight:500!important;
+  font-size:.95em!important;
+}
+
+.space-left-progress{
+  color:#FF9800 !important;
 }
 
 /*Registration Form Styles*/

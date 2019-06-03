@@ -14,10 +14,42 @@ import NewTutor from "@material-ui/icons/Group";
 import NewCourse from "@material-ui/icons/School";
 import ClassIcon from "@material-ui/icons/Class"
 import {NavLink} from "react-router-dom";
-import {Divider, Typography} from "@material-ui/core";
+import {Divider, LinearProgress, TableBody, Typography} from "@material-ui/core";
 import BackArrow from "@material-ui/icons/ArrowBack";
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import CallIcon from "@material-ui/icons/Phone";
+import EmailIcon from "@material-ui/icons/Email";
+import EditIcon from "@material-ui/icons/Edit";
+
+const rowHeadings = [
+    {id:'Student', numberic:false, disablePadding: false},
+    {id:'Parent', numberic:false, disablePadding: false},
+    {id:'Status', numberic:false, disablePadding: false},
+    {id:'', numberic:false, disablePadding: false},
+];
+
+let TableToolbar = props =>{
+    return (<TableHead>
+        <TableRow>
+            {rowHeadings.map(
+                (row, i) => (
+                    <TableCell
+                        key={i}
+                        align={row.numberic ? 'right':'left'}
+                        padding={row.disablePadding ? 'none':'default'}
+                    >
+                        {row.id}
+                    </TableCell>
+                )
+            )}
+        </TableRow>
+    </TableHead>);
+};
 
 class RegistrationCourse extends Component {
     constructor(props){
@@ -48,6 +80,24 @@ class RegistrationCourse extends Component {
 
         let Teacher = this.props.teachers.find((teacher)=>{
            return teacher.id === this.state.instructor_id;
+        });
+
+        let rows = [];
+        let student, row, parent, Actions;
+        this.props.courseRoster[this.state.course_id].forEach((student_id)=>{
+            student = this.props.students.find((studentCurr)=>{ return studentCurr.user_id === student_id});
+            parent = this.props.parents.find((parentCurr)=>{return student.parent_id === parentCurr.user_id});
+            Actions = ()=>{
+              return <div className={student.name + ' actions'}>
+                  <CallIcon/>
+                  <a href={"mailto:"+parent.email}>
+                    <EmailIcon/>
+                  </a>
+                  <EditIcon/>
+              </div>
+            };
+            row = [student.name, parent.name, "Paid", <Actions/>];
+            rows.push(row);
         });
 
         return (
@@ -133,7 +183,28 @@ class RegistrationCourse extends Component {
                         {this.state.description}
                     </Typography>
                     <Divider/>
-
+                    <LinearProgress
+                        color={'primary'}
+                        value={(this.state.filled/this.state.capacity)*100}
+                        valueBuffer={100}
+                        variant={'buffer'}
+                    />
+                    <Table>
+                        <TableToolbar/>
+                        <TableBody>
+                            {
+                                rows.map((row, i)=>{
+                                  return <TableRow key={i}>
+                                          {row.map((data, j)=>{
+                                              return <TableCell key={j} className={`${j%4===0 ? 'bold':''}`}>
+                                                  {data}
+                                              </TableCell>
+                                          })}
+                                  </TableRow>
+                                })
+                            }
+                        </TableBody>
+                    </Table>
                 </Paper>
             </Grid>
         )
@@ -149,7 +220,10 @@ function mapStateToProps(state) {
     return {
         courses: state.Registration["course_list"],
         courseCategories: state.Registration["categories"],
+        students: state.Registration["student_list"],
         teachers: state.Registration["teacher_list"],
+        parents: state.Registration["parent_list"],
+        courseRoster: state.Registration["course_roster"],
     };
 }
 
