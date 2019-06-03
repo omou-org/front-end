@@ -1,5 +1,7 @@
 import * as types from './actionTypes';
 
+import axios from 'axios';
+
 // function BaseURL() {
 //     return 'http://www.omou.io/api/';
 // }
@@ -20,4 +22,16 @@ export function getRegistrationForm(){
 
 export function addStudentField(){
     return {type: types.ADD_STUDENT_FIELD, payload: 'alert stuff'}
+}
+
+export function fetchRandomColor(){
+    return (dispatch) => {
+        return axios.get("http://api.open-notify.org/astros.json")
+        .then(res =>{
+            dispatch({type: types.RAND_COLOR, payload: res.data});
+        })
+            .catch(error=> {
+                throw(error);
+            })
+    }
 }
