@@ -23,8 +23,8 @@ export default function registration(state = initialState.RegistrationForms, {pa
             return newState;
         case actions.ADD_FIELD:
             newState = addField(state,payload);
+            return newState;
         default:
-            // console.log('reducer state: ', state);
             return state;
     }
 }
@@ -54,22 +54,21 @@ function addACourseField(prevState){
     return NewState;
 }
 
-function addField(prevState, path){
+function addField(prevState, path) {
     let NewState = prevState;
     let fieldIndex = path.pop();
     let SectionFieldList = getSectionFieldList(path, prevState.registration_form);
-    // console.log(prevState.registration_form);
     let NewField = {
         ...SectionFieldList[fieldIndex],
-        field: (SectionFieldList.length+1).toString() + " Name",
-        required:false,
+        field: `${SectionFieldList[fieldIndex].field}  ${(SectionFieldList.length + 1)}`,
+        required: false,
     };
     SectionFieldList.push(NewField);
     setSectionFieldList(path, SectionFieldList, prevState.registration_form);
     return NewState;
 }
 
-function getSectionFieldList(path, formList){
+function getSectionFieldList(path, formList) {
     if(Array.isArray(path)){
         if(path.length === 0){
             return formList;
