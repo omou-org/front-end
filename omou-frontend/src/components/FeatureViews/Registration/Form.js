@@ -111,6 +111,7 @@ class Form extends Component {
     }
 
 
+
     validateSection() {
         let formContents = this.getFormObject();
         let currSectionTitle = formContents.section_titles[this.state.activeStep];
@@ -290,36 +291,6 @@ class Form extends Component {
                     }}
                 />
         }
-    }
-
-    getPath(obj, value) {
-        if(obj.constructor !== Object) {
-            throw new TypeError('getPath() can only operate on object with Object as constructor');
-        }
-        let path = [];
-        let found = false;
-
-        function search(haystack) {
-            for (let key in haystack) {
-                path.push(key);
-                if(haystack[key] === value) {
-                    found = true;
-                    break;
-                }
-                if(haystack[key].constructor === Object) {
-                    search(haystack[key]);
-                    if(found) break;
-                }
-                path.pop();
-            }
-        }
-
-        search(obj);
-        return path;
-        /*
-        Or alternately if you want to keep mixed return
-        return found ? path : false;
-        */
     }
 
     addField(field, fieldIndex) {
