@@ -137,7 +137,11 @@ class FullRegistration extends Component {
                                                         </Typography>
                                                     </CardContent>
                                                     <CardActions>
-                                                        <Button size={"small"} color={"secondary"}>
+                                                        <Button
+                                                            component={NavLink}
+                                                            to={'/registration/category/'+category.id.toString()}
+                                                            size={"small"}
+                                                            color={"secondary"}>
                                                             Explore
                                                         </Button>
                                                     </CardActions>
@@ -196,6 +200,9 @@ class FullRegistration extends Component {
                                                             value={((course.capacity - course.filled)/course.capacity)*100}
                                                             variant={'static'}
                                                         />
+                                                        <div className={'space-left'}>
+                                                        {(course.capacity - course.filled)} / {course.capacity}
+                                                        </div>
                                                     </TableCell>
                                                     <TableCell align="left">
                                                         <Button component={NavLink} to={'/registration/form/course/'+ course.course_title.split(" ").join("-")}

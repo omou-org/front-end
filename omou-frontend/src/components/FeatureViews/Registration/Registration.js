@@ -30,7 +30,7 @@ class Registration extends Component {
     componentDidMount() {
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
-        this.props.registrationActions.fetchRandomColor();
+        // this.props.registrationActions.fetchRandomColor();
     }
 
     resize() {

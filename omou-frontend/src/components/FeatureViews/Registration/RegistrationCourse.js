@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 
 //Material UI Imports
-import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";

@@ -299,38 +299,47 @@ function initRegistrationForm(){
           {
               id: 1,
               cat_title: "AP Courses",
+              courses:[10, 9 , 8],
           },
           {
               id:2,
               cat_title: "Subjects",
+              courses:[],
           },
           {
               id:3,
-              cat_title: "Middle School"
+              cat_title: "Middle School",
+              courses:[1, 2, 6],
           },
           {
               id: 4,
               cat_title: "DVHS",
+              courses:[5,8],
           },
           {
               id:5,
               cat_title: "AVHS",
+              courses:[3, 4],
           },
           {
               id:6,
-              cat_title: "Test Preparation"
+              cat_title: "Test Preparation",
+              courses:[1, 10, 9, 8, 7],
           },
           {
               id: 7,
               cat_title: "SAT",
+              courses:[],
           },
           {
               id:8,
               cat_title: "SAT Subject Tests",
+              courses:[7],
           },
           {
               id:9,
-              cat_title: "BYU Online"
+              cat_title: "BYU Online",
+              courses:[],
           },
       ],
       registration_form:{
