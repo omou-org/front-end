@@ -350,15 +350,14 @@ class Form extends Component {
                             <StepContent>
                                 {
                                     section.map((field, j) => {
-                                        const maxFieldCount = currentForm.field_limits[field.name],
-                                            // number of fields of the same type as the current field
-                                            numSameTypeFields = section.reduce((count, otherField) => field.name === otherField.name ? count + 1 : count, 0);
+                                        // number of fields of the same type as the current field
+                                        const numSameTypeFields = section.reduce((count, otherField) => field.name === otherField.name ? count + 1 : count, 0);
                                         return (
                                             <div key={j} className="fields-wrapper">
                                                 {this.renderField(field, label)}
                                                 <br />
                                                 {
-                                                    numSameTypeFields < maxFieldCount &&
+                                                    numSameTypeFields < field.field_limit &&
                                                     <Fab color="primary" aria-label="Add" variant="extended"
                                                         className="button add-student"
                                                         onClick={(event) => {

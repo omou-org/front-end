@@ -5,65 +5,63 @@ export default {
 
 function initRegistrationForm() {
     const studentInfoSection = {
-            "Student Information": [
-                {
-                    field: "Current Teacher in School",
-                    name: "Current Teacher in School",
-                    type: "short text",
-                    conditional: false,
-                    required: false,
-                    full: true,
-                },
-                {
-                    field: "Textbook Used",
-                    name: "Textbook Used",
-                    type: "short text",
-                    conditional: false,
-                    required: false,
-                    full: true,
-                },
-                {
-                    field: "Current Grade in Class",
-                    name: "Current Grade in Class",
-                    type: "short text",
-                    conditional: false,
-                    required: false,
-                    full: false,
-                },
-                {
-                    field: "Current Topic in School / Topic of Interest",
-                    name: "Current Topic in School / Topic of Interest",
-                    type: "short text",
-                    conditional: false,
-                    required: false,
-                    full: true,
-                },
-                {
-                    field: "Student Strengths",
-                    name: "Student Strengths",
-                    type: "short text",
-                    conditional: false,
-                    required: false,
-                    full: true,
-                },
-                {
-                    field: "Student Weaknesses",
-                    name: "Student Weaknesses",
-                    type: "short text",
-                    conditional: false,
-                    required: false,
-                    full: true,
-                },
-            ]
-        },
-        studentInfoLimits = {
-            "Current Teacher in School": 1,
-            "Textbook Used": 1,
-            "Current Grade in Class": 1,
-            "Current Topic in School / Topic of Interest": 1,
-            "Student Strengths": 1,
-            "Student Weaknesses": 1,
-        };
+        "Student Information": [
+            {
+                field: "Current Teacher in School",
+                name: "Current Teacher in School",
+                type: "short text",
+                conditional: false,
+                required: false,
+                full: true,
+                field_limit: 1,
+            },
+            {
+                field: "Textbook Used",
+                name: "Textbook Used",
+                type: "short text",
+                conditional: false,
+                required: false,
+                full: true,
+                field_limit: 1,
+            },
+            {
+                field: "Current Grade in Class",
+                name: "Current Grade in Class",
+                type: "short text",
+                conditional: false,
+                required: false,
+                full: false,
+                field_limit: 1,
+            },
+            {
+                field: "Current Topic in School / Topic of Interest",
+                name: "Current Topic in School / Topic of Interest",
+                type: "short text",
+                conditional: false,
+                required: false,
+                full: true,
+                field_limit: 1,
+            },
+            {
+                field: "Student Strengths",
+                name: "Student Strengths",
+                type: "short text",
+                conditional: false,
+                required: false,
+                full: true,
+                field_limit: 1,
+            },
+            {
+                field: "Student Weaknesses",
+                name: "Student Weaknesses",
+                type: "short text",
+                conditional: false,
+                required: false,
+                full: true,
+                field_limit: 1,
+            },
+        ]
+    };
     return {
       course_list:[
           {
@@ -240,22 +238,6 @@ function initRegistrationForm() {
             student: {
                 form_type: "student",
                 section_titles: ["Basic Information", "Parent Information"],
-                field_limits: {
-                    "Student Name": 1,
-                    "Grade": 1,
-                    "Age": 1,
-                    "School": 1,
-                    "Student Email": 1,
-                    "Student Phone Number": 1,
-                    "Parent Name": 1,
-                    "Relationship to Student": 1,
-                    "Parent Email": 1,
-                    "Parent Phone Number": 1,
-                    "Address": 1,
-                    "City": 1,
-                    "State": 1,
-                    "Zip Code": 1,
-                },
                 "Basic Information": [
                     {
                         field: "Student Name",
@@ -263,6 +245,7 @@ function initRegistrationForm() {
                         type: "short text",
                         required: true,
                         full: true,
+                        field_limit: 1,
                     },
                     {
                         field: "Grade",
@@ -270,6 +253,7 @@ function initRegistrationForm() {
                         type: "number",
                         required: true,
                         full: false,
+                        field_limit: 1,
                     },
                     {
                         field: "Age",
@@ -277,6 +261,7 @@ function initRegistrationForm() {
                         type: "number",
                         required: false,
                         full: false,
+                        field_limit: 1,
                     },
                     {
                         field: "School",
@@ -284,6 +269,7 @@ function initRegistrationForm() {
                         type: "short text",
                         required: true,
                         full: true,
+                        field_limit: 1,
                     },
                     {
                         field: "Student Email",
@@ -291,6 +277,7 @@ function initRegistrationForm() {
                         type: "email",
                         required: true,
                         full: true,
+                        field_limit: 1,
                     },
                     {
                         field: "Student Phone Number",
@@ -298,6 +285,7 @@ function initRegistrationForm() {
                         type: "phone number",
                         required: false,
                         full: true,
+                        field_limit: 1,
                     },
                 ],
                 "Parent Information": [
@@ -305,31 +293,37 @@ function initRegistrationForm() {
                         field: "Parent Name",
                         name: "Parent Name",
                         type: "short text",
+                        field_limit: 1,
                     },
                     {
                         field: "Relationship to Student",
                         name: "Relationship to Student",
                         type: "short text",
+                        field_limit: 1,
                     },
                     {
                         field: "Parent Email",
                         name: "Parent Email",
                         type: "email",
+                        field_limit: 1,
                     },
                     {
                         field: "Parent Phone Number",
                         name: "Phone Number",
                         type: "phone number",
+                        field_limit: 1,
                     },
                     {
                         field: "Address",
                         name: "Address",
                         type: "address",
+                        field_limit: 1,
                     },
                     {
                         field: "City",
                         name: "City",
                         type: "short text",
+                        field_limit: 1,
                     },
                     {
                         field: "State",
@@ -347,26 +341,19 @@ function initRegistrationForm() {
                             value: suggestion.label,
                             label: suggestion.label,
                         })),
+                        field_limit: 1,
                     },
                     {
                         field: "Zip Code",
                         name: "Zip Code",
                         type: "string",
+                        field_limit: 1,
                     },
                 ],
             },
             tutoring: {
                 form_type: "tutoring",
                 section_titles: ["Tutoring Session Type", "Student(s)", "Student Information", "Tutor Selection", "Payment"],
-                field_limits: {
-                    "Select tutoring type": 1,
-                    "Student": 5,
-                    ...studentInfoLimits,
-                    "Teacher": 1,
-                    "Course / Subject": 2,
-                    "Amount": 1,
-                    "Cash or Check": 1,
-                },
                 "Tutoring Session Type": [
                     {
                         field: "Select tutoring type",
@@ -376,6 +363,7 @@ function initRegistrationForm() {
                         required: true,
                         full: false,
                         name: "Select tutoring type",
+                        field_limit: 1,
                     },
                 ],
                 "Student(s)": {
@@ -386,6 +374,7 @@ function initRegistrationForm() {
                             conditional: false,
                             required: true,
                             full: false,
+                            field_limit: 1,
                         },
                     ],
                     "Small Group": [
@@ -396,6 +385,7 @@ function initRegistrationForm() {
                             conditional: false,
                             required: true,
                             full: false,
+                            field_limit: 5,
                         },
                         {
                             field: "Student 2",
@@ -404,6 +394,7 @@ function initRegistrationForm() {
                             conditional: false,
                             required: true,
                             full: false,
+                            field_limit: 5,
                         },
                     ],
                 },
@@ -416,6 +407,7 @@ function initRegistrationForm() {
                         conditional: false,
                         required: true,
                         full: true,
+                        field_limit: 1,
                     },
                     {
                         field: "Course / Subject",
@@ -424,6 +416,7 @@ function initRegistrationForm() {
                         conditional: false,
                         required: true,
                         full: true,
+                        field_limit: 2,
                     },
                 ],
                 "Payment": [
@@ -434,6 +427,7 @@ function initRegistrationForm() {
                         conditional: false,
                         required: true,
                         full: true,
+                        field_limit: 1,
                     },
                     {
                         field: "Cash or Check",
@@ -442,18 +436,13 @@ function initRegistrationForm() {
                         conditional: false,
                         required: true,
                         full: true,
+                        field_limit: 1,
                     },
                 ],
             },
             course: {
                 form_type: "course",
                 section_titles: ["Student", "Student Information", "Course Selection",],
-                field_limits: {
-                    "Select tutoring type": 1,
-                    "Student": 5,
-                    ...studentInfoLimits,
-                    "Course Title": 2,
-                },
                 "Student": [
                     {
                         field: "Student Name",
@@ -462,6 +451,7 @@ function initRegistrationForm() {
                         conditional: false,
                         required: true,
                         full: false,
+                        field_limit: 5,
                     },
                 ],
                 ...studentInfoSection,
@@ -473,6 +463,7 @@ function initRegistrationForm() {
                         conditional: false,
                         required: false,
                         full: true,
+                        field_limit: 2,
                     },
                 ],
             },
