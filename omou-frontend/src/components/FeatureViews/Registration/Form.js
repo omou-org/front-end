@@ -349,21 +349,29 @@ class Form extends Component {
                             <StepLabel>{label}</StepLabel>
                             <StepContent>
                                 {
-                                    section.map((field, j) => (
-                                        <div key={j} className="fields-wrapper">
-                                            {this.renderField(field, label)}
-                                            <br />
-                                            <Fab color="primary" aria-label="Add" variant="extended"
-                                                className="button add-student"
-                                                onClick={(event) => {
-                                                    event.preventDefault();
-                                                    this.addField(field.field, j);
-                                                }}>
-                                                <AddIcon />
-                                                Add {field.field}
-                                            </Fab>
-                                        </div>
-                                    ))
+                                    section.map((field, j) => {
+                                        const maxFieldCount = currentForm.field_limits[field.name],
+                                            // number of fields of the same type as the current field
+                                            numSameTypeFields = section.reduce((count, otherField) => field.name === otherField.name ? count + 1 : count, 0);
+                                        return (
+                                            <div key={j} className="fields-wrapper">
+                                                {this.renderField(field, label)}
+                                                <br />
+                                                {
+                                                    numSameTypeFields < maxFieldCount &&
+                                                    <Fab color="primary" aria-label="Add" variant="extended"
+                                                        className="button add-student"
+                                                        onClick={(event) => {
+                                                            event.preventDefault();
+                                                            this.addField(field.field, j);
+                                                        }}>
+                                                        <AddIcon />
+                                                        Add {field.field}
+                                                    </Fab>
+                                                }
+                                            </div>
+                                        );
+                                    })
                                 }
                                 <div className="controls">
                                     <Button

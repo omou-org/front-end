@@ -4,6 +4,66 @@ export default {
 }
 
 function initRegistrationForm() {
+    const studentInfoSection = {
+            "Student Information": [
+                {
+                    field: "Current Teacher in School",
+                    name: "Current Teacher in School",
+                    type: "short text",
+                    conditional: false,
+                    required: false,
+                    full: true,
+                },
+                {
+                    field: "Textbook Used",
+                    name: "Textbook Used",
+                    type: "short text",
+                    conditional: false,
+                    required: false,
+                    full: true,
+                },
+                {
+                    field: "Current Grade in Class",
+                    name: "Current Grade in Class",
+                    type: "short text",
+                    conditional: false,
+                    required: false,
+                    full: false,
+                },
+                {
+                    field: "Current Topic in School / Topic of Interest",
+                    name: "Current Topic in School / Topic of Interest",
+                    type: "short text",
+                    conditional: false,
+                    required: false,
+                    full: true,
+                },
+                {
+                    field: "Student Strengths",
+                    name: "Student Strengths",
+                    type: "short text",
+                    conditional: false,
+                    required: false,
+                    full: true,
+                },
+                {
+                    field: "Student Weaknesses",
+                    name: "Student Weaknesses",
+                    type: "short text",
+                    conditional: false,
+                    required: false,
+                    full: true,
+                },
+            ]
+        },
+        studentInfoLimits = {
+            "Current Teacher in School": 1,
+            "Textbook Used": 1,
+            "Current Grade in Class": 1,
+            "Current Topic in School / Topic of Interest": 1,
+            "Student Strengths": 1,
+            "Student Weaknesses": 1,
+        };
     return {
       course_list:[
           {
@@ -180,71 +240,100 @@ function initRegistrationForm() {
             student: {
                 form_type: "student",
                 section_titles: ["Basic Information", "Parent Information"],
+                field_limits: {
+                    "Student Name": 1,
+                    "Grade": 1,
+                    "Age": 1,
+                    "School": 1,
+                    "Student Email": 1,
+                    "Student Phone Number": 1,
+                    "Parent Name": 1,
+                    "Relationship to Student": 1,
+                    "Parent Email": 1,
+                    "Parent Phone Number": 1,
+                    "Address": 1,
+                    "City": 1,
+                    "State": 1,
+                    "Zip Code": 1,
+                },
                 "Basic Information": [
                     {
-                        field: "Name",
+                        field: "Student Name",
+                        name: "Student Name",
                         type: "short text",
                         required: true,
                         full: true,
                     },
                     {
                         field: "Grade",
+                        name: "Grade",
                         type: "number",
                         required: true,
                         full: false,
                     },
                     {
                         field: "Age",
+                        name: "Age",
                         type: "number",
                         required: false,
                         full: false,
                     },
                     {
                         field: "School",
+                        name: "School",
                         type: "short text",
                         required: true,
                         full: true,
                     },
                     {
-                        field: "Email",
+                        field: "Student Email",
+                        name: "Student Email",
                         type: "email",
                         required: true,
                         full: true,
                     },
                     {
-                        field: "Phone Number",
+                        field: "Student Phone Number",
+                        name: "Student Phone Number",
                         type: "phone number",
                         required: false,
                         full: true,
-                    }
+                    },
                 ],
                 "Parent Information": [
                     {
-                        field: "Name",
+                        field: "Parent Name",
+                        name: "Parent Name",
                         type: "short text",
                     },
                     {
                         field: "Relationship to Student",
+                        name: "Relationship to Student",
                         type: "short text",
                     },
                     {
-                        field: "Email",
+                        field: "Parent Email",
+                        name: "Parent Email",
                         type: "email",
                     },
                     {
-                        field: "Phone Number",
+                        field: "Parent Phone Number",
+                        name: "Phone Number",
                         type: "phone number",
                     },
                     {
                         field: "Address",
+                        name: "Address",
                         type: "address",
                     },
                     {
                         field: "City",
+                        name: "City",
                         type: "short text",
                     },
                     {
                         field: "State",
+                        name: "State",
                         type: "short text",
                         suggestions: [{label: "AL"}, {label: "AK"}, {label: "AZ"}, {label: "AR"}, {label: "CA"}, {label: "CO"},
                         {label: "CT"}, {label: "DE"}, {label: "FL"}, {label: "GA"}, {label: "HI"}, {label: "ID"},
@@ -257,97 +346,72 @@ function initRegistrationForm() {
                         {label: "WY"}].map(suggestion => ({
                             value: suggestion.label,
                             label: suggestion.label,
-                        }))
+                        })),
                     },
                     {
                         field: "Zip Code",
+                        name: "Zip Code",
                         type: "string",
                     },
-                ]
+                ],
             },
             tutoring: {
                 form_type: "tutoring",
                 section_titles: ["Tutoring Session Type", "Student(s)", "Student Information", "Tutor Selection", "Payment"],
-                "Tutoring Session Type": [{
-                    field: "Select tutoring type",
-                    type: "select",
-                    conditional: true,
-                    options: ["Private Tutoring", "Small Group"],
-                    required: true,
-                    full: false,
-                }],
-                "Student(s)": {
-                    "Private Tutoring": [{
-                        field: "Student Name",
-                        type: "short text",
-                        conditional: false,
+                field_limits: {
+                    "Select tutoring type": 1,
+                    "Student": 5,
+                    ...studentInfoLimits,
+                    "Teacher": 1,
+                    "Course / Subject": 2,
+                    "Amount": 1,
+                    "Cash or Check": 1,
+                },
+                "Tutoring Session Type": [
+                    {
+                        field: "Select tutoring type",
+                        type: "select",
+                        conditional: true,
+                        options: ["Private Tutoring", "Small Group"],
                         required: true,
                         full: false,
-                    }],
-                    "Small Group": [
-                        {
-                            field: "Student 1 Name",
-                            type: "short text",
-                            conditional: false,
-                            required: true,
-                            full: false,
-                        },
-                        {
-                            field: "Student 2 Name",
-                            type: "short text",
-                            conditional: false,
-                            required: true,
-                            full: false,
-                        },
-                    ]
-                },
-                "Student Information": [
-                    {
-                        field: "Current Teacher in School",
-                        type: "short text",
-                        conditional: false,
-                        required: false,
-                        full: true,
-                    },
-                    {
-                        field: "Textbook Used",
-                        type: "short text",
-                        conditional: false,
-                        required: false,
-                        full: true,
-                    },
-                    {
-                        field: "Current Grade in Class",
-                        type: "short text",
-                        conditional: false,
-                        required: false,
-                        full: false,
-                    },
-                    {
-                        field: "Current Topic in School / Topic of Interest",
-                        type: "short text",
-                        conditional: false,
-                        required: false,
-                        full: true,
-                    },
-                    {
-                        field: "Student Strengths",
-                        type: "short text",
-                        conditional: false,
-                        required: false,
-                        full: true,
-                    },
-                    {
-                        field: "Student Weaknesses",
-                        type: "short text",
-                        conditional: false,
-                        required: false,
-                        full: true,
+                        name: "Select tutoring type",
                     },
                 ],
+                "Student(s)": {
+                    "Private Tutoring": [
+                        {
+                            field: "Student Name",
+                            type: "short text",
+                            conditional: false,
+                            required: true,
+                            full: false,
+                        },
+                    ],
+                    "Small Group": [
+                        {
+                            field: "Student",
+                            name: "Student",
+                            type: "short text",
+                            conditional: false,
+                            required: true,
+                            full: false,
+                        },
+                        {
+                            field: "Student 2",
+                            name: "Student",
+                            type: "short text",
+                            conditional: false,
+                            required: true,
+                            full: false,
+                        },
+                    ],
+                },
+                ...studentInfoSection,
                 "Tutor Selection": [
                     {
                         field: "Teacher",
+                        name: "Teacher",
                         type: "teacher",
                         conditional: false,
                         required: true,
@@ -355,6 +419,7 @@ function initRegistrationForm() {
                     },
                     {
                         field: "Course / Subject",
+                        name: "Course / Subject",
                         type: "short text",
                         conditional: false,
                         required: true,
@@ -364,6 +429,7 @@ function initRegistrationForm() {
                 "Payment": [
                     {
                         field: "Amount",
+                        name: "Amount",
                         type: "short text",
                         conditional: false,
                         required: true,
@@ -371,77 +437,45 @@ function initRegistrationForm() {
                     },
                     {
                         field: "Cash or Check",
+                        name: "Cash or Check",
                         type: "short text",
                         conditional: false,
                         required: true,
                         full: true,
                     },
-                ]
+                ],
             },
             course: {
                 form_type: "course",
                 section_titles: ["Student", "Student Information", "Course Selection",],
-                "Student": [{
-                    field: "Student Name",
-                    type: "short text",
-                    conditional: false,
-                    required: true,
-                    full: false,
-                }],
-                "Student Information": [
+                field_limits: {
+                    "Select tutoring type": 1,
+                    "Student": 5,
+                    ...studentInfoLimits,
+                    "Course Title": 2,
+                },
+                "Student": [
                     {
-                        field: "Current Teacher in School",
+                        field: "Student Name",
+                        name: "Student",
                         type: "short text",
                         conditional: false,
-                        required: false,
-                        full: true,
-                    },
-                    {
-                        field: "Textbook Used",
-                        type: "short text",
-                        conditional: false,
-                        required: false,
-                        full: true,
-                    },
-                    {
-                        field: "Current Grade in Class",
-                        type: "short text",
-                        conditional: false,
-                        required: false,
+                        required: true,
                         full: false,
                     },
-                    {
-                        field: "Current Topic in School / Topic of Interest",
-                        type: "short text",
-                        conditional: false,
-                        required: false,
-                        full: true,
-                    },
-                    {
-                        field: "Student Strengths",
-                        type: "short text",
-                        conditional: false,
-                        required: false,
-                        full: true,
-                    },
-                    {
-                        field: "Student Weaknesses",
-                        type: "short text",
-                        conditional: false,
-                        required: false,
-                        full: true,
-                    },
                 ],
+                ...studentInfoSection,
                 "Course Selection": [
                     {
                         field: "Course Title",
+                        name: "Course Title",
                         type: "course",
                         conditional: false,
                         required: false,
                         full: true,
                     },
-                ]
-            }
-        }
+                ],
+            },
+        },
     };
 }
