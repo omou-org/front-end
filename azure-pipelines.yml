@@ -5,7 +5,7 @@
 
 # Build on update to Stage
 trigger:
-- stage
+- master
 
 pool:
   vmImage: 'ubuntu-latest'

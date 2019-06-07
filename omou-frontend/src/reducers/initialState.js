@@ -3,9 +3,67 @@ export default {
    "RegistrationForms": initRegistrationForm()
 }
 
-function initRegistrationForm(){
-   return {
-      course_list:[
+function initRegistrationForm() {
+    const studentInfoSection = {
+        "Student Information": [
+            {
+                field: "Current Teacher in School",
+                name: "Current Teacher in School",
+                type: "short text",
+                conditional: false,
+                required: false,
+                full: true,
+                field_limit: 1,
+            },
+            {
+                field: "Textbook Used",
+                name: "Textbook Used",
+                type: "short text",
+                conditional: false,
+                required: false,
+                full: true,
+                field_limit: 1,
+            },
+            {
+                field: "Current Grade in Class",
+                name: "Current Grade in Class",
+                type: "short text",
+                conditional: false,
+                required: false,
+                full: false,
+                field_limit: 1,
+            },
+            {
+                field: "Current Topic in School / Topic of Interest",
+                name: "Current Topic in School / Topic of Interest",
+                type: "short text",
+                conditional: false,
+                required: false,
+                full: true,
+                field_limit: 1,
+            },
+            {
+                field: "Student Strengths",
+                name: "Student Strengths",
+                type: "short text",
+                conditional: false,
+                required: false,
+                full: true,
+                field_limit: 1,
+            },
+            {
+                field: "Student Weaknesses",
+                name: "Student Weaknesses",
+                type: "short text",
+                conditional: false,
+                required: false,
+                full: true,
+                field_limit: 1,
+            },
+        ]
+    };
+    return {
+        course_list:[
           {
               course_id: 1,
               course_title: "6th Grade Math Placement Test Prep",
@@ -216,63 +274,63 @@ function initRegistrationForm(){
               parent_id: 4,
           },
       ],
-       parent_list:[
-           {
-               user_id:1,
-               gender:'F',
-               address:'1111 Dale Ave',
-               city: 'Angle City',
-               phone_number:"9250108111",
-               state:'CA',
-               zipcode:'94040',
-               updated_at:"2019-06-02T01:57:49.068Z",
-               "created_at": "2019-06-02T01:57:49.068Z",
-               name:"Gale Long",
-               email:"gale.long@omou.com",
-           },
-           {
-               user_id:2,
-               gender:'M',
-               address:'3120 Apple St.',
-               city: 'Gotham',
-               phone_number:"7770108428",
-               state:'CA',
-               zipcode:'93240',
-               updated_at:"2019-06-02T01:00:49.068Z",
-               "created_at": "2019-06-02T01:00:49.068Z",
-               name:"Ranger Plano",
-               parent_id: 2,
-               email:"ranger.plano@omou.com",
-           },
-           {
-               user_id:3,
-               gender:'F',
-               address:'1111 Candy Circle',
-               city: 'Grim City',
-               phone_number:"9250108111",
-               state:'CA',
-               zipcode:'94040',
-               updated_at:"2019-06-02T02:30:49.068Z",
-               "created_at": "2019-06-02T02:15:49.068Z",
-               name:"Gretta Kid",
-               parent_id: 3,
-               email:"grettaKidd@omou.com",
-           },
-           {
-               user_id:4,
-               gender:'F',
-               address:'3120 Apple St.',
-               city: 'Gotham',
-               phone_number:"7770108428",
-               state:'CA',
-               zipcode:'93240',
-               updated_at:"2019-06-02T01:00:49.068Z",
-               "created_at": "2019-06-02T01:00:49.068Z",
-               name: "Robin Wayne",
-               parent_id: 4,
-               email:"nananana@omou.com",
-           },
-       ],
+        parent_list:[
+            {
+                user_id:1,
+                gender:'F',
+                address:'1111 Dale Ave',
+                city: 'Angle City',
+                phone_number:"9250108111",
+                state:'CA',
+                zipcode:'94040',
+                updated_at:"2019-06-02T01:57:49.068Z",
+                "created_at": "2019-06-02T01:57:49.068Z",
+                name:"Gale Long",
+                email:"gale.long@omou.com",
+            },
+            {
+                user_id:2,
+                gender:'M',
+                address:'3120 Apple St.',
+                city: 'Gotham',
+                phone_number:"7770108428",
+                state:'CA',
+                zipcode:'93240',
+                updated_at:"2019-06-02T01:00:49.068Z",
+                "created_at": "2019-06-02T01:00:49.068Z",
+                name:"Ranger Plano",
+                parent_id: 2,
+                email:"ranger.plano@omou.com",
+            },
+            {
+                user_id:3,
+                gender:'F',
+                address:'1111 Candy Circle',
+                city: 'Grim City',
+                phone_number:"9250108111",
+                state:'CA',
+                zipcode:'94040',
+                updated_at:"2019-06-02T02:30:49.068Z",
+                "created_at": "2019-06-02T02:15:49.068Z",
+                name:"Gretta Kid",
+                parent_id: 3,
+                email:"grettaKidd@omou.com",
+            },
+            {
+                user_id:4,
+                gender:'F',
+                address:'3120 Apple St.',
+                city: 'Gotham',
+                phone_number:"7770108428",
+                state:'CA',
+                zipcode:'93240',
+                updated_at:"2019-06-02T01:00:49.068Z",
+                "created_at": "2019-06-02T01:00:49.068Z",
+                name: "Robin Wayne",
+                parent_id: 4,
+                email:"nananana@omou.com",
+            },
+        ],
       teacher_list:[
           {
               id: 1,
@@ -299,47 +357,38 @@ function initRegistrationForm(){
           {
               id: 1,
               cat_title: "AP Courses",
-              courses:[10, 9 , 8],
           },
           {
               id:2,
               cat_title: "Subjects",
-              courses:[],
           },
           {
               id:3,
-              cat_title: "Middle School",
-              courses:[1, 2, 6],
+              cat_title: "Middle School"
           },
           {
               id: 4,
               cat_title: "DVHS",
-              courses:[5,8],
           },
           {
               id:5,
               cat_title: "AVHS",
-              courses:[3, 4],
           },
           {
               id:6,
-              cat_title: "Test Preparation",
-              courses:[1, 10, 9, 8, 7],
+              cat_title: "Test Preparation"
           },
           {
               id: 7,
               cat_title: "SAT",
-              courses:[],
           },
           {
               id:8,
               cat_title: "SAT Subject Tests",
-              courses:[7],
           },
           {
               id:9,
-              cat_title: "BYU Online",
-              courses:[],
+              cat_title: "BYU Online"
           },
       ],
       registration_form:{

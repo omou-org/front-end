@@ -21,7 +21,15 @@ export function getRegistrationForm(){
 }
 
 export function addStudentField(){
-    return {type: types.ADD_STUDENT_FIELD, payload: 'alert stuff'}
+    return {type: types.ADD_STUDENT_FIELD, payload: ""}
+}
+
+export function addCourseField(){
+    return {type: types.ADD_COURSE_FIELD, payload:""}
+}
+
+export function addField(path){
+    return {type: types.ADD_FIELD, payload:path}
 }
 
 export function fetchRandomColor(){
