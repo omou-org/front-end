@@ -191,7 +191,7 @@ class FullRegistration extends Component {
                                                         <TableCell align="center">{course.capacity - course.filled}</TableCell>
                                                     </Hidden>
                                                     <TableCell align="right">
-                                                        <Button component={NavLink} to={'/registration/form/course/'+ course.course_title.split(" ").join("-")}
+                                                        <Button component={NavLink} to={`/registration/form/course/${encodeURIComponent(course.course_title)}`}
                                                             variant="contained"
                                                             color="primary"
                                                             className={"button"}>REGISTER</Button>
