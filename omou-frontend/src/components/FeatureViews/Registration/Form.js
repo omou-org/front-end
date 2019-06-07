@@ -29,23 +29,22 @@ import AddIcon from "@material-ui/icons/Add"
 import SearchSelect from 'react-select';
 
 class Form extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
-            exitPopup:false,
-            nextSection:false,
+            conditional: "",
+            exitPopup: false,
+            nextSection: false,
             activeStep: 0,
             activeSection: "",
-            form:"",
-            formObject: {},
-        }
+            form: "",
+        };
     }
 
     componentWillMount() {
         let prevState = sessionStorage.getItem("form");
         let formType = this.props.match.params.type;
         let course = this.props.match.params.course;
-        // console.log(this.props.match.params);
         if(!prevState || formType !== prevState.form){
             if (this.props.registrationForm[formType]){
                 this.setState((oldState)=>{
@@ -54,7 +53,6 @@ class Form extends Component {
                     let NewState = {...oldState,
                         activeSection:formContents.section_titles[0],
                         form: formType,
-                        formObject: formContents,
                     };
 
                     formContents.section_titles.forEach((title,i)=>{
@@ -88,6 +86,19 @@ class Form extends Component {
         }
     }
 
+    getFormObject() {
+        return this.props.registrationForm[this.state.form];
+    }
+
+    getActiveSection() {
+        let section = this.getFormObject()[this.state.activeSection];
+        if (Array.isArray(section)) {
+            return section;
+        } else {
+            return section[this.state.conditional]
+        }
+    }
+
     // return to main registration page, trigger exit popup
     backToggler(){
         // clear session storage
@@ -100,12 +111,13 @@ class Form extends Component {
     }
 
 
-    validateSection(){
-        let formContents = this.state.formObject;
+
+    validateSection() {
+        let formContents = this.getFormObject();
         let currSectionTitle = formContents.section_titles[this.state.activeStep];
 
         for(let [field_key] of Object.entries(this.state[currSectionTitle+"_validated"])){
-            let fields = this.state.formObject[this.state.activeSection];
+            let fields = this.getActiveSection();
             let required = fields.filter(fieldObj => {
                return fieldObj.field === field_key;
             })[0].required;
@@ -117,96 +129,65 @@ class Form extends Component {
         return true;
     }
 
-    getConditionalFieldFromCurrentSection(){
+    getConditionalFieldFromCurrentSection() {
         let nextSectionInput = false;
         let currSectionTitle = this.state.activeSection;
         // Get input from the conditional field
-        if(Array.isArray(this.state.formObject[currSectionTitle])){
-            this.state.formObject[currSectionTitle].some((field)=>{
-                if(field.conditional){
+        if (Array.isArray(this.getFormObject()[currSectionTitle])) {
+            this.getFormObject()[currSectionTitle].some((field) => {
+                if (field.conditional) {
                     nextSectionInput = this.state[currSectionTitle][field.field];
-                    return field.conditional;
+                    return true;
+                } else {
+                    return false;
                 }
             });
         }
         return nextSectionInput;
     }
 
-    setNextConditionalSection(nextSectionInput){
-        let formContents = this.state.formObject;
-
-        // set the next conditional section
-        this.setState((oldState)=>{
-            let NewState = oldState;
-
-            // if there was a selection for the next type of section
-            if(nextSectionInput){
-                // set-up fields for the next section
-                oldState.formObject.section_titles.forEach((title,i)=>{
-                    // for conditional sections,
-                    if(formContents[title] instanceof Object && nextSectionInput in formContents[title]){
-                        formContents[title][nextSectionInput].forEach((field)=>{
-                            NewState[title][field.field] = undefined;
-                        });
-
-                        // create validated state for each field
-                        NewState[title + "_validated"] = {};
-
-                        formContents[title][nextSectionInput].forEach((field)=>{
-                            NewState[title+"_validated"][field.field] = true;
-                        });
-
-                        // set conditional section to the user selected section
-                        NewState.formObject[title] = formContents[title][nextSectionInput];
-                    }
-                });
-            }
-            return NewState;
-        });
-    }
-
     // Progresses to next section in registration form
-    handleNext(){
-        this.setState((oldState)=>{
-            if(this.validateSection()){
-                let conditionalField = this.getConditionalFieldFromCurrentSection();
-                if(conditionalField){
-                    this.setNextConditionalSection(conditionalField);
-                }
-                return{
+    handleNext() {
+        this.setState((oldState) => {
+            if (this.validateSection()) {
+                const conditionalField = this.getConditionalFieldFromCurrentSection();
+                let newState = {
                     activeStep: oldState.activeStep + 1,
-                    activeSection: oldState.formObject.section_titles[oldState.activeStep + 1],
+                    activeSection: this.getFormObject().section_titles[oldState.activeStep + 1],
+                    conditional: conditionalField ? conditionalField : oldState.conditional,
                     nextSection: true,
+                };
+                if (conditionalField) {
+                    let formContents = this.getFormObject(),
+                        title = this.getFormObject().section_titles[oldState.activeStep + 1];
+                    // create blank fields based on form type
+                    newState[title] = {};
+                    formContents[this.getFormObject().section_titles[oldState.activeStep + 1]][conditionalField].forEach((field)=>{
+                        newState[title][field.field] = undefined;
+                    });
+                    // create validated state for each field
+                    newState[`${title}_validated`] = {};
+                    formContents[this.getFormObject().section_titles[oldState.activeStep + 1]][conditionalField].forEach((field)=>{
+                        newState[`${title}_validated`][field.field] = true;
+                    });
                 }
+                return newState;
+            } else {
+                return {};
             }
         });
     }
 
     // Regresses to previous section in registration form
-    handleBack(){
-        this.setState((oldState)=>{
-            if(oldState.activeStep !== 0 && oldState.activeSection){
-                let NewState = oldState;
-                let SectionTitles = oldState.formObject.section_titles;
-                let ConditionalSectionTitle;
-
-                // Reset the conditional section
-                SectionTitles.some((title,stepIndex)=>{
-                    if(Array.isArray(oldState.formObject[title])){
-                        return oldState.formObject[title].some((field)=>{
-                            // check if a conditional field is the previous section
-                            if(field.conditional && oldState.activeStep - 1 === stepIndex){
-                                ConditionalSectionTitle = SectionTitles[oldState.activeStep];
-                                NewState.formObject[ConditionalSectionTitle] = this.props.registrationForm[oldState.form][ConditionalSectionTitle];
-                                return true;
-                            }
-                        });
-                    }
-                });
-                NewState.activeStep = oldState.activeStep - 1;
-                NewState.activeSection = oldState.formObject.section_titles[NewState.activeStep];
-
-                return NewState;
+    handleBack() {
+        this.setState((oldState) => {
+            if (oldState.activeStep !== 0 && oldState.activeSection) {
+                return {
+                    activeStep: oldState.activeStep - 1,
+                    activeSection: this.getFormObject().section_titles[oldState.activeStep - 1],
+                };
+            } else {
+                return {};
             }
         });
     }
@@ -252,7 +233,6 @@ class Form extends Component {
         this.setState((OldState)=>{
             let NewState = OldState;
             NewState[label][fieldTitle] = value;
-            console.log(NewState);
             return NewState;
         });
     }
@@ -328,70 +308,90 @@ class Form extends Component {
         }
     }
 
-    addStudentField(){
-        this.props.registrationActions.addStudentField.bind(this)();
-        this.setState((oldState)=>{
-            let NewState = oldState;
-            NewState.formObject["Student(s)"] = this.props.registrationForm.tutoring["Student(s)"]["Small Group"];
-            let StudentsFieldList = NewState.formObject["Student(s)"];
-            let NewStudentField = StudentsFieldList[StudentsFieldList.length-1].field;
-            NewState["Student(s)"] = StudentsFieldList;
-            NewState["Student(s)_validated"][NewStudentField] = true;
-            return NewState;
-        });
+    addField(field, fieldIndex) {
+        const currentForm = this.getFormObject();
+        let param = [this.state.form, this.state.activeSection, fieldIndex];
+        if (!Array.isArray(currentForm[this.state.activeSection])) {
+            param.splice(2, 0, this.state.conditional);
+        }
+        this.props.registrationActions.addField(param);
+        // for some reason it isn't rerendering automatically
+        this.forceUpdate();
     }
 
-    renderForm(){
-        // console.log(this.props.match.params);
-        // console.log(this.state.formObject);
-        let steps = this.props.registrationForm[this.state.form]["section_titles"];
-        return <Stepper activeStep={this.state.activeStep} orientation={"vertical"} className={"form-section"}>
-            {
-                steps.map((label, i) => {
-                    return <Step key={i}>
-                        <StepLabel>{label}</StepLabel>
-                        <StepContent>
-                            {
-                                this.state.formObject[this.state.activeSection].map((field,i)=>{
-                                    return <div key={i} className={"fields-wrapper"}>
-                                            {this.renderField(field,label)}
-                                        <br/>
-                                    </div>
-                                })
-                            }
-                            <Fab color="primary" aria-label="Add" variant={"extended"}
-                                 className={`button add-student ${this.state.activeSection === "Student(s)" ? "": "hide"}`}
-                                 onClick={(e)=>{e.preventDefault(); this.addStudentField()}}
-                            >
-                                <AddIcon />
-                                Add Student
-                            </Fab>
-                            <div className={"controls"}>
-                                <Button
-                                    disabled={this.state.activeStep === 0}
-                                    color={"secondary"}
-                                    onClick={(e)=>{e.preventDefault(); this.handleBack.bind(this)()}}
-                                    className={`button ${this.state.activeStep === 0 ? 'hide' : ''}`}
-                                >
-                                    Back
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    color={this.state.nextSection ? "primary" : "secondary"}
-                                    onClick={(e)=>{e.preventDefault(); this.handleNext.bind(this)()}}
-                                    className={`button`}
-                                >
-                                    {this.state.activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                                </Button>
-                            </div>
-                        </StepContent>
-                    </Step>
-                })
-            }
-        </Stepper>
+    renderForm() {
+        const {activeSection, activeStep, conditional, nextSection} = this.state,
+            currentForm = this.props.registrationForm[this.state.form],
+            steps = currentForm.section_titles;
+        let section = currentForm[activeSection];
+        if (!Array.isArray(section)) {
+            section = section[conditional];
+        }
+        return (
+            <Stepper activeStep={activeStep} orientation="vertical" className="form-section">
+                {
+                    steps.map((label) => (
+                        <Step key={label}>
+                            <StepLabel>{label}</StepLabel>
+                            <StepContent>
+                                {
+                                    section.map((field, j) => {
+                                        // number of fields of the same type as the current field
+                                        const numSameTypeFields = section.reduce((count, otherField) => field.name === otherField.name ? count + 1 : count, 0),
+                                            reversedSection = [...section].reverse(),
+                                            lastFieldOfType = reversedSection.find((otherField) => otherField.name === field.name);
+                                        return (
+                                            <div key={j} className="fields-wrapper">
+                                                {this.renderField(field, label)}
+                                                <br />
+                                                {
+                                                    numSameTypeFields < field.field_limit &&
+                                                    field === lastFieldOfType &&
+                                                    <Fab color="primary" aria-label="Add" variant="extended"
+                                                        className="button add-student"
+                                                        onClick={(event) => {
+                                                            event.preventDefault();
+                                                            this.addField(field.field, j);
+                                                        }}>
+                                                        <AddIcon />
+                                                        Add {field.field}
+                                                    </Fab>
+                                                }
+                                            </div>
+                                        );
+                                    })
+                                }
+                                <div className="controls">
+                                    <Button
+                                        disabled={activeStep === 0}
+                                        color="secondary"
+                                        onClick={(event) => {
+                                            event.preventDefault();
+                                            this.handleBack();
+                                        }}
+                                        className={`button ${activeStep === 0 ? "hide" : ""}`}>
+                                        Back
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color={nextSection ? "primary" : "secondary"}
+                                        onClick={(event) => {
+                                            event.preventDefault();
+                                            this.handleNext();
+                                        }}
+                                        className="button">
+                                        {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                                    </Button>
+                                </div>
+                            </StepContent>
+                        </Step>
+                    ))
+                }
+            </Stepper>
+        );
     }
 
-    render(){
+    render() {
         return (
             <Grid container className="">
                 <Grid item xs={12}>

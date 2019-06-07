@@ -18,8 +18,13 @@ export default function registration(state = initialState.RegistrationForms, {pa
         case actions.ADD_STUDENT_FIELD:
             newState = addAStudentField(state);
             return newState;
+        case actions.ADD_COURSE_FIELD:
+            newState = addACourseField(state);
+            return newState;
+        case actions.ADD_FIELD:
+            newState = addField(state,payload);
+            return newState;
         default:
-            // console.log('reducer state: ', state);
             return state;
     }
 }
@@ -34,4 +39,53 @@ function addAStudentField(prevState){
     SmallGroupList.push(NewStudentField);
     prevState.registration_form.tutoring["Student(s)"]["Small Group"] = SmallGroupList;
     return prevState;
+}
+
+function addACourseField(prevState){
+    let NewState = prevState;
+    let CourseFieldList = prevState.registration_form.course["Course Selection"];
+    let NewCourseField = {
+        ...CourseFieldList[0],
+        field: "Course " + (CourseFieldList.length+1).toString() + " Name",
+        required: false,
+    }
+    CourseFieldList.push(NewCourseField);
+    NewState.registration_form.course["Course Selection"] = CourseFieldList;
+    return NewState;
+}
+
+function addField(prevState, path) {
+    let NewState = prevState;
+    let fieldIndex = path.pop();
+    let SectionFieldList = getSectionFieldList(path, prevState.registration_form);
+    let NewField = {
+        ...SectionFieldList[fieldIndex],
+        field: `${SectionFieldList[fieldIndex].field}  ${(SectionFieldList.length + 1)}`,
+        required: false,
+    };
+    SectionFieldList.push(NewField);
+    setSectionFieldList(path, SectionFieldList, prevState.registration_form);
+    return NewState;
+}
+
+function getSectionFieldList(path, formList) {
+    if(Array.isArray(path)){
+        if(path.length === 0){
+            return formList;
+        }
+        return getSectionFieldList(path,formList[path.shift()])
+    }
+    Error("Path variable not an array");
+}
+
+function setSectionFieldList(path, formList, form){
+    if(Array.isArray(path)){
+        if(path.length === 0){
+            form = formList;
+            return;
+        }
+        let firstPathStep = path.shift();
+        return setSectionFieldList(path,formList, form[firstPathStep])
+    }
+    Error("Path variable not an array");
 }
