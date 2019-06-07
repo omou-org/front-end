@@ -151,12 +151,27 @@ class Form extends Component {
         this.setState((oldState) => {
             if (this.validateSection()) {
                 const conditionalField = this.getConditionalFieldFromCurrentSection();
-                return {
+                let newState = {
                     activeStep: oldState.activeStep + 1,
                     activeSection: this.getFormObject().section_titles[oldState.activeStep + 1],
                     conditional: conditionalField ? conditionalField : oldState.conditional,
                     nextSection: true,
                 };
+                if (conditionalField) {
+                    let formContents = this.getFormObject(),
+                        title = this.getFormObject().section_titles[oldState.activeStep + 1];
+                    // create blank fields based on form type
+                    newState[title] = {};
+                    formContents[this.getFormObject().section_titles[oldState.activeStep + 1]][conditionalField].forEach((field)=>{
+                        newState[title][field.field] = undefined;
+                    });
+                    // create validated state for each field
+                    newState[`${title}_validated`] = {};
+                    formContents[this.getFormObject().section_titles[oldState.activeStep + 1]][conditionalField].forEach((field)=>{
+                        newState[`${title}_validated`][field.field] = true;
+                    });
+                }
+                return newState;
             } else {
                 return {};
             }
@@ -322,13 +337,16 @@ class Form extends Component {
                                 {
                                     section.map((field, j) => {
                                         // number of fields of the same type as the current field
-                                        const numSameTypeFields = section.reduce((count, otherField) => field.name === otherField.name ? count + 1 : count, 0);
+                                        const numSameTypeFields = section.reduce((count, otherField) => field.name === otherField.name ? count + 1 : count, 0),
+                                            reversedSection = [...section].reverse(),
+                                            lastFieldOfType = reversedSection.find((otherField) => otherField.name === field.name);
                                         return (
                                             <div key={j} className="fields-wrapper">
                                                 {this.renderField(field, label)}
                                                 <br />
                                                 {
                                                     numSameTypeFields < field.field_limit &&
+                                                    field === lastFieldOfType &&
                                                     <Fab color="primary" aria-label="Add" variant="extended"
                                                         className="button add-student"
                                                         onClick={(event) => {
