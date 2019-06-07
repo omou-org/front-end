@@ -63,7 +63,7 @@ function initRegistrationForm() {
         ]
     };
     return {
-      course_list:[
+        course_list:[
           {
               course_id: 1,
               course_title: "6th Grade Math Placement Test Prep",
