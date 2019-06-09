@@ -20,14 +20,13 @@
     "redux-thunk": "^2.3.0",
     "tar": "^4.4.8"
   },
-  "proxy": "http://www.colr.org",
+  "proxy": "http://127.0.0.1:8000/api/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://127.0.0.1:8000/api/",
   "eslintConfig": {
     "extends": "react-app"
   },

@@ -117,7 +117,7 @@ class RegistrationCourse extends Component {
                                 </Button>
                             </Grid>
                             <Grid item>
-                                <Button component={NavLink} to={'/registration/form/tutoring/'+ this.state.course_title.split(' ').join('-')}
+                                <Button component={NavLink} to={`/registration/form/tutoring/${encodeURIComponent(this.state.course_title)}`}
                                         variant="outlined"
                                         color="secondary"
                                         className={"button"}>
@@ -126,7 +126,7 @@ class RegistrationCourse extends Component {
                                 </Button>
                             </Grid>
                             <Grid item>
-                                <Button component={NavLink} to={'/registration/form/course/'+ this.state.course_title.split(' ').join('-')}
+                                <Button component={NavLink} to={`/registration/form/tutoring/${encodeURIComponent(this.state.course_title)}`}
                                         variant="outlined"
                                         color="secondary"
                                         className={"button"}>
