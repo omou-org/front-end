@@ -44,7 +44,6 @@ class Form extends Component {
     componentWillMount() {
         let prevState = sessionStorage.getItem("form");
         let formType = this.props.match.params.type;
-        let course = this.props.match.params.course;
         if(!prevState || formType !== prevState.form){
             if (this.props.registrationForm[formType]){
                 this.setState((oldState)=>{
@@ -54,14 +53,27 @@ class Form extends Component {
                         activeSection:formContents.section_titles[0],
                         form: formType,
                     };
+                    let course = decodeURIComponent(this.props.match.params.course);
+                    course = this.props.courses.find((matchingCourse) => course === matchingCourse.course_title);
+                    if (course) {
+                        // convert it to a format that onselectChange can use
+                        course = {
+                            value: course.course_id.toString() + ": " + course.course_title,
+                            label: course.course_id.toString() + ": " + course.course_title,
+                        };
+                    }
 
                     formContents.section_titles.forEach((title,i)=>{
                         // create blank fields based on form type
                         NewState[title] = {};
-
+                        // set a value for every non-conditional field (object)
                         if(Array.isArray(formContents[title])){
-                            formContents[title].forEach((field)=>{
+                            formContents[title].forEach((field) => {
                                 NewState[title][field.field] = undefined;
+                                if (field.type === "course") {
+                                    console.log(title, field)
+                                    NewState[title][field.field] = course;
+                                }
                             });
                         }
                         // create validated state for each field
@@ -72,11 +84,6 @@ class Form extends Component {
                             });
                         }
                     });
-
-                    // fill out any fields from course route
-                    if(course){
-                        NewState["Course Selection"]["Course Title"] = course.split("-").join(" ");
-                    }
 
                     return NewState;
                 })
@@ -109,8 +116,6 @@ class Form extends Component {
     getStepContent(step, formType){
         return this.props.registrationForm[formType][step]
     }
-
-
 
     validateSection() {
         let formContents = this.getFormObject();
@@ -150,24 +155,26 @@ class Form extends Component {
     handleNext() {
         this.setState((oldState) => {
             if (this.validateSection()) {
-                const conditionalField = this.getConditionalFieldFromCurrentSection();
+                const conditionalField = this.getConditionalFieldFromCurrentSection(),
+                    nextActiveStep = oldState.activeStep + 1,
+                    nextActiveSection = this.getFormObject().section_titles[nextActiveStep];
                 let newState = {
-                    activeStep: oldState.activeStep + 1,
-                    activeSection: this.getFormObject().section_titles[oldState.activeStep + 1],
+                    activeStep: nextActiveStep,
+                    activeSection: nextActiveSection,
                     conditional: conditionalField ? conditionalField : oldState.conditional,
                     nextSection: true,
                 };
                 if (conditionalField) {
                     let formContents = this.getFormObject(),
-                        title = this.getFormObject().section_titles[oldState.activeStep + 1];
+                        title = nextActiveSection;
                     // create blank fields based on form type
                     newState[title] = {};
-                    formContents[this.getFormObject().section_titles[oldState.activeStep + 1]][conditionalField].forEach((field)=>{
+                    formContents[nextActiveSection][conditionalField].forEach((field)=>{
                         newState[title][field.field] = undefined;
                     });
                     // create validated state for each field
                     newState[`${title}_validated`] = {};
-                    formContents[this.getFormObject().section_titles[oldState.activeStep + 1]][conditionalField].forEach((field)=>{
+                    formContents[nextActiveSection][conditionalField].forEach((field)=>{
                         newState[`${title}_validated`][field.field] = true;
                     });
                 }
@@ -241,15 +248,12 @@ class Form extends Component {
         let fieldTitle = field.field;
         switch(field.type){
             case "select":
+                console.log(this.state, label);
                 return <FormControl className={"form-control"}>
                     <InputLabel htmlFor={fieldTitle}>{fieldTitle}</InputLabel>
                     <Select
-                        value={this.state[label][fieldTitle]}
+                        value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : "Private Tutoring"}
                         onChange={(e)=>{this.onSelectChange.bind(this)(e.target.value,label,fieldTitle)}}
-                        inputProps={{
-                            name: {fieldTitle},
-                            id: {fieldTitle},
-                        }}
                     >
                         {
                             field.options.map((option,i)=>{
@@ -268,7 +272,9 @@ class Form extends Component {
                         label: course.course_id.toString()+": "+course.course_title,
                     }
                 });
+                console.log(field, this.state[label][fieldTitle], label, fieldTitle)
                 return <SearchSelect
+                    value={this.state[label][fieldTitle]}
                     onChange={(value)=>{ this.onSelectChange.bind(this)(value,label,fieldTitle)}}
                     options={courseList}
                     className={"search-options"}/>;
@@ -411,8 +417,8 @@ class Form extends Component {
                                     Do you want to save your changes?
                                 </Typography>
                                 <Button component={NavLink} to={"/registration"}
-                                        color={"secondary"}
-                                        className={"button secondary"}>
+                                    color={"secondary"}
+                                    className={"button secondary"}>
                                     No, discard changes
                                 </Button>
                                 <Button color={"secondary"} className={"button primary"}>
@@ -421,7 +427,7 @@ class Form extends Component {
                             </div>
                         </Modal>
                         <Typography className={"heading"} align={"left"}>
-                            {this.props.match.params.course ? this.props.match.params.course.split("-").join(" ") + " " : ""}
+                            {this.props.match.params.course ? `${decodeURIComponent(this.props.match.params.course)} ` : ""}
                             {this.props.match.params.type} Registration
                         </Typography>
                         {
