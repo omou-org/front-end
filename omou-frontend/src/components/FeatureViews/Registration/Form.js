@@ -66,7 +66,7 @@ class Form extends Component {
                     formContents.section_titles.forEach((title,i)=>{
                         // create blank fields based on form type
                         NewState[title] = {};
-
+                        // set a value for every non-conditional field (object)
                         if(Array.isArray(formContents[title])){
                             formContents[title].forEach((field) => {
                                 NewState[title][field.field] = undefined;
@@ -248,15 +248,12 @@ class Form extends Component {
         let fieldTitle = field.field;
         switch(field.type){
             case "select":
+                console.log(this.state, label);
                 return <FormControl className={"form-control"}>
                     <InputLabel htmlFor={fieldTitle}>{fieldTitle}</InputLabel>
                     <Select
-                        value={this.state[label][fieldTitle]}
+                        value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : "Private Tutoring"}
                         onChange={(e)=>{this.onSelectChange.bind(this)(e.target.value,label,fieldTitle)}}
-                        inputProps={{
-                            name: {fieldTitle},
-                            id: {fieldTitle},
-                        }}
                     >
                         {
                             field.options.map((option,i)=>{
