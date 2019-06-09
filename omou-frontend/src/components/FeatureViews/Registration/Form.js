@@ -53,14 +53,27 @@ class Form extends Component {
                         activeSection:formContents.section_titles[0],
                         form: formType,
                     };
+                    let course = decodeURIComponent(this.props.match.params.course);
+                    course = this.props.courses.find((matchingCourse) => course === matchingCourse.course_title);
+                    if (course) {
+                        // convert it to a format that onselectChange can use
+                        course = {
+                            value: course.course_id.toString() + ": " + course.course_title,
+                            label: course.course_id.toString() + ": " + course.course_title,
+                        };
+                    }
 
                     formContents.section_titles.forEach((title,i)=>{
                         // create blank fields based on form type
                         NewState[title] = {};
 
                         if(Array.isArray(formContents[title])){
-                            formContents[title].forEach((field)=>{
+                            formContents[title].forEach((field) => {
                                 NewState[title][field.field] = undefined;
+                                if (field.type === "course") {
+                                    console.log(title, field)
+                                    NewState[title][field.field] = course;
+                                }
                             });
                         }
                         // create validated state for each field
@@ -169,18 +182,6 @@ class Form extends Component {
             } else {
                 return {};
             }
-        }, () => {
-            const field = this.getActiveSection().find((matchingField) => matchingField.type === "course");
-            if (field) {
-                let course = decodeURIComponent(this.props.match.params.course);
-                course = this.props.courses.find((matchingCourse) => course === matchingCourse.course_title);
-                // convert it to a format that onselectChange can use
-                course = {
-                    value: course.course_id.toString() + ": " + course.course_title,
-                    label: course.course_id.toString() + ": " + course.course_title,
-                };
-                this.onSelectChange(course, this.state.activeSection, field.field);
-            }
         });
     }
 
@@ -274,6 +275,7 @@ class Form extends Component {
                         label: course.course_id.toString()+": "+course.course_title,
                     }
                 });
+                console.log(field, this.state[label][fieldTitle], label, fieldTitle)
                 return <SearchSelect
                     value={this.state[label][fieldTitle]}
                     onChange={(value)=>{ this.onSelectChange.bind(this)(value,label,fieldTitle)}}
