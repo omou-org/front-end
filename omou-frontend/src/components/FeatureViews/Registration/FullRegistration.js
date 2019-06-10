@@ -42,7 +42,7 @@ class FullRegistration extends Component {
             minCategory: 0,
             coursePopup: false,
             ascendingOrder: true,
-            sortCategory: "Tuition",
+            sortCategory: "Course",
         };
     }
 
