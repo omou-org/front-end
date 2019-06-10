@@ -19,13 +19,13 @@ import ForwardIcon from "@material-ui/icons/ArrowForward";
 import BackIcon from "@material-ui/icons/ArrowBack";
 import ExpandIcon from "@material-ui/icons/ExpandMore";
 import ShrinkIcon from "@material-ui/icons/ExpandLess";
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 //Local Component Imports
 import './registration.scss'
 import Grow from "@material-ui/core/Grow";
 import {NavLink, Redirect} from "react-router-dom";
 import {withRouter} from 'react-router'
-
 
 const rowHeadings = [
     {id:'Course', numberic:false, disablePadding: false},
@@ -34,31 +34,15 @@ const rowHeadings = [
     {id:'Register', numberic:false, disablePadding: false}
 ];
 
-let TableToolbar = props =>{
-    return (<TableHead>
-        <TableRow>
-            {rowHeadings.map(
-                (row, i) => (
-                    <TableCell
-                        key={i}
-                        align={row.numberic ? 'right':'left'}
-                        padding={row.disablePadding ? 'none':'default'}
-                    >
-                        {row.id}
-                    </TableCell>
-                )
-            )}
-        </TableRow>
-    </TableHead>);
-};
-
 class FullRegistration extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             maxCategory: 2,
             minCategory: 0,
             coursePopup: false,
+            ascendingOrder: true,
+            sortCategory: "Course",
         };
     }
 
@@ -107,27 +91,95 @@ class FullRegistration extends Component {
         this.props.history.push(route);
     }
 
-    render(){
+    // getter = function to get the value to compare
+    stableCmp(course1, course2, getter) {
+        const sortOrder = this.state.ascendingOrder ? 1 : -1;
+        if (getter(course1.course) > getter(course2.course)) {
+            return sortOrder;
+        }
+        if (getter(course1.course) < getter(course2.course)) {
+            return -sortOrder;
+        }
+        return course2.index - course1.index;
+    }
 
+    sortCourses() {
+        let courses = JSON.parse(JSON.stringify(this.props.courses));
+        // preserve index for stable sort
+        courses = courses.map((course, index) => ({course, index}));
+        courses.sort((course1, course2) => {
+            switch (this.state.sortCategory) {
+                case "Tuition":
+                    return this.stableCmp(course1, course2, ({tuition}) => tuition);
+                case "Course":
+                    return this.stableCmp(course1, course2, ({course_title}) => course_title);
+                case "Space Left":
+                    return this.stableCmp(course1, course2, ({capacity, filled}) => capacity - filled);
+                default:
+                    return course2.index - course1.index;
+            }
+        });
+        courses = courses.map(({course}) => course);
+        return courses;
+    }
+
+    updateSort(rowID) {
+        this.setState((prevState) => {
+            if (prevState.sortCategory === rowID) {
+                return {
+                    ascendingOrder: !prevState.ascendingOrder,
+                };
+            } else {
+                return {
+                    sortCategory: rowID,
+                };
+            }
+        });
+    }
+
+    renderTableHeader() {
+        return (
+            <TableHead>
+                <TableRow>
+                    {rowHeadings.map((row) => (
+                        <TableCell
+                            key={row.id}
+                            align={row.numberic ? "right" : "left"}
+                            padding={row.disablePadding ? "none" : "default"}
+                            sortDirection={this.state.ascendingOrder ? "asc" : "desc"}>
+                            <TableSortLabel
+                                active={this.state.sortCategory === row.id}
+                                direction={this.state.ascendingOrder ? "asc" : "desc"}
+                                onClick={this.updateSort.bind(this, row.id)}>
+                                {row.id}
+                            </TableSortLabel>
+                        </TableCell>
+                    ))}
+                </TableRow>
+            </TableHead>
+        );
+    }
+
+    render() {
         return (
             <div className="">
                 <Grid container>
                     <Grid item xs={12}>
                         <Grid container className={"course-categories"} spacing={16}>
                             <div className={this.state.minCategory !== 0 ? "visible" : ""}>
-                            <BackIcon className={`control back `}
-                                      onClick={(e)=>{e.preventDefault(); this.backCategories.bind(this)()}}/>
+                                <BackIcon className={`control back `}
+                                    onClick={(e) => {e.preventDefault(); this.backCategories.bind(this)()}} />
                             </div>
                             {
-                                this.props.categories.map((category,i)=>{
-                                    if(this.state.minCategory <= i && i <= this.state.maxCategory){
+                                this.props.categories.map((category, i) => {
+                                    if (this.state.minCategory <= i && i <= this.state.maxCategory) {
                                         return <Grow in={this.state.minCategory <= i && i <= this.state.maxCategory} key={category.id}>
                                             <Grid item xs={4} >
                                                 <Card className={"category-card"}>
                                                     {/*<CardMedia*/}
-                                                        {/*className={"media"}*/}
-                                                        {/*image={"https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwjBz-2K9ZviAhWiGDQIHdopCZYQjRx6BAgBEAU&url=https%3A%2F%2Fwww.losdschools.org%2Fdomain%2F1704&psig=AOvVaw0GpyRGZMw9QDj5zOLnmw85&ust=1557954002247055"}*/}
-                                                        {/*title={"AP Test Logo"}/>*/}
+                                                    {/*className={"media"}*/}
+                                                    {/*image={"https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwjBz-2K9ZviAhWiGDQIHdopCZYQjRx6BAgBEAU&url=https%3A%2F%2Fwww.losdschools.org%2Fdomain%2F1704&psig=AOvVaw0GpyRGZMw9QDj5zOLnmw85&ust=1557954002247055"}*/}
+                                                    {/*title={"AP Test Logo"}/>*/}
                                                     <CardContent className={"text"}>
                                                         <Typography gutterBottom variant={"h6"} component={"h2"}>
                                                             {category.cat_title}
@@ -139,7 +191,7 @@ class FullRegistration extends Component {
                                                     <CardActions>
                                                         <Button
                                                             component={NavLink}
-                                                            to={'/registration/category/'+category.id.toString()}
+                                                            to={'/registration/category/' + category.id.toString()}
                                                             size={"small"}
                                                             color={"secondary"}>
                                                             Explore
@@ -152,17 +204,17 @@ class FullRegistration extends Component {
                                     return '';
                                 })
                             }
-                            <div className={this.state.maxCategory !==this.props.courses.length-1 ? "visible" : ""}>
+                            <div className={this.state.maxCategory !== this.props.courses.length - 1 ? "visible" : ""}>
                                 <ForwardIcon className={`control forward`}
-                                         onClick={(e)=>{e.preventDefault(); this.forwardCategories.bind(this)()}}/>
+                                    onClick={(e) => {e.preventDefault(); this.forwardCategories.bind(this)()}} />
                             </div>
                             <div className={this.state.expandCategory ? "" : "visible"}>
                                 <ExpandIcon className={`control expand`}
-                                        onClick={(e)=>{e.preventDefault(); this.expandCategories.bind(this)()}}/>
+                                    onClick={(e) => {e.preventDefault(); this.expandCategories.bind(this)()}} />
                             </div>
                             <div className={this.state.expandCategory ? "visible" : ""}>
                                 <ShrinkIcon className={`control shrink`}
-                                        onClick={(e)=>{e.preventDefault(); this.expandCategories.bind(this)()}}/>
+                                    onClick={(e) => {e.preventDefault(); this.expandCategories.bind(this)()}} />
                             </div>
                         </Grid>
                     </Grid>
@@ -173,35 +225,38 @@ class FullRegistration extends Component {
                         <Paper className={"paper"}>
                             <Grow in={true}>
                                 <Table>
-                                    <TableToolbar/>
+                                    {this.renderTableHeader()}
                                     <TableBody className={"pop-courses-table"}>
                                         {
-                                            this.props.courses.map((course,i)=>{
-                                                return <TableRow key={i}
-                                                                 className={"row"}
-                                                                 hover>
+                                            this.sortCourses().map((course, i) => (
+                                                <TableRow key={course.course_title}
+                                                    className="row"
+                                                    hover>
                                                     <TableCell
-                                                        onClick={(e)=>{e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
-                                                        style={{ textDecoration: 'none', cursor: 'pointer' }}
+                                                        onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
+                                                        style={{textDecoration: 'none', cursor: 'pointer'}}
                                                         align="left"
                                                         className={"course-title"}>{course.course_title}</TableCell>
                                                     <TableCell
-                                                        onClick={(e)=>{e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
-                                                        style={{ textDecoration: 'none', cursor: 'pointer' }}
-                                                        align="left">{course.tuition}</TableCell>
+                                                        onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
+                                                        style={{textDecoration: 'none', cursor: 'pointer'}}
+                                                        align="left">{course.tuition.toLocaleString("en-US", {
+                                                            style: "currency",
+                                                            currency: "USD",
+                                                        })}</TableCell>
                                                     <TableCell
-                                                        onClick={(e)=>{e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
-                                                        style={{ textDecoration: 'none', cursor: 'pointer' }}
-                                                       align="left">
+                                                        onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
+                                                        style={{textDecoration: 'none', cursor: 'pointer'}}
+                                                        align="left">
                                                         <CircularProgress
                                                             className={'space-left-progress'}
                                                             size={30}
                                                             thickness={5}
-                                                            value={((course.capacity - course.filled)/course.capacity)*100}
+                                                            value={((course.capacity - course.filled) / course.capacity) * 100}
                                                             variant={'static'}
                                                         />
                                                         <div className={'space-left'}>
-                                                        {(course.capacity - course.filled)} / {course.capacity}
+                                                            {(course.capacity - course.filled)} / {course.capacity}
                                                         </div>
                                                     </TableCell>
                                                     <TableCell align="left">
@@ -211,8 +266,8 @@ class FullRegistration extends Component {
                                                             className={"button"}>REGISTER</Button>
                                                     </TableCell>
                                                 </TableRow>
-                                            })
-                            }
+                                            ))
+                                        }
                                     </TableBody>
                                 </Table>
                             </Grow>
@@ -220,7 +275,7 @@ class FullRegistration extends Component {
                     </Grid>
                 </Grid>
             </div>
-        )
+        );
     }
 }
 
