@@ -23,7 +23,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add"
+import AddIcon from "@material-ui/icons/Add";
 
 //Outside React Component
 import SearchSelect from 'react-select';
@@ -42,54 +42,61 @@ class Form extends Component {
     }
 
     componentWillMount() {
-        let prevState = sessionStorage.getItem("form");
-        let formType = this.props.match.params.type;
-        if(!prevState || formType !== prevState.form){
-            if (this.props.registrationForm[formType]){
-                this.setState((oldState)=>{
+        let prevState = JSON.parse(sessionStorage.getItem("form") || null);
+        const formType = this.props.match.params.type;
+        if (!prevState || formType !== prevState.form) {
+            if (this.props.registrationForm[formType]) {
+                this.setState((oldState) => {
                     let formContents = JSON.parse(JSON.stringify(this.props.registrationForm[formType]));
-
-                    let NewState = {...oldState,
-                        activeSection:formContents.section_titles[0],
+                    let NewState = {
+                        ...oldState,
+                        activeSection: formContents.section_titles[0],
                         form: formType,
                     };
                     let course = decodeURIComponent(this.props.match.params.course);
-                    course = this.props.courses.find((matchingCourse) => course === matchingCourse.course_title);
+                    course = this.props.courses.find(({course_title}) => course === course_title);
                     if (course) {
                         // convert it to a format that onselectChange can use
                         course = {
-                            value: course.course_id.toString() + ": " + course.course_title,
-                            label: course.course_id.toString() + ": " + course.course_title,
+                            value: `${course.course_id}: ${course.course_title}`,
+                            label: `${course.course_id}: ${course.course_title}`,
                         };
                     }
-
-                    formContents.section_titles.forEach((title,i)=>{
+                    formContents.section_titles.forEach((title) => {
                         // create blank fields based on form type
                         NewState[title] = {};
                         // set a value for every non-conditional field (object)
-                        if(Array.isArray(formContents[title])){
-                            formContents[title].forEach((field) => {
-                                NewState[title][field.field] = undefined;
-                                if (field.type === "course") {
-                                    console.log(title, field)
-                                    NewState[title][field.field] = course;
+                        if (Array.isArray(formContents[title])) {
+                            formContents[title].forEach(({field, type, options}) => {
+                                switch (type) {
+                                    case "course":
+                                        NewState[title][field] = course;
+                                        break;
+                                    case "select":
+                                        NewState[title][field] = options[0];
+                                        break;
+                                    default:
+                                        NewState[title][field] = null;
                                 }
                             });
                         }
                         // create validated state for each field
-                        NewState[title + "_validated"] = {};
-                        if(Array.isArray(formContents[title])){
-                            formContents[title].forEach((field)=>{
-                                NewState[title+"_validated"][field.field] = true;
+                        NewState[`${title}_validated`] = {};
+                        if (Array.isArray(formContents[title])) {
+                            formContents[title].forEach((field) => {
+                                NewState[`${title}_validated`][field.field] = true;
                             });
                         }
                     });
-
                     return NewState;
-                })
+                }, () => {
+                    this.setState({
+                        nextSection: this.validateSection(),
+                    });
+                });
             }
-        } else if(prevState && formType === prevState.form){
-            this.setState(()=>{return JSON.parse(prevState);})
+        } else {
+            this.setState(prevState);
         }
     }
 
@@ -118,20 +125,14 @@ class Form extends Component {
     }
 
     validateSection() {
-        let formContents = this.getFormObject();
-        let currSectionTitle = formContents.section_titles[this.state.activeStep];
-
-        for(let [field_key] of Object.entries(this.state[currSectionTitle+"_validated"])){
-            let fields = this.getActiveSection();
-            let required = fields.filter(fieldObj => {
-               return fieldObj.field === field_key;
-            })[0].required;
-            if(required && (this.state[currSectionTitle][field_key] === ""
-                || this.state[currSectionTitle][field_key]===undefined)){
-                return false
-            }
-        }
-        return true;
+        const currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
+        return (
+            this.getActiveSection()
+                .filter(({required}) => required)
+                .every(({field}) => this.state[currSectionTitle][field]) &&
+            Object.values(this.state[`${currSectionTitle}_validated`])
+                .every((valid) => valid)
+        );
     }
 
     getConditionalFieldFromCurrentSection() {
@@ -153,6 +154,14 @@ class Form extends Component {
 
     // Progresses to next section in registration form
     handleNext() {
+        const currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
+        let section = this.props.registrationForm[this.state.form][this.state.activeSection];
+        if (!Array.isArray(section)) {
+            section = section[this.state.conditional];
+        }
+        section.forEach((field) => {
+            this.validateField(currSectionTitle, field, this.state[currSectionTitle][field.field]);
+        });
         this.setState((oldState) => {
             if (this.validateSection()) {
                 const conditionalField = this.getConditionalFieldFromCurrentSection(),
@@ -162,7 +171,7 @@ class Form extends Component {
                     activeStep: nextActiveStep,
                     activeSection: nextActiveSection,
                     conditional: conditionalField ? conditionalField : oldState.conditional,
-                    nextSection: true,
+                    nextSection: false,
                 };
                 if (conditionalField) {
                     let formContents = this.getFormObject(),
@@ -182,6 +191,10 @@ class Form extends Component {
             } else {
                 return {};
             }
+        }, () => {
+            this.setState({
+                nextSection: this.validateSection(),
+            });
         });
     }
 
@@ -196,6 +209,10 @@ class Form extends Component {
             } else {
                 return {};
             }
+        }, () => {
+            this.setState({
+                nextSection: this.validateSection(),
+            });
         });
     }
 
@@ -210,37 +227,45 @@ class Form extends Component {
         });
     }
 
-    validateField(sectionTitle, field, fieldValue){
-        let validatedInput = InputValidation(fieldValue,field.type);
-        // if this is a empty required field
-        if((fieldValue === 0 || fieldValue === "") && field.required){
-            this.setState((oldState)=>{
-               oldState[sectionTitle+"_validated"][field.field] = validatedInput;
-               sessionStorage.setItem("form",JSON.stringify(oldState));
-               return oldState;
-            });
-        } else if(validatedInput || ""){ // if valid input or an empty non-required field
-            this.setState((oldState)=>{
-                // parse if number
-                if (NumberValidation(fieldValue)){
-                    fieldValue = parseInt(fieldValue);
-                    oldState[sectionTitle][field.field] = fieldValue;
+    validateField(sectionTitle, field, fieldValue) {
+        this.setState((oldState) => {
+            if (!fieldValue) { // if empty field
+                oldState[`${sectionTitle}_validated`][field.field] = !field.required;
+            } else if (InputValidation(fieldValue, field.type)) { // if valid input
+                let isValid = true;
+                if (field.type === "number") {
+                    // parse if number
+                    oldState[sectionTitle][field.field] = parseInt(fieldValue, 10);
+                } else if (field.type === "email") {
+                    let emails;
+                    if (field.field === "Student Email") {
+                        emails = this.props.students.map(({email}) => email);
+                    } else if (field.field === "Parent Email") {
+                        emails = this.props.parents.map(({email}) => email);
+                    }
+                    isValid = !emails.includes(fieldValue);
                 }
-                oldState[sectionTitle+"_validated"][field.field] = true;
-                if(this.validateSection()){
-                    oldState["nextSection"] = true
-                }
-                sessionStorage.setItem("form",JSON.stringify(oldState));
-                return oldState;
+                oldState[`${sectionTitle}_validated`][field.field] = isValid;
+            } else {
+                oldState[`${sectionTitle}_validated`][field.field] = false;
+            }
+            return oldState;
+        }, () => {
+            this.setState({
+                nextSection: this.validateSection(),
+            }, () => {
+                sessionStorage.setItem("form", JSON.stringify(this.state));
             });
-        }
+        });
     }
 
-    onSelectChange(value,label,fieldTitle){
-        this.setState((OldState)=>{
+    onSelectChange(value, label, field) {
+        this.setState((OldState) => {
             let NewState = OldState;
-            NewState[label][fieldTitle] = value;
+            NewState[label][field.field] = value;
             return NewState;
+        }, () => {
+            this.validateField(this.state.activeSection, field, value);
         });
     }
 
@@ -248,36 +273,36 @@ class Form extends Component {
         let fieldTitle = field.field;
         switch(field.type){
             case "select":
-                console.log(this.state, label);
                 return <FormControl className={"form-control"}>
                     <InputLabel htmlFor={fieldTitle}>{fieldTitle}</InputLabel>
                     <Select
-                        value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : "Private Tutoring"}
-                        onChange={(e)=>{this.onSelectChange.bind(this)(e.target.value,label,fieldTitle)}}
-                    >
+                        value={this.state[label][fieldTitle]}
+                        onChange={({target}) => {
+                            this.onSelectChange(target.value, label, field);
+                        }}>
                         {
-                            field.options.map((option,i)=>{
-                              return  <MenuItem value={option} key={i}>
-                                  <em>{option}</em>
-                              </MenuItem>
-                            })
+                            field.options.map((option) => (
+                                <MenuItem value={option} key={option}>
+                                    <em>{option}</em>
+                                </MenuItem>
+                            ))
                         }
                     </Select>
                 </FormControl>;
             case "course":
-                let courseList = this.props.courses;
-                courseList = courseList.map((course)=>{
-                    return {
-                        value: course.course_id.toString()+": "+course.course_title,
-                        label: course.course_id.toString()+": "+course.course_title,
-                    }
-                });
-                console.log(field, this.state[label][fieldTitle], label, fieldTitle)
+                const courseList = this.props.courses
+                    .filter(({capacity, filled}) => capacity > filled)
+                    .map(({course_id, course_title}) => ({
+                        value: `${course_id}: ${course_title}`,
+                        label: `${course_id}: ${course_title}`,
+                    }));
                 return <SearchSelect
                     value={this.state[label][fieldTitle]}
-                    onChange={(value)=>{ this.onSelectChange.bind(this)(value,label,fieldTitle)}}
+                    onChange={(value) => {
+                        this.onSelectChange(value, label, field);
+                    }}
                     options={courseList}
-                    className={"search-options"}/>;
+                    className="search-options"/>;
             case "teacher":
                 let teacherList = this.props.teachers;
                 teacherList = teacherList.map((teacher)=>{
@@ -287,9 +312,12 @@ class Form extends Component {
                     }
                 });
                 return <SearchSelect
-                    onChange={(value)=>{ this.onSelectChange.bind(this)(value,label,fieldTitle)}}
+                    onChange={(value) => {
+                        this.onSelectChange(value, label, field);
+                    }}
+                    value={this.state[label][fieldTitle]}
                     options={teacherList}
-                    className={"search-options"}/>;
+                    className="search-options"/>;
             default:
                 return <TextField
                     label={field.field}
@@ -380,7 +408,8 @@ class Form extends Component {
                                     </Button>
                                     <Button
                                         variant="contained"
-                                        color={nextSection ? "primary" : "secondary"}
+                                        color="primary"
+                                        disabled={!nextSection}
                                         onClick={(event) => {
                                             event.preventDefault();
                                             this.handleNext();
@@ -449,6 +478,8 @@ function mapStateToProps(state) {
         courses: state.Registration["course_list"],
         courseCategories: state.Registration["categories"],
         registrationForm: state.Registration["registration_form"],
+        parents: state.Registration["parent_list"],
+        students: state.Registration["student_list"],
         teachers: state.Registration["teacher_list"],
     };
 }

@@ -140,7 +140,7 @@ function initRegistrationForm() {
               time: "5:30pm - 7:00pm",
               tuition: 1440,
               capacity: 12,
-              filled: 9,
+              filled: 12,
               grade: 8,
               description: "This course is to prepare 5th grade students to pass the 6th grade math placement test."
           },{
@@ -223,6 +223,7 @@ function initRegistrationForm() {
               "age": 12,
               "school": "Amador",
               name:"Danny Long",
+              email: "a@a.com",
               parent_id: 1,
           },
           {
@@ -239,6 +240,7 @@ function initRegistrationForm() {
               "age": 14,
               "school": "Mohr Elementary",
               name:"Jim Plano",
+              email: "b@b.com",
               parent_id: 2,
           },
           {
@@ -255,6 +257,7 @@ function initRegistrationForm() {
               "age": 12,
               "school": "Amador",
               name:"Hansel Kid",
+              email: "c@c.com",
               parent_id: 3,
           },
           {
@@ -271,6 +274,7 @@ function initRegistrationForm() {
               "age": 14,
               "school": "Amador",
               name: "Batkid Wayne",
+              email: "d@d.com",
               parent_id: 4,
           },
       ],
@@ -451,6 +455,7 @@ function initRegistrationForm() {
                         name: "Parent Name",
                         type: "short text",
                         field_limit: 1,
+                        full: true,
                     },
                     {
                         field: "Relationship to Student",
@@ -463,12 +468,15 @@ function initRegistrationForm() {
                         name: "Parent Email",
                         type: "email",
                         field_limit: 1,
+                        required: true,
+                        full: true,
                     },
                     {
                         field: "Parent Phone Number",
                         name: "Phone Number",
                         type: "phone number",
                         field_limit: 1,
+                        full: true,
                     },
                     {
                         field: "Address",

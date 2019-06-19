@@ -10,6 +10,7 @@ import TableBody from "@material-ui/core/TableBody";
 import Button from '@material-ui/core/Button';
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
+// import Dialog from "@material-ui/core/Modal";
 import Card from "@material-ui/core/Card";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
@@ -43,6 +44,7 @@ class FullRegistration extends Component {
             coursePopup: false,
             ascendingOrder: true,
             sortCategory: "Course",
+            // allowOpen: true,
         };
     }
 
@@ -164,6 +166,30 @@ class FullRegistration extends Component {
         return (
             <div className="">
                 <Grid container>
+                    {/* <Dialog
+                        aria-labelledby="simple-modal-title"
+                        aria-describedby="simple-modal-description"
+                        open={!this.state.allowOpen}
+                        onBackdropClick={() => {
+                            this.setState({
+                                allowOpen: true,
+                            });
+                        }}
+                        color="error">
+                        <div className="exit-popup">
+                            <Typography variant="h6" id="modal-title" color="error">
+                                Course is filled!
+                            </Typography>
+                            <Button className="button primary"
+                                onClick={() => {
+                                    this.setState({
+                                        allowOpen: true,
+                                    });
+                                }}>
+                                OK
+                            </Button>
+                        </div>
+                    </Dialog> */}
                     <Grid item xs={12}>
                         <Grid container className={"course-categories"} spacing={16}>
                             <div className={this.state.minCategory !== 0 ? "visible" : ""}>
@@ -260,10 +286,17 @@ class FullRegistration extends Component {
                                                         </div>
                                                     </TableCell>
                                                     <TableCell align="left">
-                                                        <Button component={NavLink} to={`/registration/form/course/${encodeURIComponent(course.course_title)}`}
+                                                        <Button component={NavLink}
+                                                            onClick={() => {
+                                                                // this.setState({
+                                                                //     allowOpen: course.capacity > course.filled,
+                                                                // });
+                                                                this.goToRoute(`/registration/form/course/${encodeURIComponent(course.course_title)}`);
+                                                            }}
                                                             variant="contained"
+                                                            disabled={course.capacity <= course.filled}
                                                             color="primary"
-                                                            className={"button"}>REGISTER</Button>
+                                                            className="button">REGISTER</Button>
                                                     </TableCell>
                                                 </TableRow>
                                             ))
