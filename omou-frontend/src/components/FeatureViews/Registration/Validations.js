@@ -1,25 +1,25 @@
 /*Validations for various text inputs*/
 
 export let InputValidation = (input, type) => {
-  switch(type){
-      case "number":
-          return NumberValidation(input);
-      case "phone number":
-          return PhoneValidation(input);
-      case "email":
-          return EmailValidation(input);
-      case "short text":
-          return ShortTextValidation(input);
-      case "address":
-          return AddressValidation(input);
-      default:
-          return false;
-  }
+    switch (type) {
+        case "number":
+            return NumberValidation(input);
+        case "phone number":
+            return PhoneValidation(input);
+        case "email":
+            return EmailValidation(input);
+        case "short text":
+            return ShortTextValidation(input);
+        case "address":
+            return AddressValidation(input);
+        default:
+            return Boolean(input);
+    }
 };
 
 // Simple Numbers (i.e. grade, age, etc.)
 export let NumberValidation = (input) =>{
-  return !!input.match(/^[0-9]{1,3}$/);
+  return !!String(input).match(/^[0-9]{1,3}$/);
 };
 
 let PhoneValidation = (input) =>{
