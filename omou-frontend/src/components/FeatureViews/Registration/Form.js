@@ -67,10 +67,16 @@ class Form extends Component {
                         NewState[title] = {};
                         // set a value for every non-conditional field (object)
                         if (Array.isArray(formContents[title])) {
-                            formContents[title].forEach((field) => {
-                                NewState[title][field.field] = undefined;
-                                if (field.type === "course") {
-                                    NewState[title][field.field] = course;
+                            formContents[title].forEach(({field, type, options}) => {
+                                switch (type) {
+                                    case "course":
+                                        NewState[title][field] = course;
+                                        break;
+                                    case "select":
+                                        NewState[title][field] = options[0];
+                                        break;
+                                    default:
+                                        NewState[title][field] = null;
                                 }
                             });
                         }
@@ -82,8 +88,11 @@ class Form extends Component {
                             });
                         }
                     });
-
                     return NewState;
+                }, () => {
+                    this.setState({
+                        nextSection: this.validateSection(),
+                    });
                 });
             }
         } else {
@@ -182,6 +191,10 @@ class Form extends Component {
             } else {
                 return {};
             }
+        }, () => {
+            this.setState({
+                nextSection: this.validateSection(),
+            });
         });
     }
 
@@ -196,6 +209,10 @@ class Form extends Component {
             } else {
                 return {};
             }
+        }, () => {
+            this.setState({
+                nextSection: this.validateSection(),
+            });
         });
     }
 
