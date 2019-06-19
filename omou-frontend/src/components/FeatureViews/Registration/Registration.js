@@ -44,6 +44,7 @@ class Registration extends Component {
         if(this.state.mobileView){
             return <MobileRegistration
                 courses={this.props.courses}
+                teachers={this.props.teachers}
                 categories = {this.props.courseCategories}
                 categoriesViewToggle = {this.state.mobileViewToggle}/>;
          }
@@ -141,6 +142,7 @@ Registration.propTypes = {
 
 function mapStateToProps(state) {
     return {
+        teachers: state.Registration["teacher_list"],
         courses: state.Registration["course_list"],
         courseCategories: state.Registration["categories"],
     };
