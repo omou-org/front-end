@@ -38,6 +38,7 @@ class Form extends Component {
             activeStep: 0,
             activeSection: "",
             form: "",
+            submitted: false,
         };
     }
 
@@ -164,30 +165,37 @@ class Form extends Component {
         });
         this.setState((oldState) => {
             if (this.validateSection()) {
-                const conditionalField = this.getConditionalFieldFromCurrentSection(),
-                    nextActiveStep = oldState.activeStep + 1,
-                    nextActiveSection = this.getFormObject().section_titles[nextActiveStep];
-                let newState = {
-                    activeStep: nextActiveStep,
-                    activeSection: nextActiveSection,
-                    conditional: conditionalField ? conditionalField : oldState.conditional,
-                    nextSection: false,
-                };
-                if (conditionalField) {
-                    let formContents = this.getFormObject(),
-                        title = nextActiveSection;
-                    // create blank fields based on form type
-                    newState[title] = {};
-                    formContents[nextActiveSection][conditionalField].forEach((field)=>{
-                        newState[title][field.field] = undefined;
-                    });
-                    // create validated state for each field
-                    newState[`${title}_validated`] = {};
-                    formContents[nextActiveSection][conditionalField].forEach((field)=>{
-                        newState[`${title}_validated`][field.field] = true;
-                    });
+                if (!oldState.submitted && oldState.activeStep === this.getFormObject().section_titles.length - 1) {
+                    this.props.registrationActions.submitForm(this.state);
+                    return {
+                        submitted: true,
+                    };
+                } else {
+                    const conditionalField = this.getConditionalFieldFromCurrentSection(),
+                        nextActiveStep = oldState.activeStep + 1,
+                        nextActiveSection = this.getFormObject().section_titles[nextActiveStep];
+                    let newState = {
+                        activeStep: nextActiveStep,
+                        activeSection: nextActiveSection,
+                        conditional: conditionalField ? conditionalField : oldState.conditional,
+                        nextSection: false,
+                    };
+                    if (conditionalField) {
+                        let formContents = this.getFormObject(),
+                            title = nextActiveSection;
+                        // create blank fields based on form type
+                        newState[title] = {};
+                        formContents[nextActiveSection][conditionalField].forEach((field) => {
+                            newState[title][field.field] = null;
+                        });
+                        // create validated state for each field
+                        newState[`${title}_validated`] = {};
+                        formContents[nextActiveSection][conditionalField].forEach((field) => {
+                            newState[`${title}_validated`][field.field] = true;
+                        });
+                    }
+                    return newState;
                 }
-                return newState;
             } else {
                 return {};
             }
@@ -426,20 +434,29 @@ class Form extends Component {
         );
     }
 
+    // view after a submitted form
+    renderSubmitted() {
+        return (
+            <div>
+                Your submission has been stored. A confirmation email will be sent.
+            </div>
+        );
+    }
+
     render() {
         return (
             <Grid container className="">
                 <Grid item xs={12}>
                     <Paper className={"registration-form"}>
-                        <div onClick={(e)=>{e.preventDefault(); this.backToggler.bind(this)()}}
+                        <div onClick={(e) => {e.preventDefault(); this.backToggler.bind(this)()}}
                             className={"control"}>
-                            <BackArrow className={"icon"}/> <div className={"label"}>Back</div>
+                            <BackArrow className={"icon"} /> <div className={"label"}>Back</div>
                         </div>
                         <Modal
                             aria-labelledby="simple-modal-title"
                             aria-describedby="simple-modal-description"
                             open={this.state.exitPopup}
-                            onClose={(e)=>{e.preventDefault(); this.backToggler.bind(this)()}}
+                            onClose={(e) => {e.preventDefault(); this.backToggler.bind(this)()}}
                         >
                             <div className={"exit-popup"}>
                                 <Typography variant="h6" id="modal-title">
@@ -460,16 +477,18 @@ class Form extends Component {
                             {this.props.match.params.type} Registration
                         </Typography>
                         {
-                            this.props.registrationForm[this.state.form] ? this.renderForm.bind(this)() :
-                                <Typography>
-                                    Sorry! The form is unavailable.
-                                </Typography>
+                            !this.state.submitted ?
+                                this.props.registrationForm[this.state.form] ?
+                                    this.renderForm.bind(this)() :
+                                    <Typography>
+                                        Sorry! The form is unavailable.
+                                    </Typography>
+                            : this.renderSubmitted()
                         }
-
                     </Paper>
                 </Grid>
             </Grid>
-        )
+        );
     }
 }
 
