@@ -8,16 +8,13 @@ import React, {Component} from 'react';
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import BackArrow from "@material-ui/icons/ArrowBack";
 import {Typography} from "@material-ui/core";
-import Modal from "@material-ui/core/Modal";
-import {NavLink} from "react-router-dom";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
 import TextField from "@material-ui/core/TextField";
-import {InputValidation, NumberValidation} from "./Validations";
+import {InputValidation} from "./Validations";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
@@ -27,13 +24,13 @@ import AddIcon from "@material-ui/icons/Add";
 
 //Outside React Component
 import SearchSelect from 'react-select';
+import BackButton from "../../BackButton.js";
 
 class Form extends Component {
     constructor(props) {
         super(props);
         this.state = {
             conditional: "",
-            exitPopup: false,
             nextSection: false,
             activeStep: 0,
             activeSection: "",
@@ -114,11 +111,9 @@ class Form extends Component {
         }
     }
 
-    // return to main registration page, trigger exit popup
-    backToggler(){
+    onBack() {
         // clear session storage
-        sessionStorage.setItem("form","");
-        this.setState({exitPopup:!this.state.exitPopup});
+        sessionStorage.setItem("form", "");
     }
 
     getStepContent(step, formType){
@@ -448,30 +443,9 @@ class Form extends Component {
             <Grid container className="">
                 <Grid item xs={12}>
                     <Paper className={"registration-form"}>
-                        <div onClick={(e) => {e.preventDefault(); this.backToggler.bind(this)()}}
-                            className={"control"}>
-                            <BackArrow className={"icon"} /> <div className={"label"}>Back</div>
-                        </div>
-                        <Modal
-                            aria-labelledby="simple-modal-title"
-                            aria-describedby="simple-modal-description"
-                            open={this.state.exitPopup}
-                            onClose={(e) => {e.preventDefault(); this.backToggler.bind(this)()}}
-                        >
-                            <div className={"exit-popup"}>
-                                <Typography variant="h6" id="modal-title">
-                                    Do you want to save your changes?
-                                </Typography>
-                                <Button component={NavLink} to={"/registration"}
-                                    color={"secondary"}
-                                    className={"button secondary"}>
-                                    No, discard changes
-                                </Button>
-                                <Button color={"secondary"} className={"button primary"}>
-                                    Yes, save changes
-                                </Button>
-                            </div>
-                        </Modal>
+                        <BackButton
+                            warn={true}
+                            onBack={this.onBack}/>
                         <Typography className={"heading"} align={"left"}>
                             {this.props.match.params.course ? `${decodeURIComponent(this.props.match.params.course)} ` : ""}
                             {this.props.match.params.type} Registration
