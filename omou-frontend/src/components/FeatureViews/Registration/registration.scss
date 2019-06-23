@@ -61,7 +61,7 @@
     z-index:10000;
   }
   .forward, .back{
-    top:40%;
+    top:100%;
   }
   .forward{
     right:4px;
@@ -87,8 +87,8 @@
 
   //Card
   .category-card{
-    margin-left:7%;
-    width:87%;
+    margin-left:0%;
+    width:100%;
     .media{
       height:100px;
     }
