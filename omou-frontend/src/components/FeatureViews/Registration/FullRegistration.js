@@ -138,16 +138,12 @@ class FullRegistration extends Component {
     }
 
     getInstructorNameByID(teacher_id){
-        console.log(this.props.teachers, teacher_id)
         let teacherName=this.props.teachers.find((teacher)=>{
             return teacher.id===teacher_id;
         });
        teacherName=teacherName.name;
        return teacherName;
     }
-
-  
-
 
     renderTableHeader() {
         return (
@@ -254,10 +250,6 @@ class FullRegistration extends Component {
                                                         onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
                                                         style={{textDecoration: 'none', cursor: 'pointer'}}
                                                         align="left">
-                                                        {/* {course.tuition.toLocaleString("en-US", {
-                                                            style: "currency",
-                                                            currency: "USD",
-                                                        })} */}
                                                         {this.getInstructorNameByID.bind(this)(course.instructor_id)}
                                                         </TableCell>
                                                     <TableCell
