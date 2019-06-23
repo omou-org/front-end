@@ -139,9 +139,7 @@ class RegistrationCourse extends Component {
                     </Grid>
                 </Paper>
                 <Paper className={"paper content"}>
-                    <div className="control course">
-                        <BackButton />
-                    </div>
+                    <BackButton />
                     <div className={"course-heading"}>
                         <Typography align={'left'} variant={'h3'} style={{fontWeight:"500"}} >
                             {this.props.match.params.courseTitle}

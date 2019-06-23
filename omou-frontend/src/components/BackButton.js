@@ -39,7 +39,7 @@ class BackButton extends Component {
     render() {
         return (
             <div>
-                <div className="control"
+                <div className="control course"
                     onClick={this.handleClick.bind(this)}>
                     <BackArrow className="icon" />
                     <div className="label">Back</div>
