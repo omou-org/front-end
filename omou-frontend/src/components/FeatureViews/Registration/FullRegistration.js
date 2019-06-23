@@ -30,7 +30,7 @@ import {withRouter} from 'react-router'
 const rowHeadings = [
     {id:'Course', numberic:false, disablePadding: false},
     {id:'Tuition', numberic:false, disablePadding: false},
-    {id:'Space Filled', numberic:false, disablePadding: false},
+    {id:'Registration Status', numberic:false, disablePadding: false},
     {id:'Register', numberic:false, disablePadding: false}
 ];
 
@@ -113,7 +113,7 @@ class FullRegistration extends Component {
                     return this.stableCmp(course1, course2, ({tuition}) => tuition);
                 case "Course":
                     return this.stableCmp(course1, course2, ({course_title}) => course_title);
-                case "Space Filled":
+                case "Registration Status":
                     return this.stableCmp(course1, course2, ({capacity, filled}) => filled);
                 default:
                     return course2.index - course1.index;
