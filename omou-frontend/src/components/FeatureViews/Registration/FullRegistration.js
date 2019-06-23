@@ -30,7 +30,7 @@ import {withRouter} from 'react-router'
 
 const rowHeadings = [
     {id:'Course', numberic:false, disablePadding: false},
-    {id:'Tuition', numberic:false, disablePadding: false},
+    {id:'Instructor', numberic:false, disablePadding: false},
     {id:'Registration Status', numberic:false, disablePadding: false},
     {id:'Register', numberic:false, disablePadding: false}
 ];
@@ -139,6 +139,14 @@ class FullRegistration extends Component {
         });
     }
 
+    getInstructorNameByID(teacher_id){
+        let teacherName=this.props.teachers.find((teacher)=>{
+            return teacher.id===teacher_id;
+        });
+       teacherName=teacherName.name;
+       return teacherName;
+    }
+
     renderTableHeader() {
         return (
             <TableHead>
@@ -163,6 +171,7 @@ class FullRegistration extends Component {
     }
 
     render() {
+        console.log(this.props.teachers)
         return (
             <div className="">
                 <Grid container>
@@ -266,10 +275,9 @@ class FullRegistration extends Component {
                                                     <TableCell
                                                         onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
                                                         style={{textDecoration: 'none', cursor: 'pointer'}}
-                                                        align="left">{course.tuition.toLocaleString("en-US", {
-                                                            style: "currency",
-                                                            currency: "USD",
-                                                        })}</TableCell>
+                                                        align="left">
+                                                        {this.getInstructorNameByID.bind(this)(course.instructor_id)}
+                                                        </TableCell>
                                                     <TableCell
                                                         onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
                                                         style={{textDecoration: 'none', cursor: 'pointer'}}

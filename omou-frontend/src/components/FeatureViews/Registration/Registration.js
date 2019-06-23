@@ -50,7 +50,10 @@ class Registration extends Component {
         else {
             return <FullRegistration
                 courses={this.props.courses}
-                categories = {this.props.courseCategories}/>;
+                categories = {this.props.courseCategories}
+                teachers={this.props.teachers}
+                />;
+                
         }
     }
 
@@ -143,6 +146,7 @@ function mapStateToProps(state) {
     return {
         courses: state.Registration["course_list"],
         courseCategories: state.Registration["categories"],
+        teachers: state.Registration["teacher_list"]
     };
 }
 
