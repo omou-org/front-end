@@ -32,7 +32,7 @@ class BackButton extends Component {
     }
 
     goBack() {
-        this.props.onBack();
+        this.props.onBack && this.props.onBack(); // only call the function if defined
         this.props.history.goBack();
     }
 
@@ -51,19 +51,19 @@ class BackButton extends Component {
                     onClick={this.hideWarning.bind(this)}>
                     <div className="exit-popup">
                         <Typography variant="h6" id="modal-title">
-                            Are you sure you want to go back?
+                            {this.props.prompt || "Are you sure you want to go back?"}
                         </Typography>
                         <Button
                             onClick={this.hideWarning.bind(this)}
                             color="secondary"
                             className="button secondary">
-                            No, leave me here
+                            {this.props.noMessage || "No, leave me here"}
                         </Button>
                         <Button
                             onClick={this.goBack.bind(this)}
                             color="primary"
                             className="button primary">
-                            Yes, take me back
+                            {this.props.yesMessage || "Yes, take me back"}
                         </Button>
                     </div>
                 </Modal>
@@ -76,8 +76,11 @@ BackButton.propTypes = {
     history: PropTypes.shape({
         goBack: PropTypes.func.isRequired,
     }).isRequired,
+    noMessage: PropTypes.string,
     onBack: PropTypes.func,
+    prompt: PropTypes.string,
     warn: PropTypes.bool,
+    yesMessage: PropTypes.string,
 };
 
 export default withRouter(BackButton);
