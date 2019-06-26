@@ -27,9 +27,6 @@ export default function registration(state = initialState.RegistrationForms, {pa
         case actions.ADD_FIELD:
             newState = addField(state,payload);
             return newState;
-        case actions.SUBMIT_FORM:
-            submitForm(payload);
-            return state;
         default:
             return state;
     }
@@ -94,9 +91,4 @@ function setSectionFieldList(path, formList, form){
         return setSectionFieldList(path,formList, form[firstPathStep])
     }
     Error("Path variable not an array");
-}
-
-function submitForm(state) {
-    // submit information to database
-    console.log("Received state: ", state);
 }

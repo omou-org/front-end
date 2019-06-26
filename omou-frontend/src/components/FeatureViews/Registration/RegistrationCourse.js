@@ -3,7 +3,6 @@ import {bindActionCreators} from 'redux';
 import * as registrationActions from '../../../actions/registrationActions';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
-import BackButton from "../../BackButton.js";
 
 //Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -139,7 +138,10 @@ class RegistrationCourse extends Component {
                     </Grid>
                 </Paper>
                 <Paper className={"paper content"}>
-                    <BackButton />
+                    <NavLink to={"/registration"}
+                             className={"control course"}>
+                        <BackArrow className={"icon"}/> <div className={"label"}>Back</div>
+                    </NavLink>
                     <div className={"course-heading"}>
                         <Typography align={'left'} variant={'h3'} style={{fontWeight:"500"}} >
                             {this.props.match.params.courseTitle}

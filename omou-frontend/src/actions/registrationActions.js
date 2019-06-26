@@ -43,7 +43,3 @@ export function fetchRandomColor(){
             })
     }
 }
-
-export function submitForm(state) {
-    return {type: types.SUBMIT_FORM, payload: state};
-}

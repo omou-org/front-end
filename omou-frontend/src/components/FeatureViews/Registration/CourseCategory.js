@@ -17,7 +17,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import {Typography} from "@material-ui/core";
-import BackButton from "../../BackButton";
 
 const rowHeadings = [
     {id:'Student', numberic:false, disablePadding: false},
@@ -80,7 +79,10 @@ class CourseCategory extends Component {
                     </Grid>
                 </Paper>
                 <Paper className={"paper content"}>
-                    <BackButton />
+                    <NavLink to={"/registration"}
+                             className={"control course"}>
+                        <BackArrow className={"icon"}/> <div className={"label"}>Back</div>
+                    </NavLink>
                     <Typography style={{fontWeight:500}} variant={'h4'} align={'left'}>
                         {this.state.cat_title}
                     </Typography>
