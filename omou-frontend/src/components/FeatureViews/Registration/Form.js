@@ -445,7 +445,13 @@ class Form extends Component {
                     <Paper className={"registration-form"}>
                         <BackButton
                             warn={true}
-                            onBack={this.onBack}/>
+                            onBack={this.onBack}
+                            alertMessage={"Do you want to save your changes?"}
+                            alertConfirmText={"Yes, save changes"}
+                            confirmAction={"saveForm"}
+                            alertDenyText={"No, don't save changes"}
+                            denyAction={"default"}
+                            />
                         <Typography className={"heading"} align={"left"}>
                             {this.props.match.params.course ? `${decodeURIComponent(this.props.match.params.course)} ` : ""}
                             {this.props.match.params.type} Registration
