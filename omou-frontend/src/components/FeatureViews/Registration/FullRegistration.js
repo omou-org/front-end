@@ -171,7 +171,6 @@ class FullRegistration extends Component {
     }
 
     render() {
-        console.log(this.props.teachers)
         return (
             <div className="">
                 <Grid container>

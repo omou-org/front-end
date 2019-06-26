@@ -148,7 +148,6 @@ function mapStateToProps(state) {
         teachers: state.Registration["teacher_list"],
         courses: state.Registration["course_list"],
         courseCategories: state.Registration["categories"],
-        teachers: state.Registration["teacher_list"]
     };
 }
 
