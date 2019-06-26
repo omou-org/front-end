@@ -8,3 +8,4 @@ export const ADD_STUDENT_FIELD = 'ADD_STUDENT_FIELD';
 export const  RAND_COLOR = 'RAND_COLOR';
 export const ADD_COURSE_FIELD = 'ADD_COURSE_FIELD';
 export const ADD_FIELD = 'ADD_FIELD';
+export const SUBMIT_FORM = 'SUBMIT_FORM';
