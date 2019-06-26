@@ -11,14 +11,14 @@ class BackButton extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            warningOpen: false,
+            alert: false,
         };
     }
 
     handleClick() {
         if (this.props.warn) {
             this.setState({
-                warningOpen: true,
+                alert: true,
             });
         } else {
             this.goBack();
@@ -27,43 +27,67 @@ class BackButton extends Component {
 
     hideWarning() {
         this.setState({
-            warningOpen: false,
+            alert: false,
         });
     }
 
     goBack() {
-        this.props.onBack();
+        this.props.onBack && this.props.onBack(); // only call the function if defined
         this.props.history.goBack();
+    }
+
+    saveForm(){
+        //enter future code to save form
+    }
+
+    confirmAction(actionName){
+        //actionName is a string
+        switch(actionName){
+            case "saveForm":
+                this.saveForm();
+            break;
+        } 
+        this.goBack();
+    }
+
+    denyAction(actionName){
+        // switch(actionName){
+            //future switch statement for denyAction functions
+        // }
+        this.goBack();
     }
 
     render() {
         return (
             <div>
-                <div className="control"
-                    onClick={this.handleClick.bind(this)}>
+                <div className="control course"
+                   onClick={this.handleClick.bind(this)}
+                       >
                     <BackArrow className="icon" />
                     <div className="label">Back</div>
                 </div>
                 <Modal
                     aria-labelledby="simple-modal-title"
                     aria-describedby="simple-modal-description"
-                    open={this.state.warningOpen}
+                    open={this.state.alert}
                     onClick={this.hideWarning.bind(this)}>
                     <div className="exit-popup">
                         <Typography variant="h6" id="modal-title">
-                            Are you sure you want to go back?
+                            {this.props.alertMessage || "Are you sure you want to leave unsaved changes?"}
                         </Typography>
                         <Button
-                            onClick={this.hideWarning.bind(this)}
+                            onClick={(e)=>{ e.preventDefault();
+                                this.denyAction.bind(this)(this.props.denyAction)}} //calls denyAction
                             color="secondary"
                             className="button secondary">
-                            No, leave me here
+                            {this.props.alertDenyText || "No, leave me here"}
                         </Button>
                         <Button
-                            onClick={this.goBack.bind(this)}
+                            onClick={(e)=>{ e.preventDefault();
+                                this.confirmAction.bind(this)(this.props.confirmAction)}} //calls confirmAction
                             color="primary"
                             className="button primary">
-                            Yes, take me back
+                            {this.props.alertConfirmText || "Yes, take me back"}
                         </Button>
                     </div>
                 </Modal>
@@ -76,8 +100,13 @@ BackButton.propTypes = {
     history: PropTypes.shape({
         goBack: PropTypes.func.isRequired,
     }).isRequired,
+    alertConfirmText: PropTypes.string,
     onBack: PropTypes.func,
+    alertMessage: PropTypes.string,
     warn: PropTypes.bool,
+    alertDenyText: PropTypes.string,
+    alertConfirmAction: PropTypes.string,
+    alertDenyAction: PropTypes.string,
 };
 
 export default withRouter(BackButton);

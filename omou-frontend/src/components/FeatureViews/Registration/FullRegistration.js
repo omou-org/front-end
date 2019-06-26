@@ -30,8 +30,8 @@ import {withRouter} from 'react-router'
 
 const rowHeadings = [
     {id:'Course', numberic:false, disablePadding: false},
-    {id:'Tuition', numberic:false, disablePadding: false},
-    {id:'Space Left', numberic:false, disablePadding: false},
+    {id:'Instructor', numberic:false, disablePadding: false},
+    {id:'Registration Status', numberic:false, disablePadding: false},
     {id:'Register', numberic:false, disablePadding: false}
 ];
 
@@ -115,8 +115,8 @@ class FullRegistration extends Component {
                     return this.stableCmp(course1, course2, ({tuition}) => tuition);
                 case "Course":
                     return this.stableCmp(course1, course2, ({course_title}) => course_title);
-                case "Space Left":
-                    return this.stableCmp(course1, course2, ({capacity, filled}) => capacity - filled);
+                case "Registration Status":
+                    return this.stableCmp(course1, course2, ({capacity, filled}) => filled);
                 default:
                     return course2.index - course1.index;
             }
@@ -137,6 +137,14 @@ class FullRegistration extends Component {
                 };
             }
         });
+    }
+
+    getInstructorNameByID(teacher_id){
+        let teacherName=this.props.teachers.find((teacher)=>{
+            return teacher.id===teacher_id;
+        });
+       teacherName=teacherName.name;
+       return teacherName;
     }
 
     renderTableHeader() {
@@ -163,6 +171,7 @@ class FullRegistration extends Component {
     }
 
     render() {
+        console.log(this.props.teachers)
         return (
             <div className="">
                 <Grid container>
@@ -266,10 +275,9 @@ class FullRegistration extends Component {
                                                     <TableCell
                                                         onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
                                                         style={{textDecoration: 'none', cursor: 'pointer'}}
-                                                        align="left">{course.tuition.toLocaleString("en-US", {
-                                                            style: "currency",
-                                                            currency: "USD",
-                                                        })}</TableCell>
+                                                        align="left">
+                                                        {this.getInstructorNameByID.bind(this)(course.instructor_id)}
+                                                        </TableCell>
                                                     <TableCell
                                                         onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
                                                         style={{textDecoration: 'none', cursor: 'pointer'}}
@@ -278,11 +286,11 @@ class FullRegistration extends Component {
                                                             className={'space-left-progress'}
                                                             size={30}
                                                             thickness={5}
-                                                            value={((course.capacity - course.filled) / course.capacity) * 100}
+                                                            value={((course.filled) / course.capacity) * 100}
                                                             variant={'static'}
                                                         />
                                                         <div className={'space-left'}>
-                                                            {(course.capacity - course.filled)} / {course.capacity}
+                                                            {(course.filled)} / {course.capacity}
                                                         </div>
                                                     </TableCell>
                                                     <TableCell align="left">
