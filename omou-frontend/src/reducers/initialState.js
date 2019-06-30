@@ -586,12 +586,21 @@ function initRegistrationForm() {
                 ],
                 "Payment": [
                     {
-                        field: "Amount",
-                        name: "Amount",
-                        type: "short text",
+                        field: "Number of Sessions",
+                        name: "Number of Sessions",
+                        type: "number",
                         conditional: false,
                         required: true,
-                        full: true,
+                        full: false,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Per-Session Price",
+                        name: "Amount",
+                        type: "Number",
+                        conditional: false,
+                        required: true,
+                        full: false,
                         field_limit: 1,
                     },
                     {
