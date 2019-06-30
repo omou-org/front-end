@@ -174,31 +174,7 @@ class FullRegistration extends Component {
         return (
             <div className="">
                 <Grid container>
-                    {/* <Dialog
-                        aria-labelledby="simple-modal-title"
-                        aria-describedby="simple-modal-description"
-                        open={!this.state.allowOpen}
-                        onBackdropClick={() => {
-                            this.setState({
-                                allowOpen: true,
-                            });
-                        }}
-                        color="error">
-                        <div className="exit-popup">
-                            <Typography variant="h6" id="modal-title" color="error">
-                                Course is filled!
-                            </Typography>
-                            <Button className="button primary"
-                                onClick={() => {
-                                    this.setState({
-                                        allowOpen: true,
-                                    });
-                                }}>
-                                OK
-                            </Button>
-                        </div>
-                    </Dialog> */}
-                    <Grid item xs={12}>
+                    <Grid item xs={12} style={{display:'none'}}>
                         <Grid container className={"course-categories"} spacing={16}>
                             <div className={this.state.minCategory !== 0 ? "visible" : ""}>
                                 <BackIcon className={`control back `}
