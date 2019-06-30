@@ -8,6 +8,8 @@ import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import Grow from "@material-ui/core/Grow";
 
+import {withRouter} from 'react-router'
+
 const CategoryView = (cats) => {
     return cats.map((cat,i)=>{
         return <Grow in={true} key={i}>
@@ -39,33 +41,49 @@ const CategoryView = (cats) => {
     })
 };
 
-const CoursesView = (courses) => {
-    return courses.map((course,i)=>{
-        return <Grow in={true} key={i}>
-            <Grid item xs={12}>
-                <Card className={"category-card"}>
-                    <CardContent className={"text"}>
-                        <Typography gutterBottom variant={"h6"} component={"h2"}>
-                            {course.course_title}
-                        </Typography>
-                        <Typography component="p">
-                            {course.dates} | {course.days} | {course.time}
-                        </Typography>
-                    </CardContent>
-                    <CardActions>
-                        <Button
-                            size={"small"}
-                            color={"secondary"}>
-                            Register
-                        </Button>
-                    </CardActions>
-                </Card>
-            </Grid>
-        </Grow>
-    })
-};
-
 class MobileRegistration extends Component {
+
+    goToRoute(route){
+        this.props.history.push(route);
+    }
+
+    getInstructorByID = ( id ) =>{
+        // console.log(id, this.props.teachers);
+        return this.props.teachers.find((teacher)=>{
+            return teacher.id === id;
+        })['name'];
+    };
+
+    CoursesView = (courses) => {
+        return courses.map((course,i)=>{
+            return <Grow in={true} key={i}>
+                <Grid item xs={12}>
+                    <Card className={"category-card"}>
+                        <CardContent className={"text"}>
+                            <Typography gutterBottom variant={"h4"} component={"h2"} style={{fontWeight:'500'}}>
+                                {course.course_title}
+                            </Typography>
+                            <Typography variant={"h6"} component={"h3"} >
+                                {this.getInstructorByID(course.instructor_id)}
+                            </Typography>
+                            <Typography component="p">
+                                {course.dates} | {course.days} | {course.time}
+                            </Typography>
+                        </CardContent>
+                        <CardActions>
+                            <Button
+                                size={"small"}
+                                color={"primary"}
+                                onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/form/course/' + course.course_title)}}
+                            >
+                                Register
+                            </Button>
+                        </CardActions>
+                    </Card>
+                </Grid>
+            </Grow>
+        })
+    };
 
     render(){
         // console.log('mobile registration!');
@@ -74,7 +92,7 @@ class MobileRegistration extends Component {
                 <Grid container spacing={16} className={"course-categories"}>
                 { this.props.categoriesViewToggle ?
                     CategoryView.bind(this)(this.props.categories) :
-                    CoursesView.bind(this)(this.props.courses)
+                    this.CoursesView.bind(this)(this.props.courses)
                 }
                 </Grid>
             </div>
@@ -84,4 +102,4 @@ class MobileRegistration extends Component {
 
 
 
-export default MobileRegistration;
+export default withRouter(MobileRegistration);

@@ -32,7 +32,8 @@ class BackButton extends Component {
     }
 
     goBack() {
-        this.props.onBack && this.props.onBack(); // only call the function if defined
+        // only call user defined function from parent component if defined
+        this.props.onBack && this.props.onBack();
         this.props.history.goBack();
     }
 
@@ -77,14 +78,14 @@ class BackButton extends Component {
                         </Typography>
                         <Button
                             onClick={(e)=>{ e.preventDefault();
-                                this.denyAction.bind(this)(this.props.denyAction)}} //calls denyAction
+                                this.denyAction.bind(this)(this.props.denyAction)}}
                             color="secondary"
                             className="button secondary">
                             {this.props.alertDenyText || "No, leave me here"}
                         </Button>
                         <Button
                             onClick={(e)=>{ e.preventDefault();
-                                this.confirmAction.bind(this)(this.props.confirmAction)}} //calls confirmAction
+                                this.confirmAction.bind(this)(this.props.confirmAction)}}
                             color="primary"
                             className="button primary">
                             {this.props.alertConfirmText || "Yes, take me back"}
