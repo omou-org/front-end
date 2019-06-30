@@ -181,11 +181,11 @@
   0% {
     opacity: 0;
   }
-  
+
   99% {
     opacity: .5;
   }
-  
+
   100%{
     opacity: 1;
   }
@@ -351,4 +351,9 @@
     width:100%;
   }
 
+}
+
+.innerIcon {
+  margin-right:10px;
+  color:$secondaryFontColor;
 }

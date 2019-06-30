@@ -36,16 +36,18 @@ const StyledMenu = withStyles({
     />
 ));
 
-const StyledMenuItem = withStyles((theme) => ({
-    root: {
-        "&:focus": {
-            backgroundColor: theme.palette.primary.main,
-            "& .MuiListItemIcon-root, & .MuiListItemText-primary": {
-                color: theme.palette.common.white,
-            },
-        },
-    },
-}))(MenuItem);
+const StyledMenuItem = MenuItem;
+
+// const StyledMenuItem = withStyles((theme) => ({
+//     root: {
+//         "&:focus": {
+//             backgroundColor: theme.palette.primary.main,
+//             "& .MuiListItemIcon-root, & .MuiListItemText-primary": {
+//                 color: theme.palette.common.white,
+//             },
+//         },
+//     },
+// }))(MenuItem);
 
 function RegistrationActions(props) {
     const [anchorEl, setAnchorEl] = useState(null);
@@ -78,7 +80,7 @@ function RegistrationActions(props) {
                     variant="outlined"
                     color="secondary"
                     className="button"
-                    ria-controls="simple-menu"
+                    aria-controls="simple-menu"
                     aria-haspopup="true"
                     onClick={handleClick}>
                     <AssignmentIcon className="icon" />
@@ -89,22 +91,18 @@ function RegistrationActions(props) {
                     keepMounted
                     open={Boolean(anchorEl)}
                     onClose={handleClose}>
-                    <StyledMenuItem
+                    <MenuItem
                         component={NavLink}
                         to={`/registration/form/course/${courseRoute}`}>
-                        <NewCourse className="icon" style={{
-                            "marginRight": "10px",
-                        }}/>
+                        <NewCourse className="icon innerIcon" />
                         <ListItemText primary="Course" />
-                    </StyledMenuItem>
-                    <StyledMenuItem
+                    </MenuItem>
+                    <MenuItem
                         component={NavLink}
                         to={`/registration/form/tutoring/${courseRoute}`}>
-                        <NewTutor className="icon" style={{
-                            "marginRight": "10px",
-                        }}/>
+                        <NewTutor className="icon innerIcon" />
                         <ListItemText primary="Tutoring" />
-                    </StyledMenuItem>
+                    </MenuItem>
                 </StyledMenu>
             </Grid>
         </Grid>
