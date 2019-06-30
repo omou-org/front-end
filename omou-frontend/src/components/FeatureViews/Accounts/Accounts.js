@@ -4,15 +4,15 @@ import * as stuffActions from '../../../actions/stuffActions';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 
-class UsersDirectory extends Component {
+class Accounts extends Component {
     render(){
         return (<div className="">
-            <h1>UsersDirectory</h1>
+            <h1>Accounts</h1>
         </div>)
     }
 }
 
-UsersDirectory.propTypes = {
+Accounts.propTypes = {
     stuffActions: PropTypes.object,
     stuffs: PropTypes.array
 };
@@ -32,4 +32,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(UsersDirectory);
+)(Accounts);

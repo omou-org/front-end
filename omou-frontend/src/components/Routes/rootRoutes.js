@@ -14,7 +14,7 @@ import Gradebook from "../FeatureViews/Gradebook/Gradebook";
 import Registration from "../FeatureViews/Registration/Registration";
 import RegistrationForm from "../FeatureViews/Registration/Form"
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
-import UsersDirectory from "../FeatureViews/UsersDirectory/UsersDirectory";
+import Accounts from "../FeatureViews/Accounts/Accounts";
 import ReduxExample from "../reduxExample";
 import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
 import CourseCategory from "../FeatureViews/Registration/CourseCategory";
@@ -25,13 +25,13 @@ class rootRoutes extends Component {
         <Switch>
             {/*Main Feature Views*/}
             <Route exact path="/" component={Dashboard}/>
-            <Route path="/attendance" component={Attendance}/>
-            <Route path="/courses" component={Courses}/>
-            <Route path="/gradebook" component={Gradebook}/>
+            {/*<Route path="/attendance" component={Attendance}/>*/}
+            {/*<Route path="/courses" component={Courses}/>*/}
+            {/*<Route path="/gradebook" component={Gradebook}/>*/}
             <Route exact path="/registration" render={(props)=> <Registration {...props}/>}/>
             <Route path="/scheduler" component={Scheduler}/>
-            <Route path="/directory" component={UsersDirectory}/>
-            <Route path="/reduxexample" component={ReduxExample}/>
+            <Route path="/accounts" component={Accounts}/>
+            {/*<Route path="/reduxexample" component={ReduxExample}/>*/}
 
             {/*Registration Routes*/}
             <Route path={"/registration/form/:type/:course?"} render={(props)=> <RegistrationForm {...props}/>}/>

@@ -45,11 +45,11 @@ class Navigation extends Component {
         let NavList = [
             { name: 'Dashboard', link: '/', icon: <DashboardIcon/> },
             { name: 'Scheduler', link: '/scheduler', icon: <EventIcon/> },
-            { name: 'Courses', link: '/courses', icon: <CourseIcon/>},
+            // { name: 'Courses', link: '/courses', icon: <CourseIcon/>},
             { name: 'Registration', link: '/registration', icon: <AssignmentIcon/>},
-            { name: 'Attendance', link: '/attendance', icon: <AttendanceIcon/>},
-            { name: 'Gradebook', link: '/gradebook', icon:<ClassIcon/>},
-            { name: 'Directory', link: '/directory', icon:<DirectoryIcon/>},
+            // { name: 'Attendance', link: '/attendance', icon: <AttendanceIcon/>},
+            // { name: 'Gradebook', link: '/gradebook', icon:<ClassIcon/>},
+            { name: 'Accounts', link: '/accounts', icon:<DirectoryIcon/>},
         ];
 
         const drawer = (
