@@ -26,11 +26,9 @@ import Routes from '../Routes/rootRoutes'
 import CustomTheme from "../../theme/muiTheme"
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 
-//Local Component Imports
+// Local Component Imports
 import './Navigation.scss'
 import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
-
-
 
 class Navigation extends Component {
     state = {
@@ -41,7 +39,8 @@ class Navigation extends Component {
         e.preventDefault();
         this.setState(state => ({ mobileOpen: !state.mobileOpen }));
     };
-    render(){
+
+    render() {
         let NavList = [
             { name: 'Dashboard', link: '/', icon: <DashboardIcon/> },
             { name: 'Scheduler', link: '/scheduler', icon: <EventIcon/> },
@@ -69,7 +68,6 @@ class Navigation extends Component {
             <MuiThemeProvider theme={CustomTheme}>
                 <div className={`Navigation`}>
                     <AppBar position="fixed" className="OmouBar"
-                            // className={classes.appBar}
                     >
                         <Toolbar>
                             <Hidden smUp>
@@ -82,39 +80,53 @@ class Navigation extends Component {
                                     <MenuIcon/>
                                 </IconButton>
                             </Hidden>
-                            <Typography component={NavLink} to="/" className={"title"}>
+                            <Typography component={NavLink} to="/" className="title">
                                 omou
+                            </Typography>
+                            <div style={{
+                                flex: 1,
+                            }} />
+                            <Typography component={NavLink} to="/login" className="login">
+                                login
                             </Typography>
                         </Toolbar>
                     </AppBar>
-                    <nav className="OmouDrawer"
-                        // className={classes.drawer}
-                    >
-                        <Hidden smUp implementation="css">
-                            <Drawer
-                                container={this.props.container}
-                                variant="temporary"
-                                // anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-                                open={this.state.mobileOpen}
-                                onClose={this.handleDrawerToggle}
+                    {
+                        !this.state.isLogin && (
+                            <nav className="OmouDrawer"
+                            // className={classes.drawer}
                             >
-                                {drawer}
-                            </Drawer>
-                        </Hidden>
-                        <Hidden xsDown implementation="css">
-                            <Drawer
-                                classes={{
-                                    // paper: classes.drawerPaper,
-                                }}
-                                variant="permanent"
-                                open
-                            >
-                                {drawer}
-                            </Drawer>
-                        </Hidden>
-                    </nav>
+                                <Hidden smUp implementation="css">
+                                    <Drawer
+                                        container={this.props.container}
+                                        variant="temporary"
+                                        // anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+                                        open={this.state.mobileOpen}
+                                        onClose={this.handleDrawerToggle}
+                                    >
+                                        {drawer}
+                                    </Drawer>
+                                </Hidden>
+                                <Hidden xsDown implementation="css">
+                                    <Drawer
+                                        classes={{
+                                            // paper: classes.drawerPaper,
+                                        }}
+                                        variant="permanent"
+                                        open
+                                    >
+                                        {drawer}
+                                    </Drawer>
+                                </Hidden>
+                            </nav>
+                        )
+                    }
                     <main className="OmouMain">
-                        <Routes/>
+                        <Routes setLogin={(status) => {
+                            this.setState({
+                                isLogin: status,
+                            });
+                        }}/>
                     </main>
 
                 </div>
