@@ -576,6 +576,7 @@ class Form extends Component {
 
     // view after a submitted form
     renderSubmitted() {
+        //TODO: find parent and student name of registered student
         return (
             <div style={{margin:2+"%", height:400+"px"}}>
                 <Typography align={"left"} style={{fontSize:24+'px'}}>
