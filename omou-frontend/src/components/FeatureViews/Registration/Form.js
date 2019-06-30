@@ -431,9 +431,15 @@ class Form extends Component {
 
     // view after a submitted form
     renderSubmitted() {
+        //TODO: find parent and student name of registered student
         return (
-            <div>
-                Your submission has been stored. A confirmation email will be sent.
+            <div style={{margin:2+"%", height:400+"px"}}>
+                <Typography align={"left"} style={{fontSize:24+'px'}}>
+                    You have successfully registered!
+                </Typography>
+                <Typography align={"left"} style={{fontSize:14+'px'}}>
+                    An email will be sent to "Parent Name" to confirm "Student Name"'s registration
+                </Typography>
             </div>
         );
     }
