@@ -1,8 +1,9 @@
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import * as registrationActions from '../../../actions/registrationActions';
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import RegistrationActions from "./RegistrationActions";
 
 //Material UI Imports
 import FullRegistration from "./FullRegistration";
@@ -16,10 +17,10 @@ import NewTutor from "@material-ui/icons/Group";
 import NewCourse from "@material-ui/icons/School";
 import Categories from "@material-ui/icons/Category";
 import CourseList from "@material-ui/icons/List";
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 class Registration extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             mobileViewToggle: true,
@@ -36,97 +37,67 @@ class Registration extends Component {
     resize() {
         let currentHideNav = (window.innerWidth <= 760);
         if (currentHideNav !== this.state.mobileView) {
-            this.setState({mobileView: !this.state.mobileView});
+            this.setState({ mobileView: !this.state.mobileView });
         }
     }
 
-    toggleMainView(){
-        if(this.state.mobileView){
+    toggleMainView() {
+        if (this.state.mobileView) {
             return <MobileRegistration
                 courses={this.props.courses}
                 teachers={this.props.teachers}
-                categories = {this.props.courseCategories}
-                categoriesViewToggle = {this.state.mobileViewToggle}/>;
-         }
+                categories={this.props.courseCategories}
+                categoriesViewToggle={this.state.mobileViewToggle} />;
+        }
         else {
             return <FullRegistration
                 courses={this.props.courses}
-                categories = {this.props.courseCategories}
+                categories={this.props.courseCategories}
                 teachers={this.props.teachers}
-                />;
-                
+            />;
+
         }
     }
 
-    toggleMobileView(){
-        this.setState((oldState)=>{
-            return{
+    toggleMobileView() {
+        this.setState((oldState) => {
+            return {
                 mobileViewToggle: !oldState.mobileViewToggle,
             }
         })
     }
 
-    render(){
+    render() {
         return (
             <div className="">
                 <Grid item xs={12}>
                     <Paper className={"paper"}>
                         <Grid item lg={12}>
-                            <Grid container
-                                  direction={"row"}
-                                  justify={"flex-start"}
-                                  className={"registration-action-control"}>
+                            <RegistrationActions
+                            //admin = {false}
+                            />
+                            <Hidden smUp>
                                 <Grid item>
-                                    <Button component={NavLink} to={'/registration/form/student'}
-                                        variant="outlined"
-                                        color="secondary"
-                                        className={"button"}>
-                                        <NewUser className={"icon"}/>
-                                        New Student
-                                    </Button>
-                                </Grid>
-                                <Grid item>
-                                    <Button component={NavLink} to={'/registration/form/tutoring'}
-                                        variant="outlined"
-                                        color="secondary"
-                                        className={"button"}>
-                                        <NewTutor className={"icon"}/>
-                                        New Tutoring
-                                    </Button>
-                                </Grid>
-                                <Grid item>
-                                    <Button component={NavLink} to={'/registration/form/course'}
-                                        variant="outlined"
-                                        color="secondary"
-                                        className={"button"}>
-                                        <NewCourse className={"icon"}/>
-                                        New Course
-                                    </Button>
-                                </Grid>
-                                <Hidden smUp>
-                                    <Grid item>
-                                        {
-                                            this.state.mobileViewToggle ?
-                                                <Button onClick={(e)=>{e.preventDefault(); this.toggleMobileView();}}
-                                                        variant="outlined"
-                                                        color="secondary"
-                                                        className={"button"}>
-                                                    <CourseList className={"icon"}/>
-                                                    Courses
-                                                </Button>:
-                                                <Button
-                                                    onClick={(e)=>{e.preventDefault(); this.toggleMobileView();}}
-                                                    variant="outlined"
-                                                    color="secondary"
-                                                    className={"button"}>
-                                                    <Categories className={"icon"}/>
-                                                    Categories
+                                    {
+                                        this.state.mobileViewToggle ?
+                                            <Button onClick={(e) => { e.preventDefault(); this.toggleMobileView(); }}
+                                                variant="outlined"
+                                                color="secondary"
+                                                className={"button"}>
+                                                <CourseList className={"icon"} />
+                                                Courses
+                                                </Button> :
+                                            <Button
+                                                onClick={(e) => { e.preventDefault(); this.toggleMobileView(); }}
+                                                variant="outlined"
+                                                color="secondary"
+                                                className={"button"}>
+                                                <Categories className={"icon"} />
+                                                Categories
                                                 </Button>
-
-                                        }
-                                    </Grid>
-                                </Hidden>
-                            </Grid>
+                                    }
+                                </Grid>
+                            </Hidden>
                         </Grid>
                     </Paper>
                 </Grid>

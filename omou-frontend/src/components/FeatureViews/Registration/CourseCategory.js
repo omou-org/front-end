@@ -18,7 +18,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import {Typography} from "@material-ui/core";
 import BackButton from "../../BackButton";
-
+import RegistrationActions from "./RegistrationActions";
 const rowHeadings = [
     {id:'Student', numberic:false, disablePadding: false},
     {id:'Parent', numberic:false, disablePadding: false},
@@ -45,38 +45,9 @@ class CourseCategory extends Component {
             <Grid item xs={12}>
                 <Paper className={"paper"}>
                     <Grid item lg={12}>
-                        <Grid container
-                              direction={"row"}
-                              justify={"flex-start"}
-                              className={"registration-action-control"}>
-                            <Grid item>
-                                <Button component={NavLink} to={'/registration/form/student'}
-                                        variant="outlined"
-                                        color="secondary"
-                                        className={"button"}>
-                                    <NewUser className={"icon"}/>
-                                    New Student
-                                </Button>
-                            </Grid>
-                            <Grid item>
-                                <Button component={NavLink} to={'/registration/form/tutoring/'}
-                                        variant="outlined"
-                                        color="secondary"
-                                        className={"button"}>
-                                    <NewTutor className={"icon"}/>
-                                    New Tutoring
-                                </Button>
-                            </Grid>
-                            <Grid item>
-                                <Button component={NavLink} to={'/registration/form/course/'}
-                                        variant="outlined"
-                                        color="secondary"
-                                        className={"button"}>
-                                    <NewCourse className={"icon"}/>
-                                    New Course
-                                </Button>
-                            </Grid>
-                        </Grid>
+                            <RegistrationActions
+                            //admin={false}
+                            />
                     </Grid>
                 </Paper>
                 <Paper className={"paper content"}>
