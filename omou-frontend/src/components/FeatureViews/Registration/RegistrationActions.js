@@ -14,6 +14,7 @@ import {withStyles} from "@material-ui/core/styles";
 import "./registration.scss";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import AssignmentIcon from "@material-ui/icons/Assignment";
 
 const StyledMenu = withStyles({
     paper: {
@@ -80,7 +81,7 @@ function RegistrationActions(props) {
                     ria-controls="simple-menu"
                     aria-haspopup="true"
                     onClick={handleClick}>
-                    <NewTutor className={"icon"} />
+                    <AssignmentIcon className="icon" />
                     Register
                 </Button>
                 <StyledMenu
@@ -91,17 +92,17 @@ function RegistrationActions(props) {
                     <StyledMenuItem
                         component={NavLink}
                         to={`/registration/form/course/${courseRoute}`}>
-                        <ListItemIcon>
-                            <NewCourse className="icon" />
-                        </ListItemIcon>
+                        <NewCourse className="icon" style={{
+                            "marginRight": "10px",
+                        }}/>
                         <ListItemText primary="Course" />
                     </StyledMenuItem>
                     <StyledMenuItem
                         component={NavLink}
                         to={`/registration/form/tutoring/${courseRoute}`}>
-                        <ListItemIcon>
-                            <NewTutor className="icon" />
-                        </ListItemIcon>
+                        <NewTutor className="icon" style={{
+                            "marginRight": "10px",
+                        }}/>
                         <ListItemText primary="Tutoring" />
                     </StyledMenuItem>
                 </StyledMenu>
