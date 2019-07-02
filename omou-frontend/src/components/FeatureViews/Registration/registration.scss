@@ -12,9 +12,9 @@
       width: 145px;
     }
     @include respond-to(handhelds){
-      margin-right:4px;
+      margin-right:5px;
       height: 46px;
-      width: 80px;
+      width: 100px;
     }
 
     color:$primaryFontColor;
@@ -37,6 +37,13 @@
       }
     }
   }
+}
+
+.button.mobile-toggle{
+  position:fixed;
+  top:85vh;
+  left:75vw;
+  cursor:pointer;
 }
 
 //Full Registration styles
