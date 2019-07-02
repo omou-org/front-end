@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as registrationActions from '../../../actions/registrationActions';
+import * as registrationActions from '../../actions/registrationActions';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 
@@ -14,7 +14,7 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
 import TextField from "@material-ui/core/TextField";
-import {InputValidation} from "./Validations";
+import {InputValidation} from "../FeatureViews/Registration/Validations";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
@@ -24,7 +24,7 @@ import AddIcon from "@material-ui/icons/Add";
 
 //Outside React Component
 import SearchSelect from 'react-select';
-import BackButton from "../../BackButton.js";
+import BackButton from "../BackButton.js";
 
 class Form extends Component {
     constructor(props) {

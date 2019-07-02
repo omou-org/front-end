@@ -12,7 +12,7 @@ import Attendance from "../FeatureViews/Attendance/Attendance";
 import Courses from "../FeatureViews/Courses/Courses";
 import Gradebook from "../FeatureViews/Gradebook/Gradebook";
 import Registration from "../FeatureViews/Registration/Registration";
-import RegistrationForm from "../FeatureViews/Registration/Form"
+import RegistrationForm from "../Form/Form"
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
 import Accounts from "../FeatureViews/Accounts/Accounts";
 import ReduxExample from "../reduxExample";
