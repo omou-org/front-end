@@ -32,11 +32,15 @@ export function addField(path){
     return {type: types.ADD_FIELD, payload:path}
 }
 
-export function fetchRandomColor(){
+export function getManiframe(){
     return (dispatch) => {
-        return axios.get("http://api.open-notify.org/astros.json")
+        return axios.post("http://localhost:8000/auth_token/",{
+            "username":"daniel@gmail.com",
+            "password":"daniel"
+        })
         .then(res =>{
-            dispatch({type: types.RAND_COLOR, payload: res.data});
+            console.log("Pass", res)
+            dispatch({type: types.MAINFRAME, payload: res.data});
         })
             .catch(error=> {
                 throw(error);

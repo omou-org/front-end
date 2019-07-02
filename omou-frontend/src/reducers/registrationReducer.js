@@ -18,7 +18,7 @@ export default function registration(state = initialState.RegistrationForms, {pa
         case actions.ADD_STUDENT_FIELD:
             newState = addAStudentField(state);
             return newState;
-        case actions.RAND_COLOR:
+        case actions.MAINFRAME:
             console.log(payload);
             return state;
         case actions.ADD_COURSE_FIELD:

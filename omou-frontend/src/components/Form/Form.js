@@ -445,6 +445,7 @@ class Form extends Component {
     }
 
     render() {
+        console.log("get mainframe response",this.props.registrationActions.getManiframe());
         return (
             <Grid container className="">
                 <Grid item xs={12}>
@@ -479,13 +480,14 @@ class Form extends Component {
 }
 
 function mapStateToProps(state) {
+    console.log(state);
     return {
-        courses: state.Registration["course_list"],
-        courseCategories: state.Registration["categories"],
+        courses: state.Course["CourseList"],
+        courseCategories: state.Course["CourseCategories"],
         registrationForm: state.Registration["registration_form"],
-        parents: state.Registration["parent_list"],
-        students: state.Registration["student_list"],
-        teachers: state.Registration["teacher_list"],
+        parents: state.Users["ParentList"],
+        students: state.Users["StudentList"],
+        teachers: state.Users["TeacherList"],
     };
 }
 

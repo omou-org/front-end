@@ -115,10 +115,11 @@ Registration.propTypes = {
 };
 
 function mapStateToProps(state) {
+    console.log(state.Course["CourseList"]);
     return {
-        teachers: state.Registration["teacher_list"],
-        courses: state.Registration["course_list"],
-        courseCategories: state.Registration["categories"],
+        teachers: state.Users["TeacherList"],
+        courses: state.Course["CourseList"],
+        courseCategories: state.Course["CourseCategories"],
     };
 }
 
