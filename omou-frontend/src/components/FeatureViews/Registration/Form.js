@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import * as registrationActions from '../../../actions/registrationActions';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import TableRow from "@material-ui/core/TableRow";
 
 //Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -21,6 +22,7 @@ import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
+import RemoveIcon from "@material-ui/icons/Clear";
 
 //Outside React Component
 import SearchSelect from 'react-select';
@@ -292,7 +294,7 @@ class Form extends Component {
                                     <em>{option}</em>
                                 </MenuItem>
                             ))
-                        }2=
+                        }
                     </Select>
                 </FormControl>;
             case "course":
@@ -318,7 +320,7 @@ class Form extends Component {
                 studentList.unshift({
                     value: `${-1}: ${'None'}`,
                     label: `${-1}: ${'None'}`,
-                })
+                });
                 return <SearchSelect
                     value={this.state[label][fieldTitle]}
                     onChange={(value) => {
@@ -375,6 +377,12 @@ class Form extends Component {
         // for some reason it isn't rerendering automatically
         this.forceUpdate();
     }
+    removeField(field, fieldIndex) {
+        const currentForm = this.getFormObject();
+        let param = [this.state.form, this.state.activeSection, fieldIndex];
+        this.props.registrationActions.removeField(param);
+        this.forceUpdate();
+    }
 
     renderForm() {
         const { activeSection, activeStep, conditional, nextSection } = this.state,
@@ -398,8 +406,25 @@ class Form extends Component {
                                             reversedSection = [...section].reverse(),
                                             lastFieldOfType = reversedSection.find((otherField) => otherField.name === field.name);
                                         return (
-                                            <div key={j} className="fields-wrapper">
+                                            <div key={j} className="fields-wrapper" style={{}}>
+                                             <Grid container className={"student-align"} spacing={20}>
                                                 {this.renderField(field, label)}
+                                                    {numSameTypeFields <= field.field_limit &&
+                                                    numSameTypeFields>1&&
+                                                    <RemoveIcon color="primary" aria-label="Add" variant="extended"
+                                                        className="button remove-student"
+                                                        onClick={(event) => {
+                                                            event.preventDefault();
+                                                            console.log(this.state, field.field)
+                                                            this.removeField(field.field, j);
+                                                            this.setState((prevState) => {
+                                                                // delete prevState[activeSection][];
+                                                                console.log(prevState[activeSection]);
+                                                                return prevState;
+                                                            })
+                                                            }}>
+                                                    </RemoveIcon>}
+                                                    </Grid>
                                                 <br />
                                                 {
                                                     numSameTypeFields < field.field_limit &&
@@ -414,6 +439,7 @@ class Form extends Component {
                                                         Add {field.field}
                                                     </Fab>
                                                 }
+                                            
                                             </div>
                                         );
                                     })
