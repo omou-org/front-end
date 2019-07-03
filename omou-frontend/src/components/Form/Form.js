@@ -480,7 +480,6 @@ class Form extends Component {
 }
 
 function mapStateToProps(state) {
-    console.log(state);
     return {
         courses: state.Course["CourseList"],
         courseCategories: state.Course["CourseCategories"],

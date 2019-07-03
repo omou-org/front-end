@@ -14,14 +14,14 @@
     @include respond-to(handhelds){
       margin-right:5px;
       height: 46px;
-      width: 100px;
+      width: 110px;
     }
 
     color:$primaryFontColor;
     font-size:12px;
     font-weight:400;
     line-height:12px;
-    text-transform: none;
+    text-transform: uppercase;
 
     border: 1px solid #DBD7D7;
     box-sizing: border-box;
@@ -318,6 +318,11 @@
 /*Course Registration Page*/
 .text{ font-size: 18px !important;}
 .course-heading{
+  .icon {color:$lightPrimaryFontColor}
+  .date { text-align: left; }
+  .date > *{
+    display: inline-block;
+  }
 
   .info{
     margin: 25px 0 15px 0;
@@ -327,6 +332,7 @@
       .text{
         font-weight: 500;
         margin:10px 0 5px 5px;
+        color: $lightPrimaryFontColor
       }
     }
     .first-line > *, .second-line > *{
