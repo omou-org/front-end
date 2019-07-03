@@ -228,10 +228,10 @@ class FullRegistration extends Component {
                             </div>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12}>
-                        <Typography className={"popular-courses"} align={"left"}>
-                            Popular Courses
-                        </Typography>
+                    <Typography className={"popular-courses"} align={"left"}>
+                        Popular Courses
+                    </Typography>
+                    <Grid item xs={12} style={{marginTop:'2%'}}>
                         <Paper className={"paper"}>
                             <Grow in={true}>
                                 <Table>

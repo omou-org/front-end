@@ -3,12 +3,23 @@ import {bindActionCreators} from 'redux';
 import * as stuffActions from '../../../actions/stuffActions';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
+import BackButton from "../../BackButton";
+import Grid from "@material-ui/core/Grid";
+import {Paper} from "@material-ui/core";
+
+import './Accounts.scss';
 
 class Accounts extends Component {
+
     render(){
-        return (<div className="">
-            <h1>Accounts</h1>
-        </div>)
+        let usersList = this.props.teachers.concat(this.props.parents).concat(this.props.students);
+        console.log(usersList);
+        return (<Grid item xs={'12'} className="Accounts">
+            <Paper className={'paper'}>
+                <BackButton/>
+
+            </Paper>
+        </Grid>)
     }
 }
 
@@ -19,7 +30,9 @@ Accounts.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        stuffs: state.stuff
+        teachers: state.Users.TeacherList,
+        parents: state.Users.ParentList,
+        students: state.Users.StudentList,
     };
 }
 
