@@ -1,7 +1,7 @@
 import initialState from './initialState';
 import * as actions from "./../actions/actionTypes"
 
-export default function registration(state = initialState.RegistrationForms, {payload, type}) {
+export default function registration(state = initialState.RegistrationForms, { payload, type }) {
     let newState;
     switch (type) {
         case actions.FETCH_COURSES:
@@ -25,21 +25,24 @@ export default function registration(state = initialState.RegistrationForms, {pa
             newState = addACourseField(state);
             return newState;
         case actions.ADD_FIELD:
-            newState = addField(state,payload);
+            newState = addField(state, payload);
             return newState;
         case actions.SUBMIT_FORM:
             submitForm(payload);
             return state;
+        case actions.REMOVE_FIELD:
+            newState = removeField(state, payload);
+            return newState;
         default:
             return state;
     }
 }
 
-function addAStudentField(prevState){
+function addAStudentField(prevState) {
     let SmallGroupList = prevState.registration_form.tutoring["Student(s)"]["Small Group"];
     let NewStudentField = {
-        ... SmallGroupList[0],
-        field: "Student " + (SmallGroupList.length+1).toString() + " Name",
+        ...SmallGroupList[0],
+        field: "Student " + (SmallGroupList.length + 1).toString() + " Name",
         required: false,
     };
     SmallGroupList.push(NewStudentField);
@@ -47,12 +50,12 @@ function addAStudentField(prevState){
     return prevState;
 }
 
-function addACourseField(prevState){
+function addACourseField(prevState) {
     let NewState = prevState;
     let CourseFieldList = prevState.registration_form.course["Course Selection"];
     let NewCourseField = {
         ...CourseFieldList[0],
-        field: "Course " + (CourseFieldList.length+1).toString() + " Name",
+        field: "Course " + (CourseFieldList.length + 1).toString() + " Name",
         required: false,
     }
     CourseFieldList.push(NewCourseField);
@@ -74,24 +77,34 @@ function addField(prevState, path) {
     return NewState;
 }
 
+function removeField(prevState, path) {
+    let NewState = prevState;
+    let fieldIndex = path.pop();
+    let SectionFieldList = getSectionFieldList(path, prevState.registration_form);
+
+    if(SectionFieldList.length>0){
+        SectionFieldList.splice(fieldIndex, 1);}
+    return NewState;
+}
+
 function getSectionFieldList(path, formList) {
-    if(Array.isArray(path)){
-        if(path.length === 0){
+    if (Array.isArray(path)) {
+        if (path.length === 0) {
             return formList;
         }
-        return getSectionFieldList(path,formList[path.shift()])
+        return getSectionFieldList(path, formList[path.shift()])
     }
     Error("Path variable not an array");
 }
 
-function setSectionFieldList(path, formList, form){
-    if(Array.isArray(path)){
-        if(path.length === 0){
+function setSectionFieldList(path, formList, form) {
+    if (Array.isArray(path)) {
+        if (path.length === 0) {
             form = formList;
             return;
         }
         let firstPathStep = path.shift();
-        return setSectionFieldList(path,formList, form[firstPathStep])
+        return setSectionFieldList(path, formList, form[firstPathStep])
     }
     Error("Path variable not an array");
 }

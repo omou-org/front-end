@@ -535,7 +535,7 @@ function initRegistrationForm() {
                     "Private Tutoring": [
                         {
                             field: "Student Name",
-                            type: "short text",
+                            type: "student",
                             conditional: false,
                             required: true,
                             full: false,
@@ -621,7 +621,7 @@ function initRegistrationForm() {
                     {
                         field: "Student Name",
                         name: "Student",
-                        type: "short text",
+                        type: "student",
                         conditional: false,
                         required: true,
                         full: false,
