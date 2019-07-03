@@ -8,4 +8,5 @@ export const ADD_STUDENT_FIELD = 'ADD_STUDENT_FIELD';
 export const MAINFRAME = 'MAINFRAME';
 export const ADD_COURSE_FIELD = 'ADD_COURSE_FIELD';
 export const ADD_FIELD = 'ADD_FIELD';
+export const REMOVE_FIELD = 'REMOVE_FIELD';
 export const SUBMIT_FORM = 'SUBMIT_FORM';

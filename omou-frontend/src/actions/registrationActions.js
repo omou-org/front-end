@@ -32,6 +32,11 @@ export function addField(path){
     return {type: types.ADD_FIELD, payload:path}
 }
 
+
+export function removeField(path){
+    return {type: types.REMOVE_FIELD, payload:path}
+}
+
 export function getManiframe(){
     return (dispatch) => {
         return axios.post("http://localhost:8000/auth_token/",{
