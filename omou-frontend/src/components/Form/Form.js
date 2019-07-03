@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as registrationActions from '../../../actions/registrationActions';
+import * as registrationActions from '../../actions/registrationActions';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import TableRow from "@material-ui/core/TableRow";
@@ -68,6 +68,7 @@ class Form extends Component {
                         // set a value for every non-conditional field (object)
                         if (Array.isArray(formContents[title])) {
                             formContents[title].forEach(({ field, type, options }) => {
+                                console.log("options: ",options);
                                 switch (type) {
                                     case "course":
                                         NewState[title][field] = course;
@@ -76,7 +77,7 @@ class Form extends Component {
                                         NewState[title][field] = options[0];
                                         break;
                                     case "student":
-                                        NewState[title][field] = course;
+                                        NewState[title][field] = "";
                                         break;
                                     default:
                                         NewState[title][field] = null;
