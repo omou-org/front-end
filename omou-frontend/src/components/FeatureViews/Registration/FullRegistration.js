@@ -271,10 +271,11 @@ class FullRegistration extends Component {
                                                     <TableCell align="left">
                                                         <Button component={NavLink}
                                                             onClick={() => {
-                                                                // this.setState({
-                                                                //     allowOpen: course.capacity > course.filled,
-                                                                // });
-                                                                this.goToRoute(`/registration/form/course/${encodeURIComponent(course.course_title)}`);
+                                                                if(course.capacity > course.filled){
+                                                                    this.goToRoute(`/registration/form/course/${encodeURIComponent(course.course_title)}`);
+                                                                } else {
+                                                                    alert("The course is filled!");
+                                                                }
                                                             }}
                                                             variant="contained"
                                                             disabled={course.capacity <= course.filled}

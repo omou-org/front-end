@@ -4,6 +4,7 @@ import * as registrationActions from '../../actions/registrationActions';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import TableRow from "@material-ui/core/TableRow";
+import { Prompt } from 'react-router'
 
 //Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -44,6 +45,12 @@ class Form extends Component {
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
         const formType = this.props.match.params.type;
+        let course = decodeURIComponent(this.props.match.params.course);
+        course = this.props.courses.find(({ course_title }) => course === course_title);
+        let canRegister = formType !== "course";
+        if(course){
+            canRegister = course.capacity > course.filled || formType !== "course" || course.capacity === undefined;
+        }
         if (!prevState || formType !== prevState.form) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
@@ -53,8 +60,6 @@ class Form extends Component {
                         activeSection: formContents.section_titles[0],
                         form: formType,
                     };
-                    let course = decodeURIComponent(this.props.match.params.course);
-                    course = this.props.courses.find(({ course_title }) => course === course_title);
                     if (course) {
                         // convert it to a format that onselectChange can use
                         course = {
@@ -98,6 +103,8 @@ class Form extends Component {
                         nextSection: this.validateSection(),
                     });
                 });
+            } else {
+
             }
         } else {
             this.setState(prevState);
@@ -491,9 +498,9 @@ class Form extends Component {
     }
 
     render() {
-        // console.log("get mainframe response",this.props.registrationActions.getManiframe());
         return (
             <Grid container className="">
+                <Prompt message="Are you sure you want to leave?" />
                 <Grid item xs={12}>
                     <Paper className={"registration-form"}>
                         <BackButton
@@ -544,5 +551,5 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
 )(Form);

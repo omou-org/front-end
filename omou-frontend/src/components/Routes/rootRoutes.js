@@ -20,6 +20,7 @@ import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse"
 import CourseCategory from "../FeatureViews/Registration/CourseCategory";
 
 class rootRoutes extends Component {
+
     render(){
         return (
         <Switch>
