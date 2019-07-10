@@ -7,13 +7,13 @@ import React from "react";
 
 // Local Component Imports
 import Dashboard from "../FeatureViews/Dashboard/Dashboard";
-import Attendance from "../FeatureViews/Attendance/Attendance";
-import Courses from "../FeatureViews/Courses/Courses";
-import Gradebook from "../FeatureViews/Gradebook/Gradebook";
+// import Attendance from "../FeatureViews/Attendance/Attendance";
+// import Courses from "../FeatureViews/Courses/Courses";
+// import Gradebook from "../FeatureViews/Gradebook/Gradebook";
 import Registration from "../FeatureViews/Registration/Registration";
 import RegistrationForm from "../FeatureViews/Registration/Form";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
-import UsersDirectory from "../FeatureViews/UsersDirectory/UsersDirectory";
+import Accounts from "../FeatureViews/Accounts/Accounts";
 import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
 import CourseCategory from "../FeatureViews/Registration/CourseCategory";
 import LoginPage from "../LoginPage/LoginPage.js";
@@ -27,7 +27,7 @@ function rootRoutes(props) {
                 exact
                 path="/"
                 render={(passedProps) => <Dashboard {...passedProps} />} />
-            <Route
+            {/* <Route
                 path="/attendance"
                 render={(passedProps) => <Attendance {...passedProps} />} />
             <Route
@@ -35,7 +35,7 @@ function rootRoutes(props) {
                 render={(passedProps) => <Courses {...passedProps} />} />
             <Route
                 path="/gradebook"
-                render={(passedProps) => <Gradebook {...passedProps} />} />
+                render={(passedProps) => <Gradebook {...passedProps} />} /> */}
             <ProtectedRoute
                 exact
                 path="/registration"
@@ -43,9 +43,12 @@ function rootRoutes(props) {
             <Route
                 path="/scheduler"
                 render={(passedProps) => <Scheduler {...passedProps} />} />
-            <ProtectedRoute
+            {/* <ProtectedRoute
                 path="/directory"
-                render={(passedProps) => <UsersDirectory {...passedProps} />} />
+                render={(passedProps) => <UsersDirectory {...passedProps} />} /> */}
+            <Route
+                path="/accounts"
+                render={(passedProps) => <Accounts {...passedProps} />} />
             <Route
                 path="/login"
                 render={(passedProps) => <LoginPage setLogin={props.setLogin} {...passedProps} />} />

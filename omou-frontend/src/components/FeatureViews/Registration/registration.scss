@@ -181,11 +181,11 @@
   0% {
     opacity: 0;
   }
-  
+
   99% {
     opacity: .5;
   }
-  
+
   100%{
     opacity: 1;
   }
@@ -291,9 +291,18 @@
   margin-bottom: 25px !important;
 }
 
+.remove-student{
+  margin-top:5px;
+  margin-left:5px;
+}
+
+.student-align{
+
+}
+
 .popular-courses{
   font-weight:bold !important;
-  margin-top:50px !important;
+  //margin-top:50px !important;
   margin-bottom:-35px !important;
   color:$lightPrimaryFontColor !important;
 }
@@ -351,4 +360,9 @@
     width:100%;
   }
 
+}
+
+.innerIcon {
+  margin-right:10px;
+  color:$secondaryFontColor;
 }

@@ -3,15 +3,15 @@ import {bindActionCreators} from 'redux';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 
-class UsersDirectory extends Component {
-    render(){
+class Accounts extends Component {
+    render() {
         return (<div className="">
-            <h1>UsersDirectory</h1>
+            <h1>Accounts</h1>
         </div>)
     }
 }
 
-UsersDirectory.propTypes = {};
+Accounts.propTypes = {};
 
 function mapStateToProps(state) {
     return {};
@@ -24,4 +24,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(UsersDirectory);
+)(Accounts);

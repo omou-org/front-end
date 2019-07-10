@@ -13,3 +13,4 @@ export const SUCCESSFUL_LOGIN = "SUCCESFUL_LOGIN";
 export const FAILED_LOGIN = "FAILED_LOGIN";
 export const LOGOUT = "LOGOUT";
 export const RESET_ATTEMPT = "RESET_ATTEMPT";
+export const REMOVE_FIELD = "REMOVE_FIELD";

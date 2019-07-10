@@ -32,6 +32,10 @@ export function addField(path){
     return {type: types.ADD_FIELD, payload:path}
 }
 
+export function removeField(path){
+    return {type: types.REMOVE_FIELD, payload:path}
+}
+
 export function fetchRandomColor(){
     return (dispatch) => {
         return axios.get("http://api.open-notify.org/astros.json")
