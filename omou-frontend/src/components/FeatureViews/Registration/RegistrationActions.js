@@ -95,13 +95,13 @@ function RegistrationActions(props) {
                         component={NavLink}
                         to={`/registration/form/course/${courseRoute}`}>
                         <NewCourse className="icon innerIcon" />
-                        <ListItemText primary="Course" />
+                        <ListItemText primary="COURSE" />
                     </MenuItem>
                     <MenuItem
                         component={NavLink}
                         to={`/registration/form/tutoring/${courseRoute}`}>
                         <NewTutor className="icon innerIcon" />
-                        <ListItemText primary="Tutoring" />
+                        <ListItemText primary="TUTORING" />
                     </MenuItem>
                 </StyledMenu>
             </Grid>
