@@ -16,14 +16,14 @@ import Scheduler from "../FeatureViews/Scheduler/Scheduler";
 import Accounts from "../FeatureViews/Accounts/Accounts";
 import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
 import CourseCategory from "../FeatureViews/Registration/CourseCategory";
-import LoginPage from "../LoginPage/LoginPage.js";
+import LoginPage from "../Authentication/LoginPage.js";
 import ProtectedRoute from "./ProtectedRoute";
 
 function rootRoutes(props) {
     return (
         <Switch>
             {/* Main Feature Views */}
-            <Route
+            <ProtectedRoute
                 exact
                 path="/"
                 render={(passedProps) => <Dashboard {...passedProps} />} />
@@ -40,13 +40,13 @@ function rootRoutes(props) {
                 exact
                 path="/registration"
                 render={(passedProps) => <Registration {...passedProps} />} />
-            <Route
+            <ProtectedRoute
                 path="/scheduler"
                 render={(passedProps) => <Scheduler {...passedProps} />} />
             {/* <ProtectedRoute
                 path="/directory"
                 render={(passedProps) => <UsersDirectory {...passedProps} />} /> */}
-            <Route
+            <ProtectedRoute
                 path="/accounts"
                 render={(passedProps) => <Accounts {...passedProps} />} />
             <Route
@@ -54,13 +54,13 @@ function rootRoutes(props) {
                 render={(passedProps) => <LoginPage setLogin={props.setLogin} {...passedProps} />} />
 
             {/* Registration Routes */}
-            <Route
+            <ProtectedRoute
                 path="/registration/form/:type/:course?"
                 render={(passedProps) => <RegistrationForm {...passedProps} />} />
-            <Route
+            <ProtectedRoute
                 path="/registration/course/:courseID?/:courseTitle?"
                 render={(passedProps) => <RegistrationCourse {...passedProps} />} />
-            <Route
+            <ProtectedRoute
                 path="/registration/category/:categoryID"
                 render={(passedProps) => <CourseCategory {...passedProps} />} />
         </Switch>
