@@ -10,7 +10,7 @@ function ProtectedRoute({component, render, auth, ...rest}) {
             render={() =>
                 auth.token
                     ? component || (render && render(rest))
-                    : <Redirect push to="login" />
+                    : <Redirect push to="/login" />
             } />
     );
 }

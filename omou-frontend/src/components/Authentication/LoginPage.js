@@ -40,7 +40,7 @@ function LoginPage(props) {
     });
 
     if (props.auth.token) {
-        props.history.goBack();
+        props.history.push("/");
     }
 
     return (
@@ -137,7 +137,7 @@ LoginPage.propTypes = {
         "resetAttemptStatus": PropTypes.func,
     }),
     "history": PropTypes.shape({
-        "goBack": PropTypes.func,
+        "push": PropTypes.func,
     }),
     "setLogin": PropTypes.func,
 };
