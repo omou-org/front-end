@@ -1,7 +1,7 @@
 export default {
-   "stuff" : [1,2,3],
-   "RegistrationForms": initRegistrationForm()
-}
+    RegistrationForms: initRegistrationForm(),
+    auth: initAuth(),
+};
 
 function initRegistrationForm() {
     const studentInfoSection = {
@@ -643,4 +643,11 @@ function initRegistrationForm() {
             },
         },
    };
+}
+
+function initAuth() {
+    return {
+        "token": localStorage.getItem("authToken") || null,
+        "failedLogin": false,
+    };
 }

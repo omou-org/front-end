@@ -1,32 +1,24 @@
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as stuffActions from '../../../actions/stuffActions';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 
 class Accounts extends Component {
-    render(){
+    render() {
         return (<div className="">
             <h1>Accounts</h1>
         </div>)
     }
 }
 
-Accounts.propTypes = {
-    stuffActions: PropTypes.object,
-    stuffs: PropTypes.array
-};
+Accounts.propTypes = {};
 
 function mapStateToProps(state) {
-    return {
-        stuffs: state.stuff
-    };
+    return {};
 }
 
 function mapDispatchToProps(dispatch) {
-    return {
-        stuffActions: bindActionCreators(stuffActions, dispatch)
-    };
+    return {};
 }
 
 export default connect(

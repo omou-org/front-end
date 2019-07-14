@@ -43,7 +43,7 @@ class Form extends Component {
 
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
-        const formType = this.props.match.params.type;
+        const formType = this.props.computedMatch.params.type;
         if (!prevState || formType !== prevState.form) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
@@ -53,7 +53,7 @@ class Form extends Component {
                         activeSection: formContents.section_titles[0],
                         form: formType,
                     };
-                    let course = decodeURIComponent(this.props.match.params.course);
+                    let course = decodeURIComponent(this.props.computedMatch.params.course);
                     course = this.props.courses.find(({ course_title }) => course === course_title);
                     if (course) {
                         // convert it to a format that onselectChange can use
@@ -439,7 +439,7 @@ class Form extends Component {
                                                         Add {field.field}
                                                     </Fab>
                                                 }
-                                            
+
                                             </div>
                                         );
                                     })
@@ -505,8 +505,8 @@ class Form extends Component {
                             denyAction={"default"}
                         />
                         <Typography className={"heading"} align={"left"}>
-                            {this.props.match.params.course ? `${decodeURIComponent(this.props.match.params.course)} ` : ""}
-                            {this.props.match.params.type} Registration
+                            {this.props.computedMatch.params.course ? `${decodeURIComponent(this.props.computedMatch.params.course)} ` : ""}
+                            {this.props.computedMatch.params.type} Registration
                         </Typography>
                         {
                             !this.state.submitted ?
