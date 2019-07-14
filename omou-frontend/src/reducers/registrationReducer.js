@@ -77,11 +77,9 @@ function addField(prevState, path) {
     return NewState;
 }
 
-function removeField(prevState, path) {
+function removeField(prevState, path, fieldIndex) {
     let NewState = prevState;
-    let fieldIndex = path.pop();
     let SectionFieldList = getSectionFieldList(path, prevState.registration_form);
-
     if(SectionFieldList.length>0){
         SectionFieldList.splice(fieldIndex, 1);}
     return NewState;

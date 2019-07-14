@@ -292,12 +292,8 @@
 }
 
 .remove-student{
-  margin-top:5px;
-  margin-left:5px;
-}
-
-.student-align{
-
+  margin-top:25px !important;
+  margin-bottom: 25px !important;
 }
 
 .popular-courses{
@@ -308,8 +304,13 @@
 }
 
 .search-options{
-  width:50%;
+  width:200px;
 }
+
+.button-remove-student{
+  margin-top:5px;
+}
+
 
 .label{
   margin-left:5px;

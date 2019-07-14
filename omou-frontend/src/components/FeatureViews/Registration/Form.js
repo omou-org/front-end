@@ -268,6 +268,7 @@ class Form extends Component {
     }
 
     onSelectChange(value, label, field) {
+        console.log(value);
         this.setState((OldState) => {
             let NewState = OldState;
             NewState[label][field.field] = value;
@@ -277,7 +278,7 @@ class Form extends Component {
         });
     }
 
-    renderField(field, label) {
+    renderField(field, label, fieldIndex) {
         let fieldTitle = field.field;
         switch (field.type) {
             case "select":
@@ -321,13 +322,29 @@ class Form extends Component {
                     value: `${-1}: ${'None'}`,
                     label: `${-1}: ${'None'}`,
                 });
-                return <SearchSelect
-                    value={this.state[label][fieldTitle]}
-                    onChange={(value) => {
-                        this.onSelectChange(value, label, field);
-                    }}
-                    options={studentList}
-                    className="search-options" />;
+                return (<div>
+                     <Grid container className={"student-align"} spacing={2000}>
+                    <SearchSelect
+                        value={this.state[label][fieldTitle]}
+                        onChange={(value) => {
+                            this.onSelectChange(value, label, field);
+                        }}
+                        options={studentList}
+                        className="search-options" />
+                    <RemoveIcon color="primary" aria-label="Add" variant="extended"
+                        className="button-remove-student"
+                        onClick={(event) => {
+                            event.preventDefault();
+                            //deletes answer field from state
+                            this.removeField(fieldIndex);
+                            this.setState((prevState) => {
+                                return prevState;
+                            })
+                        }}>
+                    </RemoveIcon>
+                    </Grid>
+                </div>);
+
             case "teacher":
                 let teacherList = this.props.teachers;
                 teacherList = teacherList.map((teacher) => {
@@ -342,7 +359,7 @@ class Form extends Component {
                     }}
                     value={this.state[label][fieldTitle]}
                     options={teacherList}
-                    className="search-options" />;
+                    className="search-options" />
             default:
                 return <TextField
                     label={field.field}
@@ -377,7 +394,16 @@ class Form extends Component {
         // for some reason it isn't rerendering automatically
         this.forceUpdate();
     }
-    removeField(field, fieldIndex) {
+
+    removeField(fieldIndex) {
+        let fieldtoDeleteKey = this.props.registrationForm[this.state.form][this.state.activeSection][fieldIndex].field;
+        this.setState((prevState)=>{
+            console.log(prevState[prevState["activeSection"]][fieldtoDeleteKey]);
+            delete prevState[prevState["activeSection"]][fieldtoDeleteKey]; 
+            console.log(prevState);
+            return prevState;
+        });
+        console.log(this.state[this.state.activeSection]);
         const currentForm = this.getFormObject();
         let param = [this.state.form, this.state.activeSection, fieldIndex];
         this.props.registrationActions.removeField(param);
@@ -407,24 +433,9 @@ class Form extends Component {
                                             lastFieldOfType = reversedSection.find((otherField) => otherField.name === field.name);
                                         return (
                                             <div key={j} className="fields-wrapper" style={{}}>
-                                             <Grid container className={"student-align"} spacing={20}>
-                                                {this.renderField(field, label)}
-                                                    {numSameTypeFields <= field.field_limit &&
-                                                    numSameTypeFields>1&&
-                                                    <RemoveIcon color="primary" aria-label="Add" variant="extended"
-                                                        className="button remove-student"
-                                                        onClick={(event) => {
-                                                            event.preventDefault();
-                                                            console.log(this.state, field.field)
-                                                            this.removeField(field.field, j);
-                                                            this.setState((prevState) => {
-                                                                // delete prevState[activeSection][];
-                                                                console.log(prevState[activeSection]);
-                                                                return prevState;
-                                                            })
-                                                            }}>
-                                                    </RemoveIcon>}
-                                                    </Grid>
+                                                <Grid container className={"student-align"} spacing={20}>
+                                                    {this.renderField(field, label, j)}
+                                                </Grid>
                                                 <br />
                                                 {
                                                     numSameTypeFields < field.field_limit &&
@@ -439,7 +450,7 @@ class Form extends Component {
                                                         Add {field.field}
                                                     </Fab>
                                                 }
-                                            
+
                                             </div>
                                         );
                                     })
