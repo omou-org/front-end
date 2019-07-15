@@ -1,7 +1,7 @@
 import * as actions from "./../actions/actionTypes";
 import initialState from "./initialState";
 
-export default function registration(state = initialState.auth, {payload, type}) {
+export default function auth(state = initialState.Authentication, {payload, type}) {
     switch (type) {
         case actions.SUCCESSFUL_LOGIN:
             return onSuccess(state, payload);

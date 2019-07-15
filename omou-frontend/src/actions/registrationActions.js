@@ -37,22 +37,6 @@ export function removeField(path){
     return {type: types.REMOVE_FIELD, payload:path}
 }
 
-export function getManiframe(){
-    return (dispatch) => {
-        return axios.post("http://localhost:8000/auth_token/",{
-            "username":"daniel@gmail.com",
-            "password":"daniel"
-        })
-        .then(res =>{
-            console.log("Pass", res)
-            dispatch({type: types.MAINFRAME, payload: res.data});
-        })
-            .catch(error=> {
-                throw(error);
-            })
-    }
-}
-
 export function submitForm(state) {
     return {type: types.SUBMIT_FORM, payload: state};
 }

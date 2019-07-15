@@ -16,7 +16,7 @@ import CourseIcon from "@material-ui/icons/School";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import AttendanceIcon from "@material-ui/icons/ViewList";
 import ClassIcon from "@material-ui/icons/Class";
-import DirectoryIcon from "@material-ui/icons/Contacts";
+import AccountsIcon from "@material-ui/icons/Contacts";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import List from "@material-ui/core/List";
@@ -45,7 +45,7 @@ function Navigation(props) {
         {name: "Registration", link: "/registration", icon: <AssignmentIcon/>},
         // {name: "Attendance", link: "/attendance", icon: <AttendanceIcon/>},
         // {name: "Gradebook", link: "/gradebook", icon: <ClassIcon/>},
-        {name: "Directory", link: "/directory", icon: <DirectoryIcon/>},
+        {name: "Accounts", link: "/accounts", icon: <AccountsIcon/>},
     ];
 
     const drawer = (

@@ -1,5 +1,5 @@
 export default {
-   "stuff" : [1,2,3],
+   "Authentication" : initAuth(),
    "RegistrationForms": initRegistrationForm(),
     "SignUpForm": initSignUpForm(),
     "Course":{
@@ -338,6 +338,13 @@ export default {
             },
         ],
     },
+}
+
+function initAuth() {
+    return {
+        "token": localStorage.getItem("authToken") || null,
+        "failedLogin": false,
+    };
 }
 
 function initRegistrationForm() {
