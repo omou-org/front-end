@@ -29,7 +29,7 @@
     @include respond-to(medium-up-screens){ margin-left:$drawerWidth; }
     padding:5% 3% 0 3%;
   }
-  
+
   .DrawerList{
     @include respond-to(handhelds){ width:0;}
     @include respond-to(medium-up-screens){ width:$drawerWidth; }
@@ -46,5 +46,16 @@
       background-color:$secondaryHighlightColor;
       .text > span{color:$secondaryFontColor;}
     }
+  }
+
+  .login {
+    font-family: 'Roboto Slab', serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 26px;
+    text-decoration: none;
+    color: white;
+    float: right;
   }
 }

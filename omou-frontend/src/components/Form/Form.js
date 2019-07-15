@@ -44,7 +44,7 @@ class Form extends Component {
 
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
-        const formType = this.props.match.params.type;
+        const formType = this.props.computedMatch.params.type;
         let course = decodeURIComponent(this.props.match.params.course);
         course = this.props.courses.find(({ course_title }) => course === course_title);
         let canRegister = formType !== "course";
@@ -60,6 +60,8 @@ class Form extends Component {
                         activeSection: formContents.section_titles[0],
                         form: formType,
                     };
+                    let course = decodeURIComponent(this.props.computedMatch.params.course);
+                    course = this.props.courses.find(({ course_title }) => course === course_title);
                     if (course) {
                         // convert it to a format that onselectChange can use
                         course = {
@@ -73,7 +75,6 @@ class Form extends Component {
                         // set a value for every non-conditional field (object)
                         if (Array.isArray(formContents[title])) {
                             formContents[title].forEach(({ field, type, options }) => {
-                                console.log("options: ",options);
                                 switch (type) {
                                     case "course":
                                         NewState[title][field] = course;
@@ -103,8 +104,6 @@ class Form extends Component {
                         nextSection: this.validateSection(),
                     });
                 });
-            } else {
-
             }
         } else {
             this.setState(prevState);
@@ -427,7 +426,7 @@ class Form extends Component {
                                                             this.removeField(field.field, j);
                                                             this.setState((prevState) => {
                                                                 // delete prevState[activeSection][];
-                                                                // console.log(prevState[activeSection]);
+                                                                console.log(prevState[activeSection]);
                                                                 return prevState;
                                                             })
                                                             }}>
@@ -447,6 +446,7 @@ class Form extends Component {
                                                         Add {field.field}
                                                     </Fab>
                                                 }
+
                                             </div>
                                         );
                                     })
@@ -513,8 +513,8 @@ class Form extends Component {
                             denyAction={"default"}
                         />
                         <Typography className={"heading"} align={"left"}>
-                            {this.props.match.params.course ? `${decodeURIComponent(this.props.match.params.course)} ` : ""}
-                            {this.props.match.params.type} Registration
+                            {this.props.computedMatch.params.course ? `${decodeURIComponent(this.props.computedMatch.params.course)} ` : ""}
+                            {this.props.computedMatch.params.type} Registration
                         </Typography>
                         {
                             !this.state.submitted ?

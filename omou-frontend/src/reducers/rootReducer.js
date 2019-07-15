@@ -1,14 +1,10 @@
-import {combineReducers} from 'redux';
-import stuff from './stuff/stuffReducer';
-import Registration from './registrationReducer';
-import Users from './usersReducer';
-import Course from './courseReducer';
+import {combineReducers} from "redux";
+import Registration from "./registrationReducer";
+import auth from "./authReducer";
 
 const rootReducer = combineReducers({
-    stuff,
     Registration,
-    Users,
-    Course,
+    auth,
 });
 
 export default rootReducer;
