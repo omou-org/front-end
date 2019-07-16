@@ -45,12 +45,6 @@ class Form extends Component {
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
         const formType = this.props.computedMatch.params.type;
-        let course = decodeURIComponent(this.props.match.params.course);
-        course = this.props.courses.find(({ course_title }) => course === course_title);
-        let canRegister = formType !== "course";
-        if(course){
-            canRegister = course.capacity > course.filled || formType !== "course" || course.capacity === undefined;
-        }
         if (!prevState || formType !== prevState.form) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
@@ -60,14 +54,18 @@ class Form extends Component {
                         activeSection: formContents.section_titles[0],
                         form: formType,
                     };
-                    let course = decodeURIComponent(this.props.match.params.course);
-                    course = this.props.courses.find(({ course_title }) => course === course_title);
-                    if (course) {
-                        // convert it to a format that onselectChange can use
-                        course = {
-                            value: `${course.course_id}: ${course.course_title}`,
-                            label: `${course.course_id}: ${course.course_title}`,
-                        };
+
+                    let course = '';
+                    if(this.props.computedMatch.params.course){
+                        course = decodeURIComponent(this.props.computedMatch.params.course);
+                        course = this.props.courses.find(({ course_title }) => course === course_title);
+                        if (course) {
+                            // convert it to a format that onselectChange can use
+                            course = {
+                                value: `${course.course_id}: ${course.course_title}`,
+                                label: `${course.course_id}: ${course.course_title}`,
+                            };
+                        }
                     }
                     formContents.section_titles.forEach((title) => {
                         // create blank fields based on form type
