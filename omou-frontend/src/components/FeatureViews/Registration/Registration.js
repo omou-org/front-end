@@ -69,6 +69,8 @@ class Registration extends Component {
     }
 
     render() {
+        console.log(localStorage.getItem("authToken"));
+        this.props.registrationActions.fetchCourses();
         return (
             <div className="">
                 <Grid item xs={12}>

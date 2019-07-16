@@ -4,9 +4,12 @@ import * as actions from "./../actions/actionTypes"
 export default function registration(state = initialState.RegistrationForms, { payload, type }) {
     let newState;
     switch (type) {
-        case actions.FETCH_COURSES:
-            console.log('FETCH_COURSES Action');
-            return payload;
+        case actions.FETCH_COURSES_SUCCESSFUL:
+            console.log('FETCH_COURSES_SUCCESSFUL Action', payload);
+            return state;
+        case actions.FETCH_COURSES_FAILED:
+            console.log('FETCH_COURSES_FAILED Action');
+            return state;
         case actions.FETCH_STUDENTS:
             newState = payload;
             console.log('RECEIVE_STUDENTS Action');

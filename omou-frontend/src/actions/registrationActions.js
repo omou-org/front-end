@@ -6,11 +6,26 @@ import axios from 'axios';
 //     return 'http://www.omou.io/api/';
 // }
 
-export function fetchCourses() {
-    return (dispatch) => {
-        // return
-    }
-}
+
+export const fetchCourses = () =>
+    (dispatch) => axios.get("http://localhost:8000/courses/catalog/", {
+        headers:{
+            'Authorization': `Token ${localStorage.getItem("authToken")}`
+        }
+    })
+    .then(({data}) => {
+        console.log(data);
+        dispatch({
+            type: types.FETCH_COURSES_SUCCESSFUL,
+            payload: {
+                data,
+            },
+        });
+    })
+    .catch((error) => {
+        console.log(error);
+        dispatch({type: types.FETCH_COURSES_FAILED, payload: error});
+    });
 
 export function fetchStudents() {
     return {type: types.ALERT, payload:'lol'}
