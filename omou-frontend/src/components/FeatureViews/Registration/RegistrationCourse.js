@@ -61,7 +61,7 @@ class RegistrationCourse extends Component {
 
     componentWillMount() {
         let CourseInView = this.props.courses.find((course) => {
-            return course.course_id.toString() === this.props.match.params.courseID;
+            return course.course_id.toString() === this.props.computedMatch.params.courseID;
         });
         this.setState({ ...CourseInView });
     }
@@ -116,7 +116,7 @@ class RegistrationCourse extends Component {
                     <BackButton />
                     <div className={"course-heading"}>
                         <Typography align={'left'} variant={'h3'} style={{ fontWeight: "500" }} >
-                            {this.props.match.params.courseTitle}
+                            {this.props.computedMatch.params.courseTitle}
                         </Typography>
                         <div className={"date"}>
                             <CalendarIcon style={{ fontSize: "16" }} align={'left'} className={"icon"}/>

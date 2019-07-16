@@ -81,7 +81,7 @@ class Form extends Component {
                                         NewState[title][field] = options[0];
                                         break;
                                     case "student":
-                                        NewState[title][field] = course;
+                                        NewState[title][field] = '';
                                         break;
                                     default:
                                         NewState[title][field] = null;
