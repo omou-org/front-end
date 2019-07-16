@@ -1,0 +1,60 @@
+.bg {
+    padding: 37px;
+    width: 412px;
+    height: 400px;
+    margin-left: -20vw;
+}
+
+.header {
+    font-family: 'Roboto Slab', serif;
+    font-style: normal;
+    margin: 25px 19px 0 19px!important;
+    font-weight: bold;
+    font-size: 36px;
+    line-height: 47px;
+}
+
+.email {
+    margin: 30px 19px 0px 19px!important;
+    display: block;
+    width: 300px;
+}
+
+.password {
+    margin: 10px 19px 0px 19px!important;
+    display: block;
+    width: 300px;
+}
+
+.remember {
+    margin: 20px 0px 0px 5px!important;
+}
+
+.forgot {
+    margin: 27px 0px 0px 35px!important;
+}
+
+.forgotText {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 14px;
+}
+
+.signIn {
+    margin-top: 20px!important;
+    float: right
+}
+
+.signInText {
+    font-family: Roboto Slab;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 32px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    text-transform: lowercase;
+}

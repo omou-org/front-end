@@ -36,18 +36,6 @@ export function removeField(path, fieldIndex, conditional){
     return {type: types.REMOVE_FIELD, payload:[path, fieldIndex, conditional]}
 }
 
-export function fetchRandomColor(){
-    return (dispatch) => {
-        return axios.get("http://api.open-notify.org/astros.json")
-        .then(res =>{
-            dispatch({type: types.RAND_COLOR, payload: res.data});
-        })
-            .catch(error=> {
-                throw(error);
-            })
-    }
-}
-
 export function submitForm(state) {
     return {type: types.SUBMIT_FORM, payload: state};
 }

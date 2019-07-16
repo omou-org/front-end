@@ -18,12 +18,13 @@ import NewCourse from "@material-ui/icons/School";
 import Categories from "@material-ui/icons/Category";
 import CourseList from "@material-ui/icons/List";
 import { NavLink } from "react-router-dom";
+import Fab from '@material-ui/core/Fab';
 
 class Registration extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            mobileViewToggle: true,
+            mobileViewToggle: false,
             mobileView: false,
         }
     }
@@ -45,6 +46,7 @@ class Registration extends Component {
         if (this.state.mobileView) {
             return <MobileRegistration
                 courses={this.props.courses}
+                teachers={this.props.teachers}
                 categories={this.props.courseCategories}
                 categoriesViewToggle={this.state.mobileViewToggle} />;
         }
@@ -75,34 +77,31 @@ class Registration extends Component {
                             <RegistrationActions
                             //admin = {false}
                             />
-                            <Hidden smUp>
-                                <Grid item>
-                                    {
-                                        this.state.mobileViewToggle ?
-                                            <Button onClick={(e) => { e.preventDefault(); this.toggleMobileView(); }}
-                                                variant="outlined"
-                                                color="secondary"
-                                                className={"button"}>
-                                                <CourseList className={"icon"} />
-                                                Courses
-                                                </Button> :
-                                            <Button
-                                                onClick={(e) => { e.preventDefault(); this.toggleMobileView(); }}
-                                                variant="outlined"
-                                                color="secondary"
-                                                className={"button"}>
-                                                <Categories className={"icon"} />
-                                                Categories
-                                                </Button>
-                                    }
-                                </Grid>
-                            </Hidden>
                         </Grid>
                     </Paper>
                 </Grid>
                 {
                     this.toggleMainView.bind(this)()
                 }
+                <Hidden smUp>
+                    <Grid item>
+                        {
+                            this.state.mobileViewToggle ?
+                                <Fab onClick={(e) => { e.preventDefault(); this.toggleMobileView(); }}
+                                        className={"button mobile-toggle"}
+                                        color="primary" aria-label="Add"
+                                >
+                                    <CourseList className={"icon"} />
+                                </Fab> :
+                                <Fab
+                                    onClick={(e) => { e.preventDefault(); this.toggleMobileView(); }}
+                                    className={"button mobile-toggle"}
+                                    color="primary" aria-label="Add">
+                                    <Categories className={"icon"} />
+                                </Fab>
+                        }
+                    </Grid>
+                </Hidden>
             </div>
         )
     }
@@ -115,9 +114,9 @@ Registration.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        courses: state.Registration["course_list"],
-        courseCategories: state.Registration["categories"],
-        teachers: state.Registration["teacher_list"]
+        teachers: state.Users["TeacherList"],
+        courses: state.Course["CourseList"],
+        courseCategories: state.Course["CourseCategories"],
     };
 }
 

@@ -4,6 +4,7 @@ import * as registrationActions from '../../actions/registrationActions';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import TableRow from "@material-ui/core/TableRow";
+import { Prompt } from 'react-router'
 
 //Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -43,7 +44,13 @@ class Form extends Component {
 
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
-        const formType = this.props.match.params.type;
+        const formType = this.props.computedMatch.params.type;
+        let course = decodeURIComponent(this.props.match.params.course);
+        course = this.props.courses.find(({ course_title }) => course === course_title);
+        let canRegister = formType !== "course";
+        if(course){
+            canRegister = course.capacity > course.filled || formType !== "course" || course.capacity === undefined;
+        }
         if (!prevState || formType !== prevState.form) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
@@ -560,8 +567,13 @@ class Form extends Component {
     // view after a submitted form
     renderSubmitted() {
         return (
-            <div>
-                Your submission has been stored. A confirmation email will be sent.
+            <div style={{margin:2+"%", height:400+"px"}}>
+                <Typography align={"left"} style={{fontSize:24+'px'}}>
+                    You have successfully registered!
+                </Typography>
+                <Typography align={"left"} style={{fontSize:14+'px'}}>
+                    An email will be sent to "Parent Name" to confirm "Student Name"'s registration
+                </Typography>
             </div>
         );
     }
@@ -569,6 +581,7 @@ class Form extends Component {
     render() {
         return (
             <Grid container className="">
+                <Prompt message="Are you sure you want to leave?" />
                 <Grid item xs={12}>
                     <Paper className={"registration-form"}>
                         <BackButton
@@ -581,8 +594,8 @@ class Form extends Component {
                             denyAction={"default"}
                         />
                         <Typography className={"heading"} align={"left"}>
-                            {this.props.match.params.course ? `${decodeURIComponent(this.props.match.params.course)} ` : ""}
-                            {this.props.match.params.type} Registration
+                            {this.props.computedMatch.params.course ? `${decodeURIComponent(this.props.computedMatch.params.course)} ` : ""}
+                            {this.props.computedMatch.params.type} Registration
                         </Typography>
                         {
                             !this.state.submitted ?
@@ -602,12 +615,12 @@ class Form extends Component {
 
 function mapStateToProps(state) {
     return {
-        courses: state.Registration["course_list"],
-        courseCategories: state.Registration["categories"],
+        courses: state.Course["CourseList"],
+        courseCategories: state.Course["CourseCategories"],
         registrationForm: state.Registration["registration_form"],
-        parents: state.Registration["parent_list"],
-        students: state.Registration["student_list"],
-        teachers: state.Registration["teacher_list"],
+        parents: state.Users["ParentList"],
+        students: state.Users["StudentList"],
+        teachers: state.Users["TeacherList"],
     };
 }
 
@@ -619,5 +632,5 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
 )(Form);

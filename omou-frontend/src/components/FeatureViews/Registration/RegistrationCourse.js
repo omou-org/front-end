@@ -26,6 +26,7 @@ import TableCell from "@material-ui/core/TableCell";
 import CallIcon from "@material-ui/icons/Phone";
 import EmailIcon from "@material-ui/icons/Email";
 import EditIcon from "@material-ui/icons/Edit";
+import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 
 const rowHeadings = [
     { id: 'Student', numberic: false, disablePadding: false },
@@ -117,12 +118,15 @@ class RegistrationCourse extends Component {
                         <Typography align={'left'} variant={'h3'} style={{ fontWeight: "500" }} >
                             {this.props.match.params.courseTitle}
                         </Typography>
-                        <Typography align={'left'} style={{ marginLeft: '5px', marginTop: '15px' }}>
-                            {this.state.dates}
-                        </Typography>
+                        <div className={"date"}>
+                            <CalendarIcon style={{ fontSize: "16" }} align={'left'} className={"icon"}/>
+                            <Typography align={'left'} style={{ marginLeft: '5px', marginTop: '15px' }}>
+                                {this.state.dates}
+                            </Typography>
+                        </div>
                         <div className={"info"}>
                             <div className={"first-line"}>
-                                <ClassIcon style={{ fontSize: "16" }} />
+                                <ClassIcon style={{ fontSize: "16" }} className={'icon'} />
                                 <Typography align={'left'} className={'text'}>
                                     Course Information
                                 </Typography>
@@ -138,9 +142,6 @@ class RegistrationCourse extends Component {
                                 </Typography>
                                 <Typography align={'left'} className={'text'}>
                                     {Days}
-                                </Typography>
-                                <Typography align={'left'} className={'text'}>
-                                    {this.state.tuition} Tuition
                                 </Typography>
                                 <Typography align={'left'} className={'text'}>
                                     {this.state.grade} Grade
@@ -188,12 +189,12 @@ RegistrationCourse.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        courses: state.Registration["course_list"],
-        courseCategories: state.Registration["categories"],
-        students: state.Registration["student_list"],
-        teachers: state.Registration["teacher_list"],
-        parents: state.Registration["parent_list"],
-        courseRoster: state.Registration["course_roster"],
+        courses: state.Course["CourseList"],
+        courseCategories: state.Course["CourseCategories"],
+        students: state.Users["StudentList"],
+        teachers: state.Users["TeacherList"],
+        parents: state.Users["ParentList"],
+        courseRoster: state.Course["CourseRoster"],
     };
 }
 
