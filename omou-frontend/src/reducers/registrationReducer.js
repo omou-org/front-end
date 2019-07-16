@@ -33,7 +33,6 @@ export default function registration(state = initialState.RegistrationForms, { p
             let conditional = payload[2];
             if(conditional){
                 path.push(conditional);
-                console.log(path);
             }
             newState = removeField(state, path, removeFieldIndex, conditional);
             return newState;

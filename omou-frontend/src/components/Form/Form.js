@@ -284,10 +284,18 @@ class Form extends Component {
     // removes duplicates with arr1 from arr2 from search select field
     removeDuplicates(arr1, arr2){
         let stringValue, stringOtherValue;
-        arr1.forEach((value, i)=>{
-            stringValue = value.value;
+        arr1.forEach((value)=>{
+            if(value){
+                stringValue = value.value;
+            } else {
+                stringValue = '';
+            }
             arr2.forEach((otherValue, j)=>{
-                stringOtherValue = otherValue.value;
+                if(otherValue){
+                    stringOtherValue = otherValue.value;
+                } else {
+                    stringOtherValue = '';
+                }
                 if(stringValue === stringOtherValue){
                     arr2[j] = '1';
                 }
@@ -340,7 +348,12 @@ class Form extends Component {
                     options={courseList}
                     className="search-options" />;
             case "student":
-                currSelectedValues = Object.values(this.state[label]);
+                if(this.state.conditional){
+                    currSelectedValues = Object.values(this.state[label]);
+                } else {
+                    currSelectedValues = Object.values(this.state[label]);
+                }
+
                 let studentList = this.props.students
                     .map(({ user_id, name }) => ({
                         value: `${user_id}: ${name}`,
@@ -438,7 +451,6 @@ class Form extends Component {
     removeField(fieldIndex) {
         this.setState((prevState)=>{
             // Delete field from state
-            console.log(this.props.registrationForm[this.state.form][this.state.activeSection], fieldIndex);
             let fieldtoDeleteKey;
             if(Array.isArray(this.props.registrationForm[this.state.form][this.state.activeSection])){
                 fieldtoDeleteKey = this.props.registrationForm[this.state.form][this.state.activeSection][fieldIndex].field;
