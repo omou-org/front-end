@@ -32,8 +32,8 @@ export function addField(path){
     return {type: types.ADD_FIELD, payload:path}
 }
 
-export function removeField(path){
-    return {type: types.REMOVE_FIELD, payload:path}
+export function removeField(path, fieldIndex, conditional){
+    return {type: types.REMOVE_FIELD, payload:[path, fieldIndex, conditional]}
 }
 
 export function fetchRandomColor(){

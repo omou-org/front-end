@@ -546,7 +546,7 @@ function initRegistrationForm() {
                         {
                             field: "Student",
                             name: "Student",
-                            type: "short text",
+                            type: "student",
                             conditional: false,
                             required: true,
                             full: false,
@@ -555,7 +555,7 @@ function initRegistrationForm() {
                         {
                             field: "Student 2",
                             name: "Student",
-                            type: "short text",
+                            type: "student",
                             conditional: false,
                             required: true,
                             full: false,

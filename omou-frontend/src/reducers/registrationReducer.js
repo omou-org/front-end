@@ -31,7 +31,14 @@ export default function registration(state = initialState.RegistrationForms, { p
             submitForm(payload);
             return state;
         case actions.REMOVE_FIELD:
-            newState = removeField(state, payload);
+            let path = payload[0];
+            let removeFieldIndex = payload[1];
+            let conditional = payload[2];
+            if(conditional){
+                path.push(conditional);
+                console.log(path);
+            }
+            newState = removeField(state, path, removeFieldIndex, conditional);
             return newState;
         default:
             return state;
@@ -67,21 +74,47 @@ function addField(prevState, path) {
     let NewState = prevState;
     let fieldIndex = path.pop();
     let SectionFieldList = getSectionFieldList(path, prevState.registration_form);
+    let fieldName = SectionFieldList[0].field;
     let NewField = {
         ...SectionFieldList[fieldIndex],
-        field: `${SectionFieldList[fieldIndex].field}  ${(SectionFieldList.length + 1)}`,
+        field: `${fieldName} ${(SectionFieldList.length+1)}`,
         required: false,
     };
     SectionFieldList.push(NewField);
     setSectionFieldList(path, SectionFieldList, prevState.registration_form);
+    // console.log(SectionFieldList);
     return NewState;
 }
 
-function removeField(prevState, path, fieldIndex) {
+function removeField(prevState, path, fieldIndex, conditional) {
     let NewState = prevState;
-    let SectionFieldList = getSectionFieldList(path, prevState.registration_form);
+    let SectionFieldList;
+
+    if(conditional){
+        SectionFieldList = getSectionFieldList(JSON.parse(JSON.stringify(path)), prevState.registration_form)
+    } else {
+        SectionFieldList = getSectionFieldList(JSON.parse(JSON.stringify(path)), prevState.registration_form);
+    }
+
     if(SectionFieldList.length>0){
-        SectionFieldList.splice(fieldIndex, 1);}
+        SectionFieldList.splice(fieldIndex, 1);
+    }
+    let baseFieldName, curFieldName;
+    SectionFieldList = SectionFieldList.map((field,i)=>{
+       if(i === 0){
+           baseFieldName = field.field;
+           curFieldName = baseFieldName;
+       } else {
+           curFieldName = baseFieldName + " " +i;
+       }
+       return {...field, field:curFieldName};
+    });
+
+    if(conditional){
+        NewState["registration_form"][path[0]][path[1]][conditional] = SectionFieldList;
+    } else {
+        NewState["registration_form"][path[0]][path[1]] = SectionFieldList;
+    }
     return NewState;
 }
 

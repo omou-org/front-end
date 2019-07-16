@@ -268,7 +268,6 @@ class Form extends Component {
     }
 
     onSelectChange(value, label, field) {
-        console.log(value);
         this.setState((OldState) => {
             let NewState = OldState;
             NewState[label][field.field] = value;
@@ -277,9 +276,32 @@ class Form extends Component {
             this.validateField(this.state.activeSection, field, value);
         });
     }
+    // removes duplicates with arr1 from arr2 from search select field
+    removeDuplicates(arr1, arr2){
+        let stringValue, stringOtherValue;
+        arr1.forEach((value, i)=>{
+            stringValue = value.value;
+            arr2.forEach((otherValue, j)=>{
+                stringOtherValue = otherValue.value;
+                if(stringValue === stringOtherValue){
+                    arr2[j] = '1';
+                }
+            });
+        });
+        let uniqueVals = [...new Set(arr2)], indexOfString = -1;
+        uniqueVals.forEach((value,i)=>{
+            if(typeof value === "string"){
+                indexOfString = i;
+            }
+        });
+        if(indexOfString > -1){
+            uniqueVals.splice(indexOfString,1);
+        }
+        return uniqueVals;
+    }
 
     renderField(field, label, fieldIndex) {
-        let fieldTitle = field.field;
+        let fieldTitle = field.field, currSelectedValues;
         switch (field.type) {
             case "select":
                 return <FormControl className={"form-control"}>
@@ -313,39 +335,46 @@ class Form extends Component {
                     options={courseList}
                     className="search-options" />;
             case "student":
-                const studentList = this.props.students
+                currSelectedValues = Object.values(this.state[label]);
+                let studentList = this.props.students
                     .map(({ user_id, name }) => ({
                         value: `${user_id}: ${name}`,
                         label: `${user_id}: ${name}`,
-                    }));
+                        }));
                 studentList.unshift({
-                    value: `${-1}: ${'None'}`,
-                    label: `${-1}: ${'None'}`,
+                    value: `${0}: ${'None'}`,
+                    label: `${0}: ${'None'}`,
                 });
-                return (<div>
+                studentList = this.removeDuplicates(currSelectedValues,studentList);
+
+                return (<div style={{width:"inherit",}}>
                      <Grid container className={"student-align"} spacing={2000}>
                     <SearchSelect
-                        value={this.state[label][fieldTitle]}
+                        value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ''}
                         onChange={(value) => {
                             this.onSelectChange(value, label, field);
                         }}
                         options={studentList}
                         className="search-options" />
-                    <RemoveIcon color="primary" aria-label="Add" variant="extended"
-                        className="button-remove-student"
-                        onClick={(event) => {
-                            event.preventDefault();
-                            //deletes answer field from state
-                            this.removeField(fieldIndex);
-                            this.setState((prevState) => {
-                                return prevState;
-                            })
-                        }}>
-                    </RemoveIcon>
+                         {
+                             ((this.state.conditional && fieldIndex <= 1) || (fieldIndex === 0)) ? '' :
+                                 <RemoveIcon color="primary" aria-label="Add" variant="extended"
+                                             className="button-remove-student"
+                                             onClick={(event) => {
+                                                 event.preventDefault();
+                                                 //deletes answer field from state
+                                                 this.removeField(fieldIndex);
+                                                 this.setState((prevState) => {
+                                                     return prevState;
+                                                 })
+                                             }}>
+                                 </RemoveIcon>
+                         }
                     </Grid>
                 </div>);
 
             case "teacher":
+                currSelectedValues = Object.values(this.state[label]);
                 let teacherList = this.props.teachers;
                 teacherList = teacherList.map((teacher) => {
                     return {
@@ -353,13 +382,18 @@ class Form extends Component {
                         label: teacher.id.toString() + ": " + teacher.name,
                     }
                 });
-                return <SearchSelect
-                    onChange={(value) => {
-                        this.onSelectChange(value, label, field);
-                    }}
-                    value={this.state[label][fieldTitle]}
-                    options={teacherList}
-                    className="search-options" />
+                teacherList = this.removeDuplicates(currSelectedValues, teacherList);
+                return (<div style={{width:"inherit",}}>
+                    <Grid container className={"student-align"} spacing={2000}>
+                        <SearchSelect
+                            value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ''}
+                            onChange={(value) => {
+                                this.onSelectChange(value, label, field);
+                            }}
+                            options={teacherList}
+                            className="search-options" />
+                    </Grid>
+                </div>);
             default:
                 return <TextField
                     label={field.field}
@@ -391,27 +425,64 @@ class Form extends Component {
             param.splice(2, 0, this.state.conditional);
         }
         this.props.registrationActions.addField(param);
+        sessionStorage.setItem("form", JSON.stringify(this.state));
         // for some reason it isn't rerendering automatically
         this.forceUpdate();
     }
 
     removeField(fieldIndex) {
-        let fieldtoDeleteKey = this.props.registrationForm[this.state.form][this.state.activeSection][fieldIndex].field;
         this.setState((prevState)=>{
-            console.log(prevState[prevState["activeSection"]][fieldtoDeleteKey]);
-            delete prevState[prevState["activeSection"]][fieldtoDeleteKey]; 
-            console.log(prevState);
+            // Delete field from state
+            console.log(this.props.registrationForm[this.state.form][this.state.activeSection], fieldIndex);
+            let fieldtoDeleteKey;
+            if(Array.isArray(this.props.registrationForm[this.state.form][this.state.activeSection])){
+                fieldtoDeleteKey = this.props.registrationForm[this.state.form][this.state.activeSection][fieldIndex].field;
+            } else {
+                fieldtoDeleteKey = this.props.registrationForm[this.state.form][this.state.activeSection][this.state.conditional][fieldIndex].field;
+            }
+            delete prevState[prevState["activeSection"]][fieldtoDeleteKey];
+            delete prevState[prevState["activeSection"]+"_validated"][fieldtoDeleteKey];
+
+            //rename all existing fields to be in the right order. currently there can be 2 student 3's
+            let currentSectionFields = prevState[prevState["activeSection"]];
+            let currentSectionValidationFields = prevState[prevState["activeSection"]+"_validated"];
+            let baseFieldName, curFieldName;
+
+            for (const [index, [origFieldKey, field]] of Object.entries(Object.entries(currentSectionFields))) {
+                if(index === String(0)){
+                    baseFieldName = origFieldKey;
+                    curFieldName = baseFieldName
+                } else {
+                    curFieldName = baseFieldName + " " + (index !== 0 ? index: '');
+                }
+                // Rename Answer Fields
+                if (origFieldKey !== curFieldName) {
+                    Object.defineProperty(currentSectionFields, curFieldName,
+                        Object.getOwnPropertyDescriptor(currentSectionFields, origFieldKey));
+                    delete currentSectionFields[origFieldKey];
+                }
+                // Rename Validation Fields
+                if(origFieldKey+"_validated" !== curFieldName+"_validated"){
+                    Object.defineProperty(currentSectionValidationFields, curFieldName,
+                        Object.getOwnPropertyDescriptor(currentSectionValidationFields, origFieldKey));
+                    delete currentSectionValidationFields[origFieldKey];
+                }
+            }
+
+            //save to session Storage
+            sessionStorage.setItem("form", JSON.stringify(this.state));
             return prevState;
+        }, ()=>{
+            //delete field from redux store
+            let param = [this.state.form, this.state.activeSection];
+            this.props.registrationActions.removeField(param, fieldIndex, this.state.conditional);
+            this.forceUpdate();
         });
-        console.log(this.state[this.state.activeSection]);
-        const currentForm = this.getFormObject();
-        let param = [this.state.form, this.state.activeSection, fieldIndex];
-        this.props.registrationActions.removeField(param);
         this.forceUpdate();
     }
 
     renderForm() {
-        const { activeSection, activeStep, conditional, nextSection } = this.state,
+        let { activeSection, activeStep, conditional, nextSection } = this.state,
             currentForm = this.props.registrationForm[this.state.form],
             steps = currentForm.section_titles;
         let section = currentForm[activeSection];
@@ -434,7 +505,7 @@ class Form extends Component {
                                         return (
                                             <div key={j} className="fields-wrapper" style={{}}>
                                                 <Grid container className={"student-align"} spacing={20}>
-                                                    {this.renderField(field, label, j)}
+                                                    {label === this.state.activeSection ? this.renderField(field, label, j): ''}
                                                 </Grid>
                                                 <br />
                                                 {
