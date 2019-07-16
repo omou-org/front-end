@@ -30,6 +30,8 @@ class Registration extends Component {
     }
 
     componentDidMount() {
+        console.log(localStorage.getItem("authToken"));
+        this.props.registrationActions.fetchCourses();
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
         // this.props.registrationActions.fetchRandomColor();
@@ -69,8 +71,6 @@ class Registration extends Component {
     }
 
     render() {
-        console.log(localStorage.getItem("authToken"));
-        this.props.registrationActions.fetchCourses();
         return (
             <div className="">
                 <Grid item xs={12}>

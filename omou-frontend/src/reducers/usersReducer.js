@@ -6,7 +6,7 @@ export default function users(state = initialState.Users, {payload, type}) {
     switch (type) {
         case actions.FETCH_COURSES_SUCCESSFUL:
             console.log('FETCH_COURSES Action');
-            return payload;
+            return state;
         default:
             return state;
     }

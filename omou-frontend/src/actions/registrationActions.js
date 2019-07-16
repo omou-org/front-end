@@ -14,7 +14,6 @@ export const fetchCourses = () =>
         }
     })
     .then(({data}) => {
-        console.log(data);
         dispatch({
             type: types.FETCH_COURSES_SUCCESSFUL,
             payload: {
@@ -23,7 +22,6 @@ export const fetchCourses = () =>
         });
     })
     .catch((error) => {
-        console.log(error);
         dispatch({type: types.FETCH_COURSES_FAILED, payload: error});
     });
 

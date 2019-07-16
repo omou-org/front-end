@@ -59,7 +59,7 @@ function RegistrationActions(props) {
     function handleClose() {
         setAnchorEl(null);
     }
-    console.log(props);
+    // console.log(props);
     const courseRoute = props.courseTitle ? encodeURIComponent(props.courseTitle) : "";
     return (
         <Grid container
