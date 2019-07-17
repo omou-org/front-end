@@ -157,9 +157,23 @@
     top:35%;
     left:37%;
   }
+}
 
+.existing-user-popup{
+  @include respond-to(handhelds){
+    top:35%;
+    left:5%;
+    width:90%;
+  }
+  @include respond-to(medium-up-screens){
+    top:35%;
+    left:30%;
+    width:40%;
+  }
+}
+
+.exit-popup, .existing-user-popup{
   padding:3%;
-  height:176px;
   position:absolute;
   outline:none;
   background-color:white;
@@ -183,6 +197,7 @@
     background-color:$secondaryDarkenColor;
   }
 }
+
 
 @keyframes fade-in {
   0% {

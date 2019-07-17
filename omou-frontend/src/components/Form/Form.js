@@ -27,7 +27,9 @@ import RemoveIcon from "@material-ui/icons/Clear";
 
 //Outside React Component
 import SearchSelect from 'react-select';
+import CreatableSelect from 'react-select/creatable';
 import BackButton from "../BackButton.js";
+import Modal from "@material-ui/core/Modal";
 
 class Form extends Component {
     constructor(props) {
@@ -39,6 +41,7 @@ class Form extends Component {
             activeSection: "",
             form: "",
             submitted: false,
+            existingUser: false,
         };
     }
 
@@ -256,7 +259,11 @@ class Form extends Component {
                     } else if (field.field === "Parent Email") {
                         emails = this.props.parents.map(({ email }) => email);
                     }
+                    // validate that email doesn't exist in database already
                     isValid = !emails.includes(fieldValue);
+                    if(!isValid){
+                        oldState.existingUser = true;
+                    }
                 }
                 oldState[`${sectionTitle}_validated`][field.field] = isValid;
             } else {
@@ -264,6 +271,7 @@ class Form extends Component {
             }
             return oldState;
         }, () => {
+            console.log(this.state.existingUser);
             this.setState({
                 nextSection: this.validateSection(),
             }, () => {
@@ -273,6 +281,10 @@ class Form extends Component {
     }
 
     onSelectChange(value, label, field) {
+        console.log("on select change: ", field, value);
+        if(field.type.indexOf("create") > -1 && typeof value === 'object') {
+            console.log("creating an existing user!!");
+        }
         this.setState((OldState) => {
             let NewState = OldState;
             NewState[label][field.field] = value;
@@ -281,6 +293,7 @@ class Form extends Component {
             this.validateField(this.state.activeSection, field, value);
         });
     }
+
     // removes duplicates with arr1 from arr2 from search select field
     removeDuplicates(arr1, arr2){
         let stringValue, stringOtherValue;
@@ -355,9 +368,9 @@ class Form extends Component {
                 }
 
                 let studentList = this.props.students
-                    .map(({ user_id, name }) => ({
-                        value: `${user_id}: ${name}`,
-                        label: `${user_id}: ${name}`,
+                    .map(({ user_id, name, email }) => ({
+                        value: `${name} - ${email}`,
+                        label: `${user_id}: ${name} - ${email}`,
                         }));
                 studentList.unshift({
                     value: `${0}: ${'None'}`,
@@ -390,7 +403,6 @@ class Form extends Component {
                          }
                     </Grid>
                 </div>);
-
             case "teacher":
                 currSelectedValues = Object.values(this.state[label]);
                 let teacherList = this.props.teachers;
@@ -412,6 +424,44 @@ class Form extends Component {
                             className="search-options" />
                     </Grid>
                 </div>);
+            case "create student":
+                let currStudentList = this.props.students
+                    .map(({ user_id, name, email }) => ({
+                        value: `${name} - ${email}`,
+                        label: `${user_id}: ${name} - ${email}`,
+                    }));
+                return (
+                    <CreatableSelect
+                        className="search-options"
+                        isClearable
+                        onChange={(value) => {
+                            this.onSelectChange(value, label, field);
+                        }}
+                        onInputChange={(value) => {
+                            this.onSelectChange(value, label, field);
+                        }}
+                        options={currStudentList}
+                    />
+                );
+            case "create parent":
+                let currParentList = this.props.parents
+                    .map(({ user_id, name, email }) => ({
+                        value: `${name} - ${email}`,
+                        label: `${user_id}: ${name} - ${email}`,
+                    }));
+                return (
+                    <CreatableSelect
+                        className="search-options"
+                        isClearable
+                        onChange={(value) => {
+                            this.onSelectChange(value, label, field);
+                        }}
+                        onInputChange={(value) => {
+                            this.onSelectChange(value, label, field);
+                        }}
+                        options={currParentList}
+                    />
+                );
             default:
                 return <TextField
                     label={field.field}
@@ -616,7 +666,27 @@ class Form extends Component {
                                     </Typography>
                                 : this.renderSubmitted()
                         }
+                        <Modal
+                            aria-labelledby="simple-modal-title"
+                            aria-describedby="simple-modal-description"
+                            open={this.state.existingUser}
+                            onClick={(e)=>{ e.preventDefault();
+                                this.setState({existingUser: false})}}>
+                            <div className="existing-user-popup">
+                                <Typography variant="h6" id="modal-title">
+                                    {"The user you are entering already exists in the database! Please enter a new email, and check for spelling."}
+                                </Typography>
+                                <Button
+                                    onClick={(e)=>{ e.preventDefault();
+                                        this.setState({existingUser: false})}}
+                                    color="primary"
+                                    className="button primary">
+                                    {"I will enter a new email"}
+                                </Button>
+                            </div>
+                        </Modal>
                     </Paper>
+
                 </Grid>
             </Grid>
         );

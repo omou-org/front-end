@@ -415,7 +415,7 @@ function initRegistrationForm() {
                     {
                         field: "Student Name",
                         name: "Student Name",
-                        type: "short text",
+                        type: "create student",
                         required: true,
                         full: true,
                         field_limit: 1,
