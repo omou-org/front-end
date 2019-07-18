@@ -4,7 +4,8 @@ import * as registrationActions from '../../actions/registrationActions';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import TableRow from "@material-ui/core/TableRow";
-import { Prompt } from 'react-router'
+import { Prompt } from 'react-router';
+import {NavLink} from "react-router-dom";
 
 //Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -135,6 +136,7 @@ class Form extends Component {
 
     validateSection() {
         const currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
+        // console.log(this.state[currSectionTitle]);
         return (
             this.getActiveSection()
                 .filter(({ required }) => required)
@@ -271,7 +273,6 @@ class Form extends Component {
             }
             return oldState;
         }, () => {
-            console.log(this.state.existingUser);
             this.setState({
                 nextSection: this.validateSection(),
             }, () => {
@@ -281,17 +282,57 @@ class Form extends Component {
     }
 
     onSelectChange(value, label, field) {
-        console.log("on select change: ", field, value);
-        if(field.type.indexOf("create") > -1 && typeof value === 'object') {
-            console.log("creating an existing user!!");
+        if(field.type.indexOf("create") > -1 && typeof value === 'object' && !value.__isNew__) {
+            if(field.type==="create parent"){
+                // console.log("existing parent!");
+                this.setState((OldState) => {
+                    let NewState = OldState;
+                    // console.log("existing parent ", value);
+                    // delete all non-zero index field from redux (0th index should be "Parent Name")
+                    let param = [this.state.form, this.state.activeSection];
+                    this.props.registrationForm[this.state.form][label].forEach((field,i)=>{
+                        if(i !== 0) {
+                            this.props.registrationActions.removeField(param, 1, this.state.conditional);
+                        } if(this.props.registrationForm[this.state.form][label].length == 2){
+                            this.props.registrationActions.removeField(param, 1, this.state.conditional);
+                        }
+                    });
+                    console.log(this.props.registrationForm[this.state.form][label]);
+                    // delete from state
+                    NewState[label] = {};
+                    NewState[label][field.field] = value.value;
+
+                    NewState[label+"_validated"] = {};
+                    NewState[label+"_validated"][field.field] = true;
+                    console.log("existing parent: ", NewState);
+                    return NewState;
+                }, () => {
+                    console.log(this.state);
+                    this.validateField(this.state.activeSection, field, value);
+                });
+            } else {
+                this.setState({existingUser:true});
+            }
+        } else if(value.__isNew__){
+            this.setState((OldState) => {
+                let NewState = OldState;
+                // console.log(field,value, "new value!");
+                NewState[label][field.field] = value.value;
+                console.log(NewState[label][field.field], "new value!");
+                return NewState;
+            }, () => {
+                this.validateField(this.state.activeSection, field, value);
+            });
+        } else {
+            this.setState((OldState) => {
+                let NewState = OldState;
+                // console.log(field,value);
+                NewState[label][field.field] = value;
+                return NewState;
+            }, () => {
+                this.validateField(this.state.activeSection, field, value);
+            });
         }
-        this.setState((OldState) => {
-            let NewState = OldState;
-            NewState[label][field.field] = value;
-            return NewState;
-        }, () => {
-            this.validateField(this.state.activeSection, field, value);
-        });
     }
 
     // removes duplicates with arr1 from arr2 from search select field
@@ -437,9 +478,6 @@ class Form extends Component {
                         onChange={(value) => {
                             this.onSelectChange(value, label, field);
                         }}
-                        onInputChange={(value) => {
-                            this.onSelectChange(value, label, field);
-                        }}
                         options={currStudentList}
                     />
                 );
@@ -454,9 +492,6 @@ class Form extends Component {
                         className="search-options"
                         isClearable
                         onChange={(value) => {
-                            this.onSelectChange(value, label, field);
-                        }}
-                        onInputChange={(value) => {
                             this.onSelectChange(value, label, field);
                         }}
                         options={currParentList}
@@ -634,6 +669,12 @@ class Form extends Component {
                 <Typography align={"left"} style={{fontSize:14+'px'}}>
                     An email will be sent to "Parent Name" to confirm "Student Name"'s registration
                 </Typography>
+                <Button
+                    align={"left"}
+                    component={NavLink}
+                    to={"/registration"}
+                    style={{margin:"20px"}}
+                    color={"primary"}>Back to Registration</Button>
             </div>
         );
     }
@@ -641,7 +682,8 @@ class Form extends Component {
     render() {
         return (
             <Grid container className="">
-                <Prompt message="Are you sure you want to leave?" />
+                {/*Determine if finished component is displayed. If not, then don't prompt*/}
+                { this.state.submitted ? '' :<Prompt message="Are you sure you want to leave?" />}
                 <Grid item xs={12}>
                     <Paper className={"registration-form"}>
                         <BackButton

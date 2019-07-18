@@ -465,7 +465,7 @@ function initRegistrationForm() {
                     {
                         field: "Parent Name",
                         name: "Parent Name",
-                        type: "short text",
+                        type: "create parent",
                         field_limit: 1,
                         required:true,
                         full: true,

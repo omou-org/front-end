@@ -97,15 +97,21 @@ function removeField(prevState, path, fieldIndex, conditional) {
 
     if(SectionFieldList.length>0){
         SectionFieldList.splice(fieldIndex, 1);
+    } else if(SectionFieldList.length === 2){
+        SectionFieldList.pop();
     }
     let baseFieldName, curFieldName;
+
     SectionFieldList = SectionFieldList.map((field,i)=>{
-       if(i === 0){
-           baseFieldName = field.field;
-           curFieldName = baseFieldName;
-       } else {
-           curFieldName = baseFieldName + " " +i;
-       }
+        if(i === 0 && field.field_limit > 1){
+            baseFieldName = field.field;
+            curFieldName = baseFieldName;
+        } else if(field.field.indexOf(baseFieldName) > -1 && field.field_limit > 1){
+            curFieldName = baseFieldName + " " +i;
+        }else {
+            curFieldName = field.field;
+        }
+
        return {...field, field:curFieldName};
     });
 
