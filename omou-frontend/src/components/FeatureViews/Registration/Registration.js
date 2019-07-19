@@ -30,7 +30,6 @@ class Registration extends Component {
     }
 
     componentDidMount() {
-        console.log(localStorage.getItem("authToken"));
         this.props.registrationActions.fetchCourses();
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();

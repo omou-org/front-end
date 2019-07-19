@@ -49,7 +49,7 @@ class Form extends Component {
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
         const formType = this.props.computedMatch.params.type;
-        if (!prevState || formType !== prevState.form) {
+        if (!prevState || formType !== prevState.form || prevState["submitted"]) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
                     let formContents = JSON.parse(JSON.stringify(this.props.registrationForm[formType]));
@@ -107,7 +107,7 @@ class Form extends Component {
                     });
                 });
             }
-        } else {
+        } else if(prevState && !prevState["submitted"]) {
             this.setState(prevState);
         }
     }
@@ -177,6 +177,7 @@ class Form extends Component {
             if (this.validateSection()) {
                 if (!oldState.submitted && oldState.activeStep === this.getFormObject().section_titles.length - 1) {
                     this.props.registrationActions.submitForm(this.state);
+                    sessionStorage.setItem("form","");
                     return {
                         submitted: true,
                     };
@@ -465,22 +466,6 @@ class Form extends Component {
                             className="search-options" />
                     </Grid>
                 </div>);
-            case "create student":
-                let currStudentList = this.props.students
-                    .map(({ user_id, name, email }) => ({
-                        value: `${name} - ${email}`,
-                        label: `${user_id}: ${name} - ${email}`,
-                    }));
-                return (
-                    <CreatableSelect
-                        className="search-options"
-                        isClearable
-                        onChange={(value) => {
-                            this.onSelectChange(value, label, field);
-                        }}
-                        options={currStudentList}
-                    />
-                );
             case "create parent":
                 let currParentList = this.props.parents
                     .map(({ user_id, name, email }) => ({
@@ -728,7 +713,6 @@ class Form extends Component {
                             </div>
                         </Modal>
                     </Paper>
-
                 </Grid>
             </Grid>
         );
