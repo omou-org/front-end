@@ -136,7 +136,7 @@ class Form extends Component {
 
     validateSection() {
         const currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
-        // console.log(this.state[currSectionTitle]);
+
         return (
             this.getActiveSection()
                 .filter(({ required }) => required)
@@ -256,13 +256,12 @@ class Form extends Component {
                     // parse if number
                     oldState[sectionTitle][field.field] = parseInt(fieldValue, 10);
                 } else if (field.type === "email") {
-                    let emails;
+                    let emails = [];
                     if (field.field === "Student Email") {
                         emails = this.props.students.map(({ email }) => email);
-                    } else if (field.field === "Parent Email") {
-                        emails = this.props.parents.map(({ email }) => email);
                     }
                     // validate that email doesn't exist in database already
+                    console.log(emails.includes(fieldValue));
                     isValid = !emails.includes(fieldValue);
                     if(!isValid){
                         oldState.existingUser = true;
@@ -288,28 +287,39 @@ class Form extends Component {
                 // console.log("existing parent!");
                 this.setState((OldState) => {
                     let NewState = OldState;
-                    // console.log("existing parent ", value);
-                    // delete all non-zero index field from redux (0th index should be "Parent Name")
-                    let param = [this.state.form, this.state.activeSection];
-                    this.props.registrationForm[this.state.form][label].forEach((field,i)=>{
-                        if(i !== 0) {
-                            this.props.registrationActions.removeField(param, 1, this.state.conditional);
-                        } if(this.props.registrationForm[this.state.form][label].length == 2){
-                            this.props.registrationActions.removeField(param, 1, this.state.conditional);
-                        }
+                    console.log(value, this.props.parents);
+                    let selectedParentID = value.label.substring(0,value.label.indexOf(":"));
+                    let {user_id,name, gender, email, address, city, zipcode, state, relationship, phone_number} = this.props.parents.find((parent)=>{
+                        return selectedParentID == parent.user_id;
                     });
-                    console.log(this.props.registrationForm[this.state.form][label]);
-                    // delete from state
-                    NewState[label] = {};
-                    NewState[label][field.field] = value.value;
 
-                    NewState[label+"_validated"] = {};
-                    NewState[label+"_validated"][field.field] = true;
-                    console.log("existing parent: ", NewState);
+                    NewState[label] = {
+                        "Parent Name" : name,
+                        "Gender" : gender,
+                        "Parent Email" : email,
+                        "Address": address,
+                        "City": city,
+                        "State": state,
+                        "Zip Code": zipcode,
+                        "Relationship to Student": relationship,
+                        "Parent Phone Number": phone_number,
+                        "user_id": user_id,
+                    };
+                    console.log(NewState[label]);
+                    let ParentKeys = Object.keys(NewState[label]);
+                    ParentKeys.forEach((key)=>{
+                        NewState[label+"_validated"][key] = true;
+                    });
                     return NewState;
                 }, () => {
-                    console.log(this.state);
-                    this.validateField(this.state.activeSection, field, value);
+                    if(!(field.type === "create parent")){
+                        this.validateField(this.state.activeSection, field, value);
+                    } else {
+                        // This is when the parent field is filled, submit the form
+                        this.validateSection();
+                        this.setState({nextSection:true});
+                    }
+
                 });
             } else {
                 this.setState({existingUser:true});

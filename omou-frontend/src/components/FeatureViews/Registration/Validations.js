@@ -19,7 +19,7 @@ export let InputValidation = (input, type) => {
 
 // Simple Numbers (i.e. grade, age, etc.)
 export let NumberValidation = (input) =>{
-  return !!String(input).match(/^[0-9]{1,3}$/);
+  return !!String(input).match(/^[0-9]{1,5}$/);
 };
 
 let PhoneValidation = (input) =>{
@@ -32,10 +32,10 @@ let EmailValidation = (input) =>{
 
 // Short input fields (i.e. name, school, city etc.)
 let ShortTextValidation = (input)=>{
-    return !!input.match(/([A-Za-z ]+)(" ")?([A-Za-z ]+)?(" ")?([A-Za-z ]+)?$/)
+    return !!input.match(/([A-Za-z ]+)(" ")?([A-Za-z ]+)?(" ")?([A-Za-z ]+)?$/);
 };
 
 // Address
 let AddressValidation = (input) =>{
-    return !!input.match(/\d{1,5}\s\w.\s(\b\w*\b\s){1,2}\w*\./);
+    return !!input.match(/\d{1,5}\s\w\s(\b\w*\b\s){1,2}\w*/);
 };
