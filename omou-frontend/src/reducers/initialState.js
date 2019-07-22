@@ -830,6 +830,7 @@ function initRegistrationForm() {
                         full: true,
                         required: false,
                         field_limit: 1,
+                        multiline: true
                     },
                     {
                         field: "Notes",
@@ -838,6 +839,7 @@ function initRegistrationForm() {
                         full: true,
                         required: false,
                         field_limit: 1,
+                        multiline: true
                     },
                 ]
             }

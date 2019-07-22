@@ -43,7 +43,6 @@ class Form extends Component {
             form: "",
             submitted: false,
             existingUser: false,
-            multiline: true
         };
     }
 
@@ -285,7 +284,6 @@ class Form extends Component {
     onSelectChange(value, label, field) {
         if (field.type.indexOf("create") > -1 && typeof value === 'object' && !value.__isNew__) {
             if (field.type === "create parent") {
-                // console.log("existing parent!");
                 this.setState((OldState) => {
                     let NewState = OldState;
                     console.log(value, this.props.parents);
@@ -306,7 +304,6 @@ class Form extends Component {
                         "Parent Phone Number": phone_number,
                         "user_id": user_id,
                     };
-                    console.log(NewState[label]);
                     let ParentKeys = Object.keys(NewState[label]);
                     ParentKeys.forEach((key) => {
                         NewState[label + "_validated"][key] = true;
@@ -328,7 +325,6 @@ class Form extends Component {
         } else if (value.__isNew__) {
             this.setState((OldState) => {
                 let NewState = OldState;
-                // console.log(field,value, "new value!");
                 NewState[label][field.field] = value.value;
                 console.log(NewState[label][field.field], "new value!");
                 return NewState;
@@ -338,7 +334,6 @@ class Form extends Component {
         } else {
             this.setState((OldState) => {
                 let NewState = OldState;
-                // console.log(field,value);
                 NewState[label][field.field] = value;
                 return NewState;
             }, () => {
@@ -502,7 +497,7 @@ class Form extends Component {
                 return <TextField
                     label={field.field}
                     //Sets multiline to false for default forms
-                    multiline={this.setState.multiline === false}
+                    multiline={ field.multiline}
                     // className={this.state[label+"_validated"][field.field] ? "": "error"}
                     margin="normal"
                     value={this.state[label][field.field]}
