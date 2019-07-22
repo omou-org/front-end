@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, {useState} from "react";
+import React, { useState } from "react";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -7,10 +7,10 @@ import Button from "@material-ui/core/Button";
 import NewUser from "@material-ui/icons/PersonAdd";
 import NewTutor from "@material-ui/icons/Group";
 import NewCourse from "@material-ui/icons/School";
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import {withStyles} from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import "./registration.scss";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -73,6 +73,16 @@ function RegistrationActions(props) {
                     className="button">
                     <NewUser className="icon" />
                     New Student
+                </Button>
+            </Grid>
+            <Grid item>
+                <Button component={NavLink}
+                    to="/registration/form/teacher"
+                    variant="outlined"
+                    color="secondary"
+                    className="button">
+                    <NewUser className="icon" />
+                    New Teacher
                 </Button>
             </Grid>
             <Grid item>
