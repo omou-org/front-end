@@ -6,6 +6,7 @@
   padding: 1%;
 
   .button{
+    background-color:white;
     @include respond-to(medium-up-screens){
       margin-right:30px;
       height: 46px;
@@ -234,7 +235,6 @@
     position:relative;
     top:-7px;
     font-style: normal;
-    font-weight: bold;
     line-height: 13px;
   }
 }
@@ -245,6 +245,9 @@
   text-align: left;
   display: block;
   margin-bottom: 30px;
+  padding: 12px 10px 5px 10px;
+  background-color:white;
+  width: 110px;
 }
 
 .registration-form{
@@ -311,6 +314,11 @@
 .add-student{
   margin-top:25px !important;
   margin-bottom: 25px !important;
+}
+.button.add-student{
+  border:none !important;
+  background-color:$primaryDarkColor;
+  color:white;
 }
 
 .remove-student{

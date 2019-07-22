@@ -650,7 +650,7 @@ class Form extends Component {
                                             event.preventDefault();
                                             this.handleNext();
                                         }}
-                                        className="button">
+                                        className="button primary">
                                         {activeStep === steps.length - 1 ? "Finish" : "Next"}
                                     </Button>
                                 </div>

@@ -9,6 +9,7 @@ import {CssBaseline} from '@material-ui/core'
 //Local Component Imports
 import Navigation from './components/Navigation/Navigation'
 import './App.scss';
+import './theme/theme.scss';
 
 
 
