@@ -495,7 +495,7 @@ class Form extends Component {
             default:
                 return <TextField
                     label={field.field}
-                    multiline
+                    multiline={field.multiline}
                     // className={this.state[label+"_validated"][field.field] ? "": "error"}
                     margin="normal"
                     value={this.state[label][field.field]}
@@ -576,6 +576,14 @@ class Form extends Component {
             this.forceUpdate();
         });
         this.forceUpdate();
+    }
+
+    displayField(field, label, fieldIndex) {
+        // console.log(field,label, fieldIndex);
+        console.log("display field: ",this.state[label], field.field);
+        // Check if field is not null in state
+        // if so, display it
+        // else, return empty string
     }
 
     renderForm() {

@@ -5,18 +5,13 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import BackButton from "../../BackButton.js";
 import RegistrationActions from "./RegistrationActions";
+import '../../../theme/theme.scss';
 
 //Material UI Imports
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import NewUser from "@material-ui/icons/PersonAdd";
-import NewTutor from "@material-ui/icons/Group";
-import NewCourse from "@material-ui/icons/School";
 import ClassIcon from "@material-ui/icons/Class"
-import { NavLink } from "react-router-dom";
 import { Divider, LinearProgress, TableBody, Typography } from "@material-ui/core";
-import BackArrow from "@material-ui/icons/ArrowBack";
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
 import Table from "@material-ui/core/Table";

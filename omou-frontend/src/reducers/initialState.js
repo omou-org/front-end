@@ -693,6 +693,7 @@ function initRegistrationForm() {
                     conditional: false,
                     required: true,
                     full: true,
+                    multiline:false,
                     field_limit: 1,
                 },
                     {
