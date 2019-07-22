@@ -688,7 +688,7 @@ class Form extends Component {
                 {/*Determine if finished component is displayed. If not, then don't prompt*/}
                 { this.state.submitted ? '' :<Prompt message="Are you sure you want to leave?" />}
                 <Grid item xs={12}>
-                    <Paper className={"registration-form"}>
+                    <Paper className={"registration-form paper"}>
                         <BackButton
                             warn={true}
                             onBack={this.onBack}

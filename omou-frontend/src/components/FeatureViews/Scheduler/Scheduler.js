@@ -9,6 +9,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listViewPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction'
 import './scheduler.scss'
+import Paper from "@material-ui/core/Paper";
 
 class Scheduler extends Component {
     constructor(props){
@@ -47,7 +48,7 @@ class Scheduler extends Component {
     };
 
     render(){
-        return (<div className="">
+        return (<Paper className="paper">
             <div className='demo-app-top'>
                 <button onClick={ this.toggleWeekends }>toggle weekends</button>&nbsp;
                 <button onClick={ this.gotoPast }>go to a date in the past</button>&nbsp;
@@ -68,7 +69,7 @@ class Scheduler extends Component {
                     dateClick={ this.handleDateClick }
                 />
             </div>
-        </div>)
+        </Paper>)
     }
 }
 
