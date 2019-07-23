@@ -405,3 +405,26 @@
   margin-right:10px;
   color:$secondaryFontColor;
 }
+
+// Confirmation Copy
+.confirmation-copy{
+  background-color:white;
+  margin:10px;
+  padding:3%;
+  .title{
+    font-size:1.3em;
+  }
+  .section-title{
+    margin:15px 0 5px 0;
+    font-weight:bold;
+    color:$secondaryFontColor;
+  }
+  .field-title{
+    margin-top:10px;
+    font-weight:bold;
+    font-size:1.1em;
+  }
+  .field-value{
+    font-size:1.1em;
+  }
+}

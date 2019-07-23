@@ -426,8 +426,8 @@ function initRegistrationForm() {
                     },
                     {
                         field: "Gender",
-                        name: "Gender",
-                        type: "short text",
+                        type: "select",
+                        options:["Male", "Female", "Neither"],
                         required:true,
                         field_limit: 1,
                     },
@@ -491,7 +491,8 @@ function initRegistrationForm() {
                     {
                         field: "Gender",
                         name: "Gender",
-                        type: "short text",
+                        type: "select",
+                        options:["Male", "Female", "Neither"],
                         required:true,
                         field_limit: 1,
                     },

@@ -49,7 +49,9 @@ class Form extends Component {
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
         const formType = this.props.computedMatch.params.type;
-        if (!prevState || formType !== prevState.form || prevState["submitted"]) {
+        if (!prevState || formType !== prevState.form
+            // || prevState["submitted"]
+        ) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
                     let formContents = JSON.parse(JSON.stringify(this.props.registrationForm[formType]));
@@ -578,14 +580,6 @@ class Form extends Component {
         this.forceUpdate();
     }
 
-    displayField(field, label, fieldIndex) {
-        // console.log(field,label, fieldIndex);
-        console.log("display field: ",this.state[label], field.field);
-        // Check if field is not null in state
-        // if so, display it
-        // else, return empty string
-    }
-
     renderForm() {
         let { activeSection, activeStep, conditional, nextSection } = this.state,
             currentForm = this.props.registrationForm[this.state.form],
@@ -664,20 +658,43 @@ class Form extends Component {
 
     // view after a submitted form
     renderSubmitted() {
+        let { activeSection, activeStep, conditional, nextSection } = this.state,
+            currentForm = this.props.registrationForm[this.state.form],
+            steps = currentForm.section_titles;
         return (
-            <div style={{margin:2+"%", height:400+"px"}}>
+            <div style={{margin:2+"%", padding:5+"px"}}>
                 <Typography align={"left"} style={{fontSize:24+'px'}}>
                     You have successfully registered!
                 </Typography>
                 <Typography align={"left"} style={{fontSize:14+'px'}}>
-                    An email will be sent to "Parent Name" to confirm "Student Name"'s registration
+                    An email will be sent to you to confirm your registration
                 </Typography>
                 <Button
                     align={"left"}
                     component={NavLink}
                     to={"/registration"}
                     style={{margin:"20px"}}
-                    color={"primary"}>Back to Registration</Button>
+                    className={"button"}>Back to Registration</Button>
+                <div className={"confirmation-copy"}>
+                    <Typography className={"title"} align={'left'}>Confirmation Copy</Typography>
+                {
+                    steps.map((sectionTitle)=>{
+                        return (<div>
+                            <Typography className={'section-title'}
+                                align={'left'}>{sectionTitle}</Typography>
+                            {
+                                currentForm[sectionTitle].map((field)=>{
+                                    let fieldVal = this.state[sectionTitle][field.field];
+                                    return (<div>
+                                        <Typography className={'field-title'} align={'left'}>{field.field}</Typography>
+                                        <Typography className={'field-value'} align={'left'}>{ fieldVal !== '' ? fieldVal : "N/A"}</Typography>
+                                    </div>)
+                                })
+                            }
+                        </div>)
+                    })
+                }
+                </div>
             </div>
         );
     }
