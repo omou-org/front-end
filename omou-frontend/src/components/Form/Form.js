@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import TableRow from "@material-ui/core/TableRow";
 import { Prompt } from 'react-router';
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 //Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -49,9 +49,7 @@ class Form extends Component {
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
         const formType = this.props.computedMatch.params.type;
-        if (!prevState || formType !== prevState.form
-            // || prevState["submitted"]
-        ) {
+        if (!prevState || formType !== prevState.form || prevState["submitted"]) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
                     let formContents = JSON.parse(JSON.stringify(this.props.registrationForm[formType]));
@@ -62,7 +60,7 @@ class Form extends Component {
                     };
 
                     let course = '';
-                    if(this.props.computedMatch.params.course){
+                    if (this.props.computedMatch.params.course) {
                         course = decodeURIComponent(this.props.computedMatch.params.course);
                         course = this.props.courses.find(({ course_title }) => course === course_title);
                         if (course) {
@@ -109,7 +107,7 @@ class Form extends Component {
                     });
                 });
             }
-        } else if(prevState && !prevState["submitted"]) {
+        } else if (prevState && !prevState["submitted"]) {
             this.setState(prevState);
         }
     }
@@ -179,7 +177,7 @@ class Form extends Component {
             if (this.validateSection()) {
                 if (!oldState.submitted && oldState.activeStep === this.getFormObject().section_titles.length - 1) {
                     this.props.registrationActions.submitForm(this.state);
-                    sessionStorage.setItem("form","");
+                    sessionStorage.setItem("form", "");
                     return {
                         submitted: true,
                     };
@@ -265,7 +263,7 @@ class Form extends Component {
                     // validate that email doesn't exist in database already
                     console.log(emails.includes(fieldValue));
                     isValid = !emails.includes(fieldValue);
-                    if(!isValid){
+                    if (!isValid) {
                         oldState.existingUser = true;
                     }
                 }
@@ -284,21 +282,20 @@ class Form extends Component {
     }
 
     onSelectChange(value, label, field) {
-        if(field.type.indexOf("create") > -1 && typeof value === 'object' && !value.__isNew__) {
-            if(field.type==="create parent"){
-                // console.log("existing parent!");
+        if (field.type.indexOf("create") > -1 && typeof value === 'object' && !value.__isNew__) {
+            if (field.type === "create parent") {
                 this.setState((OldState) => {
                     let NewState = OldState;
                     console.log(value, this.props.parents);
-                    let selectedParentID = value.label.substring(0,value.label.indexOf(":"));
-                    let {user_id,name, gender, email, address, city, zipcode, state, relationship, phone_number} = this.props.parents.find((parent)=>{
+                    let selectedParentID = value.label.substring(0, value.label.indexOf(":"));
+                    let { user_id, name, gender, email, address, city, zipcode, state, relationship, phone_number } = this.props.parents.find((parent) => {
                         return selectedParentID == parent.user_id;
                     });
 
                     NewState[label] = {
-                        "Parent Name" : name,
-                        "Gender" : gender,
-                        "Parent Email" : email,
+                        "Parent Name": name,
+                        "Gender": gender,
+                        "Parent Email": email,
                         "Address": address,
                         "City": city,
                         "State": state,
@@ -307,29 +304,27 @@ class Form extends Component {
                         "Parent Phone Number": phone_number,
                         "user_id": user_id,
                     };
-                    console.log(NewState[label]);
                     let ParentKeys = Object.keys(NewState[label]);
-                    ParentKeys.forEach((key)=>{
-                        NewState[label+"_validated"][key] = true;
+                    ParentKeys.forEach((key) => {
+                        NewState[label + "_validated"][key] = true;
                     });
                     return NewState;
                 }, () => {
-                    if(!(field.type === "create parent")){
+                    if (!(field.type === "create parent")) {
                         this.validateField(this.state.activeSection, field, value);
                     } else {
                         // This is when the parent field is filled, submit the form
                         this.validateSection();
-                        this.setState({nextSection:true});
+                        this.setState({ nextSection: true });
                     }
 
                 });
             } else {
-                this.setState({existingUser:true});
+                this.setState({ existingUser: true });
             }
-        } else if(value.__isNew__){
+        } else if (value.__isNew__) {
             this.setState((OldState) => {
                 let NewState = OldState;
-                // console.log(field,value, "new value!");
                 NewState[label][field.field] = value.value;
                 console.log(NewState[label][field.field], "new value!");
                 return NewState;
@@ -339,7 +334,6 @@ class Form extends Component {
         } else {
             this.setState((OldState) => {
                 let NewState = OldState;
-                // console.log(field,value);
                 NewState[label][field.field] = value;
                 return NewState;
             }, () => {
@@ -349,33 +343,33 @@ class Form extends Component {
     }
 
     // removes duplicates with arr1 from arr2 from search select field
-    removeDuplicates(arr1, arr2){
+    removeDuplicates(arr1, arr2) {
         let stringValue, stringOtherValue;
-        arr1.forEach((value)=>{
-            if(value){
+        arr1.forEach((value) => {
+            if (value) {
                 stringValue = value.value;
             } else {
                 stringValue = '';
             }
-            arr2.forEach((otherValue, j)=>{
-                if(otherValue){
+            arr2.forEach((otherValue, j) => {
+                if (otherValue) {
                     stringOtherValue = otherValue.value;
                 } else {
                     stringOtherValue = '';
                 }
-                if(stringValue === stringOtherValue){
+                if (stringValue === stringOtherValue) {
                     arr2[j] = '1';
                 }
             });
         });
         let uniqueVals = [...new Set(arr2)], indexOfString = -1;
-        uniqueVals.forEach((value,i)=>{
-            if(typeof value === "string"){
+        uniqueVals.forEach((value, i) => {
+            if (typeof value === "string") {
                 indexOfString = i;
             }
         });
-        if(indexOfString > -1){
-            uniqueVals.splice(indexOfString,1);
+        if (indexOfString > -1) {
+            uniqueVals.splice(indexOfString, 1);
         }
         return uniqueVals;
     }
@@ -415,7 +409,7 @@ class Form extends Component {
                     options={courseList}
                     className="search-options" />;
             case "student":
-                if(this.state.conditional){
+                if (this.state.conditional) {
                     currSelectedValues = Object.values(this.state[label]);
                 } else {
                     currSelectedValues = Object.values(this.state[label]);
@@ -425,41 +419,43 @@ class Form extends Component {
                     .map(({ user_id, name, email }) => ({
                         value: `${name} - ${email}`,
                         label: `${user_id}: ${name} - ${email}`,
-                        }));
+                    }));
                 studentList.unshift({
                     value: `${0}: ${'None'}`,
                     label: `${0}: ${'None'}`,
                 });
-                studentList = this.removeDuplicates(currSelectedValues,studentList);
+                studentList = this.removeDuplicates(currSelectedValues, studentList);
 
-                return (<div style={{width:"inherit",}}>
-                     <Grid container className={"student-align"} spacing={2000}>
-                    <SearchSelect
-                        value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ''}
-                        onChange={(value) => {
-                            this.onSelectChange(value, label, field);
-                        }}
-                        options={studentList}
-                        className="search-options" />
-                         {
-                             ((this.state.conditional && fieldIndex <= 1) || (fieldIndex === 0)) ? '' :
-                                 <RemoveIcon color="primary" aria-label="Add" variant="extended"
-                                             className="button-remove-student"
-                                             onClick={(event) => {
-                                                 event.preventDefault();
-                                                 //deletes answer field from state
-                                                 this.removeField(fieldIndex);
-                                                 this.setState((prevState) => {
-                                                     return prevState;
-                                                 })
-                                             }}>
-                                 </RemoveIcon>
-                         }
+                return (<div style={{ width: "inherit", }}>
+                    <Grid container className={"student-align"} spacing={2000}>
+                        <SearchSelect
+                            value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ''}
+                            onChange={(value) => {
+                                this.onSelectChange(value, label, field);
+                            }}
+                            options={studentList}
+                            className="search-options" />
+                        {
+                            ((this.state.conditional && fieldIndex <= 1) || (fieldIndex === 0)) ? '' :
+                                <RemoveIcon color="primary" aria-label="Add" variant="extended"
+                                    className="button-remove-student"
+                                    onClick={(event) => {
+                                        event.preventDefault();
+                                        //deletes answer field from state
+                                        this.removeField(fieldIndex);
+                                        this.setState((prevState) => {
+                                            return prevState;
+                                        })
+                                    }}>
+                                </RemoveIcon>
+                        }
                     </Grid>
                 </div>);
             case "teacher":
+
                 currSelectedValues = Object.values(this.state[label]);
                 let teacherList = this.props.teachers;
+
                 teacherList = teacherList.map((teacher) => {
                     return {
                         value: teacher.id.toString() + ": " + teacher.name,
@@ -467,7 +463,8 @@ class Form extends Component {
                     }
                 });
                 teacherList = this.removeDuplicates(currSelectedValues, teacherList);
-                return (<div style={{width:"inherit",}}>
+                return (<div style={{ width: "inherit", }}>
+
                     <Grid container className={"student-align"} spacing={2000}>
                         <SearchSelect
                             value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ''}
@@ -497,7 +494,7 @@ class Form extends Component {
             default:
                 return <TextField
                     label={field.field}
-                    multiline={field.multiline}
+                    multiline={ field.multiline}
                     // className={this.state[label+"_validated"][field.field] ? "": "error"}
                     margin="normal"
                     value={this.state[label][field.field]}
@@ -531,28 +528,28 @@ class Form extends Component {
     }
 
     removeField(fieldIndex) {
-        this.setState((prevState)=>{
+        this.setState((prevState) => {
             // Delete field from state
             let fieldtoDeleteKey;
-            if(Array.isArray(this.props.registrationForm[this.state.form][this.state.activeSection])){
+            if (Array.isArray(this.props.registrationForm[this.state.form][this.state.activeSection])) {
                 fieldtoDeleteKey = this.props.registrationForm[this.state.form][this.state.activeSection][fieldIndex].field;
             } else {
                 fieldtoDeleteKey = this.props.registrationForm[this.state.form][this.state.activeSection][this.state.conditional][fieldIndex].field;
             }
             delete prevState[prevState["activeSection"]][fieldtoDeleteKey];
-            delete prevState[prevState["activeSection"]+"_validated"][fieldtoDeleteKey];
+            delete prevState[prevState["activeSection"] + "_validated"][fieldtoDeleteKey];
 
             //rename all existing fields to be in the right order. currently there can be 2 student 3's
             let currentSectionFields = prevState[prevState["activeSection"]];
-            let currentSectionValidationFields = prevState[prevState["activeSection"]+"_validated"];
+            let currentSectionValidationFields = prevState[prevState["activeSection"] + "_validated"];
             let baseFieldName, curFieldName;
 
             for (const [index, [origFieldKey, field]] of Object.entries(Object.entries(currentSectionFields))) {
-                if(index === String(0)){
+                if (index === String(0)) {
                     baseFieldName = origFieldKey;
                     curFieldName = baseFieldName
                 } else {
-                    curFieldName = baseFieldName + " " + (index !== 0 ? index: '');
+                    curFieldName = baseFieldName + " " + (index !== 0 ? index : '');
                 }
                 // Rename Answer Fields
                 if (origFieldKey !== curFieldName) {
@@ -561,7 +558,7 @@ class Form extends Component {
                     delete currentSectionFields[origFieldKey];
                 }
                 // Rename Validation Fields
-                if(origFieldKey+"_validated" !== curFieldName+"_validated"){
+                if (origFieldKey + "_validated" !== curFieldName + "_validated") {
                     Object.defineProperty(currentSectionValidationFields, curFieldName,
                         Object.getOwnPropertyDescriptor(currentSectionValidationFields, origFieldKey));
                     delete currentSectionValidationFields[origFieldKey];
@@ -571,7 +568,7 @@ class Form extends Component {
             //save to session Storage
             sessionStorage.setItem("form", JSON.stringify(this.state));
             return prevState;
-        }, ()=>{
+        }, () => {
             //delete field from redux store
             let param = [this.state.form, this.state.activeSection];
             this.props.registrationActions.removeField(param, fieldIndex, this.state.conditional);
@@ -604,7 +601,7 @@ class Form extends Component {
                                         return (
                                             <div key={j} className="fields-wrapper" style={{}}>
                                                 <Grid container className={"student-align"} spacing={20}>
-                                                    {label === this.state.activeSection ? this.renderField(field, label, j): ''}
+                                                    {label === this.state.activeSection ? this.renderField(field, label, j) : ''}
                                                 </Grid>
                                                 <br />
                                                 {
@@ -703,7 +700,7 @@ class Form extends Component {
         return (
             <Grid container className="">
                 {/*Determine if finished component is displayed. If not, then don't prompt*/}
-                { this.state.submitted ? '' :<Prompt message="Are you sure you want to leave?" />}
+                {this.state.submitted ? '' : <Prompt message="Are you sure you want to leave?" />}
                 <Grid item xs={12}>
                     <Paper className={"registration-form paper"}>
                         <BackButton
@@ -732,15 +729,19 @@ class Form extends Component {
                             aria-labelledby="simple-modal-title"
                             aria-describedby="simple-modal-description"
                             open={this.state.existingUser}
-                            onClick={(e)=>{ e.preventDefault();
-                                this.setState({existingUser: false})}}>
+                            onClick={(e) => {
+                                e.preventDefault();
+                                this.setState({ existingUser: false })
+                            }}>
                             <div className="existing-user-popup">
                                 <Typography variant="h6" id="modal-title">
                                     {"The user you are entering already exists in the database! Please enter a new email, and check for spelling."}
                                 </Typography>
                                 <Button
-                                    onClick={(e)=>{ e.preventDefault();
-                                        this.setState({existingUser: false})}}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        this.setState({ existingUser: false })
+                                    }}
                                     color="primary"
                                     className="button primary">
                                     {"I will enter a new email"}
