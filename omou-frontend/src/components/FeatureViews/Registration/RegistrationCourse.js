@@ -114,7 +114,7 @@ class RegistrationCourse extends Component {
                             <BackButton />
                         </Grid>
                         <Grid item sm={2}>
-                            <Button className={"button"} style={{padding:"6px 10px 6px 10px"}}>
+                            <Button className={"button"} style={{padding:"6px 10px 6px 10px", backgroundColor:"white"}}>
                                 <EditIcon style={{fontSize:"16px"}}/>
                                 Edit Course
                             </Button>
