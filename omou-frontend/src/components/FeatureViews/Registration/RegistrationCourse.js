@@ -22,6 +22,7 @@ import CallIcon from "@material-ui/icons/Phone";
 import EmailIcon from "@material-ui/icons/Email";
 import EditIcon from "@material-ui/icons/Edit";
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
+import Button from "@material-ui/core/Button";
 
 const rowHeadings = [
     { id: 'Student', numberic: false, disablePadding: false },
@@ -108,10 +109,21 @@ class RegistrationCourse extends Component {
                     </Grid>
                 </Paper>
                 <Paper className={"paper content"}>
-                    <BackButton />
+                    <Grid container justify={"space-between"}>
+                        <Grid item sm={3}>
+                            <BackButton />
+                        </Grid>
+                        <Grid item sm={2}>
+                            <Button className={"button"} style={{padding:"6px 10px 6px 10px"}}>
+                                <EditIcon style={{fontSize:"16px"}}/>
+                                Edit Course
+                            </Button>
+                        </Grid>
+                    </Grid>
+                    <Divider className={"top-divider"}/>
                     <div className={"course-heading"}>
                         <Typography align={'left'} variant={'h3'} style={{ fontWeight: "500" }} >
-                            {this.props.computedMatch.params.courseTitle}
+                            {this.state.course_title}
                         </Typography>
                         <div className={"date"}>
                             <CalendarIcon style={{ fontSize: "16" }} align={'left'} className={"icon"}/>
@@ -144,17 +156,23 @@ class RegistrationCourse extends Component {
                             </div>
                         </div>
                     </div>
-                    <Divider />
+
                     <Typography align={'left'} className={'description text'}>
                         {this.state.description}
                     </Typography>
-                    <Divider />
-                    <LinearProgress
-                        color={'primary'}
-                        value={(this.state.filled / this.state.capacity) * 100}
-                        valueBuffer={100}
-                        variant={'buffer'}
-                    />
+                    <div className={"course-status"}>
+                        <div className={"status"}>
+                            <div className={"text"}>
+                                {this.state.filled} / {this.state.capacity} Spaces Taken
+                            </div>
+                        </div>
+                        <LinearProgress
+                            color={'primary'}
+                            value={(this.state.filled / this.state.capacity) * 100}
+                            valueBuffer={100}
+                            variant={'buffer'}
+                        />
+                    </div>
                     <Table>
                         <TableToolbar />
                         <TableBody>

@@ -12,7 +12,7 @@ h1, h2, h3, .heading {
   color: $primaryFontColor;
   border-radius: 5px;
   border: solid 2px #DBD7D7!important;
-  background-color: white;
+  background-color: white !important;
   .icon > *{
     color:$primaryFontColor;
   }
@@ -26,4 +26,26 @@ h1, h2, h3, .heading {
 
 .paper{
   background-color: $paperColor !important;
+}
+
+.top-divider{
+  margin-bottom:20px !important;
+}
+
+.status{
+  width: 150px;
+  height: 30px;
+  margin: 5px;
+  position:absolute;
+  right:10px;
+
+  background: #FFFFFF;
+  border: 1px solid $primaryColor;
+  box-sizing: border-box;
+  border-radius: 100px;
+
+  .text{
+    font-size:12px !important;
+    padding: 5px 0 0 0;
+  }
 }

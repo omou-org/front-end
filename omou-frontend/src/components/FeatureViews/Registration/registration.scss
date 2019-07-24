@@ -245,7 +245,7 @@
   text-align: left;
   display: block;
   margin-bottom: 30px;
-  padding: 8px 10px 0 10px;
+  padding: 6px 10px 0 10px;
   background-color:white;
   width: 106px;
 }
@@ -360,7 +360,7 @@
   }
 
   .info{
-    margin: 25px 0 15px 0;
+    margin: 25px 0 5px 0;
 
     .first-line {
       text-align: left;
@@ -391,6 +391,7 @@
 
 .description{
   padding:2% 1% 1% 1%;
+  margin-bottom:15px !important;
   @include respond-to(medium-up-screens){
     width:60%;
     line-height: 1.8 !important;
@@ -398,7 +399,14 @@
   @include respond-to(handheld){
     width:100%;
   }
+}
 
+.course-status{
+  position:relative;
+  margin:5px;
+  .status {
+    top:-40px;
+  }
 }
 
 .innerIcon {
