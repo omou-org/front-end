@@ -497,7 +497,7 @@ class Form extends Component {
                 return <TextField
                     label={field.field}
                     //Sets multiline to false for default forms
-                    multiline={ field.multiline}
+                    multiline={field.multiline}
                     // className={this.state[label+"_validated"][field.field] ? "": "error"}
                     margin="normal"
                     value={this.state[label][field.field]}
