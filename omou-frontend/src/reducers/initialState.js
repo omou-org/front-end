@@ -482,9 +482,9 @@ function initRegistrationForm() {
                     },
                     {
                         field: "Gender",
-                        name: "Gender",
-                        type: "short text",
-                        required: true,
+                        type: "select",
+                        options:["Male", "Female", "Neither"],
+                        required:true,
                         field_limit: 1,
                     },
                     {
@@ -547,8 +547,9 @@ function initRegistrationForm() {
                     {
                         field: "Gender",
                         name: "Gender",
-                        type: "short text",
-                        required: true,
+                        type: "select",
+                        options:["Male", "Female", "Neither"],
+                        required:true,
                         field_limit: 1,
                     },
                     {
@@ -750,7 +751,6 @@ function initRegistrationForm() {
                         required: true,
                         full: true,
                         field_limit: 1,
-
                     },
                     {
                         field: "E-Mail",
@@ -784,7 +784,7 @@ function initRegistrationForm() {
                     {
                         field: "Address",
                         name: "Address",
-                        type: "short text",
+                        type: "address",
                         conditional: false,
                         required: true,
                         full: true,
@@ -802,7 +802,7 @@ function initRegistrationForm() {
                     {
                         field: "Zip Code",
                         name: "Zip Code",
-                        type: "number",
+                        type: "zipcode",
                         conditional: false,
                         required: true,
                         full: true,
@@ -827,9 +827,9 @@ function initRegistrationForm() {
                         field_limit: 1,
                     },
                     {
-                        field: "Date of Birth",
+                        field: "Date of Birth (MM/DD/YYY)",
                         name: "Date of Birth",
-                        type: "date",
+                        type: "birthday",
                         conditional: false,
                         required: true,
                         full: true,

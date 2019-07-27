@@ -467,7 +467,6 @@ class Form extends Component {
 
                     <Grid container className={"student-align"} spacing={2000}>
                         <SearchSelect
-
                             value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ''}
                             onChange={(value) => {
                                 this.onSelectChange(value, label, field);
@@ -476,7 +475,6 @@ class Form extends Component {
                             className="search-options" />
                     </Grid>
                 </div>);
-
             case "create parent":
                 let currParentList = this.props.parents
                     .map(({ user_id, name, email }) => ({
@@ -496,9 +494,9 @@ class Form extends Component {
             default:
                 return <TextField
                     label={field.field}
-                    //Sets multiline to false for default forms
-                    multiline={field.multiline}
-                    // className={this.state[label+"_validated"][field.field] ? "": "error"}
+
+                    multiline={ field.multiline}
+                      // className={this.state[label+"_validated"][field.field] ? "": "error"}
                     margin="normal"
                     value={this.state[label][field.field]}
                     error={!this.state[label + "_validated"][field.field]}
@@ -644,7 +642,7 @@ class Form extends Component {
                                             event.preventDefault();
                                             this.handleNext();
                                         }}
-                                        className="button">
+                                        className="button primary">
                                         {activeStep === steps.length - 1 ? "Finish" : "Next"}
                                     </Button>
                                 </div>
@@ -658,20 +656,43 @@ class Form extends Component {
 
     // view after a submitted form
     renderSubmitted() {
+        let { activeSection, activeStep, conditional, nextSection } = this.state,
+            currentForm = this.props.registrationForm[this.state.form],
+            steps = currentForm.section_titles;
         return (
-            <div style={{ margin: 2 + "%", height: 400 + "px" }}>
-                <Typography align={"left"} style={{ fontSize: 24 + 'px' }}>
+            <div style={{margin:2+"%", padding:5+"px"}}>
+                <Typography align={"left"} style={{fontSize:24+'px'}}>
                     You have successfully registered!
                 </Typography>
-                <Typography align={"left"} style={{ fontSize: 14 + 'px' }}>
-                    An email will be sent to "Parent Name" to confirm "Student Name"'s registration
+                <Typography align={"left"} style={{fontSize:14+'px'}}>
+                    An email will be sent to you to confirm your registration
                 </Typography>
                 <Button
                     align={"left"}
                     component={NavLink}
                     to={"/registration"}
-                    style={{ margin: "20px" }}
-                    color={"primary"}>Back to Registration</Button>
+                    style={{margin:"20px"}}
+                    className={"button"}>Back to Registration</Button>
+                <div className={"confirmation-copy"}>
+                    <Typography className={"title"} align={'left'}>Confirmation Copy</Typography>
+                {
+                    steps.map((sectionTitle)=>{
+                        return (<div>
+                            <Typography className={'section-title'}
+                                align={'left'}>{sectionTitle}</Typography>
+                            {
+                                currentForm[sectionTitle].map((field)=>{
+                                    let fieldVal = this.state[sectionTitle][field.field];
+                                    return (<div>
+                                        <Typography className={'field-title'} align={'left'}>{field.field}</Typography>
+                                        <Typography className={'field-value'} align={'left'}>{ fieldVal !== '' ? fieldVal : "N/A"}</Typography>
+                                    </div>)
+                                })
+                            }
+                        </div>)
+                    })
+                }
+                </div>
             </div>
         );
     }
@@ -682,7 +703,7 @@ class Form extends Component {
                 {/*Determine if finished component is displayed. If not, then don't prompt*/}
                 {this.state.submitted ? '' : <Prompt message="Are you sure you want to leave?" />}
                 <Grid item xs={12}>
-                    <Paper className={"registration-form"}>
+                    <Paper className={"registration-form paper"}>
                         <BackButton
                             warn={true}
                             onBack={this.onBack}

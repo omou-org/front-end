@@ -10,7 +10,6 @@ import TableBody from "@material-ui/core/TableBody";
 import Button from '@material-ui/core/Button';
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
-// import Dialog from "@material-ui/core/Modal";
 import Card from "@material-ui/core/Card";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
@@ -21,12 +20,13 @@ import BackIcon from "@material-ui/icons/ArrowBack";
 import ExpandIcon from "@material-ui/icons/ExpandMore";
 import ShrinkIcon from "@material-ui/icons/ExpandLess";
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-
-//Local Component Imports
-import './registration.scss'
 import Grow from "@material-ui/core/Grow";
 import {NavLink, Redirect} from "react-router-dom";
 import {withRouter} from 'react-router'
+
+//Local Component Imports
+import './registration.scss'
+import '../../../theme/theme.scss';
 
 const rowHeadings = [
     {id:'Course', numberic:false, disablePadding: false},
@@ -279,8 +279,7 @@ class FullRegistration extends Component {
                                                             }}
                                                             variant="contained"
                                                             disabled={course.capacity <= course.filled}
-                                                            color="primary"
-                                                            className="button">REGISTER</Button>
+                                                            className="button primary">+ REGISTER</Button>
                                                     </TableCell>
                                                 </TableRow>
                                             ))

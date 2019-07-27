@@ -6,6 +6,7 @@
   padding: 1%;
 
   .button{
+    background-color:white;
     @include respond-to(medium-up-screens){
       margin-right:30px;
       height: 46px;
@@ -234,7 +235,6 @@
     position:relative;
     top:-7px;
     font-style: normal;
-    font-weight: bold;
     line-height: 13px;
   }
 }
@@ -245,6 +245,9 @@
   text-align: left;
   display: block;
   margin-bottom: 30px;
+  padding: 6px 10px 0 10px;
+  background-color:white;
+  width: 106px;
 }
 
 .registration-form{
@@ -275,6 +278,7 @@
   }
 
   .form-section{
+    background-color:$paperColor;
     text-align:left;
 
     .form-control{
@@ -311,6 +315,11 @@
 .add-student{
   margin-top:25px !important;
   margin-bottom: 25px !important;
+}
+.button.add-student{
+  border:none !important;
+  background-color:$primaryDarkColor;
+  color:white;
 }
 
 .remove-student{
@@ -351,7 +360,7 @@
   }
 
   .info{
-    margin: 25px 0 15px 0;
+    margin: 25px 0 5px 0;
 
     .first-line {
       text-align: left;
@@ -382,6 +391,7 @@
 
 .description{
   padding:2% 1% 1% 1%;
+  margin-bottom:15px !important;
   @include respond-to(medium-up-screens){
     width:60%;
     line-height: 1.8 !important;
@@ -389,10 +399,40 @@
   @include respond-to(handheld){
     width:100%;
   }
+}
 
+.course-status{
+  position:relative;
+  margin:5px;
+  .status {
+    top:-40px;
+  }
 }
 
 .innerIcon {
   margin-right:10px;
   color:$secondaryFontColor;
+}
+
+// Confirmation Copy
+.confirmation-copy{
+  background-color:white;
+  margin:10px;
+  padding:3%;
+  .title{
+    font-size:1.3em;
+  }
+  .section-title{
+    margin:15px 0 5px 0;
+    font-weight:bold;
+    color:$secondaryFontColor;
+  }
+  .field-title{
+    margin-top:10px;
+    font-weight:bold;
+    font-size:1.1em;
+  }
+  .field-value{
+    font-size:1.1em;
+  }
 }

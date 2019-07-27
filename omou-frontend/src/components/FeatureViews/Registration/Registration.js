@@ -4,6 +4,7 @@ import * as registrationActions from '../../../actions/registrationActions';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import RegistrationActions from "./RegistrationActions";
+import '../../../theme/theme.scss';
 
 //Material UI Imports
 import FullRegistration from "./FullRegistration";

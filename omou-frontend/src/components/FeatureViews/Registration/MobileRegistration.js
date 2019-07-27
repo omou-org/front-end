@@ -7,8 +7,9 @@ import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import Grow from "@material-ui/core/Grow";
-
 import {withRouter} from 'react-router'
+
+import '../../../theme/theme.scss';
 
 const CategoryView = (cats) => {
     return cats.map((cat,i)=>{

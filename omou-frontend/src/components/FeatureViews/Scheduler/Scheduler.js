@@ -12,6 +12,7 @@ import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
 import * as calenderActions from '../../../actions/calenderActions';
 
 import './scheduler.scss'
+import Paper from "@material-ui/core/Paper";
 
 class Scheduler extends Component {
     constructor(props) {
@@ -46,24 +47,9 @@ class Scheduler extends Component {
         calendarApi.gotoDate('2000-01-01') // call a method on the Calendar object
     };
 
-    render() {
-        // deleteEvent function will take in an array. Each int in array will corrispond to the event's 'id'. To delete an event just input the events 'id'.
-        // this.props.calenderActions.deleteEvent([4])
-        // addEvent take an object and pushes into event_in_view
-        // this.props.calenderActions.addEvent(
-        //     {
-        //     id: 3,
-        //     title: "This other class",
-        //     start: "2019-07-14",
-        //     end: "2019-07-17",
-        //     editable: true,
-        //     })
 
-
-
-        // this.props.calenderActions.filterEvent("daniel")
-
-        return (<div className="">
+    render(){
+        return (<Paper className="paper">
             <div className='demo-app-top'>
                 <button onClick={this.toggleWeekends}>toggle weekends</button>&nbsp;
                 <button onClick={this.gotoPast}>go to a date in the past</button>&nbsp;
@@ -89,7 +75,7 @@ class Scheduler extends Component {
                     schedulerLicenseKey={'GPL-My-Project-Is-Open-Source'}
                 />
             </div>
-        </div>)
+        </Paper>)
     }
 }
 
