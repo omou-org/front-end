@@ -1,9 +1,10 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as registrationActions from '../../../actions/registrationActions';
+import * as rootActions from '../../../actions/rootActions';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import RegistrationActions from "./RegistrationActions";
+import RegistrationUserActions from "./RegistrationActions";
 
 //Material UI Imports
 import FullRegistration from "./FullRegistration";
@@ -30,10 +31,8 @@ class Registration extends Component {
     }
 
     componentDidMount() {
-        this.props.registrationActions.fetchCourses();
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
-        // this.props.registrationActions.fetchRandomColor();
     }
 
     resize() {
@@ -75,7 +74,7 @@ class Registration extends Component {
                 <Grid item xs={12}>
                     <Paper className={"paper"}>
                         <Grid item lg={12}>
-                            <RegistrationActions
+                            <RegistrationUserActions
                             //admin = {false}
                             />
                         </Grid>
@@ -123,7 +122,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        registrationActions: bindActionCreators(registrationActions, dispatch)
+        registrationActions: bindActionCreators(registrationActions, dispatch),
+        rootActions: bindActionCreators(rootActions, dispatch),
     };
 }
 

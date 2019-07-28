@@ -345,8 +345,10 @@ export default {
 }
 
 function initAuth() {
+    const token = localStorage.getItem("authToken") || null;
+    sessionStorage.setItem("authToken", token);
     return {
-        "token": localStorage.getItem("authToken") || null,
+        token,
         "failedLogin": false,
     };
 }

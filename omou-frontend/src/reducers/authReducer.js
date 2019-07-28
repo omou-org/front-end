@@ -20,6 +20,7 @@ const onSuccess = (state, {data, saveLogin}) => {
     if (saveLogin) {
         localStorage.setItem("authToken", data.token);
     }
+    sessionStorage.setItem("authToken", data.token);
     return {
         ...state,
         "token": data.token,
@@ -33,6 +34,7 @@ const onFail = (state) => ({
 });
 
 const onLogout = (state) => {
+    sessionStorage.removeItem("authToken");
     localStorage.removeItem("authToken");
     return {
         ...state,
