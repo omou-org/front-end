@@ -257,13 +257,6 @@ class FullRegistration extends Component {
                                                         onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
                                                         style={{textDecoration: 'none', cursor: 'pointer'}}
                                                         align="left">
-                                                        <CircularProgress
-                                                            className={'space-left-progress'}
-                                                            size={30}
-                                                            thickness={5}
-                                                            value={((course.filled) / course.capacity) * 100}
-                                                            variant={'static'}
-                                                        />
                                                         <div className={'space-left'}>
                                                             {(course.filled)} / {course.capacity}
                                                         </div>
