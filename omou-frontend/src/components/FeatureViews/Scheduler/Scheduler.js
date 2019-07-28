@@ -1,31 +1,31 @@
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listViewPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction'
+import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
+import * as calenderActions from '../../../actions/calenderActions';
+
 import './scheduler.scss'
 import Paper from "@material-ui/core/Paper";
 
 class Scheduler extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             calendarWeekends: true,
-            calendarEvents: [ // initial event data
-                {title: 'Event Now', start: new Date()}
-            ]
+            calendarEvents: []
         }
     }
     calendarComponentRef = React.createRef();
 
     handleDateClick = (arg) => {
-        //confirm('Would you like to add an event to ' + arg.dateStr + ' ?')
-        if (true) {
+        if (window.confirm('Would you like to add an event to ' + arg.dateStr + ' ?')) {
             this.setState({  // add new event data
                 calendarEvents: this.state.calendarEvents.concat({ // creates a new array
                     title: 'New Event',
@@ -34,7 +34,7 @@ class Scheduler extends Component {
                 })
             })
         }
-    };
+    }
 
     toggleWeekends = () => {
         this.setState({ // update a property
@@ -47,26 +47,32 @@ class Scheduler extends Component {
         calendarApi.gotoDate('2000-01-01') // call a method on the Calendar object
     };
 
+
     render(){
         return (<Paper className="paper">
             <div className='demo-app-top'>
-                <button onClick={ this.toggleWeekends }>toggle weekends</button>&nbsp;
-                <button onClick={ this.gotoPast }>go to a date in the past</button>&nbsp;
+                <button onClick={this.toggleWeekends}>toggle weekends</button>&nbsp;
+                <button onClick={this.gotoPast}>go to a date in the past</button>&nbsp;
                 (also, click a date/time to add an event)
             </div>
             <div className='demo-app-calendar'>
                 <FullCalendar
                     defaultView="dayGridMonth"
                     header={{
-                        left: 'prev,next today',
-                        center: 'title',
+                        left: ' today prev,next ',
+                        center: ' title, ',
                         right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
                     }}
-                    plugins={[ dayGridPlugin, timeGridPlugin, interactionPlugin, listViewPlugin ]}
-                    ref={ this.calendarComponentRef }
-                    weekends={ this.state.calendarWeekends }
-                    events={ this.state.calendarEvents }
-                    dateClick={ this.handleDateClick }
+                    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listViewPlugin, resourceTimelinePlugin]}
+                    ref={this.calendarComponentRef}
+                    weekends={this.state.calendarWeekends}
+                    events={this.props.events_in_view}
+                    editable={true}
+                    displayEventTime={true}
+                    timeZone={'local'}
+                    eventLimit={4}
+                    dateClick={this.handleDateClick}
+                    schedulerLicenseKey={'GPL-My-Project-Is-Open-Source'}
                 />
             </div>
         </Paper>)
@@ -76,11 +82,16 @@ class Scheduler extends Component {
 Scheduler.propTypes = {};
 
 function mapStateToProps(state) {
-    return {};
+    console.log(state)
+    return {
+        events_in_view: state.Calender.events_in_view
+    };
 }
 
 function mapDispatchToProps(dispatch) {
-    return {};
+    return {
+        calenderActions: bindActionCreators(calenderActions, dispatch)
+    };
 }
 
 export default connect(

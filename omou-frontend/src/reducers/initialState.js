@@ -342,7 +342,63 @@ export default {
             },
         ],
     },
+    "CalenderData": {
+        "events_in_view": [{
+            id: 1,
+            title: "6th Grade Math Placement Test Prep",
+            start: '2019-07-22T07:00',
+            end: '2019-07-22T08:00',
+            editable: true,
+            course: "math",
+            instructor: "calvin"
+
+        },
+        {
+            id: 2,
+            title: "Math",
+            start: "2019-07-22T08:00",
+            end: "2019-07-22T10:00",
+            editable: true,
+            course: "math",
+            instructor: "daniel"
+        },
+        {
+            id: 3,
+            title: "English",
+            start: "2019-07-22T10:30",
+            end: "2019-07-22T12:00",
+            editable: true,
+            course: "english",
+            instructor: "calvin"
+        },
+        {
+            id: 4,
+            title: "Social Studies",
+            start: "2019-07-22T13:00",
+            end: "2019-07-22T15:00",
+            editable: true,
+            course: "social",
+            instructor: "calvin"
+        }, {
+            id: 5,
+            title: "Something",
+            start: "2019-07-22T15:30",
+            end: "2019-07-22T17:00",
+            editable: true,
+            course: "test"
+        }, {
+            id: 6,
+            title: "This one class",
+            start: "2019-07-22T17:00",
+            end: "2019-07-22T18:00",
+            editable: true,
+            course: "test"
+        }
+
+        ]
+    }
 }
+
 
 function initAuth() {
     return {
@@ -852,3 +908,4 @@ function initSignUpForm() {
 
     }
 }
+
