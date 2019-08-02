@@ -8,7 +8,7 @@ export default {
                 course_id: 1,
                 course_title: "6th Grade Math Placement Test Prep",
                 dates: "6/22/2018 - 8/17/2019",
-                instructor_id: 1,
+                instructor_id_id: 1,
                 days: "T",
                 time: "8:30pm - 2:00pm",
                 tuition: 450,
@@ -343,56 +343,89 @@ export default {
         ],
     },
     "CalenderData": {
+        "sessions": [{
+            session_id: 1,
+            title: "6th Grade Math Prep",
+            default_instructor_id: 12,
+            categories: [],
+            num_occurances: 15
+        }],
+
+        "events": [{
+
+            event_id: 1,
+            start: '2019-08-22T07:00',
+            end: '2019-08-22T08:00',
+            session_id: 1,
+            instructor: 12
+        },
+        {
+            event_id: 2,
+            start: '2019-08-29T07:00',
+            end: '2019-08-29T08:00',
+            session_id: 1,
+            instructor: 12
+        }],
+
         "events_in_view": [{
             id: 1,
             title: "6th Grade Math Placement Test Prep",
-            start: '2019-07-22T07:00',
-            end: '2019-07-22T08:00',
+            start: '2019-08-28T07:00',
+            end: '2019-08-28T08:00',
             editable: true,
-            course: "math",
-            instructor: "calvin"
+            subject: "math",
+            instructor_id: 1,
+            course: "C"
 
         },
         {
             id: 2,
             title: "Math",
-            start: "2019-07-22T08:00",
-            end: "2019-07-22T10:00",
+            start: "2019-08-28T08:00",
+            end: "2019-08-28T10:00",
             editable: true,
-            course: "math",
-            instructor: "daniel"
+            subject: "math",
+            instructor_id: 2,
+            course: "T"
         },
         {
             id: 3,
             title: "English",
-            start: "2019-07-22T10:30",
-            end: "2019-07-22T12:00",
+            start: "2019-08-28T10:30",
+            end: "2019-08-28T12:00",
             editable: true,
-            course: "english",
-            instructor: "calvin"
+            subject: "english",
+            instructor_id: 3,
+            course: "T"
+
         },
         {
             id: 4,
             title: "Social Studies",
-            start: "2019-07-22T13:00",
-            end: "2019-07-22T15:00",
+            start: "2019-08-28T13:00",
+            end: "2019-08-28T15:00",
             editable: true,
-            course: "social",
-            instructor: "calvin"
+            subject: "social",
+            instructor_id: 1,
+            course: "T"
         }, {
             id: 5,
             title: "Something",
-            start: "2019-07-22T15:30",
-            end: "2019-07-22T17:00",
+            start: "2019-08-28T15:30",
+            end: "2019-08-28T17:00",
             editable: true,
-            course: "test"
+            subject: "test",
+            instructor_id: 2,
+            course: "T"
         }, {
             id: 6,
             title: "This one class",
-            start: "2019-07-22T17:00",
-            end: "2019-07-22T18:00",
+            start: "2019-0-28T17:00",
+            end: "2019-08-28T18:00",
             editable: true,
-            course: "test"
+            subject: "test",
+            instructor_id: 2,
+            course: "T"
         }
 
         ]
@@ -483,8 +516,8 @@ function initRegistrationForm() {
                     {
                         field: "Gender",
                         type: "select",
-                        options:["Male", "Female", "Neither"],
-                        required:true,
+                        options: ["Male", "Female", "Neither"],
+                        required: true,
                         field_limit: 1,
                     },
                     {
@@ -548,8 +581,8 @@ function initRegistrationForm() {
                         field: "Gender",
                         name: "Gender",
                         type: "select",
-                        options:["Male", "Female", "Neither"],
-                        required:true,
+                        options: ["Male", "Female", "Neither"],
+                        required: true,
                         field_limit: 1,
                     },
                     {

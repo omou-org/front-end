@@ -10,7 +10,7 @@ const rootReducer = combineReducers({
     auth,
     Course,
     Users,
-    Calender
+    Calender,
 });
 
 export default rootReducer;

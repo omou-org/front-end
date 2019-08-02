@@ -1,42 +1,44 @@
 import initialState from './initialState';
 import * as actions from "../actions/actionTypes"
 
-export default function calender(state = initialState.CalenderData, { payload, type }) {
+export default function calender(state = initialState.CalenderData, { payload, type, }) {
     let newState = state;
-    let obj = newState.events_in_view;
+
     switch (type) {
         case actions.ADD_EVENT:
             newState.events_in_view.push(payload);
-            console.log('CalenderData Action', payload, newState);
-            return state;
+            return newState;
 
         case actions.DELETE_EVENT:
-            for (let i = 0; i < newState.events_in_view.length; i++) {
-                let obj = newState.events_in_view[i];
-                if (payload.indexOf(obj.id) !== -1) {
-                    newState.events_in_view.splice(i, 1);
-                }
-            }
-            return state;
+            const removeIndex = newState.events_in_view.map((item) => { return item.id; }).indexOf(payload.id);
+            newState.events_in_view.splice(removeIndex, 1)
+            return newState;
+
 
         case actions.DELETE_ALL_EVENTS:
-            for (let i = 0; i < newState.events_in_view.length; i++) {
-                let obj = newState.events_in_view[i];
-                console.log(obj)
-            }
             return state;
 
+
         case actions.FILTER_EVENT:
-            for (let i = 0; i < obj.length; i++) {
-                if (obj[i].course === payload) {
-                    const e = obj.filter(event => event.course === payload)
-                    newState.events_in_view.splice(0, obj.length, ...e)
-                } else if (obj[i].instructor === payload) {
-                    const e = obj.filter(event => event.instructor === payload)
-                    newState.events_in_view.splice(0, obj.length, ...e)
-                }
-            }
-            return state;
+
+
+            const filter_key = payload.key
+            const filter_value = payload.value
+
+
+            // Search by subject
+            newState.events_in_view.filter((allCourse) => {
+                return allCourse[filter_key] === filter_value
+            })
+                .map((finalResult) => {
+                    console.log(finalResult)
+                    return {
+                        ...finalResult
+                    }
+                })
+
+
+            return newState;
 
         default:
             return newState;
