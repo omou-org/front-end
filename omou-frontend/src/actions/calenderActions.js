@@ -25,6 +25,9 @@ import axios from 'axios';
 //         dispatch({type: types.FETCH_COURSES_FAILED, payload: error});
 //     });
 
+export function fetchTeacherAvailabilities(event){
+
+}
 
 export function addEvent(event) {
     console.log(event)

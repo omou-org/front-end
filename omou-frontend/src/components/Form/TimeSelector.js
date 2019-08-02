@@ -22,23 +22,30 @@ class TimeSelector extends Component {
     constructor(props){
         super(props);
         this.state = {
-            value:0,
-            usersList: [],
-            viewToggle: true, // true = list, false = card view
+            availabilities:{},
         };
         this.handleChange = this.handleChange.bind(this);
     }
 
     componentWillMount(){
-        this.setState({
-            usersList: this.props.teachers.concat(this.props.parents).concat(this.props.students),
+        // Set event variable based on type (i.e. teacher vs. room)
+        // convert all events from this.props.availabilities times to be Date objects
+        // set the "availabilities" key value in state
+        // if recurring, set keys to be days of the week
+        // if not recurring, set keys to be available days
+            // value for each key is going to be available times
+        this.setState((prevState)=>{
+            return {
+                availabilities: this.props[this.props.type][this.props.id],
+            }
         });
+
     }
 
 
     render(){
         return (<Grid item xs={'12'} className="TimeSelector">
-            {/*Select from Available Class Dates*/}
+            {/*Select from Available Class Dates/dates*/}
             {/*Select when class will meet*/}
             {/*Select class time*/}
         </Grid>)
@@ -50,8 +57,8 @@ TimeSelector.propTypes = {};
 function mapStateToProps(state) {
     return {
         teachers: state.Users.TeacherList,
-        parents: state.Users.ParentList,
-        students: state.Users.StudentList,
+        teacher: state.Calendar.teacher_availabilities,
+        room: state.Calendar.room_availabilities,
     };
 }
 

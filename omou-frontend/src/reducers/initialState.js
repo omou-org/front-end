@@ -343,7 +343,8 @@ export default {
         ],
     },
     "CalenderData": {
-        "events_in_view": [{
+        "events_in_view": [
+            {
             id: 1,
             title: "6th Grade Math Placement Test Prep",
             start: '2019-07-22T07:00',
@@ -395,7 +396,19 @@ export default {
             course: "test"
         }
 
-        ]
+        ],
+        "teacher_availabilities": {
+            1: [
+                    {
+                        start: '2019-07-22T07:00',
+                        end: '2019-07-22T08:00',
+                    },
+                    {
+                        start: '2019-07-22T08:00',
+                        end: '2019-07-22T09:00',
+                    },
+                ]
+        }
     }
 }
 
