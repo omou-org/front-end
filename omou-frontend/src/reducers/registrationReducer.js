@@ -4,20 +4,6 @@ import * as actions from "./../actions/actionTypes"
 export default function registration(state = initialState.RegistrationForms, { payload, type }) {
     let newState = state;
     switch (type) {
-        case actions.FETCH_COURSES_SUCCESSFUL:
-            console.log('FETCH_COURSES_SUCCESSFUL Action', payload, newState);
-            return newState;
-        case actions.FETCH_COURSES_FAILED:
-            console.log('FETCH_COURSES_FAILED Action');
-            return newState;
-        case actions.FETCH_STUDENTS:
-            newState = payload;
-            console.log('RECEIVE_STUDENTS Action');
-            return newState;
-        case actions.GET_REGISTRATION_FORM:
-            newState = payload;
-            console.log('RECEIVE_REGISTRATION Action');
-            break;
         case actions.ADD_STUDENT_FIELD:
             newState = addAStudentField(state);
             return newState;
@@ -27,9 +13,6 @@ export default function registration(state = initialState.RegistrationForms, { p
         case actions.ADD_FIELD:
             newState = addField(state, payload);
             return newState;
-        case actions.SUBMIT_FORM:
-            submitForm(payload);
-            return state;
         case actions.REMOVE_FIELD:
             let path = payload[0];
             let removeFieldIndex = payload[1];
@@ -39,6 +22,18 @@ export default function registration(state = initialState.RegistrationForms, { p
             }
             newState = removeField(state, path, removeFieldIndex, conditional);
             return newState;
+        case actions.POST_STUDENT_SUCCESSFUL:
+            console.log("POSTED STUDENT", payload);
+            return state;
+        case actions.POST_STUDENT_FAILED:
+            console.error("FAILED TO POST STUDENT", payload);
+            return state;
+        case actions.POST_PARENT_SUCCESSFUL:
+            console.log("POSTED PARENT", payload);
+            return state;
+        case actions.POST_PARENT_FAILED:
+            console.error("FAILED TO POST PARENT", payload);
+            return state;
         default:
             return state;
     }
@@ -143,9 +138,4 @@ function setSectionFieldList(path, formList, form) {
         return setSectionFieldList(path, formList, form[firstPathStep])
     }
     Error("Path variable not an array");
-}
-
-function submitForm(state) {
-    // submit information to database
-    console.log("Received state: ", state);
 }

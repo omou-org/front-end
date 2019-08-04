@@ -419,8 +419,16 @@ function initRegistrationForm() {
                 section_titles: ["Basic Information", "Parent Information"],
                 "Basic Information": [
                     {
-                        field: "Student Name",
-                        name: "Student Name",
+                        field: "Student First Name",
+                        name: "Student First Name",
+                        type: "short text",
+                        required: true,
+                        full: true,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Student Last Name",
+                        name: "Student Last Name",
                         type: "short text",
                         required: true,
                         full: true,
@@ -476,9 +484,17 @@ function initRegistrationForm() {
                 ],
                 "Parent Information": [
                     {
-                        field: "Parent Name",
-                        name: "Parent Name",
+                        field: "Parent First Name",
+                        name: "Parent First Name",
                         type: "create parent",
+                        field_limit: 1,
+                        required: true,
+                        full: true,
+                    },
+                    {
+                        field: "Parent Last Name",
+                        name: "Parent Last Name",
+                        type: "short text",
                         field_limit: 1,
                         required: true,
                         full: true,
@@ -486,9 +502,10 @@ function initRegistrationForm() {
                     {
                         field: "Relationship to Student",
                         name: "Relationship to Student",
-                        type: "short text",
+                        type: "select",
                         required: true,
                         field_limit: 1,
+                        options: ["Mother", "Father", "Guardian", "Other"],
                     },
                     {
                         field: "Gender",

@@ -174,7 +174,7 @@ class Form extends Component {
             this.validateField(currSectionTitle, field, this.state[currSectionTitle][field.field]);
         });
         this.setState((oldState) => {
-            if (this.validateSection()) {
+            if (this.validateSection() || oldState[this.state.activeSection].user_id) {
                 if (!oldState.submitted && oldState.activeStep === this.getFormObject().section_titles.length - 1) {
                     this.props.registrationActions.submitForm(this.state);
                     sessionStorage.setItem("form", "");
@@ -288,12 +288,13 @@ class Form extends Component {
                     let NewState = OldState;
                     console.log(value, this.props.parents);
                     let selectedParentID = value.label.substring(0, value.label.indexOf(":"));
-                    let { user_id, name, gender, email, address, city, zipcode, state, relationship, phone_number } = this.props.parents.find((parent) => {
+                    let { user_id, first_name, last_name, gender, email, address, city, zipcode, state, relationship, phone_number } = this.props.parents.find((parent) => {
                         return selectedParentID == parent.user_id;
                     });
 
                     NewState[label] = {
-                        "Parent Name": name,
+                        "Parent First Name": first_name,
+                        "Parent Last Name": last_name,
                         "Gender": gender,
                         "Parent Email": email,
                         "Address": address,
@@ -674,23 +675,39 @@ class Form extends Component {
                     className={"button"}>Back to Registration</Button>
                 <div className={"confirmation-copy"}>
                     <Typography className={"title"} align={'left'}>Confirmation Copy</Typography>
-                {
-                    steps.map((sectionTitle)=>{
-                        return (<div>
-                            <Typography className={'section-title'}
-                                align={'left'}>{sectionTitle}</Typography>
-                            {
-                                currentForm[sectionTitle].map((field)=>{
-                                    let fieldVal = this.state[sectionTitle][field.field];
-                                    return (<div>
-                                        <Typography className={'field-title'} align={'left'}>{field.field}</Typography>
-                                        <Typography className={'field-value'} align={'left'}>{ fieldVal !== '' ? fieldVal : "N/A"}</Typography>
-                                    </div>)
-                                })
-                            }
-                        </div>)
-                    })
-                }
+                    {
+                        steps.map((sectionTitle) => (
+                            <div key={sectionTitle}>
+                                <Typography
+                                    className="section-title"
+                                    align="left">
+                                    {sectionTitle}
+                                </Typography>
+                                {
+                                    currentForm[sectionTitle].map(({field, type}) => {
+                                        let fieldVal = this.state[sectionTitle][field];
+                                        if (fieldVal && (type === "student" || type === "course")) {
+                                            fieldVal = fieldVal.value;
+                                        }
+                                        return (
+                                            <div key={field}>
+                                                <Typography
+                                                    className="field-title"
+                                                    align="left">
+                                                    {field}
+                                                </Typography>
+                                                <Typography
+                                                    className="field-value"
+                                                    align="left">
+                                                    {fieldVal ? fieldVal : "N/A"}
+                                                </Typography>
+                                            </div>
+                                        );
+                                    })
+                                }
+                            </div>
+                        ))
+                    }
                 </div>
             </div>
         );
