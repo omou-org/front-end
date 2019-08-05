@@ -49,7 +49,7 @@ class Form extends Component {
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
         const formType = this.props.computedMatch.params.type;
-        if (!prevState || formType !== prevState.form || prevState["submitted"]) {
+        if (!prevState || formType !== prevState.form || prevState["submitted"] || this.props.computedMatch.params.course) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
                     let formContents = JSON.parse(JSON.stringify(this.props.registrationForm[formType]));
@@ -606,7 +606,7 @@ class Form extends Component {
                                                 </Grid>
                                                 <br />
                                                 {
-                                                    numSameTypeFields < field.field_limit &&
+                                                    this.props.computedMatch.params.course === undefined && numSameTypeFields < field.field_limit &&
                                                     field === lastFieldOfType &&
                                                     <Fab color="primary" aria-label="Add" variant="extended"
                                                         className="button add-student"

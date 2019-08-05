@@ -397,18 +397,39 @@ export default {
         }
 
         ],
-        "teacher_availabilities": {
-            1: [
-                    {
-                        start: '2019-07-22T07:00',
-                        end: '2019-07-22T08:00',
+        "teacher_work_hours": {
+            1:
+                {
+                    "monday":{
+                        start: 'T18:00',
+                        end: 'T21:00',
                     },
-                    {
-                        start: '2019-07-22T08:00',
-                        end: '2019-07-22T09:00',
+                    "tuesday":{
+                        start: 'T00:00',
+                        end: 'T00:00',
                     },
-                ]
-        }
+                    "wednesday":{
+                        start: 'T18:00',
+                        end: 'T21:00',
+                    },
+                    "thursday":{
+                        start: 'T00:00',
+                        end: 'T00:00',
+                    },
+                    "friday":{
+                        start: 'T18:00',
+                        end: 'T21:00',
+                    },
+                    "saturday":{
+                        start: 'T10:00',
+                        end: 'T03:00',
+                    },
+                    "sunday":{
+                        start: 'T00:00',
+                        end: 'T00:00',
+                    },
+                }
+        },
     }
 }
 
