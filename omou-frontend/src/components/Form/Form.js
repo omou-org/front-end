@@ -683,10 +683,16 @@ class Form extends Component {
                             {
                                 currentForm[sectionTitle].map((field)=>{
                                     let fieldVal = this.state[sectionTitle][field.field];
+                                    if(fieldVal){
+                                        if("value" in fieldVal){
+                                            fieldVal = fieldVal.value;
+                                        }
+                                    }
+                                    console.log(fieldVal !== '' && fieldVal !== null && fieldVal);
                                     return (<div>
-                                        <Typography className={'field-title'} align={'left'}>{field.field}</Typography>
-                                        <Typography className={'field-value'} align={'left'}>{ fieldVal !== '' ? fieldVal : "N/A"}</Typography>
-                                    </div>)
+                                        <Typography className={'field-title'} align={'left'}>{field.field !== null ? field.field: ''}</Typography>
+                                        <Typography className={'field-value'} align={'left'}>{ fieldVal !== '' && fieldVal !== null && fieldVal ? fieldVal : "N/A"}</Typography>
+                                    </div>);
                                 })
                             }
                         </div>)

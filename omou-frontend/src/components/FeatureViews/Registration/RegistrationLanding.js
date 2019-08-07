@@ -81,7 +81,9 @@ class RegistrationLanding extends Component {
                                                     <Grid item md={4} className={'heading-det'} align={'left'}>
                                                         Instructor
                                                     </Grid>
-                                                    <Grid item md={8} className={'value'} align={'left'}>
+                                                    <Grid item md={8}
+                                                          className={'value'}
+                                                          align={'left'}>
                                                         {this.state.instructors.find((instructor)=>{
                                                             return instructor.id === course.instructor_id;
                                                         }).name}
@@ -103,7 +105,7 @@ class RegistrationLanding extends Component {
                                                             {course.filled} / {course.capacity}
                                                         </span>
                                                         <span className={'label'}>
-                                                            Space Left
+                                                            Status
                                                         </span>
                                                     </Grid>
                                                     <Grid item md={6}>
