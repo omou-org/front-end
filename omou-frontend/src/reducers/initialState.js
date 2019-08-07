@@ -136,6 +136,9 @@ export default {
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test."
             },
         ],
+        "CourseSessions":{
+
+        },
         "CourseRoster": {
             1: [23, 99, 64],
             2: [23, 99, 64, 24],
@@ -352,7 +355,6 @@ export default {
             editable: true,
             course: "math",
             instructor: "calvin"
-
         },
         {
             id: 2,
@@ -942,4 +944,3 @@ function initSignUpForm() {
 
     }
 }
-

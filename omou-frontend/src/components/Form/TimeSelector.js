@@ -20,6 +20,38 @@ import CardActions from "@material-ui/core/CardActions";
 import Select from "@material-ui/core/es/Select/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 
+Date.daysBetween = function( date1, date2 ) {
+    //Get 1 day in milliseconds
+    let one_day=1000*60*60*24;
+
+    // Convert both dates to milliseconds
+    let date1_ms = date1.getTime();
+    let date2_ms = date2.getTime();
+
+    // Calculate the difference in milliseconds
+    let difference_ms = date2_ms - date1_ms;
+
+    // Convert back to days and return
+    return Math.round(difference_ms/one_day);
+}
+
+var date_sort_asc = function (date1, date2) {
+    // This is a comparison function that will result in dates being sorted in
+    // ASCENDING order. As you can see, JavaScript's native comparison operators
+    // can be used to compare dates. This was news to me.
+    if (date1 > date2) return 1;
+    if (date1 < date2) return -1;
+    return 0;
+};
+
+var date_sort_desc = function (date1, date2) {
+    // This is a comparison function that will result in dates being sorted in
+    // DESCENDING order.
+    if (date1 > date2) return -1;
+    if (date1 < date2) return 1;
+    return 0;
+};
+
 class TimeSelector extends Component {
     constructor(props){
         super(props);
@@ -30,30 +62,37 @@ class TimeSelector extends Component {
                 {
                     dayTitle:'Monday',
                     value:false,
+                    dayIndex: 1,
                 },
                 {
                     dayTitle:'Tuesday',
                     value:false,
+                    dayIndex: 2,
                 },
                 {
                     dayTitle:'Wednesday',
                     value:false,
+                    dayIndex: 3,
                 },
                 {
                     dayTitle:'Thursday',
                     value:false,
+                    dayIndex: 4,
                 },
                 {
                     dayTitle:'Friday',
                     value:false,
+                    dayIndex: 5,
                 },
                 {
                     dayTitle:'Saturday',
                     value:false,
+                    dayIndex: 6,
                 },
                 {
                     dayTitle:'Sunday',
                     value:false,
+                    dayIndex: 0,
                 },
             ],
         };
@@ -70,16 +109,55 @@ class TimeSelector extends Component {
 
     }
 
+    // Timeframe is all the available times given a teacher
     setTimeframe(){
         // start date is today
+        let startDate = new Date();
         // define number of days per week (int), find from this.state.daysOfWeek
+        let numDaysPerWeek = 0, daysPerWeek = [];
+        this.state.daysOfWeek.forEach((day) => {
+            if(day.value){
+                numDaysPerWeek++;
+                daysPerWeek.push(day.dayIndex);
+            }
+        });
         // if sessionNum === -1, sessionNum = 30
+        let sessionNum;
+        if(this.state.sessionNum === -1){
+            sessionNum = 30;
+        } else {
+            sessionNum = this.state.sessionNum;
+        }
         // set endDate: end date will be sessionsNum/daysPerWeek * 7 days after today
+        let endDate = new Date();
+        endDate.setDate( endDate.getDate() + ((sessionNum/numDaysPerWeek) * 7));
         // define list of valid available dates (objects) based on daysOfWeek and endDate
         // ie { date: 2019-07-22, timeSlots: [{start: tbd, end: tbd}], }
+        let availableDates = [], currentDate = new Date(), sessionDurationDays = Date.daysBetween(startDate, endDate);
+        for(let day = 0; day < sessionDurationDays; day++){
+            currentDate.setDate( currentDate.getDate() + day );
+            if( daysPerWeek.includes(currentDate.getDay()) ){
+                availableDates.push(
+                    {
+                        date: new Date(currentDate.getTime()),
+                        timeSlots: [],
+                    }
+                )
+            }
+        }
         // get teacher's current courses within this time
-        // sort current courses by date + time
+        try {
+            this.props.teacherID
+        } catch(error){
+            console.error(error)
+        }
+        let currentTeacherCourses = this.props.courses.filter((course)=>{
+            return course.instructor_id === this.props.teacherID;
+        });
+        // sort current courses by date + time in ascending order (oldest to newest)
+        currentTeacherCourses.sort(date_sort_asc);
         // Get teacher's workStart and workEnd times
+        let currentTeacherWorkHours = this.props.teacherWorkHours[this.props.teacherID];
         // for each valid available date
             //  if there are courses on this date
                 //  if courseStartTime - workStartTime > 0 (if there's a gap between when work starts and the first course)
@@ -88,6 +166,12 @@ class TimeSelector extends Component {
                     // add a time slot to the valid date from courseEndTime to nextCourseStartTime
                 // if workEndTime - lastCourseEndTime > 0 (if there's a gap between the last course and the end of the work time)
                     // add a time slot to the valid date from lastCourseEndTime to workEndTime
+        let currentDateCourses;
+        availableDates = availableDates.map((date)=>{
+            currentDateCourses = currentTeacherCourses.filter((course)=>{
+
+            });
+        });
         // for each date, append each timeSlots array
         // setState variable for availabilities to array of time slots
     }
