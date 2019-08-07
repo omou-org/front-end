@@ -228,8 +228,8 @@ class FullRegistration extends Component {
                             </div>
                         </Grid>
                     </Grid>
-                    <Typography className={"popular-courses"} align={"left"}>
-                        Popular Courses
+                    <Typography variant={'h3'} align={"left"}>
+                        Registration Catalog
                     </Typography>
                     <Grid item xs={12} style={{marginTop:'2%'}}>
                         <Paper className={"paper"}>

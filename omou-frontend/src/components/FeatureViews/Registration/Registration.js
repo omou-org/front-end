@@ -20,6 +20,7 @@ import Categories from "@material-ui/icons/Category";
 import CourseList from "@material-ui/icons/List";
 import { NavLink } from "react-router-dom";
 import Fab from '@material-ui/core/Fab';
+import RegistrationLanding from "./RegistrationLanding";
 
 class Registration extends Component {
     constructor(props) {
@@ -53,11 +54,16 @@ class Registration extends Component {
                 categoriesViewToggle={this.state.mobileViewToggle} />;
         }
         else {
-            return <FullRegistration
-                courses={this.props.courses}
-                categories={this.props.courseCategories}
-                teachers={this.props.teachers}
-            />;
+            return <RegistrationLanding
+                    courses={this.props.courses}
+                    categories={this.props.courseCategories}
+                    teachers={this.props.teachers}
+            />
+            // return <FullRegistration
+            //     courses={this.props.courses}
+            //     categories={this.props.courseCategories}
+            //     teachers={this.props.teachers}
+            // />;
 
         }
     }

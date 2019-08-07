@@ -120,6 +120,9 @@
   .row td{
     height: 56px;
   }
+  .row{
+    margin:5px;
+  }
 }
 
 .actions{
@@ -436,5 +439,47 @@
   }
   .field-value{
     font-size:1.1em;
+  }
+}
+
+// Registration Landing
+.RegistrationLanding{
+  padding: 2%;
+
+  .heading {
+    margin: 20px 0 25px 0;
+  }
+  .registration-table > * {
+    margin:10px 0 10px 0;
+  }
+  .registration-table{
+    .row{
+      .course-heading, .course-detail {
+        padding: 5px 15px;
+      }
+      .course-heading{
+        font-weight:500;
+        font-size:24px;
+      }
+      .course-detail{
+        color: $secondaryFontColor;
+        font-size: 12px;
+        margin:3px;
+
+        .heading-det{
+          font-weight: 800;
+        }
+      }
+      .course-action{
+        background-color:lightgrey;
+        height:100px;
+
+        .course-status{
+          .stats, .label{display:block;}
+          .stats{ font-size:2em; font-weight:500;}
+        }
+      }
+    }
+
   }
 }
