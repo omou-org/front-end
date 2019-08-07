@@ -688,7 +688,6 @@ class Form extends Component {
                                             fieldVal = fieldVal.value;
                                         }
                                     }
-                                    console.log(fieldVal !== '' && fieldVal !== null && fieldVal);
                                     return (<div>
                                         <Typography className={'field-title'} align={'left'}>{field.field !== null ? field.field: ''}</Typography>
                                         <Typography className={'field-value'} align={'left'}>{ fieldVal !== '' && fieldVal !== null && fieldVal ? fieldVal : "N/A"}</Typography>

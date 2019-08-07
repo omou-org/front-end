@@ -8,21 +8,17 @@ import '../../../theme/theme.scss';
 
 
 //Material UI Imports
-import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import NewUser from "@material-ui/icons/PersonAdd";
-import NewTutor from "@material-ui/icons/Group";
-import NewCourse from "@material-ui/icons/School";
-import Categories from "@material-ui/icons/Category";
-import CourseList from "@material-ui/icons/List";
 import { NavLink } from "react-router-dom";
 import { withRouter } from 'react-router-dom';
-import Fab from '@material-ui/core/Fab';
 import {Typography} from "@material-ui/core";
 import BackButton from "../../BackButton";
-import TableCell from "./FullRegistration";
+import FilterIcon from '@material-ui/icons/FilterList';
+import Popover from '@material-ui/core/Popover';
+import SearchSelect from 'react-select';
+
 
 class RegistrationLanding extends Component {
     constructor(props) {
@@ -30,6 +26,7 @@ class RegistrationLanding extends Component {
         this.state = {
             courses:[],
             instructors:[],
+            anchorEl:'',
         }
     }
 
@@ -44,16 +41,87 @@ class RegistrationLanding extends Component {
         this.props.history.push(route);
     }
 
+    handleFilterClick(event) {
+        event.preventDefault();
+        this.setState({anchorEl:event.currentTarget});
+    }
 
+    handleClose(event) {
+        event.preventDefault();
+        this.setState({anchorEl:null});
+    }
+
+    renderFilter(filter){
+        let options = [];
+        switch(filter){
+            case 'instructor':
+                options = this.state.instructors.map((instructor)=>{
+                    return {label: instructor.name, value: instructor.name};
+                });
+                break;
+            case 'subject':
+                options = [{label:"math", value:"math"},{label:"science", value:"science"}, {label:"sat", value:"sat"}];
+                break;
+            case 'grade':
+                options = [1,2,3,4,5,6,7,8,9,10,11,12];
+                break;
+            default:
+                return '';
+        }
+        options.push('All');
+        const CustomClearText = () => 'clear all';
+        const ClearIndicator = props => {
+            const {
+                children = <CustomClearText />,
+                getStyles,
+                innerProps: { ref, ...restInnerProps },
+            } = props;
+            return (
+                <div
+                    {...restInnerProps}
+                    ref={ref}
+                    style={getStyles('clearIndicator', props)}
+                >
+                    <div style={{ padding: '0px 5px' }}>{children}</div>
+                </div>
+            );
+        };
+
+        const ClearIndicatorStyles = (base, state) => ({
+            ...base,
+            cursor: 'pointer',
+            color: state.isFocused ? 'blue' : 'black',
+        });
+        return <SearchSelect
+            closeMenuOnSelect={false}
+            components={{ ClearIndicator }}
+            placeholder={`All ${filter}s`}
+            styles={{ clearIndicator: ClearIndicatorStyles }}
+            isMulti
+            options={options}
+        />
+    }
 
     render() {
+        const open = Boolean(this.state.anchorEl);
+        const id = open ? 'simple-popover' : undefined;
+
         return (
             <Grid container>
                 <Grid item xs={12}>
                     <Paper className="RegistrationLanding paper">
                         <BackButton/>
                         <hr/>
-                        <Typography variant={'h3'} align={'left'} className={"heading"}>Registration Catalog</Typography>
+                        <Grid container alignItems={'center'} layout={'row'}>
+                            <Grid item md={10}>
+                                <Typography variant={'h3'} align={'left'} className={"heading"}>Registration Catalog</Typography>
+                            </Grid>
+                            <Grid item md={2}>
+                                <FilterIcon
+                                    onClick={(e)=>{ this.handleFilterClick.bind(this)(e) }}
+                                    />
+                            </Grid>
+                        </Grid>
                         <div className={'registration-table'}>
                             {
                                 this.state.courses.map((course)=>{
@@ -132,6 +200,24 @@ class RegistrationLanding extends Component {
                         </div>
                     </Paper>
                 </Grid>
+                <Popover
+                    id={id}
+                    open={open}
+                    anchorEl={this.state.anchorEl}
+                    onClose={(e)=>{this.handleClose.bind(this)(e)}}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }}
+                >
+                    {this.renderFilter('instructor')}
+                    <Typography>The content of the Popover.</Typography>
+                    {this.renderFilter('subject')}
+                </Popover>
             </Grid>
         )
     }
