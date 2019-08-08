@@ -449,10 +449,11 @@
   .heading {
     margin: 20px 0 25px 0;
   }
-  .registration-table > * {
-    margin:10px 0 10px 0;
-  }
+
   .registration-table{
+    > * {
+      margin:10px 0 10px 0;
+    }
     .row{
       .course-heading, .course-detail {
         padding: 5px 15px;
@@ -480,6 +481,11 @@
         }
       }
     }
-
+  }
+}
+.registration-filter{
+  .filter-options{
+    margin:10px;
+    width:300px;
   }
 }

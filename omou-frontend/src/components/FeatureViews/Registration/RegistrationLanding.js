@@ -27,6 +27,11 @@ class RegistrationLanding extends Component {
             courses:[],
             instructors:[],
             anchorEl:'',
+            filter: {
+                instructor: [],
+                grade:[],
+                subject:[],
+            }
         }
     }
 
@@ -51,19 +56,43 @@ class RegistrationLanding extends Component {
         this.setState({anchorEl:null});
     }
 
+    handleFilterChange(filters, filterType){
+        this.setState((state)=>{
+            state.courses = filters && filters.length !== 0 ? this.props.courses.filter((course)=>{
+                let reducedFilter;
+               switch(filterType){
+                   case 'instructor':
+                       reducedFilter = filters.map((instructorField)=>{ return instructorField.value });
+                       return reducedFilter.includes(course.instructor_id);
+                   case 'grade':
+                       reducedFilter = filters.map((gradeField)=>{ return Number(gradeField.value) });
+                       return reducedFilter.includes(course.grade);
+                   default:
+                       return true;
+               }
+            }) : this.props.courses;
+            state.filter[filterType] = filters ? filters : [];
+            return state;
+        });
+    }
+
     renderFilter(filter){
         let options = [];
         switch(filter){
             case 'instructor':
                 options = this.state.instructors.map((instructor)=>{
-                    return {label: instructor.name, value: instructor.name};
+                    return {label: instructor.name, value: instructor.id};
                 });
                 break;
             case 'subject':
                 options = [{label:"math", value:"math"},{label:"science", value:"science"}, {label:"sat", value:"sat"}];
                 break;
             case 'grade':
-                options = [1,2,3,4,5,6,7,8,9,10,11,12];
+                options = [{label:"1", value:"1"},{label:"2", value:"2"}, {label:"3", value:"3"},
+                    {label:"4", value:"4"},{label:"5", value:"5"}, {label:"6", value:"6"},
+                    {label:"7", value:"7"},{label:"8", value:"8"}, {label:"9", value:"9"},
+                    {label:"10", value:"10"},{label:"11", value:"11"}, {label:"12", value:"12"},
+                ];
                 break;
             default:
                 return '';
@@ -93,6 +122,9 @@ class RegistrationLanding extends Component {
             color: state.isFocused ? 'blue' : 'black',
         });
         return <SearchSelect
+            value={this.state.filter[filter]}
+            onChange={(e)=>{this.handleFilterChange(e,filter)}}
+            className={'filter-options'}
             closeMenuOnSelect={false}
             components={{ ClearIndicator }}
             placeholder={`All ${filter}s`}
@@ -205,9 +237,10 @@ class RegistrationLanding extends Component {
                     open={open}
                     anchorEl={this.state.anchorEl}
                     onClose={(e)=>{this.handleClose.bind(this)(e)}}
+                    className={'registration-filter'}
                     anchorOrigin={{
                         vertical: 'bottom',
-                        horizontal: 'center',
+                        horizontal: 'right',
                     }}
                     transformOrigin={{
                         vertical: 'top',
@@ -215,8 +248,8 @@ class RegistrationLanding extends Component {
                     }}
                 >
                     {this.renderFilter('instructor')}
-                    <Typography>The content of the Popover.</Typography>
                     {this.renderFilter('subject')}
+                    {this.renderFilter('grade')}
                 </Popover>
             </Grid>
         )
