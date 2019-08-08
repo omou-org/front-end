@@ -48,7 +48,11 @@ class Scheduler extends Component {
     };
 
 
-    render(){
+    render() {
+
+        this.props.calenderActions.filterEvent({ key: "subject", value: "math" })
+
+
         return (<Paper className="paper">
             <div className='demo-app-top'>
                 <button onClick={this.toggleWeekends}>toggle weekends</button>&nbsp;
@@ -59,7 +63,7 @@ class Scheduler extends Component {
                 <FullCalendar
                     defaultView="dayGridMonth"
                     header={{
-                        left: ' today prev,next ',
+                        left: ' today prev,next   ',
                         center: ' title, ',
                         right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
                     }}
@@ -82,7 +86,6 @@ class Scheduler extends Component {
 Scheduler.propTypes = {};
 
 function mapStateToProps(state) {
-    console.log(state)
     return {
         events_in_view: state.Calender.events_in_view
     };
