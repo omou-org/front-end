@@ -42,7 +42,7 @@ class Registration extends Component {
         if (this.state.mobileView) {
             return <MobileRegistration
                 courses={this.props.courses}
-                teachers={this.props.teachers}
+                instructors={this.props.instructors}
                 categories={this.props.courseCategories}
                 categoriesViewToggle={this.state.mobileViewToggle} />;
         }
@@ -50,7 +50,7 @@ class Registration extends Component {
             return <RegistrationLanding
                     courses={this.props.courses}
                     categories={this.props.courseCategories}
-                    teachers={this.props.teachers}
+                    instructors={this.props.instructors}
             />
         }
     }
@@ -109,7 +109,7 @@ Registration.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        teachers: state.Users["TeacherList"],
+        instructors: state.Users["InstructorList"],
         courses: state.Course["NewCourseList"],
         courseCategories: state.Course["CourseCategories"],
     };

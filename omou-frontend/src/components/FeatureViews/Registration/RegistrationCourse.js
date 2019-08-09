@@ -56,9 +56,7 @@ class RegistrationCourse extends Component {
     }
 
     componentWillMount() {
-        let CourseInView = this.props.courses.find((course) => {
-            return course.course_id.toString() === this.props.computedMatch.params.courseID;
-        });
+        let CourseInView = this.props.courses[this.props.computedMatch.params.courseID] ;
         this.setState({ ...CourseInView });
     }
 
@@ -76,15 +74,13 @@ class RegistrationCourse extends Component {
             return DayConverter[day];
         });
 
-        let Teacher = this.props.teachers.find((teacher) => {
-            return teacher.id === this.state.instructor_id;
-        });
+        let Instructor = this.props.Instructors[this.state.instructor_id];
 
         let rows = [];
         let student, row, parent, Actions;
         this.props.courseRoster[this.state.course_id].forEach((student_id) => {
-            student = this.props.students.find((studentCurr) => { return studentCurr.user_id === student_id });
-            parent = this.props.parents.find((parentCurr) => { return student.parent_id === parentCurr.user_id });
+            student = this.props.students[student_id];
+            parent = this.props.parents[student.parent_id];
             Actions = () => {
                 return <div className={student.name + ' actions'}>
                     <CallIcon />
@@ -140,8 +136,8 @@ class RegistrationCourse extends Component {
                             </div>
                             <div className={'second-line'}>
                                 <Chip
-                                    avatar={<Avatar>{Teacher.name.match(/\b(\w)/g).join('')}</Avatar>}
-                                    label={Teacher.name}
+                                    avatar={<Avatar>{Instructor.name.match(/\b(\w)/g).join('')}</Avatar>}
+                                    label={Instructor.name}
                                     className={"chip"}
                                 />
                                 <Typography align={'left'} className={'text'}>
@@ -205,7 +201,7 @@ function mapStateToProps(state) {
         courses: state.Course["CourseList"],
         courseCategories: state.Course["CourseCategories"],
         students: state.Users["StudentList"],
-        teachers: state.Users["TeacherList"],
+        Instructors: state.Users["InstructorList"],
         parents: state.Users["ParentList"],
         courseRoster: state.Course["CourseRoster"],
     };

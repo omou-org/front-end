@@ -417,11 +417,16 @@ class Form extends Component {
                     currSelectedValues = Object.values(this.state[label]);
                 }
 
-                let studentList = this.props.students
-                    .map(({ user_id, name, email }) => ({
-                        value: `${name} - ${email}`,
-                        label: `${user_id}: ${name} - ${email}`,
-                    }));
+                let studentList = Object.keys(this.props.students)
+                    .map((studentID) => {
+                        let student = this.props.students[studentID],
+                            name = student.name,
+                            email = student.email;
+                        return {
+                            value: `${name} - ${email}`,
+                            label: `${studentID}: ${name} - ${email}`,
+                        }
+                    });
                 studentList.unshift({
                     value: `${0}: ${'None'}`,
                     label: `${0}: ${'None'}`,
@@ -453,18 +458,19 @@ class Form extends Component {
                         }
                     </Grid>
                 </div>);
-            case "teacher":
+            case "instructor":
 
                 currSelectedValues = Object.values(this.state[label]);
-                let teacherList = this.props.teachers;
+                let instructorList = this.props.instructors;
 
-                teacherList = teacherList.map((teacher) => {
+                instructorList = Object.keys(instructorList).map((instructorID) => {
+                    let instructor = this.props.instructors[instructorID];
                     return {
-                        value: teacher.id.toString() + ": " + teacher.name,
-                        label: teacher.id.toString() + ": " + teacher.name,
+                        value: instructor.id.toString() + ": " + instructor.name,
+                        label: instructor.id.toString() + ": " + instructor.name,
                     }
                 });
-                teacherList = this.removeDuplicates(currSelectedValues, teacherList);
+                instructorList = this.removeDuplicates(currSelectedValues, instructorList);
                 return (<div style={{ width: "inherit", }}>
 
                     <Grid container className={"student-align"} spacing={2000}>
@@ -473,7 +479,7 @@ class Form extends Component {
                             onChange={(value) => {
                                 this.onSelectChange(value, label, field);
                             }}
-                            options={teacherList}
+                            options={instructorList}
                             className="search-options" />
                     </Grid>
                 </div>);
@@ -770,7 +776,7 @@ function mapStateToProps(state) {
         registrationForm: state.Registration["registration_form"],
         parents: state.Users["ParentList"],
         students: state.Users["StudentList"],
-        teachers: state.Users["TeacherList"],
+        instructors: state.Users["TeacherList"],
     };
 }
 

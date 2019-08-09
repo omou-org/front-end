@@ -459,8 +459,8 @@
         padding: 5px 15px;
       }
       .course-heading{
-        font-weight:500;
-        font-size:24px;
+        font-weight:400;
+        font-size:22px;
       }
       .course-detail{
         color: $secondaryFontColor;
@@ -472,7 +472,7 @@
         }
       }
       .course-action{
-        background-color:lightgrey;
+        background-color: #dfdfdf;
         height:100px;
 
         .course-status{

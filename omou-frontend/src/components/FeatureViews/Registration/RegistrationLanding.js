@@ -37,7 +37,7 @@ class RegistrationLanding extends Component {
     componentDidMount() {
         this.setState({
             courses: Object.keys(this.props.courses),
-            instructors: this.props.teachers,
+            instructors: this.props.instructors,
         })
     }
 
@@ -62,6 +62,7 @@ class RegistrationLanding extends Component {
                 let reducedFilter;
                switch(filterType){
                    case 'instructor':
+                       console.log(filters,course.instructor_id);
                        reducedFilter = filters.map((instructorField)=>{ return instructorField.value });
                        return reducedFilter.includes(course.instructor_id);
                    case 'grade':
@@ -80,18 +81,19 @@ class RegistrationLanding extends Component {
         let options = [];
         switch(filter){
             case 'instructor':
-                options = this.state.instructors.map((instructor)=>{
-                    return {label: instructor.name, value: instructor.id};
+                options = Object.keys(this.state.instructors).map((instructorID)=>{
+                    let instructor = this.props.instructors[instructorID];
+                    return {label: instructor.name, value: Number(instructorID)};
                 });
                 break;
             case 'subject':
                 options = [{label:"math", value:"math"},{label:"science", value:"science"}, {label:"sat", value:"sat"}];
                 break;
             case 'grade':
-                options = [{label:"1", value:"1"},{label:"2", value:"2"}, {label:"3", value:"3"},
-                    {label:"4", value:"4"},{label:"5", value:"5"}, {label:"6", value:"6"},
-                    {label:"7", value:"7"},{label:"8", value:"8"}, {label:"9", value:"9"},
-                    {label:"10", value:"10"},{label:"11", value:"11"}, {label:"12", value:"12"},
+                options = [{label:"1", value:1},{label:"2", value:2}, {label:"3", value:3},
+                    {label:"4", value:4},{label:"5", value:5}, {label:"6", value:6},
+                    {label:"7", value:7},{label:"8", value:8}, {label:"9", value:9},
+                    {label:"10", value:10},{label:"11", value:11}, {label:"12", value:12},
                 ];
                 break;
             default:
@@ -180,14 +182,14 @@ class RegistrationLanding extends Component {
                                     return (<Paper className={'row'}>
                                         <Grid container alignItems={'center'} layout={'row'}>
                                             <Grid item md={3}
-                                                  onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
+                                                  onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.title)}}
                                                   style={{textDecoration: 'none', cursor: 'pointer'}}>
                                                 <Typography className={'course-heading'} align={'left'}>
                                                     {course.title}
                                                 </Typography>
                                             </Grid>
                                             <Grid item md={5}
-                                                  onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
+                                                  onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.title)}}
                                                   style={{textDecoration: 'none', cursor: 'pointer'}}>
                                                 <Grid container className={'course-detail'}>
                                                     <Grid item md={4} className={'heading-det'} align={'left'}>
@@ -204,9 +206,7 @@ class RegistrationLanding extends Component {
                                                     <Grid item md={8}
                                                           className={'value'}
                                                           align={'left'}>
-                                                        {this.state.instructors.find((instructor)=>{
-                                                            return instructor.id === course.instructor_id;
-                                                        }).name}
+                                                        {this.state.instructors[course.instructor_id].name}
                                                     </Grid>
                                                 </Grid>
                                                 <Grid container className={'course-detail'}>

@@ -8,7 +8,7 @@ export default {
                 course_id: 1,
                 course_title: "6th Grade Math Placement Test Prep",
                 dates: "6/22/2018 - 8/17/2019",
-                instructor_id: 1,
+                instructor_id: 10,
                 days: "T",
                 time: "8:30pm - 2:00pm",
                 tuition: 450,
@@ -24,7 +24,7 @@ export default {
                 course_id: 2,
                 course_title: "8th Grade Science",
                 dates: "6/22/2018 - 8/17/2019",
-                instructor_id: 2,
+                instructor_id: 11,
                 days: "W",
                 time: "6:30pm - 8:00pm",
                 tuition: 500,
@@ -37,7 +37,7 @@ export default {
                 course_id: 3,
                 course_title: "Honors Algebra II - Amador",
                 dates: "8/21/2018 - 5/22/2019",
-                instructor_id: 3,
+                instructor_id: 12,
                 days: "T",
                 time: "5:30pm - 7:00pm",
                 tuition: 1480,
@@ -50,7 +50,7 @@ export default {
                 course_id: 4,
                 course_title: "Honors Pre Calculus - Amador",
                 dates: "8/21/2018 - 5/22/2019",
-                instructor_id: 1,
+                instructor_id: 10,
                 days: "T",
                 time: "7:10pm - 8:40pm",
                 tuition: 1480,
@@ -62,7 +62,7 @@ export default {
                 course_id: 5,
                 course_title: "Honors Chemistry - DVHS",
                 dates: "8/20/2018 - 5/21/2019",
-                instructor_id: 2,
+                instructor_id: 11,
                 days: "T",
                 time: "8:30pm - 2:00pm",
                 tuition: 450,
@@ -75,7 +75,7 @@ export default {
                 course_id: 6,
                 course_title: "Geometry - SRVUSD",
                 dates: "8/22/2018 - 5/22/2019",
-                instructor_id: 4,
+                instructor_id: 13,
                 days: "W",
                 time: "5:30pm - 7:00pm",
                 tuition: 1440,
@@ -87,7 +87,7 @@ export default {
                 course_id: 7,
                 course_title: "SAT 2 Math 2",
                 dates: "3/8/2019 - 5/8/2019",
-                instructor_id: 2,
+                instructor_id: 11,
                 days: "F",
                 time: "5:00pm - 8:00pm",
                 tuition: 700,
@@ -100,7 +100,7 @@ export default {
                 course_id: 8,
                 course_title: "AP Chemistry",
                 dates: "2/23/2019 - 4/27/2019",
-                instructor_id: 3,
+                instructor_id: 12,
                 days: "S",
                 time: "9:00am - 12:00pm",
                 tuition: 700,
@@ -113,7 +113,7 @@ export default {
                 course_id: 9,
                 course_title: "AP Calc B/C",
                 dates: "3/8/2019 - 5/12/2019",
-                instructor_id: 2,
+                instructor_id: 11,
                 days: "F",
                 time: "5:30pm - 8:30pm",
                 tuition: 700,
@@ -126,7 +126,7 @@ export default {
                 course_id: 10,
                 course_title: "AP Calc A/B",
                 dates: "3/9/2019 - 5/11/2019",
-                instructor_id: 1,
+                instructor_id: 10,
                 days: "S",
                 time: "1:00pm - 4:00pm",
                 tuition: 700,
@@ -197,7 +197,7 @@ export default {
                     end_time: "T14:00",
                     days: [2],
                 },
-                instructor_id: 1,
+                instructor_id: 10,
                 tuition: 450,
                 capacity: 20,
                 filled: 14,
@@ -220,7 +220,7 @@ export default {
                     end_time: "T20:00",
                     days: [2],
                 },
-                instructor_id: 2,
+                instructor_id: 11,
                 tuition: 500,
                 capacity: 15,
                 filled: 2,
@@ -239,7 +239,7 @@ export default {
                     end_time: "T19:00",
                     days: [2],
                 },
-                instructor_id: 3,
+                instructor_id: 12,
                 tuition: 1480,
                 capacity: 12,
                 filled: 3,
@@ -258,7 +258,7 @@ export default {
                     end_time: "T20:40",
                     days: [2],
                 },
-                instructor_id: 1,
+                instructor_id: 10,
                 tuition: 1480,
                 capacity: 15,
                 filled: 2,
@@ -277,7 +277,7 @@ export default {
                     end_time: "T14:00",
                     days: [2],
                 },
-                instructor_id: 2,
+                instructor_id: 11,
                 tuition: 450,
                 capacity: 8,
                 filled: 4,
@@ -296,7 +296,7 @@ export default {
                     end_time: "T19:00",
                     days: [3],
                 },
-                instructor_id: 4,
+                instructor_id: 13,
                 tuition: 1440,
                 capacity: 12,
                 filled: 12,
@@ -315,7 +315,7 @@ export default {
                     end_time: "T20:00",
                     days: [5],
                 },
-                instructor_id: 2,
+                instructor_id: 11,
                 tuition: 700,
                 capacity: 15,
                 filled: 14,
@@ -334,7 +334,7 @@ export default {
                     end_time: "T12:00",
                     days: [6],
                 },
-                instructor_id: 3,
+                instructor_id: 12,
                 tuition: 700,
                 capacity: 15,
                 filled: 8,
@@ -353,7 +353,7 @@ export default {
                     end_time: "T20:30",
                     days: [5],
                 },
-                instructor_id: 2,
+                instructor_id: 11,
                 tuition: 700,
                 capacity: 15,
                 filled: 13,
@@ -372,7 +372,7 @@ export default {
                     end_time: "T16:00",
                     days: [6],
                 },
-                instructor_id: 1,
+                instructor_id: 10,
                 tuition: 700,
                 capacity: 15,
                 filled: 2,
@@ -1607,10 +1607,9 @@ export default {
             }
         },
     },
-
     "Users": {
-        "StudentList": [
-            {
+        "StudentList": {
+            23: {
                 user_id: 23,
                 gender: 'M',
                 address: '1111 Dale Ave',
@@ -1625,9 +1624,10 @@ export default {
                 "school": "Amador",
                 name: "Danny Long",
                 email: "a@a.com",
-                parent_id: 1,
+                parent_id: 78,
+                role: 'student',
             },
-            {
+            24: {
                 user_id: 24,
                 gender: 'M',
                 address: '3120 Apple St.',
@@ -1642,9 +1642,10 @@ export default {
                 "school": "Mohr Elementary",
                 name: "Jim Plano",
                 email: "b@b.com",
-                parent_id: 2,
+                parent_id: 79,
+                role: 'student',
             },
-            {
+            99: {
                 user_id: 99,
                 gender: 'F',
                 address: '1111 Candy Circle',
@@ -1659,9 +1660,10 @@ export default {
                 "school": "Amador",
                 name: "Hansel Kid",
                 email: "c@c.com",
-                parent_id: 3,
+                parent_id: 80,
+                role: 'student',
             },
-            {
+            64: {
                 user_id: 64,
                 gender: 'F',
                 address: '3120 Apple St.',
@@ -1676,12 +1678,13 @@ export default {
                 "school": "Amador",
                 name: "Batkid Wayne",
                 email: "d@d.com",
-                parent_id: 4,
+                parent_id: 81,
+                role: 'student',
             },
-        ],
-        "ParentList": [
-            {
-                user_id: 1,
+        },
+        "ParentList": {
+            78: {
+                user_id: 78,
                 gender: 'F',
                 address: '1111 Dale Ave',
                 city: 'Angle City',
@@ -1693,9 +1696,10 @@ export default {
                 relationship: "Mother",
                 name: "Gale Long",
                 email: "gale.long@omou.com",
+                role: 'parent',
             },
-            {
-                user_id: 2,
+            79: {
+                user_id: 79,
                 gender: 'M',
                 address: '3120 Apple St.',
                 city: 'Gotham',
@@ -1706,11 +1710,11 @@ export default {
                 "created_at": "2019-06-02T01:00:49.068Z",
                 relationship: "Father",
                 name: "Ranger Plano",
-                parent_id: 2,
                 email: "ranger.plano@omou.com",
+                role: 'parent',
             },
-            {
-                user_id: 3,
+            80: {
+                user_id: 80,
                 gender: 'F',
                 address: '1111 Candy Circle',
                 city: 'Grim City',
@@ -1721,11 +1725,11 @@ export default {
                 "created_at": "2019-06-02T02:15:49.068Z",
                 relationship: "Mother",
                 name: "Gretta Kid",
-                parent_id: 3,
                 email: "grettaKidd@omou.com",
+                role: 'parent',
             },
-            {
-                user_id: 4,
+            81: {
+                user_id: 81,
                 gender: 'F',
                 address: '3120 Apple St.',
                 city: 'Gotham',
@@ -1736,32 +1740,36 @@ export default {
                 "created_at": "2019-06-02T01:00:49.068Z",
                 name: "Robin Wayne",
                 relationship: "Mother",
-                parent_id: 4,
                 email: "nananana@omou.com",
+                role: 'parent',
             },
-        ],
-        "TeacherList": [
-            {
-                id: 1,
+        },
+        "InstructorList": {
+            10: {
+                user_id: 10,
                 name: "Daniel Huang",
                 email: "daniel.huang@gmail.com",
+                role: 'instructor',
             },
-            {
-                id: 2,
+            11: {
+                user_id: 11,
                 name: "Jerry Li",
                 email: "jerrylinew@gmail.com",
+                role: 'instructor',
             },
-            {
-                id: 3,
+            12: {
+                user_id: 12,
                 name: "Albert Deng",
                 email: "albert@omou.com",
+                role: 'instructor',
             },
-            {
-                id: 4,
+            13: {
+                user_id: 13,
                 name: "Katie Ho",
                 email: "katie@omou.com",
+                role: 'instructor',
             },
-        ],
+        },
     },
 
     "CalenderData": {
@@ -1772,7 +1780,7 @@ export default {
             end: '2019-08-28T08:00',
             editable: true,
             subject: "math",
-            instructor_id: 1,
+            instructor_id: 10,
             course: "C"
 
         },
@@ -1783,7 +1791,7 @@ export default {
             end: "2019-08-28T10:00",
             editable: true,
             subject: "math",
-            instructor_id: 2,
+            instructor_id: 11,
             course: "T"
         },
         {
@@ -1793,7 +1801,7 @@ export default {
             end: "2019-08-28T12:00",
             editable: true,
             subject: "english",
-            instructor_id: 3,
+            instructor_id: 12,
             course: "T"
 
         },
@@ -1804,7 +1812,7 @@ export default {
             end: "2019-08-28T15:00",
             editable: true,
             subject: "social",
-            instructor_id: 1,
+            instructor_id: 10,
             course: "T"
         }, {
             id: 5,
@@ -1813,7 +1821,7 @@ export default {
             end: "2019-08-28T17:00",
             editable: true,
             subject: "test",
-            instructor_id: 2,
+            instructor_id: 11,
             course: "T"
         }, {
             id: 6,
@@ -1822,7 +1830,7 @@ export default {
             end: "2019-08-28T18:00",
             editable: true,
             subject: "test",
-            instructor_id: 2,
+            instructor_id: 11,
             course: "T"
         }
 
@@ -1842,8 +1850,8 @@ function initRegistrationForm() {
     const studentInfoSection = {
         "Student Information": [
             {
-                field: "Current Teacher in School",
-                name: "Current Teacher in School",
+                field: "Current Instructor in School",
+                name: "Current Instructor in School",
                 type: "short text",
                 conditional: false,
                 required: false,
@@ -2095,9 +2103,9 @@ function initRegistrationForm() {
                 ...studentInfoSection,
                 "Tutor Selection": [
                     {
-                        field: "Teacher",
-                        name: "Teacher",
-                        type: "teacher",
+                        field: "Instructor",
+                        name: "Instructor",
+                        type: "instructor",
                         conditional: false,
                         required: true,
                         full: true,
@@ -2170,8 +2178,8 @@ function initRegistrationForm() {
                     },
                 ],
             },
-            teacher: {
-                form_type: "teacher",
+            instructor: {
+                form_type: "instructor",
                 section_titles: ["Basic Information", "Education", "Experience"],
                 "Basic Information": [
                     {
