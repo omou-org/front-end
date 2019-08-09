@@ -57,7 +57,7 @@ class RegistrationLanding extends Component {
 
     handleFilterChange(filters, filterType){
         this.setState((state)=>{
-            state.courses = filters && filters.length !== 0 ? this.props.courses.filter((courseID)=>{
+            state.courses = filters && filters.length !== 0 ? Object.keys(this.props.courses).filter((courseID)=>{
                 let course = this.props.courses[courseID];
                 let reducedFilter;
                switch(filterType){

@@ -65,7 +65,6 @@ class Form extends Component {
                         course = Object.keys(this.props.courses).find(( courseID ) => {
                             return this.props.courses[courseID].title === course});
                         course = this.props.courses[course];
-                        console.log(course);
                         if (course) {
                             // convert it to a format that onselectChange can use
                             course = {
