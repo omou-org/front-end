@@ -62,12 +62,15 @@ class Form extends Component {
                     let course = '';
                     if (this.props.computedMatch.params.course) {
                         course = decodeURIComponent(this.props.computedMatch.params.course);
-                        course = this.props.courses.find(({ course_title }) => course === course_title);
+                        course = Object.keys(this.props.courses).find(( courseID ) => {
+                            return this.props.courses[courseID].title === course});
+                        course = this.props.courses[course];
+                        console.log(course);
                         if (course) {
                             // convert it to a format that onselectChange can use
                             course = {
-                                value: `${course.course_id}: ${course.course_title}`,
-                                label: `${course.course_id}: ${course.course_title}`,
+                                value: `${course.course_id}: ${course.title}`,
+                                label: `${course.course_id}: ${course.title}`,
                             };
                         }
                     }
@@ -395,11 +398,11 @@ class Form extends Component {
                     </Select>
                 </FormControl>;
             case "course":
-                const courseList = this.props.courses
-                    .filter(({ capacity, filled }) => capacity > filled)
-                    .map(({ course_id, course_title }) => ({
-                        value: `${course_id}: ${course_title}`,
-                        label: `${course_id}: ${course_title}`,
+                const courseList = Object.keys(this.props.courses)
+                    .filter((courseID) => this.props.courses[courseID].capacity > this.props.courses[courseID].filled)
+                    .map((courseID) => ({
+                        value: `${courseID}: ${this.props.courses[courseID].title}`,
+                        label: `${courseID}: ${this.props.courses[courseID].title}`,
                     }));
                 return <SearchSelect
                     value={this.state[label][fieldTitle]}
@@ -763,7 +766,7 @@ class Form extends Component {
 
 function mapStateToProps(state) {
     return {
-        courses: state.Course["CourseList"],
+        courses: state.Course["NewCourseList"],
         courseCategories: state.Course["CourseCategories"],
         registrationForm: state.Registration["registration_form"],
         parents: state.Users["ParentList"],

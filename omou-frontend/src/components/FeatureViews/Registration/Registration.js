@@ -7,18 +7,12 @@ import RegistrationActions from "./RegistrationActions";
 import '../../../theme/theme.scss';
 
 //Material UI Imports
-import FullRegistration from "./FullRegistration";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import MobileRegistration from "./MobileRegistration";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import NewUser from "@material-ui/icons/PersonAdd";
-import NewTutor from "@material-ui/icons/Group";
-import NewCourse from "@material-ui/icons/School";
 import Categories from "@material-ui/icons/Category";
 import CourseList from "@material-ui/icons/List";
-import { NavLink } from "react-router-dom";
 import Fab from '@material-ui/core/Fab';
 import RegistrationLanding from "./RegistrationLanding";
 
@@ -35,7 +29,6 @@ class Registration extends Component {
         this.props.registrationActions.fetchCourses();
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
-        // this.props.registrationActions.fetchRandomColor();
     }
 
     resize() {
@@ -59,12 +52,6 @@ class Registration extends Component {
                     categories={this.props.courseCategories}
                     teachers={this.props.teachers}
             />
-            // return <FullRegistration
-            //     courses={this.props.courses}
-            //     categories={this.props.courseCategories}
-            //     teachers={this.props.teachers}
-            // />;
-
         }
     }
 
@@ -123,7 +110,7 @@ Registration.propTypes = {
 function mapStateToProps(state) {
     return {
         teachers: state.Users["TeacherList"],
-        courses: state.Course["CourseList"],
+        courses: state.Course["NewCourseList"],
         courseCategories: state.Course["CourseCategories"],
     };
 }

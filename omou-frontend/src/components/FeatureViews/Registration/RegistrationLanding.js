@@ -19,7 +19,6 @@ import FilterIcon from '@material-ui/icons/FilterList';
 import Popover from '@material-ui/core/Popover';
 import SearchSelect from 'react-select';
 
-
 class RegistrationLanding extends Component {
     constructor(props) {
         super(props);
@@ -37,7 +36,7 @@ class RegistrationLanding extends Component {
 
     componentDidMount() {
         this.setState({
-            courses:this.props.courses,
+            courses: Object.keys(this.props.courses),
             instructors: this.props.teachers,
         })
     }
@@ -58,7 +57,8 @@ class RegistrationLanding extends Component {
 
     handleFilterChange(filters, filterType){
         this.setState((state)=>{
-            state.courses = filters && filters.length !== 0 ? this.props.courses.filter((course)=>{
+            state.courses = filters && filters.length !== 0 ? this.props.courses.filter((courseID)=>{
+                let course = this.props.courses[courseID];
                 let reducedFilter;
                switch(filterType){
                    case 'instructor':
@@ -70,7 +70,7 @@ class RegistrationLanding extends Component {
                    default:
                        return true;
                }
-            }) : this.props.courses;
+            }) : Object.keys(this.props.courses);
             state.filter[filterType] = filters ? filters : [];
             return state;
         });
@@ -137,6 +137,15 @@ class RegistrationLanding extends Component {
     render() {
         const open = Boolean(this.state.anchorEl);
         const id = open ? 'simple-popover' : undefined;
+        const weekday = {
+            0:"Sunday",
+            1:"Monday",
+            2:"Tuesday",
+            3:"Wednesday",
+            4:"Thursday",
+            5:"Friday",
+            6:"Saturday",
+        };
 
         return (
             <Grid container>
@@ -156,14 +165,25 @@ class RegistrationLanding extends Component {
                         </Grid>
                         <div className={'registration-table'}>
                             {
-                                this.state.courses.map((course)=>{
+                                this.state.courses.map((courseID)=>{
+                                    let course = this.props.courses[courseID],
+                                        start_date = new Date(course.schedule.start_date),
+                                        end_date = new Date(course.schedule.end_date),
+                                        start_time = course.schedule.start_time.substr(1),
+                                        end_time = course.schedule.end_time.substr(1),
+                                        days = course.schedule.days.map((day)=>{return weekday[day].substr(0,3) });
+                                    start_date = start_date.toDateString().substr(3);
+                                    end_date = end_date.toDateString().substr(3);
+                                    let date = start_date + " - " + end_date,
+                                        time = start_time + " - " + end_time;
+
                                     return (<Paper className={'row'}>
                                         <Grid container alignItems={'center'} layout={'row'}>
                                             <Grid item md={3}
                                                   onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
                                                   style={{textDecoration: 'none', cursor: 'pointer'}}>
                                                 <Typography className={'course-heading'} align={'left'}>
-                                                    {course.course_title}
+                                                    {course.title}
                                                 </Typography>
                                             </Grid>
                                             <Grid item md={5}
@@ -174,7 +194,7 @@ class RegistrationLanding extends Component {
                                                         Date
                                                     </Grid>
                                                     <Grid item md={8} className={'value'} align={'left'}>
-                                                        {course.dates} {course.days} {course.time}
+                                                        {date} | {days} {time}
                                                     </Grid>
                                                 </Grid>
                                                 <Grid container className={'course-detail'}>
@@ -213,7 +233,7 @@ class RegistrationLanding extends Component {
                                                                 onClick={(e) => {
                                                                     e.preventDefault();
                                                                     if(course.capacity > course.filled){
-                                                                        this.goToRoute(`/registration/form/course/${encodeURIComponent(course.course_title)}`);
+                                                                        this.goToRoute(`/registration/form/course/${encodeURIComponent(course.title)}`);
                                                                     } else {
                                                                         alert("The course is filled!");
                                                                     }
