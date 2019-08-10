@@ -239,7 +239,7 @@ export default {
                     days: [2],
                 },
                 instructor_id: 12,
-                tuition: 1480,
+                tuition: 60, // $60 per session
                 capacity: 12,
                 filled: 3,
                 grade: 10,
@@ -258,7 +258,7 @@ export default {
                     days: [2],
                 },
                 instructor_id: 10,
-                tuition: 1480,
+                tuition: 85, // $85 per session
                 capacity: 15,
                 filled: 2,
                 grade: 10,
@@ -315,7 +315,7 @@ export default {
                     days: [5],
                 },
                 instructor_id: 11,
-                tuition: 700,
+                tuition: 85, // $85 per session
                 capacity: 15,
                 filled: 14,
                 grade: 10,
