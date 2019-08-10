@@ -207,8 +207,7 @@ export default {
                     " to comprehensively prepare students for the placement exam. The placement exam will vary by school district " +
                     " but it tends to take place early April.",
                 room_id: 2,
-                type: "C"
-
+                type: "C",
             },
             2: {
                 course_id: 2,
@@ -391,6 +390,7 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 2: {
                     session_id: 2,
@@ -399,6 +399,7 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 3: {
                     session_id: 3,
@@ -407,6 +408,7 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 4: {
                     session_id: 4,
@@ -415,6 +417,7 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 5: {
                     session_id: 5,
@@ -423,6 +426,7 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 6: {
                     session_id: 6,
@@ -431,6 +435,7 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 7: {
                     session_id: 7,
@@ -439,6 +444,7 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 8: {
                     session_id: 8,
@@ -447,6 +453,7 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 9: {
                     session_id: 9,
@@ -455,6 +462,7 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
 
                 10: {
@@ -464,6 +472,7 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 11: {
                     session_id: 11,
@@ -472,6 +481,7 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 12: {
                     session_id: 12,
@@ -480,6 +490,7 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 13: {
                     session_id: 13,
@@ -488,6 +499,7 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 14: {
                     session_id: 14,
@@ -496,6 +508,7 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 15: {
                     session_id: 15,
@@ -504,6 +517,7 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
 
             },
@@ -515,6 +529,7 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 2: {
                     session_id: 2,
@@ -523,6 +538,7 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 3: {
                     session_id: 3,
@@ -531,6 +547,7 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 4: {
                     session_id: 4,
@@ -539,6 +556,7 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 5: {
                     session_id: 5,
@@ -547,6 +565,7 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 6: {
                     session_id: 6,
@@ -555,6 +574,7 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 7: {
                     session_id: 7,
@@ -563,6 +583,7 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 8: {
                     session_id: 8,
@@ -571,6 +592,7 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 9: {
                     session_id: 9,
@@ -579,6 +601,7 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 10: {
                     session_id: 10,
@@ -587,6 +610,7 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 11: {
                     session_id: 11,
@@ -595,6 +619,7 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 12: {
                     session_id: 12,
@@ -603,6 +628,7 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 13: {
                     session_id: 13,
@@ -611,6 +637,7 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 14: {
                     session_id: 14,
@@ -619,6 +646,7 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 15: {
                     session_id: 15,
@@ -627,6 +655,7 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
             },
             3: {
@@ -637,6 +666,7 @@ export default {
                     course_id: 3,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 2: {
                     session_id: 2,
@@ -645,6 +675,7 @@ export default {
                     course_id: 3,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 3: {
                     session_id: 3,
@@ -653,6 +684,7 @@ export default {
                     course_id: 3,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 4: {
                     session_id: 4,
@@ -661,6 +693,7 @@ export default {
                     course_id: 3,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 5: {
                     session_id: 5,
@@ -669,6 +702,7 @@ export default {
                     course_id: 3,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 6: {
                     session_id: 6,
@@ -677,6 +711,7 @@ export default {
                     course_id: 3,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 7: {
                     session_id: 7,
@@ -693,6 +728,7 @@ export default {
                     course_id: 3,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 9: {
                     session_id: 9,
@@ -701,6 +737,7 @@ export default {
                     course_id: 3,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 10: {
                     session_id: 10,
@@ -709,6 +746,7 @@ export default {
                     course_id: 3,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 11: {
                     session_id: 11,
@@ -717,6 +755,7 @@ export default {
                     course_id: 3,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 12: {
                     session_id: 12,
@@ -725,6 +764,7 @@ export default {
                     course_id: 3,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 13: {
                     session_id: 13,
@@ -733,6 +773,7 @@ export default {
                     course_id: 3,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 14: {
                     session_id: 14,
@@ -741,6 +782,7 @@ export default {
                     course_id: 3,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 15: {
                     session_id: 15,
@@ -749,6 +791,7 @@ export default {
                     course_id: 3,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
             },
             4: {
@@ -759,6 +802,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 2: {
                     session_id: 2,
@@ -767,6 +811,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 3: {
                     session_id: 3,
@@ -775,6 +820,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 0,
                 },
                 4: {
                     session_id: 4,
@@ -783,6 +829,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 5: {
                     session_id: 5,
@@ -791,6 +838,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 6: {
                     session_id: 6,
@@ -799,6 +847,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 7: {
                     session_id: 7,
@@ -807,6 +856,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 8: {
                     session_id: 8,
@@ -815,6 +865,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 9: {
                     session_id: 9,
@@ -823,6 +874,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 10: {
                     session_id: 10,
@@ -831,6 +883,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 11: {
                     session_id: 11,
@@ -839,6 +892,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 12: {
                     session_id: 12,
@@ -847,6 +901,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 13: {
                     session_id: 13,
@@ -855,6 +910,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 14: {
                     session_id: 14,
@@ -863,6 +919,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 15: {
                     session_id: 15,
@@ -871,6 +928,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
             },
             5: {
@@ -881,6 +939,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 2: {
                     session_id: 2,
@@ -889,6 +948,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 3: {
                     session_id: 3,
@@ -897,6 +957,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 4: {
                     session_id: 4,
@@ -905,6 +966,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 5: {
                     session_id: 5,
@@ -913,6 +975,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 6: {
                     session_id: 6,
@@ -921,6 +984,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 7: {
                     session_id: 7,
@@ -929,6 +993,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 8: {
                     session_id: 8,
@@ -937,6 +1002,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 9: {
                     session_id: 9,
@@ -945,6 +1011,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 10: {
                     session_id: 10,
@@ -953,6 +1020,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 11: {
                     session_id: 11,
@@ -961,6 +1029,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 12: {
                     session_id: 12,
@@ -969,6 +1038,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 13: {
                     session_id: 13,
@@ -977,6 +1047,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 14: {
                     session_id: 14,
@@ -985,6 +1056,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 15: {
                     session_id: 15,
@@ -993,6 +1065,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
             },
             6: {
@@ -1003,6 +1076,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 2: {
                     session_id: 2,
@@ -1011,6 +1085,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 3: {
                     session_id: 3,
@@ -1019,6 +1094,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 4: {
                     session_id: 4,
@@ -1027,6 +1103,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 5: {
                     session_id: 5,
@@ -1035,6 +1112,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 6: {
                     session_id: 6,
@@ -1043,6 +1121,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 7: {
                     session_id: 7,
@@ -1051,6 +1130,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 8: {
                     session_id: 8,
@@ -1059,6 +1139,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 9: {
                     session_id: 9,
@@ -1067,6 +1148,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 10: {
                     session_id: 10,
@@ -1075,6 +1157,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 11: {
                     session_id: 11,
@@ -1083,6 +1166,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 0,
                 },
                 12: {
                     session_id: 12,
@@ -1091,6 +1175,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 13: {
                     session_id: 13,
@@ -1099,6 +1184,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 14: {
                     session_id: 14,
@@ -1107,6 +1193,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 15: {
                     session_id: 15,
@@ -1115,6 +1202,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
             },
             7: {
@@ -1125,6 +1213,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 2: {
                     session_id: 2,
@@ -1133,6 +1222,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 3: {
                     session_id: 3,
@@ -1141,6 +1231,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 4: {
                     session_id: 4,
@@ -1149,6 +1240,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 5: {
                     session_id: 5,
@@ -1157,6 +1249,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 6: {
                     session_id: 6,
@@ -1165,6 +1258,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 7: {
                     session_id: 7,
@@ -1173,6 +1267,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 8: {
                     session_id: 8,
@@ -1181,6 +1276,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 9: {
                     session_id: 9,
@@ -1189,6 +1285,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 10: {
                     session_id: 10,
@@ -1197,6 +1294,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 11: {
                     session_id: 11,
@@ -1205,6 +1303,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 12: {
                     session_id: 12,
@@ -1213,6 +1312,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 13: {
                     session_id: 13,
@@ -1221,6 +1321,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 14: {
                     session_id: 14,
@@ -1229,6 +1330,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 15: {
                     session_id: 15,
@@ -1237,6 +1339,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
             },
             8: {
@@ -1247,6 +1350,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 2: {
                     session_id: 2,
@@ -1255,6 +1359,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 3: {
                     session_id: 3,
@@ -1263,6 +1368,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 4: {
                     session_id: 4,
@@ -1271,6 +1377,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 5: {
                     session_id: 5,
@@ -1279,6 +1386,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 6: {
                     session_id: 6,
@@ -1287,6 +1395,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 7: {
                     session_id: 7,
@@ -1295,6 +1404,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 8: {
                     session_id: 8,
@@ -1303,6 +1413,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 9: {
                     session_id: 9,
@@ -1311,6 +1422,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 10: {
                     session_id: 10,
@@ -1319,6 +1431,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 11: {
                     session_id: 11,
@@ -1327,6 +1440,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 12: {
                     session_id: 12,
@@ -1335,6 +1449,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 13: {
                     session_id: 13,
@@ -1343,6 +1458,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 14: {
                     session_id: 14,
@@ -1351,6 +1467,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 15: {
                     session_id: 15,
@@ -1359,6 +1476,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
             },
             9: {
@@ -1369,6 +1487,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 2: {
                     session_id: 2,
@@ -1377,6 +1496,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 3: {
                     session_id: 3,
@@ -1385,6 +1505,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 4: {
                     session_id: 4,
@@ -1393,6 +1514,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 0,
                 },
                 5: {
                     session_id: 5,
@@ -1401,6 +1523,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 6: {
                     session_id: 6,
@@ -1409,6 +1532,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 7: {
                     session_id: 7,
@@ -1417,6 +1541,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 8: {
                     session_id: 8,
@@ -1425,6 +1550,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 9: {
                     session_id: 9,
@@ -1433,6 +1559,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 10: {
                     session_id: 10,
@@ -1441,6 +1568,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 11: {
                     session_id: 11,
@@ -1449,6 +1577,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 12: {
                     session_id: 12,
@@ -1457,6 +1586,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 13: {
                     session_id: 13,
@@ -1465,6 +1595,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 14: {
                     session_id: 14,
@@ -1473,6 +1604,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
                 15: {
                     session_id: 15,
@@ -1481,6 +1613,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: -1,
                 },
             },
             10: {
@@ -1491,6 +1624,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 2: {
                     session_id: 2,
@@ -1499,6 +1633,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 3: {
                     session_id: 3,
@@ -1507,6 +1642,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 4: {
                     session_id: 4,
@@ -1515,6 +1651,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 5: {
                     session_id: 5,
@@ -1523,6 +1660,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 6: {
                     session_id: 6,
@@ -1531,6 +1669,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 7: {
                     session_id: 7,
@@ -1539,6 +1678,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 8: {
                     session_id: 8,
@@ -1547,6 +1687,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 9: {
                     session_id: 9,
@@ -1555,6 +1696,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 10: {
                     session_id: 10,
@@ -1563,6 +1705,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 11: {
                     session_id: 11,
@@ -1571,6 +1714,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 12: {
                     session_id: 12,
@@ -1579,6 +1723,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 13: {
                     session_id: 13,
@@ -1587,6 +1732,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 14: {
                     session_id: 14,
@@ -1595,6 +1741,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
                 15: {
                     session_id: 15,
@@ -1603,6 +1750,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
+                    status: 1,
                 },
             }
         },
@@ -1626,6 +1774,9 @@ export default {
                 email: "a@a.com",
                 parent_id: 78,
                 role: 'student',
+                account:{
+
+                }
             },
             24: {
                 user_id: 24,
