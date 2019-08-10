@@ -2,23 +2,12 @@
 @import '../../../theme/sizes';
 @import url('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700');
 /*Account Styles*/
-.Accounts{
   .paper{
     padding:$paperPadding !important;
-  }
-  .row{
-      text-decoration: none;
-  }
   
-  .Directory{
-      text-align:left;
-      font-size:60px;
+  .heading{
+    display: flex;
+    margin-right: 50px;
   }
 
-  .toggleView{
-    position:absolute;
-    right:100px;
-  }
-
- 
 }

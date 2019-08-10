@@ -205,6 +205,7 @@ export default {
                 name:"Danny Long",
                 email: "a@a.com",
                 parent_id: 1,
+                type: 'student',
             },
             {
                 user_id:24,
@@ -222,6 +223,7 @@ export default {
                 name:"Jim Plano",
                 email: "b@b.com",
                 parent_id: 2,
+                type: 'student',
             },
             {
                 user_id:99,
@@ -239,6 +241,7 @@ export default {
                 name:"Hansel Kid",
                 email: "c@c.com",
                 parent_id: 3,
+                type: 'student',
             },
             {
                 user_id:64,
@@ -256,6 +259,7 @@ export default {
                 name: "Batkid Wayne",
                 email: "d@d.com",
                 parent_id: 4,
+                type: 'student',
             },
         ],
         "ParentList": [
@@ -272,6 +276,7 @@ export default {
                 relationship:"Mother",
                 name:"Gale Long",
                 email:"gale.long@omou.com",
+                type: 'parent',
             },
             {
                 user_id:2,
@@ -287,6 +292,7 @@ export default {
                 name:"Ranger Plano",
                 parent_id: 2,
                 email:"ranger.plano@omou.com",
+                type: 'parent',
             },
             {
                 user_id:3,
@@ -302,6 +308,7 @@ export default {
                 name:"Gretta Kid",
                 parent_id: 3,
                 email:"grettaKidd@omou.com",
+                type: 'parent',
             },
             {
                 user_id:4,
@@ -317,28 +324,37 @@ export default {
                 relationship:"Mother",
                 parent_id: 4,
                 email:"nananana@omou.com",
+                type: 'parent',
             },
         ],
         "TeacherList": [
             {
-                id: 1,
+                user_id: 1,
                 name: "Daniel Huang",
                 email: "daniel.huang@gmail.com",
+                type: 'teacher',
+                phone_number:"9250108111",
             },
             {
-                id: 2,
+                user_id: 2,
                 name: "Jerry Li",
                 email: "jerrylinew@gmail.com",
+                type: 'teacher',
+                phone_number:"9250108111",
             },
             {
-                id: 3,
+                user_id: 3,
                 name: "Albert Deng",
                 email: "albert@omou.com",
+                type: 'teacher',
+                phone_number:"9250108111",
             },
             {
-                id: 4,
+                user_id: 4,
                 name: "Katie Ho",
                 email: "katie@omou.com",
+                type: 'teacher',
+                phone_number:"9250108111",
             },
         ],
     },

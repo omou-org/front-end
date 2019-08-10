@@ -141,7 +141,7 @@ class FullRegistration extends Component {
 
     getInstructorNameByID(teacher_id){
         let teacherName=this.props.teachers.find((teacher)=>{
-            return teacher.id===teacher_id;
+            return teacher.user_id===teacher_id;
         });
        teacherName=teacherName.name;
        return teacherName;

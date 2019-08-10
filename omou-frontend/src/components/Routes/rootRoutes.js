@@ -1,7 +1,7 @@
 // React Imports
-import {connect} from "react-redux";
-import {Route, Switch} from "react-router-dom";
-import {bindActionCreators} from "redux";
+import { connect } from "react-redux";
+import { Route, Switch } from "react-router-dom";
+import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 import React from "react";
 
@@ -18,6 +18,8 @@ import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse"
 import CourseCategory from "../FeatureViews/Registration/CourseCategory";
 import LoginPage from "../Authentication/LoginPage.js";
 import ProtectedRoute from "./ProtectedRoute";
+import UserProfile from "../FeatureViews/Accounts/UserProfile";
+import InvalidRoute from "../InvalidRoute.js";
 
 function rootRoutes(props) {
     return (
@@ -47,11 +49,16 @@ function rootRoutes(props) {
                 path="/directory"
                 render={(passedProps) => <UsersDirectory {...passedProps} />} /> */}
             <ProtectedRoute
+                path="/accounts/:accountType/:accountID"
+                render={(passedProps) => <UserProfile {...passedProps} />} />
+            <ProtectedRoute
                 path="/accounts"
                 render={(passedProps) => <Accounts {...passedProps} />} />
             <Route
                 path="/login"
                 render={(passedProps) => <LoginPage setLogin={props.setLogin} {...passedProps} />} />
+
+
 
             {/* Registration Routes */}
             <ProtectedRoute
@@ -63,6 +70,9 @@ function rootRoutes(props) {
             <ProtectedRoute
                 path="/registration/category/:categoryID"
                 render={(passedProps) => <CourseCategory {...passedProps} />} />
+
+            <Route
+                component={InvalidRoute} />
         </Switch>
     );
 }

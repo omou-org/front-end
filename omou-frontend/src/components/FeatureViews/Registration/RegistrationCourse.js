@@ -81,7 +81,7 @@ class RegistrationCourse extends Component {
         });
 
         let Teacher = this.props.teachers.find((teacher) => {
-            return teacher.id === this.state.instructor_id;
+            return teacher.user_id === this.state.instructor_id;
         });
 
         let rows = [];

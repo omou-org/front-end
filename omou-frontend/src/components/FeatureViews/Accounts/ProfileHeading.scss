@@ -1,0 +1,18 @@
+@import '../../../theme/colors';
+@import '../../../theme/sizes';
+@import url('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700');
+/*Account Styles*/
+.grid {
+    display: grid;
+    grid-gap: 20px;
+    grid-column-gap: 300px;
+    grid-template-columns: repeat(2, 1fr);
+    text-align: left;
+  }
+  
+  div > div {
+    padding: 10px;
+  }
+.left-align{
+    text-align:left;
+}

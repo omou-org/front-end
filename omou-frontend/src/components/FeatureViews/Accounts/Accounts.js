@@ -1,10 +1,10 @@
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import BackButton from "../../BackButton";
 import Grid from "@material-ui/core/Grid";
-import {Card, Paper, Typography} from "@material-ui/core";
+import { Card, Paper, Typography } from "@material-ui/core";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import ListView from "@material-ui/icons/ViewList";
@@ -17,30 +17,31 @@ import TableBody from "@material-ui/core/TableBody";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
+import { NavLink } from "react-router-dom";
 
 import './Accounts.scss';
 
 class Accounts extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
-            value:0,
+            value: 0,
             usersList: [],
             viewToggle: true, // true = list, false = card view
         };
         this.handleChange = this.handleChange.bind(this);
     }
 
-    componentWillMount(){
+    componentWillMount() {
         this.setState({
-           usersList: this.props.teachers.concat(this.props.parents).concat(this.props.students),
+            usersList: this.props.teachers.concat(this.props.parents).concat(this.props.students),
         });
     }
 
-    handleChange(e, newTabIndex){
+    handleChange(e, newTabIndex) {
         e.preventDefault();
         let newUsersList = [];
-        switch(newTabIndex){
+        switch (newTabIndex) {
             case 0:
                 newUsersList = this.props.teachers.concat(this.props.parents).concat(this.props.students);
                 break;
@@ -56,12 +57,10 @@ class Accounts extends Component {
             default:
                 newUsersList = this.props.teachers.concat(this.props.parents).concat(this.props.students);
         }
-        this.setState({value:newTabIndex, usersList: newUsersList});
+        this.setState({ value: newTabIndex, usersList: newUsersList });
     }
 
-    render(){
-        // console.log(this.state.usersList);
-
+    render() {
         let tableView = () => {
             return <Table>
                 <TableHead>
@@ -74,7 +73,7 @@ class Accounts extends Component {
                 </TableHead>
                 <TableBody>
                     {this.state.usersList.map(row => (
-                        <TableRow key={row.name}>
+                        <TableRow key={row.name} component={NavLink} to={"/accounts/" + row.type + "/" + row.user_id} className="row">
                             <TableCell component="th" scope="row">
                                 {row.name}
                             </TableCell>
@@ -89,14 +88,14 @@ class Accounts extends Component {
         };
 
         let cardView = () => {
-            return this.state.usersList.map((user)=>{
+            return this.state.usersList.map((user) => {
                 return <Card>
                     <CardContent className={"text"}>
                         <Typography gutterBottom variant={"h6"} component={"h2"}>
                             {user.name}
                         </Typography>
                         <Typography component="p">
-                           {user.role}
+                            {user.role}
                         </Typography>
                     </CardContent>
                     <CardActions>
@@ -112,15 +111,14 @@ class Accounts extends Component {
 
         return (<Grid item xs={'12'} className="Accounts">
             <Paper className={'paper'}>
+                    <BackButton />
+                <h1 className="Directory">Directory</h1>
                 <Grid container direction={'row'} alignItems={'center'}>
-                    <Grid item xs={'1'}>
-                        <BackButton/>
-                    </Grid>
+
                     <Grid item xs={'9'}>
                         <Tabs
                             value={this.state.value}
                             onChange={this.handleChange}
-                            variant="scrollable"
                             indicatorColor="primary"
                             textColor="primary"
                         >
@@ -131,9 +129,9 @@ class Accounts extends Component {
                             <Tab label="ADMIN" />
                         </Tabs>
                     </Grid>
-                    <Grid item xs={'2'}>
-                        <ListView onClick={(e)=>{e.preventDefault(); this.setState({viewToggle: true });}}/>
-                        <CardView onClick={(e)=>{e.preventDefault(); this.setState({viewToggle: false});}}/>
+                    <Grid item xs={'2'} className="toggleView">
+                        <ListView onClick={(e) => { e.preventDefault(); this.setState({ viewToggle: true }); }} />
+                        <CardView onClick={(e) => { e.preventDefault(); this.setState({ viewToggle: false }); }} />
                     </Grid>
                 </Grid>
                 <Grid container direction={'row'} alignItems={'center'} spacing={3}>
