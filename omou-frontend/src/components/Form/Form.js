@@ -466,8 +466,8 @@ class Form extends Component {
                 instructorList = Object.keys(instructorList).map((instructorID) => {
                     let instructor = this.props.instructors[instructorID];
                     return {
-                        value: instructor.id.toString() + ": " + instructor.name,
-                        label: instructor.id.toString() + ": " + instructor.name,
+                        value: instructor.user_id.toString() + ": " + instructor.name,
+                        label: instructor.user_id.toString() + ": " + instructor.name,
                     }
                 });
                 instructorList = this.removeDuplicates(currSelectedValues, instructorList);
@@ -776,7 +776,7 @@ function mapStateToProps(state) {
         registrationForm: state.Registration["registration_form"],
         parents: state.Users["ParentList"],
         students: state.Users["StudentList"],
-        instructors: state.Users["TeacherList"],
+        instructors: state.Users["InstructorList"],
     };
 }
 

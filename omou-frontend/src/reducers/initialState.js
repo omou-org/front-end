@@ -18,7 +18,7 @@ export default {
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test. " +
                     " The material will cover all material from the fifth grade curriculum as well as some sixth grade content" +
                     " to comprehensively prepare students for the placement exam. The placement exam will vary by school district " +
-                    " but it tends to take place early April."
+                    " but it tends to take place early April.",
             },
             {
                 course_id: 2,
@@ -31,7 +31,7 @@ export default {
                 capacity: 15,
                 filled: 2,
                 grade: 8,
-                description: "This course is to prepare 5th grade students to pass the 6th grade math placement test."
+                description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
             {
                 course_id: 3,
@@ -44,7 +44,7 @@ export default {
                 capacity: 12,
                 filled: 3,
                 grade: 10,
-                description: "This course is to prepare 5th grade students to pass the 6th grade math placement test."
+                description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
             {
                 course_id: 4,
@@ -136,18 +136,6 @@ export default {
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test."
             },
         ],
-        "CourseRoster": {
-            1: [23, 99, 64],
-            2: [23, 99, 64, 24],
-            3: [23, 99, 24],
-            4: [23, 24, 64],
-            5: [24, 99, 64],
-            6: [23, 99, 64, 24],
-            7: [23, 24, 64],
-            8: [23, 99, 24],
-            9: [23, 99, 64],
-            10: [23, 99, 64],
-        },
         "CourseCategories": [
             {
                 id: 1,
@@ -186,6 +174,61 @@ export default {
                 cat_title: "BYU Online"
             },
         ],
+        "Subjects": {
+            1: {
+                title: "Physics",
+            },
+            2: {
+                title: "Algebra",
+            },
+            3: {
+                title: "Pre-Algebra",
+            },
+            4: {
+                title: "Trigonometry",
+            },
+            5: {
+                title: "Astronomy",
+            },
+            6: {
+                title: "Life Science",
+            },
+            7: {
+                title: "Biology",
+            },
+            8: {
+                title: "US History",
+            },
+            9: {
+                title: "Global Studies",
+            },
+            10: {
+                title: "Statistics",
+            },
+            11: {
+                title: "Health",
+            },
+            12: {
+                title: "Physical Education",
+            },
+            13: {
+                title: "French",
+            }
+        },
+        "Tags": {
+          1: {
+              title:"AP",
+          },
+            2:{
+                title:"Hard",
+            },
+            3:{
+                title:"DVHS",
+            },
+            4:{
+                title:"AVHS",
+            },
+        },
         "NewCourseList": {
             1: {
                 course_id: 1,
@@ -200,7 +243,6 @@ export default {
                 instructor_id: 10,
                 tuition: 450,
                 capacity: 20,
-                filled: 14,
                 grade: 5,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test. " +
                     " The material will cover all material from the fifth grade curriculum as well as some sixth grade content" +
@@ -208,6 +250,9 @@ export default {
                     " but it tends to take place early April.",
                 room_id: 2,
                 type: "C",
+                subject:"Math",
+                tags:["Test Prep","Common Core", "All School Districts"],
+                roster:[23,99,64],
             },
             2: {
                 course_id: 2,
@@ -221,12 +266,14 @@ export default {
                 },
                 instructor_id: 11,
                 tuition: 500,
-                capacity: 15,
-                filled: 2,
+                capacity: 9,
                 grade: 8,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
-                type: "C"
+                type: "C",
+                roster:[23, 99, 64, 24],
+                subject:"Science",
+                tags:["All School Districts", "Physics", "Astronomy",],
             },
             3: {
                 course_id: 3,
@@ -240,12 +287,14 @@ export default {
                 },
                 instructor_id: 12,
                 tuition: 60, // $60 per session
-                capacity: 12,
-                filled: 3,
+                capacity: 1,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
-                type: "T"
+                type: "T",
+                roster:[23],
+                subject: "Math",
+                tags: ["Honors","Algebra II", "Amador Valley High School",],
             },
             4: {
                 course_id: 4,
@@ -259,12 +308,14 @@ export default {
                 },
                 instructor_id: 10,
                 tuition: 85, // $85 per session
-                capacity: 15,
-                filled: 2,
+                capacity: 1,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
-                type: "T"
+                type: "T",
+                roster:[64],
+                subject:"Math",
+                tags:["Honors","Amador Valley High School","Pre-Calculus",],
             },
             5: {
                 course_id: 5,
@@ -279,11 +330,13 @@ export default {
                 instructor_id: 11,
                 tuition: 450,
                 capacity: 8,
-                filled: 4,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
-                type: "C"
+                type: "C",
+                roster:[24, 99, 64],
+                subject:"Science",
+                tags:["Chemistry","Dougherty Valley High School","Honors",],
             },
             6: {
                 course_id: 6,
@@ -298,11 +351,13 @@ export default {
                 instructor_id: 13,
                 tuition: 1440,
                 capacity: 12,
-                filled: 12,
                 grade: 8,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
-                type: "C"
+                type: "C",
+                roster:[23, 99, 64, 24],
+                subject:"Math",
+                tags:["Geometry", "San Ramon Valley Unified School District",]
             },
             7: {
                 course_id: 7,
@@ -316,12 +371,14 @@ export default {
                 },
                 instructor_id: 11,
                 tuition: 85, // $85 per session
-                capacity: 15,
-                filled: 14,
+                capacity: 1,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
-                type: "T"
+                type: "T",
+                roster:[99],
+                subject:"Math",
+                tags:["SAT 2", "Algebra I", "Algebra II", "Test Prep"],
             },
             8: {
                 course_id: 8,
@@ -335,12 +392,14 @@ export default {
                 },
                 instructor_id: 12,
                 tuition: 700,
-                capacity: 15,
-                filled: 8,
+                capacity: 6,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
-                type: "C"
+                type: "C",
+                roster:[23, 99, 24],
+                subject: "Chemistry",
+                tags: ["Science","AP","College Prep",],
             },
             9: {
                 course_id: 9,
@@ -354,12 +413,14 @@ export default {
                 },
                 instructor_id: 11,
                 tuition: 700,
-                capacity: 15,
-                filled: 13,
+                capacity: 5,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
-                type: "C"
+                type: "C",
+                roster:[24, 64],
+                subject: "Calculus",
+                tags:["Math", "AP", "College Prep",],
             },
             10: {
                 course_id: 10,
@@ -378,8 +439,11 @@ export default {
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
-                type: "C"
-            }
+                type: "C",
+                roster:[23, 99, 64],
+                subject: "Calculus",
+                tags:["Math","Preparation Class","AP",],
+            },
         },
         "CourseSessions": {
             1: {
@@ -390,7 +454,6 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 2: {
                     session_id: 2,
@@ -399,7 +462,6 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 3: {
                     session_id: 3,
@@ -408,7 +470,6 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 4: {
                     session_id: 4,
@@ -417,7 +478,6 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 5: {
                     session_id: 5,
@@ -426,7 +486,6 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 6: {
                     session_id: 6,
@@ -435,7 +494,6 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 7: {
                     session_id: 7,
@@ -444,7 +502,6 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 8: {
                     session_id: 8,
@@ -453,7 +510,6 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 9: {
                     session_id: 9,
@@ -462,7 +518,6 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
 
                 10: {
@@ -472,7 +527,6 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 11: {
                     session_id: 11,
@@ -481,7 +535,6 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 12: {
                     session_id: 12,
@@ -490,7 +543,6 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 13: {
                     session_id: 13,
@@ -499,7 +551,6 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 14: {
                     session_id: 14,
@@ -508,7 +559,6 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 15: {
                     session_id: 15,
@@ -517,7 +567,6 @@ export default {
                     course_id: 1,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
 
             },
@@ -529,7 +578,6 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 2: {
                     session_id: 2,
@@ -538,7 +586,6 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 3: {
                     session_id: 3,
@@ -547,7 +594,6 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 4: {
                     session_id: 4,
@@ -556,7 +602,6 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 5: {
                     session_id: 5,
@@ -565,7 +610,6 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 6: {
                     session_id: 6,
@@ -574,7 +618,6 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 7: {
                     session_id: 7,
@@ -583,7 +626,6 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 8: {
                     session_id: 8,
@@ -592,7 +634,6 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 9: {
                     session_id: 9,
@@ -601,7 +642,6 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 10: {
                     session_id: 10,
@@ -610,7 +650,6 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 11: {
                     session_id: 11,
@@ -619,7 +658,6 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 12: {
                     session_id: 12,
@@ -628,7 +666,6 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 13: {
                     session_id: 13,
@@ -637,7 +674,6 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 14: {
                     session_id: 14,
@@ -646,7 +682,6 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
                 15: {
                     session_id: 15,
@@ -655,7 +690,6 @@ export default {
                     course_id: 2,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
                 },
             },
             3: {
@@ -666,7 +700,7 @@ export default {
                     course_id: 3,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 2: {
                     session_id: 2,
@@ -802,7 +836,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 2: {
                     session_id: 2,
@@ -811,7 +845,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 3: {
                     session_id: 3,
@@ -820,7 +854,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 0,
+                    
                 },
                 4: {
                     session_id: 4,
@@ -829,7 +863,7 @@ export default {
                     course_id: 4,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 5: {
                     session_id: 5,
@@ -939,7 +973,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 2: {
                     session_id: 2,
@@ -948,7 +982,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 3: {
                     session_id: 3,
@@ -957,7 +991,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 4: {
                     session_id: 4,
@@ -966,7 +1000,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 5: {
                     session_id: 5,
@@ -975,7 +1009,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 6: {
                     session_id: 6,
@@ -984,7 +1018,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 7: {
                     session_id: 7,
@@ -993,7 +1027,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 8: {
                     session_id: 8,
@@ -1002,7 +1036,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 9: {
                     session_id: 9,
@@ -1011,7 +1045,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 10: {
                     session_id: 10,
@@ -1020,7 +1054,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 11: {
                     session_id: 11,
@@ -1029,7 +1063,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 12: {
                     session_id: 12,
@@ -1038,7 +1072,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 13: {
                     session_id: 13,
@@ -1047,7 +1081,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 14: {
                     session_id: 14,
@@ -1056,7 +1090,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 15: {
                     session_id: 15,
@@ -1065,7 +1099,7 @@ export default {
                     course_id: 5,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
             },
             6: {
@@ -1076,7 +1110,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 2: {
                     session_id: 2,
@@ -1085,7 +1119,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 3: {
                     session_id: 3,
@@ -1094,7 +1128,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 4: {
                     session_id: 4,
@@ -1103,7 +1137,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 5: {
                     session_id: 5,
@@ -1112,7 +1146,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 6: {
                     session_id: 6,
@@ -1121,7 +1155,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 7: {
                     session_id: 7,
@@ -1130,7 +1164,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 8: {
                     session_id: 8,
@@ -1139,7 +1173,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 9: {
                     session_id: 9,
@@ -1148,7 +1182,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 10: {
                     session_id: 10,
@@ -1157,7 +1191,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 11: {
                     session_id: 11,
@@ -1166,7 +1200,7 @@ export default {
                     course_id: 6,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 0,
+                    
                 },
                 12: {
                     session_id: 12,
@@ -1213,7 +1247,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 2: {
                     session_id: 2,
@@ -1222,7 +1256,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 3: {
                     session_id: 3,
@@ -1231,7 +1265,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 4: {
                     session_id: 4,
@@ -1240,7 +1274,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 5: {
                     session_id: 5,
@@ -1249,7 +1283,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 6: {
                     session_id: 6,
@@ -1258,7 +1292,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 7: {
                     session_id: 7,
@@ -1267,7 +1301,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 8: {
                     session_id: 8,
@@ -1276,7 +1310,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 9: {
                     session_id: 9,
@@ -1285,7 +1319,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 10: {
                     session_id: 10,
@@ -1294,7 +1328,7 @@ export default {
                     course_id: 7,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 11: {
                     session_id: 11,
@@ -1350,7 +1384,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 2: {
                     session_id: 2,
@@ -1359,7 +1393,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 3: {
                     session_id: 3,
@@ -1368,7 +1402,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 4: {
                     session_id: 4,
@@ -1377,7 +1411,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 5: {
                     session_id: 5,
@@ -1386,7 +1420,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 6: {
                     session_id: 6,
@@ -1395,7 +1429,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 7: {
                     session_id: 7,
@@ -1404,7 +1438,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 8: {
                     session_id: 8,
@@ -1413,7 +1447,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 9: {
                     session_id: 9,
@@ -1422,7 +1456,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 10: {
                     session_id: 10,
@@ -1431,7 +1465,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 11: {
                     session_id: 11,
@@ -1440,7 +1474,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 12: {
                     session_id: 12,
@@ -1449,7 +1483,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 13: {
                     session_id: 13,
@@ -1458,7 +1492,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 14: {
                     session_id: 14,
@@ -1467,7 +1501,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 15: {
                     session_id: 15,
@@ -1476,7 +1510,7 @@ export default {
                     course_id: 8,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
             },
             9: {
@@ -1487,7 +1521,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 2: {
                     session_id: 2,
@@ -1496,7 +1530,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 3: {
                     session_id: 3,
@@ -1505,7 +1539,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 4: {
                     session_id: 4,
@@ -1514,7 +1548,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 0,
+                    
                 },
                 5: {
                     session_id: 5,
@@ -1523,7 +1557,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 6: {
                     session_id: 6,
@@ -1532,7 +1566,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 7: {
                     session_id: 7,
@@ -1541,7 +1575,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 8: {
                     session_id: 8,
@@ -1550,7 +1584,7 @@ export default {
                     course_id: 9,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+                    
                 },
                 9: {
                     session_id: 9,
@@ -1624,7 +1658,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+
                 },
                 2: {
                     session_id: 2,
@@ -1633,7 +1667,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+
                 },
                 3: {
                     session_id: 3,
@@ -1642,7 +1676,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+
                 },
                 4: {
                     session_id: 4,
@@ -1651,7 +1685,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+
                 },
                 5: {
                     session_id: 5,
@@ -1660,7 +1694,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+
                 },
                 6: {
                     session_id: 6,
@@ -1669,7 +1703,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+
                 },
                 7: {
                     session_id: 7,
@@ -1678,7 +1712,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+
                 },
                 8: {
                     session_id: 8,
@@ -1687,7 +1721,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+
                 },
                 9: {
                     session_id: 9,
@@ -1696,7 +1730,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+
                 },
                 10: {
                     session_id: 10,
@@ -1705,7 +1739,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+
                 },
                 11: {
                     session_id: 11,
@@ -1714,7 +1748,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+
                 },
                 12: {
                     session_id: 12,
@@ -1723,7 +1757,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+
                 },
                 13: {
                     session_id: 13,
@@ -1732,7 +1766,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+
                 },
                 14: {
                     session_id: 14,
@@ -1741,7 +1775,7 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+
                 },
                 15: {
                     session_id: 15,
@@ -1750,8 +1784,958 @@ export default {
                     course_id: 10,
                     instructor: "", //default to session's default instructor - change if there's a substitute,
                     room_id: 2,
-                    status: 1,
+
                 },
+            }
+        },
+    },
+    "Enrollments":{
+        // studentID: enrolled courses : session
+        23: {
+            1: {
+                student_id:23,
+                notes:{
+                    "Current Instructor in School": "Mr. Devos",
+                    "Textbook Used":"HMG Math 6",
+                    "Current Grade in Class":"",
+                    "Current Topic in School / Topic of Interest":"Graphing",
+                    "Student Strengths":"",
+                    "Student Weakness":"",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+            2: {
+                student_id:23,
+                notes:{
+                    "Current Instructor in School": "Mrs. Gahl",
+                    "Textbook Used":"Kipling 8th Grade Physical Science",
+                    "Current Grade in Class":"B-",
+                    "Current Topic in School / Topic of Interest":"Note-taking",
+                    "Student Strengths":"computational problems",
+                    "Student Weakness":"",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+            3: {
+                student_id:23,
+                notes:{
+                    "Current Instructor in School": "Mrs. Ogle",
+                    "Textbook Used":"Common Core Algebra II",
+                    "Current Grade in Class":"B",
+                    "Current Topic in School / Topic of Interest":"conics sections",
+                    "Student Strengths":"computational problems",
+                    "Student Weakness":"word problems",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:-1,
+                    6:-1,
+                    7:1,
+                    8:1,
+                    9:0,
+                    10:0,
+                    11:0,
+                    12:0,
+                    13:0,
+                    14:0,
+                    15:0,
+                },
+            },
+            6: {
+                student_id:23,
+                notes:{
+                    "Current Instructor in School": "Mrs. Ogle",
+                    "Textbook Used":"Common Core Geometry",
+                    "Current Grade in Class":"A",
+                    "Current Topic in School / Topic of Interest":"triangle proofs",
+                    "Student Strengths":"computational problems",
+                    "Student Weakness":"word problems",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+            8: {
+                student_id:23,
+                notes:{
+                    "Current Instructor in School": "Mr. Dennis",
+                    "Textbook Used":"Fundamental Chemistry",
+                    "Current Grade in Class":"B+",
+                    "Current Topic in School / Topic of Interest":"Hess's Law",
+                    "Student Strengths":"",
+                    "Student Weakness":"",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+            10: {
+                student_id:23,
+                notes:{
+                    "Current Instructor in School": "Mr. Linke",
+                    "Textbook Used":"Fundamental Calculus",
+                    "Current Grade in Class":"B",
+                    "Current Topic in School / Topic of Interest":"L'Hopital's Rule",
+                    "Student Strengths":"",
+                    "Student Weakness":"",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+        },
+        24: {
+            2: {
+                student_id:24,
+                notes:{
+                    "Current Instructor in School": "Mr. Dolan",
+                    "Textbook Used":"Kipling 8th Grade Physical Science",
+                    "Current Grade in Class":"B",
+                    "Current Topic in School / Topic of Interest":"Physics mechanics",
+                    "Student Strengths":"reading",
+                    "Student Weakness":"math",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+            5: {
+                student_id:24,
+                notes:{
+                    "Current Instructor in School": "Mrs. Pattock",
+                    "Textbook Used":"Chemistry by HGM",
+                    "Current Grade in Class":"A",
+                    "Current Topic in School / Topic of Interest":"titration",
+                    "Student Strengths":"reading",
+                    "Student Weakness":"math",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:0,
+                    2:0,
+                    3:0,
+                    4:0,
+                    5:0,
+                    6:0,
+                    7:0,
+                    8:0,
+                    9:0,
+                    10:0,
+                    11:0,
+                    12:0,
+                    13:0,
+                    14:0,
+                    15:0,
+                },
+            },
+            6: {
+                student_id:24,
+                notes:{
+                    "Current Instructor in School": "Mrs. Kumar",
+                    "Textbook Used":"Common Core Geometry",
+                    "Current Grade in Class":"A",
+                    "Current Topic in School / Topic of Interest":"Proofs",
+                    "Student Strengths":"reading",
+                    "Student Weakness":"math",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+            8: {
+                student_id:24,
+                notes:{
+                    "Current Instructor in School": "Mr. Dennis",
+                    "Textbook Used":"Fundamental Chemistry",
+                    "Current Grade in Class":"A",
+                    "Current Topic in School / Topic of Interest":"titration",
+                    "Student Strengths":"reading",
+                    "Student Weakness":"math",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+            9: {
+                student_id:24,
+                notes:{
+                    "Current Instructor in School": "Mr. Dennis",
+                    "Textbook Used":"Foundational Calculus",
+                    "Current Grade in Class":"B-",
+                    "Current Topic in School / Topic of Interest":"Integration by parts",
+                    "Student Strengths":"reading",
+                    "Student Weakness":"math",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+        },
+        99: {
+            1: {
+                student_id:99,
+                notes:{
+                    "Current Instructor in School": "Mrs. Davis",
+                    "Textbook Used":"Holt Math 6",
+                    "Current Grade in Class":"",
+                    "Current Topic in School / Topic of Interest":"Adding fractions",
+                    "Student Strengths":"",
+                    "Student Weakness":"",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:0,
+                    2:0,
+                    3:0,
+                    4:0,
+                    5:0,
+                    6:0,
+                    7:0,
+                    8:0,
+                    9:0,
+                    10:0,
+                    11:0,
+                    12:0,
+                    13:0,
+                    14:0,
+                    15:0,
+                },
+            },
+            2: {
+                student_id:99,
+                notes:{
+                    "Current Instructor in School": "Mrs. Devine",
+                    "Textbook Used":"Kipling 8th Grade Physical Science",
+                    "Current Grade in Class":"A-",
+                    "Current Topic in School / Topic of Interest":"Physics mechanics",
+                    "Student Strengths":"reading",
+                    "Student Weakness":"math",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+            5: {
+                student_id:99,
+                notes:{
+                    "Current Instructor in School": "Mrs. Pattock",
+                    "Textbook Used":"Chemistry by HGM",
+                    "Current Grade in Class":"A-",
+                    "Current Topic in School / Topic of Interest":"Nobel Gas Law",
+                    "Student Strengths":"reading",
+                    "Student Weakness":"math",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+            6: {
+                student_id:99,
+                notes:{
+                    "Current Instructor in School": "Mrs. Kumar",
+                    "Textbook Used":"Common Core Geometry",
+                    "Current Grade in Class":"B-",
+                    "Current Topic in School / Topic of Interest":"Circle proofs",
+                    "Student Strengths":"reading",
+                    "Student Weakness":"math",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+            7: {
+                student_id:99,
+                notes:{
+                    "Current Instructor in School": "",
+                    "Textbook Used":"",
+                    "Current Grade in Class":"",
+                    "Current Topic in School / Topic of Interest":"",
+                    "Student Strengths":"",
+                    "Student Weakness":"",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:0,
+                    12:0,
+                    13:0,
+                    14:0,
+                    15:0,
+                },
+            },
+            8: {
+                student_id:99,
+                notes:{
+                    "Current Instructor in School": "Mrs. Melby",
+                    "Textbook Used":"Basic College Chemistry",
+                    "Current Grade in Class":"",
+                    "Current Topic in School / Topic of Interest":"",
+                    "Student Strengths":"",
+                    "Student Weakness":"",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+            10: {
+                student_id:99,
+                notes:{
+                    "Current Instructor in School": "Mr. Tran",
+                    "Textbook Used":"Fundamental Calculus",
+                    "Current Grade in Class":"",
+                    "Current Topic in School / Topic of Interest":"",
+                    "Student Strengths":"",
+                    "Student Weakness":"",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+        },
+        64: {
+            1: {
+                student_id:64,
+                notes:{
+                    "Current Instructor in School": "Mrs. Davis",
+                    "Textbook Used":"Holt Math 6",
+                    "Current Grade in Class":"C",
+                    "Current Topic in School / Topic of Interest":"Adding fractions, ratios, word problems",
+                    "Student Strengths":"",
+                    "Student Weakness":"",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+            2: {
+                student_id:64,
+                notes:{
+                    "Current Instructor in School": "Mrs. Devine",
+                    "Textbook Used":"Kipling 8th Grade Physical Science",
+                    "Current Grade in Class":"C+",
+                    "Current Topic in School / Topic of Interest":"Physics mechanics",
+                    "Student Strengths":"reading",
+                    "Student Weakness":"math",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+            4: {
+                student_id:64,
+                notes:{
+                    "Current Instructor in School": "Mrs. Dixon",
+                    "Textbook Used":"Introduction to Calculus",
+                    "Current Grade in Class":"B",
+                    "Current Topic in School / Topic of Interest":"Limits",
+                    "Student Strengths":"reading",
+                    "Student Weakness":"conceptual ideas",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:-1,
+                    4:1,
+                    5:0,
+                    6:0,
+                    7:0,
+                    8:0,
+                    9:0,
+                    10:0,
+                    11:0,
+                    12:0,
+                    13:0,
+                    14:0,
+                    15:0,
+                },
+            },
+            5: {
+                student_id:64,
+                notes:{
+                    "Current Instructor in School": "Mrs. Pattock",
+                    "Textbook Used":"Chemistry by HGM",
+                    "Current Grade in Class":"C+",
+                    "Current Topic in School / Topic of Interest":"Nobel Gas Law",
+                    "Student Strengths":"reading",
+                    "Student Weakness":"math",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+            6: {
+                student_id:64,
+                notes:{
+                    "Current Instructor in School": "Mrs. Kumar",
+                    "Textbook Used":"Common Core Geometry",
+                    "Current Grade in Class":"C+",
+                    "Current Topic in School / Topic of Interest":"Trigonometry",
+                    "Student Strengths":"reading",
+                    "Student Weakness":"math",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+            9: {
+                student_id:64,
+                notes:{
+                    "Current Instructor in School": "Mrs. Melby",
+                    "Textbook Used":"Foundational Calculus",
+                    "Current Grade in Class":"C+",
+                    "Current Topic in School / Topic of Interest":"Derivatives",
+                    "Student Strengths":"reading",
+                    "Student Weakness":"math",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+            10: {
+                student_id:64,
+                notes:{
+                    "Current Instructor in School": "Mr. Tran",
+                    "Textbook Used":"Foundational Calculus",
+                    "Current Grade in Class":"C-",
+                    "Current Topic in School / Topic of Interest":"Derivatives",
+                    "Student Strengths":"reading",
+                    "Student Weakness":"math",
+                    general:"",
+                },
+                session_payment_status:{
+                    1:1,
+                    2:1,
+                    3:1,
+                    4:1,
+                    5:1,
+                    6:1,
+                    7:1,
+                    8:1,
+                    9:1,
+                    10:1,
+                    11:1,
+                    12:1,
+                    13:1,
+                    14:1,
+                    15:1,
+                },
+            },
+        }
+    },
+    "Payments":{
+        //23 = studentID: 1 = course 1: 1/2 = payment
+        23: {
+            1: {
+                1:{
+                    method:"Credit Card",
+                    amount: 250,
+                    date:"2019-12-23",
+                },
+                2:{
+                    method:"Credit Card",
+                    amount: 200,
+                    date:"2019-12-31",
+                },
+            },
+            2: {
+                1:{
+                    method:"Check",
+                    amount: 500,
+                    date:"2020-05-13",
+                }
+            },
+            3: {
+              1:{
+                  method:"Credit Card",
+                  amount: 360,
+                  date: "2020-08-3",
+              }
+            },
+            6: {
+                1:{
+                    method:"Credit Card",
+                    amount:1000,
+                    date:"2020-08-01"
+                },
+                2:{
+                    method:"Credit Card",
+                    amount:440,
+                    date:"2020-08-07",
+                }
+            },
+            8: {
+                1:{
+                    method:"Check",
+                    amount: 100,
+                    date:"2020-01-16",
+                },
+                2:{
+                    method:"Credit Card",
+                    amount: 200,
+                    date:"2020-01-23",
+                },
+                3:{
+                    method:"Credit Card",
+                    amount: 400,
+                    date:"2020-01-31"
+                },
+            },
+            10: {
+                1: {
+                method:"Cash",
+                amount: 700,
+                date: "2020-03-21",
+                }
+            },
+        },
+        24: {
+            2: {
+                1: {method:"Credit Card",
+                amount: 500,
+                date: "2020-06-01",
+                },
+            },
+            5: {},
+            6: {
+                1:{
+                    method:"Check",
+                    amount:1000,
+                    date:"2019-07-10",
+                },
+                2:{
+                    method:"Check",
+                    amount: 440,
+                    date:"2019-08-5",
+                }
+            },
+            8: {
+                1:{
+                    method:"Cash",
+                    amount:100,
+                    date:"2020-01-29",
+                },
+                2:{
+                    method:"Cash",
+                    amount:600,
+                    date:"2020-02-01",
+                }
+            },
+            9: {
+                1:{
+                    method:"Credit Card",
+                    amount:700,
+                    date:"2020-03-03",
+                }
+            },
+        },
+        99: {
+            1: {
+                1:{
+                method:"Check",
+                amount: 450,
+                date: "2020-01-07",
+                }
+            },
+            2: {
+                1:{
+                    method:"Check",
+                    amount: 500,
+                    date: "2020-06-02",
+                }
+            },
+            5: {
+                1:{
+                    method:"Check",
+                    amount:450,
+                    date:"2019-10-18",
+                },
+            },
+            6: {
+                1:{
+                    method:"Cash",
+                    amount: 440,
+                    date:"2020-07-01",
+                },
+                2:{
+                    method:"Check",
+                    amount: 1000,
+                    date:"2020-08-07",
+                },
+            },
+            7: {
+                1:{
+                    method:"Check",
+                    amount: 850,
+                    date:"2020-03-01",
+                },
+            },
+            8: {
+                1:{
+                    method:"Check",
+                    amount:700,
+                    date:"2020-02-1",
+                }
+            },
+            10: {
+                1:{
+                    method:"Check",
+                    amount: 700,
+                    date:"2010-03-01",
+                },
+            },
+        },
+        64: {
+            1:{
+                1:{
+                    method:"Cash",
+                    amount: 450,
+                    date:"2020-01-07"
+                },
+            },
+            2: {
+                1:{
+                    method:"Check",
+                    amount: 500,
+                    date:"2020-06-01",
+                }
+            },
+            4: {
+                1:{
+                    method:"Check",
+                    amount:255,
+                   date:"2020-08-01",
+                }
+            },
+            5: {
+                1: {
+                method:"Check",
+                amount:450,
+                date:"2019-10-05",
+                }
+            },
+            6: {
+                1: {
+                    date:"2020-08-03",
+                    amount:1440,
+                    method:"Credit Card",
+                }
+            },
+            9: {
+                1:{
+                  date:"2020-03-02",
+                  method:"Check",
+                  amount:700,
+                },
+            },
+            10: {
+                1:{
+                    amount:700,
+                    method:"Credit Card",
+                    date:"2020-02-24",
+                }
             }
         },
     },
@@ -1774,9 +2758,19 @@ export default {
                 email: "a@a.com",
                 parent_id: 78,
                 role: 'student',
-                account:{
+                balance: 0,
+                notes:{
+                    1:{
+                        timestamp:"2020-01-02T12:05",
+                        body:"wants to take bio",
 
-                }
+                    },
+                    2:{
+                        timestamp:"2020-01-10T13:11",
+                        body:"sister is interested in taking 7th grade english",
+                        status: 1,
+                    },
+                },
             },
             24: {
                 user_id: 24,
@@ -1795,6 +2789,14 @@ export default {
                 email: "b@b.com",
                 parent_id: 79,
                 role: 'student',
+                balance: 0,
+                notes:{
+                    1:{
+                        timestamp:"2020-01-13T17:33",
+                        body:"Needs PSAT practice problems",
+                        status: 1,
+                    },
+                },
             },
             99: {
                 user_id: 99,
@@ -1813,6 +2815,14 @@ export default {
                 email: "c@c.com",
                 parent_id: 80,
                 role: 'student',
+                balance: 0,
+                notes:{
+                    1:{
+                        timestamp:"2020-01-12T15:21",
+                        body:"grade bio worksheet",
+                        status: 1,
+                    },
+                },
             },
             64: {
                 user_id: 64,
@@ -1831,6 +2841,9 @@ export default {
                 email: "d@d.com",
                 parent_id: 81,
                 role: 'student',
+                balance: 0,
+                notes:{
+                },
             },
         },
         "ParentList": {
@@ -1901,24 +2914,225 @@ export default {
                 name: "Daniel Huang",
                 email: "daniel.huang@gmail.com",
                 role: 'instructor',
+                schedule:{
+                    work_hours:{
+                        1: {
+                            start: "T17:00",
+                            end: "T20:00",
+                            title: ""
+                        },
+                        2: {
+                            start: "T17:00",
+                            end: "T20:00",
+                            title: ""
+                        },
+                        3: {
+                            start: "T18:00",
+                            end: "T20:00",
+                            title: ""
+                        },
+                        4: {
+                            start: "T00:00",
+                            end: "T00:00",
+                            title: ""
+                        },
+                        5: {
+                            start: "T16:00",
+                            end: "T21:00",
+                            title: ""
+                        },
+                        6: {
+                            start: "T09:00",
+                            end: "T12:00",
+                            title: ""
+                        },
+                    },
+                    time_off:{
+                        1:{
+                            start: "2020-01-14T00:00",
+                            end: "2020-01-21T00:00",
+                            title: "Daniel Time Off"
+                        },
+                        2:{
+                            start: "2020-03-22T00:00",
+                            end: "2020-03-22T00:00",
+                            title: "Daniel Time Off"
+                        },
+                    },
+                },
+                notes:{
+                    1:{
+                        timestamp:"2020-01-02T13:00",
+                        body:"Needs past AP CS multiple choice exams",
+                        status: 1,
+                    },
+                    2:{
+                        timestamp:"2020-01-10T15:02",
+                        body:"Needs x things copied for his 2pm class on tuesdays",
+                        status: 1,
+                    },
+                },
             },
             11: {
                 user_id: 11,
                 name: "Jerry Li",
                 email: "jerrylinew@gmail.com",
                 role: 'instructor',
+                schedule:{
+                    work_hours: {
+                        1: {
+                            start: "T18:00",
+                            end: "T21:00",
+                            title: "",
+                        },
+                        2: {
+                            start: "T17:00",
+                            end: "T20:00",
+                            title: "",
+                        },
+                        3: {
+                            start: "T18:00",
+                            end: "T21:00",
+                            title: "",
+                        },
+                        4: {
+                            start: "T17:00",
+                            end: "T20:00",
+                            title: "",
+                        },
+                        5: {
+                            start: "T16:00",
+                            end: "T21:00",
+                            title: "",
+                        },
+                        6: {
+                            start: "T09:00",
+                            end: "T15:00",
+                            title: "",
+                        }
+                    },
+                    time_off:{
+                        1:{
+                            start: "2020-02-10T00:00",
+                            end: "2020-02-21T00:00",
+                            title: "Jerry Time Off"
+                        },
+                    },
+                },
+                notes:{
+                    1:{
+                        timestamp:"2020-01-07T13:32",
+                        body:"Print January Timesheet for Jerry",
+                        status: 1,
+                    },
+                },
             },
             12: {
                 user_id: 12,
                 name: "Albert Deng",
                 email: "albert@omou.com",
                 role: 'instructor',
+                schedule: {
+                    work_hours: {
+                        1: {
+                            start: "T17:00",
+                            end: "T20:00",
+                            title: "",
+                        },
+                        2: {
+                            start: "T17:00",
+                            end: "T20:00",
+                            title: "",
+                        },
+                        3: {
+                            start: "T18:00",
+                            end: "T20:00",
+                            title: "",
+                        },
+                        4: {
+                            start: "T17:00",
+                            end: "T22:00",
+                            title: "",
+                        },
+                        5: {
+                            start: "T16:00",
+                            end: "T21:00",
+                            title: "",
+                        },
+                        6: {
+                            start: "T09:00",
+                            end: "T17:00",
+                            title: "",
+                        },
+                    },
+                    time_off:{},
+                },
+                notes:{
+                    1:{
+                        timestamp:"2020-01-04T17:12",
+                        body:"Remind Albert to fill out timesheet",
+                        status: 1,
+                    },
+                    2:{
+                        timestamp:"2020-01-04T17:16",
+                        body:"Print worksheets for Albert's bio 1x1",
+                        status: 1,
+                    },
+                },
             },
             13: {
                 user_id: 13,
                 name: "Katie Ho",
                 email: "katie@omou.com",
                 role: 'instructor',
+                schedule: {
+                    work_hours:{
+                        1: {
+                            start: "T16:00",
+                            end: "T20:00",
+                            title: "",
+                        },
+                        2: {
+                            start: "T17:00",
+                            end: "T20:00",
+                            title: "",
+                        },
+                        3: {
+                            start: "T16:00",
+                            end: "T20:00",
+                            title: "",
+                        },
+                        4: {
+                            start: "T17:00",
+                            end: "T20:00",
+                            title: "",
+                        },
+                        5: {
+                            start: "T16:00",
+                            end: "T20:00",
+                            title: "",
+                        },
+                        6: {
+                            start: "T11:00",
+                            end: "T16:00",
+                            title: "",
+                        },
+                    },
+                    time_off:{
+                        1:{
+                            start: "2020-01-05T00:00",
+                            end: "2020-01-21T00:00",
+                            title: "Katie Time Off"
+                        },
+                    },
+                },
+                notes:{
+                    1:{
+                        timestamp:"2020-01-09T18:11",
+                        body:"Katie can't teach on Saturdays after the 22nd",
+                        status: 1,
+                    },
+                },
             },
         },
     },
@@ -1933,7 +3147,6 @@ export default {
             subject: "math",
             instructor_id: 10,
             course: "C"
-
         },
         {
             id: 2,
@@ -2206,7 +3419,7 @@ function initRegistrationForm() {
             },
             tutoring: {
                 form_type: "tutoring",
-                section_titles: ["Tutoring Session Type", "Student(s)", "Student Information", "Tutor Selection", "Payment"],
+                section_titles: ["Tutoring Session Type", "Student(s)", "Student Information", "Tutor Selection", "Schedule","Payment"],
                 "Tutoring Session Type": [
                     {
                         field: "Select tutoring type",
@@ -2270,6 +3483,17 @@ function initRegistrationForm() {
                         required: true,
                         full: true,
                         field_limit: 2,
+                    },
+                ],
+                "Schedule":[
+                    {
+                        field: "Day",
+                        name: "Day",
+                        type: "short text",
+                        conditional: false,
+                        required: false,
+                        full: true,
+                        field_limit: 1,
                     },
                 ],
                 "Payment": [

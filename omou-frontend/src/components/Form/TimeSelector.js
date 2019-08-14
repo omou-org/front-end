@@ -109,7 +109,7 @@ class TimeSelector extends Component {
 
     }
 
-    // Timeframe is all the available times given a teacher
+    // Timeframe is all the available times given a instructor
     setTimeframe(){
         // start date is today
         let startDate = new Date();
@@ -145,19 +145,19 @@ class TimeSelector extends Component {
                 )
             }
         }
-        // get teacher's current courses within this time
+        // get instructor's current courses within this time
         try {
-            this.props.teacherID
+            this.props.instructorID
         } catch(error){
             console.error(error)
         }
-        let currentTeacherCourses = this.props.courses.filter((course)=>{
-            return course.instructor_id === this.props.teacherID;
+        let currentInstructorCourses = this.props.courses.filter((course)=>{
+            return course.instructor_id === this.props.instructorID;
         });
         // sort current courses by date + time in ascending order (oldest to newest)
-        currentTeacherCourses.sort(date_sort_asc);
-        // Get teacher's workStart and workEnd times
-        let currentTeacherWorkHours = this.props.teacherWorkHours[this.props.teacherID];
+        currentInstructorCourses.sort(date_sort_asc);
+        // Get instructor's workStart and workEnd times
+        let currentInstructorWorkHours = this.props.instructorWorkHours[this.props.instructorID];
         // for each valid available date
             //  if there are courses on this date
                 //  if courseStartTime - workStartTime > 0 (if there's a gap between when work starts and the first course)
@@ -168,7 +168,7 @@ class TimeSelector extends Component {
                     // add a time slot to the valid date from lastCourseEndTime to workEndTime
         let currentDateCourses;
         availableDates = availableDates.map((date)=>{
-            currentDateCourses = currentTeacherCourses.filter((course)=>{
+            currentDateCourses = currentInstructorCourses.filter((course)=>{
 
             });
         });
@@ -257,8 +257,8 @@ TimeSelector.propTypes = {};
 
 function mapStateToProps(state) {
     return {
-        teachers: state.Users.TeacherList,
-        teacherWorkHours: state.Calendar.teacher_work_hours,
+        instructors: state.Users.InstructorList,
+        instructorWorkHours: state.Calendar.instructor_work_hours,
         courses:state.Course.CourseList,
     };
 }

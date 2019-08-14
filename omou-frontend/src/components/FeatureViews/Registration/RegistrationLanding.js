@@ -36,7 +36,8 @@ class RegistrationLanding extends Component {
 
     componentDidMount() {
         this.setState({
-            courses: Object.keys(this.props.courses),
+            courses: Object.keys(this.props.courses).filter(
+                (courseID)=>{return this.props.courses[courseID].type === "C"}),
             instructors: this.props.instructors,
         })
     }
@@ -161,6 +162,7 @@ class RegistrationLanding extends Component {
                             </Grid>
                             <Grid item md={2}>
                                 <FilterIcon
+                                    style={{cursor:"pointer"}}
                                     onClick={(e)=>{ this.handleFilterClick.bind(this)(e) }}
                                     />
                             </Grid>
@@ -222,7 +224,7 @@ class RegistrationLanding extends Component {
                                                 <Grid container alignItems={'center'} layout={'row'} style={{height:"100%"}}>
                                                     <Grid item md={6} className={'course-status'}>
                                                         <span className={'stats'}>
-                                                            {course.filled} / {course.capacity}
+                                                            {course.roster.length} / {course.capacity}
                                                         </span>
                                                         <span className={'label'}>
                                                             Status
