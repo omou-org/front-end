@@ -53,7 +53,7 @@ function Navigation(props) {
             <List className={"list"}>
                 {NavList.map((NavItem, index) => (
                     <ListItem button key={index} component={NavLink} exact={NavItem.name === "Dashboard"} to={NavItem.link} className={"listItem"}>
-                        <ListItemIcon>{NavItem.icon}</ListItemIcon>
+                        <ListItemIcon className={"icon"}>{NavItem.icon}</ListItemIcon>
                         <ListItemText primary={NavItem.name} className={"text"}/>
                     </ListItem>
                 ))}
@@ -64,7 +64,9 @@ function Navigation(props) {
     return (
         <MuiThemeProvider theme={CustomTheme}>
             <div className={"Navigation"}>
-                <AppBar position="fixed" className="OmouBar">
+                <AppBar color={"background"}
+                    position="fixed"
+                    className="OmouBar">
                     <Toolbar>
                         <Hidden smUp>
                             <IconButton

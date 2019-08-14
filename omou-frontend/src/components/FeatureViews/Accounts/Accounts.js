@@ -32,21 +32,29 @@ class Accounts extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    componentWillMount() {
-        this.setState({
-            usersList: this.props.teachers.concat(this.props.parents).concat(this.props.students),
+    componentWillMount(){
+        this.setState(()=>{
+            let usersList = {};
+            Object.assign(usersList,this.props.parents);
+            Object.assign(usersList,this.props.students);
+            Object.assign(usersList,this.props.instructors);
+           return {usersList: usersList,}
         });
     }
 
     handleChange(e, newTabIndex) {
         e.preventDefault();
         let newUsersList = [];
-        switch (newTabIndex) {
+        let usersList = {};
+        Object.assign(usersList,this.props.parents);
+        Object.assign(usersList,this.props.students);
+        Object.assign(usersList,this.props.instructors);
+        switch(newTabIndex){
             case 0:
-                newUsersList = this.props.teachers.concat(this.props.parents).concat(this.props.students);
+                newUsersList = usersList;
                 break;
             case 1:
-                newUsersList = this.props.teachers;
+                newUsersList = this.props.instructors;
                 break;
             case 2:
                 newUsersList = this.props.students;
@@ -55,7 +63,7 @@ class Accounts extends Component {
                 newUsersList = this.props.parents;
                 break;
             default:
-                newUsersList = this.props.teachers.concat(this.props.parents).concat(this.props.students);
+                newUsersList = usersList;
         }
         this.setState({ value: newTabIndex, usersList: newUsersList });
     }
@@ -72,17 +80,17 @@ class Accounts extends Component {
                     </TableRow>
                 </TableHead>
                 <TableBody className="TableRow">
-                    {this.state.usersList.map(row => (
+                    {this.state.usersList.map(rowID => {
+                        let row = this.state.usersList[rowID];
+                        return (
                         <TableRow key={row.name} component={NavLink} to={"/accounts/" + row.type + "/" + row.user_id} className="row">
                             <TableCell component="th" scope="row">
                                 {row.name}
                             </TableCell>
                             <TableCell>{row.email}</TableCell>
                             <TableCell>{row.phone_number}</TableCell>
-                            {/*<TableCell align="right">{row.carbs}</TableCell>*/}
-                            {/*<TableCell align="right">{row.protein}</TableCell>*/}
                         </TableRow>
-                    ))}
+                    )})}
                 </TableBody>
             </Table>;
         };
@@ -150,7 +158,7 @@ Accounts.propTypes = {};
 
 function mapStateToProps(state) {
     return {
-        teachers: state.Users.TeacherList,
+        instructors: state.Users.InstructorList,
         parents: state.Users.ParentList,
         students: state.Users.StudentList,
     };

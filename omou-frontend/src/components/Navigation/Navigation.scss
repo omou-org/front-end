@@ -16,18 +16,22 @@
     font-size: 24px;
     line-height: 26px;
     text-decoration: none;
-    color: white;
+    color: $primaryColor;
   }
 
   /*Drawer Styling*/
   .OmouDrawer{
     //width: $drawerWidth;
+    .MuiDrawer-paperAnchorDockedLeft-100{
+      border:none;
+    }
   }
 
   .OmouMain {
     @include respond-to(handhelds){ margin-left:0;}
     @include respond-to(medium-up-screens){ margin-left:$drawerWidth; }
     padding:5% 3% 0 3%;
+    overflow-x: hidden;
   }
 
   .DrawerList{
@@ -36,15 +40,23 @@
 
     padding-top: 45%;
 
+
+    .listItem {
+      width: 94%;
+      margin:3%;
+    }
+
     .list .listItem .text > span{
       font-weight:500;
       font-size: $navigationSize;
-      color: $lightPrimaryFontColor;
+      color: $primaryFontColor;
     }
     .listItem.active{
-      //border-radius: 0px 15px 15px 0px;
+      border-radius: 5px;
       background-color:$secondaryHighlightColor;
-      .text > span{color:$secondaryFontColor;}
+      border: solid 2px $primaryDarkColor;
+      .text > span{color:$primaryFontColor;}
+      .icon > * { color: $primaryDarkColor; }
     }
   }
 
@@ -55,7 +67,7 @@
     font-size: 24px;
     line-height: 26px;
     text-decoration: none;
-    color: white;
+    color: $primaryColor;
     float: right;
   }
 }

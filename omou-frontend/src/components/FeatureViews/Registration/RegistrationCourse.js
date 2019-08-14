@@ -5,18 +5,13 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import BackButton from "../../BackButton.js";
 import RegistrationActions from "./RegistrationActions";
+import '../../../theme/theme.scss';
 
 //Material UI Imports
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import NewUser from "@material-ui/icons/PersonAdd";
-import NewTutor from "@material-ui/icons/Group";
-import NewCourse from "@material-ui/icons/School";
 import ClassIcon from "@material-ui/icons/Class"
-import { NavLink } from "react-router-dom";
 import { Divider, LinearProgress, TableBody, Typography } from "@material-ui/core";
-import BackArrow from "@material-ui/icons/ArrowBack";
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
 import Table from "@material-ui/core/Table";
@@ -27,6 +22,7 @@ import CallIcon from "@material-ui/icons/Phone";
 import EmailIcon from "@material-ui/icons/Email";
 import EditIcon from "@material-ui/icons/Edit";
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
+import Button from "@material-ui/core/Button";
 
 const rowHeadings = [
     { id: 'Student', numberic: false, disablePadding: false },
@@ -60,9 +56,7 @@ class RegistrationCourse extends Component {
     }
 
     componentWillMount() {
-        let CourseInView = this.props.courses.find((course) => {
-            return course.course_id.toString() === this.props.computedMatch.params.courseID;
-        });
+        let CourseInView = this.props.courses[this.props.computedMatch.params.courseID] ;
         this.setState({ ...CourseInView });
     }
 
@@ -80,15 +74,13 @@ class RegistrationCourse extends Component {
             return DayConverter[day];
         });
 
-        let Teacher = this.props.teachers.find((teacher) => {
-            return teacher.user_id === this.state.instructor_id;
-        });
+        let Instructor = this.props.Instructors[this.state.instructor_id];
 
         let rows = [];
         let student, row, parent, Actions;
         this.props.courseRoster[this.state.course_id].forEach((student_id) => {
-            student = this.props.students.find((studentCurr) => { return studentCurr.user_id === student_id });
-            parent = this.props.parents.find((parentCurr) => { return student.parent_id === parentCurr.user_id });
+            student = this.props.students[student_id];
+            parent = this.props.parents[student.parent_id];
             Actions = () => {
                 return <div className={student.name + ' actions'}>
                     <CallIcon />
@@ -113,10 +105,21 @@ class RegistrationCourse extends Component {
                     </Grid>
                 </Paper>
                 <Paper className={"paper content"}>
-                    <BackButton />
+                    <Grid container justify={"space-between"}>
+                        <Grid item sm={3}>
+                            <BackButton />
+                        </Grid>
+                        <Grid item sm={2}>
+                            <Button className={"button"} style={{padding:"6px 10px 6px 10px", backgroundColor:"white"}}>
+                                <EditIcon style={{fontSize:"16px"}}/>
+                                Edit Course
+                            </Button>
+                        </Grid>
+                    </Grid>
+                    <Divider className={"top-divider"}/>
                     <div className={"course-heading"}>
                         <Typography align={'left'} variant={'h3'} style={{ fontWeight: "500" }} >
-                            {this.props.computedMatch.params.courseTitle}
+                            {this.state.course_title}
                         </Typography>
                         <div className={"date"}>
                             <CalendarIcon style={{ fontSize: "16" }} align={'left'} className={"icon"}/>
@@ -133,8 +136,8 @@ class RegistrationCourse extends Component {
                             </div>
                             <div className={'second-line'}>
                                 <Chip
-                                    avatar={<Avatar>{Teacher.name.match(/\b(\w)/g).join('')}</Avatar>}
-                                    label={Teacher.name}
+                                    avatar={<Avatar>{Instructor.name.match(/\b(\w)/g).join('')}</Avatar>}
+                                    label={Instructor.name}
                                     className={"chip"}
                                 />
                                 <Typography align={'left'} className={'text'}>
@@ -149,17 +152,23 @@ class RegistrationCourse extends Component {
                             </div>
                         </div>
                     </div>
-                    <Divider />
+
                     <Typography align={'left'} className={'description text'}>
                         {this.state.description}
                     </Typography>
-                    <Divider />
-                    <LinearProgress
-                        color={'primary'}
-                        value={(this.state.filled / this.state.capacity) * 100}
-                        valueBuffer={100}
-                        variant={'buffer'}
-                    />
+                    <div className={"course-status"}>
+                        <div className={"status"}>
+                            <div className={"text"}>
+                                {this.state.filled} / {this.state.capacity} Spaces Taken
+                            </div>
+                        </div>
+                        <LinearProgress
+                            color={'primary'}
+                            value={(this.state.filled / this.state.capacity) * 100}
+                            valueBuffer={100}
+                            variant={'buffer'}
+                        />
+                    </div>
                     <Table>
                         <TableToolbar />
                         <TableBody>
@@ -192,7 +201,7 @@ function mapStateToProps(state) {
         courses: state.Course["CourseList"],
         courseCategories: state.Course["CourseCategories"],
         students: state.Users["StudentList"],
-        teachers: state.Users["TeacherList"],
+        Instructors: state.Users["InstructorList"],
         parents: state.Users["ParentList"],
         courseRoster: state.Course["CourseRoster"],
     };
