@@ -7,7 +7,9 @@ import PhoneIcon from "@material-ui/icons/Phone";
 import MoneyIcon from "@material-ui/icons/Money";
 import Grid from "@material-ui/core/Grid";
 import BackButton from "../../BackButton";
-import './ProfileHeading.scss'
+import Chip from "@material-ui/core/Chip";
+import './ProfileHeading.scss';
+import { Card, Paper, Typography } from "@material-ui/core";
 
 class ProfileHeading extends Component {
     constructor(props) {
@@ -16,40 +18,90 @@ class ProfileHeading extends Component {
         };
     }
 
+    renderStudentProfile() {
+        return (
+            <Grid container>
+                <Grid item md={6}>
+                    <Grid container>
+                        <Grid item md={6} align="left">
+                            birthday
+                        </Grid>
+                        <Grid item md={1} align="left">
+                            <PhoneIcon />
+                        </Grid>
+                        <Grid item md={5} align="left">
+                            {this.props.user.phone_number}
+                        </Grid>
+                        <Grid item md={6} align="left">
+                            grade
+                        </Grid>
+                        <Grid item md={1} align="left">
+                            <EmailIcon />
+                        </Grid>
+                        <Grid item md={5} align="left">
+                            {this.props.user.email}
+                        </Grid>
+                        <Grid item md={6} align="left">
+                            highschool
+                        </Grid>
+                        <Grid item md={1} align="left">
+                            <MoneyIcon />
+                        </Grid>
+                        <Grid item md={5} align="left">
+                            balance
+                        </Grid>
+                    </Grid>
+                </Grid>
 
+            </Grid>);
+    }
+
+    renderTeacherProfile() {
+        return (
+            <Grid container>
+                <Grid item md={6}>
+                    <Grid container>
+                        <Grid item md={1} align="left">
+                            <PhoneIcon />
+                        </Grid>
+                        <Grid item md={5} align="left">
+                            {this.props.user.phone_number}
+                        </Grid>
+                    </Grid>
+                    <Grid container>
+                        <Grid item md={1} align="left">
+                            <EmailIcon />
+                        </Grid>
+                        <Grid item md={5} align="left">
+                            {this.props.user.email}
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+            </Grid>);
+    }
 
     render() {
         let grid;
         switch (this.props.user.type) {
             case "student":
-                grid = (
-                    <div class="grid">
-                        <div>birthday</div>
-                        <div>grade</div>
-                        <div>highschool</div>
-                        <Grid container>
-                            <PhoneIcon />{this.props.user.phone_number}</Grid>
-                        <Grid container>
-                            <EmailIcon />{this.props.user.email}</Grid>
-                        <Grid container>
-                            <MoneyIcon />balance</Grid>
-                    </div>);
+                grid = (this.renderStudentProfile());
                 break;
             case "teacher":
-                grid = (<div>
-                    <Grid container>
-                        <PhoneIcon />{this.props.user.phone_number}</Grid>
-                    <Grid container>
-                        <EmailIcon />{this.props.user.email}</Grid>
-                </div>
-                );
+                grid = (this.renderTeacherProfile());
                 break;
             default:
         }
         return (<div>
-            <h1 className="left-align">{this.props.user.name}</h1>
-            {grid}
-        </div>)
+           <Grid container>
+                <h1 className="left-align">{this.props.user.name}</h1>
+            <Chip
+                label={this.props.user.type}
+
+            />
+            </Grid>
+            { grid }
+        </div >)
     }
 
 }

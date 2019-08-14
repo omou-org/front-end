@@ -26,7 +26,7 @@ const userTabs = {
         {
             tab_heading: "Schedule",
             tab_id: 0,
-        }, 
+        },
         {
             tab_heading: "Courses",
             tab_id: 1,
@@ -70,9 +70,6 @@ class UserProfile extends Component {
     }
 
     componentWillMount() {
-        // let ProfileInView = this.props.courses.find((course) => {
-        //     return course.course_id.toString() === this.props.computedMatch.params.accountType;
-        // });
         let user;
         let accountType = this.props.computedMatch.params.accountType;
         switch (accountType) {
@@ -134,9 +131,13 @@ class UserProfile extends Component {
                 <BackButton
                     warn={false}
                 />
-                <Grid container>
-                    <Avatar style={styles}>{this.state.user.name.match(/\b(\w)/g).join('')}</Avatar>
-                    <ProfileHeading user={this.state.user} />
+                <Grid container layout="row">
+                    <Grid item md={2}>
+                        <Avatar style={styles}>{this.state.user.name.match(/\b(\w)/g).join('')}</Avatar>
+                    </Grid>
+                    <Grid item md={8}>
+                        <ProfileHeading user={this.state.user} />
+                    </Grid>
                 </Grid>
                 <Tabs
                     value={this.state.value}
@@ -146,7 +147,7 @@ class UserProfile extends Component {
                 >
                     {this.state.tabs.map((tab) => { return <Tab label={tab.tab_heading} /> })}
                 </Tabs>
-                <ComponentViewer user={this.state.user} inView={this.state.tabs[this.state.value].tab_id}/>
+                <ComponentViewer user={this.state.user} inView={this.state.tabs[this.state.value].tab_id} />
             </Paper>
         </div>
         )

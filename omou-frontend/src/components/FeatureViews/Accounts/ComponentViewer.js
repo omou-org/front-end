@@ -20,11 +20,6 @@ class ComponentViewer extends Component {
         };
     }
 
-    componentWillMount() {
-
-    }
-
-
     render() {
         let component;
         switch (this.props.inView) {

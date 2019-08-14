@@ -6,19 +6,20 @@
   .paper{
     padding:$paperPadding !important;
   }
-  .row{
-      text-decoration: none;
-  }
+
   
   .Directory{
       text-align:left;
       font-size:60px;
+      .toggleView{
+        position:absolute;
+        right:100px;
+      }
   }
 
-  .toggleView{
-    position:absolute;
-    right:100px;
+}
+.TableRow{
+  .row{
+    text-decoration: none;
   }
-
- 
 }

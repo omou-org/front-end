@@ -71,7 +71,7 @@ class Accounts extends Component {
                         <TableCell>Role</TableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody>
+                <TableBody className="TableRow">
                     {this.state.usersList.map(row => (
                         <TableRow key={row.name} component={NavLink} to={"/accounts/" + row.type + "/" + row.user_id} className="row">
                             <TableCell component="th" scope="row">
@@ -112,7 +112,7 @@ class Accounts extends Component {
         return (<Grid item xs={'12'} className="Accounts">
             <Paper className={'paper'}>
                     <BackButton />
-                <h1 className="Directory">Directory</h1>
+                <Typography variant="h2">Directory</Typography>
                 <Grid container direction={'row'} alignItems={'center'}>
 
                     <Grid item xs={'9'}>
