@@ -82,13 +82,13 @@ class ProfileHeading extends Component {
     }
 
     render() {
-        let grid;
-        switch (this.props.user.type) {
+        let profileDetails;
+        switch (this.props.user.role) {
             case "student":
-                grid = (this.renderStudentProfile());
+                profileDetails = this.renderStudentProfile();
                 break;
-            case "teacher":
-                grid = (this.renderTeacherProfile());
+            case "instructor":
+                profileDetails = this.renderTeacherProfile();
                 break;
             default:
         }
@@ -96,11 +96,10 @@ class ProfileHeading extends Component {
            <Grid container>
                 <h1 className="left-align">{this.props.user.name}</h1>
             <Chip
-                label={this.props.user.type}
-
+                label={this.props.user.role}
             />
             </Grid>
-            { grid }
+            { profileDetails }
         </div >)
     }
 

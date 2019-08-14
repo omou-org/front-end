@@ -22,7 +22,7 @@ import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
 
 const userTabs = {
-    "teacher": [
+    "instructor": [
         {
             tab_heading: "Schedule",
             tab_id: 0,
@@ -71,16 +71,16 @@ class UserProfile extends Component {
 
     componentWillMount() {
         let user;
-        let accountType = this.props.computedMatch.params.accountType;
+        let accountType = this.props.computedMatch.params.accountType, accountID = this.props.computedMatch.params.accountID;
         switch (accountType) {
             case "student":
-                user = (this.props.student.find(({ user_id }) => user_id == this.props.computedMatch.params.accountID));
+                user = this.props.students[accountID];
                 break;
             case "parent":
-                user = (this.props.parent.find(({ user_id }) => user_id == this.props.computedMatch.params.accountID));
+                user = this.props.parents[accountID];
                 break;
-            case "teacher":
-                user = (this.props.teacher.find(({ user_id }) => user_id == this.props.computedMatch.params.accountID));
+            case "instructor":
+                user = this.props.instructors[accountID];
                 break;
             default:
                 user = -1;
@@ -118,6 +118,7 @@ class UserProfile extends Component {
     }
 
     render() {
+        console.log(this.state.user);
         let styles = {
             backgroundColor: this.stringToColor(this.state.user.name),
             color: "white",
@@ -159,9 +160,9 @@ UserProfile.propTypes = {};
 
 function mapStateToProps(state) {
     return {
-        student: state.Users.StudentList,
-        parent: state.Users.ParentList,
-        teacher: state.Users.TeacherList,
+        students: state.Users.StudentList,
+        parents: state.Users.ParentList,
+        instructors: state.Users.InstructorList,
     };
 }
 

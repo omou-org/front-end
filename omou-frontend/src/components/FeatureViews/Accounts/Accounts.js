@@ -80,10 +80,11 @@ class Accounts extends Component {
                     </TableRow>
                 </TableHead>
                 <TableBody className="TableRow">
-                    {this.state.usersList.map(rowID => {
+                    {Object.keys(this.state.usersList).map(rowID => {
                         let row = this.state.usersList[rowID];
+
                         return (
-                        <TableRow key={row.name} component={NavLink} to={"/accounts/" + row.type + "/" + row.user_id} className="row">
+                        <TableRow key={row.name} component={NavLink} to={"/accounts/" + row.role + "/" + row.user_id} className="row">
                             <TableCell component="th" scope="row">
                                 {row.name}
                             </TableCell>
