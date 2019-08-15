@@ -2533,11 +2533,19 @@ export default {
                     method:"Credit Card",
                     amount: 250,
                     date:"2019-12-23",
+                    discount:{
+                        code: "SIBDISC2019",
+                        session_amount: 1,
+                    },
                 },
                 2:{
                     method:"Credit Card",
                     amount: 200,
                     date:"2019-12-31",
+                    discount:{
+                        code: "SIBDISC2019",
+                        session_amount: 1,
+                    },
                 },
             },
             2: {
@@ -2545,6 +2553,10 @@ export default {
                     method:"Check",
                     amount: 500,
                     date:"2020-05-13",
+                    discount:{
+                        code: "SIBDISC2019",
+                        session_amount: 1,
+                    },
                 }
             },
             3: {
@@ -2552,18 +2564,30 @@ export default {
                   method:"Credit Card",
                   amount: 360,
                   date: "2020-08-3",
+                  discount:{
+                      code: "SIBDISC2019",
+                      session_amount: 1,
+                  },
               }
             },
             6: {
                 1:{
                     method:"Credit Card",
                     amount:1000,
-                    date:"2020-08-01"
+                    date:"2020-08-01",
+                    discount:{
+                        code: "SIBDISC2019",
+                        session_amount: 1,
+                    },
                 },
                 2:{
                     method:"Credit Card",
                     amount:440,
                     date:"2020-08-07",
+                    discount:{
+                        code: "SIBDISC2019",
+                        session_amount: 1,
+                    },
                 }
             },
             8: {
@@ -2571,23 +2595,39 @@ export default {
                     method:"Check",
                     amount: 100,
                     date:"2020-01-16",
+                    discount:{
+                        code: "SIBDISC2019",
+                        session_amount: 1,
+                    },
                 },
                 2:{
                     method:"Credit Card",
                     amount: 200,
                     date:"2020-01-23",
+                    discount:{
+                        code: "SIBDISC2019",
+                        session_amount: 1,
+                    },
                 },
                 3:{
                     method:"Credit Card",
                     amount: 400,
-                    date:"2020-01-31"
+                    date:"2020-01-31",
+                    discount:{
+                        code: "SIBDISC2019",
+                        session_amount: 1,
+                    },
                 },
             },
             10: {
                 1: {
-                method:"Cash",
-                amount: 700,
-                date: "2020-03-21",
+                    method:"Cash",
+                    amount: 700,
+                    date: "2020-03-21",
+                    discount:{
+                        code: "SIBDISC2019",
+                        session_amount: 1,
+                    },
                 }
             },
         },
