@@ -232,8 +232,7 @@ class RegistrationLanding extends Component {
                                                         </span>
                                                     </Grid>
                                                     <Grid item md={6}>
-                                                        <Button component={NavLink}
-                                                                onClick={(e) => {
+                                                        <Button onClick={(e) => {
                                                                     e.preventDefault();
                                                                     if(course.capacity > course.filled){
                                                                         this.goToRoute(`/registration/form/course/${encodeURIComponent(course.title)}`);

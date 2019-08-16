@@ -22,9 +22,11 @@
   /*Drawer Styling*/
   .OmouDrawer{
     //width: $drawerWidth;
-    .MuiDrawer-paperAnchorDockedLeft-100{
-      border:none;
-    }
+
+  }
+
+  div[class^="MuiDrawer-paperAnchorDockedLeft"]{
+    border:none !important;
   }
 
   .OmouMain {
@@ -53,7 +55,7 @@
     }
     .listItem.active{
       border-radius: 5px;
-      background-color:$secondaryHighlightColor;
+      background-color:$primaryLightColor;
       border: solid 2px $primaryDarkColor;
       .text > span{color:$primaryFontColor;}
       .icon > * { color: $primaryDarkColor; }

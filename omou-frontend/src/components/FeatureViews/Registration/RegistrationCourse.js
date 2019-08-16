@@ -23,6 +23,7 @@ import EmailIcon from "@material-ui/icons/Email";
 import EditIcon from "@material-ui/icons/Edit";
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 import Button from "@material-ui/core/Button";
+import {NavLink} from "react-router-dom";
 
 const rowHeadings = [
     { id: 'Student', numberic: false, disablePadding: false },
@@ -61,6 +62,26 @@ class RegistrationCourse extends Component {
         this.setState({ ...CourseInView });
     }
 
+    stringToColor(string) {
+        let hash = 0;
+        let i;
+
+        /* eslint-disable no-bitwise */
+        for (i = 0; i < string.length; i += 1) {
+            hash = string.charCodeAt(i) + ((hash << 5) - hash);
+        }
+
+        let colour = '#';
+
+        for (i = 0; i < 3; i += 1) {
+            const value = (hash >> (i * 8)) & 0xff;
+            colour += `00${value.toString(16)}`.substr(-2);
+        }
+        /* eslint-enable no-bitwise */
+
+        return colour;
+    }
+
     render() {
         let DayConverter = {
             1: "Monday",
@@ -88,7 +109,7 @@ class RegistrationCourse extends Component {
 
         let rows = [];
         let student, row, parent, Actions;
-        console.log(this.state);
+
         this.state.roster.forEach((student_id) => {
             student = this.props.students[student_id];
             parent = this.props.parents[student.parent_id];
@@ -104,6 +125,17 @@ class RegistrationCourse extends Component {
             row = [student.name, parent.name, "Paid", <Actions />];
             rows.push(row);
         });
+
+        let styles = (username) => {
+            return {
+                backgroundColor: this.stringToColor(username),
+                color: "white",
+                width: 38,
+                height: 38,
+                fontSize: 14,
+                border:'1px solid white'
+            }
+        };
 
         return (
             <Grid item xs={12}>
@@ -147,9 +179,11 @@ class RegistrationCourse extends Component {
                             </div>
                             <div className={'second-line'}>
                                 <Chip
-                                    avatar={<Avatar>{instructor.name.match(/\b(\w)/g).join('')}</Avatar>}
+                                    avatar={<Avatar style={styles(instructor.name)}>{instructor.name.match(/\b(\w)/g).join('')}</Avatar>}
                                     label={instructor.name}
                                     className={"chip"}
+                                    component={NavLink}
+                                    to={`/accounts/${instructor.role}/${instructor.user_id}`}
                                 />
                                 <Typography align={'left'} className={'text'}>
                                     {startTime} - {endTime}

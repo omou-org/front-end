@@ -19,6 +19,20 @@ const theme = createMuiTheme({
         },
         paper:{
             background:'#FAFAFA'
+        },
+        MuiTabs: {
+          root: {
+
+          },
+        },
+        MuiTab: {
+            root: {
+                border:"2px solid #DBD7D7",
+            },
+            "selected":{
+                border:"3px solid #43B5D9",
+                backgroundColor:"#EBFAFF",
+            },
         }
     },
 

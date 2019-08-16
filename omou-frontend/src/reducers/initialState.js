@@ -2954,6 +2954,7 @@ export default {
                 name: "Daniel Huang",
                 email: "daniel.huang@gmail.com",
                 role: 'instructor',
+                phone_number:1234458989,
                 schedule:{
                     work_hours:{
                         1: {
@@ -3018,6 +3019,7 @@ export default {
                 name: "Jerry Li",
                 email: "jerrylinew@gmail.com",
                 role: 'instructor',
+                phone_number:1234458923,
                 schedule:{
                     work_hours: {
                         1: {
@@ -3072,6 +3074,7 @@ export default {
                 name: "Albert Deng",
                 email: "albert@omou.com",
                 role: 'instructor',
+                phone_number:1234538989,
                 schedule: {
                     work_hours: {
                         1: {
@@ -3125,6 +3128,7 @@ export default {
                 name: "Katie Ho",
                 email: "katie@omou.com",
                 role: 'instructor',
+                phone_number:1299458989,
                 schedule: {
                     work_hours:{
                         1: {

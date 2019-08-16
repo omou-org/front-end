@@ -201,7 +201,7 @@
     color:white;
   }
   .button.primary:hover{
-    background-color:$secondaryDarkenColor;
+    background-color:$primaryDarkColor;
   }
 }
 
@@ -384,9 +384,10 @@
       text-align:left;
       .text, .chip{
         margin:3px 55px 3px 0;
+        cursor:pointer;
       }
       .chip{
-        width:auto;
+        //width:auto;
         display: inline-flex;
       }
     }

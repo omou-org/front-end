@@ -4,10 +4,8 @@
 /*Account Styles*/
 .Accounts{
   .paper{
-    padding:$paperPadding !important;
+    padding:3%;
   }
-
-  
   .Directory{
       text-align:left;
       font-size:60px;
@@ -17,9 +15,14 @@
       }
   }
 
-}
-.TableRow{
-  .row{
-    text-decoration: none;
+  .heading{
+    margin:25px 0;
+  }
+
+  .AccountsTable{
+    margin-top:20px;
+    .row{
+      cursor:pointer;
+    }
   }
 }

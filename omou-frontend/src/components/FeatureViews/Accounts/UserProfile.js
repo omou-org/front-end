@@ -126,7 +126,7 @@ class UserProfile extends Component {
             width: 150,
             height: 150,
             fontSize: 50,
-        }
+        };
         return (<div className="UserProfile">
             <Paper className={'paper'}>
                 <BackButton

@@ -1,10 +1,10 @@
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import BackButton from "../../BackButton";
 import Grid from "@material-ui/core/Grid";
-import { Card, Paper, Typography } from "@material-ui/core";
+import {Card, Paper, Typography} from "@material-ui/core";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import ListView from "@material-ui/icons/ViewList";
@@ -17,9 +17,11 @@ import TableBody from "@material-ui/core/TableBody";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
-import { NavLink } from "react-router-dom";
+import {NavLink} from "react-router-dom";
+import {withRouter} from 'react-router-dom';
 
 import './Accounts.scss';
+import Avatar from "@material-ui/core/Avatar";
 
 class Accounts extends Component {
     constructor(props) {
@@ -32,24 +34,28 @@ class Accounts extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    componentWillMount(){
-        this.setState(()=>{
+    componentWillMount() {
+        this.setState(() => {
             let usersList = {};
-            Object.assign(usersList,this.props.parents);
-            Object.assign(usersList,this.props.students);
-            Object.assign(usersList,this.props.instructors);
-           return {usersList: usersList,}
+            Object.assign(usersList, this.props.parents);
+            Object.assign(usersList, this.props.students);
+            Object.assign(usersList, this.props.instructors);
+            return {usersList: usersList,}
         });
+    }
+
+    goToRoute(route) {
+        this.props.history.push(this.props.match.url + route);
     }
 
     handleChange(e, newTabIndex) {
         e.preventDefault();
         let newUsersList = [];
         let usersList = {};
-        Object.assign(usersList,this.props.parents);
-        Object.assign(usersList,this.props.students);
-        Object.assign(usersList,this.props.instructors);
-        switch(newTabIndex){
+        Object.assign(usersList, this.props.parents);
+        Object.assign(usersList, this.props.students);
+        Object.assign(usersList, this.props.instructors);
+        switch (newTabIndex) {
             case 0:
                 newUsersList = usersList;
                 break;
@@ -65,12 +71,42 @@ class Accounts extends Component {
             default:
                 newUsersList = usersList;
         }
-        this.setState({ value: newTabIndex, usersList: newUsersList });
+        this.setState({value: newTabIndex, usersList: newUsersList});
+    }
+
+    stringToColor(string) {
+        let hash = 0;
+        let i;
+
+        /* eslint-disable no-bitwise */
+        for (i = 0; i < string.length; i += 1) {
+            hash = string.charCodeAt(i) + ((hash << 5) - hash);
+        }
+
+        let colour = '#';
+
+        for (i = 0; i < 3; i += 1) {
+            const value = (hash >> (i * 8)) & 0xff;
+            colour += `00${value.toString(16)}`.substr(-2);
+        }
+        /* eslint-enable no-bitwise */
+
+        return colour;
     }
 
     render() {
+        let styles = (username) => {
+            return {
+                backgroundColor: this.stringToColor(username),
+                color: "white",
+                margin: 9,
+                width: 38,
+                height: 38,
+                fontSize: 14,
+            }
+        };
         let tableView = () => {
-            return <Table>
+            return <Table className="AccountsTable">
                 <TableHead>
                     <TableRow>
                         <TableCell>Name</TableCell>
@@ -79,19 +115,35 @@ class Accounts extends Component {
                         <TableCell>Role</TableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody className="TableRow">
+                <TableBody>
                     {Object.keys(this.state.usersList).map(rowID => {
                         let row = this.state.usersList[rowID];
-
                         return (
-                        <TableRow key={row.name} component={NavLink} to={"/accounts/" + row.role + "/" + row.user_id} className="row">
-                            <TableCell component="th" scope="row">
-                                {row.name}
-                            </TableCell>
-                            <TableCell>{row.email}</TableCell>
-                            <TableCell>{row.phone_number}</TableCell>
-                        </TableRow>
-                    )})}
+                            <TableRow key={row.name}
+                                      onClick={(e) => {
+                                          e.preventDefault();
+                                          this.goToRoute(`/${row.role}/${row.user_id}`)
+                                      }}
+                                      className="row">
+                                <TableCell component="th" scope="row">
+                                    <Grid container layout={'row'} alignItems={'center'}>
+                                        <Grid item md={3}>
+                                            <Avatar
+                                                style={styles(row.name)}>{row.name.match(/\b(\w)/g).join('')}</Avatar>
+                                        </Grid>
+                                        <Grid item md={9}>
+                                            <Typography>
+                                                {row.name}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                </TableCell>
+                                <TableCell>{row.email}</TableCell>
+                                <TableCell>{row.phone_number}</TableCell>
+                                <TableCell>{row.role.charAt(0).toUpperCase() + row.role.slice(1)}</TableCell>
+                            </TableRow>
+                        )
+                    })}
                 </TableBody>
             </Table>;
         };
@@ -118,32 +170,39 @@ class Accounts extends Component {
             })
         };
 
-        return (<Grid item xs={'12'} className="Accounts">
+        return (<Grid item xs={12} className="Accounts">
             <Paper className={'paper'}>
-                    <BackButton />
-                <Typography variant="h2">Directory</Typography>
+                <BackButton/>
+                <hr/>
+                <Typography variant="h2" align={'left'} className={'heading'}>Accounts</Typography>
                 <Grid container direction={'row'} alignItems={'center'}>
-
-                    <Grid item xs={'9'}>
+                    <Grid item xs={9}>
                         <Tabs
                             value={this.state.value}
                             onChange={this.handleChange}
                             indicatorColor="primary"
                             textColor="primary"
+                            className={"tabs"}
                         >
-                            <Tab label="ALL MEMBERS" />
-                            <Tab label="TEACHERS" />
-                            <Tab label="STUDENTS" />
-                            <Tab label="PARENTS" />
-                            <Tab label="ADMIN" />
+                            <Tab label="ALL MEMBERS"/>
+                            <Tab label="INSTRUCTORS"/>
+                            <Tab label="STUDENTS"/>
+                            <Tab label="PARENTS"/>
+                            <Tab label="ADMIN"/>
                         </Tabs>
                     </Grid>
-                    <Grid item xs={'2'} className="toggleView">
-                        <ListView onClick={(e) => { e.preventDefault(); this.setState({ viewToggle: true }); }} />
-                        <CardView onClick={(e) => { e.preventDefault(); this.setState({ viewToggle: false }); }} />
+                    <Grid item xs={2} className="toggleView">
+                        <ListView onClick={(e) => {
+                            e.preventDefault();
+                            this.setState({viewToggle: true});
+                        }}/>
+                        <CardView onClick={(e) => {
+                            e.preventDefault();
+                            this.setState({viewToggle: false});
+                        }}/>
                     </Grid>
                 </Grid>
-                <Grid container direction={'row'} alignItems={'center'} spacing={3}>
+                <Grid container direction={'row'} alignItems={'center'} >
                     {
                         this.state.viewToggle ?
                             tableView() :
@@ -169,7 +228,7 @@ function mapDispatchToProps(dispatch) {
     return {};
 }
 
-export default connect(
+export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(Accounts);
+)(Accounts));
