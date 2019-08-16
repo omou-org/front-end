@@ -2955,6 +2955,14 @@ export default {
                 email: "daniel.huang@gmail.com",
                 role: 'instructor',
                 phone_number:1234458989,
+                background:{
+                    bio:"Daniel graduated from UCLA as an Economics major in 2018. He now works full time as a " +
+                        "Cyber Security Consultant. Daniel grew up in Pleasanton and went to high school at " +
+                        "Amador Valley High School. He is skilled in math and sciences.",
+                    experience:2,
+                    subjects:["Middle School Biology", "AP Calculus"],
+                    languages:["English", "Mandarin"],
+                },
                 schedule:{
                     work_hours:{
                         1: {
@@ -3020,6 +3028,14 @@ export default {
                 email: "jerrylinew@gmail.com",
                 role: 'instructor',
                 phone_number:1234458923,
+                background:{
+                    bio:"Jerry graduated from UCLA as an Computer Science major in 2018. He now works full time as a " +
+                        "Data Engineer at Robinhood. Jerry grew up in Pleasanton and went to high school at " +
+                        "Amador Valley High School. He is skilled in math and sciences.",
+                    experience:2,
+                    subjects:["Middle School Competitive Math", "AP Calculus AB and BC"],
+                    languages:["English", "Mandarin"],
+                },
                 schedule:{
                     work_hours: {
                         1: {
@@ -3075,6 +3091,14 @@ export default {
                 email: "albert@omou.com",
                 role: 'instructor',
                 phone_number:1234538989,
+                background:{
+                    bio:"Albert graduated from UCLA as an Economics major in 2016. He now works full time as a " +
+                        "Consultant at PwC. Albert grew up in San Jose and went to high school at " +
+                        "Lynbrook High School. He is skilled in math and sciences.",
+                    experience:2,
+                    subjects:["Middle School Physics", "AP Calculus", "AP Statistics"],
+                    languages:["English", "Mandarin"],
+                },
                 schedule: {
                     work_hours: {
                         1: {
@@ -3129,6 +3153,14 @@ export default {
                 email: "katie@omou.com",
                 role: 'instructor',
                 phone_number:1299458989,
+                background:{
+                    bio:"Katie graduated from UCLA as an Economics major in 2017. She now works full time as a " +
+                        "Category Specialist at Walmart. Katie grew up in Arizon and went to high school at " +
+                        "XXX. She is skilled in math and sciences.",
+                    experience:2,
+                    subjects:["Middle School Math", "AP Calculus"],
+                    languages:["English", "Mandarin"],
+                },
                 schedule: {
                     work_hours:{
                         1: {
