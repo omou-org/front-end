@@ -1,7 +1,7 @@
 // React Imports
-import {connect} from "react-redux";
-import {Route, Switch} from "react-router-dom";
-import {bindActionCreators} from "redux";
+import { connect } from "react-redux";
+import { Route, Switch } from "react-router-dom";
+import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 import React from "react";
 
@@ -20,6 +20,7 @@ import LoginPage from "../Authentication/LoginPage.js";
 import ProtectedRoute from "./ProtectedRoute";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import Redirect from "react-router-dom/es/Redirect";
+import UserProfile from "../FeatureViews/Accounts/UserProfile";
 
 function rootRoutes(props) {
     return (
@@ -48,6 +49,9 @@ function rootRoutes(props) {
             {/* <ProtectedRoute
                 path="/directory"
                 render={(passedProps) => <UsersDirectory {...passedProps} />} /> */}
+            <ProtectedRoute
+                path="/accounts/:accountType/:accountID"
+                render={(passedProps) => <UserProfile {...passedProps} />} />
             <ProtectedRoute
                 path="/accounts"
                 render={(passedProps) => <Accounts {...passedProps} />} />
