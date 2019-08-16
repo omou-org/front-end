@@ -57,28 +57,39 @@ class RegistrationCourse extends Component {
 
     componentWillMount() {
         let CourseInView = this.props.courses[this.props.computedMatch.params.courseID] ;
+        console.log(CourseInView);
         this.setState({ ...CourseInView });
     }
 
     render() {
         let DayConverter = {
-            M: "Monday",
-            T: "Tuesday",
-            W: "Wednesday",
-            Tr: "Thursday",
-            F: "Friday",
-            S: "Saturday",
+            1: "Monday",
+            2: "Tuesday",
+            3: "Wednesday",
+            4: "Thursday",
+            5: "Friday",
+            6: "Saturday",
         };
-        let Days = this.state.days.split();
+        let Days = this.state.schedule.days;
         Days = Days.map((day) => {
             return DayConverter[day];
         });
 
-        let Instructor = this.props.Instructors[this.state.instructor_id];
+        let timeOptions = { hour: "2-digit", minute: "2-digit" };
+        let dateOptions = { year: "numeric", month: "short", day: "numeric"};
+        let startDate = new Date(this.state.schedule.start_date + this.state.schedule.start_time),
+            endDate = new Date(this.state.schedule.end_date + this.state.schedule.end_time),
+            startTime = startDate.toLocaleTimeString("en-US",timeOptions),
+            endTime = endDate.toLocaleTimeString("en-US",timeOptions);
+        startDate = startDate.toLocaleDateString("en-US",dateOptions);
+        endDate = endDate.toLocaleDateString("en-US", dateOptions);
+
+        let instructor = this.props.instructors[this.state.instructor_id];
 
         let rows = [];
         let student, row, parent, Actions;
-        this.props.courseRoster[this.state.course_id].forEach((student_id) => {
+        console.log(this.state);
+        this.state.roster.forEach((student_id) => {
             student = this.props.students[student_id];
             parent = this.props.parents[student.parent_id];
             Actions = () => {
@@ -119,12 +130,12 @@ class RegistrationCourse extends Component {
                     <Divider className={"top-divider"}/>
                     <div className={"course-heading"}>
                         <Typography align={'left'} variant={'h3'} style={{ fontWeight: "500" }} >
-                            {this.state.course_title}
+                            {this.state.title}
                         </Typography>
                         <div className={"date"}>
                             <CalendarIcon style={{ fontSize: "16" }} align={'left'} className={"icon"}/>
-                            <Typography align={'left'} style={{ marginLeft: '5px', marginTop: '15px' }}>
-                                {this.state.dates}
+                            <Typography align={'left'} style={{ marginLeft: '5px', marginTop: '10px' }}>
+                                {startDate} - {endDate}
                             </Typography>
                         </div>
                         <div className={"info"}>
@@ -136,12 +147,12 @@ class RegistrationCourse extends Component {
                             </div>
                             <div className={'second-line'}>
                                 <Chip
-                                    avatar={<Avatar>{Instructor.name.match(/\b(\w)/g).join('')}</Avatar>}
-                                    label={Instructor.name}
+                                    avatar={<Avatar>{instructor.name.match(/\b(\w)/g).join('')}</Avatar>}
+                                    label={instructor.name}
                                     className={"chip"}
                                 />
                                 <Typography align={'left'} className={'text'}>
-                                    {this.state.time}
+                                    {startTime} - {endTime}
                                 </Typography>
                                 <Typography align={'left'} className={'text'}>
                                     {Days}
@@ -198,10 +209,10 @@ RegistrationCourse.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        courses: state.Course["CourseList"],
+        courses: state.Course["NewCourseList"],
         courseCategories: state.Course["CourseCategories"],
         students: state.Users["StudentList"],
-        Instructors: state.Users["InstructorList"],
+        instructors: state.Users["InstructorList"],
         parents: state.Users["ParentList"],
         courseRoster: state.Course["CourseRoster"],
     };

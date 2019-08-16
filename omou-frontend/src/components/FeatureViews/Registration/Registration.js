@@ -78,6 +78,7 @@ class Registration extends Component {
                 {
                     this.toggleMainView.bind(this)()
                 }
+
                 <Hidden smUp>
                     <Grid item>
                         {

@@ -17,10 +17,8 @@ const theme = createMuiTheme({
                 color: 'black;', // Some CSS
             },
         },
-        MuiPaper:{
-            background:{
-                backgroundColor: '#FAFAFA'
-            }
+        paper:{
+            background:'#FAFAFA'
         }
     },
 

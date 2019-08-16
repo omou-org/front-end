@@ -18,6 +18,8 @@ import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse"
 import CourseCategory from "../FeatureViews/Registration/CourseCategory";
 import LoginPage from "../Authentication/LoginPage.js";
 import ProtectedRoute from "./ProtectedRoute";
+import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
+import Redirect from "react-router-dom/es/Redirect";
 
 function rootRoutes(props) {
     return (
@@ -63,6 +65,8 @@ function rootRoutes(props) {
             <ProtectedRoute
                 path="/registration/category/:categoryID"
                 render={(passedProps) => <CourseCategory {...passedProps} />} />
+            <Route path={"/PageNotFound"} component={ErrorNotFoundPage}/>
+            <Redirect to={"/PageNotFound"}/>
         </Switch>
     );
 }

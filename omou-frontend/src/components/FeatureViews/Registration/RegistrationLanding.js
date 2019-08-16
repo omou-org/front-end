@@ -43,7 +43,8 @@ class RegistrationLanding extends Component {
     }
 
     goToRoute(route){
-        this.props.history.push(route);
+        console.log(this.props.match.url);
+        this.props.history.push(this.props.match.url+route);
     }
 
     handleFilterClick(event) {
@@ -184,14 +185,14 @@ class RegistrationLanding extends Component {
                                     return (<Paper className={'row'}>
                                         <Grid container alignItems={'center'} layout={'row'}>
                                             <Grid item md={3}
-                                                  onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.title)}}
+                                                  onClick={(e) => {e.preventDefault(); this.goToRoute('/course/' + course.course_id + "/" + course.title)}}
                                                   style={{textDecoration: 'none', cursor: 'pointer'}}>
                                                 <Typography className={'course-heading'} align={'left'}>
                                                     {course.title}
                                                 </Typography>
                                             </Grid>
                                             <Grid item md={5}
-                                                  onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.title)}}
+                                                  onClick={(e) => {e.preventDefault(); this.goToRoute('/course/' + course.course_id + "/" + course.title)}}
                                                   style={{textDecoration: 'none', cursor: 'pointer'}}>
                                                 <Grid container className={'course-detail'}>
                                                     <Grid item md={4} className={'heading-det'} align={'left'}>
