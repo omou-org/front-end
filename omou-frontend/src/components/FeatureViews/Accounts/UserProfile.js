@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import './UserProfile.scss'
 
 import Grid from '@material-ui/core/Grid';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -34,7 +33,12 @@ const userTabs = {
         {
             tab_heading: "Bio",
             tab_id: 2,
-        }],
+        },
+        {
+            tab_heading: "Notes",
+            tab_id: 7,
+        },
+        ],
     "student": [
         {
             tab_heading: "Current Sessions",

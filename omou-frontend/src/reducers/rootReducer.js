@@ -3,7 +3,9 @@ import Registration from "./registrationReducer";
 import auth from "./authReducer";
 import Course from "./courseReducer";
 import Users from "./usersReducer";
-import Calender from "./calenderReducer"
+import Calender from "./calenderReducer";
+import Enrollment from "./enrollmentReducer";
+import Payments from "./paymentsReducer";
 
 const rootReducer = combineReducers({
     Registration,
@@ -11,6 +13,8 @@ const rootReducer = combineReducers({
     Course,
     Users,
     Calender,
+    Enrollment,
+    Payments,
 });
 
 export default rootReducer;

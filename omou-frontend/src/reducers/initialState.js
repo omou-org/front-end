@@ -2526,6 +2526,7 @@ export default {
         }
     },
     "Payments":{
+        //Payment ID = studentID + courseID + SubPaymentID
         //23 = studentID: 1 = course 1: 1/2 = payment
         23: {
             1: {
@@ -2803,12 +2804,16 @@ export default {
                     1:{
                         timestamp:"2020-01-02T12:05",
                         body:"wants to take bio",
-
+                        important: false,
+                        complete: false,
+                        active: true,
                     },
                     2:{
                         timestamp:"2020-01-10T13:11",
                         body:"sister is interested in taking 7th grade english",
-                        status: 1,
+                        important: true,
+                        complete: false,
+                        active: true,
                     },
                 },
             },
@@ -2834,7 +2839,9 @@ export default {
                     1:{
                         timestamp:"2020-01-13T17:33",
                         body:"Needs PSAT practice problems",
-                        status: 1,
+                        complete: false,
+                        important: true,
+                        active: true,
                     },
                 },
             },
@@ -2860,7 +2867,9 @@ export default {
                     1:{
                         timestamp:"2020-01-12T15:21",
                         body:"grade bio worksheet",
-                        status: 1,
+                        important: true,
+                        active: true,
+                        complete: false,
                     },
                 },
             },
@@ -2901,6 +2910,7 @@ export default {
                 name: "Gale Long",
                 email: "gale.long@omou.com",
                 role: 'parent',
+                notes:{},
             },
             79: {
                 user_id: 79,
@@ -2916,6 +2926,7 @@ export default {
                 name: "Ranger Plano",
                 email: "ranger.plano@omou.com",
                 role: 'parent',
+                notes:{},
             },
             80: {
                 user_id: 80,
@@ -2931,6 +2942,7 @@ export default {
                 name: "Gretta Kid",
                 email: "grettaKidd@omou.com",
                 role: 'parent',
+                notes:{},
             },
             81: {
                 user_id: 81,
@@ -2946,6 +2958,7 @@ export default {
                 relationship: "Mother",
                 email: "nananana@omou.com",
                 role: 'parent',
+                notes:{},
             },
         },
         "InstructorList": {
@@ -3013,12 +3026,16 @@ export default {
                     1:{
                         timestamp:"2020-01-02T13:00",
                         body:"Needs past AP CS multiple choice exams",
-                        status: 1,
+                        complete: false,
+                        important: true,
+                        active: true,
                     },
                     2:{
                         timestamp:"2020-01-10T15:02",
                         body:"Needs x things copied for his 2pm class on tuesdays",
-                        status: 1,
+                        complete: false,
+                        important: true,
+                        active: true,
                     },
                 },
             },
@@ -3081,7 +3098,9 @@ export default {
                     1:{
                         timestamp:"2020-01-07T13:32",
                         body:"Print January Timesheet for Jerry",
-                        status: 1,
+                        complete: false,
+                        important: true,
+                        active: true,
                     },
                 },
             },
@@ -3138,12 +3157,16 @@ export default {
                     1:{
                         timestamp:"2020-01-04T17:12",
                         body:"Remind Albert to fill out timesheet",
-                        status: 1,
+                        complete: true,
+                        active: true,
+                        important: true,
                     },
                     2:{
                         timestamp:"2020-01-04T17:16",
                         body:"Print worksheets for Albert's bio 1x1",
-                        status: 1,
+                        complete: false,
+                        active: true,
+                        important: true,
                     },
                 },
             },
@@ -3206,7 +3229,9 @@ export default {
                     1:{
                         timestamp:"2020-01-09T18:11",
                         body:"Katie can't teach on Saturdays after the 22nd",
-                        status: 1,
+                        complete: false,
+                        active: true,
+                        important: false,
                     },
                 },
             },
@@ -3547,7 +3572,7 @@ function initRegistrationForm() {
                         name: "Instructor",
                         type: "instructor",
                         conditional: false,
-                        required: true,
+                        required: false,
                         full: true,
                         field_limit: 1,
                     },

@@ -8,7 +8,6 @@ import MoneyIcon from "@material-ui/icons/Money";
 import Grid from "@material-ui/core/Grid";
 import BackButton from "../../BackButton";
 import Chip from "@material-ui/core/Chip";
-import './ProfileHeading.scss';
 import { Card, Paper, Typography } from "@material-ui/core";
 
 class ProfileHeading extends Component {

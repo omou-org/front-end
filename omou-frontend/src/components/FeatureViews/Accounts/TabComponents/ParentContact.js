@@ -16,16 +16,20 @@ class ParentContact extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            parent:{},
         };
     }
 
-
+    componentWillMount() {
+        this.setState({
+            parent: this.props.parents[this.props.parent_id]
+        })
+    }
 
     render() {
-        let parent = (this.props.parents.find(({ user_id }) => user_id == this.props.parent_id))
         return (<div>
-            <h1>{parent.name}</h1>
-            <h1>{parent.phone_number}</h1></div>
+            <h1>{this.state.parent.name}</h1>
+            <h1>{this.state.parent.phone_number}</h1></div>
         );
     }
 

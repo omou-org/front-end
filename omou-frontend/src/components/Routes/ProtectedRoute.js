@@ -4,7 +4,6 @@ import {Route, Redirect} from "react-router-dom";
 import {connect} from "react-redux";
 
 function ProtectedRoute({component, render, auth, ...rest}) {
-    console.log(component,rest);
     return (
         <Route
             {...rest}
