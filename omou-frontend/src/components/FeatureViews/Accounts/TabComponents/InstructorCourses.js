@@ -11,6 +11,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Paper from "@material-ui/core/Paper";
 
 class InstructorCourses extends Component {
     constructor(props) {
@@ -35,29 +36,32 @@ class InstructorCourses extends Component {
     render() {
         return(<Grid container>
             <Grid item md={12}>
-                <Grid container>
+                <Grid container className={'accounts-table-heading'}>
+                    <Grid item md={1}>
+                    </Grid>
                     <Grid item md={3}>
-                        <Typography align={'left'}>
+                        <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
                             Session
                         </Typography>
                     </Grid>
                     <Grid item md={3}>
-                        <Typography align={'left'}>
+                        <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
                             Dates
                         </Typography>
                     </Grid>
-                    <Grid item md={3}>
-                        <Typography align={'left'}>
+                    <Grid item md={2}>
+                        <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
                             Class Day(s)
                         </Typography>
                     </Grid>
                     <Grid item md={3}>
-                        <Typography align={'left'}>
+                        <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
                             Time
                         </Typography>
                     </Grid>
                 </Grid>
             </Grid>
+            <Grid container spacing={8}>
             {
                 this.state.courseIDs.map((courseID)=>{
                     let course = this.props.courseList[courseID];
@@ -69,7 +73,6 @@ class InstructorCourses extends Component {
                         5: "Friday",
                         6: "Saturday",
                     };
-                    console.log(course);
                     let Days = course.schedule.days.map((day) => {
                         return DayConverter[day];
                     });
@@ -82,32 +85,37 @@ class InstructorCourses extends Component {
                         endTime = endDate.toLocaleTimeString("en-US",timeOptions);
                     startDate = startDate.toLocaleDateString("en-US",dateOptions);
                     endDate = endDate.toLocaleDateString("en-US", dateOptions);
-                    return (<Grid item md={12}>
-                        <Grid container>
-                            <Grid item md={3}>
-                                <Typography align={'left'}>
-                                    {course.title}
-                                </Typography>
+                    return (<Grid item md={12} className={'accounts-table-row'}>
+                        <Paper square={true} >
+                            <Grid container>
+                                <Grid item md={1}>
+                                </Grid>
+                                <Grid item md={3} >
+                                    <Typography align={'left'}>
+                                        {course.title}
+                                    </Typography>
+                                </Grid>
+                                <Grid item md={3}>
+                                    <Typography align={'left'}>
+                                        {startDate} - {endDate}
+                                    </Typography>
+                                </Grid>
+                                <Grid item md={2}>
+                                    <Typography align={'left'}>
+                                        {Days}
+                                    </Typography>
+                                </Grid>
+                                <Grid item md={3}>
+                                    <Typography align={'left'}>
+                                        {startTime} - {endTime}
+                                    </Typography>
+                                </Grid>
                             </Grid>
-                            <Grid item md={3}>
-                                <Typography align={'left'}>
-                                    {startDate} - {endDate}
-                                </Typography>
-                            </Grid>
-                            <Grid item md={3}>
-                                <Typography align={'left'}>
-                                    {Days}
-                                </Typography>
-                            </Grid>
-                            <Grid item md={3}>
-                                <Typography align={'left'}>
-                                    {startTime} - {endTime}
-                                </Typography>
-                            </Grid>
-                        </Grid>
+                        </Paper>
                     </Grid>);
                 })
             }
+            </Grid>
         </Grid>)
     }
 

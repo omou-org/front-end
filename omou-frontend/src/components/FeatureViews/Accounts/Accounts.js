@@ -65,9 +65,9 @@ class Accounts extends Component {
             case 2:
                 newUsersList = this.props.students;
                 break;
-            case 3:
-                newUsersList = this.props.parents;
-                break;
+            // case 3:
+            //     newUsersList = this.props.parents;
+            //     break;
             default:
                 newUsersList = usersList;
         }
@@ -184,10 +184,10 @@ class Accounts extends Component {
                             textColor="primary"
                             className={"tabs"}
                         >
-                            <Tab label="ALL MEMBERS"/>
+                            <Tab label="ALL"/>
                             <Tab label="INSTRUCTORS"/>
                             <Tab label="STUDENTS"/>
-                            <Tab label="PARENTS"/>
+                            {/*<Tab label="PARENTS"/>*/}
                             <Tab label="ADMIN"/>
                         </Tabs>
                     </Grid>

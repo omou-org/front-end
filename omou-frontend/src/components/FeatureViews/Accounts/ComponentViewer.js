@@ -1,16 +1,15 @@
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import Schedule from "./TabComponents/Schedule.js";
 import InstructorCourses from './TabComponents/InstructorCourses';
 import Bio from './TabComponents/Bio';
-import CurrentSessions from './TabComponents/CurrentSessions';
+import CourseViewer from './TabComponents/CourseViewer';
 import PaymentHistory from './TabComponents/PaymentHistory';
 import ParentContact from './TabComponents/ParentContact';
 import Notes from './TabComponents/Notes';
-import PastSessions from './TabComponents/PastSessions';
 import Grid from "@material-ui/core/Grid";
 
 class ComponentViewer extends Component {
@@ -25,22 +24,30 @@ class ComponentViewer extends Component {
         let component;
         switch (this.props.inView) {
             case 0:
-                component = <Schedule />;
+                component = <Schedule/>;
                 break;
             case 1:
                 component = <InstructorCourses user_id={this.props.user.user_id}/>;
                 break;
             case 2:
-                component = <Bio />;
+                component = <Bio/>;
                 break;
             case 3:
-                component = <CurrentSessions />;
+                component = <CourseViewer
+                    current={true}
+                    user_id={this.props.user.user_id}
+                    user_role={this.props.user.role}
+                />;
                 break;
             case 4:
-                component = <PastSessions/>;
+                component = <CourseViewer
+                    current={false}
+                    user_id={this.props.user.user_id}
+                    user_role={this.props.user.role}
+                />;
                 break;
             case 5:
-                component = <PaymentHistory user_id={this.props.user.user_id} />;
+                component = <PaymentHistory user_id={this.props.user.user_id}/>;
                 break;
             case 6:
                 component = <ParentContact parent_id={this.props.user.parent_id}/>;
@@ -49,12 +56,12 @@ class ComponentViewer extends Component {
                 component = <Notes user_notes={this.props.user.notes}/>;
                 break;
             default:
-                component = <Schedule />;
+                component = <Schedule/>;
         }
-        return (<Grid item xs={12} style={{paddingTop:15+"px"}}>{component}</Grid>);
+        return (<Grid item xs={12} style={{paddingTop: 15 + "px"}}>{component}</Grid>);
     }
 
-    render(){
+    render() {
         return <Grid container>
             {this.renderComponent()}
         </Grid>
@@ -65,8 +72,7 @@ class ComponentViewer extends Component {
 ComponentViewer.propTypes = {};
 
 function mapStateToProps(state) {
-    return {
-    };
+    return {};
 }
 
 function mapDispatchToProps(dispatch) {

@@ -6,6 +6,10 @@ import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import "./TabComponents.scss";
+import Paper from "@material-ui/core/Paper";
+import EditIcon from "@material-ui/icons/EditOutlined";
+import RemoveIcon from "@material-ui/icons/DeleteForeverOutlined";
+import AlertIcon from "@material-ui/icons/AddAlertOutlined";
 
 class Notes extends Component {
     constructor(props) {
@@ -39,17 +43,22 @@ class Notes extends Component {
             return DateObject.toLocaleTimeString("en-US", numericOptions);
         };
         return(<Grid item md={12}>
-            <Grid container spacing={8}>
+            <Grid container spacing={16}>
                 {this.state.notes.map((note,i) => {
-                    return <Grid item xs={3} className={"note"} key={i}>
-                        <div className={"actions"}>
-                        </div>
-                        <Typography className={"body"} align={'left'}>
-                            {note.body}
-                        </Typography>
-                        <Typography className={"date"} align={'right'}>
-                            {numericDateString(note.timestamp)}
-                        </Typography>
+                    return <Grid item xs={3}  key={i}>
+                        <Paper className={"note"}>
+                            <div className={"actions"}>
+                                <EditIcon/>
+                                <AlertIcon/>
+                                <RemoveIcon/>
+                            </div>
+                            <Typography className={"body"} align={'left'}>
+                                {note.body}
+                            </Typography>
+                            <Typography className={"date"} align={'right'}>
+                                {numericDateString(note.timestamp)}
+                            </Typography>
+                        </Paper>
                     </Grid>
                 })}
             </Grid>

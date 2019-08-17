@@ -2,206 +2,219 @@
 @import '../../../theme/sizes';
 /*Registration*/
 
-.registration-action-control{
+.registration-action-control {
   padding: 1%;
-  @include respond-to(handhelds){
-    margin-top:50px;
+  @include respond-to(handhelds) {
+    margin-top: 50px;
   }
 
-  .button{
-    background-color:white;
-    @include respond-to(medium-up-screens){
-      margin-right:30px;
+  .button {
+    background-color: white;
+    @include respond-to(medium-up-screens) {
+      margin-right: 30px;
       height: 46px;
       //width: 145px;
     }
-    @include respond-to(handhelds){
-      margin-right:5px;
+    @include respond-to(handhelds) {
+      margin-right: 5px;
       height: 46px;
       //width: 110px;
     }
 
-    color:$primaryFontColor;
-    font-size:12px;
-    font-weight:400;
-    line-height:12px;
+    color: $primaryFontColor;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 12px;
     text-transform: uppercase;
 
     border: 1px solid #DBD7D7;
     box-sizing: border-box;
     border-radius: 7px;
 
-    z-index:1001;
+    z-index: 1001;
 
-    .icon{
-      margin-right:4px;
-      color:$secondaryFontColor;
-      @include respond-to(handhelds){
-        font-size:1.5em;
+    .icon {
+      margin-right: 4px;
+      color: $secondaryFontColor;
+      @include respond-to(handhelds) {
+        font-size: 1.5em;
       }
     }
   }
 }
 
-.button.mobile-toggle{
-  position:fixed;
-  top:85vh;
-  left:75vw;
-  cursor:pointer;
+.button.mobile-toggle {
+  position: fixed;
+  top: 85vh;
+  left: 75vw;
+  cursor: pointer;
 }
 
 //Full Registration styles
-.paper{
+.paper {
   margin: 1% 0 2% 0;
 }
-.paper.content{
-  padding:2%;
+
+.paper.content {
+  padding: 2%;
 }
 
-.course-categories{
-  position:relative;
+.course-categories {
+  position: relative;
   //Controls
-  .control{
-    display:none;
-    position:absolute;
+  .control {
+    display: none;
+    position: absolute;
     border: $lightPrimaryFontColor solid 1px;
-    border-radius:100%;
+    border-radius: 100%;
     color: $lightPrimaryFontColor;
-    font-size:1.4em;
-    opacity:1;
-    z-index:10000;
-  }
-  .forward, .back{
-    top:100%;
-  }
-  .forward{
-    right:4px;
-  }
-  .back{
-    left:8px;
-  }
-  .expand, .shrink{
-    bottom:-25px;
-    left:47%
-  }
-  .visible *{
-    display:block;
+    font-size: 1.4em;
+    opacity: 1;
+    z-index: 10000;
   }
 
-  .control:hover{
-    display:block;
-    background-color:white;
-    color:black;
-    cursor:pointer;
-    opacity:100;
+  .forward, .back {
+    top: 100%;
+  }
+
+  .forward {
+    right: 4px;
+  }
+
+  .back {
+    left: 8px;
+  }
+
+  .expand, .shrink {
+    bottom: -25px;
+    left: 47%
+  }
+
+  .visible * {
+    display: block;
+  }
+
+  .control:hover {
+    display: block;
+    background-color: white;
+    color: black;
+    cursor: pointer;
+    opacity: 100;
   }
 
   //Card
-  .category-card{
-    margin-left:0%;
-    width:100%;
-    .media{
-      height:100px;
+  .category-card {
+    margin-left: 0%;
+    width: 100%;
+
+    .media {
+      height: 100px;
     }
-    .text *{
-      text-align:left;
-      text-overflow:ellipsis;
+
+    .text * {
+      text-align: left;
+      text-overflow: ellipsis;
     }
   }
 }
 
-.course-title{
-  font-weight:500 !important;
+.course-title {
+  font-weight: 500 !important;
   color: #404040 !important;
   font-size: 1em !important;
 }
 
-.pop-courses-table{
-  .row td{
+.pop-courses-table {
+  .row td {
     height: 56px;
   }
-  .row{
-    margin:5px;
+
+  .row {
+    margin: 5px;
   }
 }
 
-.actions{
-  cursor:pointer;
-  color:$lightPrimaryFontColor;
+.actions {
+  cursor: pointer;
+  color: $lightPrimaryFontColor;
 }
-.actions > *{
-  margin:5px;
-  color:$lightPrimaryFontColor;
-  text-decoration: none;
-}
-.actions > * :hover{
-  color:$darkenPrimaryFontColor;
+
+.actions > * {
+  margin: 5px;
+  color: $lightPrimaryFontColor;
   text-decoration: none;
 }
 
-.bold{
-  font-weight:500!important;
-  font-size:.95em!important;
+.actions > * :hover {
+  color: $darkenPrimaryFontColor;
+  text-decoration: none;
 }
 
-.space-left-progress{
-  color:#FF9800 !important;
+.bold {
+  font-weight: 500 !important;
+  font-size: .95em !important;
+}
+
+.space-left-progress {
+  color: #FF9800 !important;
   margin-left: 5px !important;
 }
 
-.space-left{
-  margin-bottom:10px;
+.space-left {
+  margin-bottom: 10px;
 }
 
 /*Registration Form Styles*/
-.exit-popup{
-  @include respond-to(handhelds){
-    top:35%;
-    left:5%;
-    width:90%;
+.exit-popup {
+  @include respond-to(handhelds) {
+    top: 35%;
+    left: 5%;
+    width: 90%;
   }
-  @include respond-to(medium-up-screens){
-    top:35%;
-    left:37%;
-  }
-}
-
-.existing-user-popup{
-  @include respond-to(handhelds){
-    top:35%;
-    left:5%;
-    width:90%;
-  }
-  @include respond-to(medium-up-screens){
-    top:35%;
-    left:30%;
-    width:40%;
+  @include respond-to(medium-up-screens) {
+    top: 35%;
+    left: 37%;
   }
 }
 
-.exit-popup, .existing-user-popup{
-  padding:3%;
-  position:absolute;
-  outline:none;
-  background-color:white;
-  border-radius:8px;
+.existing-user-popup {
+  @include respond-to(handhelds) {
+    top: 35%;
+    left: 5%;
+    width: 90%;
+  }
+  @include respond-to(medium-up-screens) {
+    top: 35%;
+    left: 30%;
+    width: 40%;
+  }
+}
 
-  .button{
-    text-align:center;
-    @include respond-to(handhelds){
-      margin:10% 15px 0 0;
-      width:45%;
+.exit-popup, .existing-user-popup {
+  padding: 3%;
+  position: absolute;
+  outline: none;
+  background-color: white;
+  border-radius: 8px;
+
+  .button {
+    text-align: center;
+    @include respond-to(handhelds) {
+      margin: 10% 15px 0 0;
+      width: 45%;
     }
-    @include respond-to(medium-up-screens){
-      margin:15% 5px 0 0;
+    @include respond-to(medium-up-screens) {
+      margin: 15% 5px 0 0;
     }
   }
-  .button.primary{
-    background-color:$secondaryColor;
-    color:white;
+
+  .button.primary {
+    background-color: $secondaryColor;
+    color: white;
   }
-  .button.primary:hover{
-    background-color:$primaryDarkColor;
+
+  .button.primary:hover {
+    background-color: $primaryColor;
   }
 }
 
@@ -215,61 +228,63 @@
     opacity: .5;
   }
 
-  100%{
+  100% {
     opacity: 1;
   }
 }
 
-.control{
-  cursor:pointer;
+.control {
+  cursor: pointer;
   position: absolute;
-  color:$lightPrimaryFontColor;
+  color: $lightPrimaryFontColor;
   text-decoration: none;
 
-  .icon, .back, .label{
-    display:inline-block;
-    @include respond-to(handhelds){
-      margin-top:15px;
+  .icon, .back, .label {
+    display: inline-block;
+    @include respond-to(handhelds) {
+      margin-top: 15px;
     }
   }
-  .icon{
-    @include respond-to(handhelds){
-      margin-left:10px;
+
+  .icon {
+    @include respond-to(handhelds) {
+      margin-left: 10px;
     }
   }
-  .label{
-    position:relative;
-    top:-7px;
+
+  .label {
+    position: relative;
+    top: -7px;
     font-style: normal;
     line-height: 13px;
   }
 }
 
 // the back button on the course registration page
-.course.control{
+.course.control {
   position: relative;
   text-align: left;
   display: block;
   margin-bottom: 30px;
   padding: 6px 10px 0 10px;
-  background-color:white;
+  background-color: white;
 }
 
-.registration-form{
-  position:relative;
+.registration-form {
+  position: relative;
   border-radius: 32px !important;
-  padding:2%;
+  padding: 2%;
   margin-top: 4%;
 
-  .fields-wrapper{
+  .fields-wrapper {
     //-webkit-animation: 1s ease 1 fade-in;
     //-o-animation: 1s ease 1 fade-in;
     //animation: 1s ease 1 fade-in;
   }
 
-  .heading{
-    margin-top:50px;
-    margin-left:2%;
+  .heading {
+    margin-top: 50px;
+    margin-left: 2%;
     text-transform: capitalize;
     font-style: normal;
     font-weight: 500;
@@ -277,116 +292,131 @@
     line-height: 42px;
     display: flex;
 
-    @include respond-to(handhelds){
-      margin-left:3%;
+    @include respond-to(handhelds) {
+      margin-left: 3%;
     }
   }
 
-  .form-section{
-    background-color:$paperColor;
-    text-align:left;
+  .form-section {
+    background-color: $paperColor;
+    text-align: left;
 
-    .form-control{
-      width:200px;
+    .form-control {
+      width: 200px;
     }
 
   }
 
-  .error{
-    color:red;
+  .error {
+    color: red;
     border: red solid 1px;
     border-radius: 5px;
   }
 
-  .controls{
-    position:relative;
-    left:80%;
+  .controls {
+    position: relative;
+    left: 80%;
     //width:28%;
 
-    .button{
-      margin:5px;
+    .button {
+      margin: 5px;
     }
-    .label{
-      font-style:italic;
-      color:red;
+
+    .label {
+      font-style: italic;
+      color: red;
     }
   }
 }
 
-.hide{
-  opacity:0;
+.hide {
+  opacity: 0;
 }
 
-.add-student{
-  margin-top:25px !important;
-  margin-bottom: 25px !important;
-}
-.button.add-student{
-  border:none !important;
-  background-color:$primaryDarkColor;
-  color:white;
-}
-
-.remove-student{
-  margin-top:25px !important;
+.add-student {
+  margin-top: 25px !important;
   margin-bottom: 25px !important;
 }
 
-.popular-courses{
-  font-weight:bold !important;
+.button.add-student {
+  border: none !important;
+  background-color: $primaryDarkColor;
+  color: white;
+}
+
+.remove-student {
+  margin-top: 25px !important;
+  margin-bottom: 25px !important;
+}
+
+.popular-courses {
+  font-weight: bold !important;
   //margin-top:50px !important;
-  margin-bottom:-35px !important;
-  color:$lightPrimaryFontColor !important;
+  margin-bottom: -35px !important;
+  color: $lightPrimaryFontColor !important;
 }
 
-.search-options{
-  width:50%;
+.search-options {
+  width: 50%;
 }
 
-.button-remove-student{
-  margin-top:5px;
-  cursor:pointer;
+.button-remove-student {
+  margin-top: 5px;
+  cursor: pointer;
 }
 
 
-.label{
-  margin-left:5px;
-  margin-right:5px;
+.label {
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 
 /*Course Registration Page*/
-.text{ font-size: 18px !important;}
-.course-heading{
-  .icon {color:$lightPrimaryFontColor}
-  .date { text-align: left; }
-  .date > *{
+.text {
+  font-size: 18px !important;
+}
+
+.course-heading {
+  .icon {
+    color: $lightPrimaryFontColor
+  }
+
+  .date {
+    text-align: left;
+  }
+
+  .date > * {
     display: inline-block;
   }
 
-  .info{
+  .info {
     margin: 25px 0 5px 0;
 
     .first-line {
       text-align: left;
-      .text{
+
+      .text {
         font-weight: 500;
-        margin:10px 0 5px 5px;
+        margin: 10px 0 5px 5px;
         color: $lightPrimaryFontColor
       }
     }
-    .first-line > *, .second-line > *{
-      display:inline-block;
+
+    .first-line > *, .second-line > * {
+      display: inline-block;
     }
 
-    .second-line{
-      margin-left:2%;
-      text-align:left;
-      .text, .chip{
-        margin:3px 55px 3px 0;
-        cursor:pointer;
+    .second-line {
+      margin-left: 2%;
+      text-align: left;
+
+      .text, .chip {
+        margin: 3px 55px 3px 0;
+        cursor: pointer;
       }
-      .chip{
+
+      .chip {
         //width:auto;
         display: inline-flex;
       }
@@ -395,98 +425,114 @@
 
 }
 
-.description{
-  padding:2% 1% 1% 1%;
-  margin-bottom:15px !important;
-  @include respond-to(medium-up-screens){
-    width:60%;
+.description {
+  padding: 2% 1% 1% 1%;
+  margin-bottom: 15px !important;
+  @include respond-to(medium-up-screens) {
+    width: 60%;
     line-height: 1.8 !important;
   }
-  @include respond-to(handheld){
-    width:100%;
+  @include respond-to(handheld) {
+    width: 100%;
   }
 }
 
-.course-status{
-  position:relative;
-  margin:5px;
+.course-status {
+  position: relative;
+  margin: 5px;
+
   .status {
-    top:-40px;
+    top: -40px;
   }
 }
 
 .innerIcon {
-  margin-right:10px;
-  color:$secondaryFontColor;
+  margin-right: 10px;
+  color: $secondaryFontColor;
 }
 
 // Confirmation Copy
-.confirmation-copy{
-  background-color:white;
-  margin:10px;
-  padding:3%;
-  .title{
-    font-size:1.3em;
+.confirmation-copy {
+  background-color: white;
+  margin: 10px;
+  padding: 3%;
+
+  .title {
+    font-size: 1.3em;
   }
-  .section-title{
-    margin:15px 0 5px 0;
-    font-weight:bold;
-    color:$secondaryFontColor;
+
+  .section-title {
+    margin: 15px 0 5px 0;
+    font-weight: bold;
+    color: $secondaryFontColor;
   }
-  .field-title{
-    margin-top:10px;
-    font-weight:bold;
-    font-size:1.1em;
+
+  .field-title {
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 1.1em;
   }
-  .field-value{
-    font-size:1.1em;
+
+  .field-value {
+    font-size: 1.1em;
   }
 }
 
 // Registration Landing
-.RegistrationLanding{
+.RegistrationLanding {
   padding: 2%;
 
   .heading {
     margin: 20px 0 25px 0;
   }
 
-  .registration-table{
+  .registration-table {
     > * {
-      margin:10px 0 10px 0;
+      margin: 10px 0 10px 0;
     }
-    .row{
+
+    .row {
       .course-heading, .course-detail {
         padding: 5px 15px;
       }
-      .course-heading{
-        font-weight:400;
-        font-size:22px;
+
+      .course-heading {
+        font-weight: 400;
+        font-size: 24px;
       }
-      .course-detail{
+
+      .course-detail {
         color: $secondaryFontColor;
         font-size: 12px;
-        margin:3px;
+        margin: 3px;
 
-        .heading-det{
+        .heading-det {
           font-weight: 800;
         }
       }
-      .course-action{
-        background-color: #dfdfdf;
-        height:100px;
 
-        .course-status{
-          .stats, .label{display:block;}
-          .stats{ font-size:2em; font-weight:500;}
+      .course-action {
+        background-color: #F5F5F5;
+        height: 100px;
+
+        .course-status {
+          .stats, .label {
+            display: block;
+          }
+
+          .stats {
+            font-size: 1.2em;
+            font-weight: 500;
+          }
         }
       }
     }
   }
 }
-.registration-filter{
-  .filter-options{
-    margin:10px;
-    width:300px;
+
+.registration-filter {
+  .filter-options {
+    margin: 10px;
+    width: 300px;
   }
 }
