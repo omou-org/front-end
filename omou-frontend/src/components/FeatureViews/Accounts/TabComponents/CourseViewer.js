@@ -22,9 +22,11 @@ class CourseViewer extends Component {
     }
 
     componentWillMount() {
+        console.log(this.props);
         this.setState({
             current: this.props.current,
-            userCourseIDList: this.setCourses(),
+            userRole: this.props.user_role,
+            userID: this.props.userID,
         });
     }
     shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -37,7 +39,7 @@ class CourseViewer extends Component {
             let inputEndDate = new Date(endDate);
             // if we're rendering current courses then check if the end date for the course is later than today
             // else if we're rendering past courses, then check if the end date for the course is later than today
-            return (this.state.current ? inputEndDate > today : inputEndDate < today)
+            return ( this.props.current ? inputEndDate > today : inputEndDate < today)
         };
         let userCourseList;
         switch(this.props.user_role){
@@ -52,7 +54,6 @@ class CourseViewer extends Component {
                 // only keep course if the student is on the roster
                 userCourseList = Object.keys(this.props.courses).filter((courseID)=>{
                     let course = this.props.courses[courseID];
-                    console.log(filterCourseByDate(course.schedule.end_date),"hi i'm a student");
                     return filterCourseByDate(course.schedule.end_date) && course.roster.includes(this.props.user_id);
                 });
         }
@@ -60,7 +61,7 @@ class CourseViewer extends Component {
     };
 
     render() {
-        console.log(this.props.current)
+        this.setCourses();
         return (<Grid container>
             <Grid item md={12}>
                 <Grid container className={'accounts-table-heading'}>
@@ -92,8 +93,8 @@ class CourseViewer extends Component {
                 </Grid>
             </Grid>
             <Grid container spacing={8}>
-                {
-                    this.state.userCourseIDList.map((courseID) => {
+                { this.setCourses().length !== 0 ?
+                    this.setCourses().map((courseID) => {
                         let course = this.props.courses[courseID];
                         let DayConverter = {
                             1: "Monday",
@@ -144,7 +145,14 @@ class CourseViewer extends Component {
                                 </Grid>
                             </Paper>
                         </Grid>);
-                    })
+                    }) :
+                    <Grid item md={12}>
+                        <Paper className={'info'}>
+                            <Typography style={{fontWeight:700}}>
+                                No Courses Yet!
+                            </Typography>
+                        </Paper>
+                    </Grid>
                 }
             </Grid>
         </Grid>)
