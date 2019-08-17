@@ -43,5 +43,7 @@
 }
 
 .accounts-table-row {
-
+  &:hover{
+    border-left: solid 5px $primaryColor;
+  }
 }
