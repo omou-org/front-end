@@ -8,14 +8,14 @@
   position: relative;
   padding: 7%;
 
-  .actions{
-    text-align:right;
-    opacity:0;
+  .actions {
+    text-align: right;
+    opacity: 0;
   }
 
-  &:hover{
-    .actions{
-      opacity:1;
+  &:hover {
+    .actions {
+      opacity: 1;
     }
   }
 
@@ -71,7 +71,32 @@
 }
 
 .accounts-table-row {
-  &:hover{
+  position:relative;
+  &:hover {
     border-left: solid 5px $primaryColor;
+  }
+}
+
+.sessions-left-chip {
+  position:absolute;
+  border-radius: 100%;
+  width:30px;
+  height:30px;
+  padding:5px;
+  top:23%;
+  right:6%;
+
+  color: $secondaryLightFontColor;
+
+  &.good {
+    background-color: $goodStatusColor;
+  }
+
+  &.warning {
+    background-color: $warningStatusColor;
+  }
+
+  &.bad{
+    background-color: $badStatusColor;
   }
 }
