@@ -23,6 +23,7 @@ import EmailIcon from "@material-ui/icons/Email";
 import EditIcon from "@material-ui/icons/Edit";
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 import Button from "@material-ui/core/Button";
+import {NavLink} from "react-router-dom";
 
 const rowHeadings = [
     { id: 'Student', numberic: false, disablePadding: false },
@@ -56,35 +57,62 @@ class RegistrationCourse extends Component {
     }
 
     componentWillMount() {
-        let CourseInView = this.props.courses.find((course) => {
-            return course.course_id.toString() === this.props.computedMatch.params.courseID;
-        });
+        let CourseInView = this.props.courses[this.props.computedMatch.params.courseID] ;
+        console.log(CourseInView);
         this.setState({ ...CourseInView });
+    }
+
+    stringToColor(string) {
+        let hash = 0;
+        let i;
+
+        /* eslint-disable no-bitwise */
+        for (i = 0; i < string.length; i += 1) {
+            hash = string.charCodeAt(i) + ((hash << 5) - hash);
+        }
+
+        let colour = '#';
+
+        for (i = 0; i < 3; i += 1) {
+            const value = (hash >> (i * 8)) & 0xff;
+            colour += `00${value.toString(16)}`.substr(-2);
+        }
+        /* eslint-enable no-bitwise */
+
+        return colour;
     }
 
     render() {
         let DayConverter = {
-            M: "Monday",
-            T: "Tuesday",
-            W: "Wednesday",
-            Tr: "Thursday",
-            F: "Friday",
-            S: "Saturday",
+            1: "Monday",
+            2: "Tuesday",
+            3: "Wednesday",
+            4: "Thursday",
+            5: "Friday",
+            6: "Saturday",
         };
-        let Days = this.state.days.split();
+        let Days = this.state.schedule.days;
         Days = Days.map((day) => {
             return DayConverter[day];
         });
 
-        let Teacher = this.props.teachers.find((teacher) => {
-            return teacher.id === this.state.instructor_id;
-        });
+        let timeOptions = { hour: "2-digit", minute: "2-digit" };
+        let dateOptions = { year: "numeric", month: "short", day: "numeric"};
+        let startDate = new Date(this.state.schedule.start_date + this.state.schedule.start_time),
+            endDate = new Date(this.state.schedule.end_date + this.state.schedule.end_time),
+            startTime = startDate.toLocaleTimeString("en-US",timeOptions),
+            endTime = endDate.toLocaleTimeString("en-US",timeOptions);
+        startDate = startDate.toLocaleDateString("en-US",dateOptions);
+        endDate = endDate.toLocaleDateString("en-US", dateOptions);
+
+        let instructor = this.props.instructors[this.state.instructor_id];
 
         let rows = [];
         let student, row, parent, Actions;
-        this.props.courseRoster[this.state.course_id].forEach((student_id) => {
-            student = this.props.students.find((studentCurr) => { return studentCurr.user_id === student_id });
-            parent = this.props.parents.find((parentCurr) => { return student.parent_id === parentCurr.user_id });
+
+        this.state.roster.forEach((student_id) => {
+            student = this.props.students[student_id];
+            parent = this.props.parents[student.parent_id];
             Actions = () => {
                 return <div className={student.name + ' actions'}>
                     <CallIcon />
@@ -97,6 +125,17 @@ class RegistrationCourse extends Component {
             row = [student.name, parent.name, "Paid", <Actions />];
             rows.push(row);
         });
+
+        let styles = (username) => {
+            return {
+                backgroundColor: this.stringToColor(username),
+                color: "white",
+                width: 38,
+                height: 38,
+                fontSize: 14,
+                border:'1px solid white'
+            }
+        };
 
         return (
             <Grid item xs={12}>
@@ -123,12 +162,12 @@ class RegistrationCourse extends Component {
                     <Divider className={"top-divider"}/>
                     <div className={"course-heading"}>
                         <Typography align={'left'} variant={'h3'} style={{ fontWeight: "500" }} >
-                            {this.state.course_title}
+                            {this.state.title}
                         </Typography>
                         <div className={"date"}>
                             <CalendarIcon style={{ fontSize: "16" }} align={'left'} className={"icon"}/>
-                            <Typography align={'left'} style={{ marginLeft: '5px', marginTop: '15px' }}>
-                                {this.state.dates}
+                            <Typography align={'left'} style={{ marginLeft: '5px', marginTop: '10px' }}>
+                                {startDate} - {endDate}
                             </Typography>
                         </div>
                         <div className={"info"}>
@@ -140,12 +179,14 @@ class RegistrationCourse extends Component {
                             </div>
                             <div className={'second-line'}>
                                 <Chip
-                                    avatar={<Avatar>{Teacher.name.match(/\b(\w)/g).join('')}</Avatar>}
-                                    label={Teacher.name}
+                                    avatar={<Avatar style={styles(instructor.name)}>{instructor.name.match(/\b(\w)/g).join('')}</Avatar>}
+                                    label={instructor.name}
                                     className={"chip"}
+                                    component={NavLink}
+                                    to={`/accounts/${instructor.role}/${instructor.user_id}`}
                                 />
                                 <Typography align={'left'} className={'text'}>
-                                    {this.state.time}
+                                    {startTime} - {endTime}
                                 </Typography>
                                 <Typography align={'left'} className={'text'}>
                                     {Days}
@@ -202,10 +243,10 @@ RegistrationCourse.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        courses: state.Course["CourseList"],
+        courses: state.Course["NewCourseList"],
         courseCategories: state.Course["CourseCategories"],
         students: state.Users["StudentList"],
-        teachers: state.Users["TeacherList"],
+        instructors: state.Users["InstructorList"],
         parents: state.Users["ParentList"],
         courseRoster: state.Course["CourseRoster"],
     };

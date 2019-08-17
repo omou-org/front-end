@@ -1,23 +1,22 @@
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as registrationActions from '../../actions/registrationActions';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import TableRow from "@material-ui/core/TableRow";
-import { Prompt } from 'react-router';
-import { NavLink } from "react-router-dom";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import * as registrationActions from "../../actions/registrationActions";
+import PropTypes from "prop-types";
+import React, {Component} from "react";
+import {Prompt} from "react-router";
+import {NavLink} from "react-router-dom";
 
-//Material UI Imports
+// Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import { Typography } from "@material-ui/core";
+import {Typography} from "@material-ui/core";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
 import TextField from "@material-ui/core/TextField";
-import { InputValidation } from "../FeatureViews/Registration/Validations";
+import {InputValidation} from "../FeatureViews/Registration/Validations";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
@@ -26,9 +25,9 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Clear";
 
-//Outside React Component
-import SearchSelect from 'react-select';
-import CreatableSelect from 'react-select/creatable';
+// Outside React Component
+import SearchSelect from "react-select";
+import CreatableSelect from "react-select/creatable";
 import BackButton from "../BackButton.js";
 import Modal from "@material-ui/core/Modal";
 
@@ -115,25 +114,27 @@ class Form extends Component {
                 sessionStorage.setItem("form", JSON.stringify(prevState));
             }
         }
-        if (!prevState || formType !== prevState.form || prevState["submitted"]) {
+        if (!prevState || formType !== prevState.form || prevState["submitted"] || this.props.computedMatch.params.id) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
-                    let formContents = JSON.parse(JSON.stringify(this.props.registrationForm[formType]));
+                    const formContents = JSON.parse(JSON.stringify(this.props.registrationForm[formType]));
                     let NewState = {
                         ...oldState,
                         activeSection: formContents.section_titles[0],
                         form: formType,
                     };
 
-                    let course = '';
+                    let course = "";
                     if (this.props.computedMatch.params.id) {
                         course = decodeURIComponent(this.props.computedMatch.params.id);
-                        course = this.props.courses.find(({course_title}) => course === course_title);
+                        course = Object.keys(this.props.courses).find(( courseID ) => {
+                            return this.props.courses[courseID].title === course});
+                        course = this.props.courses[course];
                         if (course) {
                             // convert it to a format that onselectChange can use
                             course = {
-                                value: `${course.course_id}: ${course.course_title}`,
-                                label: `${course.course_id}: ${course.course_title}`,
+                                value: `${course.course_id}: ${course.title}`,
+                                label: `${course.course_id}: ${course.title}`,
                             };
                         }
                     }
@@ -151,7 +152,7 @@ class Form extends Component {
                                         NewState[title][field] = options[0];
                                         break;
                                     case "student":
-                                        NewState[title][field] = '';
+                                        NewState[title][field] = "";
                                         break;
                                     default:
                                         NewState[title][field] = null;
@@ -183,11 +184,11 @@ class Form extends Component {
     }
 
     getActiveSection() {
-        let section = this.getFormObject()[this.state.activeSection];
+        const section = this.getFormObject()[this.state.activeSection];
         if (Array.isArray(section)) {
             return section;
         } else {
-            return section[this.state.conditional]
+            return section[this.state.conditional];
         }
     }
 
@@ -197,7 +198,7 @@ class Form extends Component {
     }
 
     getStepContent(step, formType) {
-        return this.props.registrationForm[formType][step]
+        return this.props.registrationForm[formType][step];
     }
 
     validateSection() {
@@ -205,8 +206,8 @@ class Form extends Component {
 
         return (
             this.getActiveSection()
-                .filter(({ required }) => required)
-                .every(({ field }) => this.state[currSectionTitle][field]) &&
+                .filter(({required}) => required)
+                .every(({field}) => this.state[currSectionTitle][field]) &&
             Object.values(this.state[`${currSectionTitle}_validated`])
                 .every((valid) => valid)
         );
@@ -214,7 +215,7 @@ class Form extends Component {
 
     getConditionalFieldFromCurrentSection() {
         let nextSectionInput = false;
-        let currSectionTitle = this.state.activeSection;
+        const currSectionTitle = this.state.activeSection;
         // Get input from the conditional field
         if (Array.isArray(this.getFormObject()[currSectionTitle])) {
             this.getFormObject()[currSectionTitle].some((field) => {
@@ -302,7 +303,7 @@ class Form extends Component {
     }
 
     handleReset() {
-        this.setState({ activeStep: 0 });
+        this.setState({activeStep: 0});
     }
 
     handleFieldUpdate(sectionTitle, field, fieldValue) {
@@ -324,7 +325,7 @@ class Form extends Component {
                 } else if (field.type === "email") {
                     let emails = [];
                     if (field.field === "Student Email") {
-                        emails = this.props.students.map(({ email }) => email);
+                        emails = this.props.students.map(({email}) => email);
                     }
                     // validate that email doesn't exist in database already
                     isValid = !emails.includes(fieldValue) || this.state.preLoaded;
@@ -395,12 +396,12 @@ class Form extends Component {
                     } else {
                         // This is when the parent field is filled, submit the form
                         this.validateSection();
-                        this.setState({ nextSection: true });
+                        this.setState({nextSection: true});
                     }
 
                 });
             } else {
-                this.setState({ existingUser: true });
+                this.setState({existingUser: true});
             }
         } else if (value.__isNew__) {
             this.setState((OldState) => {
@@ -432,16 +433,16 @@ class Form extends Component {
             if (value) {
                 stringValue = value.value;
             } else {
-                stringValue = '';
+                stringValue = "";
             }
             arr2.forEach((otherValue, j) => {
                 if (otherValue) {
                     stringOtherValue = otherValue.value;
                 } else {
-                    stringOtherValue = '';
+                    stringOtherValue = "";
                 }
                 if (stringValue === stringOtherValue) {
-                    arr2[j] = '1';
+                    arr2[j] = "1";
                 }
             });
         });
@@ -465,7 +466,7 @@ class Form extends Component {
                     <InputLabel htmlFor={fieldTitle}>{fieldTitle}</InputLabel>
                     <Select
                         value={this.state[label][fieldTitle]}
-                        onChange={({ target }) => {
+                        onChange={({target}) => {
                             this.onSelectChange(target.value, label, field);
                         }}>
                         {
@@ -477,12 +478,12 @@ class Form extends Component {
                         }
                     </Select>
                 </FormControl>;
-            case "course":
-                const courseList = this.props.courses
-                    .filter(({ capacity, filled }) => capacity > filled)
-                    .map(({ course_id, course_title }) => ({
-                        value: `${course_id}: ${course_title}`,
-                        label: `${course_id}: ${course_title}`,
+            case "course": {
+                const courseList = Object.keys(this.props.courses)
+                    .filter((courseID) => this.props.courses[courseID].capacity > this.props.courses[courseID].filled)
+                    .map((courseID) => ({
+                        value: `${courseID}: ${this.props.courses[courseID].title}`,
+                        label: `${courseID}: ${this.props.courses[courseID].title}`,
                     }));
                 return <SearchSelect
                     value={this.state[label][fieldTitle]}
@@ -491,6 +492,7 @@ class Form extends Component {
                     }}
                     options={courseList}
                     className="search-options" />;
+            }
             case "student": {
                 if (this.state.conditional) {
                     currSelectedValues = Object.values(this.state[label]);
@@ -498,64 +500,68 @@ class Form extends Component {
                     currSelectedValues = Object.values(this.state[label]);
                 }
 
-                let studentList = this.props.students
-                    .map(({user_id, name, email}) => ({
-                        value: user_id,
-                        label: `${user_id}: ${name} - ${email}`,
-                    }));
+                let studentList = Object.values(this.props.students)
+                    .map(({user_id, name, email}) => {
+                        return {
+                            value: user_id,
+                            label: `${user_id}: ${name} - ${email}`,
+                        }
+                    });
                 studentList.unshift({
-                    value: `${0}: ${'None'}`,
-                    label: `${0}: ${'None'}`,
+                    value: "0: None",
+                    label: "0: None",
                 });
                 studentList = this.removeDuplicates(currSelectedValues, studentList);
 
-                return (<div style={{width: "inherit", }}>
-                    <Grid container className={"student-align"} spacing={2000}>
-                        <SearchSelect
-                            value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ''}
-                            onChange={(value) => {
-                                this.onSelectChange(value, label, field);
-                            }}
-                            options={studentList}
-                            className="search-options" />
-                        {
-                            ((this.state.conditional && fieldIndex <= 1) || (fieldIndex === 0)) ? '' :
-                                <RemoveIcon color="primary" aria-label="Add" variant="extended"
-                                    className="button-remove-student"
-                                    onClick={(event) => {
-                                        event.preventDefault();
-                                        //deletes answer field from state
-                                        this.removeField(fieldIndex);
-                                        this.setState((prevState) => {
-                                            return prevState;
-                                        })
-                                    }}>
-                                </RemoveIcon>
-                        }
-                    </Grid>
-                </div>);
+                return (
+                    <div style={{width: "inherit"}}>
+                        <Grid container className={"student-align"} spacing={2000}>
+                            <SearchSelect
+                                value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
+                                onChange={(value) => {
+                                    this.onSelectChange(value, label, field);
+                                }}
+                                options={studentList}
+                                className="search-options" />
+                            {
+                                ((this.state.conditional && fieldIndex <= 1) || (fieldIndex === 0)) ? "" :
+                                    <RemoveIcon color="primary" aria-label="Add" variant="extended"
+                                        className="button-remove-student"
+                                        onClick={(event) => {
+                                            event.preventDefault();
+                                            //deletes answer field from state
+                                            this.removeField(fieldIndex);
+                                            this.setState((prevState) => {
+                                                return prevState;
+                                            })
+                                        }}>
+                                    </RemoveIcon>
+                            }
+                        </Grid>
+                    </div>
+                );
             }
-            case "teacher":
-
+            case "instructor":
                 currSelectedValues = Object.values(this.state[label]);
-                let teacherList = this.props.teachers;
+                let instructorList = this.props.instructors;
 
-                teacherList = teacherList.map((teacher) => {
+                instructorList = Object.keys(instructorList).map((instructorID) => {
+                    let instructor = this.props.instructors[instructorID];
                     return {
-                        value: teacher.id.toString() + ": " + teacher.name,
-                        label: teacher.id.toString() + ": " + teacher.name,
+                        value: instructor.user_id.toString() + ": " + instructor.name,
+                        label: instructor.user_id.toString() + ": " + instructor.name,
                     }
                 });
-                teacherList = this.removeDuplicates(currSelectedValues, teacherList);
-                return (<div style={{ width: "inherit", }}>
+                instructorList = this.removeDuplicates(currSelectedValues, instructorList);
+                return (<div style={{width: "inherit",}}>
 
                     <Grid container className={"student-align"} spacing={2000}>
                         <SearchSelect
-                            value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ''}
+                            value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
                             onChange={(value) => {
                                 this.onSelectChange(value, label, field);
                             }}
-                            options={teacherList}
+                            options={instructorList}
                             className="search-options" />
                     </Grid>
                 </div>);
@@ -580,8 +586,9 @@ class Form extends Component {
             default:
                 return <TextField
                     label={field.field}
+
                     multiline={ field.multiline}
-                    // className={this.state[label+"_validated"][field.field] ? "": "error"}
+                      // className={this.state[label+"_validated"][field.field] ? "": "error"}
                     margin="normal"
                     value={this.state[label][field.field]}
                     error={!this.state[label + "_validated"][field.field]}
@@ -635,7 +642,7 @@ class Form extends Component {
                     baseFieldName = origFieldKey;
                     curFieldName = baseFieldName
                 } else {
-                    curFieldName = baseFieldName + " " + (index !== 0 ? index : '');
+                    curFieldName = baseFieldName + " " + (index !== 0 ? index : "");
                 }
                 // Rename Answer Fields
                 if (origFieldKey !== curFieldName) {
@@ -664,7 +671,7 @@ class Form extends Component {
     }
 
     renderForm() {
-        let { activeSection, activeStep, conditional, nextSection } = this.state,
+        let {activeSection, activeStep, conditional, nextSection} = this.state,
             currentForm = this.props.registrationForm[this.state.form],
             steps = currentForm.section_titles;
         let section = currentForm[activeSection];
@@ -687,11 +694,11 @@ class Form extends Component {
                                         return (
                                             <div key={j} className="fields-wrapper" style={{}}>
                                                 <Grid container className={"student-align"} spacing={20}>
-                                                    {label === this.state.activeSection ? this.renderField(field, label, j) : ''}
+                                                    {label === this.state.activeSection ? this.renderField(field, label, j) : ""}
                                                 </Grid>
                                                 <br />
                                                 {
-                                                    numSameTypeFields < field.field_limit &&
+                                                    this.props.computedMatch.params.course === undefined && numSameTypeFields < field.field_limit &&
                                                     field === lastFieldOfType &&
                                                     <Fab color="primary" aria-label="Add" variant="extended"
                                                         className="button add-student"
@@ -741,15 +748,15 @@ class Form extends Component {
 
     // view after a submitted form
     renderSubmitted() {
-        let { activeSection, activeStep, conditional, nextSection } = this.state,
+        let {activeSection, activeStep, conditional, nextSection} = this.state,
             currentForm = this.props.registrationForm[this.state.form],
             steps = currentForm.section_titles;
         return (
             <div style={{margin:2+"%", padding:5+"px"}}>
-                <Typography align={"left"} style={{fontSize:24+'px'}}>
+                <Typography align={"left"} style={{fontSize:24+"px"}}>
                     You have successfully registered!
                 </Typography>
-                <Typography align={"left"} style={{fontSize:14+'px'}}>
+                <Typography align={"left"} style={{fontSize:14+"px"}}>
                     An email will be sent to you to confirm your registration
                 </Typography>
                 <Button
@@ -759,48 +766,29 @@ class Form extends Component {
                     style={{margin:"20px"}}
                     className={"button"}>Back to Registration</Button>
                 <div className={"confirmation-copy"}>
-                    <Typography className={"title"} align={'left'}>Confirmation Copy</Typography>
-                    {
-                        steps.map((sectionTitle) => (
-                            <div key={sectionTitle}>
-                                <Typography
-                                    className="section-title"
-                                    align="left">
-                                    {sectionTitle}
-                                </Typography>
-                                {
-                                    currentForm[sectionTitle].map(({field, type}) => {
-                                        let fieldVal = this.state[sectionTitle][field];
-                                        if (fieldVal && (type === "student" || type === "course")) {
-                                            fieldVal = fieldVal.label;
+                    <Typography className={"title"} align={"left"}>Confirmation Copy</Typography>
+                {
+                    steps.map((sectionTitle)=>{
+                        return (<div>
+                            <Typography className={"section-title"}
+                                align={"left"}>{sectionTitle}</Typography>
+                            {
+                                currentForm[sectionTitle].map((field)=>{
+                                    let fieldVal = this.state[sectionTitle][field.field];
+                                    if(fieldVal){
+                                        if("value" in fieldVal){
+                                            fieldVal = fieldVal.value;
                                         }
-                                        if (fieldVal && type === "create parent") {
-                                            if (typeof fieldVal.value === "number") {
-                                                const parent = this.props.parents.find(({user_id}) => user_id === fieldVal.value);
-                                                fieldVal = parent.first_name;
-                                            } else {
-                                                fieldVal = fieldVal.value;
-                                            }
-                                        }
-                                        return (
-                                            <div key={field}>
-                                                <Typography
-                                                    className="field-title"
-                                                    align="left">
-                                                    {field}
-                                                </Typography>
-                                                <Typography
-                                                    className="field-value"
-                                                    align="left">
-                                                    {fieldVal ? fieldVal : "N/A"}
-                                                </Typography>
-                                            </div>
-                                        );
-                                    })
-                                }
-                            </div>
-                        ))
-                    }
+                                    }
+                                    return (<div>
+                                        <Typography className={"field-title"} align={"left"}>{field.field !== null ? field.field: ""}</Typography>
+                                        <Typography className={"field-value"} align={"left"}>{ fieldVal !== "" && fieldVal !== null && fieldVal ? fieldVal : "N/A"}</Typography>
+                                    </div>);
+                                })
+                            }
+                        </div>)
+                    })
+                }
                 </div>
             </div>
         );
@@ -824,7 +812,7 @@ class Form extends Component {
         return (
             <Grid container className="">
                 {/*Determine if finished component is displayed. If not, then don't prompt*/}
-                {this.state.submitted ? '' : <Prompt message="Are you sure you want to leave?" />}
+                {this.state.submitted ? "" : <Prompt message="Are you sure you want to leave?" />}
                 <Grid item xs={12}>
                     <Paper className={"registration-form paper"}>
                         <BackButton
@@ -854,7 +842,7 @@ class Form extends Component {
                             open={this.state.existingUser}
                             onClick={(e) => {
                                 e.preventDefault();
-                                this.setState({ existingUser: false })
+                                this.setState({existingUser: false})
                             }}>
                             <div className="existing-user-popup">
                                 <Typography variant="h6" id="modal-title">
@@ -863,7 +851,7 @@ class Form extends Component {
                                 <Button
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        this.setState({ existingUser: false })
+                                        this.setState({existingUser: false})
                                     }}
                                     color="primary"
                                     className="button primary">
@@ -880,12 +868,12 @@ class Form extends Component {
 
 function mapStateToProps(state) {
     return {
-        courses: state.Course["CourseList"],
+        courses: state.Course["NewCourseList"],
         courseCategories: state.Course["CourseCategories"],
         registrationForm: state.Registration["registration_form"],
         parents: state.Users["ParentList"],
         students: state.Users["StudentList"],
-        teachers: state.Users["TeacherList"],
+        instructors: state.Users["InstructorList"],
     };
 }
 

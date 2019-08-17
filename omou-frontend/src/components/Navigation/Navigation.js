@@ -64,7 +64,7 @@ function Navigation(props) {
     return (
         <MuiThemeProvider theme={CustomTheme}>
             <div className={"Navigation"}>
-                <AppBar color={"background"}
+                <AppBar color={"default"}
                     position="fixed"
                     className="OmouBar">
                     <Toolbar>

@@ -7,6 +7,7 @@ function ProtectedRoute({component, render, auth, ...rest}) {
     return (
         <Route
             {...rest}
+            exact
             render={() =>
                 auth.token
                     ? component || (render && render(rest))

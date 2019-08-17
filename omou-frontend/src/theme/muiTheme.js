@@ -17,10 +17,22 @@ const theme = createMuiTheme({
                 color: 'black;', // Some CSS
             },
         },
-        MuiPaper:{
-            background:{
-                backgroundColor: '#FAFAFA'
-            }
+        paper:{
+            background:'#FAFAFA'
+        },
+        MuiTabs: {
+          root: {
+
+          },
+        },
+        MuiTab: {
+            root: {
+                border:"2px solid #DBD7D7",
+            },
+            "selected":{
+                border:"3px solid #43B5D9",
+                backgroundColor:"#EBFAFF",
+            },
         }
     },
 

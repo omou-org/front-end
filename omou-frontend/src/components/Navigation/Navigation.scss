@@ -22,15 +22,18 @@
   /*Drawer Styling*/
   .OmouDrawer{
     //width: $drawerWidth;
-    .MuiDrawer-paperAnchorDockedLeft-100{
-      border:none;
-    }
+
+  }
+
+  div[class^="MuiDrawer-paperAnchorDockedLeft"]{
+    border:none !important;
   }
 
   .OmouMain {
     @include respond-to(handhelds){ margin-left:0;}
     @include respond-to(medium-up-screens){ margin-left:$drawerWidth; }
     padding:5% 3% 0 3%;
+    overflow-x: hidden;
   }
 
   .DrawerList{
@@ -52,7 +55,7 @@
     }
     .listItem.active{
       border-radius: 5px;
-      background-color:$secondaryHighlightColor;
+      background-color:$primaryLightColor;
       border: solid 2px $primaryDarkColor;
       .text > span{color:$primaryFontColor;}
       .icon > * { color: $primaryDarkColor; }

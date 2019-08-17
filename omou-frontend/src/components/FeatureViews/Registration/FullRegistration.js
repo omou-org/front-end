@@ -141,7 +141,7 @@ class FullRegistration extends Component {
 
     getInstructorNameByID(teacher_id){
         let teacherName=this.props.teachers.find((teacher)=>{
-            return teacher.id===teacher_id;
+            return teacher.user_id===teacher_id;
         });
        teacherName=teacherName.name;
        return teacherName;
@@ -228,8 +228,8 @@ class FullRegistration extends Component {
                             </div>
                         </Grid>
                     </Grid>
-                    <Typography className={"popular-courses"} align={"left"}>
-                        Popular Courses
+                    <Typography variant={'h3'} align={"left"}>
+                        Registration Catalog
                     </Typography>
                     <Grid item xs={12} style={{marginTop:'2%'}}>
                         <Paper className={"paper"}>
@@ -257,13 +257,6 @@ class FullRegistration extends Component {
                                                         onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
                                                         style={{textDecoration: 'none', cursor: 'pointer'}}
                                                         align="left">
-                                                        <CircularProgress
-                                                            className={'space-left-progress'}
-                                                            size={30}
-                                                            thickness={5}
-                                                            value={((course.filled) / course.capacity) * 100}
-                                                            variant={'static'}
-                                                        />
                                                         <div className={'space-left'}>
                                                             {(course.filled)} / {course.capacity}
                                                         </div>

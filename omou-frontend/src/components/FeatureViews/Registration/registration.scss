@@ -4,18 +4,21 @@
 
 .registration-action-control{
   padding: 1%;
+  @include respond-to(handhelds){
+    margin-top:50px;
+  }
 
   .button{
     background-color:white;
     @include respond-to(medium-up-screens){
       margin-right:30px;
       height: 46px;
-      width: 145px;
+      //width: 145px;
     }
     @include respond-to(handhelds){
       margin-right:5px;
       height: 46px;
-      width: 110px;
+      //width: 110px;
     }
 
     color:$primaryFontColor;
@@ -117,6 +120,9 @@
   .row td{
     height: 56px;
   }
+  .row{
+    margin:5px;
+  }
 }
 
 .actions{
@@ -195,7 +201,7 @@
     color:white;
   }
   .button.primary:hover{
-    background-color:$secondaryDarkenColor;
+    background-color:$primaryDarkColor;
   }
 }
 
@@ -247,7 +253,6 @@
   margin-bottom: 30px;
   padding: 6px 10px 0 10px;
   background-color:white;
-  width: 106px;
 }
 
 .registration-form{
@@ -296,7 +301,7 @@
   .controls{
     position:relative;
     left:80%;
-    width:28%;
+    //width:28%;
 
     .button{
       margin:5px;
@@ -379,9 +384,10 @@
       text-align:left;
       .text, .chip{
         margin:3px 55px 3px 0;
+        cursor:pointer;
       }
       .chip{
-        width:auto;
+        //width:auto;
         display: inline-flex;
       }
     }
@@ -434,5 +440,53 @@
   }
   .field-value{
     font-size:1.1em;
+  }
+}
+
+// Registration Landing
+.RegistrationLanding{
+  padding: 2%;
+
+  .heading {
+    margin: 20px 0 25px 0;
+  }
+
+  .registration-table{
+    > * {
+      margin:10px 0 10px 0;
+    }
+    .row{
+      .course-heading, .course-detail {
+        padding: 5px 15px;
+      }
+      .course-heading{
+        font-weight:400;
+        font-size:22px;
+      }
+      .course-detail{
+        color: $secondaryFontColor;
+        font-size: 12px;
+        margin:3px;
+
+        .heading-det{
+          font-weight: 800;
+        }
+      }
+      .course-action{
+        background-color: #dfdfdf;
+        height:100px;
+
+        .course-status{
+          .stats, .label{display:block;}
+          .stats{ font-size:2em; font-weight:500;}
+        }
+      }
+    }
+  }
+}
+.registration-filter{
+  .filter-options{
+    margin:10px;
+    width:300px;
   }
 }
