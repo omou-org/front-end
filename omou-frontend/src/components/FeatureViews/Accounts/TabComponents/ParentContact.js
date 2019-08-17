@@ -4,13 +4,12 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import "./TabComponents.scss";
+import Paper from "@material-ui/core/Paper";
+import EditIcon from "@material-ui/icons/EditOutlined";
+import RemoveIcon from "@material-ui/icons/DeleteForeverOutlined";
+import AlertIcon from "@material-ui/icons/AddAlertOutlined";
 
 class ParentContact extends Component {
     constructor(props) {
@@ -27,9 +26,25 @@ class ParentContact extends Component {
     }
 
     render() {
-        return (<div>
-            <h1>{this.state.parent.name}</h1>
-            <h1>{this.state.parent.phone_number}</h1></div>
+        //this.state.parent.name
+        return (
+            <Grid item md={12}>
+            <Grid container spacing={16}>
+                <Grid item xs={3}>
+                        <Paper className={"note"}>
+                            <div className={"actions"}>
+                            {this.state.parent.name}
+                                <EditIcon/>
+                                <AlertIcon/>
+                                <RemoveIcon/>
+                            </div>
+                            <Typography className={"body"} align={'left'}>
+                                {this.state.parent.name}
+                            </Typography>
+                        </Paper>
+                    </Grid>
+            </Grid>
+        </Grid>
         );
     }
 

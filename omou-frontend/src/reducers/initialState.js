@@ -2838,9 +2838,6 @@ export default {
                 parent_id: 78,
                 role: 'student',
                 balance: 0,
-                birthday: "9/29/2004",
-                grade: 5,
-                school: "Crystal River College",
                 notes:{
                     1:{
                         timestamp:"2020-01-02T12:05",
@@ -2873,9 +2870,6 @@ export default {
                 parent_id: 79,
                 role: 'student',
                 balance: 0,
-                birthday: "12/28/2004",
-                grade: 8,
-                school: "Stonewall High School",
                 notes:{
                     1:{
                         timestamp:"2020-01-13T17:33",
@@ -2901,9 +2895,6 @@ export default {
                 parent_id: 80,
                 role: 'student',
                 balance: 0,
-                birthday: "3/11/2005",
-                grade: 3,
-                school: "Saint Helena Technical School",
                 notes:{
                     1:{
                         timestamp:"2020-01-12T15:21",
@@ -2929,9 +2920,6 @@ export default {
                 parent_id: 81,
                 role: 'student',
                 balance: 0,
-                birthday: "4/1/2005",
-                grade: 10,
-                school:"Eastside Conservatory",
                 notes:{
                 },
             },
@@ -2951,7 +2939,6 @@ export default {
                 name: "Gale Long",
                 email: "gale.long@omou.com",
                 role: 'parent',
-                birthday: "12/10/1960",
                 notes:{},
             },
             79: {
@@ -2968,7 +2955,6 @@ export default {
                 name: "Ranger Plano",
                 email: "ranger.plano@omou.com",
                 role: 'parent',
-                birthday: "1/19/1963",
                 notes:{},
             },
             80: {
@@ -2985,7 +2971,6 @@ export default {
                 name: "Gretta Kid",
                 email: "grettaKidd@omou.com",
                 role: 'parent',
-                birthday: "8/23/1965",
                 notes:{},
             },
             81: {
@@ -3002,7 +2987,6 @@ export default {
                 relationship: "Mother",
                 email: "nananana@omou.com",
                 role: 'parent',
-                birthday:"5/10/1966",
                 notes:{},
             },
         },
@@ -3021,7 +3005,6 @@ export default {
                     subjects:["Middle School Biology", "AP Calculus"],
                     languages:["English", "Mandarin"],
                 },
-                birthday: "3/13/1974",
                 schedule:{
                     work_hours:{
                         1: {
@@ -3099,7 +3082,6 @@ export default {
                     subjects:["Middle School Competitive Math", "AP Calculus AB and BC"],
                     languages:["English", "Mandarin"],
                 },
-                birthday:"9/24/1974",
                 schedule:{
                     work_hours: {
                         1: {
@@ -3165,7 +3147,6 @@ export default {
                     subjects:["Middle School Physics", "AP Calculus", "AP Statistics"],
                     languages:["English", "Mandarin"],
                 },
-                birthday: "10/28/1974",
                 schedule: {
                     work_hours: {
                         1: {
@@ -3232,7 +3213,6 @@ export default {
                     subjects:["Middle School Math", "AP Calculus"],
                     languages:["English", "Mandarin"],
                 },
-                birthday: "10/3/1975",
                 schedule: {
                     work_hours:{
                         1: {

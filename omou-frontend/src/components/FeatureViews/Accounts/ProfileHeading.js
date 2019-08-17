@@ -20,10 +20,10 @@ class ProfileHeading extends Component {
     renderStudentProfile() {
         return (
             <Grid container>
-                <Grid item md={10}>
+                <Grid item md={6}>
                     <Grid container>
                         <Grid item md={6} align="left">
-                            {this.props.user.birthday}
+                            birthday
                         </Grid>
                         <Grid item md={1} align="left">
                             <PhoneIcon />
@@ -32,7 +32,7 @@ class ProfileHeading extends Component {
                             {this.props.user.phone_number}
                         </Grid>
                         <Grid item md={6} align="left">
-                            Grade {this.props.user.grade}
+                            grade
                         </Grid>
                         <Grid item md={1} align="left">
                             <EmailIcon />
@@ -41,7 +41,7 @@ class ProfileHeading extends Component {
                             {this.props.user.email}
                         </Grid>
                         <Grid item md={6} align="left">
-                            {this.props.user.school}
+                            highschool
                         </Grid>
                         <Grid item md={1} align="left">
                             <MoneyIcon />
@@ -93,10 +93,9 @@ class ProfileHeading extends Component {
         }
         return (<div>
            <Grid container>
-                <h1>{this.props.user.name}</h1>
-            <Chip className={`userLabel ${this.props.user.role}`}
-                label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)} 
-                
+                <h1 className="left-align">{this.props.user.name}</h1>
+            <Chip
+                label={this.props.user.role}
             />
             </Grid>
             { profileDetails }
