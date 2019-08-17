@@ -81,21 +81,29 @@ export const postData = (type, body) => {
     if (typeToEndpoint.hasOwnProperty(type)) {
         const endpoint = typeToEndpoint[type];
         const [successAction, failAction] = typeToPostActions[type];
-        return (dispatch) => instance.post(endpoint, body, {
-            headers: {
-                "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
-                "Content-Type": "application/json",
-            },
-        })
-            .then(({data}) => {
-                dispatch({
-                    type: successAction,
-                    payload: data,
-                });
-            })
-            .catch((error) => {
-                dispatch({type: failAction, payload: error});
+        return (dispatch) => new Promise((resolve, reject) => {
+            dispatch({
+                type: types.SUBMIT_INITIATED,
+                payload: null,
             });
+            resolve();
+        }).then(() => {
+            instance.post(endpoint, body, {
+                headers: {
+                    "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
+                    "Content-Type": "application/json",
+                },
+            })
+                .then(({data}) => {
+                    dispatch({
+                        type: successAction,
+                        payload: data,
+                    });
+                })
+                .catch((error) => {
+                    dispatch({type: failAction, payload: error});
+                });
+        });
     } else {
         console.error(`Invalid data type ${type}, must be one of ${Object.keys(typeToEndpoint)}`);
     }
@@ -130,36 +138,44 @@ export const postParentAndStudent = (parent, student) => {
     const parentEndpoint = typeToEndpoint["parent"];
     const [studentSuccessAction, studentFailAction] = typeToPostActions["student"];
     const [parentSuccessAction, parentFailAction] = typeToPostActions["parent"];
-    return (dispatch) => instance.post(parentEndpoint, parent, {
-        headers: {
-            "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
-            "Content-Type": "application/json",
-        },
-    })
-        .then((parentResponse) => {
-            dispatch({
-                type: parentSuccessAction,
-                payload: parentResponse.data,
-            });
-            console.log(parentResponse);
-            instance.post(studentEndpoint, {
-                ...student,
-                "parent": parentResponse.data.user.id,
-            }, {
-                headers: {
-                    "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
-                    "Content-Type": "application/json",
-                },
-            })
-                .then((studentResponse) => {
-                    dispatch({
-                        type: studentSuccessAction,
-                        payload: studentResponse.data,
-                    });
-                }, (error) => {
-                    dispatch({type: studentFailAction, payload: error});
-                });
-        }, (error) => {
-            dispatch({type: parentFailAction, payload: error});
+    return (dispatch) => new Promise((resolve, reject) => {
+        dispatch({
+            type: types.SUBMIT_INITIATED,
+            payload: null,
         });
+        resolve();
+    }).then(() => {
+        instance.post(parentEndpoint, parent, {
+            headers: {
+                "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
+                "Content-Type": "application/json",
+            },
+        })
+            .then((parentResponse) => {
+                dispatch({
+                    type: parentSuccessAction,
+                    payload: parentResponse.data,
+                });
+                console.log(parentResponse);
+                instance.post(studentEndpoint, {
+                    ...student,
+                    "parent": parentResponse.data.user.id,
+                }, {
+                    headers: {
+                        "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
+                        "Content-Type": "application/json",
+                    },
+                })
+                    .then((studentResponse) => {
+                        dispatch({
+                            type: studentSuccessAction,
+                            payload: studentResponse.data,
+                        });
+                    }, (error) => {
+                        dispatch({type: studentFailAction, payload: error});
+                    });
+            }, (error) => {
+                dispatch({type: parentFailAction, payload: error});
+            });
+    });
 };

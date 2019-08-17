@@ -114,7 +114,7 @@ class Accounts extends Component {
                 </TableHead>
                 <TableBody>
                     {Object.values(this.state.usersList).map((row) => (
-                        <TableRow key={row.name}
+                        <TableRow key={row.user_id}
                             onClick={(event) => {
                                 event.preventDefault();
                                 this.goToRoute(`/${row.role}/${row.user_id}`);

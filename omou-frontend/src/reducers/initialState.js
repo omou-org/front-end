@@ -3237,7 +3237,6 @@ export default {
             },
         },
     },
-
     "CalenderData": {
         "events_in_view": [{
             id: 1,
@@ -3834,6 +3833,7 @@ function initRegistrationForm() {
                 ]
             }
         },
+        submitStatus: null,
     };
 }
 

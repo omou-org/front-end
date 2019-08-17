@@ -48,6 +48,7 @@ export const submitForm = (state, id) => {
                     "age": state["Basic Information"]["Age"],
                     "school": state["Basic Information"]["School"],
                     "parent": state["Parent Information"].user_id.toString(),
+                    "birth_date": "2019-01-01",
                 };
                 if (typeof id === "undefined") {
                     return postData("student", body);
@@ -92,12 +93,13 @@ export const submitForm = (state, id) => {
                     "city": state["Parent Information"]["City"],
                     "phone_number":
                         state["Basic Information"]["Student Phone Number"] ||
-                            null,
+                        null,
                     "state": state["Parent Information"]["State"],
                     "zipcode": state["Parent Information"]["Zip Code"],
                     "grade": state["Basic Information"]["Grade"],
                     "age": state["Basic Information"]["Age"] || null,
                     "school": state["Basic Information"]["School"],
+                    "birth_date": "2019-01-01",
                 });
             }
         }
@@ -105,3 +107,6 @@ export const submitForm = (state, id) => {
             console.error(`Invalid form type ${state.form}`);
     }
 };
+
+export const resetSubmitStatus = () =>
+    ({type: types.RESET_SUBMIT_STATUS, payload: null});

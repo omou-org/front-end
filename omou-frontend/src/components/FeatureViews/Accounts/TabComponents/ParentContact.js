@@ -21,6 +21,7 @@ class ParentContact extends Component {
     }
 
     componentWillMount() {
+        console.log(this.props.parent_id)
         this.setState({
             parent: this.props.parents[this.props.parent_id]
         })
