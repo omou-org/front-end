@@ -26,7 +26,7 @@ class CourseViewer extends Component {
             current: this.props.current,
             userRole: this.props.user_role,
             userID: this.props.userID,
-            userEnrollments: this.props.enrollments[this.props.user_id],
+            // userEnrollments: this.props.enrollments[this.props.user_id],
         });
     }
 

@@ -3,7 +3,7 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto+Slab:400,500,700');
 
 /* Notes */
-.note {
+.note, .ParentContact {
   height: 250px;
   position: relative;
   padding: 7%;
@@ -21,6 +21,7 @@
 
   .body {
     font-size: 1.2em;
+
   }
 
   .date {
@@ -30,7 +31,34 @@
     text-align: right;
   }
 }
+.ParentContact{
+  .parent-header{
+    position:absolute;
+    padding:5%;
+    background-color: $primaryColor;
+    width:100%;
+    top:0;
+    left:0;
+    .header-text{
+      margin-left:20px;
+      color: white;
+      font-size:20px;
+    }
+  }
+  .actions{
+    text-align:right;
+    opacity:0;
+    margin-top:40px
+  }
 
+  .bodyText{
+    font-size: 15px;
+    .bold{
+      font-weight: 900;
+    }
+  }
+
+}
 /* Instructor Courses */
 .accounts-table-heading, .accounts-table-row > * {
   padding: 15px;

@@ -17,6 +17,10 @@ class ProfileHeading extends Component {
         };
     }
 
+    addDashes(f) {
+        return ("(" + f.slice(0, 3) + "-" + f.slice(3, 6) + "-" + f.slice(6, 15) + ")");
+    }
+
     renderStudentProfile() {
         return (
             <Grid container>
@@ -29,7 +33,7 @@ class ProfileHeading extends Component {
                             <PhoneIcon />
                         </Grid>
                         <Grid item md={5} align="left">
-                            {this.props.user.phone_number}
+                            {this.addDashes(this.props.user.phone_number)}
                         </Grid>
                         <Grid item md={6} align="left">
                             grade
@@ -64,7 +68,7 @@ class ProfileHeading extends Component {
                             <PhoneIcon />
                         </Grid>
                         <Grid item md={5} align="left">
-                            {this.props.user.phone_number}
+                            {this.addDashes(this.props.user.phone_number)}
                         </Grid>
                     </Grid>
                     <Grid container>
@@ -80,6 +84,8 @@ class ProfileHeading extends Component {
             </Grid>);
     }
 
+
+
     render() {
         let profileDetails;
         switch (this.props.user.role) {
@@ -92,13 +98,13 @@ class ProfileHeading extends Component {
             default:
         }
         return (<div>
-           <Grid container>
+            <Grid container>
                 <h1 className="left-align">{this.props.user.name}</h1>
-            <Chip
-                label={this.props.user.role}
-            />
+                <Chip
+                    label={this.props.user.role}
+                />
             </Grid>
-            { profileDetails }
+            {profileDetails}
         </div >)
     }
 

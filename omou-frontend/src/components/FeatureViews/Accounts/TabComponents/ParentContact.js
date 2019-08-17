@@ -15,7 +15,7 @@ class ParentContact extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            parent:{},
+            parent: {},
         };
     }
 
@@ -25,26 +25,52 @@ class ParentContact extends Component {
         })
     }
 
+    addDashes(f){
+        return("("+f.slice(0,3)+"-"+f.slice(3,6)+"-"+f.slice(6,15)+")");
+    }
+
     render() {
         //this.state.parent.name
         return (
             <Grid item md={12}>
-            <Grid container spacing={16}>
-                <Grid item xs={3}>
-                        <Paper className={"note"}>
-                            <div className={"actions"}>
-                            {this.state.parent.name}
-                                <EditIcon/>
-                                <AlertIcon/>
-                                <RemoveIcon/>
+                <Grid container spacing={16}>
+                    <Grid item xs={4} >
+                        <Paper className={"ParentContact"}>
+                            <div className="parent-header" align="left">
+                                <Typography className="header-text">
+                                    {this.state.parent.name}
+                                </Typography>
+                            </div>
+                            <div className={"actions"} align="right">
+                                <EditIcon />
                             </div>
                             <Typography className={"body"} align={'left'}>
-                                {this.state.parent.name}
+                                <Grid container spacing={16} className="bodyText">
+                                    <Grid item xs={5} align="left" className="bold">
+                                        Relation
+                                    </Grid>
+                                    <Grid item xs={5} align="left">
+                                        {this.state.parent.relationship}
+                                    </Grid>
+                                    <Grid item xs={5} align="left" className="bold">
+                                        Phone
+                                    </Grid>
+                                    <Grid item xs={5} align="left">
+                                        {this.addDashes(this.state.parent.phone_number)}
+                                    </Grid>
+                                    <Grid item xs={5} align="left" className="bold">
+                                        Email
+                                    </Grid>
+                                    <Grid item xs={5} align="left">
+                                        {this.state.parent.email}
+                                    </Grid>
+
+                                </Grid>
                             </Typography>
                         </Paper>
                     </Grid>
+                </Grid>
             </Grid>
-        </Grid>
         );
     }
 

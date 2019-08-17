@@ -10,7 +10,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import { Card, Paper, Typography } from "@material-ui/core";
-
+import './Accounts.scss';
 
 import BackButton from "../../BackButton";
 import ComponentViewer from "./ComponentViewer.js";
@@ -89,7 +89,6 @@ class UserProfile extends Component {
             default:
                 user = -1;
         }
-        
         // this.setState({ ...CourseInView });
         this.setState({
             user: user,
@@ -102,11 +101,27 @@ class UserProfile extends Component {
         this.setState({ value: newTabIndex });
     }
 
-    
+    stringToColor(string) {
+        let hash = 0;
+        let i;
+
+        /* eslint-disable no-bitwise */
+        for (i = 0; i < string.length; i += 1) {
+            hash = string.charCodeAt(i) + ((hash << 5) - hash);
+        }
+
+        let colour = '#';
+
+        for (i = 0; i < 3; i += 1) {
+            const value = (hash >> (i * 8)) & 0xff;
+            colour += `00${value.toString(16)}`.substr(-2);
+        }
+        /* eslint-enable no-bitwise */
+
+        return colour;
     }
 
     render() {
-        console.log(this.state.user);
         let styles = {
             backgroundColor: this.stringToColor(this.state.user.name),
             color: "white",
@@ -120,11 +135,11 @@ class UserProfile extends Component {
                 <BackButton
                     warn={false}
                 />
-                <Grid container layout="row">
+                <Grid container layout="row" className={'padding'}>
                     <Grid item md={2}>
                         <Avatar style={styles}>{this.state.user.name.match(/\b(\w)/g).join('')}</Avatar>
                     </Grid>
-                    <Grid item md={8}>
+                    <Grid item md={8} >
                         <ProfileHeading user={this.state.user} />
                     </Grid>
                 </Grid>

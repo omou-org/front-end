@@ -1,7 +1,7 @@
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import Schedule from "./TabComponents/Schedule.js";
 import InstructorCourses from './TabComponents/InstructorCourses';
@@ -24,22 +24,24 @@ class ComponentViewer extends Component {
         let component;
         switch (this.props.inView) {
             case 0:
-                component = <Schedule />;
+                component = <Schedule key={this.props.inView}/>;
                 break;
             case 1:
-                component = <InstructorCourses user_id={this.props.user.user_id} />;
+                component = <InstructorCourses user_id={this.props.user.user_id} key={this.props.inView}/>;
                 break;
             case 2:
-                component = <Bio />;
+                component = <Bio key={this.props.inView}/>;
                 break;
             case 3:
                 component = <CourseViewer
                     current={true}
                     user_id={this.props.user.user_id}
                     user_role={this.props.user.role}
+                    key={this.props.inView}
                 />;
                 break;
             case 4:
+                console.log("past sessions");
                 component = <CourseViewer
                     current={false}
                     user_id={this.props.user.user_id}
@@ -48,21 +50,18 @@ class ComponentViewer extends Component {
                 />;
                 break;
             case 5:
-                component = <PaymentHistory user_id={this.props.user.user_id} />;
+                component = <PaymentHistory user_id={this.props.user.user_id} key={this.props.inView}/>;
                 break;
             case 6:
-                component = <ParentContact
-                    parent_id={this.props.user.parent_id} 
-
-                    />;
+                component = <ParentContact parent_id={this.props.user.parent_id} key={this.props.inView}/>;
                 break;
             case 7:
-                component = <Notes user_notes={this.props.user.notes} />;
+                component = <Notes user_notes={this.props.user.notes} key={this.props.inView}/>;
                 break;
             default:
-                component = <Schedule />;
+                component = <Schedule key={this.props.inView}/>;
         }
-        return (<Grid item xs={12} style={{ paddingTop: 15 + "px" }}>{component}</Grid>);
+        return (<Grid item xs={12} style={{paddingTop: 15 + "px"}}>{component}</Grid>);
     }
 
     render() {
