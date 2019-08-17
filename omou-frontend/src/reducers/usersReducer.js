@@ -32,11 +32,17 @@ export default function users(state = initialState.Users, {payload, type}) {
     }
 }
 
+const parseGender = {
+    "M": "Male",
+    "F": "Female",
+    "U": "Neither",
+};
+
 const addStudents = (state, students) => {
     let newState = JSON.parse(JSON.stringify(state));
     newState.StudentList.push(...students.map((student) => ({
         "user_id": student.user.id,
-        "gender": student.gender,
+        "gender": parseGender[student.gender],
         "address": student.address,
         "city": student.city,
         "phone_number": student.phone_number,
@@ -67,7 +73,7 @@ const addParents = (state, parents) => {
     let newState = JSON.parse(JSON.stringify(state));
     newState.ParentList.push(...parents.map((parent) => ({
         "user_id": parent.user.id,
-        "gender": parent.gender,
+        "gender": parseGender[parent.gender],
         "address": parent.address,
         "city": parent.city,
         "phone_number": parent.phone_number,

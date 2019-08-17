@@ -42,6 +42,7 @@ class Form extends Component {
             activeSection: "",
             form: "",
             submitted: false,
+            preLoaded: false,
             existingUser: false,
         };
     }
@@ -49,6 +50,67 @@ class Form extends Component {
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
         const formType = this.props.computedMatch.params.type;
+        if (this.props.computedMatch.params.edit === "edit") {
+            const student = this.props.students.find((matchingStudent) =>
+                matchingStudent.user_id.toString() === this.props.computedMatch.params.id);
+            if (student) {
+                const parent = this.props.parents.find((matchingParent) =>
+                    matchingParent.user_id === student.parent_id);
+                prevState = {
+                    ...this.state,
+                    "Basic Information": {
+                        "Student First Name": student.first_name,
+                        "Student Last Name": student.last_name,
+                        "Gender": student.gender,
+                        "Grade": student.grade,
+                        "Age": student.age,
+                        "School": student.school,
+                        "Student Email": student.email,
+                        "Student Phone Number": student.phone_number,
+                    },
+                    "Parent Information": {
+                        "Parent First Name": parent.first_name,
+                        "Parent Last Name": parent.last_name,
+                        "Gender": parent.gender,
+                        "Parent Email": parent.email,
+                        "Address": parent.address,
+                        "City": parent.city,
+                        "State": parent.state,
+                        "Zip Code": parent.zipcode,
+                        "Relationship to Student": parent.relationship,
+                        "Parent Phone Number": parent.phone_number,
+                        "user_id": parent.user_id,
+                    },
+                    "Basic Information_validated": {
+                        "Student First Name": true,
+                        "Student Last Name": true,
+                        "Gender": true,
+                        "Grade": true,
+                        "Age": true,
+                        "School": true,
+                        "Student Email": true,
+                        "Student Phone Number": true,
+                    },
+                    "Parent Information_validated": {
+                        "Parent First Name": true,
+                        "Parent Last Name": true,
+                        "Gender": true,
+                        "Parent Email": true,
+                        "Address": true,
+                        "City": true,
+                        "State": true,
+                        "Zip Code": true,
+                        "Relationship to Student": true,
+                        "Parent Phone Number": true,
+                        "user_id": true,
+                    },
+                    "form": formType,
+                    "activeSection": "Basic Information",
+                    "nextSection": false,
+                    "preLoaded": true,
+                };
+            }
+        }
         if (!prevState || formType !== prevState.form || prevState["submitted"]) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
@@ -60,9 +122,9 @@ class Form extends Component {
                     };
 
                     let course = '';
-                    if (this.props.computedMatch.params.course) {
-                        course = decodeURIComponent(this.props.computedMatch.params.course);
-                        course = this.props.courses.find(({ course_title }) => course === course_title);
+                    if (this.props.computedMatch.params.id) {
+                        course = decodeURIComponent(this.props.computedMatch.params.id);
+                        course = this.props.courses.find(({course_title}) => course === course_title);
                         if (course) {
                             // convert it to a format that onselectChange can use
                             course = {
@@ -76,7 +138,7 @@ class Form extends Component {
                         NewState[title] = {};
                         // set a value for every non-conditional field (object)
                         if (Array.isArray(formContents[title])) {
-                            formContents[title].forEach(({ field, type, options }) => {
+                            formContents[title].forEach(({field, type, options}) => {
                                 switch (type) {
                                     case "course":
                                         NewState[title][field] = course;
@@ -176,7 +238,7 @@ class Form extends Component {
         this.setState((oldState) => {
             if (this.validateSection() || oldState[this.state.activeSection].user_id) {
                 if (!oldState.submitted && oldState.activeStep === this.getFormObject().section_titles.length - 1) {
-                    this.props.registrationActions.submitForm(this.state);
+                    this.props.registrationActions.submitForm(this.state, this.props.computedMatch.params.id);
                     sessionStorage.setItem("form", "");
                     return {
                         submitted: true,
@@ -262,7 +324,7 @@ class Form extends Component {
                     }
                     // validate that email doesn't exist in database already
                     console.log(emails.includes(fieldValue));
-                    isValid = !emails.includes(fieldValue);
+                    isValid = !emails.includes(fieldValue) || this.state.preLoaded;
                     if (!isValid) {
                         oldState.existingUser = true;
                     }
@@ -713,6 +775,13 @@ class Form extends Component {
         );
     }
 
+    renderTitle(id, type) {
+        switch (type) {
+            case "course":
+                return id ? `${decodeURIComponent(id)} ` : ""
+        }
+    }
+
     render() {
         return (
             <Grid container className="">
@@ -729,8 +798,8 @@ class Form extends Component {
                             alertDenyText={"No, don't save changes"}
                             denyAction={"default"}
                         />
-                        <Typography className={"heading"} align={"left"}>
-                            {this.props.computedMatch.params.course ? `${decodeURIComponent(this.props.computedMatch.params.course)} ` : ""}
+                        <Typography className="heading" align="left">
+                            {this.renderTitle(this.props.computedMatch.params.id, this.state.form)}
                             {this.props.computedMatch.params.type} Registration
                         </Typography>
                         {

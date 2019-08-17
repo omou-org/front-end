@@ -101,6 +101,30 @@ export const postData = (type, body) => {
     }
 };
 
+export const putData = (type, body, id) => {
+    if (typeToEndpoint.hasOwnProperty(type)) {
+        const endpoint = typeToEndpoint[type];
+        const [successAction, failAction] = typeToPostActions[type];
+        return (dispatch) => instance.post(`${endpoint}${id}/`, body, {
+            headers: {
+                "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
+                "Content-Type": "application/json",
+            },
+        })
+            .then(({data}) => {
+                dispatch({
+                    type: successAction,
+                    payload: data,
+                });
+            })
+            .catch((error) => {
+                dispatch({type: failAction, payload: error});
+            });
+    } else {
+        console.error(`Invalid data type ${type}, must be one of ${Object.keys(typeToEndpoint)}`);
+    }
+};
+
 export const postParentAndStudent = (parent, student) => {
     const studentEndpoint = typeToEndpoint["student"];
     const parentEndpoint = typeToEndpoint["parent"];

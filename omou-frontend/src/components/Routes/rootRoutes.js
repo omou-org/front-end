@@ -55,7 +55,7 @@ function rootRoutes(props) {
 
             {/* Registration Routes */}
             <ProtectedRoute
-                path="/registration/form/:type/:course?"
+                path="/registration/form/:type/:id?/:edit?"
                 render={(passedProps) => <RegistrationForm {...passedProps} />} />
             <ProtectedRoute
                 path="/registration/course/:courseID?/:courseTitle?"

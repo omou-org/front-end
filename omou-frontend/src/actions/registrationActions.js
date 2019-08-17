@@ -1,5 +1,5 @@
 import * as types from "./actionTypes";
-import {postData, postParentAndStudent} from "./rootActions";
+import {postData, postParentAndStudent, putData} from "./rootActions";
 
 const parseGender = {
     "Male": "M",
@@ -22,12 +22,12 @@ export const addField = (path) =>
 export const removeField = (path, fieldIndex, conditional) =>
     ({type: types.REMOVE_FIELD, payload: [path, fieldIndex, conditional]});
 
-export const submitForm = (state) => {
+export const submitForm = (state, id) => {
     console.log(state);
     switch (state.form) {
         case "student": {
             if (state["Parent Information"].user_id) {
-                return postData("student", {
+                const body = {
                     "user": {
                         "first_name":
                             state["Basic Information"]["Student First Name"],
@@ -42,14 +42,19 @@ export const submitForm = (state) => {
                     "city": state["Parent Information"]["City"],
                     "phone_number":
                         state["Basic Information"]["Student Phone Number"] ||
-                            null,
+                        null,
                     "state": state["Parent Information"]["State"],
                     "zipcode": state["Parent Information"]["Zip Code"],
                     "grade": state["Basic Information"]["Grade"],
                     "age": state["Basic Information"]["Age"],
                     "school": state["Basic Information"]["School"],
                     "parent": state["Parent Information"].user_id.toString(),
-                });
+                };
+                if (typeof id === "undefined") {
+                    return postData("student", body);
+                } else {
+                    return putData("student", body, id);
+                }
             } else {
                 return postParentAndStudent({
                     "user": {

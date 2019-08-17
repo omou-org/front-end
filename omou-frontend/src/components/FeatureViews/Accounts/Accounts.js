@@ -17,6 +17,7 @@ import TableBody from "@material-ui/core/TableBody";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
+import {NavLink} from "react-router-dom";
 
 import './Accounts.scss';
 
@@ -59,11 +60,11 @@ class Accounts extends Component {
         this.setState({value:newTabIndex, usersList: newUsersList});
     }
 
-    render(){
+    render() {
         // console.log(this.state.usersList);
 
-        let tableView = () => {
-            return <Table>
+        let tableView = () => (
+            <Table>
                 <TableHead>
                     <TableRow>
                         <TableCell>Name</TableCell>
@@ -73,20 +74,23 @@ class Accounts extends Component {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {this.state.usersList.map(row => (
+                    {this.state.usersList.map((row) => (
                         <TableRow key={row.name}>
                             <TableCell component="th" scope="row">
                                 {row.name}
                             </TableCell>
                             <TableCell>{row.email}</TableCell>
                             <TableCell>{row.phone_number}</TableCell>
+                            <TableCell component={NavLink} to={`/registration/form/student/${row.user_id}/edit`}>
+                                edit
+                            </TableCell>
                             {/*<TableCell align="right">{row.carbs}</TableCell>*/}
                             {/*<TableCell align="right">{row.protein}</TableCell>*/}
                         </TableRow>
                     ))}
                 </TableBody>
-            </Table>;
-        };
+            </Table>
+        );
 
         let cardView = () => {
             return this.state.usersList.map((user)=>{
