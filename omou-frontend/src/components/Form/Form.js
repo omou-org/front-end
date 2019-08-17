@@ -51,8 +51,8 @@ class Form extends Component {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
         const formType = this.props.computedMatch.params.type;
         if (this.props.computedMatch.params.edit === "edit") {
-            const student = this.props.students.find((matchingStudent) =>
-                matchingStudent.user_id.toString() === this.props.computedMatch.params.id);
+            const student = this.props.students.find(({user_id}) =>
+                user_id.toString() === this.props.computedMatch.params.id);
             if (student) {
                 const parent = this.props.parents.find((matchingParent) =>
                     matchingParent.user_id === student.parent_id);
@@ -69,7 +69,10 @@ class Form extends Component {
                         "Student Phone Number": student.phone_number,
                     },
                     "Parent Information": {
-                        "Parent First Name": parent.first_name,
+                        "Parent First Name": {
+                            value: parent.user_id,
+                            label: `${parent.user_id}: ${parent.name} - ${parent.email}`,
+                        },
                         "Parent Last Name": parent.last_name,
                         "Gender": parent.gender,
                         "Parent Email": parent.email,
@@ -106,9 +109,10 @@ class Form extends Component {
                     },
                     "form": formType,
                     "activeSection": "Basic Information",
-                    "nextSection": false,
+                    "nextSection": true,
                     "preLoaded": true,
                 };
+                sessionStorage.setItem("form", JSON.stringify(prevState));
             }
         }
         if (!prevState || formType !== prevState.form || prevState["submitted"]) {
@@ -323,7 +327,6 @@ class Form extends Component {
                         emails = this.props.students.map(({ email }) => email);
                     }
                     // validate that email doesn't exist in database already
-                    console.log(emails.includes(fieldValue));
                     isValid = !emails.includes(fieldValue) || this.state.preLoaded;
                     if (!isValid) {
                         oldState.existingUser = true;
@@ -344,18 +347,32 @@ class Form extends Component {
     }
 
     onSelectChange(value, label, field) {
-        if (field.type.indexOf("create") > -1 && typeof value === 'object' && !value.__isNew__) {
+        if (field.type.indexOf("create") > -1 && typeof value === "object" && !value.__isNew__) {
             if (field.type === "create parent") {
                 this.setState((OldState) => {
                     let NewState = OldState;
-                    console.log(value, this.props.parents);
-                    let selectedParentID = value.label.substring(0, value.label.indexOf(":"));
-                    let { user_id, first_name, last_name, gender, email, address, city, zipcode, state, relationship, phone_number } = this.props.parents.find((parent) => {
-                        return selectedParentID == parent.user_id;
-                    });
+                    const selectedParentID = value.value;
+                    console.log(selectedParentID)
+                    const {
+                        user_id,
+                        name,
+                        last_name,
+                        gender,
+                        email,
+                        address,
+                        city,
+                        zipcode,
+                        state,
+                        relationship,
+                        phone_number,
+                    } = this.props.parents.find((parent) =>
+                        selectedParentID === parent.user_id);
 
                     NewState[label] = {
-                        "Parent First Name": first_name,
+                        "Parent First Name": {
+                            value: user_id,
+                            label: `${user_id}: ${name} - ${email}`,
+                        },
                         "Parent Last Name": last_name,
                         "Gender": gender,
                         "Parent Email": email,
@@ -367,10 +384,10 @@ class Form extends Component {
                         "Parent Phone Number": phone_number,
                         "user_id": user_id,
                     };
-                    let ParentKeys = Object.keys(NewState[label]);
-                    ParentKeys.forEach((key) => {
+                    Object.keys(NewState[label]).forEach((key) => {
                         NewState[label + "_validated"][key] = true;
                     });
+                    console.log(NewState)
                     return NewState;
                 }, () => {
                     if (!(field.type === "create parent")) {
@@ -388,7 +405,10 @@ class Form extends Component {
         } else if (value.__isNew__) {
             this.setState((OldState) => {
                 let NewState = OldState;
-                NewState[label][field.field] = value.value;
+                NewState[label][field.field] = {
+                    value: value.value,
+                    label: value.value,
+                };
                 console.log(NewState[label][field.field], "new value!");
                 return NewState;
             }, () => {
@@ -471,7 +491,7 @@ class Form extends Component {
                     }}
                     options={courseList}
                     className="search-options" />;
-            case "student":
+            case "student": {
                 if (this.state.conditional) {
                     currSelectedValues = Object.values(this.state[label]);
                 } else {
@@ -479,8 +499,8 @@ class Form extends Component {
                 }
 
                 let studentList = this.props.students
-                    .map(({ user_id, name, email }) => ({
-                        value: `${name} - ${email}`,
+                    .map(({user_id, name, email}) => ({
+                        value: user_id,
                         label: `${user_id}: ${name} - ${email}`,
                     }));
                 studentList.unshift({
@@ -489,7 +509,7 @@ class Form extends Component {
                 });
                 studentList = this.removeDuplicates(currSelectedValues, studentList);
 
-                return (<div style={{ width: "inherit", }}>
+                return (<div style={{width: "inherit", }}>
                     <Grid container className={"student-align"} spacing={2000}>
                         <SearchSelect
                             value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ''}
@@ -514,6 +534,7 @@ class Form extends Component {
                         }
                     </Grid>
                 </div>);
+            }
             case "teacher":
 
                 currSelectedValues = Object.values(this.state[label]);
@@ -538,10 +559,10 @@ class Form extends Component {
                             className="search-options" />
                     </Grid>
                 </div>);
-            case "create parent":
-                let currParentList = this.props.parents
-                    .map(({ user_id, name, email }) => ({
-                        value: `${name} - ${email}`,
+            case "create parent": {
+                const currParentList = this.props.parents
+                    .map(({user_id, name, email}) => ({
+                        value: user_id,
                         label: `${user_id}: ${name} - ${email}`,
                     }));
                 return (
@@ -551,9 +572,11 @@ class Form extends Component {
                         onChange={(value) => {
                             this.onSelectChange(value, label, field);
                         }}
+                        value={this.state[label][fieldTitle]}
                         options={currParentList}
                     />
                 );
+            }
             default:
                 return <TextField
                     label={field.field}
@@ -749,7 +772,15 @@ class Form extends Component {
                                     currentForm[sectionTitle].map(({field, type}) => {
                                         let fieldVal = this.state[sectionTitle][field];
                                         if (fieldVal && (type === "student" || type === "course")) {
-                                            fieldVal = fieldVal.value;
+                                            fieldVal = fieldVal.label;
+                                        }
+                                        if (fieldVal && type === "create parent") {
+                                            if (typeof fieldVal.value === "number") {
+                                                const parent = this.props.parents.find(({user_id}) => user_id === fieldVal.value);
+                                                fieldVal = parent.first_name;
+                                            } else {
+                                                fieldVal = fieldVal.value;
+                                            }
                                         }
                                         return (
                                             <div key={field}>
@@ -778,7 +809,14 @@ class Form extends Component {
     renderTitle(id, type) {
         switch (type) {
             case "course":
-                return id ? `${decodeURIComponent(id)} ` : ""
+                return id ? decodeURIComponent(id) : "";
+            case "student": {
+                const student = this.props.students.find(({user_id}) =>
+                    user_id.toString() === id);
+                return student ? student.name : "";
+            }
+            default:
+                return "";
         }
     }
 
@@ -799,8 +837,7 @@ class Form extends Component {
                             denyAction={"default"}
                         />
                         <Typography className="heading" align="left">
-                            {this.renderTitle(this.props.computedMatch.params.id, this.state.form)}
-                            {this.props.computedMatch.params.type} Registration
+                            {this.renderTitle(this.props.computedMatch.params.id, this.state.form)} {this.props.computedMatch.params.type} Registration
                         </Typography>
                         {
                             !this.state.submitted ?

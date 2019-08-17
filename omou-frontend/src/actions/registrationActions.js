@@ -23,7 +23,6 @@ export const removeField = (path, fieldIndex, conditional) =>
     ({type: types.REMOVE_FIELD, payload: [path, fieldIndex, conditional]});
 
 export const submitForm = (state, id) => {
-    console.log(state);
     switch (state.form) {
         case "student": {
             if (state["Parent Information"].user_id) {
@@ -53,6 +52,7 @@ export const submitForm = (state, id) => {
                 if (typeof id === "undefined") {
                     return postData("student", body);
                 } else {
+                    console.log(`putting to ${id}`, body);
                     return putData("student", body, id);
                 }
             } else {
