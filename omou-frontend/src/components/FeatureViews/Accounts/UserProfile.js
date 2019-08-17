@@ -10,7 +10,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import { Card, Paper, Typography } from "@material-ui/core";
-import './Accounts.scss';
+
 
 import BackButton from "../../BackButton";
 import ComponentViewer from "./ComponentViewer.js";
@@ -106,6 +106,7 @@ class UserProfile extends Component {
     }
 
     render() {
+        console.log(this.state.user);
         let styles = {
             backgroundColor: this.stringToColor(this.state.user.name),
             color: "white",
@@ -119,11 +120,11 @@ class UserProfile extends Component {
                 <BackButton
                     warn={false}
                 />
-                <Grid container layout="row" className={'padding'}>
+                <Grid container layout="row">
                     <Grid item md={2}>
                         <Avatar style={styles}>{this.state.user.name.match(/\b(\w)/g).join('')}</Avatar>
                     </Grid>
-                    <Grid item md={8} >
+                    <Grid item md={8}>
                         <ProfileHeading user={this.state.user} />
                     </Grid>
                 </Grid>
