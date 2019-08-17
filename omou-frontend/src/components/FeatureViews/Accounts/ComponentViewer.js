@@ -41,7 +41,6 @@ class ComponentViewer extends Component {
                 />;
                 break;
             case 4:
-                console.log("past sessions");
                 component = <CourseViewer
                     current={false}
                     user_id={this.props.user.user_id}

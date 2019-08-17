@@ -22,10 +22,11 @@ class CourseViewer extends Component {
     }
 
     componentWillMount() {
+        // console.log(this.props.enrollments[this.props.user_id]);
         this.setState({
             current: this.props.current,
             userRole: this.props.user_role,
-            userID: this.props.userID,
+            userID: this.props.user_id,
             userEnrollments: this.props.enrollments[this.props.user_id],
         });
     }
@@ -88,11 +89,30 @@ class CourseViewer extends Component {
     }
 
     numPaidCourses(courseID){
-        let courseEnrollment = this.props.enrollments[this.state.userID][courseID];
+        let courseEnrollment = this.state.userEnrollments[courseID],
+            enrollmentPayments = Object.values(courseEnrollment.session_payment_status),
+            numPaidEnrollments = 0;
+        enrollmentPayments.forEach((paymentStatus)=>{
+            if(paymentStatus === 1){
+                numPaidEnrollments++;
+            }
+        });
+        return numPaidEnrollments;
     }
+
+
 
     render() {
         this.setCourses();
+        let paymentStatus = (numPaidCourses)=>{
+            if(numPaidCourses>3) {
+                return "good";
+            } else if(numPaidCourses <= 3 && numPaidCourses >0) {
+                return "warning";
+            } else if(numPaidCourses <= 0){
+                return "bad";
+            }
+        };
         return (<Grid container>
             <Grid item md={12}>
                 <Grid container className={'accounts-table-heading'}>
@@ -152,7 +172,9 @@ class CourseViewer extends Component {
                                         </Typography>
                                     </Grid>
                                     <Grid item md={1}>
-                                        num left
+                                        <div className={`sessions-left-chip ${paymentStatus(this.numPaidCourses(courseID))}`}>
+                                            {this.numPaidCourses(courseID)}
+                                        </div>
                                     </Grid>
                                 </Grid>
                             </Paper>
@@ -178,7 +200,7 @@ function mapStateToProps(state) {
     return {
         usersList: state.Users,
         courses: state.Course.NewCourseList,
-        enrollments: state.Enrollments,
+        enrollments: state.Enrollment,
     };
 }
 
