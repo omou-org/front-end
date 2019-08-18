@@ -51,7 +51,7 @@ class ProfileHeading extends Component {
                             <MoneyIcon />
                         </Grid>
                         <Grid item md={5} align="left">
-                            balance
+                            ${this.props.user.balance}
                         </Grid>
                     </Grid>
                 </Grid>

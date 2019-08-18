@@ -148,7 +148,7 @@ class CourseViewer extends Component {
                     this.setCourses().map((courseID) => {
                         let course = this.props.courses[courseID];
                         let {Days, startDate, endDate, startTime, endTime} = this.courseDataParser(course);
-                        return (<Grid item md={12} className={'accounts-table-row'}>
+                        return (<Grid item md={12} className={'accounts-table-row'} key={courseID}>
                             <Paper square={true}>
                                 <Grid container>
                                     <Grid item md={3}>
