@@ -19,46 +19,63 @@ import Tab from "@material-ui/core/Tab";
 import ProfileHeading from "./ProfileHeading.js";
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
+import BioIcon from "@material-ui/icons/PersonOutlined";
+import CoursesIcon from "@material-ui/icons/SchoolOutlined";
+import ScheduleIcon from "@material-ui/icons/CalendarTodayOutlined";
+import NoteIcon from "@material-ui/icons/NoteOutlined";
+import CurrentSessionsIcon from "@material-ui/icons/AssignmentOutlined";
+import PastSessionsIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
+import PaymentIcon from "@material-ui/icons/CreditCardOutlined"
+import ContactIcon from "@material-ui/icons/ContactPhoneOutlined"
 
 const userTabs = {
     "instructor": [
         {
             tab_heading: "Schedule",
             tab_id: 0,
+            icon: <ScheduleIcon className="TabIcon"/>,
         },
         {
             tab_heading: "Courses",
             tab_id: 1,
+            icon: <CoursesIcon className="TabIcon"/>,
         },
         {
             tab_heading: "Bio",
             tab_id: 2,
+            icon: <BioIcon className="TabIcon"/>,
         },
         {
             tab_heading: "Notes",
             tab_id: 7,
+            icon: <NoteIcon className="TabIcon"/>,
         },
         ],
     "student": [
         {
             tab_heading: "Current Sessions",
             tab_id: 3,
+            icon: <CurrentSessionsIcon className="TabIcon"/>,
         },
         {
             tab_heading: "Past Sessions",
             tab_id: 4,
+            icon: <PastSessionsIcon className="TabIcon"/>,
         },
         {
             tab_heading: "Payment History",
             tab_id: 5,
+            icon: <PaymentIcon className="TabIcon"/>,
         },
         {
             tab_heading: "Parent Contact",
             tab_id: 6,
+            icon: <ContactIcon className="TabIcon"/>,
         },
         {
             tab_heading: "Notes",
             tab_id: 7,
+            icon: <NoteIcon className="TabIcon"/>,
         }],
 }
 
@@ -149,7 +166,8 @@ class UserProfile extends Component {
                     indicatorColor="primary"
                     textColor="primary"
                 >
-                    {this.state.tabs.map((tab) => { return <Tab label={tab.tab_heading} /> })}
+                    {this.state.tabs.map((tab) => { return <Tab 
+                    label={<>{tab.icon} {tab.tab_heading}</>} /> })}
                 </Tabs>
                 <ComponentViewer user={this.state.user} inView={this.state.tabs[this.state.value].tab_id} />
             </Paper>

@@ -3012,7 +3012,7 @@ export default {
                 name: "Daniel Huang",
                 email: "daniel.huang@gmail.com",
                 role: 'instructor',
-                phone_number:1234458989,
+                phone_number:"1234458989",
                 background:{
                     bio:"Daniel graduated from UCLA as an Economics major in 2018. He now works full time as a " +
                         "Cyber Security Consultant. Daniel grew up in Pleasanton and went to high school at " +
@@ -3090,7 +3090,7 @@ export default {
                 name: "Jerry Li",
                 email: "jerrylinew@gmail.com",
                 role: 'instructor',
-                phone_number:1234458923,
+                phone_number:"1234458923",
                 background:{
                     bio:"Jerry graduated from UCLA as an Computer Science major in 2018. He now works full time as a " +
                         "Data Engineer at Robinhood. Jerry grew up in Pleasanton and went to high school at " +
@@ -3156,7 +3156,7 @@ export default {
                 name: "Albert Deng",
                 email: "albert@omou.com",
                 role: 'instructor',
-                phone_number:1234538989,
+                phone_number:"1234538989",
                 background:{
                     bio:"Albert graduated from UCLA as an Economics major in 2016. He now works full time as a " +
                         "Consultant at PwC. Albert grew up in San Jose and went to high school at " +
@@ -3223,7 +3223,7 @@ export default {
                 name: "Katie Ho",
                 email: "katie@omou.com",
                 role: 'instructor',
-                phone_number:1299458989,
+                phone_number:"1299458989",
                 background:{
                     bio:"Katie graduated from UCLA as an Economics major in 2017. She now works full time as a " +
                         "Category Specialist at Walmart. Katie grew up in Arizon and went to high school at " +
