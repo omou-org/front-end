@@ -11,6 +11,10 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Paper from "@material-ui/core/Paper";
+import EditIcon from "@material-ui/icons/EditOutlined";
+import RemoveIcon from "@material-ui/icons/DeleteForeverOutlined";
+import AlertIcon from "@material-ui/icons/AddAlertOutlined";
 
 class Bio extends Component {
     constructor(props) {
@@ -19,10 +23,26 @@ class Bio extends Component {
         };
     }
 
+    componentWillMount(){
+
+    }
 
 
     render() {
-        return(<h1>Bio</h1>)
+        return(<Grid item md={12}>
+            <Grid container spacing={18}>
+                <Grid item xs={3}>
+                        <Paper className={"note"}>
+                            <div className={"actions"}>
+                            </div>
+                            <Typography className={"body"} align={'left'}>
+                                {this.state.user}
+                            </Typography>
+                            {this.props.bio}
+                        </Paper>
+                    </Grid>
+            </Grid>
+        </Grid>)
     }
 
 }

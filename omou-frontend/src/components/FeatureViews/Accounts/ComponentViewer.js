@@ -30,7 +30,10 @@ class ComponentViewer extends Component {
                 component = <InstructorCourses user_id={this.props.user.user_id} key={this.props.inView}/>;
                 break;
             case 2:
-                component = <Bio key={this.props.inView}/>;
+                component = <Bio 
+                key={this.props.inView}
+                bio={this.props.user.bio}
+                />;
                 break;
             case 3:
                 component = <CourseViewer
