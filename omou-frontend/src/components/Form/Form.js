@@ -288,7 +288,7 @@ class Form extends Component {
             if (field.type === "create parent") {
                 this.setState((OldState) => {
                     let NewState = OldState;
-                    console.log(value, this.props.parents);
+
                     let selectedParentID = value.label.substring(0, value.label.indexOf(":"));
                     let { user_id, name, gender, email, address, city, zipcode, state, relationship, phone_number } = this.props.parents.find((parent) => {
                         return selectedParentID == parent.user_id;
@@ -328,7 +328,7 @@ class Form extends Component {
             this.setState((OldState) => {
                 let NewState = OldState;
                 NewState[label][field.field] = value.value;
-                console.log(NewState[label][field.field], "new value!");
+
                 return NewState;
             }, () => {
                 this.validateField(this.state.activeSection, field, value);
@@ -383,16 +383,19 @@ class Form extends Component {
                 return <FormControl className={"form-control"}>
                     <InputLabel htmlFor={fieldTitle}>{fieldTitle}</InputLabel>
                     <Select
+                        displayEmpty={false}
                         value={this.state[label][fieldTitle]}
                         onChange={({ target }) => {
                             this.onSelectChange(target.value, label, field);
                         }}>
                         {
-                            field.options.map((option) => (
-                                <MenuItem value={option} key={option}>
-                                    <em>{option}</em>
-                                </MenuItem>
-                            ))
+                            field.options.map((option) => {
+                                    return <MenuItem value={option} key={option}>
+                                        <em>{option}</em>
+                                    </MenuItem>
+                            }
+
+                            )
                         }
                     </Select>
                 </FormControl>;
@@ -685,13 +688,19 @@ class Form extends Component {
                     <Typography className={"title"} align={'left'}>Confirmation Copy</Typography>
                 {
                     steps.map((sectionTitle)=>{
+                        let section;
+                        if(Array.isArray(currentForm[sectionTitle])){
+                            section = currentForm[sectionTitle];
+                        } else {
+                            section = currentForm[sectionTitle][conditional];
+                        }
                         return (<div>
                             <Typography className={'section-title'}
                                 align={'left'}>{sectionTitle}</Typography>
                             {
-                                currentForm[sectionTitle].map((field)=>{
+                                section.map((field)=>{
                                     let fieldVal = this.state[sectionTitle][field.field];
-                                    if(fieldVal){
+                                    if(fieldVal && typeof fieldVal === "object"){
                                         if("value" in fieldVal){
                                             fieldVal = fieldVal.value;
                                         }

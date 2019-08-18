@@ -1,7 +1,7 @@
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -15,74 +15,77 @@ import {TableBody, TableHead} from "@material-ui/core";
 import Table from "@material-ui/core/Table";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
 
 class PaymentHistory extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            payments:[],
+            payments: [],
         };
     }
 
-    componentWillMount(){
-        this.setState(()=>{
-            let userPayments = Object.keys(this.props.payments[this.props.user_id]).map((courseID)=>{
+    componentWillMount() {
+        this.setState(() => {
+            let userPayments = Object.keys(this.props.payments[this.props.user_id]).map((courseID) => {
                 let coursePayments = this.props.payments[this.props.user_id][courseID];
-               coursePayments = Object.keys(coursePayments).map((subPayID)=>{
+                coursePayments = Object.keys(coursePayments).map((subPayID) => {
                     return {
                         ...coursePayments[subPayID],
                         payment_id: this.props.user_id.toString() + courseID.toString() + subPayID.toString(),
-                        course_id:courseID,
+                        course_id: courseID,
                     };
                 });
-               return coursePayments;
+                return coursePayments;
             });
             let allUserPayments = [];
-            userPayments.forEach((coursePaymentsList)=>{
-               allUserPayments = allUserPayments.concat(coursePaymentsList);
+            userPayments.forEach((coursePaymentsList) => {
+                allUserPayments = allUserPayments.concat(coursePaymentsList);
             });
             return {
-                payments : allUserPayments,
+                payments: allUserPayments,
             };
         });
     }
 
     render() {
-        let numericDateString = (date)=>{
+        let numericDateString = (date) => {
             let DateObject = new Date(date),
-                numericOptions = { year: "numeric", month: "numeric", day: "numeric"};
+                numericOptions = {year: "numeric", month: "numeric", day: "numeric"};
             return DateObject.toLocaleDateString("en-US", numericOptions);
         };
-        console.log(this.state.payments);
-        return(<Grid item md={12}>
-            <Table>
-                <TableHead>
-                    <TableCell>ID</TableCell>
-                    <TableCell>Transaction Date</TableCell>
-                    <TableCell>Course</TableCell>
-                    <TableCell>Method</TableCell>
-                </TableHead>
-                <TableBody>
-                    {
-                        this.state.payments.map((payment)=>{
-                            return <TableRow key={payment.payment_id}>
-                                <TableCell>
-                                    {payment.payment_id}
-                                </TableCell>
-                                <TableCell>
-                                    {numericDateString(payment.date)}
-                                </TableCell>
-                                <TableCell>
-                                    {this.props.courses[payment.course_id].title}
-                                </TableCell>
-                                <TableCell>
-                                    {payment.method.charAt(0).toUpperCase() + payment.method.slice(1)}
-                                </TableCell>
-                            </TableRow>
-                        })
-                    }
-                </TableBody>
-            </Table>
+
+        return (<Grid item md={12}>
+            <Paper>
+                <Table>
+                    <TableHead>
+                        <TableCell>ID</TableCell>
+                        <TableCell>Transaction Date</TableCell>
+                        <TableCell>Course</TableCell>
+                        <TableCell>Method</TableCell>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            this.state.payments.map((payment) => {
+                                return <TableRow key={payment.payment_id}>
+                                    <TableCell>
+                                        {payment.payment_id}
+                                    </TableCell>
+                                    <TableCell>
+                                        {numericDateString(payment.date)}
+                                    </TableCell>
+                                    <TableCell>
+                                        {this.props.courses[payment.course_id].title}
+                                    </TableCell>
+                                    <TableCell>
+                                        {payment.method.charAt(0).toUpperCase() + payment.method.slice(1)}
+                                    </TableCell>
+                                </TableRow>
+                            })
+                        }
+                    </TableBody>
+                </Table>
+            </Paper>
         </Grid>)
     }
 
@@ -93,8 +96,8 @@ PaymentHistory.propTypes = {};
 function mapStateToProps(state) {
     console.log(state);
     return {
-        payments:state.Payments,
-        courses:state.Course.NewCourseList,
+        payments: state.Payments,
+        courses: state.Course.NewCourseList,
     };
 }
 

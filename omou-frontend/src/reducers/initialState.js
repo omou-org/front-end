@@ -3645,8 +3645,6 @@ function initRegistrationForm() {
                         full: true,
                         field_limit: 1,
                     },
-                ],
-                "Payment": [
                     {
                         field: "Number of Sessions",
                         name: "Number of Sessions",
@@ -3656,19 +3654,23 @@ function initRegistrationForm() {
                         full: false,
                         field_limit: 1,
                     },
+                ],
+                "Payment": [
                     {
-                        field: "Per-Session Price",
+                        field: "Session Price",
                         name: "Amount",
-                        type: "Number",
+                        type: "select",
+                        options:["High School", "Middle School", "Elementary School", "Test"],
                         conditional: false,
                         required: true,
                         full: false,
                         field_limit: 1,
                     },
                     {
-                        field: "Cash or Check",
-                        name: "Cash or Check",
-                        type: "short text",
+                        field: "Payment Method",
+                        name: "Payment Method",
+                        type: "select",
+                        options:["Credit Card", "Check", "Cash", "Account Balance"],
                         conditional: false,
                         required: true,
                         full: true,
