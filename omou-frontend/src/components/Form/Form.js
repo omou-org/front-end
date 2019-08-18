@@ -263,7 +263,6 @@ class Form extends Component {
                         emails = this.props.students.map(({ email }) => email);
                     }
                     // validate that email doesn't exist in database already
-                    console.log(emails.includes(fieldValue));
                     isValid = !emails.includes(fieldValue);
                     if (!isValid) {
                         oldState.existingUser = true;
