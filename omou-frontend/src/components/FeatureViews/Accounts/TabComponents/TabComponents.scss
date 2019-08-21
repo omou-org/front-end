@@ -70,9 +70,10 @@
     .chipPadding{
       padding-left:5px;
       padding-right:5px;
+      padding-top: 20px;
         
     .bioChip {
-      margin-top: -4px;
+      margin-top: -40px;
       background-color: $bioChipColor;
       border-color:$bioBorderColor;
     }

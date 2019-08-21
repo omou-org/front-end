@@ -162,13 +162,16 @@ class UserProfile extends Component {
                     </Grid>
                 </Grid>
                 <Tabs
+                    key={this.props.inView}
                     value={this.state.value}
                     onChange={this.handleChange}
                     indicatorColor="primary"
                     textColor="primary"
                 >
                     {this.state.tabs.map((tab) => { return <Tab 
-                    label={<>{tab.icon} {tab.tab_heading}</>} /> })}
+                    label={<>{tab.icon} {tab.tab_heading}</>} 
+                    key={this.props.inView}
+                    /> })}
                 </Tabs>
                 <ComponentViewer user={this.state.user} inView={this.state.tabs[this.state.value].tab_id} />
             </Paper>

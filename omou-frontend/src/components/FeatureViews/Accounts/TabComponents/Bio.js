@@ -25,24 +25,6 @@ class Bio extends Component {
 
 
     render() {
-        // <CardContent>
-
-        //                     <Typography className={"body"} align={'left'}>
-        //                         Bio
-        //                     </Typography>
-        //                     <Typography className={"body"} align={'left'}>
-        //                         {this.props.background.bio}
-        //                     </Typography>
-        //                 </CardContent>
-        //                 <CardContent style={{ backgroundColor: "#E5E5E5", border: 0 }}>
-        //                     <Typography className={"body"} align={'left'}>
-        //                         Bio
-        //                     </Typography>
-        //                     <Typography className={"body"} align={'left'}>
-        //                         {this.props.background.bio}
-        //                     </Typography>
-        //                 </CardContent>
-        console.log(this.props);
         return (
             <Card className={"Bio"}>
                 <Grid item xs={12}>
