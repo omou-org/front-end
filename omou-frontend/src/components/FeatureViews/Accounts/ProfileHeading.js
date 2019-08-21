@@ -23,34 +23,34 @@ class ProfileHeading extends Component {
 
     renderStudentProfile() {
         return (
-            <Grid container>
+            <Grid container >
                 <Grid item md={10}>
-                    <Grid container>
-                        <Grid item md={6} align="left">
+                    <Grid container >
+                        <Grid item md={6} className="rowPadding">
                             {this.props.user.birthday}
                         </Grid>
-                        <Grid item md={1} align="left">
+                        <Grid item md={1} className="rowPadding">
                             <PhoneIcon />
                         </Grid>
-                        <Grid item md={5} align="left">
+                        <Grid item md={5} className="rowPadding">
                             {this.addDashes(this.props.user.phone_number)}
                         </Grid>
-                        <Grid item md={6} align="left">
+                        <Grid item md={6} className="rowPadding">
                             Grade {this.props.user.grade}
                         </Grid>
-                        <Grid item md={1} align="left">
+                        <Grid item md={1} className="rowPadding">
                             <EmailIcon />
                         </Grid>
-                        <Grid item md={5} align="left">
+                        <Grid item md={5} className="rowPadding">
                             {this.props.user.email}
                         </Grid>
-                        <Grid item md={6} align="left">
+                        <Grid item md={6} className="rowPadding">
                             {this.props.user.school}
                         </Grid>
-                        <Grid item md={1} align="left">
+                        <Grid item md={1} className="rowPadding">
                             <MoneyIcon />
                         </Grid>
-                        <Grid item md={5} align="left">
+                        <Grid item md={5}className="rowPadding">
                             balance
                         </Grid>
                     </Grid>
@@ -64,18 +64,18 @@ class ProfileHeading extends Component {
             <Grid container>
                 <Grid item md={6}>
                     <Grid container>
-                        <Grid item md={1} align="left">
+                        <Grid item md={1} className="rowPadding">
                             <PhoneIcon />
                         </Grid>
-                        <Grid item md={5} align="left">
+                        <Grid item md={5} className="rowPadding">
                             {this.addDashes(this.props.user.phone_number)}
                         </Grid>
                     </Grid>
                     <Grid container>
-                        <Grid item md={1} align="left">
+                        <Grid item md={1} className="rowPadding">
                             <EmailIcon />
                         </Grid>
-                        <Grid item md={5} align="left">
+                        <Grid item md={5} className="rowPadding">
                             {this.props.user.email}
                         </Grid>
                     </Grid>

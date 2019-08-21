@@ -152,12 +152,13 @@ class UserProfile extends Component {
                 <BackButton
                     warn={false}
                 />
+                <hr/>
                 <Grid container layout="row" className={'padding'}>
                     <Grid item md={2}>
                         <Avatar style={styles}>{this.state.user.name.match(/\b(\w)/g).join('')}</Avatar>
                     </Grid>
-                    <Grid item md={8} >
-                        <ProfileHeading user={this.state.user} />
+                    <Grid item md={8} className="headingPadding">
+                        <ProfileHeading user={this.state.user}/>
                     </Grid>
                 </Grid>
                 <Tabs
