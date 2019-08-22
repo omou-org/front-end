@@ -56,7 +56,7 @@ class PaymentHistory extends Component {
         };
 
         return (<Grid item md={12}>
-            <Paper>
+            <Paper className={'payments-history'}>
                 <Table>
                     <TableHead>
                         <TableCell>ID</TableCell>

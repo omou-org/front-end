@@ -62,6 +62,7 @@
 /* Instructor Courses */
 .accounts-table-heading, .accounts-table-row > * {
   padding: 15px;
+  cursor:pointer;
 }
 
 .accounts-table-heading {
@@ -88,15 +89,32 @@
 
   color: $secondaryLightFontColor;
 
-  &.good {
+  &.good, &.Paid {
     background-color: $goodStatusColor;
   }
 
-  &.warning {
+  &.warning, &.Waived {
     background-color: $warningStatusColor;
   }
 
-  &.bad{
+  &.bad, &.Unpaid{
     background-color: $badStatusColor;
   }
+}
+
+.course-session-status{
+  padding:3%;
+  .sessions-left-chip{
+    border-radius:15px;
+    width:150px;
+    top:23%;
+    right:8%;
+  }
+  .accounts-table-heading, .accounts-table-row > * {
+    cursor:default;
+  }
+}
+
+.payments-history{
+  padding:15px;
 }

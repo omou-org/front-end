@@ -43,7 +43,6 @@ class RegistrationLanding extends Component {
     }
 
     goToRoute(route){
-        console.log(this.props.match.url);
         this.props.history.push(this.props.match.url+route);
     }
 

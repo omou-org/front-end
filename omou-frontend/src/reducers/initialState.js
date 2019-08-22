@@ -3288,7 +3288,8 @@ export default {
     },
 
     "CalenderData": {
-        "events_in_view": [{
+        "events_in_view": [
+            {
             id: 1,
             title: "6th Grade Math Placement Test Prep",
             start: '2019-08-28T07:00',
