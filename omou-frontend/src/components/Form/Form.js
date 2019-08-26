@@ -461,16 +461,19 @@ class Form extends Component {
                 return <FormControl className={"form-control"}>
                     <InputLabel htmlFor={fieldTitle}>{fieldTitle}</InputLabel>
                     <Select
+                        displayEmpty={false}
                         value={this.state[label][fieldTitle]}
                         onChange={({target}) => {
                             this.onSelectChange(target.value, label, field);
                         }}>
                         {
-                            field.options.map((option) => (
-                                <MenuItem value={option} key={option}>
-                                    <em>{option}</em>
-                                </MenuItem>
-                            ))
+                            field.options.map((option) => {
+                                    return <MenuItem value={option} key={option}>
+                                        <em>{option}</em>
+                                    </MenuItem>
+                            }
+
+                            )
                         }
                     </Select>
                 </FormControl>;
@@ -770,7 +773,7 @@ class Form extends Component {
                                     {sectionTitle}
                                 </Typography>
                                 {
-                                    currentForm[sectionTitle].map(({field, type}) => {
+                                    this.getActiveSection().map(({field, type}) => {
                                         let fieldVal = this.state[sectionTitle][field];
                                         if (fieldVal && fieldVal.hasOwnProperty("value")) {
                                             fieldVal = fieldVal.value;

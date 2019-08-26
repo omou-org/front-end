@@ -73,7 +73,7 @@ function addField(prevState, path) {
     let NewState = prevState;
     let fieldIndex = path.pop();
     let SectionFieldList = getSectionFieldList(path, prevState.registration_form);
-    let fieldName = SectionFieldList[0].field;
+    let fieldName = SectionFieldList[fieldIndex].field;
     let NewField = {
         ...SectionFieldList[fieldIndex],
         field: `${fieldName} ${(SectionFieldList.length+1)}`,

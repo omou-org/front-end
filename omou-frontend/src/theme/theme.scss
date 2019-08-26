@@ -20,7 +20,7 @@ h1, h2, h3, .heading {
 
 .primary.button{
   border:none !important;
-  background-color: $primaryDarkColor;
+  background-color: $primaryColor;
   color:white;
 }
 
@@ -52,4 +52,13 @@ h1, h2, h3, .heading {
 
 hr{
   border:1px solid $secondaryColor;
+}
+
+.info{
+  border: solid 2px #f39c12;
+  background-color: #f3d20c !important;
+  > * {
+    color:$secondaryLightFontColor !important;
+  }
+  padding:2%;
 }

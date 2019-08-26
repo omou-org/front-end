@@ -43,7 +43,6 @@ class RegistrationLanding extends Component {
     }
 
     goToRoute(route){
-        console.log(this.props.match.url);
         this.props.history.push(this.props.match.url+route);
     }
 
@@ -182,7 +181,7 @@ class RegistrationLanding extends Component {
                                     let date = start_date + " - " + end_date,
                                         time = start_time + " - " + end_time;
 
-                                    return (<Paper className={'row'}>
+                                    return (<Paper className={'row'} key={courseID}>
                                         <Grid container alignItems={'center'} layout={'row'}>
                                             <Grid item md={3}
                                                   onClick={(e) => {e.preventDefault(); this.goToRoute('/course/' + course.course_id + "/" + course.title)}}

@@ -1,7 +1,7 @@
 // React Imports
-import { connect } from "react-redux";
-import { Route, Switch } from "react-router-dom";
-import { bindActionCreators } from "redux";
+import {connect} from "react-redux";
+import {Route, Switch} from "react-router-dom";
+import {bindActionCreators} from "redux";
 import PropTypes from "prop-types";
 import React from "react";
 
@@ -21,29 +21,30 @@ import ProtectedRoute from "./ProtectedRoute";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import {Redirect} from "react-router-dom";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
+import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
 
 function rootRoutes(props) {
     return (
         <Switch>
             <Route
                 path="/login"
-                render={(passedProps) => <LoginPage setLogin={props.setLogin} {...passedProps} />} />
+                render={(passedProps) => <LoginPage setLogin={props.setLogin} {...passedProps} />}/>
 
             {/* Main Feature Views */}
             <ProtectedRoute
                 exact
                 path="/"
-                render={(passedProps) => <Dashboard {...passedProps} />} />
+                render={(passedProps) => <Dashboard {...passedProps} />}/>
 
             <ProtectedRoute
                 exact
                 path="/registration"
-                render={(passedProps) => <Registration {...passedProps} />} />
+                render={(passedProps) => <Registration {...passedProps} />}/>
 
             <ProtectedRoute
                 exact
                 path="/scheduler"
-                render={(passedProps) => <Scheduler {...passedProps} />} />
+                render={(passedProps) => <Scheduler {...passedProps} />}/>
             {/* <ProtectedRoute
                 path="/directory"
                 render={(passedProps) => <UsersDirectory {...passedProps} />} /> */}
@@ -52,11 +53,15 @@ function rootRoutes(props) {
             <ProtectedRoute
                 exact
                 path="/accounts/:accountType/:accountID"
-                render={(passedProps) => <UserProfile {...passedProps} />} />
+                render={(passedProps) => <UserProfile {...passedProps} />}/>
             <ProtectedRoute
                 exact
                 path="/accounts"
-                render={(passedProps) => <Accounts {...passedProps} />} />
+                render={(passedProps) => <Accounts {...passedProps} />}/>
+            <ProtectedRoute
+                exact
+                path={'/accounts/:accountType/:accountID/:courseID'}
+                render={(passedProps)=> <CourseSessionStatus {...passedProps} />}/>
 
             {/* Registration Routes */}
             <ProtectedRoute
@@ -64,10 +69,10 @@ function rootRoutes(props) {
                 render={(passedProps) => <RegistrationForm {...passedProps} />} />
             <ProtectedRoute
                 path="/registration/course/:courseID?/:courseTitle?"
-                render={(passedProps) => <RegistrationCourse {...passedProps} />} />
+                render={(passedProps) => <RegistrationCourse {...passedProps} />}/>
             <ProtectedRoute
                 path="/registration/category/:categoryID"
-                render={(passedProps) => <CourseCategory {...passedProps} />} />
+                render={(passedProps) => <CourseCategory {...passedProps} />}/>
             <Route path={"/PageNotFound"} component={ErrorNotFoundPage}/>
             <Redirect to={"/PageNotFound"}/>
         </Switch>

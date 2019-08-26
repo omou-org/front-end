@@ -1790,7 +1790,7 @@ export default {
         },
     },
     "Enrollments":{
-        // studentID: enrolled courses : session
+        // userID: enrolled courses : session
         23: {
             1: {
                 student_id:23,
@@ -2523,7 +2523,48 @@ export default {
                     15:1,
                 },
             },
-        }
+        },
+        10: {
+            1:{
+              notes:{
+                  1:{
+                      body:"print stuff for next class",
+                      timestamp:"2020-2-3T08:12",
+                      complete: false,
+                      important: true,
+                      active: true,
+                  },
+              },
+            },
+            4:{
+                notes:{}
+            },
+            10:{
+                notes:{}
+            },
+        },
+        11: {
+            2:{
+                notes:{},
+            },
+            5:{
+                notes:{},
+            },
+            7:{
+                notes:{},
+            },
+            9:{
+                notes:{},
+            },
+        },
+        12: {
+            3:{
+                notes:{},
+            },
+            8:{
+                notes:{},
+            },
+        },
     },
     "Payments":{
         //Payment ID = studentID + courseID + SubPaymentID
@@ -2792,14 +2833,14 @@ export default {
                 zipcode: '94040',
                 updated_at: "2019-06-02T01:57:49.068Z",
                 "created_at": "2019-06-02T01:57:49.068Z",
-                "grade": 5,
-                "age": 12,
-                "school": "Amador",
                 name: "Danny Long",
                 email: "a@a.com",
                 parent_id: 78,
                 role: 'student',
                 balance: 0,
+                birthday: "9/29/2004",
+                grade: 5,
+                school: "Crystal River College",
                 notes:{
                     1:{
                         timestamp:"2020-01-02T12:05",
@@ -2827,14 +2868,14 @@ export default {
                 zipcode: '93240',
                 updated_at: "2019-06-02T01:00:49.068Z",
                 "created_at": "2019-06-02T01:00:49.068Z",
-                "grade": 9,
-                "age": 14,
-                "school": "Mohr Elementary",
                 name: "Jim Plano",
                 email: "b@b.com",
                 parent_id: 79,
                 role: 'student',
                 balance: 0,
+                birthday: "12/28/2004",
+                grade: 8,
+                school: "Stonewall High School",
                 notes:{
                     1:{
                         timestamp:"2020-01-13T17:33",
@@ -2855,14 +2896,14 @@ export default {
                 zipcode: '94040',
                 updated_at: "2019-06-02T02:30:49.068Z",
                 "created_at": "2019-06-02T02:15:49.068Z",
-                "grade": 7,
-                "age": 12,
-                "school": "Amador",
                 name: "Hansel Kid",
                 email: "c@c.com",
                 parent_id: 80,
                 role: 'student',
                 balance: 0,
+                birthday: "3/11/2005",
+                grade: 3,
+                school: "Saint Helena Technical School",
                 notes:{
                     1:{
                         timestamp:"2020-01-12T15:21",
@@ -2883,14 +2924,14 @@ export default {
                 zipcode: '93240',
                 updated_at: "2019-06-02T01:00:49.068Z",
                 "created_at": "2019-06-02T01:00:49.068Z",
-                "grade": 9,
-                "age": 14,
-                "school": "Amador",
                 name: "Batkid Wayne",
                 email: "d@d.com",
                 parent_id: 81,
                 role: 'student',
                 balance: 0,
+                birthday: "4/1/2005",
+                grade: 10,
+                school:"Eastside Conservatory",
                 notes:{
                 },
             },
@@ -2910,6 +2951,7 @@ export default {
                 name: "Gale Long",
                 email: "gale.long@omou.com",
                 role: 'parent',
+                birthday: "12/10/1960",
                 notes:{},
             },
             79: {
@@ -2926,6 +2968,7 @@ export default {
                 name: "Ranger Plano",
                 email: "ranger.plano@omou.com",
                 role: 'parent',
+                birthday: "1/19/1963",
                 notes:{},
             },
             80: {
@@ -2942,6 +2985,7 @@ export default {
                 name: "Gretta Kid",
                 email: "grettaKidd@omou.com",
                 role: 'parent',
+                birthday: "8/23/1965",
                 notes:{},
             },
             81: {
@@ -2958,6 +3002,7 @@ export default {
                 relationship: "Mother",
                 email: "nananana@omou.com",
                 role: 'parent',
+                birthday:"5/10/1966",
                 notes:{},
             },
         },
@@ -2967,7 +3012,7 @@ export default {
                 name: "Daniel Huang",
                 email: "daniel.huang@gmail.com",
                 role: 'instructor',
-                phone_number:1234458989,
+                phone_number:"1234458989",
                 background:{
                     bio:"Daniel graduated from UCLA as an Economics major in 2018. He now works full time as a " +
                         "Cyber Security Consultant. Daniel grew up in Pleasanton and went to high school at " +
@@ -2976,6 +3021,7 @@ export default {
                     subjects:["Middle School Biology", "AP Calculus"],
                     languages:["English", "Mandarin"],
                 },
+                birthday: "3/13/1974",
                 schedule:{
                     work_hours:{
                         1: {
@@ -3044,7 +3090,7 @@ export default {
                 name: "Jerry Li",
                 email: "jerrylinew@gmail.com",
                 role: 'instructor',
-                phone_number:1234458923,
+                phone_number:"1234458923",
                 background:{
                     bio:"Jerry graduated from UCLA as an Computer Science major in 2018. He now works full time as a " +
                         "Data Engineer at Robinhood. Jerry grew up in Pleasanton and went to high school at " +
@@ -3053,6 +3099,7 @@ export default {
                     subjects:["Middle School Competitive Math", "AP Calculus AB and BC"],
                     languages:["English", "Mandarin"],
                 },
+                birthday:"9/24/1974",
                 schedule:{
                     work_hours: {
                         1: {
@@ -3109,7 +3156,7 @@ export default {
                 name: "Albert Deng",
                 email: "albert@omou.com",
                 role: 'instructor',
-                phone_number:1234538989,
+                phone_number:"1234538989",
                 background:{
                     bio:"Albert graduated from UCLA as an Economics major in 2016. He now works full time as a " +
                         "Consultant at PwC. Albert grew up in San Jose and went to high school at " +
@@ -3118,6 +3165,7 @@ export default {
                     subjects:["Middle School Physics", "AP Calculus", "AP Statistics"],
                     languages:["English", "Mandarin"],
                 },
+                birthday: "10/28/1974",
                 schedule: {
                     work_hours: {
                         1: {
@@ -3175,7 +3223,7 @@ export default {
                 name: "Katie Ho",
                 email: "katie@omou.com",
                 role: 'instructor',
-                phone_number:1299458989,
+                phone_number:"1299458989",
                 background:{
                     bio:"Katie graduated from UCLA as an Economics major in 2017. She now works full time as a " +
                         "Category Specialist at Walmart. Katie grew up in Arizon and went to high school at " +
@@ -3184,6 +3232,7 @@ export default {
                     subjects:["Middle School Math", "AP Calculus"],
                     languages:["English", "Mandarin"],
                 },
+                birthday: "10/3/1975",
                 schedule: {
                     work_hours:{
                         1: {
@@ -3238,7 +3287,8 @@ export default {
         },
     },
     "CalenderData": {
-        "events_in_view": [{
+        "events_in_view": [
+            {
             id: 1,
             title: "6th Grade Math Placement Test Prep",
             start: '2019-08-28T07:00',
@@ -3622,8 +3672,6 @@ function initRegistrationForm() {
                         full: true,
                         field_limit: 1,
                     },
-                ],
-                "Payment": [
                     {
                         field: "Number of Sessions",
                         name: "Number of Sessions",
@@ -3633,29 +3681,60 @@ function initRegistrationForm() {
                         full: false,
                         field_limit: 1,
                     },
+                ],
+                "Payment": [
                     {
-                        field: "Per-Session Price",
+                        field: "Session Price",
                         name: "Amount",
-                        type: "Number",
+                        type: "select",
+                        options:["High School", "Middle School", "Elementary School", "Test"],
                         conditional: false,
                         required: true,
                         full: false,
                         field_limit: 1,
                     },
                     {
-                        field: "Cash or Check",
-                        name: "Cash or Check",
-                        type: "short text",
+                        field: "Payment Method",
+                        name: "Payment Method",
+                        type: "select",
+                        options:["Credit Card", "Check", "Cash", "Account Balance"],
                         conditional: false,
                         required: true,
                         full: true,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Discount Code 1",
+                        name: "Discount Code",
+                        type: "short text",
+                        conditional: false,
+                        required: false,
+                        full: false,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Discount Code 2",
+                        name: "Discount Code",
+                        type: "short text",
+                        conditional: false,
+                        required: false,
+                        full: false,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Discount Code 3",
+                        name: "Discount Code",
+                        type: "short text",
+                        conditional: false,
+                        required: false,
+                        full: false,
                         field_limit: 1,
                     },
                 ],
             },
             course: {
                 form_type: "course",
-                section_titles: ["Student", "Student Information", "Course Selection",],
+                section_titles: ["Student", "Student Information", "Course Selection","Payment"],
                 "Student": [
                     {
                         field: "Student Name",
@@ -3677,6 +3756,45 @@ function initRegistrationForm() {
                         required: false,
                         full: true,
                         field_limit: 2,
+                    },
+                ],
+                "Payment": [
+                    {
+                        field: "Payment Method",
+                        name: "Payment Method",
+                        type: "select",
+                        options:["Credit Card", "Check", "Cash", "Account Balance"],
+                        conditional: false,
+                        required: true,
+                        full: true,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Discount Code 1",
+                        name: "Discount Code",
+                        type: "short text",
+                        conditional: false,
+                        required: false,
+                        full: false,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Discount Code 2",
+                        name: "Discount Code",
+                        type: "short text",
+                        conditional: false,
+                        required: false,
+                        full: false,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Discount Code 3",
+                        name: "Discount Code",
+                        type: "short text",
+                        conditional: false,
+                        required: false,
+                        full: false,
+                        field_limit: 1,
                     },
                 ],
             },

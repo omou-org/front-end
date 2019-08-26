@@ -1,10 +1,10 @@
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import EmailIcon from "@material-ui/icons/Email";
-import PhoneIcon from "@material-ui/icons/Phone";
-import MoneyIcon from "@material-ui/icons/Money";
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import EmailIcon from "@material-ui/icons/EmailOutlined";
+import PhoneIcon from "@material-ui/icons/PhoneOutlined";
+import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
 import Grid from "@material-ui/core/Grid";
 import BackButton from "../../BackButton";
 import Chip from "@material-ui/core/Chip";
@@ -19,22 +19,26 @@ class ProfileHeading extends Component {
         };
     }
 
+    addDashes(f) {
+        return ("(" + f.slice(0, 3) + "-" + f.slice(3, 6) + "-" + f.slice(6, 15) + ")");
+    }
+
     renderStudentProfile() {
         return (
             <Grid container>
-                <Grid item md={6}>
+                <Grid item md={10}>
                     <Grid container>
                         <Grid item md={6} align="left">
-                            birthday
+                            {this.props.user.birthday}
                         </Grid>
                         <Grid item md={1} align="left">
                             <PhoneIcon />
                         </Grid>
                         <Grid item md={5} align="left">
-                            {this.props.user.phone_number}
+                            {this.addDashes(this.props.user.phone_number)}
                         </Grid>
                         <Grid item md={6} align="left">
-                            grade
+                            Grade {this.props.user.grade}
                         </Grid>
                         <Grid item md={1} align="left">
                             <EmailIcon />
@@ -43,13 +47,13 @@ class ProfileHeading extends Component {
                             {this.props.user.email}
                         </Grid>
                         <Grid item md={6} align="left">
-                            highschool
+                            {this.props.user.school}
                         </Grid>
                         <Grid item md={1} align="left">
                             <MoneyIcon />
                         </Grid>
                         <Grid item md={5} align="left">
-                            balance
+                            ${this.props.user.balance}
                         </Grid>
                     </Grid>
                 </Grid>
@@ -65,7 +69,7 @@ class ProfileHeading extends Component {
                             <PhoneIcon />
                         </Grid>
                         <Grid item md={5} align="left">
-                            {this.props.user.phone_number}
+                            {this.addDashes(this.props.user.phone_number)}
                         </Grid>
                     </Grid>
                     <Grid container>
@@ -80,6 +84,8 @@ class ProfileHeading extends Component {
 
             </Grid>);
     }
+
+
 
     render() {
         let profileDetails;
@@ -100,7 +106,8 @@ class ProfileHeading extends Component {
                     </Grid>
                     <Grid item md={3}>
                         <Chip
-                            label={this.props.user.role}
+                            className={`userLabel ${this.props.user.role}`}
+                            label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
                         />
                     </Grid>
                     <Grid item md={3} align="right">
@@ -112,7 +119,7 @@ class ProfileHeading extends Component {
                     </Grid>
                 </Grid>
                 {profileDetails}
-            </div >
+            </div>
         );
     }
 }
