@@ -26,15 +26,14 @@ import RemoveIcon from "@material-ui/icons/Clear";
 
 // Outside React Component
 import SearchSelect from "react-select";
-import CreatableSelect from "react-select/creatable";
 import BackButton from "../BackButton.js";
 import Modal from "@material-ui/core/Modal";
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 class Form extends Component {
     constructor(props) {
@@ -57,6 +56,7 @@ class Form extends Component {
         if (this.props.computedMatch.params.edit === "edit") {
             const student = Object.values(this.props.students).find(({user_id}) =>
                 user_id.toString() === this.props.computedMatch.params.id);
+            console.log(student);
             if (student) {
                 const parent = Object.values(this.props.parents).find(({user_id}) =>
                     user_id === student.parent_id);
@@ -73,10 +73,11 @@ class Form extends Component {
                         "Student Phone Number": student.phone_number,
                     },
                     "Parent Information": {
-                        "Parent First Name": {
+                        "Select Parent": {
                             value: parent.user_id,
                             label: `${parent.user_id}: ${parent.name} - ${parent.email}`,
                         },
+                        "Parent First Name": parent.first_name,
                         "Parent Last Name": parent.last_name,
                         "Gender": parent.gender,
                         "Parent Email": parent.email,
@@ -86,7 +87,6 @@ class Form extends Component {
                         "Zip Code": parent.zipcode,
                         "Relationship to Student": parent.relationship,
                         "Parent Phone Number": parent.phone_number,
-                        "user_id": parent.user_id,
                     },
                     "Basic Information_validated": {
                         "Student First Name": true,
@@ -109,17 +109,16 @@ class Form extends Component {
                         "Zip Code": true,
                         "Relationship to Student": true,
                         "Parent Phone Number": true,
-                        "user_id": true,
                     },
                     "form": formType,
                     "activeSection": "Basic Information",
                     "nextSection": true,
                     "preLoaded": true,
                 };
-                sessionStorage.setItem("form", JSON.stringify(prevState));
             }
         }
-        if (!prevState || formType !== prevState.form || prevState["submitPending"] || this.props.computedMatch.params.id) {
+
+        if (!prevState || formType !== prevState.form || prevState["submitPending"] || (this.props.computedMatch.params.id && this.props.computedMatch.params.edit !== "edit")) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
                     const formContents = JSON.parse(JSON.stringify(this.props.registrationForm[formType]));
@@ -244,10 +243,15 @@ class Form extends Component {
             this.validateField(currSectionTitle, field, this.state[currSectionTitle][field.field]);
         });
         this.setState((oldState) => {
-            if (this.validateSection() || oldState[this.state.activeSection].user_id) {
+            if (this.validateSection() || oldState[this.state.activeSection]["Select Parent"]) {
                 if (oldState.activeStep === this.getFormObject().section_titles.length - 1) {
                     if (!oldState.submitPending) {
-                        this.props.registrationActions.submitForm(this.state, this.props.computedMatch.params.id);
+                        if (this.props.computedMatch.params.edit === "edit") {
+                            this.props.registrationActions.submitForm(this.state,
+                                this.props.computedMatch.params.id);
+                        } else {
+                            this.props.registrationActions.submitForm(this.state);
+                        }
                     }
                     return {
                         submitPending: true,
@@ -352,71 +356,61 @@ class Form extends Component {
     }
 
     onSelectChange(value, label, field) {
-        if (field.type.indexOf("create") > -1 && typeof value === "object" && !value.__isNew__) {
-            if (field.type === "create parent") {
+        if (field.type === "select parent") {
+            if (value) {
                 this.setState((OldState) => {
                     let NewState = OldState;
                     const selectedParentID = value.value;
-                    const {
-                        name,
-                        last_name,
-                        gender,
-                        email,
-                        address,
-                        city,
-                        zipcode,
-                        state,
-                        relationship,
-                        phone_number,
-                    } = Object.values(this.props.parents).find(({user_id}) =>
-                        selectedParentID === user_id);
-
+                    const parent = this.props.parents[selectedParentID];
                     NewState[label] = {
-                        "Parent First Name": {
+                        "Select Parent": {
                             value: selectedParentID,
-                            label: `${selectedParentID}: ${name} - ${email}`,
+                            label: `${selectedParentID}: ${parent.name} - ${parent.email}`,
                         },
-                        "Parent Last Name": last_name,
-                        "Gender": gender,
-                        "Parent Email": email,
-                        "Address": address,
-                        "City": city,
-                        "State": state,
-                        "Zip Code": zipcode,
-                        "Relationship to Student": relationship,
-                        "Parent Phone Number": phone_number,
+                        "Parent First Name": parent.first_name,
+                        "Parent Last Name": parent.last_name,
+                        "Gender": parent.gender,
+                        "Parent Email": parent.email,
+                        "Address": parent.address,
+                        "City": parent.city,
+                        "State": parent.state,
+                        "Zip Code": parent.zipcode,
+                        "Relationship to Student": parent.relationship,
+                        "Parent Phone Number": parent.phone_number,
                         "user_id": selectedParentID,
                     };
                     Object.keys(NewState[label]).forEach((key) => {
-                        NewState[label + "_validated"][key] = true;
+                        NewState[`${label}_validated`][key] = true;
                     });
-                    console.log(NewState)
                     return NewState;
                 }, () => {
-                    if (!(field.type === "create parent")) {
-                        this.validateField(this.state.activeSection, field, value);
-                    } else {
-                        // This is when the parent field is filled, submit the form
-                        this.validateSection();
-                        this.setState({nextSection: true});
-                    }
-
+                    this.validateSection();
+                    this.setState({nextSection: true});
                 });
             } else {
-                this.setState({existingUser: true});
+                this.setState((OldState) => {
+                    let NewState = OldState;
+                    NewState[label] = {
+                        "Select Parent": null,
+                        "Parent First Name": "",
+                        "Parent Last Name": "",
+                        "Gender": "",
+                        "Parent Email": "",
+                        "Address": "",
+                        "City": "",
+                        "State": "",
+                        "Zip Code": "",
+                        "Relationship to Student": "",
+                        "Parent Phone Number": "",
+                        "user_id": "",
+                    };
+                    Object.keys(NewState[label]).forEach((key) => {
+                        NewState[`${label}_validated`][key] = true;
+                    });
+                    NewState.nextSection = false;
+                    return NewState;
+                });
             }
-        } else if (value.__isNew__) {
-            this.setState((OldState) => {
-                let NewState = OldState;
-                NewState[label][field.field] = {
-                    value: value.value,
-                    label: value.value,
-                };
-                console.log(NewState[label][field.field], "new value!");
-                return NewState;
-            }, () => {
-                this.validateField(this.state.activeSection, field, value);
-            });
         } else {
             this.setState((OldState) => {
                 let NewState = OldState;
@@ -563,14 +557,14 @@ class Form extends Component {
                             className="search-options" />
                     </Grid>
                 </div>);
-            case "create parent": {
-                const currParentList = Object.values(this.props.parents)
+            case "select parent": {
+                let currParentList = Object.values(this.props.parents)
                     .map(({user_id, name, email}) => ({
                         value: user_id,
                         label: `${user_id}: ${name} - ${email}`,
                     }));
                 return (
-                    <CreatableSelect
+                    <SearchSelect
                         className="search-options"
                         isClearable
                         onChange={(value) => {
@@ -780,7 +774,7 @@ class Form extends Component {
                                         let fieldVal = this.state[sectionTitle][field];
                                         if (fieldVal && fieldVal.hasOwnProperty("value")) {
                                             fieldVal = fieldVal.value;
-                                            if (type === "create parent" && typeof fieldVal === "number") {
+                                            if (type === "select parent" && typeof fieldVal === "number") {
                                                 fieldVal = this.props.parents[fieldVal].first_name;
                                             }
                                         }

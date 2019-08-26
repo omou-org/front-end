@@ -71,7 +71,7 @@ const addStudents = (state, students) => {
 const parseRelationship = {
     "MOTHER": "Mother",
     "FATHER": "Father",
-    "GUARDIAN": "Guradian",
+    "GUARDIAN": "Guardian",
     "OTHER": "Other",
 };
 

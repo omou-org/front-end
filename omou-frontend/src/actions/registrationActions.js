@@ -1,5 +1,5 @@
 import * as types from "./actionTypes";
-import {postData, postParentAndStudent, putData} from "./rootActions";
+import {submitParentAndStudent} from "./rootActions";
 
 const parseGender = {
     "Male": "M",
@@ -25,83 +25,55 @@ export const removeField = (path, fieldIndex, conditional) =>
 export const submitForm = (state, id) => {
     switch (state.form) {
         case "student": {
-            if (state["Parent Information"].user_id) {
-                const body = {
-                    "user": {
-                        "first_name":
-                            state["Basic Information"]["Student First Name"],
-                        "last_name":
-                            state["Basic Information"]["Student Last Name"],
-                        "email": state["Basic Information"]["Student Email"],
-                        "password": "password123",
-                    },
-                    "gender":
-                        parseGender[state["Basic Information"]["Gender"]],
-                    "address": state["Parent Information"]["Address"],
-                    "city": state["Parent Information"]["City"],
-                    "phone_number":
-                        state["Basic Information"]["Student Phone Number"] ||
-                        null,
-                    "state": state["Parent Information"]["State"],
-                    "zipcode": state["Parent Information"]["Zip Code"],
-                    "grade": state["Basic Information"]["Grade"],
-                    "age": state["Basic Information"]["Age"],
-                    "school": state["Basic Information"]["School"],
-                    "parent": state["Parent Information"].user_id.toString(),
-                    "birth_date": "2019-01-01",
-                };
-                if (typeof id === "undefined") {
-                    return postData("student", body);
-                } else {
-                    console.log(`putting to ${id}`, body);
-                    return putData("student", body, id);
-                }
-            } else {
-                return postParentAndStudent({
-                    "user": {
-                        "email": state["Parent Information"]["Parent Email"],
-                        "password": "password123",
-                        "first_name":
-                            state["Parent Information"]["Parent First Name"],
-                        "last_name":
-                            state["Parent Information"]["Parent Last Name"],
-                    },
-                    "gender":
-                        parseGender[state["Parent Information"]["Gender"]],
-                    "address": state["Parent Information"]["Address"],
-                    "city": state["Parent Information"]["City"],
-                    "state": state["Parent Information"]["State"],
-                    "phone_number":
-                        state["Parent Information"]["Parent Phone Number"] ||
-                        null,
-                    "zipcode": state["Parent Information"]["Zip Code"],
-                    "relationship":
-                        state["Parent Information"]["Relationship to Student"]
-                            .toUpperCase(),
-                }, {
-                    "user": {
-                        "first_name":
-                            state["Basic Information"]["Student First Name"],
-                        "last_name":
-                            state["Basic Information"]["Student Last Name"],
-                        "email": state["Basic Information"]["Student Email"],
-                        "password": "password123",
-                    },
-                    "gender":
-                        parseGender[state["Basic Information"]["Gender"]],
-                    "address": state["Parent Information"]["Address"],
-                    "city": state["Parent Information"]["City"],
-                    "phone_number":
-                        state["Basic Information"]["Student Phone Number"] ||
-                        null,
-                    "state": state["Parent Information"]["State"],
-                    "zipcode": state["Parent Information"]["Zip Code"],
-                    "grade": state["Basic Information"]["Grade"],
-                    "age": state["Basic Information"]["Age"] || null,
-                    "school": state["Basic Information"]["School"],
-                    "birth_date": "2019-01-01",
-                });
-            }
+            const student = {
+                "user": {
+                    "first_name":
+                        state["Basic Information"]["Student First Name"],
+                    "last_name":
+                        state["Basic Information"]["Student Last Name"],
+                    "email": state["Basic Information"]["Student Email"],
+                    "password": "password123",
+                },
+                "gender":
+                    parseGender[state["Basic Information"]["Gender"]],
+                "address": state["Parent Information"]["Address"],
+                "city": state["Parent Information"]["City"],
+                "phone_number":
+                    state["Basic Information"]["Student Phone Number"] ||
+                    null,
+                "state": state["Parent Information"]["State"],
+                "zipcode": state["Parent Information"]["Zip Code"],
+                "grade": state["Basic Information"]["Grade"],
+                "age": state["Basic Information"]["Age"],
+                "school": state["Basic Information"]["School"],
+                "birth_date": "2019-01-01",
+            };
+            const parent = {
+                "user": {
+                    "email": state["Parent Information"]["Parent Email"],
+                    "password": "password123",
+                    "first_name":
+                        state["Parent Information"]["Parent First Name"],
+                    "last_name":
+                        state["Parent Information"]["Parent Last Name"],
+                },
+                "gender":
+                    parseGender[state["Parent Information"]["Gender"]],
+                "address": state["Parent Information"]["Address"],
+                "city": state["Parent Information"]["City"],
+                "state": state["Parent Information"]["State"],
+                "phone_number":
+                    state["Parent Information"]["Parent Phone Number"] ||
+                    null,
+                "zipcode": state["Parent Information"]["Zip Code"],
+                "relationship":
+                    state["Parent Information"]["Relationship to Student"]
+                        .toUpperCase(),
+                "birth_date": "2019-01-01",
+            };
+            const selectedParent = state["Parent Information"]["Select Parent"];
+            return submitParentAndStudent(parent, student,
+                selectedParent ? selectedParent.value : null, id);
         }
         default:
             console.error(`Invalid form type ${state.form}`);

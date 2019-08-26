@@ -81,7 +81,7 @@ export const postData = (type, body) => {
     if (typeToEndpoint.hasOwnProperty(type)) {
         const endpoint = typeToEndpoint[type];
         const [successAction, failAction] = typeToPostActions[type];
-        return (dispatch) => new Promise((resolve, reject) => {
+        return (dispatch) => new Promise((resolve) => {
             dispatch({
                 type: types.SUBMIT_INITIATED,
                 payload: null,
@@ -109,62 +109,75 @@ export const postData = (type, body) => {
     }
 };
 
-export const putData = (type, body, id) => {
+export const patchData = (type, body, id) => {
     if (typeToEndpoint.hasOwnProperty(type)) {
         const endpoint = typeToEndpoint[type];
         const [successAction, failAction] = typeToPostActions[type];
-        return (dispatch) => instance.post(`${endpoint}${id}/`, body, {
-            headers: {
-                "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
-                "Content-Type": "application/json",
-            },
-        })
-            .then(({data}) => {
-                dispatch({
-                    type: successAction,
-                    payload: data,
-                });
-            })
-            .catch((error) => {
-                dispatch({type: failAction, payload: error});
+        return (dispatch) => new Promise((resolve) => {
+            dispatch({
+                type: types.SUBMIT_INITIATED,
+                payload: null,
             });
+            resolve();
+        }).then(() => {
+            instance.patch(`${endpoint}${id}/`, body, {
+                headers: {
+                    "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
+                    "Content-Type": "application/json",
+                },
+            })
+                .then(({data}) => {
+                    dispatch({
+                        type: successAction,
+                        payload: data,
+                    });
+                })
+                .catch((error) => {
+                    dispatch({type: failAction, payload: error});
+                });
+        });
     } else {
         console.error(`Invalid data type ${type}, must be one of ${Object.keys(typeToEndpoint)}`);
     }
 };
 
-export const postParentAndStudent = (parent, student) => {
+export const submitParentAndStudent = (parent, student, parentID, studentID) => {
     const studentEndpoint = typeToEndpoint["student"];
     const parentEndpoint = typeToEndpoint["parent"];
     const [studentSuccessAction, studentFailAction] = typeToPostActions["student"];
     const [parentSuccessAction, parentFailAction] = typeToPostActions["parent"];
-    return (dispatch) => new Promise((resolve, reject) => {
+    return (dispatch) => new Promise((resolve) => {
         dispatch({
             type: types.SUBMIT_INITIATED,
             payload: null,
         });
         resolve();
     }).then(() => {
-        instance.post(parentEndpoint, parent, {
-            headers: {
+        instance.request({
+            "data": parent,
+            "headers": {
                 "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
                 "Content-Type": "application/json",
             },
+            "method": parentID ? "patch" : "post",
+            "url": parentID ? `${parentEndpoint}${parentID}/` : parentEndpoint,
         })
             .then((parentResponse) => {
                 dispatch({
                     type: parentSuccessAction,
                     payload: parentResponse.data,
                 });
-                console.log(parentResponse);
-                instance.post(studentEndpoint, {
-                    ...student,
-                    "parent": parentResponse.data.user.id,
-                }, {
-                    headers: {
+                instance.request({
+                    "data": {
+                        ...student,
+                        "parent": parentResponse.data.user.id,
+                    },
+                    "headers": {
                         "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
                         "Content-Type": "application/json",
                     },
+                    "method": studentID ? "patch" : "post",
+                    "url": studentID ? `${studentEndpoint}${studentID}/` : studentEndpoint,
                 })
                     .then((studentResponse) => {
                         dispatch({

@@ -1,14 +1,16 @@
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
 import EmailIcon from "@material-ui/icons/Email";
 import PhoneIcon from "@material-ui/icons/Phone";
 import MoneyIcon from "@material-ui/icons/Money";
 import Grid from "@material-ui/core/Grid";
 import BackButton from "../../BackButton";
 import Chip from "@material-ui/core/Chip";
-import { Card, Paper, Typography } from "@material-ui/core";
+import {Card, Paper, Typography} from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import {NavLink} from "react-router-dom";
 
 class ProfileHeading extends Component {
     constructor(props) {
@@ -51,7 +53,6 @@ class ProfileHeading extends Component {
                         </Grid>
                     </Grid>
                 </Grid>
-
             </Grid>);
     }
 
@@ -91,17 +92,29 @@ class ProfileHeading extends Component {
                 break;
             default:
         }
-        return (<div>
-           <Grid container>
-                <h1 className="left-align">{this.props.user.name}</h1>
-            <Chip
-                label={this.props.user.role}
-            />
-            </Grid>
-            { profileDetails }
-        </div >)
+        return (
+            <div>
+                <Grid container>
+                    <Grid item md={6}>
+                        <h1 className="left-align">{this.props.user.name}</h1>
+                    </Grid>
+                    <Grid item md={3}>
+                        <Chip
+                            label={this.props.user.role}
+                        />
+                    </Grid>
+                    <Grid item md={3} align="right">
+                        <Button
+                            component={NavLink}
+                            to={`/registration/form/student/${this.props.user.user_id}/edit`}>
+                            Edit Profile
+                        </Button>
+                    </Grid>
+                </Grid>
+                {profileDetails}
+            </div >
+        );
     }
-
 }
 
 ProfileHeading.propTypes = {};

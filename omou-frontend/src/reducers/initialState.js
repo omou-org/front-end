@@ -3443,9 +3443,17 @@ function initRegistrationForm() {
                 ],
                 "Parent Information": [
                     {
+                        field: "Select Parent",
+                        name: "Select Parent",
+                        type: "select parent",
+                        field_limit: 1,
+                        required: false,
+                        full: false,
+                    },
+                    {
                         field: "Parent First Name",
                         name: "Parent First Name",
-                        type: "create parent",
+                        type: "short text",
                         field_limit: 1,
                         required: true,
                         full: true,
