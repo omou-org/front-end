@@ -11,6 +11,9 @@ export const fetchCourses = () =>
     (dispatch) => axios.get("http://localhost:8000/courses/catalog/", {
         headers:{
             'Authorization': `Token ${localStorage.getItem("authToken")}`
+        },
+        body:{
+            timeFrame:"month",
         }
     })
     .then(({data}) => {

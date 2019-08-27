@@ -8,8 +8,6 @@ import Typography from '@material-ui/core/Typography';
 import "./TabComponents.scss";
 import Paper from "@material-ui/core/Paper";
 import EditIcon from "@material-ui/icons/EditOutlined";
-import RemoveIcon from "@material-ui/icons/DeleteForeverOutlined";
-import AlertIcon from "@material-ui/icons/AddAlertOutlined";
 
 class ParentContact extends Component {
     constructor(props) {
