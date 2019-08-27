@@ -3803,8 +3803,17 @@ function initRegistrationForm() {
                 section_titles: ["Basic Information", "Education", "Experience"],
                 "Basic Information": [
                     {
-                        field: "Name",
-                        name: "Name",
+                        field: "First Name",
+                        name: "First Name",
+                        type: "short text",
+                        conditional: false,
+                        required: true,
+                        full: true,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Last Name",
+                        name: "Last Name",
                         type: "short text",
                         conditional: false,
                         required: true,
@@ -3886,7 +3895,7 @@ function initRegistrationForm() {
                         field_limit: 1,
                     },
                     {
-                        field: "Date of Birth (MM/DD/YYY)",
+                        field: "Date of Birth (MM/DD/YYYY)",
                         name: "Date of Birth",
                         type: "birthday",
                         conditional: false,

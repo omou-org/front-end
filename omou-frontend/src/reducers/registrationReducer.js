@@ -34,6 +34,12 @@ export default function registration(state = initialState.RegistrationForms, { p
         case actions.POST_PARENT_FAILED:
             console.error("FAILED TO POST PARENT", payload);
             return failedSubmit(state);
+        case actions.POST_INSTRUCTOR_SUCCESSFUL:
+            console.log("POSTED INSTRUCTOR", payload);
+            return successSubmit(state);
+        case actions.POST_INSTRUCTOR_FAILED:
+            console.error("FAILED TO POST INSTRUCTOR", payload);
+            return failedSubmit(state);
         case actions.SUBMIT_INITIATED:
             console.log("STARTED SUBMIT");
             return onSubmit(state);
@@ -145,17 +151,15 @@ function setSectionFieldList(path, formList, form) {
     Error("Path variable not an array");
 }
 
-const onSubmit = (state) => {
-    let newState = JSON.parse(JSON.stringify(state));
-    newState.submitStatus = null;
-    return newState;
-};
+const onSubmit = (state) => ({
+    ...state,
+    "submitStatus": null,
+});
 
-const successSubmit = (state) => {
-    let newState = JSON.parse(JSON.stringify(state));
-    newState.submitStatus = "success";
-    return newState;
-};
+const successSubmit = (state) => ({
+    ...state,
+    "submitStatus": "success",
+});
 
 const failedSubmit = (state) => ({
     ...state,

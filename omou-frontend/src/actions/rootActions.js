@@ -8,6 +8,7 @@ const instance = axios.create({
 const typeToEndpoint = {
     "student": "/account/students/",
     "parent": "/account/parents/",
+    "instructor": "/account/instructors/",
     "course": "/courses/catalog/",
     "course category": "/courses/categories/",
 };
@@ -20,6 +21,10 @@ const typeToFetchActions = {
     "parent": [
         types.FETCH_PARENTS_SUCCESSFUL,
         types.FETCH_PARENTS_FAILED,
+    ],
+    "instructor": [
+        types.FETCH_INSTRUCTORS_SUCCESSFUL,
+        types.FETCH_INSTRUCTORS_FAILED,
     ],
     "course": [
         types.FETCH_COURSES_SUCCESSFUL,
@@ -40,6 +45,10 @@ const typeToPostActions = {
         types.POST_PARENT_SUCCESSFUL,
         types.POST_PARENT_FAILED,
     ],
+    "instructor": [
+        types.POST_INSTRUCTOR_SUCCESSFUL,
+        types.POST_INSTRUCTOR_FAILED,
+    ],
     "course": [
         types.POST_COURSE_SUCCESSFUL,
         types.POST_COURSE_FAILED,
@@ -50,10 +59,6 @@ const typeToPostActions = {
     ],
 };
 
-/**
- * Fetch data from the database. Results are stored into redux
- * @param {String} type Type of data to fetch (student, parent, course, or course category)
- */
 export const fetchData = (type) => {
     if (typeToEndpoint.hasOwnProperty(type)) {
         const endpoint = typeToEndpoint[type];

@@ -1,10 +1,16 @@
 import * as types from "./actionTypes";
-import {submitParentAndStudent} from "./rootActions";
+import {submitParentAndStudent, postData} from "./rootActions";
 
 const parseGender = {
     "Male": "M",
     "Female": "F",
     "Neither": "U",
+    "Prefer not to disclose": "U",
+};
+
+const parseBirthday = (date) => {
+    const [year, month, day] = date.split("/");
+    return `${year}-${month}-${day}`;
 };
 
 export const getRegistrationForm = () =>
@@ -74,6 +80,24 @@ export const submitForm = (state, id) => {
             const selectedParent = state["Parent Information"]["Select Parent"];
             return submitParentAndStudent(parent, student,
                 selectedParent ? selectedParent.value : null, id);
+        }
+        case "instructor": {
+            return postData("instructor", {
+                "user": {
+                    "email": state["Basic Information"]["E-Mail"],
+                    "password": "password123",
+                    "first_name": state["Basic Information"]["First Name"],
+                    "last_name": state["Basic Information"]["Last Name"],
+                },
+                "gender": parseGender[state["Basic Information"]["Gender"]],
+                "address": state["Basic Information"]["Address"],
+                "city": state["Basic Information"]["City"],
+                "state": "CA",
+                "phone_number": state["Basic Information"]["Phone Number"],
+                "zipcode": state["Basic Information"]["Zip Code"],
+                "age": 0,
+                "birth_date": parseBirthday(state["Basic Information"]["Date of Birth (MM/DD/YYYY)"]),
+            });
         }
         default:
             console.error(`Invalid form type ${state.form}`);

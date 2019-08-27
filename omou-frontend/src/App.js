@@ -1,6 +1,5 @@
 // React
 import React from "react";
-import PropTypes from "prop-types";
 
 // Redux
 import {connect} from "react-redux";
@@ -10,7 +9,6 @@ import * as rootActions from "./actions/rootActions";
 // Material UI
 // TODO: import each component individually (i.e. '@material-ui/core/AppBar') to reduce bundle size
 import {CssBaseline} from "@material-ui/core";
-// import MenuIcon from '@material-ui/icons/Menu';
 
 // Local Component Imports
 import Navigation from "./components/Navigation/Navigation";
@@ -20,6 +18,7 @@ import "./theme/theme.scss";
 const App = (props) => {
     props.rootActions.fetchData("student");
     props.rootActions.fetchData("parent");
+    props.rootActions.fetchData("instructor");
     return (
         <div className="App">
             <CssBaseline />
