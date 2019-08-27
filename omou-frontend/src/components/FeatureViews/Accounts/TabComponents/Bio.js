@@ -5,11 +5,7 @@ import React, { Component } from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
+import Chip from "@material-ui/core/Chip";
 import Typography from '@material-ui/core/Typography';
 import Paper from "@material-ui/core/Paper";
 import EditIcon from "@material-ui/icons/EditOutlined";
@@ -23,26 +19,73 @@ class Bio extends Component {
         };
     }
 
-    componentWillMount(){
+    componentWillMount() {
 
     }
 
 
     render() {
-        return(<Grid item md={12}>
-            <Grid container spacing={18}>
-                <Grid item xs={3}>
-                        <Paper className={"note"}>
-                            <div className={"actions"}>
+        return (
+            <Card className={"Bio"}>
+                <Grid item xs={12}>
+                    <Grid container>
+                        <Grid item xs={6} >
+                            <div className="Bio">
+                                <Typography class="bioHeader">
+                                    Bio
+                                    </Typography>
+                                <Typography className="bioBody">
+                                    {this.props.background.bio}
+                                </Typography>
                             </div>
-                            <Typography className={"body"} align={'left'}>
-                                {this.state.user}
-                            </Typography>
-                            {this.props.bio}
-                        </Paper>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <div className="BioBackground">
+                                <div className="Bio2">
+                                    <Grid>
+                                        <Grid container className="rowPadding">
+                                            <Grid className="bioDescription">
+                                                Experience:
+                                        </Grid>
+                                            <Grid className="chipPadding">
+                                                <Chip
+                                                label={this.props.background.experience+" years at Summit"}
+                                                className="bioChip"
+                                                variant="outlined"
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                        <Grid container className="rowPadding">
+                                            <Grid className="bioDescription">
+                                            Subjects offered:
+                                        </Grid>
+                                                {this.props.background.subjects.map((subjects)=>{return( 
+                                                <Grid className="chipPadding">
+                                                    <Chip 
+                                                    label={subjects} className="bioChip"
+                                                    variant="outlined"
+                                                    />
+                                                </Grid>)})}
+                                        </Grid>
+                                        <Grid container className="rowPadding">
+                                        <Grid className="bioDescription">
+                                            Language: 
+                                        </Grid>
+                                                {this.props.background.languages.map((languages)=>{return( 
+                                        <Grid className="chipPadding">
+                                            <Chip label={languages} 
+                                            className="bioChip"
+                                            variant="outlined"
+                                            />
+                                            </Grid>)})}
+                                        </Grid>
+                                        </Grid>
+                                </div>
+                            </div>
+                        </Grid>
                     </Grid>
-            </Grid>
-        </Grid>)
+                </Grid>
+            </Card>)
     }
 
 }

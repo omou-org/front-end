@@ -32,7 +32,7 @@ class ComponentViewer extends Component {
             case 2:
                 component = <Bio 
                 key={this.props.inView}
-                bio={this.props.user.bio}
+                background={this.props.user.background}
                 />;
                 break;
             case 3:
