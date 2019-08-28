@@ -43,8 +43,7 @@ class ParentContact extends Component {
                             <div className={"actions"} align="right">
                                 <EditIcon />
                             </div>
-                            <Typography className={"body"} align={'left'}>
-                                <Grid container spacing={16} className="bodyText">
+                            <Grid container spacing={16} className="bodyText">
                                     <Grid item xs={5} align="left" className="bold">
                                         Relation
                                     </Grid>
@@ -65,7 +64,6 @@ class ParentContact extends Component {
                                     </Grid>
 
                                 </Grid>
-                            </Typography>
                         </Paper>
                     </Grid>
                 </Grid>

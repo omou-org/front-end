@@ -152,22 +152,26 @@ class UserProfile extends Component {
                 <BackButton
                     warn={false}
                 />
+                <hr/>
                 <Grid container layout="row" className={'padding'}>
                     <Grid item md={2}>
                         <Avatar style={styles}>{this.state.user.name.match(/\b(\w)/g).join('')}</Avatar>
                     </Grid>
-                    <Grid item md={8} >
-                        <ProfileHeading user={this.state.user} />
+                    <Grid item md={8} className="headingPadding">
+                        <ProfileHeading user={this.state.user}/>
                     </Grid>
                 </Grid>
                 <Tabs
+                    key={this.props.inView}
                     value={this.state.value}
                     onChange={this.handleChange}
                     indicatorColor="primary"
                     textColor="primary"
                 >
                     {this.state.tabs.map((tab) => { return <Tab 
-                    label={<>{tab.icon} {tab.tab_heading}</>} /> })}
+                    label={<>{tab.icon} {tab.tab_heading}</>} 
+                    key={this.props.inView}
+                    /> })}
                 </Tabs>
                 <ComponentViewer user={this.state.user} inView={this.state.tabs[this.state.value].tab_id} />
             </Paper>

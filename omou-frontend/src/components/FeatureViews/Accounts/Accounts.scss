@@ -1,54 +1,66 @@
-@import '../../../theme/colors';
-@import '../../../theme/sizes';
-@import url('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700');
+@import "../../../theme/colors";
+@import "../../../theme/sizes";
+@import url("https://fonts.googleapis.com/css?family=Roboto+Slab:400,700");
 /*Account Styles*/
-.Accounts{
-  .paper{
-    padding:3%;
+.Accounts {
+  .paper {
+    padding: 3%;
   }
-  .Directory{
-      text-align:left;
-      font-size:60px;
-      .toggleView{
-        position:absolute;
-        right:100px;
-      }
-  }
-
-  .heading{
-    margin:25px 0;
+  .Directory {
+    text-align: left;
+    font-size: 60px;
+    .toggleView {
+      position: absolute;
+      right: 100px;
+    }
   }
 
-  .AccountsTable{
-    margin-top:20px;
-    .row{
-      cursor:pointer;
+  .heading {
+    margin: 25px 0;
+  }
+
+  .AccountsTable {
+    margin-top: 20px;
+    .row {
+      cursor: pointer;
     }
   }
 }
 
 /*Profile Heading Styles*/
-.UserProfile{
-  .paper{
-    padding:3%;
-  }
-  .padding{
-    padding-bottom:4%;
-  }
-  .userLabel{
-    margin-top:28px;
-    margin-left:40px;
-    color:white;
-    font-size:18px;
-    padding:0 20px 0 20px;
-    &.instructor{
-        background-color:$instructorColor;
+.UserProfile {
+  .paper {
+    padding: 3%;
+    .headingPadding {
+      padding-left: 3%;
     }
-    &.student{
-        background-color:$studentColor;
+    .rowPadding {
+      display: flex;
+      padding: 1%;
+      align-content: left;
     }
   }
-  .TabIcon{
+  .padding {
+    padding-bottom: 4%;
+    padding-top: 3%;
+  }
+  .userLabel {
+    margin-top: 28px;
+    margin-left: 40px;
+    color: white;
+    font-size: 18px;
+    padding: 0 20px 0 20px;
+    &.instructor {
+      background-color: $instructorColor;
+    }
+    &.student {
+      background-color: $studentColor;
+    }
+    &.receptionist {
+      background-color: $receptionistColor;
+    }
+  }
+  .TabIcon {
     display: inline-flex;
     vertical-align: middle;
   }
