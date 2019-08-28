@@ -6,25 +6,10 @@ import React, { Component } from 'react';
 
 //Material UI Imports
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import NewUser from "@material-ui/icons/PersonAdd";
-import NewTutor from "@material-ui/icons/Group";
-import NewCourse from "@material-ui/icons/School";
-import { NavLink } from "react-router-dom";
-import BackArrow from "@material-ui/icons/ArrowBack";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
 import { Typography } from "@material-ui/core";
 import BackButton from "../../BackButton";
 import RegistrationActions from "./RegistrationActions";
-const rowHeadings = [
-    { id: 'Student', numberic: false, disablePadding: false },
-    { id: 'Parent', numberic: false, disablePadding: false },
-    { id: 'Status', numberic: false, disablePadding: false },
-    { id: '', numberic: false, disablePadding: false },
-];
 
 class CourseCategory extends Component {
     constructor(props) {
@@ -36,7 +21,6 @@ class CourseCategory extends Component {
         let CategoryInView = this.props.courseCategories.find((category) => {
             return category.id.toString() === this.props.match.params.categoryID;
         });
-        console.log(CategoryInView);
         this.setState({ ...CategoryInView });
     }
 

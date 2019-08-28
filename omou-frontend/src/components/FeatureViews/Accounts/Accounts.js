@@ -1,6 +1,4 @@
 import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import PropTypes from "prop-types";
 import React, {Component} from "react";
 import BackButton from "../../BackButton";
 import Grid from "@material-ui/core/Grid";
@@ -17,7 +15,7 @@ import TableBody from "@material-ui/core/TableBody";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
-import {NavLink, withRouter} from "react-router-dom";
+import {withRouter} from "react-router-dom";
 
 import "./Accounts.scss";
 import Avatar from "@material-ui/core/Avatar";

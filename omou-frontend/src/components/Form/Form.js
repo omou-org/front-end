@@ -675,7 +675,6 @@ class Form extends Component {
                 }
                 let newFieldName = index === 0 ? baseName : `${baseName} ${index + 1}`;
                 newSectionFields[newFieldName] = fieldValue;
-                console.log({origFieldKey, fieldValue});
                 newSectionValidationFields[newFieldName] = currentSectionValidationFields[origFieldKey];
                 index++;
             });

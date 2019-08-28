@@ -41,13 +41,15 @@ class BackButton extends Component {
         //enter future code to save form
     }
 
-    confirmAction(actionName){
-        //actionName is a string
-        switch(actionName){
+    confirmAction(actionName) {
+        // actionName is a string
+        switch (actionName) {
             case "saveForm":
                 this.saveForm();
-            break;
-        } 
+                break;
+            default:
+                console.warn(`Unhandled backbutton action ${actionName}`)
+        }
         this.goBack();
     }
 

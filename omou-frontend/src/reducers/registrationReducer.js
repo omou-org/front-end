@@ -3,7 +3,6 @@ import * as actions from "./../actions/actionTypes"
 
 export default function registration(state = initialState.RegistrationForms, { payload, type }) {
     let newState = JSON.parse(JSON.stringify(state));
-    console.log(newState.registration_form.course);
     switch (type) {
         case actions.ADD_STUDENT_FIELD:
             newState = addAStudentField(state);
@@ -21,7 +20,6 @@ export default function registration(state = initialState.RegistrationForms, { p
             if(conditional){
                 path.push(conditional);
             }
-            console.log(newState);
             newState = removeField(state, path, removeFieldIndex, conditional);
             return newState;
         case actions.POST_STUDENT_SUCCESSFUL:
@@ -95,11 +93,9 @@ const addField = (prevState, path) => {
 
 function removeField(prevState, path, fieldIndex, conditional) {
     let NewState = prevState;
-    console.log(NewState.registration_form.course.Student);
     let SectionFieldList =
         getSectionFieldList(JSON.parse(JSON.stringify(path)), prevState.registration_form);
 
-    console.log(SectionFieldList.length);
     if (SectionFieldList.length <= 1) {
         return prevState;
     }

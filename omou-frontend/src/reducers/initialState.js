@@ -445,7 +445,6 @@ export default {
                 tuition: 700,
                 capacity: 15,
                 filled: 12,
-                filled: 2,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,

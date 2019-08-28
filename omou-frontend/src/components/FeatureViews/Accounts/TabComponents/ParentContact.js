@@ -1,6 +1,4 @@
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import Grid from '@material-ui/core/Grid';
@@ -18,7 +16,6 @@ class ParentContact extends Component {
     }
 
     componentWillMount() {
-        console.log(this.props.parent_id)
         this.setState({
             parent: this.props.parents[this.props.parent_id]
         })

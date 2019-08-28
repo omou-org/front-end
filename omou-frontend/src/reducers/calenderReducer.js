@@ -31,7 +31,6 @@ export default function calender(state = initialState.CalenderData, { payload, t
                 return allCourse[filter_key] === filter_value
             })
                 .map((finalResult) => {
-                    console.log(finalResult)
                     return {
                         ...finalResult
                     }

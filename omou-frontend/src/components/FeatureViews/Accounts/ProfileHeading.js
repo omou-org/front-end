@@ -1,14 +1,10 @@
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
 import Grid from "@material-ui/core/Grid";
-import BackButton from "../../BackButton";
 import Chip from "@material-ui/core/Chip";
-import {Card, Paper, Typography} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import {NavLink} from "react-router-dom";
 

@@ -49,7 +49,6 @@ class MobileRegistration extends Component {
     }
 
     getInstructorByID = ( id ) =>{
-        // console.log(id, this.props.teachers);
         return this.props.teachers.find((teacher)=>{
             return teacher.id === id;
         })['name'];
@@ -87,7 +86,6 @@ class MobileRegistration extends Component {
     };
 
     render(){
-        // console.log('mobile registration!');
         return (
             <div className="">
                 <Grid container spacing={16} className={"course-categories"}>

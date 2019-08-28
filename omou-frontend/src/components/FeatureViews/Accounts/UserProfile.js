@@ -1,15 +1,8 @@
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import Grid from '@material-ui/core/Grid';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
-import { Card, Paper, Typography } from "@material-ui/core";
+import {Paper} from "@material-ui/core";
 import './Accounts.scss';
 
 import BackButton from "../../BackButton";
@@ -18,7 +11,6 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import ProfileHeading from "./ProfileHeading.js";
 import Avatar from "@material-ui/core/Avatar";
-import Chip from "@material-ui/core/Chip";
 import BioIcon from "@material-ui/icons/PersonOutlined";
 import CoursesIcon from "@material-ui/icons/SchoolOutlined";
 import ScheduleIcon from "@material-ui/icons/CalendarTodayOutlined";
@@ -168,8 +160,8 @@ class UserProfile extends Component {
                     indicatorColor="primary"
                     textColor="primary"
                 >
-                    {this.state.tabs.map((tab) => { return <Tab 
-                    label={<>{tab.icon} {tab.tab_heading}</>} 
+                    {this.state.tabs.map((tab) => { return <Tab
+                    label={<>{tab.icon} {tab.tab_heading}</>}
                     key={this.props.inView}
                     /> })}
                 </Tabs>

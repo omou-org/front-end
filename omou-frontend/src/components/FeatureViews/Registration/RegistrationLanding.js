@@ -1,17 +1,10 @@
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as registrationActions from '../../../actions/registrationActions';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import RegistrationActions from "./RegistrationActions";
-import '../../../theme/theme.scss';
-
 
 //Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import { NavLink } from "react-router-dom";
 import { withRouter } from 'react-router-dom';
 import {Typography} from "@material-ui/core";
 import BackButton from "../../BackButton";
@@ -63,7 +56,6 @@ class RegistrationLanding extends Component {
                 let reducedFilter;
                switch(filterType){
                    case 'instructor':
-                       console.log(filters,course.instructor_id);
                        reducedFilter = filters.map((instructorField)=>{ return instructorField.value });
                        return reducedFilter.includes(course.instructor_id);
                    case 'grade':

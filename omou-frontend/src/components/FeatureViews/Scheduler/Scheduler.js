@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import FullCalendar from '@fullcalendar/react';
@@ -11,21 +10,10 @@ import interactionPlugin from '@fullcalendar/interaction'
 import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import * as calenderActions from '../../../actions/calenderActions';
-import Popover from '@material-ui/core/Popover';
-import Button from "@material-ui/core/Button";
-import SessionView from "./SessionView"
 import SessionActions from "./SessionActions"
-import ToolTip from "@material-ui/core/Tooltip"
-import { makeStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
-
-
 
 import './scheduler.scss'
 import Paper from "@material-ui/core/Paper";
-
-
-
 
 class Scheduler extends Component {
     constructor(props) {
@@ -88,11 +76,6 @@ class Scheduler extends Component {
             return newSessions
         })
 
-
-
-
-        console.log(sessionsInViewWithUrl)
-
         return (<Paper className="paper">
             <SessionActions />
 
@@ -110,9 +93,6 @@ class Scheduler extends Component {
                     events={sessionsInViewWithUrl}
                     displayEventTime={true}
                     timeZone={'local'}
-                    eventMouseEnter={function (info) {
-                        console.log(info)
-                    }}
                     themeSystem={''}
                     eventLimit={4}
                     dateClick={this.handleDateClick}

@@ -1,7 +1,6 @@
 // React Imports
 import {connect} from "react-redux";
 import {Route, Switch} from "react-router-dom";
-import {bindActionCreators} from "redux";
 import PropTypes from "prop-types";
 import React from "react";
 
