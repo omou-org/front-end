@@ -2,7 +2,8 @@ import initialState from './initialState';
 import * as actions from "./../actions/actionTypes"
 
 export default function registration(state = initialState.RegistrationForms, { payload, type }) {
-    let newState = state;
+    let newState = JSON.parse(JSON.stringify(state));
+    console.log(newState.registration_form.course);
     switch (type) {
         case actions.ADD_STUDENT_FIELD:
             newState = addAStudentField(state);
@@ -20,6 +21,7 @@ export default function registration(state = initialState.RegistrationForms, { p
             if(conditional){
                 path.push(conditional);
             }
+            console.log(newState);
             newState = removeField(state, path, removeFieldIndex, conditional);
             return newState;
         case actions.POST_STUDENT_SUCCESSFUL:
@@ -75,53 +77,54 @@ function addACourseField(prevState) {
     return NewState;
 }
 
-function addField(prevState, path) {
+const addField = (prevState, path) => {
     let NewState = prevState;
     let fieldIndex = path.pop();
     let SectionFieldList = getSectionFieldList(path, prevState.registration_form);
     let fieldName = SectionFieldList[fieldIndex].field;
+    const numFieldType = SectionFieldList.reduce((total, {field}) => total + (field === fieldName), 1);
     let NewField = {
         ...SectionFieldList[fieldIndex],
-        field: `${fieldName} ${(SectionFieldList.length+1)}`,
+        name: `${fieldName} ${numFieldType}`,
         required: false,
     };
     SectionFieldList.push(NewField);
     setSectionFieldList(path, SectionFieldList, prevState.registration_form);
-    // console.log(SectionFieldList);
     return NewState;
-}
+};
 
 function removeField(prevState, path, fieldIndex, conditional) {
     let NewState = prevState;
-    let SectionFieldList;
+    console.log(NewState.registration_form.course.Student);
+    let SectionFieldList =
+        getSectionFieldList(JSON.parse(JSON.stringify(path)), prevState.registration_form);
 
-    if(conditional){
-        SectionFieldList = getSectionFieldList(JSON.parse(JSON.stringify(path)), prevState.registration_form)
-    } else {
-        SectionFieldList = getSectionFieldList(JSON.parse(JSON.stringify(path)), prevState.registration_form);
+    console.log(SectionFieldList.length);
+    if (SectionFieldList.length <= 1) {
+        return prevState;
     }
 
-    if(SectionFieldList.length>0){
-        SectionFieldList.splice(fieldIndex, 1);
-    } else if(SectionFieldList.length === 2){
-        SectionFieldList.pop();
-    }
-    let baseFieldName, curFieldName;
+    SectionFieldList = SectionFieldList.slice(0, fieldIndex).concat(SectionFieldList.slice(fieldIndex + 1));
 
-    SectionFieldList = SectionFieldList.map((field,i)=>{
-        if(i === 0 && field.field_limit > 1){
-            baseFieldName = field.field;
-            curFieldName = baseFieldName;
-        } else if(field.field.indexOf(baseFieldName) > -1 && field.field_limit > 1){
-            curFieldName = baseFieldName + " " +i;
-        }else {
-            curFieldName = field.field;
+    let fieldCounts = {};
+
+    SectionFieldList = SectionFieldList.map((field, i) => {
+        if (!fieldCounts.hasOwnProperty(field.field)) {
+            fieldCounts[field.field] = 1;
+            return {
+                ...field,
+                "name": field.field,
+            };
         }
 
-       return {...field, field:curFieldName};
+        fieldCounts[field.field]++;
+        return {
+            ...field,
+            "name": `${field.field} ${fieldCounts[field.field]}`,
+        };
     });
 
-    if(conditional){
+    if (conditional) {
         NewState["registration_form"][path[0]][path[1]][conditional] = SectionFieldList;
     } else {
         NewState["registration_form"][path[0]][path[1]] = SectionFieldList;

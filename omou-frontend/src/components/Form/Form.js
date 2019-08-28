@@ -56,7 +56,6 @@ class Form extends Component {
         if (this.props.computedMatch.params.edit === "edit") {
             const student = Object.values(this.props.students).find(({user_id}) =>
                 user_id.toString() === this.props.computedMatch.params.id);
-            console.log(student);
             if (student) {
                 const parent = Object.values(this.props.parents).find(({user_id}) =>
                     user_id === student.parent_id);
@@ -117,7 +116,6 @@ class Form extends Component {
                 };
             }
         }
-
         if (!prevState || formType !== prevState.form || prevState["submitPending"] || (this.props.computedMatch.params.id && this.props.computedMatch.params.edit !== "edit")) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
@@ -166,7 +164,7 @@ class Form extends Component {
                         NewState[`${title}_validated`] = {};
                         if (Array.isArray(formContents[title])) {
                             formContents[title].forEach((field) => {
-                                NewState[`${title}_validated`][field.field] = true;
+                                NewState[`${title}_validated`][field.name] = true;
                             });
                         }
                     });
@@ -222,7 +220,7 @@ class Form extends Component {
         if (Array.isArray(this.getFormObject()[currSectionTitle])) {
             this.getFormObject()[currSectionTitle].some((field) => {
                 if (field.conditional) {
-                    nextSectionInput = this.state[currSectionTitle][field.field];
+                    nextSectionInput = this.state[currSectionTitle][field.name];
                     return true;
                 } else {
                     return false;
@@ -240,7 +238,7 @@ class Form extends Component {
             section = section[this.state.conditional];
         }
         section.forEach((field) => {
-            this.validateField(currSectionTitle, field, this.state[currSectionTitle][field.field]);
+            this.validateField(currSectionTitle, field, this.state[currSectionTitle][field.name]);
         });
         this.setState((oldState) => {
             if (this.validateSection() || oldState[this.state.activeSection]["Select Parent"]) {
@@ -272,12 +270,12 @@ class Form extends Component {
                         // create blank fields based on form type
                         newState[title] = {};
                         formContents[nextActiveSection][conditionalField].forEach((field) => {
-                            newState[title][field.field] = null;
+                            newState[title][field.name] = "";
                         });
                         // create validated state for each field
                         newState[`${title}_validated`] = {};
                         formContents[nextActiveSection][conditionalField].forEach((field) => {
-                            newState[`${title}_validated`][field.field] = true;
+                            newState[`${title}_validated`][field.name] = true;
                         });
                     }
                     return newState;
@@ -316,7 +314,7 @@ class Form extends Component {
 
     handleFieldUpdate(sectionTitle, field, fieldValue) {
         this.setState((oldState) => {
-            oldState[sectionTitle][field.field] = fieldValue;
+            oldState[sectionTitle][field.name] = fieldValue;
             return oldState;
         });
     }
@@ -324,12 +322,12 @@ class Form extends Component {
     validateField(sectionTitle, field, fieldValue) {
         this.setState((oldState) => {
             if (!fieldValue) { // if empty field
-                oldState[`${sectionTitle}_validated`][field.field] = !field.required;
+                oldState[`${sectionTitle}_validated`][field.name] = !field.required;
             } else if (InputValidation(fieldValue, field.type)) { // if valid input
                 let isValid = true;
                 if (field.type === "number") {
                     // parse if number
-                    oldState[sectionTitle][field.field] = parseInt(fieldValue, 10);
+                    oldState[sectionTitle][field.name] = parseInt(fieldValue, 10);
                 } else if (field.type === "email") {
                     let emails = [];
                     if (field.field === "Student Email") {
@@ -341,9 +339,9 @@ class Form extends Component {
                         oldState.existingUser = true;
                     }
                 }
-                oldState[`${sectionTitle}_validated`][field.field] = isValid;
+                oldState[`${sectionTitle}_validated`][field.name] = isValid;
             } else {
-                oldState[`${sectionTitle}_validated`][field.field] = false;
+                oldState[`${sectionTitle}_validated`][field.name] = false;
             }
             return oldState;
         }, () => {
@@ -414,7 +412,7 @@ class Form extends Component {
         } else {
             this.setState((OldState) => {
                 let NewState = OldState;
-                NewState[label][field.field] = value;
+                NewState[label][field.name] = value;
                 return NewState;
             }, () => {
                 this.validateField(this.state.activeSection, field, value);
@@ -455,7 +453,7 @@ class Form extends Component {
     }
 
     renderField(field, label, fieldIndex) {
-        let fieldTitle = field.field, currSelectedValues;
+        let fieldTitle = field.name, currSelectedValues;
         switch (field.type) {
             case "select":
                 return <FormControl className={"form-control"}>
@@ -484,13 +482,34 @@ class Form extends Component {
                         value: `${courseID}: ${this.props.courses[courseID].title}`,
                         label: `${courseID}: ${this.props.courses[courseID].title}`,
                     }));
-                return <SearchSelect
-                    value={this.state[label][fieldTitle]}
-                    onChange={(value) => {
-                        this.onSelectChange(value, label, field);
-                    }}
-                    options={courseList}
-                    className="search-options" />;
+                // count # of course fields in current section
+                const fieldCount = this.getActiveSection()
+                    .reduce((total, {type}) => total + (type === "course"), 0);
+                return (
+                    <div style={{width: "inherit"}}>
+                        <Grid container className={"student-align"} spacing={2000}>
+                            <SearchSelect
+                                value={this.state[label][fieldTitle]}
+                                onChange={(value) => {
+                                    this.onSelectChange(value, label, field);
+                                }}
+                                options={courseList}
+                                className="search-options" />
+                                {
+                                    (fieldCount > 1) &&
+                                        <RemoveIcon color="primary" aria-label="Add" variant="extended"
+                                            className="button-remove-student"
+                                            onClick={(event) => {
+                                                event.preventDefault();
+                                                // deletes answer field from state
+                                                this.removeField(fieldIndex);
+                                                this.forceUpdate();
+                                            }}>
+                                        </RemoveIcon>
+                                }
+                        </Grid>
+                    </div>
+                );
             }
             case "student": {
                 if (this.state.conditional) {
@@ -501,14 +520,18 @@ class Form extends Component {
 
                 let studentList = Object.values(this.props.students)
                     .map(({user_id, name, email}) => ({
-                            value: user_id,
-                            label: `${user_id}: ${name} - ${email}`,
-                        }));
+                        value: user_id,
+                        label: `${user_id}: ${name} - ${email}`,
+                    }));
                 studentList.unshift({
-                    value: "0: None",
+                    value: 0,
                     label: "0: None",
                 });
                 studentList = this.removeDuplicates(currSelectedValues, studentList);
+
+                // count # of course fields in current section
+                const studentCount = this.getActiveSection()
+                    .reduce((total, {type}) => total + (type === "student"), 0);
 
                 return (
                     <div style={{width: "inherit"}}>
@@ -521,14 +544,14 @@ class Form extends Component {
                                 options={studentList}
                                 className="search-options" />
                             {
-                                ((this.state.conditional && fieldIndex <= 1) || (fieldIndex === 0)) ? "" :
+                                studentCount > 1 &&
                                     <RemoveIcon color="primary" aria-label="Add" variant="extended"
                                         className="button-remove-student"
                                         onClick={(event) => {
                                             event.preventDefault();
-                                            //deletes answer field from state
+                                            // deletes answer field
                                             this.removeField(fieldIndex);
-                                            this.setState((prevState) => prevState)
+                                            this.forceUpdate();
                                         }}>
                                     </RemoveIcon>
                             }
@@ -580,14 +603,12 @@ class Form extends Component {
             }
             default:
                 return <TextField
-                    label={field.field}
-
+                    label={field.name}
                     multiline={ field.multiline}
-                      // className={this.state[label+"_validated"][field.field] ? "": "error"}
                     margin="normal"
-                    value={this.state[label][field.field]}
-                    error={!this.state[label + "_validated"][field.field]}
-                    helperText={!this.state[label + "_validated"][field.field] ? field.field + " invalid" : ""}
+                    value={this.state[label][field.name]}
+                    error={!this.state[label + "_validated"][field.name]}
+                    helperText={!this.state[label + "_validated"][field.name] ? field.name + " invalid" : ""}
                     type={field.type === "int" ? "Number" : "text"}
                     required={field.required}
                     fullWidth={field.full}
@@ -610,49 +631,57 @@ class Form extends Component {
             param.splice(2, 0, this.state.conditional);
         }
         this.props.registrationActions.addField(param);
-        sessionStorage.setItem("form", JSON.stringify(this.state));
+        this.setState((prevState) => {
+            // number of fields of the same type as the current field
+            const {form, activeSection, conditional} = prevState;
+            let section = this.props.registrationForm[form][activeSection];
+            if (!Array.isArray(section)) {
+                section = section[conditional];
+            }
+            const numSameTypeFields = section.reduce((count, otherField) =>
+                count + (field === otherField.field), 0);
+            if (Array.isArray(prevState[activeSection])) {
+                prevState[activeSection][`${field} ${numSameTypeFields}`] = null;
+                prevState[`${activeSection}_validated`][`${field} ${numSameTypeFields}`] = true;
+            } else {
+                prevState[activeSection][`${field} ${numSameTypeFields}`] = null;
+                prevState[`${activeSection}_validated`][`${field} ${numSameTypeFields}`] = true;
+            }
+            return prevState;
+        }, () => {
+            sessionStorage.setItem("form", JSON.stringify(this.state));
+        });
         // for some reason it isn't rerendering automatically
-        this.forceUpdate();
     }
 
     removeField(fieldIndex) {
+        // eslint-disable-next-line max-statements
         this.setState((prevState) => {
-            // Delete field from state
-            let fieldtoDeleteKey;
-            if (Array.isArray(this.props.registrationForm[this.state.form][this.state.activeSection])) {
-                fieldtoDeleteKey = this.props.registrationForm[this.state.form][this.state.activeSection][fieldIndex].field;
-            } else {
-                fieldtoDeleteKey = this.props.registrationForm[this.state.form][this.state.activeSection][this.state.conditional][fieldIndex].field;
-            }
-            delete prevState[prevState["activeSection"]][fieldtoDeleteKey];
-            delete prevState[prevState["activeSection"] + "_validated"][fieldtoDeleteKey];
+            const currentSectionFields = prevState[prevState["activeSection"]];
+            const currentSectionValidationFields = prevState[`${prevState["activeSection"]}_validated`];
+            let baseName;
+            let newSectionFields = {};
+            let newSectionValidationFields = {};
+            let index = 0;
+            let hasNotRemoved = true;
 
-            //rename all existing fields to be in the right order. currently there can be 2 student 3's
-            let currentSectionFields = prevState[prevState["activeSection"]];
-            let currentSectionValidationFields = prevState[prevState["activeSection"] + "_validated"];
-            let baseFieldName, curFieldName;
+            Object.entries(currentSectionFields).forEach(([origFieldKey, fieldValue]) => {
+                if (index === 0 && hasNotRemoved) {
+                    baseName = origFieldKey;
+                }
+                if (index === fieldIndex && hasNotRemoved) {
+                    hasNotRemoved = false;
+                    return;
+                }
+                let newFieldName = index === 0 ? baseName : `${baseName} ${index + 1}`;
+                newSectionFields[newFieldName] = fieldValue;
+                console.log({origFieldKey, fieldValue});
+                newSectionValidationFields[newFieldName] = currentSectionValidationFields[origFieldKey];
+                index++;
+            });
 
-            for (const [index, [origFieldKey, field]] of Object.entries(Object.entries(currentSectionFields))) {
-                if (index === String(0)) {
-                    baseFieldName = origFieldKey;
-                    curFieldName = baseFieldName
-                } else {
-                    curFieldName = baseFieldName + " " + (index !== 0 ? index : "");
-                }
-                // Rename Answer Fields
-                if (origFieldKey !== curFieldName) {
-                    Object.defineProperty(currentSectionFields, curFieldName,
-                        Object.getOwnPropertyDescriptor(currentSectionFields, origFieldKey));
-                    delete currentSectionFields[origFieldKey];
-                }
-                // Rename Validation Fields
-                if (origFieldKey + "_validated" !== curFieldName + "_validated") {
-                    Object.defineProperty(currentSectionValidationFields, curFieldName,
-                        Object.getOwnPropertyDescriptor(currentSectionValidationFields, origFieldKey));
-                    delete currentSectionValidationFields[origFieldKey];
-                }
-            }
-
+            prevState[prevState["activeSection"]] = newSectionFields;
+            prevState[`${prevState["activeSection"]}_validated`] = newSectionValidationFields;
             //save to session Storage
             sessionStorage.setItem("form", JSON.stringify(this.state));
             return prevState;
@@ -666,13 +695,10 @@ class Form extends Component {
     }
 
     renderForm() {
-        let {activeSection, activeStep, conditional, nextSection} = this.state,
+        let {activeStep, nextSection} = this.state,
             currentForm = this.props.registrationForm[this.state.form],
             steps = currentForm.section_titles;
-        let section = currentForm[activeSection];
-        if (!Array.isArray(section)) {
-            section = section[conditional];
-        }
+        let section = this.getActiveSection();
         return (
             <Stepper activeStep={activeStep} orientation="vertical" className="form-section">
                 {
@@ -683,9 +709,9 @@ class Form extends Component {
                                 {
                                     section.map((field, j) => {
                                         // number of fields of the same type as the current field
-                                        const numSameTypeFields = section.reduce((count, otherField) => field.name === otherField.name ? count + 1 : count, 0),
+                                        const numSameTypeFields = section.reduce((count, otherField) => field.field === otherField.field ? count + 1 : count, 0),
                                             reversedSection = [...section].reverse(),
-                                            lastFieldOfType = reversedSection.find((otherField) => otherField.name === field.name);
+                                            lastFieldOfType = reversedSection.find((otherField) => otherField.field === field.field);
                                         return (
                                             <div key={j} className="fields-wrapper" style={{}}>
                                                 <Grid container className={"student-align"} spacing={20}>
