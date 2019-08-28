@@ -8,6 +8,14 @@
 
 // Session view
 
+.session-view-modal{
+ .MuiDialog-paperWidthSm-278{
+   width:20%;
+   height: 25%;
+   
+ }
+}
+
 .session-button{
    .button {
      left: 30px;
@@ -27,11 +35,9 @@
     margin-top: 50px;
   }
 
-
-  font-size: 1.5rem !important ;
-  font-weight: 500 !important;
-  text-align: left;
-
+  h5{
+    font-weight: 500
+  }
   
 }
 
