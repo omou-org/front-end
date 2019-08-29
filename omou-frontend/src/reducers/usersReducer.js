@@ -38,12 +38,6 @@ export default function users(state = initialState.Users, {payload, type}) {
     }
 }
 
-const parseGender = {
-    "M": "Male",
-    "F": "Female",
-    "U": "Neither",
-};
-
 const parseRelationship = {
     "MOTHER": "Mother",
     "FATHER": "Father",
@@ -61,7 +55,7 @@ const addStudents = (state, students) => {
     students.forEach((student) => {
         newState.StudentList[student.user.id] = {
             "user_id": student.user.id,
-            "gender": parseGender[student.gender],
+            "gender": student.gender,
             "birth_date": parseBirthday(student.birth_date),
             "address": student.address,
             "city": student.city,
@@ -90,7 +84,7 @@ const addParents = (state, parents) => {
     parents.forEach((parent) => {
         newState.ParentList[parent.user.id] = {
             "user_id": parent.user.id,
-            "gender": parseGender[parent.gender],
+            "gender": parent.gender,
             "birth_date": parseBirthday(parent.birth_date),
             "address": parent.address,
             "city": parent.city,
@@ -115,7 +109,7 @@ const addInstructors = (state, instructors) => {
     instructors.forEach((instructor) => {
         newState.InstructorList[instructor.user.id] = {
             "user_id": instructor.user.id,
-            "gender": parseGender[instructor.gender],
+            "gender": instructor.gender,
             "birth_date": parseBirthday(instructor.birth_date),
             "address": instructor.address,
             "city": instructor.city,

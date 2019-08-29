@@ -35,6 +35,12 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
+const parseGender = {
+    "M": "Male",
+    "F": "Female",
+    "U": "Do not disclose",
+};
+
 class Form extends Component {
     constructor(props) {
         super(props);
@@ -59,12 +65,13 @@ class Form extends Component {
             if (student) {
                 const parent = Object.values(this.props.parents).find(({user_id}) =>
                     user_id === student.parent_id);
+                console.log(student, parent);
                 prevState = {
                     ...this.state,
                     "Basic Information": {
                         "Student First Name": student.first_name,
                         "Student Last Name": student.last_name,
-                        "Gender": student.gender,
+                        "Gender": parseGender[student.gender],
                         "Grade": student.grade,
                         "Age": student.age,
                         "School": student.school,
@@ -78,14 +85,14 @@ class Form extends Component {
                         },
                         "Parent First Name": parent.first_name,
                         "Parent Last Name": parent.last_name,
-                        "Gender": parent.gender,
+                        "Gender": parseGender[parent.gender],
                         "Parent Email": parent.email,
                         "Address": parent.address,
                         "City": parent.city,
                         "State": parent.state,
                         "Zip Code": parent.zipcode,
                         "Relationship to Student": parent.relationship,
-                        "Parent Phone Number": parent.phone_number,
+                        "Phone Number": parent.phone_number,
                     },
                     "Basic Information_validated": {
                         "Student First Name": true,
@@ -107,7 +114,7 @@ class Form extends Component {
                         "State": true,
                         "Zip Code": true,
                         "Relationship to Student": true,
-                        "Parent Phone Number": true,
+                        "Phone Number": true,
                     },
                     "form": formType,
                     "activeSection": "Basic Information",
@@ -193,9 +200,10 @@ class Form extends Component {
         }
     }
 
-    onBack() {
+    onBack = () => {
         // clear session storage
-        sessionStorage.setItem("form", "");
+        sessionStorage.removeItem("form");
+        this.props.registrationActions.resetSubmitStatus();
     }
 
     getStepContent(step, formType) {
@@ -207,7 +215,7 @@ class Form extends Component {
         return (
             this.getActiveSection()
                 .filter(({required}) => required)
-                .every(({field}) => this.state[currSectionTitle][field]) &&
+                .every(({name}) => this.state[currSectionTitle][name]) &&
             Object.values(this.state[`${currSectionTitle}_validated`])
                 .every((valid) => valid)
         );
@@ -241,7 +249,7 @@ class Form extends Component {
             this.validateField(currSectionTitle, field, this.state[currSectionTitle][field.name]);
         });
         this.setState((oldState) => {
-            if (this.validateSection() || oldState[this.state.activeSection]["Select Parent"]) {
+            if (this.validateSection()) {
                 if (oldState.activeStep === this.getFormObject().section_titles.length - 1) {
                     if (!oldState.submitPending) {
                         if (this.props.computedMatch.params.edit === "edit") {
@@ -354,6 +362,7 @@ class Form extends Component {
     }
 
     onSelectChange(value, label, field) {
+        console.log({value, label, field})
         if (field.type === "select parent") {
             if (value) {
                 this.setState((OldState) => {
@@ -655,7 +664,6 @@ class Form extends Component {
     }
 
     removeField(fieldIndex) {
-        // eslint-disable-next-line max-statements
         this.setState((prevState) => {
             const currentSectionFields = prevState[prevState["activeSection"]];
             const currentSectionValidationFields = prevState[`${prevState["activeSection"]}_validated`];
@@ -770,6 +778,7 @@ class Form extends Component {
     renderSubmitted() {
         const currentForm = this.props.registrationForm[this.state.form];
         const steps = currentForm.section_titles;
+        sessionStorage.removeItem("form");
         return (
             <div style={{
                 margin: "2%",
@@ -785,6 +794,9 @@ class Form extends Component {
                     align="left"
                     component={NavLink}
                     to="/registration"
+                    onClick={() => {
+                        this.props.registrationActions.resetSubmitStatus();
+                    }}
                     style={{margin: "20px"}}
                     className="button">Back to Registration</Button>
                 <div className="confirmation-copy">

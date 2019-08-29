@@ -4,8 +4,7 @@ import {submitParentAndStudent, postData} from "./rootActions";
 const parseGender = {
     "Male": "M",
     "Female": "F",
-    "Neither": "U",
-    "Prefer not to disclose": "U",
+    "Do not disclose": "U",
 };
 
 const parseBirthday = (date) => {
@@ -69,7 +68,7 @@ export const submitForm = (state, id) => {
                 "city": state["Parent Information"]["City"],
                 "state": state["Parent Information"]["State"],
                 "phone_number":
-                    state["Parent Information"]["Parent Phone Number"] ||
+                    state["Parent Information"]["Phone Number"] ||
                     null,
                 "zipcode": state["Parent Information"]["Zip Code"],
                 "relationship":

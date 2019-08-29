@@ -16,7 +16,7 @@ class ProfileHeading extends Component {
     }
 
     addDashes(f) {
-        return ("(" + f.slice(0, 3) + "-" + f.slice(3, 6) + "-" + f.slice(6, 15) + ")");
+        return f && ("(" + f.slice(0, 3) + "-" + f.slice(3, 6) + "-" + f.slice(6, 15) + ")");
     }
 
     renderStudentProfile() {
