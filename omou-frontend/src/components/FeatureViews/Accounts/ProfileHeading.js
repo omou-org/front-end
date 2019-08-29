@@ -50,7 +50,7 @@ class ProfileHeading extends Component {
                         <Grid item md={1} className="rowPadding">
                             <MoneyIcon />
                         </Grid>
-                        <Grid item md={5}className="rowPadding">
+                        <Grid item md={5} className="rowPadding">
                             balance
                         </Grid>
                     </Grid>
@@ -95,6 +95,8 @@ class ProfileHeading extends Component {
             case "instructor":
                 profileDetails = this.renderTeacherProfile();
                 break;
+            case "admin":
+                profileDetails = this.renderTeacherProfile();
             default:
         }
         return (<div>

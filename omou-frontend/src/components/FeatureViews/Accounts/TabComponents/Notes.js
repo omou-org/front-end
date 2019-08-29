@@ -25,12 +25,13 @@ class Notes extends Component {
                return this.props.user_notes[noteID];
             });
             return {
-                notes:notes,
+                notes:notes, 
             }
-        });
+        }); 
     }
 
     render() {
+        console.log(this.state.notes);
         let numericDateString = (date)=>{
             let DateObject = new Date(date),
                 numericOptions = {

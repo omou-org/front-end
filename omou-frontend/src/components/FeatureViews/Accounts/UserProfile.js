@@ -18,6 +18,11 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import ProfileHeading from "./ProfileHeading.js";
 import Avatar from "@material-ui/core/Avatar";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
 import Chip from "@material-ui/core/Chip";
 import BioIcon from "@material-ui/icons/PersonOutlined";
 import CoursesIcon from "@material-ui/icons/SchoolOutlined";
@@ -33,49 +38,49 @@ const userTabs = {
         {
             tab_heading: "Schedule",
             tab_id: 0,
-            icon: <ScheduleIcon className="TabIcon"/>,
+            icon: <ScheduleIcon className="TabIcon" />,
         },
         {
             tab_heading: "Courses",
             tab_id: 1,
-            icon: <CoursesIcon className="TabIcon"/>,
+            icon: <CoursesIcon className="TabIcon" />,
         },
         {
             tab_heading: "Bio",
             tab_id: 2,
-            icon: <BioIcon className="TabIcon"/>,
+            icon: <BioIcon className="TabIcon" />,
         },
         {
             tab_heading: "Notes",
             tab_id: 7,
-            icon: <NoteIcon className="TabIcon"/>,
+            icon: <NoteIcon className="TabIcon" />,
         },
-        ],
+    ],
     "student": [
         {
             tab_heading: "Current Sessions",
             tab_id: 3,
-            icon: <CurrentSessionsIcon className="TabIcon"/>,
+            icon: <CurrentSessionsIcon className="TabIcon" />,
         },
         {
             tab_heading: "Past Sessions",
             tab_id: 4,
-            icon: <PastSessionsIcon className="TabIcon"/>,
+            icon: <PastSessionsIcon className="TabIcon" />,
         },
         {
             tab_heading: "Payment History",
             tab_id: 5,
-            icon: <PaymentIcon className="TabIcon"/>,
+            icon: <PaymentIcon className="TabIcon" />,
         },
         {
             tab_heading: "Parent Contact",
             tab_id: 6,
-            icon: <ContactIcon className="TabIcon"/>,
+            icon: <ContactIcon className="TabIcon" />,
         },
         {
             tab_heading: "Notes",
             tab_id: 7,
-            icon: <NoteIcon className="TabIcon"/>,
+            icon: <NoteIcon className="TabIcon" />,
         }],
 }
 
@@ -103,14 +108,24 @@ class UserProfile extends Component {
             case "instructor":
                 user = this.props.instructors[accountID];
                 break;
+            case "admin":
+                user = this.props.admin[accountID];
+                break;
             default:
                 user = -1;
         }
         // this.setState({ ...CourseInView });
-        this.setState({
-            user: user,
-            tabs: userTabs[accountType],
-        })
+        if (user != "admin") {
+            this.setState({
+                user: user,
+                tabs: userTabs[accountType],
+            })
+        }
+        else {
+            this.setState({
+                user: user,  
+            })
+        }
     }
 
     handleChange(e, newTabIndex) {
@@ -147,33 +162,86 @@ class UserProfile extends Component {
             height: 150,
             fontSize: 50,
         };
-        return (<div className="UserProfile">
-            <Paper className={'paper'}>
-                <BackButton
-                    warn={false}
-                />
-                <hr/>
-                <Grid container layout="row" className={'padding'}>
-                    <Grid item md={2}>
-                        <Avatar style={styles}>{this.state.user.name.match(/\b(\w)/g).join('')}</Avatar>
-                    </Grid>
-                    <Grid item md={8} className="headingPadding">
-                        <ProfileHeading user={this.state.user}/>
-                    </Grid>
-                </Grid>
-                <Tabs
+        let tabs;
+        if (this.state.user.role !="admin") {
+            tabs =
+                (<div>
+                    <Tabs
                     key={this.props.inView}
                     value={this.state.value}
                     onChange={this.handleChange}
                     indicatorColor="primary"
                     textColor="primary"
                 >
-                    {this.state.tabs.map((tab) => { return <Tab 
-                    label={<>{tab.icon} {tab.tab_heading}</>} 
-                    key={this.props.inView}
-                    /> })}
-                </Tabs>
+                    {this.state.tabs.map((tab) => {
+                        return <Tab
+                            label={<>{tab.icon} {tab.tab_heading}</>}
+                            key={this.props.inView}
+                        />
+                    })}
+                </Tabs>  
                 <ComponentViewer user={this.state.user} inView={this.state.tabs[this.state.value].tab_id} />
+                </div>)
+        }
+        else {
+            tabs=(
+            <Table className="ActionTable">
+            <TableHead>
+                <TableRow>
+                    <TableCell>Date</TableCell>
+                    <TableCell>Time</TableCell>
+                    <TableCell>Description</TableCell>
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                {Object.keys(this.state.user.action_log).map(rowID => {
+                    let row = this.state.user.action_log[rowID];
+                    return (
+                        <TableRow key={row.date}
+                                //   onClick={(e) => {
+                                //       e.preventDefault();
+                                //       this.goToRoute(`/${row.role}/${row.user_id}`)
+                                //   }}
+                                  className="row">
+                            <TableCell component="th" scope="row">
+                                <Grid container layout={'row'} alignItems={'center'}>
+                                    <Grid item md={3}>
+                                    </Grid>
+                                    <Grid item md={9}>
+                                        <Typography>
+                                            {row.date}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                            </TableCell>
+                            <TableCell>{row.time}</TableCell>
+                            <TableCell>{row.description}</TableCell>
+                        </TableRow>
+                    )
+                })}
+            </TableBody>
+            </Table>);
+        } 
+        return (<div className="UserProfile">
+            <Paper className={'paper'}>
+                <BackButton
+                    warn={false}
+                />
+                <hr />
+                <Grid container layout="row" className={'padding'}>
+                    <Grid item md={2}>
+                        <Avatar style={styles}>{this.state.user.name.match(/\b(\w)/g).join('')}</Avatar>
+                    </Grid>
+                    <Grid item md={8} className="headingPadding">
+                        <ProfileHeading user={this.state.user} />
+                    </Grid>
+                </Grid>
+                <Grid align="left">
+                    Action Log
+                </Grid>
+                <Paper className={'paper'}>
+                {tabs}
+                </Paper>
             </Paper>
         </div>
         )
@@ -188,6 +256,7 @@ function mapStateToProps(state) {
         students: state.Users.StudentList,
         parents: state.Users.ParentList,
         instructors: state.Users.InstructorList,
+        admin: state.Users.AdminList,
     };
 }
 

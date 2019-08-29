@@ -19,11 +19,6 @@ class Bio extends Component {
         };
     }
 
-    componentWillMount() {
-
-    }
-
-
     render() {
         return (
             <Card className={"Bio"}>
@@ -49,37 +44,42 @@ class Bio extends Component {
                                         </Grid>
                                             <Grid className="chipPadding">
                                                 <Chip
-                                                label={this.props.background.experience+" years at Summit"}
-                                                className="bioChip"
-                                                variant="outlined"
+                                                    label={this.props.background.experience + " years at Summit"}
+                                                    className="bioChip"
+                                                    variant="outlined"
                                                 />
                                             </Grid>
                                         </Grid>
                                         <Grid container className="rowPadding">
                                             <Grid className="bioDescription">
-                                            Subjects offered:
+                                                Subjects offered:
                                         </Grid>
-                                                {this.props.background.subjects.map((subjects)=>{return( 
-                                                <Grid className="chipPadding">
-                                                    <Chip 
-                                                    label={subjects} className="bioChip"
-                                                    variant="outlined"
-                                                    />
-                                                </Grid>)})}
+                                            {this.props.background.subjects.map((subjects) => {
+                                                return (
+                                                    <Grid className="chipPadding">
+                                                        <Chip
+                                                            label={subjects} className="bioChip"
+                                                            variant="outlined"
+                                                        />
+                                                    </Grid>)
+                                            })}
                                         </Grid>
                                         <Grid container className="rowPadding">
-                                        <Grid className="bioDescription">
-                                            Language: 
+                                            <Grid className="bioDescription">
+                                                Language:
                                         </Grid>
-                                                {this.props.background.languages.map((languages)=>{return( 
-                                        <Grid className="chipPadding">
-                                            <Chip label={languages} 
-                                            className="bioChip"
-                                            variant="outlined"
-                                            />
-                                            </Grid>)})}
+                                            {this.props.background.languages.map((languages) => {
+                                                return (
+                                                    <Grid className="chipPadding">
+                                                        <Chip 
+                                                            label={languages}
+                                                            className="bioChip"
+                                                            variant="outlined"
+                                                        />
+                                                    </Grid>)
+                                            })}
                                         </Grid>
-                                        </Grid>
+                                    </Grid>
                                 </div>
                             </div>
                         </Grid>
