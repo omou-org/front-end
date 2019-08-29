@@ -170,7 +170,7 @@ class RegistrationCourse extends Component {
                                 {startDate} - {endDate}
                             </Typography>
                         </div>
-                        <div className={"info"}>
+                        <div className={"info-section"}>
                             <div className={"first-line"}>
                                 <ClassIcon style={{ fontSize: "16" }} className={'icon'} />
                                 <Typography align={'left'} className={'text'}>

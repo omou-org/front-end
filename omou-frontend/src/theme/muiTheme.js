@@ -33,6 +33,11 @@ const theme = createMuiTheme({
                 border:"3px solid #43B5D9",
                 backgroundColor:"#EBFAFF",
             },
+        },
+        MuiStepIcon:{
+            text:{
+                fill:"white",
+            }
         }
     },
 

@@ -20,6 +20,7 @@ class Notes extends Component {
     }
 
     componentWillMount(){
+        //TODO: notes in descending order
         this.setState(()=>{
             let notes = Object.keys(this.props.user_notes).map((noteID)=>{
                return this.props.user_notes[noteID];

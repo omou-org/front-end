@@ -50,8 +50,8 @@ class ProfileHeading extends Component {
                         <Grid item md={1} className="rowPadding">
                             <MoneyIcon />
                         </Grid>
-                        <Grid item md={5} className="rowPadding">
-                            balance
+                        <Grid item md={5} align="left">
+                            ${this.props.user.balance}
                         </Grid>
                     </Grid>
                 </Grid>
