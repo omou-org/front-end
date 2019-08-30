@@ -136,7 +136,7 @@ class Form extends Component {
                     let course = "";
                     if (this.props.computedMatch.params.id) {
                         course = decodeURIComponent(this.props.computedMatch.params.id);
-                        course = Object.keys(this.props.courses).find(( courseID ) => this.props.courses[courseID].title === course);
+                        course = Object.keys(this.props.courses).find((courseID) => this.props.courses[courseID].title === course);
                         course = this.props.courses[course];
                         if (course) {
                             // convert it to a format that onselectChange can use
@@ -462,7 +462,7 @@ class Form extends Component {
     }
 
     renderField(field, label, fieldIndex) {
-        let fieldTitle = field.name, currSelectedValues;
+        let fieldTitle = field.name;
         switch (field.type) {
             case "select":
                 return <FormControl className={"form-control"}>
@@ -475,9 +475,9 @@ class Form extends Component {
                         }}>
                         {
                             field.options.map((option) => {
-                                    return <MenuItem value={option} key={option}>
-                                        <em>{option}</em>
-                                    </MenuItem>
+                                return <MenuItem value={option} key={option}>
+                                    <em>{option}</em>
+                                </MenuItem>
                             }
 
                             )
@@ -485,12 +485,14 @@ class Form extends Component {
                     </Select>
                 </FormControl>;
             case "course": {
-                const courseList = Object.keys(this.props.courses)
+                let courseList = Object.keys(this.props.courses)
                     .filter((courseID) => this.props.courses[courseID].capacity > this.props.courses[courseID].filled)
                     .map((courseID) => ({
-                        value: `${courseID}: ${this.props.courses[courseID].title}`,
+                        value: courseID,
                         label: `${courseID}: ${this.props.courses[courseID].title}`,
                     }));
+                // remove preselected courses
+                courseList = this.removeDuplicates(Object.values(this.state[label]), courseList);
                 // count # of course fields in current section
                 const fieldCount = this.getActiveSection()
                     .reduce((total, {type}) => total + (type === "course"), 0);
@@ -504,39 +506,30 @@ class Form extends Component {
                                 }}
                                 options={courseList}
                                 className="search-options" />
-                                {
-                                    (fieldCount > 1) &&
-                                        <RemoveIcon color="primary" aria-label="Add" variant="extended"
-                                            className="button-remove-student"
-                                            onClick={(event) => {
-                                                event.preventDefault();
-                                                // deletes answer field from state
-                                                this.removeField(fieldIndex);
-                                                this.forceUpdate();
-                                            }}>
-                                        </RemoveIcon>
-                                }
+                            {
+                                (fieldCount > 1) &&
+                                <RemoveIcon color="primary" aria-label="Add" variant="extended"
+                                    className="button-remove-student"
+                                    onClick={(event) => {
+                                        event.preventDefault();
+                                        // deletes answer field from state
+                                        this.removeField(fieldIndex);
+                                        this.forceUpdate();
+                                    }}>
+                                </RemoveIcon>
+                            }
                         </Grid>
                     </div>
                 );
             }
             case "student": {
-                if (this.state.conditional) {
-                    currSelectedValues = Object.values(this.state[label]);
-                } else {
-                    currSelectedValues = Object.values(this.state[label]);
-                }
-
                 let studentList = Object.values(this.props.students)
                     .map(({user_id, name, email}) => ({
                         value: user_id,
-                        label: `${user_id}: ${name} - ${email}`,
+                        label: `${name} - ${email}`,
                     }));
-                studentList.unshift({
-                    value: 0,
-                    label: "0: None",
-                });
-                studentList = this.removeDuplicates(currSelectedValues, studentList);
+
+                studentList = this.removeDuplicates(Object.values(this.state[label]), studentList);
 
                 // count # of course fields in current section
                 const studentCount = this.getActiveSection()
@@ -554,35 +547,30 @@ class Form extends Component {
                                 className="search-options" />
                             {
                                 studentCount > 1 &&
-                                    <RemoveIcon color="primary" aria-label="Add" variant="extended"
-                                        className="button-remove-student"
-                                        onClick={(event) => {
-                                            event.preventDefault();
-                                            // deletes answer field
-                                            this.removeField(fieldIndex);
-                                            this.forceUpdate();
-                                        }}>
-                                    </RemoveIcon>
+                                <RemoveIcon color="primary" aria-label="Add" variant="extended"
+                                    className="button-remove-student"
+                                    onClick={(event) => {
+                                        event.preventDefault();
+                                        // deletes answer field
+                                        this.removeField(fieldIndex);
+                                        this.forceUpdate();
+                                    }}>
+                                </RemoveIcon>
                             }
                         </Grid>
                     </div>
                 );
             }
-            case "instructor":
-                currSelectedValues = Object.values(this.state[label]);
+            case "instructor": {
                 let instructorList = this.props.instructors;
 
-                instructorList = Object.keys(instructorList).map((instructorID) => {
-                    let instructor = this.props.instructors[instructorID];
-                    return {
-                        value: instructor.user_id.toString() + ": " + instructor.name,
-                        label: instructor.user_id.toString() + ": " + instructor.name,
-                    }
-                });
-                instructorList = this.removeDuplicates(currSelectedValues, instructorList);
-                return (<div style={{width: "inherit",}}>
-
-                    <Grid container className={"student-align"} spacing={2000}>
+                instructorList = Object.values(instructorList).map(({user_id, name, email}) => ({
+                    value: user_id,
+                    label: `${name} - ${email}`,
+                }));
+                instructorList = this.removeDuplicates(Object.values(this.state[label]), instructorList);
+                return (<div style={{width: "inherit"}}>
+                    <Grid container className="student-align" spacing={2000}>
                         <SearchSelect
                             value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
                             onChange={(value) => {
@@ -592,11 +580,12 @@ class Form extends Component {
                             className="search-options" />
                     </Grid>
                 </div>);
+            }
             case "select parent": {
-                let currParentList = Object.values(this.props.parents)
+                const currParentList = Object.values(this.props.parents)
                     .map(({user_id, name, email}) => ({
                         value: user_id,
-                        label: `${user_id}: ${name} - ${email}`,
+                        label: `${name} - ${email}`,
                     }));
                 return (
                     <SearchSelect
@@ -613,12 +602,12 @@ class Form extends Component {
             default:
                 return <TextField
                     label={field.name}
-                    multiline={ field.multiline}
+                    multiline={field.multiline}
                     margin="normal"
                     value={this.state[label][field.name]}
                     error={!this.state[label + "_validated"][field.name]}
                     helperText={!this.state[label + "_validated"][field.name] ? field.name + " invalid" : ""}
-                    type={field.type === "int" ? "Number" : "text"}
+                    type={field.type === "number" ? "Number" : "text"}
                     required={field.required}
                     fullWidth={field.full}
                     onChange={(e) => {
@@ -707,11 +696,34 @@ class Form extends Component {
             steps = currentForm.section_titles;
         let section = this.getActiveSection();
         return (
-            <Stepper activeStep={activeStep} orientation="vertical" className="form-section">
+            <Stepper
+                activeStep={activeStep}
+                orientation="vertical"
+                className="form-section">
                 {
-                    steps.map((label) => (
+                    steps.map((label, i) => (
                         <Step key={label}>
-                            <StepLabel>{label}</StepLabel>
+                            <StepLabel>
+                                {label}
+                                {activeStep > i &&
+                                    Object.entries(this.state[label]).map(([field, value]) => {
+                                        if (!value) {
+                                            return null;
+                                        }
+                                        if (value && value.hasOwnProperty("label")) {
+                                            value = value.label;
+                                        }
+
+                                        return (
+                                            <div key={field}>
+                                                <Typography className="field-title" align="left">
+                                                    {field}: {value}
+                                                </Typography>
+                                            </div>
+                                        );
+                                    })
+                                }
+                            </StepLabel>
                             <StepContent>
                                 {
                                     section.map((field, j) => {
@@ -726,7 +738,7 @@ class Form extends Component {
                                                 </Grid>
                                                 <br />
                                                 {
-                                                    this.props.computedMatch.params.course === undefined && numSameTypeFields < field.field_limit &&
+                                                    !this.props.computedMatch.params.course && numSameTypeFields < field.field_limit &&
                                                     field === lastFieldOfType &&
                                                     <Fab color="primary" aria-label="Add" variant="extended"
                                                         className="button add-student"
