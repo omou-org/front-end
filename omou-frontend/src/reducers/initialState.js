@@ -3356,7 +3356,7 @@ export default {
 
 function initAuth() {
     return {
-        "token": localStorage.getItem("authToken") || null,
+        "token": "asd",//localStorage.getItem("authToken") || null,
         "failedLogin": false,
     };
 }
