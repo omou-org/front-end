@@ -69,6 +69,29 @@ const userTabs = {
             tab_id: 7,
             icon: <NoteIcon className="TabIcon"/>,
         }],
+
+        "parent": [
+            {
+                tab_heading: "Student Info",
+                tab_id: 8,
+                icon: <CurrentSessionsIcon className="TabIcon"/>,
+            },
+            {
+                tab_heading: "Pay Courses",
+                tab_id: 9,
+                icon: <CurrentSessionsIcon className="TabIcon"/>,
+            },
+            {
+                tab_heading: "Payment History",
+                tab_id: 5,
+                icon: <PaymentIcon className="TabIcon"/>,
+            },
+            {
+                tab_heading: "Notes",
+                tab_id: 7,
+                icon: <NoteIcon className="TabIcon"/>,
+            },
+        ],
 }
 
 class UserProfile extends Component {

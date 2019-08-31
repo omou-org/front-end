@@ -81,7 +81,42 @@ class ProfileHeading extends Component {
             </Grid>);
     }
 
+    renderParentProfile(){
+        return (
+            <Grid container >
+                <Grid item md={10}>
+                    <Grid container >
+                        <Grid item md={6} className="rowPadding">
+                            {this.props.user.user_id}
+                        </Grid>
+                        <Grid item md={1} className="rowPadding">
+                            <MoneyIcon />
+                        </Grid>
+                        <Grid item md={5} className="rowPadding">
+                            money
+                        </Grid>
+                        <Grid item md={1} className="rowPadding">
+                            <PhoneIcon />
+                        </Grid>
+                        <Grid item md={5} className="rowPadding">
+                            {this.addDashes(this.props.user.phone_number)}
+                        </Grid>
+                        <Grid item md={6} className="rowPadding">
+                        </Grid>
+                        <Grid item md={1} className="rowPadding">
+                            <EmailIcon />
+                        </Grid>
+                        <Grid item md={5} className="rowPadding">
+                            {this.props.user.email}
+                        </Grid>
+                        <Grid item md={6} className="rowPadding">
+                        </Grid>
+                        
+                    </Grid>
+                </Grid>
 
+            </Grid>);
+    }
 
     render() {
         let profileDetails;
@@ -92,6 +127,8 @@ class ProfileHeading extends Component {
             case "instructor":
                 profileDetails = this.renderTeacherProfile();
                 break;
+            case "parent":
+                profileDetails = this.renderParentProfile();
             default:
         }
         return (
