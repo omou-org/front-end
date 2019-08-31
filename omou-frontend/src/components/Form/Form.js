@@ -60,67 +60,129 @@ class Form extends Component {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
         const formType = this.props.computedMatch.params.type;
         if (this.props.computedMatch.params.edit === "edit") {
-            const student = Object.values(this.props.students).find(({user_id}) =>
-                user_id.toString() === this.props.computedMatch.params.id);
-            if (student) {
-                const parent = Object.values(this.props.parents).find(({user_id}) =>
-                    user_id === student.parent_id);
-                console.log(student, parent);
-                prevState = {
-                    ...this.state,
-                    "Basic Information": {
-                        "Student First Name": student.first_name,
-                        "Student Last Name": student.last_name,
-                        "Gender": parseGender[student.gender],
-                        "Grade": student.grade,
-                        "Age": student.age,
-                        "School": student.school,
-                        "Student Email": student.email,
-                        "Student Phone Number": student.phone_number,
-                    },
-                    "Parent Information": {
-                        "Select Parent": {
-                            value: parent.user_id,
-                            label: `${parent.user_id}: ${parent.name} - ${parent.email}`,
-                        },
-                        "Parent First Name": parent.first_name,
-                        "Parent Last Name": parent.last_name,
-                        "Gender": parseGender[parent.gender],
-                        "Parent Email": parent.email,
-                        "Address": parent.address,
-                        "City": parent.city,
-                        "State": parent.state,
-                        "Zip Code": parent.zipcode,
-                        "Relationship to Student": parent.relationship,
-                        "Phone Number": parent.phone_number,
-                    },
-                    "Basic Information_validated": {
-                        "Student First Name": true,
-                        "Student Last Name": true,
-                        "Gender": true,
-                        "Grade": true,
-                        "Age": true,
-                        "School": true,
-                        "Student Email": true,
-                        "Student Phone Number": true,
-                    },
-                    "Parent Information_validated": {
-                        "Parent First Name": true,
-                        "Parent Last Name": true,
-                        "Gender": true,
-                        "Parent Email": true,
-                        "Address": true,
-                        "City": true,
-                        "State": true,
-                        "Zip Code": true,
-                        "Relationship to Student": true,
-                        "Phone Number": true,
-                    },
-                    "form": formType,
-                    "activeSection": "Basic Information",
-                    "nextSection": true,
-                    "preLoaded": true,
-                };
+            switch (formType) {
+                case "student": {
+                    const student = this.props.students[this.props.computedMatch.params.id];
+                    if (student) {
+                        const parent = this.props.parents[student.parent_id];
+                        prevState = {
+                            ...this.state,
+                            "Basic Information": {
+                                "Student First Name": student.first_name,
+                                "Student Last Name": student.last_name,
+                                "Gender": parseGender[student.gender],
+                                "Grade": student.grade,
+                                "Age": student.age,
+                                "School": student.school,
+                                "Student Email": student.email,
+                                "Student Phone Number": student.phone_number,
+                            },
+                            "Parent Information": {
+                                "Select Parent": {
+                                    value: parent.user_id,
+                                    label: `${parent.user_id}: ${parent.name} - ${parent.email}`,
+                                },
+                                "Parent First Name": parent.first_name,
+                                "Parent Last Name": parent.last_name,
+                                "Gender": parseGender[parent.gender],
+                                "Parent Email": parent.email,
+                                "Address": parent.address,
+                                "City": parent.city,
+                                "State": parent.state,
+                                "Zip Code": parent.zipcode,
+                                "Relationship to Student": parent.relationship,
+                                "Phone Number": parent.phone_number,
+                            },
+                            "Basic Information_validated": {
+                                "Student First Name": true,
+                                "Student Last Name": true,
+                                "Gender": true,
+                                "Grade": true,
+                                "Age": true,
+                                "School": true,
+                                "Student Email": true,
+                                "Student Phone Number": true,
+                            },
+                            "Parent Information_validated": {
+                                "Parent First Name": true,
+                                "Parent Last Name": true,
+                                "Gender": true,
+                                "Parent Email": true,
+                                "Address": true,
+                                "City": true,
+                                "State": true,
+                                "Zip Code": true,
+                                "Relationship to Student": true,
+                                "Phone Number": true,
+                            },
+                            "form": formType,
+                            "activeSection": "Basic Information",
+                            "nextSection": true,
+                            "preLoaded": true,
+                        };
+                    }
+                    break;
+                }
+                case "instructor": {
+                    const instructor = this.props.instructors[this.props.computedMatch.params.id];
+                    if (instructor) {
+                        prevState = {
+                            ...this.state,
+                            "Basic Information": {
+                                "First Name": instructor.first_name,
+                                "Last Name": instructor.last_name,
+                                "E-Mail": instructor.email,
+                                "Phone Number": instructor.phone_number,
+                                "Gender": parseGender[instructor.gender],
+                                "Address": instructor.address,
+                                "City": instructor.city,
+                                "Zip Code": instructor.zipcode,
+                                "State": instructor.state,
+                                "Date of Birth": instructor.birth_date,
+                            },
+                            "Education": {
+                                "College": "",
+                                "Degree(s)": "",
+                                "Minor(s)": "",
+                            },
+                            "Experience": {
+                                "Subject(s) Tutor Can Teach": "",
+                                "Specialties": "",
+                                "Background": "",
+                                "Notes": "",
+                            },
+                            "Basic Information_validated": {
+                                "First Name": true,
+                                "Last Name": true,
+                                "E-Mail": true,
+                                "Phone Number": true,
+                                "Gender": true,
+                                "Address": true,
+                                "City": true,
+                                "Zip Code": true,
+                                "State": true,
+                                "Date of Birth": true,
+                            },
+                            "Education_validated": {
+                                "College": true,
+                                "Degree(s)": true,
+                                "Minor(s)": true,
+                            },
+                            "Experience_validated": {
+                                "Subject(s) Tutor Can Teach": true,
+                                "Specialties": true,
+                                "Background": true,
+                                "Notes": true,
+                            },
+                            "form": formType,
+                            "activeSection": "Basic Information",
+                            "nextSection": true,
+                            "preLoaded": true,
+                        };
+                    }
+                    break;
+                }
+                default: console.warn("Invalid form type!");
             }
         }
         if (!prevState || formType !== prevState.form || prevState["submitPending"] || (this.props.computedMatch.params.id && this.props.computedMatch.params.edit !== "edit")) {
@@ -733,7 +795,7 @@ class Form extends Component {
                                             lastFieldOfType = reversedSection.find((otherField) => otherField.field === field.field);
                                         return (
                                             <div key={j} className="fields-wrapper" style={{}}>
-                                                <Grid container className={"student-align"} spacing={20}>
+                                                <Grid container className="student-align">
                                                     {label === this.state.activeSection ? this.renderField(field, label, j) : ""}
                                                 </Grid>
                                                 <br />

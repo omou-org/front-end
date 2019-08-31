@@ -118,6 +118,15 @@ class ProfileHeading extends Component {
             </Grid>);
     }
 
+    getURL(role) {
+        switch (role) {
+            case "parent":
+                return "student";
+            default:
+                return role;
+        }
+    }
+
     render() {
         let profileDetails;
         switch (this.props.user.role) {
@@ -146,7 +155,7 @@ class ProfileHeading extends Component {
                     <Grid item md={3} align="right">
                         <Button
                             component={NavLink}
-                            to={`/registration/form/student/${this.props.user.user_id}/edit`}>
+                            to={`/registration/form/${this.getURL(this.props.user.role)}/${this.props.user.user_id}/edit`}>
                             Edit Profile
                         </Button>
                     </Grid>

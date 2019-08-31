@@ -3642,7 +3642,8 @@ function initRegistrationForm() {
                 "Student(s)": {
                     "Private Tutoring": [
                         {
-                            field: "Student Name",
+                            field: "Student",
+                            name: "Student",
                             type: "student",
                             conditional: false,
                             required: true,
