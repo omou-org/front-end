@@ -3356,7 +3356,7 @@ export default {
 
 function initAuth() {
     return {
-        "token": "asd",//localStorage.getItem("authToken") || null,
+        "token": localStorage.getItem("authToken") || null,
         "failedLogin": false,
     };
 }
@@ -3941,4 +3941,3 @@ function initSignUpForm() {
 
     }
 }
-
