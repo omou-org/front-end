@@ -1,14 +1,12 @@
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
 import Grid from "@material-ui/core/Grid";
-import BackButton from "../../BackButton";
 import Chip from "@material-ui/core/Chip";
-import { Card, Paper, Typography } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import {NavLink} from "react-router-dom";
 
 class ProfileHeading extends Component {
     constructor(props) {
@@ -18,7 +16,7 @@ class ProfileHeading extends Component {
     }
 
     addDashes(f) {
-        return ("(" + f.slice(0, 3) + "-" + f.slice(3, 6) + "-" + f.slice(6, 15) + ")");
+        return f && ("(" + f.slice(0, 3) + "-" + f.slice(3, 6) + "-" + f.slice(6, 15) + ")");
     }
 
     renderStudentProfile() {
@@ -55,7 +53,6 @@ class ProfileHeading extends Component {
                         </Grid>
                     </Grid>
                 </Grid>
-
             </Grid>);
     }
 
@@ -121,6 +118,15 @@ class ProfileHeading extends Component {
             </Grid>);
     }
 
+    getURL(role) {
+        switch (role) {
+            case "parent":
+                return "student";
+            default:
+                return role;
+        }
+    }
+
     render() {
         let profileDetails;
         switch (this.props.user.role) {
@@ -134,17 +140,30 @@ class ProfileHeading extends Component {
                 profileDetails = this.renderParentProfile();
             default:
         }
-        return (<div>
-            <Grid container>
-                <h1 className="left-align">{this.props.user.name}</h1>
-                <Chip className={`userLabel ${this.props.user.role}`}
-                    label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
-                />
-            </Grid>
-            {profileDetails}
-        </div >)
+        return (
+            <div>
+                <Grid container>
+                    <Grid item md={6}>
+                        <h1 className="left-align">{this.props.user.name}</h1>
+                    </Grid>
+                    <Grid item md={3}>
+                        <Chip
+                            className={`userLabel ${this.props.user.role}`}
+                            label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
+                        />
+                    </Grid>
+                    <Grid item md={3} align="right">
+                        <Button
+                            component={NavLink}
+                            to={`/registration/form/${this.getURL(this.props.user.role)}/${this.props.user.user_id}/edit`}>
+                            Edit Profile
+                        </Button>
+                    </Grid>
+                </Grid>
+                {profileDetails}
+            </div>
+        );
     }
-
 }
 
 ProfileHeading.propTypes = {};

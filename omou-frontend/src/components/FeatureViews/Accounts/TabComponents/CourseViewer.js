@@ -1,6 +1,4 @@
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {withRouter} from 'react-router-dom';
 
@@ -17,7 +15,6 @@ class CourseViewer extends Component {
     }
 
     componentWillMount() {
-        // console.log(this.props.enrollments[this.props.user_id]);
         this.setState({
             current: this.props.current,
             userRole: this.props.user_role,
@@ -53,6 +50,9 @@ class CourseViewer extends Component {
                     let course = this.props.courses[courseID];
                     return filterCourseByDate(course.schedule.end_date) && course.roster.includes(this.props.user_id);
                 });
+                break;
+            default:
+                console.warn(`Unhandled user role ${this.props.user_role}`);
         }
         return userCourseList;
     };

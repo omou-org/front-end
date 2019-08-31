@@ -1,7 +1,5 @@
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import PropTypes from 'prop-types';
-import React, {Component} from 'react';
+import {connect} from "react-redux";
+import React, {Component} from "react";
 import BackButton from "../../BackButton";
 import Grid from "@material-ui/core/Grid";
 import {Card, Paper, Typography} from "@material-ui/core";
@@ -17,10 +15,9 @@ import TableBody from "@material-ui/core/TableBody";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
-import {NavLink} from "react-router-dom";
-import {withRouter} from 'react-router-dom';
+import {withRouter} from "react-router-dom";
 
-import './Accounts.scss';
+import "./Accounts.scss";
 import Avatar from "@material-ui/core/Avatar";
 
 class Accounts extends Component {
@@ -83,7 +80,7 @@ class Accounts extends Component {
             hash = string.charCodeAt(i) + ((hash << 5) - hash);
         }
 
-        let colour = '#';
+        let colour = "#";
 
         for (i = 0; i < 3; i += 1) {
             const value = (hash >> (i * 8)) & 0xff;
@@ -95,18 +92,16 @@ class Accounts extends Component {
     }
 
     render() {
-        let styles = (username) => {
-            return {
+        let styles = (username) => ({
                 backgroundColor: this.stringToColor(username),
                 color: "white",
                 margin: 9,
                 width: 38,
                 height: 38,
                 fontSize: 14,
-            }
-        };
-        let tableView = () => {
-            return <Table className="AccountsTable">
+            });
+        let tableView = () => (
+            <Table className="AccountsTable">
                 <TableHead>
                     <TableRow>
                         <TableCell>Name</TableCell>
@@ -116,66 +111,61 @@ class Accounts extends Component {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {Object.keys(this.state.usersList).map(rowID => {
-                        let row = this.state.usersList[rowID];
-                        return (
-                            <TableRow key={row.name}
-                                      onClick={(e) => {
-                                          e.preventDefault();
-                                          this.goToRoute(`/${row.role}/${row.user_id}`)
-                                      }}
-                                      className="row">
-                                <TableCell component="th" scope="row">
-                                    <Grid container layout={'row'} alignItems={'center'}>
-                                        <Grid item md={3}>
-                                            <Avatar
-                                                style={styles(row.name)}>{row.name.match(/\b(\w)/g).join('')}</Avatar>
-                                        </Grid>
-                                        <Grid item md={9}>
-                                            <Typography>
-                                                {row.name}
-                                            </Typography>
-                                        </Grid>
+                    {Object.values(this.state.usersList).map((row) => (
+                        <TableRow key={row.user_id}
+                            onClick={(event) => {
+                                event.preventDefault();
+                                this.goToRoute(`/${row.role}/${row.user_id}`);
+                            }}
+                            className="row">
+                            <TableCell component="th" scope="row">
+                                <Grid container layout={"row"} alignItems={"center"}>
+                                    <Grid item md={3}>
+                                        <Avatar
+                                            style={styles(row.name)}>{row.name.match(/\b(\w)/g).join("")}</Avatar>
                                     </Grid>
-                                </TableCell>
-                                <TableCell>{row.email}</TableCell>
-                                <TableCell>{row.phone_number}</TableCell>
-                                <TableCell>{row.role.charAt(0).toUpperCase() + row.role.slice(1)}</TableCell>
-                            </TableRow>
-                        )
-                    })}
+                                    <Grid item md={9}>
+                                        <Typography>
+                                            {row.name}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                            </TableCell>
+                            <TableCell>{row.email}</TableCell>
+                            <TableCell>{row.phone_number}</TableCell>
+                            <TableCell>{row.role.charAt(0).toUpperCase() + row.role.slice(1)}</TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
-            </Table>;
-        };
+            </Table>
+        );
 
-        let cardView = () => {
-            return this.state.usersList.map((user) => {
-                return <Card>
-                    <CardContent className={"text"}>
-                        <Typography gutterBottom variant={"h6"} component={"h2"}>
-                            {user.name}
-                        </Typography>
-                        <Typography component="p">
-                            {user.role}
-                        </Typography>
-                    </CardContent>
-                    <CardActions>
-                        <Button
-                            size={"small"}
-                            color={"secondary"}>
-                            Call
-                        </Button>
-                    </CardActions>
-                </Card>
-            })
-        };
+        const cardView = () => this.state.usersList.map((user) => (
+            <Card key={user.user_id}>
+                <CardContent className={"text"}>
+                    <Typography gutterBottom variant={"h6"} component={"h2"}>
+                        {user.name}
+                    </Typography>
+                    <Typography component="p">
+                        {user.role}
+                    </Typography>
+                </CardContent>
+                <CardActions>
+                    <Button
+                        size={"small"}
+                        color={"secondary"}>
+                        Call
+                    </Button>
+                </CardActions>
+            </Card>
+        ));
 
         return (<Grid item xs={12} className="Accounts">
-            <Paper className={'paper'}>
+            <Paper className={"paper"}>
                 <BackButton/>
                 <hr/>
-                <Typography variant="h2" align={'left'} className={'heading'}>Accounts</Typography>
-                <Grid container direction={'row'} alignItems={'center'}>
+                <Typography variant="h2" align={"left"} className={"heading"}>Accounts</Typography>
+                <Grid container direction={"row"} alignItems={"center"}>
                     <Grid item xs={9}>
                         <Tabs
                             value={this.state.value}
@@ -192,17 +182,17 @@ class Accounts extends Component {
                         </Tabs>
                     </Grid>
                     <Grid item xs={2} className="toggleView">
-                        <ListView onClick={(e) => {
-                            e.preventDefault();
+                        <ListView onClick={(event) => {
+                            event.preventDefault();
                             this.setState({viewToggle: true});
                         }}/>
-                        <CardView onClick={(e) => {
-                            e.preventDefault();
+                        <CardView onClick={(event) => {
+                            event.preventDefault();
                             this.setState({viewToggle: false});
                         }}/>
                     </Grid>
                 </Grid>
-                <Grid container direction={'row'} alignItems={'center'} >
+                <Grid container direction={"row"} alignItems={"center"} >
                     {
                         this.state.viewToggle ?
                             tableView() :

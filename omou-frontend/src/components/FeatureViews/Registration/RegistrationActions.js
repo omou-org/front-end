@@ -12,7 +12,6 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
 import "./registration.scss";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 
@@ -36,19 +35,6 @@ const StyledMenu = withStyles({
     />
 ));
 
-const StyledMenuItem = MenuItem;
-
-// const StyledMenuItem = withStyles((theme) => ({
-//     root: {
-//         "&:focus": {
-//             backgroundColor: theme.palette.primary.main,
-//             "& .MuiListItemIcon-root, & .MuiListItemText-primary": {
-//                 color: theme.palette.common.white,
-//             },
-//         },
-//     },
-// }))(MenuItem);
-
 function RegistrationActions(props) {
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -59,7 +45,7 @@ function RegistrationActions(props) {
     function handleClose() {
         setAnchorEl(null);
     }
-    // console.log(props);
+
     const courseRoute = props.courseTitle ? encodeURIComponent(props.courseTitle) : "";
     return (
         <Grid container

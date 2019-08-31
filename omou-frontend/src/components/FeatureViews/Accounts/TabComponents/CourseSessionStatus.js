@@ -1,6 +1,4 @@
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 
 import Grid from '@material-ui/core/Grid';
@@ -17,7 +15,7 @@ class CourseSessionStatus extends Component {
 
     componentWillMount() {
         this.setState(() => {
-            let {accountType, accountID, courseID} = this.props.computedMatch.params;
+            let {accountID, courseID} = this.props.computedMatch.params;
             let calendarSessions = this.props.courseSessions[courseID],
                 paymentSessionStatus = this.props.enrollments[accountID][courseID].session_payment_status,
                 statusKey = (status) => {
@@ -78,7 +76,6 @@ class CourseSessionStatus extends Component {
             5: "Friday",
             6: "Saturday",
         };
-        console.log(course);
         let Days = course.schedule.days.map((day) => {
             return DayConverter[day];
         });
@@ -113,7 +110,7 @@ class CourseSessionStatus extends Component {
     }
 
     sessionDataParse(session) {
-        let { session_id, start, end, course_id, status } = session;
+        let {start, end, course_id, status} = session;
         let startDate = new Date(start);
         let endDate = new Date(end);
 
@@ -149,7 +146,6 @@ class CourseSessionStatus extends Component {
     }
 
     render() {
-        console.log(this.state.course);
         return (<Paper className={'paper'}>
             <Grid container className={'course-session-status'}>
                 <Grid item md={12}>

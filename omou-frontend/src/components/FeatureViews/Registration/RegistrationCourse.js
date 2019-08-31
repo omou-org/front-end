@@ -58,7 +58,6 @@ class RegistrationCourse extends Component {
 
     componentWillMount() {
         let CourseInView = this.props.courses[this.props.computedMatch.params.courseID] ;
-        console.log(CourseInView);
         this.setState({ ...CourseInView });
     }
 
