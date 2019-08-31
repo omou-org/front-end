@@ -3941,4 +3941,3 @@ function initSignUpForm() {
 
     }
 }
-

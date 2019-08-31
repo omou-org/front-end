@@ -9,6 +9,8 @@ import Bio from './TabComponents/Bio';
 import CourseViewer from './TabComponents/CourseViewer';
 import PaymentHistory from './TabComponents/PaymentHistory';
 import ParentContact from './TabComponents/ParentContact';
+import StudentInfo from './TabComponents/StudentInfo';
+import PayCourses from './TabComponents/PayCourses';
 import Notes from './TabComponents/Notes';
 import Grid from "@material-ui/core/Grid";
 
@@ -59,6 +61,12 @@ class ComponentViewer extends Component {
                 break;
             case 7:
                 component = <Notes user_notes={this.props.user.notes} key={this.props.inView}/>;
+                break;
+            case 8:
+                component = <StudentInfo user={this.props.user} key={this.props.inView}/>;
+                break;
+            case 9:
+                component = <PayCourses user={this.props.user} key={this.props.inView}/>;
                 break;
             default:
                 component = <Schedule key={this.props.inView}/>;
