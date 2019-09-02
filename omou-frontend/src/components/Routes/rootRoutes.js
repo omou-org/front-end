@@ -19,6 +19,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
+import ParentPayment from "../Form/ParentPayment";
 
 function rootRoutes(props) {
     props.registrationActions.resetSubmitStatus();
@@ -43,23 +44,24 @@ function rootRoutes(props) {
                 exact
                 path="/scheduler"
                 render={(passedProps) => <Scheduler {...passedProps} />}/>
-            {/* <ProtectedRoute
-                path="/directory"
-                render={(passedProps) => <UsersDirectory {...passedProps} />} /> */}
 
             {/* Accounts */}
             <ProtectedRoute
                 exact
                 path="/accounts/:accountType/:accountID"
-                render={(passedProps) => <UserProfile {...passedProps} />}/>
+                render={(passedProps) => <UserProfile {...passedProps} />} />
+            <ProtectedRoute
+                exact
+                path="/accounts/parents/:parentID/pay"
+                render={(passedProps) => <ParentPayment {...passedProps} />}/>
             <ProtectedRoute
                 exact
                 path="/accounts"
                 render={(passedProps) => <Accounts {...passedProps} />}/>
             <ProtectedRoute
                 exact
-                path={'/accounts/:accountType/:accountID/:courseID'}
-                render={(passedProps)=> <CourseSessionStatus {...passedProps} />}/>
+                path="/accounts/:accountType/:accountID/:courseID"
+                render={(passedProps) => <CourseSessionStatus {...passedProps} />}/>
 
             {/* Registration Routes */}
             <ProtectedRoute
@@ -71,8 +73,8 @@ function rootRoutes(props) {
             <ProtectedRoute
                 path="/registration/category/:categoryID"
                 render={(passedProps) => <CourseCategory {...passedProps} />}/>
-            <Route path={"/PageNotFound"} component={ErrorNotFoundPage}/>
-            <Redirect to={"/PageNotFound"}/>
+            <Route path="/PageNotFound" component={ErrorNotFoundPage}/>
+            <Redirect to="/PageNotFound"/>
         </Switch>
     );
 }
