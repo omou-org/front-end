@@ -13,6 +13,7 @@ import { NavLink } from "react-router-dom";
 //Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
+
 import { Divider, LinearProgress, Typography, ListItem, RadioGroup } from "@material-ui/core";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
@@ -33,9 +34,13 @@ import AssignmentIcon from "@material-ui/icons/Assignment";
 import UpdateTeacher from "@material-ui/icons/PersonAdd";
 import EditIcon from "@material-ui/icons/Edit";
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
+
+import {Divider, Typography, ListItem} from "@material-ui/core";
+import List from '@material-ui/core/List'
+import ListItemText from '@material-ui/core/ListItemText'
+
+
 import Button from "@material-ui/core/Button";
-
-
 
 class SessionView extends Component {
     constructor(props) {
@@ -64,11 +69,10 @@ class SessionView extends Component {
 
             let sessionData = this.props.courseSessions[this.props.computedMatch.params.course_id][this.props.computedMatch.params.session_id]
             let courseData = this.props.courses[this.props.computedMatch.params.course_id]
+
             let instructorData = this.props.instructors
 
-            // console.log(this.props.computedMatch)
-            console.log("Session data: ", sessionData)
-            console.log("courseData: ", courseData)
+   
 
             return {
                 sessionData: sessionData,
@@ -80,7 +84,15 @@ class SessionView extends Component {
     }
 
     render() {
-        // console.log(this.state)
+
+        const flexContainer = {
+            display: "flex",
+            justifyContent: "flex-start",
+            width: "50%",
+            padding: 0,
+        };
+
+
 
 
         return (

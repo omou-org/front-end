@@ -1,15 +1,15 @@
 // React Imports
-import { connect } from "react-redux";
-import { Route, Switch } from "react-router-dom";
-import { bindActionCreators } from "redux";
+
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {Route, Switch, Redirect} from "react-router-dom";
+import * as registrationActions from "../../actions/registrationActions";
+
 import PropTypes from "prop-types";
 import React from "react";
 
 // Local Component Imports
 import Dashboard from "../FeatureViews/Dashboard/Dashboard";
-// import Attendance from "../FeatureViews/Attendance/Attendance";
-// import Courses from "../FeatureViews/Courses/Courses";
-// import Gradebook from "../FeatureViews/Gradebook/Gradebook";
 import Registration from "../FeatureViews/Registration/Registration";
 import RegistrationForm from "../Form/Form";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
@@ -18,30 +18,34 @@ import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse"
 import CourseCategory from "../FeatureViews/Registration/CourseCategory";
 import LoginPage from "../Authentication/LoginPage.js";
 import ProtectedRoute from "./ProtectedRoute";
+
 import SessionView from "../FeatureViews/Scheduler/SessionView"
 import AddCourse from "../FeatureViews/Scheduler/AddCourse";
 
 
+import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
+import UserProfile from "../FeatureViews/Accounts/UserProfile";
+import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
+
+
 function rootRoutes(props) {
+    props.registrationActions.resetSubmitStatus();
     return (
         <Switch>
+            <Route
+                path="/login"
+                render={(passedProps) => <LoginPage setLogin={props.setLogin} {...passedProps} />}/>
+
             {/* Main Feature Views */}
             <ProtectedRoute
                 exact
                 path="/"
-                render={(passedProps) => <Dashboard {...passedProps} />} />
-            {/* <Route
-                path="/attendance"
-                render={(passedProps) => <Attendance {...passedProps} />} />
-            <Route
-                path="/courses"
-                render={(passedProps) => <Courses {...passedProps} />} />
-            <Route
-                path="/gradebook"
-                render={(passedProps) => <Gradebook {...passedProps} />} /> */}
+                render={(passedProps) => <Dashboard {...passedProps} />}/>
+
             <ProtectedRoute
                 exact
                 path="/registration"
+
                 render={(passedProps) => <Registration {...passedProps} />} />
             {/* Scheduler Routes */}
             <ProtectedRoute
@@ -59,27 +63,46 @@ function rootRoutes(props) {
                 render={(passedProps) => <ResourceView {...passedProps} />} /> */}
 
 
+
+                render={(passedProps) => <Registration {...passedProps} />}/>
+
+            <ProtectedRoute
+                exact
+                path="/scheduler"
+                render={(passedProps) => <Scheduler {...passedProps} />}/>
+
             {/* <ProtectedRoute
                 path="/directory"
                 render={(passedProps) => <UsersDirectory {...passedProps} />} /> */}
 
+
+            {/* Accounts */}
             <ProtectedRoute
+                exact
+                path="/accounts/:accountType/:accountID"
+                render={(passedProps) => <UserProfile {...passedProps} />}/>
+
+            <ProtectedRoute
+                exact
                 path="/accounts"
-                render={(passedProps) => <Accounts {...passedProps} />} />
-            <Route
-                path="/login"
-                render={(passedProps) => <LoginPage setLogin={props.setLogin} {...passedProps} />} />
+                render={(passedProps) => <Accounts {...passedProps} />}/>
+            <ProtectedRoute
+                exact
+                path={'/accounts/:accountType/:accountID/:courseID'}
+                render={(passedProps)=> <CourseSessionStatus {...passedProps} />}/>
 
             {/* Registration Routes */}
             <ProtectedRoute
-                path="/registration/form/:type/:course?"
+                path="/registration/form/:type/:id?/:edit?"
                 render={(passedProps) => <RegistrationForm {...passedProps} />} />
             <ProtectedRoute
                 path="/registration/course/:courseID?/:courseTitle?"
-                render={(passedProps) => <RegistrationCourse {...passedProps} />} />
+                render={(passedProps) => <RegistrationCourse {...passedProps} />}/>
             <ProtectedRoute
                 path="/registration/category/:categoryID"
-                render={(passedProps) => <CourseCategory {...passedProps} />} />
+                render={(passedProps) => <CourseCategory {...passedProps} />}/>
+            <Route path={"/PageNotFound"} component={ErrorNotFoundPage}/>
+            <Redirect to={"/PageNotFound"}/>
         </Switch>
     );
 }
@@ -90,7 +113,9 @@ rootRoutes.propTypes = {
 
 const mapStateToProps = (state) => ({});
 
-const mapDispatchToProps = (dispatch) => ({});
+const mapDispatchToProps = (dispatch) => ({
+    registrationActions: bindActionCreators(registrationActions, dispatch),
+});
 
 export default connect(
     mapStateToProps,

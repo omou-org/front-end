@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes, { bool } from 'prop-types';
 import React, { Component } from 'react';
-
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -11,6 +10,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
 
 import * as calenderActions from '../../../actions/calenderActions';
+
 
 // Material-Ui dependencies
 
@@ -32,10 +32,11 @@ import SearchIcon from '@material-ui/icons/Search';
 // Tool tip dependencies 
 import tippy from 'tippy.js'
 import 'tippy.js/themes/google.css'
+
+import SessionActions from "./SessionActions"
+
+
 import './scheduler.scss'
-
-
-
 
 class Scheduler extends Component {
     constructor(props) {
@@ -217,6 +218,7 @@ class Scheduler extends Component {
             return newSessions
         })
 
+
         return sessionsInViewWithUrl
 
     }
@@ -251,6 +253,32 @@ class Scheduler extends Component {
         console.log(resourceList)
         return resourceList
     }
+
+
+        return (<Paper className="paper">
+            <SessionActions />
+
+            <div className='demo-app-calendar'>
+                <FullCalendar
+                    defaultView="timeGridDay"
+                    header={{
+                        left: 'today prev,next',
+                        center: ' title, ',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                    }}
+                    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listViewPlugin, resourceTimelinePlugin, bootstrapPlugin]}
+                    ref={this.calendarComponentRef}
+                    weekends={this.state.calendarWeekends}
+                    events={sessionsInViewWithUrl}
+                    displayEventTime={true}
+                    timeZone={'local'}
+                    themeSystem={''}
+                    eventLimit={4}
+                    dateClick={this.handleDateClick}
+                    schedulerLicenseKey={'GPL-My-Project-Is-Open-Source'}
+                />
+
+            </div>
 
 
     render() {

@@ -1,17 +1,10 @@
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as registrationActions from '../../../actions/registrationActions';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import RegistrationActions from "./RegistrationActions";
-import '../../../theme/theme.scss';
-
 
 //Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import { NavLink } from "react-router-dom";
 import { withRouter } from 'react-router-dom';
 import {Typography} from "@material-ui/core";
 import BackButton from "../../BackButton";
@@ -43,7 +36,7 @@ class RegistrationLanding extends Component {
     }
 
     goToRoute(route){
-        this.props.history.push(route);
+        this.props.history.push(this.props.match.url+route);
     }
 
     handleFilterClick(event) {
@@ -63,7 +56,6 @@ class RegistrationLanding extends Component {
                 let reducedFilter;
                switch(filterType){
                    case 'instructor':
-                       console.log(filters,course.instructor_id);
                        reducedFilter = filters.map((instructorField)=>{ return instructorField.value });
                        return reducedFilter.includes(course.instructor_id);
                    case 'grade':
@@ -181,17 +173,17 @@ class RegistrationLanding extends Component {
                                     let date = start_date + " - " + end_date,
                                         time = start_time + " - " + end_time;
 
-                                    return (<Paper className={'row'}>
+                                    return (<Paper className={'row'} key={courseID}>
                                         <Grid container alignItems={'center'} layout={'row'}>
                                             <Grid item md={3}
-                                                  onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.title)}}
+                                                  onClick={(e) => {e.preventDefault(); this.goToRoute('/course/' + course.course_id + "/" + course.title)}}
                                                   style={{textDecoration: 'none', cursor: 'pointer'}}>
                                                 <Typography className={'course-heading'} align={'left'}>
                                                     {course.title}
                                                 </Typography>
                                             </Grid>
                                             <Grid item md={5}
-                                                  onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.title)}}
+                                                  onClick={(e) => {e.preventDefault(); this.goToRoute('/course/' + course.course_id + "/" + course.title)}}
                                                   style={{textDecoration: 'none', cursor: 'pointer'}}>
                                                 <Grid container className={'course-detail'}>
                                                     <Grid item md={4} className={'heading-det'} align={'left'}>
@@ -231,8 +223,7 @@ class RegistrationLanding extends Component {
                                                         </span>
                                                     </Grid>
                                                     <Grid item md={6}>
-                                                        <Button component={NavLink}
-                                                                onClick={(e) => {
+                                                        <Button onClick={(e) => {
                                                                     e.preventDefault();
                                                                     if(course.capacity > course.filled){
                                                                         this.goToRoute(`/registration/form/course/${encodeURIComponent(course.title)}`);

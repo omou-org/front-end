@@ -1,27 +1,39 @@
-//React
-import React from 'react';
+// React
+import React from "react";
 
-//Material UI
-//TODO: import each component individually (i.e. '@material-ui/core/AppBar') to reduce bundle size
-import {CssBaseline} from '@material-ui/core'
-// import MenuIcon from '@material-ui/icons/Menu';
+// Redux
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import * as rootActions from "./actions/rootActions";
 
-//Local Component Imports
-import Navigation from './components/Navigation/Navigation'
-import './App.scss';
-import './theme/theme.scss';
+// Material UI
+// TODO: import each component individually (i.e. '@material-ui/core/AppBar') to reduce bundle size
+import {CssBaseline} from "@material-ui/core";
 
+// Local Component Imports
+import Navigation from "./components/Navigation/Navigation";
+import "./App.scss";
+import "./theme/theme.scss";
 
-
-
-function App() {
-  return (
+const App = (props) => {
+    props.rootActions.fetchData("student");
+    props.rootActions.fetchData("parent");
+    props.rootActions.fetchData("instructor");
+    return (
         <div className="App">
-            <CssBaseline/>
-            <Navigation/>
+            <CssBaseline />
+            <Navigation />
         </div>
+    );
+};
 
-  );
-}
+const mapStateToProps = () => ({});
 
-export default App;
+const mapDispatchToProps = (dispatch) => ({
+    rootActions: bindActionCreators(rootActions, dispatch),
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(App);

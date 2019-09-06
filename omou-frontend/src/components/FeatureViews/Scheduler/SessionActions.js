@@ -3,22 +3,16 @@ import { bindActionCreators } from 'redux';
 import * as calenderActions from '../../../actions/calenderActions';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import BackButton from "../../BackButton.js";
 import '../../../theme/theme.scss';
 
 //Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import { Divider, LinearProgress, Typography } from "@material-ui/core";
 import NewCourse from "@material-ui/icons/CalendarToday";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import UpdateTeacher from "@material-ui/icons/PersonAdd";
-import EditIcon from "@material-ui/icons/Edit";
-import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 import Button from "@material-ui/core/Button";
 import { NavLink } from "react-router-dom";
-import Scheduler from "./Scheduler"
-
 
 class SessionView extends Component {
     constructor(props) {

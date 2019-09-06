@@ -12,10 +12,7 @@ import {AppBar, Drawer, IconButton, Toolbar, Typography} from "@material-ui/core
 import MenuIcon from "@material-ui/icons/Menu";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import EventIcon from "@material-ui/icons/Event";
-import CourseIcon from "@material-ui/icons/School";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import AttendanceIcon from "@material-ui/icons/ViewList";
-import ClassIcon from "@material-ui/icons/Class";
 import AccountsIcon from "@material-ui/icons/Contacts";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -64,7 +61,7 @@ function Navigation(props) {
     return (
         <MuiThemeProvider theme={CustomTheme}>
             <div className={"Navigation"}>
-                <AppBar color={"background"}
+                <AppBar color={"default"}
                     position="fixed"
                     className="OmouBar">
                     <Toolbar>
