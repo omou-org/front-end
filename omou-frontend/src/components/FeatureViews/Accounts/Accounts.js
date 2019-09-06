@@ -19,6 +19,8 @@ import {withRouter} from "react-router-dom";
 
 import "./Accounts.scss";
 import Avatar from "@material-ui/core/Avatar";
+import ProfileCard from "./ProfileCard";
+import Grow from "@material-ui/core/Grow";
 
 class Accounts extends Component {
     constructor(props) {
@@ -32,13 +34,19 @@ class Accounts extends Component {
     }
 
     componentWillMount() {
-        this.setState(() => {
-            let usersList = {};
-            Object.assign(usersList, this.props.parents);
-            Object.assign(usersList, this.props.students);
-            Object.assign(usersList, this.props.instructors);
-            return {usersList: usersList,}
-        });
+        let prevState = JSON.parse(sessionStorage.getItem('AccountsState'));
+        if(prevState){
+            this.setState(prevState);
+
+        } else {
+            this.setState(() => {
+                let usersList = {};
+                Object.assign(usersList, this.props.parents);
+                Object.assign(usersList, this.props.students);
+                Object.assign(usersList, this.props.instructors);
+                return {usersList: usersList,}
+            });
+        }
     }
 
     goToRoute(route) {
@@ -68,7 +76,10 @@ class Accounts extends Component {
             default:
                 newUsersList = usersList;
         }
-        this.setState({value: newTabIndex, usersList: newUsersList});
+        this.setState({value: newTabIndex, usersList: newUsersList},
+            ()=>{
+                sessionStorage.setItem('AccountsState', JSON.stringify(this.state));
+            });
     }
 
     stringToColor(string) {
@@ -140,30 +151,17 @@ class Accounts extends Component {
             </Table>
         );
 
-        const cardView = () => this.state.usersList.map((user) => (
-            <Card key={user.user_id}>
-                <CardContent className={"text"}>
-                    <Typography gutterBottom variant={"h6"} component={"h2"}>
-                        {user.name}
-                    </Typography>
-                    <Typography component="p">
-                        {user.role}
-                    </Typography>
-                </CardContent>
-                <CardActions>
-                    <Button
-                        size={"small"}
-                        color={"secondary"}>
-                        Call
-                    </Button>
-                </CardActions>
-            </Card>
-        ));
+        const cardView = () => {
+            return <Grow in={true}>
+                    <Grid container spacing={8} alignItems={'center'} direction={'row'}>
+                    {Object.values(this.state.usersList).map((user) => (
+                    <ProfileCard user={user} key={user.user_id}/>))}
+                    </Grid>
+                </Grow>
+        };
 
         return (<Grid item xs={12} className="Accounts">
             <Paper className={"paper"}>
-                <BackButton/>
-                <hr/>
                 <Typography variant="h2" align={"left"} className={"heading"}>Accounts</Typography>
                 <Grid container direction={"row"} alignItems={"center"}>
                     <Grid item xs={9}>
@@ -182,17 +180,24 @@ class Accounts extends Component {
                         </Tabs>
                     </Grid>
                     <Grid item xs={2} className="toggleView">
-                        <ListView onClick={(event) => {
+                        <ListView className={`list icon ${this.state.viewToggle ? 'active':''}`} onClick={(event) => {
                             event.preventDefault();
-                            this.setState({viewToggle: true});
+                            this.setState({viewToggle: true},
+                                ()=>{sessionStorage.setItem('AccountsState',JSON.stringify(this.state));});
                         }}/>
-                        <CardView onClick={(event) => {
+                        <CardView className={`card icon ${this.state.viewToggle ? '':'active'}`} onClick={(event) => {
                             event.preventDefault();
-                            this.setState({viewToggle: false});
+                            this.setState({viewToggle: false},
+                                ()=>{sessionStorage.setItem('AccountsState',JSON.stringify(this.state));});
                         }}/>
                     </Grid>
                 </Grid>
-                <Grid container direction={"row"} alignItems={"center"} >
+                <Grid container
+                      direction={"row"}
+                      alignItems={"center"}
+                      spacing={8}
+                      className={'accounts-list-wrapper'}
+                >
                     {
                         this.state.viewToggle ?
                             tableView() :
