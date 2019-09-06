@@ -14,7 +14,7 @@ import Typography from '@material-ui/core/Typography';
 class Dashboard extends Component {
     render() {
         return (<div className="`Dashboard`">
-            <h1>Dashboard</h1>
+            <h1 className={'feature-title'}>Dashboard</h1>
             <Grid container spacing={16} className="Root">
                 <Card>
                     <CardActionArea>
