@@ -184,7 +184,12 @@ class UserProfile extends Component {
                 </div>)
         }
         else {
-            tabs=(
+            tabs=(<div>
+                <Grid align="left">
+                    Action Log
+                </Grid>
+                
+                <Paper className={'paper'}>
             <Table className="ActionTable">
             <TableHead>
                 <TableRow>
@@ -220,7 +225,10 @@ class UserProfile extends Component {
                     )
                 })}
             </TableBody>
-            </Table>);
+            </Table>
+            </Paper>
+            </div>
+            );
         } 
         return (<div className="UserProfile">
             <Paper className={'paper'}>
@@ -236,12 +244,7 @@ class UserProfile extends Component {
                         <ProfileHeading user={this.state.user} />
                     </Grid>
                 </Grid>
-                <Grid align="left">
-                    Action Log
-                </Grid>
-                <Paper className={'paper'}>
                 {tabs}
-                </Paper>
             </Paper>
         </div>
         )
