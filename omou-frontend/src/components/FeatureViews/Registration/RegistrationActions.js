@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, {useState} from "react";
+import React, { useState } from "react";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -7,12 +7,11 @@ import Button from "@material-ui/core/Button";
 import NewUser from "@material-ui/icons/PersonAdd";
 import NewTutor from "@material-ui/icons/Group";
 import NewCourse from "@material-ui/icons/School";
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import {withStyles} from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import "./registration.scss";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 
@@ -36,19 +35,6 @@ const StyledMenu = withStyles({
     />
 ));
 
-const StyledMenuItem = MenuItem;
-
-// const StyledMenuItem = withStyles((theme) => ({
-//     root: {
-//         "&:focus": {
-//             backgroundColor: theme.palette.primary.main,
-//             "& .MuiListItemIcon-root, & .MuiListItemText-primary": {
-//                 color: theme.palette.common.white,
-//             },
-//         },
-//     },
-// }))(MenuItem);
-
 function RegistrationActions(props) {
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -59,7 +45,7 @@ function RegistrationActions(props) {
     function handleClose() {
         setAnchorEl(null);
     }
-    console.log(props);
+
     const courseRoute = props.courseTitle ? encodeURIComponent(props.courseTitle) : "";
     return (
         <Grid container
@@ -73,6 +59,16 @@ function RegistrationActions(props) {
                     className="button">
                     <NewUser className="icon" />
                     New Student
+                </Button>
+            </Grid>
+            <Grid item>
+                <Button component={NavLink}
+                    to="/registration/form/instructor"
+                    variant="outlined"
+                    color="secondary"
+                    className="button">
+                    <NewUser className="icon" />
+                    New Instructor
                 </Button>
             </Grid>
             <Grid item>

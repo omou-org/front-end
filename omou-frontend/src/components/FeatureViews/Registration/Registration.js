@@ -1,24 +1,21 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as registrationActions from '../../../actions/registrationActions';
+import * as rootActions from '../../../actions/rootActions';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import RegistrationActions from "./RegistrationActions";
+import RegistrationUserActions from "./RegistrationActions";
+import '../../../theme/theme.scss';
 
 //Material UI Imports
-import FullRegistration from "./FullRegistration";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import MobileRegistration from "./MobileRegistration";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import NewUser from "@material-ui/icons/PersonAdd";
-import NewTutor from "@material-ui/icons/Group";
-import NewCourse from "@material-ui/icons/School";
 import Categories from "@material-ui/icons/Category";
 import CourseList from "@material-ui/icons/List";
-import { NavLink } from "react-router-dom";
 import Fab from '@material-ui/core/Fab';
+import RegistrationLanding from "./RegistrationLanding";
 
 class Registration extends Component {
     constructor(props) {
@@ -32,7 +29,6 @@ class Registration extends Component {
     componentDidMount() {
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
-        // this.props.registrationActions.fetchRandomColor();
     }
 
     resize() {
@@ -46,17 +42,16 @@ class Registration extends Component {
         if (this.state.mobileView) {
             return <MobileRegistration
                 courses={this.props.courses}
-                teachers={this.props.teachers}
+                instructors={this.props.instructors}
                 categories={this.props.courseCategories}
                 categoriesViewToggle={this.state.mobileViewToggle} />;
         }
         else {
-            return <FullRegistration
-                courses={this.props.courses}
-                categories={this.props.courseCategories}
-                teachers={this.props.teachers}
-            />;
-
+            return <RegistrationLanding
+                    courses={this.props.courses}
+                    categories={this.props.courseCategories}
+                    instructors={this.props.instructors}
+            />
         }
     }
 
@@ -74,7 +69,7 @@ class Registration extends Component {
                 <Grid item xs={12}>
                     <Paper className={"paper"}>
                         <Grid item lg={12}>
-                            <RegistrationActions
+                            <RegistrationUserActions
                             //admin = {false}
                             />
                         </Grid>
@@ -83,6 +78,7 @@ class Registration extends Component {
                 {
                     this.toggleMainView.bind(this)()
                 }
+
                 <Hidden smUp>
                     <Grid item>
                         {
@@ -114,15 +110,16 @@ Registration.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        teachers: state.Users["TeacherList"],
-        courses: state.Course["CourseList"],
+        instructors: state.Users["InstructorList"],
+        courses: state.Course["NewCourseList"],
         courseCategories: state.Course["CourseCategories"],
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        registrationActions: bindActionCreators(registrationActions, dispatch)
+        registrationActions: bindActionCreators(registrationActions, dispatch),
+        rootActions: bindActionCreators(rootActions, dispatch),
     };
 }
 

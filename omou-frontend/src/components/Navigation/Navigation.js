@@ -12,10 +12,7 @@ import {AppBar, Drawer, IconButton, Toolbar, Typography} from "@material-ui/core
 import MenuIcon from "@material-ui/icons/Menu";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import EventIcon from "@material-ui/icons/Event";
-import CourseIcon from "@material-ui/icons/School";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import AttendanceIcon from "@material-ui/icons/ViewList";
-import ClassIcon from "@material-ui/icons/Class";
 import AccountsIcon from "@material-ui/icons/Contacts";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -53,7 +50,7 @@ function Navigation(props) {
             <List className={"list"}>
                 {NavList.map((NavItem, index) => (
                     <ListItem button key={index} component={NavLink} exact={NavItem.name === "Dashboard"} to={NavItem.link} className={"listItem"}>
-                        <ListItemIcon>{NavItem.icon}</ListItemIcon>
+                        <ListItemIcon className={"icon"}>{NavItem.icon}</ListItemIcon>
                         <ListItemText primary={NavItem.name} className={"text"}/>
                     </ListItem>
                 ))}
@@ -64,7 +61,9 @@ function Navigation(props) {
     return (
         <MuiThemeProvider theme={CustomTheme}>
             <div className={"Navigation"}>
-                <AppBar position="fixed" className="OmouBar">
+                <AppBar color={"default"}
+                    position="fixed"
+                    className="OmouBar">
                     <Toolbar>
                         <Hidden smUp>
                             <IconButton
