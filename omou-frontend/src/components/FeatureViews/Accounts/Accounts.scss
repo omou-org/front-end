@@ -63,6 +63,9 @@
     &.receptionist {
       background-color: $receptionistColor;
     }
+    &.parent{
+      background-color: $parentColor;
+    }
   }
   .TabIcon {
     display: inline-flex;

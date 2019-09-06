@@ -1,15 +1,13 @@
 // React Imports
 import {connect} from "react-redux";
-import {Route, Switch} from "react-router-dom";
 import {bindActionCreators} from "redux";
+import {Route, Switch, Redirect} from "react-router-dom";
+import * as registrationActions from "../../actions/registrationActions";
 import PropTypes from "prop-types";
 import React from "react";
 
 // Local Component Imports
 import Dashboard from "../FeatureViews/Dashboard/Dashboard";
-// import Attendance from "../FeatureViews/Attendance/Attendance";
-// import Courses from "../FeatureViews/Courses/Courses";
-// import Gradebook from "../FeatureViews/Gradebook/Gradebook";
 import Registration from "../FeatureViews/Registration/Registration";
 import RegistrationForm from "../Form/Form";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
@@ -19,11 +17,11 @@ import CourseCategory from "../FeatureViews/Registration/CourseCategory";
 import LoginPage from "../Authentication/LoginPage.js";
 import ProtectedRoute from "./ProtectedRoute";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
-import {Redirect} from "react-router-dom";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
 
 function rootRoutes(props) {
+    props.registrationActions.resetSubmitStatus();
     return (
         <Switch>
             <Route
@@ -65,8 +63,8 @@ function rootRoutes(props) {
 
             {/* Registration Routes */}
             <ProtectedRoute
-                path="/registration/form/:type/:course?"
-                render={(passedProps) => <RegistrationForm {...passedProps} />}/>
+                path="/registration/form/:type/:id?/:edit?"
+                render={(passedProps) => <RegistrationForm {...passedProps} />} />
             <ProtectedRoute
                 path="/registration/course/:courseID?/:courseTitle?"
                 render={(passedProps) => <RegistrationCourse {...passedProps} />}/>
@@ -85,7 +83,9 @@ rootRoutes.propTypes = {
 
 const mapStateToProps = (state) => ({});
 
-const mapDispatchToProps = (dispatch) => ({});
+const mapDispatchToProps = (dispatch) => ({
+    registrationActions: bindActionCreators(registrationActions, dispatch),
+});
 
 export default connect(
     mapStateToProps,
