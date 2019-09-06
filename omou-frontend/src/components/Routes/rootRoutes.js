@@ -1,7 +1,7 @@
 // React Imports
-import {connect} from "react-redux";
-import {Route, Switch} from "react-router-dom";
-import {bindActionCreators} from "redux";
+import { connect } from "react-redux";
+import { Route, Switch } from "react-router-dom";
+import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 import React from "react";
 
@@ -18,6 +18,9 @@ import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse"
 import CourseCategory from "../FeatureViews/Registration/CourseCategory";
 import LoginPage from "../Authentication/LoginPage.js";
 import ProtectedRoute from "./ProtectedRoute";
+import SessionView from "../FeatureViews/Scheduler/SessionView"
+import AddCourse from "../FeatureViews/Scheduler/AddCourse";
+
 
 function rootRoutes(props) {
     return (
@@ -40,12 +43,26 @@ function rootRoutes(props) {
                 exact
                 path="/registration"
                 render={(passedProps) => <Registration {...passedProps} />} />
+            {/* Scheduler Routes */}
             <ProtectedRoute
-                path="/scheduler"
+                exact path="/scheduler"
                 render={(passedProps) => <Scheduler {...passedProps} />} />
+            <ProtectedRoute
+                path="/scheduler/view-session/:course_id/:session_id"
+                render={(passedProps) => <SessionView {...passedProps} />} />
+            <ProtectedRoute
+                path="/scheduler/add-course"
+                render={(passedProps) => <AddCourse {...passedProps} />} />
+            {/* 
+            <ProtectedRoute
+                path='/scheduler/resource'
+                render={(passedProps) => <ResourceView {...passedProps} />} /> */}
+
+
             {/* <ProtectedRoute
                 path="/directory"
                 render={(passedProps) => <UsersDirectory {...passedProps} />} /> */}
+
             <ProtectedRoute
                 path="/accounts"
                 render={(passedProps) => <Accounts {...passedProps} />} />
