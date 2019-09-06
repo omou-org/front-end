@@ -95,7 +95,7 @@ class ProfileHeading extends Component {
             case "instructor":
                 profileDetails = this.renderTeacherProfile();
                 break;
-            case "admin":
+            case "receptionist":
                 profileDetails = this.renderTeacherProfile();
             default:
         }

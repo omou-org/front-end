@@ -40,7 +40,7 @@ class Accounts extends Component {
             Object.assign(usersList, this.props.parents);
             Object.assign(usersList, this.props.students);
             Object.assign(usersList, this.props.instructors);
-            Object.assign(usersList, this.props.admin);
+            Object.assign(usersList, this.props.receptionist);
             return {usersList: usersList,}
         });
     }
@@ -56,7 +56,7 @@ class Accounts extends Component {
         Object.assign(usersList, this.props.parents);
         Object.assign(usersList, this.props.students);
         Object.assign(usersList, this.props.instructors);
-        Object.assign(usersList, this.props.admin);
+        Object.assign(usersList, this.props.receptionist);
         switch (newTabIndex) {
             case 0:
                 newUsersList = usersList;
@@ -68,7 +68,7 @@ class Accounts extends Component {
                 newUsersList = this.props.students;
                 break;
             case 3:
-                newUsersList = this.props.admin;
+                newUsersList = this.props.receptionist;
                 break;
             default:
                 newUsersList = usersList;
@@ -97,7 +97,6 @@ class Accounts extends Component {
     }
 
     render() {
-        console.log(this.props.admin);
         let styles = (username) => {
             return {
                 backgroundColor: this.stringToColor(username),
@@ -190,6 +189,7 @@ class Accounts extends Component {
                             <Tab label="ALL"/>
                             <Tab label="INSTRUCTORS"/>
                             <Tab label="STUDENTS"/>
+                            <Tab label="RECEPTIONIST"/>
                             <Tab label="ADMIN"/>
                             {/*<Tab label="PARENTS"/>*/}
                         </Tabs>
@@ -224,7 +224,7 @@ function mapStateToProps(state) {
         instructors: state.Users.InstructorList,
         parents: state.Users.ParentList,
         students: state.Users.StudentList,
-        admin: state.Users.AdminList,
+        receptionist: state.Users.ReceptionistList,
     };
 }
 

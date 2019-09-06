@@ -3286,13 +3286,13 @@ export default {
                 },
             },
         },
-        "AdminList": {
+        "ReceptionistList": {
             101: {
                 user_id: 101,
                 name: "Ryan Liou",
                 phone_number: "1234567899",
                 email: "ryan.liou@gmail.com",
-                role: 'admin',
+                role: 'receptionist',
                 birthday: "11/5/1985",
                 action_log: {
                     1: {
@@ -3322,7 +3322,7 @@ export default {
                 name: "Lian Ryou",
                 phone_number: "9921351863",
                 email: "lianryou@gmail.com",
-                role: 'admin',
+                role: 'receptionist',
                 birthday: "10/8/1965",
                 action_log: {
                     1: {

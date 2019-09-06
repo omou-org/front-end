@@ -108,14 +108,14 @@ class UserProfile extends Component {
             case "instructor":
                 user = this.props.instructors[accountID];
                 break;
-            case "admin":
-                user = this.props.admin[accountID];
+            case "receptionist":
+                user = this.props.receptionist[accountID];
                 break;
             default:
                 user = -1;
         }
         // this.setState({ ...CourseInView });
-        if (user != "admin") {
+        if (user != "receptionist") {
             this.setState({
                 user: user,
                 tabs: userTabs[accountType],
@@ -163,7 +163,7 @@ class UserProfile extends Component {
             fontSize: 50,
         };
         let tabs;
-        if (this.state.user.role !="admin") {
+        if (this.state.user.role !="receptionist") {
             tabs =
                 (<div>
                     <Tabs
@@ -256,7 +256,7 @@ function mapStateToProps(state) {
         students: state.Users.StudentList,
         parents: state.Users.ParentList,
         instructors: state.Users.InstructorList,
-        admin: state.Users.AdminList,
+        receptionist: state.Users.ReceptionistList,
     };
 }
 
