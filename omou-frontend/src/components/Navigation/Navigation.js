@@ -36,13 +36,8 @@ function Navigation(props) {
     }
 
     const NavList = [
-        {name: "Dashboard", link: "/", icon: <DashboardIcon/>},
-        {name: "Scheduler", link: "/scheduler", icon: <EventIcon/>},
-        // {name: "Courses", link: "/courses", icon: <CourseIcon/>},
-        {name: "Registration", link: "/registration", icon: <AssignmentIcon/>},
-        // {name: "Attendance", link: "/attendance", icon: <AttendanceIcon/>},
-        // {name: "Gradebook", link: "/gradebook", icon: <ClassIcon/>},
         {name: "Accounts", link: "/accounts", icon: <AccountsIcon/>},
+        {name: "Registration", link: "/registration", icon: <AssignmentIcon/>},
     ];
 
     const drawer = (
@@ -73,7 +68,7 @@ function Navigation(props) {
                                 <MenuIcon />
                             </IconButton>
                         </Hidden>
-                        <Typography component={NavLink} to="/" className="title">
+                        <Typography component={NavLink} to="/accounts" className="title">
                             omou
                         </Typography>
                         <div style={{
@@ -82,7 +77,7 @@ function Navigation(props) {
                         {
                             props.auth.token
                                 ? <Typography
-                                    className="login"
+                                    className="loginToggle"
                                     onClick={props.authActions.logout}>
                                     logout
                                 </Typography>

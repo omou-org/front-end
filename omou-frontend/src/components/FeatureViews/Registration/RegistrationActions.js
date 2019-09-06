@@ -61,46 +61,6 @@ function RegistrationActions(props) {
                     New Student
                 </Button>
             </Grid>
-            <Grid item>
-                <Button component={NavLink}
-                    to="/registration/form/instructor"
-                    variant="outlined"
-                    color="secondary"
-                    className="button">
-                    <NewUser className="icon" />
-                    New Instructor
-                </Button>
-            </Grid>
-            <Grid item>
-                <Button
-                    variant="outlined"
-                    color="secondary"
-                    className="button"
-                    aria-controls="simple-menu"
-                    aria-haspopup="true"
-                    onClick={handleClick}>
-                    <AssignmentIcon className="icon" />
-                    Register
-                </Button>
-                <StyledMenu
-                    anchorEl={anchorEl}
-                    keepMounted
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}>
-                    <MenuItem
-                        component={NavLink}
-                        to={`/registration/form/course/${courseRoute}`}>
-                        <NewCourse className="icon innerIcon" />
-                        <ListItemText primary="COURSE" />
-                    </MenuItem>
-                    <MenuItem
-                        component={NavLink}
-                        to={`/registration/form/tutoring/${courseRoute}`}>
-                        <NewTutor className="icon innerIcon" />
-                        <ListItemText primary="TUTORING" />
-                    </MenuItem>
-                </StyledMenu>
-            </Grid>
         </Grid>
     );
 }

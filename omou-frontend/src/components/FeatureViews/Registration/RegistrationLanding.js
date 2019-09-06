@@ -212,32 +212,6 @@ class RegistrationLanding extends Component {
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
-                                            <Grid item md={4} className={'course-action'}>
-                                                <Grid container alignItems={'center'} layout={'row'} style={{height:"100%"}}>
-                                                    <Grid item md={6} className={'course-status'}>
-                                                        <span className={'stats'}>
-                                                            {course.roster.length} / {course.capacity}
-                                                        </span>
-                                                        <span className={'label'}>
-                                                            Status
-                                                        </span>
-                                                    </Grid>
-                                                    <Grid item md={6}>
-                                                        <Button onClick={(e) => {
-                                                                    e.preventDefault();
-                                                                    if(course.capacity > course.filled){
-                                                                        this.goToRoute(`/registration/form/course/${encodeURIComponent(course.title)}`);
-                                                                    } else {
-                                                                        alert("The course is filled!");
-                                                                    }
-                                                                }}
-                                                                variant="contained"
-                                                                disabled={course.capacity <= course.filled}
-                                                                className="button primary">+ REGISTER</Button>
-                                                    </Grid>
-                                                </Grid>
-
-                                            </Grid>
                                         </Grid>
                                     </Paper>);
                                 })

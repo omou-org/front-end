@@ -32,7 +32,7 @@ function rootRoutes(props) {
             <ProtectedRoute
                 exact
                 path="/"
-                render={(passedProps) => <Dashboard {...passedProps} />}/>
+                render={(passedProps) => <Accounts {...passedProps} />}/>
 
             <ProtectedRoute
                 exact

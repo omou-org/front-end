@@ -40,7 +40,7 @@ function LoginPage(props) {
     });
 
     if (props.auth.token) {
-        props.history.push("/");
+        props.history.push("/accounts");
     }
 
     return (

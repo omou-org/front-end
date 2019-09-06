@@ -62,14 +62,16 @@
     }
   }
 
-  .login {
-    font-family: 'Roboto Slab', serif;
+  .loginToggle {
+    font-family: 'Roboto', sans-serif;
     font-style: normal;
-    font-weight: 700;
-    font-size: 24px;
+    font-weight: 400;
+    font-size: 16px;
     line-height: 26px;
     text-decoration: none;
-    color: $primaryColor;
+    color: $primaryFontColor;
     float: right;
+    cursor:pointer;
+    text-transform: capitalize;
   }
 }
