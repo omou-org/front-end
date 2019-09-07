@@ -35,7 +35,6 @@ import UpdateTeacher from "@material-ui/icons/PersonAdd";
 import EditIcon from "@material-ui/icons/Edit";
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 
-import {Divider, Typography, ListItem} from "@material-ui/core";
 import List from '@material-ui/core/List'
 import ListItemText from '@material-ui/core/ListItemText'
 
@@ -72,7 +71,7 @@ class SessionView extends Component {
 
             let instructorData = this.props.instructors
 
-   
+
 
             return {
                 sessionData: sessionData,
