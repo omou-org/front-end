@@ -1,8 +1,10 @@
 // React Imports
+
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {Route, Switch, Redirect} from "react-router-dom";
 import * as registrationActions from "../../actions/registrationActions";
+
 import PropTypes from "prop-types";
 import React from "react";
 
@@ -16,9 +18,15 @@ import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse"
 import CourseCategory from "../FeatureViews/Registration/CourseCategory";
 import LoginPage from "../Authentication/LoginPage.js";
 import ProtectedRoute from "./ProtectedRoute";
+
+import SessionView from "../FeatureViews/Scheduler/SessionView"
+import AddCourse from "../FeatureViews/Scheduler/AddCourse";
+
+
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
+
 
 function rootRoutes(props) {
     props.registrationActions.resetSubmitStatus();
@@ -37,21 +45,43 @@ function rootRoutes(props) {
             <ProtectedRoute
                 exact
                 path="/registration"
+
+                render={(passedProps) => <Registration {...passedProps} />} />
+            {/* Scheduler Routes */}
+            <ProtectedRoute
+                exact path="/scheduler"
+                render={(passedProps) => <Scheduler {...passedProps} />} />
+            <ProtectedRoute
+                path="/scheduler/view-session/:course_id/:session_id"
+                render={(passedProps) => <SessionView {...passedProps} />} />
+            <ProtectedRoute
+                path="/scheduler/add-course"
+                render={(passedProps) => <AddCourse {...passedProps} />} />
+            {/* 
+            <ProtectedRoute
+                path='/scheduler/resource'
+                render={(passedProps) => <ResourceView {...passedProps} />} /> */}
+
+
+
                 render={(passedProps) => <Registration {...passedProps} />}/>
 
             <ProtectedRoute
                 exact
                 path="/scheduler"
                 render={(passedProps) => <Scheduler {...passedProps} />}/>
+
             {/* <ProtectedRoute
                 path="/directory"
                 render={(passedProps) => <UsersDirectory {...passedProps} />} /> */}
+
 
             {/* Accounts */}
             <ProtectedRoute
                 exact
                 path="/accounts/:accountType/:accountID"
                 render={(passedProps) => <UserProfile {...passedProps} />}/>
+
             <ProtectedRoute
                 exact
                 path="/accounts"
