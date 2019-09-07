@@ -1,8 +1,8 @@
 // React Imports
 
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import {Route, Switch, Redirect} from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { Route, Switch, Redirect } from "react-router-dom";
 import * as registrationActions from "../../actions/registrationActions";
 
 import PropTypes from "prop-types";
@@ -20,7 +20,7 @@ import LoginPage from "../Authentication/LoginPage.js";
 import ProtectedRoute from "./ProtectedRoute";
 
 import SessionView from "../FeatureViews/Scheduler/SessionView"
-import AddCourse from "../FeatureViews/Scheduler/AddCourse";
+
 
 
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
@@ -34,13 +34,13 @@ function rootRoutes(props) {
         <Switch>
             <Route
                 path="/login"
-                render={(passedProps) => <LoginPage setLogin={props.setLogin} {...passedProps} />}/>
+                render={(passedProps) => <LoginPage setLogin={props.setLogin} {...passedProps} />} />
 
             {/* Main Feature Views */}
             <ProtectedRoute
                 exact
                 path="/"
-                render={(passedProps) => <Dashboard {...passedProps} />}/>
+                render={(passedProps) => <Dashboard {...passedProps} />} />
 
             <ProtectedRoute
                 exact
@@ -54,9 +54,7 @@ function rootRoutes(props) {
             <ProtectedRoute
                 path="/scheduler/view-session/:course_id/:session_id"
                 render={(passedProps) => <SessionView {...passedProps} />} />
-            <ProtectedRoute
-                path="/scheduler/add-course"
-                render={(passedProps) => <AddCourse {...passedProps} />} />
+
             {/* 
             <ProtectedRoute
                 path='/scheduler/resource'
@@ -64,12 +62,12 @@ function rootRoutes(props) {
 
 
 
-                render={(passedProps) => <Registration {...passedProps} />}/>
+            render={(passedProps) => <Registration {...passedProps} />}/>
 
             <ProtectedRoute
                 exact
                 path="/scheduler"
-                render={(passedProps) => <Scheduler {...passedProps} />}/>
+                render={(passedProps) => <Scheduler {...passedProps} />} />
 
             {/* <ProtectedRoute
                 path="/directory"
@@ -80,16 +78,16 @@ function rootRoutes(props) {
             <ProtectedRoute
                 exact
                 path="/accounts/:accountType/:accountID"
-                render={(passedProps) => <UserProfile {...passedProps} />}/>
+                render={(passedProps) => <UserProfile {...passedProps} />} />
 
             <ProtectedRoute
                 exact
                 path="/accounts"
-                render={(passedProps) => <Accounts {...passedProps} />}/>
+                render={(passedProps) => <Accounts {...passedProps} />} />
             <ProtectedRoute
                 exact
                 path={'/accounts/:accountType/:accountID/:courseID'}
-                render={(passedProps)=> <CourseSessionStatus {...passedProps} />}/>
+                render={(passedProps) => <CourseSessionStatus {...passedProps} />} />
 
             {/* Registration Routes */}
             <ProtectedRoute
@@ -97,12 +95,12 @@ function rootRoutes(props) {
                 render={(passedProps) => <RegistrationForm {...passedProps} />} />
             <ProtectedRoute
                 path="/registration/course/:courseID?/:courseTitle?"
-                render={(passedProps) => <RegistrationCourse {...passedProps} />}/>
+                render={(passedProps) => <RegistrationCourse {...passedProps} />} />
             <ProtectedRoute
                 path="/registration/category/:categoryID"
-                render={(passedProps) => <CourseCategory {...passedProps} />}/>
-            <Route path={"/PageNotFound"} component={ErrorNotFoundPage}/>
-            <Redirect to={"/PageNotFound"}/>
+                render={(passedProps) => <CourseCategory {...passedProps} />} />
+            <Route path={"/PageNotFound"} component={ErrorNotFoundPage} />
+            <Redirect to={"/PageNotFound"} />
         </Switch>
     );
 }

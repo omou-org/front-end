@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes, { bool } from 'prop-types';
 import React, { Component } from 'react';
+
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -10,7 +11,6 @@ import interactionPlugin from '@fullcalendar/interaction'
 import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
 
 import * as calenderActions from '../../../actions/calenderActions';
-
 
 // Material-Ui dependencies
 
@@ -32,11 +32,10 @@ import SearchIcon from '@material-ui/icons/Search';
 // Tool tip dependencies 
 import tippy from 'tippy.js'
 import 'tippy.js/themes/google.css'
-
-import SessionActions from "./SessionActions"
-
-
 import './scheduler.scss'
+
+
+
 
 class Scheduler extends Component {
     constructor(props) {
@@ -48,6 +47,7 @@ class Scheduler extends Component {
             currentDate: "",
             viewValue: '',
             filterValue: "C",
+            resourceFilterValue: "R",
             calendarIcon: true,
             resourceIcon: false,
 
@@ -61,18 +61,15 @@ class Scheduler extends Component {
         this.setState({
             calendarEvents: this.getEvents(),
         })
-        console.log(this.state.viewValue)
+
     }
 
     componentDidMount() {
         this.setState({
-            calendarResources: this.getRoomResources(),
             currentDate: this.currentDate()
         })
 
     }
-
-
 
     // The eventRender function handles the tooltip
     handleToolTip(info) {
@@ -83,6 +80,8 @@ class Scheduler extends Component {
             else
                 return string;
         };
+
+
 
         new tippy(info.el, {
             content: `
@@ -162,7 +161,8 @@ class Scheduler extends Component {
         this.currentDate()
         this.setState({
             resourceIcon: true,
-            calendarIcon: false
+            calendarIcon: false,
+            calendarResources: this.getRoomResources(),
         })
 
     }
@@ -201,6 +201,7 @@ class Scheduler extends Component {
                 session["description"] = this.props.courses[session.course_id].description;
                 session['type'] = this.props.courses[session.course_id].type;
                 session['resourceId'] = this.props.courses[session.course_id].room_id;
+
                 return session;
 
             })
@@ -218,18 +219,19 @@ class Scheduler extends Component {
             return newSessions
         })
 
-
         return sessionsInViewWithUrl
 
     }
     // This function is used in material-ui for the eventhandler
     handleFilterChange = (name) => event => {
+        console.log(event)
         this.setState({
             ...this.state,
             [name]: event.target.value
         })
         this.filterEvent(event.target.value)
     }
+
     // This will filter out event based on type
     filterEvent = (type) => {
         // Grabs the array of objects to filter 
@@ -241,6 +243,31 @@ class Scheduler extends Component {
             }))
     }
 
+    handleResourceFilterChange = (name) => event => {
+        this.setState({
+            ...this.state,
+            [name]: event.target.value
+        })
+        if (event.target.value === "R") {
+            let rooms = this.getRoomResources()
+            this.setState(prevState => (
+                {
+                    calendarResources: rooms
+                }
+            ))
+            console.log(rooms)
+        } else {
+            let instructors = this.getInstructorResources()
+            console.log(instructors)
+            this.setState(prevState => (
+                {
+                    calendarResources: instructors
+                }
+            ))
+        }
+    }
+
+
     // gets the values of course object 
     getRoomResources = () => {
         let courses = Object.values(this.props.courses);
@@ -248,37 +275,29 @@ class Scheduler extends Component {
             return {
                 "id": course.course_id,
                 "title": `Room ${course.room_id}`,
+
             }
         });
-        console.log(resourceList)
+
         return resourceList
     }
 
+    // gets values of instructors and places them in the resource col
+    getInstructorResources = () => {
+        let instructor = Object.values(this.props.instructors)
+        let instructorList = instructor.map((inst) => {
+            console.log(inst)
+            return {
+                "id": inst.user_id,
+                'title': inst.name
+            }
 
-        return (<Paper className="paper">
-            <SessionActions />
+        })
 
-            <div className='demo-app-calendar'>
-                <FullCalendar
-                    defaultView="timeGridDay"
-                    header={{
-                        left: 'today prev,next',
-                        center: ' title, ',
-                        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-                    }}
-                    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listViewPlugin, resourceTimelinePlugin, bootstrapPlugin]}
-                    ref={this.calendarComponentRef}
-                    weekends={this.state.calendarWeekends}
-                    events={sessionsInViewWithUrl}
-                    displayEventTime={true}
-                    timeZone={'local'}
-                    themeSystem={''}
-                    eventLimit={4}
-                    dateClick={this.handleDateClick}
-                    schedulerLicenseKey={'GPL-My-Project-Is-Open-Source'}
-                />
+        return instructorList
+    }
 
-            </div>
+
 
 
     render() {
@@ -309,21 +328,42 @@ class Scheduler extends Component {
                                 </IconButton>
                             </Grid>
                             <Grid item md={1} lg={1}>
-                                <FormControl className={'filter-select'}>
-                                    <InputLabel htmlFor="filter-class-type"></InputLabel>
-                                    <Select
-                                        native
-                                        value={this.state.filterValue}
-                                        onChange={this.handleFilterChange('filterValue')}
-                                        inputProps={{
-                                            name: 'filterValue',
-                                            id: 'filter-class-type',
-                                        }}
-                                    >
-                                        <option value={"C"}>Class</option>
-                                        <option value={"T"}>Tutor</option>
-                                    </Select>
-                                </FormControl>
+                                {(this.state.calendarIcon) ?
+                                    <FormControl className={'filter-select'}>
+                                        <InputLabel htmlFor="filter-class-type"></InputLabel>
+
+                                        <Select
+                                            native
+                                            value={this.state.filterValue}
+                                            onChange={this.handleFilterChange('filterValue')}
+                                            inputProps={{
+                                                name: 'filterValue',
+                                                id: 'filter-class-type',
+                                            }}
+                                        >
+                                            <option value={"C"}>Class</option>
+                                            <option value={"T"}>Tutor</option>
+                                        </Select>
+                                    </FormControl>
+                                    :
+                                    <FormControl className={'filter-select'}>
+                                        <InputLabel htmlFor="filter-resource-type"></InputLabel>
+
+                                        <Select
+                                            native
+                                            value={this.state.resourceFilterValue}
+                                            onChange={this.handleResourceFilterChange('resourceFilterValue')}
+                                            inputProps={{
+                                                name: 'resourceFilterValue',
+                                                id: 'filter-resource-type',
+                                            }}
+                                        >
+                                            <option value={"R"}>Room</option>
+                                            <option value={"I"}>Instructors</option>
+                                        </Select>
+                                    </FormControl>
+                                }
+
                             </Grid>
                             <Grid item lg={1} md={1}>
                                 <IconButton onClick={this.goToPrev} className={'prev-month'} aria-label="prev-month">
@@ -375,13 +415,17 @@ class Scheduler extends Component {
                             ref={this.calendarComponentRef}
                             weekends={this.state.calendarWeekends}
                             displayEventTime={true}
-                            events={this.state.calendarEvents}
+                            eventColor={"none"}
+                            eventSources={[
+                                { events: this.state.calendarEvents, color: '#6FB87B' }
+                            ]}
+
                             timeZone={'local'}
                             eventMouseEnter={this.handleToolTip}
                             eventLimit={4}
                             nowIndicator={true}
                             resourceOrder={'title'}
-                            resourceAreaWidth={'15%'}
+                            resourceAreaWidth={'20%'}
                             resources={this.state.calendarResources}
                             schedulerLicenseKey={'GPL-My-Project-Is-Open-Source'}
                         />
