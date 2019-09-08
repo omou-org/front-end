@@ -548,7 +548,7 @@ class Form extends Component {
                 </FormControl>;
             case "course": {
                 let courseList = Object.keys(this.props.courses)
-                    .filter((courseID) => this.props.courses[courseID].capacity > this.props.courses[courseID].filled)
+                    .filter((courseID) => this.props.courses[courseID].capacity > this.props.courses[courseID].roster.length)
                     .map((courseID) => ({
                         value: courseID,
                         label: `${courseID}: ${this.props.courses[courseID].title}`,

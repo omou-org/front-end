@@ -225,7 +225,7 @@ class RegistrationLanding extends Component {
                                                     <Grid item md={6}>
                                                         <Button onClick={(e) => {
                                                                     e.preventDefault();
-                                                                    if(course.capacity > course.filled){
+                                                                    if(course.capacity > course.roster.length){
                                                                         this.goToRoute(`/registration/form/course/${encodeURIComponent(course.title)}`);
                                                                     } else {
                                                                         alert("The course is filled!");

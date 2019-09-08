@@ -13,7 +13,6 @@ export default {
                 time: "8:30pm - 2:00pm",
                 tuition: 450,
                 capacity: 20,
-                filled: 14,
                 grade: 5,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test. " +
                     " The material will cover all material from the fifth grade curriculum as well as some sixth grade content" +
@@ -29,7 +28,6 @@ export default {
                 time: "6:30pm - 8:00pm",
                 tuition: 500,
                 capacity: 15,
-                filled: 2,
                 grade: 8,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
@@ -42,7 +40,6 @@ export default {
                 time: "5:30pm - 7:00pm",
                 tuition: 1480,
                 capacity: 12,
-                filled: 3,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
@@ -55,7 +52,6 @@ export default {
                 time: "7:10pm - 8:40pm",
                 tuition: 1480,
                 capacity: 15,
-                filled: 2,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             }, {
@@ -67,7 +63,6 @@ export default {
                 time: "8:30pm - 2:00pm",
                 tuition: 450,
                 capacity: 8,
-                filled: 4,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
@@ -80,7 +75,6 @@ export default {
                 time: "5:30pm - 7:00pm",
                 tuition: 1440,
                 capacity: 12,
-                filled: 12,
                 grade: 8,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             }, {
@@ -92,7 +86,6 @@ export default {
                 time: "5:00pm - 8:00pm",
                 tuition: 700,
                 capacity: 15,
-                filled: 14,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
@@ -105,7 +98,6 @@ export default {
                 time: "9:00am - 12:00pm",
                 tuition: 700,
                 capacity: 15,
-                filled: 8,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
@@ -118,7 +110,6 @@ export default {
                 time: "5:30pm - 8:30pm",
                 tuition: 700,
                 capacity: 15,
-                filled: 13,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
@@ -131,7 +122,6 @@ export default {
                 time: "1:00pm - 4:00pm",
                 tuition: 700,
                 capacity: 15,
-                filled: 2,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
@@ -253,7 +243,6 @@ export default {
                 subject: "Math",
                 tags: ["Test Prep", "Common Core", "All School Districts"],
                 roster: [23, 99, 64],
-                filled: 10,
             },
             2: {
                 course_id: 2,
@@ -268,7 +257,6 @@ export default {
                 instructor_id: 11,
                 tuition: 500,
                 capacity: 9,
-                filled: 9,
                 grade: 8,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
@@ -290,7 +278,6 @@ export default {
                 instructor_id: 12,
                 tuition: 60, // $60 per session
                 capacity: 1,
-                filled: 0,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
@@ -312,7 +299,6 @@ export default {
                 instructor_id: 10,
                 tuition: 85, // $85 per session
                 capacity: 1,
-                filled: 1,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
@@ -334,7 +320,6 @@ export default {
                 instructor_id: 11,
                 tuition: 450,
                 capacity: 8,
-                filled: 4,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
@@ -356,7 +341,6 @@ export default {
                 instructor_id: 13,
                 tuition: 1440,
                 capacity: 12,
-                filled: 10,
                 grade: 8,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
@@ -378,7 +362,6 @@ export default {
                 instructor_id: 11,
                 tuition: 85, // $85 per session
                 capacity: 1,
-                filled: 1,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
@@ -400,7 +383,6 @@ export default {
                 instructor_id: 12,
                 tuition: 700,
                 capacity: 6,
-                filled: 5,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
@@ -422,7 +404,6 @@ export default {
                 instructor_id: 11,
                 tuition: 700,
                 capacity: 5,
-                filled: 3,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
@@ -444,7 +425,6 @@ export default {
                 instructor_id: 10,
                 tuition: 700,
                 capacity: 15,
-                filled: 12,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
@@ -2684,9 +2664,11 @@ export default {
         },
         24: {
             2: {
-                1: {method: "Credit Card",
+                1: {
+                    method: "Credit Card",
                     amount: 500,
-                    date: "2020-06-01"},
+                    date: "2020-06-01"
+                },
             },
             5: {},
             6: {

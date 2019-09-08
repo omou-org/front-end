@@ -29,10 +29,10 @@ import './registration.scss'
 import '../../../theme/theme.scss';
 
 const rowHeadings = [
-    {id:'Course', numberic:false, disablePadding: false},
-    {id:'Instructor', numberic:false, disablePadding: false},
-    {id:'Registration Status', numberic:false, disablePadding: false},
-    {id:'Register', numberic:false, disablePadding: false}
+    {id: 'Course', numberic: false, disablePadding: false},
+    {id: 'Instructor', numberic: false, disablePadding: false},
+    {id: 'Registration Status', numberic: false, disablePadding: false},
+    {id: 'Register', numberic: false, disablePadding: false}
 ];
 
 class FullRegistration extends Component {
@@ -48,39 +48,39 @@ class FullRegistration extends Component {
         };
     }
 
-    forwardCategories(){
-        this.setState((oldState)=>{
-            if(oldState.maxCategory + 1 < this.props.categories.length){
+    forwardCategories() {
+        this.setState((oldState) => {
+            if (oldState.maxCategory + 1 < this.props.categories.length) {
                 return {
-                    maxCategory: oldState.maxCategory+1,
-                    minCategory: oldState.minCategory+1
+                    maxCategory: oldState.maxCategory + 1,
+                    minCategory: oldState.minCategory + 1
                 }
             }
         });
     }
 
-    backCategories(){
-        this.setState((oldState)=>{
-            if(oldState.minCategory - 1 >= 0){
+    backCategories() {
+        this.setState((oldState) => {
+            if (oldState.minCategory - 1 >= 0) {
                 return {
-                    maxCategory: oldState.maxCategory-1,
-                    minCategory: oldState.minCategory-1
+                    maxCategory: oldState.maxCategory - 1,
+                    minCategory: oldState.minCategory - 1
                 }
             }
         });
     }
 
-    expandCategories(){
+    expandCategories() {
         let newMaxCategory = 0;
         let newMinCategory = 0;
-        if(this.state.maxCategory === this.props.courses.length-1){
+        if (this.state.maxCategory === this.props.courses.length - 1) {
             newMaxCategory = 2;
             newMinCategory = 0;
         } else {
             newMaxCategory = this.props.courses.length - 1;
             newMinCategory = 0;
         }
-        this.setState( (old)=>{
+        this.setState((old) => {
             return {
                 maxCategory: newMaxCategory,
                 minCategory: newMinCategory,
@@ -89,7 +89,7 @@ class FullRegistration extends Component {
         });
     }
 
-    goToRoute(route){
+    goToRoute(route) {
         this.props.history.push(route);
     }
 
@@ -116,7 +116,7 @@ class FullRegistration extends Component {
                 case "Course":
                     return this.stableCmp(course1, course2, ({course_title}) => course_title);
                 case "Registration Status":
-                    return this.stableCmp(course1, course2, ({capacity, filled}) => filled);
+                    return this.stableCmp(course1, course2, ({roster}) => roster.length);
                 default:
                     return course2.index - course1.index;
             }
@@ -139,12 +139,12 @@ class FullRegistration extends Component {
         });
     }
 
-    getInstructorNameByID(teacher_id){
-        let teacherName=this.props.teachers.find((teacher)=>{
-            return teacher.user_id===teacher_id;
+    getInstructorNameByID(teacher_id) {
+        let teacherName = this.props.teachers.find((teacher) => {
+            return teacher.user_id === teacher_id;
         });
-       teacherName=teacherName.name;
-       return teacherName;
+        teacherName = teacherName.name;
+        return teacherName;
     }
 
     renderTableHeader() {
@@ -174,7 +174,7 @@ class FullRegistration extends Component {
         return (
             <div className="">
                 <Grid container>
-                    <Grid item xs={12} style={{display:'none'}}>
+                    <Grid item xs={12} style={{display: 'none'}}>
                         <Grid container className={"course-categories"} spacing={16}>
                             <div className={this.state.minCategory !== 0 ? "visible" : ""}>
                                 <BackIcon className={`control back `}
@@ -231,7 +231,7 @@ class FullRegistration extends Component {
                     <Typography variant={'h3'} align={"left"}>
                         Registration Catalog
                     </Typography>
-                    <Grid item xs={12} style={{marginTop:'2%'}}>
+                    <Grid item xs={12} style={{marginTop: '2%'}}>
                         <Paper className={"paper"}>
                             <Grow in={true}>
                                 <Table>
@@ -252,26 +252,26 @@ class FullRegistration extends Component {
                                                         style={{textDecoration: 'none', cursor: 'pointer'}}
                                                         align="left">
                                                         {this.getInstructorNameByID.bind(this)(course.instructor_id)}
-                                                        </TableCell>
+                                                    </TableCell>
                                                     <TableCell
                                                         onClick={(e) => {e.preventDefault(); this.goToRoute('/registration/course/' + course.course_id + "/" + course.course_title)}}
                                                         style={{textDecoration: 'none', cursor: 'pointer'}}
                                                         align="left">
                                                         <div className={'space-left'}>
-                                                            {(course.filled)} / {course.capacity}
+                                                            {(course.roster.length)} / {course.capacity}
                                                         </div>
                                                     </TableCell>
                                                     <TableCell align="left">
                                                         <Button component={NavLink}
                                                             onClick={() => {
-                                                                if(course.capacity > course.filled){
+                                                                if (course.capacity > course.roster.length) {
                                                                     this.goToRoute(`/registration/form/course/${encodeURIComponent(course.course_title)}`);
                                                                 } else {
                                                                     alert("The course is filled!");
                                                                 }
                                                             }}
                                                             variant="contained"
-                                                            disabled={course.capacity <= course.filled}
+                                                            disabled={course.capacity === course.roster.length}
                                                             className="button primary">+ REGISTER</Button>
                                                     </TableCell>
                                                 </TableRow>
