@@ -1,8 +1,8 @@
-import {connect} from "react-redux";
-import React, {Component} from "react";
+import { connect } from "react-redux";
+import React, { Component } from "react";
 import BackButton from "../../BackButton";
 import Grid from "@material-ui/core/Grid";
-import {Card, Paper, Typography} from "@material-ui/core";
+import { Card, Paper, Typography } from "@material-ui/core";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import ListView from "@material-ui/icons/ViewList";
@@ -14,8 +14,10 @@ import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
+import Chip from "@material-ui/core/Chip";
 import CardActions from "@material-ui/core/CardActions";
-import {withRouter} from "react-router-dom";
+import { withRouter } from "react-router-dom";
+import './Accounts.scss';
 
 import Avatar from "@material-ui/core/Avatar";
 
@@ -61,29 +63,43 @@ class ProfileCard extends Component {
             backgroundColor: this.stringToColor(username),
             color: "white",
             margin: 9,
-            width: 38,
-            height: 38,
-            fontSize: 14,
+            width: 80,
+            height: 80,
+            fontSize: 25,
+            margin: 12,
         });
 
         return (
-            <Grid item xs={3}>
+            <Grid item xs={6}>
                 <Card key={this.props.user.user_id}>
-                    <CardContent className={"text"}>
-                        <Typography gutterBottom variant={"h6"} component={"h2"} align={'left'}>
-                            {this.props.user.name}
-                        </Typography>
-                        <Typography component="p" align={'left'}>
-                            {this.props.user.role}
-                        </Typography>
-                    </CardContent>
-                    <CardActions>
-                        <Button
-                            size={"small"}
-                            color={"secondary"}>
-                            Call
+                    <Grid container>
+                        <Grid item xs={3}>
+                            <Avatar
+                                style={styles(this.props.user.name)}>{this.props.user.name.match(/\b(\w)/g).join("")}
+                            </Avatar>
+                        </Grid>
+                        <Grid item xs={9}>
+                            <CardContent className={"text"}>
+
+                                <Typography gutterBottom variant={"h6"} component={"h2"} align={'left'}>
+                                    {this.props.user.name}
+                                </Typography>
+                                <Typography component="p" align={'left'}>
+                                    <Chip
+                                        className={`userLabel ${this.props.user.role}`}
+                                        label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
+                                    />
+                                </Typography>
+                            </CardContent>
+                            <CardActions>
+                                <Button
+                                    size={"small"}
+                                    color={"secondary"}>
+                                    Call
                         </Button>
-                    </CardActions>
+                            </CardActions>
+                        </Grid>
+                    </Grid>
                 </Card>
             </Grid>
         )

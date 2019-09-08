@@ -18,13 +18,6 @@
   .heading {
     margin: 25px 0;
   }
-  .icon{
-    cursor:pointer;
-    color:$secondaryFontColor;
-    &.active{
-      color:$primaryColor;
-    }
-  }
 
   .AccountsTable {
     margin-top: 20px;
@@ -32,25 +25,23 @@
       cursor: pointer;
     }
   }
-
-  .accounts-list-wrapper{
-    padding-top:15px;
-    height:100%;
-
-  }
 }
 
 /*Profile Heading Styles*/
 .UserProfile {
   .paper {
     padding: 3%;
+
+  .ActionTable{
+    margin-top: -20px;
+  }
     .headingPadding {
       padding-left: 3%;
     }
     .rowPadding {
       display: flex;
       padding: 1%;
-      align-content: flex-start;
+      align-content: left;
     }
   }
   .padding {
@@ -79,5 +70,27 @@
   .TabIcon {
     display: inline-flex;
     vertical-align: middle;
+  }
+  
+  .left-align{
+    margin-left:-40%;
+  }
+}
+.userLabel{
+
+  color: white;
+  font-size: 18px;
+  padding: 0 20px 0 20px;
+  &.instructor {
+    background-color: $instructorColor;
+  }
+  &.student {
+    background-color: $studentColor;
+  }
+  &.receptionist {
+    background-color: $receptionistColor;
+  }
+  &.parent{
+    background-color: $parentColor;
   }
 }
