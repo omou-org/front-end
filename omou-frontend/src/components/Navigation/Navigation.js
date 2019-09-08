@@ -82,7 +82,7 @@ function Navigation(props) {
                         {
                             props.auth.token
                                 ? <Typography
-                                    className="login"
+                                    className="loginToggle"
                                     onClick={props.authActions.logout}>
                                     logout
                                 </Typography>
