@@ -32,9 +32,9 @@
   .paper {
     padding: 3%;
 
-  .ActionTable{
-    margin-top: -20px;
-  }
+    .ActionTable {
+      margin-top: -20px;
+    }
     .headingPadding {
       padding-left: 3%;
     }
@@ -51,6 +51,19 @@
   .userLabel {
     margin-top: 28px;
     margin-left: 40px;
+  }
+  .TabIcon {
+    display: inline-flex;
+    vertical-align: middle;
+  }
+
+  .left-align {
+    margin-left: -40%;
+  }
+  
+}.ProfileCard,
+.UserProfile {
+  .userLabel {
     color: white;
     font-size: 18px;
     padding: 0 20px 0 20px;
@@ -63,34 +76,8 @@
     &.receptionist {
       background-color: $receptionistColor;
     }
-    &.parent{
+    &.parent {
       background-color: $parentColor;
     }
-  }
-  .TabIcon {
-    display: inline-flex;
-    vertical-align: middle;
-  }
-  
-  .left-align{
-    margin-left:-40%;
-  }
-}
-.userLabel{
-
-  color: white;
-  font-size: 18px;
-  padding: 0 20px 0 20px;
-  &.instructor {
-    background-color: $instructorColor;
-  }
-  &.student {
-    background-color: $studentColor;
-  }
-  &.receptionist {
-    background-color: $receptionistColor;
-  }
-  &.parent{
-    background-color: $parentColor;
   }
 }
