@@ -17,8 +17,6 @@ import Button from "@material-ui/core/Button";
 import Chip from "@material-ui/core/Chip";
 import CardActions from "@material-ui/core/CardActions";
 import { withRouter } from "react-router-dom";
-import EmailIcon from "@material-ui/icons/EmailOutlined";
-import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import './Accounts.scss';
 
 import Avatar from "@material-ui/core/Avatar";
@@ -35,10 +33,6 @@ class ProfileCard extends Component {
 
     componentWillMount() {
 
-    }
-
-    addDashes(f) {
-        return f && ("(" + f.slice(0, 3) + "-" + f.slice(3, 6) + "-" + f.slice(6, 15) + ")");
     }
 
     goToRoute(route) {
@@ -69,27 +63,22 @@ class ProfileCard extends Component {
             backgroundColor: this.stringToColor(username),
             color: "white",
             margin: 9,
-            width: 120,
-            height: 120,
-            fontSize: 40,
-            margin: 20,
+            width: 80,
+            height: 80,
+            fontSize: 25,
+            margin: 12,
         });
 
         return (
-            <Grid item xs={6} className="ProfileCard">
-                <Card key={this.props.user.user_id}
-                    style={{ cursor: "pointer" }}
-                    onClick={(event) => {
-                        event.preventDefault();
-                        this.goToRoute(`/${this.props.user.role}/${this.props.user.user_id}`);
-                    }}>
+            <Grid item xs={6}>
+                <Card key={this.props.user.user_id}>
                     <Grid container>
-                        <Grid item xs={4}>
+                        <Grid item xs={3}>
                             <Avatar
                                 style={styles(this.props.user.name)}>{this.props.user.name.match(/\b(\w)/g).join("")}
                             </Avatar>
                         </Grid>
-                        <Grid item xs={8}>
+                        <Grid item xs={9}>
                             <CardContent className={"text"}>
 
                                 <Typography gutterBottom variant={"h6"} component={"h2"} align={'left'}>
@@ -101,34 +90,14 @@ class ProfileCard extends Component {
                                         label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
                                     />
                                 </Typography>
-                                <Typography>
-                                    <Grid item xs={8} style={{marginTop:10}}>
-                                        <Grid container>
-                                            <Grid item md={2} align="left">
-                                                <PhoneIcon />
-                                            </Grid>
-                                            <Grid item md={10} align="left">
-                                                {this.props.user.user_id}
-                                            </Grid>
-                                            <Grid item md={2} align="left">
-                                                <PhoneIcon />
-                                            </Grid>
-                                            <Grid item md={10} align="left">
-                                                {this.addDashes(this.props.user.phone_number)}
-                                            </Grid>
-                                        </Grid>
-                                        <Grid container>
-                                            <Grid item md={2} align="left">
-                                                <EmailIcon />
-                                            </Grid>
-                                            <Grid item md={10} align="left">
-                                                {this.props.user.email}
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                </Typography>
                             </CardContent>
-
+                            <CardActions>
+                                <Button
+                                    size={"small"}
+                                    color={"secondary"}>
+                                    Call
+                        </Button>
+                            </CardActions>
                         </Grid>
                     </Grid>
                 </Card>
