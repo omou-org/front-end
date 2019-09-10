@@ -11,7 +11,7 @@ import Button from "@material-ui/core/Button";
 
 function ErrorNotFoundPage(props) {
     return (
-        <div>
+        <div className={'error-page'}>
             <Paper className={'paper'}>
                 <BackButton />
                 <hr />
