@@ -54,60 +54,22 @@ const PayCourses = (props) => {
     });
 
     return (
-        <Grid container>
+        <Grid>
             <Grid item md={6}>
-                <Grid container className={'payment-table-heading'}>
-                    <Grid item md={1}>
-                    </Grid>
-                    <Grid item md={2}>
-                        <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
-                            Student
-                        </Typography>
-                    </Grid>
-                    <Grid item md={2}>
-                        <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
-                        Unpaid&nbsp;Courses
-                        </Typography>
-                    </Grid>
-                    <Grid item md={2}>
-                        <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
-                        Tuition
-                        </Typography>
-                    </Grid>
-                   
-                </Grid>
-            </Grid>
-            <Grid container spacing={8}>
-            <Grid item md={12} className={'accounts-table-row'}>
-                        <Paper square={true} >
-                            <Grid container>
-                                <Grid item md={1}>
-                                </Grid>
-                                <Grid item md={3} >
-                                    <Typography align={'left'}>
-                                        {course.title}
-                                    </Typography>
-                                </Grid>
-                                <Grid item md={3}>
-                                    <Typography align={'left'}>
-                                        {startDate} - {endDate}
-                                    </Typography>
-                                </Grid>
-                                <Grid item md={2}>
-                                    <Typography align={'left'}>
-                                        {Days}
-                                    </Typography>
-                                </Grid>
-                                <Grid item md={3}>
-                                    <Typography align={'left'}>
-                                        {startTime} - {endTime}
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-                        </Paper>
-                    </Grid>
-            </Grid>
-            
+                <Table component={Paper}>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align="left">
+                                Student
+                            </TableCell>
+                            <TableCell align="left">
+                                Unpaid&nbsp;Courses
+                            </TableCell>
+                            <TableCell align="left">
+                                Tuition
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
                     <TableBody>
                         {rows.map(({
                             "student": {first_name, last_name, user_id},
@@ -136,6 +98,7 @@ const PayCourses = (props) => {
                     to={`/accounts/parents/${props.user.user_id}/pay`}>
                     $ Pay
                 </Button>
+            </Grid>
         </Grid>
     );
 };
