@@ -60,6 +60,7 @@ class Accounts extends Component {
         Object.assign(usersList, this.props.parents);
         Object.assign(usersList, this.props.students);
         Object.assign(usersList, this.props.instructors);
+        Object.assign(usersList, this.props.receptionist);
         switch (newTabIndex) {
             case 0:
                 newUsersList = usersList;
@@ -70,9 +71,9 @@ class Accounts extends Component {
             case 2:
                 newUsersList = this.props.students;
                 break;
-            // case 3:
-            //     newUsersList = this.props.parents;
-            //     break;
+            case 3:
+                newUsersList = this.props.receptionist;
+                break;
             default:
                 newUsersList = usersList;
         }
@@ -178,8 +179,9 @@ class Accounts extends Component {
                             <Tab label="ALL"/>
                             <Tab label="INSTRUCTORS"/>
                             <Tab label="STUDENTS"/>
-                            {/*<Tab label="PARENTS"/>*/}
+                            <Tab label="RECEPTIONIST"/>
                             <Tab label="ADMIN"/>
+                            {/*<Tab label="PARENTS"/>*/}
                         </Tabs>
                     </Grid>
                     <Grid item xs={2} className="toggleView">
@@ -219,6 +221,7 @@ function mapStateToProps(state) {
         instructors: state.Users.InstructorList,
         parents: state.Users.ParentList,
         students: state.Users.StudentList,
+        receptionist: state.Users.ReceptionistList,
     };
 }
 
