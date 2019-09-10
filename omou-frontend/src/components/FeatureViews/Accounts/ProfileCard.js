@@ -97,12 +97,13 @@ class ProfileCard extends Component {
                                 </Typography>
                                 <Typography component="p" align={'left'}>
                                     <Chip
+                                        style={{ cursor: "pointer" }}
                                         className={`userLabel ${this.props.user.role}`}
                                         label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
                                     />
                                 </Typography>
                                 <Typography>
-                                    <Grid item xs={8} style={{marginTop:10}}>
+                                    <Grid item xs={8} style={{ marginTop: 10 }}>
                                         <Grid container>
                                             <Grid item md={2} align="left">
                                                 <PhoneIcon />
