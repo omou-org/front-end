@@ -94,6 +94,7 @@ class ProfileHeading extends Component {
         return (
             <Grid container >
                 <Grid item md={10}>
+                    <Grid container>
                     <Grid item md={1} className="rowPadding">
                         <IDIcon height={24} width={24} />
                     </Grid>
@@ -122,9 +123,8 @@ class ProfileHeading extends Component {
                     </Grid>
                     <Grid item md={6} className="rowPadding">
                     </Grid>
-
+                    </Grid>
                 </Grid>
-
             </Grid>);
     }
 
