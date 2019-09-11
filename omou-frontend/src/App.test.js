@@ -1,15 +1,43 @@
-const faker = require('faker');
 const puppeteer = require('puppeteer');
+const faker = require('faker');
 
 const person = {
   name: faker.name.firstName() + ' ' + faker.name.lastName(),
-  email: faker.internet.email(),
+  email: "calvin@email.com",
   phone: faker.phone.phoneNumber(),
   message: faker.random.words(),
-  password: faker.random.word(),
+  password: "password"
 };
 
-const appUrlBase = 'http://localhost:3002'
+
+const isDebugging = () => {
+  let debugging_mode = {
+    headless: false,
+    slowMo: 50,
+    devtools: true,
+  };
+  return process.env.NODE_ENV === 'debug' ? debugging_mode : {};
+};
+
+let browser;
+let page;
+beforeAll(async () => {
+  browser = await puppeteer.launch(isDebugging());
+  page = await browser.newPage();
+  await page.goto('http://localhost:3000/');
+  page.emulate({
+    viewport: {
+      width: 1366,
+      height: 768
+    },
+    userAgent: ''
+  });
+
+});
+
+
+
+const appUrlBase = 'http://localhost:3000'
 const routes = {
   public: {
     login: `${appUrlBase}/login`,
@@ -23,18 +51,6 @@ const routes = {
 
 describe('Signing In', () => {
   test('sign-in title loads correctly', async () => {
-    let browser = await puppeteer.launch({
-      headless: false
-    });
-    let page = await browser.newPage();
-
-    page.emulate({
-      viewport: {
-        width: 1366,
-        height: 768
-      },
-      userAgent: ''
-    });
 
     await page.goto('http://localhost:3000/');
     await page.waitForSelector('.header');
@@ -42,6 +58,21 @@ describe('Signing In', () => {
     const html = await page.$eval('.header', e => e.innerHTML);
     expect(html).toBe('sign in');
 
-    browser.close();
+
   }, 16000);
-});
+  test('login form works correctly', async () => {
+
+    await page.click('.email')
+    await page.type('.email', person.email)
+    await page.click('.password')
+    await page.type('.password', person.password)
+    await page.click('.remember')
+    await page.click('.signIn')
+
+    const html = await page.$eval('.Navigation', e => e.innerHTML);
+    expect(html).toBe('.Navigation')
+
+    browser.close();
+  }, 16000)
+}
+);

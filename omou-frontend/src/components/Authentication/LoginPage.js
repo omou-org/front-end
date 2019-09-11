@@ -1,15 +1,15 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import * as authActions from "../../actions/authActions.js";
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import {withRouter} from "react-router";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import {Typography} from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 
@@ -22,7 +22,7 @@ function LoginPage(props) {
     const [emailEmpty, setEmailEmpty] = useState(false);
     const [passwordEmpty, setPasswordEmpty] = useState(false);
 
-    const handleTextInput = (setter, validator, {target}) => {
+    const handleTextInput = (setter, validator, { target }) => {
         setter(target.value);
         props.authActions.resetAttemptStatus();
         validator(!target.value);
@@ -46,6 +46,7 @@ function LoginPage(props) {
     return (
         <Grid
             container
+            className="loginForm"
             spacing={0}
             direction="column"
             alignItems="center"
@@ -142,7 +143,7 @@ LoginPage.propTypes = {
     "setLogin": PropTypes.func,
 };
 
-const mapStateToProps = ({auth}) => ({auth});
+const mapStateToProps = ({ auth }) => ({ auth });
 
 const mapDispatchToProps = (dispatch) => ({
     "authActions": bindActionCreators(authActions, dispatch),
