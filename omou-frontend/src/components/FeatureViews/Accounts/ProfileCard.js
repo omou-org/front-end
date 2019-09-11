@@ -19,6 +19,8 @@ import CardActions from "@material-ui/core/CardActions";
 import { withRouter } from "react-router-dom";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
+
+import {ReactComponent as IDIcon} from "../../identifier.svg";
 import './Accounts.scss';
 
 import Avatar from "@material-ui/core/Avatar";
@@ -106,10 +108,12 @@ class ProfileCard extends Component {
                                     <Grid item xs={8} style={{ marginTop: 10 }}>
                                         <Grid container>
                                             <Grid item md={2} align="left">
-                                                <PhoneIcon />
+                                                <IDIcon 
+                                                width={22}
+                                                height={22}/>
                                             </Grid>
                                             <Grid item md={10} align="left">
-                                                {this.props.user.user_id}
+                                                #{this.props.user.user_id}
                                             </Grid>
                                             <Grid item md={2} align="left">
                                                 <PhoneIcon />
@@ -129,7 +133,6 @@ class ProfileCard extends Component {
                                     </Grid>
                                 </Typography>
                             </CardContent>
-
                         </Grid>
                     </Grid>
                 </Card>
