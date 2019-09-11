@@ -3762,8 +3762,8 @@ function initRegistrationForm() {
                 ...studentInfoSection,
                 "Course Selection": [
                     {
-                        field: "Course Title",
-                        name: "Course Title",
+                        field: "Course",
+                        name: "Course",
                         type: "course",
                         conditional: false,
                         required: false,
