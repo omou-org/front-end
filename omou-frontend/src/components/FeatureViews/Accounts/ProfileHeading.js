@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
+import EditIcon from "@material-ui/icons/EditOutlined";
 import { ReactComponent as IDIcon } from "../../identifier.svg";
 import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
@@ -17,8 +18,8 @@ class ProfileHeading extends Component {
     }
 
     addDashes(string) {
-        return(
-             `(${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 15)})`);
+        return (
+            `(${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 15)})`);
     }
 
     renderStudentProfile() {
@@ -96,37 +97,52 @@ class ProfileHeading extends Component {
             <Grid container >
                 <Grid item md={10}>
                     <Grid container>
-                    <Grid item md={1} className="rowPadding">
-                        <IDIcon height={24} width={24} />
-                    </Grid>
-                    <Grid item md={5} className="rowPadding">
-                        #{this.props.user.user_id}
-                    </Grid>
-                    <Grid item md={1} className="rowPadding">
-                        <MoneyIcon />
-                    </Grid>
-                    <Grid item md={5} className="rowPadding">
-                        money
+                        <Grid item md={1} className="rowPadding">
+                            <IDIcon height={24} width={24} />
                         </Grid>
-                    <Grid item md={1} className="rowPadding">
-                        <PhoneIcon />
-                    </Grid>
-                    <Grid item md={5} className="rowPadding">
-                        {this.addDashes(this.props.user.phone_number)}
-                    </Grid>
-                    <Grid item md={6} className="rowPadding">
-                    </Grid>
-                    <Grid item md={1} className="rowPadding">
-                        <EmailIcon />
-                    </Grid>
-                    <Grid item md={5} className="rowPadding">
-                        {this.props.user.email}
-                    </Grid>
-                    <Grid item md={6} className="rowPadding">
-                    </Grid>
+                        <Grid item md={5} className="rowPadding">
+                            #{this.props.user.user_id}
+                        </Grid>
+                        <Grid item md={1} className="rowPadding">
+                            <MoneyIcon />
+                        </Grid>
+                        <Grid item md={5} className="rowPadding">
+                            money
+                        </Grid>
+                        <Grid item md={1} className="rowPadding">
+                            <PhoneIcon />
+                        </Grid>
+                        <Grid item md={5} className="rowPadding">
+                            {this.addDashes(this.props.user.phone_number)}
+                        </Grid>
+                        <Grid item md={6} className="rowPadding">
+                        </Grid>
+                        <Grid item md={1} className="rowPadding">
+                            <EmailIcon />
+                        </Grid>
+                        <Grid item md={5} className="rowPadding">
+                            {this.props.user.email}
+                        </Grid>
+                        <Grid item md={6} className="rowPadding">
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>);
+    }
+
+    renderEditButton() {
+        if(this.props.user.role!="receptionist"){
+            return(
+        <Grid align="right" className="editPadding">
+            <Button
+                className="editButton"
+                component={NavLink}
+                to={`/registration/form/${this.getURL(this.props.user.role)}/${this.props.user.user_id}/edit`}>
+                <EditIcon />
+                Edit Profile
+        </Button>
+        </Grid>);
+        }
     }
 
     getURL(role) {
@@ -156,22 +172,16 @@ class ProfileHeading extends Component {
         return (
             <div>
                 <Grid container>
-                    <Grid item md={6}>
-                        <h1 className="left-align">{this.props.user.name}</h1>
+                    <Grid align="left">
+                        <h1>{this.props.user.name}</h1>
                     </Grid>
-                    <Grid item md={3}>
+                    <Grid>
                         <Chip
                             className={`userLabel ${this.props.user.role}`}
                             label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
                         />
                     </Grid>
-                    <Grid item md={3} align="right">
-                        <Button
-                            component={NavLink}
-                            to={`/registration/form/${this.getURL(this.props.user.role)}/${this.props.user.user_id}/edit`}>
-                            Edit Profile
-                        </Button>
-                    </Grid>
+                    {this.renderEditButton()}
                 </Grid>
                 {profileDetails}
             </div>
