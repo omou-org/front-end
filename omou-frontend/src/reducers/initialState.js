@@ -234,8 +234,8 @@ export default {
                 course_id: 1,
                 title: "6th Grade Math Placement Test Prep",
                 schedule: {
-                    start_date: "2020-01-07",
-                    end_date: "2020-04-02",
+                    start_date: "2020-01-08",
+                    end_date: "2020-04-01",
                     start_time: "T10:30",
                     end_time: "T14:00",
                     days: [2],
@@ -262,7 +262,7 @@ export default {
                     end_date: "2020-08-18",
                     start_time: "T18:00",
                     end_time: "T20:00",
-                    days: [2],
+                    days: [1],
                 },
                 instructor_id: 11,
                 tuition: 500,
@@ -284,7 +284,7 @@ export default {
                     end_date: "2020-11-10",
                     start_time: "T17:30",
                     end_time: "T19:00",
-                    days: [2],
+                    days: [1],
                 },
                 instructor_id: 12,
                 tuition: 60, // $60 per session
@@ -302,14 +302,15 @@ export default {
                 course_id: 4,
                 title: "Honors Pre Calculus - Amador",
                 schedule: {
-                    start_date: "2020-08-18",
-                    end_date: "2020-11-06",
+                    start_date: "2020-08-19",
+                    end_date: "2020-11-04",
                     start_time: "T19:10",
                     end_time: "T20:40",
                     days: [2],
                 },
                 instructor_id: 10,
-                tuition: 85, // $85 per session
+                tuition: 935,
+                session_cost: 85,
                 capacity: 1,
                 filled: 1,
                 grade: 10,
@@ -324,8 +325,8 @@ export default {
                 course_id: 5,
                 title: "Honors Chemistry - DVHS",
                 schedule: {
-                    start_date: "2019-10-08",
-                    end_date: "2019-12-19",
+                    start_date: "2019-10-09",
+                    end_date: "2019-12-18",
                     start_time: "T20:30",
                     end_time: "T14:00",
                     days: [2],
@@ -350,7 +351,7 @@ export default {
                     end_date: "2020-11-13",
                     start_time: "T17:30",
                     end_time: "T19:00",
-                    days: [3],
+                    days: [4],
                 },
                 instructor_id: 13,
                 tuition: 1440,
@@ -372,10 +373,10 @@ export default {
                     end_date: "2020-06-12",
                     start_time: "T17:00",
                     end_time: "T20:00",
-                    days: [5],
+                    days: [4],
                 },
                 instructor_id: 11,
-                tuition: 85, // $85 per session
+                tuition: 1190, // $85 per session
                 capacity: 1,
                 filled: 1,
                 grade: 10,
@@ -394,7 +395,7 @@ export default {
                     end_date: "2020-05-09",
                     start_time: "T09:00",
                     end_time: "T12:00",
-                    days: [6],
+                    days: [5],
                 },
                 instructor_id: 12,
                 tuition: 700,
@@ -412,11 +413,11 @@ export default {
                 course_id: 9,
                 title: "AP Calc B/C",
                 schedule: {
-                    start_date: "2020-03-03",
+                    start_date: "2020-03-04",
                     end_date: "2020-06-10",
                     start_time: "T18:30",
                     end_time: "T20:30",
-                    days: [5],
+                    days: [2],
                 },
                 instructor_id: 11,
                 tuition: 700,
@@ -438,7 +439,7 @@ export default {
                     end_date: "2020-06-27",
                     start_time: "T13:00",
                     end_time: "T16:00",
-                    days: [6],
+                    days: [5],
                 },
                 instructor_id: 10,
                 tuition: 700,
@@ -1799,6 +1800,10 @@ export default {
     },
     "Enrollments": {
         // userID: enrolled courses : session
+        // payment status:
+        // 1 = paid
+        // 0 = unpaid
+        // -1 = waived
         23: {
             1: {
                 student_id: 23,
@@ -2976,6 +2981,7 @@ export default {
                 role: "parent",
                 birthday: "12/10/1960",
                 notes: {},
+                student_ids: [23],
             },
             79: {
                 user_id: 79,
@@ -2995,6 +3001,7 @@ export default {
                 role: "parent",
                 birthday: "1/19/1963",
                 notes: {},
+                student_ids: [24, 99, 64],
             },
             80: {
                 user_id: 80,
@@ -3014,6 +3021,7 @@ export default {
                 role: "parent",
                 birthday: "8/23/1965",
                 notes: {},
+                student_ids: [99],
             },
             81: {
                 user_id: 81,
@@ -3033,6 +3041,7 @@ export default {
                 role: 'parent',
                 birthday: "5/10/1966",
                 notes: {},
+                student_ids: [64],
             },
         },
         "InstructorList": {

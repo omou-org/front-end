@@ -18,25 +18,12 @@
   .heading {
     margin: 25px 0;
   }
-  .icon{
-    cursor:pointer;
-    color:$secondaryFontColor;
-    &.active{
-      color:$primaryColor;
-    }
-  }
 
   .AccountsTable {
     margin-top: 20px;
     .row {
       cursor: pointer;
     }
-  }
-
-  .accounts-list-wrapper{
-    padding-top:15px;
-    height:100%;
-
   }
 }
 
@@ -54,7 +41,7 @@
     .rowPadding {
       display: flex;
       padding: 1%;
-      align-content: flex-start;
+      align-content: left;
     }
   }
   .padding {
@@ -64,6 +51,20 @@
   .userLabel {
     margin-top: 28px;
     margin-left: 40px;
+  }
+  .TabIcon {
+    display: inline-flex;
+    vertical-align: middle;
+  }
+
+  .left-align {
+    margin-left: -40%;
+  }
+  
+}
+.ProfileCard,
+.UserProfile {
+  .userLabel {
     color: white;
     font-size: 18px;
     padding: 0 20px 0 20px;
@@ -76,12 +77,8 @@
     &.receptionist {
       background-color: $receptionistColor;
     }
-    &.parent{
+    &.parent {
       background-color: $parentColor;
     }
-  }
-  .TabIcon {
-    display: inline-flex;
-    vertical-align: middle;
   }
 }

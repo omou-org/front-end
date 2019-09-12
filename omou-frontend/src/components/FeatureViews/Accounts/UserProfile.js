@@ -23,8 +23,8 @@ import ScheduleIcon from "@material-ui/icons/CalendarTodayOutlined";
 import NoteIcon from "@material-ui/icons/NoteOutlined";
 import CurrentSessionsIcon from "@material-ui/icons/AssignmentOutlined";
 import PastSessionsIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
-import PaymentIcon from "@material-ui/icons/CreditCardOutlined"
-import ContactIcon from "@material-ui/icons/ContactPhoneOutlined"
+import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
+import ContactIcon from "@material-ui/icons/ContactPhoneOutlined";
 
 const userTabs = {
     "instructor": [
