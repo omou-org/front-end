@@ -106,6 +106,7 @@ const RegistrationCourse = (props) => {
     const rows = course.roster.map((student_id) => {
         const student = props.students[student_id];
         const parent = props.parents[student.parent_id];
+        console.log(props)
         const {notes, session_payment_status} = props.enrollments[student_id][course.course_id];
         const paymentStatus = Object.values(session_payment_status).every((status) => status !== 0);
         return [
