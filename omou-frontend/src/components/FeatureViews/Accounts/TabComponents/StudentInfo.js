@@ -82,12 +82,7 @@ class StudentInfo extends Component {
             <Grid container spacing={40} alignItems={'center'} direction={'row'} item xs={12}>
                 {this.state.student.map((students) =>
                     <Grid item xs={5} className="ProfileCard">
-                        <Card key={students.user_id}
-                            style={{ cursor: "pointer" }}
-                            onClick={(event) => {
-                                event.preventDefault();
-                                this.goToRoute(`/${students.role}/${students.user_id}`);
-                            }}>
+                        <Card key={students.user_id}>
                             <Grid container>
                                 <Grid item xs={4}>
                                     <Avatar
@@ -102,7 +97,7 @@ class StudentInfo extends Component {
                                         </Typography>
                                         <Typography component="p" align={'left'}>
                                             <Chip
-                                                style={{ marginLeft: 0, marginTop: 0, cursor: "pointer" }}
+                                                style={{ marginLeft: 0, marginTop: 0,}}
                                                 className={`userLabel ${students.role}`}
                                                 label={students.role.charAt(0).toUpperCase() + students.role.slice(1)}
                                             />
