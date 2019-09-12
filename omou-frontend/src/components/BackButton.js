@@ -1,11 +1,11 @@
-import React, {Component} from "react";
-import {withRouter} from "react-router-dom";
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import BackArrow from "@material-ui/icons/ArrowBack";
 import Modal from "@material-ui/core/Modal";
 import Button from "@material-ui/core/Button";
-import {Typography} from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 
 class BackButton extends Component {
     constructor(props) {
@@ -37,12 +37,12 @@ class BackButton extends Component {
         this.props.history.goBack();
     }
 
-    saveForm(){
+    saveForm() {
         //enter future code to save form
     }
 
     confirmAction(actionName) {
-        // actionName is a string
+        //actionName is a string
         switch (actionName) {
             case "saveForm":
                 this.saveForm();
@@ -53,9 +53,9 @@ class BackButton extends Component {
         this.goBack();
     }
 
-    denyAction(actionName){
+    denyAction(actionName) {
         // switch(actionName){
-            //future switch statement for denyAction functions
+        //future switch statement for denyAction functions
         // }
         this.goBack();
     }
@@ -64,8 +64,8 @@ class BackButton extends Component {
         return (
             <div>
                 <Button className="control course button"
-                   onClick={this.handleClick.bind(this)}
-                       >
+                    onClick={this.handleClick.bind(this)}
+                >
                     <BackArrow className="icon" />
                     <div className="label">Back</div>
                 </Button>
@@ -79,15 +79,19 @@ class BackButton extends Component {
                             {this.props.alertMessage || "Are you sure you want to leave unsaved changes?"}
                         </Typography>
                         <Button
-                            onClick={(e)=>{ e.preventDefault();
-                                this.denyAction.bind(this)(this.props.denyAction)}}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                this.denyAction.bind(this)(this.props.denyAction)
+                            }}
                             color="secondary"
                             className="button secondary">
                             {this.props.alertDenyText || "No, leave me here"}
                         </Button>
                         <Button
-                            onClick={(e)=>{ e.preventDefault();
-                                this.confirmAction.bind(this)(this.props.confirmAction)}}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                this.confirmAction.bind(this)(this.props.confirmAction)
+                            }}
                             color="primary"
                             className="button primary">
                             {this.props.alertConfirmText || "Yes, take me back"}

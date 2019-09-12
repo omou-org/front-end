@@ -1,8 +1,8 @@
-import {connect} from "react-redux";
-import React, {Component} from "react";
+import { connect } from "react-redux";
+import React, { Component } from "react";
 import BackButton from "../../BackButton";
 import Grid from "@material-ui/core/Grid";
-import {Card, Paper, Typography} from "@material-ui/core";
+import { Card, Paper, Typography } from "@material-ui/core";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import ListView from "@material-ui/icons/ViewList";
@@ -14,8 +14,14 @@ import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
+import Chip from "@material-ui/core/Chip";
 import CardActions from "@material-ui/core/CardActions";
-import {withRouter} from "react-router-dom";
+import { withRouter } from "react-router-dom";
+import EmailIcon from "@material-ui/icons/EmailOutlined";
+import PhoneIcon from "@material-ui/icons/PhoneOutlined";
+
+import { ReactComponent as IDIcon } from "../../identifier.svg";
+import './Accounts.scss';
 
 import Avatar from "@material-ui/core/Avatar";
 
@@ -31,6 +37,11 @@ class ProfileCard extends Component {
 
     componentWillMount() {
 
+    }
+
+    addDashes(string) {
+        return(
+             `(${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 15)})`);
     }
 
     goToRoute(route) {
@@ -61,32 +72,73 @@ class ProfileCard extends Component {
             backgroundColor: this.stringToColor(username),
             color: "white",
             margin: 9,
-            width: 38,
-            height: 38,
-            fontSize: 14,
+            width: 120,
+            height: 120,
+            fontSize: 40,
+            margin: 20,
         });
 
         return (
-            <Grid item xs={3}>
-                <Card key={this.props.user.user_id}>
-                    <CardContent className={"text"}>
-                        <Typography gutterBottom variant={"h6"} component={"h2"} align={'left'}>
-                            {this.props.user.name}
-                        </Typography>
-                        <Typography component="p" align={'left'}>
-                            {this.props.user.role}
-                        </Typography>
-                    </CardContent>
-                    <CardActions>
-                        <Button
-                            size={"small"}
-                            color={"secondary"}>
-                            Call
-                        </Button>
-                    </CardActions>
+            <Grid item xs={6} className="ProfileCard">
+                <Card key={this.props.user.user_id}
+                    style={{ cursor: "pointer" }}
+                    onClick={(event) => {
+                        event.preventDefault();
+                        this.goToRoute(`/${this.props.user.role}/${this.props.user.user_id}`);
+                    }}>
+                    <Grid container>
+                        <Grid item xs={4}>
+                            <Avatar
+                                style={styles(this.props.user.name)}>{this.props.user.name.match(/\b(\w)/g).join("")}
+                            </Avatar>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <CardContent className={"text"}>
+
+                                <Typography gutterBottom variant={"h6"} component={"h2"} align={'left'}>
+                                    {this.props.user.name}
+                                </Typography>
+                                <Typography component="p" align={'left'}>
+                                    <Chip
+                                        style={{ cursor: "pointer" }}
+                                        className={`userLabel ${this.props.user.role}`}
+                                        label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
+                                    />
+                                </Typography>
+                                <Typography>
+                                    <Grid item xs={8} style={{ marginTop: 10 }}>
+                                        <Grid container>
+                                            <Grid item md={2} align="left">
+                                                <IDIcon
+                                                    width={22}
+                                                    height={22} />
+                                            </Grid>
+                                            <Grid item md={10} align="left">
+                                                #{this.props.user.user_id}
+                                            </Grid>
+                                            <Grid item md={2} align="left">
+                                                <PhoneIcon />
+                                            </Grid>
+                                            <Grid item md={10} align="left">
+                                                {this.addDashes(this.props.user.phone_number)}
+                                            </Grid>
+                                        </Grid>
+                                        <Grid container>
+                                            <Grid item md={2} align="left">
+                                                <EmailIcon />
+                                            </Grid>
+                                            <Grid item md={10} align="left">
+                                                {this.props.user.email}
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Typography>
+                            </CardContent>
+                        </Grid>
+                    </Grid>
                 </Card>
             </Grid>
-            )
+        )
     }
 }
 

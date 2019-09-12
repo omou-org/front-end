@@ -44,6 +44,7 @@ class Accounts extends Component {
                 Object.assign(usersList, this.props.parents);
                 Object.assign(usersList, this.props.students);
                 Object.assign(usersList, this.props.instructors);
+                Object.assign(usersList, this.props.receptionist);
                 return {usersList: usersList,}
             });
         }
@@ -60,6 +61,7 @@ class Accounts extends Component {
         Object.assign(usersList, this.props.parents);
         Object.assign(usersList, this.props.students);
         Object.assign(usersList, this.props.instructors);
+        Object.assign(usersList, this.props.receptionist);
         switch (newTabIndex) {
             case 0:
                 newUsersList = usersList;
@@ -70,16 +72,20 @@ class Accounts extends Component {
             case 2:
                 newUsersList = this.props.students;
                 break;
-            // case 3:
-            //     newUsersList = this.props.parents;
-            //     break;
+            case 3:
+                newUsersList = this.props.receptionist;
+                break;
+            case 4:
+                newUsersList = this.props.parents;
+                break;
             default:
                 newUsersList = usersList;
         }
         this.setState({value: newTabIndex, usersList: newUsersList},
             ()=>{
                 sessionStorage.setItem('AccountsState', JSON.stringify(this.state));
-            });
+            }
+        );
     }
 
     stringToColor(string) {
@@ -153,18 +159,20 @@ class Accounts extends Component {
 
         const cardView = () => {
             return <Grow in={true}>
-                    <Grid container spacing={8} alignItems={'center'} direction={'row'}>
+                <Grid container xs={10} spacing={8} alignItems={'center'} direction={'row'} style={{marginTop:20}}>
                     {Object.values(this.state.usersList).map((user) => (
-                    <ProfileCard user={user} key={user.user_id}/>))}
-                    </Grid>
-                </Grow>
+                        <ProfileCard user={user} key={user.user_id}/>))}
+                </Grid>
+            </Grow>
         };
 
         return (<Grid item xs={12} className="Accounts">
             <Paper className={"paper"}>
+                <BackButton/>
+                <hr/>
                 <Typography variant="h2" align={"left"} className={"heading"}>Accounts</Typography>
                 <Grid container direction={"row"} alignItems={"center"}>
-                    <Grid item xs={9}>
+                    <Grid item xs={10}>
                         <Tabs
                             value={this.state.value}
                             onChange={this.handleChange}
@@ -175,8 +183,8 @@ class Accounts extends Component {
                             <Tab label="ALL"/>
                             <Tab label="INSTRUCTORS"/>
                             <Tab label="STUDENTS"/>
-                            {/*<Tab label="PARENTS"/>*/}
-                            <Tab label="ADMIN"/>
+                            <Tab label="RECEPTIONIST"/>
+                            <Tab label="PARENTS"/>
                         </Tabs>
                     </Grid>
                     <Grid item xs={2} className="toggleView">
@@ -216,6 +224,7 @@ function mapStateToProps(state) {
         instructors: state.Users.InstructorList,
         parents: state.Users.ParentList,
         students: state.Users.StudentList,
+        receptionist: state.Users.ReceptionistList,
     };
 }
 
