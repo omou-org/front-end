@@ -44,6 +44,7 @@ class Accounts extends Component {
                 Object.assign(usersList, this.props.parents);
                 Object.assign(usersList, this.props.students);
                 Object.assign(usersList, this.props.instructors);
+                Object.assign(usersList, this.props.receptionist);
                 return {usersList: usersList,}
             });
         }
@@ -73,6 +74,9 @@ class Accounts extends Component {
                 break;
             case 3:
                 newUsersList = this.props.receptionist;
+                break;
+            case 4:
+                newUsersList = this.props.parents;
                 break;
             default:
                 newUsersList = usersList;
@@ -168,7 +172,7 @@ class Accounts extends Component {
                 <hr/>
                 <Typography variant="h2" align={"left"} className={"heading"}>Accounts</Typography>
                 <Grid container direction={"row"} alignItems={"center"}>
-                    <Grid item xs={9}>
+                    <Grid item xs={10}>
                         <Tabs
                             value={this.state.value}
                             onChange={this.handleChange}
@@ -180,8 +184,7 @@ class Accounts extends Component {
                             <Tab label="INSTRUCTORS"/>
                             <Tab label="STUDENTS"/>
                             <Tab label="RECEPTIONIST"/>
-                            <Tab label="ADMIN"/>
-                            {/*<Tab label="PARENTS"/>*/}
+                            <Tab label="PARENTS"/>
                         </Tabs>
                     </Grid>
                     <Grid item xs={2} className="toggleView">
