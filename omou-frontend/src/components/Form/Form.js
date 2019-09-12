@@ -425,7 +425,6 @@ class Form extends Component {
     }
 
     onSelectChange(value, label, field) {
-        console.log({value, label, field})
         if (field.type === "select parent") {
             if (value) {
                 this.setState((OldState) => {

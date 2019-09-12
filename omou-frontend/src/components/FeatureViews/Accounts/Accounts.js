@@ -155,7 +155,7 @@ class Accounts extends Component {
 
         const cardView = () => {
             return <Grow in={true}>
-                <Grid container spacing={8} alignItems={'center'} direction={'row'}>
+                <Grid container xs={10} spacing={8} alignItems={'center'} direction={'row'} style={{marginTop:20}}>
                     {Object.values(this.state.usersList).map((user) => (
                         <ProfileCard user={user} key={user.user_id}/>))}
                 </Grid>
