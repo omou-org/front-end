@@ -130,6 +130,21 @@ class ProfileHeading extends Component {
             </Grid>);
     }
 
+    renderEditButton() {
+        if(this.props.user.role!="receptionist"){
+            return(
+        <Grid align="right" className="editPadding">
+            <Button
+                className="editButton"
+                component={NavLink}
+                to={`/registration/form/${this.getURL(this.props.user.role)}/${this.props.user.user_id}/edit`}>
+                <EditIcon />
+                Edit Profile
+        </Button>
+        </Grid>);
+        }
+    }
+
     getURL(role) {
         switch (role) {
             case "parent":
@@ -166,15 +181,7 @@ class ProfileHeading extends Component {
                             label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
                         />
                     </Grid>
-                    <Grid align="right" className="editPadding">
-                        <Button
-                            className="editButton"
-                            component={NavLink}
-                            to={`/registration/form/${this.getURL(this.props.user.role)}/${this.props.user.user_id}/edit`}>
-                               <EditIcon/>
-                            Edit Profile
-                        </Button>
-                    </Grid>
+                    {this.renderEditButton()}
                 </Grid>
                 {profileDetails}
             </div>
