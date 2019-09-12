@@ -32,9 +32,9 @@
   .paper {
     padding: 3%;
 
-  .ActionTable{
-    margin-top: -20px;
-  }
+    .ActionTable {
+      margin-top: -20px;
+    }
     .headingPadding {
       padding-left: 3%;
     }
@@ -42,6 +42,18 @@
       display: flex;
       padding: 1%;
       align-content: left;
+    }
+    .editPadding {
+      position: absolute;
+      right: 10%;
+      padding-top: 1.5%;
+      .editButton {
+        color: $darkenPrimaryFontColor;
+        border-radius: 5px;
+        box-sizing: border-box;
+        border: solid 2px $secondaryColor !important;
+        white-space: nowrap;
+      }
     }
   }
   .padding {
@@ -60,7 +72,6 @@
   .left-align {
     margin-left: -40%;
   }
-  
 }
 .ProfileCard,
 .UserProfile {
