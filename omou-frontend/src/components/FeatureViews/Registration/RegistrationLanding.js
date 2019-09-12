@@ -17,6 +17,14 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import ForwardArrow from "@material-ui/icons/ArrowForward";
 
+const trimString = (string, maxLen) => {
+    if (string.length > maxLen) {
+        return `${string.slice(0, maxLen - 3).trim()}...`;
+    } else {
+        return string;
+    }
+};
+
 const RegistrationLanding = (props) => {
     const [courses, setCourses] = useState(
         Object.keys(props.courses).filter(
@@ -302,7 +310,7 @@ const RegistrationLanding = (props) => {
                                             xs={11}
                                             component={CardContent}
                                             align="left">
-                                            {course.title}
+                                            {trimString(course.title, 20)}
                                         </Grid>
                                         <Grid
                                             item

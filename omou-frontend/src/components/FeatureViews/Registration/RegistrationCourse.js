@@ -19,11 +19,12 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import DownArrow from "@material-ui/icons/KeyboardArrowDown";
+import UpArrow from "@material-ui/icons/KeyboardArrowUp";
 import EmailIcon from "@material-ui/icons/Email";
 import EditIcon from "@material-ui/icons/Edit";
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 import Button from "@material-ui/core/Button";
-import {NavLink, Link} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 
 const TableToolbar = () => (
     <TableHead>
@@ -106,7 +107,6 @@ const RegistrationCourse = (props) => {
         const student = props.students[student_id];
         const parent = props.parents[student.parent_id];
         const {notes, session_payment_status} = props.enrollments[student_id][course.course_id];
-        console.log(session_payment_status);
         const paymentStatus = Object.values(session_payment_status).every((status) => status !== 0);
         return [
             (
@@ -155,12 +155,20 @@ const RegistrationCourse = (props) => {
                         <EditIcon />
                     </span>
                     <span>
-                        <DownArrow onClick={() => {
-                            setExpanded({
-                                ...expanded,
-                                [student_id]: !expanded[student_id],
-                            });
-                        }} />
+                        {expanded[student_id]
+                            ? <UpArrow onClick={() => {
+                                setExpanded({
+                                    ...expanded,
+                                    [student_id]: false,
+                                });
+                            }} />
+                            : <DownArrow onClick={() => {
+                                setExpanded({
+                                    ...expanded,
+                                    [student_id]: true,
+                                });
+                            }} />
+                        }
                     </span>
                 </div>
             ),
@@ -286,15 +294,21 @@ const RegistrationCourse = (props) => {
                                                 "padding": "10px 0 10px 20px",
                                             }}>
                                                 <span style={{"padding": "5px"}}>
-                                                    <b>School</b>: {row[5].student.school}
+                                                    <b>School</b>: {
+                                                        row[5].student.school
+                                                    }
                                                     <br />
                                                 </span>
                                                 <span style={{"padding": "5px"}}>
-                                                    <b>School Teacher</b>: {row[5].notes["Current Instructor in School"]}
+                                                    <b>School Teacher</b>: {
+                                                        row[5].notes["Current Instructor in School"]
+                                                    }
                                                     <br />
                                                 </span>
                                                 <span style={{"padding": "5px"}}>
-                                                    <b>Textbook:</b> {row[5].notes["Textbook Used"]}
+                                                    <b>Textbook:</b> {
+                                                        row[5].notes["Textbook Used"]
+                                                    }
                                                     <br />
                                                 </span>
                                             </TableCell>
@@ -322,7 +336,7 @@ const mapStateToProps = (state) => ({
     "instructors": state.Users["InstructorList"],
     "parents": state.Users["ParentList"],
     "courseRoster": state.Course["CourseRoster"],
-    "enrollments": state.Enrollment,
+    "enrollments": state.Enrollments,
 });
 
 const mapDispatchToProps = (dispatch) => ({
