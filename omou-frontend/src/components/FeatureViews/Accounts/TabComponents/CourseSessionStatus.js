@@ -268,7 +268,7 @@ function mapStateToProps(state) {
         usersList: state.Users,
         courseSessions: state.Course.CourseSessions,
         courses: state.Course.NewCourseList,
-        enrollments: state.Enrollment,
+        enrollments: state.Enrollments,
     };
 }
 

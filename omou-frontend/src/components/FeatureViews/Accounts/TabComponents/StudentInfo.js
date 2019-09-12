@@ -37,7 +37,6 @@ class StudentInfo extends Component {
 StudentInfo.propTypes = {};
 
 function mapStateToProps(state) {
-    console.log(state);
     return {
         payments: state.Payments,
         courses: state.Course.NewCourseList,

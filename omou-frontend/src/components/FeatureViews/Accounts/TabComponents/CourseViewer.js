@@ -203,7 +203,7 @@ function mapStateToProps(state) {
     return {
         usersList: state.Users,
         courses: state.Course.NewCourseList,
-        enrollments: state.Enrollment,
+        enrollments: state.Enrollments,
     };
 }
 
