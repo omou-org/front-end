@@ -148,6 +148,8 @@ class ProfileHeading extends Component {
                 break;
             case "parent":
                 profileDetails = this.renderParentProfile();
+            case "receptionist":
+                profileDetails = this.renderTeacherProfile();
             default:
         }
         return (
