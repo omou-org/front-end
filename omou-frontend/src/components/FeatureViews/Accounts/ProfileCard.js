@@ -20,7 +20,7 @@ import { withRouter } from "react-router-dom";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 
-import {ReactComponent as IDIcon} from "../../identifier.svg";
+import { ReactComponent as IDIcon } from "../../identifier.svg";
 import './Accounts.scss';
 
 import Avatar from "@material-ui/core/Avatar";
@@ -39,8 +39,9 @@ class ProfileCard extends Component {
 
     }
 
-    addDashes(f) {
-        return f && ("(" + f.slice(0, 3) + "-" + f.slice(3, 6) + "-" + f.slice(6, 15) + ")");
+    addDashes(string) {
+        return(
+             `(${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 15)})`);
     }
 
     goToRoute(route) {
@@ -108,9 +109,9 @@ class ProfileCard extends Component {
                                     <Grid item xs={8} style={{ marginTop: 10 }}>
                                         <Grid container>
                                             <Grid item md={2} align="left">
-                                                <IDIcon 
-                                                width={22}
-                                                height={22}/>
+                                                <IDIcon
+                                                    width={22}
+                                                    height={22} />
                                             </Grid>
                                             <Grid item md={10} align="left">
                                                 #{this.props.user.user_id}
