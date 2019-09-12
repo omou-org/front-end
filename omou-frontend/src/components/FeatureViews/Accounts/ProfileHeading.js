@@ -107,7 +107,7 @@ class ProfileHeading extends Component {
                             <MoneyIcon />
                         </Grid>
                         <Grid item md={5} className="rowPadding">
-                            money
+                            0
                         </Grid>
                         <Grid item md={1} className="rowPadding">
                             <PhoneIcon />

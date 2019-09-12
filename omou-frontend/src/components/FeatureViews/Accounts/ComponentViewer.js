@@ -61,7 +61,7 @@ class ComponentViewer extends Component {
                 component = <Notes user_notes={this.props.user.notes} key={this.props.inView}/>;
                 break;
             case 8:
-                component = <StudentInfo user={this.props.user} key={this.props.inView}/>;
+                component = <StudentInfo user_id={this.props.user} key={this.props.inView}/>;
                 break;
             case 9:
                 component = <PayCourses user={this.props.user} key={this.props.inView}/>;
