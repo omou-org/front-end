@@ -62,8 +62,13 @@
     padding-top: 3%;
   }
   .userLabel {
-    margin-top: 28px;
-    margin-left: 40px;
+    @include respond-to(medium-up-screens) {
+      margin-top: 28px;
+      margin-left: 40px;
+    }
+    @include respond-to(handhelds) {
+      margin-top: 28px;
+    }
   }
   .TabIcon {
     display: inline-flex;

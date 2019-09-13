@@ -19,6 +19,7 @@ import CardActions from "@material-ui/core/CardActions";
 import { withRouter } from "react-router-dom";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
+import Hidden from "@material-ui/core/es/Hidden/Hidden";
 
 import { ReactComponent as IDIcon } from "../../identifier.svg";
 import './Accounts.scss';
@@ -68,18 +69,17 @@ class ProfileCard extends Component {
     }
 
     render() {
-        let styles = (username) => ({
-            backgroundColor: this.stringToColor(username),
-            color: "white",
-            margin: 9,
-            width: 120,
-            height: 120,
-            fontSize: 40,
-            margin: 20,
+        const styles = (username) => ({
+            "backgroundColor": this.stringToColor(username),
+            "color": "white",
+            "width": "5vw",
+            "height": "5vw",
+            "fontSize": 20,
+            "margin": 20,
         });
 
         return (
-            <Grid item xs={6} className="ProfileCard">
+            <Grid item xs={12} sm={6} className="ProfileCard">
                 <Card key={this.props.user.user_id}
                     style={{ cursor: "pointer" }}
                     onClick={(event) => {
@@ -87,14 +87,13 @@ class ProfileCard extends Component {
                         this.goToRoute(`/${this.props.user.role}/${this.props.user.user_id}`);
                     }}>
                     <Grid container>
-                        <Grid item xs={4}>
+                        <Grid component={Hidden} xsDown item xs={4} md={3}>
                             <Avatar
                                 style={styles(this.props.user.name)}>{this.props.user.name.match(/\b(\w)/g).join("")}
                             </Avatar>
                         </Grid>
-                        <Grid item xs={8}>
+                        <Grid item xs={8} md={9}>
                             <CardContent className={"text"}>
-
                                 <Typography gutterBottom variant={"h6"} component={"h2"} align={'left'}>
                                     {this.props.user.name}
                                 </Typography>
