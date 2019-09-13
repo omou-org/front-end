@@ -84,6 +84,7 @@ class Scheduler extends Component {
 
 
         new tippy(info.el, {
+
             content: `
             <div class="toolTip">
             <div class='title'><h3> ${info.event.title} </h3></div>
@@ -102,6 +103,7 @@ class Scheduler extends Component {
             placement: 'right',
             interactive: true,
         })
+
     }
 
 
@@ -159,11 +161,12 @@ class Scheduler extends Component {
     changeViewToResource = () => {
         let calendarApi = this.calendarComponentRef.current.getApi()
         calendarApi.changeView('resourceTimeline');
-        this.currentDate()
+        let date = this.currentDate()
         this.setState({
             resourceIcon: true,
             calendarIcon: false,
             calendarResourcesViews: this.getRoomResources(),
+            currentDate: date
         })
 
     }
@@ -171,10 +174,11 @@ class Scheduler extends Component {
     changeViewToCalendar = () => {
         let calendarApi = this.calendarComponentRef.current.getApi()
         calendarApi.changeView('dayGridMonth');
-        this.currentDate()
+        let date = this.currentDate()
         this.setState({
             calendarIcon: true,
-            resourceIcon: false
+            resourceIcon: false,
+            currentDate: date
         })
     }
 
@@ -202,10 +206,12 @@ class Scheduler extends Component {
                 session["description"] = this.props.courses[session.course_id].description;
                 session['type'] = this.props.courses[session.course_id].type;
                 session['resourceId'] = this.props.courses[session.course_id].room_id;
+                session['room_id'] = this.props.courses[session.course_id].room_id;
 
                 return session;
 
             })
+
             return courseSessions;
         })
 
@@ -219,13 +225,18 @@ class Scheduler extends Component {
             newSessions.url = `http:/scheduler/view-session/${newSessions.course_id}/${newSessions.session_id}`
             return newSessions
         })
+        let options = instructorKeys.map((instructorID) => {
+            let instructor = this.props.instructors[instructorID];
+            return { label: instructor.name, value: Number(instructorID) };
+        });
+        console.log(options)
 
         return sessionsInViewWithUrl
 
     }
     // This function is used in material-ui for the eventhandler
     handleFilterChange = (name) => event => {
-        console.log(event)
+
         this.setState({
             ...this.state,
             [name]: event.target.value
@@ -256,10 +267,10 @@ class Scheduler extends Component {
                     calendarResourcesViews: rooms
                 }
             ))
-            console.log(rooms)
+
         } else {
             let instructors = this.getInstructorResources()
-            console.log(instructors)
+
             this.setState(prevState => (
                 {
                     calendarResourcesViews: instructors
@@ -273,8 +284,9 @@ class Scheduler extends Component {
     getRoomResources = () => {
         let courses = Object.values(this.props.courses);
         let resourceList = courses.map((course) => {
+
             return {
-                "id": course.course_id,
+                "id": course.room_id,
                 "title": `Room ${course.room_id}`,
 
             }
@@ -287,7 +299,7 @@ class Scheduler extends Component {
     getInstructorResources = () => {
         let instructor = Object.values(this.props.instructors)
         let instructorList = instructor.map((inst) => {
-            console.log(inst)
+
             return {
                 "id": inst.user_id,
                 'title': inst.name
@@ -298,36 +310,37 @@ class Scheduler extends Component {
 
     render() {
         return (
-            <Grid >
-                <Paper className="paper" style={{ "padding": "2%" }}>
+            <div className="main-calendar-div">
+                <Paper className="paper">
                     <Typography variant="h3" align="left">Scheduler</Typography>
                     <br />
                     <Grid container
                         direction="row"
                         alignItems="center"
                         className="scheduler-header">
-                        <Grid item className={"calendar-icon-header"}>
-                            <IconButton color={this.state.calendarIcon ? "primary" : ""} onClick={this.changeViewToCalendar} className={'calendar-icon'} aria-label='next-month'>
+                        <Grid item >
+                            <IconButton color={this.state.calendarIcon ? "primary" : "default"} onClick={this.changeViewToCalendar} className={'calendar-icon'} aria-label='next-month'>
                                 <DateRangeOutlinedIcon />
                             </IconButton>
                         </Grid>
-                        <Grid item  >
-                            <IconButton color={this.state.resourceIcon ? "primary" : ""} onClick={this.changeViewToResource} className={'resource-icon'} aria-label='next-month'>
+                        <Grid item >
+                            <IconButton color={this.state.resourceIcon ? "primary" : "default"} onClick={this.changeViewToResource} className={'resource-icon'} aria-label='next-month'>
                                 <ViewListIcon />
                             </IconButton>
                         </Grid>
                         <Grid item  >
-                            <IconButton onClick={""} className={'next-month'} aria-label='next-month'>
+                            <IconButton className={'next-month'} aria-label='next-month'>
                                 <SearchIcon />
                             </IconButton>
                         </Grid>
-                        <Grid item sm={1}>
+                        <Grid item sm={2}>
                             {(this.state.calendarIcon) ?
-                                <FormControl className={'filter-select'}>
+                                <FormControl className={'filter-select'} >
                                     <InputLabel htmlFor="filter-class-type"></InputLabel>
 
                                     <Select
                                         native
+
                                         value={this.state.filterValue}
                                         onChange={this.handleFilterChange('filterValue')}
                                         inputProps={{
@@ -340,7 +353,7 @@ class Scheduler extends Component {
                                     </Select>
                                 </FormControl>
                                 :
-                                <FormControl className={'filter-select'}>
+                                <FormControl className={'filter-select'} >
                                     <InputLabel htmlFor="filter-resource-type"></InputLabel>
 
                                     <Select
@@ -359,12 +372,12 @@ class Scheduler extends Component {
                             }
 
                         </Grid>
-                        <Grid item>
+                        <Grid item md={1}>
                             <IconButton onClick={this.goToPrev} className={'prev-month'} aria-label="prev-month">
                                 <ChevronLeftOutlinedIcon />
                             </IconButton>
                         </Grid>
-                        <Grid item>
+                        <Grid item md={2}>
                             <Typography variant={'h6'} >{this.state.currentDate}</Typography>
                         </Grid>
                         <Grid item>
@@ -375,10 +388,11 @@ class Scheduler extends Component {
 
 
                         <Grid item md={1} >
-                            <FormControl className={'change-view'}>
+                            <FormControl className={'change-view'} variant="outlined">
                                 <InputLabel htmlFor="change-view-select"></InputLabel>
                                 <Select
                                     native
+
                                     value={this.state.viewValue}
                                     onChange={(event) => this.changeView(event.target.value)}
                                     inputProps={{
@@ -438,7 +452,7 @@ class Scheduler extends Component {
                         />
                     </div>
                 </Paper >
-            </Grid >
+            </div>
         )
     }
 }

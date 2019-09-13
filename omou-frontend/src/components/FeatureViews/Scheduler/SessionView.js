@@ -95,7 +95,7 @@ class SessionView extends Component {
         };
         let MonthConverter = {
             0: "January",
-            1: "Febuary",
+            1: "February",
             2: "March",
             3: "April",
             4: "May",
@@ -126,6 +126,7 @@ class SessionView extends Component {
         let startTime = start.slice(11)
         let endTime = end.slice(11)
 
+        // Converts 24hr to 12 hr time 
         this.timeConverter = (s) => {
             let timeString = s;
             let H = +s.substr(0, 2);
@@ -142,11 +143,22 @@ class SessionView extends Component {
 
     }
 
+    getInstructorName = () => {
+        let options = Object.keys(this.state.instructorData).map((instructorID) => {
+            let instructor = this.props.instructors[instructorID];
+            return { label: instructor.name, value: Number(instructorID) };
+        });
+        console.log(options)
+
+    }
+
 
 
 
     render() {
+        this.getInstructorName()
         return (
+
             <Grid container className={'main-session-view'}>
                 <Paper className={'paper'} mt={"2em"} >
                     <Grid item className={'session-button'}>
@@ -154,28 +166,28 @@ class SessionView extends Component {
                     </Grid>
                     <Divider />
 
-                    <Grid container className={'session-view'} ml={10} spacing={2}>
+                    <Grid container className={'session-view'} ml={10}>
                         <Grid item xs={12}>
                             <Typography className={'session-view-title'} align={'left'} variant={'h3'}>
                                 {this.state.courseData.title}
                             </Typography>
                         </Grid>
 
-                        <Grid container className={"session-view-details"} spacing={10} align={'left'} >
-                            <Grid item xs={4} style={{ "padding-top": "1%" }}>
+                        <Grid container className={"session-view-details"} align={'left'} >
+                            <Grid item xs={4} style={{ "paddingTop": "1%" }}>
                                 <Typography variant="h5"> Subject </Typography>
                                 <Typography varient="body1">{this.state.courseData.subject} </Typography>
                             </Grid>
 
-                            <Grid item xs={6} lg={3} style={{ "padding-top": "1%" }}>
+                            <Grid item xs={6} lg={3} style={{ "paddingTop": "1%" }}>
                                 <Typography variant="h5"> Date & Time </Typography>
                                 <Typography variant="body1">{this.formatDate(this.state.sessionData.start, this.state.sessionData.end)}</Typography>
                             </Grid>
-                            <Grid item xs={12} style={{ "padding-top": "1%" }}>
+                            <Grid item xs={12} style={{ "paddingTop": "1%" }}>
                                 <Typography variant="h5"> Teacher </Typography>
                                 <Typography variant="body1">{this.state.instructorData[10].name}</Typography>
                             </Grid>
-                            <Grid item xs={10} style={{ "padding-top": "1%" }}>
+                            <Grid item xs={10} style={{ "paddingTop": "1%" }}>
                                 <Typography variant="h5"> Description </Typography>
                                 <Typography variant="body1" style={{ width: "75%" }} > {this.state.courseData.description}   </Typography>
                             </Grid>

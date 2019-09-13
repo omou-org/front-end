@@ -134,7 +134,12 @@
   padding: 1%;
 }
 
-
+.main-calendar-div{
+  padding: 1%;
+  @include respond-to(handhelds){
+    padding : 5%
+  }
+}
 
 
 .session-detail-action-control{

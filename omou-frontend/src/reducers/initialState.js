@@ -535,7 +535,7 @@ export default {
                 filled: 12,
                 grade: 10,
                 description: "This course prepares junior students for AP Language and Composition.",
-                room_id: 4,
+                room_id: 6,
                 type: "C",
                 roster: [23, 99, 64],
                 subject: "Language",
@@ -613,8 +613,8 @@ export default {
                 schedule: {
                     start_date: "2019-09-12",
                     end_date: "2020-1-27",
-                    start_time: "T12:00",
-                    end_time: "T14:00",
+                    start_time: "T09:00",
+                    end_time: "T10:00",
                     days: [6],
                 },
                 instructor_id: 11,
@@ -623,7 +623,7 @@ export default {
                 filled: 12,
                 grade: 10,
                 description: "This course is to prepare for AP Government.",
-                room_id: 4,
+                room_id: 5,
                 type: "C",
                 roster: [23, 99, 64],
                 subject: "History",
@@ -645,7 +645,7 @@ export default {
                 filled: 12,
                 grade: 10,
                 description: "This course is to prepare students for French.",
-                room_id: 4,
+                room_id: 3,
                 type: "T",
                 roster: [23, 99, 64],
                 subject: "Language",
@@ -2020,8 +2020,8 @@ export default {
             11: {
                 1: {
                     session_id: 1,
-                    start: "2019-09-13T13:00",
-                    end: "2019-06-13T16:00",
+                    start: "2019-09-13T09:00",
+                    end: "2019-06-13T10:00",
                     course_id: 11,
                     instructor: "", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
@@ -2030,8 +2030,8 @@ export default {
             12: {
                 1: {
                     session_id: 1,
-                    start: "2019-09-14T13:00",
-                    end: "2019-06-14T16:00",
+                    start: "2019-09-14T11:00",
+                    end: "2019-06-14T13:00",
                     course_id: 12,
                     instructor: "", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
@@ -2050,8 +2050,8 @@ export default {
             14: {
                 1: {
                     session_id: 1,
-                    start: "2019-09-13T12:00",
-                    end: "2019-06-13T14:00",
+                    start: "2019-09-13T11:00",
+                    end: "2019-06-13T12:00",
                     course_id: 14,
                     instructor: "", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
