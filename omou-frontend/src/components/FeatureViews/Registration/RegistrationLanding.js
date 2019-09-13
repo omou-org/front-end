@@ -16,6 +16,7 @@ import Tab from "@material-ui/core/Tab";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import ForwardArrow from "@material-ui/icons/ArrowForward";
+import Hidden from "@material-ui/core/Hidden";
 
 const trimString = (string, maxLen) => {
     if (string.length > maxLen) {
@@ -189,14 +190,14 @@ const RegistrationLanding = (props) => {
                             container className="course-detail">
                             <Grid
                                 item
-                                md={4}
+                                md={4} xs={3}
                                 className="heading-det"
                                 align="left">
                                 Date
                             </Grid>
                             <Grid
                                 item
-                                md={8}
+                                md={8} xs={9}
                                 className="value"
                                 align="left">
                                 {date} | {days} {time}
@@ -205,12 +206,12 @@ const RegistrationLanding = (props) => {
                         <Grid container className="course-detail">
                             <Grid
                                 item
-                                md={4} xs={12}
+                                md={4} xs={3}
                                 className="heading-det"
                                 align="left">
                                 Instructor
                             </Grid>
-                            <Grid item md={8}
+                            <Grid item md={8} xs={9}
                                 className="value"
                                 align="left">
                                 {props.instructors[course.instructor_id].name}
@@ -219,14 +220,14 @@ const RegistrationLanding = (props) => {
                         <Grid container className="course-detail">
                             <Grid
                                 item
-                                md={4} xs={12}
+                                md={4} xs={3}
                                 className="heading-det"
                                 align="left">
                                 Tuition
                             </Grid>
                             <Grid
                                 item
-                                md={8}
+                                md={8} xs={9}
                                 className="value"
                                 align="left">
                                 ${course.tuition}
@@ -243,7 +244,7 @@ const RegistrationLanding = (props) => {
                             layout="row"
                             style={{"height": "100%"}}>
                             <Grid
-                                item md={6}
+                                item xs={6}
                                 className="course-status">
                                 <span className="stats">
                                     {course.roster.length} / {course.capacity}
@@ -252,7 +253,7 @@ const RegistrationLanding = (props) => {
                                     Status
                                 </span>
                             </Grid>
-                            <Grid item md={6}>
+                            <Grid item xs={6}>
                                 <Button
                                     onClick={(event) => {
                                         event.preventDefault();
@@ -291,9 +292,7 @@ const RegistrationLanding = (props) => {
                         return (
                             <Grid
                                 item
-                                xs={12}
-                                sm={6}
-                                md={4}
+                                xs={12} sm={6} md={4}
                                 key={courseID}
                                 onClick={() => {
                                     goToRoute(`/form/tutoring/${courseID}`);
@@ -344,7 +343,7 @@ const RegistrationLanding = (props) => {
                     <BackButton />
                     <hr />
                     <Grid container layout="row">
-                        <Grid item md={6}>
+                        <Grid item md={7} xs={12}>
                             <Typography
                                 variant="h3"
                                 align="left"
@@ -352,12 +351,8 @@ const RegistrationLanding = (props) => {
                                 Registration Catalog
                             </Typography>
                         </Grid>
-                        <Grid item md={6} style={{
-                            "margin": "auto 0",
-                        }}>
-                            <Tabs value={view} style={{
-                                "marginLeft": "2vw",
-                            }}>
+                        <Grid item md={5} xs={12} className={'catalog-setting-wrapper'}>
+                            <Tabs value={view} className={'catalog-setting'}>
                                 <Tab label="Courses" onClick={() => {
                                     setView(0);
                                 }} />
@@ -378,15 +373,17 @@ const RegistrationLanding = (props) => {
                         </Grid> */}
                     </Grid>
                     <Grid container layout="row" spacing={8}>
-                        <Grid item xs={4}>
+                        <Grid item xs={12} md={4}>
                             {renderFilter("instructor")}
                         </Grid>
-                        <Grid item xs={4}>
-                            {renderFilter("subject")}
-                        </Grid>
-                        <Grid item xs={4}>
-                            {renderFilter("grade")}
-                        </Grid>
+                        <Hidden xsDown>
+                            <Grid item xs={12} md={4}>
+                                {renderFilter("subject")}
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                {renderFilter("grade")}
+                            </Grid>
+                        </Hidden>
                     </Grid>
                     <div className="registration-table">
                         {view === 0 && renderCourses()}
