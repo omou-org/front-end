@@ -5,6 +5,7 @@ import {withRouter} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Paper from "@material-ui/core/Paper";
+import Hidden from "@material-ui/core/Hidden";
 
 class CourseViewer extends Component {
     constructor(props) {
@@ -114,35 +115,37 @@ class CourseViewer extends Component {
             }
         };
         return (<Grid container>
-            <Grid item md={12}>
-                <Grid container className={'accounts-table-heading'}>
-                    <Grid item md={3}>
-                        <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
-                            Session
-                        </Typography>
-                    </Grid>
-                    <Grid item md={3}>
-                        <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
-                            Dates
-                        </Typography>
-                    </Grid>
-                    <Grid item md={2}>
-                        <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
-                            Class Day(s)
-                        </Typography>
-                    </Grid>
-                    <Grid item md={3}>
-                        <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
-                            Time
-                        </Typography>
-                    </Grid>
-                    <Grid item md={1}>
-                        <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
-                            Status
-                        </Typography>
+            <Hidden xsDown>
+                <Grid item md={12}>
+                    <Grid container className={'accounts-table-heading'}>
+                        <Grid item md={3}>
+                            <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                                Session
+                            </Typography>
+                        </Grid>
+                        <Grid item md={3}>
+                            <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                                Dates
+                            </Typography>
+                        </Grid>
+                        <Grid item md={2}>
+                            <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                                Class Day(s)
+                            </Typography>
+                        </Grid>
+                        <Grid item md={3}>
+                            <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                                Time
+                            </Typography>
+                        </Grid>
+                        <Grid item md={1}>
+                            <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                                Status
+                            </Typography>
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
+            </Hidden>
             <Grid container spacing={8}>
                 {this.setCourses().length !== 0 ?
                     this.setCourses().map((courseID) => {
@@ -154,27 +157,27 @@ class CourseViewer extends Component {
                                       key={courseID}>
                             <Paper square={true}>
                                 <Grid container>
-                                    <Grid item md={3}>
-                                        <Typography align={'left'}>
+                                    <Grid item md={3} xs={12}>
+                                        <Typography align={'left'} style={{fontWeight:'700'}}>
                                             {course.title}
                                         </Typography>
                                     </Grid>
-                                    <Grid item md={3}>
+                                    <Grid item md={3} xs={12}>
                                         <Typography align={'left'}>
                                             {startDate} - {endDate}
                                         </Typography>
                                     </Grid>
-                                    <Grid item md={2}>
+                                    <Grid item md={2} xs={12}>
                                         <Typography align={'left'}>
                                             {Days}
                                         </Typography>
                                     </Grid>
-                                    <Grid item md={3}>
+                                    <Grid item md={3} xs={12}>
                                         <Typography align={'left'}>
                                             {startTime} - {endTime}
                                         </Typography>
                                     </Grid>
-                                    <Grid item md={1}>
+                                    <Grid item md={1} xs={12}>
                                         <div className={`sessions-left-chip ${paymentStatus(this.numPaidCourses(courseID))}`}>
                                             {this.numPaidCourses(courseID)}
                                         </div>

@@ -28,9 +28,9 @@ class ParentContact extends Component {
     render() {
         //this.state.parent.name
         return (
-            <Grid item md={12}>
+            <Grid item xs={12}>
                 <Grid container spacing={16}>
-                    <Grid item xs={4} >
+                    <Grid item xs={12} md={4}>
                         <Paper className={"ParentContact"}>
                             <div className="parent-header" align="left">
                                 <Typography className="header-text">

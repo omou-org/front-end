@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Paper from "@material-ui/core/Paper";
+import Hidden from "@material-ui/core/Hidden";
 
 class InstructorCourses extends Component {
     constructor(props) {
@@ -28,30 +29,32 @@ class InstructorCourses extends Component {
     render() {
         return(<Grid container>
             <Grid item md={12}>
-                <Grid container className={'accounts-table-heading'}>
-                    <Grid item md={1}>
+                <Hidden xsDown>
+                    <Grid container className={'accounts-table-heading'}>
+                        <Grid item md={1}>
+                        </Grid>
+                        <Grid item md={3}>
+                            <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
+                                Session
+                            </Typography>
+                        </Grid>
+                        <Grid item md={3}>
+                            <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
+                                Dates
+                            </Typography>
+                        </Grid>
+                        <Grid item md={2}>
+                            <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
+                                Class Day(s)
+                            </Typography>
+                        </Grid>
+                        <Grid item md={3}>
+                            <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
+                                Time
+                            </Typography>
+                        </Grid>
                     </Grid>
-                    <Grid item md={3}>
-                        <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
-                            Session
-                        </Typography>
-                    </Grid>
-                    <Grid item md={3}>
-                        <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
-                            Dates
-                        </Typography>
-                    </Grid>
-                    <Grid item md={2}>
-                        <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
-                            Class Day(s)
-                        </Typography>
-                    </Grid>
-                    <Grid item md={3}>
-                        <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
-                            Time
-                        </Typography>
-                    </Grid>
-                </Grid>
+                </Hidden>
             </Grid>
             <Grid container spacing={8}>
             {
@@ -82,22 +85,22 @@ class InstructorCourses extends Component {
                             <Grid container>
                                 <Grid item md={1}>
                                 </Grid>
-                                <Grid item md={3} >
-                                    <Typography align={'left'}>
+                                <Grid item md={3} xs={12}>
+                                    <Typography align={'left'} style={{fontWeight:'700'}}>
                                         {course.title}
                                     </Typography>
                                 </Grid>
-                                <Grid item md={3}>
+                                <Grid item md={3} xs={12}>
                                     <Typography align={'left'}>
                                         {startDate} - {endDate}
                                     </Typography>
                                 </Grid>
-                                <Grid item md={2}>
+                                <Grid item md={2} xs={12}>
                                     <Typography align={'left'}>
                                         {Days}
                                     </Typography>
                                 </Grid>
-                                <Grid item md={3}>
+                                <Grid item md={3} xs={12}>
                                     <Typography align={'left'}>
                                         {startTime} - {endTime}
                                     </Typography>
