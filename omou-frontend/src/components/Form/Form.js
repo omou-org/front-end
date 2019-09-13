@@ -765,11 +765,11 @@ class Form extends Component {
                 orientation="vertical"
                 className="form-section">
                 {
-                    steps.map((label, i) => (
+                    steps.map((label) => (
                         <Step key={label}>
                             <StepLabel>
                                 {label}
-                                {activeStep !== i &&
+                                {/* {activeStep !== i &&
                                     Object.entries(this.state[label]).map(([field, value]) => {
                                         if (!value) {
                                             return null;
@@ -786,7 +786,7 @@ class Form extends Component {
                                             </div>
                                         );
                                     })
-                                }
+                                } */}
                             </StepLabel>
                             <StepContent>
                                 {

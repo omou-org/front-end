@@ -88,7 +88,7 @@ const RegistrationLanding = (props) => {
                 options = Object.values(props.instructors).map(
                     ({name, user_id}) => ({
                         "label": name,
-                        "value": Number(user_id),
+                        "value": user_id,
                     })
                 );
                 break;
@@ -100,25 +100,14 @@ const RegistrationLanding = (props) => {
                 ];
                 break;
             case "grade":
-                options = [
-                    {"label": "1", "value": 1},
-                    {"label": "2", "value": 2},
-                    {"label": "3", "value": 3},
-                    {"label": "4", "value": 4},
-                    {"label": "5", "value": 5},
-                    {"label": "6", "value": 6},
-                    {"label": "7", "value": 7},
-                    {"label": "8", "value": 8},
-                    {"label": "9", "value": 9},
-                    {"label": "10", "value": 10},
-                    {"label": "11", "value": 11},
-                    {"label": "12", "value": 12},
-                ];
+                options = [...Array(10).keys()].map((i) => ({
+                    "label": `${i + 1}`,
+                    "value": i + 1,
+                }));
                 break;
             default:
                 return "";
         }
-        options.push("All");
         const CustomClearText = () => "clear all";
         const ClearIndicator = (indicatorProps) => {
             const {
@@ -136,11 +125,17 @@ const RegistrationLanding = (props) => {
             );
         };
 
-        const ClearIndicatorStyles = (base, state) => ({
-            ...base,
-            "cursor": "pointer",
-            "color": state.isFocused ? "blue" : "black",
-        });
+        const customStyles = {
+            "clearIndicator": (base, state) => ({
+                ...base,
+                "cursor": "pointer",
+                "color": state.isFocused ? "blue" : "black",
+            }),
+            "option": (base, state) => ({
+                ...base,
+                "textAlign": "left",
+            }),
+        };
         return <SearchSelect
             value={handleFilterClick[filterType]}
             onChange={(event) => {
@@ -150,7 +145,7 @@ const RegistrationLanding = (props) => {
             closeMenuOnSelect={false}
             components={{ClearIndicator}}
             placeholder={`All ${filterType}s`}
-            styles={{"clearIndicator": ClearIndicatorStyles}}
+            styles={customStyles}
             isMulti
             options={options}
         />;
@@ -272,7 +267,6 @@ const RegistrationLanding = (props) => {
                                     className="button primary">+ REGISTER</Button>
                             </Grid>
                         </Grid>
-
                     </Grid>
                 </Grid>
             </Paper>
@@ -297,7 +291,9 @@ const RegistrationLanding = (props) => {
                         return (
                             <Grid
                                 item
-                                xs={4}
+                                xs={12}
+                                sm={6}
+                                md={4}
                                 key={courseID}
                                 onClick={() => {
                                     goToRoute(`/form/tutoring/${courseID}`);
@@ -331,8 +327,6 @@ const RegistrationLanding = (props) => {
         );
     };
 
-    const open = Boolean(anchorEl);
-    const id = open ? "simple-popover" : null;
     const weekday = {
         "0": "Sunday",
         "1": "Monday",
@@ -358,7 +352,7 @@ const RegistrationLanding = (props) => {
                                 Registration Catalog
                             </Typography>
                         </Grid>
-                        <Grid item md={5} style={{
+                        <Grid item md={6} style={{
                             "margin": "auto 0",
                         }}>
                             <Tabs value={view} style={{
@@ -372,7 +366,7 @@ const RegistrationLanding = (props) => {
                                 }} />
                             </Tabs>
                         </Grid>
-                        <Grid item md={1} alignContent="space-between" style={{
+                        {/* <Grid item md={1} alignContent="space-between" style={{
                             "margin": "auto 0",
                         }}>
                             <FilterIcon
@@ -381,6 +375,17 @@ const RegistrationLanding = (props) => {
                                     handleFilterClick(event);
                                 }}
                             />
+                        </Grid> */}
+                    </Grid>
+                    <Grid container layout="row" spacing={8}>
+                        <Grid item xs={4}>
+                            {renderFilter("instructor")}
+                        </Grid>
+                        <Grid item xs={4}>
+                            {renderFilter("subject")}
+                        </Grid>
+                        <Grid item xs={4}>
+                            {renderFilter("grade")}
                         </Grid>
                     </Grid>
                     <div className="registration-table">
@@ -389,26 +394,6 @@ const RegistrationLanding = (props) => {
                     </div>
                 </Paper>
             </Grid>
-            <Popover
-                id={id}
-                open={open}
-                anchorEl={anchorEl}
-                onClose={(event) => {
-                    handleClose(event);
-                }}
-                className="registration-filter"
-                anchorOrigin={{
-                    "vertical": "bottom",
-                    "horizontal": "right",
-                }}
-                transformOrigin={{
-                    "vertical": "top",
-                    "horizontal": "center",
-                }}>
-                {renderFilter("instructor")}
-                {renderFilter("subject")}
-                {renderFilter("grade")}
-            </Popover>
         </Grid>
     );
 };
