@@ -2,7 +2,7 @@ import {connect} from "react-redux";
 import React, {Component} from "react";
 import BackButton from "../../BackButton";
 import Grid from "@material-ui/core/Grid";
-import {Card, Paper, Typography} from "@material-ui/core";
+import {Card, Hidden, Paper, Typography} from "@material-ui/core";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import ListView from "@material-ui/icons/ViewList";
@@ -122,7 +122,6 @@ class Accounts extends Component {
         let styles = (username) => ({
                 backgroundColor: this.stringToColor(username),
                 color: "white",
-                margin: 9,
                 width: 38,
                 height: 38,
                 fontSize: 14,
@@ -132,7 +131,9 @@ class Accounts extends Component {
                 <TableHead>
                     <TableRow>
                         <TableCell>Name</TableCell>
-                        <TableCell>Email</TableCell>
+                        <Hidden mdDown>
+                            <TableCell>Email</TableCell>
+                        </Hidden>
                         <TableCell>Phone</TableCell>
                         <TableCell>Role</TableCell>
                     </TableRow>
@@ -158,7 +159,9 @@ class Accounts extends Component {
                                     </Grid>
                                 </Grid>
                             </TableCell>
-                            <TableCell>{row.email}</TableCell>
+                            <Hidden mdDown>
+                                <TableCell>{row.email}</TableCell>
+                            </Hidden>
                             <TableCell>{row.phone_number}</TableCell>
                             <TableCell>{row.role.charAt(0).toUpperCase() + row.role.slice(1)}</TableCell>
                         </TableRow>
@@ -169,7 +172,7 @@ class Accounts extends Component {
 
         const cardView = () => {
             return <Grow in={true}>
-                <Grid container xs={12} md={10} spacing={8} alignItems={'center'} direction={'row'} style={{marginTop:20}}>
+                <Grid container xs={12} md={12} spacing={8} alignItems={'center'} direction={'row'} style={{marginTop:20}}>
                     {Object.values(this.state.usersList).map((user) => (
                         <ProfileCard user={user} key={user.user_id}/>))}
                 </Grid>
@@ -194,7 +197,7 @@ class Accounts extends Component {
                             <Tab label="ALL"/>
                             <Tab label="INSTRUCTORS"/>
                             <Tab label="STUDENTS"/>
-                            <Tab label="RECEPTIONIST"/>
+                            <Tab label="RECEPTIONISTS"/>
                             <Tab label="PARENTS"/>
                         </Tabs>
                     </Grid>

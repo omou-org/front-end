@@ -234,41 +234,6 @@ const RegistrationLanding = (props) => {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid
-                        item
-                        md={4} xs={12}
-                        className="course-action">
-                        <Grid
-                            container
-                            alignItems="center"
-                            layout="row"
-                            style={{"height": "100%"}}>
-                            <Grid
-                                item xs={6}
-                                className="course-status">
-                                <span className="stats">
-                                    {course.roster.length} / {course.capacity}
-                                </span>
-                                <span className="label">
-                                    Status
-                                </span>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Button
-                                    onClick={(event) => {
-                                        event.preventDefault();
-                                        if (course.capacity > course.roster.length) {
-                                            goToRoute(`/form/course/${course.course_id}`);
-                                        } else {
-                                            alert("The course is filled!");
-                                        }
-                                    }}
-                                    variant="contained"
-                                    disabled={course.capacity <= course.filled}
-                                    className="button primary">+ REGISTER</Button>
-                            </Grid>
-                        </Grid>
-                    </Grid>
                 </Grid>
             </Paper>
         );
