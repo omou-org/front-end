@@ -149,10 +149,10 @@ class RegistrationLanding extends Component {
                         <BackButton/>
                         <hr/>
                         <Grid container alignItems={'center'} layout={'row'}>
-                            <Grid item md={10}>
+                            <Grid item xs={10}>
                                 <Typography variant={'h3'} align={'left'} className={"heading"}>Registration Catalog</Typography>
                             </Grid>
-                            <Grid item md={2}>
+                            <Grid item xs={2}>
                                 <FilterIcon
                                     style={{cursor:"pointer"}}
                                     onClick={(e)=>{ this.handleFilterClick.bind(this)(e) }}
@@ -175,14 +175,14 @@ class RegistrationLanding extends Component {
 
                                     return (<Paper className={'row'} key={courseID}>
                                         <Grid container alignItems={'center'} layout={'row'}>
-                                            <Grid item md={3}
+                                            <Grid item md={3} xs={12}
                                                   onClick={(e) => {e.preventDefault(); this.goToRoute('/course/' + course.course_id + "/" + course.title)}}
                                                   style={{textDecoration: 'none', cursor: 'pointer'}}>
                                                 <Typography className={'course-heading'} align={'left'}>
                                                     {course.title}
                                                 </Typography>
                                             </Grid>
-                                            <Grid item md={5}
+                                            <Grid item md={5} xs={12}
                                                   onClick={(e) => {e.preventDefault(); this.goToRoute('/course/' + course.course_id + "/" + course.title)}}
                                                   style={{textDecoration: 'none', cursor: 'pointer'}}>
                                                 <Grid container className={'course-detail'}>
@@ -212,9 +212,10 @@ class RegistrationLanding extends Component {
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
-                                            <Grid item md={4} className={'course-action'}>
+                                            <Grid item md={4} xs={12}
+                                                  className={'course-action'}>
                                                 <Grid container alignItems={'center'} layout={'row'} style={{height:"100%"}}>
-                                                    <Grid item md={6} className={'course-status'}>
+                                                    <Grid item xs={6} className={'course-status'}>
                                                         <span className={'stats'}>
                                                             {course.roster.length} / {course.capacity}
                                                         </span>
@@ -222,7 +223,7 @@ class RegistrationLanding extends Component {
                                                             Status
                                                         </span>
                                                     </Grid>
-                                                    <Grid item md={6}>
+                                                    <Grid item xs={6}>
                                                         <Button onClick={(e) => {
                                                                     e.preventDefault();
                                                                     if(course.capacity > course.filled){
