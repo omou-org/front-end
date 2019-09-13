@@ -40,9 +40,12 @@ function rootRoutes(props) {
             {/* Main Feature Views */}
             <Route
                 exact
+                path="/front-end"
+                render={(passedProps) => <Accounts {...passedProps} />} />
+            <Route
+                exact
                 path="/"
                 render={(passedProps) => <Accounts {...passedProps} />} />
-
             <Route
                 exact
                 path="/registration"
