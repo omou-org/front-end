@@ -36,8 +36,8 @@
     }
     @include respond-to(handhelds){
       margin-left:0;
-      padding:15% 3% 0 3%;}
-
+      padding:15% 3% 0 3%;
+    }
     overflow-x: hidden;
   }
 
@@ -79,6 +79,9 @@
     text-transform: capitalize;
   }
 }
+
 .DrawerList .list{
-  padding-top:80px !important;
+  @include respond-to(handhelds){
+    padding-top:80px !important;
+  }
 }

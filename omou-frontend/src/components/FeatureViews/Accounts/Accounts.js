@@ -40,6 +40,7 @@ class Accounts extends Component {
         this.resize();
         if(prevState){
             this.setState(prevState);
+
         } else {
             this.setState(() => {
                 let usersList = {};
@@ -168,7 +169,7 @@ class Accounts extends Component {
 
         const cardView = () => {
             return <Grow in={true}>
-                <Grid container xs={10} spacing={8} alignItems={'center'} direction={'row'} style={{marginTop:20}}>
+                <Grid container xs={12} md={10} spacing={8} alignItems={'center'} direction={'row'} style={{marginTop:20}}>
                     {Object.values(this.state.usersList).map((user) => (
                         <ProfileCard user={user} key={user.user_id}/>))}
                 </Grid>
@@ -219,11 +220,12 @@ class Accounts extends Component {
                       spacing={8}
                       className={'accounts-list-wrapper'}
                 >
-                    {   this.state.mobileView ?
-                        cardView() :
-                        this.state.viewToggle ?
-                            tableView() :
-                            cardView()
+                    {
+                        this.state.mobileView ?
+                            cardView() :
+                            this.state.viewToggle ?
+                                tableView() :
+                                cardView()
                     }
                 </Grid>
             </Paper>

@@ -25,6 +25,7 @@ import CurrentSessionsIcon from "@material-ui/icons/AssignmentOutlined";
 import PastSessionsIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import ContactIcon from "@material-ui/icons/ContactPhoneOutlined";
+import Hidden from "@material-ui/core/es/Hidden/Hidden";
 
 const userTabs = {
     "instructor": [
@@ -119,7 +120,7 @@ class UserProfile extends Component {
         }
         else {
             this.setState({
-                user: user,  
+                user: user,
             })
         }
     }
@@ -150,16 +151,16 @@ class UserProfile extends Component {
     }
 
     render() {
-        let styles = {
-            backgroundColor: this.stringToColor(this.state.user.name),
-            color: "white",
-            margin: 10,
-            width: window.innerWidth/10,
-            height: window.innerWidth/10,
-            fontSize: 50,
+        const styles = {
+            "backgroundColor": this.stringToColor(this.state.user.name),
+            "color": "white",
+            "width": "10vw",
+            "height": "10vw",
+            "fontSize": "3.5vw",
+            "margin": 20,
         };
         let tabs;
-        if (this.state.user.role !="receptionist") {
+        if (this.state.user.role !== "receptionist") {
             tabs =
                 (<div>
                     <Tabs
@@ -175,7 +176,7 @@ class UserProfile extends Component {
                             key={this.props.inView}
                         />
                     })}
-                </Tabs>  
+                </Tabs>
                 <ComponentViewer user={this.state.user} inView={this.state.tabs[this.state.value].tab_id} />
                 </div>)
         }
@@ -184,7 +185,7 @@ class UserProfile extends Component {
                 <Grid align="left">
                     Action Log
                 </Grid>
-                
+
                 <Paper className={'paper'}>
             <Table className="ActionTable">
             <TableHead>
@@ -225,7 +226,7 @@ class UserProfile extends Component {
             </Paper>
             </div>
             );
-        } 
+        }
         return (<div className="UserProfile">
             <Paper className={'paper'}>
                 <BackButton
@@ -233,7 +234,7 @@ class UserProfile extends Component {
                 />
                 <hr />
                 <Grid container layout="row" className={'padding'}>
-                    <Grid item md={2}>
+                    <Grid item md={2} component={Hidden} xsDown>
                         <Avatar style={styles}>{this.state.user.name.match(/\b(\w)/g).join('')}</Avatar>
                     </Grid>
                     <Grid item md={8} className="headingPadding">
