@@ -26,6 +26,7 @@ import SessionView from "../FeatureViews/Scheduler/SessionView"
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
+import ParentPayment from "../Form/ParentPayment";
 
 
 function rootRoutes(props) {
@@ -67,11 +68,7 @@ function rootRoutes(props) {
             <ProtectedRoute
                 exact
                 path="/scheduler"
-                render={(passedProps) => <Scheduler {...passedProps} />} />
-
-            {/* <ProtectedRoute
-                path="/directory"
-                render={(passedProps) => <UsersDirectory {...passedProps} />} /> */}
+                render={(passedProps) => <Scheduler {...passedProps} />}/>
 
 
             {/* Accounts */}
@@ -79,15 +76,18 @@ function rootRoutes(props) {
                 exact
                 path="/accounts/:accountType/:accountID"
                 render={(passedProps) => <UserProfile {...passedProps} />} />
-
+            <ProtectedRoute
+                exact
+                path="/accounts/parents/:parentID/pay"
+                render={(passedProps) => <ParentPayment {...passedProps} />}/>
             <ProtectedRoute
                 exact
                 path="/accounts"
                 render={(passedProps) => <Accounts {...passedProps} />} />
             <ProtectedRoute
                 exact
-                path={'/accounts/:accountType/:accountID/:courseID'}
-                render={(passedProps) => <CourseSessionStatus {...passedProps} />} />
+                path="/accounts/:accountType/:accountID/:courseID"
+                render={(passedProps) => <CourseSessionStatus {...passedProps} />}/>
 
             {/* Registration Routes */}
             <ProtectedRoute
@@ -98,9 +98,9 @@ function rootRoutes(props) {
                 render={(passedProps) => <RegistrationCourse {...passedProps} />} />
             <ProtectedRoute
                 path="/registration/category/:categoryID"
-                render={(passedProps) => <CourseCategory {...passedProps} />} />
-            <Route path={"/PageNotFound"} component={ErrorNotFoundPage} />
-            <Redirect to={"/PageNotFound"} />
+                render={(passedProps) => <CourseCategory {...passedProps} />}/>
+            <Route path="/PageNotFound" component={ErrorNotFoundPage}/>
+            <Redirect to="/PageNotFound"/>
         </Switch>
     );
 }

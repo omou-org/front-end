@@ -38,31 +38,6 @@ class Registration extends Component {
         }
     }
 
-    toggleMainView() {
-        if (this.state.mobileView) {
-            return <MobileRegistration
-                courses={this.props.courses}
-                instructors={this.props.instructors}
-                categories={this.props.courseCategories}
-                categoriesViewToggle={this.state.mobileViewToggle} />;
-        }
-        else {
-            return <RegistrationLanding
-                    courses={this.props.courses}
-                    categories={this.props.courseCategories}
-                    instructors={this.props.instructors}
-            />
-        }
-    }
-
-    toggleMobileView() {
-        this.setState((oldState) => {
-            return {
-                mobileViewToggle: !oldState.mobileViewToggle,
-            }
-        })
-    }
-
     render() {
         return (
             <div className="">
@@ -75,29 +50,11 @@ class Registration extends Component {
                         </Grid>
                     </Paper>
                 </Grid>
-                {
-                    this.toggleMainView.bind(this)()
-                }
-
-                <Hidden smUp>
-                    <Grid item>
-                        {
-                            this.state.mobileViewToggle ?
-                                <Fab onClick={(e) => { e.preventDefault(); this.toggleMobileView(); }}
-                                        className={"button mobile-toggle"}
-                                        color="primary" aria-label="Add"
-                                >
-                                    <CourseList className={"icon"} />
-                                </Fab> :
-                                <Fab
-                                    onClick={(e) => { e.preventDefault(); this.toggleMobileView(); }}
-                                    className={"button mobile-toggle"}
-                                    color="primary" aria-label="Add">
-                                    <Categories className={"icon"} />
-                                </Fab>
-                        }
-                    </Grid>
-                </Hidden>
+                <RegistrationLanding
+                    courses={this.props.courses}
+                    categories={this.props.courseCategories}
+                    instructors={this.props.instructors}
+                />
             </div>
         )
     }
