@@ -167,7 +167,7 @@ const RegistrationLanding = (props) => {
                 <Grid container alignItems="center" layout="row">
                     <Grid
                         item
-                        md={3}
+                        md={3} xs={12}
                         onClick={(event) => {
                             event.preventDefault();
                             goToRoute(`/course/${course.course_id}`);
@@ -179,7 +179,7 @@ const RegistrationLanding = (props) => {
                     </Grid>
                     <Grid
                         item
-                        md={5}
+                        md={5} xs={12}
                         onClick={(event) => {
                             event.preventDefault();
                             goToRoute(`/course/${course.course_id}`);
@@ -205,7 +205,7 @@ const RegistrationLanding = (props) => {
                         <Grid container className="course-detail">
                             <Grid
                                 item
-                                md={4}
+                                md={4} xs={12}
                                 className="heading-det"
                                 align="left">
                                 Instructor
@@ -219,7 +219,7 @@ const RegistrationLanding = (props) => {
                         <Grid container className="course-detail">
                             <Grid
                                 item
-                                md={4}
+                                md={4} xs={12}
                                 className="heading-det"
                                 align="left">
                                 Tuition
@@ -235,7 +235,7 @@ const RegistrationLanding = (props) => {
                     </Grid>
                     <Grid
                         item
-                        md={4}
+                        md={4} xs={12}
                         className="course-action">
                         <Grid
                             container
@@ -402,5 +402,6 @@ RegistrationLanding.propTypes = {
     "stuffActions": PropTypes.object,
     "RegistrationForms": PropTypes.array,
 };
+
 
 export default withRouter(RegistrationLanding);

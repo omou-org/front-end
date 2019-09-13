@@ -1,14 +1,15 @@
-import { connect } from 'react-redux';
-import React, { Component } from 'react';
+import {connect} from "react-redux";
+import React, {Component} from "react";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
-import { ReactComponent as IDIcon } from "../../identifier.svg";
+import {ReactComponent as IDIcon} from "../../identifier.svg";
 import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
 import Button from "@material-ui/core/Button";
-import { NavLink } from "react-router-dom";
+import {NavLink} from "react-router-dom";
+import Hidden from "@material-ui/core/es/Hidden/Hidden";
 
 class ProfileHeading extends Component {
     constructor(props) {
@@ -24,9 +25,9 @@ class ProfileHeading extends Component {
 
     renderStudentProfile() {
         return (
-            <Grid container >
+            <Grid container>
                 <Grid item md={10}>
-                    <Grid container >
+                    <Grid container>
                         <Grid item md={6} className="rowPadding">
                             {this.props.user.birthday}
                         </Grid>
@@ -94,54 +95,50 @@ class ProfileHeading extends Component {
 
     renderParentProfile() {
         return (
-            <Grid container >
-                <Grid item md={10}>
-                    <Grid container>
-                        <Grid item md={1} className="rowPadding">
-                            <IDIcon height={24} width={24} />
-                        </Grid>
-                        <Grid item md={5} className="rowPadding">
-                            #{this.props.user.user_id}
-                        </Grid>
-                        <Grid item md={1} className="rowPadding">
-                            <MoneyIcon />
-                        </Grid>
-                        <Grid item md={5} className="rowPadding">
-                            money
-                        </Grid>
-                        <Grid item md={1} className="rowPadding">
-                            <PhoneIcon />
-                        </Grid>
-                        <Grid item md={5} className="rowPadding">
-                            {this.addDashes(this.props.user.phone_number)}
-                        </Grid>
-                        <Grid item md={6} className="rowPadding">
-                        </Grid>
-                        <Grid item md={1} className="rowPadding">
-                            <EmailIcon />
-                        </Grid>
-                        <Grid item md={5} className="rowPadding">
-                            {this.props.user.email}
-                        </Grid>
-                        <Grid item md={6} className="rowPadding">
-                        </Grid>
-                    </Grid>
+            <Grid container>
+                <Grid item xs={1} className="rowPadding">
+                    <IDIcon height={24} width={24} />
+                </Grid>
+                <Grid item ={5} className="rowPadding">
+                    #{this.props.user.user_id}
+                </Grid>
+                <Grid item md={1} className="rowPadding">
+                    <MoneyIcon />
+                </Grid>
+                <Grid item md={5} className="rowPadding">
+                    0
+                </Grid>
+                <Grid item md={1} className="rowPadding">
+                    <PhoneIcon />
+                </Grid>
+                <Grid item md={5} className="rowPadding">
+                    {this.addDashes(this.props.user.phone_number)}
+                </Grid>
+                <Grid item md={6} className="rowPadding">
+                </Grid>
+                <Grid item md={1} className="rowPadding">
+                    <EmailIcon />
+                </Grid>
+                <Grid item md={5} className="rowPadding">
+                    {this.props.user.email}
+                </Grid>
+                <Grid item md={6} className="rowPadding">
                 </Grid>
             </Grid>);
     }
 
     renderEditButton() {
-        if(this.props.user.role!="receptionist"){
-            return(
-        <Grid align="right" className="editPadding">
-            <Button
-                className="editButton"
-                component={NavLink}
-                to={`/registration/form/${this.getURL(this.props.user.role)}/${this.props.user.user_id}/edit`}>
-                <EditIcon />
+        if (this.props.user.role != "receptionist") {
+            return (
+                <Grid component={Hidden} xsDown align="right" className="editPadding">
+                    <Button
+                        className="editButton"
+                        component={NavLink}
+                        to={`/registration/form/${this.getURL(this.props.user.role)}/${this.props.user.user_id}/edit`}>
+                        <EditIcon />
                 Edit Profile
-        </Button>
-        </Grid>);
+                    </Button>
+                </Grid>);
         }
     }
 
@@ -171,11 +168,17 @@ class ProfileHeading extends Component {
         }
         return (
             <div>
-                <Grid container>
+                <Grid container className="row">
                     <Grid align="left">
                         <h1>{this.props.user.name}</h1>
                     </Grid>
-                    <Grid>
+                    <Grid component={Hidden} xsDown>
+                        <Chip
+                            className={`userLabel ${this.props.user.role}`}
+                            label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
+                        />
+                    </Grid>
+                    <Grid component={Hidden} smUp xs={12}>
                         <Chip
                             className={`userLabel ${this.props.user.role}`}
                             label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}

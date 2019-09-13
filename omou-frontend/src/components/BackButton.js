@@ -62,12 +62,12 @@ class BackButton extends Component {
 
     render() {
         return (
-            <div>
+            <>
                 <Button className="control course button"
                     onClick={this.handleClick.bind(this)}
                 >
                     <BackArrow className="icon" />
-                    <div className="label">Back</div>
+                    <span className="label">Back</span>
                 </Button>
                 <Modal
                     aria-labelledby="simple-modal-title"
@@ -98,7 +98,7 @@ class BackButton extends Component {
                         </Button>
                     </div>
                 </Modal>
-            </div>
+            </>
         );
     }
 }

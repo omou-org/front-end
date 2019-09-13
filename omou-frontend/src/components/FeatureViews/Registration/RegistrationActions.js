@@ -62,16 +62,6 @@ function RegistrationActions(props) {
                 </Button>
             </Grid>
             <Grid item>
-                <Button component={NavLink}
-                    to="/registration/form/instructor"
-                    variant="outlined"
-                    color="secondary"
-                    className="button">
-                    <NewUser className="icon" />
-                    New Instructor
-                </Button>
-            </Grid>
-            <Grid item>
                 <Button
                     variant="outlined"
                     color="secondary"
