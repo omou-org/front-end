@@ -70,34 +70,35 @@ class Registration extends Component {
                     <Paper className={"paper"}>
                         <Grid item lg={12}>
                             <RegistrationUserActions
-                            //admin = {false}
+                                //admin = {false}
                             />
                         </Grid>
                     </Paper>
                 </Grid>
-                {
-                    this.toggleMainView.bind(this)()
-                }
-
-                <Hidden smUp>
-                    <Grid item>
-                        {
-                            this.state.mobileViewToggle ?
-                                <Fab onClick={(e) => { e.preventDefault(); this.toggleMobileView(); }}
-                                        className={"button mobile-toggle"}
-                                        color="primary" aria-label="Add"
-                                >
-                                    <CourseList className={"icon"} />
-                                </Fab> :
-                                <Fab
-                                    onClick={(e) => { e.preventDefault(); this.toggleMobileView(); }}
-                                    className={"button mobile-toggle"}
-                                    color="primary" aria-label="Add">
-                                    <Categories className={"icon"} />
-                                </Fab>
-                        }
-                    </Grid>
-                </Hidden>
+                <RegistrationLanding
+                    courses={this.props.courses}
+                    categories={this.props.courseCategories}
+                    instructors={this.props.instructors}
+                />
+                {/*<Hidden smUp>*/}
+                {/*    <Grid item>*/}
+                {/*        {*/}
+                {/*            this.state.mobileViewToggle ?*/}
+                {/*                <Fab onClick={(e) => { e.preventDefault(); this.toggleMobileView(); }}*/}
+                {/*                        className={"button mobile-toggle"}*/}
+                {/*                        color="primary" aria-label="Add"*/}
+                {/*                >*/}
+                {/*                    <CourseList className={"icon"} />*/}
+                {/*                </Fab> :*/}
+                {/*                <Fab*/}
+                {/*                    onClick={(e) => { e.preventDefault(); this.toggleMobileView(); }}*/}
+                {/*                    className={"button mobile-toggle"}*/}
+                {/*                    color="primary" aria-label="Add">*/}
+                {/*                    <Categories className={"icon"} />*/}
+                {/*                </Fab>*/}
+                {/*        }*/}
+                {/*    </Grid>*/}
+                {/*</Hidden>*/}
             </div>
         )
     }

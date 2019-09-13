@@ -23,7 +23,8 @@ class RegistrationLanding extends Component {
                 instructor: [],
                 grade:[],
                 subject:[],
-            }
+            },
+            mobileViewToggle: false,
         }
     }
 
@@ -32,7 +33,14 @@ class RegistrationLanding extends Component {
             courses: Object.keys(this.props.courses).filter(
                 (courseID)=>{return this.props.courses[courseID].type === "C"}),
             instructors: this.props.instructors,
-        })
+        });
+    }
+
+    resize() {
+        let currentHideNav = (window.innerWidth <= 760);
+        if (currentHideNav !== this.state.mobileView) {
+            this.setState({ mobileView: !this.state.mobileView });
+        }
     }
 
     goToRoute(route){
@@ -149,10 +157,10 @@ class RegistrationLanding extends Component {
                         <BackButton/>
                         <hr/>
                         <Grid container alignItems={'center'} layout={'row'}>
-                            <Grid item md={10}>
+                            <Grid item md={10} xs={10}>
                                 <Typography variant={'h3'} align={'left'} className={"heading"}>Registration Catalog</Typography>
                             </Grid>
-                            <Grid item md={2}>
+                            <Grid item md={2} xs={2}>
                                 <FilterIcon
                                     style={{cursor:"pointer"}}
                                     onClick={(e)=>{ this.handleFilterClick.bind(this)(e) }}

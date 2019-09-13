@@ -29,15 +29,17 @@ class Accounts extends Component {
             value: 0,
             usersList: [],
             viewToggle: true, // true = list, false = card view
+            mobileView: false,
         };
         this.handleChange = this.handleChange.bind(this);
     }
 
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem('AccountsState'));
+        window.addEventListener("resize", this.resize.bind(this));
+        this.resize();
         if(prevState){
             this.setState(prevState);
-
         } else {
             this.setState(() => {
                 let usersList = {};
@@ -47,6 +49,13 @@ class Accounts extends Component {
                 Object.assign(usersList, this.props.receptionist);
                 return {usersList: usersList,}
             });
+        }
+    }
+
+    resize() {
+        let currentHideNav = (window.innerWidth <= 760);
+        if (currentHideNav !== this.state.mobileView) {
+            this.setState({ mobileView: !this.state.mobileView });
         }
     }
 
@@ -172,11 +181,12 @@ class Accounts extends Component {
                 <hr/>
                 <Typography variant="h2" align={"left"} className={"heading"}>Accounts</Typography>
                 <Grid container direction={"row"} alignItems={"center"}>
-                    <Grid item xs={10}>
+                    <Grid item xs={12} md={10}>
                         <Tabs
                             value={this.state.value}
                             onChange={this.handleChange}
                             indicatorColor="primary"
+                            variant="scrollable"
                             textColor="primary"
                             className={"tabs"}
                         >
@@ -187,18 +197,21 @@ class Accounts extends Component {
                             <Tab label="PARENTS"/>
                         </Tabs>
                     </Grid>
-                    <Grid item xs={2} className="toggleView">
-                        <ListView className={`list icon ${this.state.viewToggle ? 'active':''}`} onClick={(event) => {
-                            event.preventDefault();
-                            this.setState({viewToggle: true},
-                                ()=>{sessionStorage.setItem('AccountsState',JSON.stringify(this.state));});
-                        }}/>
-                        <CardView className={`card icon ${this.state.viewToggle ? '':'active'}`} onClick={(event) => {
-                            event.preventDefault();
-                            this.setState({viewToggle: false},
-                                ()=>{sessionStorage.setItem('AccountsState',JSON.stringify(this.state));});
-                        }}/>
-                    </Grid>
+                    {
+                        this.state.mobileView ? '' :
+                        <Grid item xs={2} className="toggleView">
+                            <ListView className={`list icon ${this.state.viewToggle ? 'active':''}`} onClick={(event) => {
+                                event.preventDefault();
+                                this.setState({viewToggle: true},
+                                    ()=>{sessionStorage.setItem('AccountsState',JSON.stringify(this.state));});
+                            }}/>
+                            <CardView className={`card icon ${this.state.viewToggle ? '':'active'}`} onClick={(event) => {
+                                event.preventDefault();
+                                this.setState({viewToggle: false},
+                                    ()=>{sessionStorage.setItem('AccountsState',JSON.stringify(this.state));});
+                            }}/>
+                        </Grid>
+                    }
                 </Grid>
                 <Grid container
                       direction={"row"}
@@ -206,7 +219,8 @@ class Accounts extends Component {
                       spacing={8}
                       className={'accounts-list-wrapper'}
                 >
-                    {
+                    {   this.state.mobileView ?
+                        cardView() :
                         this.state.viewToggle ?
                             tableView() :
                             cardView()

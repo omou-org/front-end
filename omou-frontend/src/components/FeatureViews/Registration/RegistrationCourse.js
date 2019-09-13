@@ -114,11 +114,9 @@ class RegistrationCourse extends Component {
             parent = this.props.parents[student.parent_id];
             Actions = () => {
                 return <div className={student.name + ' actions'}>
-                    <CallIcon />
                     <a href={"mailto:" + parent.email}>
                         <EmailIcon />
                     </a>
-                    <EditIcon />
                 </div>
             };
             row = [student.name, parent.name, "Paid", <Actions />];
@@ -203,12 +201,12 @@ class RegistrationCourse extends Component {
                     <div className={"course-status"}>
                         <div className={"status"}>
                             <div className={"text"}>
-                                {this.state.filled} / {this.state.capacity} Spaces Taken
+                                {this.state.roster.length} / {this.state.capacity} Spaces Taken
                             </div>
                         </div>
                         <LinearProgress
                             color={'primary'}
-                            value={(this.state.filled / this.state.capacity) * 100}
+                            value={(this.state.roster.length / this.state.capacity) * 100}
                             valueBuffer={100}
                             variant={'buffer'}
                         />

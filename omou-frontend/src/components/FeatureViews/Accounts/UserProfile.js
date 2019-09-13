@@ -29,11 +29,6 @@ import ContactIcon from "@material-ui/icons/ContactPhoneOutlined";
 const userTabs = {
     "instructor": [
         {
-            tab_heading: "Schedule",
-            tab_id: 0,
-            icon: <ScheduleIcon className="TabIcon" />,
-        },
-        {
             tab_heading: "Courses",
             tab_id: 1,
             icon: <CoursesIcon className="TabIcon" />,
@@ -61,11 +56,6 @@ const userTabs = {
             icon: <PastSessionsIcon className="TabIcon" />,
         },
         {
-            tab_heading: "Payment History",
-            tab_id: 5,
-            icon: <PaymentIcon className="TabIcon" />,
-        },
-        {
             tab_heading: "Parent Contact",
             tab_id: 6,
             icon: <ContactIcon className="TabIcon" />,
@@ -81,16 +71,6 @@ const userTabs = {
                 tab_heading: "Student Info",
                 tab_id: 8,
                 icon: <CurrentSessionsIcon className="TabIcon"/>,
-            },
-            {
-                tab_heading: "Pay Courses",
-                tab_id: 9,
-                icon: <CurrentSessionsIcon className="TabIcon"/>,
-            },
-            {
-                tab_heading: "Payment History",
-                tab_id: 5,
-                icon: <PaymentIcon className="TabIcon"/>,
             },
             {
                 tab_heading: "Notes",

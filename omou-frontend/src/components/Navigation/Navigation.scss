@@ -30,9 +30,14 @@
   }
 
   .OmouMain {
-    @include respond-to(handhelds){ margin-left:0;}
-    @include respond-to(medium-up-screens){ margin-left:$drawerWidth; }
-    padding:5% 3% 0 3%;
+    @include respond-to(medium-up-screens){
+      margin-left:$drawerWidth;
+      padding:5% 3% 0 3%;
+    }
+    @include respond-to(handhelds){
+      margin-left:0;
+      padding:15% 3% 0 3%;}
+
     overflow-x: hidden;
   }
 
@@ -41,7 +46,6 @@
     @include respond-to(medium-up-screens){ width:$drawerWidth; }
 
     padding-top: 45%;
-
 
     .listItem {
       width: 94%;
@@ -74,4 +78,7 @@
     cursor:pointer;
     text-transform: capitalize;
   }
+}
+.DrawerList .list{
+  padding-top:80px !important;
 }
