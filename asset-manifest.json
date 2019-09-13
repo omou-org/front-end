@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/front-end/static/css/main.1769bf10.chunk.css",
+    "main.js": "/front-end/static/js/main.f0407d17.chunk.js",
+    "main.js.map": "/front-end/static/js/main.f0407d17.chunk.js.map",
+    "runtime~main.js": "/front-end/static/js/runtime~main.d65dd991.js",
+    "runtime~main.js.map": "/front-end/static/js/runtime~main.d65dd991.js.map",
+    "static/css/2.55e5a6bb.chunk.css": "/front-end/static/css/2.55e5a6bb.chunk.css",
+    "static/js/2.d593e34f.chunk.js": "/front-end/static/js/2.d593e34f.chunk.js",
+    "static/js/2.d593e34f.chunk.js.map": "/front-end/static/js/2.d593e34f.chunk.js.map",
+    "index.html": "/front-end/index.html",
+    "precache-manifest.7e37499a7ade13deee9373fcf90309d5.js": "/front-end/precache-manifest.7e37499a7ade13deee9373fcf90309d5.js",
+    "service-worker.js": "/front-end/service-worker.js",
+    "static/css/2.55e5a6bb.chunk.css.map": "/front-end/static/css/2.55e5a6bb.chunk.css.map",
+    "static/css/main.1769bf10.chunk.css.map": "/front-end/static/css/main.1769bf10.chunk.css.map",
+    "static/media/identifier.64906079.svg": "/front-end/static/media/identifier.64906079.svg"
+  }
+}
