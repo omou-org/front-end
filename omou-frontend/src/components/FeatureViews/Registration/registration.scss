@@ -4,9 +4,6 @@
 
 .registration-action-control {
   padding: 1%;
-  @include respond-to(handhelds) {
-    margin-top: 50px;
-  }
 
   .button {
     background-color: white;
@@ -268,6 +265,10 @@
   margin-bottom: 30px;
   padding: 6px 10px 0 10px;
   background-color: white;
+  @include respond-to(handhelds){
+    margin-bottom: 30px;
+    padding: 0px 8px 5px 0px;
+  }
 }
 
 .registration-form {
@@ -482,6 +483,18 @@
 .RegistrationLanding {
   padding: 2%;
 
+  .catalog-setting-wrapper{
+    .catalog-setting{
+      @include respond-to(medium-up-screens){
+        margin-top:8%;
+      }
+      @include respond-to(handhelds){
+        //margin-top:2%;
+        margin-bottom:5%;
+      }
+    }
+  }
+
   .heading {
     margin: 20px 0 25px 0;
   }
@@ -498,7 +511,7 @@
 
       .course-heading {
         font-weight: 400;
-        font-size: 24px;
+        font-size: 20px;
       }
 
       .course-detail {
@@ -534,5 +547,20 @@
   .filter-options {
     margin: 10px;
     width: 300px;
+    text-align: left;
   }
+}
+
+.tutoring-card {
+  cursor: pointer;
+  color: #828282;
+  border: 1px solid #43B5D9;
+  border-left-width: 5px;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 28px;
+  display: flex;
+  align-items: center;
 }

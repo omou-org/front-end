@@ -13,7 +13,6 @@ export default {
                 time: "8:30pm - 2:00pm",
                 tuition: 450,
                 capacity: 20,
-                filled: 14,
                 grade: 5,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test. " +
                     " The material will cover all material from the fifth grade curriculum as well as some sixth grade content" +
@@ -29,7 +28,6 @@ export default {
                 time: "6:30pm - 8:00pm",
                 tuition: 500,
                 capacity: 15,
-                filled: 2,
                 grade: 8,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
@@ -42,7 +40,6 @@ export default {
                 time: "5:30pm - 7:00pm",
                 tuition: 1480,
                 capacity: 12,
-                filled: 3,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
@@ -55,7 +52,6 @@ export default {
                 time: "7:10pm - 8:40pm",
                 tuition: 1480,
                 capacity: 15,
-                filled: 2,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             }, {
@@ -67,7 +63,6 @@ export default {
                 time: "8:30pm - 2:00pm",
                 tuition: 450,
                 capacity: 8,
-                filled: 4,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
@@ -80,7 +75,6 @@ export default {
                 time: "5:30pm - 7:00pm",
                 tuition: 1440,
                 capacity: 12,
-                filled: 12,
                 grade: 8,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             }, {
@@ -92,7 +86,6 @@ export default {
                 time: "5:00pm - 8:00pm",
                 tuition: 700,
                 capacity: 15,
-                filled: 14,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
@@ -105,7 +98,6 @@ export default {
                 time: "9:00am - 12:00pm",
                 tuition: 700,
                 capacity: 15,
-                filled: 8,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
@@ -118,7 +110,6 @@ export default {
                 time: "5:30pm - 8:30pm",
                 tuition: 700,
                 capacity: 15,
-                filled: 13,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
@@ -131,7 +122,6 @@ export default {
                 time: "1:00pm - 4:00pm",
                 tuition: 700,
                 capacity: 15,
-                filled: 2,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
@@ -234,8 +224,8 @@ export default {
                 course_id: 1,
                 title: "6th Grade Math Placement Test Prep",
                 schedule: {
-                    start_date: "2020-01-07",
-                    end_date: "2020-04-02",
+                    start_date: "2020-01-08",
+                    end_date: "2020-04-01",
                     start_time: "T10:30",
                     end_time: "T14:00",
                     days: [2],
@@ -253,7 +243,6 @@ export default {
                 subject: "Math",
                 tags: ["Test Prep", "Common Core", "All School Districts"],
                 roster: [23, 99, 64],
-                filled: 10,
             },
             2: {
                 course_id: 2,
@@ -263,19 +252,18 @@ export default {
                     end_date: "2020-08-18",
                     start_time: "T18:00",
                     end_time: "T20:00",
-                    days: [2],
+                    days: [1],
                 },
                 instructor_id: 11,
                 tuition: 500,
                 capacity: 9,
-                filled: 9,
                 grade: 8,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
                 type: "C",
                 roster: [23, 99, 64, 24],
                 subject: "Science",
-                tags: ["All School Districts", "Physics", "Astronomy"],
+                tags: ["All School Districts", "Physics", "Astronomy",],
             },
             3: {
                 course_id: 3,
@@ -285,48 +273,47 @@ export default {
                     end_date: "2020-11-10",
                     start_time: "T17:30",
                     end_time: "T19:00",
-                    days: [2],
+                    days: [1],
                 },
                 instructor_id: 12,
                 tuition: 60, // $60 per session
                 capacity: 1,
-                filled: 0,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
                 type: "T",
                 roster: [23],
                 subject: "Math",
-                tags: ["Honors", "Algebra II", "Amador Valley High School"],
+                tags: ["Honors", "Algebra II", "Amador Valley High School",],
             },
             4: {
                 course_id: 4,
                 title: "Honors Pre Calculus - Amador",
                 schedule: {
-                    start_date: "2020-08-18",
-                    end_date: "2020-11-06",
+                    start_date: "2020-08-19",
+                    end_date: "2020-11-04",
                     start_time: "T19:10",
                     end_time: "T20:40",
                     days: [2],
                 },
                 instructor_id: 10,
-                tuition: 85, // $85 per session
+                tuition: 935,
+                session_cost: 85,
                 capacity: 1,
-                filled: 1,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 4,
                 type: "T",
                 roster: [64],
                 subject: "Math",
-                tags: ["Honors", "Amador Valley High School", "Pre-Calculus"],
+                tags: ["Honors", "Amador Valley High School", "Pre-Calculus",],
             },
             5: {
                 course_id: 5,
                 title: "Honors Chemistry - DVHS",
                 schedule: {
-                    start_date: "2019-10-08",
-                    end_date: "2019-12-19",
+                    start_date: "2019-10-09",
+                    end_date: "2019-12-18",
                     start_time: "T20:30",
                     end_time: "T14:00",
                     days: [2],
@@ -334,14 +321,13 @@ export default {
                 instructor_id: 11,
                 tuition: 450,
                 capacity: 8,
-                filled: 2,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 2,
                 type: "C",
                 roster: [24, 99, 64],
                 subject: "Science",
-                tags: ["Chemistry", "Dougherty Valley High School", "Honors"],
+                tags: ["Chemistry", "Dougherty Valley High School", "Honors",],
             },
             6: {
                 course_id: 6,
@@ -351,19 +337,18 @@ export default {
                     end_date: "2020-11-13",
                     start_time: "T17:30",
                     end_time: "T19:00",
-                    days: [3],
+                    days: [4],
                 },
                 instructor_id: 13,
                 tuition: 1440,
                 capacity: 12,
-                filled: 10,
                 grade: 8,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 6,
                 type: "C",
                 roster: [23, 99, 64, 24],
                 subject: "Math",
-                tags: ["Geometry", "San Ramon Valley Unified School District"],
+                tags: ["Geometry", "San Ramon Valley Unified School District",]
             },
             7: {
                 course_id: 7,
@@ -373,12 +358,11 @@ export default {
                     end_date: "2020-06-12",
                     start_time: "T17:00",
                     end_time: "T20:00",
-                    days: [5],
+                    days: [4],
                 },
                 instructor_id: 11,
-                tuition: 85, // $85 per session
+                tuition: 1190, // $85 per session
                 capacity: 1,
-                filled: 1,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 1,
@@ -395,41 +379,39 @@ export default {
                     end_date: "2020-05-09",
                     start_time: "T09:00",
                     end_time: "T12:00",
-                    days: [6],
+                    days: [5],
                 },
                 instructor_id: 12,
                 tuition: 700,
                 capacity: 6,
-                filled: 5,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 7,
                 type: "C",
                 roster: [23, 99, 24],
                 subject: "Chemistry",
-                tags: ["Science", "AP", "College Prep"],
+                tags: ["Science", "AP", "College Prep",],
             },
             9: {
                 course_id: 9,
                 title: "AP Calc B/C",
                 schedule: {
-                    start_date: "2020-03-03",
+                    start_date: "2020-03-04",
                     end_date: "2020-06-10",
                     start_time: "T18:30",
                     end_time: "T20:30",
-                    days: [5],
+                    days: [2],
                 },
                 instructor_id: 11,
                 tuition: 700,
                 capacity: 5,
-                filled: 3,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 1,
                 type: "C",
                 roster: [24, 64],
                 subject: "Calculus",
-                tags: ["Math", "AP", "College Prep"],
+                tags: ["Math", "AP", "College Prep",],
             },
             10: {
                 course_id: 10,
@@ -439,19 +421,18 @@ export default {
                     end_date: "2020-06-27",
                     start_time: "T13:00",
                     end_time: "T16:00",
-                    days: [6],
+                    days: [5],
                 },
                 instructor_id: 10,
                 tuition: 700,
                 capacity: 15,
-                filled: 12,
                 grade: 10,
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
                 room_id: 4,
                 type: "C",
                 roster: [23, 99, 64],
                 subject: "Calculus",
-                tags: ["Math", "Preparation Class", "AP"],
+                tags: ["Math", "Preparation Class", "AP",],
             },
             11: {
                 course_id: 11,
@@ -2121,6 +2102,10 @@ export default {
     },
     "Enrollments": {
         // userID: enrolled courses : session
+        // payment status:
+        // 1 = paid
+        // 0 = unpaid
+        // -1 = waived
         23: {
             1: {
                 student_id: 23,
@@ -2867,10 +2852,10 @@ export default {
                 },
             },
             4: {
-                notes: {},
+                notes: {}
             },
             10: {
-                notes: {},
+                notes: {}
             },
         },
         11: {
@@ -2897,8 +2882,8 @@ export default {
         },
     },
     "Payments": {
-        // Payment ID = studentID + courseID + SubPaymentID
-        // 23 = studentID: 1 = course 1: 1/2 = payment
+        //Payment ID = studentID + courseID + SubPaymentID
+        //23 = studentID: 1 = course 1: 1/2 = payment
         23: {
             1: {
                 1: {
@@ -2940,7 +2925,7 @@ export default {
                         code: "SIBDISC2019",
                         session_amount: 1,
                     },
-                },
+                }
             },
             6: {
                 1: {
@@ -3008,7 +2993,7 @@ export default {
                 1: {
                     method: "Credit Card",
                     amount: 500,
-                    date: "2020-06-01"
+                    date: "2020-06-01",
                 },
             },
             5: {},
@@ -3022,7 +3007,7 @@ export default {
                     method: "Check",
                     amount: 440,
                     date: "2019-08-5",
-                },
+                }
             },
             8: {
                 1: {
@@ -3034,14 +3019,14 @@ export default {
                     method: "Cash",
                     amount: 600,
                     date: "2020-02-01",
-                },
+                }
             },
             9: {
                 1: {
                     method: "Credit Card",
                     amount: 700,
                     date: "2020-03-03",
-                },
+                }
             },
         },
         99: {
@@ -3050,7 +3035,7 @@ export default {
                     method: "Check",
                     amount: 450,
                     date: "2020-01-07",
-                },
+                }
             },
             2: {
                 1: {
@@ -3090,7 +3075,7 @@ export default {
                     method: "Check",
                     amount: 700,
                     date: "2020-02-1",
-                },
+                }
             },
             10: {
                 1: {
@@ -3105,7 +3090,7 @@ export default {
                 1: {
                     method: "Cash",
                     amount: 450,
-                    date: "2020-01-07",
+                    date: "2020-01-07"
                 },
             },
             2: {
@@ -3113,28 +3098,28 @@ export default {
                     method: "Check",
                     amount: 500,
                     date: "2020-06-01",
-                },
+                }
             },
             4: {
                 1: {
                     method: "Check",
                     amount: 255,
                     date: "2020-08-01",
-                },
+                }
             },
             5: {
                 1: {
                     method: "Check",
                     amount: 450,
                     date: "2019-10-05",
-                },
+                }
             },
             6: {
                 1: {
                     date: "2020-08-03",
                     amount: 1440,
                     method: "Credit Card",
-                },
+                }
             },
             9: {
                 1: {
@@ -3148,8 +3133,8 @@ export default {
                     amount: 700,
                     method: "Credit Card",
                     date: "2020-02-24",
-                },
-            },
+                }
+            }
         },
     },
     "Users": {
@@ -3168,7 +3153,7 @@ export default {
                 name: "Danny Long",
                 first_name: "Danny",
                 last_name: "Long",
-                email: "a@a.com",
+                email: "dannylong@omou.com",
                 parent_id: 78,
                 role: "student",
                 balance: 0,
@@ -3206,7 +3191,7 @@ export default {
                 name: "Jim Plano",
                 first_name: "Jim",
                 last_name: "Plano",
-                email: "b@b.com",
+                email: "planojim@yahoo.com",
                 parent_id: 79,
                 role: "student",
                 balance: 0,
@@ -3237,7 +3222,7 @@ export default {
                 name: "Hansel Kid",
                 first_name: "Hansel",
                 last_name: "Kid",
-                email: "c@c.com",
+                email: "hanselkid@gmail.com",
                 parent_id: 80,
                 role: "student",
                 balance: 0,
@@ -3268,7 +3253,7 @@ export default {
                 name: "Batkid Wayne",
                 first_name: "Batkid",
                 last_name: "Wayne",
-                email: "d@d.com",
+                email: "batkid@wayne.com",
                 parent_id: 81,
                 role: "student",
                 balance: 0,
@@ -3298,6 +3283,7 @@ export default {
                 role: "parent",
                 birthday: "12/10/1960",
                 notes: {},
+                student_ids: [23],
             },
             79: {
                 user_id: 79,
@@ -3317,6 +3303,7 @@ export default {
                 role: "parent",
                 birthday: "1/19/1963",
                 notes: {},
+                student_ids: [24, 99, 64],
             },
             80: {
                 user_id: 80,
@@ -3336,6 +3323,7 @@ export default {
                 role: "parent",
                 birthday: "8/23/1965",
                 notes: {},
+                student_ids: [99],
             },
             81: {
                 user_id: 81,
@@ -3351,10 +3339,11 @@ export default {
                 first_name: "Robin",
                 last_name: "Wayne",
                 relationship: "Mother",
-                email: "nananana@omou.com",
-                role: "parent",
+                email: "robinwayne@omou.com",
+                role: 'parent',
                 birthday: "5/10/1966",
                 notes: {},
+                student_ids: [64],
             },
         },
         "InstructorList": {
@@ -3362,7 +3351,7 @@ export default {
                 user_id: 10,
                 name: "Daniel Huang",
                 email: "daniel.huang@gmail.com",
-                role: "instructor",
+                role: 'instructor',
                 phone_number: "1234458989",
                 background: {
                     bio: "Daniel graduated from UCLA as an Economics major in 2018. He now works full time as a " +
@@ -3440,7 +3429,7 @@ export default {
                 user_id: 11,
                 name: "Jerry Li",
                 email: "jerrylinew@gmail.com",
-                role: "instructor",
+                role: 'instructor',
                 phone_number: "1234458923",
                 background: {
                     bio: "Jerry graduated from UCLA as an Computer Science major in 2018. He now works full time as a " +
@@ -3506,7 +3495,7 @@ export default {
                 user_id: 12,
                 name: "Albert Deng",
                 email: "albert@omou.com",
-                role: "instructor",
+                role: 'instructor',
                 phone_number: "1234538989",
                 background: {
                     bio: "Albert graduated from UCLA as an Economics major in 2016. He now works full time as a " +
@@ -3573,7 +3562,7 @@ export default {
                 user_id: 13,
                 name: "Katie Ho",
                 email: "katie@omou.com",
-                role: "instructor",
+                role: 'instructor',
                 phone_number: "1299458989",
                 background: {
                     bio: "Katie graduated from UCLA as an Economics major in 2017. She now works full time as a " +
@@ -3632,6 +3621,68 @@ export default {
                         complete: false,
                         active: true,
                         important: false,
+                    },
+                },
+            },
+        },
+        "ReceptionistList": {
+            101: {
+                user_id: 101,
+                name: "Ryan Liou",
+                phone_number: "1234567899",
+                email: "ryan.liou@gmail.com",
+                role: 'receptionist',
+                birthday: "11/5/1985",
+                action_log: {
+                    1: {
+                        date: "6/22/2018",
+                        time: "2:00PM",
+                        description: "Unregistered English 7 sessions with Danny Hong",
+                    },
+                    2: {
+                        date: "6/10/2018",
+                        time: "5:00PM",
+                        description: "Registered AP Calc tutoring with Daniel Huang",
+                    },
+                    3: {
+                        date: "6/2/2018",
+                        time: "5:00PM",
+                        description: "Registered AP Calc tutoring with Daniel Huang",
+                    },
+                    4: {
+                        date: "5/24/2018",
+                        time: "5:00PM",
+                        description: "Registered AP Calc tutoring with Daniel Huang",
+                    },
+                },
+            },
+            130: {
+                user_id: 130,
+                name: "Lian Ryou",
+                phone_number: "9921351863",
+                email: "lianryou@gmail.com",
+                role: 'receptionist',
+                birthday: "10/8/1965",
+                action_log: {
+                    1: {
+                        date: "6/26/2018",
+                        time: "2:00PM",
+                        description: "Unregistered English 7 sessions with Danny Hong",
+                    },
+                    2: {
+                        date: "6/10/2018",
+                        time: "4:00PM",
+                        description: "Registered AP Calc tutoring with Daniel Huang",
+                    },
+                    3: {
+                        date: "4/9/2018",
+                        time: "3:00PM",
+                        description: "Registered AP Calc tutoring with Daniel Huang",
+                    },
+                    4: {
+                        date: "3/24/2018",
+                        time: "8:00PM",
+                        description: "Registered AP Calc tutoring with Daniel Huang",
                     },
                 },
             },
@@ -4103,8 +4154,8 @@ function initRegistrationForm() {
                 ...studentInfoSection,
                 "Course Selection": [
                     {
-                        field: "Course Title",
-                        name: "Course Title",
+                        field: "Course",
+                        name: "Course",
                         type: "course",
                         conditional: false,
                         required: false,
