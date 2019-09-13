@@ -316,26 +316,6 @@ const RegistrationLanding = (props) => {
                                 Registration Catalog
                             </Typography>
                         </Grid>
-                        <Grid item md={5} xs={12} className={'catalog-setting-wrapper'}>
-                            <Tabs value={view} className={'catalog-setting'}>
-                                <Tab label="Courses" onClick={() => {
-                                    setView(0);
-                                }} />
-                                <Tab label="Tutoring" onClick={() => {
-                                    setView(1);
-                                }} />
-                            </Tabs>
-                        </Grid>
-                        {/* <Grid item md={1} alignContent="space-between" style={{
-                            "margin": "auto 0",
-                        }}>
-                            <FilterIcon
-                                style={{"cursor": "pointer"}}
-                                onClick={(event) => {
-                                    handleFilterClick(event);
-                                }}
-                            />
-                        </Grid> */}
                     </Grid>
                     <Grid container layout="row" spacing={8}>
                         <Grid item xs={12} md={4}>
@@ -351,8 +331,7 @@ const RegistrationLanding = (props) => {
                         </Hidden>
                     </Grid>
                     <div className="registration-table">
-                        {view === 0 && renderCourses()}
-                        {view === 1 && renderTutoring()}
+                        {renderCourses()}
                     </div>
                 </Paper>
             </Grid>
