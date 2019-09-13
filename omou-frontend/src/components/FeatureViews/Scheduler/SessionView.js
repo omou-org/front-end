@@ -47,7 +47,8 @@ class SessionView extends Component {
         this.state = {
             open: false,
             current: "current",
-            all: "all"
+            all: "all",
+
         }
     }
 
@@ -64,39 +65,89 @@ class SessionView extends Component {
 
 
     componentWillMount() {
+
         this.setState(() => {
 
             let sessionData = this.props.courseSessions[this.props.computedMatch.params.course_id][this.props.computedMatch.params.session_id]
             let courseData = this.props.courses[this.props.computedMatch.params.course_id]
-
             let instructorData = this.props.instructors
-
 
 
             return {
                 sessionData: sessionData,
-                courseData: courseData
+                courseData: courseData,
+                instructorData: instructorData
             }
         })
+    }
 
+
+
+    // Formatting the date in the view
+    formatDate = (start, end) => {
+        let DayConverter = {
+            1: "Monday",
+            2: "Tuesday",
+            3: "Wednesday",
+            4: "Thursday",
+            5: "Friday",
+            6: "Saturday",
+        };
+        let MonthConverter = {
+            0: "January",
+            1: "Febuary",
+            2: "March",
+            3: "April",
+            4: "May",
+            5: "June",
+            6: "July",
+            7: "August",
+            8: "September",
+            9: "October",
+            10: "November",
+            11: "December"
+        }
+
+        let date = new Date(start)
+        let dateNumber = date.getDate()
+        let dayOfWeek = date.getDay()
+        let startMonth = date.getMonth()
+        // Gets days
+        let Days = [dayOfWeek]
+        Days = Days.map((day) => {
+            return DayConverter[day];
+        });
+        //Gets months
+        let Month = [startMonth]
+        Month = Month.map(month => {
+            return MonthConverter[month]
+        })
+        //Start times and end times variable 
+        let startTime = start.slice(11)
+        let endTime = end.slice(11)
+
+        this.timeConverter = (s) => {
+            let timeString = s;
+            let H = +s.substr(0, 2);
+            let h = (H % 12) || 12;
+            let ampm = H < 12 ? "a" : "p";
+            timeString = h + s.substr(2, 3) + ampm;
+            return timeString
+
+        }
+
+        let finalTime = `${Days}, ${Month} ${dateNumber} at ${this.timeConverter(startTime)} - ${this.timeConverter(endTime)}`
+
+        return finalTime
 
     }
 
+
+
+
     render() {
-
-        const flexContainer = {
-            display: "flex",
-            justifyContent: "flex-start",
-            width: "50%",
-            padding: 0,
-        };
-
-
-
-
         return (
             <Grid container className={'main-session-view'}>
-
                 <Paper className={'paper'} mt={"2em"} >
                     <Grid item className={'session-button'}>
                         <BackButton />
@@ -111,25 +162,26 @@ class SessionView extends Component {
                         </Grid>
 
                         <Grid container className={"session-view-details"} spacing={10} align={'left'} >
-                            <Grid item xs={6} md={7} lg={2}>
+                            <Grid item xs={4} style={{ "padding-top": "1%" }}>
                                 <Typography variant="h5"> Subject </Typography>
                                 <Typography varient="body1">{this.state.courseData.subject} </Typography>
                             </Grid>
 
-                            <Grid item xs={'auto'}>
+                            <Grid item xs={6} lg={3} style={{ "padding-top": "1%" }}>
                                 <Typography variant="h5"> Date & Time </Typography>
-                                <Typography variant="body1">{this.state.sessionData.start}</Typography>
+                                <Typography variant="body1">{this.formatDate(this.state.sessionData.start, this.state.sessionData.end)}</Typography>
                             </Grid>
-                            <Grid item xs={12}>
+                            <Grid item xs={12} style={{ "padding-top": "1%" }}>
                                 <Typography variant="h5"> Teacher </Typography>
-                                <Typography variant="body1">{this.state.courseData.instructor_id}</Typography>
+                                <Typography variant="body1">{this.state.instructorData[10].name}</Typography>
                             </Grid>
-                            <Grid item xs={10}>
+                            <Grid item xs={10} style={{ "padding-top": "1%" }}>
                                 <Typography variant="h5"> Description </Typography>
                                 <Typography variant="body1" style={{ width: "75%" }} > {this.state.courseData.description}   </Typography>
                             </Grid>
                         </Grid>
                     </Grid>
+
                     <Grid container
                         direction="row"
                         justify="flex-end"

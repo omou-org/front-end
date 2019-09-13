@@ -42,7 +42,7 @@ class Scheduler extends Component {
         super(props);
         this.state = {
             calendarWeekends: true,
-            calendarResources: [],
+            calendarResourcesViews: [],
             calendarEvents: [],
             currentDate: "",
             viewValue: '',
@@ -137,6 +137,7 @@ class Scheduler extends Component {
         let calendarApi = this.calendarComponentRef.current.getApi()
         calendarApi.prev()
         let date = this.currentDate();
+
         this.setState({
             currentDate: date
         })
@@ -162,7 +163,7 @@ class Scheduler extends Component {
         this.setState({
             resourceIcon: true,
             calendarIcon: false,
-            calendarResources: this.getRoomResources(),
+            calendarResourcesViews: this.getRoomResources(),
         })
 
     }
@@ -252,7 +253,7 @@ class Scheduler extends Component {
             let rooms = this.getRoomResources()
             this.setState(prevState => (
                 {
-                    calendarResources: rooms
+                    calendarResourcesViews: rooms
                 }
             ))
             console.log(rooms)
@@ -261,7 +262,7 @@ class Scheduler extends Component {
             console.log(instructors)
             this.setState(prevState => (
                 {
-                    calendarResources: instructors
+                    calendarResourcesViews: instructors
                 }
             ))
         }
@@ -291,123 +292,119 @@ class Scheduler extends Component {
                 "id": inst.user_id,
                 'title': inst.name
             }
-
         })
-
         return instructorList
     }
-
-
-
 
     render() {
         return (
             <Grid >
-                <Paper className="paper">
-                    <div className='demo-app-calendar'>
-                        <Typography variant="h3" align="left">Scheduler</Typography>
-                        <br />
-                        <Grid container
-                            direction="row"
-                            alignItems="center"
-                            className="scheduler-header"
-                        >
-                            <Grid item  >
-                                <IconButton color={this.state.calendarIcon ? "primary" : ""} onClick={this.changeViewToCalendar} className={'calendar-icon'} aria-label='next-month'>
-                                    <DateRangeOutlinedIcon />
-                                </IconButton>
-                            </Grid>
-                            <Grid item  >
-                                <IconButton color={this.state.resourceIcon ? "primary" : ""} onClick={this.changeViewToResource} className={'resource-icon'} aria-label='next-month'>
-                                    <ViewListIcon />
-                                </IconButton>
-                            </Grid>
-                            <Grid item  >
-                                <IconButton onClick={this.goToNext} className={'next-month'} aria-label='next-month'>
-                                    <SearchIcon />
-                                </IconButton>
-                            </Grid>
-                            <Grid item md={1} lg={1}>
-                                {(this.state.calendarIcon) ?
-                                    <FormControl className={'filter-select'}>
-                                        <InputLabel htmlFor="filter-class-type"></InputLabel>
+                <Paper className="paper" style={{ "padding": "2%" }}>
+                    <Typography variant="h3" align="left">Scheduler</Typography>
+                    <br />
+                    <Grid container
+                        direction="row"
+                        alignItems="center"
+                        className="scheduler-header">
+                        <Grid item className={"calendar-icon-header"}>
+                            <IconButton color={this.state.calendarIcon ? "primary" : ""} onClick={this.changeViewToCalendar} className={'calendar-icon'} aria-label='next-month'>
+                                <DateRangeOutlinedIcon />
+                            </IconButton>
+                        </Grid>
+                        <Grid item  >
+                            <IconButton color={this.state.resourceIcon ? "primary" : ""} onClick={this.changeViewToResource} className={'resource-icon'} aria-label='next-month'>
+                                <ViewListIcon />
+                            </IconButton>
+                        </Grid>
+                        <Grid item  >
+                            <IconButton onClick={""} className={'next-month'} aria-label='next-month'>
+                                <SearchIcon />
+                            </IconButton>
+                        </Grid>
+                        <Grid item sm={1}>
+                            {(this.state.calendarIcon) ?
+                                <FormControl className={'filter-select'}>
+                                    <InputLabel htmlFor="filter-class-type"></InputLabel>
 
-                                        <Select
-                                            native
-                                            value={this.state.filterValue}
-                                            onChange={this.handleFilterChange('filterValue')}
-                                            inputProps={{
-                                                name: 'filterValue',
-                                                id: 'filter-class-type',
-                                            }}
-                                        >
-                                            <option value={"C"}>Class</option>
-                                            <option value={"T"}>Tutor</option>
-                                        </Select>
-                                    </FormControl>
-                                    :
-                                    <FormControl className={'filter-select'}>
-                                        <InputLabel htmlFor="filter-resource-type"></InputLabel>
-
-                                        <Select
-                                            native
-                                            value={this.state.resourceFilterValue}
-                                            onChange={this.handleResourceFilterChange('resourceFilterValue')}
-                                            inputProps={{
-                                                name: 'resourceFilterValue',
-                                                id: 'filter-resource-type',
-                                            }}
-                                        >
-                                            <option value={"R"}>Room</option>
-                                            <option value={"I"}>Instructors</option>
-                                        </Select>
-                                    </FormControl>
-                                }
-
-                            </Grid>
-                            <Grid item lg={1} md={1}>
-                                <IconButton onClick={this.goToPrev} className={'prev-month'} aria-label="prev-month">
-                                    <ChevronLeftOutlinedIcon />
-                                </IconButton>
-                            </Grid>
-                            <Grid item lg={3} md={2}>
-                                <Typography variant={'h6'}>  {this.state.currentDate} </Typography>
-                            </Grid>
-                            <Grid item lg={1} md={1} >
-                                <IconButton onClick={this.goToNext} className={'next-month'} aria-label='next-month'>
-                                    <ChevronRightOutlinedIcon />
-                                </IconButton>
-                            </Grid>
-                            <Grid item md={2} lg={1}>
-                                <FormControl className={'change-view'}>
-                                    <InputLabel htmlFor="change-view-select"></InputLabel>
                                     <Select
                                         native
-                                        value={this.state.viewValue}
-                                        onChange={(event) => this.changeView(event.target.value)}
+                                        value={this.state.filterValue}
+                                        onChange={this.handleFilterChange('filterValue')}
                                         inputProps={{
-                                            name: 'viewValue',
-                                            id: 'change-view-select'
+                                            name: 'filterValue',
+                                            id: 'filter-class-type',
                                         }}
                                     >
-                                        <option value={"timeGridDay"}>Day</option>
-                                        <option value={"dayGridWeek"}>Week</option>
-                                        <option value={"dayGridMonth"}>Month</option>
+                                        <option value={"C"}>Class</option>
+                                        <option value={"T"}>Tutor</option>
                                     </Select>
                                 </FormControl>
-                            </Grid>
-                            <Grid item>
-                                <Button
-                                    onClick={() => { this.changeViewToCalendar() }}
-                                >Calendar</Button>
-                            </Grid>
-                            <Grid item>
-                                <Button
-                                    onClick={() => { this.changeViewToResource() }}
-                                >Resource</Button>
-                            </Grid>
+                                :
+                                <FormControl className={'filter-select'}>
+                                    <InputLabel htmlFor="filter-resource-type"></InputLabel>
+
+                                    <Select
+                                        native
+                                        value={this.state.resourceFilterValue}
+                                        onChange={this.handleResourceFilterChange('resourceFilterValue')}
+                                        inputProps={{
+                                            name: 'resourceFilterValue',
+                                            id: 'filter-resource-type',
+                                        }}
+                                    >
+                                        <option value={"R"}>Room</option>
+                                        <option value={"I"}>Instructors</option>
+                                    </Select>
+                                </FormControl>
+                            }
+
                         </Grid>
-                        <br />
+                        <Grid item>
+                            <IconButton onClick={this.goToPrev} className={'prev-month'} aria-label="prev-month">
+                                <ChevronLeftOutlinedIcon />
+                            </IconButton>
+                        </Grid>
+                        <Grid item>
+                            <Typography variant={'h6'} >{this.state.currentDate}</Typography>
+                        </Grid>
+                        <Grid item>
+                            <IconButton onClick={this.goToNext} className={'next-month'} aria-label='next-month'>
+                                <ChevronRightOutlinedIcon />
+                            </IconButton>
+                        </Grid>
+
+
+                        <Grid item md={1} >
+                            <FormControl className={'change-view'}>
+                                <InputLabel htmlFor="change-view-select"></InputLabel>
+                                <Select
+                                    native
+                                    value={this.state.viewValue}
+                                    onChange={(event) => this.changeView(event.target.value)}
+                                    inputProps={{
+                                        name: 'viewValue',
+                                        id: 'change-view-select'
+                                    }}
+                                >
+                                    <option value={"timeGridDay"}>Day</option>
+                                    <option value={"timeGridWeek"}>Week</option>
+                                    <option value={"dayGridMonth"}>Month</option>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item>
+                            <Button
+                                onClick={() => { this.changeViewToCalendar() }}
+                            >Calendar</Button>
+                        </Grid>
+                        <Grid item >
+                            <Button
+                                onClick={() => { this.changeViewToResource() }}
+                            >Resource</Button>
+                        </Grid>
+                    </Grid>
+                    <br />
+                    <div className='demo-app-calendar'>
                         <FullCalendar
                             defaultView="timeGridDay"
                             header={false}
@@ -417,16 +414,26 @@ class Scheduler extends Component {
                             displayEventTime={true}
                             eventColor={"none"}
                             eventSources={[
-                                { events: this.state.calendarEvents, color: '#6FB87B' }
+                                { events: this.state.calendarEvents }
                             ]}
-
+                            titleFormat={{
+                                month: "long",
+                                day: "numeric",
+                            }}
+                            views={{
+                                dayGrid: {
+                                    titleFormat: {
+                                        month: "long"
+                                    }
+                                }
+                            }}
                             timeZone={'local'}
                             eventMouseEnter={this.handleToolTip}
                             eventLimit={4}
                             nowIndicator={true}
                             resourceOrder={'title'}
                             resourceAreaWidth={'20%'}
-                            resources={this.state.calendarResources}
+                            resources={this.state.calendarResourcesViews}
                             schedulerLicenseKey={'GPL-My-Project-Is-Open-Source'}
                         />
                     </div>

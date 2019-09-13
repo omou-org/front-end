@@ -23,7 +23,7 @@ import EmailIcon from "@material-ui/icons/Email";
 import EditIcon from "@material-ui/icons/Edit";
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 import Button from "@material-ui/core/Button";
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const rowHeadings = [
     { id: 'Student', numberic: false, disablePadding: false },
@@ -57,7 +57,7 @@ class RegistrationCourse extends Component {
     }
 
     componentWillMount() {
-        let CourseInView = this.props.courses[this.props.computedMatch.params.courseID] ;
+        let CourseInView = this.props.courses[this.props.computedMatch.params.courseID];
         this.setState({ ...CourseInView });
     }
 
@@ -95,13 +95,14 @@ class RegistrationCourse extends Component {
             return DayConverter[day];
         });
 
+
         let timeOptions = { hour: "2-digit", minute: "2-digit" };
-        let dateOptions = { year: "numeric", month: "short", day: "numeric"};
+        let dateOptions = { year: "numeric", month: "short", day: "numeric" };
         let startDate = new Date(this.state.schedule.start_date + this.state.schedule.start_time),
             endDate = new Date(this.state.schedule.end_date + this.state.schedule.end_time),
-            startTime = startDate.toLocaleTimeString("en-US",timeOptions),
-            endTime = endDate.toLocaleTimeString("en-US",timeOptions);
-        startDate = startDate.toLocaleDateString("en-US",dateOptions);
+            startTime = startDate.toLocaleTimeString("en-US", timeOptions),
+            endTime = endDate.toLocaleTimeString("en-US", timeOptions);
+        startDate = startDate.toLocaleDateString("en-US", dateOptions);
         endDate = endDate.toLocaleDateString("en-US", dateOptions);
 
         let instructor = this.props.instructors[this.state.instructor_id];
@@ -132,7 +133,7 @@ class RegistrationCourse extends Component {
                 width: 38,
                 height: 38,
                 fontSize: 14,
-                border:'1px solid white'
+                border: '1px solid white'
             }
         };
 
@@ -152,19 +153,19 @@ class RegistrationCourse extends Component {
                             <BackButton />
                         </Grid>
                         <Grid item sm={2}>
-                            <Button className={"button"} style={{padding:"6px 10px 6px 10px", backgroundColor:"white"}}>
-                                <EditIcon style={{fontSize:"16px"}}/>
+                            <Button className={"button"} style={{ padding: "6px 10px 6px 10px", backgroundColor: "white" }}>
+                                <EditIcon style={{ fontSize: "16px" }} />
                                 Edit Course
                             </Button>
                         </Grid>
                     </Grid>
-                    <Divider className={"top-divider"}/>
+                    <Divider className={"top-divider"} />
                     <div className={"course-heading"}>
                         <Typography align={'left'} variant={'h3'} style={{ fontWeight: "500" }} >
                             {this.state.title}
                         </Typography>
                         <div className={"date"}>
-                            <CalendarIcon style={{ fontSize: "16" }} align={'left'} className={"icon"}/>
+                            <CalendarIcon style={{ fontSize: "16" }} align={'left'} className={"icon"} />
                             <Typography align={'left'} style={{ marginLeft: '5px', marginTop: '10px' }}>
                                 {startDate} - {endDate}
                             </Typography>

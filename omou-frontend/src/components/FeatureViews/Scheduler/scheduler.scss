@@ -16,6 +16,7 @@
      top: 15px;
    }
 }
+
 .main-session-view{
   margin-top: 2em
 }
@@ -40,6 +41,14 @@
     font-weight: 500
   }
   
+}
+
+
+.scheduler-header{
+  
+  @include respond-to(wide-screens){
+    margin-left: 6em;
+  }
 }
 
 .fc-now-indicator{
@@ -130,6 +139,7 @@
 
 .session-detail-action-control{
   padding: 1%;
+  padding-top: 4%;
   @include respond-to(handhelds){
     margin-top:50px;
   }
@@ -181,7 +191,7 @@
 
 .demo-app-calendar {
   margin: 0 auto;
-  max-width: 897px;
+  max-width: 1300px;
 }
 .fc-view, .fc-view > table{
   z-index: 0;
