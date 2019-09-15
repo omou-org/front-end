@@ -181,8 +181,6 @@ class Accounts extends Component {
 
         return (<Grid item xs={12} className="Accounts">
             <Paper className={"paper"}>
-                <BackButton/>
-                <hr/>
                 <Typography variant="h2" align={"left"} className={"heading"}>Accounts</Typography>
                 <Grid container direction={"row"} alignItems={"center"}>
                     <Grid item xs={12} md={10}>
