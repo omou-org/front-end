@@ -1,15 +1,13 @@
 import PropTypes from "prop-types";
-
 import React, {useState} from "react";
 import {connect} from "react-redux";
-
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import { withRouter } from "react-router-dom";
-import { Typography } from "@material-ui/core";
+import {withRouter} from "react-router-dom";
+import {Typography} from "@material-ui/core";
 import BackButton from "../../BackButton";
 import FilterIcon from "@material-ui/icons/FilterList";
 import Popover from "@material-ui/core/Popover";
@@ -52,31 +50,8 @@ const RegistrationLanding = (props) => {
     };
 
     const handleFilterChange = (filters, filterType) => {
-
-        setCourses(filters
-            ? Object.keys(props.courses).filter((courseID) => {
-                const course = props.courses[courseID];
-                switch (filterType) {
-                    case "instructor":
-                        return filters
-                            .map(({ value }) => value)
-                            .includes(course.instructor_id);
-                    case "subject":
-                        return filters
-                            .map(({ value }) => value)
-                            .includes(course.subject);
-                    case "grade":
-                        return filters
-                            .map(({ value }) => value)
-                            .includes(course.grade);
-                    default:
-                        return true;
-                }
-            })
-            : Object.keys(props.courses));
-        setFilter({
-            ...filter,
-
+        setCourseFilters({
+            ...courseFilters,
             [filterType]: filters ? filters : [],
         });
     };
@@ -86,7 +61,7 @@ const RegistrationLanding = (props) => {
         switch (filterType) {
             case "instructor":
                 options = Object.values(props.instructors).map(
-                    ({ name, user_id }) => ({
+                    ({name, user_id}) => ({
                         "label": name,
                         "value": user_id,
                     })
@@ -94,11 +69,8 @@ const RegistrationLanding = (props) => {
                 break;
             case "subject":
                 options = [
-
-                    { "label": "Math", "value": "Math" },
-                    { "label": "Science", "value": "Science" },
-                    { "label": "Sat", "value": "Sat" },
-
+                    {"label": "Math", "value": "Math"},
+                    {"label": "Science", "value": "Science"},
                 ];
                 break;
             case "grade":
@@ -115,14 +87,14 @@ const RegistrationLanding = (props) => {
             const {
                 children = <CustomClearText />,
                 getStyles,
-                "innerProps": { ref, ...restInnerProps },
+                "innerProps": {ref, ...restInnerProps},
             } = indicatorProps;
             return (
                 <div
                     {...restInnerProps}
                     ref={ref}
                     style={getStyles("clearIndicator", indicatorProps)}>
-                    <div style={{ "padding": "0px 5px" }}>{children}</div>
+                    <div style={{"padding": "0px 5px"}}>{children}</div>
                 </div>
             );
         };
@@ -145,7 +117,7 @@ const RegistrationLanding = (props) => {
             }}
             className="filter-options"
             closeMenuOnSelect={false}
-            components={{ ClearIndicator }}
+            components={{ClearIndicator}}
             placeholder={`All ${filterType}s`}
             styles={customStyles}
             isMulti
@@ -153,138 +125,26 @@ const RegistrationLanding = (props) => {
         />;
     };
 
-
-    const renderCourses = () => courses.map((courseID) => {
-        let course = props.courses[courseID],
-            start_date = new Date(course.schedule.start_date),
-            end_date = new Date(course.schedule.end_date),
-            start_time = course.schedule.start_time.substr(1),
-            end_time = course.schedule.end_time.substr(1),
-            days = course.schedule.days.map((day) => weekday[day].substr(0, 3));
-        start_date = start_date.toDateString().substr(3);
-        end_date = end_date.toDateString().substr(3);
-        const date = `${start_date} - ${end_date}`,
-            time = `${start_time} - ${end_time}`;
-        return (
-            <Paper className="row" key={courseID}>
-                <Grid container alignItems="center" layout="row">
-                    <Grid
-                        item
-                        md={3} xs={12}
-                        onClick={(event) => {
-                            event.preventDefault();
-                            goToRoute(`/course/${course.course_id}`);
-                        }}
-                        style={{ "textDecoration": "none", "cursor": "pointer" }}>
-                        <Typography className="course-heading" align="left">
-                            {course.title}
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        item
-                        md={5} xs={12}
-                        onClick={(event) => {
-                            event.preventDefault();
-                            goToRoute(`/course/${course.course_id}`);
-                        }}
-                        style={{ "textDecoration": "none", "cursor": "pointer" }}>
-                        <Grid
-                            container className="course-detail">
-                            <Grid
-                                item
-                                md={4} xs={3}
-                                className="heading-det"
-                                align="left">
-                                Date
-                            </Grid>
-                            <Grid
-                                item
-                                md={8} xs={9}
-                                className="value"
-                                align="left">
-                                {date} | {days} {time}
-                            </Grid>
-                        </Grid>
-                        <Grid container className="course-detail">
-                            <Grid
-                                item
-                                md={4} xs={3}
-                                className="heading-det"
-                                align="left">
-                                Instructor
-                            </Grid>
-                            <Grid item md={8} xs={9}
-                                className="value"
-                                align="left">
-                                {props.instructors[course.instructor_id].name}
-                            </Grid>
-                        </Grid>
-                        <Grid container className="course-detail">
-                            <Grid
-                                item
-                                md={4} xs={3}
-                                className="heading-det"
-                                align="left">
-                                Tuition
-                            </Grid>
-                            <Grid
-                                item
-                                md={8} xs={9}
-                                className="value"
-                                align="left">
-                                ${course.tuition}
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid
-                        item
-                        md={4} xs={12}
-                        className="course-action">
-                        <Grid
-                            container
-                            alignItems="center"
-                            layout="row"
-                            style={{ "height": "100%" }}>
-                            <Grid
-                                item xs={6}
-                                className="course-status">
-                                <span className="stats">
-                                    {course.roster.length} / {course.capacity}
-                                </span>
-                                <span className="label">
-                                    Status
-                                </span>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Button
-                                    onClick={(event) => {
-                                        event.preventDefault();
-                                        if (course.capacity > course.roster.length) {
-                                            goToRoute(`/form/course/${course.course_id}`);
-                                        } else {
-                                            alert("The course is filled!");
-                                        }
-                                    }}
-                                    variant="contained"
-                                    disabled={course.capacity <= course.filled}
-                                    className="button primary">+ REGISTER</Button>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Paper>
-        );
-    });
-
-    const renderTutoring = () => {
-        const coursesPerRow = 3;
-        const coursesSplit = [[]];
-        courses.forEach((course) => {
-            if (coursesSplit[coursesSplit.length - 1].length === coursesPerRow) {
-                coursesSplit.push([course]);
-            } else {
-                coursesSplit[coursesSplit.length - 1].push(course);
-
+    let filteredCourses = Object.values(props.courses);
+    Object.entries(courseFilters)
+        .filter(([, filters]) => filters.length > 0)
+        .forEach(([filterName, filters]) => {
+            const mappedValues = filters.map(({value}) => value);
+            switch (filterName) {
+                case "instructor":
+                    filteredCourses = filteredCourses.filter(({instructor_id}) =>
+                        mappedValues.includes(instructor_id));
+                    break;
+                case "subject":
+                    filteredCourses = filteredCourses.filter(({subject}) =>
+                        mappedValues.includes(subject));
+                    break;
+                case "grade":
+                    filteredCourses = filteredCourses.filter(({grade}) =>
+                        mappedValues.includes(grade));
+                    break;
+                default:
+                    console.warn(`Unhandled filter ${filterName}`);
             }
         });
 
