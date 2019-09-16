@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
-import React, {useState} from "react";
+import React, { useState } from "react";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import {withRouter} from "react-router-dom";
-import {Typography} from "@material-ui/core";
+import { withRouter } from "react-router-dom";
+import { Typography } from "@material-ui/core";
 import BackButton from "../../BackButton";
 import FilterIcon from "@material-ui/icons/FilterList";
 import Popover from "@material-ui/core/Popover";
@@ -61,15 +61,15 @@ const RegistrationLanding = (props) => {
                 switch (filterType) {
                     case "instructor":
                         return filters
-                            .map(({value}) => value)
+                            .map(({ value }) => value)
                             .includes(course.instructor_id);
                     case "subject":
                         return filters
-                            .map(({value}) => value)
+                            .map(({ value }) => value)
                             .includes(course.subject);
                     case "grade":
                         return filters
-                            .map(({value}) => value)
+                            .map(({ value }) => value)
                             .includes(course.grade);
                     default:
                         return true;
@@ -87,7 +87,7 @@ const RegistrationLanding = (props) => {
         switch (filterType) {
             case "instructor":
                 options = Object.values(props.instructors).map(
-                    ({name, user_id}) => ({
+                    ({ name, user_id }) => ({
                         "label": name,
                         "value": user_id,
                     })
@@ -95,9 +95,9 @@ const RegistrationLanding = (props) => {
                 break;
             case "subject":
                 options = [
-                    {"label": "Math", "value": "Math"},
-                    {"label": "Science", "value": "Science"},
-                    {"label": "Sat", "value": "Sat"},
+                    { "label": "Math", "value": "Math" },
+                    { "label": "Science", "value": "Science" },
+                    { "label": "Sat", "value": "Sat" },
                 ];
                 break;
             case "grade":
@@ -114,14 +114,14 @@ const RegistrationLanding = (props) => {
             const {
                 children = <CustomClearText />,
                 getStyles,
-                "innerProps": {ref, ...restInnerProps},
+                "innerProps": { ref, ...restInnerProps },
             } = indicatorProps;
             return (
                 <div
                     {...restInnerProps}
                     ref={ref}
                     style={getStyles("clearIndicator", indicatorProps)}>
-                    <div style={{"padding": "0px 5px"}}>{children}</div>
+                    <div style={{ "padding": "0px 5px" }}>{children}</div>
                 </div>
             );
         };
@@ -144,7 +144,7 @@ const RegistrationLanding = (props) => {
             }}
             className="filter-options"
             closeMenuOnSelect={false}
-            components={{ClearIndicator}}
+            components={{ ClearIndicator }}
             placeholder={`All ${filterType}s`}
             styles={customStyles}
             isMulti
@@ -173,7 +173,7 @@ const RegistrationLanding = (props) => {
                             event.preventDefault();
                             goToRoute(`/course/${course.course_id}`);
                         }}
-                        style={{"textDecoration": "none", "cursor": "pointer"}}>
+                        style={{ "textDecoration": "none", "cursor": "pointer" }}>
                         <Typography className="course-heading" align="left">
                             {course.title}
                         </Typography>
@@ -185,7 +185,7 @@ const RegistrationLanding = (props) => {
                             event.preventDefault();
                             goToRoute(`/course/${course.course_id}`);
                         }}
-                        style={{"textDecoration": "none", "cursor": "pointer"}}>
+                        style={{ "textDecoration": "none", "cursor": "pointer" }}>
                         <Grid
                             container className="course-detail">
                             <Grid
@@ -242,7 +242,7 @@ const RegistrationLanding = (props) => {
                             container
                             alignItems="center"
                             layout="row"
-                            style={{"height": "100%"}}>
+                            style={{ "height": "100%" }}>
                             <Grid
                                 item xs={6}
                                 className="course-status">

@@ -67,16 +67,15 @@ class SessionView extends Component {
     componentWillMount() {
 
         this.setState(() => {
-
+            const course = this.props.courses[this.props.computedMatch.params.course_id];
             let sessionData = this.props.courseSessions[this.props.computedMatch.params.course_id][this.props.computedMatch.params.session_id]
             let courseData = this.props.courses[this.props.computedMatch.params.course_id]
-            let instructorData = this.props.instructors
-
-
+            const instructor = this.props.instructors[course.instructor_id];
+            console.log(instructor)
             return {
                 sessionData: sessionData,
                 courseData: courseData,
-                instructorData: instructorData
+                instructor: instructor
             }
         })
     }
@@ -108,31 +107,27 @@ class SessionView extends Component {
             11: "December"
         }
 
-        let date = new Date(start)
-        let dateNumber = date.getDate()
-        let dayOfWeek = date.getDay()
-        let startMonth = date.getMonth()
+        const date = new Date(start)
+        const dateNumber = date.getDate()
+        const dayOfWeek = date.getDay()
+        const startMonth = date.getMonth()
         // Gets days
-        let Days = [dayOfWeek]
-        Days = Days.map((day) => {
-            return DayConverter[day];
-        });
+        let Days = DayConverter[dayOfWeek]
+
         //Gets months
-        let Month = [startMonth]
-        Month = Month.map(month => {
-            return MonthConverter[month]
-        })
+        let Month = MonthConverter[startMonth]
+
         //Start times and end times variable 
         let startTime = start.slice(11)
         let endTime = end.slice(11)
 
         // Converts 24hr to 12 hr time 
-        this.timeConverter = (s) => {
-            let timeString = s;
-            let H = +s.substr(0, 2);
-            let h = (H % 12) || 12;
-            let ampm = H < 12 ? "a" : "p";
-            timeString = h + s.substr(2, 3) + ampm;
+        this.timeConverter = (time) => {
+            let timeString = time;
+            let Hour = +time.substr(0, 2);
+            let to12HourTime = (Hour % 12) || 12;
+            let ampm = Hour < 12 ? "a" : "p";
+            timeString = to12HourTime + time.substr(2, 3) + ampm;
             return timeString
 
         }
@@ -143,23 +138,15 @@ class SessionView extends Component {
 
     }
 
-    getInstructorName = () => {
-        let options = Object.keys(this.state.instructorData).map((instructorID) => {
-            let instructor = this.props.instructors[instructorID];
-            return { label: instructor.name, value: Number(instructorID) };
-        });
-        console.log(options)
-
-    }
 
 
 
 
     render() {
-        this.getInstructorName()
+
         return (
 
-            <Grid container className={'main-session-view'}>
+            <Grid className={'main-session-view'}>
                 <Paper className={'paper'} mt={"2em"} >
                     <Grid item className={'session-button'}>
                         <BackButton />
@@ -168,28 +155,66 @@ class SessionView extends Component {
 
                     <Grid container className={'session-view'} ml={10}>
                         <Grid item xs={12}>
-                            <Typography className={'session-view-title'} align={'left'} variant={'h3'}>
+                            <Typography
+                                className={'session-view-title'}
+                                align={'left'}
+                                variant={'h3'}>
                                 {this.state.courseData.title}
                             </Typography>
                         </Grid>
-
-                        <Grid container className={"session-view-details"} align={'left'} >
-                            <Grid item xs={4} style={{ "paddingTop": "1%" }}>
-                                <Typography variant="h5"> Subject </Typography>
-                                <Typography varient="body1">{this.state.courseData.subject} </Typography>
+                        <Grid
+                            container
+                            className={"session-view-details"}
+                            align={'left'} >
+                            <Grid
+                                item xs={4}
+                                style={{ "paddingTop": "1%" }}>
+                                <Typography
+                                    variant="h5">
+                                    Subject
+                                    </Typography>
+                                <Typography
+                                    varient="body1">
+                                    {this.state.courseData.subject}
+                                </Typography>
                             </Grid>
-
-                            <Grid item xs={6} lg={3} style={{ "paddingTop": "1%" }}>
-                                <Typography variant="h5"> Date & Time </Typography>
-                                <Typography variant="body1">{this.formatDate(this.state.sessionData.start, this.state.sessionData.end)}</Typography>
+                            <Grid
+                                item xs={6}
+                                lg={3}
+                                style={{ "paddingTop": "1%" }}>
+                                <Typography
+                                    variant="h5">
+                                    Date & Time
+                                 </Typography>
+                                <Typography
+                                    variant="body1">
+                                    {this.formatDate(this.state.sessionData.start, this.state.sessionData.end)}
+                                </Typography>
                             </Grid>
-                            <Grid item xs={12} style={{ "paddingTop": "1%" }}>
-                                <Typography variant="h5"> Teacher </Typography>
-                                <Typography variant="body1">{this.state.instructorData[10].name}</Typography>
+                            <Grid
+                                item xs={12}
+                                style={{ "paddingTop": "1%" }}>
+                                <Typography
+                                    variant="h5">
+                                    Teacher
+                                    </Typography>
+                                <Typography
+                                    variant="body1">
+                                    {this.state.instructor.name}
+                                </Typography>
                             </Grid>
-                            <Grid item xs={10} style={{ "paddingTop": "1%" }}>
-                                <Typography variant="h5"> Description </Typography>
-                                <Typography variant="body1" style={{ width: "75%" }} > {this.state.courseData.description}   </Typography>
+                            <Grid
+                                item xs={10}
+                                style={{ "paddingTop": "1%" }}>
+                                <Typography
+                                    variant="h5">
+                                    Description
+                                     </Typography>
+                                <Typography
+                                    variant="body1"
+                                    style={{ width: "75%" }} >
+                                    {this.state.courseData.description}
+                                </Typography>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -262,20 +287,20 @@ class SessionView extends Component {
                                 labelPlacement="end"
                             />
                         </RadioGroup>
-
                     </DialogContent>
-
-
                     <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">
+                        <Button
+                            onClick={this.handleClose}
+                            color="primary">
                             Cancel
-          </Button>
-                        <Button onClick={this.handleClose} color="primary">
+                            </Button>
+                        <Button
+                            onClick={this.handleClose}
+                            color="primary">
                             Apply
-          </Button>
+                            </Button>
                     </DialogActions>
                 </Dialog>
-
             </Grid>
 
         )

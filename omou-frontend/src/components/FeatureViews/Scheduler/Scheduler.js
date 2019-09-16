@@ -83,22 +83,25 @@ class Scheduler extends Component {
 
 
 
+
         new tippy(info.el, {
 
-            content: `
-            <div class="toolTip">
-            <div class='title'><h3> ${info.event.title} </h3></div>
-            <div class="container">
-            <div class='clock'><span class='clock_icon'>  ${ new Date(info.event.start).toDateString().slice(0, 10)}</span></div>   
-            <span> 
-            ${info.event.extendedProps.type}
-            </span>
-            <div class='pin_icon'><span class=''>Room # ${info.event.extendedProps.room_id}</span></div> 
-            <div class='teacher_icon'><span class=''>${info.event.extendedProps.instructor ? info.event.extendedProps.instructor : "No teacher Yet"}</span></div> 
-            <div class='discription_icon'><span class='description-text'>${truncate(info.event.extendedProps.description)}</span></div> 
-            </div>
-        </div>
-            `,
+            content:
+                `
+                <div class="toolTip">
+                    <div class='title'><h3> ${info.event.title} </h3></div>
+                    <div class="container">
+                        <div class='clock'><span class='clock_icon'>  ${new Date(info.event.start).toDateString().slice(0, 10)}</span></div>
+                        <span>
+                            ${info.event.extendedProps.type}
+                        </span>
+                        <div class='pin_icon'><span class=''>Room # ${info.event.extendedProps.room_id}</span></div>
+                        <div class='teacher_icon'><span class=''>${info.event.extendedProps.instructor ? info.event.extendedProps.instructor : "No teacher Yet"}</span></div>
+                        <div class='discription_icon'><span class='description-text'>${truncate(info.event.extendedProps.description)}</span></div>
+                    </div>
+                </div>
+            `
+            ,
             theme: "light",
             placement: 'right',
             interactive: true,
@@ -225,23 +228,17 @@ class Scheduler extends Component {
             newSessions.url = `http:/scheduler/view-session/${newSessions.course_id}/${newSessions.session_id}`
             return newSessions
         })
-        let options = instructorKeys.map((instructorID) => {
-            let instructor = this.props.instructors[instructorID];
-            return { label: instructor.name, value: Number(instructorID) };
-        });
-        console.log(options)
 
         return sessionsInViewWithUrl
 
     }
     // This function is used in material-ui for the eventhandler
     handleFilterChange = (name) => event => {
-
         this.setState({
-            ...this.state,
-            [name]: event.target.value
+
+            "filterValue": event.target.value
         })
-        this.filterEvent(event.target.value)
+
     }
 
     // This will filter out event based on type
@@ -319,17 +316,26 @@ class Scheduler extends Component {
                         alignItems="center"
                         className="scheduler-header">
                         <Grid item >
-                            <IconButton color={this.state.calendarIcon ? "primary" : "default"} onClick={this.changeViewToCalendar} className={'calendar-icon'} aria-label='next-month'>
+                            <IconButton
+                                color={this.state.calendarIcon ? "primary" : "default"}
+                                onClick={this.changeViewToCalendar}
+                                className={'calendar-icon'} aria-label='next-month'>
                                 <DateRangeOutlinedIcon />
                             </IconButton>
                         </Grid>
                         <Grid item >
-                            <IconButton color={this.state.resourceIcon ? "primary" : "default"} onClick={this.changeViewToResource} className={'resource-icon'} aria-label='next-month'>
+                            <IconButton
+                                color={this.state.resourceIcon ? "primary" : "default"}
+                                onClick={this.changeViewToResource}
+                                className={'resource-icon'}
+                                aria-label='next-month'>
                                 <ViewListIcon />
                             </IconButton>
                         </Grid>
                         <Grid item  >
-                            <IconButton className={'next-month'} aria-label='next-month'>
+                            <IconButton
+                                className={'next-month'}
+                                aria-label='next-month'>
                                 <SearchIcon />
                             </IconButton>
                         </Grid>
@@ -337,10 +343,8 @@ class Scheduler extends Component {
                             {(this.state.calendarIcon) ?
                                 <FormControl className={'filter-select'} >
                                     <InputLabel htmlFor="filter-class-type"></InputLabel>
-
                                     <Select
                                         native
-
                                         value={this.state.filterValue}
                                         onChange={this.handleFilterChange('filterValue')}
                                         inputProps={{
