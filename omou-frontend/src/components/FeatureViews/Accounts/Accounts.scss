@@ -43,20 +43,23 @@
       padding: 1%;
       align-content: left;
       white-space: nowrap;
-    }
-    .editPadding {
-      position: absolute;
-      right: 10%;
-      padding-top: 1.5%;
-      .editButton {
-        color: $darkenPrimaryFontColor;
-        border-radius: 5px;
-        box-sizing: border-box;
-        border: solid 2px $secondaryColor !important;
-        white-space: nowrap;
+      .icon{
+        height: 2em;
+        width: 2em;
       }
     }
+    .editButton {
+      color: $darkenPrimaryFontColor;
+      border-radius: 5px;
+      box-sizing: border-box;
+      border: solid 2px $secondaryColor !important;
+      white-space: nowrap;
+      margin-top: 1.5%;
+      position: absolute;
+      right: 10%;
+    }
   }
+
   .padding {
     padding-bottom: 4%;
     padding-top: 3%;
