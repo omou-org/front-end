@@ -44,10 +44,11 @@
 }
 
 
+
 .scheduler-header{
-  
+  background-color : white;
   @include respond-to(wide-screens){
-    margin-left: 6em;
+    
   }
 }
 
@@ -188,6 +189,10 @@
 .demo-app {
   font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
   font-size: 14px;
+  
+}
+body .fc {
+  font-size: 15px;
 }
 
 .demo-app-top {
@@ -197,7 +202,9 @@
 .demo-app-calendar {
   margin: 0 auto;
   max-width: 1300px;
+  background-color : white;
 }
 .fc-view, .fc-view > table{
   z-index: 0;
 }
+

@@ -15,7 +15,7 @@ import * as calenderActions from '../../../actions/calenderActions';
 // Material-Ui dependencies
 
 import Button from "@material-ui/core/Button";
-import { makeStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import FormControl from '@material-ui/core/FormControl';
@@ -33,6 +33,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import tippy from 'tippy.js'
 import 'tippy.js/themes/google.css'
 import './scheduler.scss'
+
 
 
 
@@ -60,13 +61,15 @@ class Scheduler extends Component {
     componentWillMount() {
         this.setState({
             calendarEvents: this.getEvents(),
+
         })
 
     }
 
     componentDidMount() {
         this.setState({
-            currentDate: this.currentDate()
+            currentDate: this.currentDate(),
+            filterValue: this.filterEvent("C")
         })
 
     }
@@ -81,6 +84,60 @@ class Scheduler extends Component {
                 return string;
         };
 
+        function formatDate(start, end) {
+            let DayConverter = {
+                1: "Monday",
+                2: "Tuesday",
+                3: "Wednesday",
+                4: "Thursday",
+                5: "Friday",
+                6: "Saturday",
+            };
+            let MonthConverter = {
+                0: "January",
+                1: "February",
+                2: "March",
+                3: "April",
+                4: "May",
+                5: "June",
+                6: "July",
+                7: "August",
+                8: "September",
+                9: "October",
+                10: "November",
+                11: "December"
+            }
+
+            const date = new Date(start)
+            const dateNumber = date.getDate()
+            const dayOfWeek = date.getDay()
+            const startMonth = date.getMonth()
+            // Gets days
+            let Days = DayConverter[dayOfWeek]
+
+            //Gets months
+            let Month = MonthConverter[startMonth]
+
+            //Start times and end times variable 
+            let startTime = start.slice(11)
+            let endTime = end.slice(11)
+
+            // Converts 24hr to 12 hr time 
+            function timeConverter(time) {
+                let timeString = time;
+                let Hour = time.substr(0, 2);
+                let to12HourTime = (Hour % 12) || 12;
+                let ampm = Hour < 12 ? "a" : "p";
+                timeString = to12HourTime + time.substr(2, 3) + ampm;
+                return timeString
+
+            }
+
+            let finalTime = `${Days}, ${Month} ${dateNumber} <br> ${timeConverter(startTime)} - ${timeConverter(endTime)}`
+
+            return finalTime
+
+        }
 
 
 
@@ -91,7 +148,7 @@ class Scheduler extends Component {
                 <div class="toolTip">
                     <div class='title'><h3> ${info.event.title} </h3></div>
                     <div class="container">
-                        <div class='clock'><span class='clock_icon'>  ${new Date(info.event.start).toDateString().slice(0, 10)}</span></div>
+                        <div class='clock'><span class='clock_icon'>  ${formatDate(info.event.extendedProps.start_time, info.event.extendedProps.end_time)}</span></div>
                         <span>
                             ${info.event.extendedProps.type}
                         </span>
@@ -106,7 +163,7 @@ class Scheduler extends Component {
             placement: 'right',
             interactive: true,
         })
-
+        console.log(info)
     }
 
 
@@ -210,7 +267,8 @@ class Scheduler extends Component {
                 session['type'] = this.props.courses[session.course_id].type;
                 session['resourceId'] = this.props.courses[session.course_id].room_id;
                 session['room_id'] = this.props.courses[session.course_id].room_id;
-
+                session["start_time"] = this.props.sessions[courseKey][sessionKey].start
+                session["end_time"] = this.props.sessions[courseKey][sessionKey].end
                 return session;
 
             })
@@ -236,9 +294,9 @@ class Scheduler extends Component {
     handleFilterChange = (name) => event => {
         this.setState({
 
-            "filterValue": event.target.value
+            "filterEvent": event.target.value
         })
-
+        this.filterEvent(event.target.value)
     }
 
     // This will filter out event based on type
@@ -305,7 +363,52 @@ class Scheduler extends Component {
         return instructorList
     }
 
+    // ID of instructors should match resourceID 
+    // Object needs to be pushed into calendar events 
+    // Need to use daysOfWeek with start time,endTime,startRecur and endRecur
+    // Step one take use this.state.instructorlists to get the instructors object
+    // Take the user_id, name,
+    // 
+    /*
+        Events should be stored like 
+        [{
+            title : "name of instructor",
+            id: "instructor ID",
+            resourceID : "instructor ID",
+            daysOfWeek : [ 0,1,4] = the amount of recurring days, 0 = sunday , 1 = monday ect.
+            startTime : "Time of work in 24hour time ie, 10:30 ,
+            endTime : "Time to end work in 24hour time ie, 14:00",
+            startRecur : "when recurrence of event starts '2019-09-25"
+            endRecur : "when the recurrence of events end '2020-01-25" (should be the semester long )
+    
+        }]
+        
+            with time off same applys with everything on top, but we need 
+            [{
+                resourceID " instructor ID"
+                start
+                rendering: "background",
+                color  : "gray"
+            }]
+        Issues : Full calendar 
+    
+        */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     render() {
+        console.log(this.getInstructorResources())
         return (
             <div className="main-calendar-div">
                 <Paper className="paper">
@@ -314,6 +417,7 @@ class Scheduler extends Component {
                     <Grid container
                         direction="row"
                         alignItems="center"
+                        justify="center"
                         className="scheduler-header">
                         <Grid item >
                             <IconButton
@@ -339,9 +443,9 @@ class Scheduler extends Component {
                                 <SearchIcon />
                             </IconButton>
                         </Grid>
-                        <Grid item sm={2}>
+                        <Grid item >
                             {(this.state.calendarIcon) ?
-                                <FormControl className={'filter-select'} >
+                                <FormControl className={'filter-select'}  >
                                     <InputLabel htmlFor="filter-class-type"></InputLabel>
                                     <Select
                                         native
@@ -376,12 +480,13 @@ class Scheduler extends Component {
                             }
 
                         </Grid>
+
                         <Grid item md={1}>
                             <IconButton onClick={this.goToPrev} className={'prev-month'} aria-label="prev-month">
                                 <ChevronLeftOutlinedIcon />
                             </IconButton>
                         </Grid>
-                        <Grid item md={2}>
+                        <Grid item md={2} >
                             <Typography variant={'h6'} >{this.state.currentDate}</Typography>
                         </Grid>
                         <Grid item>
@@ -390,13 +495,11 @@ class Scheduler extends Component {
                             </IconButton>
                         </Grid>
 
-
                         <Grid item md={1} >
-                            <FormControl className={'change-view'} variant="outlined">
+                            <FormControl className={'change-view'} >
                                 <InputLabel htmlFor="change-view-select"></InputLabel>
                                 <Select
                                     native
-
                                     value={this.state.viewValue}
                                     onChange={(event) => this.changeView(event.target.value)}
                                     inputProps={{
@@ -421,42 +524,44 @@ class Scheduler extends Component {
                             >Resource</Button>
                         </Grid>
                     </Grid>
-                    <br />
-                    <div className='demo-app-calendar'>
-                        <FullCalendar
-                            defaultView="timeGridDay"
-                            header={false}
-                            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listViewPlugin, resourceTimelinePlugin]}
-                            ref={this.calendarComponentRef}
-                            weekends={this.state.calendarWeekends}
-                            displayEventTime={true}
-                            eventColor={"none"}
-                            eventSources={[
-                                { events: this.state.calendarEvents }
-                            ]}
-                            titleFormat={{
-                                month: "long",
-                                day: "numeric",
-                            }}
-                            views={{
-                                dayGrid: {
-                                    titleFormat: {
-                                        month: "long"
+                    <Grid item>
+                        <Grid className='demo-app-calendar'>
+                            <FullCalendar
+                                defaultView="timeGridDay"
+                                header={false}
+                                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listViewPlugin, resourceTimelinePlugin]}
+                                ref={this.calendarComponentRef}
+                                weekends={this.state.calendarWeekends}
+                                displayEventTime={true}
+                                eventColor={"none"}
+                                eventSources={[
+                                    { events: this.state.calendarEvents }
+                                ]}
+                                titleFormat={{
+                                    month: "long",
+                                    day: "numeric",
+                                }}
+                                views={{
+                                    dayGrid: {
+                                        titleFormat: {
+                                            month: "long"
+                                        }
                                     }
-                                }
-                            }}
-                            timeZone={'local'}
-                            eventMouseEnter={this.handleToolTip}
-                            eventLimit={4}
-                            nowIndicator={true}
-                            resourceOrder={'title'}
-                            resourceAreaWidth={'20%'}
-                            resources={this.state.calendarResourcesViews}
-                            schedulerLicenseKey={'GPL-My-Project-Is-Open-Source'}
-                        />
-                    </div>
+                                }}
+                                timeZone={'local'}
+                                eventMouseEnter={this.handleToolTip}
+                                eventLimit={4}
+                                nowIndicator={true}
+                                resourceOrder={'title'}
+                                resourceAreaWidth={'20%'}
+                                resources={this.state.calendarResourcesViews}
+                                schedulerLicenseKey={'GPL-My-Project-Is-Open-Source'}
+                            />
+                        </Grid>
+                    </Grid>
                 </Paper >
-            </div>
+
+            </div >
         )
     }
 }

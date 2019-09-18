@@ -139,9 +139,6 @@ class SessionView extends Component {
     }
 
 
-
-
-
     render() {
 
         return (
