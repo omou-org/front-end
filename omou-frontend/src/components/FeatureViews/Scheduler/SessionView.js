@@ -67,15 +67,18 @@ class SessionView extends Component {
     componentWillMount() {
 
         this.setState(() => {
-            const course = this.props.courses[this.props.computedMatch.params.course_id];
-            let sessionData = this.props.courseSessions[this.props.computedMatch.params.course_id][this.props.computedMatch.params.session_id]
-            let courseData = this.props.courses[this.props.computedMatch.params.course_id]
-            const instructor = this.props.instructors[course.instructor_id];
-            console.log(instructor)
+
+            const computedMatches = this.props.computedMatch.params.course_id
+            const sessionMatches = this.props.computedMatch.params.session_id
+
+            let sessionData = this.props.courseSessions[computedMatches][sessionMatches]
+            let courseData = this.props.courses[computedMatches]
+            const instructor = this.props.instructors[courseData.instructor_id];
+
             return {
-                sessionData: sessionData,
-                courseData: courseData,
-                instructor: instructor
+                sessionData,
+                courseData,
+                instructor,
             }
         })
     }
@@ -84,7 +87,7 @@ class SessionView extends Component {
 
     // Formatting the date in the view
     formatDate = (start, end) => {
-        let DayConverter = {
+        const DayConverter = {
             1: "Monday",
             2: "Tuesday",
             3: "Wednesday",
@@ -92,7 +95,7 @@ class SessionView extends Component {
             5: "Friday",
             6: "Saturday",
         };
-        let MonthConverter = {
+        const MonthConverter = {
             0: "January",
             1: "February",
             2: "March",
@@ -115,7 +118,7 @@ class SessionView extends Component {
         let Days = DayConverter[dayOfWeek]
 
         //Gets months
-        let Month = MonthConverter[startMonth]
+        const Month = MonthConverter[startMonth]
 
         //Start times and end times variable 
         let startTime = start.slice(11)
@@ -123,12 +126,12 @@ class SessionView extends Component {
 
         // Converts 24hr to 12 hr time 
         this.timeConverter = (time) => {
-            let timeString = time;
+
             let Hour = +time.substr(0, 2);
             let to12HourTime = (Hour % 12) || 12;
             let ampm = Hour < 12 ? "a" : "p";
-            timeString = to12HourTime + time.substr(2, 3) + ampm;
-            return timeString
+            time = to12HourTime + time.substr(2, 3) + ampm;
+            return time
 
         }
 

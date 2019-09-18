@@ -85,7 +85,7 @@ class Scheduler extends Component {
         };
 
         function formatDate(start, end) {
-            let DayConverter = {
+            const DayConverter = {
                 1: "Monday",
                 2: "Tuesday",
                 3: "Wednesday",
@@ -93,7 +93,7 @@ class Scheduler extends Component {
                 5: "Friday",
                 6: "Saturday",
             };
-            let MonthConverter = {
+            const MonthConverter = {
                 0: "January",
                 1: "February",
                 2: "March",
@@ -113,10 +113,10 @@ class Scheduler extends Component {
             const dayOfWeek = date.getDay()
             const startMonth = date.getMonth()
             // Gets days
-            let Days = DayConverter[dayOfWeek]
+            const Days = DayConverter[dayOfWeek]
 
             //Gets months
-            let Month = MonthConverter[startMonth]
+            const Month = MonthConverter[startMonth]
 
             //Start times and end times variable 
             let startTime = start.slice(11)
@@ -124,12 +124,12 @@ class Scheduler extends Component {
 
             // Converts 24hr to 12 hr time 
             function timeConverter(time) {
-                let timeString = time;
+
                 let Hour = time.substr(0, 2);
                 let to12HourTime = (Hour % 12) || 12;
                 let ampm = Hour < 12 ? "a" : "p";
-                timeString = to12HourTime + time.substr(2, 3) + ampm;
-                return timeString
+                time = to12HourTime + time.substr(2, 3) + ampm;
+                return time
 
             }
 
@@ -163,7 +163,7 @@ class Scheduler extends Component {
             placement: 'right',
             interactive: true,
         })
-        console.log(info)
+
     }
 
 
@@ -178,7 +178,7 @@ class Scheduler extends Component {
     changeView = (value) => {
         let calendarApi = this.calendarComponentRef.current.getApi()
         calendarApi.changeView(value)
-        let date = this.currentDate()
+        const date = this.currentDate()
         this.setState({
             viewValue: value,
             currentDate: date
@@ -189,7 +189,7 @@ class Scheduler extends Component {
         let calendarApi = this.calendarComponentRef.current.getApi()
 
         calendarApi.next()
-        let date = this.currentDate();
+        const date = this.currentDate();
         this.setState({
             currentDate: date
         })
@@ -198,7 +198,7 @@ class Scheduler extends Component {
     goToPrev = () => {
         let calendarApi = this.calendarComponentRef.current.getApi()
         calendarApi.prev()
-        let date = this.currentDate();
+        const date = this.currentDate();
 
         this.setState({
             currentDate: date
@@ -261,12 +261,13 @@ class Scheduler extends Component {
                 // sessionKey is the variable named inside the map, this is mapping over each coursekey
                 // session is the matched pairs of course and session objects 
                 let session = this.props.sessions[courseKey][sessionKey];
+                const allSessions = this.props.courses[session.course_id]
 
-                session["title"] = this.props.courses[session.course_id].title;
-                session["description"] = this.props.courses[session.course_id].description;
-                session['type'] = this.props.courses[session.course_id].type;
-                session['resourceId'] = this.props.courses[session.course_id].room_id;
-                session['room_id'] = this.props.courses[session.course_id].room_id;
+                session["title"] = allSessions.title;
+                session["description"] = allSessions.description;
+                session['type'] = allSessions.type;
+                session['resourceId'] = allSessions.room_id;
+                session['room_id'] = allSessions.room_id;
                 session["start_time"] = this.props.sessions[courseKey][sessionKey].start
                 session["end_time"] = this.props.sessions[courseKey][sessionKey].end
                 return session;
@@ -338,11 +339,11 @@ class Scheduler extends Component {
     // gets the values of course object 
     getRoomResources = () => {
         let courses = Object.values(this.props.courses);
-        let resourceList = courses.map((course) => {
+        let resourceList = courses.map(({ room_id }) => {
 
             return {
-                "id": course.room_id,
-                "title": `Room ${course.room_id}`,
+                "id": room_id,
+                "title": `Room ${room_id}`,
 
             }
         });
@@ -353,11 +354,11 @@ class Scheduler extends Component {
     // gets values of instructors and places them in the resource col
     getInstructorResources = () => {
         let instructor = Object.values(this.props.instructors)
-        let instructorList = instructor.map((inst) => {
+        let instructorList = instructor.map(({ user_id, name }) => {
 
             return {
-                "id": inst.user_id,
-                'title': inst.name
+                "id": user_id,
+                'title': name
             }
         })
         return instructorList
@@ -390,25 +391,14 @@ class Scheduler extends Component {
                 rendering: "background",
                 color  : "gray"
             }]
-        Issues : Full calendar 
+        
     
         */
 
 
 
-
-
-
-
-
-
-
-
-
-
-
     render() {
-        console.log(this.getInstructorResources())
+
         return (
             <div className="main-calendar-div">
                 <Paper className="paper">
