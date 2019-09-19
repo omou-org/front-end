@@ -169,9 +169,9 @@ class UserProfile extends Component {
         const styles = {
             "backgroundColor": this.stringToColor(this.state.user.name),
             "color": "white",
-            "width": "10vw",
-            "height": "10vw",
-            "fontSize": "3.5vw",
+            "width": "11vw",
+            "height": "11vw",
+            "fontSize": "4vw",
             "margin": 20,
         };
         let tabs;
@@ -249,10 +249,10 @@ class UserProfile extends Component {
                 />
                 <hr />
                 <Grid container layout="row" className={'padding'}>
-                    <Grid item md={2} component={Hidden} xsDown>
+                    <Grid item xs={2} md={2} component={Hidden} xsDown>
                         <Avatar style={styles}>{this.state.user.name.match(/\b(\w)/g).join('')}</Avatar>
                     </Grid>
-                    <Grid item md={8} className="headingPadding">
+                    <Grid item xs={8} md={8} className="headingPadding">
                         <ProfileHeading user={this.state.user} />
                     </Grid>
                 </Grid>

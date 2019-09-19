@@ -38,25 +38,30 @@
     .headingPadding {
       padding-left: 3%;
     }
+    .gridScaling {
+      white-space: nowrap;
+    }
+    .ProfileName {
+      word-break: break-word;
+    }
     .rowPadding {
       display: flex;
-      padding: 1%;
+      padding: 4px;
       align-content: left;
-      white-space: nowrap;
-      .icon{
-        height: 2em;
-        width: 2em;
+      text-align: left;
+      .rowText {
+        word-break: break-word;
       }
     }
     .editButton {
       color: $darkenPrimaryFontColor;
-      border-radius: 5px;
+      border-radius: 0px;
       box-sizing: border-box;
       border: solid 2px $secondaryColor !important;
       white-space: nowrap;
-      margin-top: 1.5%;
       position: absolute;
-      right: 10%;
+      right: 5%;
+      margin-top:-4.5%;
     }
   }
 
@@ -67,7 +72,6 @@
   .userLabel {
     @include respond-to(medium-up-screens) {
       margin-top: 28px;
-      margin-left: 40px;
     }
     @include respond-to(handhelds) {
       margin-top: 28px;

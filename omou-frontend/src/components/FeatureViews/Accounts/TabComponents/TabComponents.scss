@@ -40,7 +40,7 @@
   text-align: left;
   .Bio {
     margin-left: -9%;
-    margin-top: -50px;
+    margin-top: -10%;
     .bioHeader{
       font-weight:bold;
       font-size:20px;
@@ -64,16 +64,16 @@
         .bioDescription{
           font-weight:500;
           font-size:16;
-          padding-right:10px;
+          padding:2%;
         }
     }
     .chipPadding{
       padding-left:5px;
       padding-right:5px;
-      padding-top: 20px;
+      margin-top: 1%;
+      padding-bottom: 2%;
 
     .bioChip {
-      margin-top: -40px;
       background-color: $bioChipColor;
       border-color:$bioBorderColor;
     }
