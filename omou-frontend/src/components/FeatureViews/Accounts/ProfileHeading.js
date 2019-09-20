@@ -43,7 +43,7 @@ class ProfileHeading extends Component {
                             </Typography>
                         </Grid>
                         <Grid item xs={1} md={1} className="rowPadding">
-                            <IDIcon height={24} width={24} />
+                            <IDIcon display="block" viewBox="0 0 10 10" />
                         </Grid>
                         <Grid item xs={5} md={5} className="rowPadding">
                             <Typography className="rowText">
@@ -87,7 +87,7 @@ class ProfileHeading extends Component {
                 <Grid item md={6}>
                     <Grid container>
                         <Grid item md={1} className="rowPadding">
-                            <IDIcon height={24} width={24} />
+                            <IDIcon height={"24px"} width={"24px"} />
                         </Grid>
                         <Grid item md={5} className="rowPadding">
                             <Typography className="rowText">
@@ -124,7 +124,7 @@ class ProfileHeading extends Component {
         return (
             <Grid container>
                 <Grid item xs={1} md={1} className="rowPadding">
-                    <IDIcon height={24} width={24} />
+                    <IDIcon height={"24px"} width={"24px"}  />
                 </Grid>
                 <Grid item xs={5} md={5} className="rowPadding">
                     <Typography className="rowText">

@@ -155,22 +155,22 @@ class CourseViewer extends Component {
                             <Paper square={true}>
                                 <Grid container>
                                     <Grid item md={3}>
-                                        <Typography align={'left'}>
+                                        <Typography className='accounts-table-text' align={'left'}>
                                             {course.title}
                                         </Typography>
                                     </Grid>
                                     <Grid item md={3}>
-                                        <Typography align={'left'}>
+                                        <Typography className='accounts-table-text' align={'left'}>
                                             {startDate} - {endDate}
                                         </Typography>
                                     </Grid>
                                     <Grid item md={2}>
-                                        <Typography align={'left'}>
+                                        <Typography className='accounts-table-text' align={'left'}>
                                             {Days}
                                         </Typography>
                                     </Grid>
                                     <Grid item md={3}>
-                                        <Typography align={'left'}>
+                                        <Typography className='accounts-table-text' align={'left'}>
                                             {startTime} - {endTime}
                                         </Typography>
                                     </Grid>
