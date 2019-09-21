@@ -30,11 +30,6 @@ import Hidden from "@material-ui/core/es/Hidden/Hidden";
 const userTabs = {
     "instructor": [
         {
-            tab_heading: "Schedule",
-            tab_id: 0,
-            icon: <ScheduleIcon className="TabIcon" />,
-        },
-        {
             tab_heading: "Courses",
             tab_id: 1,
             icon: <CoursesIcon className="TabIcon" />,
@@ -79,16 +74,6 @@ const userTabs = {
                 icon: <CurrentSessionsIcon className="TabIcon"/>,
             },
             {
-                tab_heading: "Pay Courses",
-                tab_id: 9,
-                icon: <CurrentSessionsIcon className="TabIcon"/>,
-            },
-            {
-                tab_heading: "Payment History",
-                tab_id: 5,
-                icon: <PaymentIcon className="TabIcon"/>,
-            },
-            {
                 tab_heading: "Notes",
                 tab_id: 7,
                 icon: <NoteIcon className="TabIcon"/>,
@@ -109,7 +94,7 @@ class UserProfile extends Component {
 
     componentWillMount() {
         let user;
-        let accountType = this.props.computedMatch.params.accountType, accountID = this.props.computedMatch.params.accountID;
+        let accountType = this.props.match.params.accountType, accountID = this.props.match.params.accountID;
         switch (accountType) {
             case "student":
                 user = this.props.students[accountID];
