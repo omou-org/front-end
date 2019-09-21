@@ -56,16 +56,16 @@ class StudentInfo extends Component {
         const styles = (username) => ({
             "backgroundColor": this.stringToColor(username),
             "color": "white",
-            "width": "5vw",
-            "height": "5vw",
-            "fontSize": 20,
+            "width": "7vw",
+            "height": "7vw",
+            "fontSize": "2vw",
             "margin": 20,
         });
 
         return (
-            <Grid container spacing={40} alignItems="center" direction="row" item xs={12}>
+            <Grid container spacing={40} alignItems="center" direction="row" item xs={14}>
                 {this.state.student.map((student) =>
-                    <Grid item xs={12} sm={6} className="ProfileCard" key={student.user_id}>
+                    <Grid item xs={12} md={6} className="ProfileCard" key={student.user_id}>
                         <Card
                             // onClick={() => {
                             //     this.props.history.push(`/accounts/student/${student.user_id}`);
@@ -76,7 +76,7 @@ class StudentInfo extends Component {
                             // }}
                         >
                             <Grid container>
-                                <Grid component={Hidden} xsDown item xs={4} lg={3}>
+                                <Grid component={Hidden} xsDown item xs={4} md={4}>
                                     <Avatar
                                         style={styles(student.name)}>
                                         {student.name.match(/\b(\w)/g).join("")}

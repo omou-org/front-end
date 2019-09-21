@@ -182,6 +182,7 @@ class UserProfile extends Component {
                     key={this.props.inView}
                     value={this.state.value}
                     onChange={this.handleChange}
+                    variant="scrollable"
                     indicatorColor="primary"
                     textColor="primary"
                 >

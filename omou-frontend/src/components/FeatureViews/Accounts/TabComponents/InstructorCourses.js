@@ -27,26 +27,24 @@ class InstructorCourses extends Component {
 
     render() {
         return(<Grid container>
-            <Grid item md={12}>
+            <Grid item xs={12} md={12}>
                 <Grid container className={'accounts-table-heading'}>
-                    <Grid item md={1}>
-                    </Grid>
-                    <Grid item md={3}>
+                    <Grid item xs={3} md={3}>
                         <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
                             Session
                         </Typography>
                     </Grid>
-                    <Grid item md={3}>
+                    <Grid item xs={3} md={3}>
                         <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
                             Dates
                         </Typography>
                     </Grid>
-                    <Grid item md={2}>
+                    <Grid item xs={2} md={2}>
                         <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
                             Class Day(s)
                         </Typography>
                     </Grid>
-                    <Grid item md={3}>
+                    <Grid item xs={3} md={3}>
                         <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
                             Time
                         </Typography>
@@ -77,27 +75,25 @@ class InstructorCourses extends Component {
                         endTime = endDate.toLocaleTimeString("en-US",timeOptions);
                     startDate = startDate.toLocaleDateString("en-US",dateOptions);
                     endDate = endDate.toLocaleDateString("en-US", dateOptions);
-                    return (<Grid item md={12} className={'accounts-table-row'}>
+                    return (<Grid item xs={12} md={12} className={'accounts-table-row'}>
                         <Paper square={true} >
                             <Grid container>
-                                <Grid item md={1}>
-                                </Grid>
-                                <Grid item md={3} >
+                                <Grid item xs={3} md={3} >
                                     <Typography align={'left'}>
                                         {course.title}
                                     </Typography>
                                 </Grid>
-                                <Grid item md={3}>
+                                <Grid item xs={3} md={3}>
                                     <Typography align={'left'}>
                                         {startDate} - {endDate}
                                     </Typography>
                                 </Grid>
-                                <Grid item md={2}>
+                                <Grid item xs={2} md={2}>
                                     <Typography align={'left'}>
                                         {Days}
                                     </Typography>
                                 </Grid>
-                                <Grid item md={3}>
+                                <Grid item xs={3} md={3}>
                                     <Typography align={'left'}>
                                         {startTime} - {endTime}
                                     </Typography>

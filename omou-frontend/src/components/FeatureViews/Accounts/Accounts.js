@@ -181,7 +181,7 @@ class Accounts extends Component {
                 <hr/>
                 <Typography variant="h2" align={"left"} className={"heading"}>Accounts</Typography>
                 <Grid container direction={"row"} alignItems={"center"}>
-                    <Grid item xs={12} md={10}>
+                    <Grid item xs={11} md={11}>
                         <Tabs
                             value={this.state.value}
                             onChange={this.handleChange}
@@ -200,7 +200,7 @@ class Accounts extends Component {
                     {
                         this.state.mobileView ?
                             '' :
-                            <Grid item xs={2} className="toggleView">
+                            <Grid item xs={1} md={1} className="toggleView">
                                 <ListView className={`list icon ${this.state.viewToggle ? 'active':''}`} onClick={(event) => {
                                     event.preventDefault();
                                     this.setState({viewToggle: true},

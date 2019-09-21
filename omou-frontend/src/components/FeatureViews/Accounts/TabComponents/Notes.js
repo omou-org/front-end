@@ -25,13 +25,12 @@ class Notes extends Component {
                return this.props.user_notes[noteID];
             });
             return {
-                notes:notes, 
+                notes:notes,
             }
-        }); 
+        });
     }
 
     render() {
-        console.log(this.state.notes);
         let numericDateString = (date)=>{
             let DateObject = new Date(date),
                 numericOptions = {
@@ -46,12 +45,12 @@ class Notes extends Component {
         return(<Grid item md={12}>
             <Grid container spacing={16}>
                 {this.state.notes.map((note,i) => {
-                    return <Grid item xs={3}  key={i}>
+                    return <Grid item md={3} xs={6} key={i}>
                         <Paper className={"note"}>
                             <div className={"actions"}>
-                                <EditIcon/>
-                                <AlertIcon/>
-                                <RemoveIcon/>
+                                <EditIcon />
+                                <AlertIcon />
+                                <RemoveIcon />
                             </div>
                             <Typography className={"body"} align={'left'}>
                                 {note.body}

@@ -22,10 +22,10 @@ class Bio extends Component {
     render() {
         return (
             <Card className={"Bio"}>
-                <Grid item xs={12}>
+                <Grid item md={12} xs={12}>
                     <Grid container>
-                        <Grid item xs={6} >
-                            <div className="Bio">
+                        <Grid item md={6} xs={12} >
+                            <div className="Bio1">
                                 <Typography class="bioHeader">
                                     Bio
                                     </Typography>
@@ -34,7 +34,7 @@ class Bio extends Component {
                                 </Typography>
                             </div>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item md={6} xs={12}>
                             <div className="BioBackground">
                                 <div className="Bio2">
                                     <Grid>

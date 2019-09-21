@@ -148,12 +148,12 @@ class CourseSessionStatus extends Component {
     render() {
         return (<Paper className={'paper'}>
             <Grid container className={'course-session-status'}>
-                <Grid item md={12}>
+                <Grid item xs={12} md={12}>
                     <BackButton />
                     <hr />
                 </Grid>
 
-                <Grid item md={12}>
+                <Grid item xs={12} md={12}>
                     <Typography variant={'h4'} align={'left'}>
                         {this.state.course.title}
                     </Typography>
@@ -174,32 +174,32 @@ class CourseSessionStatus extends Component {
 
                 </Grid>
 
-                <Grid item md={12}>
+                <Grid item xs={12} md={12}>
                     <Grid container className={'accounts-table-heading'}>
-                        <Grid item md={1}>
+                        <Grid item xs={1} md={1}>
 
                         </Grid>
-                        <Grid item md={3}>
+                        <Grid item xs={3} md={3}>
                             <Typography align={'left'} style={{ color: 'white', fontWeight: '500' }}>
                                 Session Date
                             </Typography>
                         </Grid>
-                        <Grid item md={2}>
+                        <Grid item xs={2} md={2}>
                             <Typography align={'left'} style={{ color: 'white', fontWeight: '500' }}>
                                 Day
                             </Typography>
                         </Grid>
-                        <Grid item md={2}>
+                        <Grid item xs={2} md={2}>
                             <Typography align={'left'} style={{ color: 'white', fontWeight: '500' }}>
                                 Time
                             </Typography>
                         </Grid>
-                        <Grid item md={2}>
+                        <Grid item xs={2} md={2}>
                             <Typography align={'left'} style={{ color: 'white', fontWeight: '500' }}>
                                 Tuition
                             </Typography>
                         </Grid>
-                        <Grid item md={2}>
+                        <Grid item xs={2} md={2}>
                             <Typography align={'left'} style={{ color: 'white', fontWeight: '500' }}>
                                 Status
                             </Typography>
@@ -211,33 +211,33 @@ class CourseSessionStatus extends Component {
                         this.state.sessions.map((session, i) => {
                             let { day, date, startTime, endTime, status, tuition } = this.state.type === "T" ?
                                 this.sessionDataParse(session) : this.courseDataParser(session);
-                            return (<Grid item md={12}
+                            return (<Grid item xs={12 }md={12}
                                 className={'accounts-table-row'}
                                 key={i}>
                                 <Paper square={true}>
                                     <Grid container>
-                                        <Grid item md={1}></Grid>
-                                        <Grid item md={3}>
+                                        <Grid item xs={1} md={1}></Grid>
+                                        <Grid item xs={3} md={3}>
                                             <Typography align={'left'}>
                                                 {date}
                                             </Typography>
                                         </Grid>
-                                        <Grid item md={2}>
+                                        <Grid item xs={2} md={2}>
                                             <Typography align={'left'}>
                                                 {day}
                                             </Typography>
                                         </Grid>
-                                        <Grid item md={2}>
+                                        <Grid item xs={2} md={2}>
                                             <Typography align={'left'}>
                                                 {startTime} - {endTime}
                                             </Typography>
                                         </Grid>
-                                        <Grid item md={2}>
+                                        <Grid item xs={2} md={2}>
                                             <Typography align={'left'}>
                                                 ${tuition}
                                             </Typography>
                                         </Grid>
-                                        <Grid item md={2}>
+                                        <Grid item xs={2} md={2}>
                                             <div className={`sessions-left-chip ${status}`}>
                                                 {status}
                                             </div>
@@ -246,7 +246,7 @@ class CourseSessionStatus extends Component {
                                 </Paper>
                             </Grid>);
                         }) :
-                        <Grid item md={12}>
+                        <Grid item xs={12} md={12}>
                             <Paper className={'info'}>
                                 <Typography style={{ fontWeight: 700 }}>
                                     No Courses Yet!

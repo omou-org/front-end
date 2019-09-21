@@ -35,7 +35,7 @@ class ProfileHeading extends Component {
     renderStudentProfile() {
         return (
             <Grid container>
-                <Grid item md={6}>
+                <Grid item md={12}>
                     <Grid container>
                         <Grid item xs={6} md={6} className="rowPadding">
                             <Typography className="rowText">
@@ -84,12 +84,12 @@ class ProfileHeading extends Component {
     renderTeacherProfile() {
         return (
             <Grid container>
-                <Grid item md={6}>
+                <Grid item md={12}>
                     <Grid container>
                         <Grid item md={1} className="rowPadding">
                             <IDIcon height={"24px"} width={"24px"} />
                         </Grid>
-                        <Grid item md={5} className="rowPadding">
+                        <Grid item md={11} className="rowPadding">
                             <Typography className="rowText">
                                 #{this.props.user.user_id}
                             </Typography>
@@ -98,7 +98,7 @@ class ProfileHeading extends Component {
                             <Grid item md={1} className="rowPadding">
                                 <PhoneIcon style={this.iconScaling()} />
                             </Grid>
-                            <Grid item md={5} className="rowPadding">
+                            <Grid item md={11} className="rowPadding">
                                 <Typography className="rowText">
                                     {this.addDashes(this.props.user.phone_number)}
                                 </Typography>
@@ -109,7 +109,7 @@ class ProfileHeading extends Component {
                         <Grid item md={1} className="rowPadding">
                             <EmailIcon />
                         </Grid>
-                        <Grid item md={5} className="rowPadding">
+                        <Grid item md={11} className="rowPadding">
                             <Typography className="rowText">
                                 {this.props.user.email}
                             </Typography>

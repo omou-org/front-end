@@ -33,14 +33,12 @@
 }
 .Bio,
 .Bio2 {
-  height: 300px;
   position: relative;
-  padding: 5%;
-  top: 0%;
   text-align: left;
-  .Bio {
-    margin-left: -9%;
-    margin-top: -10%;
+  .Bio1 {
+    right:9%;
+    padding:5%;
+    margin-top:-5%;
     .bioHeader{
       font-weight:bold;
       font-size:20px;
@@ -52,11 +50,8 @@
   }
   .BioBackground {
     background-color: $bioBackgroundColor;
-    padding: 2%;
     position: relative;
-    top: 0%;
-    margin-top: -15%;
-    margin-right: -15%;
+    padding:5%;
       .rowPadding {
         padding: 3%;
         margin-top: -5%;
@@ -68,6 +63,7 @@
           padding-top:4%;
           padding-bottom: -5%;
           padding-right: 5%;
+          white-space: nowrap;
         }
     }
     .chipPadding{
@@ -95,7 +91,6 @@
       margin-left: 20px;
       color: white;
       font-size: 20px;
-
     }
   }
   .actions {
@@ -106,6 +101,7 @@
 
   .bodyText {
     font-size: 15px;
+    word-break: break-all;
     .bold {
       font-weight: 900;
     }
@@ -127,7 +123,6 @@
 
 .accounts-table-row {
   position: relative;
-  font-size: 3px;
   &:hover {
     border-left: solid 5px $primaryColor;
   }
