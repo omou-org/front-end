@@ -58,9 +58,9 @@ class Form extends Component {
 
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
-        const formType = this.props.match.params.type;
-        const {id} = this.props.match.params;
-        if (this.props.match.params.edit === "edit") {
+        const formType = this.props.computedMatch.params.type;
+        const {id} = this.props.computedMatch.params;
+        if (this.props.computedMatch.params.edit === "edit") {
             switch (formType) {
                 case "student": {
                     const student = this.props.students[id];
@@ -189,7 +189,7 @@ class Form extends Component {
         if (!prevState ||
             formType !== prevState.form ||
             prevState["submitPending"] ||
-            (id && this.props.match.params.edit !== "edit")) {
+            (id && this.props.computedMatch.params.edit !== "edit")) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
                     const formContents = JSON.parse(
@@ -203,7 +203,7 @@ class Form extends Component {
                     let course = null;
                     if (this.props.courses.hasOwnProperty(id)) {
                         const {course_id, title} =
-                            this.props.courses[this.props.match.params.id];
+                            this.props.courses[this.props.computedMatch.params.id];
                         // convert it to a format that onselectChange can use
                         course = {
                             "value": course_id,
@@ -315,9 +315,9 @@ class Form extends Component {
             if (this.validateSection()) {
                 if (oldState.activeStep === this.getFormObject().section_titles.length - 1) {
                     if (!oldState.submitPending) {
-                        if (this.props.match.params.edit === "edit") {
+                        if (this.props.computedMatch.params.edit === "edit") {
                             this.props.registrationActions.submitForm(this.state,
-                                this.props.match.params.id);
+                                this.props.computedMatch.params.id);
                         } else {
                             this.props.registrationActions.submitForm(this.state);
                         }
@@ -802,7 +802,7 @@ class Form extends Component {
                                                 </Grid>
                                                 <br />
                                                 {
-                                                    !this.props.match.params.course && numSameTypeFields < field.field_limit &&
+                                                    !this.props.computedMatch.params.course && numSameTypeFields < field.field_limit &&
                                                     field === lastFieldOfType &&
                                                     <Fab color="primary" aria-label="Add" variant="extended"
                                                         className="button add-student"
@@ -945,7 +945,7 @@ class Form extends Component {
                             denyAction={"default"}
                         />
                         <Typography className="heading" align="left">
-                            {this.renderTitle(this.props.match.params.id, this.state.form)} {this.props.match.params.type} Registration
+                            {this.renderTitle(this.props.computedMatch.params.id, this.state.form)} {this.props.computedMatch.params.type} Registration
                         </Typography>
                         {
                             this.props.submitStatus !== "success" ?

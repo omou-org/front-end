@@ -36,8 +36,13 @@ function Navigation(props) {
     }
 
     const NavList = [
-        {name: "Accounts", link: "/accounts", icon: <AccountsIcon/>},
+        {name: "Dashboard", link: "/", icon: <DashboardIcon/>},
+        {name: "Scheduler", link: "/scheduler", icon: <EventIcon/>},
+        // {name: "Courses", link: "/courses", icon: <CourseIcon/>},
         {name: "Registration", link: "/registration", icon: <AssignmentIcon/>},
+        // {name: "Attendance", link: "/attendance", icon: <AttendanceIcon/>},
+        // {name: "Gradebook", link: "/gradebook", icon: <ClassIcon/>},
+        {name: "Accounts", link: "/accounts", icon: <AccountsIcon/>},
     ];
 
     const drawer = (
@@ -68,7 +73,7 @@ function Navigation(props) {
                                 <MenuIcon />
                             </IconButton>
                         </Hidden>
-                        <Typography component={NavLink} to="/accounts" className="title">
+                        <Typography component={NavLink} to="/" className="title">
                             omou
                         </Typography>
                         <div style={{
