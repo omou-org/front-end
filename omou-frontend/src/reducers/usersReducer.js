@@ -1,5 +1,6 @@
-import initialState from "./initialState";
 import * as actions from "./../actions/actionTypes";
+import initialState from "./initialState";
+import {REQUEST_ALL} from "../actions/apiActions";
 
 export default function users(state = initialState.Users, {payload, type}) {
     switch (type) {
@@ -17,21 +18,9 @@ export default function users(state = initialState.Users, {payload, type}) {
             return state;
         case actions.FETCH_INSTRUCTORS_SUCCESSFUL:
             console.log("FETCHED INSTRUCTORS", payload);
-            return addInstructors(state, payload);
+            return handleInstructorsFetch(state, payload);
         case actions.FETCH_INSTRUCTORS_FAILED:
             console.error("FAILED TO FETCH INSTRUCTORS", payload);
-            return state;
-        case actions.FETCH_COURSES_SUCCESSFUL:
-            console.log("FETCHED COURSES", payload);
-            return state;
-        case actions.FETCH_COURSES_FAILED:
-            console.error("FAILED TO FETCH COURSES", payload);
-            return state;
-        case actions.FETCH_CATEGORIES_SUCCESSFUL:
-            console.log("FETCHED STUDENTS", payload);
-            return state;
-        case actions.FETCH_CATEGORIES_FAILED:
-            console.error("FAILED TO FETCH CATEGORIES", payload);
             return state;
         default:
             return state;
@@ -51,7 +40,7 @@ const parseBirthday = (date) => {
 };
 
 const addStudents = (state, students) => {
-    let newState = JSON.parse(JSON.stringify(state));
+    const newState = JSON.parse(JSON.stringify(state));
     students.forEach((student) => {
         newState.StudentList[student.user.id] = {
             "user_id": student.user.id,
@@ -80,7 +69,7 @@ const addStudents = (state, students) => {
 };
 
 const addParents = (state, parents) => {
-    let newState = JSON.parse(JSON.stringify(state));
+    const newState = JSON.parse(JSON.stringify(state));
     parents.forEach((parent) => {
         newState.ParentList[parent.user.id] = {
             "user_id": parent.user.id,
@@ -104,79 +93,92 @@ const addParents = (state, parents) => {
     return newState;
 };
 
-const addInstructors = (state, instructors) => {
-    let newState = JSON.parse(JSON.stringify(state));
-    instructors.forEach((instructor) => {
-        newState.InstructorList[instructor.user.id] = {
-            "user_id": instructor.user.id,
-            "gender": instructor.gender,
-            "birth_date": parseBirthday(instructor.birth_date),
-            "address": instructor.address,
-            "city": instructor.city,
-            "phone_number": instructor.phone_number,
-            "state": instructor.state,
-            "zipcode": instructor.zipcode,
-            "age": instructor.age,
-            "first_name": instructor.user.first_name,
-            "last_name": instructor.user.last_name,
-            "name": `${instructor.user.first_name} ${instructor.user.last_name}`,
-            "email": instructor.user.email,
-            // below is not from database
-            "role": "instructor",
-            "background": {
-                "bio": "",
-                "experience": 0,
-                "subjects": [],
-                "languages": [],
-            },
-            schedule: {
-                work_hours: {
-                    1: {
-                        start: "T17:00",
-                        end: "T20:00",
-                        title: "",
-                    },
-                    2: {
-                        start: "T17:00",
-                        end: "T20:00",
-                        title: "",
-                    },
-                    3: {
-                        start: "T18:00",
-                        end: "T20:00",
-                        title: "",
-                    },
-                    4: {
-                        start: "T00:00",
-                        end: "T00:00",
-                        title: "",
-                    },
-                    5: {
-                        start: "T16:00",
-                        end: "T21:00",
-                        title: "",
-                    },
-                    6: {
-                        start: "T09:00",
-                        end: "T12:00",
-                        title: "",
-                    },
-                },
-                time_off: {
-                    1: {
-                        start: "2020-01-14T00:00",
-                        end: "2020-01-21T00:00",
-                        title: "Daniel Time Off",
-                    },
-                    2: {
-                        start: "2020-03-22T00:00",
-                        end: "2020-03-22T00:00",
-                        title: "Daniel Time Off",
-                    },
-                },
-            },
-            "notes": {},
-        };
+const handleInstructorsFetch = (state, {id, response}) => {
+    const {data} = response;
+    if (id !== REQUEST_ALL) {
+        return updateInstructor(state, id, data);
+    }
+    let {InstructorList} = state;
+    data.forEach((instructor) => {
+        InstructorList = updateInstructor(InstructorList, instructor.user.id, instructor);
     });
-    return newState;
+    return {
+        ...state,
+        InstructorList,
+    };
 };
+
+
+const updateInstructor = (instructors, id, instructor) => ({
+    ...instructors,
+    [id]: {
+        "user_id": instructor.user.id,
+        "gender": instructor.gender,
+        "birth_date": parseBirthday(instructor.birth_date),
+        "address": instructor.address,
+        "city": instructor.city,
+        "phone_number": instructor.phone_number,
+        "state": instructor.state,
+        "zipcode": instructor.zipcode,
+        "age": instructor.age,
+        "first_name": instructor.user.first_name,
+        "last_name": instructor.user.last_name,
+        "name": `${instructor.user.first_name} ${instructor.user.last_name}`,
+        "email": instructor.user.email,
+        // below is not from database
+        "role": "instructor",
+        "background": {
+            "bio": "",
+            "experience": 0,
+            "subjects": [],
+            "languages": [],
+        },
+        "schedule": {
+            "work_hours": {
+                "1": {
+                    "start": "T17:00",
+                    "end": "T20:00",
+                    "title": "",
+                },
+                "2": {
+                    "start": "T17:00",
+                    "end": "T20:00",
+                    "title": "",
+                },
+                "3": {
+                    "start": "T18:00",
+                    "end": "T20:00",
+                    "title": "",
+                },
+                "4": {
+                    "start": "T00:00",
+                    "end": "T00:00",
+                    "title": "",
+                },
+                "5": {
+                    "start": "T16:00",
+                    "end": "T21:00",
+                    "title": "",
+                },
+                "6": {
+                    "start": "T09:00",
+                    "end": "T12:00",
+                    "title": "",
+                },
+            },
+            "time_off": {
+                "1": {
+                    "start": "2020-01-14T00:00",
+                    "end": "2020-01-21T00:00",
+                    "title": "Daniel Time Off",
+                },
+                "2": {
+                    "start": "2020-03-22T00:00",
+                    "end": "2020-03-22T00:00",
+                    "title": "Daniel Time Off",
+                },
+            },
+        },
+        "notes": {},
+    },
+});

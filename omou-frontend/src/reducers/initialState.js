@@ -1,3 +1,5 @@
+import {GET, PATCH, POST} from "../actions/actionTypes";
+
 export default {
     "Authentication": initAuth(),
     "RegistrationForms": initRegistrationForm(),
@@ -3431,7 +3433,26 @@ export default {
 
         ],
     },
+    "RequestStatus": initRequests(),
 };
+
+function initRequests() {
+
+    const baseSettings = {
+        [GET]: {},
+        [PATCH]: {},
+        [POST]: {},
+    };
+    return {
+        "admin": baseSettings,
+        "course": baseSettings,
+        "category": baseSettings,
+        "instructor": baseSettings,
+        "parent": baseSettings,
+        "student": baseSettings,
+        "schedule": baseSettings,
+    };
+}
 
 function initAuth() {
     const token = localStorage.getItem("authToken") || null;
