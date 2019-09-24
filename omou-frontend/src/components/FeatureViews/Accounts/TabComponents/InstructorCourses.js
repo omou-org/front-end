@@ -39,7 +39,7 @@ class InstructorCourses extends Component {
                             Dates
                         </Typography>
                     </Grid>
-                    <Grid item xs={2} md={2}>
+                    <Grid item xs={3} md={2}>
                         <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
                             Class Day(s)
                         </Typography>
@@ -88,7 +88,7 @@ class InstructorCourses extends Component {
                                         {startDate} - {endDate}
                                     </Typography>
                                 </Grid>
-                                <Grid item xs={2} md={2}>
+                                <Grid item xs={3} md={2}>
                                     <Typography align={'left'}>
                                         {Days}
                                     </Typography>

@@ -24,6 +24,13 @@
     .row {
       cursor: pointer;
     }
+    .editButton {
+      color: $darkenPrimaryFontColor;
+      border-radius: 0px;
+      box-sizing: border-box;
+      border: solid 2px $secondaryColor !important;
+      white-space: nowrap;
+    }
   }
 }
 

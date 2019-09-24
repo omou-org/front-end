@@ -30,7 +30,7 @@ class ParentContact extends Component {
         return (
             <Grid item md={12}>
                 <Grid container spacing={16}>
-                    <Grid item xs={6} >
+                    <Grid item md={6} xs={12} >
                         <Paper className={"ParentContact"}>
                             <div className="parent-header" align="left">
                                 <Typography className="header-text">

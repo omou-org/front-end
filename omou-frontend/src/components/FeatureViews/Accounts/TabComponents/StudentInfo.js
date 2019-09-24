@@ -95,28 +95,28 @@ class StudentInfo extends Component {
                                             />
                                         </Typography>
                                         <Typography>
-                                            <Grid item xs={8} style={{"marginTop": 10}}>
+                                            <Grid item xs={16} style={{"marginTop": 10}}>
                                                 <Grid container>
-                                                    <Grid item xs={4} align="left">
+                                                    <Grid item xs={4} md={2} align="left">
                                                         <IDIcon
                                                             width={22}
                                                             height={22} />
                                                     </Grid>
-                                                    <Grid item xs={8} align="left">
+                                                    <Grid item xs={8} md={10} align="left">
                                                         #{student.user_id}
                                                     </Grid>
-                                                    <Grid item xs={4} align="left">
+                                                    <Grid item xs={4} md={2} align="left">
                                                         <PhoneIcon />
                                                     </Grid>
-                                                    <Grid item xs={8} align="left">
+                                                    <Grid item xs={8} md={10} align="left">
                                                         {this.addDashes(student.phone_number)}
                                                     </Grid>
                                                 </Grid>
                                                 <Grid container>
-                                                    <Grid item xs={4} align="left">
+                                                    <Grid item xs={4} md={2} align="left">
                                                         <EmailIcon />
                                                     </Grid>
-                                                    <Grid item xs={8} align="left">
+                                                    <Grid item xs={8} md={10} align="left">
                                                         {student.email}
                                                     </Grid>
                                                 </Grid>

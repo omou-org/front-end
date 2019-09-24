@@ -6,6 +6,9 @@ import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import { ReactComponent as IDIcon } from "../../identifier.svg";
+import { ReactComponent as BirthdayIcon } from "../../birthday.svg";
+import { ReactComponent as GradeIcon } from "../../grade.svg";
+import { ReactComponent as SchoolIcon } from "../../school.svg";
 import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
 import Button from "@material-ui/core/Button";
@@ -21,8 +24,13 @@ class ProfileHeading extends Component {
     }
 
     addDashes(string) {
-        return (
-            `(${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 15)})`);
+        if (string.length == 10 && string.match(/^[0-9]+$/) != null) {
+            return (
+                `(${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 15)})`);
+        }
+        else {
+            return ("error");
+        }
     }
 
     iconScaling() {
@@ -35,22 +43,28 @@ class ProfileHeading extends Component {
     renderStudentProfile() {
         return (
             <Grid container>
-                <Grid item md={12}>
+                <Grid item xs={12} md={12}>
                     <Grid container>
-                        <Grid item xs={6} md={6} className="rowPadding">
+                        <Grid item xs={1} md={1} className="rowPadding">
+                            <BirthdayIcon height={"24px"} width={"24px"} />
+                        </Grid>
+                        <Grid item xs={5} md={5} className="rowPadding">
                             <Typography className="rowText">
                                 {this.props.user.birthday}
                             </Typography>
                         </Grid>
                         <Grid item xs={1} md={1} className="rowPadding">
-                            <IDIcon display="block" viewBox="0 0 10 10" />
+                            <IDIcon height={"24px"} width={"24px"} />
                         </Grid>
                         <Grid item xs={5} md={5} className="rowPadding">
                             <Typography className="rowText">
                                 #{this.props.user.user_id}
                             </Typography>
                         </Grid>
-                        <Grid item xs={6} md={6} className="rowPadding">
+                        <Grid item xs={1} md={1} className="rowPadding">
+                            <GradeIcon height={"24px"} width={"24px"} />
+                        </Grid>
+                        <Grid item xs={5} md={5} className="rowPadding">
                             <Typography className="rowText">
                                 Grade {this.props.user.grade}
                             </Typography>
@@ -63,7 +77,10 @@ class ProfileHeading extends Component {
                                 {this.addDashes(this.props.user.phone_number)}
                             </Typography>
                         </Grid>
-                        <Grid item xs={6} md={6} className="rowPadding">
+                        <Grid item xs={1} md={1} className="rowPadding">
+                            <SchoolIcon height={"24px"} width={"24px"} />
+                        </Grid>
+                        <Grid item xs={5} md={5} className="rowPadding">
                             <Typography className="rowText">
                                 {this.props.user.school}
                             </Typography>
@@ -123,41 +140,45 @@ class ProfileHeading extends Component {
     renderParentProfile() {
         return (
             <Grid container>
-                <Grid item xs={1} md={1} className="rowPadding">
-                    <IDIcon height={"24px"} width={"24px"}  />
-                </Grid>
-                <Grid item xs={5} md={5} className="rowPadding">
-                    <Typography className="rowText">
-                        #{this.props.user.user_id}
-                    </Typography>
-                </Grid>
-                <Grid item xs={1} md={1} className="rowPadding">
-                    <MoneyIcon style={this.iconScaling()} />
-                </Grid>
-                <Grid item xs={5} md={5} className="rowPadding">
-                    <Typography className="rowText">
-                        0
-                    </Typography>
-                </Grid>
-                <Grid item xs={1} md={1} className="rowPadding">
-                    <PhoneIcon style={this.iconScaling()} />
-                </Grid>
-                <Grid item xs={5} md={5} className="rowPadding">
-                    <Typography className="rowText">
-                        {this.addDashes(this.props.user.phone_number)}
-                    </Typography>
-                </Grid>
-                <Grid item xs={6} md={6} className="rowPadding">
-                </Grid>
-                <Grid item xs={1} md={1} className="rowPadding">
-                    <EmailIcon style={this.iconScaling()} />
-                </Grid>
-                <Grid item xs={5} md={5} className="rowPadding">
-                    <Typography className="rowText">
-                        {this.props.user.email}
-                    </Typography>
-                </Grid>
-                <Grid item xs={6} md={6} className="rowPadding">
+                <Grid item xs={12} md={12}>
+                    <Grid container>
+                        <Grid item xs={1} md={1} className="rowPadding">
+                            <IDIcon height={"24px"} width={"24px"} />
+                        </Grid>
+                        <Grid item xs={5} md={5} className="rowPadding">
+                            <Typography className="rowText">
+                                #{this.props.user.user_id}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={1} md={1} className="rowPadding">
+                            <MoneyIcon style={this.iconScaling()} />
+                        </Grid>
+                        <Grid item xs={5} md={5} className="rowPadding">
+                            <Typography className="rowText">
+                                0
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={1} md={1} className="rowPadding">
+                            <PhoneIcon style={this.iconScaling()} />
+                        </Grid>
+                        <Grid item xs={5} md={5} className="rowPadding">
+                            <Typography className="rowText">
+                                {this.addDashes(this.props.user.phone_number)}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={6} md={6} className="rowPadding">
+                        </Grid>
+                        <Grid item xs={1} md={1} className="rowPadding">
+                            <EmailIcon style={this.iconScaling()} />
+                        </Grid>
+                        <Grid item xs={5} md={5} className="rowPadding">
+                            <Typography className="rowText">
+                                {this.props.user.email}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={6} md={6} className="rowPadding">
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>);
     }
@@ -165,7 +186,7 @@ class ProfileHeading extends Component {
     renderEditButton() {
         if (this.props.user.role != "receptionist") {
             return (<div>
-                <Grid component={Hidden} xsUp align="right" className="editPadding">
+                <Grid component={Hidden} xsDown align="right" className="editPadding">
                     <Button
                         className="editButton"
                         component={NavLink}
@@ -174,7 +195,7 @@ class ProfileHeading extends Component {
                         Edit Profile
                     </Button>
                 </Grid>
-                <Grid component={Hidden} xsDown align="right" className="editPadding">
+                <Grid component={Hidden} smUp align="right" className="editPadding">
                     <Button
                         className="editButton"
                         component={NavLink}
@@ -206,8 +227,10 @@ class ProfileHeading extends Component {
                 break;
             case "parent":
                 profileDetails = this.renderParentProfile();
+                break;
             case "receptionist":
                 profileDetails = this.renderTeacherProfile();
+                break;
             default:
         }
         return (

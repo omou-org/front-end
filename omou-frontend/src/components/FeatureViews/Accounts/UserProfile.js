@@ -250,10 +250,10 @@ class UserProfile extends Component {
                 />
                 <hr />
                 <Grid container layout="row" className={'padding'}>
-                    <Grid item xs={2} md={2} component={Hidden} xsDown>
+                    <Grid item sm={2} xs={2} md={2} component={Hidden} xsDown>
                         <Avatar style={styles}>{this.state.user.name.match(/\b(\w)/g).join('')}</Avatar>
                     </Grid>
-                    <Grid item xs={8} md={8} className="headingPadding">
+                    <Grid item sm={8} xs={16} md={8} className="headingPadding">
                         <ProfileHeading user={this.state.user} />
                     </Grid>
                 </Grid>
