@@ -219,7 +219,6 @@ class Scheduler extends Component {
 
     // this function is used in material-ui for the eventhandler
     handleFilterChange = (name) => (event) => {
-        console.log(event);
         this.setState({
             ...this.state,
             [name]: event.target.value,
@@ -273,7 +272,6 @@ class Scheduler extends Component {
     getInstructorResources = () => {
         const instructor = Object.values(this.props.instructors);
         const instructorList = instructor.map((inst) => {
-            console.log(inst);
             return {
                 "id": inst.user_id,
                 "title": inst.name,

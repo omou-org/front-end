@@ -7,16 +7,16 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
         case actions.FETCH_COURSES_STARTED:
             return updateCourseFetch(state, payload.id, api.REQUEST_STARTED);
         case actions.FETCH_COURSES_SUCCESSFUL:
-            return updateCourseFetch(state, payload.id, api.REQUEST_SUCCESS);
+            return updateCourseFetch(state, payload.id, payload.response.status);
         case actions.FETCH_COURSES_FAILED:
-            return updateCourseFetch(state, payload.id, api.REQUEST_FAILED);
+            return updateCourseFetch(state, payload.id, payload.response.status);
 
         case actions.FETCH_INSTRUCTORS_STARTED:
-            return updateInstructorFetch(state, payload.id, api.REQUEST_STARTED);
+            return updateInstructorFetch(state, payload.id, payload.REQUEST_STARTED);
         case actions.FETCH_INSTRUCTORS_SUCCESSFUL:
-            return updateInstructorFetch(state, payload.id, api.REQUEST_SUCCESS);
+            return updateInstructorFetch(state, payload.id, payload.response.status);
         case actions.FETCH_INSTRUCTORS_FAILED:
-            return updateInstructorFetch(state, payload.id, api.REQUEST_FAILED);
+            return updateInstructorFetch(state, payload.id, payload.response.status);
 
         default:
             return state;

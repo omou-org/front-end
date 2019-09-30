@@ -136,13 +136,15 @@ const RegistrationLanding = ({api, courses, instructors, requestStatus}) => {
         return "HAVE NOT REQUESTED COURSES YET";
     }
 
-    if (requestStatus.instructor[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED &&
+    if (requestStatus.instructor[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED ||
         requestStatus.course[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED) {
         return "LOADING";
     }
 
-    if (requestStatus.instructor[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_FAILED &&
-        requestStatus.course[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_FAILED) {
+    if (requestStatus.instructor[GET][apiActions.REQUEST_ALL] < 200 ||
+        requestStatus.instructor[GET][apiActions.REQUEST_ALL] >= 300 ||
+        requestStatus.course[GET][apiActions.REQUEST_ALL] < 200 ||
+        requestStatus.course[GET][apiActions.REQUEST_ALL] >= 300) {
         return "ERROR LOADING COURSES";
     }
 

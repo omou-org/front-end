@@ -12,43 +12,43 @@ export const REQUEST_STARTED = 1;
 export const REQUEST_SUCCESS = 2;
 export const REQUEST_FAILED = 3;
 
-export const wrapAPICall = (method, endpoint, [startType, successType, failType], id) => (dispatch) => {
-    // creates a new action based on the response given
-    const newAction = (type, response) => {
-        dispatch({
-            type,
-            "payload": {
-                "id": id || REQUEST_ALL,
-                response,
-            },
-        });
+const wrapGet = (endpoint, [startType, successType, failType], id) =>
+    (dispatch, getState) => {
+        // creates a new action based on the response given
+        const newAction = (type, response) => {
+            dispatch({
+                type,
+                "payload": {
+                    "id": id || REQUEST_ALL,
+                    response,
+                },
+            });
+        };
+
+        // request starting
+        newAction(startType, {});
+
+        return instance
+            .request({
+                "headers": {
+                    "Authorization": `Token ${getState().auth.token}`,
+                    // "month": month
+                },
+                "method": types.GET,
+                "url": endpoint,
+            })
+            .then((response) => {
+                // succesful request
+                newAction(successType, response);
+            })
+            .catch((error) => {
+                // failed request
+                newAction(failType, error.response);
+            });
     };
 
-    // request starting
-    newAction(startType, {});
-
-    return instance
-        .request({
-            "headers": {
-                "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
-                // "month": month
-            },
-            method,
-            "url": endpoint,
-        })
-        .then((response) => {
-            // succesful request
-            newAction(successType, response);
-        })
-        .catch((error) => {
-            // failed request
-            newAction(failType, error);
-        });
-};
-
 export const fetchCourses = (id) =>
-    wrapAPICall(
-        types.GET,
+    wrapGet(
         "/courses/catalog/",
         [
             types.FETCH_COURSES_STARTED,
@@ -59,8 +59,7 @@ export const fetchCourses = (id) =>
     );
 
 export const fetchInstructors = (id) =>
-    wrapAPICall(
-        types.GET,
+    wrapGet(
         "/account/instructor/",
         [
             types.FETCH_INSTRUCTORS_STARTED,

@@ -3444,13 +3444,13 @@ function initRequests() {
         [POST]: {},
     };
     return {
-        "admin": baseSettings,
-        "course": baseSettings,
-        "category": baseSettings,
-        "instructor": baseSettings,
-        "parent": baseSettings,
-        "student": baseSettings,
-        "schedule": baseSettings,
+        "admin": {...baseSettings},
+        "course": {...baseSettings},
+        "category": {...baseSettings},
+        "instructor": {...baseSettings},
+        "parent": {...baseSettings},
+        "student": {...baseSettings},
+        "schedule": {...baseSettings},
     };
 }
 
