@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes, { bool } from 'prop-types';
 import React, { Component } from 'react';
-
+import ReactDom from 'react-dom'
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -45,6 +45,7 @@ class Scheduler extends Component {
             calendarWeekends: true,
             calendarResourcesViews: [],
             calendarEvents: [],
+            event: [],
             currentDate: "",
             viewValue: '',
             filterValue: "C",
@@ -60,7 +61,7 @@ class Scheduler extends Component {
 
     componentWillMount() {
         this.setState({
-            calendarEvents: this.getEvents(),
+            event: this.getEvents()
 
         })
 
@@ -71,6 +72,23 @@ class Scheduler extends Component {
             currentDate: this.currentDate(),
             filterValue: this.filterEvent("C")
         })
+
+    }
+
+    getResource = () => {
+        let instructor = this.props.instructors
+        let instructorKey = Object.keys(this.props.instructors)
+
+        let instructorsSchedule = instructorKey.map((iKey) => {
+            return instructor[iKey].schedule.work_hours
+        })
+
+        let instructorList = []
+        instructorsSchedule.forEach((iList) => {
+            instructorList = instructorList.concat(Object.values(iList));
+        })
+
+        return instructorList
 
     }
 
@@ -227,6 +245,7 @@ class Scheduler extends Component {
             calendarIcon: false,
             calendarResourcesViews: this.getRoomResources(),
             currentDate: date
+
         })
 
     }
@@ -292,7 +311,7 @@ class Scheduler extends Component {
 
     }
     // This function is used in material-ui for the eventhandler
-    handleFilterChange = (name) => event => {
+    handleFilterChange = () => event => {
         this.setState({
 
             "filterEvent": event.target.value
@@ -326,12 +345,16 @@ class Scheduler extends Component {
 
         } else {
             let instructors = this.getInstructorResources()
-
+            let instructorsSchedule = this.getResource()
             this.setState(prevState => (
                 {
-                    calendarResourcesViews: instructors
+                    calendarResourcesViews: instructors,
+                    calendarEvents: prevState.calendarEvents = instructorsSchedule
+
                 }
+
             ))
+            console.log(instructorsSchedule)
         }
     }
 
@@ -398,6 +421,30 @@ class Scheduler extends Component {
 
 
     render() {
+        const tippyOpts = {
+            placement: 'bottom',
+            offset: '0, 5'
+        };
+
+        const Test = () => (
+            <div>
+                Test
+             </div>
+        )
+
+        const interactiveTipOpts = {
+            placement: 'bottom',
+            offset: '0, 5',
+            interactive: true,
+            performance: true,
+            html: el => {
+
+                let newEl = document.createElement('div')
+                ReactDom.render(<Test />, newEl);
+                return newEl;
+            }
+        }
+
 
         return (
             <div className="main-calendar-div">
@@ -524,9 +571,7 @@ class Scheduler extends Component {
                                 weekends={this.state.calendarWeekends}
                                 displayEventTime={true}
                                 eventColor={"none"}
-                                eventSources={[
-                                    { events: this.state.calendarEvents }
-                                ]}
+                                events={this.state.event}
                                 titleFormat={{
                                     month: "long",
                                     day: "numeric",
@@ -539,7 +584,7 @@ class Scheduler extends Component {
                                     }
                                 }}
                                 timeZone={'local'}
-                                eventMouseEnter={this.handleToolTip}
+                                eventMouseEnter={{}}
                                 eventLimit={4}
                                 nowIndicator={true}
                                 resourceOrder={'title'}
@@ -562,7 +607,7 @@ function mapStateToProps(state) {
     return {
         courses: state.Course.NewCourseList,
         sessions: state.Course.CourseSessions,
-        instructors: state.Users.InstructorList
+        instructors: state.Users.NewInstructorList
 
     };
 }
