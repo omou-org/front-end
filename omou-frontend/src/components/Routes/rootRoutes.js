@@ -38,65 +38,50 @@ function rootRoutes(props) {
                 render={(passedProps) => <LoginPage setLogin={props.setLogin} {...passedProps} />} />
 
             {/* Main Feature Views */}
-            <ProtectedRoute
+            <Route
                 exact
                 path="/"
-                render={(passedProps) => <Dashboard {...passedProps} />} />
+                render={(passedProps) => <Accounts {...passedProps} />} />
 
-            <ProtectedRoute
+            <Route
                 exact
                 path="/registration"
-
                 render={(passedProps) => <Registration {...passedProps} />} />
-            {/* Scheduler Routes */}
-            <ProtectedRoute
-                exact path="/scheduler"
-                render={(passedProps) => <Scheduler {...passedProps} />} />
-            <ProtectedRoute
-                path="/scheduler/view-session/:course_id/:session_id"
-                render={(passedProps) => <SessionView {...passedProps} />} />
-
-            {/* 
-            <ProtectedRoute
-                path='/scheduler/resource'
-                render={(passedProps) => <ResourceView {...passedProps} />} /> */}
-
-
 
             render={(passedProps) => <Registration {...passedProps} />}/>
 
-            <ProtectedRoute
+            <Route
                 exact
                 path="/scheduler"
                 render={(passedProps) => <Scheduler {...passedProps} />}/>
 
 
             {/* Accounts */}
-            <ProtectedRoute
+            <Route
                 exact
                 path="/accounts/:accountType/:accountID"
                 render={(passedProps) => <UserProfile {...passedProps} />} />
-            <ProtectedRoute
+            <Route
                 exact
                 path="/accounts/parents/:parentID/pay"
                 render={(passedProps) => <ParentPayment {...passedProps} />}/>
-            <ProtectedRoute
+            <Route
                 exact
                 path="/accounts"
                 render={(passedProps) => <Accounts {...passedProps} />} />
-            <ProtectedRoute
+            <Route
                 exact
                 path="/accounts/:accountType/:accountID/:courseID"
                 render={(passedProps) => <CourseSessionStatus {...passedProps} />}/>
 
             {/* Registration Routes */}
-            <ProtectedRoute
+            <Route
                 path="/registration/form/:type/:id?/:edit?"
                 render={(passedProps) => <RegistrationForm {...passedProps} />} />
-            <ProtectedRoute
+            <Route
                 path="/registration/course/:courseID?/:courseTitle?"
                 render={(passedProps) => <RegistrationCourse {...passedProps} />} />
-            <ProtectedRoute
+            <Route
                 path="/registration/category/:categoryID"
                 render={(passedProps) => <CourseCategory {...passedProps} />}/>
             <Route path="/PageNotFound" component={ErrorNotFoundPage}/>

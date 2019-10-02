@@ -80,7 +80,7 @@ const RegistrationLanding = (props) => {
                 }));
                 break;
             default:
-                return "";
+                return '';
         }
         const CustomClearText = () => "clear all";
         const ClearIndicator = (indicatorProps) => {

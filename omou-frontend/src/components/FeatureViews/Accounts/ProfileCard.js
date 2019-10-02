@@ -79,7 +79,7 @@ class ProfileCard extends Component {
         });
 
         return (
-            <Grid item xs={12} sm={6} className="ProfileCard">
+            <Grid item xs={12} sm={6} md={4} className="ProfileCard">
                 <Card key={this.props.user.user_id}
                     style={{ cursor: "pointer" }}
                     onClick={(event) => {
@@ -87,11 +87,14 @@ class ProfileCard extends Component {
                         this.goToRoute(`/${this.props.user.role}/${this.props.user.user_id}`);
                     }}>
                     <Grid container>
-                        <Grid component={Hidden} xsDown item xs={4} md={3}>
-                            <Avatar
-                                style={styles(this.props.user.name)}>{this.props.user.name.match(/\b(\w)/g).join("")}
-                            </Avatar>
-                        </Grid>
+                        <Hidden xsDown>
+                            <Grid item xs={4} md={3}>
+                                <Avatar
+                                    className={'avatar'}
+                                    style={styles(this.props.user.name)}>{this.props.user.name.match(/\b(\w)/g).join("")}
+                                </Avatar>
+                            </Grid>
+                        </Hidden>
                         <Grid item xs={8} md={9}>
                             <CardContent className={"text"}>
                                 <Typography gutterBottom variant={"h6"} component={"h2"} align={'left'}>

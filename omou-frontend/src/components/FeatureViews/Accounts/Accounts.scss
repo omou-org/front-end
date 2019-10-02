@@ -19,11 +19,25 @@
     margin: 25px 0;
   }
 
+  .icon{
+    cursor:pointer;
+    color:$secondaryFontColor;
+    &.active{
+      color:$primaryColor;
+    }
+  }
+
   .AccountsTable {
     margin-top: 20px;
     .row {
       cursor: pointer;
     }
+  }
+
+  .accounts-list-wrapper{
+    padding-top:15px;
+    height:100%;
+
   }
 }
 
@@ -41,7 +55,7 @@
     .rowPadding {
       display: flex;
       padding: 1%;
-      align-content: left;
+      align-content: flex-start;
       white-space: nowrap;
     }
     .editPadding {
@@ -97,5 +111,9 @@
     &.parent {
       background-color: $parentColor;
     }
+  }
+
+  .avatar{
+    margin-top:52% !important;
   }
 }
