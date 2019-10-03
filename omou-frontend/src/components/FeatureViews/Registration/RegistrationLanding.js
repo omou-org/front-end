@@ -234,7 +234,7 @@ RegistrationLanding.propTypes = {
 const mapStateToProps = (state) => ({
     "courses": state.Course.NewCourseList,
     "instructors": state.Users.InstructorList,
-    "requestStatus": state.Api,
+    "requestStatus": state.RequestStatus,
 });
 
 const mapDispatchToProps = (dispatch) => ({

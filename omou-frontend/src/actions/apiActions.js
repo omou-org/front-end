@@ -12,7 +12,7 @@ export const REQUEST_STARTED = 1;
 export const REQUEST_SUCCESS = 2;
 export const REQUEST_FAILED = 3;
 
-const wrapGet = (endpoint, [startType, successType, failType], id) =>
+export const wrapGet = (endpoint, [startType, successType, failType], id) =>
     (dispatch, getState) => {
         // creates a new action based on the response given
         const newAction = (type, response) => {
@@ -29,13 +29,39 @@ const wrapGet = (endpoint, [startType, successType, failType], id) =>
         newAction(startType, {});
 
         return instance
-            .request({
+            .get(endpoint, {
                 "headers": {
                     "Authorization": `Token ${getState().auth.token}`,
-                    // "month": month
+                }
+            })
+            .then((response) => {
+                // succesful request
+                newAction(successType, response);
+            })
+            .catch((error) => {
+                // failed request
+                newAction(failType, error.response);
+            });
+    };
+
+export const wrapPost = (endpoint, [startType, successType, failType], data) =>
+    (dispatch, getState) => {
+        // creates a new action based on the response given
+        const newAction = (type, response) => {
+            dispatch({
+                type,
+                "payload": response,
+            });
+        };
+
+        // request starting
+        newAction(startType, {});
+
+        return instance
+            .post(endpoint, data, {
+                "headers": {
+                    "Authorization": `Token ${getState().auth.token}`,
                 },
-                "method": types.GET,
-                "url": endpoint,
             })
             .then((response) => {
                 // succesful request

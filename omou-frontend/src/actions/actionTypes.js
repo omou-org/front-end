@@ -4,8 +4,6 @@ export const ADD_STUDENT_FIELD = "ADD_STUDENT_FIELD";
 export const ADD_COURSE_FIELD = "ADD_COURSE_FIELD";
 export const ADD_FIELD = "ADD_FIELD";
 export const SUBMIT_FORM = "SUBMIT_FORM";
-export const SUCCESSFUL_LOGIN = "SUCCESFUL_LOGIN";
-export const FAILED_LOGIN = "FAILED_LOGIN";
 export const LOGOUT = "LOGOUT";
 export const RESET_ATTEMPT = "RESET_ATTEMPT";
 export const REMOVE_FIELD = "REMOVE_FIELD";
@@ -18,6 +16,10 @@ export const RESET_SUBMIT_STATUS = "RESET_SUBMIT_STATUS";
 export const GET = "get";
 export const POST = "post";
 export const PATCH = "patch";
+
+export const LOGIN_STARTED = "LOGIN_STARTED";
+export const LOGIN_SUCCESSFUL = "LOGIN_SUCCESSFUL";
+export const LOGIN_FAILED = "LOGIN_FAILED";
 
 export const FETCH_COURSES_STARTED = "FETCH_COURSES_STARTED";
 export const FETCH_COURSES_SUCCESSFUL = "FETCH_COURSES_SUCCESSFUL";
