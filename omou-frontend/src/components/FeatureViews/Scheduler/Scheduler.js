@@ -75,7 +75,8 @@ class Scheduler extends Component {
 
     }
 
-    getResource = () => {
+
+    getInstructorSchedule = () => {
         let instructor = this.props.instructors
         let instructorKey = Object.keys(this.props.instructors)
 
@@ -339,22 +340,24 @@ class Scheduler extends Component {
             let rooms = this.getRoomResources()
             this.setState(prevState => (
                 {
+                    // over here I need to change it back if user click back to Room 
                     calendarResourcesViews: rooms
                 }
             ))
 
         } else {
             let instructors = this.getInstructorResources()
-            let instructorsSchedule = this.getResource()
+            let instructorsSchedule = this.getInstructorSchedule()
             this.setState(prevState => (
                 {
                     calendarResourcesViews: instructors,
+                    //This is where I need to update state and change it to the instructors schedule 
                     calendarEvents: prevState.calendarEvents = instructorsSchedule
 
                 }
 
             ))
-            console.log(instructorsSchedule)
+
         }
     }
 
