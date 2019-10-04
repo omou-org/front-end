@@ -24,7 +24,7 @@ import EmailIcon from "@material-ui/icons/Email";
 import EditIcon from "@material-ui/icons/Edit";
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 import Button from "@material-ui/core/Button";
-import { NavLink } from "react-router-dom";
+import {NavLink} from "react-router-dom";
 
 const TableToolbar = () => (
     <TableHead>
@@ -89,10 +89,8 @@ const RegistrationCourse = (props) => {
 
     const days = course.schedule.days.map((day) => dayConverter[day]);
 
-
     const timeOptions = {"hour": "2-digit", "minute": "2-digit"};
     const dateOptions = {"year": "numeric", "month": "short", "day": "numeric"};
-
 
     const startDate = new Date(course.schedule.start_date +
         course.schedule.start_time),

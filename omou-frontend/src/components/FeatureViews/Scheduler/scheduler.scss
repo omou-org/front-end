@@ -20,10 +20,6 @@
   margin-top: 2em
 }
 
-.main-session-view{
-  margin-top: 2em
-}
-
 .session-footer-buttons{
     display: flex;
     width: 50%;
@@ -44,15 +40,6 @@
     font-weight: 500
   }
   
-}
-
-
-
-.scheduler-header{
-  background-color : white;
-  @include respond-to(wide-screens){
-    
-  }
 }
 
 .fc-now-indicator{
@@ -138,17 +125,11 @@
   padding: 1%;
 }
 
-.main-calendar-div{
-  padding: 1%;
-  @include respond-to(handhelds){
-    padding : 5%
-  }
-}
+
 
 
 .session-detail-action-control{
   padding: 1%;
-  padding-top: 4%;
   @include respond-to(handhelds){
     margin-top:50px;
   }
@@ -192,10 +173,6 @@
 .demo-app {
   font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
   font-size: 14px;
-  
-}
-body .fc {
-  font-size: 15px;
 }
 
 .demo-app-top {
@@ -204,10 +181,8 @@ body .fc {
 
 .demo-app-calendar {
   margin: 0 auto;
-  max-width: 1300px;
-  background-color : white;
+  max-width: 897px;
 }
 .fc-view, .fc-view > table{
   z-index: 0;
 }
-
