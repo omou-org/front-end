@@ -62,19 +62,19 @@ function rootRoutes(props) {
             {/* Accounts */}
             <Route
                 exact
-                path="/accounts/:accountType/:accountID"
+                path="/:accountType/:accountID"
                 render={(passedProps) => <UserProfile {...passedProps} />} />
             <Route
                 exact
-                path="/accounts/parents/:parentID/pay"
+                path="/parents/:parentID/pay"
                 render={(passedProps) => <ParentPayment {...passedProps} />}/>
+            {/*<Route*/}
+            {/*    exact*/}
+            {/*    path="/accounts"*/}
+            {/*    render={(passedProps) => <Accounts {...passedProps} />} />*/}
             <Route
                 exact
-                path="/accounts"
-                render={(passedProps) => <Accounts {...passedProps} />} />
-            <Route
-                exact
-                path="/accounts/:accountType/:accountID/:courseID"
+                path="/:accountType/:accountID/:courseID"
                 render={(passedProps) => <CourseSessionStatus {...passedProps} />}/>
 
             {/* Registration Routes */}
