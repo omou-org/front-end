@@ -45,7 +45,6 @@ class Scheduler extends Component {
             calendarWeekends: true,
             calendarResourcesViews: [],
             calendarEvents: [],
-            event: [],
             currentDate: "",
             viewValue: '',
             filterValue: "C",
@@ -60,10 +59,6 @@ class Scheduler extends Component {
     calendarComponentRef = React.createRef();
 
     componentWillMount() {
-        this.setState({
-            event: this.getEvents()
-
-        })
 
     }
 
@@ -83,14 +78,11 @@ class Scheduler extends Component {
         let instructorsSchedule = instructorKey.map((iKey) => {
             return instructor[iKey].schedule.work_hours
         })
-
-        let instructorList = []
+        let allInstructorSchedules = []
         instructorsSchedule.forEach((iList) => {
-            instructorList = instructorList.concat(Object.values(iList));
+            allInstructorSchedules = allInstructorSchedules.concat(Object.values(iList));
         })
-
-        return instructorList
-
+        return allInstructorSchedules
     }
 
     // The eventRender function handles the tooltip
@@ -157,11 +149,7 @@ class Scheduler extends Component {
             return finalTime
 
         }
-
-
-
         new tippy(info.el, {
-
             content:
                 `
                 <div class="toolTip">
@@ -182,7 +170,6 @@ class Scheduler extends Component {
             placement: 'right',
             interactive: true,
         })
-
     }
 
 
@@ -192,6 +179,12 @@ class Scheduler extends Component {
             calendarWeekends: !this.state.calendarWeekends
         })
     };
+
+    currentDate = () => {
+        let calendarApi = this.calendarComponentRef.current.getApi()
+        const date = calendarApi.view.title
+        return date
+    }
 
     // Change from day,week, and month views
     changeView = (value) => {
@@ -206,7 +199,6 @@ class Scheduler extends Component {
 
     goToNext = () => {
         let calendarApi = this.calendarComponentRef.current.getApi()
-
         calendarApi.next()
         const date = this.currentDate();
         this.setState({
@@ -218,7 +210,6 @@ class Scheduler extends Component {
         let calendarApi = this.calendarComponentRef.current.getApi()
         calendarApi.prev()
         const date = this.currentDate();
-
         this.setState({
             currentDate: date
         })
@@ -230,11 +221,6 @@ class Scheduler extends Component {
         this.currentDate()
     }
 
-    currentDate = () => {
-        let calendarApi = this.calendarComponentRef.current.getApi()
-        const date = calendarApi.view.title
-        return date
-    }
 
     // This function changes the resouce view when click as well as change the color of the icon 
     changeViewToResource = () => {
@@ -245,7 +231,9 @@ class Scheduler extends Component {
             resourceIcon: true,
             calendarIcon: false,
             calendarResourcesViews: this.getRoomResources(),
-            currentDate: date
+            currentDate: date,
+            calendarEvents: this.getEvents()
+
 
         })
 
@@ -258,16 +246,15 @@ class Scheduler extends Component {
         this.setState({
             calendarIcon: true,
             resourceIcon: false,
-            currentDate: date
+            currentDate: date,
+            calendarEvents: this.getEvents()
+
         })
     }
 
     // Function to parse the inital state into data that full calendar could
     getEvents = () => {
         let courseKeys = Object.keys(this.props.sessions);
-        let instructorKeys = Object.keys(this.props.instructors)
-
-
         // creates an array from courseKeys [0,1,2,3,...,10]
         let sessionsInViewList = courseKeys.map((courseKey) => {
             // course will get each session and map with courseKey
@@ -314,8 +301,7 @@ class Scheduler extends Component {
     // This function is used in material-ui for the eventhandler
     handleFilterChange = () => event => {
         this.setState({
-
-            "filterEvent": event.target.value
+            filterEvent: event.target.value
         })
         this.filterEvent(event.target.value)
     }
@@ -338,10 +324,12 @@ class Scheduler extends Component {
         })
         if (event.target.value === "R") {
             let rooms = this.getRoomResources()
+            let currentCalendarEvents = this.getEvents()
             this.setState(prevState => (
                 {
                     // over here I need to change it back if user click back to Room 
-                    calendarResourcesViews: rooms
+                    calendarResourcesViews: rooms,
+                    calendarEvents: prevState.calendarEvents = currentCalendarEvents
                 }
             ))
 
@@ -390,65 +378,10 @@ class Scheduler extends Component {
         return instructorList
     }
 
-    // ID of instructors should match resourceID 
-    // Object needs to be pushed into calendar events 
-    // Need to use daysOfWeek with start time,endTime,startRecur and endRecur
-    // Step one take use this.state.instructorlists to get the instructors object
-    // Take the user_id, name,
-    // 
-    /*
-        Events should be stored like 
-        [{
-            title : "name of instructor",
-            id: "instructor ID",
-            resourceID : "instructor ID",
-            daysOfWeek : [ 0,1,4] = the amount of recurring days, 0 = sunday , 1 = monday ect.
-            startTime : "Time of work in 24hour time ie, 10:30 ,
-            endTime : "Time to end work in 24hour time ie, 14:00",
-            startRecur : "when recurrence of event starts '2019-09-25"
-            endRecur : "when the recurrence of events end '2020-01-25" (should be the semester long )
-    
-        }]
-        
-            with time off same applys with everything on top, but we need 
-            [{
-                resourceID " instructor ID"
-                start
-                rendering: "background",
-                color  : "gray"
-            }]
-        
-    
-        */
 
 
 
     render() {
-        const tippyOpts = {
-            placement: 'bottom',
-            offset: '0, 5'
-        };
-
-        const Test = () => (
-            <div>
-                Test
-             </div>
-        )
-
-        const interactiveTipOpts = {
-            placement: 'bottom',
-            offset: '0, 5',
-            interactive: true,
-            performance: true,
-            html: el => {
-
-                let newEl = document.createElement('div')
-                ReactDom.render(<Test />, newEl);
-                return newEl;
-            }
-        }
-
-
         return (
             <div className="main-calendar-div">
                 <Paper className="paper">
@@ -574,7 +507,7 @@ class Scheduler extends Component {
                                 weekends={this.state.calendarWeekends}
                                 displayEventTime={true}
                                 eventColor={"none"}
-                                events={this.state.event}
+                                events={this.state.calendarEvents}
                                 titleFormat={{
                                     month: "long",
                                     day: "numeric",
@@ -587,7 +520,7 @@ class Scheduler extends Component {
                                     }
                                 }}
                                 timeZone={'local'}
-                                eventMouseEnter={{}}
+                                eventMouseEnter={(this.state.resourceIcon) ? null : this.handleToolTip}
                                 eventLimit={4}
                                 nowIndicator={true}
                                 resourceOrder={'title'}
