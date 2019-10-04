@@ -1,14 +1,14 @@
 // React Imports
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import * as authActions from "../../actions/authActions";
 import PropTypes from "prop-types";
-import React, {useState} from "react";
-import {NavLink} from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 // Material UI Imports
 // TODO: import each component individually (i.e. '@material-ui/core/AppBar') to reduce bundle size
-import {AppBar, Drawer, IconButton, Toolbar, Typography} from "@material-ui/core";
+import { AppBar, Drawer, IconButton, Toolbar, Typography } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import EventIcon from "@material-ui/icons/Event";
@@ -36,8 +36,15 @@ function Navigation(props) {
     }
 
     const NavList = [
-        {name: "Accounts", link: "/accounts", icon: <AccountsIcon/>},
-        {name: "Registration", link: "/registration", icon: <AssignmentIcon/>},
+
+        { name: "Dashboard", link: "/", icon: <DashboardIcon /> },
+        { name: "Scheduler", link: "/scheduler", icon: <EventIcon /> },
+        // {name: "Courses", link: "/courses", icon: <CourseIcon/>},
+        { name: "Registration", link: "/registration", icon: <AssignmentIcon /> },
+        // {name: "Attendance", link: "/attendance", icon: <AttendanceIcon/>},
+        // {name: "Gradebook", link: "/gradebook", icon: <ClassIcon/>},
+        { name: "Accounts", link: "/accounts", icon: <AccountsIcon /> },
+
     ];
 
     const drawer = (
@@ -46,7 +53,7 @@ function Navigation(props) {
                 {NavList.map((NavItem, index) => (
                     <ListItem button key={index} component={NavLink} exact={NavItem.name === "Dashboard"} to={NavItem.link} className={"listItem"}>
                         <ListItemIcon className={"icon"}>{NavItem.icon}</ListItemIcon>
-                        <ListItemText primary={NavItem.name} className={"text"}/>
+                        <ListItemText primary={NavItem.name} className={"text"} />
                     </ListItem>
                 ))}
             </List>
@@ -60,7 +67,7 @@ function Navigation(props) {
                     position="fixed"
                     className="OmouBar">
                     <Toolbar>
-                        <Hidden smUp>
+                        <Hidden >
                             <IconButton
                                 color="inherit"
                                 aria-label="Open Drawer"
@@ -99,7 +106,7 @@ function Navigation(props) {
                                     {drawer}
                                 </Drawer>
                             </Hidden>
-                            <Hidden xsDown implementation="css">
+                            <Hidden mdDown implementation="css">
                                 <Drawer
                                     variant="permanent"
                                     open>

@@ -30,20 +30,22 @@
   }
 
   .OmouMain {
-    @include respond-to(medium-up-screens){
-      margin-left:$drawerWidth;
-      padding:5% 3% 0 3%;
-    }
-    @include respond-to(handhelds){
-      margin-left:0;
-      padding:15% 3% 0 3%;
-    }
+
+
+    @include respond-to(handhelds){ margin-left:0;}
+    @include respond-to(medium-screens){ margin-left: 0 }
+    @include respond-to(ipad-landscape){ margin-left: 0  ; }
+    @include respond-to(wide-screens){ margin-left:$drawerWidth; }
+   
+    padding:5% 3% 0 3%;
+
     overflow-x: hidden;
   }
 
   .DrawerList{
     @include respond-to(handhelds){ width:0;}
     @include respond-to(medium-up-screens){ width:$drawerWidth; }
+    
 
     padding-top: 45%;
 
