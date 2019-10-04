@@ -59,7 +59,6 @@ class ParentContact extends Component {
                                     <Grid item xs={5} align="left">
                                         {this.state.parent.email}
                                     </Grid>
-
                                 </Grid>
                         </Paper>
                     </Grid>

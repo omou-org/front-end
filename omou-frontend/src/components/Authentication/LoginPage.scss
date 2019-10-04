@@ -1,3 +1,5 @@
+@import '../../theme/colors';
+@import '../../theme/sizes';
 .bg {
     padding: 37px;
     width: 412px;
@@ -8,7 +10,13 @@
 .header {
     font-family: 'Roboto Slab', serif;
     font-style: normal;
-    margin: 25px 19px 0 19px!important;
+    @include respond-to(handhelds){
+        margin: 5px 19px 0 19px!important;
+    }
+    @include respond-to(medium-up-screens){
+        margin: 25px 19px 0 19px!important;
+    }
+
     font-weight: bold;
     font-size: 36px;
     line-height: 47px;

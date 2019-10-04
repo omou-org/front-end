@@ -8,13 +8,7 @@
 
 // Session view
 
-.session-view-modal{
- .MuiDialog-paperWidthSm-278{
-   width:20%;
-   height: 25%;
-   
- }
-}
+
 
 .session-button{
    .button {
@@ -22,15 +16,22 @@
      top: 15px;
    }
 }
+.main-session-view{
+  margin-top: 2em
+}
 
 .session-footer-buttons{
     display: flex;
     width: 50%;
 
 }
+.session-view{
+  padding-left: 
+  2%
+}
 
 .session-view-details{
-  padding: 1%;
+  padding-left: 1%;
   @include respond-to(handhelds){
     margin-top: 50px;
   }
@@ -41,9 +42,91 @@
   
 }
 
+.fc-now-indicator{
+  border : 0 solid #43B5D9;
+}
+
+// ToolTip css are styled ul's
+.toolTip{
+  .ul{
+    padding-inline-start: 0 !important;
+    list-style : none;
+    
+  }
+  .container{
+    line-height: 2rem;
+
+  .clock_icon{
+  background-image: url('./icons/icons8-clock-64.png');
+  margin: 0;
+	padding-left: 25px ;
+	list-style: none;
+	background-repeat: no-repeat;
+	background-position: left center;
+  background-size: 20px;
+  
+  
+}
+
+.pin_icon{
+    background-image: url('./icons/icons8-place-marker-50.png');
+    margin: 0;
+    padding-left: 25px ;
+    list-style: none;
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: 20px;
+}
+
+.teacher_icon{
+  background-image: url('./icons/icons8-teacher-24.png');
+  margin: 0;
+  padding-left: 25px ;
+  list-style: none;
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;
+}
+.discription_icon{
+  background-image: url('./icons/icons8-topic-32.png');
+  margin: 0;
+  padding-left: 25px ;
+  list-style: none;
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 20px;
+  line-height: 1.2rem;
+ 
+ }
+
+
+  }
+}
+
+
+  
+// Tool tip styling 
+
+.tippy-tooltip.light-theme {
+  background: white;
+  text-align: left;
+  border: 1px solid #c6c6c6;
+  color: #000000;
+  box-shadow:  2px 2px 2px rgba(0, 0, 0, 0.25);
+  max-width: 260px !important;
+  
+}
+
+.tippy-tooltip.light-theme .tippy-backdrop {
+  background-color: #ffffff;
+  
+}
 .session-view-title{
   padding: 1%;
 }
+
+
+
 
 .session-detail-action-control{
   padding: 1%;
@@ -98,5 +181,8 @@
 
 .demo-app-calendar {
   margin: 0 auto;
-  max-width: 900px;
+  max-width: 897px;
+}
+.fc-view, .fc-view > table{
+  z-index: 0;
 }

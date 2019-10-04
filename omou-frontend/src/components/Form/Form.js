@@ -58,11 +58,12 @@ class Form extends Component {
 
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
-        const formType = this.props.computedMatch.params.type;
-        if (this.props.computedMatch.params.edit === "edit") {
+        const formType = this.props.match.params.type;
+        const {id} = this.props.match.params;
+        if (this.props.match.params.edit === "edit") {
             switch (formType) {
                 case "student": {
-                    const student = this.props.students[this.props.computedMatch.params.id];
+                    const student = this.props.students[id];
                     if (student) {
                         const parent = this.props.parents[student.parent_id];
                         prevState = {
@@ -124,7 +125,7 @@ class Form extends Component {
                     break;
                 }
                 case "instructor": {
-                    const instructor = this.props.instructors[this.props.computedMatch.params.id];
+                    const instructor = this.props.instructors[id];
                     if (instructor) {
                         prevState = {
                             ...this.state,
@@ -185,66 +186,66 @@ class Form extends Component {
                 default: console.warn("Invalid form type!");
             }
         }
-        if (!prevState || formType !== prevState.form || prevState["submitPending"] || (this.props.computedMatch.params.id && this.props.computedMatch.params.edit !== "edit")) {
+        if (!prevState ||
+            formType !== prevState.form ||
+            prevState["submitPending"] ||
+            (id && this.props.match.params.edit !== "edit")) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
-                    const formContents = JSON.parse(JSON.stringify(this.props.registrationForm[formType]));
+                    const formContents = JSON.parse(
+                        JSON.stringify(this.props.registrationForm[formType])
+                    );
                     let NewState = {
                         ...oldState,
-                        activeSection: formContents.section_titles[0],
-                        form: formType,
+                        "activeSection": formContents.section_titles[0],
+                        "form": formType,
                     };
-
-                    let course = "";
-                    if (this.props.computedMatch.params.id) {
-                        course = decodeURIComponent(this.props.computedMatch.params.id);
-                        course = Object.keys(this.props.courses).find((courseID) => this.props.courses[courseID].title === course);
-                        course = this.props.courses[course];
-                        if (course) {
-                            // convert it to a format that onselectChange can use
-                            course = {
-                                value: `${course.course_id}: ${course.title}`,
-                                label: `${course.course_id}: ${course.title}`,
-                            };
-                        }
+                    let course = null;
+                    if (this.props.courses.hasOwnProperty(id)) {
+                        const {course_id, title} =
+                            this.props.courses[this.props.match.params.id];
+                        // convert it to a format that onselectChange can use
+                        course = {
+                            "value": course_id,
+                            "label": title,
+                        };
                     }
                     formContents.section_titles.forEach((title) => {
                         // create blank fields based on form type
                         NewState[title] = {};
+                        NewState[`${title}_validated`] = {};
                         // set a value for every non-conditional field (object)
                         if (Array.isArray(formContents[title])) {
-                            formContents[title].forEach(({field, type, options}) => {
+                            formContents[title].forEach(({name, type}) => {
+                                NewState[`${title}_validated`][name] = true;
                                 switch (type) {
                                     case "course":
-                                        NewState[title][field] = course;
-                                        break;
-                                    case "select":
-                                        NewState[title][field] = options[0];
-                                        break;
-                                    case "student":
-                                        NewState[title][field] = "";
+                                        NewState[title][name] = course;
                                         break;
                                     default:
-                                        NewState[title][field] = null;
+                                        NewState[title][name] = null;
                                 }
                             });
                         }
-                        // create validated state for each field
-                        NewState[`${title}_validated`] = {};
-                        if (Array.isArray(formContents[title])) {
-                            formContents[title].forEach((field) => {
-                                NewState[`${title}_validated`][field.name] = true;
-                            });
-                        }
                     });
+                    if (formType === "tutoring" && id &&
+                        this.props.courses.hasOwnProperty(id)) {
+                        NewState["Tutor Selection"]["Course / Subject"] =
+                            this.props.courses[id].title;
+                    }
                     return NewState;
                 }, () => {
                     this.setState({
-                        nextSection: this.validateSection(),
+                        "nextSection": this.validateSection(),
                     });
                 });
             }
         } else if (prevState && !prevState["submitPending"]) {
+            if (formType === "tutoring" &&
+                this.props.courses.hasOwnProperty(id)) {
+                prevState["Tutor Selection"]["Course / Subject"] =
+                    this.props.courses[id].title;
+            }
             this.setState(prevState);
         }
     }
@@ -314,9 +315,9 @@ class Form extends Component {
             if (this.validateSection()) {
                 if (oldState.activeStep === this.getFormObject().section_titles.length - 1) {
                     if (!oldState.submitPending) {
-                        if (this.props.computedMatch.params.edit === "edit") {
+                        if (this.props.match.params.edit === "edit") {
                             this.props.registrationActions.submitForm(this.state,
-                                this.props.computedMatch.params.id);
+                                this.props.match.params.id);
                         } else {
                             this.props.registrationActions.submitForm(this.state);
                         }
@@ -424,7 +425,6 @@ class Form extends Component {
     }
 
     onSelectChange(value, label, field) {
-        console.log({value, label, field})
         if (field.type === "select parent") {
             if (value) {
                 this.setState((OldState) => {
@@ -548,10 +548,12 @@ class Form extends Component {
                 </FormControl>;
             case "course": {
                 let courseList = Object.keys(this.props.courses)
-                    .filter((courseID) => this.props.courses[courseID].capacity > this.props.courses[courseID].filled)
+                    .filter((courseID) =>
+                        this.props.courses[courseID].capacity >
+                        this.props.courses[courseID].roster.length)
                     .map((courseID) => ({
-                        value: courseID,
-                        label: `${courseID}: ${this.props.courses[courseID].title}`,
+                        "value": courseID,
+                        "label": this.props.courses[courseID].title,
                     }));
                 // remove preselected courses
                 courseList = this.removeDuplicates(Object.values(this.state[label]), courseList);
@@ -763,11 +765,11 @@ class Form extends Component {
                 orientation="vertical"
                 className="form-section">
                 {
-                    steps.map((label, i) => (
+                    steps.map((label) => (
                         <Step key={label}>
                             <StepLabel>
                                 {label}
-                                {activeStep > i &&
+                                {/* {activeStep !== i &&
                                     Object.entries(this.state[label]).map(([field, value]) => {
                                         if (!value) {
                                             return null;
@@ -784,7 +786,7 @@ class Form extends Component {
                                             </div>
                                         );
                                     })
-                                }
+                                } */}
                             </StepLabel>
                             <StepContent>
                                 {
@@ -800,7 +802,7 @@ class Form extends Component {
                                                 </Grid>
                                                 <br />
                                                 {
-                                                    !this.props.computedMatch.params.course && numSameTypeFields < field.field_limit &&
+                                                    !this.props.match.params.course && numSameTypeFields < field.field_limit &&
                                                     field === lastFieldOfType &&
                                                     <Fab color="primary" aria-label="Add" variant="extended"
                                                         className="button add-student"
@@ -916,7 +918,7 @@ class Form extends Component {
     renderTitle(id, type) {
         switch (type) {
             case "course":
-                return id ? decodeURIComponent(id) : "";
+                return id ? this.props.courses[id].title : "";
             case "student": {
                 const student = this.props.students[id];
                 return student ? student.name : "";
@@ -943,7 +945,7 @@ class Form extends Component {
                             denyAction={"default"}
                         />
                         <Typography className="heading" align="left">
-                            {this.renderTitle(this.props.computedMatch.params.id, this.state.form)} {this.props.computedMatch.params.type} Registration
+                            {this.renderTitle(this.props.match.params.id, this.state.form)} {this.props.match.params.type} Registration
                         </Typography>
                         {
                             this.props.submitStatus !== "success" ?

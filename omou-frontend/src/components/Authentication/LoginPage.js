@@ -13,7 +13,7 @@ import { Typography } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 
-import "./LoginPage.css";
+import "./LoginPage.scss";
 
 function LoginPage(props) {
     const [email, setEmail] = useState("");
@@ -40,7 +40,7 @@ function LoginPage(props) {
     });
 
     if (props.auth.token) {
-        props.history.push("/");
+        props.history.push("/accounts");
     }
 
     return (
@@ -57,7 +57,7 @@ function LoginPage(props) {
             <Grid item xs={3}>
                 <Paper className="bg">
                     <Typography
-                        align="left"
+                        align="center"
                         color="primary">
                         <span className="header">sign in</span>
                     </Typography>
@@ -113,7 +113,7 @@ function LoginPage(props) {
                             className="button signIn"
                             disabled={!email || !password}
                             onClick={login}>
-                            <span className="signInText">sign in</span>
+                            sign in
                         </Button>
                     </form>
                     {

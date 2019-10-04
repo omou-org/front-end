@@ -1,12 +1,15 @@
-import { connect } from 'react-redux';
-import React, { Component } from 'react';
+import {connect} from "react-redux";
+import React, {Component} from "react";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
+import EditIcon from "@material-ui/icons/EditOutlined";
+import {ReactComponent as IDIcon} from "../../identifier.svg";
 import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
 import Button from "@material-ui/core/Button";
 import {NavLink} from "react-router-dom";
+import Hidden from "@material-ui/core/es/Hidden/Hidden";
 
 class ProfileHeading extends Component {
     constructor(props) {
@@ -15,17 +18,27 @@ class ProfileHeading extends Component {
         };
     }
 
-    addDashes(f) {
-        return f && ("(" + f.slice(0, 3) + "-" + f.slice(3, 6) + "-" + f.slice(6, 15) + ")");
+    addDashes(string) {
+        return (
+            `(${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 15)})`);
     }
 
     renderStudentProfile() {
         return (
-            <Grid container >
+            <Grid container>
                 <Grid item md={10}>
-                    <Grid container >
+                    <Grid container>
                         <Grid item md={6} className="rowPadding">
                             {this.props.user.birthday}
+                        </Grid>
+                        <Grid item md={1} className="rowPadding">
+                            <IDIcon height={24} width={24} />
+                        </Grid>
+                        <Grid item md={5} className="rowPadding">
+                            #{this.props.user.user_id}
+                        </Grid>
+                        <Grid item md={6} className="rowPadding">
+                            Grade {this.props.user.grade}
                         </Grid>
                         <Grid item md={1} className="rowPadding">
                             <PhoneIcon />
@@ -34,22 +47,13 @@ class ProfileHeading extends Component {
                             {this.addDashes(this.props.user.phone_number)}
                         </Grid>
                         <Grid item md={6} className="rowPadding">
-                            Grade {this.props.user.grade}
+                            {this.props.user.school}
                         </Grid>
                         <Grid item md={1} className="rowPadding">
                             <EmailIcon />
                         </Grid>
                         <Grid item md={5} className="rowPadding">
                             {this.props.user.email}
-                        </Grid>
-                        <Grid item md={6} className="rowPadding">
-                            {this.props.user.school}
-                        </Grid>
-                        <Grid item md={1} className="rowPadding">
-                            <MoneyIcon />
-                        </Grid>
-                        <Grid item md={5} align="left">
-                            ${this.props.user.balance}
                         </Grid>
                     </Grid>
                 </Grid>
@@ -62,10 +66,18 @@ class ProfileHeading extends Component {
                 <Grid item md={6}>
                     <Grid container>
                         <Grid item md={1} className="rowPadding">
-                            <PhoneIcon />
+                            <IDIcon height={24} width={24} />
                         </Grid>
                         <Grid item md={5} className="rowPadding">
-                            {this.addDashes(this.props.user.phone_number)}
+                            #{this.props.user.user_id}
+                        </Grid>
+                        <Grid container>
+                            <Grid item md={1} className="rowPadding">
+                                <PhoneIcon />
+                            </Grid>
+                            <Grid item md={5} className="rowPadding">
+                                {this.addDashes(this.props.user.phone_number)}
+                            </Grid>
                         </Grid>
                     </Grid>
                     <Grid container>
@@ -81,41 +93,53 @@ class ProfileHeading extends Component {
             </Grid>);
     }
 
-    renderParentProfile(){
+    renderParentProfile() {
         return (
-            <Grid container >
-                <Grid item md={10}>
-                    <Grid container >
-                        <Grid item md={6} className="rowPadding">
-                            {this.props.user.user_id}
-                        </Grid>
-                        <Grid item md={1} className="rowPadding">
-                            <MoneyIcon />
-                        </Grid>
-                        <Grid item md={5} className="rowPadding">
-                            money
-                        </Grid>
-                        <Grid item md={1} className="rowPadding">
-                            <PhoneIcon />
-                        </Grid>
-                        <Grid item md={5} className="rowPadding">
-                            {this.addDashes(this.props.user.phone_number)}
-                        </Grid>
-                        <Grid item md={6} className="rowPadding">
-                        </Grid>
-                        <Grid item md={1} className="rowPadding">
-                            <EmailIcon />
-                        </Grid>
-                        <Grid item md={5} className="rowPadding">
-                            {this.props.user.email}
-                        </Grid>
-                        <Grid item md={6} className="rowPadding">
-                        </Grid>
-                        
-                    </Grid>
+            <Grid container>
+                <Grid item xs={1} className="rowPadding">
+                    <IDIcon height={24} width={24} />
                 </Grid>
-
+                <Grid item ={5} className="rowPadding">
+                    #{this.props.user.user_id}
+                </Grid>
+                <Grid item md={1} className="rowPadding">
+                    <MoneyIcon />
+                </Grid>
+                <Grid item md={5} className="rowPadding">
+                    0
+                </Grid>
+                <Grid item md={1} className="rowPadding">
+                    <PhoneIcon />
+                </Grid>
+                <Grid item md={5} className="rowPadding">
+                    {this.addDashes(this.props.user.phone_number)}
+                </Grid>
+                <Grid item md={6} className="rowPadding">
+                </Grid>
+                <Grid item md={1} className="rowPadding">
+                    <EmailIcon />
+                </Grid>
+                <Grid item md={5} className="rowPadding">
+                    {this.props.user.email}
+                </Grid>
+                <Grid item md={6} className="rowPadding">
+                </Grid>
             </Grid>);
+    }
+
+    renderEditButton() {
+        if (this.props.user.role != "receptionist") {
+            return (
+                <Grid component={Hidden} xsDown align="right" className="editPadding">
+                    <Button
+                        className="editButton"
+                        component={NavLink}
+                        to={`/registration/form/${this.getURL(this.props.user.role)}/${this.props.user.user_id}/edit`}>
+                        <EditIcon />
+                Edit Profile
+                    </Button>
+                </Grid>);
+        }
     }
 
     getURL(role) {
@@ -138,27 +162,29 @@ class ProfileHeading extends Component {
                 break;
             case "parent":
                 profileDetails = this.renderParentProfile();
+            case "receptionist":
+                profileDetails = this.renderTeacherProfile();
             default:
         }
         return (
             <div>
-                <Grid container>
-                    <Grid item md={6}>
-                        <h1 className="left-align">{this.props.user.name}</h1>
+                <Grid container className="row">
+                    <Grid align="left">
+                        <h1>{this.props.user.name}</h1>
                     </Grid>
-                    <Grid item md={3}>
+                    <Grid component={Hidden} xsDown>
                         <Chip
                             className={`userLabel ${this.props.user.role}`}
                             label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
                         />
                     </Grid>
-                    <Grid item md={3} align="right">
-                        <Button
-                            component={NavLink}
-                            to={`/registration/form/${this.getURL(this.props.user.role)}/${this.props.user.user_id}/edit`}>
-                            Edit Profile
-                        </Button>
+                    <Grid component={Hidden} smUp xs={12}>
+                        <Chip
+                            className={`userLabel ${this.props.user.role}`}
+                            label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
+                        />
                     </Grid>
+                    {this.renderEditButton()}
                 </Grid>
                 {profileDetails}
             </div>

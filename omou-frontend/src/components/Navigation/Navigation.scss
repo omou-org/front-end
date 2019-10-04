@@ -30,9 +30,14 @@
   }
 
   .OmouMain {
-    @include respond-to(handhelds){ margin-left:0;}
-    @include respond-to(medium-up-screens){ margin-left:$drawerWidth; }
-    padding:5% 3% 0 3%;
+    @include respond-to(medium-up-screens){
+      margin-left:$drawerWidth;
+      padding:5% 3% 0 3%;
+    }
+    @include respond-to(handhelds){
+      margin-left:0;
+      padding:15% 3% 0 3%;
+    }
     overflow-x: hidden;
   }
 
@@ -41,7 +46,6 @@
     @include respond-to(medium-up-screens){ width:$drawerWidth; }
 
     padding-top: 45%;
-
 
     .listItem {
       width: 94%;
@@ -62,14 +66,22 @@
     }
   }
 
-  .login {
-    font-family: 'Roboto Slab', serif;
+  .loginToggle {
+    font-family: 'Roboto', sans-serif;
     font-style: normal;
-    font-weight: 700;
-    font-size: 24px;
+    font-weight: 400;
+    font-size: 16px;
     line-height: 26px;
     text-decoration: none;
-    color: $primaryColor;
+    color: $primaryFontColor;
     float: right;
+    cursor:pointer;
+    text-transform: capitalize;
+  }
+}
+
+.DrawerList .list{
+  @include respond-to(handhelds){
+    padding-top:80px !important;
   }
 }
