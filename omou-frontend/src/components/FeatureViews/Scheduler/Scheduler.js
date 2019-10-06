@@ -417,7 +417,7 @@ class Scheduler extends Component {
                             displayEventTime={true}
                             eventColor={"none"}
                             eventSources={[
-                                { events: this.state.calendarEvents, color: '#6FB87B' }
+                                { events: this.state.calendarEvents }
                             ]}
 
                             timeZone={'local'}
