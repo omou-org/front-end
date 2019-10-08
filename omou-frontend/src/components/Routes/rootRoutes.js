@@ -38,6 +38,16 @@ function rootRoutes(props) {
                 render={(passedProps) => <LoginPage setLogin={props.setLogin} {...passedProps} />} />
 
             {/* Main Feature Views */}
+            {/* Registration Routes */}
+            <Route
+                path="/registration/form/:type/:id?/:edit?"
+                render={(passedProps) => <RegistrationForm {...passedProps} />} />
+            <Route
+                path="/registration/course/:courseID?/:courseTitle?"
+                render={(passedProps) => <RegistrationCourse {...passedProps} />} />
+            <Route
+                path="/registration/category/:categoryID"
+                render={(passedProps) => <CourseCategory {...passedProps} />}/>
             <Route
                 exact
                 path="/front-end"
@@ -77,16 +87,7 @@ function rootRoutes(props) {
                 path="/:accountType/:accountID/:courseID"
                 render={(passedProps) => <CourseSessionStatus {...passedProps} />}/>
 
-            {/* Registration Routes */}
-            <Route
-                path="/registration/form/:type/:id?/:edit?"
-                render={(passedProps) => <RegistrationForm {...passedProps} />} />
-            <Route
-                path="/registration/course/:courseID?/:courseTitle?"
-                render={(passedProps) => <RegistrationCourse {...passedProps} />} />
-            <Route
-                path="/registration/category/:categoryID"
-                render={(passedProps) => <CourseCategory {...passedProps} />}/>
+
             <Route path="/PageNotFound" component={ErrorNotFoundPage}/>
             <Redirect to="/PageNotFound"/>
         </Switch>

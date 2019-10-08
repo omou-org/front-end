@@ -36,7 +36,7 @@ function Navigation(props) {
     }
 
     const NavList = [
-        {name: "Accounts", link: "/accounts", icon: <AccountsIcon/>},
+        {name: "Accounts", link: "/", icon: <AccountsIcon/>},
         {name: "Registration", link: "/registration", icon: <AssignmentIcon/>},
     ];
 
@@ -68,7 +68,7 @@ function Navigation(props) {
                                 <MenuIcon />
                             </IconButton>
                         </Hidden>
-                        <Typography component={NavLink} to="/accounts" className="title">
+                        <Typography component={NavLink} to="/" className="title">
                             omou
                         </Typography>
                         <div style={{
