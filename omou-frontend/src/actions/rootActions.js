@@ -6,9 +6,9 @@ const instance = axios.create({
 });
 
 const typeToEndpoint = {
-    "student": "/account/students/",
-    "parent": "/account/parents/",
-    "instructor": "/account/instructors/",
+    "student": "/account/student/",
+    "parent": "/account/parent/",
+    "instructor": "/account/instructor/",
     "course": "/courses/catalog/",
     "course category": "/courses/categories/",
 };

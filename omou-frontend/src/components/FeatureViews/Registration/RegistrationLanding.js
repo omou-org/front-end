@@ -1,37 +1,20 @@
-import PropTypes from "prop-types";
-import React, {useState} from "react";
 import {connect} from "react-redux";
+import React, {useMemo, useState} from "react";
+import PropTypes from "prop-types";
 
-// Material UI Imports
+// material UI Imports
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import {withRouter} from "react-router-dom";
-import {Typography} from "@material-ui/core";
-import BackButton from "../../BackButton";
-import FilterIcon from "@material-ui/icons/FilterList";
-import Popover from "@material-ui/core/Popover";
 import SearchSelect from "react-select";
-import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import ForwardArrow from "@material-ui/icons/ArrowForward";
-import Hidden from "@material-ui/core/Hidden";
+import Tabs from "@material-ui/core/Tabs";
+import Typography from "@material-ui/core/Typography";
 
+import BackButton from "../../BackButton";
 import CourseList from "./CourseList";
 import TutoringList from "./TutoringList";
 
-const trimString = (string, maxLen) => {
-    if (string.length > maxLen) {
-        return `${string.slice(0, maxLen - 3).trim()}...`;
-    } else {
-        return string;
-    }
-};
-
-const RegistrationLanding = (props) => {
-    const [anchorEl, setAnchorEl] = useState("");
+const RegistrationLanding = ({courses, instructors}) => {
     const [view, setView] = useState(0);
     const [courseFilters, setCourseFilters] = useState({
         "instructor": [],
@@ -39,33 +22,28 @@ const RegistrationLanding = (props) => {
         "subject": [],
     });
 
-    const handleFilterClick = (event) => {
-        event.preventDefault();
-        setAnchorEl(event.currentTarget);
+    const changeView = (viewIndex) => () => {
+        setView(viewIndex);
     };
 
-    const handleClose = (event) => {
-        event.preventDefault();
-        setAnchorEl(null);
-    };
-
-    const handleFilterChange = (filters, filterType) => {
+    const handleFilterChange = (filterType) => (filters) => {
         setCourseFilters({
             ...courseFilters,
             [filterType]: filters ? filters : [],
         });
     };
 
+    const instructorOptions = useMemo(() =>
+        Object.values(instructors).map(({name, user_id}) => ({
+            "label": name,
+            "value": user_id,
+        })), [instructors]);
+
     const renderFilter = (filterType) => {
         let options = [];
         switch (filterType) {
             case "instructor":
-                options = Object.values(props.instructors).map(
-                    ({name, user_id}) => ({
-                        "label": name,
-                        "value": user_id,
-                    })
-                );
+                options = instructorOptions;
                 break;
             case "subject":
                 options = [
@@ -82,22 +60,6 @@ const RegistrationLanding = (props) => {
             default:
                 return "";
         }
-        const CustomClearText = () => "clear all";
-        const ClearIndicator = (indicatorProps) => {
-            const {
-                children = <CustomClearText />,
-                getStyles,
-                "innerProps": {ref, ...restInnerProps},
-            } = indicatorProps;
-            return (
-                <div
-                    {...restInnerProps}
-                    ref={ref}
-                    style={getStyles("clearIndicator", indicatorProps)}>
-                    <div style={{"padding": "0px 5px"}}>{children}</div>
-                </div>
-            );
-        };
 
         const customStyles = {
             "clearIndicator": (base, state) => ({
@@ -110,22 +72,20 @@ const RegistrationLanding = (props) => {
                 "textAlign": "left",
             }),
         };
-        return <SearchSelect
-            value={handleFilterClick[filterType]}
-            onChange={(event) => {
-                handleFilterChange(event, filterType);
-            }}
-            className="filter-options"
-            closeMenuOnSelect={false}
-            components={{ClearIndicator}}
-            placeholder={`All ${filterType}s`}
-            styles={customStyles}
-            isMulti
-            options={options}
-        />;
+
+        return (
+            <SearchSelect
+                className="filter-options"
+                closeMenuOnSelect={false}
+                isMulti
+                onChange={handleFilterChange(filterType)}
+                options={options}
+                placeholder={`All ${filterType}s`}
+                styles={customStyles} />
+        );
     };
 
-    let filteredCourses = Object.values(props.courses);
+    let filteredCourses = Object.values(courses);
     Object.entries(courseFilters)
         .filter(([, filters]) => filters.length > 0)
         .forEach(([filterName, filters]) => {
@@ -149,73 +109,84 @@ const RegistrationLanding = (props) => {
         });
 
     return (
-        <Grid container>
-            <Grid item xs={12}>
-                <Paper className="RegistrationLanding paper">
-                    <BackButton />
-                    <hr />
-                    <Grid container layout="row">
-                        <Grid item md={7} xs={12}>
-                            <Typography
-                                variant="h3"
-                                align="left"
-                                className="heading">
-                                Registration Catalog
-                            </Typography>
-                        </Grid>
-                        <Grid item md={5} xs={12} className="catalog-setting-wrapper">
-                            <Tabs value={view} className="catalog-setting">
-                                <Tab label="Courses" onClick={() => {
-                                    setView(0);
-                                }} />
-                                <Tab label="Tutoring" onClick={() => {
-                                    setView(1);
-                                }} />
-                            </Tabs>
-                        </Grid>
-                        {/* <Grid item md={1} alignContent="space-between" style={{
-                            "margin": "auto 0",
-                        }}>
-                            <FilterIcon
-                                style={{"cursor": "pointer"}}
-                                onClick={(event) => {
-                                    handleFilterClick(event);
-                                }}
-                            />
-                        </Grid> */}
-                    </Grid>
-                    <Grid container layout="row" spacing={8}>
-                        <Grid item xs={12} md={4}>
-                            {renderFilter("instructor")}
-                        </Grid>
-                        <Hidden xsDown>
-                            <Grid item xs={12} md={4}>
-                                {renderFilter("subject")}
-                            </Grid>
-                            <Grid item xs={12} md={4}>
-                                {renderFilter("grade")}
-                            </Grid>
-                        </Hidden>
-                    </Grid>
-                    <div className="registration-table">
-                        {
-                            view === 0 &&
-                            <CourseList filteredCourses={filteredCourses} />
-                        }
-                        {
-                            view === 1 &&
-                            <TutoringList filteredCourses={filteredCourses} />
-                        }
-                    </div>
-                </Paper>
+        <Paper className="RegistrationLanding paper">
+            <BackButton />
+            <hr />
+            <Grid
+                alignContent="flex-start"
+                alignItems="center"
+                container
+                layout="row">
+                <Typography
+                    align="left"
+                    className="heading"
+                    component={Grid}
+                    item
+                    sm={6}
+                    variant="h3"
+                    xs={12}>
+                    Registration Catalog
+                </Typography>
+                <Tabs
+                    className="catalog-setting"
+                    component={Grid}
+                    item
+                    sm={6}
+                    value={view}
+                    xs={12}>
+                    <Tab
+                        label="Courses"
+                        onClick={changeView(0)} />
+                    <Tab
+                        label="Tutoring"
+                        onClick={changeView(1)} />
+                </Tabs>
             </Grid>
-        </Grid>
+            <Grid
+                container
+                layout="row"
+                spacing={8}>
+                <Grid
+                    item
+                    md={4}
+                    xs={12}>
+                    {renderFilter("instructor")}
+                </Grid>
+                <Grid
+                    item
+                    md={4}
+                    xs={12}>
+                    {renderFilter("subject")}
+                </Grid>
+                <Grid
+                    item
+                    md={4}
+                    xs={12}>
+                    {renderFilter("grade")}
+                </Grid>
+            </Grid>
+            <div className="registration-table">
+                {
+                    view === 0 &&
+                    <CourseList filteredCourses={filteredCourses} />
+                }
+                {
+                    view === 1 &&
+                    <TutoringList filteredCourses={filteredCourses} />
+                }
+            </div>
+        </Paper>
     );
 };
 
+RegistrationLanding.propTypes = {
+    "courses": PropTypes.object.isRequired,
+    "instructors": PropTypes.object.isRequired,
+};
+
 const mapStateToProps = (state) => ({
-    "courses": state.Course["NewCourseList"],
-    "instructors": state.Users["InstructorList"],
+    "courses": state.Course.NewCourseList,
+    "instructors": state.Users.InstructorList,
 });
 
 const mapDispatchToProps = () => ({});
