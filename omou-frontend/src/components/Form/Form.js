@@ -971,7 +971,6 @@ class Form extends Component {
         //     // POST request
         //     submitStatus = this.props.requestStatus[this.state.form][POST];
         // }
-        console.log(submitStatus)
         return (
             <Grid container className="">
                 {/* Determine if finished component is displayed. If not, then don't prompt */}
@@ -1024,7 +1023,7 @@ class Form extends Component {
                         </Modal>
                         {/* Error message on failed submit */}
                         <Dialog
-                            open={submitStatus !== 1 && submitStatus < 200 || submitStatus >= 300}
+                            open={this.props.submitStatus == "fail"}
                             onClose={() => {
                                 this.props.registrationActions.resetSubmitStatus();
                                 this.setState({

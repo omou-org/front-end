@@ -1,6 +1,6 @@
 // react/redux imports
 import * as apiActions from "../../../actions/apiActions";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useMemo} from "react";
 import PropTypes from "prop-types";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
