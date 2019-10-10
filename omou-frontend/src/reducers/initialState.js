@@ -3437,20 +3437,42 @@ export default {
 };
 
 function initRequests() {
-    const baseSettings = {
-        [GET]: {},
-        [PATCH]: {},
-        [POST]: {},
-    };
-
     return {
-        "admin": {...baseSettings},
-        "course": {...baseSettings},
-        "category": {...baseSettings},
-        "instructor": {...baseSettings},
-        "parent": {...baseSettings},
-        "student": {...baseSettings},
-        "schedule": {...baseSettings},
+        "admin": {
+            [GET]: {},
+            [PATCH]: {},
+            [POST]: {},
+        },
+        "course": {
+            [GET]: {},
+            [PATCH]: {},
+            [POST]: {},
+        },
+        "category": {
+            [GET]: {},
+            [PATCH]: {},
+            [POST]: {},
+        },
+        "instructor": {
+            [GET]: {},
+            [PATCH]: {},
+            [POST]: {},
+        },
+        "parent": {
+            [GET]: {},
+            [PATCH]: {},
+            [POST]: {},
+        },
+        "student": {
+            [GET]: {},
+            [PATCH]: {},
+            [POST]: {},
+        },
+        "schedule": {
+            [GET]: {},
+            [PATCH]: {},
+            [POST]: {},
+        },
         "login": null,
     };
 }
