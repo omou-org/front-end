@@ -53,7 +53,10 @@ function rootRoutes(props) {
             <Route
                 exact
                 path="/scheduler"
-                render={(passedProps) => <Scheduler {...passedProps} />}/>
+                render={(passedProps) => <Scheduler {...passedProps} />} />
+            <ProtectedRoute
+                path="/scheduler/view-session/:course_id/:session_id"
+                render={(passedProps) => <SessionView {...passedProps} />} />
 
 
             {/* Accounts */}
@@ -64,7 +67,7 @@ function rootRoutes(props) {
             <Route
                 exact
                 path="/accounts/parents/:parentID/pay"
-                render={(passedProps) => <ParentPayment {...passedProps} />}/>
+                render={(passedProps) => <ParentPayment {...passedProps} />} />
             <Route
                 exact
                 path="/accounts"
@@ -72,7 +75,7 @@ function rootRoutes(props) {
             <Route
                 exact
                 path="/accounts/:accountType/:accountID/:courseID"
-                render={(passedProps) => <CourseSessionStatus {...passedProps} />}/>
+                render={(passedProps) => <CourseSessionStatus {...passedProps} />} />
 
             {/* Registration Routes */}
             <Route
@@ -83,9 +86,9 @@ function rootRoutes(props) {
                 render={(passedProps) => <RegistrationCourse {...passedProps} />} />
             <Route
                 path="/registration/category/:categoryID"
-                render={(passedProps) => <CourseCategory {...passedProps} />}/>
-            <Route path="/PageNotFound" component={ErrorNotFoundPage}/>
-            <Redirect to="/PageNotFound"/>
+                render={(passedProps) => <CourseCategory {...passedProps} />} />
+            <Route path="/PageNotFound" component={ErrorNotFoundPage} />
+            <Redirect to="/PageNotFound" />
         </Switch>
     );
 }
