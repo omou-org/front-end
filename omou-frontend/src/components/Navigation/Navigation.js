@@ -44,7 +44,7 @@ function Navigation(props) {
         <div className="DrawerList">
             <List className={"list"}>
                 {NavList.map((NavItem, index) => (
-                    <ListItem button key={index} component={NavLink} exact={NavItem.name === "Dashboard"} to={NavItem.link} className={"listItem"}>
+                    <ListItem button key={index} component={NavLink} exact={NavItem.name === "Accounts"} to={NavItem.link} className={"listItem"}>
                         <ListItemIcon className={"icon"}>{NavItem.icon}</ListItemIcon>
                         <ListItemText primary={NavItem.name} className={"text"}/>
                     </ListItem>
