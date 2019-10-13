@@ -13,7 +13,7 @@ import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
 import Button from "@material-ui/core/Button";
 import { NavLink } from "react-router-dom";
-import {addDashes} from "./addDashes";
+import {addDashes} from "./accountUtils";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import './Accounts.scss';
 
@@ -33,7 +33,7 @@ class ProfileHeading extends Component {
 
     renderStudentProfile() {
         return (
-                <Grid item xs={12} md={12}>
+                <Grid item xs={12}>
                     <Grid container>
                         <Grid item xs={1} md={1} className="rowPadding">
                             <BirthdayIcon height={"24px"} width={"24px"} />
@@ -89,7 +89,7 @@ class ProfileHeading extends Component {
 
     renderTeacherProfile() {
         return (
-                <Grid item md={12}>
+                <Grid item xs={12}>
                     <Grid container>
                         <Grid item md={1} className="rowPadding">
                             <IDIcon height={"24px"} width={"24px"} />
@@ -125,7 +125,7 @@ class ProfileHeading extends Component {
 
     renderParentProfile() {
         return (
-                <Grid item xs={12} md={12}>
+                <Grid item xs={12}>
                     <Grid container>
                         <Grid item xs={1} md={1} className="rowPadding">
                             <IDIcon height={"24px"} width={"24px"} />

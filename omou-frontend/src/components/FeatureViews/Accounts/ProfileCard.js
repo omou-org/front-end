@@ -22,8 +22,8 @@ import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 
 import { ReactComponent as IDIcon } from "../../identifier.svg";
-import {stringToColor} from "./stringToColor";
-import {addDashes} from "./addDashes";
+import {stringToColor} from "./accountUtils";
+import {addDashes} from "./accountUtils";
 
 import './Accounts.scss';
 

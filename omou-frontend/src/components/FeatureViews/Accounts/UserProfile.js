@@ -100,14 +100,18 @@ class UserProfile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            user: {},
-            tabs: [],
             value: 0,
         };
         this.handleChange = this.handleChange.bind(this);
     }
 
-    componentWillMount() {
+    componentDidUpdate(prevProps){
+       if(prevProps.computedMatch.params.accountID !== this.props.computedMatch.params.accountID){
+           this.setState({value:0})
+       }
+    }
+
+    getUser() {
         let user;
         let accountType = this.props.computedMatch.params.accountType, accountID = this.props.computedMatch.params.accountID;
         switch (accountType) {
@@ -128,15 +132,15 @@ class UserProfile extends Component {
         }
         // this.setState({ ...CourseInView });
         if (user != "receptionist") {
-            this.setState({
+            return {
                 user: user,
-                tabs: userTabs[accountType],
-            })
+                userTabs: userTabs[accountType],
+            };
         }
         else {
-            this.setState({
+            return {
                 user: user,
-            })
+            };
         }
     }
 
@@ -166,8 +170,9 @@ class UserProfile extends Component {
     }
 
     render() {
+        const {user, userTabs} = this.getUser();
         const styles = {
-            "backgroundColor": this.stringToColor(this.state.user.name),
+            "backgroundColor": this.stringToColor(user.name),
             "color": "white",
             "width": "11vw",
             "height": "11vw",
@@ -175,7 +180,14 @@ class UserProfile extends Component {
             "margin": 20,
         };
         let tabs;
-        if (this.state.user.role !== "receptionist") {
+        if (user.role !== "receptionist") {
+            let tabID;
+            if(this.state.value<userTabs.length){
+                tabID=userTabs[this.state.value].tab_id;
+            }
+            else{
+                tabID=userTabs[0].tab_id;
+            }
             tabs =
                 (<div>
                     <Tabs
@@ -186,16 +198,17 @@ class UserProfile extends Component {
                     indicatorColor="primary"
                     textColor="primary"
                 >
-                    {this.state.tabs.map((tab) => {
+                    {userTabs.map((tab) => {
                         return <Tab
                             label={<>{tab.icon} {tab.tab_heading}</>}
                             key={this.props.inView}
                         />
                     })}
                 </Tabs>
-                <ComponentViewer user={this.state.user} inView={this.state.tabs[this.state.value].tab_id} />
-                </div>)
+                <ComponentViewer user={user} inView={tabID} />
+            </div>)
         }
+    
         else {
             tabs=(<div>
                 <Grid align="left">
@@ -212,8 +225,8 @@ class UserProfile extends Component {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {Object.keys(this.state.user.action_log).map(rowID => {
-                    let row = this.state.user.action_log[rowID];
+                {Object.keys(user.action_log).map(rowID => {
+                    let row = user.action_log[rowID];
                     return (
                         <TableRow key={row.date}
                                 //   onClick={(e) => {
@@ -251,10 +264,10 @@ class UserProfile extends Component {
                 <hr />
                 <Grid container layout="row" className={'padding'}>
                     <Grid item sm={2} xs={2} md={2} component={Hidden} xsDown>
-                        <Avatar style={styles}>{this.state.user.name.match(/\b(\w)/g).join('')}</Avatar>
+                        <Avatar style={styles}>{user.name.match(/\b(\w)/g).join('')}</Avatar>
                     </Grid>
                     <Grid item sm={8} xs={16} md={8} className="headingPadding">
-                        <ProfileHeading user={this.state.user} />
+                        <ProfileHeading user={user} />
                     </Grid>
                 </Grid>
                 {tabs}

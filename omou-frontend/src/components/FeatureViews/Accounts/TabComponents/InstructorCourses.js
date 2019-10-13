@@ -1,9 +1,10 @@
 import { connect } from 'react-redux';
-import React, { Component } from 'react';
+import React, { Component, NavLink } from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Paper from "@material-ui/core/Paper";
+import {withRouter} from 'react-router-dom';
 
 class InstructorCourses extends Component {
     constructor(props) {
@@ -23,6 +24,10 @@ class InstructorCourses extends Component {
                 courseIDs: CoursesTaughtByInstructor,
             }
         })
+    }
+
+    goToCourse = (courseID) => () => {
+        this.props.history.push(`/registration/course/${courseID}`);
     }
 
     render() {
@@ -75,7 +80,8 @@ class InstructorCourses extends Component {
                         endTime = endDate.toLocaleTimeString("en-US",timeOptions);
                     startDate = startDate.toLocaleDateString("en-US",dateOptions);
                     endDate = endDate.toLocaleDateString("en-US", dateOptions);
-                    return (<Grid item xs={12} md={12} className={'accounts-table-row'}>
+                    return (<Grid item xs={12} md={12} className={'accounts-table-row'}
+                    onClick={this.goToCourse(courseID)}>
                         <Paper square={true} >
                             <Grid container>
                                 <Grid item xs={3} md={3} >
@@ -121,7 +127,7 @@ function mapDispatchToProps(dispatch) {
     return {};
 }
 
-export default connect(
+export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(InstructorCourses);
+)(InstructorCourses));

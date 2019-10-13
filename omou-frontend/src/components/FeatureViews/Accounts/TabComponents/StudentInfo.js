@@ -13,8 +13,7 @@ import {ReactComponent as IDIcon} from "../../../identifier.svg";
 import "../Accounts.scss";
 import Avatar from "@material-ui/core/Avatar";
 import {withRouter} from "react-router-dom";
-import {stringToColor} from "../stringToColor";
-import {addDashes} from "../addDashes";
+import {addDashes, stringToColor} from "../accountUtils";
 
 
 class StudentInfo extends Component {
@@ -45,13 +44,13 @@ class StudentInfo extends Component {
                 {this.state.student.map((student) =>
                     <Grid item xs={12} md={6} className="ProfileCard" key={student.user_id}>
                         <Card
-                            // onClick={() => {
-                            //     this.props.history.push(`/accounts/student/${student.user_id}`);
-                            // }}
+                            onClick={() => {
+                                this.props.history.push(`/accounts/student/${student.user_id}`);
+                            }}
                             key={student.user_id}
-                            // style={{
-                            //     "cursor": "pointer",
-                            // }}
+                            style={{
+                                "cursor": "pointer",
+                            }}
                         >
                             <Grid container>
                                 <Grid component={Hidden} xsDown item xs={6}>

@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import React, { Component } from "react";
 import BackButton from "../../BackButton";
 import Grid from "@material-ui/core/Grid";
-import { Card, Paper, Typography } from "@material-ui/core";
+import { Paper, Typography } from "@material-ui/core";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import ListView from "@material-ui/icons/ViewList";
@@ -12,14 +12,11 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
-import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
-import CardActions from "@material-ui/core/CardActions";
 import { withRouter } from "react-router-dom";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import { NavLink } from "react-router-dom";
-import {stringToColor} from "./stringToColor";
-
+import {stringToColor, addDashes} from "./accountUtils";
 
 import "./Accounts.scss";
 import Avatar from "@material-ui/core/Avatar";
@@ -58,7 +55,7 @@ class Accounts extends Component {
         }
     }
     resize() {
-        let currentHideNav = (window.innerWidth <= 800);
+        const currentHideNav = (window.innerWidth <= 800);
         if (currentHideNav !== this.state.mobileView) {
             this.setState({ mobileView: !this.state.mobileView });
         }
@@ -157,12 +154,14 @@ class Accounts extends Component {
                             <TableCell>{row.email}</TableCell>
                             <TableCell>{this.addDashes(row.phone_number)}</TableCell>
                             <TableCell>{row.role.charAt(0).toUpperCase() + row.role.slice(1)}</TableCell>
-                            <TableCell>
+                            <TableCell onClick={(event) => {
+                                event.stopPropagation();
+                            }}>
                                 <Grid component={Hidden} mdDown align="right">
                                     <Button
                                         className="editButton"
                                         component={NavLink}
-                                        to={"asd"}>
+                                        to={`/registration/form/${row.role}/${row.user_id}/edit`}>
                                         <EditIcon />
                                         Edit Profile
                                     </Button>
@@ -171,7 +170,7 @@ class Accounts extends Component {
                                     <Button
                                         className="editButton"
                                         component={NavLink}
-                                        to={"asd"}>
+                                        to={`/registration/form/${row.role}/${row.user_id}/edit`}>
                                         <EditIcon />
                                     </Button>
                                 </Grid>
@@ -197,7 +196,7 @@ class Accounts extends Component {
                 <hr />
                 <Typography variant="h2" align={"left"} className={"heading"}>Accounts</Typography>
                 <Grid container direction={"row"} alignItems={"center"}>
-                    <Grid item xs={11} sm={11} md={11}>
+                    <Grid item xs={11}>
                         <Tabs
                             value={this.state.value}
                             onChange={this.handleChange}
