@@ -13,6 +13,7 @@ import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
 import Button from "@material-ui/core/Button";
 import { NavLink } from "react-router-dom";
+import {addDashes} from "./addDashes";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import './Accounts.scss';
 
@@ -21,16 +22,6 @@ class ProfileHeading extends Component {
         super(props);
         this.state = {
         };
-    }
-
-    addDashes(string) {
-        if (string.length == 10 && string.match(/^[0-9]+$/) != null) {
-            return (
-                `(${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 15)})`);
-        }
-        else {
-            return ("error");
-        }
     }
 
     iconScaling() {
@@ -42,7 +33,6 @@ class ProfileHeading extends Component {
 
     renderStudentProfile() {
         return (
-            <Grid container>
                 <Grid item xs={12} md={12}>
                     <Grid container>
                         <Grid item xs={1} md={1} className="rowPadding">
@@ -74,7 +64,7 @@ class ProfileHeading extends Component {
                         </Grid>
                         <Grid item xs={5} md={5} className="rowPadding">
                             <Typography className="rowText">
-                                {this.addDashes(this.props.user.phone_number)}
+                                {addDashes(this.props.user.phone_number)}
                             </Typography>
                         </Grid>
                         <Grid item xs={1} md={1} className="rowPadding">
@@ -94,13 +84,11 @@ class ProfileHeading extends Component {
                             </Typography>
                         </Grid>
                     </Grid>
-                </Grid>
-            </Grid>);
+                </Grid>);
     }
 
     renderTeacherProfile() {
         return (
-            <Grid container>
                 <Grid item md={12}>
                     <Grid container>
                         <Grid item md={1} className="rowPadding">
@@ -117,7 +105,7 @@ class ProfileHeading extends Component {
                             </Grid>
                             <Grid item md={11} className="rowPadding">
                                 <Typography className="rowText">
-                                    {this.addDashes(this.props.user.phone_number)}
+                                    {addDashes(this.props.user.phone_number)}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -132,14 +120,11 @@ class ProfileHeading extends Component {
                             </Typography>
                         </Grid>
                     </Grid>
-                </Grid>
-
-            </Grid>);
+                </Grid>);
     }
 
     renderParentProfile() {
         return (
-            <Grid container>
                 <Grid item xs={12} md={12}>
                     <Grid container>
                         <Grid item xs={1} md={1} className="rowPadding">
@@ -163,7 +148,7 @@ class ProfileHeading extends Component {
                         </Grid>
                         <Grid item xs={5} md={5} className="rowPadding">
                             <Typography className="rowText">
-                                {this.addDashes(this.props.user.phone_number)}
+                                {addDashes(this.props.user.phone_number)}
                             </Typography>
                         </Grid>
                         <Grid item xs={6} md={6} className="rowPadding">
@@ -179,8 +164,7 @@ class ProfileHeading extends Component {
                         <Grid item xs={6} md={6} className="rowPadding">
                         </Grid>
                     </Grid>
-                </Grid>
-            </Grid>);
+                </Grid>);
     }
 
     renderEditButton() {

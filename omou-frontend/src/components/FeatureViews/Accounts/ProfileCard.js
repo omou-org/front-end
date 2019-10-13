@@ -22,6 +22,9 @@ import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 
 import { ReactComponent as IDIcon } from "../../identifier.svg";
+import {stringToColor} from "./stringToColor";
+import {addDashes} from "./addDashes";
+
 import './Accounts.scss';
 
 import Avatar from "@material-ui/core/Avatar";
@@ -40,37 +43,14 @@ class ProfileCard extends Component {
 
     }
 
-    addDashes(string) {
-        return(
-             `(${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 15)})`);
-    }
-
     goToRoute(route) {
         this.props.history.push(this.props.match.url + route);
     }
-    stringToColor(string) {
-        let hash = 0;
-        let i;
-
-        /* eslint-disable no-bitwise */
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
-        }
-
-        let colour = "#";
-
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            colour += `00${value.toString(16)}`.substr(-2);
-        }
-        /* eslint-enable no-bitwise */
-
-        return colour;
-    }
+    
 
     render() {
         const styles = (username) => ({
-            "backgroundColor": this.stringToColor(username),
+            "backgroundColor": stringToColor(username),
             "color": "white",
             "width": "7vw",
             "height": "7vw",
@@ -119,7 +99,7 @@ class ProfileCard extends Component {
                                                 <PhoneIcon />
                                             </Grid>
                                             <Grid item xs={8} md={10} align="left">
-                                                {this.addDashes(this.props.user.phone_number)}
+                                                {addDashes(this.props.user.phone_number)}
                                             </Grid>
                                         </Grid>
                                         <Grid container>

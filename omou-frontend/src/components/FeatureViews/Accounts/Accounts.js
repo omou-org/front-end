@@ -17,11 +17,15 @@ import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
 import { withRouter } from "react-router-dom";
 import EditIcon from "@material-ui/icons/EditOutlined";
+import { NavLink } from "react-router-dom";
+import {stringToColor} from "./stringToColor";
+
 
 import "./Accounts.scss";
 import Avatar from "@material-ui/core/Avatar";
 import ProfileCard from "./ProfileCard";
 import Grow from "@material-ui/core/Grow";
+import Hidden from "@material-ui/core/es/Hidden/Hidden";
 
 class Accounts extends Component {
     constructor(props) {
@@ -54,7 +58,7 @@ class Accounts extends Component {
         }
     }
     resize() {
-        let currentHideNav = (window.innerWidth <= 760);
+        let currentHideNav = (window.innerWidth <= 800);
         if (currentHideNav !== this.state.mobileView) {
             this.setState({ mobileView: !this.state.mobileView });
         }
@@ -66,7 +70,7 @@ class Accounts extends Component {
 
     handleChange(e, newTabIndex) {
         e.preventDefault();
-        let newUsersList = [];
+        let newUsersList = []; 
         let usersList = {};
         Object.assign(usersList, this.props.parents);
         Object.assign(usersList, this.props.students);
@@ -98,39 +102,20 @@ class Accounts extends Component {
         );
     }
 
-    stringToColor(string) {
-        let hash = 0;
-        let i;
-
-        /* eslint-disable no-bitwise */
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
-        }
-
-        let colour = "#";
-
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            colour += `00${value.toString(16)}`.substr(-2);
-        }
-        /* eslint-enable no-bitwise */
-
-        return colour;
-    }
-
     addDashes(string) {
-        if(string.length==10&&string.match(/^[0-9]+$/) != null){
-        return (
-            `(${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 15)})`);
+        if (string.length == 10 && string.match(/^[0-9]+$/) != null) {
+            return (
+                `(${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 15)})`);
         }
-        else{
-            return("error");
+        else {
+            return ("error");
         }
     }
 
     render() {
+        console.log(this.state.mobileView)
         let styles = (username) => ({
-            backgroundColor: this.stringToColor(username),
+            backgroundColor: stringToColor(username),
             color: "white",
             margin: 9,
             width: 38,
@@ -158,11 +143,11 @@ class Accounts extends Component {
                             className="row">
                             <TableCell component="th" scope="row">
                                 <Grid container layout={"row"} alignItems={"center"}>
-                                    <Grid item md={4}>
+                                    <Grid item md={12} lg={4}>
                                         <Avatar
                                             style={styles(row.name)}>{row.name.match(/\b(\w)/g).join("")}</Avatar>
                                     </Grid>
-                                    <Grid item md={8}>
+                                    <Grid item md={4} lg={8}>
                                         <Typography>
                                             {row.name}
                                         </Typography>
@@ -173,13 +158,23 @@ class Accounts extends Component {
                             <TableCell>{this.addDashes(row.phone_number)}</TableCell>
                             <TableCell>{row.role.charAt(0).toUpperCase() + row.role.slice(1)}</TableCell>
                             <TableCell>
-                                <Grid align="right" className="editPadding">
-                                <Button
-                                    className="editButton">
-                                    <EditIcon />
-                                    Edit Profile
-                                </Button>
-                            </Grid>
+                                <Grid component={Hidden} mdDown align="right">
+                                    <Button
+                                        className="editButton"
+                                        component={NavLink}
+                                        to={"asd"}>
+                                        <EditIcon />
+                                        Edit Profile
+                                    </Button>
+                                </Grid>
+                                <Grid component={Hidden} lgUp align="right">
+                                    <Button
+                                        className="editButton"
+                                        component={NavLink}
+                                        to={"asd"}>
+                                        <EditIcon />
+                                    </Button>
+                                </Grid>
                             </TableCell>
                         </TableRow>
                     ))}
@@ -202,7 +197,7 @@ class Accounts extends Component {
                 <hr />
                 <Typography variant="h2" align={"left"} className={"heading"}>Accounts</Typography>
                 <Grid container direction={"row"} alignItems={"center"}>
-                    <Grid item xs={11} md={11}>
+                    <Grid item xs={11} sm={11} md={11}>
                         <Tabs
                             value={this.state.value}
                             onChange={this.handleChange}

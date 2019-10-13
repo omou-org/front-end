@@ -13,6 +13,9 @@ import {ReactComponent as IDIcon} from "../../../identifier.svg";
 import "../Accounts.scss";
 import Avatar from "@material-ui/core/Avatar";
 import {withRouter} from "react-router-dom";
+import {stringToColor} from "../stringToColor";
+import {addDashes} from "../addDashes";
+
 
 class StudentInfo extends Component {
     constructor(props) {
@@ -23,38 +26,13 @@ class StudentInfo extends Component {
         };
     }
 
-    addDashes(string) {
-        return (
-            `(${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 15)})`);
-    }
-
-    stringToColor(string) {
-        let hash = 0;
-        let i;
-
-        /* eslint-disable no-bitwise */
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
-        }
-
-        let colour = "#";
-
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            colour += `00${value.toString(16)}`.substr(-2);
-        }
-        /* eslint-enable no-bitwise */
-
-        return colour;
-    }
-
     goToRoute(route) {
         this.props.history.push(route);
     }
 
     render() {
         const styles = (username) => ({
-            "backgroundColor": this.stringToColor(username),
+            "backgroundColor": stringToColor(username),
             "color": "white",
             "width": "7vw",
             "height": "7vw",
@@ -63,7 +41,7 @@ class StudentInfo extends Component {
         });
 
         return (
-            <Grid container spacing={40} alignItems="center" direction="row" item xs={14}>
+            <Grid container spacing={40} alignItems="center" direction="row" item xs={10}>
                 {this.state.student.map((student) =>
                     <Grid item xs={12} md={6} className="ProfileCard" key={student.user_id}>
                         <Card
@@ -76,13 +54,13 @@ class StudentInfo extends Component {
                             // }}
                         >
                             <Grid container>
-                                <Grid component={Hidden} xsDown item xs={4} md={4}>
+                                <Grid component={Hidden} xsDown item xs={6}>
                                     <Avatar
                                         style={styles(student.name)}>
                                         {student.name.match(/\b(\w)/g).join("")}
                                     </Avatar>
                                 </Grid>
-                                <Grid item xs={8}>
+                                <Grid item xs={6}>
                                     <CardContent className="text">
                                         <Typography gutterBottom variant="h6" component="h2" align="left">
                                             {student.name}
@@ -95,28 +73,28 @@ class StudentInfo extends Component {
                                             />
                                         </Typography>
                                         <Typography>
-                                            <Grid item xs={16} style={{"marginTop": 10}}>
+                                            <Grid item xs={8} style={{"marginTop": 10}}>
                                                 <Grid container>
-                                                    <Grid item xs={4} md={2} align="left">
+                                                    <Grid item xs={6} md={3} align="left">
                                                         <IDIcon
                                                             width={22}
                                                             height={22} />
                                                     </Grid>
-                                                    <Grid item xs={8} md={10} align="left">
+                                                    <Grid item xs={6} md={9} align="left">
                                                         #{student.user_id}
                                                     </Grid>
-                                                    <Grid item xs={4} md={2} align="left">
+                                                    <Grid item xs={6} md={3} align="left">
                                                         <PhoneIcon />
                                                     </Grid>
-                                                    <Grid item xs={8} md={10} align="left">
-                                                        {this.addDashes(student.phone_number)}
+                                                    <Grid item xs={6} md={9} align="left">
+                                                        {addDashes(student.phone_number)}
                                                     </Grid>
                                                 </Grid>
                                                 <Grid container>
-                                                    <Grid item xs={4} md={2} align="left">
+                                                    <Grid item xs={6} md={3} align="left">
                                                         <EmailIcon />
                                                     </Grid>
-                                                    <Grid item xs={8} md={10} align="left">
+                                                    <Grid item xs={6} md={9} align="left">
                                                         {student.email}
                                                     </Grid>
                                                 </Grid>
