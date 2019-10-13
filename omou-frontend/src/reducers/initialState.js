@@ -3762,39 +3762,31 @@ function initRequests() {
         "admin": {
             [GET]: {},
             [PATCH]: {},
-            [POST]: {},
         },
         "course": {
             [GET]: {},
             [PATCH]: {},
-            [POST]: {},
         },
         "category": {
             [GET]: {},
             [PATCH]: {},
-            [POST]: {},
         },
         "instructor": {
             [GET]: {},
             [PATCH]: {},
-            [POST]: {},
         },
         "parent": {
             [GET]: {},
             [PATCH]: {},
-            [POST]: {},
         },
         "student": {
             [GET]: {},
             [PATCH]: {},
-            [POST]: {},
         },
         "schedule": {
             [GET]: {},
             [PATCH]: {},
-            [POST]: {},
         },
-        "login": null,
     };
 }
 

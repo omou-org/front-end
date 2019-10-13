@@ -35,23 +35,11 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import {POST, PATCH} from "../../actions/actionTypes";
 
 const parseGender = {
     "M": "Male",
     "F": "Female",
     "U": "Do not disclose",
-};
-
-const parseGenderForSubmit = {
-    "Male": "M",
-    "Female": "F",
-    "Do not disclose": "U",
-};
-
-const parseBirthday = (date) => {
-    const [month, day, year] = date.split("/");
-    return `${year}-${month}-${day}`;
 };
 
 class Form extends Component {
@@ -329,51 +317,9 @@ class Form extends Component {
                 if (oldState.activeStep === this.getFormObject().section_titles.length - 1) {
                     if (!oldState.submitPending) {
                         if (this.props.computedMatch.params.edit === "edit") {
-                            switch (this.state.form) {
-                                case "instructor":
-                                    this.props.userActions.patchInstructor(this.props.computedMatch.params.id, {
-                                        "user": {
-                                            "email": this.state["Basic Information"]["E-Mail"],
-                                            "password": "password123",
-                                            "first_name": this.state["Basic Information"]["First Name"],
-                                            "last_name": this.state["Basic Information"]["Last Name"],
-                                        },
-                                        "gender": parseGenderForSubmit[this.state["Basic Information"]["Gender"]],
-                                        "address": this.state["Basic Information"]["Address"],
-                                        "city": this.state["Basic Information"]["City"],
-                                        "state": "CA",
-                                        "phone_number": this.state["Basic Information"]["Phone Number"],
-                                        "zipcode": this.state["Basic Information"]["Zip Code"],
-                                        "age": 21,
-                                        "birth_date": parseBirthday(this.state["Basic Information"]["Date of Birth"]),
-                                    });
-                                    break;
-                                default:
-                                    this.props.registrationActions.submitForm(this.state);
-                            }
+                            this.props.registrationActions.submitForm(this.state, this.props.computedMatch.params.id);
                         } else {
-                            switch (this.state.form) {
-                                // case "instructor":
-                                //     this.props.userActions.postInstructor({
-                                //         "user": {
-                                //             "email": this.state["Basic Information"]["E-Mail"],
-                                //             "password": "password123",
-                                //             "first_name": this.state["Basic Information"]["First Name"],
-                                //             "last_name": this.state["Basic Information"]["Last Name"],
-                                //         },
-                                //         "gender": parseGender[this.state["Basic Information"]["Gender"]],
-                                //         "address": this.state["Basic Information"]["Address"],
-                                //         "city": this.state["Basic Information"]["City"],
-                                //         "state": "CA",
-                                //         "phone_number": this.state["Basic Information"]["Phone Number"],
-                                //         "zipcode": this.state["Basic Information"]["Zip Code"],
-                                //         "age": 21,
-                                //         "birth_date": parseBirthday(this.state["Basic Information"]["Date of Birth"]),
-                                //     });
-                                //     break;
-                                default:
-                                    this.props.registrationActions.submitForm(this.state);
-                            }
+                            this.props.registrationActions.submitForm(this.state);
                         }
                     }
                     return {
@@ -919,7 +865,7 @@ class Form extends Component {
                                     {sectionTitle}
                                 </Typography>
                                 {
-                                    this.getActiveSection().map(({field, type}) => {
+                                    this.getFormObject()[sectionTitle].map(({field, type}) => {
                                         let fieldVal = this.state[sectionTitle][field];
                                         if (fieldVal && fieldVal.hasOwnProperty("value")) {
                                             fieldVal = fieldVal.value;
