@@ -61,7 +61,6 @@ class Accounts extends Component {
     }
 
     goToRoute(route) {
-        console.log(route);
         this.props.history.push(route);
     }
 
