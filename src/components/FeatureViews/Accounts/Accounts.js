@@ -61,7 +61,7 @@ class Accounts extends Component {
     }
 
     goToRoute(route) {
-        this.props.history.push(this.props.match.url + route);
+        this.props.history.push(route);
     }
 
     handleChange(e, newTabIndex) {

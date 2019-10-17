@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import React, {useState} from "react";
-import {connect} from "react-redux";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -19,9 +18,6 @@ import CardContent from "@material-ui/core/CardContent";
 import ForwardArrow from "@material-ui/icons/ArrowForward";
 import Hidden from "@material-ui/core/Hidden";
 
-import CourseList from "./CourseList";
-import TutoringList from "./TutoringList";
-
 const trimString = (string, maxLen) => {
     if (string.length > maxLen) {
         return `${string.slice(0, maxLen - 3).trim()}...`;
@@ -31,13 +27,22 @@ const trimString = (string, maxLen) => {
 };
 
 const RegistrationLanding = (props) => {
+    const [courses, setCourses] = useState(
+        Object.keys(props.courses).filter(
+            (courseID) => props.courses[courseID].type === "C"
+        ),
+    );
     const [anchorEl, setAnchorEl] = useState("");
     const [view, setView] = useState(0);
-    const [courseFilters, setCourseFilters] = useState({
+    const [filter, setFilter] = useState({
         "instructor": [],
         "grade": [],
         "subject": [],
     });
+
+    const goToRoute = (route) => {
+        props.history.push(props.match.url + route);
+    };
 
     const handleFilterClick = (event) => {
         event.preventDefault();
@@ -50,8 +55,29 @@ const RegistrationLanding = (props) => {
     };
 
     const handleFilterChange = (filters, filterType) => {
-        setCourseFilters({
-            ...courseFilters,
+        setCourses(filters
+            ? Object.keys(props.courses).filter((courseID) => {
+                const course = props.courses[courseID];
+                switch (filterType) {
+                    case "instructor":
+                        return filters
+                            .map(({value}) => value)
+                            .includes(course.instructor_id);
+                    case "subject":
+                        return filters
+                            .map(({value}) => value)
+                            .includes(course.subject);
+                    case "grade":
+                        return filters
+                            .map(({value}) => value)
+                            .includes(course.grade);
+                    default:
+                        return true;
+                }
+            })
+            : Object.keys(props.courses));
+        setFilter({
+            ...filter,
             [filterType]: filters ? filters : [],
         });
     };
@@ -71,6 +97,7 @@ const RegistrationLanding = (props) => {
                 options = [
                     {"label": "Math", "value": "Math"},
                     {"label": "Science", "value": "Science"},
+                    {"label": "Sat", "value": "Sat"},
                 ];
                 break;
             case "grade":
@@ -105,7 +132,7 @@ const RegistrationLanding = (props) => {
                 "cursor": "pointer",
                 "color": state.isFocused ? "blue" : "black",
             }),
-            "option": (base) => ({
+            "option": (base, state) => ({
                 ...base,
                 "textAlign": "left",
             }),
@@ -125,28 +152,154 @@ const RegistrationLanding = (props) => {
         />;
     };
 
-    let filteredCourses = Object.values(props.courses);
-    Object.entries(courseFilters)
-        .filter(([, filters]) => filters.length > 0)
-        .forEach(([filterName, filters]) => {
-            const mappedValues = filters.map(({value}) => value);
-            switch (filterName) {
-                case "instructor":
-                    filteredCourses = filteredCourses.filter(({instructor_id}) =>
-                        mappedValues.includes(instructor_id));
-                    break;
-                case "subject":
-                    filteredCourses = filteredCourses.filter(({subject}) =>
-                        mappedValues.includes(subject));
-                    break;
-                case "grade":
-                    filteredCourses = filteredCourses.filter(({grade}) =>
-                        mappedValues.includes(grade));
-                    break;
-                default:
-                    console.warn(`Unhandled filter ${filterName}`);
+    const renderCourses = () => courses.map((courseID) => {
+        let course = props.courses[courseID],
+            start_date = new Date(course.schedule.start_date),
+            end_date = new Date(course.schedule.end_date),
+            start_time = course.schedule.start_time.substr(1),
+            end_time = course.schedule.end_time.substr(1),
+            days = course.schedule.days.map((day) => weekday[day].substr(0, 3));
+        start_date = start_date.toDateString().substr(3);
+        end_date = end_date.toDateString().substr(3);
+        const date = `${start_date} - ${end_date}`,
+            time = `${start_time} - ${end_time}`;
+        return (
+            <Paper className="row" key={courseID}>
+                <Grid container alignItems="center" layout="row">
+                    <Grid
+                        item
+                        md={3} xs={12}
+                        onClick={(event) => {
+                            event.preventDefault();
+                            goToRoute(`/course/${course.course_id}`);
+                        }}
+                        style={{"textDecoration": "none", "cursor": "pointer"}}>
+                        <Typography className="course-heading" align="left">
+                            {course.title}
+                        </Typography>
+                    </Grid>
+                    <Grid
+                        item
+                        md={5} xs={12}
+                        onClick={(event) => {
+                            event.preventDefault();
+                            goToRoute(`/course/${course.course_id}`);
+                        }}
+                        style={{"textDecoration": "none", "cursor": "pointer"}}>
+                        <Grid
+                            container className="course-detail">
+                            <Grid
+                                item
+                                md={4} xs={3}
+                                className="heading-det"
+                                align="left">
+                                Date
+                            </Grid>
+                            <Grid
+                                item
+                                md={8} xs={9}
+                                className="value"
+                                align="left">
+                                {date} | {days} {time}
+                            </Grid>
+                        </Grid>
+                        <Grid container className="course-detail">
+                            <Grid
+                                item
+                                md={4} xs={3}
+                                className="heading-det"
+                                align="left">
+                                Instructor
+                            </Grid>
+                            <Grid item md={8} xs={9}
+                                className="value"
+                                align="left">
+                                {props.instructors[course.instructor_id].name}
+                            </Grid>
+                        </Grid>
+                        <Grid container className="course-detail">
+                            <Grid
+                                item
+                                md={4} xs={3}
+                                className="heading-det"
+                                align="left">
+                                Tuition
+                            </Grid>
+                            <Grid
+                                item
+                                md={8} xs={9}
+                                className="value"
+                                align="left">
+                                ${course.tuition}
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Paper>
+        );
+    });
+
+    const renderTutoring = () => {
+        const coursesPerRow = 3;
+        const coursesSplit = [[]];
+        courses.forEach((course) => {
+            if (coursesSplit[coursesSplit.length - 1].length === coursesPerRow) {
+                coursesSplit.push([course]);
+            } else {
+                coursesSplit[coursesSplit.length - 1].push(course);
             }
         });
+        return (
+            <Grid container spacing={8} alignItems="center" direction="row">
+                {
+                    courses.map((courseID) => {
+                        const course = props.courses[courseID];
+                        return (
+                            <Grid
+                                item
+                                xs={12} sm={6} md={4}
+                                key={courseID}
+                                onClick={() => {
+                                    goToRoute(`/form/tutoring/${courseID}`);
+                                }}
+                                alignItems="center">
+                                <Card className="tutoring-card">
+                                    <Grid container>
+                                        <Grid
+                                            item
+                                            xs={11}
+                                            component={CardContent}
+                                            align="left">
+                                            {trimString(course.title, 20)}
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={1}
+                                            align="center"
+                                            component={ForwardArrow}
+                                            style={{
+                                                "display": "inline",
+                                                "margin": "auto 0",
+                                            }} />
+                                    </Grid>
+                                </Card>
+                            </Grid>
+                        );
+                    })
+                }
+            </Grid>
+        );
+    };
+
+    const weekday = {
+        "0": "Sunday",
+        "1": "Monday",
+        "2": "Tuesday",
+        "3": "Wednesday",
+        "4": "Thursday",
+        "5": "Friday",
+        "6": "Saturday",
+    };
 
     return (
         <Grid container>
@@ -163,26 +316,6 @@ const RegistrationLanding = (props) => {
                                 Registration Catalog
                             </Typography>
                         </Grid>
-                        <Grid item md={5} xs={12} className="catalog-setting-wrapper">
-                            <Tabs value={view} className="catalog-setting">
-                                <Tab label="Courses" onClick={() => {
-                                    setView(0);
-                                }} />
-                                <Tab label="Tutoring" onClick={() => {
-                                    setView(1);
-                                }} />
-                            </Tabs>
-                        </Grid>
-                        {/* <Grid item md={1} alignContent="space-between" style={{
-                            "margin": "auto 0",
-                        }}>
-                            <FilterIcon
-                                style={{"cursor": "pointer"}}
-                                onClick={(event) => {
-                                    handleFilterClick(event);
-                                }}
-                            />
-                        </Grid> */}
                     </Grid>
                     <Grid container layout="row" spacing={8}>
                         <Grid item xs={12} md={4}>
@@ -198,14 +331,7 @@ const RegistrationLanding = (props) => {
                         </Hidden>
                     </Grid>
                     <div className="registration-table">
-                        {
-                            view === 0 &&
-                            <CourseList filteredCourses={filteredCourses} />
-                        }
-                        {
-                            view === 1 &&
-                            <TutoringList filteredCourses={filteredCourses} />
-                        }
+                        {renderCourses()}
                     </div>
                 </Paper>
             </Grid>
@@ -213,14 +339,10 @@ const RegistrationLanding = (props) => {
     );
 };
 
-const mapStateToProps = (state) => ({
-    "courses": state.Course["NewCourseList"],
-    "instructors": state.Users["InstructorList"],
-});
+RegistrationLanding.propTypes = {
+    "stuffActions": PropTypes.object,
+    "RegistrationForms": PropTypes.array,
+};
 
-const mapDispatchToProps = () => ({});
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(RegistrationLanding);
+export default withRouter(RegistrationLanding);

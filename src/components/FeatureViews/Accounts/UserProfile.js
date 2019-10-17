@@ -169,6 +169,7 @@ class UserProfile extends Component {
                     onChange={this.handleChange}
                     indicatorColor="primary"
                     textColor="primary"
+                    variant={'scrollable'}
                 >
                     {this.state.tabs.map((tab) => {
                         return <Tab

@@ -28,31 +28,31 @@ class ProfileHeading extends Component {
             <Grid container>
                 <Grid item md={10}>
                     <Grid container>
-                        <Grid item md={6} className="rowPadding">
+                        <Grid item xs={6}  className="rowPadding">
                             {this.props.user.birthday}
                         </Grid>
-                        <Grid item md={1} className="rowPadding">
+                        <Grid item xs={1}  className="rowPadding">
                             <IDIcon height={24} width={24} />
                         </Grid>
-                        <Grid item md={5} className="rowPadding">
+                        <Grid item xs={5}  className="rowPadding">
                             #{this.props.user.user_id}
                         </Grid>
-                        <Grid item md={6} className="rowPadding">
+                        <Grid item xs={6}  className="rowPadding">
                             Grade {this.props.user.grade}
                         </Grid>
-                        <Grid item md={1} className="rowPadding">
+                        <Grid item xs={1}  className="rowPadding">
                             <PhoneIcon />
                         </Grid>
-                        <Grid item md={5} className="rowPadding">
+                        <Grid item xs={5}  className="rowPadding">
                             {this.addDashes(this.props.user.phone_number)}
                         </Grid>
-                        <Grid item md={6} className="rowPadding">
+                        <Grid item xs={6}  className="rowPadding">
                             {this.props.user.school}
                         </Grid>
-                        <Grid item md={1} className="rowPadding">
+                        <Grid item xs={1}  className="rowPadding">
                             <EmailIcon />
                         </Grid>
-                        <Grid item md={5} className="rowPadding">
+                        <Grid item xs={5}  className="rowPadding">
                             {this.props.user.email}
                         </Grid>
                     </Grid>
@@ -99,7 +99,7 @@ class ProfileHeading extends Component {
                 <Grid item xs={1} className="rowPadding">
                     <IDIcon height={24} width={24} />
                 </Grid>
-                <Grid item ={5} className="rowPadding">
+                <Grid item xs={5} className="rowPadding">
                     #{this.props.user.user_id}
                 </Grid>
                 <Grid item md={1} className="rowPadding">
