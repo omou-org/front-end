@@ -1,4 +1,5 @@
 import {combineReducers} from "redux";
+import RequestStatus from "./apiReducer";
 import Registration from "./registrationReducer";
 import auth from "./authReducer";
 import Course from "./courseReducer";
@@ -8,6 +9,7 @@ import Enrollments from "./enrollmentReducer";
 import Payments from "./paymentsReducer";
 
 const rootReducer = combineReducers({
+    RequestStatus,
     Registration,
     auth,
     Course,

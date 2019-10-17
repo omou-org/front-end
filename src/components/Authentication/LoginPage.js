@@ -1,21 +1,23 @@
-import React, {useEffect, useState} from "react";
 import * as authActions from "../../actions/authActions.js";
-import {connect} from "react-redux";
+import {REQUEST_STARTED} from "../../actions/apiActions";
 import {bindActionCreators} from "redux";
-import {withRouter} from "react-router";
+import {connect} from "react-redux";
+import {Redirect} from "react-router-dom";
 import PropTypes from "prop-types";
+import React, {useEffect, useState} from "react";
 
-// Material UI Imports
-import Grid from "@material-ui/core/Grid";
+
+// material UI Imports
 import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
-import {Typography} from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
 
 import "./LoginPage.scss";
 
-function LoginPage(props) {
+const LoginPage = (props) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [savePassword, setSavePassword] = useState(false);
@@ -39,21 +41,27 @@ function LoginPage(props) {
         };
     });
 
+    const failedLogin = props.requestStatus.login &&
+        props.requestStatus.login !== REQUEST_STARTED &&
+        (props.requestStatus.login < 200 || props.requestStatus.login > 200);
+
     if (props.auth.token) {
-        props.history.push("/accounts");
+        return <Redirect to="/" />;
     }
 
     return (
         <Grid
-            container
-            spacing={0}
-            direction="column"
             alignItems="center"
+            container
+            direction="column"
             justify="center"
+            spacing={0}
             style={{
-                minHeight: "100vh",
+                "minHeight": "100vh",
             }}>
-            <Grid item xs={3}>
+            <Grid
+                item
+                xs={3}>
                 <Paper className="bg">
                     <Typography
                         align="center"
@@ -66,30 +74,30 @@ function LoginPage(props) {
                         login();
                     }}>
                         <TextField
-                            error={props.auth.failedLogin || emailEmpty}
-                            label="E-Mail"
                             className="email"
+                            error={failedLogin || emailEmpty}
+                            label="E-Mail"
                             margin="dense"
-                            value={email}
                             onChange={(event) => {
                                 handleTextInput(setEmail, setEmailEmpty, event);
                             }}
-                        />
+                            value={email} />
                         <TextField
+                            autoComplete="current-password"
+                            className="password"
+                            error={failedLogin || passwordEmpty}
                             id="standard-password-input"
                             label="Password"
-                            className="password"
-                            type="password"
-                            autoComplete="current-password"
                             margin="normal"
-                            value={password}
-                            error={props.auth.failedLogin || passwordEmpty}
                             onChange={(event) => {
                                 handleTextInput(setPassword, setPasswordEmpty, event);
                             }}
-                        />
+                            type="password"
+                            value={password} />
                         <Grid container>
-                            <Grid item className="remember">
+                            <Grid
+                                className="remember"
+                                item>
                                 <label>
                                     <Checkbox
                                         checked={savePassword}
@@ -100,23 +108,25 @@ function LoginPage(props) {
                                 </label>
                             </Grid>
                             <Grid item>
-                                <Button color="secondary" className="forgot">
+                                <Button
+                                    className="forgot"
+                                    color="secondary">
                                     <span className="forgotText">Forgot Password?</span>
                                 </Button>
                             </Grid>
                         </Grid>
                         <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
                             className="button signIn"
+                            color="primary"
                             disabled={!email || !password}
-                            onClick={login}>
+                            onClick={login}
+                            type="submit"
+                            variant="contained">
                             sign in
                         </Button>
                     </form>
                     {
-                        props.auth.failedLogin &&
+                        failedLogin &&
                         <Typography color="error">
                             Invalid credentials
                         </Typography>
@@ -125,24 +135,23 @@ function LoginPage(props) {
             </Grid>
         </Grid>
     );
-}
+};
 
 LoginPage.propTypes = {
     "auth": PropTypes.shape({
-        "failedLogin": PropTypes.bool,
         "token": PropTypes.string,
     }),
     "authActions": PropTypes.shape({
         "login": PropTypes.func,
         "resetAttemptStatus": PropTypes.func,
     }),
-    "history": PropTypes.shape({
-        "push": PropTypes.func,
-    }),
-    "setLogin": PropTypes.func,
+    "setLogin": PropTypes.func.isRequired,
 };
 
-const mapStateToProps = ({auth}) => ({auth});
+const mapStateToProps = ({auth, RequestStatus}) => ({
+    auth,
+    "requestStatus": RequestStatus,
+});
 
 const mapDispatchToProps = (dispatch) => ({
     "authActions": bindActionCreators(authActions, dispatch),
@@ -151,4 +160,4 @@ const mapDispatchToProps = (dispatch) => ({
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(withRouter(LoginPage));
+)(LoginPage);
