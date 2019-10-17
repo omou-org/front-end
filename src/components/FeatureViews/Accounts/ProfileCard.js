@@ -46,7 +46,7 @@ class ProfileCard extends Component {
     }
 
     goToRoute(route) {
-        this.props.history.push(this.props.match.url + route);
+        this.props.history.push(route);
     }
     stringToColor(string) {
         let hash = 0;
