@@ -3757,7 +3757,13 @@ export default {
     "RequestStatus": initRequests(),
     "SearchResults":{
         accounts:[
-
+            {
+                first_name: "",
+                last_name: "",
+                role: "",
+                id: "",
+                email: "",
+            }
         ],
         sessions:[
 
