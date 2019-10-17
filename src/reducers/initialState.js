@@ -3755,6 +3755,17 @@ export default {
         ],
     },
     "RequestStatus": initRequests(),
+    "SearchResults":{
+        accounts:[
+
+        ],
+        sessions:[
+
+        ],
+        courses:[
+
+        ],
+    }
 };
 
 function initRequests() {
