@@ -37,6 +37,11 @@ function rootRoutes(props) {
                 path="/login"
                 render={(passedProps) => <LoginPage setLogin={props.setLogin} {...passedProps} />} />
 
+            <Route
+                exact
+                path="/"
+                render={(passedProps) => <Accounts {...passedProps} />} />
+
             {/* Main Feature Views */}
             {/* Registration Routes */}
             <Route
@@ -50,18 +55,8 @@ function rootRoutes(props) {
                 render={(passedProps) => <CourseCategory {...passedProps} />}/>
             <Route
                 exact
-                path="/front-end"
-                render={(passedProps) => <Accounts {...passedProps} />} />
-            <Route
-                exact
-                path="/"
-                render={(passedProps) => <Accounts {...passedProps} />} />
-            <Route
-                exact
                 path="/registration"
                 render={(passedProps) => <Registration {...passedProps} />} />
-
-            render={(passedProps) => <Registration {...passedProps} />}/>
 
             <Route
                 exact
@@ -72,16 +67,17 @@ function rootRoutes(props) {
             {/* Accounts */}
             <Route
                 exact
+                path="/accounts"
+                render={(passedProps) => <Accounts {...passedProps} />} />
+
+            <Route
+                exact
                 path="/:accountType/:accountID"
                 render={(passedProps) => <UserProfile {...passedProps} />} />
             <Route
                 exact
                 path="/parents/:parentID/pay"
                 render={(passedProps) => <ParentPayment {...passedProps} />}/>
-            {/*<Route*/}
-            {/*    exact*/}
-            {/*    path="/accounts"*/}
-            {/*    render={(passedProps) => <Accounts {...passedProps} />} />*/}
             <Route
                 exact
                 path="/:accountType/:accountID/:courseID"

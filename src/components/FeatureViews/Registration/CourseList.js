@@ -96,7 +96,7 @@ const CourseList = (props) => props.filteredCourses.map((course) => {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid
+                {/* <Grid
                     item
                     md={4} xs={12}
                     className="course-action">
@@ -124,7 +124,7 @@ const CourseList = (props) => props.filteredCourses.map((course) => {
                                 className="button primary">+ REGISTER</Button>
                         </Grid>
                     </Grid>
-                </Grid>
+                </Grid> */}
             </Grid>
         </Paper>
     );

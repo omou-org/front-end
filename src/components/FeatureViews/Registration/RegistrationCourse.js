@@ -151,6 +151,25 @@ const RegistrationCourse = (props) => {
                     <a href={`mailto:${parent.email}`}>
                         <EmailIcon />
                     </a>
+                    <span>
+                        <EditIcon />
+                    </span>
+                    <span>
+                        {expanded[student_id]
+                            ? <UpArrow onClick={() => {
+                                setExpanded({
+                                    ...expanded,
+                                    [student_id]: false,
+                                });
+                            }} />
+                            : <DownArrow onClick={() => {
+                                setExpanded({
+                                    ...expanded,
+                                    [student_id]: true,
+                                });
+                            }} />
+                        }
+                    </span>
                 </div>
             ),
             {
@@ -172,7 +191,7 @@ const RegistrationCourse = (props) => {
                     <Grid item sm={3}>
                         <BackButton />
                     </Grid>
-                    <Grid item sm={2}>
+                    {/* <Grid item sm={2}>
                         <Button
                             className="button"
                             style={{
@@ -182,7 +201,7 @@ const RegistrationCourse = (props) => {
                             <EditIcon style={{"fontSize": "16px"}} />
                             Edit Course
                         </Button>
-                    </Grid>
+                    </Grid> */}
                 </Grid>
                 <Divider className="top-divider" />
                 <div className="course-heading">
@@ -251,57 +270,55 @@ const RegistrationCourse = (props) => {
                         valueBuffer={100}
                         variant="buffer" />
                 </div>
-                <div style={{overflow:'auto'}}>
-                     <Table>
-                        <TableToolbar />
-                        <TableBody>
-                            {
-                                rows.map((row, i) => (
-                                    <Fragment key={i}>
-                                        <TableRow>
-                                            {
-                                                row.slice(0, 5).map((data, j) => (
-                                                    <TableCell
-                                                        key={j}
-                                                        className={j === 0 ? "bold" : ""}>
-                                                        {data}
-                                                    </TableCell>
-                                                ))
-                                            }
-                                        </TableRow>
+                <Table>
+                    <TableToolbar />
+                    <TableBody>
+                        {
+                            rows.map((row, i) => (
+                                <Fragment key={i}>
+                                    <TableRow>
                                         {
-                                            expanded[course.roster[i]] &&
-                                            <TableRow align="left">
-                                                <TableCell component={Typography} style={{
-                                                    "padding": "10px 0 10px 20px",
-                                                }}>
-                                                    <span style={{"padding": "5px"}}>
-                                                        <b>School</b>: {
-                                                            row[5].student.school
-                                                        }
-                                                        <br />
-                                                    </span>
-                                                    <span style={{"padding": "5px"}}>
-                                                        <b>School Teacher</b>: {
-                                                            row[5].notes["Current Instructor in School"]
-                                                        }
-                                                        <br />
-                                                    </span>
-                                                    <span style={{"padding": "5px"}}>
-                                                        <b>Textbook:</b> {
-                                                            row[5].notes["Textbook Used"]
-                                                        }
-                                                        <br />
-                                                    </span>
+                                            row.slice(0, 5).map((data, j) => (
+                                                <TableCell
+                                                    key={j}
+                                                    className={j === 0 ? "bold" : ""}>
+                                                    {data}
                                                 </TableCell>
-                                            </TableRow>
+                                            ))
                                         }
-                                    </Fragment>
-                                ))
-                            }
-                        </TableBody>
+                                    </TableRow>
+                                    {
+                                        expanded[course.roster[i]] &&
+                                        <TableRow align="left">
+                                            <TableCell component={Typography} style={{
+                                                "padding": "10px 0 10px 20px",
+                                            }}>
+                                                <span style={{"padding": "5px"}}>
+                                                    <b>School</b>: {
+                                                        row[5].student.school
+                                                    }
+                                                    <br />
+                                                </span>
+                                                <span style={{"padding": "5px"}}>
+                                                    <b>School Teacher</b>: {
+                                                        row[5].notes["Current Instructor in School"]
+                                                    }
+                                                    <br />
+                                                </span>
+                                                <span style={{"padding": "5px"}}>
+                                                    <b>Textbook:</b> {
+                                                        row[5].notes["Textbook Used"]
+                                                    }
+                                                    <br />
+                                                </span>
+                                            </TableCell>
+                                        </TableRow>
+                                    }
+                                </Fragment>
+                            ))
+                        }
+                    </TableBody>
                 </Table>
-                </div>
             </Paper>
         </Grid>
     );

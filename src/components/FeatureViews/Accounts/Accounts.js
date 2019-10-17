@@ -2,7 +2,7 @@ import {connect} from "react-redux";
 import React, {Component} from "react";
 import BackButton from "../../BackButton";
 import Grid from "@material-ui/core/Grid";
-import {Card, Hidden, Paper, Typography} from "@material-ui/core";
+import {Card, Paper, Typography} from "@material-ui/core";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import ListView from "@material-ui/icons/ViewList";
@@ -38,7 +38,7 @@ class Accounts extends Component {
         let prevState = JSON.parse(sessionStorage.getItem('AccountsState'));
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
-        if(prevState){
+        if (prevState) {
             this.setState(prevState);
 
         } else {
@@ -48,15 +48,14 @@ class Accounts extends Component {
                 Object.assign(usersList, this.props.students);
                 Object.assign(usersList, this.props.instructors);
                 Object.assign(usersList, this.props.receptionist);
-                return {usersList: usersList,}
+                return {usersList: usersList, }
             });
         }
     }
-
     resize() {
         let currentHideNav = (window.innerWidth <= 760);
         if (currentHideNav !== this.state.mobileView) {
-            this.setState({ mobileView: !this.state.mobileView });
+            this.setState({mobileView: !this.state.mobileView});
         }
     }
 
@@ -92,7 +91,7 @@ class Accounts extends Component {
                 newUsersList = usersList;
         }
         this.setState({value: newTabIndex, usersList: newUsersList},
-            ()=>{
+            () => {
                 sessionStorage.setItem('AccountsState', JSON.stringify(this.state));
             }
         );
@@ -120,20 +119,19 @@ class Accounts extends Component {
 
     render() {
         let styles = (username) => ({
-                backgroundColor: this.stringToColor(username),
-                color: "white",
-                width: 38,
-                height: 38,
-                fontSize: 14,
-            });
+            backgroundColor: this.stringToColor(username),
+            color: "white",
+            margin: 9,
+            width: 38,
+            height: 38,
+            fontSize: 14,
+        });
         let tableView = () => (
             <Table className="AccountsTable">
                 <TableHead>
                     <TableRow>
                         <TableCell>Name</TableCell>
-                        <Hidden mdDown>
-                            <TableCell>Email</TableCell>
-                        </Hidden>
+                        <TableCell>Email</TableCell>
                         <TableCell>Phone</TableCell>
                         <TableCell>Role</TableCell>
                     </TableRow>
@@ -159,9 +157,7 @@ class Accounts extends Component {
                                     </Grid>
                                 </Grid>
                             </TableCell>
-                            <Hidden mdDown>
-                                <TableCell>{row.email}</TableCell>
-                            </Hidden>
+                            <TableCell>{row.email}</TableCell>
                             <TableCell>{row.phone_number}</TableCell>
                             <TableCell>{row.role.charAt(0).toUpperCase() + row.role.slice(1)}</TableCell>
                         </TableRow>
@@ -172,17 +168,17 @@ class Accounts extends Component {
 
         const cardView = () => {
             return <Grow in={true}>
-                <Grid container xs={12} md={12} spacing={8} alignItems={'center'} direction={'row'} style={{marginTop:20}}>
+                <Grid container xs={12} md={10} spacing={8} alignItems={'center'} direction={'row'} style={{marginTop: 20}}>
                     {Object.values(this.state.usersList).map((user) => (
-                        <ProfileCard user={user} key={user.user_id}/>))}
+                        <ProfileCard user={user} key={user.user_id} />))}
                 </Grid>
             </Grow>
         };
 
         return (<Grid item xs={12} className="Accounts">
             <Paper className={"paper"}>
-                <BackButton/>
-                <hr/>
+                <BackButton />
+                <hr />
                 <Typography variant="h2" align={"left"} className={"heading"}>Accounts</Typography>
                 <Grid container direction={"row"} alignItems={"center"}>
                     <Grid item xs={12} md={10}>
@@ -194,34 +190,35 @@ class Accounts extends Component {
                             textColor="primary"
                             className={"tabs"}
                         >
-                            <Tab label="ALL"/>
-                            <Tab label="INSTRUCTORS"/>
-                            <Tab label="STUDENTS"/>
-                            <Tab label="RECEPTIONISTS"/>
-                            <Tab label="PARENTS"/>
+                            <Tab label="ALL" />
+                            <Tab label="INSTRUCTORS" />
+                            <Tab label="STUDENTS" />
+                            <Tab label="RECEPTIONISTS" />
+                            <Tab label="PARENTS" />
                         </Tabs>
                     </Grid>
                     {
-                        this.state.mobileView ? '' :
-                        <Grid item xs={2} className="toggleView">
-                            <ListView className={`list icon ${this.state.viewToggle ? 'active':''}`} onClick={(event) => {
-                                event.preventDefault();
-                                this.setState({viewToggle: true},
-                                    ()=>{sessionStorage.setItem('AccountsState',JSON.stringify(this.state));});
-                            }}/>
-                            <CardView className={`card icon ${this.state.viewToggle ? '':'active'}`} onClick={(event) => {
-                                event.preventDefault();
-                                this.setState({viewToggle: false},
-                                    ()=>{sessionStorage.setItem('AccountsState',JSON.stringify(this.state));});
-                            }}/>
-                        </Grid>
+                        this.state.mobileView ?
+                            '' :
+                            <Grid item xs={2} className="toggleView">
+                                <ListView className={`list icon ${this.state.viewToggle ? 'active' : ''}`} onClick={(event) => {
+                                    event.preventDefault();
+                                    this.setState({viewToggle: true},
+                                        () => {sessionStorage.setItem('AccountsState', JSON.stringify(this.state));});
+                                }} />
+                                <CardView className={`card icon ${this.state.viewToggle ? '' : 'active'}`} onClick={(event) => {
+                                    event.preventDefault();
+                                    this.setState({viewToggle: false},
+                                        () => {sessionStorage.setItem('AccountsState', JSON.stringify(this.state));});
+                                }} />
+                            </Grid>
                     }
                 </Grid>
                 <Grid container
-                      direction={"row"}
-                      alignItems={"center"}
-                      spacing={8}
-                      className={'accounts-list-wrapper'}
+                    direction={"row"}
+                    alignItems={"center"}
+                    spacing={8}
+                    className={'accounts-list-wrapper'}
                 >
                     {
                         this.state.mobileView ?
