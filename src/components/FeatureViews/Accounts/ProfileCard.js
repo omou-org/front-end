@@ -85,7 +85,7 @@ class ProfileCard extends Component {
                                     />
                                 </Typography>
                                 <Typography>
-                                    <Grid item xs={8} style={{ marginTop: 10 }}>
+                                    <Grid item xs={12} style={{ marginTop: 10}}>
                                         <Grid container>
                                             <Grid item xs={4} md={2} align="left">
                                                 <IDIcon

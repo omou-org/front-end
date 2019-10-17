@@ -2843,6 +2843,7 @@ export default {
                     1: {
                         timestamp: "2020-01-02T12:05",
                         body: "wants to take bio",
+                        subject: "asd",
                         important: false,
                         complete: false,
                         active: true,
@@ -2850,6 +2851,7 @@ export default {
                     2: {
                         timestamp: "2020-01-10T13:11",
                         body: "sister is interested in taking 7th grade english",
+                        subject: "wee woo",
                         important: true,
                         complete: false,
                         active: true,
@@ -2881,6 +2883,7 @@ export default {
                     1: {
                         timestamp: "2020-01-13T17:33",
                         body: "Needs PSAT practice problems",
+                        subject: "wee woo",
                         complete: false,
                         important: true,
                         active: true,
@@ -2912,6 +2915,7 @@ export default {
                     1: {
                         timestamp: "2020-01-12T15:21",
                         body: "grade bio worksheet",
+                        subject: "wee woo",
                         important: true,
                         active: true,
                         complete: false,

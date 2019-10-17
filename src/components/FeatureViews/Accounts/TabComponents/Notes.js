@@ -10,6 +10,7 @@ import Modal from "@material-ui/core/Modal";
 import Button from "@material-ui/core/Button";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import DoneIcon from "@material-ui/icons/CheckCircleOutlined";
+import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import AddIcon from "@material-ui/icons/AddOutlined";
 import InputBase from '@material-ui/core/InputBase';
 import TextField from '@material-ui/core/TextField';
@@ -20,7 +21,8 @@ class Notes extends Component {
         this.state = {
             notes: [],
             alert: false,
-            noteBody:"",
+            noteBody: "",
+            notication: false,
         };
     }
 
@@ -68,12 +70,25 @@ class Notes extends Component {
         console.log(this.state.notes);
         let iconStyle = {
             fontSize: "16px",
-            align: "right"
+            align: "right",
         }
-        let popup= {
-              minHeight: 381,
-              minWidth: 381,
-          };
+        let notificationColor
+        if (this.state.notification) {
+            notificationColor = {
+                color: "red",
+                cursor: "pointer",
+            }
+        }
+        else {
+            notificationColor = {
+                color: "grey",
+                cursor: "pointer",
+            }
+        }
+        let popup = {
+            minHeight: 381,
+            minWidth: 381,
+        };
         let numericDateString = (date) => {
             let DateObject = new Date(date),
                 numericOptions = {
@@ -104,38 +119,60 @@ class Notes extends Component {
                         aria-labelledby="simple-modal-title"
                         aria-describedby="simple-modal-description"
                         open={this.state.alert}
+                        className="popup"
                     >
                         <div className="exit-popup" style={popup}>
                             <Grid>
-                            <TextField
-                                id="standard-name"
-                                label="Subject"
-                                className="textfield"
-                                margin="normal"
-                            />
+                                <TextField
+                                    id="standard-name"
+                                    label="Subject"
+                                    className="textfield"
+                                    margin="normal"
+                                />
+                                <NotificationIcon
+                                    className={"notification"}
+                                    style={notificationColor}
+                                    onClick={() => {
+                                        this.state.notification = !this.state.notification;
+                                        this.forceUpdate();
+                                    }}
+                                />
                             </Grid>
                             <Grid>
-                            <InputBase
-                                defaultValue={this.state.noteBody}
-                                multiline
-                                inputProps={{ 'aria-label': 'naked' }}
-                            />
+                                <InputBase
+                                    defaultValue={this.state.noteBody}
+                                    multiline
+                                    rows={10}
+                                    variant="filled"
+                                    margin="normal"
+                                    required={true}
+                                    className="textfield"
+                                    inputProps={{ 'aria-label': 'naked' }}
+                                />
                             </Grid>
-                            <Button>
-                                Delete
+                            <div className="popUpActions">
+                                <Button>
+                                    Delete
                             </Button>
-                            <Button onClick={this.hideWarning.bind(this)}>
-                                Cancel
+                                <Button onClick={this.hideWarning.bind(this)}>
+                                    Cancel
                             </Button>
-                            <Button>
-                                Save
+                                <Button>
+                                    Save
                             </Button>
+                            </div>
                         </div>
                     </Modal>
                 </Grid>
                 {this.state.notes.map((note, i) => {
                     return <Grid item xs={3} key={i}>
                         <Paper className={"note"}>
+                            <Grid>
+                                <Typography className={"header"} align={'left'}>
+                                    {note.body}
+                                </Typography>
+                                <NotificationIcon/>
+                            </Grid>
                             <Typography className={"body"} align={'left'}>
                                 {note.body}
                             </Typography>
@@ -144,9 +181,9 @@ class Notes extends Component {
                             </Typography>
                             <div className={"actions"}>
                                 <EditIcon style={iconStyle}
-                                onClick={() => {
-                                    this.handleClick(note.body);
-                                }}
+                                    onClick={() => {
+                                        this.handleClick(note.body);
+                                    }}
                                 />
                                 <DoneIcon style={iconStyle} />
                             </div>

@@ -72,7 +72,7 @@ class StudentInfo extends Component {
                                             />
                                         </Typography>
                                         <Typography>
-                                            <Grid item xs={8} style={{"marginTop": 10}}>
+                                            <Grid item xs={8} md={12} style={{"marginTop": 10}}>
                                                 <Grid container>
                                                     <Grid item xs={6} md={3} align="left">
                                                         <IDIcon

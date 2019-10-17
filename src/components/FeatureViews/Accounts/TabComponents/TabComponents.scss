@@ -21,6 +21,11 @@
       opacity: 1;
     }
   }
+  
+  .header{
+    font-size: 1.2em;
+    font-weight:bold;
+  }
 
   .body {
     font-size: 1.2em;
@@ -38,14 +43,34 @@
   height: 250px;
   position: relative;
   padding: 7%;
-  background: #F5F5F5;
+  background: #f5f5f5;
   border: 1.5px solid #999999;
   border-style: dashed;
-  .center{
-    margin-top:35%;
+  .center {
+    margin-top: 35%;
   }
-  .exit-popup{
-    width:100%;
+}
+.popup {
+  .popUpActions {
+    position: absolute;
+    bottom: 5%;
+  }
+  .exit-popup {
+    padding-top:0%;
+    .textfield{
+      width:80%;
+      text-align: left;
+    }
+    .notification{
+      margin-top: 7%;
+      right: 10%;
+      font-size: 40px;
+      position:absolute;
+    }
+    .bodyfield{
+      width:100%;
+      text-align: left;
+    }
   }
 }
 
