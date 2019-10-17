@@ -24,7 +24,8 @@ class CourseViewer extends Component {
         });
     }
 
-    goToRoute(route){
+    goToRoute(route) {
+        console.log(this.props)
         this.props.history.push(this.props.match.url+route);
     }
 

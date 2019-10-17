@@ -72,7 +72,7 @@ const formatPhone = (phone) => phone &&
     `${phone.slice(0, 3)}-${phone.slice(3, 6)}-${phone.slice(6, 15)}`;
 
 const RegistrationCourse = (props) => {
-    const course = props.courses[props.match.params.courseID];
+    const course = props.courses[props.computedMatch.params.courseID];
     const [expanded, setExpanded] = useState(
         course.roster.reduce((object, studentID) =>
             ({...object, [studentID]: false})), {}
