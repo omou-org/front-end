@@ -13,7 +13,7 @@ export const REQUEST_SUCCESS = 2;
 export const REQUEST_FAILED = 3;
 
 export const wrapGet = (endpoint, [startType, successType, failType], id) =>
-    (dispatch, getState) => {
+    async (dispatch, getState) => {
         // creates a new action based on the response given
         const newAction = (type, response) => {
             dispatch({
@@ -28,58 +28,88 @@ export const wrapGet = (endpoint, [startType, successType, failType], id) =>
         // request starting
         newAction(startType, {});
 
-        return instance
-            .get(endpoint, {
+        const requestURL = id ? `${endpoint}${id}/` : endpoint;
+
+        try {
+            const response = await instance.get(requestURL, {
                 "headers": {
                     "Authorization": `Token ${getState().auth.token}`,
-                }
-            })
-            .then((response) => {
-                // succesful request
-                newAction(successType, response);
-            })
-            .catch((error) => {
-                // failed request
-                newAction(failType, error.response);
+                },
             });
+            // succesful request
+            newAction(successType, response);
+        } catch ({response}) {
+            // failed request
+            newAction(failType, response);
+        }
     };
 
 export const wrapPost = (endpoint, [startType, successType, failType], data) =>
-    (dispatch, getState) => {
+    async (dispatch, getState) => {
         // creates a new action based on the response given
         const newAction = (type, response) => {
             dispatch({
                 type,
-                "payload": response,
+                "payload": {
+                    response,
+                },
             });
         };
 
         // request starting
         newAction(startType, {});
 
-        return instance
-            .post(endpoint, data, {
+        try {
+            const response = await instance.post(endpoint, data, {
                 "headers": {
                     "Authorization": `Token ${getState().auth.token}`,
                 },
-            })
-            .then((response) => {
-                // succesful request
-                newAction(successType, response);
-            })
-            .catch((error) => {
-                // failed request
-                newAction(failType, error.response);
             });
+            // succesful request
+            newAction(successType, response);
+        } catch ({response}) {
+            // failed request
+            newAction(failType, response);
+        }
+    };
+
+export const wrapPatch = (endpoint, [startType, successType, failType], id, data) =>
+    async (dispatch, getState) => {
+        // creates a new action based on the response given
+        const newAction = (type, response) => {
+            dispatch({
+                type,
+                "payload": {
+                    id,
+                    response,
+                },
+            });
+        };
+
+        // request starting
+        newAction(startType, {});
+
+        try {
+            const response = await instance.patch(`${endpoint}${id}/`, data, {
+                "headers": {
+                    "Authorization": `Token ${getState().auth.token}`,
+                },
+            });
+            // succesful request
+            newAction(successType, response);
+        } catch ({response}) {
+            // failed request
+            newAction(failType, response);
+        }
     };
 
 export const fetchCourses = (id) =>
     wrapGet(
         "/courses/catalog/",
         [
-            types.FETCH_COURSES_STARTED,
-            types.FETCH_COURSES_SUCCESSFUL,
-            types.FETCH_COURSES_FAILED,
+            types.FETCH_COURSE_STARTED,
+            types.FETCH_COURSE_SUCCESSFUL,
+            types.FETCH_COURSE_FAILED,
         ],
         id,
     );
@@ -88,9 +118,9 @@ export const fetchInstructors = (id) =>
     wrapGet(
         "/account/instructor/",
         [
-            types.FETCH_INSTRUCTORS_STARTED,
-            types.FETCH_INSTRUCTORS_SUCCESSFUL,
-            types.FETCH_INSTRUCTORS_FAILED,
+            types.FETCH_INSTRUCTOR_STARTED,
+            types.FETCH_INSTRUCTOR_SUCCESSFUL,
+            types.FETCH_INSTRUCTOR_FAILED,
         ],
         id,
     );

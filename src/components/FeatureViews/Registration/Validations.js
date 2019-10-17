@@ -1,6 +1,6 @@
-/*Validations for various text inputs*/
+/* validations for various text inputs*/
 
-export let InputValidation = (input, type) => {
+export const InputValidation = (input, type) => {
     switch (type) {
         case "number":
             return NumberValidation(input);
@@ -21,37 +21,28 @@ export let InputValidation = (input, type) => {
     }
 };
 
-// Simple Numbers (i.e. grade, age, etc.)
-export let NumberValidation = (input) => {
-    return !!String(input).match(/^[0-9]{1,5}$/);
-};
+// simple Numbers (i.e. grade, age, etc.)
+export const NumberValidation = (input) =>
+    Boolean(String(input).match(/^[0-9]{1,5}$/));
 
-let PhoneValidation = (input) => {
-    return !!input.match(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})$/);
-};
+const PhoneValidation = (input) =>
+    Boolean(input.match(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})$/));
 
-let EmailValidation = (input) => {
-    return !!input.match(/^(?:[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/);
-};
+const EmailValidation = (input) =>
+    Boolean(input.match(/^(?:[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/));
 
-// Short input fields (i.e. name, school, city etc.)
-let ShortTextValidation = (input) => {
-    return !!input.match(/([A-Za-z ]+)(" ")?([A-Za-z ]+)?(" ")?([A-Za-z ]+)?$/);
-};
+// short input fields (i.e. name, school, city etc.)
+const ShortTextValidation = (input) =>
+    Boolean(input.match(/([A-Za-z ]+)(" ")?([A-Za-z ]+)?(" ")?([A-Za-z ]+)?$/));
 
-// Address
-let AddressValidation = (input) => {
-    // Old regex /\d{1,5}\s\w\s(\b\w*\b\s){1,2}?.\w*/
-    return !!input.match(/\d+[ ](?:[A-Za-z0-9.-]+[ ]?)+/);
+// address
+const AddressValidation = (input) =>
+    Boolean(input.match(/\d+[ ](?:[A-Za-z0-9.-]+[ ]?)+/));
 
-};
+// zip Code
+const ZipCodeValidation = (input) =>
+    Boolean(input.match(/^\d{5}(?:[-\s]\d{4})?$/));
 
-// Zip Code
-let ZipCodeValidation = (input) => {
-    return !!input.match(/^\d{5}(?:[-\s]\d{4})?$/)
-}
-
-// Birthday format to MM/DD/YYYY
-let BirthdayValidation = (input) => {
-    return !!input.match(/^((0|1)\d{1})\/((0|1|2)\d{1})\/((19|20)\d{2})/)
-}
+// birthday format to MM/DD/YYYY
+const BirthdayValidation = (input) =>
+    Boolean(input.match(/^((0|1)\d{1})\/((0|1|2|3)\d{1})\/((19|20)\d{2})/));

@@ -4,7 +4,7 @@ import {REQUEST_ALL} from "../actions/apiActions";
 
 export default (state = initialState.Course, {payload, type}) => {
     switch (type) {
-        case actions.FETCH_COURSES_SUCCESSFUL:
+        case actions.FETCH_COURSE_SUCCESSFUL:
             return handleCoursesFetch(state, payload);
         default:
             return state;
