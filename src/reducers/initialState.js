@@ -3444,13 +3444,13 @@ function initRequests() {
     };
 
     return {
-        "admin": {...baseSettings},
-        "course": {...baseSettings},
-        "category": {...baseSettings},
-        "instructor": {...baseSettings},
-        "parent": {...baseSettings},
-        "student": {...baseSettings},
-        "schedule": {...baseSettings},
+        "admin": JSON.parse(JSON.stringify(baseSettings)),
+        "course": JSON.parse(JSON.stringify(baseSettings)),
+        "category": JSON.parse(JSON.stringify(baseSettings)),
+        "instructor": JSON.parse(JSON.stringify(baseSettings)),
+        "parent": JSON.parse(JSON.stringify(baseSettings)),
+        "student": JSON.parse(JSON.stringify(baseSettings)),
+        "schedule": JSON.parse(JSON.stringify(baseSettings)),
         "login": null,
     };
 }

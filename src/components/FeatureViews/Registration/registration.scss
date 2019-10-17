@@ -215,6 +215,10 @@
   }
 }
 
+.exit-popup, .parent-options {
+  width: 33vw;
+  left: 33vw;
+}
 
 @keyframes fade-in {
   0% {
@@ -359,6 +363,26 @@
 
 .search-options {
   width: 50%;
+}
+
+.parent-options {
+  left: 0;
+  width: 100%;
+}
+
+.parent-select-button:hover {
+  background-color: $primaryDarkColor!important;
+}
+
+.parent-selected {
+  background-color: $primaryLightColor!important;
+  border: 2px solid $primaryColor!important;
+  color: $primaryFontColor;
+  border-radius: 5px;
+}
+
+.parent-selected:hover {
+  background-color: $primaryColor!important;
 }
 
 .button-remove-student {

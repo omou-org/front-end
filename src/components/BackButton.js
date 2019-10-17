@@ -74,7 +74,9 @@ class BackButton extends Component {
                     aria-describedby="simple-modal-description"
                     open={this.state.alert}
                     onClick={this.hideWarning.bind(this)}>
-                    <div className="exit-popup">
+                    <div className="exit-popup" onClick={(event) => {
+                        event.stopPropagation();
+                    }}>
                         <Typography variant="h6" id="modal-title">
                             {this.props.alertMessage || "Are you sure you want to leave unsaved changes?"}
                         </Typography>
