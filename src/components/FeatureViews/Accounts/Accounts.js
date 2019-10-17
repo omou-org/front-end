@@ -17,9 +17,9 @@ import { withRouter } from "react-router-dom";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import { NavLink } from "react-router-dom";
 import {stringToColor, addDashes} from "./accountUtils";
+import AvatarUtil from "./AvatarUtil";
 
 import "./Accounts.scss";
-import Avatar from "@material-ui/core/Avatar";
 import ProfileCard from "./ProfileCard";
 import Grow from "@material-ui/core/Grow";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
@@ -99,26 +99,8 @@ class Accounts extends Component {
         );
     }
 
-    addDashes(string) {
-        if (string.length == 10 && string.match(/^[0-9]+$/) != null) {
-            return (
-                `(${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 15)})`);
-        }
-        else {
-            return ("error");
-        }
-    }
-
     render() {
         console.log(this.state.mobileView)
-        let styles = (username) => ({
-            backgroundColor: stringToColor(username),
-            color: "white",
-            margin: 9,
-            width: 38,
-            height: 38,
-            fontSize: 14,
-        });
         let tableView = () => (
             <Table className="AccountsTable">
                 <TableHead>
@@ -141,8 +123,13 @@ class Accounts extends Component {
                             <TableCell component="th" scope="row">
                                 <Grid container layout={"row"} alignItems={"center"}>
                                     <Grid item md={12} lg={4}>
-                                        <Avatar
-                                            style={styles(row.name)}>{row.name.match(/\b(\w)/g).join("")}</Avatar>
+                                        <AvatarUtil
+                                         profilename={row.name}
+                                         margin={9}
+                                         width={38}
+                                         height={38}
+                                         fontSize={14}
+                                        />
                                     </Grid>
                                     <Grid item md={4} lg={8}>
                                         <Typography>
@@ -152,7 +139,7 @@ class Accounts extends Component {
                                 </Grid>
                             </TableCell>
                             <TableCell>{row.email}</TableCell>
-                            <TableCell>{this.addDashes(row.phone_number)}</TableCell>
+                            <TableCell>{addDashes(row.phone_number)}</TableCell>
                             <TableCell>{row.role.charAt(0).toUpperCase() + row.role.slice(1)}</TableCell>
                             <TableCell onClick={(event) => {
                                 event.stopPropagation();
