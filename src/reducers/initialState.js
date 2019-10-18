@@ -1,4 +1,4 @@
-import {GET, PATCH, POST} from "../actions/actionTypes";
+import { GET, PATCH, POST } from "../actions/actionTypes";
 
 export default {
     "Authentication": initAuth(),
@@ -3368,6 +3368,379 @@ export default {
                 },
             },
         },
+        "NewInstructorList": {
+            10: {
+                user_id: 10,
+                name: "Daniel Huang",
+                email: "daniel.huang@gmail.com",
+                role: 'instructor',
+                phone_number: "1234458989",
+                background: {
+                    bio: "Daniel graduated from UCLA as an Economics major in 2018. He now works full time as a " +
+                        "Cyber Security Consultant. Daniel grew up in Pleasanton and went to high school at " +
+                        "Amador Valley High School. He is skilled in math and sciences.",
+                    experience: 2,
+                    subjects: ["Middle School Biology", "AP Calculus"],
+                    languages: ["English", "Mandarin"],
+                },
+                birthday: "3/13/1974",
+                schedule: {
+                    work_hours: {
+                        1: {
+                            resourceId: "10",
+                            title: "Monday class",
+                            daysOfWeek: [1],
+                            startTime: "07:00",
+                            endTime: "19:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+
+                        },
+                        2: {
+                            resourceId: "10",
+                            title: "Tuesday class",
+                            daysOfWeek: [2],
+                            startTime: "07:00",
+                            endTime: "19:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                        3: {
+                            resourceId: "10",
+                            title: "Wednesday class",
+                            daysOfWeek: [3],
+                            startTime: "07:00",
+                            endTime: "19:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                        4: {
+                            resourceId: "10",
+                            title: "Thrusday class",
+                            daysOfWeek: [4],
+                            startTime: "07:00",
+                            endTime: "19:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                        5: {
+                            resourceId: "10",
+                            title: "Friday class 5",
+                            daysOfWeek: [5],
+                            startTime: "07:00",
+                            endTime: "19:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                        6: {
+                            resourceId: "10",
+                            title: "Saturday class",
+                            daysOfWeek: [6],
+                            startTime: "07:00",
+                            endTime: "19:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                    },
+                    time_off: {
+                        1: {
+                            start: "2020-01-14T00:00",
+                            end: "2020-01-21T00:00",
+                            title: "Daniel Time Off",
+                        },
+                        2: {
+                            start: "2020-03-22T00:00",
+                            end: "2020-03-22T00:00",
+                            title: "Daniel Time Off",
+                        },
+                    },
+                },
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T13:00",
+                        body: "Needs past AP CS multiple choice exams",
+                        complete: false,
+                        important: true,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T15:02",
+                        body: "Needs x things copied for his 2pm class on tuesdays",
+                        complete: false,
+                        important: true,
+                        active: true,
+                    },
+                },
+            },
+            11: {
+                user_id: 11,
+                name: "Jerry Li",
+                email: "jerrylinew@gmail.com",
+                role: 'instructor',
+                phone_number: "1234458923",
+                background: {
+                    bio: "Jerry graduated from UCLA as an Computer Science major in 2018. He now works full time as a " +
+                        "Data Engineer at Robinhood. Jerry grew up in Pleasanton and went to high school at " +
+                        "Amador Valley High School. He is skilled in math and sciences.",
+                    experience: 2,
+                    subjects: ["Middle School Competitive Math", "AP Calculus AB and BC"],
+                    languages: ["English", "Mandarin"],
+                },
+                birthday: "9/24/1974",
+                schedule: {
+                    work_hours: {
+                        1: {
+                            resourceId: "11",
+                            title: "Monday class",
+                            daysOfWeek: [1],
+                            startTime: "09:00",
+                            endTime: "17:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+
+                        },
+                        2: {
+                            resourceId: "11",
+                            title: "Tuesday class",
+                            daysOfWeek: [2],
+                            startTime: "09:00",
+                            endTime: "17:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                        3: {
+                            resourceId: "11",
+                            title: "Wednesday class",
+                            daysOfWeek: [3],
+                            startTime: "09:00",
+                            endTime: "17:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                        4: {
+                            resourceId: "11",
+                            title: "Thrusday class",
+                            daysOfWeek: [4],
+                            startTime: "09:00",
+                            endTime: "17:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                        5: {
+                            resourceId: "11",
+                            title: "Friday class 5",
+                            daysOfWeek: [5],
+                            startTime: "09:00",
+                            endTime: "17:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                        6: {
+                            resourceId: "11",
+                            title: "Saturday class",
+                            daysOfWeek: [6],
+                            startTime: "09:00",
+                            endTime: "17:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                    },
+                    time_off: {
+                        1: {
+                            start: "2020-02-10T00:00",
+                            end: "2020-02-21T00:00",
+                            title: "Jerry Time Off",
+                        },
+                    },
+                },
+                notes: {
+                    1: {
+                        timestamp: "2020-01-07T13:32",
+                        body: "Print January Timesheet for Jerry",
+                        complete: false,
+                        important: true,
+                        active: true,
+                    },
+                },
+            },
+            12: {
+                user_id: 12,
+                name: "Albert Deng",
+                email: "albert@omou.com",
+                role: 'instructor',
+                phone_number: "1234538989",
+                background: {
+                    bio: "Albert graduated from UCLA as an Economics major in 2016. He now works full time as a " +
+                        "Consultant at PwC. Albert grew up in San Jose and went to high school at " +
+                        "Lynbrook High School. He is skilled in math and sciences.",
+                    experience: 2,
+                    subjects: ["Middle School Physics", "AP Calculus", "AP Statistics"],
+                    languages: ["English", "Mandarin"],
+                },
+                birthday: "10/28/1974",
+                schedule: {
+                    work_hours: {
+                        1: {
+                            resourceId: "12",
+                            title: "Monday class",
+                            daysOfWeek: [1],
+                            startTime: "10:00",
+                            endTime: "20:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+
+                        },
+                        2: {
+                            resourceId: "12",
+                            title: "Tuesday class",
+                            daysOfWeek: [2],
+                            startTime: "10:00",
+                            endTime: "20:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                        3: {
+                            resourceId: "12",
+                            title: "Wednesday class",
+                            daysOfWeek: [3],
+                            startTime: "10:00",
+                            endTime: "20:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                        4: {
+                            resourceId: "12",
+                            title: "Thrusday class",
+                            daysOfWeek: [4],
+                            startTime: "10:00",
+                            endTime: "20:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                        5: {
+                            resourceId: "12",
+                            title: "Friday class 5",
+                            daysOfWeek: [5],
+                            startTime: "10:00",
+                            endTime: "20:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                        6: {
+                            resourceId: "12",
+                            title: "Saturday class",
+                            daysOfWeek: [6],
+                            startTime: "10:00",
+                            endTime: "20:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+
+                        },
+                    },
+                    time_off: {},
+                },
+                notes: {
+                    1: {
+                        timestamp: "2020-01-04T17:12",
+                        body: "Remind Albert to fill out timesheet",
+                        complete: true,
+                        active: true,
+                        important: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-04T17:16",
+                        body: "Print worksheets for Albert's bio 1x1",
+                        complete: false,
+                        active: true,
+                        important: true,
+                    },
+                },
+            },
+            13: {
+                user_id: 13,
+                name: "Katie Ho",
+                email: "katie@omou.com",
+                role: 'instructor',
+                phone_number: "1299458989",
+                background: {
+                    bio: "Katie graduated from UCLA as an Economics major in 2017. She now works full time as a " +
+                        "Category Specialist at Walmart. Katie grew up in Arizon and went to high school at " +
+                        "XXX. She is skilled in math and sciences.",
+                    experience: 2,
+                    subjects: ["Middle School Math", "AP Calculus"],
+                    languages: ["English", "Mandarin"],
+                },
+                birthday: "10/3/1975",
+                schedule: {
+                    work_hours: {
+                        1: {
+                            resourceId: "13",
+                            title: "Monday class",
+                            daysOfWeek: [1],
+                            startTime: "12:00",
+                            endTime: "20:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+
+                        },
+                        2: {
+                            resourceId: "13",
+                            title: "Tuesday class",
+                            daysOfWeek: [2],
+                            startTime: "12:00",
+                            endTime: "20:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                        3: {
+                            resourceId: "13",
+                            title: "Wednesday class",
+                            daysOfWeek: [3],
+                            startTime: "12:00",
+                            endTime: "20:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                        4: {
+                            resourceId: "13",
+                            title: "Thrusday class",
+                            daysOfWeek: [4],
+                            startTime: "12:00",
+                            endTime: "20:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                        5: {
+                            resourceId: "13",
+                            title: "Friday class 5",
+                            daysOfWeek: [5],
+                            startTime: "12:00",
+                            endTime: "20:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                        6: {
+                            resourceId: "13",
+                            title: "Saturday class",
+                            daysOfWeek: [6],
+                            startTime: "12:00",
+                            endTime: "20:00",
+                            startRecur: "2019-09-22",
+                            endRecur: "2019-10-22",
+                        },
+                    },
+                },
+                notes: {
+                    1: {
+                        timestamp: "2020-01-09T18:11",
+                        body: "Katie can't teach on Saturdays after the 22nd",
+                        complete: false,
+                        active: true,
+                        important: false,
+                    },
+                },
+            },
+        },
     },
     "CalenderData": {
         "events_in_view": [
@@ -3444,13 +3817,13 @@ function initRequests() {
     };
 
     return {
-        "admin": {...baseSettings},
-        "course": {...baseSettings},
-        "category": {...baseSettings},
-        "instructor": {...baseSettings},
-        "parent": {...baseSettings},
-        "student": {...baseSettings},
-        "schedule": {...baseSettings},
+        "admin": { ...baseSettings },
+        "course": { ...baseSettings },
+        "category": { ...baseSettings },
+        "instructor": { ...baseSettings },
+        "parent": { ...baseSettings },
+        "student": { ...baseSettings },
+        "schedule": { ...baseSettings },
         "login": null,
     };
 }
@@ -3671,15 +4044,15 @@ function initRegistrationForm() {
                         name: "State",
                         type: "short text",
                         suggestions: [
-                            {label: "AL"}, {label: "AK"}, {label: "AZ"}, {label: "AR"}, {label: "CA"}, {label: "CO"},
-                            {label: "CT"}, {label: "DE"}, {label: "FL"}, {label: "GA"}, {label: "HI"}, {label: "ID"},
-                            {label: "IL"}, {label: "IN"}, {label: "IA"}, {label: "KS"},
-                            {label: "KY"}, {label: "KY"}, {label: "LA"}, {label: "ME"}, {label: "MD"}, {label: "MA"}, {label: "MI"},
-                            {label: "MS"}, {label: "MO"}, {label: "MT"}, {label: "NE"}, {label: "NV"}, {label: "NH"}, {label: "NJ"},
-                            {label: "NM"}, {label: "NY"}, {label: "NC"}, {label: "ND"},
-                            {label: "OH"}, {label: "OK"}, {label: "OR"}, {label: "PA"}, {label: "RI"}, {label: "SC"}, {label: "SD"},
-                            {label: "TN"}, {label: "TX"}, {label: "UT"}, {label: "VT"}, {label: "VA"}, {label: "WA"}, {label: "WV"}, {label: "WI"},
-                            {label: "WY"},
+                            { label: "AL" }, { label: "AK" }, { label: "AZ" }, { label: "AR" }, { label: "CA" }, { label: "CO" },
+                            { label: "CT" }, { label: "DE" }, { label: "FL" }, { label: "GA" }, { label: "HI" }, { label: "ID" },
+                            { label: "IL" }, { label: "IN" }, { label: "IA" }, { label: "KS" },
+                            { label: "KY" }, { label: "KY" }, { label: "LA" }, { label: "ME" }, { label: "MD" }, { label: "MA" }, { label: "MI" },
+                            { label: "MS" }, { label: "MO" }, { label: "MT" }, { label: "NE" }, { label: "NV" }, { label: "NH" }, { label: "NJ" },
+                            { label: "NM" }, { label: "NY" }, { label: "NC" }, { label: "ND" },
+                            { label: "OH" }, { label: "OK" }, { label: "OR" }, { label: "PA" }, { label: "RI" }, { label: "SC" }, { label: "SD" },
+                            { label: "TN" }, { label: "TX" }, { label: "UT" }, { label: "VT" }, { label: "VA" }, { label: "WA" }, { label: "WV" }, { label: "WI" },
+                            { label: "WY" },
                         ].map((suggestion) => ({
                             value: suggestion.label,
                             label: suggestion.label,
