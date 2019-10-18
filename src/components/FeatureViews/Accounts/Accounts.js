@@ -1,8 +1,8 @@
-import {connect} from "react-redux";
-import React, {Component} from "react";
+import { connect } from "react-redux";
+import React, { Component } from "react";
 import BackButton from "../../BackButton";
 import Grid from "@material-ui/core/Grid";
-import {Card, Paper, Typography} from "@material-ui/core";
+import { Paper, Typography } from "@material-ui/core";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import ListView from "@material-ui/icons/ViewList";
@@ -12,15 +12,17 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
-import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
-import CardActions from "@material-ui/core/CardActions";
-import {withRouter} from "react-router-dom";
+import { withRouter } from "react-router-dom";
+import EditIcon from "@material-ui/icons/EditOutlined";
+import { NavLink } from "react-router-dom";
+import {stringToColor, addDashes} from "./accountUtils";
 
 import "./Accounts.scss";
 import Avatar from "@material-ui/core/Avatar";
 import ProfileCard from "./ProfileCard";
 import Grow from "@material-ui/core/Grow";
+import Hidden from "@material-ui/core/es/Hidden/Hidden";
 
 class Accounts extends Component {
     constructor(props) {
@@ -48,14 +50,14 @@ class Accounts extends Component {
                 Object.assign(usersList, this.props.students);
                 Object.assign(usersList, this.props.instructors);
                 Object.assign(usersList, this.props.receptionist);
-                return {usersList: usersList, }
+                return { usersList: usersList, }
             });
         }
     }
     resize() {
-        let currentHideNav = (window.innerWidth <= 760);
+        const currentHideNav = (window.innerWidth <= 800);
         if (currentHideNav !== this.state.mobileView) {
-            this.setState({mobileView: !this.state.mobileView});
+            this.setState({ mobileView: !this.state.mobileView });
         }
     }
 
@@ -65,7 +67,7 @@ class Accounts extends Component {
 
     handleChange(e, newTabIndex) {
         e.preventDefault();
-        let newUsersList = [];
+        let newUsersList = []; 
         let usersList = {};
         Object.assign(usersList, this.props.parents);
         Object.assign(usersList, this.props.students);
@@ -90,36 +92,27 @@ class Accounts extends Component {
             default:
                 newUsersList = usersList;
         }
-        this.setState({value: newTabIndex, usersList: newUsersList},
+        this.setState({ value: newTabIndex, usersList: newUsersList },
             () => {
                 sessionStorage.setItem('AccountsState', JSON.stringify(this.state));
             }
         );
     }
 
-    stringToColor(string) {
-        let hash = 0;
-        let i;
-
-        /* eslint-disable no-bitwise */
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    addDashes(string) {
+        if (string.length == 10 && string.match(/^[0-9]+$/) != null) {
+            return (
+                `(${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 15)})`);
         }
-
-        let colour = "#";
-
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            colour += `00${value.toString(16)}`.substr(-2);
+        else {
+            return ("error");
         }
-        /* eslint-enable no-bitwise */
-
-        return colour;
     }
 
     render() {
+        console.log(this.state.mobileView)
         let styles = (username) => ({
-            backgroundColor: this.stringToColor(username),
+            backgroundColor: stringToColor(username),
             color: "white",
             margin: 9,
             width: 38,
@@ -134,6 +127,7 @@ class Accounts extends Component {
                         <TableCell>Email</TableCell>
                         <TableCell>Phone</TableCell>
                         <TableCell>Role</TableCell>
+                        <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -146,11 +140,11 @@ class Accounts extends Component {
                             className="row">
                             <TableCell component="th" scope="row">
                                 <Grid container layout={"row"} alignItems={"center"}>
-                                    <Grid item md={3}>
+                                    <Grid item md={12} lg={4}>
                                         <Avatar
                                             style={styles(row.name)}>{row.name.match(/\b(\w)/g).join("")}</Avatar>
                                     </Grid>
-                                    <Grid item md={9}>
+                                    <Grid item md={4} lg={8}>
                                         <Typography>
                                             {row.name}
                                         </Typography>
@@ -158,8 +152,29 @@ class Accounts extends Component {
                                 </Grid>
                             </TableCell>
                             <TableCell>{row.email}</TableCell>
-                            <TableCell>{row.phone_number}</TableCell>
+                            <TableCell>{this.addDashes(row.phone_number)}</TableCell>
                             <TableCell>{row.role.charAt(0).toUpperCase() + row.role.slice(1)}</TableCell>
+                            <TableCell onClick={(event) => {
+                                event.stopPropagation();
+                            }}>
+                                <Grid component={Hidden} mdDown align="right">
+                                    <Button
+                                        className="editButton"
+                                        component={NavLink}
+                                        to={`/registration/form/${row.role}/${row.user_id}/edit`}>
+                                        <EditIcon />
+                                        Edit Profile
+                                    </Button>
+                                </Grid>
+                                <Grid component={Hidden} lgUp align="right">
+                                    <Button
+                                        className="editButton"
+                                        component={NavLink}
+                                        to={`/registration/form/${row.role}/${row.user_id}/edit`}>
+                                        <EditIcon />
+                                    </Button>
+                                </Grid>
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
@@ -168,7 +183,7 @@ class Accounts extends Component {
 
         const cardView = () => {
             return <Grow in={true}>
-                <Grid container xs={12} md={10} spacing={8} alignItems={'center'} direction={'row'} style={{marginTop: 20}}>
+                <Grid container xs={12} md={10} spacing={8} alignItems={'center'} direction={'row'} style={{ marginTop: 20 }}>
                     {Object.values(this.state.usersList).map((user) => (
                         <ProfileCard user={user} key={user.user_id} />))}
                 </Grid>
@@ -181,7 +196,7 @@ class Accounts extends Component {
                 <hr />
                 <Typography variant="h2" align={"left"} className={"heading"}>Accounts</Typography>
                 <Grid container direction={"row"} alignItems={"center"}>
-                    <Grid item xs={12} md={10}>
+                    <Grid item xs={11}>
                         <Tabs
                             value={this.state.value}
                             onChange={this.handleChange}
@@ -200,16 +215,16 @@ class Accounts extends Component {
                     {
                         this.state.mobileView ?
                             '' :
-                            <Grid item xs={2} className="toggleView">
+                            <Grid item xs={1} md={1} className="toggleView">
                                 <ListView className={`list icon ${this.state.viewToggle ? 'active' : ''}`} onClick={(event) => {
                                     event.preventDefault();
-                                    this.setState({viewToggle: true},
-                                        () => {sessionStorage.setItem('AccountsState', JSON.stringify(this.state));});
+                                    this.setState({ viewToggle: true },
+                                        () => { sessionStorage.setItem('AccountsState', JSON.stringify(this.state)); });
                                 }} />
                                 <CardView className={`card icon ${this.state.viewToggle ? '' : 'active'}`} onClick={(event) => {
                                     event.preventDefault();
-                                    this.setState({viewToggle: false},
-                                        () => {sessionStorage.setItem('AccountsState', JSON.stringify(this.state));});
+                                    this.setState({ viewToggle: false },
+                                        () => { sessionStorage.setItem('AccountsState', JSON.stringify(this.state)); });
                                 }} />
                             </Grid>
                     }
