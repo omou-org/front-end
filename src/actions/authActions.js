@@ -1,24 +1,35 @@
 import * as types from "./actionTypes";
 import axios from "axios";
 
-export const login = (email, password, saveLogin) =>
-    (dispatch) => axios.post("http://localhost:8000/auth_token/", {
-        username: email,
-        password,
-    })
-        .then(({data}) => {
-            dispatch({
-                type: types.SUCCESSFUL_LOGIN,
-                payload: {
-                    saveLogin,
-                    data,
-                },
+export const login = (email, password, savePassword) => async (dispatch) => {
+    // request starting
+    dispatch({"type": types.LOGIN_STARTED});
+
+    try {
+        const response = await axios
+            .post("/auth_token/", {
+                "username": email,
+                password,
+            }, {
+                "baseURL": "http://localhost:8000",
             });
-        })
-        .catch((error) => {
-            dispatch({type: types.FAILED_LOGIN, payload: error});
+        // succesful request
+        dispatch({
+            "type": types.LOGIN_SUCCESSFUL,
+            "payload": {
+                response,
+                savePassword,
+            },
         });
+    } catch (error) {
+        // failed request
+        dispatch({
+            "type": types.LOGIN_FAILED,
+            "payload": error,
+        });
+    }
+};
 
-export const logout = () => ({type: types.LOGOUT});
+export const logout = () => ({"type": types.LOGOUT});
 
-export const resetAttemptStatus = () => ({type: types.RESET_ATTEMPT});
+export const resetAttemptStatus = () => ({"type": types.RESET_ATTEMPT});
