@@ -1,3 +1,5 @@
+import {GET, PATCH, POST} from "../actions/actionTypes";
+
 export default {
     "Authentication": initAuth(),
     "RegistrationForms": initRegistrationForm(),
@@ -3431,14 +3433,33 @@ export default {
 
         ],
     },
+    "RequestStatus": initRequests(),
 };
+
+function initRequests() {
+    const baseSettings = {
+        [GET]: {},
+        [PATCH]: {},
+        [POST]: {},
+    };
+
+    return {
+        "admin": {...baseSettings},
+        "course": {...baseSettings},
+        "category": {...baseSettings},
+        "instructor": {...baseSettings},
+        "parent": {...baseSettings},
+        "student": {...baseSettings},
+        "schedule": {...baseSettings},
+        "login": null,
+    };
+}
 
 function initAuth() {
     const token = localStorage.getItem("authToken") || null;
     sessionStorage.setItem("authToken", token);
     return {
         token,
-        "failedLogin": false,
     };
 }
 
@@ -3650,15 +3671,15 @@ function initRegistrationForm() {
                         name: "State",
                         type: "short text",
                         suggestions: [
-                            { label: "AL" }, { label: "AK" }, { label: "AZ" }, { label: "AR" }, { label: "CA" }, { label: "CO" },
-                            { label: "CT" }, { label: "DE" }, { label: "FL" }, { label: "GA" }, { label: "HI" }, { label: "ID" },
-                            { label: "IL" }, { label: "IN" }, { label: "IA" }, { label: "KS" },
-                            { label: "KY" }, { label: "KY" }, { label: "LA" }, { label: "ME" }, { label: "MD" }, { label: "MA" }, { label: "MI" },
-                            { label: "MS" }, { label: "MO" }, { label: "MT" }, { label: "NE" }, { label: "NV" }, { label: "NH" }, { label: "NJ" },
-                            { label: "NM" }, { label: "NY" }, { label: "NC" }, { label: "ND" },
-                            { label: "OH" }, { label: "OK" }, { label: "OR" }, { label: "PA" }, { label: "RI" }, { label: "SC" }, { label: "SD" },
-                            { label: "TN" }, { label: "TX" }, { label: "UT" }, { label: "VT" }, { label: "VA" }, { label: "WA" }, { label: "WV" }, { label: "WI" },
-                            { label: "WY" },
+                            {label: "AL"}, {label: "AK"}, {label: "AZ"}, {label: "AR"}, {label: "CA"}, {label: "CO"},
+                            {label: "CT"}, {label: "DE"}, {label: "FL"}, {label: "GA"}, {label: "HI"}, {label: "ID"},
+                            {label: "IL"}, {label: "IN"}, {label: "IA"}, {label: "KS"},
+                            {label: "KY"}, {label: "KY"}, {label: "LA"}, {label: "ME"}, {label: "MD"}, {label: "MA"}, {label: "MI"},
+                            {label: "MS"}, {label: "MO"}, {label: "MT"}, {label: "NE"}, {label: "NV"}, {label: "NH"}, {label: "NJ"},
+                            {label: "NM"}, {label: "NY"}, {label: "NC"}, {label: "ND"},
+                            {label: "OH"}, {label: "OK"}, {label: "OR"}, {label: "PA"}, {label: "RI"}, {label: "SC"}, {label: "SD"},
+                            {label: "TN"}, {label: "TX"}, {label: "UT"}, {label: "VT"}, {label: "VA"}, {label: "WA"}, {label: "WV"}, {label: "WI"},
+                            {label: "WY"},
                         ].map((suggestion) => ({
                             value: suggestion.label,
                             label: suggestion.label,

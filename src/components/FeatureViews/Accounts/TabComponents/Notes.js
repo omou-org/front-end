@@ -1,6 +1,6 @@
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -14,25 +14,24 @@ class Notes extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            notes:[],
+            notes: [],
         };
     }
 
-    componentWillMount(){
+    componentWillMount() {
         //TODO: notes in descending order
-        this.setState(()=>{
-            let notes = Object.keys(this.props.user_notes).map((noteID)=>{
-               return this.props.user_notes[noteID];
+        this.setState(() => {
+            let notes = Object.keys(this.props.user_notes).map((noteID) => {
+                return this.props.user_notes[noteID];
             });
             return {
-                notes:notes, 
+                notes: notes,
             }
-        }); 
+        });
     }
 
     render() {
-        console.log(this.state.notes);
-        let numericDateString = (date)=>{
+        let numericDateString = (date) => {
             let DateObject = new Date(date),
                 numericOptions = {
                     year: "numeric",
@@ -43,15 +42,15 @@ class Notes extends Component {
                 };
             return DateObject.toLocaleTimeString("en-US", numericOptions);
         };
-        return(<Grid item md={12}>
+        return (<Grid item md={12}>
             <Grid container spacing={16}>
-                {this.state.notes.map((note,i) => {
-                    return <Grid item xs={3}  key={i}>
+                {this.state.notes.map((note, i) => {
+                    return <Grid item xs={3} key={i}>
                         <Paper className={"note"}>
                             <div className={"actions"}>
-                                <EditIcon/>
-                                <AlertIcon/>
-                                <RemoveIcon/>
+                                <EditIcon />
+                                <AlertIcon />
+                                <RemoveIcon />
                             </div>
                             <Typography className={"body"} align={'left'}>
                                 {note.body}
