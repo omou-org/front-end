@@ -524,28 +524,31 @@ class Form extends Component {
     }
 
     renderField(field, label, fieldIndex) {
-        let fieldTitle = field.name;
+        const fieldTitle = field.name;
         switch (field.type) {
             case "select":
-                return <FormControl className={"form-control"}>
-                    <InputLabel htmlFor={fieldTitle}>{fieldTitle}</InputLabel>
-                    <Select
-                        displayEmpty={false}
-                        value={this.state[label][fieldTitle]}
-                        onChange={({target}) => {
-                            this.onSelectChange(target.value, label, field);
-                        }}>
-                        {
-                            field.options.map((option) => {
-                                return <MenuItem value={option} key={option}>
-                                    <em>{option}</em>
-                                </MenuItem>
+                return (
+                    <FormControl className="form-control">
+                        <InputLabel shrink={this.state[label][fieldTitle]}>
+                            {fieldTitle}
+                        </InputLabel>
+                        <Select
+                            onChange={({"target": {value}}) => {
+                                this.onSelectChange(value, label, field);
+                            }}
+                            value={this.state[label][fieldTitle]}>
+                            {
+                                field.options.map((option) => (
+                                    <MenuItem
+                                        key={option}
+                                        value={option}>
+                                        <em>{option}</em>
+                                    </MenuItem>
+                                ))
                             }
-
-                            )
-                        }
-                    </Select>
-                </FormControl>;
+                        </Select>
+                    </FormControl>
+            );
             case "course": {
                 let courseList = Object.keys(this.props.courses)
                     .filter((courseID) =>
