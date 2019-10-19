@@ -3027,7 +3027,7 @@ export default {
                 student_ids: [64],
             },
         },
-        "InstructorList": {
+        "newInstructorList": {
             10: {
                 user_id: 10,
                 name: "Daniel Huang",
@@ -3368,7 +3368,7 @@ export default {
                 },
             },
         },
-        "NewInstructorList": {
+        "InstructorList": {
             10: {
                 user_id: 10,
                 name: "Daniel Huang",
