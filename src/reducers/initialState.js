@@ -3348,7 +3348,7 @@ export default {
                 student_ids: [64],
             },
         },
-        "newInstructorList": {
+        "OldInstructorList": {
             10: {
                 user_id: 10,
                 name: "Daniel Huang",
@@ -3711,7 +3711,7 @@ export default {
                             resourceId: "10",
                             title: "Monday class",
                             daysOfWeek: [1],
-                            startTime: "07:00",
+                            startTime: "10:00",
                             endTime: "19:00",
                             startRecur: "2019-09-22",
                             endRecur: "2019-10-22",
