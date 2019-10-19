@@ -4,24 +4,12 @@ import {REQUEST_ALL} from "../actions/apiActions";
 
 export default function users(state = initialState.Users, {payload, type}) {
     switch (type) {
-        case actions.FETCH_STUDENTS_SUCCESSFUL:
-            console.log("FETCHED STUDENTS", payload);
+        case actions.FETCH_STUDENT_SUCCESSFUL:
             return addStudents(state, payload);
-        case actions.FETCH_STUDENTS_FAILED:
-            console.error("FAILED TO FETCH STUDENTS", payload);
-            return state;
-        case actions.FETCH_PARENTS_SUCCESSFUL:
-            console.log("FETCHED PARENTS", payload);
+        case actions.FETCH_PARENT_SUCCESSFUL:
             return addParents(state, payload);
-        case actions.FETCH_PARENTS_FAILED:
-            console.error("FAILED TO FETCH PARENTS", payload);
-            return state;
-        case actions.FETCH_INSTRUCTORS_SUCCESSFUL:
-            console.log("FETCHED INSTRUCTORS", payload);
+        case actions.FETCH_INSTRUCTOR_SUCCESSFUL:
             return handleInstructorsFetch(state, payload);
-        case actions.FETCH_INSTRUCTORS_FAILED:
-            console.error("FAILED TO FETCH INSTRUCTORS", payload);
-            return state;
         default:
             return state;
     }
