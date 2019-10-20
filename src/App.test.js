@@ -56,12 +56,12 @@ describe('Signing In', () => {
     expect(html).toBe('sign in');
 
 
-  }, 16000);
+  }, 160000000);
   test('login form leads to the dashboard', async () => {
 
     // you will need to find the exact path for the screen shots to save in the file. 
-    // i've tried ({path : "../debug_screenshot"}) but you will get a Unsupported screenshot mime type: null error
-    await page.screenshot({ path: "/Users/calvinfronda/Documents/GitHub/front-end/debug_screenshots/test.png" })
+
+    await page.screenshot({ path: "debug_screenshots/test.png" })
     // Uses faker to load data from object uptop
     await page.goto(routes.public.login);
     await page.click('.email')
@@ -74,7 +74,7 @@ describe('Signing In', () => {
     //This will test if the path is "/"
     expect(window.location.pathname).toBe('/')
 
-  }, 16000)
+  }, 16000000)
 }
 );
 
@@ -83,7 +83,7 @@ describe('Register', () => {
   xtest('Go to register page click on tutoring and click 6th grade math ', async () => {
     await page.goto(routes.private.registration);
     await page.click('a[href$="/registration/form/course/1"]')
-    await page.screenshot({ path: "/Users/calvinfronda/Documents/GitHub/front-end/debug_screenshots/register.png" })
+    await page.screenshot({ path: "debug_screenshots/register.png" })
 
 
   })
