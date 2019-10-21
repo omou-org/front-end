@@ -1,21 +1,21 @@
 // react/redux imports
 import * as apiActions from "../../../actions/apiActions";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useMemo} from "react";
 import PropTypes from "prop-types";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 
 // material ui imports
-import BackButton from "../../BackButton";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import Paper from "@material-ui/core/Paper";
 import SearchSelect from "react-select";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
-import {Typography} from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 
 // component imports
+import BackButton from "../../BackButton";
 import CourseList from "./CourseList";
 import TutoringList from "./TutoringList";
 
@@ -23,7 +23,6 @@ import {GET} from "../../../actions/actionTypes.js";
 
 const NUM_GRADES = 10;
 
-// eslint-disable-next-line max-statements
 const RegistrationLanding = ({api, courses, instructors, requestStatus}) => {
     const [view, setView] = useState(0);
     const [courseFilters, setCourseFilters] = useState({
@@ -48,15 +47,17 @@ const RegistrationLanding = ({api, courses, instructors, requestStatus}) => {
         });
     };
 
+    const instructorOptions = useMemo(() =>
+        Object.values(instructors).map(({name, user_id}) => ({
+            "label": name,
+            "value": user_id,
+        })), [instructors]);
+
     const renderFilter = (filterType) => {
         let options = [];
         switch (filterType) {
             case "instructor":
-                options = Object.values(instructors)
-                    .map(({name, user_id}) => ({
-                        "label": name,
-                        "value": user_id,
-                    }));
+                options = instructorOptions;
                 break;
             case "subject":
                 options = [

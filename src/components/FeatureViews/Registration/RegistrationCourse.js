@@ -24,7 +24,7 @@ import EmailIcon from "@material-ui/icons/Email";
 import EditIcon from "@material-ui/icons/Edit";
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 import Button from "@material-ui/core/Button";
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const TableToolbar = () => (
     <TableHead>
@@ -54,6 +54,7 @@ const stringToColor = (string) => {
     for (i = 0; i < 3; i += 1) {
         const value = (hash >> (i * 8)) & 0xff;
         color += `00${value.toString(16)}`.substr(-2);
+
     }
 
     return color;
@@ -89,8 +90,10 @@ const RegistrationCourse = (props) => {
 
     const days = course.schedule.days.map((day) => dayConverter[day]);
 
+
     const timeOptions = {"hour": "2-digit", "minute": "2-digit"};
     const dateOptions = {"year": "numeric", "month": "short", "day": "numeric"};
+
 
     const startDate = new Date(course.schedule.start_date +
         course.schedule.start_time),
@@ -171,6 +174,7 @@ const RegistrationCourse = (props) => {
                         }
                     </span>
                 </div>
+
             ),
             {
                 notes,
@@ -178,6 +182,7 @@ const RegistrationCourse = (props) => {
             },
         ];
     });
+
 
     return (
         <Grid item xs={12}>
@@ -230,6 +235,7 @@ const RegistrationCourse = (props) => {
                             <ClassIcon style={{"fontSize": "16"}} className="icon" />
                             <Typography align="left" className="text">
                                 Course Information
+
                             </Typography>
                         </div>
                         <div className="second-line">

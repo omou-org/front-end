@@ -4,7 +4,7 @@ import initialState from "./initialState";
 export default function auth(state = initialState.Authentication, {payload, type}) {
     switch (type) {
         case actions.LOGIN_SUCCESSFUL:
-            return onSuccess(state, payload.response);
+            return onSuccess(state, payload);
         case actions.LOGOUT:
             return onLogout(state);
         default:
@@ -12,14 +12,14 @@ export default function auth(state = initialState.Authentication, {payload, type
     }
 }
 
-const onSuccess = (state, {data, saveLogin}) => {
-    if (saveLogin) {
-        localStorage.setItem("authToken", data.token);
+const onSuccess = (state, {response, savePassword}) => {
+    if (savePassword) {
+        localStorage.setItem("authToken", response.data.token);
     }
-    sessionStorage.setItem("authToken", data.token);
+    sessionStorage.setItem("authToken", response.data.token);
     return {
         ...state,
-        "token": data.token,
+        "token": response.data.token,
     };
 };
 
