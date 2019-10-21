@@ -39,7 +39,7 @@ const calcSessionCost = ({
 };
 
 const ParentPayment = (props) => {
-    const parent = props.parents[props.computedMatch.params.parentID];
+    const parent = props.parents[props.match.params.parentID];
 
     const sessionsMax = {};
     const initialSelectedRows = {};
@@ -266,7 +266,7 @@ const ParentPayment = (props) => {
 };
 
 ParentPayment.propTypes = {
-    "computedMatch": PropTypes.shape({
+    "match": PropTypes.shape({
         "params": PropTypes.shape({
             "parentID": PropTypes.string.isRequired,
         }).isRequired,

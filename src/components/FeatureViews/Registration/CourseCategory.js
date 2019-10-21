@@ -19,7 +19,7 @@ class CourseCategory extends Component {
 
     componentWillMount() {
         let CategoryInView = this.props.courseCategories.find((category) => {
-            return category.id.toString() === this.props.computedMatch.params.categoryID;
+            return category.id.toString() === this.props.match.params.categoryID;
         });
         this.setState({ ...CategoryInView });
     }
