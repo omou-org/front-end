@@ -94,7 +94,7 @@ class UserProfile extends Component {
 
     componentWillMount() {
         let user;
-        let accountType = this.props.computedMatch.params.accountType, accountID = this.props.computedMatch.params.accountID;
+        let accountType = this.props.match.params.accountType, accountID = this.props.match.params.accountID;
         switch (accountType) {
             case "student":
                 user = this.props.students[accountID];
