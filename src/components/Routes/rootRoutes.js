@@ -37,23 +37,23 @@ function rootRoutes(props) {
                 path="/login"
                 render={(passedProps) => <LoginPage setLogin={props.setLogin} {...passedProps} />} />
 
-            <ProtectedRoute
+            <Route
                 exact
                 path="/"
                 render={(passedProps) => <Accounts {...passedProps} />} />
 
             {/* Main Feature Views */}
             {/* Registration Routes */}
-            <ProtectedRoute
+            <Route
                 path="/registration/form/:type/:id?/:edit?"
                 render={(passedProps) => <RegistrationForm {...passedProps} />} />
-            <ProtectedRoute
+            <Route
                 path="/registration/course/:courseID?/:courseTitle?"
                 render={(passedProps) => <RegistrationCourse {...passedProps} />} />
-            <ProtectedRoute
+            <Route
                 path="/registration/category/:categoryID"
                 render={(passedProps) => <CourseCategory {...passedProps} />}/>
-            <ProtectedRoute
+            <Route
                 exact
                 path="/registration"
                 render={(passedProps) => <Registration {...passedProps} />} />
@@ -69,15 +69,15 @@ function rootRoutes(props) {
                 exact
                 path="/accounts"
                 render={(passedProps) => <Accounts {...passedProps} />} />
-            <ProtectedRoute
+            <Route
                 exact
                 path="/:accountType/:accountID"
                 render={(passedProps) => <UserProfile {...passedProps} />} />
-            <ProtectedRoute
+            <Route
                 exact
                 path="/parents/:parentID/pay"
                 render={(passedProps) => <ParentPayment {...passedProps} />}/>
-            <ProtectedRoute
+            <Route
                 exact
                 path="/:accountType/:accountID/:courseID"
                 render={(passedProps) => <CourseSessionStatus {...passedProps} />}/>
