@@ -80,17 +80,6 @@ ScheduleForm.propTypes = {
     sessionView: PropTypes.string
 };
 
-function mapStateToProps(state) {
-    return {
-    };
-}
 
-function mapDispatchToProps(dispatch) {
-    return {
-    };
-}
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ScheduleForm);
+export default ScheduleForm;

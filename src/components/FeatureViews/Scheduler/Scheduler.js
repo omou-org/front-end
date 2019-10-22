@@ -175,9 +175,6 @@ class Scheduler extends Component {
                     <div class='title'><h3> ${info.event.title} </h3></div>
                     <div class="container">
                         <div class='clock'><span class='clock_icon'>  ${formatDate(info.event.extendedProps.start_time, info.event.extendedProps.end_time)}</span></div>
-                        <span>
-                            ${info.event.extendedProps.type}
-                        </span>
                         <div class='pin_icon'><span class=''>Room # ${info.event.extendedProps.room_id}</span></div>
                         <div class='teacher_icon'><span class=''>${info.event.extendedProps.instructor ? info.event.extendedProps.instructor : "No teacher Yet"}</span></div>
                         <div class='discription_icon'><span class='description-text'>${truncate(info.event.extendedProps.description)}</span></div>
