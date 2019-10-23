@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import * as authActions from "../../actions/authActions";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import NavLinkNoDup from "../Routes/NavLinkNoDup";
 
 // Material UI Imports
 // TODO: import each component individually (i.e. '@material-ui/core/AppBar') to reduce bundle size
@@ -49,7 +49,7 @@ function Navigation(props) {
         <div className="DrawerList">
             <List className={"list"}>
                 {NavList.map((NavItem, index) => (
-                    <ListItem button key={index} component={NavLink} exact={NavItem.name === "Dashboard"} to={NavItem.link} className={"listItem"}>
+                    <ListItem button key={index} component={NavLinkNoDup} exact={NavItem.name === "Dashboard"} to={NavItem.link} className={"listItem"}>
                         <ListItemIcon className={"icon"}>{NavItem.icon}</ListItemIcon>
                         <ListItemText primary={NavItem.name} className={"text"} />
                     </ListItem>
@@ -73,7 +73,7 @@ function Navigation(props) {
                                 <MenuIcon />
                             </IconButton>
                         </Hidden>
-                        <Typography component={NavLink} to="/" className="title">
+                        <Typography component={NavLinkNoDup} to="/" className="title">
                             omou
                         </Typography>
                         <div style={{
@@ -86,7 +86,7 @@ function Navigation(props) {
                                     onClick={props.authActions.logout}>
                                     logout
                                 </Typography>
-                                : <Typography component={NavLink} to="/login" className="login">
+                                : <Typography component={NavLinkNoDup} to="/login" className="login">
                                     login
                                 </Typography>
                         }
