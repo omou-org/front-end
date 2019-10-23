@@ -21,7 +21,6 @@ const height = 1080;
 beforeAll(async () => {
   browser = await puppeteer.launch({
     headless: true,
-    slowMo: 80,
     args: [`--window-size=${width},${height}`]
   });
   page = await browser.newPage();
@@ -70,6 +69,7 @@ describe('Signing In', () => {
     await page.type('.password', person.password)
     await page.click('.remember')
     await page.click('.signIn')
+    await page.waitFor(".Navigation")
 
     //This will test if the path is "/"
     expect(window.location.pathname).toBe('/')
