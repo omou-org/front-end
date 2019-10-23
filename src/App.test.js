@@ -69,7 +69,7 @@ describe('Signing In', () => {
     await page.type('.password', person.password)
     await page.click('.remember')
     await page.click('.signIn')
-    await page.waitFor(".Navigation")
+    await page.waitFor(1000);
 
     //This will test if the path is "/"
     expect(window.location.pathname).toBe('/')
