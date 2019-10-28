@@ -170,7 +170,7 @@ class ProfileHeading extends Component {
     renderEditButton() {
         if (this.props.user.role != "receptionist") {
             return (<div>
-                <Grid component={Hidden} xsDown align="right" className="editPadding">
+                <Grid component={Hidden} mdDown align="right" className="editPadding">
                     <Button
                         className="editButton"
                         component={NavLink}
@@ -179,7 +179,7 @@ class ProfileHeading extends Component {
                         Edit Profile
                     </Button>
                 </Grid>
-                <Grid component={Hidden} smUp align="right" className="editPadding">
+                <Grid component={Hidden} lgUp align="right" className="editPadding">
                     <Button
                         className="editButton"
                         component={NavLink}
@@ -219,26 +219,26 @@ class ProfileHeading extends Component {
         }
         return (
             <div>
-                <Grid container>
-                    <Grid item xs={12}>
-                        <Grid container>
-                            <Grid align="left" item md={5} xs={7}>
+                    <Grid container item lg={12}>
+                            <Grid align="left" item lg={4}>
                                 <h1 className="ProfileName">
                                     {this.props.user.name}
                                 </h1>
                             </Grid>
-                            <Grid align="left" item md={7} xs={4}>
+                            <Grid align="left" item lg={2}>
+                                <Grid component={Hidden} smDown>
                                 <Chip
                                     className={`userLabel ${this.props.user.role}`}
                                     label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
                                 />
+                                </Grid>
                             </Grid>
-                            <Grid item md={1} xs={4}>
+                            <Grid item lg={4}>
+                            </Grid>
+                            <Grid item lg={2} align="left">
                                 {this.renderEditButton()}
                             </Grid>
                         </Grid>
-                    </Grid>
-                </Grid>
                 {profileDetails}
             </div>
         );

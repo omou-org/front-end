@@ -50,6 +50,9 @@
     .gridScaling {
       white-space: nowrap;
     }
+    .headingContainer{
+      display: grid;
+    }
     .ProfileName {
       word-break: break-word;
     }
@@ -68,9 +71,7 @@
       box-sizing: border-box;
       border: solid 2px $secondaryColor !important;
       white-space: nowrap;
-      position: absolute;
-      right: 5%;
-      margin-top: -4.5%;
+      position: relative;
     }
   }
 

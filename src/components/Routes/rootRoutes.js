@@ -30,7 +30,6 @@ import ParentPayment from "../Form/ParentPayment";
 
 
 function rootRoutes(props) {
-    console.log(props);
     props.registrationActions.resetSubmitStatus();
     return (
         <Switch>

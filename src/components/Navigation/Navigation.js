@@ -65,7 +65,7 @@ function Navigation(props) {
                     position="fixed"
                     className="OmouBar">
                     <Toolbar>
-                        <Hidden smUp>
+                        <Hidden mdUp>
                             <IconButton
                                 color="inherit"
                                 aria-label="Open Drawer"
@@ -95,7 +95,7 @@ function Navigation(props) {
                 {
                     !isLogin && (
                         <nav className="OmouDrawer">
-                            <Hidden smUp implementation="css">
+                            <Hidden mdUp implementation="css">
                                 <Drawer
                                     container={props.container}
                                     variant="temporary"
@@ -104,7 +104,7 @@ function Navigation(props) {
                                     {drawer}
                                 </Drawer>
                             </Hidden>
-                            <Hidden xsDown implementation="css">
+                            <Hidden smDown implementation="css">
                                 <Drawer
                                     variant="permanent"
                                     open>

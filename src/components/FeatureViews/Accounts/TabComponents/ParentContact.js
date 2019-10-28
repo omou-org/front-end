@@ -8,6 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import "./TabComponents.scss";
 import Paper from "@material-ui/core/Paper";
 import EditIcon from "@material-ui/icons/EditOutlined";
+import {addDashes} from "../accountUtils";
+
 
 class ParentContact extends Component {
     constructor(props) {
@@ -26,10 +28,6 @@ class ParentContact extends Component {
     goToRoute(route) {
         this.props.history.push(route);
         
-    }
-
-    addDashes(f){
-        return("("+f.slice(0,3)+"-"+f.slice(3,6)+"-"+f.slice(6,15)+")");
     }
 
     render() {
@@ -62,7 +60,7 @@ class ParentContact extends Component {
                                         Phone
                                     </Grid>
                                     <Grid item xs={5} align="left">
-                                        {this.addDashes(this.state.parent.phone_number)}
+                                        {addDashes(this.state.parent.phone_number)}
                                     </Grid>
                                     <Grid item xs={5} align="left" className="bold">
                                         Email

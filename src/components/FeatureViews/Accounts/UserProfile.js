@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 
 import Grid from '@material-ui/core/Grid';
-import {Paper, Typography} from "@material-ui/core";
+import { Paper, Typography } from "@material-ui/core";
 import './Accounts.scss';
 
 import BackButton from "../../BackButton";
@@ -26,6 +26,7 @@ import PastSessionsIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import ContactIcon from "@material-ui/icons/ContactPhoneOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
+import {stringToColor} from "./accountUtils";
 
 const userTabs = {
     "instructor": [
@@ -72,28 +73,28 @@ const userTabs = {
             icon: <NoteIcon className="TabIcon" />,
         }],
 
-        "parent": [
-            {
-                tab_heading: "Student Info",
-                tab_id: 8,
-                icon: <CurrentSessionsIcon className="TabIcon"/>,
-            },
-            {
-                tab_heading: "Pay Courses",
-                tab_id: 9,
-                icon: <CurrentSessionsIcon className="TabIcon"/>,
-            },
-            {
-                tab_heading: "Payment History",
-                tab_id: 5,
-                icon: <PaymentIcon className="TabIcon"/>,
-            },
-            {
-                tab_heading: "Notes",
-                tab_id: 7,
-                icon: <NoteIcon className="TabIcon"/>,
-            },
-        ],
+    "parent": [
+        {
+            tab_heading: "Student Info",
+            tab_id: 8,
+            icon: <CurrentSessionsIcon className="TabIcon" />,
+        },
+        {
+            tab_heading: "Pay Courses",
+            tab_id: 9,
+            icon: <CurrentSessionsIcon className="TabIcon" />,
+        },
+        {
+            tab_heading: "Payment History",
+            tab_id: 5,
+            icon: <PaymentIcon className="TabIcon" />,
+        },
+        {
+            tab_heading: "Notes",
+            tab_id: 7,
+            icon: <NoteIcon className="TabIcon" />,
+        },
+    ],
 }
 
 class UserProfile extends Component {
@@ -105,10 +106,10 @@ class UserProfile extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    componentDidUpdate(prevProps){
-       if(prevProps.computedMatch.params.accountID !== this.props.computedMatch.params.accountID){
-           this.setState({value:0})
-       }
+    componentDidUpdate(prevProps) {
+        if (prevProps.computedMatch.params.accountID !== this.props.computedMatch.params.accountID) {
+            this.setState({ value: 0 })
+        }
     }
 
     getUser() {
@@ -149,30 +150,10 @@ class UserProfile extends Component {
         this.setState({ value: newTabIndex });
     }
 
-    stringToColor(string) {
-        let hash = 0;
-        let i;
-
-        /* eslint-disable no-bitwise */
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
-        }
-
-        let colour = '#';
-
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            colour += `00${value.toString(16)}`.substr(-2);
-        }
-        /* eslint-enable no-bitwise */
-
-        return colour;
-    }
-
     render() {
-        const {user, userTabs} = this.getUser();
+        const { user, userTabs } = this.getUser();
         const styles = {
-            "backgroundColor": this.stringToColor(user.name),
+            "backgroundColor": stringToColor(user.name),
             "color": "white",
             "width": "11vw",
             "height": "11vw",
@@ -182,77 +163,77 @@ class UserProfile extends Component {
         let tabs;
         if (user.role !== "receptionist") {
             let tabID;
-            if(this.state.value<userTabs.length){
-                tabID=userTabs[this.state.value].tab_id;
+            if (this.state.value < userTabs.length) {
+                tabID = userTabs[this.state.value].tab_id;
             }
-            else{
-                tabID=userTabs[0].tab_id;
+            else {
+                tabID = userTabs[0].tab_id;
             }
             tabs =
                 (<div>
                     <Tabs
-                    key={this.props.inView}
-                    value={this.state.value}
-                    onChange={this.handleChange}
-                    variant="scrollable"
-                    indicatorColor="primary"
-                    textColor="primary"
-                >
-                    {userTabs.map((tab) => {
-                        return <Tab
-                            label={<>{tab.icon} {tab.tab_heading}</>}
-                            key={this.props.inView}
-                        />
-                    })}
-                </Tabs>
-                <ComponentViewer user={user} inView={tabID} />
-            </div>)
+                        key={this.props.inView}
+                        value={this.state.value}
+                        onChange={this.handleChange}
+                        variant="scrollable"
+                        indicatorColor="primary"
+                        textColor="primary"
+                    >
+                        {userTabs.map((tab) => {
+                            return <Tab
+                                label={<>{tab.icon} {tab.tab_heading}</>}
+                                key={this.props.inView}
+                            />
+                        })}
+                    </Tabs>
+                    <ComponentViewer user={user} inView={tabID} />
+                </div>)
         }
-    
+
         else {
-            tabs=(<div>
+            tabs = (<div>
                 <Grid align="left">
                     Action Log
                 </Grid>
 
                 <Paper className={'paper'}>
-            <Table className="ActionTable">
-            <TableHead>
-                <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Time</TableCell>
-                    <TableCell>Description</TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {Object.keys(user.action_log).map(rowID => {
-                    let row = user.action_log[rowID];
-                    return (
-                        <TableRow key={row.date}
-                                //   onClick={(e) => {
-                                //       e.preventDefault();
-                                //       this.goToRoute(`/${row.role}/${row.user_id}`)
-                                //   }}
-                                  className="row">
-                            <TableCell component="th" scope="row">
-                                <Grid container layout={'row'} alignItems={'center'}>
-                                    <Grid item md={3}>
-                                    </Grid>
-                                    <Grid item md={9}>
-                                        <Typography>
-                                            {row.date}
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
-                            </TableCell>
-                            <TableCell>{row.time}</TableCell>
-                            <TableCell>{row.description}</TableCell>
-                        </TableRow>
-                    )
-                })}
-            </TableBody>
-            </Table>
-            </Paper>
+                    <Table className="ActionTable">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Date</TableCell>
+                                <TableCell>Time</TableCell>
+                                <TableCell>Description</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {Object.keys(user.action_log).map(rowID => {
+                                let row = user.action_log[rowID];
+                                return (
+                                    <TableRow key={row.date}
+                                        //   onClick={(e) => {
+                                        //       e.preventDefault();
+                                        //       this.goToRoute(`/${row.role}/${row.user_id}`)
+                                        //   }}
+                                        className="row">
+                                        <TableCell component="th" scope="row">
+                                            <Grid container layout={'row'} alignItems={'center'}>
+                                                <Grid item md={3}>
+                                                </Grid>
+                                                <Grid item md={9}>
+                                                    <Typography>
+                                                        {row.date}
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid>
+                                        </TableCell>
+                                        <TableCell>{row.time}</TableCell>
+                                        <TableCell>{row.description}</TableCell>
+                                    </TableRow>
+                                )
+                            })}
+                        </TableBody>
+                    </Table>
+                </Paper>
             </div>
             );
         }
@@ -262,13 +243,16 @@ class UserProfile extends Component {
                     warn={false}
                 />
                 <hr />
-                <Grid container layout="row" className={'padding'}>
-                    <Grid item sm={2} xs={2} md={2} component={Hidden} xsDown>
-                        <Avatar style={styles}>{user.name.match(/\b(\w)/g).join('')}</Avatar>
+                <Grid container item lg={12} sm={12} className={'padding'}>
+                    <Grid item lg={2}>
+                        <Grid component={Hidden} mdDown>
+                            <Avatar style={styles}>{user.name.match(/\b(\w)/g).join('')}</Avatar>
+                        </Grid>
                     </Grid>
-                    <Grid item sm={8} xs={16} md={8} className="headingPadding">
+                    <Grid item lg={10} sm={12} className="headingPadding">
                         <ProfileHeading user={user} />
                     </Grid>
+
                 </Grid>
                 {tabs}
             </Paper>

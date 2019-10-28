@@ -99,16 +99,6 @@ class Accounts extends Component {
         );
     }
 
-    addDashes(string) {
-        if (string.length == 10 && string.match(/^[0-9]+$/) != null) {
-            return (
-                `(${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 15)})`);
-        }
-        else {
-            return ("error");
-        }
-    }
-
     render() {
         console.log(this.state.mobileView)
         let styles = (username) => ({
@@ -152,7 +142,7 @@ class Accounts extends Component {
                                 </Grid>
                             </TableCell>
                             <TableCell>{row.email}</TableCell>
-                            <TableCell>{this.addDashes(row.phone_number)}</TableCell>
+                            <TableCell>{addDashes(row.phone_number)}</TableCell>
                             <TableCell>{row.role.charAt(0).toUpperCase() + row.role.slice(1)}</TableCell>
                             <TableCell onClick={(event) => {
                                 event.stopPropagation();
@@ -196,7 +186,7 @@ class Accounts extends Component {
                 <hr />
                 <Typography variant="h2" align={"left"} className={"heading"}>Accounts</Typography>
                 <Grid container direction={"row"} alignItems={"center"}>
-                    <Grid item xs={11}>
+                    <Grid item xs={12}>
                         <Tabs
                             value={this.state.value}
                             onChange={this.handleChange}
