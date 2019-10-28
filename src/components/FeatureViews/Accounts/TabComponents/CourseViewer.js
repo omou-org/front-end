@@ -48,6 +48,7 @@ class CourseViewer extends Component {
                 // only keep course if the student is on the roster
                 userCourseList = Object.keys(this.props.courses).filter((courseID) => {
                     let course = this.props.courses[courseID];
+                    // console.log(filterCourseByDate(course.schedule.end_date),course.roster.includes(this.props.user_id));
                     return filterCourseByDate(course.schedule.end_date) && course.roster.includes(this.props.user_id);
                 });
                 break;
@@ -89,6 +90,7 @@ class CourseViewer extends Component {
     }
 
     numPaidCourses(courseID){
+        // console.log(this.state.userEnrollments);
         let courseEnrollment = this.state.userEnrollments[courseID],
             enrollmentPayments = Object.values(courseEnrollment.session_payment_status),
             numPaidEnrollments = 0;
@@ -146,6 +148,7 @@ class CourseViewer extends Component {
             <Grid container spacing={8}>
                 {this.setCourses().length !== 0 ?
                     this.setCourses().map((courseID) => {
+                        // console.log(courseID);
                         let course = this.props.courses[courseID];
                         let {Days, startDate, endDate, startTime, endTime} = this.courseDataParser(course);
                         return (<Grid item md={12}

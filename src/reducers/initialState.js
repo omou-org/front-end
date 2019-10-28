@@ -3758,18 +3758,58 @@ export default {
     "SearchResults":{
         accounts:[
             {
-                first_name: "",
-                last_name: "",
-                role: "",
-                id: "",
-                email: "",
-            }
-        ],
-        sessions:[
-
+                first_name: "Daniel",
+                last_name: "Huang",
+                role: "Instructor",
+                id: 10,
+                email: "daniel.huang@gmail.com",
+            },
+            {
+                first_name: "Danny",
+                last_name: "Long",
+                role: "Student",
+                id: 10,
+                email: "dannylong@omou.com",
+            },
+            {
+                first_name: "Gale",
+                last_name: "Long",
+                role: "Parent",
+                id: 78,
+                email: "gale.long@omou.com",
+            },
         ],
         courses:[
-
+            {
+                date_start: "2020-01-08",
+                date_end: "2020-04-01",
+                course: {
+                    title: "6th Grade Math Placement Test Prep",
+                    course_id: "6GMPTP-A",
+                    subject: "Math",
+                    instructor: "Daniel Huang",
+                },
+            },
+            {
+                date_start: "2020-08-19",
+                date_end: "2020-11-04",
+                course: {
+                    title: "Honors Pre-Calculus - Amador",
+                    course_id: "HPC-A",
+                    subject: "Calculus",
+                    instructor: "Daniel Huang",
+                },
+            },
+            {
+                date_start: "2020-03-21",
+                date_end: "2020-06-27",
+                course: {
+                    title: "AP Calc A/B",
+                    course_id: "APCAB-A",
+                    subject: "Calculus",
+                    instructor: "Daniel Huang",
+                },
+            },
         ],
     }
 };

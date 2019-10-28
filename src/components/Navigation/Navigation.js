@@ -25,6 +25,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 // Local Component Imports
 import "./Navigation.scss";
 import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
+import Search from "../FeatureViews/Search/Search";
 
 function Navigation(props) {
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -65,7 +66,7 @@ function Navigation(props) {
                     position="fixed"
                     className="OmouBar">
                     <Toolbar>
-                        <Hidden >
+                        <Hidden>
                             <IconButton
                                 color="inherit"
                                 aria-label="Open Drawer"
@@ -79,6 +80,7 @@ function Navigation(props) {
                         <div style={{
                             flex: 1,
                         }} />
+                        <Search/>
                         {
                             props.auth.token
                                 ? <Typography
