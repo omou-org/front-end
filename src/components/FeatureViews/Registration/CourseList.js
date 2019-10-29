@@ -60,7 +60,6 @@ const CourseList = (props) => props.filteredCourses.map((course) => {
                         <Grid
                             item
                             md={8} xs={9}
-                            className="value"
                             align="left">
                             {date} | {days} {time}
                         </Grid>
@@ -74,7 +73,6 @@ const CourseList = (props) => props.filteredCourses.map((course) => {
                             Instructor
                         </Grid>
                         <Grid item md={8} xs={9}
-                            className="value"
                             align="left">
                             {props.instructors[course.instructor_id].name}
                         </Grid>
@@ -90,7 +88,6 @@ const CourseList = (props) => props.filteredCourses.map((course) => {
                         <Grid
                             item
                             md={8} xs={9}
-                            className="value"
                             align="left">
                             ${course.tuition}
                         </Grid>

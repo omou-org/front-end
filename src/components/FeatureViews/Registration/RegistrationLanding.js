@@ -1,6 +1,6 @@
 // react/redux imports
 import * as apiActions from "../../../actions/apiActions";
-import React, {useEffect, useState, useMemo} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import PropTypes from "prop-types";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
@@ -113,16 +113,13 @@ const RegistrationLanding = ({api, courses, instructors, requestStatus}) => {
             const mappedValues = filters.map(({value}) => value);
             switch (filterName) {
                 case "instructor":
-                    filteredCourses = filteredCourses.filter(({instructor_id}) =>
-                        mappedValues.includes(instructor_id));
+                    filteredCourses = filteredCourses.filter(({instructor_id}) => mappedValues.includes(instructor_id));
                     break;
                 case "subject":
-                    filteredCourses = filteredCourses.filter(({subject}) =>
-                        mappedValues.includes(subject));
+                    filteredCourses = filteredCourses.filter(({subject}) => mappedValues.includes(subject));
                     break;
                 case "grade":
-                    filteredCourses = filteredCourses.filter(({grade}) =>
-                        mappedValues.includes(grade));
+                    filteredCourses = filteredCourses.filter(({grade}) => mappedValues.includes(grade));
                     break;
                 default:
                     console.warn(`Unhandled filter ${filterName}`);
@@ -150,78 +147,76 @@ const RegistrationLanding = ({api, courses, instructors, requestStatus}) => {
     }
 
     return (
-        <>
-            <Paper className="RegistrationLanding paper">
-                <BackButton />
-                <hr />
+        <Paper className="RegistrationLanding paper">
+            <BackButton />
+            <hr />
+            <Grid
+                container
+                layout="row">
                 <Grid
-                    container
-                    layout="row">
-                    <Grid
-                        item
-                        md={7}
-                        xs={12}>
-                        <Typography
-                            align="left"
-                            className="heading"
-                            variant="h3">
+                    item
+                    md={7}
+                    xs={12}>
+                    <Typography
+                        align="left"
+                        className="heading"
+                        variant="h3">
                             Registration Catalog
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        className="catalog-setting-wrapper"
-                        item
-                        md={5}
-                        xs={12}>
-                        <Tabs
-                            className="catalog-setting"
-                            value={view}>
-                            <Tab
-                                label="Courses"
-                                onClick={updateView(0)} />
-                            <Tab
-                                label="Tutoring"
-                                onClick={updateView(1)} />
-                        </Tabs>
-                    </Grid>
+                    </Typography>
                 </Grid>
                 <Grid
-                    container
-                    layout="row"
-                    spacing={8}>
+                    className="catalog-setting-wrapper"
+                    item
+                    md={5}
+                    xs={12}>
+                    <Tabs
+                        className="catalog-setting"
+                        value={view}>
+                        <Tab
+                            label="Courses"
+                            onClick={updateView(0)} />
+                        <Tab
+                            label="Tutoring"
+                            onClick={updateView(1)} />
+                    </Tabs>
+                </Grid>
+            </Grid>
+            <Grid
+                container
+                layout="row"
+                spacing={8}>
+                <Grid
+                    item
+                    md={4}
+                    xs={12}>
+                    {renderFilter("instructor")}
+                </Grid>
+                <Hidden xsDown>
                     <Grid
                         item
                         md={4}
                         xs={12}>
-                        {renderFilter("instructor")}
+                        {renderFilter("subject")}
                     </Grid>
-                    <Hidden xsDown>
-                        <Grid
-                            item
-                            md={4}
-                            xs={12}>
-                            {renderFilter("subject")}
-                        </Grid>
-                        <Grid
-                            item
-                            md={4}
-                            xs={12}>
-                            {renderFilter("grade")}
-                        </Grid>
-                    </Hidden>
-                </Grid>
-                <div className="registration-table">
-                    {
-                        view === 0 &&
+                    <Grid
+                        item
+                        md={4}
+                        xs={12}>
+                        {renderFilter("grade")}
+                    </Grid>
+                </Hidden>
+            </Grid>
+            <div className="registration-table">
+                {
+                    view === 0 &&
                         <CourseList filteredCourses={filteredCourses} />
-                    }
-                    {
-                        view === 1 &&
+                }
+                {
+                    view === 1 &&
                         <TutoringList filteredCourses={filteredCourses} />
-                    }
-                </div>
-            </Paper>
-        </>
+                }
+            </div>
+        </Paper>
     );
 };
 
