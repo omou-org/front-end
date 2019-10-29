@@ -414,12 +414,11 @@
 
       .text, .chip {
         margin: 3px 55px 3px 0;
-        cursor: pointer;
       }
 
       .chip {
-        //width:auto;
         display: inline-flex;
+        cursor: pointer;
       }
     }
   }

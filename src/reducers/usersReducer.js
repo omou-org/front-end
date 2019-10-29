@@ -83,13 +83,14 @@ const addParents = (state, parents) => {
 
 const handleInstructorsFetch = (state, {id, response}) => {
     const {data} = response;
-    if (id !== REQUEST_ALL) {
-        return updateInstructor(state, id, data);
-    }
     let {InstructorList} = state;
-    data.forEach((instructor) => {
-        InstructorList = updateInstructor(InstructorList, instructor.user.id, instructor);
-    });
+    if (id !== REQUEST_ALL) {
+        InstructorList = updateInstructor(InstructorList, id, data);
+    } else {
+        data.forEach((instructor) => {
+            InstructorList = updateInstructor(InstructorList, instructor.user.id, instructor);
+        });
+    }
     return {
         ...state,
         InstructorList,

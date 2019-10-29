@@ -23,13 +23,14 @@ const dayToNum = {
 
 const handleCoursesFetch = (state, {id, response}) => {
     const {data} = response;
-    if (id !== REQUEST_ALL) {
-        return updateCourse(state, id, data);
-    }
     let {NewCourseList} = state;
-    data.forEach((course) => {
-        NewCourseList = updateCourse(NewCourseList, course.id, course);
-    });
+    if (id !== REQUEST_ALL) {
+        NewCourseList = updateCourse(NewCourseList, id, data);
+    } else {
+        data.forEach((course) => {
+            NewCourseList = updateCourse(NewCourseList, course.id, course);
+        });
+    }
     return {
         ...state,
         NewCourseList,
