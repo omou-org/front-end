@@ -1,5 +1,5 @@
-import { connect } from 'react-redux';
-import React, { Component } from 'react';
+import {connect} from 'react-redux';
+import React, {Component} from 'react';
 
 class Schedule extends Component {
     constructor(props) {
@@ -11,7 +11,7 @@ class Schedule extends Component {
 
 
     render() {
-        return(<h1>Schedule</h1>)
+        return (<h1>Schedule</h1>)
     }
 
 }

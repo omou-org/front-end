@@ -28,24 +28,16 @@
     .row {
       cursor: pointer;
     }
-  }
 
-  .accountsCell {
-    margin-left: 0px !important;
-    padding-left: 0px !important;
-    margin-right: 0px !important;
-    padding-right: 0px !important;
-  }
+    .editButton {
+      color: $darkenPrimaryFontColor;
+      border-radius: 0px;
+      box-sizing: border-box;
+      border: solid 2px $secondaryColor !important;
+      white-space: nowrap;
+      right: 10%;
+    }
 
-  .editButton {
-    color: $darkenPrimaryFontColor;
-    border-radius: 0px;
-    box-sizing: border-box;
-    border: solid 2px $secondaryColor !important;
-    font-weight: normal !important;
-    font-size: 12px;
-    white-space: nowrap;
-    right: 10%;
   }
 }
 
@@ -77,7 +69,6 @@
     .rowPadding {
       display: flex;
       padding: 4px;
-      padding: 1%;
       align-content: left;
       text-align: left;
 
@@ -94,25 +85,6 @@
       white-space: nowrap;
       position: relative;
     }
-
-    // .rowPadding {
-    //   display: flex;
-    //   padding: 1%;
-    //   align-content: left;
-    //   white-space: nowrap;
-    // }
-    // .editPadding {
-    //   position: absolute;
-    //   right: 10%;
-    //   padding-top: 1.5%;
-    //   .editButton {
-    //     color: $darkenPrimaryFontColor;
-    //     border-radius: 5px;
-    //     box-sizing: border-box;
-    //     border: solid 2px $secondaryColor !important;
-    //     white-space: nowrap;
-    //   }
-    // }
   }
 
   .padding {
@@ -123,7 +95,6 @@
   .userLabel {
     @include respond-to(medium-up-screens) {
       margin-top: 28px;
-      margin-left: 40px;
     }
 
     @include respond-to(handhelds) {
