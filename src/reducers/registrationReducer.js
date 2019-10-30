@@ -1,7 +1,7 @@
 import initialState from './initialState';
 import * as actions from "./../actions/actionTypes"
 
-export default function registration(state = initialState.RegistrationForms, { payload, type }) {
+export default function registration(state = initialState.RegistrationForms, {payload, type}) {
     let newState = JSON.parse(JSON.stringify(state));
     switch (type) {
         case actions.ADD_STUDENT_FIELD:
@@ -17,31 +17,24 @@ export default function registration(state = initialState.RegistrationForms, { p
             let path = payload[0];
             let removeFieldIndex = payload[1];
             let conditional = payload[2];
-            if(conditional){
+            if (conditional) {
                 path.push(conditional);
             }
             newState = removeField(state, path, removeFieldIndex, conditional);
             return newState;
         case actions.POST_STUDENT_SUCCESSFUL:
-            console.log("POSTED STUDENT", payload);
             return successSubmit(state);
         case actions.POST_STUDENT_FAILED:
-            console.error("FAILED TO POST STUDENT", payload);
             return failedSubmit(state);
         case actions.POST_PARENT_SUCCESSFUL:
-            console.log("POSTED PARENT", payload);
             return successSubmit(state);
         case actions.POST_PARENT_FAILED:
-            console.error("FAILED TO POST PARENT", payload);
             return failedSubmit(state);
         case actions.POST_INSTRUCTOR_SUCCESSFUL:
-            console.log("POSTED INSTRUCTOR", payload);
             return successSubmit(state);
         case actions.POST_INSTRUCTOR_FAILED:
-            console.error("FAILED TO POST INSTRUCTOR", payload);
             return failedSubmit(state);
         case actions.SUBMIT_INITIATED:
-            console.log("STARTED SUBMIT");
             return onSubmit(state);
         case actions.RESET_SUBMIT_STATUS:
             return onSubmit(state);

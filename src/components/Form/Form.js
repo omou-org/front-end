@@ -1,6 +1,7 @@
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../actions/registrationActions";
+import * as userActions from "../../actions/userActions";
 import React, {Component} from "react";
 import {Prompt} from "react-router";
 import {NavLink} from "react-router-dom";
@@ -316,8 +317,7 @@ class Form extends Component {
                 if (oldState.activeStep === this.getFormObject().section_titles.length - 1) {
                     if (!oldState.submitPending) {
                         if (this.props.computedMatch.params.edit === "edit") {
-                            this.props.registrationActions.submitForm(this.state,
-                                this.props.computedMatch.params.id);
+                            this.props.registrationActions.submitForm(this.state, this.props.computedMatch.params.id);
                         } else {
                             this.props.registrationActions.submitForm(this.state);
                         }
@@ -524,28 +524,31 @@ class Form extends Component {
     }
 
     renderField(field, label, fieldIndex) {
-        let fieldTitle = field.name;
+        const fieldTitle = field.name;
         switch (field.type) {
             case "select":
-                return <FormControl className={"form-control"}>
-                    <InputLabel htmlFor={fieldTitle}>{fieldTitle}</InputLabel>
-                    <Select
-                        displayEmpty={false}
-                        value={this.state[label][fieldTitle]}
-                        onChange={({target}) => {
-                            this.onSelectChange(target.value, label, field);
-                        }}>
-                        {
-                            field.options.map((option) => {
-                                return <MenuItem value={option} key={option}>
-                                    <em>{option}</em>
-                                </MenuItem>
+                return (
+                    <FormControl className="form-control">
+                        <InputLabel shrink={this.state[label][fieldTitle]}>
+                            {fieldTitle}
+                        </InputLabel>
+                        <Select
+                            onChange={({"target": {value}}) => {
+                                this.onSelectChange(value, label, field);
+                            }}
+                            value={this.state[label][fieldTitle]}>
+                            {
+                                field.options.map((option) => (
+                                    <MenuItem
+                                        key={option}
+                                        value={option}>
+                                        <em>{option}</em>
+                                    </MenuItem>
+                                ))
                             }
-
-                            )
-                        }
-                    </Select>
-                </FormControl>;
+                        </Select>
+                    </FormControl>
+            );
             case "course": {
                 let courseList = Object.keys(this.props.courses)
                     .filter((courseID) =>
@@ -713,7 +716,6 @@ class Form extends Component {
         }, () => {
             sessionStorage.setItem("form", JSON.stringify(this.state));
         });
-        // for some reason it isn't rerendering automatically
     }
 
     removeField(fieldIndex) {
@@ -767,27 +769,7 @@ class Form extends Component {
                 {
                     steps.map((label) => (
                         <Step key={label}>
-                            <StepLabel>
-                                {label}
-                                {/* {activeStep !== i &&
-                                    Object.entries(this.state[label]).map(([field, value]) => {
-                                        if (!value) {
-                                            return null;
-                                        }
-                                        if (value && value.hasOwnProperty("label")) {
-                                            value = value.label;
-                                        }
-
-                                        return (
-                                            <div key={field}>
-                                                <Typography className="field-title" align="left">
-                                                    {field}: {value}
-                                                </Typography>
-                                            </div>
-                                        );
-                                    })
-                                } */}
-                            </StepLabel>
+                            <StepLabel>{label}</StepLabel>
                             <StepContent>
                                 {
                                     section.map((field, j) => {
@@ -886,7 +868,7 @@ class Form extends Component {
                                     {sectionTitle}
                                 </Typography>
                                 {
-                                    this.getActiveSection().map(({field, type}) => {
+                                    this.getFormObject()[sectionTitle].map(({field, type}) => {
                                         let fieldVal = this.state[sectionTitle][field];
                                         if (fieldVal && fieldVal.hasOwnProperty("value")) {
                                             fieldVal = fieldVal.value;
@@ -929,6 +911,15 @@ class Form extends Component {
     }
 
     render() {
+        const {id, edit} = this.props.computedMatch.params;
+        // let submitStatus;
+        // if (this.props.computedMatch.params.edit === "edit") {
+        //     // PATCH request
+        //     submitStatus = this.props.requestStatus[this.state.form][PATCH][id];
+        // } else {
+        //     // POST request
+        //     submitStatus = this.props.requestStatus[this.state.form][POST];
+        // }
         return (
             <Grid container className="">
                 {/* Determine if finished component is displayed. If not, then don't prompt */}
@@ -950,7 +941,7 @@ class Form extends Component {
                         {
                             this.props.submitStatus !== "success" ?
                                 this.props.registrationForm[this.state.form] ?
-                                    this.renderForm.bind(this)() :
+                                    this.renderForm() :
                                     <Typography>
                                         Sorry! The form is unavailable.
                                     </Typography>
@@ -981,7 +972,7 @@ class Form extends Component {
                         </Modal>
                         {/* Error message on failed submit */}
                         <Dialog
-                            open={this.props.submitStatus === "fail"}
+                            open={this.props.submitStatus == "fail"}
                             onClose={() => {
                                 this.props.registrationActions.resetSubmitStatus();
                                 this.setState({
@@ -1018,23 +1009,21 @@ class Form extends Component {
     }
 }
 
-function mapStateToProps(state) {
-    return {
-        courses: state.Course["NewCourseList"],
-        courseCategories: state.Course["CourseCategories"],
-        registrationForm: state.Registration["registration_form"],
-        submitStatus: state.Registration["submitStatus"],
-        parents: state.Users["ParentList"],
-        students: state.Users["StudentList"],
-        instructors: state.Users["InstructorList"],
-    };
-}
+const mapStateToProps = (state) => ({
+    "courses": state.Course["NewCourseList"],
+    "courseCategories": state.Course["CourseCategories"],
+    "registrationForm": state.Registration["registration_form"],
+    "submitStatus": state.Registration["submitStatus"],
+    "parents": state.Users["ParentList"],
+    "students": state.Users["StudentList"],
+    "instructors": state.Users["InstructorList"],
+    "requestStatus": state.RequestStatus,
+});
 
-function mapDispatchToProps(dispatch) {
-    return {
-        registrationActions: bindActionCreators(registrationActions, dispatch),
-    };
-}
+const mapDispatchToProps = (dispatch) => ({
+    "registrationActions": bindActionCreators(registrationActions, dispatch),
+    "userActions": bindActionCreators(userActions, dispatch),
+});
 
 export default connect(
     mapStateToProps,

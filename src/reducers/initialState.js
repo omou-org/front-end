@@ -1,3 +1,5 @@
+import {GET, PATCH, POST} from "../actions/actionTypes";
+
 export default {
     "Authentication": initAuth(),
     "RegistrationForms": initRegistrationForm(),
@@ -434,6 +436,227 @@ export default {
                 subject: "Calculus",
                 tags: ["Math", "Preparation Class", "AP",],
             },
+            11: {
+                course_id: 11,
+                title: "Reading Comprehension",
+                schedule: {
+                    start_date: "2019-09-13",
+                    end_date: "2020-1-27",
+                    start_time: "T11:00",
+                    end_time: "T13:00",
+                    days: [6],
+                },
+                instructor_id: 10,
+                tuition: 700,
+                capacity: 15,
+                filled: 12,
+                grade: 10,
+                description: "This course is primarily for sophomores and juniors preparing for the SAT.",
+                room_id: 4,
+                type: "C",
+                roster: [23, 99,],
+                subject: "English",
+                tags: ["English", "Preparation Class", "SAT"],
+            },
+            12: {
+                course_id: 12,
+                title: "AP US History prep",
+                schedule: {
+                    start_date: "2019-09-14",
+                    end_date: "2020-2-27",
+                    start_time: "T09:00",
+                    end_time: "T12:00",
+                    days: [6],
+                },
+                instructor_id: 10,
+                tuition: 700,
+                capacity: 15,
+                filled: 12,
+                grade: 10,
+                description: "This course is to prepare sophmores or juniors for AP US history.",
+                room_id: 4,
+                type: "C",
+                roster: [23, 99, 64],
+                subject: "History",
+                tags: ["History", "Preparation Class", "AP"],
+            },
+            13: {
+                course_id: 13,
+                title: "AP Chemistry",
+                schedule: {
+                    start_date: "2019-09-21",
+                    end_date: "2020-1-27",
+                    start_time: "T13:00",
+                    end_time: "T16:00",
+                    days: [6],
+                },
+                instructor_id: 11,
+                tuition: 700,
+                capacity: 15,
+                filled: 12,
+                grade: 10,
+                description: "This course is to prepare students for AP Chemistry.",
+                room_id: 4,
+                type: "C",
+                roster: [23, 99, 64],
+                subject: "Science",
+                tags: ["Science", "Preparation Class", "AP"],
+            },
+            14: {
+                course_id: 14,
+                title: "AP Language and Composition",
+                schedule: {
+                    start_date: "2019-09-12",
+                    end_date: "2020-1-27",
+                    start_time: "T12:00",
+                    end_time: "T14:00",
+                    days: [6],
+                },
+                instructor_id: 10,
+                tuition: 700,
+                capacity: 15,
+                filled: 12,
+                grade: 10,
+                description: "This course prepares junior students for AP Language and Composition.",
+                room_id: 6,
+                type: "C",
+                roster: [23, 99, 64],
+                subject: "Language",
+                tags: ["Language", "Preparation Class",],
+            },
+            15: {
+                course_id: 15,
+                title: "AP Comp Sci",
+                schedule: {
+                    start_date: "2019-09-21",
+                    end_date: "2020-1-27",
+                    start_time: "T15:00",
+                    end_time: "T17:00",
+                    days: [6],
+                },
+                instructor_id: 11,
+                tuition: 700,
+                capacity: 15,
+                filled: 12,
+                grade: 10,
+                description: "This course is to prepare students for computer science.",
+                room_id: 4,
+                type: "C",
+                roster: [23, 99, 64],
+                subject: "Computer Science",
+                tags: ["CS", "Preparation Class", "AP"],
+            },
+            16: {
+                course_id: 16,
+                title: "AP Physics",
+                schedule: {
+                    start_date: "2019-09-13",
+                    end_date: "2020-1-27",
+                    start_time: "T10:00",
+                    end_time: "T12:00",
+                    days: [6],
+                },
+                instructor_id: 13,
+                tuition: 700,
+                capacity: 15,
+                filled: 12,
+                grade: 10,
+                description: "This course is to prepare studenets for AP Physics.",
+                room_id: 2,
+                type: "C",
+                roster: [23, 99, 64],
+                subject: "Physics",
+                tags: ["Physics", "Preparation Class", "AP"],
+            },
+            17: {
+                course_id: 17,
+                title: "AP Literature",
+                schedule: {
+                    start_date: "2019-09-10",
+                    end_date: "2020-1-27",
+                    start_time: "T09:00",
+                    end_time: "T12:00",
+                    days: [6],
+                },
+                instructor_id: 10,
+                tuition: 700,
+                capacity: 15,
+                filled: 12,
+                grade: 10,
+                description: "This course is to prepare students for AP Literature.",
+                room_id: 4,
+                type: "C",
+                roster: [23, 99, 64],
+                subject: "English",
+                tags: ["English", "Preparation Class", "AP"],
+            },
+            18: {
+                course_id: 18,
+                title: "AP Government",
+                schedule: {
+                    start_date: "2019-09-12",
+                    end_date: "2020-1-27",
+                    start_time: "T09:00",
+                    end_time: "T10:00",
+                    days: [6],
+                },
+                instructor_id: 11,
+                tuition: 700,
+                capacity: 15,
+                filled: 12,
+                grade: 10,
+                description: "This course is to prepare for AP Government.",
+                room_id: 5,
+                type: "C",
+                roster: [23, 99, 64],
+                subject: "History",
+                tags: ["History", "Preparation Class", "AP"],
+            },
+            19: {
+                course_id: 19,
+                title: "AP French",
+                schedule: {
+                    start_date: "2019-09-12",
+                    end_date: "2020-1-27",
+                    start_time: "T14:00",
+                    end_time: "T17:00",
+                    days: [6],
+                },
+                instructor_id: 11,
+                tuition: 700,
+                capacity: 15,
+                filled: 12,
+                grade: 10,
+                description: "This course is to prepare students for French.",
+                room_id: 3,
+                type: "T",
+                roster: [23, 99, 64],
+                subject: "Language",
+                tags: ["Language", "Preparation Class", "AP"],
+            },
+            20: {
+                course_id: 20,
+                title: "AP Spanish",
+                schedule: {
+                    start_date: "2019-09-12",
+                    end_date: "2020-1-27",
+                    start_time: "T12:00",
+                    end_time: "T19:00",
+                    days: [6],
+                },
+                instructor_id: 10,
+                tuition: 700,
+                capacity: 15,
+                filled: 12,
+                grade: 10,
+                description: "This course is to prepare students for Spanish.",
+                room_id: 4,
+                type: "T",
+                roster: [23, 64],
+                subject: "Language",
+                tags: ["Language", "Preparation Class", "AP"],
+            }
+
         },
         "CourseSessions": {
             1: {
@@ -442,7 +665,7 @@ export default {
                     start: "2020-01-07T10:30",
                     end: "2020-01-07T14:00",
                     course_id: 1,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Daniel Huang", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 2: {
@@ -450,7 +673,7 @@ export default {
                     start: "2020-01-14T10:30",
                     end: "2020-01-14T14:00",
                     course_id: 1,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Daniel Huang", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 3: {
@@ -458,7 +681,7 @@ export default {
                     start: "2020-01-21T10:30",
                     end: "2020-01-21T14:00",
                     course_id: 1,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Daniel Huang", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 4: {
@@ -466,7 +689,7 @@ export default {
                     start: "2020-01-28T10:30",
                     end: "2020-01-28T14:00",
                     course_id: 1,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Daniel Huang", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 5: {
@@ -474,7 +697,7 @@ export default {
                     start: "2020-02-04T10:30",
                     end: "2020-02-04T14:00",
                     course_id: 1,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Daniel Huang", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 6: {
@@ -482,7 +705,7 @@ export default {
                     start: "2020-02-11T10:30",
                     end: "2020-02-11T14:00",
                     course_id: 1,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Daniel Huang", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 7: {
@@ -490,7 +713,7 @@ export default {
                     start: "2020-02-18T10:30",
                     end: "2020-02-18T14:00",
                     course_id: 1,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Daniel Huang", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 8: {
@@ -498,7 +721,7 @@ export default {
                     start: "2020-02-25T10:30",
                     end: "2020-02-25T14:00",
                     course_id: 1,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Daniel Huang", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 9: {
@@ -506,7 +729,7 @@ export default {
                     start: "2020-02-28T10:30",
                     end: "2020-02-28T14:00",
                     course_id: 1,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Daniel Huang", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
 
@@ -515,7 +738,7 @@ export default {
                     start: "2020-03-03T10:30",
                     end: "2020-03-03T14:00",
                     course_id: 1,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Daniel Huang", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 11: {
@@ -523,7 +746,7 @@ export default {
                     start: "2020-03-10T10:30",
                     end: "2020-03-10T14:00",
                     course_id: 1,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Daniel Huang", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 12: {
@@ -531,7 +754,7 @@ export default {
                     start: "2020-03-17T10:30",
                     end: "2020-03-17T14:00",
                     course_id: 1,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Daniel Huang", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 13: {
@@ -539,7 +762,7 @@ export default {
                     start: "2020-03-24T10:30",
                     end: "2020-03-24T14:00",
                     course_id: 1,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Daniel Huang", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 14: {
@@ -547,7 +770,7 @@ export default {
                     start: "2020-03-31T10:30",
                     end: "2020-03-31T14:00",
                     course_id: 1,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Daniel Huang", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 15: {
@@ -555,7 +778,7 @@ export default {
                     start: "2020-04-02T10:30",
                     end: "2020-04-02T14:00",
                     course_id: 1,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Daniel Huang", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
 
@@ -566,7 +789,7 @@ export default {
                     start: "2020-06-02T18:00",
                     end: "2020-06-02T020:00",
                     course_id: 2,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Jerry Li", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 2: {
@@ -574,7 +797,7 @@ export default {
                     start: "2020-06-09T1800",
                     end: "2020-06-09T20:00",
                     course_id: 2,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Jerry Li", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 3: {
@@ -582,7 +805,7 @@ export default {
                     start: "2020-06-16T1800",
                     end: "2020-06-16T20:00",
                     course_id: 2,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Jerry Li", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 4: {
@@ -590,7 +813,7 @@ export default {
                     start: "2020-06-23T1800",
                     end: "2020-06-23T20:00",
                     course_id: 2,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Jerry Li", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 5: {
@@ -598,7 +821,7 @@ export default {
                     start: "2020-06-30T1800",
                     end: "2020-06-30T20:00",
                     course_id: 2,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Jerry Li", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 6: {
@@ -606,7 +829,7 @@ export default {
                     start: "2020-07-07T1800",
                     end: "2020-07-07T20:00",
                     course_id: 2,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Jerry Li", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 7: {
@@ -614,7 +837,7 @@ export default {
                     start: "2020-07-14T1800",
                     end: "2020-07-14T20:00",
                     course_id: 2,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Jerry Li", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 8: {
@@ -622,7 +845,7 @@ export default {
                     start: "2020-07-21T1800",
                     end: "2020-07-21T20:00",
                     course_id: 2,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Jerry Li", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 9: {
@@ -630,7 +853,7 @@ export default {
                     start: "2020-07-28T1800",
                     end: "2020-07-28T20:00",
                     course_id: 2,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Jerry Li", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 10: {
@@ -638,7 +861,7 @@ export default {
                     start: "2020-08-04T1800",
                     end: "2020-08-04T20:00",
                     course_id: 2,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Jerry Li", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 11: {
@@ -646,7 +869,7 @@ export default {
                     start: "2020-08-11T1800",
                     end: "2020-08-11T20:00",
                     course_id: 2,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Jerry Li", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 12: {
@@ -654,7 +877,7 @@ export default {
                     start: "2020-08-13T1800",
                     end: "2020-08-13T20:00",
                     course_id: 2,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Jerry Li", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 13: {
@@ -662,7 +885,7 @@ export default {
                     start: "2020-08-14T1800",
                     end: "2020-08-14T20:00",
                     course_id: 2,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Jerry Li", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 14: {
@@ -670,7 +893,7 @@ export default {
                     start: "2020-08-15T1800",
                     end: "2020-08-15T20:00",
                     course_id: 2,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Jerry Li", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
                 15: {
@@ -678,7 +901,7 @@ export default {
                     start: "2020-08-18T1800",
                     end: "2020-08-18T20:00",
                     course_id: 2,
-                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    instructor: "Jerry Li", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
                 },
             },
@@ -1777,6 +2000,106 @@ export default {
 
                 },
             },
+            11: {
+                1: {
+                    session_id: 1,
+                    start: "2019-09-13T09:00",
+                    end: "2019-06-13T10:00",
+                    course_id: 11,
+                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    room_id: 2,
+                }
+            },
+            12: {
+                1: {
+                    session_id: 1,
+                    start: "2019-09-14T11:00",
+                    end: "2019-06-14T13:00",
+                    course_id: 12,
+                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    room_id: 2,
+                }
+            },
+            13: {
+                1: {
+                    session_id: 1,
+                    start: "2019-09-13T13:00",
+                    end: "2019-06-13T16:00",
+                    course_id: 13,
+                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    room_id: 2,
+                }
+            },
+            14: {
+                1: {
+                    session_id: 1,
+                    start: "2019-09-13T11:00",
+                    end: "2019-06-13T12:00",
+                    course_id: 14,
+                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    room_id: 2,
+                }
+            },
+            15: {
+                1: {
+                    session_id: 1,
+                    start: "2019-09-11T09:00",
+                    end: "2019-06-11T12:00",
+                    course_id: 15,
+                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    room_id: 2,
+                }
+            },
+            16: {
+                1: {
+                    session_id: 1,
+                    start: "2019-09-13T07:00",
+                    end: "2019-06-13T10:00",
+                    course_id: 16,
+                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    room_id: 2,
+                }
+            },
+            17: {
+                1: {
+                    session_id: 1,
+                    start: "2019-09-14T14:00",
+                    end: "2019-06-14T16:00",
+                    course_id: 17,
+                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    room_id: 2,
+                }
+            },
+            18: {
+                1: {
+                    session_id: 1,
+                    start: "2019-09-13T12:00",
+                    end: "2019-06-13T16:00",
+                    course_id: 18,
+                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    room_id: 2,
+                }
+            },
+            19: {
+                1: {
+                    session_id: 1,
+                    start: "2019-09-12T13:00",
+                    end: "2019-06-12T16:00",
+                    course_id: 19,
+                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    room_id: 2,
+                }
+            },
+            20: {
+                1: {
+                    session_id: 1,
+                    start: "2019-09-12T14:00",
+                    end: "2019-06-12T17:00",
+                    course_id: 20,
+                    instructor: "", // default to session's default instructor - change if there's a substitute,
+                    room_id: 2,
+                }
+            }
         },
     },
     "Enrollments": {
@@ -2843,7 +3166,6 @@ export default {
                     1: {
                         timestamp: "2020-01-02T12:05",
                         body: "wants to take bio",
-                        subject: "asd",
                         important: false,
                         complete: false,
                         active: true,
@@ -2851,7 +3173,6 @@ export default {
                     2: {
                         timestamp: "2020-01-10T13:11",
                         body: "sister is interested in taking 7th grade english",
-                        subject: "wee woo",
                         important: true,
                         complete: false,
                         active: true,
@@ -2883,7 +3204,6 @@ export default {
                     1: {
                         timestamp: "2020-01-13T17:33",
                         body: "Needs PSAT practice problems",
-                        subject: "wee woo",
                         complete: false,
                         important: true,
                         active: true,
@@ -2915,7 +3235,6 @@ export default {
                     1: {
                         timestamp: "2020-01-12T15:21",
                         body: "grade bio worksheet",
-                        subject: "wee woo",
                         important: true,
                         active: true,
                         complete: false,
@@ -3435,14 +3754,47 @@ export default {
 
         ],
     },
+    "RequestStatus": initRequests(),
 };
+
+function initRequests() {
+    return {
+        "admin": {
+            [GET]: {},
+            [PATCH]: {},
+        },
+        "course": {
+            [GET]: {},
+            [PATCH]: {},
+        },
+        "category": {
+            [GET]: {},
+            [PATCH]: {},
+        },
+        "instructor": {
+            [GET]: {},
+            [PATCH]: {},
+        },
+        "parent": {
+            [GET]: {},
+            [PATCH]: {},
+        },
+        "student": {
+            [GET]: {},
+            [PATCH]: {},
+        },
+        "schedule": {
+            [GET]: {},
+            [PATCH]: {},
+        },
+    };
+}
 
 function initAuth() {
     const token = localStorage.getItem("authToken") || null;
     sessionStorage.setItem("authToken", token);
     return {
         token,
-        "failedLogin": false,
     };
 }
 
@@ -3654,15 +4006,15 @@ function initRegistrationForm() {
                         name: "State",
                         type: "short text",
                         suggestions: [
-                            { label: "AL" }, { label: "AK" }, { label: "AZ" }, { label: "AR" }, { label: "CA" }, { label: "CO" },
-                            { label: "CT" }, { label: "DE" }, { label: "FL" }, { label: "GA" }, { label: "HI" }, { label: "ID" },
-                            { label: "IL" }, { label: "IN" }, { label: "IA" }, { label: "KS" },
-                            { label: "KY" }, { label: "KY" }, { label: "LA" }, { label: "ME" }, { label: "MD" }, { label: "MA" }, { label: "MI" },
-                            { label: "MS" }, { label: "MO" }, { label: "MT" }, { label: "NE" }, { label: "NV" }, { label: "NH" }, { label: "NJ" },
-                            { label: "NM" }, { label: "NY" }, { label: "NC" }, { label: "ND" },
-                            { label: "OH" }, { label: "OK" }, { label: "OR" }, { label: "PA" }, { label: "RI" }, { label: "SC" }, { label: "SD" },
-                            { label: "TN" }, { label: "TX" }, { label: "UT" }, { label: "VT" }, { label: "VA" }, { label: "WA" }, { label: "WV" }, { label: "WI" },
-                            { label: "WY" },
+                            {label: "AL"}, {label: "AK"}, {label: "AZ"}, {label: "AR"}, {label: "CA"}, {label: "CO"},
+                            {label: "CT"}, {label: "DE"}, {label: "FL"}, {label: "GA"}, {label: "HI"}, {label: "ID"},
+                            {label: "IL"}, {label: "IN"}, {label: "IA"}, {label: "KS"},
+                            {label: "KY"}, {label: "KY"}, {label: "LA"}, {label: "ME"}, {label: "MD"}, {label: "MA"}, {label: "MI"},
+                            {label: "MS"}, {label: "MO"}, {label: "MT"}, {label: "NE"}, {label: "NV"}, {label: "NH"}, {label: "NJ"},
+                            {label: "NM"}, {label: "NY"}, {label: "NC"}, {label: "ND"},
+                            {label: "OH"}, {label: "OK"}, {label: "OR"}, {label: "PA"}, {label: "RI"}, {label: "SC"}, {label: "SD"},
+                            {label: "TN"}, {label: "TX"}, {label: "UT"}, {label: "VT"}, {label: "VA"}, {label: "WA"}, {label: "WV"}, {label: "WI"},
+                            {label: "WY"},
                         ].map((suggestion) => ({
                             value: suggestion.label,
                             label: suggestion.label,
@@ -3858,31 +4210,31 @@ function initRegistrationForm() {
                         field_limit: 1,
                     },
                     {
-                        field: "Discount Code 1",
-                        name: "Discount Code",
+                        field: "Discount Code",
+                        name: "Discount Code 1",
                         type: "short text",
                         conditional: false,
                         required: false,
                         full: false,
-                        field_limit: 1,
+                        field_limit: 3,
                     },
                     {
-                        field: "Discount Code 2",
-                        name: "Discount Code",
+                        field: "Discount Code",
+                        name: "Discount Code 2",
                         type: "short text",
                         conditional: false,
                         required: false,
                         full: false,
-                        field_limit: 1,
+                        field_limit: 3,
                     },
                     {
-                        field: "Discount Code 3",
-                        name: "Discount Code",
+                        field: "Discount Code",
+                        name: "Discount Code 3",
                         type: "short text",
                         conditional: false,
                         required: false,
                         full: false,
-                        field_limit: 1,
+                        field_limit: 3,
                     },
                 ],
             },

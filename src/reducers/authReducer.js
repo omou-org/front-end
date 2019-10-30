@@ -3,35 +3,25 @@ import initialState from "./initialState";
 
 export default function auth(state = initialState.Authentication, {payload, type}) {
     switch (type) {
-        case actions.SUCCESSFUL_LOGIN:
+        case actions.LOGIN_SUCCESSFUL:
             return onSuccess(state, payload);
-        case actions.FAILED_LOGIN:
-            return onFail(state);
         case actions.LOGOUT:
             return onLogout(state);
-        case actions.RESET_ATTEMPT:
-            return resetStatus(state);
         default:
             return state;
     }
 }
 
-const onSuccess = (state, {data, saveLogin}) => {
-    if (saveLogin) {
-        localStorage.setItem("authToken", data.token);
+const onSuccess = (state, {response, savePassword}) => {
+    if (savePassword) {
+        localStorage.setItem("authToken", response.data.token);
     }
-    sessionStorage.setItem("authToken", data.token);
+    sessionStorage.setItem("authToken", response.data.token);
     return {
         ...state,
-        "token": data.token,
-        "failedLogin": false,
+        "token": response.data.token,
     };
 };
-
-const onFail = (state) => ({
-    ...state,
-    "failedLogin": true,
-});
 
 const onLogout = (state) => {
     sessionStorage.removeItem("authToken");
@@ -41,8 +31,3 @@ const onLogout = (state) => {
         "token": null,
     };
 };
-
-const resetStatus = (state) => ({
-    ...state,
-    "failedLogin": false,
-});

@@ -17,26 +17,26 @@ class PaymentHistory extends Component {
     }
 
     componentWillMount() {
-        // this.setState(() => {
-        //     let userPayments = Object.keys(this.props.payments[this.props.user_id]).map((courseID) => {
-        //         let coursePayments = this.props.payments[this.props.user_id][courseID];
-        //         coursePayments = Object.keys(coursePayments).map((subPayID) => {
-        //             return {
-        //                 ...coursePayments[subPayID],
-        //                 payment_id: this.props.user_id.toString() + courseID.toString() + subPayID.toString(),
-        //                 course_id: courseID,
-        //             };
-        //         });
-        //         return coursePayments;
-        //     });
-        //     let allUserPayments = [];
-        //     userPayments.forEach((coursePaymentsList) => {
-        //         allUserPayments = allUserPayments.concat(coursePaymentsList);
-        //     });
-        //     return {
-        //         payments: allUserPayments,
-        //     };
-        // });
+        this.setState(() => {
+            let userPayments = Object.keys(this.props.payments[this.props.user_id]).map((courseID) => {
+                let coursePayments = this.props.payments[this.props.user_id][courseID];
+                coursePayments = Object.keys(coursePayments).map((subPayID) => {
+                    return {
+                        ...coursePayments[subPayID],
+                        payment_id: this.props.user_id.toString() + courseID.toString() + subPayID.toString(),
+                        course_id: courseID,
+                    };
+                });
+                return coursePayments;
+            });
+            let allUserPayments = [];
+            userPayments.forEach((coursePaymentsList) => {
+                allUserPayments = allUserPayments.concat(coursePaymentsList);
+            });
+            return {
+                payments: allUserPayments,
+            };
+        });
     }
 
     render() {

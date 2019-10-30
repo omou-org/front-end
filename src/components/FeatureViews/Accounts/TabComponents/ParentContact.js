@@ -1,15 +1,11 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import {withRouter} from "react-router-dom";
-
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import "./TabComponents.scss";
 import Paper from "@material-ui/core/Paper";
 import EditIcon from "@material-ui/icons/EditOutlined";
-import {addDashes} from "../accountUtils";
-
 
 class ParentContact extends Component {
     constructor(props) {
@@ -25,9 +21,8 @@ class ParentContact extends Component {
         })
     }
 
-    goToRoute(route) {
-        this.props.history.push(route);
-        
+    addDashes(f){
+        return("("+f.slice(0,3)+"-"+f.slice(3,6)+"-"+f.slice(6,15)+")");
     }
 
     render() {
@@ -35,19 +30,15 @@ class ParentContact extends Component {
         return (
             <Grid item md={12}>
                 <Grid container spacing={16}>
-                    <Grid item md={6} xs={12} >
-                        <Paper className={"ParentContact"}
-                        onClick={() => {
-                            this.props.history.push(`/accounts/parent/${this.state.parent.user_id}`);
-                        }}
-                        key={this.state.parent.user_id}
-                        style={{
-                            "cursor": "pointer",
-                        }}>
+                    <Grid item xs={4} >
+                        <Paper className={"ParentContact"}>
                             <div className="parent-header" align="left">
                                 <Typography className="header-text">
                                     {this.state.parent.name}
                                 </Typography>
+                            </div>
+                            <div className={"actions"} align="right">
+                                <EditIcon />
                             </div>
                             <Grid container spacing={16} className="bodyText">
                                     <Grid item xs={5} align="left" className="bold">
@@ -60,7 +51,7 @@ class ParentContact extends Component {
                                         Phone
                                     </Grid>
                                     <Grid item xs={5} align="left">
-                                        {addDashes(this.state.parent.phone_number)}
+                                        {this.addDashes(this.state.parent.phone_number)}
                                     </Grid>
                                     <Grid item xs={5} align="left" className="bold">
                                         Email
@@ -90,7 +81,7 @@ function mapDispatchToProps(dispatch) {
     return {};
 }
 
-export default withRouter(connect(
+export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(ParentContact));
+)(ParentContact);

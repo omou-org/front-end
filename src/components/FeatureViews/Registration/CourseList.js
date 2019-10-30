@@ -55,7 +55,7 @@ const CourseList = (props) => props.filteredCourses.map((course) => {
                             md={4} xs={3}
                             className="heading-det"
                             align="left">
-                                Date
+                            Date
                         </Grid>
                         <Grid
                             item
@@ -71,7 +71,7 @@ const CourseList = (props) => props.filteredCourses.map((course) => {
                             md={4} xs={3}
                             className="heading-det"
                             align="left">
-                                Instructor
+                            Instructor
                         </Grid>
                         <Grid item md={8} xs={9}
                             className="value"
@@ -85,14 +85,14 @@ const CourseList = (props) => props.filteredCourses.map((course) => {
                             md={4} xs={3}
                             className="heading-det"
                             align="left">
-                                Tuition
+                            Tuition
                         </Grid>
                         <Grid
                             item
                             md={8} xs={9}
                             className="value"
                             align="left">
-                                ${course.tuition}
+                            ${course.tuition}
                         </Grid>
                     </Grid>
                 </Grid>

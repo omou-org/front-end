@@ -114,29 +114,29 @@ class CourseViewer extends Component {
             }
         };
         return (<Grid container>
-            <Grid item xs={12} md={12}>
+            <Grid item md={12}>
                 <Grid container className={'accounts-table-heading'}>
-                    <Grid item xs={3} md={3}>
+                    <Grid item md={3}>
                         <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
                             Session
                         </Typography>
                     </Grid>
-                    <Grid item xs={3} md={3}>
+                    <Grid item md={3}>
                         <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
                             Dates
                         </Typography>
                     </Grid>
-                    <Grid item xs={2} md={2}>
+                    <Grid item md={2}>
                         <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
                             Class Day(s)
                         </Typography>
                     </Grid>
-                    <Grid item xs={3} md={3}>
+                    <Grid item md={3}>
                         <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
                             Time
                         </Typography>
                     </Grid>
-                    <Grid item xs={1} md={1}>
+                    <Grid item md={1}>
                         <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
                             Status
                         </Typography>
@@ -148,33 +148,33 @@ class CourseViewer extends Component {
                     this.setCourses().map((courseID) => {
                         let course = this.props.courses[courseID];
                         let {Days, startDate, endDate, startTime, endTime} = this.courseDataParser(course);
-                        return (<Grid item xs={12} md={12}
+                        return (<Grid item md={12}
                                       className={'accounts-table-row'}
                                       onClick={(e)=>{e.preventDefault(); this.goToRoute(`/${courseID}`)}}
                                       key={courseID}>
                             <Paper square={true}>
                                 <Grid container>
-                                    <Grid item xs={3} md={3}>
-                                        <Typography className='accounts-table-text' align={'left'}>
+                                    <Grid item md={3}>
+                                        <Typography align={'left'}>
                                             {course.title}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={3} md={3}>
-                                        <Typography className='accounts-table-text' align={'left'}>
+                                    <Grid item md={3}>
+                                        <Typography align={'left'}>
                                             {startDate} - {endDate}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={2} md={2}>
-                                        <Typography className='accounts-table-text' align={'left'}>
+                                    <Grid item md={2}>
+                                        <Typography align={'left'}>
                                             {Days}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={3} md={3}>
-                                        <Typography className='accounts-table-text' align={'left'}>
+                                    <Grid item md={3}>
+                                        <Typography align={'left'}>
                                             {startTime} - {endTime}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={1} md={1}>
+                                    <Grid item md={1}>
                                         <div className={`sessions-left-chip ${paymentStatus(this.numPaidCourses(courseID))}`}>
                                             {this.numPaidCourses(courseID)}
                                         </div>
@@ -183,7 +183,7 @@ class CourseViewer extends Component {
                             </Paper>
                         </Grid>);
                     }) :
-                    <Grid item xs={12} md={12}>
+                    <Grid item md={12}>
                         <Paper className={'info'}>
                             <Typography style={{fontWeight: 700}}>
                                 No Courses Yet!

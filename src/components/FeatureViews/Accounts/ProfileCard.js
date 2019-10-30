@@ -22,9 +22,6 @@ import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 
 import { ReactComponent as IDIcon } from "../../identifier.svg";
-import {stringToColor} from "./accountUtils";
-import {addDashes} from "./accountUtils";
-
 import './Accounts.scss';
 
 import Avatar from "@material-ui/core/Avatar";
@@ -43,23 +40,46 @@ class ProfileCard extends Component {
 
     }
 
+    addDashes(string) {
+        return(
+             `(${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 15)})`);
+    }
+
     goToRoute(route) {
         this.props.history.push(this.props.match.url + route);
     }
-    
+    stringToColor(string) {
+        let hash = 0;
+        let i;
+
+        /* eslint-disable no-bitwise */
+        for (i = 0; i < string.length; i += 1) {
+            hash = string.charCodeAt(i) + ((hash << 5) - hash);
+        }
+
+        let colour = "#";
+
+        for (i = 0; i < 3; i += 1) {
+            const value = (hash >> (i * 8)) & 0xff;
+            colour += `00${value.toString(16)}`.substr(-2);
+        }
+        /* eslint-enable no-bitwise */
+
+        return colour;
+    }
 
     render() {
         const styles = (username) => ({
-            "backgroundColor": stringToColor(username),
+            "backgroundColor": this.stringToColor(username),
             "color": "white",
-            "width": "7vw",
-            "height": "7vw",
-            "fontSize": "2vw",
+            "width": "5vw",
+            "height": "5vw",
+            "fontSize": 20,
             "margin": 20,
         });
 
         return (
-            <Grid item xs={12} md={6} className="ProfileCard">
+            <Grid item xs={12} sm={6} className="ProfileCard">
                 <Card key={this.props.user.user_id}
                     style={{ cursor: "pointer" }}
                     onClick={(event) => {
@@ -67,12 +87,12 @@ class ProfileCard extends Component {
                         this.goToRoute(`/${this.props.user.role}/${this.props.user.user_id}`);
                     }}>
                     <Grid container>
-                        <Grid component={Hidden} xsDown item xs={4} md={4}>
+                        <Grid component={Hidden} xsDown item xs={4} md={3}>
                             <Avatar
                                 style={styles(this.props.user.name)}>{this.props.user.name.match(/\b(\w)/g).join("")}
                             </Avatar>
                         </Grid>
-                        <Grid item xs={8} md={8}>
+                        <Grid item xs={8} md={9}>
                             <CardContent className={"text"}>
                                 <Typography gutterBottom variant={"h6"} component={"h2"} align={'left'}>
                                     {this.props.user.name}
@@ -85,28 +105,28 @@ class ProfileCard extends Component {
                                     />
                                 </Typography>
                                 <Typography>
-                                    <Grid item xs={12} style={{ marginTop: 10}}>
+                                    <Grid item xs={8} style={{ marginTop: 10 }}>
                                         <Grid container>
-                                            <Grid item xs={4} md={2} align="left">
+                                            <Grid item md={2} align="left">
                                                 <IDIcon
                                                     width={22}
                                                     height={22} />
                                             </Grid>
-                                            <Grid item xs={8} md={10} align="left">
+                                            <Grid item md={10} align="left">
                                                 #{this.props.user.user_id}
                                             </Grid>
-                                            <Grid item xs={4} md={2} align="left">
+                                            <Grid item md={2} align="left">
                                                 <PhoneIcon />
                                             </Grid>
-                                            <Grid item xs={8} md={10} align="left">
-                                                {addDashes(this.props.user.phone_number)}
+                                            <Grid item md={10} align="left">
+                                                {this.addDashes(this.props.user.phone_number)}
                                             </Grid>
                                         </Grid>
                                         <Grid container>
-                                            <Grid item xs={4} md={2} align="left">
+                                            <Grid item md={2} align="left">
                                                 <EmailIcon />
                                             </Grid>
-                                            <Grid item xs={8} md={10} align="left">
+                                            <Grid item md={10} align="left">
                                                 {this.props.user.email}
                                             </Grid>
                                         </Grid>
