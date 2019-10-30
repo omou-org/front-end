@@ -1,9 +1,8 @@
 // react/redux imports
 import * as apiActions from "../../../actions/apiActions";
 import React, {useEffect, useMemo, useState} from "react";
-import PropTypes from "prop-types";
 import {bindActionCreators} from "redux";
-import {connect} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 // material ui imports
 import Grid from "@material-ui/core/Grid";
@@ -23,7 +22,17 @@ import {GET} from "../../../actions/actionTypes.js";
 
 const NUM_GRADES = 10;
 
-const RegistrationLanding = ({api, courses, instructors, requestStatus}) => {
+const RegistrationLanding = () => {
+    const dispatch = useDispatch();
+    const api = useMemo(
+        () => bindActionCreators(apiActions, dispatch),
+        [dispatch]
+    );
+
+    const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
+    const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
+    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
+
     const [view, setView] = useState(0);
     const [courseFilters, setCourseFilters] = useState({
         "grade": [],
@@ -126,15 +135,9 @@ const RegistrationLanding = ({api, courses, instructors, requestStatus}) => {
             }
         });
 
-    if (typeof requestStatus.instructor[GET][apiActions.REQUEST_ALL] === "undefined") {
-        return "HAVE NOT REQUESTED INSTRUCTORS YET";
-    }
-
-    if (typeof requestStatus.course[GET][apiActions.REQUEST_ALL] === "undefined") {
-        return "HAVE NOT REQUESTED COURSES YET";
-    }
-
-    if (requestStatus.instructor[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED ||
+    if (!requestStatus.instructor[GET][apiActions.REQUEST_ALL] ||
+        !requestStatus.course[GET][apiActions.REQUEST_ALL] ||
+        requestStatus.instructor[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED ||
         requestStatus.course[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED) {
         return "LOADING";
     }
@@ -220,24 +223,4 @@ const RegistrationLanding = ({api, courses, instructors, requestStatus}) => {
     );
 };
 
-RegistrationLanding.propTypes = {
-    "api": PropTypes.object.isRequired,
-    "courses": PropTypes.object.isRequired,
-    "instructors": PropTypes.object.isRequired,
-    "requestStatus": PropTypes.object.isRequired,
-};
-
-const mapStateToProps = (state) => ({
-    "courses": state.Course.NewCourseList,
-    "instructors": state.Users.InstructorList,
-    "requestStatus": state.RequestStatus,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-    "api": bindActionCreators(apiActions, dispatch),
-});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(RegistrationLanding);
+export default RegistrationLanding;
