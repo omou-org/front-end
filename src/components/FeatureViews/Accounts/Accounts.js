@@ -118,7 +118,7 @@ class Accounts extends Component {
     }
 
     render() {
-        console.log(this.props);
+        console.log(process.env);
         let styles = (username) => ({
             backgroundColor: this.stringToColor(username),
             color: "white",
