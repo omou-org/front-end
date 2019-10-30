@@ -67,7 +67,7 @@ class Accounts extends Component {
 
     handleChange(e, newTabIndex) {
         e.preventDefault();
-        let newUsersList = []; 
+        let newUsersList = [];
         let usersList = {};
         Object.assign(usersList, this.props.parents);
         Object.assign(usersList, this.props.students);
@@ -128,23 +128,28 @@ class Accounts extends Component {
                                 this.goToRoute(`/${row.role}/${row.user_id}`);
                             }}
                             className="row">
-                            <TableCell component="th" scope="row">
-                                <Grid container layout={"row"} alignItems={"center"}>
-                                    <Grid item md={12} lg={4}>
-                                        <Avatar
-                                            style={styles(row.name)}>{row.name.match(/\b(\w)/g).join("")}</Avatar>
-                                    </Grid>
-                                    <Grid item md={4} lg={8}>
-                                        <Typography>
-                                            {row.name}
-                                        </Typography>
-                                    </Grid>
+                            <TableCell
+                                className="accountsCell"
+                                style={{
+                                    "marginLeft": "0px",
+                                    "paddingLeft": "0px"
+                                }}>
+                                <Grid container layout="row" alignItems="center">
+                                    <Avatar
+                                        style={styles(row.name)}>{row.name.match(/\b(\w)/g).join("")}</Avatar>
+                                    <Typography>
+                                        {row.name}
+                                    </Typography>
                                 </Grid>
                             </TableCell>
-                            <TableCell>{row.email}</TableCell>
-                            <TableCell>{addDashes(row.phone_number)}</TableCell>
-                            <TableCell>{row.role.charAt(0).toUpperCase() + row.role.slice(1)}</TableCell>
-                            <TableCell onClick={(event) => {
+                            <TableCell
+                                className="accountsCell">{row.email}</TableCell>
+                            <TableCell
+                                className="accountsCell">{addDashes(row.phone_number)}</TableCell>
+                            <TableCell
+                                className="accountsCell">{row.role.charAt(0).toUpperCase() + row.role.slice(1)}</TableCell>
+                            <TableCell
+                                className="accountsCell" onClick={(event) => {
                                 event.stopPropagation();
                             }}>
                                 <Grid component={Hidden} mdDown align="right">
@@ -186,7 +191,7 @@ class Accounts extends Component {
                 <hr />
                 <Typography variant="h2" align={"left"} className={"heading"}>Accounts</Typography>
                 <Grid container direction={"row"} alignItems={"center"}>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} md={11}>
                         <Tabs
                             value={this.state.value}
                             onChange={this.handleChange}
@@ -203,9 +208,8 @@ class Accounts extends Component {
                         </Tabs>
                     </Grid>
                     {
-                        this.state.mobileView ?
-                            '' :
-                            <Grid item xs={1} md={1} className="toggleView">
+                        !this.state.mobileView &&
+                            <Grid item md={1} className="toggleView">
                                 <ListView className={`list icon ${this.state.viewToggle ? 'active' : ''}`} onClick={(event) => {
                                     event.preventDefault();
                                     this.setState({ viewToggle: true },

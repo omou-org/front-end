@@ -24,15 +24,24 @@
     .row {
       cursor: pointer;
     }
+
+    .accountsCell {
+      margin-left: 0px!important;
+      padding-left: 0px !important;
+      margin-right: 0px !important;
+      padding-right: 0px !important;
+    }
       .editButton {
         color: $darkenPrimaryFontColor;
         border-radius: 0px;
         box-sizing: border-box;
         border: solid 2px $secondaryColor !important;
+        font-weight: normal!important;
+        font-size: 12px;
         white-space: nowrap;
         right:10%;
       }
-    
+
   }
 }
 
