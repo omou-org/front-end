@@ -102,7 +102,6 @@ const RegistrationCourse = () => {
     const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
 
     const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
-    console.log(courseID, courses);
     const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
     const parents = useSelector(({"Users": {ParentList}}) => ParentList);
     const students = useSelector(({"Users": {StudentList}}) => StudentList);
@@ -219,7 +218,6 @@ const RegistrationCourse = () => {
                         }
                     </span>
                 </div>
-
             ),
             {
                 notes,

@@ -85,7 +85,6 @@ const updateInstructorPost = (state, status) => {
 };
 
 const updateInstructorPatch = (state, id, status) => {
-    console.log("hit")
     let newState = JSON.parse(JSON.stringify(state));
     newState.instructor[actions.PATCH][id] = status;
     return newState;
