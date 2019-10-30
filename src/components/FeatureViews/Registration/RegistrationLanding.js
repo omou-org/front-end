@@ -1,5 +1,7 @@
 // react/redux imports
 import * as apiActions from "../../../actions/apiActions";
+import * as userActions from "../../../actions/userActions";
+import * as registrationActions from "../../../actions/registrationActions";
 import React, {useEffect, useMemo, useState} from "react";
 import {bindActionCreators} from "redux";
 import {useDispatch, useSelector} from "react-redux";
@@ -25,7 +27,11 @@ const NUM_GRADES = 10;
 const RegistrationLanding = () => {
     const dispatch = useDispatch();
     const api = useMemo(
-        () => bindActionCreators(apiActions, dispatch),
+        () => ({
+            ...bindActionCreators(apiActions, dispatch),
+            ...bindActionCreators(userActions, dispatch),
+            ...bindActionCreators(registrationActions, dispatch),
+        }),
         [dispatch]
     );
 
@@ -49,18 +55,36 @@ const RegistrationLanding = () => {
         api.fetchCourses();
     }, [api]);
 
-    const handleFilterChange = (filterType) => (filters) => {
-        setCourseFilters({
-            ...courseFilters,
-            [filterType]: filters || [],
-        });
-    };
+    useEffect(() => {
+        api.fetchEnrollments();
+    }, [api, requestStatus.course[GET][apiActions.REQUEST_ALL]]);
 
     const instructorOptions = useMemo(() =>
         Object.values(instructors).map(({name, user_id}) => ({
             "label": name,
             "value": user_id,
         })), [instructors]);
+
+    if (!requestStatus.instructor[GET][apiActions.REQUEST_ALL] ||
+        !requestStatus.course[GET][apiActions.REQUEST_ALL] ||
+        requestStatus.instructor[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED ||
+        requestStatus.course[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED) {
+        return "LOADING";
+    }
+
+    if (requestStatus.instructor[GET][apiActions.REQUEST_ALL] < 200 ||
+        requestStatus.instructor[GET][apiActions.REQUEST_ALL] >= 300 ||
+        requestStatus.course[GET][apiActions.REQUEST_ALL] < 200 ||
+        requestStatus.course[GET][apiActions.REQUEST_ALL] >= 300) {
+        return "ERROR LOADING COURSES";
+    }
+
+    const handleFilterChange = (filterType) => (filters) => {
+        setCourseFilters({
+            ...courseFilters,
+            [filterType]: filters || [],
+        });
+    };
 
     const renderFilter = (filterType) => {
         let options = [];
@@ -134,20 +158,6 @@ const RegistrationLanding = () => {
                     console.warn(`Unhandled filter ${filterName}`);
             }
         });
-
-    if (!requestStatus.instructor[GET][apiActions.REQUEST_ALL] ||
-        !requestStatus.course[GET][apiActions.REQUEST_ALL] ||
-        requestStatus.instructor[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED ||
-        requestStatus.course[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED) {
-        return "LOADING";
-    }
-
-    if (requestStatus.instructor[GET][apiActions.REQUEST_ALL] < 200 ||
-        requestStatus.instructor[GET][apiActions.REQUEST_ALL] >= 300 ||
-        requestStatus.course[GET][apiActions.REQUEST_ALL] < 200 ||
-        requestStatus.course[GET][apiActions.REQUEST_ALL] >= 300) {
-        return "ERROR LOADING COURSES";
-    }
 
     return (
         <Paper className="RegistrationLanding paper">

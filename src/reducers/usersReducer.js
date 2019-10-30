@@ -5,9 +5,9 @@ import {REQUEST_ALL} from "../actions/apiActions";
 export default function users(state = initialState.Users, {payload, type}) {
     switch (type) {
         case actions.FETCH_STUDENT_SUCCESSFUL:
-            return addStudents(state, payload);
+            return handleStudentsFetch(state, payload);
         case actions.FETCH_PARENT_SUCCESSFUL:
-            return addParents(state, payload);
+            return handleParentsFetch(state, payload);
         case actions.FETCH_INSTRUCTOR_SUCCESSFUL:
             return handleInstructorsFetch(state, payload);
         default:
@@ -27,59 +27,86 @@ const parseBirthday = (date) => {
     return `${month}/${day}/${year}`;
 };
 
-const addStudents = (state, students) => {
-    const newState = JSON.parse(JSON.stringify(state));
-    students.forEach((student) => {
-        newState.StudentList[student.user.id] = {
-            "user_id": student.user.id,
-            "gender": student.gender,
-            "birth_date": parseBirthday(student.birth_date),
-            "address": student.address,
-            "city": student.city,
-            "phone_number": student.phone_number,
-            "state": student.state,
-            "zipcode": student.zipcode,
-            "grade": student.grade,
-            "age": student.age,
-            "school": student.school,
-            "first_name": student.user.first_name,
-            "last_name": student.user.last_name,
-            "name": `${student.user.first_name} ${student.user.last_name}`,
-            "email": student.user.email,
-            "parent_id": student.parent,
-            // below is not from database
-            "role": "student",
-            "balance": 0,
-            "notes": {},
-        };
-    });
-    return newState;
+const handleParentsFetch = (state, {id, response}) => {
+    const {data} = response;
+    let {ParentList} = state;
+    if (id !== REQUEST_ALL) {
+        ParentList = updateParent(ParentList, id, data);
+    } else {
+        data.forEach((parent) => {
+            ParentList = updateParent(ParentList, parent.user.id, parent);
+        });
+    }
+    return {
+        ...state,
+        ParentList,
+    };
 };
 
-const addParents = (state, parents) => {
-    const newState = JSON.parse(JSON.stringify(state));
-    parents.forEach((parent) => {
-        newState.ParentList[parent.user.id] = {
-            "user_id": parent.user.id,
-            "gender": parent.gender,
-            "birth_date": parseBirthday(parent.birth_date),
-            "address": parent.address,
-            "city": parent.city,
-            "phone_number": parent.phone_number,
-            "state": parent.state,
-            "zipcode": parent.zipcode,
-            "relationship": parseRelationship[parent.relationship],
-            "first_name": parent.user.first_name,
-            "last_name": parent.user.last_name,
-            "name": `${parent.user.first_name} ${parent.user.last_name}`,
-            "email": parent.user.email,
-            // below is not from database
-            "role": "parent",
-            "notes": {},
-        };
-    });
-    return newState;
+const updateParent = (parents, id, parent) => ({
+    ...parents,
+    [id]: {
+        "user_id": parent.user.id,
+        "gender": parent.gender,
+        "birth_date": parseBirthday(parent.birth_date),
+        "address": parent.address,
+        "city": parent.city,
+        "phone_number": parent.phone_number,
+        "state": parent.state,
+        "zipcode": parent.zipcode,
+        "relationship": parseRelationship[parent.relationship],
+        "first_name": parent.user.first_name,
+        "last_name": parent.user.last_name,
+        "name": `${parent.user.first_name} ${parent.user.last_name}`,
+        "email": parent.user.email,
+        // below is not from database
+        "role": "parent",
+        "student_ids": [],
+        "notes": {},
+    }
+});
+
+const handleStudentsFetch = (state, {id, response}) => {
+    const {data} = response;
+    let {StudentList} = state;
+    if (id !== REQUEST_ALL) {
+        StudentList = updateStudent(StudentList, id, data);
+    } else {
+        data.forEach((student) => {
+            StudentList = updateStudent(StudentList, student.user.id, student);
+        });
+    }
+    return {
+        ...state,
+        StudentList,
+    };
 };
+
+const updateStudent = (students, id, student) => ({
+    ...students,
+    [id]: {
+        "user_id": student.user.id,
+        "gender": student.gender,
+        "birth_date": parseBirthday(student.birth_date),
+        "address": student.address,
+        "city": student.city,
+        "phone_number": student.phone_number,
+        "state": student.state,
+        "zipcode": student.zipcode,
+        "grade": student.grade,
+        "age": student.age,
+        "school": student.school,
+        "first_name": student.user.first_name,
+        "last_name": student.user.last_name,
+        "name": `${student.user.first_name} ${student.user.last_name}`,
+        "email": student.user.email,
+        "parent_id": student.parent,
+        // below is not from database
+        "role": "student",
+        "balance": 0,
+        "notes": {},
+    }
+});
 
 const handleInstructorsFetch = (state, {id, response}) => {
     const {data} = response;

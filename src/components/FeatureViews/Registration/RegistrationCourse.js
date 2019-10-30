@@ -1,6 +1,8 @@
 import {useDispatch, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as apiActions from "../../../actions/apiActions";
+import * as registrationActions from "../../../actions/registrationActions";
+import * as userActions from "../../../actions/userActions";
 import {GET} from "../../../actions/actionTypes.js";
 import React, {Fragment, useEffect, useMemo, useState} from "react";
 import BackButton from "../../BackButton.js";
@@ -94,8 +96,12 @@ const formatPhone = (phone) => phone &&
 
 const RegistrationCourse = () => {
     const dispatch = useDispatch();
-    const boundDispatch = useMemo(
-        () => bindActionCreators(apiActions, dispatch),
+    const api = useMemo(
+        () => ({
+            ...bindActionCreators(apiActions, dispatch),
+            ...bindActionCreators(registrationActions, dispatch),
+            ...bindActionCreators(userActions, dispatch),
+        }),
         [dispatch]
     );
     const {"params": {courseID}} = useRouteMatch();
@@ -119,23 +125,30 @@ const RegistrationCourse = () => {
     const [expanded, setExpanded] = useState({});
 
     useEffect(() => {
-        boundDispatch.fetchCourses(courseID);
-    }, [boundDispatch, courseID]);
+        api.fetchCourses(courseID);
+        api.fetchStudents();
+        api.fetchParents();
+    }, [api, courseID]);
 
     useEffect(() => {
-        if (course.instructor_id) {
-            boundDispatch.fetchInstructors(course.instructor_id);
+        if (course) {
+            api.fetchEnrollments();
+            api.fetchInstructors(course.instructor_id);
             setExpanded(course.roster.reduce((object, studentID) => ({
                 ...object,
                 [studentID]: false,
             }), {}));
         }
-    }, [boundDispatch, course]);
+    }, [api, requestStatus.course[GET][courseID]]);
 
     if (!requestStatus.course[GET][courseID] ||
-        !requestStatus.instructor[GET][course.instructor_id] ||
         requestStatus.course[GET][courseID] === apiActions.REQUEST_STARTED ||
-        requestStatus.instructor[GET][course.instructor_id] === apiActions.REQUEST_STARTED) {
+        !requestStatus.instructor[GET][course.instructor_id] ||
+        requestStatus.instructor[GET][course.instructor_id] === apiActions.REQUEST_STARTED ||
+        !requestStatus.parent[GET][apiActions.REQUEST_ALL] ||
+        requestStatus.parent[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED ||
+        !requestStatus.student[GET][apiActions.REQUEST_ALL] ||
+        requestStatus.student[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED) {
         return "LOADING";
     }
 
