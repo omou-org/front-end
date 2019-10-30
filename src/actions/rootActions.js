@@ -2,7 +2,7 @@ import * as types from "./actionTypes";
 import axios from "axios";
 
 const instance = axios.create({
-    baseURL: "http://localhost:8000",
+    baseURL: process.env.REACT_APP_DOMAIN,
 });
 
 const typeToEndpoint = {
