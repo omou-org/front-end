@@ -2,9 +2,21 @@
 @import '../../../theme/colors';
 @import '../../../theme/sizes';
 .search{
+  .primary-filter{
 
+  }
 }
-
-#menu-primary-filter{
+.search-input{
+  .main-search__control{
+    border-width:1px 0;
+    border-radius:0;
+    background-color:#EEEEEE;
+    .main-search__value-container{
+      color:$secondaryFontColor;
+    }
+  }
+}
+#select-primary-filter{
   z-index:10000;
+  border-bottom:none;
 }

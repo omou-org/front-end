@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ReactSelect from 'react-select';
-import {Grid, Select} from "@material-ui/core";
+import {Button, Grid, Select} from "@material-ui/core";
 import {bindActionCreators} from "redux";
 import * as searchActions from "../../../actions/searchActions";
 import {connect} from "react-redux";
@@ -8,7 +8,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import "./Search.scss";
 import FormControl from "@material-ui/core/FormControl";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
-
+import InputBase from "@material-ui/core/InputBase";
 const Search = ()=>{
     const [query, setQuery ] = useState('');
     const [primaryFilter, setPrimaryFilter] = useState("All");
@@ -23,9 +23,10 @@ const Search = ()=>{
             <Grid item xs={7}>
                 <form>
                     <Grid container>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <FormControl required variant="outlined">
-                                <Select className={'primary-filter'}
+                                <Select className={'select-primary-filter'}
+                                        // classNamePrefix={''}
                                         displayEmpty={false}
                                         value={primaryFilter}
                                         onChange={handleFilterChange(primaryFilter)}
@@ -33,7 +34,8 @@ const Search = ()=>{
                                             name: 'primary-filter',
                                             id: 'primary-filter',
                                         }}
-                                        variant="outlined">
+                                        variant="outlined"
+                                >
                                     <MenuItem value={"All"} key={"All"}>
                                         <em>All</em>
                                     </MenuItem>
@@ -47,7 +49,13 @@ const Search = ()=>{
                             </FormControl>
                         </Grid>
                         <Grid item xs={9}>
-                            <ReactSelect/>
+                            <ReactSelect
+                                className={"search-input"}
+                                classNamePrefix="main-search"
+                            />
+                        </Grid>
+                        <Grid item xs={1}>
+                            <Button color={'primary'}> > </Button>
                         </Grid>
                     </Grid>
                 </form>
