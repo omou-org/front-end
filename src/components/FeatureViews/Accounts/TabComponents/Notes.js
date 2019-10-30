@@ -1,9 +1,8 @@
-import {connect} from 'react-redux';
-import PropTypes from 'prop-types';
-import React, {Component} from 'react';
+import PropTypes from "prop-types";
+import React, {Component} from "react";
 
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
 import "./TabComponents.scss";
 import Paper from "@material-ui/core/Paper";
 import Modal from "@material-ui/core/Modal";
@@ -12,204 +11,184 @@ import EditIcon from "@material-ui/icons/EditOutlined";
 import DoneIcon from "@material-ui/icons/CheckCircleOutlined";
 import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import AddIcon from "@material-ui/icons/AddOutlined";
-import InputBase from '@material-ui/core/InputBase';
-import TextField from '@material-ui/core/TextField';
+import InputBase from "@material-ui/core/InputBase";
+import TextField from "@material-ui/core/TextField";
 
 class Notes extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            notes: [],
-            alert: false,
-            noteBody: "",
-            notication: false,
+            "notes": props.user_notes,
+            "alert": false,
+            "noteBody": "",
+            "notication": false,
         };
-    }
-
-    componentWillMount() {
-        //TODO: notes in descending order
-        this.setState(() => {
-            let notes = Object.keys(this.props.user_notes).map((noteID) => {
-                return this.props.user_notes[noteID];
-            });
-            return {
-                notes: notes,
-            }
-        });
     }
 
     handleClick(notebody) {
         this.setState({
-            alert: true,
-            noteBody: notebody,
-        })
-    }
-
-    hideWarning() {
-        this.setState({
-            alert: false,
+            "alert": true,
+            "noteBody": notebody,
         });
     }
 
-    renderPopUp() {
-        return (
-            <Modal
-                aria-labelledby="simple-modal-title"
-                aria-describedby="simple-modal-description"
-                open={this.state.alert}>
-                onClick={this.hideWarning.bind(this)}>
-                        <div><Typography variant="h6" id="modal-title">
-                    asd
-                        </Typography>
-                </div>
-            </Modal>
-        );
+    hideWarning = () => {
+        this.setState({
+            "alert": false,
+        });
     }
 
     render() {
-        console.log(this.state.notes);
-        let iconStyle = {
-            fontSize: "16px",
-            align: "right",
-        }
-        let notificationColor
+        const iconStyle = {
+            "fontSize": "16px",
+            "align": "right",
+        };
+        let notificationColor;
         if (this.state.notification) {
             notificationColor = {
-                color: "red",
-                cursor: "pointer",
-            }
-        }
-        else {
+                "color": "red",
+                "cursor": "pointer",
+            };
+        } else {
             notificationColor = {
-                color: "grey",
-                cursor: "pointer",
-            }
+                "color": "grey",
+                "cursor": "pointer",
+            };
         }
-        let popup = {
-            minHeight: 381,
-            minWidth: 381,
+        const popup = {
+            "minHeight": 381,
+            "minWidth": 381,
         };
-        let numericDateString = (date) => {
-            let DateObject = new Date(date),
+        const numericDateString = (date) => {
+            const DateObject = new Date(date),
                 numericOptions = {
-                    month: "numeric",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit"
+                    "month": "numeric",
+                    "day": "numeric",
+                    "hour": "2-digit",
+                    "minute": "2-digit",
                 };
             return DateObject.toLocaleTimeString("en-US", numericOptions);
         };
-        return (<Grid item md={12}>
-            <Grid container spacing={16}>
-                <Grid item md={3}>
-                    <div className="addNote"
-                        onClick={() => {
-                            this.handleClick();
-                        }}
-                        style={{
-                            "cursor": "pointer",
-                        }}>
-                        <Typography className="center">
-                            <AddIcon />
-                            <br />
-                            Add Note
-                        </Typography>
-                    </div>
-                    <Modal
-                        aria-labelledby="simple-modal-title"
-                        aria-describedby="simple-modal-description"
-                        open={this.state.alert}
-                        className="popup"
-                    >
-                        <div className="exit-popup" style={popup}>
-                            <Grid>
-                                <TextField
-                                    id="standard-name"
-                                    label="Subject"
-                                    className="textfield"
-                                    margin="normal"
-                                />
-                                <NotificationIcon
-                                    className={"notification"}
-                                    style={notificationColor}
-                                    onClick={() => {
-                                        this.state.notification = !this.state.notification;
-                                        this.forceUpdate();
-                                    }}
-                                />
-                            </Grid>
-                            <Grid>
-                                <InputBase
-                                    defaultValue={this.state.noteBody}
-                                    multiline
-                                    rows={10}
-                                    variant="filled"
-                                    margin="normal"
-                                    required={true}
-                                    className="textfield"
-                                    inputProps={{'aria-label': 'naked'}}
-                                />
-                            </Grid>
-                            <div className="popUpActions">
-                                <Button>
-                                    Delete
-                            </Button>
-                                <Button onClick={this.hideWarning.bind(this)}>
-                                    Cancel
-                            </Button>
-                                <Button>
-                                    Save
-                            </Button>
-                            </div>
+        console.log(this.state.notes);
+        return (
+            <Grid
+                item
+                md={12}>
+                <Grid
+                    container
+                    spacing={16}>
+                    <Grid
+                        item
+                        md={3}>
+                        <div
+                            className="addNote"
+                            onClick={() => {
+                                this.handleClick();
+                            }}
+                            style={{
+                                "cursor": "pointer",
+                            }}>
+                            <Typography className="center">
+                                <AddIcon />
+                                <br />
+                                Add Note
+                            </Typography>
                         </div>
-                    </Modal>
-                </Grid>
-                {this.state.notes.map((note, i) => {
-                    return <Grid item xs={3} key={i}>
-                        <Paper className={"note"}>
-                            <Grid>
-                                <Typography className={"header"} align={'left'}>
+                        <Modal
+                            aria-describedby="simple-modal-description"
+                            aria-labelledby="simple-modal-title"
+                            className="popup"
+                            open={this.state.alert}
+                            onClick={this.hideWarning}>
+                            <div
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                }}
+                                className="exit-popup"
+                                style={popup}>
+                                <Grid>
+                                    <TextField
+                                        className="textfield"
+                                        id="standard-name"
+                                        label="Subject"
+                                        margin="normal" />
+                                    <NotificationIcon
+                                        className="notification"
+                                        onClick={() => {
+                                            this.setState(({notification}) => ({
+                                                "notification": !notification
+                                            }));
+                                        }}
+                                        style={notificationColor} />
+                                </Grid>
+                                <Grid>
+                                    <InputBase
+                                        className="textfield"
+                                        defaultValue={this.state.noteBody}
+                                        inputProps={{"aria-label": "naked"}}
+                                        margin="normal"
+                                        multiline
+                                        required
+                                        rows={10}
+                                        variant="filled" />
+                                </Grid>
+                                <div className="popUpActions">
+                                    {/* <Button>
+                                        Delete
+                                    </Button> */}
+                                    <Button onClick={this.hideWarning}>
+                                        Cancel
+                                    </Button>
+                                    <Button>
+                                        Save
+                                    </Button>
+                                </div>
+                            </div>
+                        </Modal>
+                    </Grid>
+                    {this.state.notes.map((note, i) => (
+                        <Grid
+                            item
+                            key={i}
+                            xs={3}>
+                            <Paper className="note">
+                                <Typography
+                                    align="left"
+                                    className="noteHeader">
+                                    {note.title || "TITLE"}
+                                    {note.important &&
+                                        <NotificationIcon className="noteNotification" />}
+                                </Typography>
+                                <Typography
+                                    align="left"
+                                    className="body">
                                     {note.body}
                                 </Typography>
-                                <NotificationIcon />
-                            </Grid>
-                            <Typography className={"body"} align={'left'}>
-                                {note.body}
-                            </Typography>
-                            <Typography className={"date"} style={{fontWeight: "500"}}>
-                                {numericDateString(note.timestamp).replace(",", "ãƒ»")}
-                            </Typography>
-                            <div className={"actions"}>
-                                <EditIcon style={iconStyle}
-                                    onClick={() => {
-                                        this.handleClick(note.body);
-                                    }}
-                                />
-                                <DoneIcon style={iconStyle} />
-                            </div>
-                        </Paper>
-                    </Grid>
-                })}
+                                <Typography
+                                    className="date"
+                                    style={{"fontWeight": "500"}}>
+                                    {numericDateString(note.timestamp)}
+                                </Typography>
+                                <div className="actions">
+                                    <EditIcon
+                                        onClick={() => {
+                                            this.handleClick(note.body);
+                                        }}
+                                        style={iconStyle} />
+                                    <DoneIcon style={iconStyle} />
+                                </div>
+                            </Paper>
+                        </Grid>
+                    ))}
+                </Grid>
             </Grid>
-        </Grid>)
+        );
     }
 
 }
 
 Notes.propTypes = {
-    user_notes: PropTypes.object,
+    "user_notes": PropTypes.object,
 };
 
-function mapStateToProps(state) {
-    return {
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {};
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Notes);
+export default Notes;

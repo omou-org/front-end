@@ -169,25 +169,27 @@ class ProfileHeading extends Component {
 
     renderEditButton() {
         if (this.props.user.role != "receptionist") {
-            return (<div>
-                <Grid component={Hidden} mdDown align="right" className="editPadding">
-                    <Button
-                        className="editButton"
-                        component={NavLink}
-                        to={`/registration/form/${this.getURL(this.props.user.role)}/${this.props.user.user_id}/edit`}>
-                        <EditIcon />
-                        Edit Profile
-                    </Button>
-                </Grid>
-                <Grid component={Hidden} lgUp align="right" className="editPadding">
-                    <Button
-                        className="editButton"
-                        component={NavLink}
-                        to={`/registration/form/${this.getURL(this.props.user.role)}/${this.props.user.user_id}/edit`}>
-                        <EditIcon />
-                    </Button>
-                </Grid>
-            </div>);
+            return (
+                <>
+                    <Grid component={Hidden} mdDown align="right" className="editPadding">
+                        <Button
+                            className="editButton"
+                            component={NavLink}
+                            to={`/registration/form/${this.getURL(this.props.user.role)}/${this.props.user.user_id}/edit`}>
+                            <EditIcon />
+                            Edit Profile
+                        </Button>
+                    </Grid>
+                    <Grid component={Hidden} lgUp align="right" className="editPadding">
+                        <Button
+                            className="editButton"
+                            component={NavLink}
+                            to={`/registration/form/${this.getURL(this.props.user.role)}/${this.props.user.user_id}/edit`}>
+                            <EditIcon />
+                        </Button>
+                    </Grid>
+                </>
+            );
         }
     }
 
@@ -219,23 +221,21 @@ class ProfileHeading extends Component {
         }
         return (
             <div>
-                <Grid container item lg={12}>
-                    <Grid align="left" item lg={4}>
+                <Grid container item xs={12} alignItems="center">
+                    <Grid item xs={6}>
                         <h1 className="ProfileName">
                             {this.props.user.name}
                         </h1>
                     </Grid>
-                    <Grid align="left" item lg={2}>
-                        <Grid component={Hidden} smDown>
+                    <Grid item xs={3} align="left">
+                        <Hidden smDown>
                             <Chip
                                 className={`userLabel ${this.props.user.role}`}
                                 label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
                             />
-                        </Grid>
+                        </Hidden>
                     </Grid>
-                    <Grid item lg={4}>
-                    </Grid>
-                    <Grid item lg={2} align="left">
+                    <Grid item xs={3} align="right" >
                         {this.renderEditButton()}
                     </Grid>
                 </Grid>
