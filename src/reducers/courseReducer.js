@@ -36,7 +36,6 @@ const handleCoursesFetch = (state, {id, response}) => {
     };
 };
 
-
 const updateCourse = (courses, id, course) => ({
     ...courses,
     [id]: {

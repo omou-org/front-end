@@ -9,15 +9,26 @@
   position: relative;
   padding: 7%;
 
+  .noteNotification {
+    float: right;
+  }
+
   .actions {
     text-align: right;
-    opacity: 0;
+    bottom: 5%;
+    width: 85%;
+    position: absolute;
   }
 
   &:hover {
     .actions {
       opacity: 1;
     }
+  }
+
+  .header {
+    font-size: 1.2em;
+    font-weight: bold;
   }
 
   .body {
@@ -28,58 +39,107 @@
     position: absolute;
     bottom: 5%;
     width: 85%;
-    text-align: right;
+    text-align: left;
   }
 }
+
+.addNote {
+  height: 250px;
+  position: relative;
+  padding: 7%;
+  background: #f5f5f5;
+  border: 1.5px solid #999999;
+  border-style: dashed;
+
+  .center {
+    margin-top: 35%;
+  }
+}
+
+.popup {
+  .popUpActions {
+    position: absolute;
+    bottom: 5%;
+  }
+
+  .exit-popup {
+    padding-top: 0%;
+
+    .textfield {
+      width: 80%;
+      text-align: left;
+    }
+
+    .notification {
+      margin-top: 7%;
+      right: 10%;
+      font-size: 40px;
+      position: absolute;
+    }
+
+    .bodyfield {
+      width: 100%;
+      text-align: left;
+    }
+  }
+}
+
 .Bio,
 .Bio2 {
-  height: 300px;
   position: relative;
-  padding: 5%;
-  top: 0%;
   text-align: left;
-  .Bio {
-    margin-left: -9%;
-    margin-top: -50px;
-    .bioHeader{
-      font-weight:bold;
-      font-size:20px;
-      font-family:Roboto Slab;
+
+  .Bio1 {
+    right: 9%;
+    padding: 5%;
+    margin-top: -5%;
+
+    .bioHeader {
+      font-weight: bold;
+      font-size: 20px;
+      font-family: Roboto Slab;
     }
+
     .bioBody {
       font-size: 14px;
     }
   }
+
   .BioBackground {
     background-color: $bioBackgroundColor;
-    padding: 2%;
     position: relative;
-    top: 0%;
-    margin-top: -15%;
-    margin-right: -15%;
-      .rowPadding {
-        padding: 3%;
-        display: relative;
-        align-content: left;
-        .bioDescription{
-          font-weight:500;
-          font-size:16;
-          padding-right:10px;
-        }
-    }
-    .chipPadding{
-      padding-left:5px;
-      padding-right:5px;
-      padding-top: 20px;
+    padding: 5%;
 
-    .bioChip {
-      margin-top: -40px;
-      background-color: $bioChipColor;
-      border-color:$bioBorderColor;
+    .rowPadding {
+      padding: 3%;
+      margin-top: -5%;
+      display: relative;
+      align-content: left;
+
+      .bioDescription {
+        font-weight: 500;
+        font-size: 16;
+        padding-top: 4%;
+        padding-bottom: -5%;
+        padding-right: 5%;
+        white-space: nowrap;
+      }
     }
-  }
+
+    .chipPadding {
+      padding-left: 5px;
+      padding-right: 5px;
+      margin-top: 3%;
+      padding-bottom: 2%;
+
+      .bioChip {
+        background-color: $bioChipColor;
+        border-color: $bioBorderColor;
+      }
+    }
   }
 }
+
 .ParentContact {
   .parent-header {
     position: absolute;
@@ -88,13 +148,14 @@
     width: 100%;
     top: 0;
     left: 0;
+
     .header-text {
       margin-left: 20px;
       color: white;
       font-size: 20px;
-
     }
   }
+
   .actions {
     text-align: right;
     opacity: 0;
@@ -103,19 +164,24 @@
 
   .bodyText {
     font-size: 15px;
+    word-break: break-all;
+    margin-top: 15%;
+
     .bold {
       font-weight: 900;
     }
   }
 }
+
 /* Instructor Courses */
 .accounts-table-heading,
-.accounts-table-row > * {
+.accounts-table-row>* {
   padding: 15px;
-  cursor:pointer;
+  cursor: pointer;
 }
 
-.accounts-table-heading, .payment-table-heading {
+.accounts-table-heading,
+.payment-table-heading {
   margin-bottom: 10px;
   background-color: $primaryColor;
   box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
@@ -124,8 +190,13 @@
 
 .accounts-table-row {
   position: relative;
+
   &:hover {
     border-left: solid 5px $primaryColor;
+  }
+
+  .accounts-table-text {
+    font-size: 12px;
   }
 }
 
@@ -140,32 +211,38 @@
 
   color: $secondaryLightFontColor;
 
-  &.good, &.Paid {
+  &.good,
+  &.Paid {
     background-color: $goodStatusColor;
   }
 
-  &.warning, &.Waived {
+  &.warning,
+  &.Waived {
     background-color: $warningStatusColor;
   }
 
-  &.bad, &.Unpaid{
+  &.bad,
+  &.Unpaid {
     background-color: $badStatusColor;
   }
 }
 
-.course-session-status{
-  padding:3%;
-  .sessions-left-chip{
-    border-radius:15px;
-    width:150px;
-    top:23%;
-    right:8%;
+.course-session-status {
+  padding: 3%;
+
+  .sessions-left-chip {
+    border-radius: 15px;
+    width: 150px;
+    top: 23%;
+    right: 8%;
   }
-  .accounts-table-heading, .accounts-table-row > * {
-    cursor:default;
+
+  .accounts-table-heading,
+  .accounts-table-row>* {
+    cursor: default;
   }
 }
 
-.payments-history{
-  padding:15px;
+.payments-history {
+  padding: 15px;
 }

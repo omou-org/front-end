@@ -1,24 +1,39 @@
-// react
+// React
 import React from "react";
 
-/*
- * Material UI
- * TODO: import each component individually (i.e. '@material-ui/core/AppBar') to reduce bundle size
- */
-import CssBaseline from "@material-ui/core/CssBaseline";
+// Redux
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import * as rootActions from "./actions/rootActions";
 
-// local component import
+// Material UI
+// TODO: import each component individually (i.e. '@material-ui/core/AppBar') to reduce bundle size
+import {CssBaseline} from "@material-ui/core";
+
+// Local Component Imports
 import Navigation from "./components/Navigation/Navigation";
-
-// css import
 import "./App.scss";
 import "./theme/theme.scss";
 
-const App = () => (
-    <div className="App">
-        <CssBaseline />
-        <Navigation />
-    </div>
-);
+const App = (props) => {
+    props.rootActions.fetchData("student");
+    props.rootActions.fetchData("parent");
+    props.rootActions.fetchData("instructor");
+    return (
+        <div className="App">
+            <CssBaseline />
+            <Navigation />
+        </div>
+    );
+};
 
-export default App;
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = (dispatch) => ({
+    rootActions: bindActionCreators(rootActions, dispatch),
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(App);

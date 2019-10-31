@@ -1,10 +1,16 @@
-import { connect } from 'react-redux';
-import React, { Component } from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import PropTypes from 'prop-types';
+import React, {Component} from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import Chip from "@material-ui/core/Chip";
 import Typography from '@material-ui/core/Typography';
+import Paper from "@material-ui/core/Paper";
+import EditIcon from "@material-ui/icons/EditOutlined";
+import RemoveIcon from "@material-ui/icons/DeleteForeverOutlined";
+import AlertIcon from "@material-ui/icons/AddAlertOutlined";
 
 class Bio extends Component {
     constructor(props) {
@@ -16,10 +22,10 @@ class Bio extends Component {
     render() {
         return (
             <Card className={"Bio"}>
-                <Grid item xs={12}>
+                <Grid item md={12} xs={12}>
                     <Grid container>
-                        <Grid item xs={6} >
-                            <div className="Bio">
+                        <Grid item md={6} xs={12} >
+                            <div className="Bio1">
                                 <Typography class="bioHeader">
                                     Bio
                                     </Typography>
@@ -28,7 +34,7 @@ class Bio extends Component {
                                 </Typography>
                             </div>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item md={6} xs={12}>
                             <div className="BioBackground">
                                 <div className="Bio2">
                                     <Grid>
@@ -65,7 +71,7 @@ class Bio extends Component {
                                             {this.props.background.languages.map((languages) => {
                                                 return (
                                                     <Grid className="chipPadding">
-                                                        <Chip 
+                                                        <Chip
                                                             label={languages}
                                                             className="bioChip"
                                                             variant="outlined"

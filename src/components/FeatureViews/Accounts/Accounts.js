@@ -16,6 +16,10 @@ import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
 import {withRouter} from "react-router-dom";
+import EditIcon from "@material-ui/icons/EditOutlined";
+import {NavLink} from "react-router-dom";
+import {stringToColor, addDashes} from "./accountUtils";
+import Hidden from "@material-ui/core/es/Hidden/Hidden";
 
 import "./Accounts.scss";
 import Avatar from "@material-ui/core/Avatar";
@@ -97,29 +101,9 @@ class Accounts extends Component {
         );
     }
 
-    stringToColor(string) {
-        let hash = 0;
-        let i;
-
-        /* eslint-disable no-bitwise */
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
-        }
-
-        let colour = "#";
-
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            colour += `00${value.toString(16)}`.substr(-2);
-        }
-        /* eslint-enable no-bitwise */
-
-        return colour;
-    }
-
     render() {
         let styles = (username) => ({
-                backgroundColor: this.stringToColor(username),
+                backgroundColor: stringToColor(username),
                 color: "white",
                 margin: 9,
                 width: 38,
@@ -134,6 +118,7 @@ class Accounts extends Component {
                         <TableCell>Email</TableCell>
                         <TableCell>Phone</TableCell>
                         <TableCell>Role</TableCell>
+                        <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -144,22 +129,48 @@ class Accounts extends Component {
                                 this.goToRoute(`/${row.role}/${row.user_id}`);
                             }}
                             className="row">
-                            <TableCell component="th" scope="row">
-                                <Grid container layout={"row"} alignItems={"center"}>
-                                    <Grid item md={3}>
-                                        <Avatar
-                                            style={styles(row.name)}>{row.name.match(/\b(\w)/g).join("")}</Avatar>
-                                    </Grid>
-                                    <Grid item md={9}>
-                                        <Typography>
-                                            {row.name}
-                                        </Typography>
-                                    </Grid>
+                            <TableCell
+                                className="accountsCell"
+                                style={{
+                                    "marginLeft": "0px",
+                                    "paddingLeft": "0px"
+                                }}>
+                                <Grid container layout="row" alignItems="center">
+                                    <Avatar
+                                        style={styles(row.name)}>{row.name.match(/\b(\w)/g).join("")}</Avatar>
+                                    <Typography>
+                                        {row.name}
+                                    </Typography>
                                 </Grid>
                             </TableCell>
-                            <TableCell>{row.email}</TableCell>
-                            <TableCell>{row.phone_number}</TableCell>
-                            <TableCell>{row.role.charAt(0).toUpperCase() + row.role.slice(1)}</TableCell>
+                            <TableCell
+                                className="accountsCell">{row.email}</TableCell>
+                            <TableCell
+                                className="accountsCell">{addDashes(row.phone_number)}</TableCell>
+                            <TableCell
+                                className="accountsCell">{row.role.charAt(0).toUpperCase() + row.role.slice(1)}</TableCell>
+                            <TableCell
+                                className="accountsCell" onClick={(event) => {
+                                    event.stopPropagation();
+                                }}>
+                                <Grid component={Hidden} mdDown align="right">
+                                    <Button
+                                        className="editButton"
+                                        component={NavLink}
+                                        to={`/registration/form/${row.role}/${row.user_id}/edit`}>
+                                        <EditIcon />
+                                        Edit Profile
+                                    </Button>
+                                </Grid>
+                                <Grid component={Hidden} lgUp align="right">
+                                    <Button
+                                        className="editButton"
+                                        component={NavLink}
+                                        to={`/registration/form/${row.role}/${row.user_id}/edit`}>
+                                        <EditIcon />
+                                    </Button>
+                                </Grid>
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
@@ -198,19 +209,16 @@ class Accounts extends Component {
                         </Tabs>
                     </Grid>
                     {
-                        this.state.mobileView ?
-                            '' :
-                            <Grid item xs={2} className="toggleView">
-                                <ListView className={`list icon ${this.state.viewToggle ? 'active':''}`} onClick={(event) => {
-                                    event.preventDefault();
+                        !this.state.mobileView &&
+                            <Grid item md={2} className="toggleView">
+                                <ListView className={`list icon ${this.state.viewToggle ? 'active' : ''}`} onClick={(event) => {
                                     this.setState({viewToggle: true},
-                                        ()=>{sessionStorage.setItem('AccountsState',JSON.stringify(this.state));});
-                                }}/>
-                                <CardView className={`card icon ${this.state.viewToggle ? '':'active'}`} onClick={(event) => {
-                                    event.preventDefault();
+                                        () => {sessionStorage.setItem('AccountsState', JSON.stringify(this.state));});
+                                }} />
+                                <CardView className={`card icon ${this.state.viewToggle ? '' : 'active'}`} onClick={(event) => {
                                     this.setState({viewToggle: false},
-                                        ()=>{sessionStorage.setItem('AccountsState',JSON.stringify(this.state));});
-                                }}/>
+                                        () => {sessionStorage.setItem('AccountsState', JSON.stringify(this.state));});
+                                }} />
                             </Grid>
                     }
                 </Grid>
