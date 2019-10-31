@@ -1199,8 +1199,8 @@ export default {
                 },
                 3: {
                     session_id: 3,
-                    start: "2019-10-22T07:00",
-                    end: "2019-10-22T08:00",
+                    start: "2019-11-22T07:00",
+                    end: "2019-11-22T08:00",
                     course_id: 5,
                     instructor: "", // default to session's default instructor - change if there's a substitute,
                     room_id: 2,
@@ -3714,7 +3714,7 @@ export default {
                             startTime: "10:00",
                             endTime: "19:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
 
                         },
                         2: {
@@ -3724,7 +3724,7 @@ export default {
                             startTime: "07:00",
                             endTime: "19:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                         3: {
                             resourceId: "10",
@@ -3733,7 +3733,7 @@ export default {
                             startTime: "07:00",
                             endTime: "19:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                         4: {
                             resourceId: "10",
@@ -3742,7 +3742,7 @@ export default {
                             startTime: "07:00",
                             endTime: "19:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                         5: {
                             resourceId: "10",
@@ -3751,7 +3751,7 @@ export default {
                             startTime: "07:00",
                             endTime: "19:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                         6: {
                             resourceId: "10",
@@ -3760,7 +3760,7 @@ export default {
                             startTime: "07:00",
                             endTime: "19:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                     },
                     time_off: {
@@ -3817,7 +3817,7 @@ export default {
                             startTime: "09:00",
                             endTime: "17:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
 
                         },
                         2: {
@@ -3827,7 +3827,7 @@ export default {
                             startTime: "09:00",
                             endTime: "17:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                         3: {
                             resourceId: "11",
@@ -3836,7 +3836,7 @@ export default {
                             startTime: "09:00",
                             endTime: "17:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                         4: {
                             resourceId: "11",
@@ -3845,7 +3845,7 @@ export default {
                             startTime: "09:00",
                             endTime: "17:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                         5: {
                             resourceId: "11",
@@ -3854,7 +3854,7 @@ export default {
                             startTime: "09:00",
                             endTime: "17:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                         6: {
                             resourceId: "11",
@@ -3863,7 +3863,7 @@ export default {
                             startTime: "09:00",
                             endTime: "17:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                     },
                     time_off: {
@@ -3908,7 +3908,7 @@ export default {
                             startTime: "10:00",
                             endTime: "20:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
 
                         },
                         2: {
@@ -3918,7 +3918,7 @@ export default {
                             startTime: "10:00",
                             endTime: "20:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                         3: {
                             resourceId: "12",
@@ -3927,7 +3927,7 @@ export default {
                             startTime: "10:00",
                             endTime: "20:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                         4: {
                             resourceId: "12",
@@ -3936,7 +3936,7 @@ export default {
                             startTime: "10:00",
                             endTime: "20:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                         5: {
                             resourceId: "12",
@@ -3945,7 +3945,7 @@ export default {
                             startTime: "10:00",
                             endTime: "20:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                         6: {
                             resourceId: "12",
@@ -3954,7 +3954,7 @@ export default {
                             startTime: "10:00",
                             endTime: "20:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
 
                         },
                     },
@@ -4000,8 +4000,8 @@ export default {
                             daysOfWeek: [1],
                             startTime: "12:00",
                             endTime: "20:00",
-                            startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            startRecur: "2001-09-22",
+                            endRecur: "2019-11-22",
 
                         },
                         2: {
@@ -4011,7 +4011,7 @@ export default {
                             startTime: "12:00",
                             endTime: "20:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                         3: {
                             resourceId: "13",
@@ -4020,7 +4020,7 @@ export default {
                             startTime: "12:00",
                             endTime: "20:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                         4: {
                             resourceId: "13",
@@ -4029,7 +4029,7 @@ export default {
                             startTime: "12:00",
                             endTime: "20:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                         5: {
                             resourceId: "13",
@@ -4038,7 +4038,7 @@ export default {
                             startTime: "12:00",
                             endTime: "20:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                         6: {
                             resourceId: "13",
@@ -4047,7 +4047,7 @@ export default {
                             startTime: "12:00",
                             endTime: "20:00",
                             startRecur: "2019-09-22",
-                            endRecur: "2019-10-22",
+                            endRecur: "2019-11-22",
                         },
                     },
                 },

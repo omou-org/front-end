@@ -69,7 +69,7 @@ class Notes extends Component {
                 };
             return DateObject.toLocaleTimeString("en-US", numericOptions);
         };
-        console.log(this.state.notes);
+
         return (
             <Grid
                 item
@@ -146,7 +146,7 @@ class Notes extends Component {
                             </div>
                         </Modal>
                     </Grid>
-                    {this.state.notes.map((note, i) => (
+                    {Object.values(this.props.user_notes).map((note, i) => (
                         <Grid
                             item
                             key={i}
