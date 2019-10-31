@@ -1,5 +1,5 @@
 import * as types from "./actionTypes";
-import {wrapPatch} from "./apiActions";
+import {wrapGet, wrapPatch} from "./apiActions";
 
 export const patchInstructor = (id, data) => wrapPatch(
     "/account/instructor/",
@@ -10,4 +10,34 @@ export const patchInstructor = (id, data) => wrapPatch(
     ],
     id,
     data,
+);
+
+export const fetchStudents = (id) => wrapGet(
+    "/account/student/",
+    [
+        types.FETCH_STUDENT_STARTED,
+        types.FETCH_STUDENT_SUCCESSFUL,
+        types.FETCH_STUDENT_FAILED,
+    ],
+    id,
+);
+
+export const fetchParents = (id) => wrapGet(
+    "/account/parent/",
+    [
+        types.FETCH_PARENT_STARTED,
+        types.FETCH_PARENT_SUCCESSFUL,
+        types.FETCH_PARENT_FAILED,
+    ],
+    id,
+);
+
+export const fetchInstructors = (id) => wrapGet(
+    "/account/instructor/",
+    [
+        types.FETCH_INSTRUCTOR_STARTED,
+        types.FETCH_INSTRUCTOR_SUCCESSFUL,
+        types.FETCH_INSTRUCTOR_FAILED,
+    ],
+    id,
 );

@@ -1,4 +1,4 @@
-import { GET, PATCH, POST } from "../actions/actionTypes";
+import {GET, PATCH} from "../actions/actionTypes";
 
 export default {
     "Authentication": initAuth(),
@@ -4159,6 +4159,9 @@ function initRequests() {
         },
         "schedule": {
             [GET]: {},
+            [PATCH]: {},
+        },
+        "enrollment": {
             [PATCH]: {},
         },
     };

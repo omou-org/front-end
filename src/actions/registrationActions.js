@@ -1,5 +1,6 @@
 import * as types from "./actionTypes";
 import {submitParentAndStudent, postData, patchData} from "./rootActions";
+import {wrapGet} from "./apiActions";
 
 const parseGender = {
     "Male": "M",
@@ -110,3 +111,12 @@ export const submitForm = (state, id) => {
 
 export const resetSubmitStatus = () =>
     ({type: types.RESET_SUBMIT_STATUS, payload: null});
+
+export const fetchEnrollments = () => wrapGet(
+    "/courses/enrollment/",
+    [
+        types.FETCH_ENROLLMENT_STARTED,
+        types.FETCH_ENROLLMENT_SUCCESSFUL,
+        types.FETCH_ENROLLMENT_FAILED,
+    ]
+);

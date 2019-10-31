@@ -56,6 +56,11 @@ class Accounts extends Component {
             });
         }
     }
+
+    componentDidMount() {
+
+    }
+
     resize() {
         let currentHideNav = (window.innerWidth <= 760);
         if (currentHideNav !== this.state.mobileView) {

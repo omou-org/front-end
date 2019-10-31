@@ -542,7 +542,7 @@ class Form extends Component {
                                     <MenuItem
                                         key={option}
                                         value={option}>
-                                        <em>{option}</em>
+                                        {option}
                                     </MenuItem>
                                 ))
                             }
