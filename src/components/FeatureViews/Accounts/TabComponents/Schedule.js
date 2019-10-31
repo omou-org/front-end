@@ -1,26 +1,21 @@
+import React from "react";
+import PropTypes from "prop-types"
+import FullCalendar from "@fullcalendar/react";
+import timeGridPlugin from "@fullcalendar/timegrid";
 
-import React from 'react';
-import FullCalendar from '@fullcalendar/react';
-import timeGridPlugin from '@fullcalendar/timegrid';
+const Schedule = ({work_hours}) => (
+    <FullCalendar
+        allDaySlot={false}
+        columnHeaderFormat={{"weekday": "short"}}
+        defaultView="timeGridWeek"
+        events={Object.values(work_hours)}
+        header={false}
+        height={337}
+        plugins={[timeGridPlugin]} />
+);
 
-function Schedule(props) {
-
-    return (
-        <FullCalendar
-            header={false}
-            columnHeaderFormat={{ weekday: "short" }}
-            allDaySlot={false}
-            height={337}
-            defaultView="timeGridWeek"
-            plugins={[timeGridPlugin]}
-            events={Object.values(props.work_hours)}
-
-        />
-    )
-}
-
-Schedule.propTypes = {};
-
-
+Schedule.propTypes = {
+    "work_hours": PropTypes.object.isRequired,
+};
 
 export default Schedule;
