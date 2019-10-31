@@ -5,7 +5,6 @@ import {bindActionCreators} from "redux";
 import * as searchActions from "../../../actions/searchActions";
 import {connect} from "react-redux";
 import MenuItem from "@material-ui/core/MenuItem";
-import "./Search.scss";
 import FormControl from "@material-ui/core/FormControl";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputBase from "@material-ui/core/InputBase";
