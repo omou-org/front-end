@@ -113,14 +113,3 @@ export const fetchCourses = (id) =>
         ],
         id,
     );
-
-export const fetchInstructors = (id) =>
-    wrapGet(
-        "/account/instructor/",
-        [
-            types.FETCH_INSTRUCTOR_STARTED,
-            types.FETCH_INSTRUCTOR_SUCCESSFUL,
-            types.FETCH_INSTRUCTOR_FAILED,
-        ],
-        id,
-    );

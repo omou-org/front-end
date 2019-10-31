@@ -3,7 +3,6 @@ import initialState from "./initialState";
 import * as api from "../actions/apiActions";
 
 export default (state = initialState.RequestStatus, {payload, type}) => {
-    console.log(type, payload)
     let status;
     if (payload && payload.response && payload.response.status) {
         ({status} = payload.response);
