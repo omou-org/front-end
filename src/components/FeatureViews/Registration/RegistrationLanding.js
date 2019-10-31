@@ -2,27 +2,31 @@
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 import * as registrationActions from "../../../actions/registrationActions";
+import {GET} from "../../../actions/actionTypes";
 import React, {useEffect, useMemo, useState} from "react";
 import {bindActionCreators} from "redux";
 import {useDispatch, useSelector} from "react-redux";
 
-// material ui imports
+// Material UI Imports
 import Grid from "@material-ui/core/Grid";
-import Hidden from "@material-ui/core/Hidden";
 import Paper from "@material-ui/core/Paper";
-import SearchSelect from "react-select";
-import Tab from "@material-ui/core/Tab";
-import Tabs from "@material-ui/core/Tabs";
-import Typography from "@material-ui/core/Typography";
-
-// component imports
+import {Typography} from "@material-ui/core";
 import BackButton from "../../BackButton";
+import SearchSelect from "react-select";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import Hidden from "@material-ui/core/Hidden";
+
 import CourseList from "./CourseList";
 import TutoringList from "./TutoringList";
 
-import {GET} from "../../../actions/actionTypes.js";
-
-const NUM_GRADES = 10;
+const trimString = (string, maxLen) => {
+    if (string.length > maxLen) {
+        return `${string.slice(0, maxLen - 3).trim()}...`;
+    } else {
+        return string;
+    }
+};
 
 const RegistrationLanding = () => {
     const dispatch = useDispatch();
@@ -39,21 +43,33 @@ const RegistrationLanding = () => {
     const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
     const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
 
+    const [anchorEl, setAnchorEl] = useState("");
     const [view, setView] = useState(0);
     const [courseFilters, setCourseFilters] = useState({
-        "grade": [],
         "instructor": [],
+        "grade": [],
         "subject": [],
     });
 
-    const updateView = (newView) => () => {
-        setView(newView);
+    const handleFilterClick = (event) => {
+        event.preventDefault();
+        setAnchorEl(event.currentTarget);
     };
 
+    const handleClose = (event) => {
+        event.preventDefault();
+        setAnchorEl(null);
+    };
+
+    const updateView = (view) => () => {
+        setView(view);
+    }
+
     useEffect(() => {
-        api.fetchInstructors();
         api.fetchCourses();
+        api.fetchInstructors();
     }, [api]);
+
 
     useEffect(() => {
         api.fetchEnrollments();
@@ -90,53 +106,69 @@ const RegistrationLanding = () => {
         let options = [];
         switch (filterType) {
             case "instructor":
-                options = instructorOptions;
+                options = Object.values(instructors).map(
+                    ({name, user_id}) => ({
+                        "label": name,
+                        "value": user_id,
+                    })
+                );
                 break;
             case "subject":
                 options = [
-                    {
-                        "label": "Math",
-                        "value": "Math",
-                    },
-                    {
-                        "label": "Science",
-                        "value": "Science",
-                    },
+                    {"label": "Math", "value": "Math"},
+                    {"label": "Science", "value": "Science"},
                 ];
                 break;
             case "grade":
-                options = [...Array(NUM_GRADES).keys()]
-                    .map((i) => ({
-                        "label": `${i + 1}`,
-                        "value": i + 1,
-                    }));
+                options = [...Array(10).keys()].map((i) => ({
+                    "label": `${i + 1}`,
+                    "value": i + 1,
+                }));
                 break;
             default:
                 return "";
         }
+        const CustomClearText = () => "clear all";
+        const ClearIndicator = (indicatorProps) => {
+            const {
+                children = <CustomClearText />,
+                getStyles,
+                "innerProps": {ref, ...restInnerProps},
+            } = indicatorProps;
+            return (
+                <div
+                    {...restInnerProps}
+                    ref={ref}
+                    style={getStyles("clearIndicator", indicatorProps)}>
+                    <div style={{"padding": "0px 5px"}}>{children}</div>
+                </div>
+            );
+        };
 
         const customStyles = {
             "clearIndicator": (base, state) => ({
                 ...base,
-                "color": state.isFocused ? "blue" : "black",
                 "cursor": "pointer",
+                "color": state.isFocused ? "blue" : "black",
             }),
             "option": (base) => ({
                 ...base,
                 "textAlign": "left",
             }),
         };
-
-        return (
-            <SearchSelect
-                className="filter-options"
-                closeMenuOnSelect={false}
-                isMulti
-                onChange={handleFilterChange(filterType)}
-                options={options}
-                placeholder={`All ${filterType}s`}
-                styles={customStyles} />
-        );
+        return <SearchSelect
+            value={handleFilterClick[filterType]}
+            onChange={(event) => {
+                handleFilterChange(event, filterType);
+            }}
+            className="filter-options"
+            closeMenuOnSelect={false}
+            components={{ClearIndicator}}
+            placeholder={`All ${filterType}s`}
+            styles={customStyles}
+            isMulti
+            options={options}
+        />;
     };
 
     let filteredCourses = Object.values(courses);

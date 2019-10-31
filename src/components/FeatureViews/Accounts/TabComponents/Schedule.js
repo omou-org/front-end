@@ -1,33 +1,21 @@
-import { connect } from 'react-redux';
-import React, { Component } from 'react';
+import React from "react";
+import PropTypes from "prop-types"
+import FullCalendar from "@fullcalendar/react";
+import timeGridPlugin from "@fullcalendar/timegrid";
 
-class Schedule extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        };
-    }
+const Schedule = ({work_hours}) => (
+    <FullCalendar
+        allDaySlot={false}
+        columnHeaderFormat={{"weekday": "short"}}
+        defaultView="timeGridWeek"
+        events={Object.values(work_hours)}
+        header={false}
+        height={337}
+        plugins={[timeGridPlugin]} />
+);
 
+Schedule.propTypes = {
+    "work_hours": PropTypes.object.isRequired,
+};
 
-
-    render() {
-        return(<h1>Schedule</h1>)
-    }
-
-}
-
-Schedule.propTypes = {};
-
-function mapStateToProps(state) {
-    return {
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {};
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Schedule);
+export default Schedule;
