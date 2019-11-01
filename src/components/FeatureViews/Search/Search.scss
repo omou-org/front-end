@@ -3,7 +3,6 @@
 @import '../../../theme/sizes';
 .search{
   .primary-filter{
-
   }
 }
 .search-input{
@@ -16,9 +15,25 @@
     }
   }
 }
+
+
 #select-primary-filter{
-  border-bottom:none;
+  height: 22px;
+  border: 1px solid #EEEEEE;
+  background: #FFFFFF;
+  border-radius: 3px 0px 0px 3px;
+  padding-top : 8px;
 }
+
 #menu-primary-filter{
   z-index:10000;
+}
+
+.button-background{
+  background-color: #43B5D9 !important;
+  
+}
+
+.searchIcon{
+  color: #EEEEEE;
 }

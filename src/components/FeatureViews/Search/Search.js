@@ -1,40 +1,48 @@
 import React, { useState } from 'react';
 import ReactSelect from 'react-select';
-import {Button, Grid, Select} from "@material-ui/core";
-import {bindActionCreators} from "redux";
+import { Button, Grid, Select } from "@material-ui/core";
+import { bindActionCreators } from "redux";
 import * as searchActions from "../../../actions/searchActions";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import MenuItem from "@material-ui/core/MenuItem";
 import "./Search.scss";
 import FormControl from "@material-ui/core/FormControl";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputBase from "@material-ui/core/InputBase";
-const Search = ()=>{
-    const [query, setQuery ] = useState('');
+import SearchIcon from "@material-ui/icons/Search";
+
+
+
+
+const Search = () => {
+    const [query, setQuery] = useState('');
     const [primaryFilter, setPrimaryFilter] = useState("All");
 
-    const handleFilterChange = (filter) => (e)=>{
+    const handleFilterChange = (filter) => (e) => {
         setPrimaryFilter(e.target.value);
     };
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
-        <Grid container className={'search'}>
-            <Grid item xs={2}/>
-            <Grid item xs={7}>
+        <Grid container
+            className={'search'}
+        >
+            <Grid item xs={1} />
+            <Grid item xs={8}>
                 <form>
                     <Grid container>
-                        <Grid item xs={2}>
-                            <FormControl required variant="outlined">
+                        <Grid item >
+                            <FormControl required variant="outlined" className={"search-selector"}>
                                 <Select className={'select-primary-filter'}
-                                        // classNamePrefix={''}
-                                        displayEmpty={false}
-                                        value={primaryFilter}
-                                        onChange={handleFilterChange(primaryFilter)}
-                                        inputProps={{
-                                            name: 'primary-filter',
-                                            id: 'primary-filter',
-                                        }}
-                                        variant="outlined"
+                                    // classNamePrefix={''}
+                                    disableUnderline
+                                    displayEmpty={false}
+                                    value={primaryFilter}
+                                    onChange={handleFilterChange(primaryFilter)}
+                                    inputProps={{
+                                        name: 'primary-filter',
+                                        id: 'primary-filter',
+                                    }}
+                                    variant="outlined"
                                 >
                                     <MenuItem value={"All"} key={"All"}>
                                         <em>All</em>
@@ -48,21 +56,19 @@ const Search = ()=>{
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={9}>
+                        <Grid item md={9} xs={7}>
                             <ReactSelect
                                 className={"search-input"}
                                 classNamePrefix="main-search"
                             />
                         </Grid>
-                        <Grid item xs={1}>
-                            <Button color={'primary'}> > </Button>
+                        <Grid item>
+                            <Button className={"button-background"}> <SearchIcon className={"searchIcon"} /> </Button>
                         </Grid>
                     </Grid>
                 </form>
             </Grid>
-            <Grid item xs={1}>
 
-            </Grid>
         </Grid>
     )
 };
