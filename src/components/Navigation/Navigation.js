@@ -80,7 +80,11 @@ function Navigation(props) {
                         <div style={{
                             flex: 1,
                         }} />
-                        <Search/>
+                        {props.auth.token
+                            ? <Search />
+                            :
+                            ""
+                        }
                         {
                             props.auth.token
                                 ? <Typography
