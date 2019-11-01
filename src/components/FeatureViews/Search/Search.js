@@ -27,7 +27,7 @@ const Search = () => {
             className={'search'}
         >
             <Grid item xs={1} />
-            <Grid item xs={8}>
+            <Grid item xs={11}>
                 <form>
                     <Grid container>
                         <Grid item >
