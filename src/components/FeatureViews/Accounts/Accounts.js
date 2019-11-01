@@ -75,18 +75,6 @@ class Accounts extends Component {
         this.props.history.push(this.props.match.url + route);
     }
 
-    filterList(property){
-        return function(a, b){
-            if(a[property] < b[property]){
-                return -1;
-            }else if(a[property] > b[property]){
-                return 1;
-            }else{
-                return 0;   
-            }
-        }
-    }
-
     handleChange(e, newTabIndex) {
         e.preventDefault();
         let newUsersList = [];
@@ -95,9 +83,6 @@ class Accounts extends Component {
         Object.assign(usersList, this.props.students);
         Object.assign(usersList, this.props.instructors);
         Object.assign(usersList, this.props.receptionist);
-        usersList=Object.values(usersList).sort(function(a, b) {
-            return (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0;
-        });
         switch (newTabIndex) {
             case 0:
                 newUsersList = usersList;
@@ -239,6 +224,7 @@ class Accounts extends Component {
                     </Grid>
                     {
                         !this.state.mobileView &&
+                        <Hidden smDown>
                         <Grid item md={1} className="toggleView">
                                 <ListView className={`list icon ${this.state.viewToggle ? 'active' : ''}`} onClick={(event) => {
                                     this.setState({ viewToggle: true },
@@ -249,6 +235,7 @@ class Accounts extends Component {
                                         () => { sessionStorage.setItem('AccountsState', JSON.stringify(this.state)); });
                                 }} />
                         </Grid>
+                        </Hidden>
                     }
                 </Grid>
                 <Grid container
