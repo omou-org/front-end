@@ -20,8 +20,8 @@ import { withRouter } from "react-router-dom";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
-import {stringToColor} from "./accountUtils";
-import {addDashes} from "./accountUtils";
+import { stringToColor } from "./accountUtils";
+import { addDashes } from "./accountUtils";
 
 import { ReactComponent as IDIcon } from "../../identifier.svg";
 import './Accounts.scss';
@@ -61,12 +61,12 @@ class ProfileCard extends Component {
                         this.goToRoute(`/${this.props.user.role}/${this.props.user.user_id}`);
                     }}>
                     <Grid container>
-                        <Grid component={Hidden} xsDown item xs={4}>
+                        <Grid component={Hidden} xsDown item md={4}>
                             <Avatar
                                 style={styles(this.props.user.name)}>{this.props.user.name.match(/\b(\w)/g).join("")}
                             </Avatar>
                         </Grid>
-                        <Grid item xs={8}>
+                        <Grid item xs={12} md={8}>
                             <CardContent className={"text"}>
                                 <Typography gutterBottom variant={"h6"} component={"h2"} align={'left'}>
                                     {this.props.user.name}
@@ -79,28 +79,30 @@ class ProfileCard extends Component {
                                     />
                                 </Typography>
                                 <Typography>
-                                    <Grid item xs={8} style={{ marginTop: 10 }}>
+                                    <Grid item xs={12} md={8} style={{ marginTop: 10 }}>
                                         <Grid container>
-                                            <Grid item md={4} align="left">
+                                            <Grid item xs={2} md={3} align="left">
                                                 <IDIcon
                                                     width={22}
                                                     height={22} />
                                             </Grid>
-                                            <Grid item md={8} align="left">
+                                            <Grid item xs={10} md={9} align="left">
                                                 #{this.props.user.user_id}
                                             </Grid>
-                                            <Grid item md={4} align="left">
-                                                <PhoneIcon />
-                                            </Grid>
-                                            <Grid item md={8} align="left">
-                                                {addDashes(this.props.user.phone_number)}
+                                            <Grid container>
+                                                <Grid item xs={2} md={3} align="left">
+                                                    <PhoneIcon />
+                                                </Grid>
+                                                <Grid item xs={10} md={9} align="left">
+                                                    {addDashes(this.props.user.phone_number)}
+                                                </Grid>
                                             </Grid>
                                         </Grid>
                                         <Grid container>
-                                            <Grid item md={4} align="left">
+                                            <Grid item xs={2} md={3} align="left">
                                                 <EmailIcon />
                                             </Grid>
-                                            <Grid item md={8} align="left">
+                                            <Grid item xs={10} md={9} align="left">
                                                 {this.props.user.email}
                                             </Grid>
                                         </Grid>
