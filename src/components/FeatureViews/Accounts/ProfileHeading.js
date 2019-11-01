@@ -222,20 +222,23 @@ class ProfileHeading extends Component {
         return (
             <div>
                 <Grid container item xs={12} alignItems="center">
-                    <Grid item xs={9} md={6} align="left">
+                    <Grid item xs={9} md={9} align="left">
+                        <Grid container alignItems="center">
                         <h1 className="ProfileName">
                             {this.props.user.name}
                         </h1>
-                    </Grid>
-                    <Grid item xs={0} md={3} align="left">
+                        <div style={{paddingLeft:30}}>
                         <Hidden smDown>
                             <Chip
                                 className={`userLabel ${this.props.user.role}`}
                                 label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
                             />
                         </Hidden>
+                        </div>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={3} sm={3} md={3} align="right" >
+                    
+                    <Grid item xs={3} align="right">
                         {this.renderEditButton()}
                     </Grid>
                 </Grid>
