@@ -4132,7 +4132,6 @@ export default {
 
 function initRequests() {
     return {
-
         "admin": {
             [GET]: {},
             [PATCH]: {},
@@ -4164,6 +4163,10 @@ function initRequests() {
         "enrollment": {
             [PATCH]: {},
         },
+        "note": {
+            [GET]: {},
+            [PATCH]: {},
+        }
     };
 }
 

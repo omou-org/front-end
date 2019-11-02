@@ -11,6 +11,8 @@
 
   .noteNotification {
     float: right;
+    color: red;
+    cursor: pointer;
   }
 
   .actions {
@@ -32,6 +34,7 @@
   }
 
   .body {
+    white-space: pre-wrap;
     font-size: 1.2em;
   }
 
@@ -40,6 +43,10 @@
     bottom: 5%;
     width: 85%;
     text-align: left;
+  }
+
+  .icon {
+    font-size: 16px;
   }
 }
 
@@ -64,10 +71,16 @@
 
   .exit-popup {
     padding-top: 0%;
+    min-height: 381px;
+    min-width: 381px;
 
     .textfield {
       width: 80%;
       text-align: left;
+    }
+
+    .note-body {
+      width: 100%;
     }
 
     .notification {

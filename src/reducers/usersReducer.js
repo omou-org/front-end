@@ -10,6 +10,11 @@ export default function users(state = initialState.Users, {payload, type}) {
             return handleParentsFetch(state, payload);
         case actions.FETCH_INSTRUCTOR_SUCCESSFUL:
             return handleInstructorsFetch(state, payload);
+        case actions.FETCH_NOTE_SUCCESSFUL:
+            return handleNotesFetch(state, payload);
+        case actions.POST_NOTE_SUCCESSFUL:
+        case actions.PATCH_NOTE_SUCCESSFUL:
+            return handleNotesPost(state, payload);
         default:
             return state;
     }
@@ -25,6 +30,39 @@ const parseRelationship = {
 const parseBirthday = (date) => {
     const [year, month, day] = date.split("-");
     return `${month}/${day}/${year}`;
+};
+
+const handleNotesPost = (state, {response, ...rest}) => handleNotesFetch(state, {
+    "response": {
+        ...response,
+        "data": [response.data],
+    },
+    "userID": response.data.user,
+    ...rest,
+});
+
+const handleNotesFetch = (state, {userID, userType, response}) => {
+    const {data} = response;
+    const newState = JSON.parse(JSON.stringify(state));
+    data.forEach((note) => {
+        switch (userType) {
+            case "student":
+                newState.StudentList[userID].notes[note.id] = note;
+                break;
+            case "parent":
+                newState.ParentList[userID].notes[note.id] = note;
+                break;
+            case "instructor":
+                newState.InstructorList[userID].notes[note.id] = note;
+                break;
+            case "receptionist":
+                newState.ReceptionistList[userID].notes[note.id] = note;
+                break;
+            default:
+                console.error("Bad user type", userType);
+        }
+    });
+    return newState;
 };
 
 const handleParentsFetch = (state, {id, response}) => {
@@ -48,7 +86,7 @@ const updateParent = (parents, id, parent) => ({
     [id]: {
         "user_id": parent.user.id,
         "gender": parent.gender,
-        "birth_date": parseBirthday(parent.birth_date),
+        "birthday": parseBirthday(parent.birth_date),
         "address": parent.address,
         "city": parent.city,
         "phone_number": parent.phone_number,
@@ -68,54 +106,45 @@ const updateParent = (parents, id, parent) => ({
 
 const handleStudentsFetch = (state, {id, response}) => {
     const {data} = response;
-    let newState = JSON.parse(JSON.stringify(state));
+    let {StudentList} = state;
     if (id !== REQUEST_ALL) {
-        newState = updateStudent(newState, id, data);
+        StudentList = updateStudent(StudentList, id, data);
     } else {
         data.forEach((student) => {
-            newState = updateStudent(newState, student.user.id, student);
+            StudentList = updateStudent(StudentList, student.user.id, student);
         });
     }
-    return newState;
-};
-
-const updateStudent = (state, id, student) => {
-    const parent = state.ParentList[student.primary_parent] || {"student_ids": []};
-    parent.student_ids.push(id);
-
     return {
         ...state,
-        "ParentList": {
-            ...state.ParentList,
-            [student.primary_parent]: parent,
-        },
-        "StudentList": {
-            ...state.StudentList,
-            [id]: {
-                "user_id": student.user.id,
-                "gender": student.gender,
-                "birth_date": parseBirthday(student.birth_date),
-                "address": student.address,
-                "city": student.city,
-                "phone_number": student.phone_number,
-                "state": student.state,
-                "zipcode": student.zipcode,
-                "grade": student.grade,
-                "age": student.age,
-                "school": student.school,
-                "first_name": student.user.first_name,
-                "last_name": student.user.last_name,
-                "name": `${student.user.first_name} ${student.user.last_name}`,
-                "email": student.user.email,
-                "parent_id": student.primary_parent,
-                // below is not from database
-                "role": "student",
-                "balance": 0,
-                "notes": {},
-            }
-        }
+        StudentList,
     };
 };
+
+const updateStudent = (students, id, student) => ({
+    ...students,
+    [id]: {
+        "user_id": student.user.id,
+        "gender": student.gender,
+        "birthday": parseBirthday(student.birth_date),
+        "address": student.address,
+        "city": student.city,
+        "phone_number": student.phone_number,
+        "state": student.state,
+        "zipcode": student.zipcode,
+        "grade": student.grade,
+        "age": student.age,
+        "school": student.school,
+        "first_name": student.user.first_name,
+        "last_name": student.user.last_name,
+        "name": `${student.user.first_name} ${student.user.last_name}`,
+        "email": student.user.email,
+        "parent_id": student.primary_parent,
+        // below is not from database
+        "role": "student",
+        "balance": 0,
+        "notes": {},
+    },
+});
 
 const handleInstructorsFetch = (state, {id, response}) => {
     const {data} = response;
