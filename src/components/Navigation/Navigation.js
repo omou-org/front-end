@@ -65,7 +65,7 @@ function Navigation(props) {
                     position="fixed"
                     className="OmouBar">
                     <Toolbar>
-                        <Hidden >
+                        <Hidden lgUp>
                             <IconButton
                                 color="inherit"
                                 aria-label="Open Drawer"
