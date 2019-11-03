@@ -10,7 +10,7 @@ import { withRouter } from "react-router-dom";
 
 
 
-function UpcomingSessionCards(props) {
+function CourseCards(props) {
     const [value, setValue] = useState(0);
     const [userList, setUserList] = useState([])
     const [viewToggle, setViewToggle] = useState(true);
@@ -20,37 +20,38 @@ function UpcomingSessionCards(props) {
     }
 
 
-
     return (
-        <Grid item xs={12} sm={3} className={"UpcomingSessionCards"} style={{ padding: "20px" }}>
+        <Grid item xs={12} sm={3} className={"CourseCards"} style={{ "padding": "20px" }}>
             <Card key={props.user.user_id}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", width: "100%" }}
                 onClick={(event) => {
                     event.preventDefault();
                     goToRoute(`/${props.user.role}/${props.user.user_id}`);
                 }}>
-                <Grid container>
+                <Grid container style={{ "paddingLeft": "1em" }}>
                     <Grid item sm={12}>
-                        <Typography align={"center"} variant={"h5"}> Noveber 12, 2019 | 7:00 - 9:00 </Typography>
+                        <Typography align={"left"} variant={"h5"}> Calculus 101 </Typography>
                     </Grid>
-                    <Grid item sm={5}>
+                    <Grid item sm={"auto"}>
                         <Chip
                             style={{
                                 cursor: "pointer", width: '100px',
-                                height: '30px'
+                                height: '30px',
                             }}
-                            label={"Type of course"}
+                            label={"Full or Open"}
+                            color='primary'
                         />
                     </Grid>
-                    <Grid container style={{ "paddingLeft": "1em" }}>
+                    <Grid container>
                         <Grid container
                             direction={"row"}
-                            alignItems={'center'}
+                            alignItems={"center"}
+                            justify={"flex-start"}
                         >
-                            <Grid item >
-                                <Typography variant={"h6"}> Course Name: </Typography>
+                            <Grid item>
+                                <Typography variant={"h6"}> Session Dates:  </Typography>
                             </Grid>
-                            <Grid item sm={3}>Calc 101</Grid>
+                            <Grid item> 10/1/2019 - 12/20/2019</Grid>
                         </Grid>
                         <Grid container
                             direction={"row"}
@@ -79,7 +80,7 @@ function UpcomingSessionCards(props) {
 }
 
 
-UpcomingSessionCards.propTypes = {};
+CourseCards.propTypes = {};
 
 function mapStateToProps(state) {
     return {
@@ -96,4 +97,4 @@ function mapDispatchToProps(dispatch) {
 export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(UpcomingSessionCards));
+)(CourseCards));

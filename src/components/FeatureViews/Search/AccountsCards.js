@@ -76,7 +76,7 @@ function ProfileCard(props) {
 
 
     return (
-        <Grid item xs={12} sm={3} className={"ProfileCard"}>
+        <Grid item xs={12} sm={3} className={"ProfileCard"} style={{ padding: "20px" }}>
             <Card key={props.user.user_id}
                 style={{ cursor: "pointer" }}
                 onClick={(event) => {
@@ -91,7 +91,7 @@ function ProfileCard(props) {
                             </Avatar>
                         </Grid>
                     </Hidden>
-                    <Grid container xs={8} md={7}>
+                    <Grid container xs={8} md={9}>
 
                         <CardContent className={"text"}>
 

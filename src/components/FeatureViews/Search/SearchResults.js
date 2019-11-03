@@ -14,6 +14,7 @@ import AccountsCards from "./AccountsCards"
 import UpcomingSessionCards from './UpcomingSessionCards'
 import { makeStyles } from '@material-ui/styles';
 import Fab from '@material-ui/core/Fab';
+import CoursesCards from "./CoursesCards"
 
 
 const SearchResults = (props) => {
@@ -29,23 +30,25 @@ const SearchResults = (props) => {
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
         <div>
-            <Grid container className={'search-results'}>
-                <Paper className={'main-search-view'}>
-                    <Grid item xs={12}>
-                        <Typography variant={"h4"} align={"left"}> (number of results) Search Resuts for "Search Result"  </Typography>
+            <Grid container className={'search-results'} style={{ "padding": "1em" }}>
+                <Paper className={'main-search-view'} >
+                    <Grid item xs={12} style={{ "padding": "1em" }}>
+                        <Typography variant={"h4"} align={"left"}> "15" Search Resuts for "Search Result"  </Typography>
                     </Grid>
                     <hr />
                     <Grid item xs={12}>
-
                         <Grid container
                             justify={"space-between"}
                             direction={"row"}
                             alignItems="center">
-
-                            <Grid item>
-                                <Typography variant={"h3"} align={'left'} gutterBottom>Accounts</Typography>
+                            <Grid item style={{ "paddingLeft": "25px" }}>
+                                <Typography variant={"h5"} align={'left'} gutterBottom>Accounts</Typography>
                             </Grid>
-                            <Fab size="small" variant="extended" aria-label="Delete" className={""}>See All Accounts</Fab>
+                            <Grid item>
+                                <Fab size="small" variant="extended" className={""}>
+                                    See All Accounts
+                                    </Fab>
+                            </Grid>
                         </Grid>
                         <Grid container spacing={16} direction={"row"}>
                             {Object.values(props.parents).map((user) => (
@@ -54,16 +57,16 @@ const SearchResults = (props) => {
                         </Grid>
                     </Grid>
                     <hr />
-                    <Grid item xs={12}>
+                    <Grid item xs={12} >
                         <Grid container
                             justify={"space-between"}
                             direction={"row"}
                             alignItems="center">
-                            <Grid item>
-                                <Typography variant={"h3"} align={'left'} gutterBottom>Upcoming Session</Typography>
+                            <Grid item style={{ "paddingLeft": "25px" }}>
+                                <Typography variant={"h5"} align={'left'} gutterBottom>Upcoming Session</Typography>
                             </Grid>
-                            <Grid item>
-                                <Fab size="small" variant="extended" aria-label="Delete" className={""}>
+                            <Grid item style={{ "padding": "1em" }}>
+                                <Fab size="small" variant="extended" className={""}>
                                     See All Upcoming Session
                                     </Fab>
                             </Grid>
@@ -80,18 +83,18 @@ const SearchResults = (props) => {
                             justify={"space-between"}
                             direction={"row"}
                             alignItems="center">
-                            <Grid item>
-                                <Typography variant={"h3"} align={'left'} gutterBottom>Courses</Typography>
+                            <Grid item style={{ "paddingLeft": "25px" }}>
+                                <Typography variant={"h5"} align={'left'} gutterBottom>Courses</Typography>
                             </Grid>
-                            <Grid item>
-                                <Fab size="small" variant="extended" aria-label="Delete" className={""}>
+                            <Grid item style={{ "paddingRight": "1em" }}>
+                                <Fab size="small" variant="extended" className={""}>
                                     See All Courses
                                     </Fab>
                             </Grid>
                         </Grid>
                         <Grid container spacing={16} direction={"row"}>
                             {Object.values(props.students).map((user) => (
-                                <AccountsCards user={user} key={user.user_id} />)
+                                <CoursesCards user={user} key={user.user_id} />)
                             )}
                         </Grid>
                     </Grid>
