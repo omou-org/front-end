@@ -1,5 +1,6 @@
+import {connect} from "react-redux";
 import React, {Component} from "react";
-import Typography from "@material-ui/core/Typography";
+import {Card, Paper, Typography} from "@material-ui/core";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
@@ -22,6 +23,14 @@ class ProfileHeading extends Component {
         this.state = {
         };
     }
+
+    iconScaling() {
+        let iconStyles;
+        return (iconStyles = {
+            fontSize: "24",
+        })
+    }
+
     renderStudentProfile() {
         return (
             <Grid item xs={12}>
@@ -51,7 +60,7 @@ class ProfileHeading extends Component {
                         </Typography>
                     </Grid>
                     <Grid item xs={1} md={1} className="rowPadding">
-                        <PhoneIcon className="profileIcons" />
+                        <PhoneIcon style={this.iconScaling()} />
                     </Grid>
                     <Grid item xs={5} md={5} className="rowPadding">
                         <Typography className="rowText">
@@ -67,7 +76,7 @@ class ProfileHeading extends Component {
                         </Typography>
                     </Grid>
                     <Grid item xs={1} md={1} className="rowPadding">
-                        <EmailIcon className="profileIcons" />
+                        <EmailIcon style={this.iconScaling()} />
                     </Grid>
                     <Grid item xs={5} md={5} className="rowPadding">
                         <Typography className="rowText">
@@ -92,7 +101,7 @@ class ProfileHeading extends Component {
                     </Grid>
                     <Grid container>
                         <Grid item md={1} className="rowPadding">
-                            <PhoneIcon className="profileIcons" />
+                            <PhoneIcon style={this.iconScaling()} />
                         </Grid>
                         <Grid item md={11} className="rowPadding">
                             <Typography className="rowText">
@@ -127,7 +136,7 @@ class ProfileHeading extends Component {
                         </Typography>
                     </Grid>
                     <Grid item xs={1} md={1} className="rowPadding">
-                        <MoneyIcon className="profileIcons" />
+                        <MoneyIcon style={this.iconScaling()} />
                     </Grid>
                     <Grid item xs={5} md={5} className="rowPadding">
                         <Typography className="rowText">
@@ -135,7 +144,7 @@ class ProfileHeading extends Component {
                             </Typography>
                     </Grid>
                     <Grid item xs={1} md={1} className="rowPadding">
-                        <PhoneIcon className="profileIcons" />
+                        <PhoneIcon style={this.iconScaling()} />
                     </Grid>
                     <Grid item xs={5} md={5} className="rowPadding">
                         <Typography className="rowText">
@@ -145,7 +154,7 @@ class ProfileHeading extends Component {
                     <Grid item xs={6} md={6} className="rowPadding">
                     </Grid>
                     <Grid item xs={1} md={1} className="rowPadding">
-                        <EmailIcon className="profileIcons" />
+                        <EmailIcon style={this.iconScaling()} />
                     </Grid>
                     <Grid item xs={5} md={5} className="rowPadding">
                         <Typography className="rowText">
@@ -162,7 +171,7 @@ class ProfileHeading extends Component {
         if (this.props.user.role != "receptionist") {
             return (
                 <>
-                    <Grid component={Hidden} mdDown className="editPadding">
+                    <Grid component={Hidden} mdDown align="right" className="editPadding">
                         <Button
                             className="editButton"
                             component={NavLink}
@@ -171,7 +180,7 @@ class ProfileHeading extends Component {
                             Edit Profile
                         </Button>
                     </Grid>
-                    <Grid component={Hidden} lgUp className="editPadding">
+                    <Grid component={Hidden} lgUp align="right" className="editPadding">
                         <Button
                             className="editButton"
                             component={NavLink}
@@ -213,20 +222,22 @@ class ProfileHeading extends Component {
         return (
             <div>
                 <Grid container item xs={12} alignItems="center">
-                    <Grid item xs={6}>
-                        <h1 className="ProfileName">
-                            {this.props.user.name}
-                        </h1>
+                    <Grid item xs={9} align="left">
+                        <Grid container alignItems="center">
+                            <h1 className="ProfileName">
+                                {this.props.user.name}
+                            </h1>
+                            <div style={{paddingLeft: 30}}>
+                                <Hidden smDown>
+                                    <Chip
+                                        className={`userLabel ${this.props.user.role}`}
+                                        label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
+                                    />
+                                </Hidden>
+                            </div>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={3}>
-                        <Hidden smDown>
-                            <Chip
-                                className={`userLabel ${this.props.user.role}`}
-                                label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
-                            />
-                        </Hidden>
-                    </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={3} align="right">
                         {this.renderEditButton()}
                     </Grid>
                 </Grid>
@@ -236,4 +247,18 @@ class ProfileHeading extends Component {
     }
 }
 
-export default ProfileHeading;
+ProfileHeading.propTypes = {};
+
+function mapStateToProps(state) {
+    return {
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {};
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ProfileHeading);

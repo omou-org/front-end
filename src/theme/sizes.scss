@@ -20,7 +20,6 @@ $ipad-landscape-height: 768px;
     @media only screen 
     and (min-width: $ipad-landscape-height)
     and (max-width : $break-large)
-    and (orientation : landscape)
     {@content;}
   }
 }

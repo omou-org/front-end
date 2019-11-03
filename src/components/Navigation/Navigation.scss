@@ -44,8 +44,7 @@
     @include respond-to(handhelds){ width:0;}
     @include respond-to(medium-up-screens){ width:$drawerWidth; }
     
-
-    padding-top: 45%;
+    padding-top: 30%;
 
     .listItem {
       width: 94%;
@@ -82,6 +81,9 @@
 
 .DrawerList .list{
   @include respond-to(handhelds){
+    padding-top:80px !important;
+  }
+  @include respond-to(ipad-landscape){
     padding-top:80px !important;
   }
 }

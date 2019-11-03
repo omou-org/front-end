@@ -6,6 +6,7 @@ import BackButton from "../../BackButton";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import { Card } from "@material-ui/core";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import ListView from "@material-ui/icons/ViewList";
@@ -19,6 +20,7 @@ import Button from "@material-ui/core/Button";
 import {NavLink, withRouter} from "react-router-dom";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import {addDashes, stringToColor} from "./accountUtils";
+import CardActions from "@material-ui/core/CardActions";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 
 import "./Accounts.scss";
@@ -35,7 +37,6 @@ class Accounts extends Component {
             "viewToggle": true, // true = list, false = card view
             "mobileView": false,
         };
-        this.handleChange = this.handleChange.bind(this);
     }
 
     componentWillMount() {
@@ -47,12 +48,15 @@ class Accounts extends Component {
 
         } else {
             this.setState(() => {
-                const usersList = {};
+                let usersList = {};
                 Object.assign(usersList, this.props.parents);
                 Object.assign(usersList, this.props.students);
                 Object.assign(usersList, this.props.instructors);
                 Object.assign(usersList, this.props.receptionist);
-                return {usersList};
+                usersList=Object.values(usersList).sort(function(a, b) {
+                    return (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0;
+                })
+                return { usersList: usersList, }
             });
         }
     }
@@ -102,10 +106,13 @@ class Accounts extends Component {
             default:
                 newUsersList = usersList;
         }
+        newUsersList = Object.values(newUsersList).sort(function (a, b) {
+            return (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0;
+        });
         return newUsersList;
     }
 
-    handleChange(event, tabIndex) {
+    handleChange = (event, tabIndex) => {
         event.preventDefault();
         this.setState({
             tabIndex,
@@ -219,6 +226,7 @@ class Accounts extends Component {
                     {Object.values(userList).map((user) => (
                         <ProfileCard
                             key={user.user_id}
+                            route={`accounts/${user.role}/${user.user_id}`}
                             user={user} />))}
                 </Grid>
             </Grow>
@@ -243,7 +251,7 @@ class Accounts extends Component {
                         direction="row">
                         <Grid
                             item
-                            md={10}
+                            md={11}
                             xs={12}>
                             <Tabs
                                 className="tabs"
@@ -261,31 +269,33 @@ class Accounts extends Component {
                         </Grid>
                         {
                             !this.state.mobileView &&
-                            <Grid
-                                className="toggleView"
-                                item
-                                md={2}>
-                                <ListView
-                                    className={`list icon ${this.state.viewToggle ? "active" : ""}`}
-                                    onClick={(event) => {
-                                        this.setState(
-                                            {"viewToggle": true},
-                                            () => {
-                                                sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
-                                            }
-                                        );
-                                    }} />
-                                <CardView
-                                    className={`card icon ${this.state.viewToggle ? "" : "active"}`}
-                                    onClick={(event) => {
-                                        this.setState(
-                                            {"viewToggle": false},
-                                            () => {
-                                                sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
-                                            }
-                                        );
-                                    }} />
-                            </Grid>
+                            <Hidden smDown>
+                                <Grid
+                                    className="toggleView"
+                                    item
+                                    md={1}>
+                                    <ListView
+                                        className={`list icon ${this.state.viewToggle ? "active" : ""}`}
+                                        onClick={(event) => {
+                                            this.setState(
+                                                {"viewToggle": true},
+                                                () => {
+                                                    sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
+                                                }
+                                            );
+                                        }} />
+                                    <CardView
+                                        className={`card icon ${this.state.viewToggle ? "" : "active"}`}
+                                        onClick={(event) => {
+                                            this.setState(
+                                                {"viewToggle": false},
+                                                () => {
+                                                    sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
+                                                }
+                                            );
+                                        }} />
+                                </Grid>
+                            </Hidden>
                         }
                     </Grid>
                     <Grid

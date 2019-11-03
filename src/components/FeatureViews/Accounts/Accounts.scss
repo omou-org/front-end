@@ -7,21 +7,21 @@
   .paper {
     padding: 3%;
   }
+  .toggleView {
+    position: absolute;
+    right:10%;
+  }
 
   .Directory {
     text-align: left;
     font-size: 60px;
-
-    .toggleView {
-      position: absolute;
-      right: 100px;
-    }
   }
 
   .heading {
     margin: 25px 0;
   }
 
+  
   .AccountsTable {
     margin-top: 20px;
 
