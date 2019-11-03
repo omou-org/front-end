@@ -39,16 +39,17 @@ class ProfileCard extends Component {
     }
 
     goToRoute(route) {
-        this.props.history.push(this.props.match.url + route);
+        this.props.history.push(route);
     }
 
     render() {
+        console.log(this.props.route)
         const styles = (username) => ({
             "backgroundColor": stringToColor(username),
             "color": "white",
-            "width": "5vw",
-            "height": "5vw",
-            "fontSize": 20,
+            "width": "7vw",
+            "height": "7vw",
+            "fontSize": 30,
             "margin": 20,
         });
 
@@ -58,7 +59,7 @@ class ProfileCard extends Component {
                     style={{ cursor: "pointer" }}
                     onClick={(event) => {
                         event.preventDefault();
-                        this.goToRoute(`/${this.props.user.role}/${this.props.user.user_id}`);
+                        this.goToRoute(this.props.route);
                     }}>
                     <Grid container>
                         <Grid component={Hidden} xsDown item md={4}>

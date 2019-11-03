@@ -113,9 +113,6 @@ class Accounts extends Component {
     }
 
     render() {
-        console.log(Object.values(this.state.usersList).sort(function(a, b) {
-            return (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0;
-        }));
         let styles = (username) => ({
             backgroundColor: stringToColor(username),
             color: "white",
@@ -195,7 +192,7 @@ class Accounts extends Component {
             return <Grow in={true}>
                 <Grid container xs={12} md={10} spacing={8} alignItems={'center'} direction={'row'} style={{ marginTop: 20 }}>
                     {Object.values(this.state.usersList).map((user) => (
-                        <ProfileCard user={user} key={user.user_id} />))}
+                        <ProfileCard user={user} route={`accounts/${user.role}/${user.user_id}`} key={user.user_id} />))}
                 </Grid>
             </Grow>
         };

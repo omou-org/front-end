@@ -222,7 +222,7 @@ class ProfileHeading extends Component {
         return (
             <div>
                 <Grid container item xs={12} alignItems="center">
-                    <Grid item xs={9} md={9} align="left">
+                    <Grid item xs={9} align="left">
                         <Grid container alignItems="center">
                         <h1 className="ProfileName">
                             {this.props.user.name}
