@@ -106,7 +106,7 @@ export const postNote = (data, userType) => async (dispatch, getState) => {
     }
 };
 
-export const patchNote = (id, data, userType) => async (dispatch, getState) => {
+export const patchNote = (id, data, userType,) => async (dispatch, getState) => {
     // creates a new action based on the response given
     const newAction = (type, response) => {
         dispatch({
@@ -114,6 +114,7 @@ export const patchNote = (id, data, userType) => async (dispatch, getState) => {
             "payload": {
                 response,
                 userType,
+                "userID": data.user,
             },
         });
     };

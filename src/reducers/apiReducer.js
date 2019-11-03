@@ -86,11 +86,11 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             return updateNotePost(state, status);
 
         case actions.PATCH_NOTE_STARTED:
-            return updateNotePatch(state, payload.id, api.REQUEST_STARTED);
+            return updateNotePatch(state, payload.userID, api.REQUEST_STARTED);
         case actions.PATCH_NOTE_SUCCESSFUL:
-            return updateNotePatch(state, payload.id, status);
+            return updateNotePatch(state, payload.userID, status);
         case actions.PATCH_NOTE_FAILED:
-            return updateNotePatch(state, payload.id, status);
+            return updateNotePatch(state, payload.userID, status);
 
         default:
             return state;
@@ -161,8 +161,8 @@ const updateNotePost = (state, status) => {
     return newState;
 };
 
-const updateNotePatch = (state, id, status) => {
+const updateNotePatch = (state, userID, status) => {
     let newState = JSON.parse(JSON.stringify(state));
-    newState.note[actions.PATCH][id] = status;
+    newState.note[actions.PATCH][userID] = status;
     return newState;
 };
