@@ -18,7 +18,7 @@ import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse"
 import CourseCategory from "../FeatureViews/Registration/CourseCategory";
 import LoginPage from "../Authentication/LoginPage.js";
 import ProtectedRoute from "./ProtectedRoute";
-
+import SearchResults from '../FeatureViews/Search/SearchResults';
 import SessionView from "../FeatureViews/Scheduler/SessionView"
 
 
@@ -27,6 +27,7 @@ import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
 import ParentPayment from "../Form/ParentPayment";
+import Search from "../FeatureViews/Search/Search";
 
 
 function rootRoutes(props) {
@@ -66,9 +67,13 @@ function rootRoutes(props) {
             render={(passedProps) => <Registration {...passedProps} />}/>
 
             <ProtectedRoute
+                path='/test'
+                render={(passedProps) => <SearchResults {...passedProps} />} />
+
+            <ProtectedRoute
                 exact
                 path="/scheduler"
-                render={(passedProps) => <Scheduler {...passedProps} />}/>
+                render={(passedProps) => <Scheduler {...passedProps} />} />
 
 
             {/* Accounts */}
@@ -79,7 +84,7 @@ function rootRoutes(props) {
             <ProtectedRoute
                 exact
                 path="/accounts/parents/:parentID/pay"
-                render={(passedProps) => <ParentPayment {...passedProps} />}/>
+                render={(passedProps) => <ParentPayment {...passedProps} />} />
             <ProtectedRoute
                 exact
                 path="/accounts"
@@ -87,7 +92,7 @@ function rootRoutes(props) {
             <ProtectedRoute
                 exact
                 path="/accounts/:accountType/:accountID/:courseID"
-                render={(passedProps) => <CourseSessionStatus {...passedProps} />}/>
+                render={(passedProps) => <CourseSessionStatus {...passedProps} />} />
 
             {/* Registration Routes */}
             <ProtectedRoute
@@ -98,9 +103,9 @@ function rootRoutes(props) {
                 render={(passedProps) => <RegistrationCourse {...passedProps} />} />
             <ProtectedRoute
                 path="/registration/category/:categoryID"
-                render={(passedProps) => <CourseCategory {...passedProps} />}/>
-            <Route path="/PageNotFound" component={ErrorNotFoundPage}/>
-            <Redirect to="/PageNotFound"/>
+                render={(passedProps) => <CourseCategory {...passedProps} />} />
+            <Route path="/PageNotFound" component={ErrorNotFoundPage} />
+            <Redirect to="/PageNotFound" />
         </Switch>
     );
 }

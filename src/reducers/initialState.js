@@ -1,4 +1,4 @@
-import {GET, PATCH, POST} from "../actions/actionTypes";
+import { GET, PATCH, POST } from "../actions/actionTypes";
 
 export default {
     "Authentication": initAuth(),
@@ -454,7 +454,7 @@ export default {
                 description: "This course is primarily for sophomores and juniors preparing for the SAT.",
                 room_id: 4,
                 type: "C",
-                roster: [23, 99,],
+                roster: [],
                 subject: "English",
                 tags: ["English", "Preparation Class", "SAT"],
             },
@@ -476,7 +476,7 @@ export default {
                 description: "This course is to prepare sophmores or juniors for AP US history.",
                 room_id: 4,
                 type: "C",
-                roster: [23, 99, 64],
+                roster: [],
                 subject: "History",
                 tags: ["History", "Preparation Class", "AP"],
             },
@@ -498,7 +498,7 @@ export default {
                 description: "This course is to prepare students for AP Chemistry.",
                 room_id: 4,
                 type: "C",
-                roster: [23, 99, 64],
+                roster: [],
                 subject: "Science",
                 tags: ["Science", "Preparation Class", "AP"],
             },
@@ -520,7 +520,7 @@ export default {
                 description: "This course prepares junior students for AP Language and Composition.",
                 room_id: 6,
                 type: "C",
-                roster: [23, 99, 64],
+                roster: [],
                 subject: "Language",
                 tags: ["Language", "Preparation Class",],
             },
@@ -542,7 +542,7 @@ export default {
                 description: "This course is to prepare students for computer science.",
                 room_id: 4,
                 type: "C",
-                roster: [23, 99, 64],
+                roster: [],
                 subject: "Computer Science",
                 tags: ["CS", "Preparation Class", "AP"],
             },
@@ -564,7 +564,7 @@ export default {
                 description: "This course is to prepare studenets for AP Physics.",
                 room_id: 2,
                 type: "C",
-                roster: [23, 99, 64],
+                roster: [],
                 subject: "Physics",
                 tags: ["Physics", "Preparation Class", "AP"],
             },
@@ -586,7 +586,7 @@ export default {
                 description: "This course is to prepare students for AP Literature.",
                 room_id: 4,
                 type: "C",
-                roster: [23, 99, 64],
+                roster: [],
                 subject: "English",
                 tags: ["English", "Preparation Class", "AP"],
             },
@@ -608,7 +608,7 @@ export default {
                 description: "This course is to prepare for AP Government.",
                 room_id: 5,
                 type: "C",
-                roster: [23, 99, 64],
+                roster: [],
                 subject: "History",
                 tags: ["History", "Preparation Class", "AP"],
             },
@@ -630,7 +630,7 @@ export default {
                 description: "This course is to prepare students for French.",
                 room_id: 3,
                 type: "T",
-                roster: [23, 99, 64],
+                roster: [],
                 subject: "Language",
                 tags: ["Language", "Preparation Class", "AP"],
             },
@@ -652,7 +652,7 @@ export default {
                 description: "This course is to prepare students for Spanish.",
                 room_id: 4,
                 type: "T",
-                roster: [23, 64],
+                roster: [],
                 subject: "Language",
                 tags: ["Language", "Preparation Class", "AP"],
             }
@@ -3755,8 +3755,8 @@ export default {
         ],
     },
     "RequestStatus": initRequests(),
-    "SearchResults":{
-        accounts:[
+    "SearchResults": {
+        accounts: [
             {
                 first_name: "Daniel",
                 last_name: "Huang",
@@ -3779,7 +3779,7 @@ export default {
                 email: "gale.long@omou.com",
             },
         ],
-        courses:[
+        courses: [
             {
                 date_start: "2020-01-08",
                 date_end: "2020-04-01",
@@ -4063,15 +4063,15 @@ function initRegistrationForm() {
                         name: "State",
                         type: "short text",
                         suggestions: [
-                            {label: "AL"}, {label: "AK"}, {label: "AZ"}, {label: "AR"}, {label: "CA"}, {label: "CO"},
-                            {label: "CT"}, {label: "DE"}, {label: "FL"}, {label: "GA"}, {label: "HI"}, {label: "ID"},
-                            {label: "IL"}, {label: "IN"}, {label: "IA"}, {label: "KS"},
-                            {label: "KY"}, {label: "KY"}, {label: "LA"}, {label: "ME"}, {label: "MD"}, {label: "MA"}, {label: "MI"},
-                            {label: "MS"}, {label: "MO"}, {label: "MT"}, {label: "NE"}, {label: "NV"}, {label: "NH"}, {label: "NJ"},
-                            {label: "NM"}, {label: "NY"}, {label: "NC"}, {label: "ND"},
-                            {label: "OH"}, {label: "OK"}, {label: "OR"}, {label: "PA"}, {label: "RI"}, {label: "SC"}, {label: "SD"},
-                            {label: "TN"}, {label: "TX"}, {label: "UT"}, {label: "VT"}, {label: "VA"}, {label: "WA"}, {label: "WV"}, {label: "WI"},
-                            {label: "WY"},
+                            { label: "AL" }, { label: "AK" }, { label: "AZ" }, { label: "AR" }, { label: "CA" }, { label: "CO" },
+                            { label: "CT" }, { label: "DE" }, { label: "FL" }, { label: "GA" }, { label: "HI" }, { label: "ID" },
+                            { label: "IL" }, { label: "IN" }, { label: "IA" }, { label: "KS" },
+                            { label: "KY" }, { label: "KY" }, { label: "LA" }, { label: "ME" }, { label: "MD" }, { label: "MA" }, { label: "MI" },
+                            { label: "MS" }, { label: "MO" }, { label: "MT" }, { label: "NE" }, { label: "NV" }, { label: "NH" }, { label: "NJ" },
+                            { label: "NM" }, { label: "NY" }, { label: "NC" }, { label: "ND" },
+                            { label: "OH" }, { label: "OK" }, { label: "OR" }, { label: "PA" }, { label: "RI" }, { label: "SC" }, { label: "SD" },
+                            { label: "TN" }, { label: "TX" }, { label: "UT" }, { label: "VT" }, { label: "VA" }, { label: "WA" }, { label: "WV" }, { label: "WI" },
+                            { label: "WY" },
                         ].map((suggestion) => ({
                             value: suggestion.label,
                             label: suggestion.label,
