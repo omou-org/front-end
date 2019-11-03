@@ -43,7 +43,6 @@ class ProfileCard extends Component {
     }
 
     render() {
-        console.log(this.props.route)
         const styles = (username) => ({
             "backgroundColor": stringToColor(username),
             "color": "white",

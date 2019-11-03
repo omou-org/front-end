@@ -109,6 +109,25 @@ class UserProfile extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
+    componentDidUpdate(prevProps) {
+        const {
+            "accountType": currAccType,
+            "accountID": currAccID
+        } = this.props.computedMatch.params;
+
+        const {
+            "accountType": prevAccType,
+            "accountID": prevAccID
+        } = prevProps.computedMatch.params;
+
+        // if looking at new profile, reset tab to the first one
+        if (currAccType !== prevAccType || currAccID !== prevAccID) {
+            this.setState({
+                "value": 0,
+            });
+        }
+    }
+
     getUser = () => {
         let user;
         const { accountType, accountID } = this.props.computedMatch.params;
