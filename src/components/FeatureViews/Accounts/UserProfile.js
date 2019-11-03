@@ -1,10 +1,10 @@
-import {connect} from "react-redux";
-import React, {Component} from "react";
-import {Redirect} from "react-router-dom";
+import { connect } from "react-redux";
+import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 
-import {stringToColor} from "./accountUtils";
+import { stringToColor } from "./accountUtils";
 import Grid from "@material-ui/core/Grid";
-import {Paper, Typography} from "@material-ui/core";
+import { Paper, Typography } from "@material-ui/core";
 import "./Accounts.scss";
 
 import BackButton from "../../BackButton";
@@ -109,9 +109,28 @@ class UserProfile extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
+    componentDidUpdate(prevProps) {
+        const {
+            "accountType": currAccType,
+            "accountID": currAccID
+        } = this.props.computedMatch.params;
+
+        const {
+            "accountType": prevAccType,
+            "accountID": prevAccID
+        } = prevProps.computedMatch.params;
+
+        // if looking at new profile, reset tab to the first one
+        if (currAccType !== prevAccType || currAccID !== prevAccID) {
+            this.setState({
+                "value": 0,
+            });
+        }
+    }
+
     getUser = () => {
         let user;
-        const {accountType, accountID} = this.props.computedMatch.params;
+        const { accountType, accountID } = this.props.computedMatch.params;
         switch (accountType) {
             case "student":
                 user = this.props.students[accountID];
@@ -133,7 +152,7 @@ class UserProfile extends Component {
 
     handleChange(e, newTabIndex) {
         e.preventDefault();
-        this.setState({"value": newTabIndex});
+        this.setState({ "value": newTabIndex });
     }
 
     render() {
@@ -141,12 +160,12 @@ class UserProfile extends Component {
         if (user === -1) {
             return <Redirect to="/PageNotFound" />;
         }
-        const {accountType, accountID} = this.props.computedMatch.params;
+        const { accountType, accountID } = this.props.computedMatch.params;
         const styles = {
             "backgroundColor": stringToColor(user.name),
             "color": "white",
-            "width": "10vw",
-            "height": "10vw",
+            "width": "9vw",
+            "height": "9vw",
             "fontSize": "3.5vw",
             "margin": 20,
         };
@@ -174,7 +193,7 @@ class UserProfile extends Component {
             tabs = (
                 <div>
                     <Grid align="left">
-                    Action Log
+                        Action Log
                     </Grid>
 
                     <Paper className="paper">
@@ -229,23 +248,15 @@ class UserProfile extends Component {
                     <BackButton
                         warn={false} />
                     <hr />
-                    <Grid
-                        className="padding"
-                        container
-                        layout="row">
-                        <Grid
-                            component={Hidden}
-                            item
-                            md={2}
-                            xsDown>
-                            <Avatar style={styles}>
-                                {user.name.match(/\b(\w)/g).join("")}
-                            </Avatar>
+                    <Grid className="padding" container layout="row" >
+                        <Grid item md={2}>
+                            <Hidden xsDown>
+                                <Avatar style={styles}>
+                                    {user.name.match(/\b(\w)/g).join("")}
+                                </Avatar>
+                            </Hidden>
                         </Grid>
-                        <Grid
-                            className="headingPadding"
-                            item
-                            md={8}>
+                        <Grid item md={10} xs={12} className="headingPadding" >
                             <ProfileHeading user={user} />
                         </Grid>
                     </Grid>

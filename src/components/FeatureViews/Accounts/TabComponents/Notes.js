@@ -79,6 +79,7 @@ class Notes extends Component {
                     spacing={16}>
                     <Grid
                         item
+                        xs={6}
                         md={3}>
                         <div
                             className="addNote"
@@ -150,7 +151,7 @@ class Notes extends Component {
                         <Grid
                             item
                             key={i}
-                            xs={3}>
+                            xs={6} md={3}>
                             <Paper className="note">
                                 <Typography
                                     align="left"

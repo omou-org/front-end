@@ -89,15 +89,15 @@ class CourseViewer extends Component {
     }
 
     numPaidCourses(courseID) {
-        let courseEnrollment = this.state.userEnrollments[courseID],
-            enrollmentPayments = Object.values(courseEnrollment.session_payment_status),
-            numPaidEnrollments = 0;
-        enrollmentPayments.forEach((paymentStatus) => {
-            if (paymentStatus === 1) {
-                numPaidEnrollments++;
-            }
-        });
-        return numPaidEnrollments;
+        // let courseEnrollment = this.state.userEnrollments[courseID],
+        //     enrollmentPayments = Object.values(courseEnrollment.session_payment_status),
+        //     numPaidEnrollments = 0;
+        // enrollmentPayments.forEach((paymentStatus) => {
+        //     if (paymentStatus === 1) {
+        //         numPaidEnrollments++;
+        //     }
+        // });
+        return 0;
     }
 
 
