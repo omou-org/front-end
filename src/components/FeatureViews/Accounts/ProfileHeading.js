@@ -31,12 +31,20 @@ class ProfileHeading extends Component {
         })
     }
 
+    handleEmail(){
+        window.location.href = `mailto:${this.props.user.email}`;
+    }
+
+    handlePhone(){
+        
+    }
+
     renderStudentProfile() {
         return (
             <Grid item xs={12}>
                 <Grid container>
                     <Grid item xs={1} md={1} className="rowPadding">
-                        <BirthdayIcon height={"24px"} width={"24px"} />
+                        <BirthdayIcon style={this.iconScaling()} />
                     </Grid>
                     <Grid item xs={5} md={5} className="rowPadding">
                         <Typography className="rowText">
@@ -44,7 +52,7 @@ class ProfileHeading extends Component {
                         </Typography>
                     </Grid>
                     <Grid item xs={1} md={1} className="rowPadding">
-                        <IDIcon height={"24px"} width={"24px"} />
+                        <IDIcon style={this.iconScaling()}/>
                     </Grid>
                     <Grid item xs={5} md={5} className="rowPadding">
                         <Typography className="rowText">
@@ -52,7 +60,7 @@ class ProfileHeading extends Component {
                         </Typography>
                     </Grid>
                     <Grid item xs={1} md={1} className="rowPadding">
-                        <GradeIcon height={"24px"} width={"24px"} />
+                        <GradeIcon style={this.iconScaling()} />
                     </Grid>
                     <Grid item xs={5} md={5} className="rowPadding">
                         <Typography className="rowText">
@@ -68,7 +76,7 @@ class ProfileHeading extends Component {
                         </Typography>
                     </Grid>
                     <Grid item xs={1} md={1} className="rowPadding">
-                        <SchoolIcon height={"24px"} width={"24px"} />
+                        <SchoolIcon style={this.iconScaling()} />
                     </Grid>
                     <Grid item xs={5} md={5} className="rowPadding">
                         <Typography className="rowText">
@@ -92,7 +100,7 @@ class ProfileHeading extends Component {
             <Grid item xs={12}>
                 <Grid container>
                     <Grid item md={1} className="rowPadding">
-                        <IDIcon height={"24px"} width={"24px"} />
+                        <IDIcon style={this.iconScaling()} />
                     </Grid>
                     <Grid item md={11} className="rowPadding">
                         <Typography className="rowText">
@@ -112,7 +120,7 @@ class ProfileHeading extends Component {
                 </Grid>
                 <Grid container>
                     <Grid item md={1} className="rowPadding">
-                        <EmailIcon />
+                        <EmailIcon style={this.iconScaling()}/>
                     </Grid>
                     <Grid item md={11} className="rowPadding">
                         <Typography className="rowText">
@@ -128,7 +136,7 @@ class ProfileHeading extends Component {
             <Grid item xs={12}>
                 <Grid container>
                     <Grid item xs={1} md={1} className="rowPadding">
-                        <IDIcon height={"24px"} width={"24px"} />
+                        <IDIcon style={this.iconScaling()} />
                     </Grid>
                     <Grid item xs={5} md={5} className="rowPadding">
                         <Typography className="rowText">
@@ -153,10 +161,14 @@ class ProfileHeading extends Component {
                     </Grid>
                     <Grid item xs={6} md={6} className="rowPadding">
                     </Grid>
-                    <Grid item xs={1} md={1} className="rowPadding">
+                    <Grid item xs={1} md={1} className="rowPadding"
+                    onClick={()=>this.handleEmail()}
+                    style={{cursor:"pointer"}}>
                         <EmailIcon style={this.iconScaling()} />
                     </Grid>
-                    <Grid item xs={5} md={5} className="rowPadding">
+                    <Grid item xs={5} md={5} className="rowPadding"
+                    onClick={()=>this.handleEmail()}
+                    style={{cursor:"pointer"}}>
                         <Typography className="rowText">
                             {this.props.user.email}
                         </Typography>
