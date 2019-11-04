@@ -28,6 +28,7 @@ import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
 import ParentPayment from "../Form/ParentPayment";
 import Search from "../FeatureViews/Search/Search";
+import FilterAccountsPage from "../FeatureViews/Search/FilterAccountsPage";
 
 
 function rootRoutes(props) {
@@ -69,6 +70,9 @@ function rootRoutes(props) {
             <ProtectedRoute
                 path='/test'
                 render={(passedProps) => <SearchResults {...passedProps} />} />
+            <ProtectedRoute
+                path="/filterAccount"
+                render={(passedProps) => <FilterAccountsPage {...passedProps} />} />
 
             <ProtectedRoute
                 exact

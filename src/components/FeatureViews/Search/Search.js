@@ -42,16 +42,15 @@ const Search = () => {
                                         name: 'primary-filter',
                                         id: 'primary-filter',
                                     }}
-                                    variant="outlined"
                                 >
-                                    <MenuItem value={"All"} key={"All"}>
-                                        <em>All</em>
+                                    <MenuItem value={"All"} key={"All"} >
+                                        All
                                     </MenuItem>
                                     <MenuItem value={"Accounts"} key={"Accounts"}>
-                                        <em>Accounts</em>
+                                        Account
                                     </MenuItem>
                                     <MenuItem value={"Courses"} key={"Courses"}>
-                                        <em>Courses</em>
+                                        Courses
                                     </MenuItem>
                                 </Select>
                             </FormControl>
@@ -62,7 +61,7 @@ const Search = () => {
                                 classNamePrefix="main-search"
                             />
                         </Grid>
-                        <Grid item>
+                        <Grid item style={{ paddingTop: "1px" }}>
                             <Button className={"button-background"}> <SearchIcon className={"searchIcon"} /> </Button>
                         </Grid>
                     </Grid>
