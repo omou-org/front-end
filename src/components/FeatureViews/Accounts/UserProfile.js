@@ -1,6 +1,10 @@
-import { connect } from "react-redux";
-import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import * as userActions from "../../../actions/userActions";
+import * as apiActions from "../../../actions/apiActions";
+import {GET} from "../../../actions/actionTypes";
+import React, {Component} from "react";
+import {Redirect} from "react-router-dom";
 
 import { stringToColor } from "./accountUtils";
 import Grid from "@material-ui/core/Grid";
@@ -18,7 +22,6 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
-import Chip from "@material-ui/core/Chip";
 import BioIcon from "@material-ui/icons/PersonOutlined";
 import CoursesIcon from "@material-ui/icons/SchoolOutlined";
 import ScheduleIcon from "@material-ui/icons/CalendarTodayOutlined";
@@ -106,7 +109,29 @@ class UserProfile extends Component {
             "user": {},
             "value": 0,
         };
+        this.currID = props.computedMatch.params.accountID;
         this.handleChange = this.handleChange.bind(this);
+    }
+
+    componentDidMount() {
+        let user;
+        const {accountType, accountID} = this.props.computedMatch.params;
+        switch (accountType) {
+            case "student":
+                this.props.userActions.fetchStudents(accountID);
+                break;
+            case "parent":
+                this.props.userActions.fetchParents(accountID);
+                break;
+            case "instructor":
+                this.props.userActions.fetchInstructors(accountID);
+                break;
+            case "receptionist":
+                // future request for receptionists
+                break;
+            // no default
+        }
+        return user;
     }
 
     componentDidUpdate(prevProps) {
@@ -150,14 +175,27 @@ class UserProfile extends Component {
         return user;
     }
 
+    getRequestStatus = () => {
+        const {accountType, accountID} = this.props.computedMatch.params;
+        return accountType === "receptionist"
+            ? 200
+            : this.props.requestStatus[accountType][GET][accountID];
+    }
+
     handleChange(e, newTabIndex) {
         e.preventDefault();
         this.setState({ "value": newTabIndex });
     }
 
     render() {
+        const status = this.getRequestStatus();
+        if (!status || status === apiActions.REQUEST_STARTED) {
+            return "Loading...";
+        }
+
         const user = this.getUser();
-        if (user === -1) {
+
+        if ((!user || user === -1) && (status < 200 || status >= 300)) {
             return <Redirect to="/PageNotFound" />;
         }
         const { accountType, accountID } = this.props.computedMatch.params;
@@ -180,9 +218,11 @@ class UserProfile extends Component {
                             onChange={this.handleChange}
                             textColor="primary"
                             value={this.state.value}>
-                            {userTabs[accountType].map((tab) => (<Tab
-                                key={this.props.inView}
-                                label={<>{tab.icon} {tab.tab_heading}</>} />))}
+                            {userTabs[accountType].map((tab) => (
+                                <Tab
+                                    key={tab.tab_id}
+                                    label={<>{tab.icon} {tab.tab_heading}</>} />
+                            ))}
                         </Tabs>
                         <ComponentViewer
                             inView={userTabs[accountType][this.state.value].tab_id}
@@ -270,18 +310,17 @@ class UserProfile extends Component {
 
 UserProfile.propTypes = {};
 
-function mapStateToProps(state) {
-    return {
-        "students": state.Users.StudentList,
-        "parents": state.Users.ParentList,
-        "instructors": state.Users.InstructorList,
-        "receptionist": state.Users.ReceptionistList,
-    };
-}
+const mapStateToProps = (state) => ({
+    "students": state.Users.StudentList,
+    "parents": state.Users.ParentList,
+    "instructors": state.Users.InstructorList,
+    "receptionist": state.Users.ReceptionistList,
+    "requestStatus": state.RequestStatus,
+});
 
-function mapDispatchToProps(dispatch) {
-    return {};
-}
+const mapDispatchToProps = (dispatch) => ({
+    "userActions": bindActionCreators(userActions, dispatch),
+});
 
 export default connect(
     mapStateToProps,

@@ -1,107 +1,85 @@
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import PropTypes from 'prop-types';
-import React, {Component} from 'react';
+import React from "react";
 
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Card from "@material-ui/core/Card";
 import Chip from "@material-ui/core/Chip";
-import Typography from '@material-ui/core/Typography';
-import Paper from "@material-ui/core/Paper";
-import EditIcon from "@material-ui/icons/EditOutlined";
-import RemoveIcon from "@material-ui/icons/DeleteForeverOutlined";
-import AlertIcon from "@material-ui/icons/AddAlertOutlined";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
 
-class Bio extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        };
-    }
-
-    render() {
-        return (
-            <Card className={"Bio"}>
-                <Grid item md={12} xs={12}>
-                    <Grid container>
-                        <Grid item md={6} xs={12} >
-                            <div className="Bio1">
-                                <Typography class="bioHeader">
-                                    Bio
-                                    </Typography>
-                                <Typography className="bioBody">
-                                    {this.props.background.bio}
-                                </Typography>
-                            </div>
+const Bio = (props) => (
+    <Card className="Bio">
+        <Grid
+            container
+            item
+            xs={12}>
+            <Grid
+                item
+                md={6}
+                xs={12}>
+                <div className="Bio1">
+                    <Typography className="bioHeader">
+                        Bio
+                    </Typography>
+                    <Typography className="bioBody">
+                        {props.background.bio}
+                    </Typography>
+                </div>
+            </Grid>
+            <Grid
+                item
+                md={6}
+                xs={12}>
+                <div className="BioBackground Bio2">
+                    <Grid
+                        className="rowPadding"
+                        container>
+                        <Grid className="bioDescription">
+                            Experience:
                         </Grid>
-                        <Grid item md={6} xs={12}>
-                            <div className="BioBackground">
-                                <div className="Bio2">
-                                    <Grid>
-                                        <Grid container className="rowPadding">
-                                            <Grid className="bioDescription">
-                                                Experience:
-                                        </Grid>
-                                            <Grid className="chipPadding">
-                                                <Chip
-                                                    label={this.props.background.experience + " years at Summit"}
-                                                    className="bioChip"
-                                                    variant="outlined"
-                                                />
-                                            </Grid>
-                                        </Grid>
-                                        <Grid container className="rowPadding">
-                                            <Grid className="bioDescription">
-                                                Subjects offered:
-                                        </Grid>
-                                            {this.props.background.subjects.map((subjects) => {
-                                                return (
-                                                    <Grid className="chipPadding">
-                                                        <Chip
-                                                            label={subjects} className="bioChip"
-                                                            variant="outlined"
-                                                        />
-                                                    </Grid>)
-                                            })}
-                                        </Grid>
-                                        <Grid container className="rowPadding">
-                                            <Grid className="bioDescription">
-                                                Language:
-                                        </Grid>
-                                            {this.props.background.languages.map((languages) => {
-                                                return (
-                                                    <Grid className="chipPadding">
-                                                        <Chip
-                                                            label={languages}
-                                                            className="bioChip"
-                                                            variant="outlined"
-                                                        />
-                                                    </Grid>)
-                                            })}
-                                        </Grid>
-                                    </Grid>
-                                </div>
-                            </div>
+                        <Grid className="chipPadding">
+                            <Chip
+                                className="bioChip"
+                                label={`${props.background.experience} years at Summit`}
+                                variant="outlined" />
                         </Grid>
                     </Grid>
-                </Grid>
-            </Card>)
-    }
+                    <Grid
+                        className="rowPadding"
+                        container>
+                        <Grid className="bioDescription">
+                            Subjects offered:
+                        </Grid>
+                        {props.background.subjects.map((subject) => (
+                            <Grid
+                                className="chipPadding"
+                                key={subject}>
+                                <Chip
+                                    className="bioChip"
+                                    label={subject}
+                                    variant="outlined" />
+                            </Grid>
+                        ))}
+                    </Grid>
+                    <Grid
+                        className="rowPadding"
+                        container>
+                        <Grid className="bioDescription">
+                            Language:
+                        </Grid>
+                        {props.background.languages.map((language) => (
+                            <Grid
+                                className="chipPadding"
+                                key={language}>
+                                <Chip
+                                    className="bioChip"
+                                    label={language}
+                                    variant="outlined" />
+                            </Grid>
+                        ))}
+                    </Grid>
+                </div>
+            </Grid>
+        </Grid>
+    </Card>
+);
 
-}
-
-Bio.propTypes = {};
-
-function mapStateToProps(state) {
-    return {
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {};
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Bio);
+export default Bio;

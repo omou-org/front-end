@@ -56,14 +56,10 @@ function rootRoutes(props) {
                 path="/scheduler/view-session/:course_id/:session_id"
                 render={(passedProps) => <SessionView {...passedProps} />} />
 
-            {/* 
+            {/*
             <ProtectedRoute
                 path='/scheduler/resource'
                 render={(passedProps) => <ResourceView {...passedProps} />} /> */}
-
-
-
-            render={(passedProps) => <Registration {...passedProps} />}/>
 
             <ProtectedRoute
                 exact
