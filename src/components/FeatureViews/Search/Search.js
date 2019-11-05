@@ -14,12 +14,48 @@ import SearchIcon from "@material-ui/icons/Search";
 
 
 
-const Search = () => {
-    const [query, setQuery] = useState('');
+const Search = (props) => {
+    const [query, setQuery] = useState(null);
     const [primaryFilter, setPrimaryFilter] = useState("All");
+    const [searchResult, setSearchResult] = useState(props.accounts)
+
+
+    const searchList = searchResult.map(
+        (data) => {
+            if (data.first_name) {
+                return {
+                    value: data.first_name,
+                    label: data.first_name
+                }
+            } else if (data.date_start) {
+                return {
+                    value: data.course.title,
+                    label: data.course.title
+                }
+            }
+
+        }
+    )
+    const searchFilterChange = (primaryFilter) => {
+        switch (primaryFilter) {
+            case "All":
+                break;
+            case "Accounts":
+                setSearchResult(props.accounts);
+                break;
+            case "Courses":
+                setSearchResult(props.course);
+                break;
+            default:
+                return
+
+        }
+    }
 
     const handleFilterChange = (filter) => (e) => {
+
         setPrimaryFilter(e.target.value);
+        searchFilterChange(e.target.value)
     };
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
@@ -59,6 +95,10 @@ const Search = () => {
                             <ReactSelect
                                 className={"search-input"}
                                 classNamePrefix="main-search"
+                                options={searchList}
+                                value={query}
+                                openMenuOnClick={false}
+
                             />
                         </Grid>
                         <Grid item style={{ paddingTop: "1px" }}>
@@ -81,6 +121,8 @@ const mapStateToProps = (state) => ({
     "parents": state.Users["ParentList"],
     "courseRoster": state.Course["CourseRoster"],
     "enrollments": state.Enrollments,
+    "accounts": state.Search.accounts,
+    "course": state.Search.courses
 });
 
 const mapDispatchToProps = (dispatch) => ({
