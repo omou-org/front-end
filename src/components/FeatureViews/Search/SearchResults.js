@@ -51,12 +51,12 @@ const SearchResults = (props) => {
                         </Grid>
                     </Grid>
                     <hr />
-                    <Grid item xs={12} style={{paddingLeft:20, paddingRight:20}}>
+                    <Grid item xs={12}>
                         <Grid container
                             justify={"space-between"}
                             direction={"row"}
                             alignItems="center">
-                            <Grid item style={{}}>
+                            <Grid item style={{ "paddingLeft": "25px" }}>
                                 <Typography variant={"h5"} align={'left'} >Upcoming Sessions</Typography>
                             </Grid>
                             <Grid item style={{ "padding": "1vh" }}>
@@ -65,7 +65,7 @@ const SearchResults = (props) => {
                                     </Fab>
                             </Grid>
                         </Grid>
-                        <Grid container spacing={16} direction={"row"}>
+                        <Grid container spacing={16} style={{paddingLeft:20, paddingRight:20}} direction={"row"}>
                             {Object.values(props.instructors).slice(0, 4).map((user) => (
                                 <UpcomingSessionCards user={user} key={user.user_id} />)
                             )}
@@ -86,7 +86,7 @@ const SearchResults = (props) => {
                                     </Fab>
                             </Grid>
                         </Grid>
-                        <Grid container spacing={16} direction={"row"}>
+                        <Grid container direction={"row"} style={{paddingLeft:20, paddingRight:20}}>
                             {props.course.slice(0, 4).map((user) => (
                                 <CoursesCards user={user} key={user.user_id} />)
                             )}
