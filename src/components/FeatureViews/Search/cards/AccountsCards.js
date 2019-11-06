@@ -35,7 +35,8 @@ function AccountsCards(props) {
 
 
     const goToRoute = (route) => {
-        props.history.push(props.match.url + route);
+        props.history.push(route);
+        console.log(props.user)
     }
     const stringToColor = (string) => {
         let hash = 0;
@@ -79,7 +80,7 @@ function AccountsCards(props) {
                 style={{ cursor: "pointer" }}
                 onClick={(event) => {
                     event.preventDefault();
-                    goToRoute(`/${props.user.role}/${props.user.user_id}`);
+                    goToRoute(`accounts/${props.user.role}/${props.user.id}`);
                 }}>
                 <Grid container>
                     <Hidden mdDown>
