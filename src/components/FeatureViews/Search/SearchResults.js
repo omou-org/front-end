@@ -51,7 +51,8 @@ const SearchResults = (props) => {
                         </Grid>
                     </Grid>
                     <hr />
-                    <Grid item xs={12} >
+
+                    {/* <Grid item xs={12} >
                         <Grid container
                             justify={"space-between"}
                             direction={"row"}
@@ -72,6 +73,7 @@ const SearchResults = (props) => {
                         </Grid>
                     </Grid>
                     <hr />
+                     */}
                     <Grid item xs={12}>
                         <Grid container
                             justify={"space-between"}
