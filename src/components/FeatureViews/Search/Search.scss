@@ -22,7 +22,7 @@
   border: 1px solid #EEEEEE;
   background: #FFFFFF;
   border-radius: 3px 0px 0px 3px;
-  padding-top : 8px;
+  padding : 8px 25px 7px 15px;
 }
 
 #menu-primary-filter{
@@ -30,6 +30,7 @@
 }
 
 .button-background{
+  
   background-color: #43B5D9 !important;
   
 }
@@ -37,3 +38,9 @@
 .searchIcon{
   color: #EEEEEE;
 }
+
+.main-search-view{
+  width: 100%;
+}
+
+
