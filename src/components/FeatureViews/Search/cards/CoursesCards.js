@@ -20,7 +20,7 @@ function CourseCards(props) {
     }
 
     return (
-        <Grid item xs={12} sm={3} className={"CourseCards"} style={{ "padding": "20px" }}>
+        <Grid item xs={12} sm={3} className={"CourseCards"} style={{ "padding": "16px" }}>
             <Card key={props.user.user_id}
                 style={{ cursor: "pointer", width: "103%", height: "106%" }}>
                 <Grid container style={{ "paddingLeft": "1em" }}>
