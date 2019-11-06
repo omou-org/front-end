@@ -15,8 +15,8 @@ import UpcomingSessionCards from './cards/UpcomingSessionCards'
 import Divider from '@material-ui/core/Divider';
 import Fab from '@material-ui/core/Fab';
 import CoursesCards from "./cards/CoursesCards"
+import Chip from "@material-ui/core/Chip";
 import "./Search.scss";
-
 
 const SearchResults = (props) => {
 
@@ -39,9 +39,9 @@ const SearchResults = (props) => {
                                 <Typography variant={"h5"} align={'left'} gutterBottom>Accounts</Typography>
                             </Grid>
                             <Grid item >
-                                <Fab size="small" variant="extended" className={""}>
-                                    See All Accounts
-                                    </Fab>
+                            <Chip label="See All Accounts" 
+                                className="searchChip"
+                                />
                             </Grid>
                         </Grid>
                         <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} direction={"row"}>
@@ -60,9 +60,9 @@ const SearchResults = (props) => {
                                 <Typography variant={"h5"} align={'left'} >Upcoming Sessions</Typography>
                             </Grid>
                             <Grid item style={{ "padding": "1vh" }}>
-                                <Fab size="small" variant="extended" className={""}>
-                                    See All Upcoming Session
-                                    </Fab>
+                            <Chip label="See All Upcoming Sessions" 
+                                className="searchChip"
+                                />
                             </Grid>
                         </Grid>
                         <Grid container spacing={16} style={{ paddingLeft: 20, paddingRight: 20 }} direction={"row"}>
@@ -82,9 +82,9 @@ const SearchResults = (props) => {
                                 <Typography variant={"h5"} align={'left'} >Courses</Typography>
                             </Grid>
                             <Grid item style={{ "paddingRight": "1vh" }}>
-                                <Fab size="small" variant="extended" className={""}>
-                                    See All Courses
-                                    </Fab>
+                                <Chip label="See All Courses" 
+                                className="searchChip"
+                                />
                             </Grid>
                         </Grid>
                         <Grid container direction={"row"} style={{ paddingLeft: 20, paddingRight: 20 }}>

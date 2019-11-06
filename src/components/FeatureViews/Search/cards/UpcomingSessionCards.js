@@ -9,14 +9,14 @@ import "../Search.scss";
 
 function UpcomingSessionCards(props) {
     return (
-        <Grid item xs={12} sm={3} style={{ padding: "20px" }}>
+        <Grid item xs={12} sm={3} style={{ padding: "10px" }}>
             <Card key={props.user.user_id}
                 className={"UpcomingSessionCards"}
                 style={{ cursor: "pointer" }}
             >
                 <Grid container>
                     <Grid item sm={12}>
-                        <Typography align={"center"} variant={"subtitle2"}> November 12, 2019 | 7:00 - 9:00 </Typography>
+                        <Typography align={"left"} variant={"subtitle2"}> November 12, 2019 | 7:00 - 9:00 </Typography>
                     </Grid>
                     <Grid item sm={5}>
                         <Chip
