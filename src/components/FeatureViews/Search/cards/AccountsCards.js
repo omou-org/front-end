@@ -36,7 +36,6 @@ function AccountsCards(props) {
 
     const goToRoute = (route) => {
         props.history.push(route);
-        console.log(props.user)
     }
     const stringToColor = (string) => {
         let hash = 0;

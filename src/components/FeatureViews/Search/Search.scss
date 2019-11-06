@@ -44,21 +44,21 @@
 .CourseCards {
   padding: 5%;
   .courseRow {
-    padding-top:2%;
+    padding-top: 2%;
     .courseText {
       font-size: 12px;
     }
   }
 }
 
-.UpcomingSessionCards{
+.UpcomingSessionCards {
   padding: 5%;
-  .sessionRow{
-    padding-top:2%;
-  .sessionText{
-    font-size: 12px;
+  .sessionRow {
+    padding-top: 2%;
+    .sessionText {
+      font-size: 12px;
+    }
   }
-}
 }
 
 #select-primary-filter {
@@ -79,4 +79,12 @@
 
 .searchIcon {
   color: #eeeeee;
+}
+
+.search-results {
+  .searchChip {
+    background: #ffffff;
+    border: 1px solid #dadada;
+    cursor: pointer;
+  }
 }

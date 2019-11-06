@@ -108,8 +108,6 @@ function rootRoutes(props) {
             <ProtectedRoute
                 path="/registration/category/:categoryID"
                 render={(passedProps) => <CourseCategory {...passedProps} />} />
-            <Route path="/PageNotFound" component={ErrorNotFoundPage} />
-            <Redirect to="/PageNotFound" />
         </Switch>
     );
 }
