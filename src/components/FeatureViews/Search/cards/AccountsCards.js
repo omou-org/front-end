@@ -60,10 +60,10 @@ function AccountsCards(props) {
     const AvatarStyles = (username) => ({
         "backgroundColor": stringToColor(username),
         "color": "white",
-        "width": "3vw",
-        "height": "3vw",
+        "width": "3.5vw",
+        "height": "3.5vw",
         "fontSize": 20,
-        "marginTop": 47,
+        "marginTop": 30,
         "marginBottom": 17,
         "marginRight": 17,
         "marginLeft": 17
@@ -74,7 +74,7 @@ function AccountsCards(props) {
     const fullName = `${props.user.first_name} ${props.user.last_name}`
 
     return (
-        <Grid item xs={12} sm={3} className={"ProfileCard"} style={{ padding: "20px" }}>
+        <Grid item xs={12} sm={3} className={"AccountsCards"} style={{ padding: "10px" }}>
             <Card key={props.user.id}
                 style={{ cursor: "pointer" }}
                 onClick={(event) => {
@@ -89,18 +89,17 @@ function AccountsCards(props) {
                             </Avatar>
                         </Grid>
                     </Hidden>
-                    <Grid container item xs={8} md={9}>
+                    <Grid item xs={8} md={9}>
 
-                        <CardContent className={"text"}>
-                            <Typography gutterBottom variant={"h6"} component={"h2"} align={'left'}>
+                        <CardContent className={"cardText"}>
+                            <Typography align={'left'}>
                                 {props.user.first_name} {props.user.last_name}
                             </Typography>
 
                             <Grid align={'left'}>
                                 <Chip
                                     style={{
-                                        cursor: "pointer", width: '100px',
-                                        height: '30px'
+                                        cursor: "pointer"
                                     }}
                                     className={`userLabel ${props.user.role}`}
                                     label={props.user.role.charAt(0).toUpperCase() + props.user.role.slice(1)}
@@ -111,23 +110,22 @@ function AccountsCards(props) {
                                 <Grid container
                                     justify={'flex-start'}
                                 >
-                                    <Grid>
+                                    <Grid item xs={2}>
                                         <IDIcon
-                                            width={22}
-                                            height={22} />
+                                            width={14}
+                                            height={14} />
                                     </Grid>
-                                    <Grid>
+                                    <Grid item xs={10}>
                                         # {props.user.id}
                                     </Grid>
                                 </Grid>
                                 <Grid container
                                     justify={'flex-start'}
-                                    width={"100%"}
                                 >
-                                    <Grid item >
-                                        <EmailIcon />
+                                    <Grid item xs={2}>
+                                        <EmailIcon style={{fontSize:14}}/>
                                     </Grid>
-                                    <Grid item>
+                                    <Grid item xs={10}>
                                         {props.user.email}
                                     </Grid>
                                 </Grid>

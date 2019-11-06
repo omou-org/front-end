@@ -1,29 +1,43 @@
 @import "../../../theme/colors";
 @import "../../../theme/sizes";
 @import url("https://fonts.googleapis.com/css?family=Roboto+Slab:400,700");
+
 /*Account Styles*/
 .Accounts {
   .paper {
     padding: 3%;
   }
+  .toggleView {
+    position: absolute;
+    right:10%;
+  }
+
   .Directory {
     text-align: left;
     font-size: 60px;
-    .toggleView {
-      position: absolute;
-      right: 100px;
-    }
   }
 
   .heading {
     margin: 25px 0;
   }
 
+  
   .AccountsTable {
     margin-top: 20px;
+
     .row {
       cursor: pointer;
     }
+
+    .editButton {
+      color: $darkenPrimaryFontColor;
+      border-radius: 0px;
+      box-sizing: border-box;
+      border: solid 2px $secondaryColor !important;
+      white-space: nowrap;
+      right: 10%;
+    }
+
   }
 }
 
@@ -35,41 +49,50 @@
     .ActionTable {
       margin-top: -20px;
     }
+
     .headingPadding {
       padding-left: 3%;
     }
-    .rowPadding {
-      display: flex;
-      padding: 1%;
-      align-content: left;
+
+    .gridScaling {
       white-space: nowrap;
     }
-    .editPadding {
-      position: absolute;
-      right: 10%;
-      padding-top: 1.5%;
-      .editButton {
-        color: $darkenPrimaryFontColor;
-        border-radius: 5px;
-        box-sizing: border-box;
-        border: solid 2px $secondaryColor !important;
-        white-space: nowrap;
+
+    .headingContainer {
+      display: grid;
+    }
+
+    .ProfileName {
+      word-break: break-word;
+    }
+
+    .rowPadding {
+      display: flex;
+      padding: 4px;
+      align-content: left;
+      text-align: left;
+      color: "grey";
+
+      .rowText {
+        word-break: break-word;
       }
     }
+
+    .editButton {
+      color: $darkenPrimaryFontColor;
+      border-radius: 0px;
+      box-sizing: border-box;
+      border: solid 2px $secondaryColor !important;
+      white-space: nowrap;
+      position: relative;
+    }
   }
+
   .padding {
     padding-bottom: 4%;
     padding-top: 3%;
   }
-  .userLabel {
-    @include respond-to(medium-up-screens) {
-      margin-top: 28px;
-      margin-left: 40px;
-    }
-    @include respond-to(handhelds) {
-      margin-top: 28px;
-    }
-  }
+
   .TabIcon {
     display: inline-flex;
     vertical-align: middle;
@@ -79,21 +102,26 @@
     margin-left: -40%;
   }
 }
+
 .ProfileCard,
 .UserProfile {
   .userLabel {
     color: white;
     font-size: 18px;
     padding: 0 20px 0 20px;
+
     &.instructor {
       background-color: $instructorColor;
     }
+
     &.student {
       background-color: $studentColor;
     }
+
     &.receptionist {
       background-color: $receptionistColor;
     }
+
     &.parent {
       background-color: $parentColor;
     }

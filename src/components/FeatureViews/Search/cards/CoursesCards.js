@@ -7,11 +7,10 @@ import { Card, Paper, Typography, Grow } from "@material-ui/core";
 import Chip from "@material-ui/core/Chip";
 import CardActions from "@material-ui/core/CardActions";
 import { withRouter } from "react-router-dom";
-
+import "../Search.scss";
 
 
 function CourseCards(props) {
-
 
     const handleLocaleDateString = (start, end) => {
         let s1 = new Date(start.replace(/-/g, '\/'))
@@ -20,10 +19,11 @@ function CourseCards(props) {
     }
 
     return (
-        <Grid item xs={12} sm={3} className={"CourseCards"} style={{ "padding": "20px" }}>
+        <Grid item xs={12} sm={3} style={{ "padding": "10px" }}>
             <Card key={props.user.user_id}
-                style={{ cursor: "pointer", width: "103%", height: "106%" }}>
-                <Grid container style={{ "paddingLeft": "1em" }}>
+                className={"CourseCards"}
+                style={{ cursor: "pointer", height: "148px" }}>
+                <Grid container>
                     <Grid item sm={12}>
                         <Typography align={"left"} variant={"subtitle2"}> {props.user.course.title} </Typography>
                     </Grid>
@@ -32,7 +32,8 @@ function CourseCards(props) {
                             style={{
                                 cursor: "pointer",
                                 width: '9rem',
-                                height: '20px',
+                                height: '15px',
+                                color: "white",
                             }}
                             label={"Full or Open"}
                             color='primary'
@@ -41,26 +42,28 @@ function CourseCards(props) {
 
                     <Grid item container>
                         <Grid container
+                            className="courseRow"
                             direction={"row"}
                             alignItems={'center'}>
-                            <Grid item>
-                                <Typography variant={"body1"}>Session Dates: {handleLocaleDateString(props.user.date_start, props.user.date_end)} </Typography>
+                            <Grid item align="left">
+                                <Typography className="courseText">Session Dates: {handleLocaleDateString(props.user.date_start, props.user.date_end)} </Typography>
                             </Grid>
-                            <Grid item ></Grid>
                         </Grid>
                         <Grid container
+                            className="courseRow"
                             direction={"row"}
                             alignItems={'center'}>
                             <Grid item>
-                                <Typography variant={"body1"}> Subject: {props.user.course.subject} </Typography>
+                                <Typography className="courseText"> Subject: {props.user.course.subject} </Typography>
                             </Grid>
 
                         </Grid>
                         <Grid container
+                            className="courseRow"
                             direction={"row"}
                             alignItems={'center'}>
                             <Grid item>
-                                <Typography variant={"body1"}> Teacher: {props.user.course.instructor} </Typography>
+                                <Typography className="courseText"> Teacher: {props.user.course.instructor} </Typography>
                             </Grid>
                         </Grid>
                     </Grid>

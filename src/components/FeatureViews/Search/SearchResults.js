@@ -15,7 +15,7 @@ import UpcomingSessionCards from './cards/UpcomingSessionCards'
 import Divider from '@material-ui/core/Divider';
 import Fab from '@material-ui/core/Fab';
 import CoursesCards from "./cards/CoursesCards"
-
+import "./Search.scss";
 
 
 const SearchResults = (props) => {
@@ -27,7 +27,7 @@ const SearchResults = (props) => {
             <Grid container className={'search-results'} style={{ "padding": "1em" }}>
                 <Paper className={'main-search-view'} >
                     <Grid item xs={12} style={{ "padding": "1em" }}>
-                        <Typography variant={"h4"} align={"left"}> "15" Search Resuts for "Search Result"  </Typography>
+                        <Typography variant={"h4"} align={"left"}> "15" Search Results for "Search Result"  </Typography>
                     </Grid>
                     <hr />
                     <Grid item xs={12}>
@@ -44,21 +44,20 @@ const SearchResults = (props) => {
                                     </Fab>
                             </Grid>
                         </Grid>
-                        <Grid container spacing={16} direction={"row"}>
+                        <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} direction={"row"}>
                             {props.accounts.slice(0, 4).map((user) => (
                                 <AccountsCards user={user} key={user.user_id} />)
                             )}
                         </Grid>
                     </Grid>
                     <hr />
-
-                    {/* <Grid item xs={12} >
+                    <Grid item xs={12}>
                         <Grid container
                             justify={"space-between"}
                             direction={"row"}
                             alignItems="center">
                             <Grid item style={{ "paddingLeft": "25px" }}>
-                                <Typography variant={"h5"} align={'left'} >Upcoming Session</Typography>
+                                <Typography variant={"h5"} align={'left'} >Upcoming Sessions</Typography>
                             </Grid>
                             <Grid item style={{ "padding": "1vh" }}>
                                 <Fab size="small" variant="extended" className={""}>
@@ -66,14 +65,14 @@ const SearchResults = (props) => {
                                     </Fab>
                             </Grid>
                         </Grid>
-                        <Grid container spacing={16} direction={"row"}>
+                        <Grid container spacing={16} style={{ paddingLeft: 20, paddingRight: 20 }} direction={"row"}>
                             {Object.values(props.instructors).slice(0, 4).map((user) => (
                                 <UpcomingSessionCards user={user} key={user.user_id} />)
                             )}
                         </Grid>
                     </Grid>
                     <hr />
-                     */}
+
                     <Grid item xs={12}>
                         <Grid container
                             justify={"space-between"}
@@ -88,7 +87,7 @@ const SearchResults = (props) => {
                                     </Fab>
                             </Grid>
                         </Grid>
-                        <Grid container spacing={16} direction={"row"}>
+                        <Grid container direction={"row"} style={{ paddingLeft: 20, paddingRight: 20 }}>
                             {props.course.slice(0, 4).map((user) => (
                                 <CoursesCards user={user} key={user.user_id} />)
                             )}

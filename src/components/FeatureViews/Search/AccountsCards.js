@@ -20,6 +20,7 @@ import { withRouter } from "react-router-dom";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
+import './Search.scss';
 
 import { makeStyles } from '@material-ui/styles';
 
@@ -37,7 +38,8 @@ function ProfileCard(props) {
     const [viewToggle, setViewToggle] = useState(true);
 
     const goToRoute = (route) => {
-        props.history.push(props.match.url + route);
+        console.log(props.match.url)
+        this.props.history.push(route);
     }
     const stringToColor = (string) => {
         let hash = 0;
@@ -72,11 +74,8 @@ function ProfileCard(props) {
 
     });
 
-
-
-
     return (
-        <Grid item xs={12} sm={3} className={"ProfileCard"} style={{ padding: "20px" }}>
+        <Grid item xs={12} sm={3} className={"AccountsCards"} style={{ padding: "20px" }}>
             <Card key={props.user.user_id}
                 style={{ cursor: "pointer" }}
                 onClick={(event) => {
@@ -93,13 +92,13 @@ function ProfileCard(props) {
                     </Hidden>
                     <Grid container xs={8} md={9}>
 
-                        <CardContent className={"text"}>
+                        <CardContent className={"cardText"}>
 
-                            <Typography gutterBottom variant={"h6"} component={"h2"} align={'left'}>
+                            <Typography align={'left'}>
                                 {props.user.name}
                             </Typography>
 
-                            <Typography component="p" align={'left'}>
+                            <Typography align={'left'}>
                                 <Chip
                                     style={{
                                         cursor: "pointer", width: '100px',
