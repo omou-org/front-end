@@ -250,7 +250,7 @@ class UserProfile extends Component {
                     <hr />
                     <Grid className="padding" container layout="row" >
                         <Grid item md={2}>
-                            <Hidden xsDown>
+                            <Hidden smDown>
                                 <Avatar style={styles}>
                                     {user.name.match(/\b(\w)/g).join("")}
                                 </Avatar>

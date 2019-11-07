@@ -35,10 +35,6 @@ class ProfileHeading extends Component {
         window.location.href = `mailto:${this.props.user.email}`;
     }
 
-    handlePhone(){
-        
-    }
-
     renderStudentProfile() {
         return (
             <Grid item xs={12}>
@@ -83,11 +79,15 @@ class ProfileHeading extends Component {
                             {this.props.user.school}
                         </Typography>
                     </Grid>
-                    <Grid item xs={1} md={1} className="rowPadding">
+                    <Grid item xs={1} md={1} className="rowPadding"
+                     onClick={()=>this.handleEmail()}
+                     style={{cursor:"pointer"}}>
                         <EmailIcon style={this.iconScaling()} />
                     </Grid>
-                    <Grid item xs={5} md={5} className="rowPadding">
-                        <Typography className="rowText">
+                    <Grid item xs={5} md={5} className="rowPadding"
+                     onClick={()=>this.handleEmail()}
+                     style={{cursor:"pointer"}}>
+                        <Typography className="rowText" >
                             {this.props.user.email}
                         </Typography>
                     </Grid>
@@ -119,10 +119,14 @@ class ProfileHeading extends Component {
                     </Grid>
                 </Grid>
                 <Grid container>
-                    <Grid item md={1} className="rowPadding">
+                    <Grid item md={1} className="rowPadding"  
+                    onClick={()=>this.handleEmail()}
+                    style={{cursor:"pointer"}}>
                         <EmailIcon style={this.iconScaling()}/>
                     </Grid>
-                    <Grid item md={11} className="rowPadding">
+                    <Grid item md={11} className="rowPadding"
+                     onClick={()=>this.handleEmail()}
+                     style={{cursor:"pointer"}}>
                         <Typography className="rowText">
                             {this.props.user.email}
                         </Typography>

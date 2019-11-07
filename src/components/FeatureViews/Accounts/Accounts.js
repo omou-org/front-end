@@ -190,7 +190,7 @@ class Accounts extends Component {
 
         const cardView = () => {
             return <Grow in={true}>
-                <Grid container xs={12} md={10} spacing={8} alignItems={'center'} direction={'row'} style={{ marginTop: 20 }}>
+                <Grid container xs={12} spacing={16} alignItems={'center'} direction={'row'} style={{ marginTop: 20 }}>
                     {Object.values(this.state.usersList).map((user) => (
                         <ProfileCard user={user} route={`accounts/${user.role}/${user.user_id}`} key={user.user_id} />))}
                 </Grid>
