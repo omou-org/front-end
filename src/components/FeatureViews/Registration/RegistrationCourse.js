@@ -27,6 +27,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 import Button from "@material-ui/core/Button";
 import {Link, useRouteMatch} from "react-router-dom";
+import {stringToColor} from "components/FeatureViews/Accounts/accountUtils";
 
 const dayConverter = {
     "1": "Monday",
@@ -62,25 +63,6 @@ const TableToolbar = () => (
         </TableRow>
     </TableHead>
 );
-
-const stringToColor = (string) => {
-    let hash = 0;
-    let i;
-
-    for (i = 0; i < string.length; i += 1) {
-        hash = string.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    let color = "#";
-
-    for (i = 0; i < 3; i += 1) {
-        const value = hash >> i * 8 & 0xff;
-        color += `00${value.toString(16)}`.substr(-2);
-
-    }
-
-    return color;
-};
 
 const styles = (username) => ({
     "backgroundColor": stringToColor(username),

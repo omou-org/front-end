@@ -35,7 +35,7 @@ function rootRoutes(props) {
         <Switch>
             <Route
                 path="/login"
-                render={(passedProps) => <LoginPage setLogin={props.setLogin} {...passedProps} />} />
+                render={(passedProps) => <LoginPage {...passedProps} />} />
 
             {/* Main Feature Views */}
             <ProtectedRoute
@@ -100,10 +100,6 @@ function rootRoutes(props) {
         </Switch>
     );
 }
-
-rootRoutes.propTypes = {
-    "setLogin": PropTypes.func,
-};
 
 const mapStateToProps = (state) => ({});
 
