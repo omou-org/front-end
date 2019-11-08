@@ -1,4 +1,5 @@
-/*Validations for various text inputs*/
+/* eslint-disable no-control-regex */
+/* Validations for various text inputs */
 
 export let InputValidation = (input, type) => {
     switch (type) {

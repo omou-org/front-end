@@ -911,7 +911,7 @@ class Form extends Component {
     }
 
     render() {
-        const {id, edit} = this.props.computedMatch.params;
+        // const {id, edit} = this.props.computedMatch.params;
         // let submitStatus;
         // if (this.props.computedMatch.params.edit === "edit") {
         //     // PATCH request
@@ -972,7 +972,7 @@ class Form extends Component {
                         </Modal>
                         {/* Error message on failed submit */}
                         <Dialog
-                            open={this.props.submitStatus == "fail"}
+                            open={this.props.submitStatus === "fail"}
                             onClose={() => {
                                 this.props.registrationActions.resetSubmitStatus();
                                 this.setState({

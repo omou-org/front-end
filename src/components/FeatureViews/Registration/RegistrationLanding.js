@@ -20,13 +20,12 @@ import Hidden from "@material-ui/core/Hidden";
 import CourseList from "./CourseList";
 import TutoringList from "./TutoringList";
 
-const trimString = (string, maxLen) => {
-    if (string.length > maxLen) {
-        return `${string.slice(0, maxLen - 3).trim()}...`;
-    } else {
-        return string;
-    }
-};
+const NUM_GRADES = 13;
+
+const gradeOptions = Array(NUM_GRADES).map((_, gradeNum) => ({
+    "label": `${gradeNum + 1}`,
+    "value": gradeNum + 1,
+}));
 
 const RegistrationLanding = () => {
     const dispatch = useDispatch();
@@ -43,27 +42,16 @@ const RegistrationLanding = () => {
     const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
     const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
 
-    const [anchorEl, setAnchorEl] = useState("");
     const [view, setView] = useState(0);
     const [courseFilters, setCourseFilters] = useState({
-        "instructor": [],
         "grade": [],
+        "instructor": [],
         "subject": [],
     });
 
-    const handleFilterClick = (event) => {
-        event.preventDefault();
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = (event) => {
-        event.preventDefault();
-        setAnchorEl(null);
-    };
-
     const updateView = (view) => () => {
         setView(view);
-    }
+    };
 
     useEffect(() => {
         api.fetchCourses();
@@ -75,11 +63,33 @@ const RegistrationLanding = () => {
         api.fetchEnrollments();
     }, [api, requestStatus.course[GET][apiActions.REQUEST_ALL]]);
 
-    const instructorOptions = useMemo(() =>
-        Object.values(instructors).map(({name, user_id}) => ({
+    const instructorOptions = useMemo(() => Object.values(instructors)
+        .map(({name, user_id}) => ({
             "label": name,
             "value": user_id,
         })), [instructors]);
+
+    const filteredCourses = useMemo(
+        () => Object.entries(courseFilters)
+            .filter(([, filters]) => filters.length > 0)
+            .reduce((courseList, [filterName, filters]) => {
+                const mappedValues = filters.map(({value}) => value);
+                switch (filterName) {
+                    case "instructor":
+                        return courseList.filter(({instructor_id}) =>
+                            mappedValues.includes(instructor_id));
+                    case "subject":
+                        return courseList.filter(({subject}) =>
+                            mappedValues.includes(subject));
+                    case "grade":
+                        return courseList.filter(({grade}) =>
+                            mappedValues.includes(grade));
+                    default:
+                        return courseList;
+                }
+            }, Object.values(courses))
+        , [courses, courseFilters]
+    );
 
     if (!requestStatus.instructor[GET][apiActions.REQUEST_ALL] ||
         !requestStatus.course[GET][apiActions.REQUEST_ALL] ||
@@ -106,24 +116,22 @@ const RegistrationLanding = () => {
         let options = [];
         switch (filterType) {
             case "instructor":
-                options = Object.values(instructors).map(
-                    ({name, user_id}) => ({
-                        "label": name,
-                        "value": user_id,
-                    })
-                );
+                options = instructorOptions;
                 break;
             case "subject":
                 options = [
-                    {"label": "Math", "value": "Math"},
-                    {"label": "Science", "value": "Science"},
+                    {
+                        "label": "Math",
+                        "value": "Math",
+                    },
+                    {
+                        "label": "Science",
+                        "value": "Science",
+                    },
                 ];
                 break;
             case "grade":
-                options = [...Array(10).keys()].map((i) => ({
-                    "label": `${i + 1}`,
-                    "value": i + 1,
-                }));
+                options = gradeOptions;
                 break;
             default:
                 return "";
@@ -148,48 +156,29 @@ const RegistrationLanding = () => {
         const customStyles = {
             "clearIndicator": (base, state) => ({
                 ...base,
+                "color": state.isFocused
+                    ? "blue"
+                    : "black",
                 "cursor": "pointer",
-                "color": state.isFocused ? "blue" : "black",
             }),
             "option": (base) => ({
                 ...base,
                 "textAlign": "left",
             }),
         };
-        return <SearchSelect
-            value={handleFilterClick[filterType]}
-            onChange={(event) => {
-                handleFilterChange(event, filterType);
-            }}
-            className="filter-options"
-            closeMenuOnSelect={false}
-            components={{ClearIndicator}}
-            placeholder={`All ${filterType}s`}
-            styles={customStyles}
-            isMulti
-            options={options}
-        />;
+        return (
+            <SearchSelect
+                className="filter-options"
+                closeMenuOnSelect={false}
+                components={{ClearIndicator}}
+                isMulti
+                onChange={handleFilterChange(filterType)}
+                options={options}
+                placeholder={`All ${filterType}s`}
+                styles={customStyles}
+                value={courseFilters[filterType]} />
+        );
     };
-
-    let filteredCourses = Object.values(courses);
-    Object.entries(courseFilters)
-        .filter(([, filters]) => filters.length > 0)
-        .forEach(([filterName, filters]) => {
-            const mappedValues = filters.map(({value}) => value);
-            switch (filterName) {
-                case "instructor":
-                    filteredCourses = filteredCourses.filter(({instructor_id}) => mappedValues.includes(instructor_id));
-                    break;
-                case "subject":
-                    filteredCourses = filteredCourses.filter(({subject}) => mappedValues.includes(subject));
-                    break;
-                case "grade":
-                    filteredCourses = filteredCourses.filter(({grade}) => mappedValues.includes(grade));
-                    break;
-                default:
-                    console.warn(`Unhandled filter ${filterName}`);
-            }
-        });
 
     return (
         <Paper className="RegistrationLanding paper">
