@@ -24,17 +24,6 @@ class ProfileHeading extends Component {
         };
     }
 
-    iconScaling() {
-        let iconStyles;
-        return (iconStyles = {
-            fontSize: "24",
-        })
-    }
-
-    handleEmail() {
-        window.location.href = `mailto:${this.props.user.email}`;
-    }
-
     renderStudentProfile() {
         return (
             <Grid item xs={12}>
