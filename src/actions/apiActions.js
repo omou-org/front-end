@@ -2,15 +2,12 @@ import * as types from "./actionTypes";
 
 import axios from "axios";
 
-const instance = axios.create({
+export const instance = axios.create({
     "baseURL": "http://localhost:8000",
 });
 
 export const REQUEST_ALL = -1;
-
 export const REQUEST_STARTED = 1;
-export const REQUEST_SUCCESS = 2;
-export const REQUEST_FAILED = 3;
 
 export const wrapGet = (endpoint, [startType, successType, failType], id) =>
     async (dispatch, getState) => {

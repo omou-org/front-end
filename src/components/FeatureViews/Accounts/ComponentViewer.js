@@ -61,7 +61,12 @@ class ComponentViewer extends Component {
                 component = <ParentContact parent_id={this.props.user.parent_id} key={this.props.inView} />;
                 break;
             case 7:
-                component = <Notes user_notes={this.props.user.notes} key={this.props.inView} />;
+                component = (
+                    <Notes
+                    userID={this.props.user.user_id}
+                    userRole={this.props.user.role}
+                        key={this.props.inView} />
+                );
                 break;
             case 8:
                 component = <StudentInfo user={this.props.user} key={this.props.inView} />;

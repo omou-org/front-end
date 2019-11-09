@@ -232,7 +232,7 @@ class ProfileHeading extends Component {
                             <h1 className="ProfileName">
                                 {this.props.user.name}
                             </h1>
-                            <div style={{ paddingLeft: 30 }}>
+                            <div style={{paddingLeft: 30}}>
                                 <Hidden smDown>
                                     <Chip
                                         className={`userLabel ${this.props.user.role}`}
@@ -242,7 +242,6 @@ class ProfileHeading extends Component {
                             </div>
                         </Grid>
                     </Grid>
-
                     <Grid item xs={3} align="right">
                         {this.renderEditButton()}
                     </Grid>

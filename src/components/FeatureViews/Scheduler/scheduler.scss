@@ -27,7 +27,7 @@
 
 }
 .session-view{
-  padding-left: 
+  padding-left:
   2%
 }
 
@@ -40,7 +40,7 @@
   h5{
     font-weight: 500
   }
-  
+
 }
 
 
@@ -66,12 +66,12 @@
 }
 
 .scheduler-header-date{
-  
+
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  
+
 }
 
 .scheduler-header-last{
@@ -90,7 +90,7 @@
   .ul{
     padding-inline-start: 0 !important;
     list-style : none;
-    
+
   }
   .container{
     line-height: 2rem;
@@ -103,8 +103,8 @@
 	background-repeat: no-repeat;
 	background-position: left center;
   background-size: 20px;
-  
-  
+
+
 }
 
 .pin_icon{
@@ -135,7 +135,7 @@
   background-position: left center;
   background-size: 20px;
   line-height: 1.2rem;
- 
+
  }
 
 
@@ -143,8 +143,8 @@
 }
 
 
-  
-// Tool tip styling 
+
+// Tool tip styling
 
 .tippy-tooltip.light-theme {
   background: white;
@@ -153,12 +153,12 @@
   color: #000000;
   box-shadow:  2px 2px 2px rgba(0, 0, 0, 0.25);
   max-width: 260px !important;
-  
+
 }
 
 .tippy-tooltip.light-theme .tippy-backdrop {
   background-color: #ffffff;
-  
+
 }
 .session-view-title{
   padding: 1%;
@@ -195,7 +195,7 @@
     font-size:12px;
     font-weight:400;
     line-height:12px;
-    
+
 
     border: 1px solid #ffffff;
     box-sizing: border-box;
@@ -236,4 +236,3 @@ body .fc {
 .fc-view, .fc-view > table{
   z-index: 0;
 }
-

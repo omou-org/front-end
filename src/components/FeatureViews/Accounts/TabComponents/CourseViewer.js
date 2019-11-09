@@ -1,26 +1,18 @@
 import {connect} from 'react-redux';
 import React, {Component} from 'react';
 import {withRouter} from 'react-router-dom';
+import {bindActionCreators} from "redux";
+import * as registrationActions from "../../../../actions/registrationActions";
+import * as apiActions from "../../../../actions/apiActions";
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Paper from "@material-ui/core/Paper";
 
 class CourseViewer extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            userCourseIDList: [],
-        };
-    }
-
-    componentWillMount() {
-        this.setState({
-            current: this.props.current,
-            userRole: this.props.user_role,
-            userID: this.props.user_id,
-            userEnrollments: this.props.enrollments[this.props.user_id],
-        });
+    componentDidMount() {
+        this.props.apiActions.fetchCourses();
+        this.props.registrationActions.fetchEnrollments();
     }
 
     goToRoute(route) {
@@ -89,18 +81,16 @@ class CourseViewer extends Component {
     }
 
     numPaidCourses(courseID) {
-        // let courseEnrollment = this.state.userEnrollments[courseID],
-        //     enrollmentPayments = Object.values(courseEnrollment.session_payment_status),
-        //     numPaidEnrollments = 0;
-        // enrollmentPayments.forEach((paymentStatus) => {
-        //     if (paymentStatus === 1) {
-        //         numPaidEnrollments++;
-        //     }
-        // });
-        return 0;
+        let courseEnrollment = this.props.enrollments[this.props.user_id][courseID],
+            enrollmentPayments = Object.values(courseEnrollment.session_payment_status),
+            numPaidEnrollments = 0;
+        enrollmentPayments.forEach((paymentStatus) => {
+            if (paymentStatus === 1) {
+                numPaidEnrollments++;
+            }
+        });
+        return numPaidEnrollments;
     }
-
-
 
     render() {
         this.setCourses();
@@ -208,7 +198,10 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return {};
+    return {
+        "apiActions": bindActionCreators(apiActions, dispatch),
+        "registrationActions": bindActionCreators(registrationActions, dispatch)
+    };
 }
 
 export default withRouter(connect(

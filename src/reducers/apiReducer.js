@@ -66,10 +66,31 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
 
         case actions.PATCH_INSTRUCTOR_STARTED:
             return updateInstructorPatch(state, payload.id, api.REQUEST_STARTED);
-        case actions.POST_INSTRUCTOR_SUCCESSFUL:
+        case actions.PATCH_INSTRUCTOR_SUCCESSFUL:
             return updateInstructorPatch(state, payload.id, status);
-        case actions.POST_INSTRUCTOR_FAILED:
+        case actions.PATCH_INSTRUCTOR_FAILED:
             return updateInstructorPatch(state, payload.id, status);
+
+        case actions.FETCH_NOTE_STARTED:
+            return updateNoteFetch(state, payload.userID, api.REQUEST_STARTED);
+        case actions.FETCH_NOTE_SUCCESSFUL:
+            return updateNoteFetch(state, payload.userID, status);
+        case actions.FETCH_NOTE_FAILED:
+            return updateNoteFetch(state, payload.userID, status);
+
+        case actions.POST_NOTE_STARTED:
+            return updateNotePost(state, api.REQUEST_STARTED);
+        case actions.POST_NOTE_SUCCESSFUL:
+            return updateNotePost(state, status);
+        case actions.POST_NOTE_FAILED:
+            return updateNotePost(state, status);
+
+        case actions.PATCH_NOTE_STARTED:
+            return updateNotePatch(state, payload.userID, api.REQUEST_STARTED);
+        case actions.PATCH_NOTE_SUCCESSFUL:
+            return updateNotePatch(state, payload.userID, status);
+        case actions.PATCH_NOTE_FAILED:
+            return updateNotePatch(state, payload.userID, status);
 
         default:
             return state;
@@ -125,5 +146,23 @@ const updateInstructorPatch = (state, id, status) => {
 const updateEnrollmentFetch = (state, id, status) => {
     let newState = JSON.parse(JSON.stringify(state));
     newState.enrollment[actions.GET] = status;
+    return newState;
+};
+
+const updateNoteFetch = (state, userID, status) => {
+    let newState = JSON.parse(JSON.stringify(state));
+    newState.note[actions.GET][userID] = status;
+    return newState;
+};
+
+const updateNotePost = (state, status) => {
+    let newState = JSON.parse(JSON.stringify(state));
+    newState.note[actions.POST] = status;
+    return newState;
+};
+
+const updateNotePatch = (state, userID, status) => {
+    let newState = JSON.parse(JSON.stringify(state));
+    newState.note[actions.PATCH][userID] = status;
     return newState;
 };
