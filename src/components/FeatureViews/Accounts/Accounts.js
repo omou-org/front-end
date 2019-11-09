@@ -219,8 +219,7 @@ class Accounts extends Component {
                     alignItems="center"
                     container
                     direction="row"
-                    md={10}
-                    spacing={8}
+                    spacing={16}
                     style={{"marginTop": 20}}
                     xs={12}>
                     {Object.values(userList).map((user) => (
