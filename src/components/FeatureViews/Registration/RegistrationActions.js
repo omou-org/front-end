@@ -61,7 +61,7 @@ function RegistrationActions(props) {
                     New Student
                 </Button>
             </Grid>
-            <Grid item>
+            {/* <Grid item>
                 <Button
                     variant="outlined"
                     color="secondary"
@@ -90,7 +90,7 @@ function RegistrationActions(props) {
                         <ListItemText primary="TUTORING" />
                     </MenuItem>
                 </StyledMenu>
-            </Grid>
+            </Grid> */}
         </Grid>
     );
 }
