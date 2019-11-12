@@ -30,6 +30,7 @@ import {Link, useRouteMatch} from "react-router-dom";
 import {stringToColor} from "components/FeatureViews/Accounts/accountUtils";
 
 const dayConverter = {
+    "0": "Sunday",
     "1": "Monday",
     "2": "Tuesday",
     "3": "Wednesday",
@@ -38,16 +39,19 @@ const dayConverter = {
     "6": "Saturday",
 };
 
-const timeOptions = {
-    "hour": "2-digit",
-    "minute": "2-digit",
+const formatDate = (date) => {
+    if (!date) {
+        return null;
+    }
+    const [year, month, day] = date.split("-");
+    return `${month}/${day}/${year}`;
 };
 
-const dateOptions = {
-    "day": "numeric",
-    "month": "short",
-    "year": "numeric",
-};
+const formatTime = (time) => {
+    const [hrs, mins] = time.substring(1).split(":");
+    const hours = parseInt(hrs, 10);
+    return `${hours % 12 === 0 ? 12 : hours % 12}:${mins} ${hours >= 12 ? "PM" : "AM"}`
+}
 
 const TableToolbar = () => (
     <TableHead>
@@ -138,10 +142,10 @@ const RegistrationCourse = () => {
         course.schedule.start_time),
         endDate = new Date(course.schedule.end_date +
             course.schedule.end_time),
-        startTime = startDate.toLocaleTimeString("en-US", timeOptions),
-        endTime = endDate.toLocaleTimeString("en-US", timeOptions),
-        startDay = startDate.toLocaleDateString("en-US", dateOptions),
-        endDay = endDate.toLocaleDateString("en-US", dateOptions);
+        startTime = formatTime(course.schedule.start_time),
+        endTime = formatTime(course.schedule.end_time),
+        startDay = formatDate(course.schedule.start_date),
+        endDay = formatDate(course.schedule.end_date);
 
     const rows = course.roster.map((student_id) => {
         const student = students[student_id];
@@ -250,7 +254,9 @@ const RegistrationCourse = () => {
                             style={{
                                 "padding": "6px 10px 6px 10px",
                                 "backgroundColor": "white",
-                            }}>
+                            }}
+                            component={Link}
+                            to={`/registration/form/course_details/${courseID}/edit`}>
                             <EditIcon style={{"fontSize": "16px"}} />
                             Edit Course
                         </Button>

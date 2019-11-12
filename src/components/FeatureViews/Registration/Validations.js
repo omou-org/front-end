@@ -15,8 +15,10 @@ export let InputValidation = (input, type) => {
             return AddressValidation(input);
         case "zipcode":
             return ZipCodeValidation(input);
-        case "birthday":
-            return BirthdayValidation(input);
+        case "date":
+            return DateValidation(input);
+        case "time":
+            return timeValidation(input);
         default:
             return Boolean(input);
     }
@@ -53,6 +55,10 @@ let ZipCodeValidation = (input) => {
 }
 
 // Birthday format to MM/DD/YYYY
-let BirthdayValidation = (input) => {
-    return !!input.match(/^((0|1)\d{1})\/((0|1|2)\d{1})\/((19|20)\d{2})/)
+let DateValidation = (input) => {
+    return !!input.match(/^((0|1)\d{1})\/((0|1|2|3)\d{1})\/((19|20)\d{2})/)
 }
+
+// Time format of HH:MM AM/PM
+const timeValidation = (input) =>
+    (/^(1[0-2]|0?[1-9]):[0-5][0-9] (a|A|p|P)(m|M)$/u).test(input);

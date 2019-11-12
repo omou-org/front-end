@@ -13,6 +13,11 @@ export default (state = initialState.Course, {payload, type}) => {
     }
 };
 
+const parseTime = (time) => {
+    const [hours, mins] = time.split(":");
+    return `T${hours}:${mins}`;
+};
+
 const handleEnrollmentFetch = (state, {response}) => {
     const {data} = response;
 
@@ -57,7 +62,7 @@ const handleCoursesFetch = (state, {id, response}) => {
     };
 };
 
-const updateCourse = (courses, id, course) => ({
+export const updateCourse = (courses, id, course) => ({
     ...courses,
     [id]: {
         "course_id": id,
@@ -65,9 +70,9 @@ const updateCourse = (courses, id, course) => ({
         "schedule": {
             "start_date": course.start_date,
             "end_date": course.end_date,
-            "start_time": "T18:00",
-            "end_time": "T20:00",
-            "days": [dayToNum[course.days] || 0],
+            "start_time": parseTime(course.start_time),
+            "end_time": parseTime(course.end_time),
+            "days": [dayToNum[course.day_of_week]],
         },
         "instructor_id": course.instructor,
         "tuition": course.tuition,

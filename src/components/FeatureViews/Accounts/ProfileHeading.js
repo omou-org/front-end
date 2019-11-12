@@ -18,12 +18,6 @@ import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import './Accounts.scss';
 
 class ProfileHeading extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        };
-    }
-
     renderStudentProfile() {
         return (
             <Grid item xs={12}>
@@ -180,7 +174,7 @@ class ProfileHeading extends Component {
                         <Button
                             className="editButton"
                             component={NavLink}
-                            to={`/registration/form/${this.getURL(this.props.user.role)}/${this.props.user.user_id}/edit`}>
+                            to={`/registration/form/${this.props.user.role}/${this.props.user.user_id}/edit`}>
                             <EditIcon />
                             Edit Profile
                         </Button>
@@ -189,21 +183,12 @@ class ProfileHeading extends Component {
                         <Button
                             className="editButton"
                             component={NavLink}
-                            to={`/registration/form/${this.getURL(this.props.user.role)}/${this.props.user.user_id}/edit`}>
+                            to={`/registration/form/${this.props.user.role}/${this.props.user.user_id}/edit`}>
                             <EditIcon />
                         </Button>
                     </Grid>
                 </>
             );
-        }
-    }
-
-    getURL(role) {
-        switch (role) {
-            case "parent":
-                return "student";
-            default:
-                return role;
         }
     }
 
@@ -252,18 +237,4 @@ class ProfileHeading extends Component {
     }
 }
 
-ProfileHeading.propTypes = {};
-
-function mapStateToProps(state) {
-    return {
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {};
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ProfileHeading);
+export default ProfileHeading;

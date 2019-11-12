@@ -2,9 +2,13 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../actions/registrationActions";
 import * as userActions from "../../actions/userActions";
+import * as apiActions from "../../actions/apiActions";
+import * as types from "actions/actionTypes";
 import React, {Component} from "react";
 import {Prompt} from "react-router";
-import {NavLink} from "react-router-dom";
+import {NavLink, withRouter} from "react-router-dom";
+import {updateStudent, updateParent} from "reducers/usersReducer";
+import {updateCourse} from "reducers/courseReducer";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -42,6 +46,25 @@ const parseGender = {
     "U": "Do not disclose",
 };
 
+const numToDay = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+const formatDate = (date) => {
+    if (!date) {
+        return null;
+    }
+    const [year, month, day] = date.split("-");
+    return `${month}/${day}/${year}`;
+};
+
+const formatTime = (time) => {
+    if (!time) {
+        return null;
+    }
+    const [hrs, mins] = time.substring(1).split(":");
+    const hours = parseInt(hrs, 10);
+    return `${hours % 12 === 0 ? 12 : hours % 12}:${mins} ${hours >= 12 ? "PM" : "AM"}`
+}
+
 class Form extends Component {
     constructor(props) {
         super(props);
@@ -63,68 +86,6 @@ class Form extends Component {
         const {id} = this.props.computedMatch.params;
         if (this.props.computedMatch.params.edit === "edit") {
             switch (formType) {
-                case "student": {
-                    const student = this.props.students[id];
-                    if (student) {
-                        const parent = this.props.parents[student.parent_id];
-                        prevState = {
-                            ...this.state,
-                            "Basic Information": {
-                                "Student First Name": student.first_name,
-                                "Student Last Name": student.last_name,
-                                "Gender": parseGender[student.gender],
-                                "Grade": student.grade,
-                                "Age": student.age,
-                                "School": student.school,
-                                "Student Email": student.email,
-                                "Student Phone Number": student.phone_number,
-                            },
-                            "Parent Information": {
-                                "Select Parent": {
-                                    value: parent.user_id,
-                                    label: `${parent.user_id}: ${parent.name} - ${parent.email}`,
-                                },
-                                "Parent First Name": parent.first_name,
-                                "Parent Last Name": parent.last_name,
-                                "Gender": parseGender[parent.gender],
-                                "Parent Email": parent.email,
-                                "Address": parent.address,
-                                "City": parent.city,
-                                "State": parent.state,
-                                "Zip Code": parent.zipcode,
-                                "Relationship to Student": parent.relationship,
-                                "Phone Number": parent.phone_number,
-                            },
-                            "Basic Information_validated": {
-                                "Student First Name": true,
-                                "Student Last Name": true,
-                                "Gender": true,
-                                "Grade": true,
-                                "Age": true,
-                                "School": true,
-                                "Student Email": true,
-                                "Student Phone Number": true,
-                            },
-                            "Parent Information_validated": {
-                                "Parent First Name": true,
-                                "Parent Last Name": true,
-                                "Gender": true,
-                                "Parent Email": true,
-                                "Address": true,
-                                "City": true,
-                                "State": true,
-                                "Zip Code": true,
-                                "Relationship to Student": true,
-                                "Phone Number": true,
-                            },
-                            "form": formType,
-                            "activeSection": "Basic Information",
-                            "nextSection": true,
-                            "preLoaded": true,
-                        };
-                    }
-                    break;
-                }
                 case "instructor": {
                     const instructor = this.props.instructors[id];
                     if (instructor) {
@@ -248,6 +209,195 @@ class Form extends Component {
                     this.props.courses[id].title;
             }
             this.setState(prevState);
+        }
+    }
+
+    componentDidMount() {
+        const {id, edit, "type": formType} = this.props.computedMatch.params;
+        if (edit === "edit") {
+            switch (formType) {
+                case "student": {
+                    this.props.userActions.fetchParents();
+                    (async () => {
+                        // creates a new action based on the response given
+                        const newAction = (type, response) => {
+                            this.props.dispatch({
+                                type,
+                                "payload": {
+                                    id,
+                                    response,
+                                },
+                            });
+                        };
+                        let student;
+                        try {
+                            const response = await apiActions.instance.get(
+                                `/account/student/${id}/`, {
+                                    "headers": {
+                                        "Authorization": `Token ${this.props.token}`,
+                                    },
+                                });
+                            // succesful request
+                            newAction(types.FETCH_STUDENT_SUCCESSFUL, response);
+                            student = updateStudent({}, id, response.data)[id];
+                        } catch ({response}) {
+                            if (this.props.students[id]) {
+                                student = this.props.courses[id];
+                            } else {
+                                this.props.history.replace("/PageNotFound");
+                            }
+                        } finally {
+                            if (student) {
+                                const parent = this.props.parents[student.parent_id] || {};
+                                this.setState({
+                                    "Basic Information": {
+                                        "Student First Name": student.first_name,
+                                        "Student Last Name": student.last_name,
+                                        "Gender": parseGender[student.gender],
+                                        "Birthday": student.birthday,
+                                        "Grade": student.grade,
+                                        "School": student.school,
+                                        "Student Email": student.email,
+                                        "Student Phone Number": student.phone_number,
+                                    },
+                                    "Parent Information": {
+                                        "Select Parent": parent
+                                            ? {
+                                                "value": parent.user_id,
+                                                "label": `${parent.user_id}: ${parent.name} - ${parent.email}`,
+                                            }
+                                            : null,
+                                        "Parent First Name": parent.first_name,
+                                        "Parent Last Name": parent.last_name,
+                                        "Parent Birthday": parent.birthday,
+                                        "Gender": parseGender[parent.gender],
+                                        "Parent Email": parent.email,
+                                        "Address": parent.address,
+                                        "City": parent.city,
+                                        "State": parent.state,
+                                        "Zip Code": parent.zipcode,
+                                        "Relationship to Student": parent.relationship,
+                                        "Phone Number": parent.phone_number,
+                                    },
+                                    "preLoaded": true,
+                                });
+                            }
+                        }
+                    })();
+                    break;
+                }
+                case "course_details": {
+                    this.props.userActions.fetchInstructors();
+                    (async () => {
+                        // creates a new action based on the response given
+                        const newAction = (type, response) => {
+                            this.props.dispatch({
+                                type,
+                                "payload": {
+                                    id,
+                                    response,
+                                },
+                            });
+                        };
+                        let course;
+                        try {
+                            const response = await apiActions.instance.get(
+                                `/courses/catalog/${id}/`, {
+                                    "headers": {
+                                        "Authorization": `Token ${this.props.token}`,
+                                    },
+                                });
+                            // succesful request
+                            newAction(types.FETCH_COURSE_SUCCESSFUL, response);
+                            course = updateCourse({}, id, response.data)[id];
+                        } catch ({response}) {
+                            if (this.props.courses[id]) {
+                                course = this.props.courses[id];
+                            } else {
+                                this.props.history.replace("/PageNotFound");
+                            }
+                        } finally {
+                            if (course) {
+                                const inst = this.props.instructors[course.instructor_id];
+                                this.setState({
+                                    "Course Info": {
+                                        "Name": course.title,
+                                        "Description": course.description,
+                                        "Instructor":
+                                            inst
+                                                ? {
+                                                    "value": course.instructor_id,
+                                                    "label": `${inst.name} - ${inst.email}`,
+                                                }
+                                                : null,
+                                        "Tuition": Math.round(course.tuition),
+                                        "Day": numToDay[course.schedule.days[0]],
+                                        "Start Date": formatDate(course.schedule.start_date),
+                                        "End Date": formatDate(course.schedule.end_date),
+                                        "Start Time": formatTime(course.schedule.start_time),
+                                        "End Time": formatTime(course.schedule.end_time),
+                                        "Capacity": course.capacity,
+                                    },
+                                    "preLoaded": true,
+                                });
+                            }
+                        }
+                    })();
+                    break;
+                }
+                case "parent": {
+                    (async () => {
+                        // creates a new action based on the response given
+                        const newAction = (type, response) => {
+                            this.props.dispatch({
+                                type,
+                                "payload": {
+                                    id,
+                                    response,
+                                },
+                            });
+                        };
+                        let parent;
+                        try {
+                            const response = await apiActions.instance.get(
+                                `/account/parent/${id}/`, {
+                                    "headers": {
+                                        "Authorization": `Token ${this.props.token}`,
+                                    },
+                                });
+                            // succesful request
+                            newAction(types.FETCH_PARENT_SUCCESSFUL, response);
+                            parent = updateParent({}, id, response.data)[id];
+                        } catch {
+                            if (this.props.parents[id]) {
+                                parent = this.props.parents[id];
+                            } else {
+                                this.props.history.replace("/PageNotFound");
+                            }
+                        } finally {
+                            if (parent) {
+                                this.setState({
+                                    "Parent Information": {
+                                        "First Name": parent.first_name,
+                                        "Last Name": parent.last_name,
+                                        "Gender": parseGender[parent.gender],
+                                        "Email": parent.email,
+                                        "Address": parent.address,
+                                        "Birthday": parent.birthday,
+                                        "City": parent.city,
+                                        "State": parent.state,
+                                        "Zip Code": parent.zipcode,
+                                        "Relationship to Student(s)": parent.relationship,
+                                        "Phone Number": parent.phone_number,
+                                    },
+                                    "preLoaded": true,
+                                });
+                            }
+                        }
+                    })();
+                }
+                // no default
+            }
         }
     }
 
@@ -405,7 +555,7 @@ class Form extends Component {
                         emails = Object.values(this.props.students).map(({email}) => email);
                     }
                     // validate that email doesn't exist in database already
-                    isValid = !emails.includes(fieldValue) || this.state.preLoaded;
+                    isValid = !emails.includes(fieldValue) || oldState.preLoaded;
                     if (!isValid) {
                         oldState.existingUser = true;
                     }
@@ -438,8 +588,9 @@ class Form extends Component {
                         },
                         "Parent First Name": parent.first_name,
                         "Parent Last Name": parent.last_name,
-                        "Gender": parent.gender,
+                        "Gender": parseGender[parent.gender],
                         "Parent Email": parent.email,
+                        "Parent Birthday": parent.birthday,
                         "Address": parent.address,
                         "City": parent.city,
                         "State": parent.state,
@@ -529,7 +680,7 @@ class Form extends Component {
             case "select":
                 return (
                     <FormControl className="form-control">
-                        <InputLabel shrink={this.state[label][fieldTitle]}>
+                        <InputLabel shrink={Boolean(this.state[label][fieldTitle])}>
                             {fieldTitle}
                         </InputLabel>
                         <Select
@@ -637,7 +788,7 @@ class Form extends Component {
                 }));
                 instructorList = this.removeDuplicates(Object.values(this.state[label]), instructorList);
                 return (<div style={{width: "inherit"}}>
-                    <Grid container className="student-align" spacing={2000}>
+                    <Grid container className="student-align">
                         <SearchSelect
                             value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
                             onChange={(value) => {
@@ -676,6 +827,9 @@ class Form extends Component {
                     helperText={!this.state[label + "_validated"][field.name] ? field.name + " invalid" : ""}
                     type={field.type === "number" ? "Number" : "text"}
                     required={field.required}
+                    InputLabelProps={{
+                        "shrink": Boolean(this.state[label][field.name])
+                    }}
                     fullWidth={field.full}
                     onChange={(e) => {
                         e.preventDefault();
@@ -898,28 +1052,36 @@ class Form extends Component {
     }
 
     renderTitle(id, type) {
+        let title = "";
         switch (type) {
-            case "course":
-                return id ? this.props.courses[id].title : "";
+            case "course": {
+                const course = this.props.courses[id];
+                title = course ? course.title + " ": "";
+                break;
+            }
             case "student": {
                 const student = this.props.students[id];
-                return student ? student.name : "";
+                title = student ? student.name + " " : "";
+                break;
+            }
+            case "parent": {
+                const parent = this.props.parents[id];
+                title = parent ? parent.name + " ": "";
+                break;
+            }
+            case "course_details": {
+                const course = this.props.courses[id];
+                title = course ? course.title + " " : "";
+                break;
             }
             default:
-                return "";
+                title = "";
+                break;
         }
+        return title + type.split("_").join(" ") + " Registration"
     }
 
     render() {
-        // const {id, edit} = this.props.computedMatch.params;
-        // let submitStatus;
-        // if (this.props.computedMatch.params.edit === "edit") {
-        //     // PATCH request
-        //     submitStatus = this.props.requestStatus[this.state.form][PATCH][id];
-        // } else {
-        //     // POST request
-        //     submitStatus = this.props.requestStatus[this.state.form][POST];
-        // }
         return (
             <Grid container className="">
                 {/* Determine if finished component is displayed. If not, then don't prompt */}
@@ -936,7 +1098,7 @@ class Form extends Component {
                             denyAction={"default"}
                         />
                         <Typography className="heading" align="left">
-                            {this.renderTitle(this.props.computedMatch.params.id, this.state.form)} {this.props.computedMatch.params.type} Registration
+                            {this.renderTitle(this.props.computedMatch.params.id, this.state.form)}
                         </Typography>
                         {
                             this.props.submitStatus !== "success" ?
@@ -1018,14 +1180,17 @@ const mapStateToProps = (state) => ({
     "students": state.Users["StudentList"],
     "instructors": state.Users["InstructorList"],
     "requestStatus": state.RequestStatus,
+    "token": state.auth.token,
 });
 
 const mapDispatchToProps = (dispatch) => ({
     "registrationActions": bindActionCreators(registrationActions, dispatch),
     "userActions": bindActionCreators(userActions, dispatch),
+    "apiActions": bindActionCreators(apiActions, dispatch),
+    dispatch,
 });
 
-export default connect(
+export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps,
-)(Form);
+)(Form));
