@@ -233,13 +233,26 @@ class Form extends Component {
                         try {
                             const response = await apiActions.instance.get(
                                 `/account/student/${id}/`, {
-                                    "headers": {
-                                        "Authorization": `Token ${this.props.token}`,
-                                    },
-                                });
+                                "headers": {
+                                    "Authorization": `Token ${this.props.token}`,
+                                },
+                            });
                             // succesful request
                             newAction(types.FETCH_STUDENT_SUCCESSFUL, response);
                             student = updateStudent({}, id, response.data)[id];
+                            const parents = await apiActions.instance.get(
+                                `/account/parent/`, {
+                                "headers": {
+                                    "Authorization": `Token ${this.props.token}`,
+                                },
+                            });
+                            this.props.dispatch({
+                                "type": types.FETCH_PARENT_SUCCESSFUL,
+                                "payload": {
+                                    "id": -1,
+                                    "response": parents,
+                                },
+                            });
                         } catch ({response}) {
                             if (this.props.students[id]) {
                                 student = this.props.courses[id];
@@ -248,8 +261,8 @@ class Form extends Component {
                             }
                         } finally {
                             if (student) {
-                                const parent = this.props.parents[student.parent_id] || {};
-                                this.setState({
+                                const parent = this.props.parents[student.parent_id];
+                                this.setState((prevState) => ({
                                     "Basic Information": {
                                         "Student First Name": student.first_name,
                                         "Student Last Name": student.last_name,
@@ -260,13 +273,12 @@ class Form extends Component {
                                         "Student Email": student.email,
                                         "Student Phone Number": student.phone_number,
                                     },
-                                    "Parent Information": {
-                                        "Select Parent": parent
-                                            ? {
-                                                "value": parent.user_id,
-                                                "label": `${parent.user_id}: ${parent.name} - ${parent.email}`,
-                                            }
-                                            : null,
+                                    "Parent Information":
+                                        parent ? {
+                                        "Select Parent":{
+                                            "value": parent.user_id,
+                                            "label": `${parent.user_id}: ${parent.name} - ${parent.email}`,
+                                        },
                                         "Parent First Name": parent.first_name,
                                         "Parent Last Name": parent.last_name,
                                         "Parent Birthday": parent.birthday,
@@ -277,10 +289,10 @@ class Form extends Component {
                                         "State": parent.state,
                                         "Zip Code": parent.zipcode,
                                         "Relationship to Student": parent.relationship,
-                                        "Phone Number": parent.phone_number,
-                                    },
+                                         "Phone Number": parent.phone_number,
+                                        }: prevState["Parent Information"],
                                     "preLoaded": true,
-                                });
+                                }));
                             }
                         }
                     })();
@@ -310,6 +322,19 @@ class Form extends Component {
                             // succesful request
                             newAction(types.FETCH_COURSE_SUCCESSFUL, response);
                             course = updateCourse({}, id, response.data)[id];
+                            const instructors = await apiActions.instance.get(
+                                `/account/parent/`, {
+                                "headers": {
+                                    "Authorization": `Token ${this.props.token}`,
+                                },
+                            });
+                            this.props.dispatch({
+                                "type": types.FETCH_INSTRUCTOR_SUCCESSFUL,
+                                "payload": {
+                                    "id": -1,
+                                    "response": instructors,
+                                },
+                            });
                         } catch ({response}) {
                             if (this.props.courses[id]) {
                                 course = this.props.courses[id];
