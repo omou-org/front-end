@@ -81,7 +81,7 @@ const handleParentsFetch = (state, {id, response}) => {
     };
 };
 
-const updateParent = (parents, id, parent) => ({
+export const updateParent = (parents, id, parent) => ({
     ...parents,
     [id]: {
         "user_id": parent.user.id,
@@ -96,7 +96,7 @@ const updateParent = (parents, id, parent) => ({
         "first_name": parent.user.first_name,
         "last_name": parent.user.last_name,
         "name": `${parent.user.first_name} ${parent.user.last_name}`,
-        "email": "example@example.com",
+        "email": parent.user.email,
         // below is not from database
         "role": "parent",
         "student_ids": parents[id] ? parents[id].student_ids : [],
@@ -120,7 +120,7 @@ const handleStudentsFetch = (state, {id, response}) => {
     };
 };
 
-const updateStudent = (students, id, student) => ({
+export const updateStudent = (students, id, student) => ({
     ...students,
     [id]: {
         "user_id": student.user.id,
@@ -163,7 +163,7 @@ const handleInstructorsFetch = (state, {id, response}) => {
 };
 
 
-const updateInstructor = (instructors, id, instructor) => ({
+export const updateInstructor = (instructors, id, instructor) => ({
     ...instructors,
     [id]: {
         "user_id": instructor.user.id,
