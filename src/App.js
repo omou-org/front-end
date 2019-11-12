@@ -1,12 +1,11 @@
-// react
+// React
 import React from "react";
 
+// Material UI
 import CssBaseline from "@material-ui/core/CssBaseline";
 
-// local component import
+// Local Component Imports
 import Navigation from "./components/Navigation/Navigation";
-
-// css import
 import "./App.scss";
 import "./theme/theme.scss";
 

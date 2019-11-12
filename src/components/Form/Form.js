@@ -1,9 +1,14 @@
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../actions/registrationActions";
+import * as userActions from "../../actions/userActions";
+import * as apiActions from "../../actions/apiActions";
+import * as types from "actions/actionTypes";
 import React, {Component} from "react";
 import {Prompt} from "react-router";
-import {NavLink} from "react-router-dom";
+import {NavLink, withRouter} from "react-router-dom";
+import {updateStudent, updateParent} from "reducers/usersReducer";
+import {updateCourse} from "reducers/courseReducer";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -41,6 +46,25 @@ const parseGender = {
     "U": "Do not disclose",
 };
 
+const numToDay = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+const formatDate = (date) => {
+    if (!date) {
+        return null;
+    }
+    const [year, month, day] = date.split("-");
+    return `${month}/${day}/${year}`;
+};
+
+const formatTime = (time) => {
+    if (!time) {
+        return null;
+    }
+    const [hrs, mins] = time.substring(1).split(":");
+    const hours = parseInt(hrs, 10);
+    return `${hours % 12 === 0 ? 12 : hours % 12}:${mins} ${hours >= 12 ? "PM" : "AM"}`
+}
+
 class Form extends Component {
     constructor(props) {
         super(props);
@@ -58,72 +82,10 @@ class Form extends Component {
 
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
-        const formType = this.props.match.params.type;
-        const {id} = this.props.match.params;
-        if (this.props.match.params.edit === "edit") {
+        const formType = this.props.computedMatch.params.type;
+        const {id} = this.props.computedMatch.params;
+        if (this.props.computedMatch.params.edit === "edit") {
             switch (formType) {
-                case "student": {
-                    const student = this.props.students[id];
-                    if (student) {
-                        const parent = this.props.parents[student.parent_id];
-                        prevState = {
-                            ...this.state,
-                            "Basic Information": {
-                                "Student First Name": student.first_name,
-                                "Student Last Name": student.last_name,
-                                "Gender": parseGender[student.gender],
-                                "Grade": student.grade,
-                                "Age": student.age,
-                                "School": student.school,
-                                "Student Email": student.email,
-                                "Student Phone Number": student.phone_number,
-                            },
-                            "Parent Information": {
-                                "Select Parent": {
-                                    value: parent.user_id,
-                                    label: `${parent.user_id}: ${parent.name} - ${parent.email}`,
-                                },
-                                "Parent First Name": parent.first_name,
-                                "Parent Last Name": parent.last_name,
-                                "Gender": parseGender[parent.gender],
-                                "Parent Email": parent.email,
-                                "Address": parent.address,
-                                "City": parent.city,
-                                "State": parent.state,
-                                "Zip Code": parent.zipcode,
-                                "Relationship to Student": parent.relationship,
-                                "Phone Number": parent.phone_number,
-                            },
-                            "Basic Information_validated": {
-                                "Student First Name": true,
-                                "Student Last Name": true,
-                                "Gender": true,
-                                "Grade": true,
-                                "Age": true,
-                                "School": true,
-                                "Student Email": true,
-                                "Student Phone Number": true,
-                            },
-                            "Parent Information_validated": {
-                                "Parent First Name": true,
-                                "Parent Last Name": true,
-                                "Gender": true,
-                                "Parent Email": true,
-                                "Address": true,
-                                "City": true,
-                                "State": true,
-                                "Zip Code": true,
-                                "Relationship to Student": true,
-                                "Phone Number": true,
-                            },
-                            "form": formType,
-                            "activeSection": "Basic Information",
-                            "nextSection": true,
-                            "preLoaded": true,
-                        };
-                    }
-                    break;
-                }
                 case "instructor": {
                     const instructor = this.props.instructors[id];
                     if (instructor) {
@@ -189,7 +151,7 @@ class Form extends Component {
         if (!prevState ||
             formType !== prevState.form ||
             prevState["submitPending"] ||
-            (id && this.props.match.params.edit !== "edit")) {
+            (id && this.props.computedMatch.params.edit !== "edit")) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
                     const formContents = JSON.parse(
@@ -203,7 +165,7 @@ class Form extends Component {
                     let course = null;
                     if (this.props.courses.hasOwnProperty(id)) {
                         const {course_id, title} =
-                            this.props.courses[this.props.match.params.id];
+                            this.props.courses[this.props.computedMatch.params.id];
                         // convert it to a format that onselectChange can use
                         course = {
                             "value": course_id,
@@ -247,6 +209,220 @@ class Form extends Component {
                     this.props.courses[id].title;
             }
             this.setState(prevState);
+        }
+    }
+
+    componentDidMount() {
+        const {id, edit, "type": formType} = this.props.computedMatch.params;
+        if (edit === "edit") {
+            switch (formType) {
+                case "student": {
+                    this.props.userActions.fetchParents();
+                    (async () => {
+                        // creates a new action based on the response given
+                        const newAction = (type, response) => {
+                            this.props.dispatch({
+                                type,
+                                "payload": {
+                                    id,
+                                    response,
+                                },
+                            });
+                        };
+                        let student;
+                        try {
+                            const response = await apiActions.instance.get(
+                                `/account/student/${id}/`, {
+                                "headers": {
+                                    "Authorization": `Token ${this.props.token}`,
+                                },
+                            });
+                            // succesful request
+                            newAction(types.FETCH_STUDENT_SUCCESSFUL, response);
+                            student = updateStudent({}, id, response.data)[id];
+                            const parents = await apiActions.instance.get(
+                                `/account/parent/`, {
+                                "headers": {
+                                    "Authorization": `Token ${this.props.token}`,
+                                },
+                            });
+                            this.props.dispatch({
+                                "type": types.FETCH_PARENT_SUCCESSFUL,
+                                "payload": {
+                                    "id": -1,
+                                    "response": parents,
+                                },
+                            });
+                        } catch ({response}) {
+                            if (this.props.students[id]) {
+                                student = this.props.courses[id];
+                            } else {
+                                this.props.history.replace("/PageNotFound");
+                            }
+                        } finally {
+                            if (student) {
+                                const parent = this.props.parents[student.parent_id];
+                                this.setState((prevState) => ({
+                                    "Basic Information": {
+                                        "Student First Name": student.first_name,
+                                        "Student Last Name": student.last_name,
+                                        "Gender": parseGender[student.gender],
+                                        "Birthday": student.birthday,
+                                        "Grade": student.grade,
+                                        "School": student.school,
+                                        "Student Email": student.email,
+                                        "Student Phone Number": student.phone_number,
+                                    },
+                                    "Parent Information":
+                                        parent ? {
+                                        "Select Parent":{
+                                            "value": parent.user_id,
+                                            "label": `${parent.user_id}: ${parent.name} - ${parent.email}`,
+                                        },
+                                        "Parent First Name": parent.first_name,
+                                        "Parent Last Name": parent.last_name,
+                                        "Parent Birthday": parent.birthday,
+                                        "Gender": parseGender[parent.gender],
+                                        "Parent Email": parent.email,
+                                        "Address": parent.address,
+                                        "City": parent.city,
+                                        "State": parent.state,
+                                        "Zip Code": parent.zipcode,
+                                        "Relationship to Student": parent.relationship,
+                                         "Phone Number": parent.phone_number,
+                                        }: prevState["Parent Information"],
+                                    "preLoaded": true,
+                                }));
+                            }
+                        }
+                    })();
+                    break;
+                }
+                case "course_details": {
+                    this.props.userActions.fetchInstructors();
+                    (async () => {
+                        // creates a new action based on the response given
+                        const newAction = (type, response) => {
+                            this.props.dispatch({
+                                type,
+                                "payload": {
+                                    id,
+                                    response,
+                                },
+                            });
+                        };
+                        let course;
+                        try {
+                            const response = await apiActions.instance.get(
+                                `/courses/catalog/${id}/`, {
+                                    "headers": {
+                                        "Authorization": `Token ${this.props.token}`,
+                                    },
+                                });
+                            // succesful request
+                            newAction(types.FETCH_COURSE_SUCCESSFUL, response);
+                            course = updateCourse({}, id, response.data)[id];
+                            const instructors = await apiActions.instance.get(
+                                `/account/parent/`, {
+                                "headers": {
+                                    "Authorization": `Token ${this.props.token}`,
+                                },
+                            });
+                            this.props.dispatch({
+                                "type": types.FETCH_INSTRUCTOR_SUCCESSFUL,
+                                "payload": {
+                                    "id": -1,
+                                    "response": instructors,
+                                },
+                            });
+                        } catch ({response}) {
+                            if (this.props.courses[id]) {
+                                course = this.props.courses[id];
+                            } else {
+                                this.props.history.replace("/PageNotFound");
+                            }
+                        } finally {
+                            if (course) {
+                                const inst = this.props.instructors[course.instructor_id];
+                                this.setState({
+                                    "Course Info": {
+                                        "Name": course.title,
+                                        "Description": course.description,
+                                        "Instructor":
+                                            inst
+                                                ? {
+                                                    "value": course.instructor_id,
+                                                    "label": `${inst.name} - ${inst.email}`,
+                                                }
+                                                : null,
+                                        "Tuition": Math.round(course.tuition),
+                                        "Day": numToDay[course.schedule.days[0]],
+                                        "Start Date": formatDate(course.schedule.start_date),
+                                        "End Date": formatDate(course.schedule.end_date),
+                                        "Start Time": formatTime(course.schedule.start_time),
+                                        "End Time": formatTime(course.schedule.end_time),
+                                        "Capacity": course.capacity,
+                                    },
+                                    "preLoaded": true,
+                                });
+                            }
+                        }
+                    })();
+                    break;
+                }
+                case "parent": {
+                    (async () => {
+                        // creates a new action based on the response given
+                        const newAction = (type, response) => {
+                            this.props.dispatch({
+                                type,
+                                "payload": {
+                                    id,
+                                    response,
+                                },
+                            });
+                        };
+                        let parent;
+                        try {
+                            const response = await apiActions.instance.get(
+                                `/account/parent/${id}/`, {
+                                    "headers": {
+                                        "Authorization": `Token ${this.props.token}`,
+                                    },
+                                });
+                            // succesful request
+                            newAction(types.FETCH_PARENT_SUCCESSFUL, response);
+                            parent = updateParent({}, id, response.data)[id];
+                        } catch {
+                            if (this.props.parents[id]) {
+                                parent = this.props.parents[id];
+                            } else {
+                                this.props.history.replace("/PageNotFound");
+                            }
+                        } finally {
+                            if (parent) {
+                                this.setState({
+                                    "Parent Information": {
+                                        "First Name": parent.first_name,
+                                        "Last Name": parent.last_name,
+                                        "Gender": parseGender[parent.gender],
+                                        "Email": parent.email,
+                                        "Address": parent.address,
+                                        "Birthday": parent.birthday,
+                                        "City": parent.city,
+                                        "State": parent.state,
+                                        "Zip Code": parent.zipcode,
+                                        "Relationship to Student(s)": parent.relationship,
+                                        "Phone Number": parent.phone_number,
+                                    },
+                                    "preLoaded": true,
+                                });
+                            }
+                        }
+                    })();
+                }
+                // no default
+            }
         }
     }
 
@@ -315,9 +491,8 @@ class Form extends Component {
             if (this.validateSection()) {
                 if (oldState.activeStep === this.getFormObject().section_titles.length - 1) {
                     if (!oldState.submitPending) {
-                        if (this.props.match.params.edit === "edit") {
-                            this.props.registrationActions.submitForm(this.state,
-                                this.props.match.params.id);
+                        if (this.props.computedMatch.params.edit === "edit") {
+                            this.props.registrationActions.submitForm(this.state, this.props.computedMatch.params.id);
                         } else {
                             this.props.registrationActions.submitForm(this.state);
                         }
@@ -405,7 +580,7 @@ class Form extends Component {
                         emails = Object.values(this.props.students).map(({email}) => email);
                     }
                     // validate that email doesn't exist in database already
-                    isValid = !emails.includes(fieldValue) || this.state.preLoaded;
+                    isValid = !emails.includes(fieldValue) || oldState.preLoaded;
                     if (!isValid) {
                         oldState.existingUser = true;
                     }
@@ -438,8 +613,9 @@ class Form extends Component {
                         },
                         "Parent First Name": parent.first_name,
                         "Parent Last Name": parent.last_name,
-                        "Gender": parent.gender,
+                        "Gender": parseGender[parent.gender],
                         "Parent Email": parent.email,
+                        "Parent Birthday": parent.birthday,
                         "Address": parent.address,
                         "City": parent.city,
                         "State": parent.state,
@@ -524,28 +700,31 @@ class Form extends Component {
     }
 
     renderField(field, label, fieldIndex) {
-        let fieldTitle = field.name;
+        const fieldTitle = field.name;
         switch (field.type) {
             case "select":
-                return <FormControl className={"form-control"}>
-                    <InputLabel htmlFor={fieldTitle}>{fieldTitle}</InputLabel>
-                    <Select
-                        displayEmpty={false}
-                        value={this.state[label][fieldTitle]}
-                        onChange={({target}) => {
-                            this.onSelectChange(target.value, label, field);
-                        }}>
-                        {
-                            field.options.map((option) => {
-                                return <MenuItem value={option} key={option}>
-                                    <em>{option}</em>
-                                </MenuItem>
+                return (
+                    <FormControl className="form-control">
+                        <InputLabel shrink={Boolean(this.state[label][fieldTitle])}>
+                            {fieldTitle}
+                        </InputLabel>
+                        <Select
+                            onChange={({"target": {value}}) => {
+                                this.onSelectChange(value, label, field);
+                            }}
+                            value={this.state[label][fieldTitle]}>
+                            {
+                                field.options.map((option) => (
+                                    <MenuItem
+                                        key={option}
+                                        value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))
                             }
-
-                            )
-                        }
-                    </Select>
-                </FormControl>;
+                        </Select>
+                    </FormControl>
+            );
             case "course": {
                 let courseList = Object.keys(this.props.courses)
                     .filter((courseID) =>
@@ -634,7 +813,7 @@ class Form extends Component {
                 }));
                 instructorList = this.removeDuplicates(Object.values(this.state[label]), instructorList);
                 return (<div style={{width: "inherit"}}>
-                    <Grid container className="student-align" spacing={2000}>
+                    <Grid container className="student-align">
                         <SearchSelect
                             value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
                             onChange={(value) => {
@@ -673,6 +852,9 @@ class Form extends Component {
                     helperText={!this.state[label + "_validated"][field.name] ? field.name + " invalid" : ""}
                     type={field.type === "number" ? "Number" : "text"}
                     required={field.required}
+                    InputLabelProps={{
+                        "shrink": Boolean(this.state[label][field.name])
+                    }}
                     fullWidth={field.full}
                     onChange={(e) => {
                         e.preventDefault();
@@ -713,7 +895,6 @@ class Form extends Component {
         }, () => {
             sessionStorage.setItem("form", JSON.stringify(this.state));
         });
-        // for some reason it isn't rerendering automatically
     }
 
     removeField(fieldIndex) {
@@ -767,27 +948,7 @@ class Form extends Component {
                 {
                     steps.map((label) => (
                         <Step key={label}>
-                            <StepLabel>
-                                {label}
-                                {/* {activeStep !== i &&
-                                    Object.entries(this.state[label]).map(([field, value]) => {
-                                        if (!value) {
-                                            return null;
-                                        }
-                                        if (value && value.hasOwnProperty("label")) {
-                                            value = value.label;
-                                        }
-
-                                        return (
-                                            <div key={field}>
-                                                <Typography className="field-title" align="left">
-                                                    {field}: {value}
-                                                </Typography>
-                                            </div>
-                                        );
-                                    })
-                                } */}
-                            </StepLabel>
+                            <StepLabel>{label}</StepLabel>
                             <StepContent>
                                 {
                                     section.map((field, j) => {
@@ -802,7 +963,7 @@ class Form extends Component {
                                                 </Grid>
                                                 <br />
                                                 {
-                                                    !this.props.match.params.course && numSameTypeFields < field.field_limit &&
+                                                    !this.props.computedMatch.params.course && numSameTypeFields < field.field_limit &&
                                                     field === lastFieldOfType &&
                                                     <Fab color="primary" aria-label="Add" variant="extended"
                                                         className="button add-student"
@@ -886,7 +1047,7 @@ class Form extends Component {
                                     {sectionTitle}
                                 </Typography>
                                 {
-                                    this.getActiveSection().map(({field, type}) => {
+                                    this.getFormObject()[sectionTitle].map(({field, type}) => {
                                         let fieldVal = this.state[sectionTitle][field];
                                         if (fieldVal && fieldVal.hasOwnProperty("value")) {
                                             fieldVal = fieldVal.value;
@@ -916,16 +1077,33 @@ class Form extends Component {
     }
 
     renderTitle(id, type) {
+        let title = "";
         switch (type) {
-            case "course":
-                return id ? this.props.courses[id].title : "";
+            case "course": {
+                const course = this.props.courses[id];
+                title = course ? course.title + " ": "";
+                break;
+            }
             case "student": {
                 const student = this.props.students[id];
-                return student ? student.name : "";
+                title = student ? student.name + " " : "";
+                break;
+            }
+            case "parent": {
+                const parent = this.props.parents[id];
+                title = parent ? parent.name + " ": "";
+                break;
+            }
+            case "course_details": {
+                const course = this.props.courses[id];
+                title = course ? course.title + " " : "";
+                break;
             }
             default:
-                return "";
+                title = "";
+                break;
         }
+        return title + type.split("_").join(" ") + " Registration"
     }
 
     render() {
@@ -945,12 +1123,12 @@ class Form extends Component {
                             denyAction={"default"}
                         />
                         <Typography className="heading" align="left">
-                            {this.renderTitle(this.props.match.params.id, this.state.form)} {this.props.match.params.type} Registration
+                            {this.renderTitle(this.props.computedMatch.params.id, this.state.form)}
                         </Typography>
                         {
                             this.props.submitStatus !== "success" ?
                                 this.props.registrationForm[this.state.form] ?
-                                    this.renderForm.bind(this)() :
+                                    this.renderForm() :
                                     <Typography>
                                         Sorry! The form is unavailable.
                                     </Typography>
@@ -1018,25 +1196,26 @@ class Form extends Component {
     }
 }
 
-function mapStateToProps(state) {
-    return {
-        courses: state.Course["NewCourseList"],
-        courseCategories: state.Course["CourseCategories"],
-        registrationForm: state.Registration["registration_form"],
-        submitStatus: state.Registration["submitStatus"],
-        parents: state.Users["ParentList"],
-        students: state.Users["StudentList"],
-        instructors: state.Users["InstructorList"],
-    };
-}
+const mapStateToProps = (state) => ({
+    "courses": state.Course["NewCourseList"],
+    "courseCategories": state.Course["CourseCategories"],
+    "registrationForm": state.Registration["registration_form"],
+    "submitStatus": state.Registration["submitStatus"],
+    "parents": state.Users["ParentList"],
+    "students": state.Users["StudentList"],
+    "instructors": state.Users["InstructorList"],
+    "requestStatus": state.RequestStatus,
+    "token": state.auth.token,
+});
 
-function mapDispatchToProps(dispatch) {
-    return {
-        registrationActions: bindActionCreators(registrationActions, dispatch),
-    };
-}
+const mapDispatchToProps = (dispatch) => ({
+    "registrationActions": bindActionCreators(registrationActions, dispatch),
+    "userActions": bindActionCreators(userActions, dispatch),
+    "apiActions": bindActionCreators(apiActions, dispatch),
+    dispatch,
+});
 
-export default connect(
+export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps,
-)(Form);
+)(Form));

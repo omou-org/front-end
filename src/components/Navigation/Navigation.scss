@@ -3,13 +3,14 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700');
 
 /*Navigation Styling*/
-.Navigation{
+.Navigation {
+
   /*App Bar Styling*/
   .OmouBar {
     z-index: 10000 !important;
   }
 
-  .title{
+  .title {
     font-family: 'Roboto Slab', serif;
     font-style: normal;
     font-weight: 700;
@@ -20,49 +21,66 @@
   }
 
   /*Drawer Styling*/
-  .OmouDrawer{
-    //width: $drawerWidth;
 
-  }
-
-  div[class^="MuiDrawer-paperAnchorDockedLeft"]{
-    border:none !important;
+  div[class^="MuiDrawer-paperAnchorDockedLeft"] {
+    border: none !important;
   }
 
   .OmouMain {
-    @include respond-to(medium-up-screens){
-      margin-left:$drawerWidth;
-      padding:5% 3% 0 3%;
+    @include respond-to(handhelds) {
+      margin-left: 0;
     }
-    @include respond-to(handhelds){
-      margin-left:0;
-      padding:15% 3% 0 3%;
+
+    @include respond-to(medium-screens) {
+      margin-left: 0
     }
+
+    @include respond-to(ipad-landscape) {
+      margin-left: 0;
+    }
+
+    @include respond-to(wide-screens) {
+      margin-left: $drawerWidth;
+    }
+
+    padding: 0 3%;
     overflow-x: hidden;
   }
 
-  .DrawerList{
-    @include respond-to(handhelds){ width:0;}
-    @include respond-to(medium-up-screens){ width:$drawerWidth; }
+  .DrawerList {
+    @include respond-to(handhelds) {
+      width: 0;
+    }
 
-    padding-top: 45%;
+    @include respond-to(medium-up-screens) {
+      width: $drawerWidth;
+    }
+
+    padding-top: 30%;
 
     .listItem {
       width: 94%;
-      margin:3%;
+      margin: 3%;
     }
 
-    .list .listItem .text > span{
-      font-weight:500;
+    .list .listItem .text>span {
+      font-weight: 500;
       font-size: $navigationSize;
       color: $primaryFontColor;
     }
-    .listItem.active{
+
+    .listItem.active {
       border-radius: 5px;
-      background-color:$primaryLightColor;
+      background-color: $primaryLightColor;
       border: solid 2px $primaryDarkColor;
-      .text > span{color:$primaryFontColor;}
-      .icon > * { color: $primaryDarkColor; }
+
+      .text>span {
+        color: $primaryFontColor;
+      }
+
+      .icon>* {
+        color: $primaryDarkColor;
+      }
     }
   }
 
@@ -75,13 +93,21 @@
     text-decoration: none;
     color: $primaryFontColor;
     float: right;
-    cursor:pointer;
+    cursor: pointer;
     text-transform: capitalize;
   }
 }
 
-.DrawerList .list{
-  @include respond-to(handhelds){
-    padding-top:80px !important;
+.DrawerList .list {
+  @include respond-to(handhelds-vertical) {
+    padding-top: 70px !important;
+  }
+
+  @include respond-to(handhelds) {
+    padding-top: 60px !important;
+  }
+
+  @include respond-to(ipad-landscape) {
+    padding-top: 80px !important;
   }
 }

@@ -20,6 +20,8 @@ import {withRouter} from "react-router-dom";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
+import { stringToColor } from "./accountUtils";
+import { addDashes } from "./accountUtils";
 
 import {ReactComponent as IDIcon} from "../../identifier.svg";
 import './Accounts.scss';
@@ -36,45 +38,17 @@ class ProfileCard extends Component {
         };
     }
 
-    componentWillMount() {
-
-    }
-
-    addDashes(string) {
-        return (
-            `(${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 15)})`);
-    }
-
     goToRoute(route) {
         this.props.history.push(route);
-    }
-    stringToColor(string) {
-        let hash = 0;
-        let i;
-
-        /* eslint-disable no-bitwise */
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
-        }
-
-        let colour = "#";
-
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            colour += `00${value.toString(16)}`.substr(-2);
-        }
-        /* eslint-enable no-bitwise */
-
-        return colour;
     }
 
     render() {
         const styles = (username) => ({
-            "backgroundColor": this.stringToColor(username),
+            "backgroundColor": stringToColor(username),
             "color": "white",
-            "width": "5vw",
-            "height": "5vw",
-            "fontSize": 20,
+            "width": "7vw",
+            "height": "7vw",
+            "fontSize": 30,
             "margin": 20,
         });
 
@@ -84,15 +58,15 @@ class ProfileCard extends Component {
                     style={{cursor: "pointer"}}
                     onClick={(event) => {
                         event.preventDefault();
-                        this.goToRoute(`/${this.props.user.role}/${this.props.user.user_id}`);
+                        this.goToRoute(this.props.route);
                     }}>
                     <Grid container>
-                        <Grid component={Hidden} xsDown item xs={4} md={3}>
+                        <Grid component={Hidden} xsDown item md={4}>
                             <Avatar
                                 style={styles(this.props.user.name)}>{this.props.user.name.match(/\b(\w)/g).join("")}
                             </Avatar>
                         </Grid>
-                        <Grid item xs={8} md={9}>
+                        <Grid item xs={12} md={8}>
                             <CardContent className={"text"}>
                                 <Typography gutterBottom variant={"h6"} component={"h2"} align={'left'}>
                                     {this.props.user.name}
@@ -105,28 +79,30 @@ class ProfileCard extends Component {
                                     />
                                 </Typography>
                                 <Typography>
-                                    <Grid item xs={8} style={{marginTop: 10}}>
+                                    <Grid item xs={12} md={8} style={{ marginTop: 10 }}>
                                         <Grid container>
-                                            <Grid item md={2} align="left">
+                                            <Grid item xs={2} md={3} align="left">
                                                 <IDIcon
                                                     width={22}
                                                     height={22} />
                                             </Grid>
-                                            <Grid item md={10} align="left">
+                                            <Grid item xs={10} md={9} align="left">
                                                 #{this.props.user.user_id}
                                             </Grid>
-                                            <Grid item md={2} align="left">
-                                                <PhoneIcon />
-                                            </Grid>
-                                            <Grid item md={10} align="left">
-                                                {this.addDashes(this.props.user.phone_number)}
+                                            <Grid container>
+                                                <Grid item xs={2} md={3} align="left">
+                                                    <PhoneIcon />
+                                                </Grid>
+                                                <Grid item xs={10} md={9} align="left">
+                                                    {addDashes(this.props.user.phone_number)}
+                                                </Grid>
                                             </Grid>
                                         </Grid>
                                         <Grid container>
-                                            <Grid item md={2} align="left">
+                                            <Grid item xs={2} md={3} align="left">
                                                 <EmailIcon />
                                             </Grid>
-                                            <Grid item md={10} align="left">
+                                            <Grid item xs={10} md={9} align="left">
                                                 {this.props.user.email}
                                             </Grid>
                                         </Grid>

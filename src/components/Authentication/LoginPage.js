@@ -34,19 +34,12 @@ const LoginPage = (props) => {
         props.authActions.login(email, password, savePassword);
     };
 
-    useEffect(() => {
-        props.setLogin(true);
-        return () => {
-            props.setLogin(false);
-        };
-    });
-
     const failedLogin = props.requestStatus.login &&
         props.requestStatus.login !== REQUEST_STARTED &&
         (props.requestStatus.login < 200 || props.requestStatus.login > 200);
 
     if (props.auth.token) {
-        return <Redirect to="/accounts" />;
+        return <Redirect to="/" />;
     }
 
     return (
@@ -145,7 +138,6 @@ LoginPage.propTypes = {
         "login": PropTypes.func,
         "resetAttemptStatus": PropTypes.func,
     }),
-    "setLogin": PropTypes.func.isRequired,
 };
 
 const mapStateToProps = ({auth, RequestStatus}) => ({

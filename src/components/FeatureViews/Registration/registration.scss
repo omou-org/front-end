@@ -277,12 +277,6 @@
   padding: 2%;
   margin-top: 4%;
 
-  .fields-wrapper {
-    //-webkit-animation: 1s ease 1 fade-in;
-    //-o-animation: 1s ease 1 fade-in;
-    //animation: 1s ease 1 fade-in;
-  }
-
   .heading {
     margin-top: 50px;
     margin-left: 2%;
@@ -414,12 +408,11 @@
 
       .text, .chip {
         margin: 3px 55px 3px 0;
-        cursor: pointer;
       }
 
       .chip {
-        //width:auto;
         display: inline-flex;
+        cursor: pointer;
       }
     }
   }
@@ -483,6 +476,7 @@
 
 // Registration Landing
 .RegistrationLanding {
+  min-height: 75vh;
   padding: 2%;
 
   .catalog-setting-wrapper{
@@ -518,7 +512,7 @@
 
       .course-detail {
         color: $secondaryFontColor;
-        font-size: 12px;
+        font-size: 14px;
         margin: 3px;
 
         .heading-det {
@@ -542,14 +536,10 @@
         }
       }
     }
-  }
-}
 
-.registration-filter {
-  .filter-options {
-    margin: 10px;
-    width: 300px;
-    text-align: left;
+    .row:hover {
+        border-left: solid 5px $primaryColor;
+    }
   }
 }
 

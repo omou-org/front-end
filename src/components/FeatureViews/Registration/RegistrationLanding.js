@@ -1,30 +1,47 @@
 // react/redux imports
-import * as apiActions from "../../../actions/apiActions";
-import React, {useEffect, useState} from "react";
-import PropTypes from "prop-types";
+import * as apiActions from "actions/apiActions";
+import * as userActions from "actions/userActions";
+import * as registrationActions from "actions/registrationActions";
+import {GET} from "actions/actionTypes";
+import React, {useEffect, useMemo, useState} from "react";
 import {bindActionCreators} from "redux";
-import {connect} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
-// material ui imports
-import BackButton from "../../BackButton";
+// Material UI Imports
 import Grid from "@material-ui/core/Grid";
-import Hidden from "@material-ui/core/Hidden";
 import Paper from "@material-ui/core/Paper";
-import SearchSelect from "react-select";
-import Tab from "@material-ui/core/Tab";
-import Tabs from "@material-ui/core/Tabs";
 import {Typography} from "@material-ui/core";
+import BackButton from "components/BackButton";
+import SearchSelect from "react-select";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import Hidden from "@material-ui/core/Hidden";
 
-// component imports
 import CourseList from "./CourseList";
 import TutoringList from "./TutoringList";
 
-import {GET} from "../../../actions/actionTypes.js";
+const NUM_GRADES = 13;
 
-const NUM_GRADES = 10;
+const gradeOptions = Array(NUM_GRADES).map((_, gradeNum) => ({
+    "label": `${gradeNum + 1}`,
+    "value": gradeNum + 1,
+}));
 
-// eslint-disable-next-line max-statements
-const RegistrationLanding = ({api, courses, instructors, requestStatus}) => {
+const RegistrationLanding = () => {
+    const dispatch = useDispatch();
+    const api = useMemo(
+        () => ({
+            ...bindActionCreators(apiActions, dispatch),
+            ...bindActionCreators(userActions, dispatch),
+            ...bindActionCreators(registrationActions, dispatch),
+        }),
+        [dispatch]
+    );
+
+    const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
+    const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
+    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
+
     const [view, setView] = useState(0);
     const [courseFilters, setCourseFilters] = useState({
         "grade": [],
@@ -32,14 +49,61 @@ const RegistrationLanding = ({api, courses, instructors, requestStatus}) => {
         "subject": [],
     });
 
-    const updateView = (newView) => () => {
-        setView(newView);
+    const updateView = (view) => () => {
+        setView(view);
     };
 
-    // useEffect(() => {
-    //     api.fetchInstructors();
-    //     api.fetchCourses();
-    // }, [api]);
+    useEffect(() => {
+        api.fetchCourses();
+        api.fetchInstructors();
+    }, [api]);
+
+
+    useEffect(() => {
+        api.fetchEnrollments();
+    }, [api, requestStatus.course[GET][apiActions.REQUEST_ALL]]);
+
+    const instructorOptions = useMemo(() => Object.values(instructors)
+        .map(({name, user_id}) => ({
+            "label": name,
+            "value": user_id,
+        })), [instructors]);
+
+    const filteredCourses = useMemo(
+        () => Object.entries(courseFilters)
+            .filter(([, filters]) => filters.length > 0)
+            .reduce((courseList, [filterName, filters]) => {
+                const mappedValues = filters.map(({value}) => value);
+                switch (filterName) {
+                    case "instructor":
+                        return courseList.filter(({instructor_id}) =>
+                            mappedValues.includes(instructor_id));
+                    case "subject":
+                        return courseList.filter(({subject}) =>
+                            mappedValues.includes(subject));
+                    case "grade":
+                        return courseList.filter(({grade}) =>
+                            mappedValues.includes(grade));
+                    default:
+                        return courseList;
+                }
+            }, Object.values(courses))
+        , [courses, courseFilters]
+    );
+
+    if (!requestStatus.instructor[GET][apiActions.REQUEST_ALL] ||
+        !requestStatus.course[GET][apiActions.REQUEST_ALL] ||
+        requestStatus.instructor[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED ||
+        requestStatus.course[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED) {
+        return "LOADING";
+    }
+
+    if (requestStatus.instructor[GET][apiActions.REQUEST_ALL] < 200 ||
+        requestStatus.instructor[GET][apiActions.REQUEST_ALL] >= 300 ||
+        requestStatus.course[GET][apiActions.REQUEST_ALL] < 200 ||
+        requestStatus.course[GET][apiActions.REQUEST_ALL] >= 300) {
+        return "ERROR LOADING COURSES";
+    }
 
     const handleFilterChange = (filterType) => (filters) => {
         setCourseFilters({
@@ -52,11 +116,7 @@ const RegistrationLanding = ({api, courses, instructors, requestStatus}) => {
         let options = [];
         switch (filterType) {
             case "instructor":
-                options = Object.values(instructors)
-                    .map(({name, user_id}) => ({
-                        "label": name,
-                        "value": user_id,
-                    }));
+                options = instructorOptions;
                 break;
             case "subject":
                 options = [
@@ -71,20 +131,34 @@ const RegistrationLanding = ({api, courses, instructors, requestStatus}) => {
                 ];
                 break;
             case "grade":
-                options = [...Array(NUM_GRADES).keys()]
-                    .map((i) => ({
-                        "label": `${i + 1}`,
-                        "value": i + 1,
-                    }));
+                options = gradeOptions;
                 break;
             default:
                 return "";
         }
+        const CustomClearText = () => "clear all";
+        const ClearIndicator = (indicatorProps) => {
+            const {
+                children = <CustomClearText />,
+                getStyles,
+                "innerProps": {ref, ...restInnerProps},
+            } = indicatorProps;
+            return (
+                <div
+                    {...restInnerProps}
+                    ref={ref}
+                    style={getStyles("clearIndicator", indicatorProps)}>
+                    <div style={{"padding": "0px 5px"}}>{children}</div>
+                </div>
+            );
+        };
 
         const customStyles = {
             "clearIndicator": (base, state) => ({
                 ...base,
-                "color": state.isFocused ? "blue" : "black",
+                "color": state.isFocused
+                    ? "blue"
+                    : "black",
                 "cursor": "pointer",
             }),
             "option": (base) => ({
@@ -92,156 +166,92 @@ const RegistrationLanding = ({api, courses, instructors, requestStatus}) => {
                 "textAlign": "left",
             }),
         };
-
         return (
             <SearchSelect
                 className="filter-options"
                 closeMenuOnSelect={false}
+                components={{ClearIndicator}}
                 isMulti
                 onChange={handleFilterChange(filterType)}
                 options={options}
                 placeholder={`All ${filterType}s`}
-                styles={customStyles} />
+                styles={customStyles}
+                value={courseFilters[filterType]} />
         );
     };
 
-    let filteredCourses = Object.values(courses);
-    Object.entries(courseFilters)
-        .filter(([, filters]) => filters.length > 0)
-        .forEach(([filterName, filters]) => {
-            const mappedValues = filters.map(({value}) => value);
-            switch (filterName) {
-                case "instructor":
-                    filteredCourses = filteredCourses.filter(({instructor_id}) =>
-                        mappedValues.includes(instructor_id));
-                    break;
-                case "subject":
-                    filteredCourses = filteredCourses.filter(({subject}) =>
-                        mappedValues.includes(subject));
-                    break;
-                case "grade":
-                    filteredCourses = filteredCourses.filter(({grade}) =>
-                        mappedValues.includes(grade));
-                    break;
-                default:
-                    console.warn(`Unhandled filter ${filterName}`);
-            }
-        });
-
-    // if (typeof requestStatus.instructor[GET][apiActions.REQUEST_ALL] === "undefined") {
-    //     return "HAVE NOT REQUESTED INSTRUCTORS YET";
-    // }
-
-    // if (typeof requestStatus.course[GET][apiActions.REQUEST_ALL] === "undefined") {
-    //     return "HAVE NOT REQUESTED COURSES YET";
-    // }
-
-    // if (requestStatus.instructor[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED ||
-    //     requestStatus.course[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED) {
-    //     return "LOADING";
-    // }
-
-    // if (requestStatus.instructor[GET][apiActions.REQUEST_ALL] < 200 ||
-    //     requestStatus.instructor[GET][apiActions.REQUEST_ALL] >= 300 ||
-    //     requestStatus.course[GET][apiActions.REQUEST_ALL] < 200 ||
-    //     requestStatus.course[GET][apiActions.REQUEST_ALL] >= 300) {
-    //     return "ERROR LOADING COURSES";
-    // }
-
     return (
-        <>
-            <Paper className="RegistrationLanding paper">
-                <BackButton />
-                <hr />
+        <Paper className="RegistrationLanding paper">
+            <BackButton />
+            <hr />
+            <Grid
+                container
+                layout="row">
                 <Grid
-                    container
-                    layout="row">
-                    <Grid
-                        item
-                        md={7}
-                        xs={12}>
-                        <Typography
-                            align="left"
-                            className="heading"
-                            variant="h3">
+                    item
+                    md={7}
+                    xs={12}>
+                    <Typography
+                        align="left"
+                        className="heading"
+                        variant="h3">
                             Registration Catalog
-                        </Typography>
-                    </Grid>
-                    {/* <Grid
-                        className="catalog-setting-wrapper"
-                        item
-                        md={5}
-                        xs={12}>
-                        <Tabs
-                            className="catalog-setting"
-                            value={view}>
-                            <Tab
-                                label="Courses"
-                                onClick={updateView(0)} />
-                            <Tab
-                                label="Tutoring"
-                                onClick={updateView(1)} />
-                        </Tabs>
-                    </Grid> */}
+                    </Typography>
                 </Grid>
+                {/* <Grid
+                    className="catalog-setting-wrapper"
+                    item
+                    md={5}
+                    xs={12}>
+                    <Tabs
+                        className="catalog-setting"
+                        value={view}>
+                        <Tab
+                            label="Courses"
+                            onClick={updateView(0)} />
+                        <Tab
+                            label="Tutoring"
+                            onClick={updateView(1)} />
+                    </Tabs>
+                </Grid> */}
+            </Grid>
+            <Grid
+                container
+                layout="row"
+                spacing={8}>
                 <Grid
-                    container
-                    layout="row"
-                    spacing={8}>
+                    item
+                    md={4}
+                    xs={12}>
+                    {renderFilter("instructor")}
+                </Grid>
+                <Hidden xsDown>
                     <Grid
                         item
                         md={4}
                         xs={12}>
-                        {renderFilter("instructor")}
+                        {renderFilter("subject")}
                     </Grid>
-                    <Hidden xsDown>
-                        <Grid
-                            item
-                            md={4}
-                            xs={12}>
-                            {renderFilter("subject")}
-                        </Grid>
-                        <Grid
-                            item
-                            md={4}
-                            xs={12}>
-                            {renderFilter("grade")}
-                        </Grid>
-                    </Hidden>
-                </Grid>
-                <div className="registration-table">
-                    {
-                        view === 0 &&
+                    <Grid
+                        item
+                        md={4}
+                        xs={12}>
+                        {renderFilter("grade")}
+                    </Grid>
+                </Hidden>
+            </Grid>
+            <div className="registration-table">
+                {
+                    view === 0 &&
                         <CourseList filteredCourses={filteredCourses} />
-                    }
-                    {
-                        view === 1 &&
+                }
+                {
+                    view === 1 &&
                         <TutoringList filteredCourses={filteredCourses} />
-                    }
-                </div>
-            </Paper>
-        </>
+                }
+            </div>
+        </Paper>
     );
 };
 
-RegistrationLanding.propTypes = {
-    "api": PropTypes.object.isRequired,
-    "courses": PropTypes.object.isRequired,
-    "instructors": PropTypes.object.isRequired,
-    "requestStatus": PropTypes.object.isRequired,
-};
-
-const mapStateToProps = (state) => ({
-    "courses": state.Course.NewCourseList,
-    "instructors": state.Users.InstructorList,
-    "requestStatus": state.RequestStatus,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-    "api": bindActionCreators(apiActions, dispatch),
-});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(RegistrationLanding);
+export default RegistrationLanding;

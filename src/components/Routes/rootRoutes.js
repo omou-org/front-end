@@ -35,63 +35,70 @@ function rootRoutes(props) {
         <Switch>
             <Route
                 path="/login"
-                render={(passedProps) => <LoginPage setLogin={props.setLogin} {...passedProps} />} />
+                render={(passedProps) => <LoginPage {...passedProps} />} />
 
-            <Route
+            {/* Main Feature Views */}
+            <ProtectedRoute
                 exact
                 path="/"
                 render={(passedProps) => <Accounts {...passedProps} />} />
 
-            {/* Main Feature Views */}
-            {/* Registration Routes */}
-            <Route
-                path="/registration/form/:type/:id?/:edit?"
-                render={(passedProps) => <RegistrationForm {...passedProps} />} />
-            <Route
-                path="/registration/course/:courseID?/:courseTitle?"
-                render={(passedProps) => <RegistrationCourse {...passedProps} />} />
-            <Route
-                path="/registration/category/:categoryID"
-                render={(passedProps) => <CourseCategory {...passedProps} />}/>
-            <Route
+            <ProtectedRoute
                 exact
                 path="/registration"
                 render={(passedProps) => <Registration {...passedProps} />} />
+            {/* Scheduler Routes */}
+            {/* <ProtectedRoute
+                exact path="/scheduler"
+                render={(passedProps) => <Scheduler {...passedProps} />} />
+            <ProtectedRoute
+                path="/scheduler/view-session/:course_id/:session_id"
+                render={(passedProps) => <SessionView {...passedProps} />} /> */}
+
+            {/*
+            <ProtectedRoute
+                path='/scheduler/resource'
+                render={(passedProps) => <ResourceView {...passedProps} />} /> */}
 
             {/* <ProtectedRoute
                 exact
                 path="/scheduler"
-                render={(passedProps) => <Scheduler {...passedProps} />}/> */}
+                render={(passedProps) => <Scheduler {...passedProps} />}/> */} */}
 
 
             {/* Accounts */}
-            <Route
+            <ProtectedRoute
+                exact
+                path="/accounts/:accountType/:accountID"
+                render={(passedProps) => <UserProfile {...passedProps} />} />
+            {/* <ProtectedRoute
+                exact
+                path="/accounts/parents/:parentID/pay"
+                render={(passedProps) => <ParentPayment {...passedProps} />}/> */}
+            <ProtectedRoute
                 exact
                 path="/accounts"
                 render={(passedProps) => <Accounts {...passedProps} />} />
-            <Route
+            <ProtectedRoute
                 exact
-                path="/:accountType/:accountID"
-                render={(passedProps) => <UserProfile {...passedProps} />} />
-            <Route
-                exact
-                path="/parents/:parentID/pay"
-                render={(passedProps) => <ParentPayment {...passedProps} />}/>
-            <Route
-                exact
-                path="/:accountType/:accountID/:courseID"
+                path="/accounts/:accountType/:accountID/:courseID"
                 render={(passedProps) => <CourseSessionStatus {...passedProps} />}/>
 
-
+            {/* Registration Routes */}
+            <ProtectedRoute
+                path="/registration/form/:type/:id?/:edit?"
+                render={(passedProps) => <RegistrationForm {...passedProps} />} />
+            <ProtectedRoute
+                path="/registration/course/:courseID?/:courseTitle?"
+                render={(passedProps) => <RegistrationCourse {...passedProps} />} />
+            <ProtectedRoute
+                path="/registration/category/:categoryID"
+                render={(passedProps) => <CourseCategory {...passedProps} />}/>
             <Route path="/PageNotFound" component={ErrorNotFoundPage}/>
             <Redirect to="/PageNotFound"/>
         </Switch>
     );
 }
-
-rootRoutes.propTypes = {
-    "setLogin": PropTypes.func,
-};
 
 const mapStateToProps = (state) => ({});
 
