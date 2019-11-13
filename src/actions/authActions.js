@@ -1,17 +1,15 @@
 import * as types from "./actionTypes";
-import axios from "axios";
+import {instance} from "./apiActions";
 
 export const login = (email, password, savePassword) => async (dispatch) => {
     // request starting
     dispatch({"type": types.LOGIN_STARTED});
 
     try {
-        const response = await axios
+        const response = await instance
             .post("/auth_token/", {
                 "username": email,
                 password,
-            }, {
-                "baseURL": "http://localhost:8000",
             });
         // succesful request
         dispatch({
