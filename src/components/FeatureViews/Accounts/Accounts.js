@@ -253,8 +253,8 @@ class Accounts extends Component {
                         direction="row">
                         <Grid
                             item
-                            md={11}
-                            xs={12}>
+                            md={9}
+                            xs={10}>
                             <Tabs
                                 className="tabs"
                                 indicatorColor="primary"
@@ -275,9 +275,8 @@ class Accounts extends Component {
                                 <Grid
                                     className="toggleView"
                                     item
-                                    md={1}>
-                                    <ListView
-                                        className={`list icon ${this.state.viewToggle ? "active" : ""}`}
+                                    md={3}>
+                                    <Button className={`btn list ${this.state.viewToggle ? "active" : ""}`}
                                         onClick={(event) => {
                                             this.setState(
                                                 {"viewToggle": true},
@@ -285,17 +284,23 @@ class Accounts extends Component {
                                                     sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
                                                 }
                                             );
-                                        }} />
-                                    <CardView
-                                        className={`card icon ${this.state.viewToggle ? "" : "active"}`}
-                                        onClick={(event) => {
-                                            this.setState(
-                                                {"viewToggle": false},
-                                                () => {
-                                                    sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
-                                                }
-                                            );
-                                        }} />
+                                        }}>
+                                        <ListView className={`icon ${this.state.viewToggle ? "active" : ""}`}/>
+                                             List View
+                                    </Button>
+                                    <Button className={`btn card ${this.state.viewToggle ? "" : "active"}`}
+                                            onClick={(event) => {
+                                                this.setState(
+                                                    {"viewToggle": false},
+                                                    () => {
+                                                        sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
+                                                    }
+                                                );
+                                            }} >
+                                        <CardView className={`icon ${this.state.viewToggle ? "" : "active"}`}/>
+                                        Card View
+                                    </Button>
+
                                 </Grid>
                             </Hidden>
                         }

@@ -77,8 +77,12 @@ const drawer = (
 );
 
 const Navigation = () => {
+    // for (let i = 0; i < sessionStorage.length; i++){
+    //     console.log(sessionStorage.key(i));
+    // }
     const dispatch = useDispatch();
-    const authToken = useSelector(({auth}) => auth);
+    const authToken = useSelector(({auth}) => auth).token;
+    console.log(authToken);
     const [mobileOpen, setMobileOpen] = useState(false);
     const {pathname} = useLocation();
 
@@ -99,14 +103,17 @@ const Navigation = () => {
                     color="default"
                     position="sticky">
                     <Toolbar>
-                        <Hidden lgUp>
-                            <IconButton
-                                aria-label="Open Drawer"
-                                color="inherit"
-                                onClick={handleDrawerToggle}>
-                                <MenuIcon />
-                            </IconButton>
-                        </Hidden>
+                        {
+                            pathname === "/login" ? "" :
+                                <Hidden lgUp>
+                                    <IconButton
+                                        aria-label="Open Drawer"
+                                        color="inherit"
+                                        onClick={handleDrawerToggle}>
+                                        <MenuIcon />
+                                    </IconButton>
+                                </Hidden>
+                        }
                         <Typography
                             className="title"
                             component={NavLinkNoDup}
@@ -117,7 +124,7 @@ const Navigation = () => {
                             "flex": 1,
                         }} />
                         {
-                            authToken
+                            pathname === "/login" ? "" : authToken
                                 ? <Typography
                                     className="loginToggle"
                                     onClick={handleLogout}>
