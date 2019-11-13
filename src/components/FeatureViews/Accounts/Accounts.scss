@@ -110,6 +110,10 @@
       border: solid 2px $secondaryColor !important;
       white-space: nowrap;
       position: relative;
+      font-size: .9em !important;
+      > *{
+        font-size: .9em !important;
+      }
     }
   }
 

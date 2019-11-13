@@ -233,7 +233,7 @@ class Accounts extends Component {
                 </Grid>
             </Grow>
         );
-
+        this.resize();
         return (
             <Grid
                 className="Accounts"
@@ -241,7 +241,9 @@ class Accounts extends Component {
                 xs={12}>
                 <Paper className="paper">
                     <BackButton />
-                    <hr />
+                    <Hidden xsDown>
+                        <hr />
+                    </Hidden>
                     <Typography
                         align="left"
                         className="heading"
