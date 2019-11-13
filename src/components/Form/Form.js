@@ -7,6 +7,7 @@ import * as types from "actions/actionTypes";
 import React, {Component} from "react";
 import {Prompt} from "react-router";
 import {NavLink, withRouter} from "react-router-dom";
+import CreatableSelect, {makeCreatableSelect} from 'react-select/creatable';
 import {updateStudent, updateParent} from "reducers/usersReducer";
 import {updateCourse} from "reducers/courseReducer";
 
@@ -621,7 +622,7 @@ class Form extends Component {
                         "State": parent.state,
                         "Zip Code": parent.zipcode,
                         "Relationship to Student": parent.relationship,
-                        "Parent Phone Number": parent.phone_number,
+                        "Phone Number": parent.phone_number,
                         "user_id": selectedParentID,
                     };
                     Object.keys(NewState[label]).forEach((key) => {
@@ -642,11 +643,12 @@ class Form extends Component {
                         "Gender": "",
                         "Parent Email": "",
                         "Address": "",
+                        "Parent Birthday": "",
                         "City": "",
                         "State": "",
                         "Zip Code": "",
                         "Relationship to Student": "",
-                        "Parent Phone Number": "",
+                        "Phone Number": "",
                         "user_id": "",
                     };
                     Object.keys(NewState[label]).forEach((key) => {
@@ -701,6 +703,7 @@ class Form extends Component {
 
     renderField(field, label, fieldIndex) {
         const fieldTitle = field.name;
+        const disabled = this.state["Parent Information"] && Boolean(this.state["Parent Information"]["Select Parent"]);
         switch (field.type) {
             case "select":
                 return (
@@ -709,6 +712,7 @@ class Form extends Component {
                             {fieldTitle}
                         </InputLabel>
                         <Select
+                            disabled={disabled}
                             onChange={({"target": {value}}) => {
                                 this.onSelectChange(value, label, field);
                             }}
@@ -743,6 +747,7 @@ class Form extends Component {
                     <div style={{width: "inherit"}}>
                         <Grid container className={"student-align"} spacing={2000}>
                             <SearchSelect
+                                disabled={disabled}
                                 value={this.state[label][fieldTitle]}
                                 onChange={(value) => {
                                     this.onSelectChange(value, label, field);
@@ -750,7 +755,7 @@ class Form extends Component {
                                 options={courseList}
                                 className="search-options" />
                             {
-                                (fieldCount > 1) &&
+                                (fieldCount > 1) && !disabled &&
                                 <RemoveIcon color="primary" aria-label="Add" variant="extended"
                                     className="button-remove-student"
                                     onClick={(event) => {
@@ -782,6 +787,7 @@ class Form extends Component {
                     <div style={{width: "inherit"}}>
                         <Grid container className={"student-align"} spacing={2000}>
                             <SearchSelect
+                                disabled={disabled}
                                 value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
                                 onChange={(value) => {
                                     this.onSelectChange(value, label, field);
@@ -789,7 +795,7 @@ class Form extends Component {
                                 options={studentList}
                                 className="search-options" />
                             {
-                                studentCount > 1 &&
+                                studentCount > 1 && !disabled &&
                                 <RemoveIcon color="primary" aria-label="Add" variant="extended"
                                     className="button-remove-student"
                                     onClick={(event) => {
@@ -815,6 +821,7 @@ class Form extends Component {
                 return (<div style={{width: "inherit"}}>
                     <Grid container className="student-align">
                         <SearchSelect
+                            disabled={disabled}
                             value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
                             onChange={(value) => {
                                 this.onSelectChange(value, label, field);
@@ -831,11 +838,15 @@ class Form extends Component {
                         label: `${name} - ${email}`,
                     }));
                 return (
-                    <SearchSelect
+                    <CreatableSelect
+                        createOptionPosition="first"
                         className="search-options"
                         isClearable
                         onChange={(value) => {
                             this.onSelectChange(value, label, field);
+                        }}
+                        onCreateOption={() => {
+                            this.onSelectChange(null, label, field);
                         }}
                         value={this.state[label][fieldTitle]}
                         options={currParentList}
@@ -847,6 +858,7 @@ class Form extends Component {
                     label={field.name}
                     multiline={field.multiline}
                     margin="normal"
+                    disabled={disabled}
                     value={this.state[label][field.name]}
                     error={!this.state[label + "_validated"][field.name]}
                     helperText={!this.state[label + "_validated"][field.name] ? field.name + " invalid" : ""}
@@ -1103,7 +1115,7 @@ class Form extends Component {
                 title = "";
                 break;
         }
-        return title + type.split("_").join(" ") + " Registration"
+        return `${title} ${type.split("_").join(" ")} ${this.props.computedMatch.params.edit === "edit" ? "Edit" : "Registration"}`
     }
 
     render() {
