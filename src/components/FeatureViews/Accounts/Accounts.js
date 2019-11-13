@@ -118,7 +118,6 @@ class Accounts extends Component {
             tabIndex,
         }, () => {
             sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
-            console.log("hi");
         });
     }
 
