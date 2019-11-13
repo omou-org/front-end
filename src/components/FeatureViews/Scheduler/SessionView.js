@@ -14,29 +14,19 @@ import { NavLink } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 
-import { Divider, LinearProgress, Typography, ListItem, RadioGroup } from "@material-ui/core";
+
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
-import FormControl from "@material-ui/core/FormControl"
+import Typography from "@material-ui/core/Typography"
 
-
-
+import RadioGroup from "@material-ui/core/RadioGroup";
+import Divider from "@material-ui/core/Divider"
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
+
 import DialogTitle from '@material-ui/core/DialogTitle';
-
-
-import NewCourse from "@material-ui/icons/CalendarToday";
-import AssignmentIcon from "@material-ui/icons/Assignment";
-import UpdateTeacher from "@material-ui/icons/PersonAdd";
-import EditIcon from "@material-ui/icons/Edit";
-import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
-
-import List from '@material-ui/core/List'
-import ListItemText from '@material-ui/core/ListItemText'
 
 
 import Button from "@material-ui/core/Button";
@@ -65,14 +55,8 @@ class SessionView extends Component {
 
     componentWillMount() {
         this.setState(() => {
-
-            let sessionData = this.props.courseSessions[this.props.match.params.course_id][this.props.match.params.session_id]
-            let courseData = this.props.courses[this.props.match.params.course_id]
-
-            let instructorData = this.props.instructors
-
-
-
+            let sessionData = this.props.courseSessions[this.props.computedMatch.params.course_id][this.props.computedMatch.params.session_id]
+            let courseData = this.props.courses[this.props.computedMatch.params.course_id]
             return {
                 sessionData: sessionData,
                 courseData: courseData
@@ -84,19 +68,8 @@ class SessionView extends Component {
 
     render() {
 
-        const flexContainer = {
-            display: "flex",
-            justifyContent: "flex-start",
-            width: "50%",
-            padding: 0,
-        };
-
-
-
-
         return (
             <Grid container className={'main-session-view'}>
-
                 <Paper className={'paper'} mt={"2em"} >
                     <Grid item className={'session-button'}>
                         <BackButton />

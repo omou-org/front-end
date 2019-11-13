@@ -1,53 +1,31 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { Route, Redirect } from "react-router-dom";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { Card, Paper, Typography } from "@material-ui/core";
-import './ErrorNotFoundPage.scss';
-import BackButton from "../BackButton";
+import {useHistory} from "react-router-dom";
+
 import Button from "@material-ui/core/Button";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
 
+import "./ErrorNotFoundPage.scss";
 
-function ErrorNotFoundPage(props) {
+const ErrorNotFoundPage = () => {
+    const {goBack} = useHistory();
     return (
-        <div className={'error-page'}>
-            <Paper className={'paper'}>
-                <BackButton />
-                <hr />
+        <div className="error-page">
+            <Paper className="paper">
                 <Typography className="center">
                     404.
                     <br />
                     page not found.
                     <div className="space" />
-                    <Button className="backButton"
-                        onClick={
-                            props.history.goBack}
-                    >
-                        <div className="buttonText">Let's go back.</div>
+                    <Button
+                        className="backButton"
+                        onClick={goBack}>
+                        <span className="buttonText">Let's go back.</span>
                     </Button>
                 </Typography>
             </Paper>
         </div>
     );
-}
-
-const mapStateToProps = (state) => ({
-    auth: state.auth,
-});
-
-ErrorNotFoundPage.propTypes = {
-    history: PropTypes.shape({
-        goBack: PropTypes.func.isRequired,
-    }).isRequired,
-    onBack: PropTypes.func,
-    alertMessage: PropTypes.string,
 };
 
-
-const mapDispatchToProps = () => ({});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ErrorNotFoundPage);
+export default ErrorNotFoundPage;

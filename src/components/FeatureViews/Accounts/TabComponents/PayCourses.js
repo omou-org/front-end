@@ -76,18 +76,18 @@ const PayCourses = (props) => {
                             numUnpaid,
                             tuition,
                         }) => (
-                            <TableRow key={user_id}>
-                                <TableCell align="left">
-                                    {first_name}&nbsp;{last_name}
-                                </TableCell>
-                                <TableCell align="left">
-                                    {numUnpaid}
-                                </TableCell>
-                                <TableCell align="left">
-                                    {tuition}
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                                <TableRow key={user_id}>
+                                    <TableCell align="left">
+                                        {first_name}&nbsp;{last_name}
+                                    </TableCell>
+                                    <TableCell align="left">
+                                        {numUnpaid}
+                                    </TableCell>
+                                    <TableCell align="left">
+                                        {tuition}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
                     </TableBody>
                 </Table>
                 <Button

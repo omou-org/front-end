@@ -1,108 +1,156 @@
 // React Imports
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import * as authActions from "../../actions/authActions";
-import PropTypes from "prop-types";
-import React, {useState} from "react";
-import {NavLink} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {logout} from "../../actions/authActions";
+import {useLocation} from "react-router-dom";
+import React, {useCallback, useState} from "react";
+import NavLinkNoDup from "../Routes/NavLinkNoDup";
 
 // Material UI Imports
-// TODO: import each component individually (i.e. '@material-ui/core/AppBar') to reduce bundle size
-import {AppBar, Drawer, IconButton, Toolbar, Typography} from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
-import DashboardIcon from "@material-ui/icons/Dashboard";
-import EventIcon from "@material-ui/icons/Event";
-import AssignmentIcon from "@material-ui/icons/Assignment";
 import AccountsIcon from "@material-ui/icons/Contacts";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import List from "@material-ui/core/List";
+import AppBar from "@material-ui/core/AppBar";
+import AssignmentIcon from "@material-ui/icons/Assignment";
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import Drawer from "@material-ui/core/Drawer";
+import EventIcon from "@material-ui/icons/Event";
 import Hidden from "@material-ui/core/Hidden";
-import Routes from "../Routes/rootRoutes"
-import CustomTheme from "../../theme/muiTheme"
+import IconButton from "@material-ui/core/IconButton";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import MenuIcon from "@material-ui/icons/Menu";
+import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
 
 // Local Component Imports
 import "./Navigation.scss";
-import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
+import Routes from "../Routes/rootRoutes";
+import CustomTheme from "../../theme/muiTheme";
 
-function Navigation(props) {
+const NavList = [
+    // {
+    //     "name": "Dashboard",
+    //     "link": "/",
+    //     "icon": <DashboardIcon />,
+    // },
+    // {
+    //     "name": "Scheduler",
+    //     "link": "/scheduler",
+    //     "icon": <EventIcon />,
+    // },
+    // {name: "Courses", link: "/courses", icon: <CourseIcon/>},
+    {
+    "name": "Accounts",
+    "link": "/accounts",
+    "icon": <AccountsIcon />,
+    },
+    {
+        "name": "Registration",
+        "link": "/registration",
+        "icon": <AssignmentIcon />,
+    },
+    // {name: "Attendance", link: "/attendance", icon: <AttendanceIcon/>},
+    // {name: "Gradebook", link: "/gradebook", icon: <ClassIcon/>},
+
+];
+
+const drawer = (
+    <div className="DrawerList">
+        <List className="list">
+            {NavList.map((NavItem) => (
+                <ListItem
+                    button
+                    className="listItem"
+                    component={NavLinkNoDup}
+                    exact={NavItem.name === "Dashboard"}
+                    key={NavItem.name}
+                    to={NavItem.link}>
+                    <ListItemIcon className="icon">{NavItem.icon}</ListItemIcon>
+                    <ListItemText
+                        className="text"
+                        primary={NavItem.name} />
+                </ListItem>
+            ))}
+        </List>
+    </div>
+);
+
+const Navigation = () => {
+    const dispatch = useDispatch();
+    const authToken = useSelector(({auth}) => auth);
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [isLogin, setIsLogin] = useState(false);
+    const {pathname} = useLocation();
 
-    function handleDrawerToggle(event) {
+    const handleDrawerToggle = useCallback((event) => {
         event.preventDefault();
-        setMobileOpen(!mobileOpen);
-    }
+        setMobileOpen((open) => !open);
+    }, []);
 
-    const NavList = [
-        {name: "Accounts", link: "/", icon: <AccountsIcon/>},
-        {name: "Registration", link: "/registration", icon: <AssignmentIcon/>},
-    ];
-
-    const drawer = (
-        <div className="DrawerList">
-            <List className={"list"}>
-                {NavList.map((NavItem, index) => (
-                    <ListItem button key={index} component={NavLink} exact={NavItem.name === "Accounts"} to={NavItem.link} className={"listItem"}>
-                        <ListItemIcon className={"icon"}>{NavItem.icon}</ListItemIcon>
-                        <ListItemText primary={NavItem.name} className={"text"}/>
-                    </ListItem>
-                ))}
-            </List>
-        </div>
-    );
+    const handleLogout = useCallback(() => {
+        dispatch(logout());
+    }, [dispatch]);
 
     return (
         <MuiThemeProvider theme={CustomTheme}>
-            <div className={"Navigation"}>
-                <AppBar color={"default"}
-                    position="fixed"
-                    className="OmouBar">
+            <div className="Navigation">
+                <AppBar
+                    className="OmouBar"
+                    color="default"
+                    position="sticky">
                     <Toolbar>
-                        <Hidden smUp>
+                        <Hidden lgUp>
                             <IconButton
-                                color="inherit"
                                 aria-label="Open Drawer"
+                                color="inherit"
                                 onClick={handleDrawerToggle}>
                                 <MenuIcon />
                             </IconButton>
                         </Hidden>
-                        <Typography component={NavLink} to="/" className="title">
+                        <Typography
+                            className="title"
+                            component={NavLinkNoDup}
+                            to="/">
                             omou
                         </Typography>
                         <div style={{
-                            flex: 1,
+                            "flex": 1,
                         }} />
                         {
-                            props.auth.token
+                            authToken
                                 ? <Typography
                                     className="loginToggle"
-                                    onClick={props.authActions.logout}>
+                                    onClick={handleLogout}>
                                     logout
-                                </Typography>
-                                : <Typography component={NavLink} to="/login" className="login">
+                                  </Typography>
+                                : <Typography
+                                    className="login"
+                                    component={NavLinkNoDup}
+                                    to="/login">
                                     login
-                                </Typography>
+                                  </Typography>
                         }
                     </Toolbar>
                 </AppBar>
                 {
-                    !isLogin && (
+                    pathname !== "/login" && (
                         <nav className="OmouDrawer">
-                            <Hidden smUp implementation="css">
+                            <Hidden
+                                implementation="css"
+                                smUp>
                                 <Drawer
-                                    container={props.container}
-                                    variant="temporary"
+                                    onClose={handleDrawerToggle}
                                     open={mobileOpen}
-                                    onClose={handleDrawerToggle}>
+                                    variant="temporary">
                                     {drawer}
                                 </Drawer>
                             </Hidden>
-                            <Hidden xsDown implementation="css">
+                            <Hidden
+                                implementation="css"
+                                mdDown>
                                 <Drawer
-                                    variant="permanent"
-                                    open>
+                                    open
+                                    variant="permanent">
                                     {drawer}
                                 </Drawer>
                             </Hidden>
@@ -110,33 +158,11 @@ function Navigation(props) {
                     )
                 }
                 <main className="OmouMain">
-                    <Routes setLogin={(status) => {
-                        setIsLogin(status);
-                    }} />
+                    <Routes />
                 </main>
             </div>
         </MuiThemeProvider>
     );
-}
-
-Navigation.propTypes = {
-    auth: PropTypes.shape({}),
-    authActions: PropTypes.any,
 };
 
-function mapStateToProps(state) {
-    return {
-        auth: state.auth,
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        authActions: bindActionCreators(authActions, dispatch),
-    };
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Navigation);
+export default Navigation;

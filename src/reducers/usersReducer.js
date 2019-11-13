@@ -4,24 +4,17 @@ import {REQUEST_ALL} from "../actions/apiActions";
 
 export default function users(state = initialState.Users, {payload, type}) {
     switch (type) {
-        case actions.FETCH_STUDENTS_SUCCESSFUL:
-            console.log("FETCHED STUDENTS", payload);
-            return addStudents(state, payload);
-        case actions.FETCH_STUDENTS_FAILED:
-            console.error("FAILED TO FETCH STUDENTS", payload);
-            return state;
-        case actions.FETCH_PARENTS_SUCCESSFUL:
-            console.log("FETCHED PARENTS", payload);
-            return addParents(state, payload);
-        case actions.FETCH_PARENTS_FAILED:
-            console.error("FAILED TO FETCH PARENTS", payload);
-            return state;
-        case actions.FETCH_INSTRUCTORS_SUCCESSFUL:
-            console.log("FETCHED INSTRUCTORS", payload);
+        case actions.FETCH_STUDENT_SUCCESSFUL:
+            return handleStudentsFetch(state, payload);
+        case actions.FETCH_PARENT_SUCCESSFUL:
+            return handleParentsFetch(state, payload);
+        case actions.FETCH_INSTRUCTOR_SUCCESSFUL:
             return handleInstructorsFetch(state, payload);
-        case actions.FETCH_INSTRUCTORS_FAILED:
-            console.error("FAILED TO FETCH INSTRUCTORS", payload);
-            return state;
+        case actions.FETCH_NOTE_SUCCESSFUL:
+            return handleNotesFetch(state, payload);
+        case actions.POST_NOTE_SUCCESSFUL:
+        case actions.PATCH_NOTE_SUCCESSFUL:
+            return handleNotesPost(state, payload);
         default:
             return state;
     }
@@ -39,69 +32,130 @@ const parseBirthday = (date) => {
     return `${month}/${day}/${year}`;
 };
 
-const addStudents = (state, students) => {
+const handleNotesPost = (state, {response, ...rest}) => handleNotesFetch(state, {
+    "response": {
+        ...response,
+        "data": [response.data],
+    },
+    "userID": response.data.user,
+    ...rest,
+});
+
+const handleNotesFetch = (state, {userID, userType, response}) => {
+    const {data} = response;
     const newState = JSON.parse(JSON.stringify(state));
-    students.forEach((student) => {
-        newState.StudentList[student.user.id] = {
-            "user_id": student.user.id,
-            "gender": student.gender,
-            "birth_date": parseBirthday(student.birth_date),
-            "address": student.address,
-            "city": student.city,
-            "phone_number": student.phone_number,
-            "state": student.state,
-            "zipcode": student.zipcode,
-            "grade": student.grade,
-            "age": student.age,
-            "school": student.school,
-            "first_name": student.user.first_name,
-            "last_name": student.user.last_name,
-            "name": `${student.user.first_name} ${student.user.last_name}`,
-            "email": student.user.email,
-            "parent_id": student.parent,
-            // below is not from database
-            "role": "student",
-            "balance": 0,
-            "notes": {},
-        };
+    data.forEach((note) => {
+        switch (userType) {
+            case "student":
+                newState.StudentList[userID].notes[note.id] = note;
+                break;
+            case "parent":
+                newState.ParentList[userID].notes[note.id] = note;
+                break;
+            case "instructor":
+                newState.InstructorList[userID].notes[note.id] = note;
+                break;
+            case "receptionist":
+                newState.ReceptionistList[userID].notes[note.id] = note;
+                break;
+            default:
+                console.error("Bad user type", userType);
+        }
     });
     return newState;
 };
 
-const addParents = (state, parents) => {
-    const newState = JSON.parse(JSON.stringify(state));
-    parents.forEach((parent) => {
-        newState.ParentList[parent.user.id] = {
-            "user_id": parent.user.id,
-            "gender": parent.gender,
-            "birth_date": parseBirthday(parent.birth_date),
-            "address": parent.address,
-            "city": parent.city,
-            "phone_number": parent.phone_number,
-            "state": parent.state,
-            "zipcode": parent.zipcode,
-            "relationship": parseRelationship[parent.relationship],
-            "first_name": parent.user.first_name,
-            "last_name": parent.user.last_name,
-            "name": `${parent.user.first_name} ${parent.user.last_name}`,
-            "email": parent.user.email,
-            // below is not from database
-            "role": "parent",
-            "notes": {},
-        };
-    });
-    return newState;
+const handleParentsFetch = (state, {id, response}) => {
+    const {data} = response;
+    let {ParentList} = state;
+    if (id !== REQUEST_ALL) {
+        ParentList = updateParent(ParentList, id, data);
+    } else {
+        data.forEach((parent) => {
+            ParentList = updateParent(ParentList, parent.user.id, parent);
+        });
+    }
+    return {
+        ...state,
+        ParentList,
+    };
 };
+
+export const updateParent = (parents, id, parent) => ({
+    ...parents,
+    [id]: {
+        "user_id": parent.user.id,
+        "gender": parent.gender,
+        "birthday": parseBirthday(parent.birth_date),
+        "address": parent.address,
+        "city": parent.city,
+        "phone_number": parent.phone_number,
+        "state": parent.state,
+        "zipcode": parent.zipcode,
+        "relationship": parseRelationship[parent.relationship],
+        "first_name": parent.user.first_name,
+        "last_name": parent.user.last_name,
+        "name": `${parent.user.first_name} ${parent.user.last_name}`,
+        "email": parent.user.email,
+        // below is not from database
+        "role": "parent",
+        "student_ids": parents[id] ? parents[id].student_ids : [],
+        "notes": {},
+    },
+});
+
+const handleStudentsFetch = (state, {id, response}) => {
+    const {data} = response;
+    let {StudentList} = state;
+    if (id !== REQUEST_ALL) {
+        StudentList = updateStudent(StudentList, id, data);
+    } else {
+        data.forEach((student) => {
+            StudentList = updateStudent(StudentList, student.user.id, student);
+        });
+    }
+    return {
+        ...state,
+        StudentList,
+    };
+};
+
+export const updateStudent = (students, id, student) => ({
+    ...students,
+    [id]: {
+        "user_id": student.user.id,
+        "gender": student.gender,
+        "birthday": parseBirthday(student.birth_date),
+        "address": student.address,
+        "city": student.city,
+        "phone_number": student.phone_number,
+        "state": student.state,
+        "zipcode": student.zipcode,
+        "grade": student.grade,
+        "age": student.age,
+        "school": student.school,
+        "first_name": student.user.first_name,
+        "last_name": student.user.last_name,
+        "name": `${student.user.first_name} ${student.user.last_name}`,
+        "email": student.user.email,
+        "parent_id": student.primary_parent,
+        // below is not from database
+        "role": "student",
+        "balance": 0,
+        "notes": {},
+    },
+});
 
 const handleInstructorsFetch = (state, {id, response}) => {
     const {data} = response;
-    if (id !== REQUEST_ALL) {
-        return updateInstructor(state, id, data);
-    }
     let {InstructorList} = state;
-    data.forEach((instructor) => {
-        InstructorList = updateInstructor(InstructorList, instructor.user.id, instructor);
-    });
+    if (id !== REQUEST_ALL) {
+        InstructorList = updateInstructor(InstructorList, id, data);
+    } else {
+        data.forEach((instructor) => {
+            InstructorList = updateInstructor(InstructorList, instructor.user.id, instructor);
+        });
+    }
     return {
         ...state,
         InstructorList,
@@ -109,7 +163,7 @@ const handleInstructorsFetch = (state, {id, response}) => {
 };
 
 
-const updateInstructor = (instructors, id, instructor) => ({
+export const updateInstructor = (instructors, id, instructor) => ({
     ...instructors,
     [id]: {
         "user_id": instructor.user.id,

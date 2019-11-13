@@ -4,8 +4,7 @@ import * as actions from "./../actions/actionTypes"
 export default function course(state = initialState.Payments, {payload, type}) {
     let newState;
     switch (type) {
-        case actions.FETCH_COURSES_SUCCESSFUL:
-            console.log('FETCH_COURSES Action');
+        case actions.FETCH_COURSE_SUCCESSFUL:
             return state;
         default:
             return state;

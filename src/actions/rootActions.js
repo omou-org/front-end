@@ -6,33 +6,28 @@ const instance = axios.create({
 });
 
 const typeToEndpoint = {
-    "student": "/account/students/",
-    "parent": "/account/parents/",
-    "instructor": "/account/instructors/",
+    "student": "/account/student/",
+    "parent": "/account/parent/",
+    "instructor": "/account/instructor/",
     "course": "/courses/catalog/",
-    "course category": "/courses/categories/",
 };
 
 const typeToFetchActions = {
     "student": [
-        types.FETCH_STUDENTS_SUCCESSFUL,
-        types.FETCH_STUDENTS_FAILED,
+        types.FETCH_STUDENT_SUCCESSFUL,
+        types.FETCH_STUDENT_FAILED,
     ],
     "parent": [
-        types.FETCH_PARENTS_SUCCESSFUL,
-        types.FETCH_PARENTS_FAILED,
+        types.FETCH_PARENT_SUCCESSFUL,
+        types.FETCH_PARENT_FAILED,
     ],
     "instructor": [
-        types.FETCH_INSTRUCTORS_SUCCESSFUL,
-        types.FETCH_INSTRUCTORS_FAILED,
+        types.FETCH_INSTRUCTOR_SUCCESSFUL,
+        types.FETCH_INSTRUCTOR_FAILED,
     ],
     "course": [
-        types.FETCH_COURSES_SUCCESSFUL,
-        types.FETCH_COURSES_FAILED,
-    ],
-    "course category": [
-        types.FETCH_CATEGORIES_SUCCESSFUL,
-        types.FETCH_CATEGORIES_FAILED,
+        types.FETCH_COURSE_SUCCESSFUL,
+        types.FETCH_COURSE_FAILED,
     ],
 };
 
