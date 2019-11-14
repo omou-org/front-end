@@ -109,7 +109,7 @@
   .notification{
       background-color:orange;
       position: absolute;
-      top:7px;
+      top:10px;
       left: 2.9em;
     @include respond-to(medium-screens){
      left : 1.4em 

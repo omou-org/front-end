@@ -97,7 +97,7 @@ const userTabs = {
         {
             "tab_heading": "Notes",
             "tab_id": 7,
-            "icon": <NoteIcon className="TabIcon"/>,
+            "icon": <NoteIcon className="TabIcon" />,
         },
 
     ],
@@ -206,20 +206,20 @@ class UserProfile extends Component {
 
     }
     renderNoteIcon() {
-        if(this.filter()){
-            userTabs[this.getUser().role].filter(tab=>tab.tab_id===7)[0].icon=
-            <><Avatar style={{width:10, height:10}} className="notification"/><NoteIcon/></>
-        }
-        else{
-            userTabs[this.getUser().role].filter(tab=>tab.tab_id===7)[0].icon=
-            <NoteIcon/>
+        if (this.getUser().role != "receptionist") {
+            if (this.filter()) {
+                userTabs[this.getUser().role].filter(tab => tab.tab_id === 7)[0].icon =
+                    <><Avatar style={{ width: 10, height: 10 }} className="notification" /><NoteIcon className="TabIcon" /></>
+            }
+            else {
+                userTabs[this.getUser().role].filter(tab => tab.tab_id === 7)[0].icon =
+                    <NoteIcon className="TabIcon" />
+            }
         }
     }
 
     render() {
-        
         this.renderNoteIcon();
-        console.log((userTabs[this.getUser().role]).filter(tab=>tab.tab_id===7))
         const status = this.getRequestStatus();
         if (!status || status === apiActions.REQUEST_STARTED) {
             return "Loading...";
