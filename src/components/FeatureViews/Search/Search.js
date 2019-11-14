@@ -39,7 +39,6 @@ const Search = (props) => {
 
     const searchList = searchSuggestions.map(
         (data) => {
-
             if (data.gender) {
                 return {
                     value: "account_"+data.type+"+"+ data.name+"-"+ data.user_id,
@@ -197,7 +196,8 @@ const mapStateToProps = (state) => ({
     "courseRoster": state.Course["CourseRoster"],
     "enrollments": state.Enrollments,
     "accounts": state.Search.accounts,
-    "course": state.Search.courses
+    "course": state.Search.courses,
+    "state": state,
 });
 
 const mapDispatchToProps = (dispatch) => ({

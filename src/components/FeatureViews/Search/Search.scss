@@ -66,7 +66,7 @@
   border: 1px solid #eeeeee;
   background: #ffffff;
   border-radius: 3px 0px 0px 3px;
-  padding-top: 8px;
+  padding: 9px 20px 5px 15px;
 }
 
 #menu-primary-filter {
@@ -75,6 +75,7 @@
 
 .button-background {
   background-color: #43b5d9 !important;
+  border-radius: 0 5px 5px 0 !important;
 }
 
 .searchIcon {
