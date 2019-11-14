@@ -123,6 +123,7 @@ const Navigation = () => {
                         <div style={{
                             "flex": 1,
                         }} />
+                        {props.auth.token ? <Search /> : ""}
                         {
                             pathname === "/login" ? "" : authToken
                                 ? <Typography
