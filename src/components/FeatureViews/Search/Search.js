@@ -3,6 +3,7 @@ import ReactSelect from 'react-select/creatable';
 import { Button, Grid, Select } from "@material-ui/core";
 import { bindActionCreators } from "redux";
 import * as searchActions from "../../../actions/searchActions";
+import * as userActions from "../../../actions/userActions";
 import { connect } from "react-redux";
 import MenuItem from "@material-ui/core/MenuItem";
 import "./Search.scss";
@@ -10,7 +11,7 @@ import FormControl from "@material-ui/core/FormControl";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
-import {withRouter} from 'react-router-dom';
+import {withRouter, Link} from 'react-router-dom';
 
 
 
@@ -75,7 +76,6 @@ const Search = (props) => {
     };
 
     const handleSearchChange = () => (e) => {
-      console.log(e);
       if(e){
           let value = e.value;
           let endTypeIndex = value.indexOf("_");
@@ -100,6 +100,20 @@ const Search = (props) => {
           setQuery("");
       }
 
+    };
+    const handleOnInputChange = () => (e)=>{
+        if(e!==""){
+            let newInput = {
+                value: e,
+                label: e,
+            };
+            setQuery(newInput);
+        }
+    };
+
+    const handleQuery = () => (e) =>{
+      e.preventDefault();
+      props.history.push("/search/"+query.value);
     };
 
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
@@ -145,14 +159,14 @@ const Search = (props) => {
                                 value={query}
                                 // openMenuOnClick={false}
                                 onChange={handleSearchChange()}
-                                // onInputChange={}
+                                onInputChange={handleOnInputChange()}
                             />
                         </Grid>
                         <Grid item style={{ paddingTop: "1px" }}>
                             <Button
                                 className={"button-background"}
                                 component={Link}
-                                to={`/search/${query.value}/`}
+                                onClick={handleQuery()}
                             > <SearchIcon className={"searchIcon"} /> </Button>
                         </Grid>
                     </Grid>

@@ -45,7 +45,7 @@ const SearchResults = (props) => {
         })()
 
     }, [params.query, props.auth.token])
-    console.log(data)
+    console.log(data, "what we're getting from the backend");
 
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
