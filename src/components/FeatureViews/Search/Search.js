@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ReactSelect from 'react-select';
+import ReactSelect from 'react-select/creatable';
 import { Button, Grid, Select } from "@material-ui/core";
 import { bindActionCreators } from "redux";
 import * as searchActions from "../../../actions/searchActions";
@@ -10,41 +10,57 @@ import FormControl from "@material-ui/core/FormControl";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
+import {withRouter} from 'react-router-dom';
 
 
 
 
 const Search = (props) => {
-    const [query, setQuery] = useState(null);
+    const [query, setQuery] = useState("");
     const [primaryFilter, setPrimaryFilter] = useState("All");
-    const [searchResult, setSearchResult] = useState(props.accounts)
+    const [searchSuggestions, setSearchSuggestions] = useState(()=>{
+        let suggestions = [];
+        suggestions = suggestions.concat(Object.values(props.students).map((student)=>{ return {...student, type:"student"}}));
+        suggestions = suggestions.concat(Object.values(props.parents).map((parent)=>{ return {...parent, type:"parent"}}));
+        suggestions = suggestions.concat(Object.values(props.instructors).map((instructor)=>{ return {...instructor, type:"instructor"}}));
+        suggestions = suggestions.concat(Object.values(props.courses));
+        return suggestions;
+    });
 
-
-    const searchList = searchResult.map(
+    const searchList = searchSuggestions.map(
         (data) => {
-            if (data.first_name) {
+            if (data.gender) {
                 return {
-                    value: data.first_name,
-                    label: data.first_name
+                    value: "account_"+data.type+"+"+ data.name+"-"+ data.user_id,
+                    label: data.name
                 }
-            } else if (data.date_start) {
+            } else if (data.tuition) {
                 return {
-                    value: data.course.title,
-                    label: data.course.title
+                    value: "course_"+data.course_id + "-" +data.title,
+                    label: data.title,
+                }
+            } else{
+                return {
+                    value: "",
+                    label: "",
                 }
             }
-
         }
-    )
+    );
+
     const searchFilterChange = (primaryFilter) => {
         switch (primaryFilter) {
             case "All":
                 break;
             case "Accounts":
-                setSearchResult(props.accounts);
+                let accountSuggestions = [];
+                accountSuggestions = accountSuggestions.concat(Object.values(props.students).map((student)=>{ return {...student, type:"student"}}));
+                accountSuggestions = accountSuggestions.concat(Object.values(props.parents).map((parent)=>{ return {...parent, type:"parent"}}));
+                accountSuggestions = accountSuggestions.concat(Object.values(props.instructors).map((instructor)=>{ return {...instructor, type:"instructor"}}));
+                setSearchSuggestions(accountSuggestions);
                 break;
             case "Courses":
-                setSearchResult(props.course);
+                setSearchSuggestions(Object.values(props.courses));
                 break;
             default:
                 return
@@ -53,10 +69,39 @@ const Search = (props) => {
     }
 
     const handleFilterChange = (filter) => (e) => {
-
         setPrimaryFilter(e.target.value);
+
         searchFilterChange(e.target.value)
     };
+    
+    const handleSearchChange = () => (e) => {
+      console.log(e);
+      if(e){
+          let value = e.value;
+          let endTypeIndex = value.indexOf("_");
+          let type = value.substring(0,endTypeIndex);
+          switch(type){
+              case "account":
+                  let startTypeIndex = value.indexOf("_")+1;
+                  endTypeIndex = value.indexOf("+");
+                  let startIDIndex = value.indexOf("-")+1;
+                  type = value.substring(startTypeIndex,endTypeIndex);
+                  let accountID = value.substring(startIDIndex, value.length);
+                  props.history.push("/accounts/"+type+"/"+accountID);
+                  break;
+              case "course":
+                  let startTitleIndex = value.indexOf("-");
+                  let courseID = value.substring(endTypeIndex+1,startTitleIndex);
+                  let courseTitle = value.substring(startTitleIndex+1, value.length);
+                  props.history.push("/registration/course/"+courseID+"/"+courseTitle);
+          }
+          setQuery(e);
+      } else {
+          setQuery("");
+      }
+
+    };
+    
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
         <Grid container
@@ -93,12 +138,14 @@ const Search = (props) => {
                         </Grid>
                         <Grid item md={9} xs={7}>
                             <ReactSelect
+                                isClearable
                                 className={"search-input"}
                                 classNamePrefix="main-search"
                                 options={searchList}
                                 value={query}
-                                openMenuOnClick={false}
-
+                                // openMenuOnClick={false}
+                                onChange={handleSearchChange()}
+                                // onInputChange={}
                             />
                         </Grid>
                         <Grid item style={{ paddingTop: "1px" }}>
@@ -129,7 +176,7 @@ const mapDispatchToProps = (dispatch) => ({
     "searchActions": bindActionCreators(searchActions, dispatch),
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Search);
+export default withRouter(
+    connect(mapStateToProps,
+    mapDispatchToProps,)
+(Search));
