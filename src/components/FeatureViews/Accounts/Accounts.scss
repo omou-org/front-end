@@ -107,10 +107,17 @@
     vertical-align: middle;
   }
   .notification{
-    background-color:orange;
-    position: absolute;
-    top:5;
-    left:2;
+      background-color:orange;
+      position: absolute;
+      top:7px;
+      left: 2.9em;
+    @include respond-to(medium-screens){
+     left : 1.4em 
+    }
+    @include respond-to(handhelds){
+      left: 1.4em
+    }
+    
   }
   .left-align {
     margin-left: -40%;
