@@ -73,7 +73,7 @@ function AccountsCards(props) {
 
     const fullName = `${props.user.first_name} ${props.user.last_name}`
 
-    console.log(props)
+
 
     return (
         <Grid item xs={12} sm={3} className={"AccountsCards"} style={{ padding: "10px" }}>
