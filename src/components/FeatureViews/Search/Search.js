@@ -73,7 +73,7 @@ const Search = (props) => {
 
         searchFilterChange(e.target.value)
     };
-    
+
     const handleSearchChange = () => (e) => {
       console.log(e);
       if(e){
@@ -101,7 +101,7 @@ const Search = (props) => {
       }
 
     };
-    
+
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
         <Grid container
@@ -149,7 +149,11 @@ const Search = (props) => {
                             />
                         </Grid>
                         <Grid item style={{ paddingTop: "1px" }}>
-                            <Button className={"button-background"}> <SearchIcon className={"searchIcon"} /> </Button>
+                            <Button
+                                className={"button-background"}
+                                component={Link}
+                                to={`/search/${query.value}/`}
+                            > <SearchIcon className={"searchIcon"} /> </Button>
                         </Grid>
                     </Grid>
                 </form>
@@ -174,6 +178,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     "searchActions": bindActionCreators(searchActions, dispatch),
+    "userActions": bindActionCreators(userActions, dispatch)
 });
 
 export default withRouter(

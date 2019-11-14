@@ -27,7 +27,7 @@ import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
 import ParentPayment from "../Form/ParentPayment";
-import Search from "../FeatureViews/Search/Search";
+import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage"
 import FilterAccountsPage from "../FeatureViews/Search/FilterAccountsPage";
 
 
@@ -58,6 +58,12 @@ function rootRoutes(props) {
                 path="/scheduler/view-session/:course_id/:session_id"
                 render={(passedProps) => <SessionView {...passedProps} />} />
 
+            <ProtectedRoute
+                path="/search/:query"
+                render={(passedProps) => <SearchResults {...passedProps} />} />
+
+
+
             {/* 
             <ProtectedRoute
                 path='/scheduler/resource'
@@ -69,10 +75,15 @@ function rootRoutes(props) {
 
             <ProtectedRoute
                 path='/test'
-                render={(passedProps) => <SearchResults {...passedProps} />} />
+                render={(passedProps) => <NoResultsPage {...passedProps} />} />
             <ProtectedRoute
                 path="/filterAccount"
                 render={(passedProps) => <FilterAccountsPage {...passedProps} />} />
+
+            <ProtectedRoute
+                path='/noresults'
+                render={(passedProps) => <NoResultsPage {...passedProps} />} />
+
 
             <ProtectedRoute
                 exact
@@ -108,6 +119,7 @@ function rootRoutes(props) {
             <ProtectedRoute
                 path="/registration/category/:categoryID"
                 render={(passedProps) => <CourseCategory {...passedProps} />} />
+
             <Route path="/PageNotFound" component={ErrorNotFoundPage} />
             <Redirect to="/PageNotFound" />
         </Switch>

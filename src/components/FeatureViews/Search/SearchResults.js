@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, } from 'react';
 import ReactSelect from 'react-select';
 import { Grid, Select, Button } from "@material-ui/core";
 import { bindActionCreators } from "redux";
@@ -17,9 +17,35 @@ import Fab from '@material-ui/core/Fab';
 import CoursesCards from "./cards/CoursesCards"
 import Chip from "@material-ui/core/Chip";
 import "./Search.scss";
+import axios from "axios"
+import { useParams } from "react-router-dom"
 
 const SearchResults = (props) => {
+    const [data, setData] = useState("");
+    const [loading, setLoading] = useState(true);
 
+    const params = useParams()
+
+    // /search/account/?query=query?profileFilter=profileFilter?gradeFilter=gradeFilter?sortAlpha=asc?sortID=desc
+    useEffect(() => {
+        (async () => {
+            try {
+                const response = await axios.get("http://localhost:8000/search/account/", { params: { query: params.query }, "Authorization": `Token ${props.auth.token}`, })
+                if (response.data === []) {
+                    console.log("hit")
+                } else {
+                    setData(response.data)
+                }
+
+            } catch (err) {
+                console.log(err)
+            } finally {
+                setLoading(false)
+            }
+        })()
+
+    }, [params.query, props.auth.token])
+    console.log(data)
 
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
@@ -27,7 +53,7 @@ const SearchResults = (props) => {
             <Grid container className={'search-results'} style={{ "padding": "1em" }}>
                 <Paper className={'main-search-view'} >
                     <Grid item xs={12} style={{ "padding": "1em" }}>
-                        <Typography variant={"h4"} align={"left"}> "15" Search Results for "Search Result"  </Typography>
+                        <Typography variant={"h4"} align={"left"}> {data.length} Search Results for "{params.query}"  </Typography>
                     </Grid>
                     <hr />
                     <Grid item xs={12}>
@@ -39,19 +65,19 @@ const SearchResults = (props) => {
                                 <Typography variant={"h5"} align={'left'} gutterBottom>Accounts</Typography>
                             </Grid>
                             <Grid item >
-                            <Chip label="See All Accounts" 
-                                className="searchChip"
+                                <Chip label="See All Accounts"
+                                    className="searchChip"
                                 />
                             </Grid>
                         </Grid>
-                        <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} direction={"row"}>
-                            {props.accounts.slice(0, 4).map((user) => (
-                                <AccountsCards user={user} key={user.user_id} />)
-                            )}
-                        </Grid>
+                        {/* <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} direction={"row"}>
+                            {data.slice(0, 4).map((data) => (
+                                <AccountsCards user={data.user} key={data.user.user_id} />)
+                            )} */}
                     </Grid>
+                    {/* </Grid> */}
                     <hr />
-                    <Grid item xs={12}>
+                    {/* <Grid item xs={12}>
                         <Grid container
                             justify={"space-between"}
                             direction={"row"}
@@ -71,7 +97,7 @@ const SearchResults = (props) => {
                             )}
                         </Grid>
                     </Grid>
-                    <hr />
+                    <hr /> */}
 
                     <Grid item xs={12}>
                         <Grid container
@@ -82,8 +108,8 @@ const SearchResults = (props) => {
                                 <Typography variant={"h5"} align={'left'} >Courses</Typography>
                             </Grid>
                             <Grid item style={{ "paddingRight": "1vh" }}>
-                                <Chip label="See All Courses" 
-                                className="searchChip"
+                                <Chip label="See All Courses"
+                                    className="searchChip"
                                 />
                             </Grid>
                         </Grid>
@@ -95,7 +121,7 @@ const SearchResults = (props) => {
                     </Grid>
                 </Paper>
             </Grid>
-        </div>
+        </div >
     )
 };
 
@@ -109,7 +135,8 @@ const mapStateToProps = (state) => ({
     "courseRoster": state.Course["CourseRoster"],
     "enrollments": state.Enrollments,
     "accounts": state.Search.accounts,
-    "course": state.Search.courses
+    "course": state.Search.courses,
+    "auth": state.auth
 });
 
 const mapDispatchToProps = (dispatch) => ({
