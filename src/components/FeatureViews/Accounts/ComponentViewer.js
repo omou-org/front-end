@@ -9,7 +9,7 @@ import PaymentHistory from './TabComponents/PaymentHistory';
 import ParentContact from './TabComponents/ParentContact';
 import StudentInfo from './TabComponents/StudentInfo';
 import PayCourses from './TabComponents/PayCourses';
-import Notes from './TabComponents/Notes';
+import Notes from '../Notes/Notes';
 import Grid from "@material-ui/core/Grid";
 
 class ComponentViewer extends Component {
