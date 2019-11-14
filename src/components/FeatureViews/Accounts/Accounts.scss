@@ -106,7 +106,12 @@
     display: inline-flex;
     vertical-align: middle;
   }
-
+  .notification{
+    background-color:orange;
+    position: absolute;
+    top:5;
+    left:2;
+  }
   .left-align {
     margin-left: -40%;
   }

@@ -1,10 +1,10 @@
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import * as userActions from "../../../actions/userActions";
 import * as apiActions from "../../../actions/apiActions";
-import {GET} from "../../../actions/actionTypes";
-import React, {Component} from "react";
-import {Redirect} from "react-router-dom";
+import { GET } from "../../../actions/actionTypes";
+import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 
 import { stringToColor } from "./accountUtils";
 import Grid from "@material-ui/core/Grid";
@@ -52,7 +52,7 @@ const userTabs = {
         {
             "tab_heading": "Notes",
             "tab_id": 7,
-            "icon": <NoteIcon className="TabIcon" />,
+            "icon": <notificationIcon className="TabIcon" />,
         },
     ],
     "student": [
@@ -97,8 +97,9 @@ const userTabs = {
         {
             "tab_heading": "Notes",
             "tab_id": 7,
-            "icon": <NoteIcon className="TabIcon" />,
+            "icon": <NoteIcon className="TabIcon"/>,
         },
+
     ],
 };
 
@@ -108,6 +109,7 @@ class UserProfile extends Component {
         this.state = {
             "user": {},
             "value": 0,
+            "alert": false,
         };
         this.currID = props.computedMatch.params.accountID;
         this.handleChange = this.handleChange.bind(this);
@@ -115,7 +117,7 @@ class UserProfile extends Component {
 
     componentDidMount() {
         let user;
-        const {accountType, accountID} = this.props.computedMatch.params;
+        const { accountType, accountID } = this.props.computedMatch.params;
         switch (accountType) {
             case "student":
                 this.props.userActions.fetchStudents(accountID);
@@ -176,7 +178,7 @@ class UserProfile extends Component {
     }
 
     getRequestStatus = () => {
-        const {accountType, accountID} = this.props.computedMatch.params;
+        const { accountType, accountID } = this.props.computedMatch.params;
         return accountType === "receptionist"
             ? 200
             : this.props.requestStatus[accountType][GET][accountID];
@@ -187,7 +189,37 @@ class UserProfile extends Component {
         this.setState({ "value": newTabIndex });
     }
 
+    filter() {
+        Object.filter = (obj, predicate) =>
+            Object.keys(obj)
+                .filter(key => predicate(obj[key]))
+                .reduce((res, key) => (res[key] = obj[key], res), {});
+
+        // Example use:
+        let filtered = Object.filter(this.getUser().notes, note => note.important === true)
+        if (Object.keys(filtered).length != 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    }
+    renderNoteIcon() {
+        if(this.filter()){
+            userTabs[this.getUser().role].filter(tab=>tab.tab_id===7)[0].icon=
+            <><Avatar style={{width:10, height:10}} className="notification"/><NoteIcon/></>
+        }
+        else{
+            userTabs[this.getUser().role].filter(tab=>tab.tab_id===7)[0].icon=
+            <NoteIcon/>
+        }
+    }
+
     render() {
+        
+        this.renderNoteIcon();
+        console.log((userTabs[this.getUser().role]).filter(tab=>tab.tab_id===7))
         const status = this.getRequestStatus();
         if (!status || status === apiActions.REQUEST_STARTED) {
             return "Loading...";
