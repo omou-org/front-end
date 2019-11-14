@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import ReactSelect from 'react-select/creatable';
 import { Button, Grid, Select } from "@material-ui/core";
 import { bindActionCreators } from "redux";
@@ -12,6 +12,7 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
 import {withRouter, Link} from 'react-router-dom';
+import axios from "axios";
 
 
 
@@ -21,6 +22,7 @@ const Search = (props) => {
     const [primaryFilter, setPrimaryFilter] = useState("All");
     const [searchSuggestions, setSearchSuggestions] = useState(()=>{
         let suggestions = [];
+        console.log(props);
         suggestions = suggestions.concat(Object.values(props.students).map((student)=>{ return {...student, type:"student"}}));
         suggestions = suggestions.concat(Object.values(props.parents).map((parent)=>{ return {...parent, type:"parent"}}));
         suggestions = suggestions.concat(Object.values(props.instructors).map((instructor)=>{ return {...instructor, type:"instructor"}}));
@@ -28,8 +30,16 @@ const Search = (props) => {
         return suggestions;
     });
 
+    // useEffect(() => {
+    //     props.userActions.fetchParents();
+    //     props.userActions.fetchInstructors();
+    //     props.userActions.fetchStudents();
+    //
+    // })
+
     const searchList = searchSuggestions.map(
         (data) => {
+
             if (data.gender) {
                 return {
                     value: "account_"+data.type+"+"+ data.name+"-"+ data.user_id,

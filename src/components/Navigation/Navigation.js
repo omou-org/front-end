@@ -27,6 +27,7 @@ import Typography from "@material-ui/core/Typography";
 import "./Navigation.scss";
 import Routes from "../Routes/rootRoutes";
 import CustomTheme from "../../theme/muiTheme";
+import Search from "../../components/FeatureViews/Search/Search";
 
 const NavList = [
     // {
@@ -82,7 +83,7 @@ const Navigation = () => {
     // }
     const dispatch = useDispatch();
     const authToken = useSelector(({auth}) => auth).token;
-    console.log(authToken);
+
     const [mobileOpen, setMobileOpen] = useState(false);
     const {pathname} = useLocation();
 
@@ -123,7 +124,7 @@ const Navigation = () => {
                         <div style={{
                             "flex": 1,
                         }} />
-                        {props.auth.token ? <Search /> : ""}
+                        { authToken ? <Search /> : ""}
                         {
                             pathname === "/login" ? "" : authToken
                                 ? <Typography
