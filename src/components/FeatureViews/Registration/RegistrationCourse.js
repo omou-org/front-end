@@ -110,7 +110,6 @@ const RegistrationCourse = () => {
         "schedule": {
             "days": [],
         },
-        "notes":[]
     };
     const instructor = instructors[course.instructor_id];
     const days = course.schedule.days.map((day) => dayConverter[day]);
@@ -120,13 +119,13 @@ const RegistrationCourse = () => {
 
     useEffect(() => {
         api.fetchCourses(courseID);
+        api.fetchCourseNotes(courseID);
         api.fetchStudents();
         api.fetchParents();
     }, [api, courseID]);
 
     useEffect(() => {
         if (course) {
-            api.fetchEnrollments();
             api.fetchInstructors(course.instructor_id);
             setExpanded(course.roster.reduce((object, studentID) => ({
                 ...object,
@@ -234,7 +233,6 @@ const RegistrationCourse = () => {
     });
 
     const handleChange=(event, value)=>{
-        console.log(value);
         setValue(value);
     }
 
@@ -311,8 +309,7 @@ const RegistrationCourse = () => {
                 </div>)
             break;
             default:
-                component=(<div>wee woo wee woo we have a problem in aisle 6</div>)
-
+                component=(<div>Error loading info!</div>)
         }
         return component;
     }
@@ -435,14 +432,17 @@ const RegistrationCourse = () => {
                 </div>
 
                 <Tabs
-                onChange={handleChange}
-                value={value}>
+                    onChange={handleChange}
+                    value={value}
+                    indicatorColor="primary">
                     <Tab
                     label={<><RegistrationIcon className="NoteIcon"/> Registration</>}
                     />
                     <Tab
-                    label={<><NoteIcon className="NoteIcon"/> Notes</>}/>
-
+                        label={
+                            course.notes && Object.values(course.notes).some(({important}) => important)
+                                ? <><Avatar style={{width: 10, height: 10}} className="notificationCourse" /><NoteIcon className="TabIcon" />  Notes</>
+                                : <><NoteIcon className="NoteIcon" /> Notes</>} />
                 </Tabs>
                 {displayComponent()}
             </Paper>

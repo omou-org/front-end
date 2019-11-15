@@ -12,7 +12,6 @@ import Paper from "@material-ui/core/Paper";
 class CourseViewer extends Component {
     componentDidMount() {
         this.props.apiActions.fetchCourses();
-        this.props.registrationActions.fetchEnrollments();
     }
 
     goToRoute(route) {

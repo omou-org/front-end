@@ -116,8 +116,8 @@ class UserProfile extends Component {
     }
 
     componentDidMount() {
-        let user;
-        const { accountType, accountID } = this.props.computedMatch.params;
+        const {accountType, accountID} = this.props.computedMatch.params;
+        this.props.userActions.fetchNotes(accountID, accountType);
         switch (accountType) {
             case "student":
                 this.props.userActions.fetchStudents(accountID);
@@ -133,7 +133,6 @@ class UserProfile extends Component {
                 break;
             // no default
         }
-        return user;
     }
 
     componentDidUpdate(prevProps) {
@@ -149,8 +148,8 @@ class UserProfile extends Component {
 
         // if looking at new profile, reset tab to the first one
         if (currAccType !== prevAccType || currAccID !== prevAccID) {
-            let user;
             const {accountType, accountID} = this.props.computedMatch.params;
+            this.props.userActions.fetchNotes(accountID, accountType);
             switch (accountType) {
                 case "student":
                     this.props.userActions.fetchStudents(accountID);
@@ -166,7 +165,6 @@ class UserProfile extends Component {
                     break;
                 // no default
             }
-            return user;
             this.setState({
                 "value": 0,
             });
@@ -224,7 +222,7 @@ class UserProfile extends Component {
 
     }
     renderNoteIcon() {
-        if (this.getUser().role != "receptionist") {
+        if (this.getUser() && this.getUser().role != "receptionist") {
             if (this.filter()) {
                 userTabs[this.getUser().role].filter(tab => tab.tab_id === 7)[0].icon =
                     <><Avatar style={{ width: 10, height: 10 }} className="notification" /><NoteIcon className="TabIcon" /></>

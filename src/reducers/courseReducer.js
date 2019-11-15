@@ -3,9 +3,13 @@ import initialState from "./initialState";
 import {REQUEST_ALL} from "../actions/apiActions";
 
 export default (state = initialState.Course, {payload, type}) => {
+    console.log(type)
     switch (type) {
         case actions.FETCH_COURSE_SUCCESSFUL:
-            return handleCoursesFetch(state, payload);
+            console.log(state);
+            const n = handleCoursesFetch(state, payload);
+            console.log(n);
+            return n;
         case actions.FETCH_ENROLLMENT_SUCCESSFUL:
             return handleEnrollmentFetch(state, payload);
         case actions.FETCH_COURSE_NOTE_SUCCESSFUL:
@@ -55,6 +59,7 @@ const handleCoursesFetch = (state, {id, response}) => {
     const {data} = response;
     let {NewCourseList} = state;
     if (id !== REQUEST_ALL) {
+        console.log((NewCourseList[id] && NewCourseList[id].notes), (NewCourseList[id] && NewCourseList[id].notes) || {})
         NewCourseList = updateCourse(NewCourseList, id, data);
     } else {
         data.forEach((course) => {
@@ -70,6 +75,9 @@ const handleCoursesFetch = (state, {id, response}) => {
 export const updateCourse = (courses, id, course) => ({
     ...courses,
     [id]: {
+        ...(courses[id] || {
+            "notes": {},
+        }),
         "course_id": id,
         "title": course.subject,
         "schedule": {
@@ -85,7 +93,6 @@ export const updateCourse = (courses, id, course) => ({
         "grade": 10,
         "description": course.description,
         "room_id": course.room,
-        "notes": {},
         "type": "C",
         "subject": "Math",
         "tags": [],
@@ -105,6 +112,12 @@ const handleNotesPost = (state, {response, ...rest}) => handleNotesFetch(state, 
 const handleNotesFetch = (state, {courseID, response}) => {
     const {data} = response;
     const newState = JSON.parse(JSON.stringify(state));
+    if (!newState.NewCourseList[courseID]) {
+        newState.NewCourseList[courseID] = {};
+    }
+    if (!newState.NewCourseList[courseID].notes) {
+        newState.NewCourseList[courseID].notes = {};
+    }
     data.forEach((note) => {
         newState.NewCourseList[courseID].notes[note.id] = note;
     });
