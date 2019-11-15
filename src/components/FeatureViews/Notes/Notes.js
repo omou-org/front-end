@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from "react";
-import * as userActions from "../../../../actions/userActions";
+import * as userActions from "../../../actions/userActions";
 import {useDispatch, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
 import PropTypes from "prop-types";
@@ -16,9 +16,9 @@ import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 
-import "./TabComponents.scss";
-import {GET, PATCH, POST} from "../../../../actions/actionTypes";
-import {REQUEST_STARTED} from "../../../../actions/apiActions";
+import "../Accounts/TabComponents/TabComponents.scss";
+import {GET, PATCH, POST} from "../../../actions/actionTypes";
+import {REQUEST_STARTED} from "../../../actions/apiActions";
 
 const numericDateString = (date) => {
     const DateObject = new Date(date);
@@ -33,7 +33,7 @@ const numericDateString = (date) => {
 const Notes = ({userRole, userID}) => {
     const dispatch = useDispatch();
     const api = useMemo(() => bindActionCreators(userActions, dispatch), [dispatch]);
-    const user = useSelector(({Users}) => {
+    const user = useSelector(({Users, Course}) => {
         switch (userRole) {
             case "student":
                 return Users.StudentList[userID];
@@ -43,6 +43,8 @@ const Notes = ({userRole, userID}) => {
                 return Users.InstructorList[userID];
             case "receptionist":
                 return Users.ReceptionistList[userID];
+            case "course":
+                return Course.CourseList[userID];
             default:
                 return -1;
         }
