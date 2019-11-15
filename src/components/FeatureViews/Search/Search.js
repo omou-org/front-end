@@ -50,9 +50,16 @@ const Search = (props) => {
         }
     );
 
-    const searchFilterChange = (primaryFilter) => {
+    const searchFilterChange = (primaryFilter) => () =>{
+        console.log(primaryFilter,"hi");
         switch (primaryFilter) {
             case "All":
+                let suggestions = [];
+                suggestions = suggestions.concat(Object.values(props.students).map((student)=>{ return {...student, type:"student"}}));
+                suggestions = suggestions.concat(Object.values(props.parents).map((parent)=>{ return {...parent, type:"parent"}}));
+                suggestions = suggestions.concat(Object.values(props.instructors).map((instructor)=>{ return {...instructor, type:"instructor"}}));
+                suggestions = suggestions.concat(Object.values(props.courses));
+                setSearchSuggestions(suggestions);
                 break;
             case "Accounts":
                 let accountSuggestions = [];
@@ -72,7 +79,6 @@ const Search = (props) => {
 
     const handleFilterChange = (filter) => (e) => {
         setPrimaryFilter(e.target.value);
-
         searchFilterChange(e.target.value)
     };
 
@@ -117,6 +123,32 @@ const Search = (props) => {
       props.history.push("/search/"+query.value);
     };
 
+    const handleOnFocus = (primaryFilter) => (e)=>{
+        switch (primaryFilter) {
+            case "All":
+                let suggestions = [];
+                suggestions = suggestions.concat(Object.values(props.students).map((student)=>{ return {...student, type:"student"}}));
+                suggestions = suggestions.concat(Object.values(props.parents).map((parent)=>{ return {...parent, type:"parent"}}));
+                suggestions = suggestions.concat(Object.values(props.instructors).map((instructor)=>{ return {...instructor, type:"instructor"}}));
+                suggestions = suggestions.concat(Object.values(props.courses));
+                setSearchSuggestions(suggestions);
+                break;
+            case "Accounts":
+                let accountSuggestions = [];
+                accountSuggestions = accountSuggestions.concat(Object.values(props.students).map((student)=>{ return {...student, type:"student"}}));
+                accountSuggestions = accountSuggestions.concat(Object.values(props.parents).map((parent)=>{ return {...parent, type:"parent"}}));
+                accountSuggestions = accountSuggestions.concat(Object.values(props.instructors).map((instructor)=>{ return {...instructor, type:"instructor"}}));
+                setSearchSuggestions(accountSuggestions);
+                break;
+            case "Courses":
+                setSearchSuggestions(Object.values(props.courses));
+                break;
+            default:
+                return
+
+        }
+    }
+
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
         <Grid container
@@ -124,7 +156,7 @@ const Search = (props) => {
         >
             <Grid item xs={1} />
             <Grid item xs={11}>
-                <form>
+                <form onSubmit={handleQuery()}>
                     <Grid container>
                         <Grid item >
                             <FormControl required variant="outlined" className={"search-selector"}>
@@ -158,7 +190,7 @@ const Search = (props) => {
                                 classNamePrefix="main-search"
                                 options={searchList}
                                 value={query}
-                                // openMenuOnClick={false}
+                                onFocus={handleOnFocus(primaryFilter)}
                                 onChange={handleSearchChange()}
                                 onInputChange={handleOnInputChange()}
                             />

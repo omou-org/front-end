@@ -123,7 +123,6 @@ class Accounts extends Component {
 
     render() {
         const userList = this.getUsers();
-        console.log(userList);
         const styles = (username) => ({
             "backgroundColor": stringToColor(username),
             "color": "white",

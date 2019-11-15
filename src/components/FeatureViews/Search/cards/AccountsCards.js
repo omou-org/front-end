@@ -70,10 +70,15 @@ function AccountsCards(props) {
 
     });
 
+    console.log(props.user);
 
-    const fullName = `${props.user.first_name} ${props.user.last_name}`
-
-
+    const fullName = `${props.user.user.first_name} ${props.user.user.last_name}`;
+    // const role = ()=>{
+    //   if(props.user.relationship) {
+    //       return "parent";
+    //   }
+    //   // }  else if ( props.user.)
+    // };
 
     return (
         <Grid item xs={12} sm={3} className={"AccountsCards"} style={{ padding: "10px" }}>
@@ -81,7 +86,8 @@ function AccountsCards(props) {
                 style={{ cursor: "pointer" }}
                 onClick={(event) => {
                     event.preventDefault();
-                    goToRoute(`accounts/${props.user.role}/${props.user.id}`);
+                    // goToRoute(`accounts/${props.user.role}/${props.user.id}`);
+                    console.log(props.user)
                 }}>
                 <Grid container>
                     <Hidden mdDown>
@@ -95,17 +101,17 @@ function AccountsCards(props) {
 
                         <CardContent className={"cardText"}>
                             <Typography align={'left'}>
-                                {props.user.first_name} {props.user.last_name}
+                                {props.user.user.first_name} {props.user.user.last_name}
                             </Typography>
 
                             <Grid align={'left'}>
-                                <Chip
-                                    style={{
-                                        cursor: "pointer"
-                                    }}
-                                    className={`userLabel ${props.user.role}`}
-                                    label={props.user.role.charAt(0).toUpperCase() + props.user.role.slice(1)}
-                                />
+                                {/*<Chip*/}
+                                {/*    style={{*/}
+                                {/*        cursor: "pointer"*/}
+                                {/*    }}*/}
+                                {/*    className={`userLabel ${props.user.role}`}*/}
+                                {/*    label={props.user.role.charAt(0).toUpperCase() + props.user.role.slice(1)}*/}
+                                {/*/>*/}
                             </Grid>
 
                             <Grid item xs={12} style={{ marginTop: 10 }}>
@@ -118,7 +124,7 @@ function AccountsCards(props) {
                                             height={14} />
                                     </Grid>
                                     <Grid item xs={10}>
-                                        # {props.user.id}
+                                        # {props.user.user.id}
                                     </Grid>
                                 </Grid>
                                 <Grid container
@@ -128,7 +134,7 @@ function AccountsCards(props) {
                                         <EmailIcon style={{ fontSize: 14 }} />
                                     </Grid>
                                     <Grid item xs={10}>
-                                        {props.user.email}
+                                        {props.user.user.email}
                                     </Grid>
                                 </Grid>
                             </Grid>
