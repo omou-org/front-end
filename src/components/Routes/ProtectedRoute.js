@@ -5,6 +5,7 @@ import {useSelector} from "react-redux";
 
 const ProtectedRoute = ({component, render, ...rest}) => {
     const token = useSelector(({auth}) => auth.token);
+
     const renderFunc = useCallback(
         () => token
             ? component || render && render(rest)
@@ -14,10 +15,11 @@ const ProtectedRoute = ({component, render, ...rest}) => {
         [token, component, render, rest]
     );
 
-    return (<Route
-        {...rest}
-        exact
-        render={renderFunc} />
+    return (
+        <Route
+            {...rest}
+            exact
+            render={renderFunc} />
     );
 };
 

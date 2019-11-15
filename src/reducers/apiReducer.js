@@ -93,7 +93,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             return updateNotePatch(state, payload.userID, status);
 
         case actions.FETCH_USER_STARTED:
-            return updateUserFetch(state, status);
+            return updateUserFetch(state, api.REQUEST_STARTED);
         case actions.FETCH_USER_SUCCESSFUL:
             return updateUserFetch(state, status);
         case actions.FETCH_USER_FAILED:

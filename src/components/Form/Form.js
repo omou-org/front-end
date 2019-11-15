@@ -78,6 +78,7 @@ class Form extends Component {
             submitPending: false,
             preLoaded: false,
             existingUser: false,
+            "hasLoaded": false,
         };
     }
 
@@ -215,6 +216,9 @@ class Form extends Component {
 
     componentDidMount() {
         const {id, edit, "type": formType} = this.props.computedMatch.params;
+        if (!this.props.isAdmin && (formType === "instructor" || formType === "course_details")) {
+            this.props.history.replace("/PageNotFound");
+        }
         if (edit === "edit") {
             switch (formType) {
                 case "student": {
@@ -425,6 +429,9 @@ class Form extends Component {
                 // no default
             }
         }
+        this.setState({
+            "hasLoaded": true,
+        })
     }
 
     getFormObject() {
@@ -1119,6 +1126,9 @@ class Form extends Component {
     }
 
     render() {
+        if (!this.state.hasLoaded) {
+            return "Loading...";
+        }
         return (
             <Grid container className="">
                 {/* Determine if finished component is displayed. If not, then don't prompt */}
@@ -1218,6 +1228,7 @@ const mapStateToProps = (state) => ({
     "instructors": state.Users["InstructorList"],
     "requestStatus": state.RequestStatus,
     "token": state.auth.token,
+    "isAdmin": state.auth.isAdmin,
 });
 
 const mapDispatchToProps = (dispatch) => ({
