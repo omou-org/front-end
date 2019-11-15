@@ -135,3 +135,95 @@ export const patchNote = (id, data, userType) => async (dispatch, getState) => {
         newAction(types.PATCH_NOTE_FAILED, response);
     }
 };
+
+
+const courseNoteEndpoint = "/courses/catalog_note/";
+
+export const fetchCourseNotes = (courseID) => async (dispatch, getState) => {
+    // creates a new action based on the response given
+    const newAction = (type, response) => {
+        dispatch({
+            type,
+            "payload": {
+                courseID,
+                response,
+            },
+        });
+    };
+
+    // request starting
+    newAction(types.FETCH_COURSE_NOTE_STARTED, {});
+
+    try {
+        const response = await instance.get(courseNoteEndpoint, {
+            "headers": {
+                "Authorization": `Token ${getState().auth.token}`,
+            },
+            "params": {
+                "course_id": courseID,
+            },
+        });
+        // succesful request
+        newAction(types.FETCH_COURSE_NOTE_SUCCESSFUL, response);
+    } catch ({response}) {
+        // failed request
+        newAction(types.FETCH_COURSE_NOTE_FAILED, response);
+    }
+};
+
+export const postCourseNote = (data) => async (dispatch, getState) => {
+    // creates a new action based on the response given
+    const newAction = (type, response) => {
+        dispatch({
+            type,
+            "payload": {
+                response,
+            },
+        });
+    };
+
+    // request starting
+    newAction(types.POST_NOTE_STARTED, {});
+
+    try {
+        const response = await instance.post(courseNoteEndpoint, data, {
+            "headers": {
+                "Authorization": `Token ${getState().auth.token}`,
+            },
+        });
+        // succesful request
+        newAction(types.POST_COURSE_NOTE_SUCCESSFUL, response);
+    } catch ({response}) {
+        // failed request
+        newAction(types.POST_COURSE_NOTE_FAILED, response);
+    }
+};
+
+export const patchCourseNote = (id, data) => async (dispatch, getState) => {
+    // creates a new action based on the response given
+    const newAction = (type, response) => {
+        dispatch({
+            type,
+            "payload": {
+                response,
+                "courseID": data.course,
+            },
+        });
+    };
+
+    // request starting
+    newAction(types.PATCH_COURSE_NOTE_STARTED, {});
+
+    try {
+        const response = await instance.patch(`${courseNoteEndpoint}${id}/`, data, {
+            "headers": {
+                "Authorization": `Token ${getState().auth.token}`,
+            },
+        });
+        // succesful request
+        newAction(types.PATCH_COURSE_NOTE_SUCCESSFUL, response);
+    } catch ({response}) {
+        // failed request
+        newAction(types.PATCH_COURSE_NOTE_FAILED, response);
+    }
+};

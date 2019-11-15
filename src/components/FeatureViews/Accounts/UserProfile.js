@@ -149,6 +149,24 @@ class UserProfile extends Component {
 
         // if looking at new profile, reset tab to the first one
         if (currAccType !== prevAccType || currAccID !== prevAccID) {
+            let user;
+            const {accountType, accountID} = this.props.computedMatch.params;
+            switch (accountType) {
+                case "student":
+                    this.props.userActions.fetchStudents(accountID);
+                    break;
+                case "parent":
+                    this.props.userActions.fetchParents(accountID);
+                    break;
+                case "instructor":
+                    this.props.userActions.fetchInstructors(accountID);
+                    break;
+                case "receptionist":
+                    // future request for receptionists
+                    break;
+                // no default
+            }
+            return user;
             this.setState({
                 "value": 0,
             });
