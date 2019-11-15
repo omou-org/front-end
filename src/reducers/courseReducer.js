@@ -54,6 +54,7 @@ const handleCoursesFetch = (state, {id, response}) => {
     } else {
         data.forEach((course) => {
             NewCourseList = updateCourse(NewCourseList, course.id, course);
+            // console.log('new courses: ', NewCourseList);
         });
     }
     return {
@@ -62,11 +63,12 @@ const handleCoursesFetch = (state, {id, response}) => {
     };
 };
 
-export const updateCourse = (courses, id, course) => ({
+export const updateCourse = (courses, id, course) => {
+    return {
     ...courses,
     [id]: {
         "course_id": id,
-        "title": course.subject,
+        "title": course.subject ? course.subject : "",
         "schedule": {
             "start_date": course.start_date,
             "end_date": course.end_date,
@@ -85,4 +87,4 @@ export const updateCourse = (courses, id, course) => ({
         "tags": [],
         "roster": [],
     },
-});
+}};

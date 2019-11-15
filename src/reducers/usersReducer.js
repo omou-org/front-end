@@ -28,8 +28,12 @@ const parseRelationship = {
 };
 
 const parseBirthday = (date) => {
-    const [year, month, day] = date.split("-");
-    return `${month}/${day}/${year}`;
+    if(date !== null){
+        const [year, month, day] = date.split("-");
+        return `${month}/${day}/${year}`;
+    } else {
+        return "01/01/2000";
+    }
 };
 
 const handleNotesPost = (state, {response, ...rest}) => handleNotesFetch(state, {
@@ -151,11 +155,13 @@ const handleInstructorsFetch = (state, {id, response}) => {
     let {InstructorList} = state;
     if (id !== REQUEST_ALL) {
         InstructorList = updateInstructor(InstructorList, id, data);
+
     } else {
-        data.forEach((instructor) => {
+        data.forEach((instructor,i) => {
             InstructorList = updateInstructor(InstructorList, instructor.user.id, instructor);
         });
     }
+    // console.log(InstructorList,"hi");
     return {
         ...state,
         InstructorList,
@@ -163,22 +169,23 @@ const handleInstructorsFetch = (state, {id, response}) => {
 };
 
 
-export const updateInstructor = (instructors, id, instructor) => ({
+export const updateInstructor = (instructors, id, instructor) => {
+    let {address, birth_date, city, gender, phone_number, state, user, user_uuid, zipcode} = instructor;
+    return {
     ...instructors,
     [id]: {
-        "user_id": instructor.user.id,
-        "gender": instructor.gender,
-        "birth_date": parseBirthday(instructor.birth_date),
-        "address": instructor.address,
-        "city": instructor.city,
-        "phone_number": instructor.phone_number,
-        "state": instructor.state,
-        "zipcode": instructor.zipcode,
-        "age": instructor.age,
-        "first_name": instructor.user.first_name,
-        "last_name": instructor.user.last_name,
-        "name": `${instructor.user.first_name} ${instructor.user.last_name}`,
-        "email": instructor.user.email,
+        "user_id": user.id,
+        "gender": gender,
+        "birth_date": parseBirthday(birth_date),
+        "address": address,
+        "city": city,
+        "phone_number": phone_number,
+        "state": state,
+        "zipcode": zipcode,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "name": `${user.first_name} ${user.last_name}`,
+        "email": user.email,
         // below is not from database
         "role": "instructor",
         "background": {
@@ -227,12 +234,13 @@ export const updateInstructor = (instructors, id, instructor) => ({
                     "title": "Daniel Time Off",
                 },
                 "2": {
+        "notes": {},
                     "start": "2020-03-22T00:00",
                     "end": "2020-03-22T00:00",
                     "title": "Daniel Time Off",
                 },
             },
         },
-        "notes": {},
     },
-});
+    };
+};
