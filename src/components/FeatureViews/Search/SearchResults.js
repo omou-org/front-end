@@ -28,9 +28,11 @@ const SearchResults = (props) => {
 
     // /search/account/?query=query?profileFilter=profileFilter?gradeFilter=gradeFilter?sortAlpha=asc?sortID=desc
     useEffect(() => {
+        console.log(sessionStorage.getItem("authToken"));
         (async () => {
             try {
-                const response = await axios.get("http://localhost:8000/search/account/", { params: { query: params.query }, "Authorization": `Token ${props.auth.token}`, })
+                const response = await axios.get("http://localhost:8000/search/account/",
+                    { params: { query: params.query }, headers: {"Authorization": `Token ${props.auth.token}`,} });
                 if (response.data === []) {
                     console.log("hit")
                 } else {

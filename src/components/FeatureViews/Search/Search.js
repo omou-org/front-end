@@ -22,20 +22,12 @@ const Search = (props) => {
     const [primaryFilter, setPrimaryFilter] = useState("All");
     const [searchSuggestions, setSearchSuggestions] = useState(()=>{
         let suggestions = [];
-        console.log(props);
         suggestions = suggestions.concat(Object.values(props.students).map((student)=>{ return {...student, type:"student"}}));
         suggestions = suggestions.concat(Object.values(props.parents).map((parent)=>{ return {...parent, type:"parent"}}));
         suggestions = suggestions.concat(Object.values(props.instructors).map((instructor)=>{ return {...instructor, type:"instructor"}}));
         suggestions = suggestions.concat(Object.values(props.courses));
         return suggestions;
     });
-
-    // useEffect(() => {
-    //     props.userActions.fetchParents();
-    //     props.userActions.fetchInstructors();
-    //     props.userActions.fetchStudents();
-    //
-    // })
 
     const searchList = searchSuggestions.map(
         (data) => {
