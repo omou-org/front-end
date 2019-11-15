@@ -44,15 +44,24 @@ const Notes = ({userRole, userID}) => {
             case "receptionist":
                 return Users.ReceptionistList[userID];
             case "course":
-                return Course.CourseList[userID];
+                return Course.NewCourseList[userID];
             default:
                 return -1;
         }
     });
 
-    const getRequestStatus = useSelector(({RequestStatus}) => RequestStatus.note[GET][userID]);
-    const postRequestStatus = useSelector(({RequestStatus}) => RequestStatus.note[POST]);
-    const patchRequestStatus = useSelector(({RequestStatus}) => RequestStatus.note[PATCH][userID]);
+    const getRequestStatus = useSelector(({RequestStatus}) =>
+        userRole === "course"
+            ? RequestStatus.courseNote[GET][userID]
+            : RequestStatus.note[GET][userID]);
+    const postRequestStatus = useSelector(({RequestStatus}) =>
+        userRole === "course"
+            ? RequestStatus.courseNote[POST]
+            : RequestStatus.note[POST]);
+    const patchRequestStatus = useSelector(({RequestStatus}) =>
+        userRole === "course"
+            ? RequestStatus.courseNote[PATCH][userID]
+            : RequestStatus.note[PATCH][userID]);
 
     const [alert, setAlert] = useState(false);
     const [noteBody, setNoteBody] = useState("");
@@ -64,7 +73,11 @@ const Notes = ({userRole, userID}) => {
     const [error, setError] = useState(false);
 
     useEffect(() => {
-        api.fetchNotes(userID, userRole);
+        if (userRole === "course") {
+            api.fetchCourseNotes(userID);
+        } else {
+            api.fetchNotes(userID, userRole);
+        }
     }, [api, userID, userRole]);
 
     const openNewNote = useCallback(() => {
@@ -105,21 +118,39 @@ const Notes = ({userRole, userID}) => {
     };
 
     const saveNote = useCallback(() => {
-        const note = {
-            "body": noteBody,
-            "complete": false,
-            "important": notification,
-            "title": noteTitle,
-            "user": userID,
-        };
-        if (editID) {
-            api.patchNote(editID, note, userRole);
-            setIsPost(false);
+        if (userRole === "course") {
+            const note = {
+                "body": noteBody,
+                "complete": false,
+                "important": notification,
+                "title": noteTitle,
+                "course": userID,
+            };
+            if (editID) {
+                api.patchCourseNote(editID, note, userRole);
+                setIsPost(false);
+            } else {
+                api.postCourseNote(note, userRole);
+                setIsPost(true);
+            }
+            setSubmitting(true);
         } else {
-            api.postNote(note, userRole);
-            setIsPost(true);
+            const note = {
+                "body": noteBody,
+                "complete": false,
+                "important": notification,
+                "title": noteTitle,
+                "user": userID,
+            };
+            if (editID) {
+                api.patchNote(editID, note, userRole);
+                setIsPost(false);
+            } else {
+                api.postNote(note, userRole);
+                setIsPost(true);
+            }
+            setSubmitting(true);
         }
-        setSubmitting(true);
     }, [api, noteBody, notification, noteTitle, userID, userRole, editID]);
 
     if (!getRequestStatus || getRequestStatus === REQUEST_STARTED) {
@@ -223,7 +254,7 @@ const Notes = ({userRole, userID}) => {
                     </Typography>
                 </div>
             </Grid>
-            {Object.values(user.notes).map((note) => (
+            {user.notes && Object.values(user.notes).map((note) => (
                 <Grid
                     item
                     key={note.id || note.body}
