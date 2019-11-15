@@ -22,7 +22,7 @@
 
   /*Drawer Styling*/
 
-  div[class^="MuiDrawer-paperAnchorDockedLeft"] {
+  div[class*="MuiDrawer-paperAnchorDockedLeft"] {
     border: none !important;
   }
 

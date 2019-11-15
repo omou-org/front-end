@@ -1,4 +1,4 @@
-import {GET, PATCH} from "../actions/actionTypes";
+import {GET, PATCH, POST} from "../actions/actionTypes";
 
 export default {
     "Authentication": initAuth(),
@@ -4124,6 +4124,87 @@ export default {
         ],
     },
     "RequestStatus": initRequests(),
+    "SearchResults": {
+        accounts: [
+            {
+                first_name: "Daniel",
+                last_name: "Huang",
+                role: "instructor",
+                id: 10,
+                email: "daniel.huang@gmail.com",
+            },
+            {
+                first_name: "Danny",
+                last_name: "Long",
+                role: "student",
+                id: 10,
+                email: "dannylong@omou.com",
+            },
+            {
+                first_name: "Gale",
+                last_name: "Long",
+                role: "parent",
+                id: 78,
+                email: "gale.long@omou.com",
+            },
+            {
+                first_name: "Katie",
+                last_name: "Ho",
+                role: "instructor",
+                id: 13,
+                email: "katie@omou.com",
+            },
+            {
+                first_name: "Calvin",
+                last_name: "Fronda",
+                role: "instructor",
+                id: 15,
+                email: "cfronda@omou.com",
+            },
+        ],
+        courses: [
+            {
+                date_start: "2020-01-08",
+                date_end: "2020-04-01",
+                course: {
+                    title: "6th Grade Math Placement Test Prep",
+                    course_id: "6GMPTP-A",
+                    subject: "Math",
+                    instructor: "Daniel Huang",
+                },
+            },
+            {
+                date_start: "2020-08-19",
+                date_end: "2020-11-04",
+                course: {
+                    title: "Honors Pre-Calculus - Amador",
+                    course_id: "HPC-A",
+                    subject: "Calculus",
+                    instructor: "Daniel Huang",
+                },
+            },
+            {
+                date_start: "2020-03-21",
+                date_end: "2020-06-27",
+                course: {
+                    title: "AP Calc A/B",
+                    course_id: "APCAB-A",
+                    subject: "Calculus",
+                    instructor: "Daniel Huang",
+                },
+            },
+            {
+                date_start: "2020-05-21",
+                date_end: "2020-09-27",
+                course: {
+                    title: "AP History",
+                    course_id: "APH-A",
+                    subject: "History",
+                    instructor: "Calvin Fronda",
+                },
+            },
+        ],
+    }
 };
 
 function initRequests() {
@@ -4494,15 +4575,15 @@ function initRegistrationForm() {
                         name: "State",
                         type: "short text",
                         suggestions: [
-                            {label: "AL"}, {label: "AK"}, {label: "AZ"}, {label: "AR"}, {label: "CA"}, {label: "CO"},
-                            {label: "CT"}, {label: "DE"}, {label: "FL"}, {label: "GA"}, {label: "HI"}, {label: "ID"},
-                            {label: "IL"}, {label: "IN"}, {label: "IA"}, {label: "KS"},
-                            {label: "KY"}, {label: "KY"}, {label: "LA"}, {label: "ME"}, {label: "MD"}, {label: "MA"}, {label: "MI"},
-                            {label: "MS"}, {label: "MO"}, {label: "MT"}, {label: "NE"}, {label: "NV"}, {label: "NH"}, {label: "NJ"},
-                            {label: "NM"}, {label: "NY"}, {label: "NC"}, {label: "ND"},
-                            {label: "OH"}, {label: "OK"}, {label: "OR"}, {label: "PA"}, {label: "RI"}, {label: "SC"}, {label: "SD"},
-                            {label: "TN"}, {label: "TX"}, {label: "UT"}, {label: "VT"}, {label: "VA"}, {label: "WA"}, {label: "WV"}, {label: "WI"},
-                            {label: "WY"},
+                            { label: "AL" }, { label: "AK" }, { label: "AZ" }, { label: "AR" }, { label: "CA" }, { label: "CO" },
+                            { label: "CT" }, { label: "DE" }, { label: "FL" }, { label: "GA" }, { label: "HI" }, { label: "ID" },
+                            { label: "IL" }, { label: "IN" }, { label: "IA" }, { label: "KS" },
+                            { label: "KY" }, { label: "KY" }, { label: "LA" }, { label: "ME" }, { label: "MD" }, { label: "MA" }, { label: "MI" },
+                            { label: "MS" }, { label: "MO" }, { label: "MT" }, { label: "NE" }, { label: "NV" }, { label: "NH" }, { label: "NJ" },
+                            { label: "NM" }, { label: "NY" }, { label: "NC" }, { label: "ND" },
+                            { label: "OH" }, { label: "OK" }, { label: "OR" }, { label: "PA" }, { label: "RI" }, { label: "SC" }, { label: "SD" },
+                            { label: "TN" }, { label: "TX" }, { label: "UT" }, { label: "VT" }, { label: "VA" }, { label: "WA" }, { label: "WV" }, { label: "WI" },
+                            { label: "WY" },
                         ].map((suggestion) => ({
                             value: suggestion.label,
                             label: suggestion.label,
