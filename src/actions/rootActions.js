@@ -1,9 +1,5 @@
 import * as types from "./actionTypes";
-import axios from "axios";
-
-const instance = axios.create({
-    baseURL: "http://localhost:8000",
-});
+import {instance} from "./apiActions";
 
 const typeToEndpoint = {
     "student": "/account/student/",
@@ -170,7 +166,7 @@ export const submitParentAndStudent = (parent, student, parentID, studentID) => 
                 instance.request({
                     "data": {
                         ...student,
-                        "parent": parentResponse.data.user.id,
+                        "primary_parent": parentResponse.data.user.id,
                     },
                     "headers": {
                         "Authorization": `Token ${sessionStorage.getItem("authToken")}`,

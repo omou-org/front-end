@@ -445,7 +445,6 @@ const RegistrationCourse = () => {
 
                 </Tabs>
                 {displayComponent()}
-
             </Paper>
         </Grid>
     );

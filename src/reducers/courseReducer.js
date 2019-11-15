@@ -89,7 +89,7 @@ export const updateCourse = (courses, id, course) => ({
         "type": "C",
         "subject": "Math",
         "tags": [],
-        "roster": [],
+        "roster": course.enrollment_list,
     },
 });
 

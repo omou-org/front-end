@@ -4,7 +4,10 @@
     padding: 37px;
     width: 412px;
     height: 400px;
-    margin-left: -20vw;
+    position:fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .header {
