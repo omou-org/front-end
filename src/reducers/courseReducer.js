@@ -8,6 +8,11 @@ export default (state = initialState.Course, {payload, type}) => {
             return handleCoursesFetch(state, payload);
         case actions.FETCH_ENROLLMENT_SUCCESSFUL:
             return handleEnrollmentFetch(state, payload);
+        case actions.FETCH_COURSE_NOTE_SUCCESSFUL:
+            return handleNotesFetch(state, payload);
+        case actions.POST_COURSE_NOTE_SUCCESSFUL:
+        case actions.PATCH_COURSE_NOTE_SUCCESSFUL:
+            return handleNotesPost(state, payload);
         default:
             return state;
     }
@@ -80,9 +85,28 @@ export const updateCourse = (courses, id, course) => ({
         "grade": 10,
         "description": course.description,
         "room_id": course.room,
+        "notes": {},
         "type": "C",
         "subject": "Math",
         "tags": [],
         "roster": course.enrollment_list,
     },
 });
+
+const handleNotesPost = (state, {response, ...rest}) => handleNotesFetch(state, {
+    "response": {
+        ...response,
+        "data": [response.data],
+    },
+    "courseID": response.data.course,
+    ...rest,
+});
+
+const handleNotesFetch = (state, {courseID, response}) => {
+    const {data} = response;
+    const newState = JSON.parse(JSON.stringify(state));
+    data.forEach((note) => {
+        newState.NewCourseList[courseID].notes[note.id] = note;
+    });
+    return newState;
+};

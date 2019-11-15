@@ -305,7 +305,7 @@ const RegistrationCourse = () => {
                 component=(<div
                 style={{paddingTop:30}}>
                     <Note
-                     userID={course.course_id}
+                     userID={courseID}
                      userRole="course"
                      />
                 </div>)
@@ -445,7 +445,6 @@ const RegistrationCourse = () => {
 
                 </Tabs>
                 {displayComponent()}
-               
             </Paper>
         </Grid>
     );

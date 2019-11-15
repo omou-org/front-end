@@ -4322,7 +4322,11 @@ function initRequests() {
         "note": {
             [GET]: {},
             [PATCH]: {},
-        }
+        },
+        "courseNote": {
+            [GET]: {},
+            [PATCH]: {},
+        },
     };
 }
 
