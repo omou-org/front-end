@@ -92,6 +92,13 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
         case actions.PATCH_NOTE_FAILED:
             return updateNotePatch(state, payload.userID, status);
 
+        case actions.FETCH_USER_STARTED:
+            return updateUserFetch(state, status);
+        case actions.FETCH_USER_SUCCESSFUL:
+            return updateUserFetch(state, status);
+        case actions.FETCH_USER_FAILED:
+            return updateUserFetch(state, status);
+
         default:
             return state;
     }
@@ -166,3 +173,8 @@ const updateNotePatch = (state, userID, status) => {
     newState.note[actions.PATCH][userID] = status;
     return newState;
 };
+
+const updateUserFetch = (state, status) => ({
+    ...state,
+    "userFetch": status,
+});

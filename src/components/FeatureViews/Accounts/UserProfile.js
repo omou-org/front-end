@@ -172,7 +172,7 @@ class UserProfile extends Component {
                 user = this.props.receptionist[accountID];
                 break;
             default:
-                user = -1;
+                user = null;
         }
         return user;
     }
@@ -206,7 +206,7 @@ class UserProfile extends Component {
 
     }
     renderNoteIcon() {
-        if (this.getUser().role != "receptionist") {
+        if (this.getUser() && this.getUser().role != "receptionist") {
             if (this.filter()) {
                 userTabs[this.getUser().role].filter(tab => tab.tab_id === 7)[0].icon =
                     <><Avatar style={{ width: 10, height: 10 }} className="notification" /><NoteIcon className="TabIcon" /></>

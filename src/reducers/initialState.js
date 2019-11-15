@@ -4167,10 +4167,9 @@ function initRequests() {
 }
 
 function initAuth() {
-    const token = localStorage.getItem("authToken") || null;
-    sessionStorage.setItem("authToken", token);
     return {
-        token,
+        token: null,
+        isAdmin: false,
     };
 }
 

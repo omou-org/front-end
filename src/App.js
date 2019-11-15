@@ -1,5 +1,8 @@
 // React
-import React from "react";
+import React, {useEffect, useMemo} from "react";
+import * as authActions from "actions/authActions";
+import {useDispatch, useSelector} from "react-redux";
+import {bindActionCreators} from "redux";
 
 // Material UI
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -9,11 +12,19 @@ import Navigation from "./components/Navigation/Navigation";
 import "./App.scss";
 import "./theme/theme.scss";
 
-const App = () => (
-    <div className="App">
-        <CssBaseline />
-        <Navigation />
-    </div>
-);
+const App = () => {
+    const dispatch = useDispatch();
+    const token = useSelector(({auth}) => auth.token) || localStorage.getItem("authToken");
+    const bound = useMemo(() => bindActionCreators(authActions, dispatch), [dispatch]);
+    useEffect(() => {
+        bound.fetchUserStatus(token);
+    }, [bound, token]);
+    return (
+        <div className="App">
+            <CssBaseline />
+            <Navigation />
+        </div>
+    );
+};
 
 export default App;
