@@ -188,7 +188,7 @@ class UserProfile extends Component {
                 user = this.props.receptionist[accountID];
                 break;
             default:
-                user = -1;
+                user = null;
         }
         return user;
     }

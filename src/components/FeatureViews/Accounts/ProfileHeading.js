@@ -228,7 +228,7 @@ class ProfileHeading extends Component {
                         </Grid>
                     </Grid>
                     <Grid item xs={3} align="right">
-                        {this.renderEditButton()}
+                        {this.props.isAdmin && this.renderEditButton()}
                     </Grid>
                 </Grid>
                 {profileDetails}
@@ -237,4 +237,8 @@ class ProfileHeading extends Component {
     }
 }
 
-export default ProfileHeading;
+const mapStateToProps = (state) => ({
+    "isAdmin": state.auth.isAdmin,
+});
+
+export default connect(mapStateToProps)(ProfileHeading);
