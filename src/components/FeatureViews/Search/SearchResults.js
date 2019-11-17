@@ -61,8 +61,10 @@ const SearchResults = (props) => {
     //Endpoints
     // /search/account/?query=query?profileFilter=profileFilter?gradeFilter=gradeFilter?sortAlpha=asc?sortID=desc
     // /search/courses/?query=query?courseTypeFilter=courseType?availability=availability?dateSort=desc
-    const accountSearchURL = "http://localhost:8000/search/account/";
-    const courseSearchURL = "http://localhost:8000/search/courses/";
+    // const accountSearchURL = "http://localhost:8000/search/account/";
+    // const courseSearchURL = "http://localhost:8000/search/courses/";
+    const accountSearchURL = "http://api.omoulearning.com:8000/search/account/";
+    const courseSearchURL = "http://api.omoulearning.com:8000/search/courses/";
     const requestConfig = { params: { query: params.query }, headers: {"Authorization": `Token ${props.auth.token}`,} };
 
     useEffect(() => {
