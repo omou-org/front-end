@@ -82,6 +82,9 @@ class CourseViewer extends Component {
     }
 
     numPaidCourses(courseID) {
+        if (!this.props.enrollments[this.props.user_id] || !this.props.enrollments[this.props.user_id][courseID]) {
+            return 0;
+        }
         let courseEnrollment = this.props.enrollments[this.props.user_id][courseID],
             enrollmentPayments = Object.values(courseEnrollment.session_payment_status),
             numPaidEnrollments = 0;

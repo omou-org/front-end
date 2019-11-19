@@ -16,6 +16,22 @@ export default {
                 tuition: 450,
                 capacity: 20,
                 grade: 5,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test. " +
                     " The material will cover all material from the fifth grade curriculum as well as some sixth grade content" +
                     " to comprehensively prepare students for the placement exam. The placement exam will vary by school district " +
@@ -31,6 +47,22 @@ export default {
                 tuition: 500,
                 capacity: 15,
                 grade: 8,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
             {
@@ -43,6 +75,22 @@ export default {
                 tuition: 1480,
                 capacity: 12,
                 grade: 10,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
             {
@@ -55,6 +103,22 @@ export default {
                 tuition: 1480,
                 capacity: 15,
                 grade: 10,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             }, {
                 course_id: 5,
@@ -66,6 +130,22 @@ export default {
                 tuition: 450,
                 capacity: 8,
                 grade: 10,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
             {
@@ -78,6 +158,22 @@ export default {
                 tuition: 1440,
                 capacity: 12,
                 grade: 8,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             }, {
                 course_id: 7,
@@ -89,6 +185,22 @@ export default {
                 tuition: 700,
                 capacity: 15,
                 grade: 10,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
             {
@@ -101,6 +213,22 @@ export default {
                 tuition: 700,
                 capacity: 15,
                 grade: 10,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
             {
@@ -113,6 +241,22 @@ export default {
                 tuition: 700,
                 capacity: 15,
                 grade: 10,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
             {
@@ -125,6 +269,22 @@ export default {
                 tuition: 700,
                 capacity: 15,
                 grade: 10,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
         ],
@@ -4162,15 +4322,18 @@ function initRequests() {
         "note": {
             [GET]: {},
             [PATCH]: {},
-        }
+        },
+        "courseNote": {
+            [GET]: {},
+            [PATCH]: {},
+        },
     };
 }
 
 function initAuth() {
-    const token = localStorage.getItem("authToken") || null;
-    sessionStorage.setItem("authToken", token);
     return {
-        token,
+        token: null,
+        isAdmin: false,
     };
 }
 
