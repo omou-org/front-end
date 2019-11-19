@@ -85,7 +85,6 @@ const SearchResults = (props) => {
                     console.log(props);
                     setCourseResults(courseResponse.data)
                 }
-                // props.courseActions.
             } catch (err) {
                 console.log(err)
             } finally {
