@@ -61,14 +61,23 @@ const SearchResults = (props) => {
     //Endpoints
     // /search/account/?query=query?profileFilter=profileFilter?gradeFilter=gradeFilter?sortAlpha=asc?sortID=desc
     // /search/courses/?query=query?courseTypeFilter=courseType?availability=availability?dateSort=desc
-    const accountSearchURL = "http://localhost:8000/search/account/";
-    const courseSearchURL = "http://localhost:8000/search/courses/";
+    // const accountSearchURL = "http://localhost:8000/search/account/";
+    // const courseSearchURL = "http://localhost:8000/search/courses/";
+    const accountSearchURL = "http://api.omoulearning.com:8000/search/account/";
+    const courseSearchURL = "http://api.omoulearning.com:8000/search/courses/";
     const requestConfig = { params: { query: params.query }, headers: {"Authorization": `Token ${props.auth.token}`,} };
 
     useEffect(() => {
         (async () => {
+            console.log("search rsults")
             try {
                 const accountResponse = await axios.get(accountSearchURL, requestConfig);
+                axios.interceptors.request.use(function(config){
+                    setLoading(true);
+                }, (error) => {
+                    return Promise.reject(error);
+                });
+
                 if (accountResponse.data === []) {
                     console.log("account hit")
                 } else {
@@ -96,81 +105,85 @@ const SearchResults = (props) => {
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
             <Grid container className={'search-results'} style={{ "padding": "1em" }}>
-                <Grid item xs={12}>
-                <Paper className={'main-search-view'} >
-                    <Grid item xs={12} style={{ "padding": "1em" }}>
-                        <Typography variant={"h4"} align={"left"}> {accountResults.length + courseResults.length} Search Results for "{params.query}"  </Typography>
-                    </Grid>
-                    <hr />
+                { loading ?
+                    <h2>Loading...</h2>
+                    :
                     <Grid item xs={12}>
-                        <Grid container
-                            justify={"space-between"}
-                            direction={"row"}
-                            alignItems="center">
-                            <Grid item style={{ "paddingLeft": "25px" }}>
-                                <Typography variant={"h5"} align={'left'} gutterBottom>Accounts</Typography>
+                        <Paper className={'main-search-view'} >
+                            <Grid item xs={12} style={{ "padding": "1em" }}>
+                                <Typography variant={"h4"} align={"left"}> {accountResults.length + courseResults.length} Search Results for "{params.query}"  </Typography>
                             </Grid>
-                            {/*<Grid item >*/}
-                            {/*    <Chip label="See All Accounts"*/}
-                            {/*        className="searchChip"*/}
-                            {/*    />*/}
+                            <hr />
+                            <Grid item xs={12}>
+                                <Grid container
+                                      justify={"space-between"}
+                                      direction={"row"}
+                                      alignItems="center">
+                                    <Grid item style={{ "paddingLeft": "25px" }}>
+                                        <Typography variant={"h5"} align={'left'} gutterBottom>Accounts</Typography>
+                                    </Grid>
+                                    {/*<Grid item >*/}
+                                    {/*    <Chip label="See All Accounts"*/}
+                                    {/*        className="searchChip"*/}
+                                    {/*    />*/}
+                                    {/*</Grid>*/}
+                                </Grid>
+                                <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} direction={"row"}>
+                                    { accountResults.length > 0 ?
+                                        accountResults.slice(0, 4).map((account) => (
+                                            <AccountsCards user={account.user} key={account.user_id} />))
+                                        :
+                                        ""
+                                    }
+                                </Grid>
+                            </Grid>
+                            {/* </Grid> */}
+                            <hr />
+                            {/*<Grid item xs={12}>*/}
+                            {/*    <Grid container*/}
+                            {/*        justify={"space-between"}*/}
+                            {/*        direction={"row"}*/}
+                            {/*        alignItems="center">*/}
+                            {/*        <Grid item style={{ "paddingLeft": "25px" }}>*/}
+                            {/*            <Typography variant={"h5"} align={'left'} >Upcoming Sessions</Typography>*/}
+                            {/*        </Grid>*/}
+                            {/*        /!*<Grid item style={{ "padding": "1vh" }}>*!/*/}
+                            {/*        /!*<Chip label="See All Upcoming Sessions"*!/*/}
+                            {/*        /!*    className="searchChip"*!/*/}
+                            {/*        /!*    />*!/*/}
+                            {/*        /!*</Grid>*!/*/}
+                            {/*    </Grid>*/}
+                            {/*    <Grid container spacing={16} style={{ paddingLeft: 20, paddingRight: 20 }} direction={"row"}>*/}
+                            {/*        {Object.values(props.instructors).slice(0, 4).map((user) => (*/}
+                            {/*            <UpcomingSessionCards user={user} key={user.user_id} />)*/}
+                            {/*        )}*/}
+                            {/*    </Grid>*/}
                             {/*</Grid>*/}
-                        </Grid>
-                        <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} direction={"row"}>
-                            { accountResults.length > 0 ?
-                                accountResults.slice(0, 4).map((account) => (
-                                <AccountsCards user={account.user} key={account.user_id} />))
-                                :
-                                ""
-                            }
-                        </Grid>
-                    </Grid>
-                    {/* </Grid> */}
-                    <hr />
-                    {/*<Grid item xs={12}>*/}
-                    {/*    <Grid container*/}
-                    {/*        justify={"space-between"}*/}
-                    {/*        direction={"row"}*/}
-                    {/*        alignItems="center">*/}
-                    {/*        <Grid item style={{ "paddingLeft": "25px" }}>*/}
-                    {/*            <Typography variant={"h5"} align={'left'} >Upcoming Sessions</Typography>*/}
-                    {/*        </Grid>*/}
-                    {/*        /!*<Grid item style={{ "padding": "1vh" }}>*!/*/}
-                    {/*        /!*<Chip label="See All Upcoming Sessions"*!/*/}
-                    {/*        /!*    className="searchChip"*!/*/}
-                    {/*        /!*    />*!/*/}
-                    {/*        /!*</Grid>*!/*/}
-                    {/*    </Grid>*/}
-                    {/*    <Grid container spacing={16} style={{ paddingLeft: 20, paddingRight: 20 }} direction={"row"}>*/}
-                    {/*        {Object.values(props.instructors).slice(0, 4).map((user) => (*/}
-                    {/*            <UpcomingSessionCards user={user} key={user.user_id} />)*/}
-                    {/*        )}*/}
-                    {/*    </Grid>*/}
-                    {/*</Grid>*/}
-                    {/*<hr />*/}
+                            {/*<hr />*/}
 
-                    <Grid item xs={12}>
-                        <Grid container
-                            justify={"space-between"}
-                            direction={"row"}
-                            alignItems="center">
-                            <Grid item style={{ "paddingLeft": "25px" }}>
-                                <Typography variant={"h5"} align={'left'} >Courses</Typography>
+                            <Grid item xs={12}>
+                                <Grid container
+                                      justify={"space-between"}
+                                      direction={"row"}
+                                      alignItems="center">
+                                    <Grid item style={{ "paddingLeft": "25px" }}>
+                                        <Typography variant={"h5"} align={'left'} >Courses</Typography>
+                                    </Grid>
+                                    {/*<Grid item style={{ "paddingRight": "1vh" }}>*/}
+                                    {/*    <Chip label="See All Courses"*/}
+                                    {/*        className="searchChip"*/}
+                                    {/*    />*/}
+                                    {/*</Grid>*/}
+                                </Grid>
+                                <Grid container direction={"row"} style={{ paddingLeft: 20, paddingRight: 20 }}>
+                                    {courseResults.slice(0, 4).map((course) => (
+                                        <CoursesCards course={course} key={course.course_id} />)
+                                    )}
+                                </Grid>
                             </Grid>
-                            {/*<Grid item style={{ "paddingRight": "1vh" }}>*/}
-                            {/*    <Chip label="See All Courses"*/}
-                            {/*        className="searchChip"*/}
-                            {/*    />*/}
-                            {/*</Grid>*/}
-                        </Grid>
-                        <Grid container direction={"row"} style={{ paddingLeft: 20, paddingRight: 20 }}>
-                            {courseResults.slice(0, 4).map((course) => (
-                                <CoursesCards course={course} key={course.course_id} />)
-                            )}
-                        </Grid>
+                        </Paper>
                     </Grid>
-                </Paper>
-                </Grid>
+                }
             </Grid>
     )
 };
