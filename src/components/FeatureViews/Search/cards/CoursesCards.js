@@ -13,10 +13,11 @@ import "../Search.scss";
 function CourseCards(props) {
 
     const handleLocaleDateString = (start, end) => {
-        console.log(props.course)
-        let s1 = new Date(start.replace(/-/g, '\/'))
-        let s2 = new Date(end.replace(/-/g, '\/'))
-        return `${s1.toLocaleDateString()} - ${s2.toLocaleDateString()}`
+        if(start && end){
+            let s1 = new Date(start.replace(/-/g, '\/'))
+            let s2 = new Date(end.replace(/-/g, '\/'))
+            return `${s1.toLocaleDateString()} - ${s2.toLocaleDateString()}`
+        }
     }
 
     const goToCoursePage = ()=> (e)=>{
