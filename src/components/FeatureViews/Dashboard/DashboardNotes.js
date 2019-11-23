@@ -14,13 +14,13 @@ import Paper from '@material-ui/core/Paper';
 
 class DashboardNotes extends Component {
     render() {
-        return (<div className="`DashboardNotes`">
+        return (<div className="notes">
                 <Card>
                     <CardActionArea>
                         <CardMedia>
                         </CardMedia>
                         <CardContent>
-                            <Typography gutterBottom variant="h5" component="h2">
+                            <Typography gutterBottom variant="h5" component="h2" className="notes">
                                 Notes
                             </Typography>
                         </CardContent>

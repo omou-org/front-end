@@ -15,6 +15,7 @@ import DashboardMainPanel from './DashboardMainPanel';
 import DashboardAccounts from './DashboardAccounts';
 import DashboardOP from './DashboardOP';
 import DashboardNotes from './DashboardNotes';
+import Avatar from "@material-ui/core/Avatar";
 
 
 class Dashboard extends Component {
@@ -51,51 +52,79 @@ class Dashboard extends Component {
         Accounts:[{
             fName: 'Ryan',
             lName: 'Liou',
+            initials: 'RL',
             phone: '555-555-5555',
-            email: 'ryanliou@email.com'
+            email: 'ryanliou@email.com',
+            role: 'Receptionist'
         },
         {
             fName: 'Daniel',
             lName: 'Huang',
+            intials: 'DH',
             phone: '555-555-5555',
-            email: 'dHuang@email.com'
+            email: 'dHuang@email.com',
+            role: 'Instructor'
         },
         {
             fName: 'Selina',
             lName: 'Che',
+            initials: 'SC',
             phone: '555-555-5555',
-            email: 'selinache@email.com'
+            email: 'selinache@email.com',
+            role: 'Student'
         }
-    ]
+        ],
+        OP:[{
+            fName: 'Selina',
+            lName: 'Che',
+            role: 'Student',
+            status: 'Overdue',
+            amt: '$50',
+            course: 'AP Calclus'
+        },
+        {
+            fName: 'Jerry',
+            lName: 'Li',
+            role: 'Student',
+            status:'Due',
+            amt: '$35',
+            course: 'AP Calculus'
+        }
+       ]
     }
 
     render() {
         return (<div className="`Dashboard`">
-               <Paper className="`Paper`">
+               <Paper className={"Paper"}>
                     <Typography variant="h3" align="left">Hello Sharon!</Typography>
                     <br />
                     <Typography variant="h6" align="left">Summit Education</Typography>
                     <br/>
-                    <Grid container spacing={16}>
+                    <Grid container direction="row" spacing={16}>
+                    <Grid container xs={9} sm={9} direction="row">
                     {this.state.MainPanel.Classes.map(c=>(
                         <DashboardMainPanel
                         cName={c.cName}
                         time={c.time}
+                        location={c.location}
                         >
                         </DashboardMainPanel>
                     ))}
-
-                        <DashboardNotes>
-
-                        </DashboardNotes>
-
                     </Grid>
-                    </Paper>
+                    <DashboardNotes>
+                    </DashboardNotes>
+                    </Grid>
+                </Paper>
                     <Paper>
                         <br></br>
                     <Typography variant="h5" align="left">
                         Recently Updated Accounts
                     </Typography>
+
+                    <Typography variant="h5" align="right">
+                        Outstanding Payments
+                    </Typography>
+
                         <br></br>
                     <Grid container spacing={16}>
                     {this.state.Accounts.map(a=>(
@@ -104,12 +133,22 @@ class Dashboard extends Component {
                        lName={a.lName}
                        phone={a.phone}
                        email={a.email}
+                       role={a.role}
                        >
                        </DashboardAccounts>
                     ))}
-                       <DashboardOP>
+                    {this.state.OP.map(op=>(
 
+                       <DashboardOP
+                        fName={op.fName}
+                        lName={op.lName}
+                        status={op.status}
+                        amt={op.amt}
+                        course={op.course}
+                        role={op.role}
+                        >
                        </DashboardOP>
+                    ))}
                     </Grid>
                 {/* contact */}
                 {/* <Card>

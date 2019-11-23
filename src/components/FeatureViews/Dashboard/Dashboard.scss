@@ -4,13 +4,11 @@
         flex-grow: 1;
     }
 
-    .Paper {
-        height: 140;
-        width: 100;
-    }
-    .DashboardNotes {
-        height: 400;
-        width: 300;
-        float: right;
-    }
+}
+.notes {
+    float: right
+}
+
+.DashboardMainPanel {
+    display:"inline-block";
 }
