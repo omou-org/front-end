@@ -14,9 +14,6 @@ import SearchIcon from "@material-ui/icons/Search";
 import {withRouter, Link} from 'react-router-dom';
 import axios from "axios";
 
-
-
-
 const Search = (props) => {
     const [query, setQuery] = useState("");
     const [primaryFilter, setPrimaryFilter] = useState("All");
@@ -124,6 +121,7 @@ const Search = (props) => {
     };
 
     const handleOnFocus = (primaryFilter) => (e)=>{
+        setQuery("");
         switch (primaryFilter) {
             case "All":
                 let suggestions = [];
