@@ -1,12 +1,11 @@
-import PropTypes from "prop-types";
 import React from "react";
-import {connect} from "react-redux";
+import {Link} from "react-router-dom";
+import {useSelector} from "react-redux";
 
 // Material UI Imports
-import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import {NavLink} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 
 const weekday = {
@@ -19,126 +18,144 @@ const weekday = {
     "6": "Sat",
 };
 
-const CourseList = (props) => props.filteredCourses.map((course) => {
-    let start_date = new Date(course.schedule.start_date),
-        end_date = new Date(course.schedule.end_date),
-        start_time = course.schedule.start_time.substr(1),
-        end_time = course.schedule.end_time.substr(1),
-        days = course.schedule.days.map((day) => weekday[day]);
-    start_date = start_date.toDateString().substr(3);
-    end_date = end_date.toDateString().substr(3);
-    const date = `${start_date} - ${end_date}`,
-        time = `${start_time} - ${end_time}`;
-    return (
-        <Paper className="row" key={course.course_id}>
-            <Grid container alignItems="center" layout="row">
+const CourseList = ({filteredCourses}) => {
+    const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
+    return filteredCourses.map((course) => {
+        let start_date = new Date(course.schedule.start_date),
+            end_date = new Date(course.schedule.end_date),
+            start_time = course.schedule.start_time.substr(1),
+            end_time = course.schedule.end_time.substr(1),
+            days = course.schedule.days.map((day) => weekday[day]);
+        start_date = start_date.toDateString().substr(3);
+        end_date = end_date.toDateString().substr(3);
+        const date = `${start_date} - ${end_date}`,
+            time = `${start_time} - ${end_time}`;
+        return (
+            <Paper
+                className="row"
+                key={course.course_id}>
                 <Grid
-                    item
-                    md={3} xs={12}
-                    component={NavLink}
-                    to={`/registration/course/${course.course_id}`}
-                    style={{"textDecoration": "none", "cursor": "pointer"}}>
-                    <Typography className="course-heading" align="left">
-                        {course.title}
-                    </Typography>
-                </Grid>
-                <Grid
-                    item
-                    md={5} xs={12}
-                    component={NavLink}
-                    to={`/registration/course/${course.course_id}`}
-                    style={{"textDecoration": "none", "cursor": "pointer"}}>
+                    alignItems="center"
+                    container
+                    layout="row">
                     <Grid
-                        container className="course-detail">
-                        <Grid
-                            item
-                            md={4} xs={3}
-                            className="heading-det"
-                            align="left">
-                            Date
-                        </Grid>
-                        <Grid
-                            item
-                            md={8} xs={9}
-                            className="value"
-                            align="left">
-                            {date} | {days} {time}
-                        </Grid>
+                        component={Link}
+                        item
+                        md={3}
+                        style={{"textDecoration": "none",
+                            "cursor": "pointer"}}
+                        to={`/registration/course/${course.course_id}`}
+                        xs={12}>
+                        <Typography
+                            align="left"
+                            className="course-heading">
+                            {course.title}
+                        </Typography>
                     </Grid>
-                    <Grid container className="course-detail">
-                        <Grid
-                            item
-                            md={4} xs={3}
-                            className="heading-det"
-                            align="left">
-                            Instructor
-                        </Grid>
-                        <Grid item md={8} xs={9}
-                            className="value"
-                            align="left">
-                            {props.instructors[course.instructor_id].name}
-                        </Grid>
-                    </Grid>
-                    <Grid container className="course-detail">
-                        <Grid
-                            item
-                            md={4} xs={3}
-                            className="heading-det"
-                            align="left">
-                            Tuition
-                        </Grid>
-                        <Grid
-                            item
-                            md={8} xs={9}
-                            className="value"
-                            align="left">
-                            ${course.tuition}
-                        </Grid>
-                    </Grid>
-                </Grid>
-                <Grid
-                    item
-                    md={4} xs={12}
-                    className="course-action">
                     <Grid
-                        container
-                        alignItems="center"
-                        layout="row"
-                        style={{"height": "100%"}}>
+                        // component={Link}
+                        item
+                        md={5}
+                        style={{"textDecoration": "none",
+                            "cursor": "pointer"}}
+                        // to={`/registration/course/${course.course_id}`}
+                        xs={12}>
                         <Grid
-                            item xs={6}
-                            className="course-status">
-                            <span className="stats">
-                                {course.roster.length} / {course.capacity}
-                            </span>
-                            <span className="label">
-                                Status
-                            </span>
+                            className="course-detail"
+                            container>
+                            <Grid
+                                align="left"
+                                className="heading-det"
+                                item
+                                md={4}
+                                xs={3}>
+                                Date
+                            </Grid>
+                            <Grid
+                                align="left"
+                                item
+                                md={8}
+                                xs={9}>
+                                {date} | {days} {time}
+                            </Grid>
                         </Grid>
-                        <Grid item xs={6}>
-                            <Button
-                                component={NavLink}
-                                to={`/registration/form/course/${course.course_id}`}
-                                variant="contained"
-                                disabled={course.capacity <= course.filled}
-                                className="button primary">+ REGISTER</Button>
+                        <Grid
+                            className="course-detail"
+                            container>
+                            <Grid
+                                align="left"
+                                className="heading-det"
+                                item
+                                md={4}
+                                xs={3}>
+                                Instructor
+                            </Grid>
+                            <Grid
+                                align="left"
+                                item
+                                md={8}
+                                xs={9}>
+                                {instructors[course.instructor_id].name}
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className="course-detail"
+                            container>
+                            <Grid
+                                align="left"
+                                className="heading-det"
+                                item
+                                md={4}
+                                xs={3}>
+                                Tuition
+                            </Grid>
+                            <Grid
+                                align="left"
+                                item
+                                md={8}
+                                xs={9}>
+                                ${course.tuition}
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid
+                        className="course-action"
+                        item
+                        md={4}
+                        xs={12}>
+                        <Grid
+                            alignItems="center"
+                            container
+                            layout="row"
+                            style={{"height": "100%"}}>
+                            <Grid
+                                className="course-status"
+                                item
+                                xs={6}>
+                                <span className="stats">
+                                    {course.roster.length} / {course.capacity}
+                                </span>
+                                <span className="label">
+                                    Status
+                                </span>
+                            </Grid>
+                            <Grid
+                                item
+                                xs={6}>
+                                <Button
+                                    className="button primary"
+                                    component={Link}
+                                    disabled={course.capacity <= course.filled}
+                                    to={`/registration/form/course/${course.course_id}`}
+                                    variant="contained">+ REGISTER
+                                </Button>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
-        </Paper>
-    );
-});
+            </Paper>
+        );
+    });
+};
 
-const mapStateToProps = (state) => ({
-    "instructors": state.Users["InstructorList"],
-    "courses": state.Course["NewCourseList"],
-    "courseCategories": state.Course["CourseCategories"],
-});
-
-const mapDispatchToProps = () => ({});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(CourseList);
+export default CourseList;

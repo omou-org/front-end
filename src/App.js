@@ -1,24 +1,30 @@
-// react
-import React from "react";
+// React
+import React, {useEffect, useMemo} from "react";
+import * as authActions from "actions/authActions";
+import {useDispatch, useSelector} from "react-redux";
+import {bindActionCreators} from "redux";
 
-/*
- * Material UI
- * TODO: import each component individually (i.e. '@material-ui/core/AppBar') to reduce bundle size
- */
+// Material UI
 import CssBaseline from "@material-ui/core/CssBaseline";
 
-// local component import
+// Local Component Imports
 import Navigation from "./components/Navigation/Navigation";
-
-// css import
 import "./App.scss";
 import "./theme/theme.scss";
 
-const App = () => (
-    <div className="App">
-        <CssBaseline />
-        <Navigation />
-    </div>
-);
+const App = () => {
+    const dispatch = useDispatch();
+    const token = useSelector(({auth}) => auth.token) || localStorage.getItem("authToken");
+    const bound = useMemo(() => bindActionCreators(authActions, dispatch), [dispatch]);
+    useEffect(() => {
+        bound.fetchUserStatus(token);
+    }, [bound, token]);
+    return (
+        <div className="App">
+            <CssBaseline />
+            <Navigation />
+        </div>
+    );
+};
 
 export default App;

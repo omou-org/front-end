@@ -58,7 +58,7 @@ describe('Signing In', () => {
   }, 160000000);
   test('login form leads to the dashboard', async () => {
 
-    // you will need to find the exact path for the screen shots to save in the file. 
+    // you will need to find the exact path for the screen shots to save in the file.
 
     await page.screenshot({ path: "debug_screenshots/test.png" })
     // Uses faker to load data from object uptop

@@ -2,7 +2,7 @@ import * as authActions from "../../actions/authActions.js";
 import {REQUEST_STARTED} from "../../actions/apiActions";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
-import {Redirect} from "react-router-dom";
+import {Redirect, useHistory} from "react-router-dom";
 import PropTypes from "prop-types";
 import React, {useEffect, useState} from "react";
 
@@ -23,6 +23,7 @@ const LoginPage = (props) => {
     const [savePassword, setSavePassword] = useState(false);
     const [emailEmpty, setEmailEmpty] = useState(false);
     const [passwordEmpty, setPasswordEmpty] = useState(false);
+    const history = useHistory();
 
     const handleTextInput = (setter, validator, {target}) => {
         setter(target.value);
@@ -34,19 +35,40 @@ const LoginPage = (props) => {
         props.authActions.login(email, password, savePassword);
     };
 
-    useEffect(() => {
-        props.setLogin(true);
-        return () => {
-            props.setLogin(false);
-        };
-    });
-
     const failedLogin = props.requestStatus.login &&
         props.requestStatus.login !== REQUEST_STARTED &&
         (props.requestStatus.login < 200 || props.requestStatus.login > 200);
 
+    const fetchUserStatus = props.requestStatus.userFetch;
+    if (!props.requestStatus.login && (!fetchUserStatus || fetchUserStatus === REQUEST_STARTED)) {
+        return "Loading...";
+    }
+
+    if (200 <= fetchUserStatus && fetchUserStatus < 300) {
+        if (history.length > 2) {
+            history.goBack();
+        } else {
+            return <Redirect to="/" />;
+        }
+    }
+
+    if (200 <= props.requestStatus.login && props.requestStatus.login < 300) {
+        if (!fetchUserStatus || fetchUserStatus !== REQUEST_STARTED) {
+            props.authActions.fetchUserStatus();
+        }
+        if (history.length > 2) {
+            history.goBack();
+        } else {
+            return <Redirect to="/" />;
+        }
+    }
+
     if (props.auth.token) {
-        return <Redirect to="/" />;
+        if (history.length > 2) {
+            history.goBack();
+        } else {
+            return <Redirect to="/" />;
+        }
     }
 
     return (
@@ -145,7 +167,6 @@ LoginPage.propTypes = {
         "login": PropTypes.func,
         "resetAttemptStatus": PropTypes.func,
     }),
-    "setLogin": PropTypes.func.isRequired,
 };
 
 const mapStateToProps = ({auth, RequestStatus}) => ({

@@ -34,6 +34,14 @@ export default function registration(state = initialState.RegistrationForms, {pa
             return successSubmit(state);
         case actions.POST_INSTRUCTOR_FAILED:
             return failedSubmit(state);
+        case actions.PATCH_COURSE_SUCCESSFUL:
+            return successSubmit(state);
+        case actions.PATCH_COURSE_FAILED:
+            return failedSubmit(state);
+        case actions.POST_COURSE_SUCCESSFUL:
+            return successSubmit(state);
+        case actions.POST_COURSE_FAILED:
+            return failedSubmit(state);
         case actions.SUBMIT_INITIATED:
             return onSubmit(state);
         case actions.RESET_SUBMIT_STATUS:

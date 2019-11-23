@@ -2,15 +2,12 @@ import * as types from "./actionTypes";
 
 import axios from "axios";
 
-const instance = axios.create({
+export const instance = axios.create({
     "baseURL": "http://api.omoulearning.com:8000",
 });
 
 export const REQUEST_ALL = -1;
-
 export const REQUEST_STARTED = 1;
-export const REQUEST_SUCCESS = 2;
-export const REQUEST_FAILED = 3;
 
 export const wrapGet = (endpoint, [startType, successType, failType], id) =>
     async (dispatch, getState) => {
@@ -110,17 +107,6 @@ export const fetchCourses = (id) =>
             types.FETCH_COURSE_STARTED,
             types.FETCH_COURSE_SUCCESSFUL,
             types.FETCH_COURSE_FAILED,
-        ],
-        id,
-    );
-
-export const fetchInstructors = (id) =>
-    wrapGet(
-        "/account/instructor/",
-        [
-            types.FETCH_INSTRUCTOR_STARTED,
-            types.FETCH_INSTRUCTOR_SUCCESSFUL,
-            types.FETCH_INSTRUCTOR_FAILED,
         ],
         id,
     );

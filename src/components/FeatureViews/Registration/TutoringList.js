@@ -1,52 +1,55 @@
 import PropTypes from "prop-types";
 import React from "react";
-import {connect} from "react-redux";
 
 // Material UI Imports
-import Grid from "@material-ui/core/Grid";
-import {NavLink} from "react-router-dom";
+import {Link} from "react-router-dom";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import ForwardArrow from "@material-ui/icons/ArrowForward";
+import Grid from "@material-ui/core/Grid";
 
-const trimString = (string, maxLen) => {
-    if (string.length > maxLen) {
-        return `${string.slice(0, maxLen - 3).trim()}...`;
-    } else {
-        return string;
-    }
-};
+const trimString = (string, maxLen) =>
+    string.length > maxLen
+    ? `${string.slice(0, maxLen - 3).trim()}...`
+    : string;
 
-const renderTutoring = (props) => (
-    <Grid container spacing={8} alignItems="center" direction="row">
+
+const TutoringList = ({filteredCourses}) => (
+    <Grid
+        alignItems="center"
+        container
+        direction="row"
+        spacing={8}>
         {
-            props.filteredCourses.map((course) => (
+            filteredCourses.map(({course_id, title}) => (
                 <Grid
+                    alignItems="center"
                     item
-                    xs={12} sm={6} md={4}
-                    key={course.course_id}
-                    alignItems="center">
+                    key={course_id}
+                    md={4}
+                    sm={6}
+                    xs={12}>
                     <Card
                         className="tutoring-card"
-                        component={NavLink}
-                        to={`/registration/form/tutoring/${course.course_id}`}>
+                        component={Link}
+                        to={`/registration/form/tutoring/${course_id}`}>
                         <Grid container>
                             <Grid
-                                item
-                                xs={11}
+                                align="left"
                                 component={CardContent}
-                                align="left">
-                                {trimString(course.title, 20)}
+                                item
+                                xs={11}>
+                                {trimString(title, 20)}
                             </Grid>
                             <Grid
-                                item
-                                xs={1}
                                 align="center"
                                 component={ForwardArrow}
+                                item
                                 style={{
                                     "display": "inline",
                                     "margin": "auto 0",
-                                }} />
+                                }}
+                                xs={1} />
                         </Grid>
                     </Card>
                 </Grid>
@@ -55,15 +58,17 @@ const renderTutoring = (props) => (
     </Grid>
 );
 
-const mapStateToProps = (state) => ({
-    "instructors": state.Users["InstructorList"],
-    "courses": state.Course["NewCourseList"],
-    "courseCategories": state.Course["CourseCategories"],
-});
+TutoringList.propTypes = {
+    "filteredCourses": PropTypes.arrayOf(PropTypes.shape({
+        "course_id": PropTypes
+            .oneOfType([PropTypes.string, PropTypes.number])
+            .isRequired,
+        "title": PropTypes.string.isRequired,
+    })),
+};
 
-const mapDispatchToProps = () => ({});
+TutoringList.defaultProps = {
+    "filteredCourses": [],
+};
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(renderTutoring);
+export default TutoringList;
