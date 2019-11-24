@@ -1,0 +1,113 @@
+@import "../../../theme/colors";
+@import "../../../theme/sizes";
+.search {
+  .primary-filter {
+    outline: none;
+  }
+  .input {
+    outline: none;
+  }
+  .search-input {
+    outline: none;
+  }
+}
+.search-input {
+  .main-search__menu{
+    text-align: left !important;
+  }
+
+  .main-search__control {
+    border-width: 1px 0;
+    border-radius: 0;
+    background-color: #eeeeee;
+
+    .main-search__value-container {
+      color: $secondaryFontColor;
+    }
+  }
+}
+
+.AccountsCards {
+  .userLabel {
+    color: white;
+    font-size: 10px;
+    padding: -5%;
+    width: 80px;
+    height: 20px;
+    &.instructor {
+      background-color: $instructorColor;
+    }
+    &.student {
+      background-color: $studentColor;
+    }
+    &.receptionist {
+      background-color: $receptionistColor;
+    }
+    &.parent {
+      background-color: $parentColor;
+    }
+  }
+  .cardText {
+    font-size: 10px;
+    text-align: left;
+  }
+}
+
+.CourseCards {
+  padding: 5%;
+  .courseRow {
+    padding-top: 2%;
+    .courseText {
+      font-size: 12px;
+    }
+  }
+}
+
+.UpcomingSessionCards {
+  padding: 5%;
+  .sessionRow {
+    padding-top: 2%;
+    .sessionText {
+      font-size: 12px;
+    }
+  }
+}
+
+#select-primary-filter {
+  height: 22px;
+  border: 1px solid #eeeeee;
+  background: #ffffff;
+  border-radius: 3px 0px 0px 3px;
+  padding: 9px 20px 5px 15px;
+}
+
+#menu-primary-filter {
+  z-index: 10000;
+}
+
+.button-background {
+  background-color: #43b5d9 !important;
+  border-radius: 0 5px 5px 0 !important;
+}
+
+.searchIcon {
+  color: #eeeeee;
+}
+
+.search-results {
+  .searchChip {
+    background: #ffffff;
+    border: 1px solid #dadada;
+    cursor: pointer;
+  }
+  .main-search-view {
+    .searchResults {
+      padding-left: 25px;
+      padding-top: 25px;
+      .resultsColor {
+        color: #666666;
+        font-size: 24px;
+      }
+    }
+  }
+}

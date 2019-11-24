@@ -21,6 +21,23 @@
     margin: 25px 0;
   }
 
+  .toggleView {
+    .btn{
+      color: $lightPrimaryFontColor;
+      border-radius: 5px;
+      box-sizing: border-box;
+      border: solid 2px $secondaryColor !important;
+      white-space: nowrap;
+      right:-20%;
+      margin-left:5px;
+
+      &.active{
+        border: solid 2px $primaryColor !important;
+        color: $primaryColor;
+      }
+    }
+  }
+
   .AccountsTable {
     margin-top: 20px;
 
@@ -29,8 +46,8 @@
     }
 
     .editButton {
-      color: $darkenPrimaryFontColor;
-      border-radius: 0px;
+      color: $lightPrimaryFontColor;
+      border-radius: 5px;
       box-sizing: border-box;
       border: solid 2px $secondaryColor !important;
       white-space: nowrap;
@@ -68,9 +85,8 @@
     .rowPadding {
       display: flex;
       padding: 4px;
-      align-content: left;
       text-align: left;
-      color: "grey";
+      color: grey;
       .rowText {
         word-break: break-word;
       }
@@ -94,6 +110,10 @@
       border: solid 2px $secondaryColor !important;
       white-space: nowrap;
       position: relative;
+      font-size: .9em !important;
+      > *{
+        font-size: .9em !important;
+      }
     }
   }
 

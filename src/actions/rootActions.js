@@ -1,5 +1,10 @@
 import * as types from "./actionTypes";
 import {instance} from "./apiActions";
+import axios from "axios";
+
+const instance = axios.create({
+    baseURL: process.env.REACT_APP_DOMAIN,
+});
 
 const typeToEndpoint = {
     "student": "/account/student/",

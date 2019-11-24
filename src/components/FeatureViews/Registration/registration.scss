@@ -439,7 +439,9 @@
 
 .course-status {
   position: relative;
-  margin: 5px;
+  @include respond-to(handhelds){
+    margin-top:35px;
+  }
 
   .status {
     top: -40px;

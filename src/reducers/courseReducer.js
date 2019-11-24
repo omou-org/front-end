@@ -71,7 +71,7 @@ export const updateCourse = (courses, id, course) => ({
     ...courses,
     [id]: {
         "course_id": id,
-        "title": course.subject,
+        "title": course.subject ? course.subject : "",
         "schedule": {
             "start_date": course.start_date,
             "end_date": course.end_date,

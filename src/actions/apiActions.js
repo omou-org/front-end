@@ -3,7 +3,8 @@ import * as types from "./actionTypes";
 import axios from "axios";
 
 export const instance = axios.create({
-    "baseURL": "http://localhost:8000",
+    // "baseURL": process.env.REACT_APP_DOMAIN,
+    "baseURL":"http://localhost:8000/"
 });
 
 export const REQUEST_ALL = -1;
@@ -11,6 +12,7 @@ export const REQUEST_STARTED = 1;
 
 export const wrapGet = (endpoint, [startType, successType, failType], id) =>
     async (dispatch, getState) => {
+
         // creates a new action based on the response given
         const newAction = (type, response) => {
             dispatch({
@@ -26,7 +28,6 @@ export const wrapGet = (endpoint, [startType, successType, failType], id) =>
         newAction(startType, {});
 
         const requestURL = id ? `${endpoint}${id}/` : endpoint;
-
         try {
             const response = await instance.get(requestURL, {
                 "headers": {

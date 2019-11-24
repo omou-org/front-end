@@ -18,6 +18,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import LogoutIcon from "@material-ui/icons/ExitToAppOutlined"
 import MenuIcon from "@material-ui/icons/Menu";
 import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -27,19 +28,25 @@ import Typography from "@material-ui/core/Typography";
 import "./Navigation.scss";
 import Routes from "../Routes/rootRoutes";
 import CustomTheme from "../../theme/muiTheme";
+import Search from "../../components/FeatureViews/Search/Search";
 
 const NavList = [
-    {
-        "name": "Dashboard",
-        "link": "/",
-        "icon": <DashboardIcon />,
-    },
-    {
-        "name": "Scheduler",
-        "link": "/scheduler",
-        "icon": <EventIcon />,
-    },
+    // {
+    //     "name": "Dashboard",
+    //     "link": "/",
+    //     "icon": <DashboardIcon />,
+    // },
+    // {
+    //     "name": "Scheduler",
+    //     "link": "/scheduler",
+    //     "icon": <EventIcon />,
+    // },
     // {name: "Courses", link: "/courses", icon: <CourseIcon/>},
+    {
+    "name": "Accounts",
+    "link": "/accounts",
+    "icon": <AccountsIcon />,
+    },
     {
         "name": "Registration",
         "link": "/registration",
@@ -47,11 +54,7 @@ const NavList = [
     },
     // {name: "Attendance", link: "/attendance", icon: <AttendanceIcon/>},
     // {name: "Gradebook", link: "/gradebook", icon: <ClassIcon/>},
-    {
-        "name": "Accounts",
-        "link": "/accounts",
-        "icon": <AccountsIcon />,
-    },
+
 ];
 
 const drawer = (
@@ -76,8 +79,12 @@ const drawer = (
 );
 
 const Navigation = () => {
+    // for (let i = 0; i < sessionStorage.length; i++){
+    //     console.log(sessionStorage.key(i));
+    // }
     const dispatch = useDispatch();
-    const authToken = useSelector(({auth}) => auth);
+    const authToken = useSelector(({auth}) => auth).token;
+
     const [mobileOpen, setMobileOpen] = useState(false);
     const {pathname} = useLocation();
 
@@ -98,14 +105,17 @@ const Navigation = () => {
                     color="default"
                     position="sticky">
                     <Toolbar>
-                        <Hidden lgUp>
-                            <IconButton
-                                aria-label="Open Drawer"
-                                color="inherit"
-                                onClick={handleDrawerToggle}>
-                                <MenuIcon />
-                            </IconButton>
-                        </Hidden>
+                        {
+                            pathname === "/login" ? "" :
+                                <Hidden lgUp>
+                                    <IconButton
+                                        aria-label="Open Drawer"
+                                        color="inherit"
+                                        onClick={handleDrawerToggle}>
+                                        <MenuIcon />
+                                    </IconButton>
+                                </Hidden>
+                        }
                         <Typography
                             className="title"
                             component={NavLinkNoDup}
@@ -115,13 +125,11 @@ const Navigation = () => {
                         <div style={{
                             "flex": 1,
                         }} />
+                        { authToken ? <Search/> : ""}
                         {
-                            authToken
-                                ? <Typography
-                                    className="loginToggle"
-                                    onClick={handleLogout}>
-                                    logout
-                                  </Typography>
+                            pathname === "/login" ? "" : authToken
+                                ? <LogoutIcon
+                                    onClick={handleLogout}/>
                                 : <Typography
                                     className="login"
                                     component={NavLinkNoDup}

@@ -15,8 +15,8 @@ class CourseViewer extends Component {
         this.props.registrationActions.fetchEnrollments();
     }
 
-    goToRoute(route) {
-        this.props.history.push(this.props.match.url + route);
+    goToRoute(route){
+        this.props.history.push(this.props.match.url+route);
     }
 
     setCourses = () => {
@@ -87,8 +87,8 @@ class CourseViewer extends Component {
         let courseEnrollment = this.props.enrollments[this.props.user_id][courseID],
             enrollmentPayments = Object.values(courseEnrollment.session_payment_status),
             numPaidEnrollments = 0;
-        enrollmentPayments.forEach((paymentStatus) => {
-            if (paymentStatus === 1) {
+        enrollmentPayments.forEach((paymentStatus)=>{
+            if(paymentStatus === 1){
                 numPaidEnrollments++;
             }
         });
@@ -97,12 +97,12 @@ class CourseViewer extends Component {
 
     render() {
         this.setCourses();
-        let paymentStatus = (numPaidCourses) => {
-            if (numPaidCourses > 3) {
+        let paymentStatus = (numPaidCourses)=>{
+            if(numPaidCourses>3) {
                 return "good";
-            } else if (numPaidCourses <= 3 && numPaidCourses > 0) {
+            } else if(numPaidCourses <= 3 && numPaidCourses >0) {
                 return "warning";
-            } else if (numPaidCourses <= 0) {
+            } else if(numPaidCourses <= 0){
                 return "bad";
             }
         };

@@ -4,6 +4,7 @@ import React, {Component, NavLink} from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Paper from "@material-ui/core/Paper";
+import Hidden from "@material-ui/core/Hidden";
 import {withRouter} from 'react-router-dom';
 
 class InstructorCourses extends Component {
@@ -32,7 +33,7 @@ class InstructorCourses extends Component {
 
     render() {
         return (<Grid container>
-            <Grid item xs={12} md={12}>
+            <Grid item xs={12}>
                 <Grid container className={'accounts-table-heading'}>
                     <Grid item xs={3} md={3}>
                         <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>

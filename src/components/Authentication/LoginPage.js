@@ -129,16 +129,16 @@ const LoginPage = (props) => {
                                     Remember me
                                 </label>
                             </Grid>
-                            <Grid item>
-                                <Button
-                                    className="forgot"
-                                    color="secondary">
-                                    <span className="forgotText">Forgot Password?</span>
-                                </Button>
-                            </Grid>
+                            {/*<Grid item>*/}
+                            {/*    <Button*/}
+                            {/*        className="forgot"*/}
+                            {/*        color="secondary">*/}
+                            {/*        <span className="forgotText">Forgot Password?</span>*/}
+                            {/*    </Button>*/}
+                            {/*</Grid>*/}
                         </Grid>
                         <Button
-                            className="button signIn"
+                            className="signIn"
                             color="primary"
                             disabled={!email || !password}
                             onClick={login}

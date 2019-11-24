@@ -28,7 +28,7 @@ beforeAll(async () => {
 });
 // after all tests are complete close the browser
 afterAll(() => {
-  browser.close();
+  // browser.close();
 });
 
 

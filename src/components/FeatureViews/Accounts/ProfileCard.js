@@ -1,8 +1,8 @@
-import { connect } from "react-redux";
-import React, { Component } from "react";
+import {connect} from "react-redux";
+import React, {Component} from "react";
 import BackButton from "../../BackButton";
 import Grid from "@material-ui/core/Grid";
-import { Card, Paper, Typography } from "@material-ui/core";
+import {Card, Paper, Typography} from "@material-ui/core";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import ListView from "@material-ui/icons/ViewList";
@@ -16,14 +16,14 @@ import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import Chip from "@material-ui/core/Chip";
 import CardActions from "@material-ui/core/CardActions";
-import { withRouter } from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import { stringToColor } from "./accountUtils";
 import { addDashes } from "./accountUtils";
 
-import { ReactComponent as IDIcon } from "../../identifier.svg";
+import {ReactComponent as IDIcon} from "../../identifier.svg";
 import './Accounts.scss';
 
 import Avatar from "@material-ui/core/Avatar";
@@ -55,7 +55,7 @@ class ProfileCard extends Component {
         return (
             <Grid item xs={12} sm={6} className="ProfileCard">
                 <Card key={this.props.user.user_id}
-                    style={{ cursor: "pointer" }}
+                    style={{cursor: "pointer"}}
                     onClick={(event) => {
                         event.preventDefault();
                         this.goToRoute(this.props.route);
@@ -73,7 +73,7 @@ class ProfileCard extends Component {
                                 </Typography>
                                 <Typography component="p" align={'left'}>
                                     <Chip
-                                        style={{ cursor: "pointer" }}
+                                        style={{cursor: "pointer"}}
                                         className={`userLabel ${this.props.user.role}`}
                                         label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
                                     />

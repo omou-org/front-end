@@ -270,6 +270,7 @@ class UserProfile extends Component {
                             value={this.state.value}>
                             {userTabs[accountType].map((tab) => (
                                 <Tab
+                                    style={{ maxWidth: 1 }}
                                     key={tab.tab_id}
                                     label={<>{tab.icon} {tab.tab_heading}</>} />
                             ))}

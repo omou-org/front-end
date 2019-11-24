@@ -102,6 +102,8 @@ const RegistrationLanding = () => {
         requestStatus.instructor[GET][apiActions.REQUEST_ALL] >= 300 ||
         requestStatus.course[GET][apiActions.REQUEST_ALL] < 200 ||
         requestStatus.course[GET][apiActions.REQUEST_ALL] >= 300) {
+        // console.log(requestStatus.instructor[GET]);
+        // console.log(requestStatus.course[GET][apiActions.REQUEST_ALL]);
         return "ERROR LOADING COURSES";
     }
 
@@ -198,7 +200,7 @@ const RegistrationLanding = () => {
                             Registration Catalog
                     </Typography>
                 </Grid>
-                <Grid
+                {/* <Grid
                     className="catalog-setting-wrapper"
                     item
                     md={5}
@@ -213,7 +215,7 @@ const RegistrationLanding = () => {
                             label="Tutoring"
                             onClick={updateView(1)} />
                     </Tabs>
-                </Grid>
+                </Grid> */}
             </Grid>
             <Grid
                 container
