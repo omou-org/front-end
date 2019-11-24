@@ -63,8 +63,8 @@ const SearchResults = (props) => {
     // /search/courses/?query=query?courseTypeFilter=courseType?availability=availability?dateSort=desc
     // const accountSearchURL = "http://localhost:8000/search/account/";
     // const courseSearchURL = "http://localhost:8000/search/courses/";
-    const accountSearchURL = "http://api.omoulearning.com:8000/search/account/";
-    const courseSearchURL = "http://api.omoulearning.com:8000/search/courses/";
+    const accountSearchURL = `${process.env.REACT_APP_DOMAIN}/search/account/`;
+    const courseSearchURL = `${process.env.REACT_APP_DOMAIN}/search/course/`;
     const requestConfig = { params: { query: params.query }, headers: {"Authorization": `Token ${props.auth.token}`,} };
 
     useEffect(() => {
