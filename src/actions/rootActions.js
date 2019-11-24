@@ -1,5 +1,5 @@
 import * as types from "./actionTypes";
-import {instance} from "./apiActions";
+// import {instance} from "./apiActions";
 import axios from "axios";
 
 const instance = axios.create({
