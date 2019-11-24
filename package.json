@@ -32,7 +32,6 @@
     "tar": "^4.4.11",
     "tippy.js": "^4.3.5"
   },
-  "proxy": "http://127.0.0.1:8000/api/",
   "homepage": "https://omoulearning.com",
   "scripts": {
     "start": "react-scripts start",

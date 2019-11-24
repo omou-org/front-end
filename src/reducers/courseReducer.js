@@ -58,7 +58,7 @@ const handleCoursesFetch = (state, {id, response}) => {
         NewCourseList = updateCourse(NewCourseList, id, data);
     } else {
         data.forEach((course) => {
-            NewCourseList = updateCourse(NewCourseList, course.id, course);
+            NewCourseList = updateCourse(NewCourseList, course.course_id, course);
         });
     }
     return {

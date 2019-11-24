@@ -8,7 +8,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
         ({status} = payload.response);
     } else {
         // general server error
-        status = 500;
+        status = 600;
     }
     switch (type) {
         case actions.LOGIN_STARTED:

@@ -59,9 +59,9 @@ export const fetchData = (type) => {
     if (typeToEndpoint.hasOwnProperty(type)) {
         const endpoint = typeToEndpoint[type];
         const [successAction, failAction] = typeToFetchActions[type];
-        return (dispatch) => instance.get(endpoint, {
-            headers: {
-                "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
+        return (dispatch, getState) => instance.get(endpoint, {
+            "headers": {
+                "Authorization": `Token ${getState().auth.token}`,
             },
         })
             .then(({data}) => {
@@ -82,7 +82,7 @@ export const postData = (type, body) => {
     if (typeToEndpoint.hasOwnProperty(type)) {
         const endpoint = typeToEndpoint[type];
         const [successAction, failAction] = typeToPostActions[type];
-        return (dispatch) => new Promise((resolve) => {
+        return (dispatch, getState) => new Promise((resolve) => {
             dispatch({
                 type: types.SUBMIT_INITIATED,
                 payload: null,
@@ -90,9 +90,8 @@ export const postData = (type, body) => {
             resolve();
         }).then(() => {
             instance.post(endpoint, body, {
-                headers: {
-                    "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
-                    "Content-Type": "application/json",
+                "headers": {
+                    "Authorization": `Token ${getState().auth.token}`,
                 },
             })
                 .then(({data}) => {
@@ -114,7 +113,7 @@ export const patchData = (type, body, id) => {
     if (typeToEndpoint.hasOwnProperty(type)) {
         const endpoint = typeToEndpoint[type];
         const [successAction, failAction] = typeToPostActions[type];
-        return (dispatch) => new Promise((resolve) => {
+        return (dispatch, getState) => new Promise((resolve) => {
             dispatch({
                 type: types.SUBMIT_INITIATED,
                 payload: null,
@@ -122,9 +121,8 @@ export const patchData = (type, body, id) => {
             resolve();
         }).then(() => {
             instance.patch(`${endpoint}${id}/`, body, {
-                headers: {
-                    "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
-                    "Content-Type": "application/json",
+                "headers": {
+                    "Authorization": `Token ${getState().auth.token}`,
                 },
             })
                 .then(({data}) => {
@@ -147,7 +145,7 @@ export const submitParentAndStudent = (parent, student, parentID, studentID) => 
     const parentEndpoint = typeToEndpoint["parent"];
     const [studentSuccessAction, studentFailAction] = typeToPostActions["student"];
     const [parentSuccessAction, parentFailAction] = typeToPostActions["parent"];
-    return (dispatch) => new Promise((resolve) => {
+    return (dispatch, getState) => new Promise((resolve) => {
         dispatch({
             type: types.SUBMIT_INITIATED,
             payload: null,
@@ -157,8 +155,7 @@ export const submitParentAndStudent = (parent, student, parentID, studentID) => 
         instance.request({
             "data": parent,
             "headers": {
-                "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
-                "Content-Type": "application/json",
+                "Authorization": `Token ${getState().auth.token}`,
             },
             "method": parentID ? "patch" : "post",
             "url": parentID ? `${parentEndpoint}${parentID}/` : parentEndpoint,
@@ -174,8 +171,7 @@ export const submitParentAndStudent = (parent, student, parentID, studentID) => 
                         "primary_parent": parentResponse.data.user.id,
                     },
                     "headers": {
-                        "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
-                        "Content-Type": "application/json",
+                        "Authorization": `Token ${getState().auth.token}`,
                     },
                     "method": studentID ? "patch" : "post",
                     "url": studentID ? `${studentEndpoint}${studentID}/` : studentEndpoint,
