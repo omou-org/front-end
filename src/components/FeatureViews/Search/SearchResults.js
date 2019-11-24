@@ -69,11 +69,11 @@ const SearchResults = (props) => {
 
     useEffect(() => {
         (async () => {
-            console.log("search rsults")
             try {
                 const accountResponse = await axios.get(accountSearchURL, requestConfig);
                 axios.interceptors.request.use(function(config){
                     setLoading(true);
+                    return config
                 }, (error) => {
                     return Promise.reject(error);
                 });
@@ -91,7 +91,6 @@ const SearchResults = (props) => {
                 if (courseResponse.data === []){
                     console.log("course hit");
                 } else {
-                    console.log(props);
                     setCourseResults(courseResponse.data)
                 }
             } catch (err) {
