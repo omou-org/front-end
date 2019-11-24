@@ -3,7 +3,7 @@ import {REQUEST_STARTED} from "../../actions/apiActions";
 import {bindActionCreators} from "redux";
 import {useSelector, useDispatch} from "react-redux";
 import {Redirect, useHistory} from "react-router-dom";
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useMemo, useState, useCallback} from "react";
 
 
 // material UI Imports
@@ -17,7 +17,6 @@ import Typography from "@material-ui/core/Typography";
 import "./LoginPage.scss";
 
 const LoginPage = () => {
-    const token = useSelector(({auth}) => auth.token);
     const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
     const dispatch = useDispatch();
 
@@ -28,17 +27,24 @@ const LoginPage = () => {
     const [savePassword, setSavePassword] = useState(false);
     const [emailEmpty, setEmailEmpty] = useState(false);
     const [passwordEmpty, setPasswordEmpty] = useState(false);
+    const [hasGoneBack, setHasGoneBack] = useState(false);
     const history = useHistory();
 
-    const handleTextInput = (setter, validator, {target}) => {
+    const handleTextInput = useCallback((setter, validator) => ({target}) => {
         setter(target.value);
         actions.resetAttemptStatus();
         validator(!target.value);
-    };
+    }, [actions]);
 
-    const login = () => {
+    const login = useCallback((event) => {
+        event.preventDefault();
+        event.stopPropagation();
         actions.login(email, password, savePassword);
-    };
+    }, [actions, email, password, savePassword]);
+
+    const toggleSavePassword = useCallback(() => {
+        setSavePassword((prevPassword) => !prevPassword);
+    }, []);
 
     const failedLogin = requestStatus.login &&
         requestStatus.login !== REQUEST_STARTED &&
@@ -49,31 +55,25 @@ const LoginPage = () => {
         return "Loading...";
     }
 
-    if (200 <= fetchUserStatus && fetchUserStatus < 300) {
-        // if (history.length > 2) {
-        //     history.goBack();
-        // } else {
-        return <Redirect to="/" />;
-        // }
-    }
+    const goBack = () => {
+        // to avoid multiple go-backs
+        if (!hasGoneBack) {
+            if (history.length > 2) {
+                history.goBack();
+            } else {
+                return <Redirect to="/" />;
+            }
+            setHasGoneBack(true);
+        }
+    };
 
-    if (200 <= requestStatus.login && requestStatus.login < 300) {
+    if (fetchUserStatus >= 200 && fetchUserStatus < 300) {
+        goBack();
+    } else if (requestStatus.login >= 200 && requestStatus.login < 300) {
         if (!fetchUserStatus || fetchUserStatus !== REQUEST_STARTED) {
             actions.fetchUserStatus();
         }
-        // if (history.length > 2) {
-        //     history.goBack();
-        // } else {
-        return <Redirect to="/" />;
-        // }
-    }
-
-    if (token) {
-        if (history.length > 2) {
-            history.goBack();
-        } else {
-            return <Redirect to="/" />;
-        }
+        goBack();
     }
 
     return (
@@ -95,19 +95,13 @@ const LoginPage = () => {
                         color="primary">
                         <span className="header">sign in</span>
                     </Typography>
-                    <form onSubmit={(event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        login();
-                    }}>
+                    <form onSubmit={login}>
                         <TextField
                             className="email"
                             error={failedLogin || emailEmpty}
                             label="E-Mail"
                             margin="dense"
-                            onChange={(event) => {
-                                handleTextInput(setEmail, setEmailEmpty, event);
-                            }}
+                            onChange={handleTextInput(setEmail, setEmailEmpty)}
                             value={email} />
                         <TextField
                             autoComplete="current-password"
@@ -116,9 +110,7 @@ const LoginPage = () => {
                             id="standard-password-input"
                             label="Password"
                             margin="normal"
-                            onChange={(event) => {
-                                handleTextInput(setPassword, setPasswordEmpty, event);
-                            }}
+                            onChange={handleTextInput(setPassword, setPasswordEmpty)}
                             type="password"
                             value={password} />
                         <Grid container>
@@ -128,9 +120,7 @@ const LoginPage = () => {
                                 <label>
                                     <Checkbox
                                         checked={savePassword}
-                                        onClick={() => {
-                                            setSavePassword(!savePassword);
-                                        }} />
+                                        onClick={toggleSavePassword} />
                                     Remember me
                                 </label>
                             </Grid>
