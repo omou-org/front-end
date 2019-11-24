@@ -31,16 +31,16 @@ import CustomTheme from "../../theme/muiTheme";
 import Search from "../../components/FeatureViews/Search/Search";
 
 const NavList = [
-    // {
-    //     "name": "Dashboard",
-    //     "link": "/",
-    //     "icon": <DashboardIcon />,
-    // },
-    // {
-    //     "name": "Scheduler",
-    //     "link": "/scheduler",
-    //     "icon": <EventIcon />,
-    // },
+    {
+        "name": "Dashboard",
+        "link": "/",
+        "icon": <DashboardIcon />,
+    },
+    {
+        "name": "Scheduler",
+        "link": "/scheduler",
+        "icon": <EventIcon />,
+    },
     // {name: "Courses", link: "/courses", icon: <CourseIcon/>},
     {
     "name": "Accounts",

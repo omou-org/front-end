@@ -50,19 +50,19 @@ function rootRoutes(props) {
                 path="/registration"
                 render={(passedProps) => <Registration {...passedProps} />} />
             {/* Scheduler Routes */}
-            {/* <ProtectedRoute
+             <ProtectedRoute
                 exact path="/scheduler"
                 render={(passedProps) => <Scheduler {...passedProps} />} />
             <ProtectedRoute
                 path="/scheduler/view-session/:course_id/:session_id"
-                render={(passedProps) => <SessionView {...passedProps} />} /> */}
+                render={(passedProps) => <SessionView {...passedProps} />} />
             <ProtectedRoute
                 path="/search/:query"
                 render={(passedProps) => <SearchResults {...passedProps} />} />
-            {/*
-            <ProtectedRoute
-                path='/scheduler/resource'
-                render={(passedProps) => <ResourceView {...passedProps} />} /> */}
+
+            {/*<ProtectedRoute*/}
+            {/*    path='/scheduler/resource'*/}
+            {/*    render={(passedProps) => <ResourceView {...passedProps} />} /> */}
 
             <ProtectedRoute
                 path='/test'
@@ -76,10 +76,10 @@ function rootRoutes(props) {
                 render={(passedProps) => <NoResultsPage {...passedProps} />} />
 
 
-            {/*<ProtectedRoute
+            <ProtectedRoute
                 exact
                 path="/scheduler"
-                render={(passedProps) => <Scheduler {...passedProps} />}/> */}
+                render={(passedProps) => <Scheduler {...passedProps} />}/>
 
 
             {/* Accounts */}
@@ -87,10 +87,10 @@ function rootRoutes(props) {
                 exact
                 path="/accounts/:accountType/:accountID"
                 render={(passedProps) => <UserProfile {...passedProps} />} />
-            {/* <ProtectedRoute
+            <ProtectedRoute
                 exact
                 path="/accounts/parents/:parentID/pay"
-                render={(passedProps) => <ParentPayment {...passedProps} />}/> */}
+                render={(passedProps) => <ParentPayment {...passedProps} />}/>
             <ProtectedRoute
                 exact
                 path="/accounts"
