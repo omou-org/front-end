@@ -31,6 +31,7 @@ import PastSessionsIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import ContactIcon from "@material-ui/icons/ContactPhoneOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
+import Loading from "../../Loading";
 
 const userTabs = {
     "instructor": [
@@ -190,7 +191,7 @@ class UserProfile extends Component {
     render() {
         const status = this.getRequestStatus();
         if (!status || status === apiActions.REQUEST_STARTED) {
-            return "Loading...";
+            return <Loading/>
         }
 
         const user = this.getUser();
@@ -220,7 +221,6 @@ class UserProfile extends Component {
                             value={this.state.value}>
                             {userTabs[accountType].map((tab) => (
                                 <Tab
-                                    style={{ maxWidth: 1 }}
                                     key={tab.tab_id}
                                     label={<>{tab.icon} {tab.tab_heading}</>} />
                             ))}
@@ -293,7 +293,7 @@ class UserProfile extends Component {
                         <Grid item md={2}>
                             <Hidden smDown>
                                 <Avatar style={styles}>
-                                    {user.name.match(/\b(\w)/g).join("")}
+                                    {user.name.toUpperCase().match(/\b(\w)/g).join("")}
                                 </Avatar>
                             </Hidden>
                         </Grid>

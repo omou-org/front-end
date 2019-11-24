@@ -28,6 +28,7 @@ import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 import Button from "@material-ui/core/Button";
 import {Link, useRouteMatch} from "react-router-dom";
 import {stringToColor} from "components/FeatureViews/Accounts/accountUtils";
+import Loading from "../../Loading";
 
 const dayConverter = {
     "0": "Sunday",
@@ -135,7 +136,7 @@ const RegistrationCourse = () => {
         requestStatus.parent[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED ||
         !requestStatus.student[GET][apiActions.REQUEST_ALL] ||
         requestStatus.student[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED) {
-        return "LOADING";
+        return <Loading/>;
     }
 
     const startDate = new Date(course.schedule.start_date +

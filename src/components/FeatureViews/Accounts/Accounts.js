@@ -162,7 +162,7 @@ class Accounts extends Component {
                                     container
                                     layout="row">
                                     <Avatar
-                                        style={styles(row.name)}>{row.name.match(/\b(\w)/g).join("")}
+                                        style={styles(row.name)}>{row.name.toUpperCase().match(/\b(\w)/g).join("")}
                                     </Avatar>
                                     <Typography>
                                         {row.name}
