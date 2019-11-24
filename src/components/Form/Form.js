@@ -319,7 +319,7 @@ class Form extends Component {
                         let course;
                         try {
                             const response = await apiActions.instance.get(
-                                `/courses/catalog/${id}/`, {
+                                `/course/catalog/${id}/`, {
                                     "headers": {
                                         "Authorization": `Token ${this.props.token}`,
                                     },

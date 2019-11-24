@@ -10,7 +10,7 @@ const typeToEndpoint = {
     "student": "/account/student/",
     "parent": "/account/parent/",
     "instructor": "/account/instructor/",
-    "course": "/courses/catalog/",
+    "course": "/course/catalog/",
 };
 
 const typeToFetchActions = {

@@ -137,7 +137,7 @@ export const patchNote = (id, data, userType) => async (dispatch, getState) => {
 };
 
 
-const courseNoteEndpoint = "/courses/catalog_note/";
+const courseNoteEndpoint = "/course/catalog_note/";
 
 export const fetchCourseNotes = (courseID) => async (dispatch, getState) => {
     // creates a new action based on the response given
