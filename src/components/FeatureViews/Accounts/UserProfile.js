@@ -1,10 +1,10 @@
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import * as userActions from "../../../actions/userActions";
 import * as apiActions from "../../../actions/apiActions";
-import {GET} from "../../../actions/actionTypes";
-import React, {Component} from "react";
-import {Redirect} from "react-router-dom";
+import { GET } from "../../../actions/actionTypes";
+import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 
 import { stringToColor } from "./accountUtils";
 import Grid from "@material-ui/core/Grid";
@@ -115,7 +115,7 @@ class UserProfile extends Component {
 
     componentDidMount() {
         let user;
-        const {accountType, accountID} = this.props.computedMatch.params;
+        const { accountType, accountID } = this.props.computedMatch.params;
         switch (accountType) {
             case "student":
                 this.props.userActions.fetchStudents(accountID);
@@ -176,7 +176,7 @@ class UserProfile extends Component {
     }
 
     getRequestStatus = () => {
-        const {accountType, accountID} = this.props.computedMatch.params;
+        const { accountType, accountID } = this.props.computedMatch.params;
         return accountType === "receptionist"
             ? 200
             : this.props.requestStatus[accountType][GET][accountID];
@@ -220,6 +220,7 @@ class UserProfile extends Component {
                             value={this.state.value}>
                             {userTabs[accountType].map((tab) => (
                                 <Tab
+                                    style={{ maxWidth: 1 }}
                                     key={tab.tab_id}
                                     label={<>{tab.icon} {tab.tab_heading}</>} />
                             ))}
