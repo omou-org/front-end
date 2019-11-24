@@ -1,10 +1,9 @@
 import * as authActions from "../../actions/authActions.js";
 import {REQUEST_STARTED} from "../../actions/apiActions";
 import {bindActionCreators} from "redux";
-import {connect} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import {Redirect, useHistory} from "react-router-dom";
-import PropTypes from "prop-types";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 
 
 // material UI Imports
@@ -17,7 +16,13 @@ import Typography from "@material-ui/core/Typography";
 
 import "./LoginPage.scss";
 
-const LoginPage = (props) => {
+const LoginPage = () => {
+    const token = useSelector(({auth}) => auth.token);
+    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
+    const dispatch = useDispatch();
+
+    const actions = useMemo(() => bindActionCreators(authActions, dispatch), [dispatch]);
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [savePassword, setSavePassword] = useState(false);
@@ -27,43 +32,43 @@ const LoginPage = (props) => {
 
     const handleTextInput = (setter, validator, {target}) => {
         setter(target.value);
-        props.authActions.resetAttemptStatus();
+        actions.resetAttemptStatus();
         validator(!target.value);
     };
 
     const login = () => {
-        props.authActions.login(email, password, savePassword);
+        actions.login(email, password, savePassword);
     };
 
-    const failedLogin = props.requestStatus.login &&
-        props.requestStatus.login !== REQUEST_STARTED &&
-        (props.requestStatus.login < 200 || props.requestStatus.login > 200);
+    const failedLogin = requestStatus.login &&
+        requestStatus.login !== REQUEST_STARTED &&
+        (requestStatus.login < 200 || requestStatus.login > 300);
 
-    const fetchUserStatus = props.requestStatus.userFetch;
-    if (!props.requestStatus.login && (!fetchUserStatus || fetchUserStatus === REQUEST_STARTED)) {
+    const fetchUserStatus = requestStatus.userFetch;
+    if (!requestStatus.login && (!fetchUserStatus || fetchUserStatus === REQUEST_STARTED)) {
         return "Loading...";
     }
 
     if (200 <= fetchUserStatus && fetchUserStatus < 300) {
-        if (history.length > 2) {
-            history.goBack();
-        } else {
-            return <Redirect to="/" />;
-        }
+        // if (history.length > 2) {
+        //     history.goBack();
+        // } else {
+        return <Redirect to="/" />;
+        // }
     }
 
-    if (200 <= props.requestStatus.login && props.requestStatus.login < 300) {
+    if (200 <= requestStatus.login && requestStatus.login < 300) {
         if (!fetchUserStatus || fetchUserStatus !== REQUEST_STARTED) {
-            props.authActions.fetchUserStatus();
+            actions.fetchUserStatus();
         }
-        if (history.length > 2) {
-            history.goBack();
-        } else {
-            return <Redirect to="/" />;
-        }
+        // if (history.length > 2) {
+        //     history.goBack();
+        // } else {
+        return <Redirect to="/" />;
+        // }
     }
 
-    if (props.auth.token) {
+    if (token) {
         if (history.length > 2) {
             history.goBack();
         } else {
@@ -159,26 +164,4 @@ const LoginPage = (props) => {
     );
 };
 
-LoginPage.propTypes = {
-    "auth": PropTypes.shape({
-        "token": PropTypes.string,
-    }),
-    "authActions": PropTypes.shape({
-        "login": PropTypes.func,
-        "resetAttemptStatus": PropTypes.func,
-    }),
-};
-
-const mapStateToProps = ({auth, RequestStatus}) => ({
-    auth,
-    "requestStatus": RequestStatus,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-    "authActions": bindActionCreators(authActions, dispatch),
-});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(LoginPage);
+export default LoginPage;
