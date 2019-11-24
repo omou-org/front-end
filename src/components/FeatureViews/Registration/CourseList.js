@@ -21,13 +21,14 @@ const weekday = {
 const CourseList = ({filteredCourses}) => {
     const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
     return filteredCourses.map((course) => {
-        let start_date = new Date(course.schedule.start_date),
-            end_date = new Date(course.schedule.end_date),
-            start_time = course.schedule.start_time.substr(1),
-            end_time = course.schedule.end_time.substr(1),
-            days = course.schedule.days.map((day) => weekday[day]);
-        start_date = start_date.toDateString().substr(3);
-        end_date = end_date.toDateString().substr(3);
+        let start_date = course.start_date && new Date(course.start_date),
+            end_date = course.end_date && new Date(course.end_date),
+            start_time = course.start_time && course.start_time.substr(1),
+            end_time = course.end_time && course.end_time.substr(1),
+            days = course.days && course.days.map((day) => weekday[day]);
+
+        start_date = start_date && start_date.toDateString().substr(3);
+        end_date = end_date && end_date.toDateString().substr(3);
         const date = `${start_date} - ${end_date}`,
             time = `${start_time} - ${end_time}`;
         return (
@@ -49,7 +50,7 @@ const CourseList = ({filteredCourses}) => {
                         <Typography
                             align="left"
                             className="course-heading">
-                            {course.title}
+                            {course.subject}
                         </Typography>
                     </Grid>
                     <Grid
@@ -95,7 +96,7 @@ const CourseList = ({filteredCourses}) => {
                                 item
                                 md={8}
                                 xs={9}>
-                                {instructors[course.instructor_id].name}
+                                {instructors[course.instructor].name}
                             </Grid>
                         </Grid>
                         <Grid
@@ -114,7 +115,7 @@ const CourseList = ({filteredCourses}) => {
                                 item
                                 md={8}
                                 xs={9}>
-                                ${course.tuition}
+                                {course.tuition && `$ ${course.tuition}`}
                             </Grid>
                         </Grid>
                     </Grid>
@@ -132,24 +133,24 @@ const CourseList = ({filteredCourses}) => {
                                 className="course-status"
                                 item
                                 xs={6}>
-                                <span className="stats">
-                                    {course.roster.length} / {course.capacity}
-                                </span>
+                                {/*<span className="stats">*/}
+                                {/*    {course.enrollment_id_list.length} / {course.max_capacity}*/}
+                                {/*</span>*/}
                                 <span className="label">
                                     Status
                                 </span>
                             </Grid>
-                            <Grid
-                                item
-                                xs={6}>
-                                <Button
-                                    className="button primary"
-                                    component={Link}
-                                    disabled={course.capacity <= course.filled}
-                                    to={`/registration/form/course/${course.course_id}`}
-                                    variant="contained">+ REGISTER
-                                </Button>
-                            </Grid>
+                            {/*<Grid*/}
+                            {/*    item*/}
+                            {/*    xs={6}>*/}
+                            {/*    <Button*/}
+                            {/*        className="button primary"*/}
+                            {/*        component={Link}*/}
+                            {/*        disabled={course.capacity <= course.filled}*/}
+                            {/*        to={`/registration/form/course/${course.course_id}`}*/}
+                            {/*        variant="contained">+ REGISTER*/}
+                            {/*    </Button>*/}
+                            {/*</Grid>*/}
                         </Grid>
                     </Grid>
                 </Grid>
