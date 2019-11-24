@@ -61,19 +61,19 @@ const SearchResults = (props) => {
     //Endpoints
     // /search/account/?query=query?profileFilter=profileFilter?gradeFilter=gradeFilter?sortAlpha=asc?sortID=desc
     // /search/courses/?query=query?courseTypeFilter=courseType?availability=availability?dateSort=desc
-    // const accountSearchURL = "http://localhost:8000/search/account/";
-    // const courseSearchURL = "http://localhost:8000/search/courses/";
-    const accountSearchURL = "http://api.omoulearning.com:8000/search/account/";
-    const courseSearchURL = "http://api.omoulearning.com:8000/search/courses/";
+    const accountSearchURL = "http://localhost:8000/search/account/";
+    const courseSearchURL = "http://localhost:8000/search/courses/";
+    // const accountSearchURL = "http://api.omoulearning.com:8000/search/account/";
+    // const courseSearchURL = "http://api.omoulearning.com:8000/search/courses/";
     const requestConfig = { params: { query: params.query }, headers: {"Authorization": `Token ${props.auth.token}`,} };
 
     useEffect(() => {
         (async () => {
-            console.log("search rsults")
             try {
                 const accountResponse = await axios.get(accountSearchURL, requestConfig);
                 axios.interceptors.request.use(function(config){
                     setLoading(true);
+                    return config
                 }, (error) => {
                     return Promise.reject(error);
                 });
@@ -91,7 +91,6 @@ const SearchResults = (props) => {
                 if (courseResponse.data === []){
                     console.log("course hit");
                 } else {
-                    console.log(props);
                     setCourseResults(courseResponse.data)
                 }
             } catch (err) {

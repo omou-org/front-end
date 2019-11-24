@@ -3,7 +3,8 @@ import * as types from "./actionTypes";
 import axios from "axios";
 
 export const instance = axios.create({
-    "baseURL": process.env.REACT_APP_DOMAIN,
+    // "baseURL": process.env.REACT_APP_DOMAIN,
+    "baseURL":"http://localhost:8000/"
 });
 
 export const REQUEST_ALL = -1;

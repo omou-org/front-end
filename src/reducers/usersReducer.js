@@ -55,6 +55,7 @@ const handleNotesFetch = (state, {userID, userType, response}) => {
                 break;
             case "parent":
                 newState.ParentList[userID].notes[note.id] = note;
+                // console.log(newState.ParentList[0]);
                 break;
             case "instructor":
                 newState.InstructorList[userID].notes[note.id] = note;
