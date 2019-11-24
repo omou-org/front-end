@@ -20,6 +20,7 @@ import { withRouter } from "react-router-dom";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
+import {truncateStrings} from "../../../truncateStrings"
 
 import { makeStyles } from '@material-ui/styles';
 
@@ -72,7 +73,7 @@ function AccountsCards(props) {
 
     console.log(props.user);
 
-    const fullName = `${props.user.user.first_name} ${props.user.user.last_name}`;
+    const fullName = `${props.user.user.first_name} ${props.user.user.last_name}`
     // const role = ()=>{
     //   if(props.user.relationship) {
     //       return "parent";
@@ -86,7 +87,7 @@ function AccountsCards(props) {
                 style={{ cursor: "pointer" }}
                 onClick={(event) => {
                     event.preventDefault();
-                    // goToRoute(`accounts/${props.user.role}/${props.user.id}`);
+                     goToRoute(`accounts/${(props.user.account_type).toLowerCase}/${props.user.id}`);
                     console.log(props.user)
                 }}>
                 <Grid container>
@@ -100,18 +101,18 @@ function AccountsCards(props) {
                     <Grid item xs={8} md={9}>
 
                         <CardContent className={"cardText"}>
-                            <Typography align={'left'}>
-                                {props.user.user.first_name} {props.user.user.last_name}
+                            <Typography align={'left'} style={{ fontWeight: "500" }}>
+                                {truncateStrings(`${props.user.user.first_name} ${props.user.user.last_name}`, 20)}
                             </Typography>
 
                             <Grid align={'left'}>
-                                {/*<Chip*/}
-                                {/*    style={{*/}
-                                {/*        cursor: "pointer"*/}
-                                {/*    }}*/}
-                                {/*    className={`userLabel ${props.user.role}`}*/}
-                                {/*    label={props.user.role.charAt(0).toUpperCase() + props.user.role.slice(1)}*/}
-                                {/*/>*/}
+                                <Chip
+                                    style={{
+                                        cursor: "pointer"
+                                    }}
+                                    className={`userLabel ${(props.user.account_type).toLowerCase()}`}
+                                    label={props.user.account_type.charAt(0).toUpperCase() + (props.user.account_type).toLowerCase().slice(1)}
+                                />
                             </Grid>
 
                             <Grid item xs={12} style={{ marginTop: 10 }}>
@@ -127,7 +128,7 @@ function AccountsCards(props) {
                                         # {props.user.user.id}
                                     </Grid>
                                 </Grid>
-                                <Grid container
+                              {props.user.account_type!=="STUDENT"&&  <Grid container
                                     justify={'flex-start'}
                                 >
                                     <Grid item xs={2}>
@@ -136,7 +137,7 @@ function AccountsCards(props) {
                                     <Grid item xs={10}>
                                         {props.user.user.email}
                                     </Grid>
-                                </Grid>
+                                </Grid>}
                             </Grid>
 
 

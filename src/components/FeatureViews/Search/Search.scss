@@ -2,6 +2,13 @@
 @import "../../../theme/sizes";
 .search {
   .primary-filter {
+    outline: none;
+  }
+  .input {
+    outline: none;
+  }
+  .search-input {
+    outline: none;
   }
 }
 .search-input {
@@ -9,6 +16,7 @@
     border-width: 1px 0;
     border-radius: 0;
     background-color: #eeeeee;
+
     .main-search__value-container {
       color: $secondaryFontColor;
     }
@@ -87,5 +95,15 @@
     background: #ffffff;
     border: 1px solid #dadada;
     cursor: pointer;
+  }
+  .main-search-view {
+    .searchResults {
+      padding-left: 25px;
+      padding-top: 25px;
+      .resultsColor {
+        color: #666666;
+        font-size: 24px;
+      }
+    }
   }
 }

@@ -22,7 +22,7 @@ import { useParams } from "react-router-dom"
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 import * as registrationActions from "../../../actions/registrationActions";
-
+import {truncateStrings} from "../../truncateStrings";
 
 const SearchResults = (props) => {
     const dispatch = useDispatch();
@@ -61,10 +61,10 @@ const SearchResults = (props) => {
     //Endpoints
     // /search/account/?query=query?profileFilter=profileFilter?gradeFilter=gradeFilter?sortAlpha=asc?sortID=desc
     // /search/courses/?query=query?courseTypeFilter=courseType?availability=availability?dateSort=desc
-    // const accountSearchURL = "http://localhost:8000/search/account/";
-    // const courseSearchURL = "http://localhost:8000/search/courses/";
-    const accountSearchURL = "http://api.omoulearning.com:8000/search/account/";
-    const courseSearchURL = "http://api.omoulearning.com:8000/search/courses/";
+    const accountSearchURL = "http://localhost:8000/search/account/";
+    const courseSearchURL = "http://localhost:8000/search/courses/";
+    // const accountSearchURL = "http://api.omoulearning.com:8000/search/account/";
+    // const courseSearchURL = "http://api.omoulearning.com:8000/search/courses/";
     const requestConfig = { params: { query: params.query }, headers: {"Authorization": `Token ${props.auth.token}`,} };
 
     useEffect(() => {
@@ -110,8 +110,12 @@ const SearchResults = (props) => {
                     :
                     <Grid item xs={12}>
                         <Paper className={'main-search-view'} >
-                            <Grid item xs={12} style={{ "padding": "1em" }}>
-                                <Typography variant={"h4"} align={"left"}> {accountResults.length + courseResults.length} Search Results for "{params.query}"  </Typography>
+                            <Grid item xs={12} className="searchResults">
+                                <Typography variant={"h4"} align={"left"}>
+                                <span style={{fontFamily:"Roboto Slab", fontWeight:"500"}}>
+                                {accountResults.length + courseResults.length} Search Results for </span>
+                                     "{params.query}" 
+                                     </Typography>
                             </Grid>
                             <hr />
                             <Grid item xs={12}>
@@ -119,8 +123,8 @@ const SearchResults = (props) => {
                                       justify={"space-between"}
                                       direction={"row"}
                                       alignItems="center">
-                                    <Grid item style={{ "paddingLeft": "25px" }}>
-                                        <Typography variant={"h5"} align={'left'} gutterBottom>Accounts</Typography>
+                                    <Grid item className="searchResults" >
+                                        <Typography className={"resultsColor"} align={'left'} gutterBottom>Accounts</Typography>
                                     </Grid>
                                     {/*<Grid item >*/}
                                     {/*    <Chip label="See All Accounts"*/}
@@ -166,8 +170,8 @@ const SearchResults = (props) => {
                                       justify={"space-between"}
                                       direction={"row"}
                                       alignItems="center">
-                                    <Grid item style={{ "paddingLeft": "25px" }}>
-                                        <Typography variant={"h5"} align={'left'} >Courses</Typography>
+                                    <Grid item className="searchResults">
+                                        <Typography className={"resultsColor"} align={'left'} >Courses</Typography>
                                     </Grid>
                                     {/*<Grid item style={{ "paddingRight": "1vh" }}>*/}
                                     {/*    <Chip label="See All Courses"*/}

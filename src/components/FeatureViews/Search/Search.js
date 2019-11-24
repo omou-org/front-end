@@ -76,6 +76,18 @@ const Search = (props) => {
 
         }
     }
+    
+    const customStyles = {
+        control: (base, state) => ({
+            ...base,
+            border: '0 !important',
+            // This line disable the blue border
+            boxShadow: '0 !important',
+            '&:hover': {
+                border: '0 !important'
+             }
+         })
+      };
 
     const handleFilterChange = (filter) => (e) => {
         setPrimaryFilter(e.target.value);
@@ -154,10 +166,10 @@ const Search = (props) => {
         <Grid container
             className={'search'}
         >
-            <Grid item xs={1} />
-            <Grid item xs={11}>
+            <Grid item xs={2} />
+            <Grid item xs={10} >
                 <form onSubmit={handleQuery()}>
-                    <Grid container>
+                    <Grid container >
                         <Grid item >
                             <FormControl required variant="outlined" className={"search-selector"}>
                                 <Select className={'select-primary-filter'}
@@ -183,7 +195,7 @@ const Search = (props) => {
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item md={9} xs={7}>
+                        <Grid item md={10} xs={7}>
                             <ReactSelect
                                 isClearable
                                 className={"search-input"}
@@ -193,7 +205,9 @@ const Search = (props) => {
                                 onFocus={handleOnFocus(primaryFilter)}
                                 onChange={handleSearchChange()}
                                 onInputChange={handleOnInputChange()}
+                                styles={customStyles}
                             />
+                            
                         </Grid>
                         <Grid item style={{ paddingTop: "1px" }}>
                             <Button
