@@ -528,7 +528,8 @@
 
       .course-action {
         background-color: #F5F5F5;
-        height: 100px;
+        height: 120px;
+        overflow-y: hidden;
 
         .course-status {
           .stats, .label {

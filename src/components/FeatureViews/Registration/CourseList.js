@@ -95,7 +95,7 @@ const CourseList = ({filteredCourses}) => {
                                 item
                                 md={8}
                                 xs={9}>
-                                {instructors[course.instructor_id].first_name + " " + instructors[course.instructor_id].last_name}
+                                { course.instructor_id && instructors[course.instructor_id].name}
                             </Grid>
                         </Grid>
                         <Grid
@@ -133,7 +133,7 @@ const CourseList = ({filteredCourses}) => {
                                 item
                                 xs={6}>
                                 {/*<span className="stats">*/}
-                                {/*    {course.enrollment_id_list.length} / {course.max_capacity}*/}
+                                    {course.roster.length} / {course.capacity}
                                 {/*</span>*/}
                                 <span className="label">
                                     Status
