@@ -319,7 +319,7 @@ class Form extends Component {
                         let course;
                         try {
                             const response = await apiActions.instance.get(
-                                `/courses/catalog/${id}/`, {
+                                `/course/catalog/${id}/`, {
                                     "headers": {
                                         "Authorization": `Token ${this.props.token}`,
                                     },
@@ -710,7 +710,7 @@ class Form extends Component {
 
     renderField(field, label, fieldIndex) {
         const fieldTitle = field.name;
-        const disabled = this.state["Parent Information"] && Boolean(this.state["Parent Information"]["Select Parent"]);
+        const disabled = this.state["Parent Information"] && Boolean(this.state["Parent Information"]["Select Parent"]) && this.state.activeSection === "Parent Information";
         switch (field.type) {
             case "select":
                 return (

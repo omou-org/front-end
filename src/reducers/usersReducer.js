@@ -55,6 +55,7 @@ const handleNotesFetch = (state, {userID, userType, response}) => {
                 break;
             case "parent":
                 newState.ParentList[userID].notes[note.id] = note;
+                // console.log(newState.ParentList[0]);
                 break;
             case "instructor":
                 newState.InstructorList[userID].notes[note.id] = note;
@@ -101,9 +102,9 @@ export const updateParent = (parents, id, parent) => ({
         "last_name": parent.user.last_name,
         "name": `${parent.user.first_name} ${parent.user.last_name}`,
         "email": parent.user.email,
+        "student_ids": parent.student_list,
         // below is not from database
         "role": "parent",
-        "student_ids": parents[id] ? parents[id].student_ids : [],
         "notes": {},
     },
 });
@@ -111,12 +112,16 @@ export const updateParent = (parents, id, parent) => ({
 const handleStudentsFetch = (state, {id, response}) => {
     const {data} = response;
     let {StudentList} = state;
-    if (id !== REQUEST_ALL) {
-        StudentList = updateStudent(StudentList, id, data);
-    } else {
+    if (id === REQUEST_ALL) {
         data.forEach((student) => {
             StudentList = updateStudent(StudentList, student.user.id, student);
         });
+    } else if (Array.isArray(id)) {
+        response.forEach(({data}) => {
+            StudentList = updateStudent(StudentList, data.user.id, data);
+        });
+    } else {
+        StudentList = updateStudent(StudentList, id, data);
     }
     return {
         ...state,

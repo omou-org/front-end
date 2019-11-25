@@ -18,6 +18,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import LogoutIcon from "@material-ui/icons/ExitToAppOutlined"
 import MenuIcon from "@material-ui/icons/Menu";
 import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -30,16 +31,16 @@ import CustomTheme from "../../theme/muiTheme";
 import Search from "../../components/FeatureViews/Search/Search";
 
 const NavList = [
-    // {
-    //     "name": "Dashboard",
-    //     "link": "/",
-    //     "icon": <DashboardIcon />,
-    // },
-    // {
-    //     "name": "Scheduler",
-    //     "link": "/scheduler",
-    //     "icon": <EventIcon />,
-    // },
+    {
+        "name": "Dashboard",
+        "link": "/",
+        "icon": <DashboardIcon />,
+    },
+    {
+        "name": "Scheduler",
+        "link": "/scheduler",
+        "icon": <EventIcon />,
+    },
     // {name: "Courses", link: "/courses", icon: <CourseIcon/>},
     {
     "name": "Accounts",
@@ -124,14 +125,11 @@ const Navigation = () => {
                         <div style={{
                             "flex": 1,
                         }} />
-                        { authToken ? <Search /> : ""}
+                        { authToken ? <Search/> : ""}
                         {
                             pathname === "/login" ? "" : authToken
-                                ? <Typography
-                                    className="loginToggle"
-                                    onClick={handleLogout}>
-                                    logout
-                                  </Typography>
+                                ? <LogoutIcon
+                                    onClick={handleLogout}/>
                                 : <Typography
                                     className="login"
                                     component={NavLinkNoDup}

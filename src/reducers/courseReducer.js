@@ -59,7 +59,6 @@ const handleCoursesFetch = (state, {id, response}) => {
     } else {
         data.forEach((course) => {
             NewCourseList = updateCourse(NewCourseList, course.course_id, course);
-            console.log('new courses: ', course);
         });
     }
     return {
@@ -70,8 +69,8 @@ const handleCoursesFetch = (state, {id, response}) => {
 
 export const updateCourse = (courses, id, course) => ({
     ...courses,
-    [id]: {
-        "course_id": id,
+    [course.course_id]: {
+        "course_id": course.course_id,
         "title": course.subject ? course.subject : "",
         "schedule": {
             "start_date": course.start_date,
