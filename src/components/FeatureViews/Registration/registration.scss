@@ -442,6 +442,7 @@
   @include respond-to(handhelds){
     margin-top:35px;
   }
+  margin-top:5x;
 
   .status {
     top: -40px;
@@ -563,4 +564,17 @@
   display: flex;
   align-items: center;
   text-decoration: none;
+}
+
+// Registration Course Styling
+
+.registrationCourse{
+  .registration-course-tabs{
+    margin-bottom:10px;
+  }
+  //.tab-border{
+  //  margin-top:-1px;
+  //  position:relative;
+  //  z-index:0;
+  //}
 }

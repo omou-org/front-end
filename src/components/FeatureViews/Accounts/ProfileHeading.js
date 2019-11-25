@@ -19,7 +19,6 @@ import './Accounts.scss';
 
 class ProfileHeading extends Component {
     renderStudentProfile() {
-        console.log(this.props.user)
         return (
             <Grid item xs={12}>
                 <Grid container>
@@ -36,7 +35,7 @@ class ProfileHeading extends Component {
                     </Grid>
                     <Grid item xs={5} md={5} className="rowPadding">
                         <Typography className="rowText">
-                            #{this.props.user.summit_id}
+                            #{this.props.user.summit_id ? this.props.user.summit_id : this.props.user.user_id}
                         </Typography>
                     </Grid>
                     <Grid item xs={1} md={1} className="rowPadding">

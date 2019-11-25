@@ -121,7 +121,6 @@ const handleStudentsFetch = (state, {id, response}) => {
             StudentList = updateStudent(StudentList, data.user.id, data);
         });
     } else {
-        console.log(data);
         StudentList = updateStudent(StudentList, id, data);
     }
     return {
