@@ -112,7 +112,7 @@ const Search = (props) => {
           // }
           setQuery(e);
       } else {
-          setQuery("");
+          // setQuery("");
       }
 
     };
@@ -144,8 +144,16 @@ const Search = (props) => {
       props.history.push("/search/"+query.label);
     };
 
+    const handleInputChange = () => (e)=>{
+        let input = {
+            value: e,
+            label: e
+        };
+        setQuery(input);
+    };
+
     const handleOnFocus = (primaryFilter) => (e)=>{
-        setQuery("");
+        // setQuery("");
         switch (primaryFilter) {
             case "All":
                 let suggestions = [];
@@ -214,6 +222,7 @@ const Search = (props) => {
                                 value={query}
                                 onFocus={handleOnFocus(primaryFilter)}
                                 onChange={handleSearchChange()}
+                                onInputChange={handleInputChange()}
                                 onMenuSelect
                                 closeMenuOnScroll={true}
                             />
