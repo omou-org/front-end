@@ -55,8 +55,8 @@ class SessionView extends Component {
 
     componentWillMount() {
         this.setState(() => {
-            let sessionData = this.props.courseSessions[this.props.computedMatch.params.course_id][this.props.computedMatch.params.session_id]
-            let courseData = this.props.courses[this.props.computedMatch.params.course_id]
+            let sessionData = this.props.courseSessions[this.props.match.params.course_id][this.props.match.params.session_id]
+            let courseData = this.props.courses[this.props.match.params.course_id]
             return {
                 sessionData: sessionData,
                 courseData: courseData

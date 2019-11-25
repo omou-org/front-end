@@ -28,7 +28,7 @@ const parseRelationship = {
 };
 
 const parseBirthday = (date) => {
-    if(date !== null){
+    if (date !== null) {
         const [year, month, day] = date.split("-");
         return `${month}/${day}/${year}`;
     } else {
@@ -162,7 +162,7 @@ const handleInstructorsFetch = (state, {id, response}) => {
         InstructorList = updateInstructor(InstructorList, id, data);
 
     } else {
-        data.forEach((instructor,i) => {
+        data.forEach((instructor, i) => {
             InstructorList = updateInstructor(InstructorList, instructor.user.id, instructor);
         });
     }
@@ -177,75 +177,75 @@ const handleInstructorsFetch = (state, {id, response}) => {
 export const updateInstructor = (instructors, id, instructor) => {
     let {address, birth_date, city, gender, phone_number, state, user, user_uuid, zipcode} = instructor;
     return {
-    ...instructors,
-    [id]: {
-        "user_id": user.id,
-        "gender": gender,
-        "birth_date": parseBirthday(birth_date),
-        "address": address,
-        "city": city,
-        "phone_number": phone_number,
-        "state": state,
-        "zipcode": zipcode,
-        "first_name": user.first_name,
-        "last_name": user.last_name,
-        "name": `${user.first_name} ${user.last_name}`,
-        "email": user.email,
-        // below is not from database
-        "role": "instructor",
-        "background": {
-            "bio": "",
-            "experience": 0,
-            "subjects": [],
-            "languages": [],
-        },
-        "schedule": {
-            "work_hours": {
-                "1": {
-                    "start": "T17:00",
-                    "end": "T20:00",
-                    "title": "",
+        ...instructors,
+        [id]: {
+            "user_id": user.id,
+            "gender": gender,
+            "birth_date": parseBirthday(birth_date),
+            "address": address,
+            "city": city,
+            "phone_number": phone_number,
+            "state": state,
+            "zipcode": zipcode,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "name": `${user.first_name} ${user.last_name}`,
+            "email": user.email,
+            // below is not from database
+            "role": "instructor",
+            "background": {
+                "bio": "",
+                "experience": 0,
+                "subjects": [],
+                "languages": [],
+            },
+            "schedule": {
+                "work_hours": {
+                    "1": {
+                        "start": "T17:00",
+                        "end": "T20:00",
+                        "title": "",
+                    },
+                    "2": {
+                        "start": "T17:00",
+                        "end": "T20:00",
+                        "title": "",
+                    },
+                    "3": {
+                        "start": "T18:00",
+                        "end": "T20:00",
+                        "title": "",
+                    },
+                    "4": {
+                        "start": "T00:00",
+                        "end": "T00:00",
+                        "title": "",
+                    },
+                    "5": {
+                        "start": "T16:00",
+                        "end": "T21:00",
+                        "title": "",
+                    },
+                    "6": {
+                        "start": "T09:00",
+                        "end": "T12:00",
+                        "title": "",
+                    },
                 },
-                "2": {
-                    "start": "T17:00",
-                    "end": "T20:00",
-                    "title": "",
-                },
-                "3": {
-                    "start": "T18:00",
-                    "end": "T20:00",
-                    "title": "",
-                },
-                "4": {
-                    "start": "T00:00",
-                    "end": "T00:00",
-                    "title": "",
-                },
-                "5": {
-                    "start": "T16:00",
-                    "end": "T21:00",
-                    "title": "",
-                },
-                "6": {
-                    "start": "T09:00",
-                    "end": "T12:00",
-                    "title": "",
+                "time_off": {
+                    "1": {
+                        "start": "2020-01-14T00:00",
+                        "end": "2020-01-21T00:00",
+                        "title": "Daniel Time Off",
+                    },
+                    "2": {
+                        "start": "2020-03-22T00:00",
+                        "end": "2020-03-22T00:00",
+                        "title": "Daniel Time Off",
+                    },
                 },
             },
-            "time_off": {
-                "1": {
-                    "start": "2020-01-14T00:00",
-                    "end": "2020-01-21T00:00",
-                    "title": "Daniel Time Off",
-                },
-                "2": {
-        "notes": {},
-                    "start": "2020-03-22T00:00",
-                    "end": "2020-03-22T00:00",
-                    "title": "Daniel Time Off",
-                },
-            },
+            "notes": {},
         },
-    },
     };
 };
