@@ -95,7 +95,7 @@ const CourseList = ({filteredCourses}) => {
                                 item
                                 md={8}
                                 xs={9}>
-                                {instructors[course.instructor_id].name}
+                                {instructors[course.instructor_id].first_name + " " + instructors[course.instructor_id].last_name}
                             </Grid>
                         </Grid>
                         <Grid
