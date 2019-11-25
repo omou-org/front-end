@@ -4,6 +4,6 @@ export const truncateStrings=(string, length)=>{
        return(string.slice(0, length-3).trim()+"...");
    }
    else{
-       return ("asd");
+       return (string);
    }
 };
