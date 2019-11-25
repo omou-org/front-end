@@ -54,12 +54,12 @@ class ProfileCard extends Component {
 
         return (
             <Grid item xs={12} sm={6} className="ProfileCard">
-                <Card key={this.props.user.user_id}
-                    style={{cursor: "pointer"}}
-                    onClick={(event) => {
-                        event.preventDefault();
-                        this.goToRoute(this.props.route);
-                    }}>
+                {this.props.user  && <Card key={this.props.user.user_id}
+                                           style={{cursor: "pointer"}}
+                                           onClick={(event) => {
+                                               event.preventDefault();
+                                               this.goToRoute(this.props.route);
+                                           }}>
                     <Grid container>
                         <Grid component={Hidden} xsDown item md={4}>
                             <Avatar
@@ -111,7 +111,7 @@ class ProfileCard extends Component {
                             </CardContent>
                         </Grid>
                     </Grid>
-                </Card>
+                </Card>}
             </Grid>
         )
     }

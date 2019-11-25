@@ -208,7 +208,6 @@ class UserProfile extends Component {
     }
 
     filter() {
-        console.log(this.getUser())
         const filterHelper = (obj, predicate) =>
             Object.keys(obj)
                 .filter(key => predicate(obj[key]))
