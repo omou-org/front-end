@@ -158,6 +158,7 @@ const RegistrationCourse = () => {
         endDay = formatDate(course.schedule.end_date);
 
     const rows = course.roster.map((student_id) => {
+        // console.log(student_id, students);
         const student = students[student_id];
         const parent = parents[student.parent_id];
         const {notes, session_payment_status} = enrollments[student_id][course.course_id];

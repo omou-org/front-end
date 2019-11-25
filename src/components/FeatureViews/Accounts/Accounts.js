@@ -258,7 +258,7 @@ class Accounts extends Component {
                         direction="row">
                         <Grid
                             item
-                            md={9}
+                            md={8}
                             xs={10}>
                             <Tabs
                                 className="tabs"
