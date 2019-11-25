@@ -162,7 +162,7 @@ const handleInstructorsFetch = (state, {id, response}) => {
         InstructorList = updateInstructor(InstructorList, id, data);
 
     } else {
-        data.forEach((instructor, i) => {
+        data.forEach((instructor) => {
             InstructorList = updateInstructor(InstructorList, instructor.user.id, instructor);
         });
     }
