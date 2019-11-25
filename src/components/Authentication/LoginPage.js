@@ -84,7 +84,7 @@ const LoginPage = () => {
             justify="center"
             spacing={0}
             style={{
-                "minHeight": "100vh",
+                // "minHeight": "100vh",
             }}>
             <Grid
                 item

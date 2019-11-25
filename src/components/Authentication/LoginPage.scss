@@ -27,16 +27,14 @@
         padding: 37px;
         width: 412px;
         height: 400px;
-        margin-left: -20vw;
     }
     @include respond-to(handhelds){
         position:absolute;
-        top:30vh;
-        left:0;
-        padding: 20px;
+        margin-top:6vh;
+        padding: 10px;
         width: 100vw;
-        height: 100vh;
         box-shadow:none !important;
+        overflow-y:hidden;
     }
 }
 
@@ -85,7 +83,6 @@
 
 .signIn {
     margin-top: 20px!important;
-    float: right;
     color:white !important;
     @include respond-to(handhelds){
         width:85vw;

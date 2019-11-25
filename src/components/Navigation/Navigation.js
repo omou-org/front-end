@@ -29,6 +29,8 @@ import "./Navigation.scss";
 import Routes from "../Routes/rootRoutes";
 import CustomTheme from "../../theme/muiTheme";
 import Search from "../../components/FeatureViews/Search/Search";
+import NavBarRoutes from "../Routes/NavBarRoutes";
+import LoginPage from "../Authentication/LoginPage";
 
 const NavList = [
     // {
@@ -93,80 +95,48 @@ const Navigation = () => {
         setMobileOpen((open) => !open);
     }, []);
 
-    const handleLogout = useCallback(() => {
-        dispatch(logout());
-    }, [dispatch]);
 
     return (
         <MuiThemeProvider theme={CustomTheme}>
             <div className="Navigation">
-                <AppBar
-                    className="OmouBar"
-                    color="default"
-                    position="sticky">
-                    <Toolbar>
-                        {
-                            pathname === "/login" ? "" :
-                                <Hidden lgUp>
-                                    <IconButton
-                                        aria-label="Open Drawer"
-                                        color="inherit"
-                                        onClick={handleDrawerToggle}>
-                                        <MenuIcon />
-                                    </IconButton>
-                                </Hidden>
-                        }
-                        <Typography
-                            className="title"
-                            component={NavLinkNoDup}
-                            to="/">
-                            omou
-                        </Typography>
-                        <div style={{
-                            "flex": 1,
-                        }} />
-                        { authToken ? <Search/> : ""}
-                        {
-                            pathname === "/login" ? "" : authToken
-                                ? <LogoutIcon
-                                    onClick={handleLogout}/>
-                                : <Typography
-                                    className="login"
-                                    component={NavLinkNoDup}
-                                    to="/login">
-                                    login
-                                  </Typography>
-                        }
-                    </Toolbar>
-                </AppBar>
+                <NavBarRoutes/>
                 {
                     pathname !== "/login" && (
                         <nav className="OmouDrawer">
-                            <Hidden
-                                implementation="css"
-                                smUp>
-                                <Drawer
-                                    onClose={handleDrawerToggle}
-                                    open={mobileOpen}
-                                    variant="temporary">
-                                    {drawer}
-                                </Drawer>
-                            </Hidden>
-                            <Hidden
-                                implementation="css"
-                                mdDown>
-                                <Drawer
-                                    open
-                                    variant="permanent">
-                                    {drawer}
-                                </Drawer>
-                            </Hidden>
+                            {
+                                authToken ? <div>
+                                    <Hidden
+                                        implementation="css"
+                                        smUp>
+                                        <Drawer
+                                            onClose={handleDrawerToggle}
+                                            open={mobileOpen}
+                                            variant="temporary">
+                                            {drawer}
+                                        </Drawer>
+                                    </Hidden>
+                                    <Hidden
+                                        implementation="css"
+                                        mdDown>
+                                        <Drawer
+                                            open
+                                            variant="permanent">
+                                            {drawer}
+                                        </Drawer>
+                                    </Hidden>
+                                </div> : ""
+                            }
+
                         </nav>
                     )
                 }
-                <main className="OmouMain">
-                    <Routes />
-                </main>
+                {
+                    authToken ? <main className="OmouMain">
+                        <Routes />
+                    </main> : <LoginPage/>
+
+                }
+
             </div>
         </MuiThemeProvider>
     );
