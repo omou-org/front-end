@@ -45,7 +45,7 @@ function rootRoutes(props) {
             <Route
                 exact
                 path="/"
-                render={(passedProps) => <Accounts {...passedProps} />} />
+                render={(passedProps) => <Dashboard {...passedProps} />} />
 
             <Route
                 exact
@@ -59,6 +59,7 @@ function rootRoutes(props) {
                 path="/scheduler/view-session/:course_id/:session_id"
                 render={(passedProps) => <SessionView {...passedProps} />} /> */}
             <ProtectedRoute
+                exact
                 path="/search/:query"
                 render={(passedProps) => <SearchResults {...passedProps} />} />
 
@@ -67,10 +68,12 @@ function rootRoutes(props) {
             {/*    render={(passedProps) => <ResourceView {...passedProps} />} /> */}
 
             <ProtectedRoute
+                exact
                 path="/filterAccount"
                 render={(passedProps) => <FilterAccountsPage {...passedProps} />} />
 
             <ProtectedRoute
+                exact
                 path='/noresults'
                 render={(passedProps) => <NoResultsPage {...passedProps} />} />
 

@@ -33,16 +33,16 @@ import NavBarRoutes from "../Routes/NavBarRoutes";
 import LoginPage from "../Authentication/LoginPage";
 
 const NavList = [
-    // {
-    //     "name": "Dashboard",
-    //     "link": "/",
-    //     "icon": <DashboardIcon />,
-    // },
-    // {
-    //     "name": "Scheduler",
-    //     "link": "/scheduler",
-    //     "icon": <EventIcon />,
-    // },
+    {
+        "name": "Dashboard",
+        "link": "/",
+        "icon": <DashboardIcon />,
+    },
+    {
+        "name": "Scheduler",
+        "link": "/scheduler",
+        "icon": <EventIcon />,
+    },
     // {name: "Courses", link: "/courses", icon: <CourseIcon/>},
     {
     "name": "Accounts",
@@ -67,7 +67,7 @@ const drawer = (
                     button
                     className="listItem"
                     component={NavLinkNoDup}
-                    isActive={(match, location) => match || (NavItem.name === "Accounts" && location.pathname === "/")}
+                    isActive={(match, location) => match }
                     key={NavItem.name}
                     to={NavItem.link}>
                     <ListItemIcon className="icon">{NavItem.icon}</ListItemIcon>
