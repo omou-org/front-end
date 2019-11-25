@@ -14,9 +14,6 @@ import SearchIcon from "@material-ui/icons/Search";
 import {withRouter, Link} from 'react-router-dom';
 import axios from "axios";
 
-
-
-
 const Search = (props) => {
     const [query, setQuery] = useState("");
     const [primaryFilter, setPrimaryFilter] = useState("All");
@@ -51,7 +48,6 @@ const Search = (props) => {
     );
 
     const searchFilterChange = (primaryFilter) => () =>{
-        console.log(primaryFilter,"hi");
         switch (primaryFilter) {
             case "All":
                 let suggestions = [];
@@ -76,6 +72,18 @@ const Search = (props) => {
 
         }
     }
+    
+    const customStyles = {
+        control: (base, state) => ({
+            ...base,
+            border: '0 !important',
+            // This line disable the blue border
+            boxShadow: '0 !important',
+            '&:hover': {
+                border: '0 !important'
+             }
+         })
+      };
 
     const handleFilterChange = (filter) => (e) => {
         setPrimaryFilter(e.target.value);
@@ -84,46 +92,60 @@ const Search = (props) => {
 
     const handleSearchChange = () => (e) => {
       if(e){
-          let value = e.value;
-          let endTypeIndex = value.indexOf("_");
-          let type = value.substring(0,endTypeIndex);
-          switch(type){
-              case "account":
-                  let startTypeIndex = value.indexOf("_")+1;
-                  endTypeIndex = value.indexOf("+");
-                  let startIDIndex = value.indexOf("-")+1;
-                  type = value.substring(startTypeIndex,endTypeIndex);
-                  let accountID = value.substring(startIDIndex, value.length);
-                  props.history.push("/accounts/"+type+"/"+accountID);
-                  break;
-              case "course":
-                  let startTitleIndex = value.indexOf("-");
-                  let courseID = value.substring(endTypeIndex+1,startTitleIndex);
-                  let courseTitle = value.substring(startTitleIndex+1, value.length);
-                  props.history.push("/registration/course/"+courseID+"/"+courseTitle);
-          }
+          // let value = e.value;
+          // let endTypeIndex = value.indexOf("_");
+          // let type = value.substring(0,endTypeIndex);
+          // switch(type){
+          //     case "account":
+          //         let startTypeIndex = value.indexOf("_")+1;
+          //         endTypeIndex = value.indexOf("+");
+          //         let startIDIndex = value.indexOf("-")+1;
+          //         type = value.substring(startTypeIndex,endTypeIndex);
+          //         let accountID = value.substring(startIDIndex, value.length);
+          //         props.history.push("/accounts/"+type+"/"+accountID);
+          //         break;
+          //     case "course":
+          //         let startTitleIndex = value.indexOf("-");
+          //         let courseID = value.substring(endTypeIndex+1,startTitleIndex);
+          //         let courseTitle = value.substring(startTitleIndex+1, value.length);
+          //         props.history.push("/registration/course/"+courseID+"/"+courseTitle);
+          // }
           setQuery(e);
       } else {
           setQuery("");
       }
 
     };
-    const handleOnInputChange = () => (e)=>{
-        if(e!==""){
-            let newInput = {
-                value: e,
-                label: e,
-            };
-            setQuery(newInput);
+
+    const handleMenuClick = () => (e) => {
+        e.preventDefault();
+        let value = query.value;
+        let endTypeIndex = value.indexOf("_");
+        let type = value.substring(0,endTypeIndex);
+        switch(type){
+            case "account":
+                let startTypeIndex = value.indexOf("_")+1;
+                endTypeIndex = value.indexOf("+");
+                let startIDIndex = value.indexOf("-")+1;
+                type = value.substring(startTypeIndex,endTypeIndex);
+                let accountID = value.substring(startIDIndex, value.length);
+                props.history.push("/accounts/"+type+"/"+accountID);
+                break;
+            case "course":
+                let startTitleIndex = value.indexOf("-");
+                let courseID = value.substring(endTypeIndex+1,startTitleIndex);
+                let courseTitle = value.substring(startTitleIndex+1, value.length);
+                props.history.push("/registration/course/"+courseID+"/"+courseTitle);
         }
-    };
+    }
 
     const handleQuery = () => (e) =>{
       e.preventDefault();
-      props.history.push("/search/"+query.value);
+      props.history.push("/search/"+query.label);
     };
 
     const handleOnFocus = (primaryFilter) => (e)=>{
+        setQuery("");
         switch (primaryFilter) {
             case "All":
                 let suggestions = [];
@@ -154,10 +176,10 @@ const Search = (props) => {
         <Grid container
             className={'search'}
         >
-            <Grid item xs={1} />
-            <Grid item xs={11}>
+            <Grid item xs={2} />
+            <Grid item xs={10} >
                 <form onSubmit={handleQuery()}>
-                    <Grid container>
+                    <Grid container >
                         <Grid item >
                             <FormControl required variant="outlined" className={"search-selector"}>
                                 <Select className={'select-primary-filter'}
@@ -183,7 +205,7 @@ const Search = (props) => {
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item md={9} xs={7}>
+                        <Grid item md={10} xs={7}>
                             <ReactSelect
                                 isClearable
                                 className={"search-input"}
@@ -192,8 +214,10 @@ const Search = (props) => {
                                 value={query}
                                 onFocus={handleOnFocus(primaryFilter)}
                                 onChange={handleSearchChange()}
-                                onInputChange={handleOnInputChange()}
+                                onMenuSelect
+                                closeMenuOnScroll={true}
                             />
+                            
                         </Grid>
                         <Grid item style={{ paddingTop: "1px" }}>
                             <Button

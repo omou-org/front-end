@@ -102,7 +102,7 @@ export const wrapPatch = (endpoint, [startType, successType, failType], id, data
 
 export const fetchCourses = (id) =>
     wrapGet(
-        "/courses/catalog/",
+        "/course/catalog/",
         [
             types.FETCH_COURSE_STARTED,
             types.FETCH_COURSE_SUCCESSFUL,

@@ -17,6 +17,10 @@ import Accounts from "../FeatureViews/Accounts/Accounts";
 import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
 import CourseCategory from "../FeatureViews/Registration/CourseCategory";
 import LoginPage from "../Authentication/LoginPage.js";
+import ProtectedRoute from "./ProtectedRoute";
+import SearchResults from "../FeatureViews/Search/SearchResults";
+import FilterAccountsPage from "../FeatureViews/Search/FilterAccountsPage";
+import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage";
 // import ProtectedRoute from "./ProtectedRoute";
 
 import SessionView from "../FeatureViews/Scheduler/SessionView"
@@ -48,22 +52,33 @@ function rootRoutes(props) {
                 path="/registration"
                 render={(passedProps) => <Registration {...passedProps} />} />
             {/* Scheduler Routes */}
-            {/* <Route
+             {/* <ProtectedRoute
                 exact path="/scheduler"
                 render={(passedProps) => <Scheduler {...passedProps} />} />
             <Route
                 path="/scheduler/view-session/:course_id/:session_id"
                 render={(passedProps) => <SessionView {...passedProps} />} /> */}
+            <ProtectedRoute
+                path="/search/:query"
+                render={(passedProps) => <SearchResults {...passedProps} />} />
 
-            {/*
-            <Route
-                path='/scheduler/resource'
-                render={(passedProps) => <ResourceView {...passedProps} />} /> */}
+            {/*<ProtectedRoute*/}
+            {/*    path='/scheduler/resource'*/}
+            {/*    render={(passedProps) => <ResourceView {...passedProps} />} /> */}
 
-            {/* <Route
+            <ProtectedRoute
+                path="/filterAccount"
+                render={(passedProps) => <FilterAccountsPage {...passedProps} />} />
+
+            <ProtectedRoute
+                path='/noresults'
+                render={(passedProps) => <NoResultsPage {...passedProps} />} />
+
+
+            {/* <ProtectedRoute
                 exact
                 path="/scheduler"
-                render={(passedProps) => <Scheduler {...passedProps} />}/> */} */}
+                render={(passedProps) => <Scheduler {...passedProps} />}/> */}
 
 
             {/* Accounts */}
@@ -71,11 +86,11 @@ function rootRoutes(props) {
                 exact
                 path="/accounts/:accountType/:accountID"
                 render={(passedProps) => <UserProfile {...passedProps} />} />
-            {/* <Route
+            {/* <ProtectedRoute
                 exact
                 path="/accounts/parents/:parentID/pay"
                 render={(passedProps) => <ParentPayment {...passedProps} />}/> */}
-            <Route
+            <ProtectedRoute
                 exact
                 path="/accounts"
                 render={(passedProps) => <Accounts {...passedProps} />} />

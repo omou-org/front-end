@@ -22,7 +22,7 @@ import { useParams } from "react-router-dom"
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 import * as registrationActions from "../../../actions/registrationActions";
-
+import {truncateStrings} from "../../truncateStrings";
 
 const SearchResults = (props) => {
     const dispatch = useDispatch();
@@ -69,11 +69,11 @@ const SearchResults = (props) => {
 
     useEffect(() => {
         (async () => {
-            console.log("search rsults")
             try {
                 const accountResponse = await axios.get(accountSearchURL, requestConfig);
                 axios.interceptors.request.use(function(config){
                     setLoading(true);
+                    return config
                 }, (error) => {
                     return Promise.reject(error);
                 });
@@ -91,10 +91,8 @@ const SearchResults = (props) => {
                 if (courseResponse.data === []){
                     console.log("course hit");
                 } else {
-                    console.log(props);
                     setCourseResults(courseResponse.data)
                 }
-                // props.courseActions.
             } catch (err) {
                 console.log(err)
             } finally {
@@ -111,8 +109,12 @@ const SearchResults = (props) => {
                     :
                     <Grid item xs={12}>
                         <Paper className={'main-search-view'} >
-                            <Grid item xs={12} style={{ "padding": "1em" }}>
-                                <Typography variant={"h4"} align={"left"}> {accountResults.length + courseResults.length} Search Results for "{params.query}"  </Typography>
+                            <Grid item xs={12} className="searchResults">
+                                <Typography variant={"h4"} align={"left"}>
+                                <span style={{fontFamily:"Roboto Slab", fontWeight:"500"}}>
+                                {accountResults.length + courseResults.length} Search Results for </span>
+                                     "{params.query}"
+                                     </Typography>
                             </Grid>
                             <hr />
                             <Grid item xs={12}>
@@ -120,8 +122,8 @@ const SearchResults = (props) => {
                                       justify={"space-between"}
                                       direction={"row"}
                                       alignItems="center">
-                                    <Grid item style={{ "paddingLeft": "25px" }}>
-                                        <Typography variant={"h5"} align={'left'} gutterBottom>Accounts</Typography>
+                                    <Grid item className="searchResults" >
+                                        <Typography className={"resultsColor"} align={'left'} gutterBottom>Accounts</Typography>
                                     </Grid>
                                     {/*<Grid item >*/}
                                     {/*    <Chip label="See All Accounts"*/}
@@ -167,8 +169,8 @@ const SearchResults = (props) => {
                                       justify={"space-between"}
                                       direction={"row"}
                                       alignItems="center">
-                                    <Grid item style={{ "paddingLeft": "25px" }}>
-                                        <Typography variant={"h5"} align={'left'} >Courses</Typography>
+                                    <Grid item className="searchResults">
+                                        <Typography className={"resultsColor"} align={'left'} >Courses</Typography>
                                     </Grid>
                                     {/*<Grid item style={{ "paddingRight": "1vh" }}>*/}
                                     {/*    <Chip label="See All Courses"*/}

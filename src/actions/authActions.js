@@ -1,5 +1,6 @@
 import * as types from "./actionTypes";
-import {instance} from "./apiActions";
+import {instance, wrapGet} from "./apiActions";
+import {wrap} from "module";
 
 export const login = (email, password, savePassword) => async (dispatch) => {
     // request starting
