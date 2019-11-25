@@ -21,12 +21,11 @@ const weekday = {
 const CourseList = ({filteredCourses}) => {
     const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
     return filteredCourses.map((course) => {
-        let start_date = course.start_date && new Date(course.start_date),
-            end_date = course.end_date && new Date(course.end_date),
-            start_time = course.start_time && course.start_time.substr(1),
-            end_time = course.end_time && course.end_time.substr(1),
-            days = course.days && course.days.map((day) => weekday[day]);
-
+        let start_date = new Date(course.schedule.start_date),
+            end_date = new Date(course.schedule.end_date),
+            start_time = course.schedule.start_time && course.schedule.start_time.substr(1),
+            end_time = course.schedule.end_time && course.schedule.end_time.substr(1),
+            days = course.schedule.days && course.schedule.days.map((day) => weekday[day]);
         start_date = start_date && start_date.toDateString().substr(3);
         end_date = end_date && end_date.toDateString().substr(3);
         const date = `${start_date} - ${end_date}`,
@@ -50,7 +49,7 @@ const CourseList = ({filteredCourses}) => {
                         <Typography
                             align="left"
                             className="course-heading">
-                            {course.subject}
+                            {course.title}
                         </Typography>
                     </Grid>
                     <Grid
