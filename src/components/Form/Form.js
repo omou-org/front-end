@@ -7,7 +7,7 @@ import * as types from "actions/actionTypes";
 import React, {Component} from "react";
 import {Prompt} from "react-router";
 import {NavLink, withRouter} from "react-router-dom";
-import CreatableSelect, {makeCreatableSelect} from 'react-select/creatable';
+import CreatableSelect from 'react-select/creatable';
 import {updateStudent, updateParent} from "reducers/usersReducer";
 import {updateCourse} from "reducers/courseReducer";
 
@@ -432,6 +432,10 @@ class Form extends Component {
         this.setState({
             "hasLoaded": true,
         })
+    }
+
+    componentWillUnmount = () => {
+        this.props.registrationActions.resetSubmitStatus();
     }
 
     getFormObject() {
