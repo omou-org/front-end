@@ -87,8 +87,7 @@ function AccountsCards(props) {
                 style={{ cursor: "pointer" }}
                 onClick={(event) => {
                     event.preventDefault();
-                     goToRoute(`accounts/${(props.user.account_type).toLowerCase}/${props.user.id}`);
-                    console.log(props.user)
+                     goToRoute(`/accounts/${props.user.account_type.toLowerCase()}/${props.user.user.id}`);
                 }}>
                 <Grid container>
                     <Hidden mdDown>
