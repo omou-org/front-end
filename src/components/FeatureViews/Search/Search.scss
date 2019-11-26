@@ -111,3 +111,21 @@
     }
   }
 }
+
+// Filters 
+
+.filtered-accounts{
+.main-search-view{
+  width: 100%;
+  .searchFilters{
+    display: flex;
+    padding-top: 10px;
+    .input-title{
+      top: -15px;
+      left: 7px;
+    }
+  }
+ 
+}
+}
+

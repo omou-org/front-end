@@ -9,13 +9,12 @@ import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
 import AccountsCards from "./cards/AccountsCards"
 import BackButton from '../../BackButton';
-
+import Filters from "./Filters"
+import "./Search.scss";
 
 
 
 const FilterAccountsPage = (props) => {
-
-
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
         <div>
@@ -26,7 +25,7 @@ const FilterAccountsPage = (props) => {
                     </Grid>
                     <hr />
                     <Grid item xs={12} style={{ "padding": "1em" }}>
-                        <Typography variant={"h4"} align={"left"}> "15" Search Resuts for "Search Result"  </Typography>
+                        <Filters />
                     </Grid>
 
                     <Grid item xs={12}>
@@ -34,15 +33,12 @@ const FilterAccountsPage = (props) => {
                             justify={"space-between"}
                             direction={"row"}
                             alignItems="center">
-                            <Grid item style={{ "paddingLeft": "25px" }}>
-                                <Typography variant={"h5"} align={'left'} gutterBottom>This is where the filters will go</Typography>
-                            </Grid>
                         </Grid>
-                        <Grid container spacing={16} direction={"row"}>
+                        {/* <Grid container spacing={16} direction={"row"}>
                             {Object.values(props.accounts).map((user) => (
                                 <AccountsCards user={user} key={user.user_id} />)
                             )}
-                        </Grid>
+                        </Grid> */}
                     </Grid>
 
                 </Paper>
