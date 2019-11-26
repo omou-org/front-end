@@ -1,9 +1,9 @@
 import * as types from "./actionTypes";
-import {instance} from "./apiActions";
+import { instance } from "./apiActions";
 
 export const login = (email, password, savePassword) => async (dispatch) => {
     // request starting
-    dispatch({"type": types.LOGIN_STARTED});
+    dispatch({ "type": types.LOGIN_STARTED });
 
     try {
         const response = await instance
@@ -28,6 +28,6 @@ export const login = (email, password, savePassword) => async (dispatch) => {
     }
 };
 
-export const logout = () => ({"type": types.LOGOUT});
+export const logout = () => ({ "type": types.LOGOUT });
 
-export const resetAttemptStatus = () => ({"type": types.RESET_ATTEMPT});
+export const resetAttemptStatus = () => ({ "type": types.RESET_ATTEMPT });

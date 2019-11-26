@@ -57,14 +57,14 @@ const Search = (props) => {
                 suggestions = suggestions.concat(Object.values(props.courses));
                 setSearchSuggestions(suggestions);
                 break;
-            case "Accounts":
+            case "Account":
                 let accountSuggestions = [];
                 accountSuggestions = accountSuggestions.concat(Object.values(props.students).map((student) => { return { ...student, type: "student" } }));
                 accountSuggestions = accountSuggestions.concat(Object.values(props.parents).map((parent) => { return { ...parent, type: "parent" } }));
                 accountSuggestions = accountSuggestions.concat(Object.values(props.instructors).map((instructor) => { return { ...instructor, type: "instructor" } }));
                 setSearchSuggestions(accountSuggestions);
                 break;
-            case "Courses":
+            case "Course":
                 setSearchSuggestions(Object.values(props.courses));
                 break;
             default:
@@ -141,7 +141,7 @@ const Search = (props) => {
 
     const handleQuery = () => (e) => {
         e.preventDefault();
-        props.history.push("/search/" + query.label);
+        props.history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
     };
 
     const handleOnFocus = (primaryFilter) => (e) => {
@@ -196,11 +196,11 @@ const Search = (props) => {
                                     <MenuItem value={"All"} key={"All"} >
                                         All
                                     </MenuItem>
-                                    <MenuItem value={"Accounts"} key={"Accounts"}>
+                                    <MenuItem value={"Account"} key={"Accounts"}>
                                         Account
                                     </MenuItem>
-                                    <MenuItem value={"Courses"} key={"Courses"}>
-                                        Courses
+                                    <MenuItem value={"Course"} key={"Courses"}>
+                                        Course
                                     </MenuItem>
                                 </Select>
                             </FormControl>

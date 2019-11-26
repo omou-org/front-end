@@ -1,9 +1,9 @@
-import React, {useState, useEffect, useMemo,} from 'react';
+import React, { useState, useEffect, useMemo, } from 'react';
 import ReactSelect from 'react-select';
 import { Grid, Select, Button } from "@material-ui/core";
 import { bindActionCreators } from "redux";
 import * as searchActions from "../../../actions/searchActions";
-import {connect, useDispatch, useSelector} from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
@@ -22,7 +22,9 @@ import { useParams } from "react-router-dom"
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 import * as registrationActions from "../../../actions/registrationActions";
-import {truncateStrings} from "../../truncateStrings";
+import { truncateStrings } from "../../truncateStrings";
+import AccountFilters from "../../FeatureViews/Search/Filters"
+import NoResultsPage from './NoResults/NoResultsPage';
 
 const SearchResults = (props) => {
     const dispatch = useDispatch();
@@ -35,9 +37,9 @@ const SearchResults = (props) => {
         [dispatch]
     );
 
-    const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
-    const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
-    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
+    const courses = useSelector(({ "Course": { NewCourseList } }) => NewCourseList);
+    const instructors = useSelector(({ "Users": { InstructorList } }) => InstructorList);
+    const requestStatus = useSelector(({ RequestStatus }) => RequestStatus);
 
     useEffect(() => {
         api.fetchCourses();
@@ -52,8 +54,8 @@ const SearchResults = (props) => {
     }, [api]);
 
     const [data, setData] = useState("");
-    const [accountResults, setAccountResults ] = useState([]);
-    const [courseResults, setCourseResults ] = useState([]);
+    const [accountResults, setAccountResults] = useState([]);
+    const [courseResults, setCourseResults] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const params = useParams();
@@ -65,13 +67,13 @@ const SearchResults = (props) => {
     const courseSearchURL = "http://localhost:8000/search/courses/";
     // const accountSearchURL = "http://api.omoulearning.com:8000/search/account/";
     // const courseSearchURL = "http://api.omoulearning.com:8000/search/courses/";
-    const requestConfig = { params: { query: params.query }, headers: {"Authorization": `Token ${props.auth.token}`,} };
+    const requestConfig = { params: { query: params.query }, headers: { "Authorization": `Token ${props.auth.token}`, } };
 
     useEffect(() => {
         (async () => {
             try {
                 const accountResponse = await axios.get(accountSearchURL, requestConfig);
-                axios.interceptors.request.use(function(config){
+                axios.interceptors.request.use(function (config) {
                     setLoading(true);
                     return config
                 }, (error) => {
@@ -82,13 +84,13 @@ const SearchResults = (props) => {
                     console.log("account hit")
                 } else {
                     let rawAccountResults = accountResponse.data;
-                    let accountResults = rawAccountResults.map((rawAccountResult) =>{
-                        return {user: rawAccountResult, type:"user", user_id: rawAccountResult.user.id}
+                    let accountResults = rawAccountResults.map((rawAccountResult) => {
+                        return { user: rawAccountResult, type: "user", user_id: rawAccountResult.user.id }
                     });
                     setAccountResults(accountResults);
                 }
-                const courseResponse = await axios.get(courseSearchURL,requestConfig);
-                if (courseResponse.data === []){
+                const courseResponse = await axios.get(courseSearchURL, requestConfig);
+                if (courseResponse.data === []) {
                     console.log("course hit");
                 } else {
                     setCourseResults(courseResponse.data)
@@ -99,29 +101,30 @@ const SearchResults = (props) => {
                 setLoading(false)
             }
         })()
-    }, [params.query, props.auth.token]);
+    }, [params.query, props.auth.token, requestConfig]);
 
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
-            <Grid container className={'search-results'} style={{ "padding": "1em" }}>
-                { loading ?
-                    <h2>Loading...</h2>
-                    :
+        <Grid container className={'search-results'} style={{ "padding": "1em" }}>
+            {loading ?
+                <h2>Loading...</h2>
+                : accountResults.length + courseResults.length !== 0 ?
                     <Grid item xs={12}>
                         <Paper className={'main-search-view'} >
                             <Grid item xs={12} className="searchResults">
                                 <Typography variant={"h4"} align={"left"}>
-                                <span style={{fontFamily:"Roboto Slab", fontWeight:"500"}}>
-                                {accountResults.length + courseResults.length} Search Results for </span>
-                                     "{params.query}" 
+                                    <span style={{ fontFamily: "Roboto Slab", fontWeight: "500" }}>
+                                        {accountResults.length + courseResults.length} Search Results for </span>
+                                    "{params.query}"
                                      </Typography>
+                                {params.type === "account" ? <AccountFilters /> : ""}
                             </Grid>
                             <hr />
                             <Grid item xs={12}>
                                 <Grid container
-                                      justify={"space-between"}
-                                      direction={"row"}
-                                      alignItems="center">
+                                    justify={"space-between"}
+                                    direction={"row"}
+                                    alignItems="center">
                                     <Grid item className="searchResults" >
                                         <Typography className={"resultsColor"} align={'left'} gutterBottom>Accounts</Typography>
                                     </Grid>
@@ -132,7 +135,7 @@ const SearchResults = (props) => {
                                     {/*</Grid>*/}
                                 </Grid>
                                 <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} direction={"row"}>
-                                    { accountResults.length > 0 ?
+                                    {accountResults.length > 0 ?
                                         accountResults.slice(0, 4).map((account) => (
                                             <AccountsCards user={account.user} key={account.user_id} />))
                                         :
@@ -166,9 +169,9 @@ const SearchResults = (props) => {
 
                             <Grid item xs={12}>
                                 <Grid container
-                                      justify={"space-between"}
-                                      direction={"row"}
-                                      alignItems="center">
+                                    justify={"space-between"}
+                                    direction={"row"}
+                                    alignItems="center">
                                     <Grid item className="searchResults">
                                         <Typography className={"resultsColor"} align={'left'} >Courses</Typography>
                                     </Grid>
@@ -186,8 +189,8 @@ const SearchResults = (props) => {
                             </Grid>
                         </Paper>
                     </Grid>
-                }
-            </Grid>
+                    : <NoResultsPage />}
+        </Grid>
     )
 };
 

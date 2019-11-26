@@ -3,8 +3,8 @@ import * as types from "./actionTypes";
 import axios from "axios";
 
 export const instance = axios.create({
-    // "baseURL": process.env.REACT_APP_DOMAIN,
-    "baseURL":"http://localhost:8000/"
+    "baseURL": process.env.REACT_APP_DOMAIN,
+
 });
 
 export const REQUEST_ALL = -1;
@@ -36,7 +36,7 @@ export const wrapGet = (endpoint, [startType, successType, failType], id) =>
             });
             // succesful request
             newAction(successType, response);
-        } catch ({response}) {
+        } catch ({ response }) {
             // failed request
             newAction(failType, response);
         }
@@ -65,7 +65,7 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
             });
             // succesful request
             newAction(successType, response);
-        } catch ({response}) {
+        } catch ({ response }) {
             // failed request
             newAction(failType, response);
         }
@@ -95,7 +95,7 @@ export const wrapPatch = (endpoint, [startType, successType, failType], id, data
             });
             // succesful request
             newAction(successType, response);
-        } catch ({response}) {
+        } catch ({ response }) {
             // failed request
             newAction(failType, response);
         }

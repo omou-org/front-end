@@ -29,6 +29,7 @@ import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSe
 import ParentPayment from "../Form/ParentPayment";
 import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage"
 import FilterAccountsPage from "../FeatureViews/Search/FilterAccountsPage";
+import AccountResults from '../FeatureViews/Search/FilterAccountsPage'
 
 
 function rootRoutes(props) {
@@ -50,15 +51,19 @@ function rootRoutes(props) {
                 path="/registration"
                 render={(passedProps) => <Registration {...passedProps} />} />
             {/* Scheduler Routes */}
-            {/* <ProtectedRoute
-                exact path="/scheduler"
-                render={(passedProps) => <Scheduler {...passedProps} />} />
             <ProtectedRoute
-                path="/scheduler/view-session/:course_id/:session_id"
-                render={(passedProps) => <SessionView {...passedProps} />} /> */}
-            <ProtectedRoute
-                path="/search/:query"
+                exact
+                path="/search/:type/:query?"
                 render={(passedProps) => <SearchResults {...passedProps} />} />
+
+            {/* <ProtectedRoute
+                exact
+                path="/search/account/:query?"
+                render={(passedProps) => <AccountResults {...passedProps} />} /> */}
+
+            {/* <ProtectedRoute
+                path="/search/course/:query?"
+                render={(passedProps) => <SearchResults {...passedProps} />} /> */}
             {/*
             <ProtectedRoute
                 path='/scheduler/resource'
