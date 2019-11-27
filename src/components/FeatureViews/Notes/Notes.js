@@ -72,14 +72,6 @@ const Notes = ({userRole, userID}) => {
     const [isPost, setIsPost] = useState(false);
     const [error, setError] = useState(false);
 
-    useEffect(() => {
-        if (userRole === "course") {
-            api.fetchCourseNotes(userID);
-        } else {
-            api.fetchNotes(userID, userRole);
-        }
-    }, [api, userID, userRole]);
-
     const openNewNote = useCallback(() => {
         setAlert(true);
         setEditID(null);

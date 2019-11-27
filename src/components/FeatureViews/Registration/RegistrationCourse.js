@@ -35,6 +35,7 @@ import Note from "../Notes/Notes";
 import "./registration.scss"
 import {Link, useRouteMatch} from "react-router-dom";
 import {stringToColor} from "components/FeatureViews/Accounts/accountUtils";
+import Loading from "../../Loading";
 
 const dayConverter = {
     "0": "Sunday",
@@ -123,6 +124,7 @@ const RegistrationCourse = () => {
 
     useEffect(() => {
         api.fetchCourses(courseID);
+        api.fetchCourseNotes(courseID);
         api.fetchStudents();
         api.fetchParents();
     }, [api, courseID]);
@@ -144,8 +146,9 @@ const RegistrationCourse = () => {
         requestStatus.instructor[GET][course.instructor_id] === apiActions.REQUEST_STARTED ||
         !requestStatus.parent[GET][apiActions.REQUEST_ALL] ||
         requestStatus.parent[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED ||
-        studentStatus === apiActions.REQUEST_STARTED) {
-        return "LOADING";
+        !requestStatus.student[GET][apiActions.REQUEST_ALL] ||
+        requestStatus.student[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED) {
+        return <Loading/>;
     }
 
     const startDate = new Date(course.schedule.start_date +
@@ -426,12 +429,16 @@ const RegistrationCourse = () => {
                 </Typography>
                 <Tabs className={"registration-course-tabs"}
                       onChange={handleChange}
-                      value={value}>
+                      value={value}
+                      indicatorColor="primary">
                     <Tab
                         label={<><RegistrationIcon className="NoteIcon" /> Registration</>}
                     />
                     <Tab
-                        label={<><NoteIcon className="NoteIcon" /> Notes</>} />
+                        label={
+                            course.notes && Object.values(course.notes).some(({important}) => important)
+                                ? <><Avatar style={{width: 10, height: 10}} className="notificationCourse" /><NoteIcon className="TabIcon" />  Notes</>
+                                : <><NoteIcon className="NoteIcon" /> Notes</>} />
 
                 </Tabs>
                 <div className="course-status">
@@ -446,8 +453,6 @@ const RegistrationCourse = () => {
                         valueBuffer={100}
                         variant="buffer" />
                 </div>
-
-                {/*<hr className={"tab-border"}/>*/}
                 {displayComponent()}
             </Paper>
         </Grid>

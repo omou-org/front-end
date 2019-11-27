@@ -189,7 +189,8 @@ export const fetchEnrollments = () => wrapGet(
         types.FETCH_ENROLLMENT_STARTED,
         types.FETCH_ENROLLMENT_SUCCESSFUL,
         types.FETCH_ENROLLMENT_FAILED,
-    ]
+    ],
+    // enrollmentId
 );
 
 export const initializeRegistration = () =>

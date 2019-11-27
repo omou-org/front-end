@@ -82,6 +82,11 @@
   vertical-align: middle;
 }
 
+.TabIcon {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
 .course-categories {
   position: relative;
   //Controls
@@ -396,6 +401,21 @@
 /*Course Registration Page*/
 .text {
   font-size: 18px !important;
+}
+
+.notificationCourse {
+  background-color: orange!important;
+  position: absolute!important;
+  top: 10px!important;
+  left: 2.9em!important;
+
+  @include respond-to(medium-screens) {
+    left: 1.4em!important;
+  }
+
+  @include respond-to(handhelds) {
+    left: 1.4em!important;
+  }
 }
 
 .course-heading {

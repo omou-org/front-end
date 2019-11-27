@@ -3,6 +3,7 @@ import {bindActionCreators} from "redux";
 import * as userActions from "../../../actions/userActions";
 import React, {Component} from "react";
 import BackButton from "../../BackButton";
+import Truncate from 'react-truncate';
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
@@ -162,11 +163,11 @@ class Accounts extends Component {
                                     container
                                     layout="row">
                                     <Avatar
-                                        style={styles(row.name)}>{row.name.match(/\b(\w)/g).join("")}
+                                        style={styles(row.name)}>{row.name.toUpperCase().match(/\b(\w)/g).join("")}
                                     </Avatar>
-                                    <Typography>
+                                    <Truncate lines={1} ellipsis={<span>... <a href='/link/to/article'>Read more</a></span>}>
                                         {row.name}
-                                    </Typography>
+                                    </Truncate>
                                 </Grid>
                             </TableCell>
                             <TableCell

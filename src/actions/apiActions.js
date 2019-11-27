@@ -11,7 +11,6 @@ export const REQUEST_STARTED = 1;
 
 export const wrapGet = (endpoint, [startType, successType, failType], id) =>
     async (dispatch, getState) => {
-
         // creates a new action based on the response given
         const newAction = (type, response) => {
             dispatch({
