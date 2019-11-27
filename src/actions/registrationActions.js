@@ -176,8 +176,8 @@ export const submitForm = (state, id) => {
 export const resetSubmitStatus = () =>
     ({type: types.RESET_SUBMIT_STATUS, payload: null});
 
-export const fetchEnrollments = (enrollmentId) => wrapGet(
-    "/courses/enrollment/",
+export const fetchEnrollments = () => wrapGet(
+    "/course/enrollment/",
     [
         types.FETCH_ENROLLMENT_STARTED,
         types.FETCH_ENROLLMENT_SUCCESSFUL,

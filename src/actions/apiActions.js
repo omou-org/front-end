@@ -3,8 +3,7 @@ import * as types from "./actionTypes";
 import axios from "axios";
 
 export const instance = axios.create({
-    // "baseURL": "http://localhost:8000",
-    "baseURL": "http://api.omoulearning.com:8000",
+    "baseURL": process.env.REACT_APP_DOMAIN,
 });
 
 export const REQUEST_ALL = -1;
@@ -27,7 +26,6 @@ export const wrapGet = (endpoint, [startType, successType, failType], id) =>
         newAction(startType, {});
 
         const requestURL = id ? `${endpoint}${id}/` : endpoint;
-
         try {
             const response = await instance.get(requestURL, {
                 "headers": {
@@ -103,7 +101,7 @@ export const wrapPatch = (endpoint, [startType, successType, failType], id, data
 
 export const fetchCourses = (id) =>
     wrapGet(
-        "/courses/catalog/",
+        "/course/catalog/",
         [
             types.FETCH_COURSE_STARTED,
             types.FETCH_COURSE_SUCCESSFUL,

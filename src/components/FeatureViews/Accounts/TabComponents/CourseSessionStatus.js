@@ -24,7 +24,7 @@ class CourseSessionStatus extends Component {
 
     componentWillMount() {
         this.setState(() => {
-            let {accountID, courseID} = this.props.computedMatch.params;
+            let {accountID, courseID} = this.props.match.params;
             let calendarSessions = this.props.courseSessions[courseID],
                 paymentSessionStatus = this.props.enrollments[accountID][courseID].session_payment_status,
                 statusKey = (status) => {

@@ -3,12 +3,9 @@ import initialState from "./initialState";
 import {REQUEST_ALL} from "../actions/apiActions";
 
 export default (state = initialState.Course, {payload, type}) => {
-    console.log(type)
     switch (type) {
         case actions.FETCH_COURSE_SUCCESSFUL:
-            console.log(state);
             const n = handleCoursesFetch(state, payload);
-            console.log(n);
             return n;
         case actions.FETCH_ENROLLMENT_SUCCESSFUL:
             return handleEnrollmentFetch(state, payload);
@@ -59,11 +56,10 @@ const handleCoursesFetch = (state, {id, response}) => {
     const {data} = response;
     let {NewCourseList} = state;
     if (id !== REQUEST_ALL) {
-        console.log((NewCourseList[id] && NewCourseList[id].notes), (NewCourseList[id] && NewCourseList[id].notes) || {})
         NewCourseList = updateCourse(NewCourseList, id, data);
     } else {
         data.forEach((course) => {
-            NewCourseList = updateCourse(NewCourseList, course.id, course);
+            NewCourseList = updateCourse(NewCourseList, course.course_id, course);
         });
     }
     return {
@@ -79,7 +75,7 @@ export const updateCourse = (courses, id, course) => ({
             "notes": {},
         }),
         "course_id": id,
-        "title": course.subject,
+        "title": course.subject ? course.subject : "",
         "schedule": {
             "start_date": course.start_date,
             "end_date": course.end_date,

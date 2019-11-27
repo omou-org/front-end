@@ -28,8 +28,12 @@ const parseRelationship = {
 };
 
 const parseBirthday = (date) => {
-    const [year, month, day] = date.split("-");
-    return `${month}/${day}/${year}`;
+    if (date !== null) {
+        const [year, month, day] = date.split("-");
+        return `${month}/${day}/${year}`;
+    } else {
+        return "01/01/2000";
+    }
 };
 
 const handleNotesPost = (state, {response, ...rest}) => handleNotesFetch(state, {
@@ -51,6 +55,7 @@ const handleNotesFetch = (state, {userID, userType, response}) => {
                 break;
             case "parent":
                 newState.ParentList[userID].notes[note.id] = note;
+                // console.log(newState.ParentList[0]);
                 break;
             case "instructor":
                 newState.InstructorList[userID].notes[note.id] = note;
@@ -97,9 +102,9 @@ export const updateParent = (parents, id, parent) => ({
         "last_name": parent.user.last_name,
         "name": `${parent.user.first_name} ${parent.user.last_name}`,
         "email": parent.user.email,
+        "student_ids": parent.student_list,
         // below is not from database
         "role": "parent",
-        "student_ids": parents[id] ? parents[id].student_ids : [],
         "notes": {},
     },
 });
@@ -107,12 +112,16 @@ export const updateParent = (parents, id, parent) => ({
 const handleStudentsFetch = (state, {id, response}) => {
     const {data} = response;
     let {StudentList} = state;
-    if (id !== REQUEST_ALL) {
-        StudentList = updateStudent(StudentList, id, data);
-    } else {
+    if (id === REQUEST_ALL) {
         data.forEach((student) => {
             StudentList = updateStudent(StudentList, student.user.id, student);
         });
+    } else if (Array.isArray(id)) {
+        response.forEach(({data}) => {
+            StudentList = updateStudent(StudentList, data.user.id, data);
+        });
+    } else {
+        StudentList = updateStudent(StudentList, id, data);
     }
     return {
         ...state,
@@ -124,6 +133,7 @@ export const updateStudent = (students, id, student) => ({
     ...students,
     [id]: {
         "user_id": student.user.id,
+        "summit_id": student.user_uuid,
         "gender": student.gender,
         "birthday": parseBirthday(student.birth_date),
         "address": student.address,
@@ -151,11 +161,13 @@ const handleInstructorsFetch = (state, {id, response}) => {
     let {InstructorList} = state;
     if (id !== REQUEST_ALL) {
         InstructorList = updateInstructor(InstructorList, id, data);
+
     } else {
-        data.forEach((instructor) => {
+        data.forEach((instructor, i) => {
             InstructorList = updateInstructor(InstructorList, instructor.user.id, instructor);
         });
     }
+    // console.log(InstructorList,"hi");
     return {
         ...state,
         InstructorList,
@@ -163,76 +175,79 @@ const handleInstructorsFetch = (state, {id, response}) => {
 };
 
 
-export const updateInstructor = (instructors, id, instructor) => ({
-    ...instructors,
-    [id]: {
-        "user_id": instructor.user.id,
-        "gender": instructor.gender,
-        "birth_date": parseBirthday(instructor.birth_date),
-        "address": instructor.address,
-        "city": instructor.city,
-        "phone_number": instructor.phone_number,
-        "state": instructor.state,
-        "zipcode": instructor.zipcode,
-        "age": instructor.age,
-        "first_name": instructor.user.first_name,
-        "last_name": instructor.user.last_name,
-        "name": `${instructor.user.first_name} ${instructor.user.last_name}`,
-        "email": instructor.user.email,
-        // below is not from database
-        "role": "instructor",
-        "background": {
-            "bio": "",
-            "experience": 0,
-            "subjects": [],
-            "languages": [],
-        },
-        "schedule": {
-            "work_hours": {
-                "1": {
-                    "start": "T17:00",
-                    "end": "T20:00",
-                    "title": "",
+export const updateInstructor = (instructors, id, instructor) => {
+    let {address, birth_date, city, gender, phone_number, state, user, user_uuid, zipcode} = instructor;
+    return {
+        ...instructors,
+        [id]: {
+            "user_id": user.id,
+            "summit_id": user_uuid,
+            "gender": gender,
+            "birth_date": parseBirthday(birth_date),
+            "address": address,
+            "city": city,
+            "phone_number": phone_number,
+            "state": state,
+            "zipcode": zipcode,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "name": `${user.first_name} ${user.last_name}`,
+            "email": user.email,
+            // below is not from database
+            "role": "instructor",
+            "background": {
+                "bio": "",
+                "experience": 0,
+                "subjects": [],
+                "languages": [],
+            },
+            "schedule": {
+                "work_hours": {
+                    "1": {
+                        "start": "T17:00",
+                        "end": "T20:00",
+                        "title": "",
+                    },
+                    "2": {
+                        "start": "T17:00",
+                        "end": "T20:00",
+                        "title": "",
+                    },
+                    "3": {
+                        "start": "T18:00",
+                        "end": "T20:00",
+                        "title": "",
+                    },
+                    "4": {
+                        "start": "T00:00",
+                        "end": "T00:00",
+                        "title": "",
+                    },
+                    "5": {
+                        "start": "T16:00",
+                        "end": "T21:00",
+                        "title": "",
+                    },
+                    "6": {
+                        "start": "T09:00",
+                        "end": "T12:00",
+                        "title": "",
+                    },
                 },
-                "2": {
-                    "start": "T17:00",
-                    "end": "T20:00",
-                    "title": "",
-                },
-                "3": {
-                    "start": "T18:00",
-                    "end": "T20:00",
-                    "title": "",
-                },
-                "4": {
-                    "start": "T00:00",
-                    "end": "T00:00",
-                    "title": "",
-                },
-                "5": {
-                    "start": "T16:00",
-                    "end": "T21:00",
-                    "title": "",
-                },
-                "6": {
-                    "start": "T09:00",
-                    "end": "T12:00",
-                    "title": "",
+                "time_off": {
+                    "1": {
+                        "start": "2020-01-14T00:00",
+                        "end": "2020-01-21T00:00",
+                        "title": "Daniel Time Off",
+                    },
+                    "2": {
+                        "start": "2020-03-22T00:00",
+                        "end": "2020-03-22T00:00",
+                        "title": "Daniel Time Off",
+                    },
                 },
             },
-            "time_off": {
-                "1": {
-                    "start": "2020-01-14T00:00",
-                    "end": "2020-01-21T00:00",
-                    "title": "Daniel Time Off",
-                },
-                "2": {
-                    "start": "2020-03-22T00:00",
-                    "end": "2020-03-22T00:00",
-                    "title": "Daniel Time Off",
-                },
-            },
+            "notes": {},
         },
-        "notes": {},
-    },
-});
+    };
+};

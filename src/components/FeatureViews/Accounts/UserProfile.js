@@ -111,13 +111,13 @@ class UserProfile extends Component {
             "value": 0,
             "alert": false,
         };
-        this.currID = props.computedMatch.params.accountID;
+        this.currID = props.match.params.accountID;
         this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount() {
-        const {accountType, accountID} = this.props.computedMatch.params;
-        this.props.userActions.fetchNotes(accountID, accountType);
+        let user;
+        const { accountType, accountID } = this.props.match.params;
         switch (accountType) {
             case "student":
                 this.props.userActions.fetchStudents(accountID);
@@ -133,23 +133,25 @@ class UserProfile extends Component {
                 break;
             // no default
         }
+        return user;
     }
 
     componentDidUpdate(prevProps) {
         const {
             "accountType": currAccType,
             "accountID": currAccID
-        } = this.props.computedMatch.params;
+        } = this.props.match.params;
 
         const {
             "accountType": prevAccType,
             "accountID": prevAccID
-        } = prevProps.computedMatch.params;
+        } = prevProps.match.params;
 
         // if looking at new profile, reset tab to the first one
         if (currAccType !== prevAccType || currAccID !== prevAccID) {
-            const {accountType, accountID} = this.props.computedMatch.params;
+            const {accountType, accountID} = this.props.match.params;
             this.props.userActions.fetchNotes(accountID, accountType);
+            let user;
             switch (accountType) {
                 case "student":
                     this.props.userActions.fetchStudents(accountID);
@@ -165,6 +167,7 @@ class UserProfile extends Component {
                     break;
                 // no default
             }
+            return user;
             this.setState({
                 "value": 0,
             });
@@ -173,7 +176,7 @@ class UserProfile extends Component {
 
     getUser = () => {
         let user;
-        const { accountType, accountID } = this.props.computedMatch.params;
+        const { accountType, accountID } = this.props.match.params;
         switch (accountType) {
             case "student":
                 user = this.props.students[accountID];
@@ -194,7 +197,7 @@ class UserProfile extends Component {
     }
 
     getRequestStatus = () => {
-        const { accountType, accountID } = this.props.computedMatch.params;
+        const { accountType, accountID } = this.props.match.params;
         return accountType === "receptionist"
             ? 200
             : this.props.requestStatus[accountType][GET][accountID];
@@ -206,13 +209,13 @@ class UserProfile extends Component {
     }
 
     filter() {
-        Object.filter = (obj, predicate) =>
+        const filterHelper = (obj, predicate) =>
             Object.keys(obj)
                 .filter(key => predicate(obj[key]))
                 .reduce((res, key) => (res[key] = obj[key], res), {});
 
         // Example use:
-        let filtered = Object.filter(this.getUser().notes, note => note.important === true)
+        let filtered = filterHelper(this.getUser().notes, note => note.important === true)
         if (Object.keys(filtered).length != 0) {
             return true;
         }
@@ -246,7 +249,7 @@ class UserProfile extends Component {
         if ((!user || user === -1) && (status < 200 || status >= 300)) {
             return <Redirect to="/PageNotFound" />;
         }
-        const { accountType, accountID } = this.props.computedMatch.params;
+        const { accountType, accountID } = this.props.match.params;
         const styles = {
             "backgroundColor": stringToColor(user.name),
             "color": "white",

@@ -77,7 +77,7 @@ class Accounts extends Component {
     }
 
     goToRoute(route) {
-        this.props.history.push(this.props.match.url + route);
+        this.props.history.push(route);
     }
 
     getUsers = () => {
@@ -149,7 +149,7 @@ class Accounts extends Component {
                             key={row.user_id}
                             onClick={(event) => {
                                 event.preventDefault();
-                                this.goToRoute(`/${row.role}/${row.user_id}`);
+                                this.goToRoute(`/accounts/${row.role}/${row.user_id}`);
                             }}>
                             <TableCell
                                 className="accountsCell"
@@ -210,6 +210,9 @@ class Accounts extends Component {
                                     </Button>
                                 </Grid>
                             </TableCell>
+                            {/* <TableCell>{row.email}</TableCell>
+                            <TableCell>{row.phone_number}</TableCell>
+                            <TableCell>{row.role.charAt(0).toUpperCase() + row.role.slice(1)}</TableCell> */}
                         </TableRow>
                     ))}
                 </TableBody>
@@ -228,12 +231,12 @@ class Accounts extends Component {
                     {Object.values(userList).map((user) => (
                         <ProfileCard
                             key={user.user_id}
-                            route={`accounts/${user.role}/${user.user_id}`}
+                            route={`/accounts/${user.role}/${user.user_id}`}
                             user={user} />))}
                 </Grid>
             </Grow>
         );
-
+        this.resize();
         return (
             <Grid
                 className="Accounts"
@@ -241,7 +244,9 @@ class Accounts extends Component {
                 xs={12}>
                 <Paper className="paper">
                     <BackButton />
-                    <hr />
+                    <Hidden xsDown>
+                        <hr />
+                    </Hidden>
                     <Typography
                         align="left"
                         className="heading"
@@ -253,8 +258,8 @@ class Accounts extends Component {
                         direction="row">
                         <Grid
                             item
-                            md={11}
-                            xs={12}>
+                            md={8}
+                            xs={10}>
                             <Tabs
                                 className="tabs"
                                 indicatorColor="primary"
@@ -275,9 +280,8 @@ class Accounts extends Component {
                                 <Grid
                                     className="toggleView"
                                     item
-                                    md={1}>
-                                    <ListView
-                                        className={`list icon ${this.state.viewToggle ? "active" : ""}`}
+                                    md={3}>
+                                    <Button className={`btn list ${this.state.viewToggle ? "active" : ""}`}
                                         onClick={(event) => {
                                             this.setState(
                                                 {"viewToggle": true},
@@ -285,17 +289,23 @@ class Accounts extends Component {
                                                     sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
                                                 }
                                             );
-                                        }} />
-                                    <CardView
-                                        className={`card icon ${this.state.viewToggle ? "" : "active"}`}
-                                        onClick={(event) => {
-                                            this.setState(
-                                                {"viewToggle": false},
-                                                () => {
-                                                    sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
-                                                }
-                                            );
-                                        }} />
+                                        }}>
+                                        <ListView className={`icon ${this.state.viewToggle ? "active" : ""}`}/>
+                                             List View
+                                    </Button>
+                                    <Button className={`btn card ${this.state.viewToggle ? "" : "active"}`}
+                                            onClick={(event) => {
+                                                this.setState(
+                                                    {"viewToggle": false},
+                                                    () => {
+                                                        sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
+                                                    }
+                                                );
+                                            }} >
+                                        <CardView className={`icon ${this.state.viewToggle ? "" : "active"}`}/>
+                                        Card View
+                                    </Button>
+
                                 </Grid>
                             </Hidden>
                         }

@@ -8,6 +8,7 @@ import * as apiActions from "../../../../actions/apiActions";
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Paper from "@material-ui/core/Paper";
+import Hidden from "@material-ui/core/Hidden";
 
 class CourseViewer extends Component {
     componentDidMount() {
@@ -106,7 +107,7 @@ class CourseViewer extends Component {
             }
         };
         return (<Grid container>
-            <Grid item xs={12} md={12}>
+            <Grid item xs={12}>
                 <Grid container className={'accounts-table-heading'}>
                     <Grid item xs={3} md={3}>
                         <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
@@ -134,7 +135,6 @@ class CourseViewer extends Component {
                         </Typography>
                     </Grid>
                 </Grid>
-            </Grid>
             <Grid container spacing={8}>
                 {this.setCourses().length !== 0 ?
                     this.setCourses().map((courseID) => {
@@ -182,7 +182,8 @@ class CourseViewer extends Component {
                             </Typography>
                         </Paper>
                     </Grid>
-                }
+                    }
+                    </Grid>
             </Grid>
         </Grid>)
     }
