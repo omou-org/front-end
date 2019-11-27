@@ -124,6 +124,7 @@ const RegistrationCourse = () => {
 
     useEffect(() => {
         api.fetchCourses(courseID);
+        api.fetchCourseNotes(courseID);
         api.fetchStudents();
         api.fetchParents();
     }, [api, courseID]);
@@ -428,12 +429,16 @@ const RegistrationCourse = () => {
                 </Typography>
                 <Tabs className={"registration-course-tabs"}
                       onChange={handleChange}
-                      value={value}>
+                      value={value}
+                      indicatorColor="primary">
                     <Tab
                         label={<><RegistrationIcon className="NoteIcon" /> Registration</>}
                     />
                     <Tab
-                        label={<><NoteIcon className="NoteIcon" /> Notes</>} />
+                        label={
+                            course.notes && Object.values(course.notes).some(({important}) => important)
+                                ? <><Avatar style={{width: 10, height: 10}} className="notificationCourse" /><NoteIcon className="TabIcon" />  Notes</>
+                                : <><NoteIcon className="NoteIcon" /> Notes</>} />
 
                 </Tabs>
                 <div className="course-status">
@@ -448,8 +453,6 @@ const RegistrationCourse = () => {
                         valueBuffer={100}
                         variant="buffer" />
                 </div>
-
-                {/*<hr className={"tab-border"}/>*/}
                 {displayComponent()}
             </Paper>
         </Grid>

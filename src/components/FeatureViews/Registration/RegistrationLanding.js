@@ -102,8 +102,6 @@ const RegistrationLanding = () => {
         requestStatus.instructor[GET][apiActions.REQUEST_ALL] >= 300 ||
         requestStatus.course[GET][apiActions.REQUEST_ALL] < 200 ||
         requestStatus.course[GET][apiActions.REQUEST_ALL] >= 300) {
-        // console.log(requestStatus.instructor[GET]);
-        // console.log(requestStatus.course[GET][apiActions.REQUEST_ALL]);
         return "ERROR LOADING COURSES";
     }
 
