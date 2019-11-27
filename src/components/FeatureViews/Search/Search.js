@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import ReactSelect from 'react-select/creatable';
+import ReactSelect from 'react-select';
 import { Button, Grid, Select } from "@material-ui/core";
 import { bindActionCreators } from "redux";
 import * as searchActions from "../../../actions/searchActions";
@@ -153,7 +153,7 @@ const Search = (props) => {
     };
 
     const handleOnFocus = (primaryFilter) => (e)=>{
-        // setQuery("");
+        setQuery("");
         switch (primaryFilter) {
             case "All":
                 let suggestions = [];
@@ -215,7 +215,7 @@ const Search = (props) => {
                         </Grid>
                         <Grid item md={10} xs={7}>
                             <ReactSelect
-                                isClearable
+                                // isClearable
                                 className={"search-input"}
                                 classNamePrefix="main-search"
                                 options={searchList}
@@ -223,8 +223,6 @@ const Search = (props) => {
                                 onFocus={handleOnFocus(primaryFilter)}
                                 onChange={handleSearchChange()}
                                 onInputChange={handleInputChange()}
-                                onMenuSelect
-                                closeMenuOnScroll={true}
                             />
                             
                         </Grid>

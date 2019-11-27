@@ -1095,6 +1095,25 @@ class Form extends Component {
         );
     }
 
+    renderCourseRegistrationSubmission(){
+        let currentStudentID = this.state.Student.Student.value;
+        let registeredCourseForm = this.props.registeredCourses[currentStudentID];
+        registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
+
+        let currentStudentName = registeredCourseForm.display.student_name;
+        let currentCourseTitle = registeredCourseForm.display.course_name;
+
+
+        return <div>
+            <h3>{currentStudentName}</h3>
+            <h3>{currentCourseTitle}</h3>
+            <Button component={NavLink} to={"/registration"}
+                className={"button"}>Register More</Button>
+            {/*<Button component={NavLink} to={"/registration"}*/}
+            {/*        className={"button"}>Register More</Button>*/}
+        </div>
+    }
+
     renderTitle(id, type) {
         let title = "";
         switch (type) {
@@ -1154,7 +1173,9 @@ class Form extends Component {
                                     <Typography>
                                         Sorry! The form is unavailable.
                                     </Typography>
-                                : this.renderSubmitted()
+                                : this.state.form !== "course" ?
+                                    this.renderSubmitted() :
+                                    this.renderCourseRegistrationSubmission()
                         }
                         <Modal
                             aria-labelledby="simple-modal-title"
@@ -1222,6 +1243,8 @@ const mapStateToProps = (state) => ({
     "courses": state.Course["NewCourseList"],
     "courseCategories": state.Course["CourseCategories"],
     "registrationForm": state.Registration["registration_form"],
+    "registeredCourses": state.Registration["registered_courses"],
+    "currentParent": state.Registration["CurrentParent"],
     "submitStatus": state.Registration["submitStatus"],
     "parents": state.Users["ParentList"],
     "students": state.Users["StudentList"],

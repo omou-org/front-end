@@ -82,13 +82,15 @@ function AccountsCards(props) {
     // };
 
     return (
-        <Grid item xs={12} sm={3} className={"AccountsCards"} style={{ padding: "10px" }}>
+        <Grid item xs={12}
+              sm={3}
+              md={8}
+              className={"AccountsCards"} style={{ padding: "10px" }}>
             <Card key={props.user.id}
                 style={{ cursor: "pointer" }}
                 onClick={(event) => {
                     event.preventDefault();
-                     goToRoute(`accounts/${(props.user.account_type).toLowerCase}/${props.user.id}`);
-                    console.log(props.user)
+                     goToRoute(`/accounts/${props.user.account_type.toLowerCase()}/${props.user.user.id}`);
                 }}>
                 <Grid container>
                     <Hidden mdDown>

@@ -13,7 +13,6 @@ import Hidden from "@material-ui/core/Hidden";
 class CourseViewer extends Component {
     componentDidMount() {
         this.props.apiActions.fetchCourses();
-        this.props.registrationActions.fetchEnrollments();
     }
 
     goToRoute(route) {

@@ -14,11 +14,6 @@ import { withStyles } from "@material-ui/core/styles";
 import "./registration.scss";
 import ListItemText from "@material-ui/core/ListItemText";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import SetParent from "./SetParentRegistration";
-import {bindActionCreators} from "redux";
-import * as registrationActions from "../../../actions/registrationActions";
-import {connect} from "react-redux";
-import ParentRegistrationActions from "./ParentRegistrationActions";
 
 const StyledMenu = withStyles({
     paper: {
@@ -40,7 +35,7 @@ const StyledMenu = withStyles({
     />
 ));
 
-function RegistrationActions(props) {
+function ParentRegistrationActions(props) {
     const [anchorEl, setAnchorEl] = useState(null);
 
     function handleClick(event) {
@@ -53,42 +48,44 @@ function RegistrationActions(props) {
 
     const courseRoute = props.courseTitle ? encodeURIComponent(props.courseTitle) : "";
     return (
-        <Grid container
-            direction="row"
-            justify="flex-start"
-            className="registration-action-control">
-            <Grid item md={2}>
-                <Button component={NavLink} to="/registration/form/student"
+         <Grid container>
+             <Grid item xs={2}>
+                <Button
                     variant="outlined"
                     color="secondary"
-                    className="button">
-                    <NewUser className="icon" />
-                    New Student
+                    className="button"
+                    aria-controls="simple-menu"
+                    aria-haspopup="true"
+                    onClick={handleClick}>
+                    <AssignmentIcon className="icon" />
+                    Register
                 </Button>
-            </Grid>
-            <Grid item md={8}>
-                {
-                    props.registration.CurrentParent && <ParentRegistrationActions/>
-                }
-            </Grid>
-            <SetParent/>
-        </Grid>
+             </Grid>
+             <StyledMenu
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}>
+                    <MenuItem
+                        component={NavLink}
+                        to={`/registration/form/course/${courseRoute}`}>
+                        <NewCourse className="icon innerIcon" />
+                        <ListItemText primary="COURSE" />
+                    </MenuItem>
+                    <MenuItem
+                        component={NavLink}
+                        to={`/registration/form/tutoring/${courseRoute}`}>
+                        <NewTutor className="icon innerIcon" />
+                        <ListItemText primary="TUTORING" />
+                    </MenuItem>
+                </StyledMenu>
+         </Grid>
     );
 }
-RegistrationActions.propTypes = {
+
+ParentRegistrationActions.propTypes = {
     courseTitle: PropTypes.string,
     admin: PropTypes.bool,
 };
 
-const mapStateToProps = (state) => ({
-    "registration": state.Registration,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-    "registrationActions": bindActionCreators(registrationActions, dispatch),
-});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(RegistrationActions);
+export default ParentRegistrationActions;

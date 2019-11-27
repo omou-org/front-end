@@ -133,6 +133,7 @@ export const updateStudent = (students, id, student) => ({
     ...students,
     [id]: {
         "user_id": student.user.id,
+        "summit_id": student.user_uuid,
         "gender": student.gender,
         "birthday": parseBirthday(student.birth_date),
         "address": student.address,
@@ -180,6 +181,7 @@ export const updateInstructor = (instructors, id, instructor) => {
         ...instructors,
         [id]: {
             "user_id": user.id,
+            "summit_id": user_uuid,
             "gender": gender,
             "birth_date": parseBirthday(birth_date),
             "address": address,
