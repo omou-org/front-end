@@ -183,5 +183,5 @@ export const fetchEnrollments = () => wrapGet(
         types.FETCH_ENROLLMENT_SUCCESSFUL,
         types.FETCH_ENROLLMENT_FAILED,
     ],
-    enrollmentId
+    // enrollmentId
 );
