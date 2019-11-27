@@ -31,6 +31,8 @@ import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
 import ParentPayment from "../Form/ParentPayment";
 import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
+import AdminRoute from "./AdminRoute";
+import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
 
 
 function rootRoutes(props) {
@@ -110,6 +112,13 @@ function rootRoutes(props) {
                 path="/registration/cart/"
                 render={(passedProps) => <RegistrationCart {...passedProps}/>}
             />
+
+            {/* Admin Routes */}
+            <AdminRoute
+                exact
+                path="/adminportal"
+                render={(passedProps) => <AdminPortal/>}/>
+
             <Route path="/PageNotFound" component={ErrorNotFoundPage}/>
             <Redirect to="/PageNotFound"/>
         </Switch>
