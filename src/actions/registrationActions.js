@@ -173,8 +173,7 @@ export const submitForm = (state, id) => {
             }
         }
         case "course": {
-            console.log("made it to actions!")
-            return { type: types.ADD_COURSE_REGISTRATION, payload: state }
+            return { type: types.ADD_CLASS_REGISTRATION, payload: state }
         }
         default:
             console.error(`Invalid form type ${state.form}`);

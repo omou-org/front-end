@@ -49,8 +49,8 @@ export default function registration(state = initialState.RegistrationForms, {pa
         case actions.SET_PARENT:
             newState["CurrentParent"] = payload;
             return newState;
-        case actions.ADD_COURSE_REGISTRATION:
-            return addCourseRegistration(newState, payload);
+        case actions.ADD_CLASS_REGISTRATION:
+            return addClassRegistration(newState, payload);
         case actions.INIT_COURSE_REGISTRATION:
             return initializeRegistration(newState);
         default:
@@ -173,7 +173,7 @@ const failedSubmit = (state) => ({
     "submitStatus": "fail",
 });
 
-const addCourseRegistration = (prevState, form) => {
+const addClassRegistration = (prevState, form) => {
     console.log(form);
     let studentID = form["Student"].Student.value;
     let studentName = form["Student"].Student.label;

@@ -10,11 +10,12 @@ import "./AdminPortal.scss";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import {connect} from "react-redux";
-import {Typography} from "@material-ui/core";
+import {Button, Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import {withRouter} from "react-router-dom";
 import Checkbox from "@material-ui/core/Checkbox";
 import BackButton from "../../BackButton";
+import NavLinkNoDup from "../../Routes/NavLinkNoDup";
 
 const useStyles = makeStyles({
     setParent: {
@@ -66,7 +67,13 @@ function AdminPortal(props) {
                         <Typography variant={"h3"} align={"left"}>Admin Portal</Typography>
                     </Grid>
                     <Grid item xs={12}>
-
+                        <Grid container>
+                            <Grid item xs={2}>
+                                <Button component={NavLinkNoDup} to={"/registration/form/instructor"}
+                                        color={"primary"}
+                                    className={"button"}> Add Instructor</Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Paper>

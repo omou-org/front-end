@@ -81,15 +81,10 @@ const Navigation = (props) => {
                 "link": "/registration",
                 "icon": <AssignmentIcon />,
             },
-        ]
-    // const NavListCallcack = useCallback(()=>{
-    //
-    // },[]);
+        ];
 
     const [mobileOpen, setMobileOpen] = useState(false);
     const {pathname} = useLocation();
-
-    console.log(NavList);
 
     const drawer = (
         <div className="DrawerList">
