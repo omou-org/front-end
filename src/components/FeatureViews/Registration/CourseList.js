@@ -1,12 +1,14 @@
 import React from "react";
 import {Link} from "react-router-dom";
-import {useSelector} from "react-redux";
+import {connect, useSelector} from "react-redux";
 
 // Material UI Imports
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import {bindActionCreators} from "redux";
+import * as registrationActions from "../../../actions/registrationActions";
 
 const weekday = {
     "0": "Sun",
@@ -18,7 +20,8 @@ const weekday = {
     "6": "Sat",
 };
 
-const CourseList = ({filteredCourses}) => {
+const CourseList = (props) => {
+    let filteredCourses = props.filteredCourses;
     const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
     return filteredCourses.map((course) => {
         let start_date = new Date(course.schedule.start_date),
@@ -139,17 +142,19 @@ const CourseList = ({filteredCourses}) => {
                                     Status
                                 </span>
                             </Grid>
-                            {/*<Grid*/}
-                            {/*    item*/}
-                            {/*    xs={6}>*/}
-                            {/*    <Button*/}
-                            {/*        className="button primary"*/}
-                            {/*        component={Link}*/}
-                            {/*        disabled={course.capacity <= course.filled}*/}
-                            {/*        to={`/registration/form/course/${course.course_id}`}*/}
-                            {/*        variant="contained">+ REGISTER*/}
-                            {/*    </Button>*/}
-                            {/*</Grid>*/}
+                            <Grid
+                                item
+                                xs={6}>
+                                {
+                                    props.registration.CurrentParent && <Button
+                                        className="button primary"
+                                        component={Link}
+                                        disabled={course.capacity <= course.filled}
+                                        to={`/registration/form/course/${course.course_id}`}
+                                        variant="contained">+ REGISTER
+                                    </Button>
+                                }
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -158,4 +163,15 @@ const CourseList = ({filteredCourses}) => {
     });
 };
 
-export default CourseList;
+const mapStateToProps = (state) => ({
+    "registration": state.Registration,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    "registrationActions": bindActionCreators(registrationActions, dispatch),
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CourseList);

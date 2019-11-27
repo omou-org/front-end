@@ -33,6 +33,9 @@ const parseTime = (time) => {
 export const getRegistrationForm = () =>
     ({type: types.ALERT, payload: "alert stuff"});
 
+export const setRegisteringParent = (parent) =>
+    ({type: types.SET_PARENT, payload: parent});
+
 export const addStudentField = () =>
     ({type: types.ADD_STUDENT_FIELD, payload: ""});
 
@@ -46,6 +49,7 @@ export const removeField = (path, fieldIndex, conditional) =>
     ({type: types.REMOVE_FIELD, payload: [path, fieldIndex, conditional]});
 
 export const submitForm = (state, id) => {
+    console.log(state.form);
     switch (state.form) {
         case "student": {
             const student = {
@@ -168,6 +172,10 @@ export const submitForm = (state, id) => {
                 return patchData("course", course, id);
             }
         }
+        case "course": {
+            console.log("made it to actions!")
+            return { type: types.ADD_COURSE_REGISTRATION, payload: state }
+        }
         default:
             console.error(`Invalid form type ${state.form}`);
     }
@@ -184,3 +192,6 @@ export const fetchEnrollments = () => wrapGet(
         types.FETCH_ENROLLMENT_FAILED,
     ]
 );
+
+export const initializeRegistration = () =>
+    ({type: types.INIT_COURSE_REGISTRATION, payload:""});

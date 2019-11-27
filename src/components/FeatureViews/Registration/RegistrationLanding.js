@@ -19,6 +19,7 @@ import Hidden from "@material-ui/core/Hidden";
 
 import CourseList from "./CourseList";
 import TutoringList from "./TutoringList";
+import RegistrationActions from "./RegistrationActions";
 
 const NUM_GRADES = 13;
 
@@ -186,6 +187,7 @@ const RegistrationLanding = () => {
         <Paper className="RegistrationLanding paper">
             <BackButton />
             <hr />
+            <RegistrationActions/>
             <Grid
                 container
                 layout="row">

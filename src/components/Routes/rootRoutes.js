@@ -15,7 +15,6 @@ import RegistrationForm from "../Form/Form";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
 import Accounts from "../FeatureViews/Accounts/Accounts";
 import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
-import CourseCategory from "../FeatureViews/Registration/CourseCategory";
 import LoginPage from "../Authentication/LoginPage.js";
 import ProtectedRoute from "./ProtectedRoute";
 import SearchResults from "../FeatureViews/Search/SearchResults";
@@ -31,6 +30,7 @@ import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
 import ParentPayment from "../Form/ParentPayment";
+import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
 
 
 function rootRoutes(props) {
@@ -94,21 +94,22 @@ function rootRoutes(props) {
                 exact
                 path="/accounts"
                 render={(passedProps) => <Accounts {...passedProps} />} />
-            <Route
+            <ProtectedRoute
                 exact
                 path="/accounts/:accountType/:accountID/:courseID"
                 render={(passedProps) => <CourseSessionStatus {...passedProps} />}/>
 
             {/* Registration Routes */}
-            <Route
+            <ProtectedRoute
                 path="/registration/form/:type/:id?/:edit?"
                 render={(passedProps) => <RegistrationForm {...passedProps} />} />
-            <Route
+            <ProtectedRoute
                 path="/registration/course/:courseID?/:courseTitle?"
                 render={(passedProps) => <RegistrationCourse {...passedProps} />} />
-            <Route
-                path="/registration/category/:categoryID"
-                render={(passedProps) => <CourseCategory {...passedProps} />}/>
+            <ProtectedRoute
+                path="/registration/cart/"
+                render={(passedProps) => <RegistrationCart {...passedProps}/>}
+            />
             <Route path="/PageNotFound" component={ErrorNotFoundPage}/>
             <Redirect to="/PageNotFound"/>
         </Switch>

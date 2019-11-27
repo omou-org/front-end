@@ -46,6 +46,13 @@ export default function registration(state = initialState.RegistrationForms, {pa
             return onSubmit(state);
         case actions.RESET_SUBMIT_STATUS:
             return onSubmit(state);
+        case actions.SET_PARENT:
+            newState["CurrentParent"] = payload;
+            return newState;
+        case actions.ADD_COURSE_REGISTRATION:
+            return addCourseRegistration(newState, payload);
+        case actions.INIT_COURSE_REGISTRATION:
+            return initializeRegistration(newState);
         default:
             return state;
     }
@@ -165,3 +172,67 @@ const failedSubmit = (state) => ({
     ...state,
     "submitStatus": "fail",
 });
+
+const addCourseRegistration = (prevState, form) => {
+    console.log(form);
+    let studentID = form["Student"].Student.value;
+    let studentName = form["Student"].Student.label;
+    let courseID = form["Course Selection"].Course.value;
+    let courseName = form["Course Selection"].Course.label;
+    let isStudentCurrentlyRegistered = Object.keys(prevState.registered_courses).includes(studentID);
+
+    let studentInfoList = Object.entries(form["Student Information"]);
+    let studentInfoNote = "";
+    studentInfoList.forEach((infoPair) => {
+        studentInfoNote += infoPair[0] + ": " + infoPair[1] + "\n";
+    });
+
+    let enrollmentObject = {
+        student_id: studentID,
+        course_id: courseID,
+        enrollment_note: studentInfoNote,
+        display:{
+            student_name: studentName,
+            course_name: courseName,
+        }
+    };
+
+    let enrollmentExists = false;
+    prevState.registered_courses[studentID] && prevState.registered_courses[studentID].forEach((enrollment)=>{
+        if(enrollment.student_id === enrollmentObject.student_id && enrollment.course_id === enrollmentObject.course_id){
+            enrollmentExists = true;
+        }
+    });
+
+    // Registration Model:
+    // Registration: {
+    //     CurrentParent: "Eileen Hong",
+    //     registered_courses: {
+    //         [joey_id] : [
+    //             joey's registration forms
+    //         ],
+    //         [catherine_id] : [
+    //             catherine's registration forms
+    //         ]
+    //     }
+    // }
+    if(!enrollmentExists){
+        if(isStudentCurrentlyRegistered){
+            prevState.registered_courses[studentID].push(enrollmentObject);
+        } else {
+            prevState.registered_courses[studentID] = [enrollmentObject];
+        }
+    }
+    sessionStorage.setItem("registered_courses",JSON.stringify(prevState.registered_courses));
+    prevState.submitStatus = "success";
+    // console.log(prevState);
+    return prevState;
+}
+
+const initializeRegistration = (prevState)=>{
+    let prevRegisteredCourses = JSON.parse(sessionStorage.getItem("registered_courses"));
+    if(prevRegisteredCourses){
+        prevState.registered_courses = prevRegisteredCourses;
+    }
+    return prevState;
+}

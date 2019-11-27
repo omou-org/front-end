@@ -5241,6 +5241,8 @@ function initRegistrationForm() {
             },
         },
         submitStatus: null,
+        CurrentParent: "",
+        registered_courses: {},
     };
 }
 

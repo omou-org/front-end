@@ -82,7 +82,10 @@ function AccountsCards(props) {
     // };
 
     return (
-        <Grid item xs={12} sm={3} className={"AccountsCards"} style={{ padding: "10px" }}>
+        <Grid item xs={12}
+              sm={3}
+              md={8}
+              className={"AccountsCards"} style={{ padding: "10px" }}>
             <Card key={props.user.id}
                 style={{ cursor: "pointer" }}
                 onClick={(event) => {
