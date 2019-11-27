@@ -4,15 +4,15 @@ import PropTypes from "prop-types";
 import {useSelector} from "react-redux";
 
 const ProtectedRoute = ({component, render, ...rest}) => {
-    const token = useSelector(({auth}) => auth.token);
+    const {token, isAdmin} = useSelector(({auth}) => auth);
 
     const renderFunc = useCallback(
-        () => token
+        () => token && isAdmin
             ? component || render && render(rest)
             : <Redirect
                 push
                 to="/login" />,
-        [token, component, render, rest]
+        [token, isAdmin, component, render, rest]
     );
 
     return (

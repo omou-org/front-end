@@ -56,6 +56,12 @@
   padding: 2%;
 }
 
+
+.NoteIcon{
+  display: inline-flex;
+  vertical-align: middle;
+}
+
 .course-categories {
   position: relative;
   //Controls
@@ -436,6 +442,7 @@
   @include respond-to(handhelds){
     margin-top:35px;
   }
+  margin-top:5x;
 
   .status {
     top: -40px;
@@ -522,7 +529,8 @@
 
       .course-action {
         background-color: #F5F5F5;
-        height: 100px;
+        height: 120px;
+        overflow-y: hidden;
 
         .course-status {
           .stats, .label {
@@ -556,4 +564,17 @@
   display: flex;
   align-items: center;
   text-decoration: none;
+}
+
+// Registration Course Styling
+
+.registrationCourse{
+  .registration-course-tabs{
+    margin-bottom:10px;
+  }
+  //.tab-border{
+  //  margin-top:-1px;
+  //  position:relative;
+  //  z-index:0;
+  //}
 }

@@ -23,11 +23,11 @@ const CourseList = ({filteredCourses}) => {
     return filteredCourses.map((course) => {
         let start_date = new Date(course.schedule.start_date),
             end_date = new Date(course.schedule.end_date),
-            start_time = course.schedule.start_time.substr(1),
-            end_time = course.schedule.end_time.substr(1),
-            days = course.schedule.days.map((day) => weekday[day]);
-        start_date = start_date.toDateString().substr(3);
-        end_date = end_date.toDateString().substr(3);
+            start_time = course.schedule.start_time && course.schedule.start_time.substr(1),
+            end_time = course.schedule.end_time && course.schedule.end_time.substr(1),
+            days = course.schedule.days && course.schedule.days.map((day) => weekday[day]);
+        start_date = start_date && start_date.toDateString().substr(3);
+        end_date = end_date && end_date.toDateString().substr(3);
         const date = `${start_date} - ${end_date}`,
             time = `${start_time} - ${end_time}`;
         return (
@@ -95,7 +95,7 @@ const CourseList = ({filteredCourses}) => {
                                 item
                                 md={8}
                                 xs={9}>
-                                {instructors[course.instructor_id].name}
+                                { course.instructor_id && instructors[course.instructor_id].name}
                             </Grid>
                         </Grid>
                         <Grid
@@ -114,7 +114,7 @@ const CourseList = ({filteredCourses}) => {
                                 item
                                 md={8}
                                 xs={9}>
-                                ${course.tuition}
+                                {course.tuition && `$ ${course.tuition}`}
                             </Grid>
                         </Grid>
                     </Grid>
@@ -132,24 +132,24 @@ const CourseList = ({filteredCourses}) => {
                                 className="course-status"
                                 item
                                 xs={6}>
-                                <span className="stats">
+                                {/*<span className="stats">*/}
                                     {course.roster.length} / {course.capacity}
-                                </span>
+                                {/*</span>*/}
                                 <span className="label">
                                     Status
                                 </span>
                             </Grid>
-                            <Grid
-                                item
-                                xs={6}>
-                                <Button
-                                    className="button primary"
-                                    component={Link}
-                                    disabled={course.capacity <= course.filled}
-                                    to={`/registration/form/course/${course.course_id}`}
-                                    variant="contained">+ REGISTER
-                                </Button>
-                            </Grid>
+                            {/*<Grid*/}
+                            {/*    item*/}
+                            {/*    xs={6}>*/}
+                            {/*    <Button*/}
+                            {/*        className="button primary"*/}
+                            {/*        component={Link}*/}
+                            {/*        disabled={course.capacity <= course.filled}*/}
+                            {/*        to={`/registration/form/course/${course.course_id}`}*/}
+                            {/*        variant="contained">+ REGISTER*/}
+                            {/*    </Button>*/}
+                            {/*</Grid>*/}
                         </Grid>
                     </Grid>
                 </Grid>

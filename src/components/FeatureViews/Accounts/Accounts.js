@@ -188,13 +188,16 @@ class Accounts extends Component {
                                     align="right"
                                     component={Hidden}
                                     mdDown>
-                                    <Button
-                                        className="editButton"
-                                        component={NavLink}
-                                        to={`/registration/form/${row.role}/${row.user_id}/edit`}>
-                                        <EditIcon />
-                                        Edit Profile
-                                    </Button>
+                                    {
+                                        (row.role === "student" || row.role === "parent" || this.props.isAdmin) &&
+                                        <Button
+                                            className="editButton"
+                                            component={NavLink}
+                                            to={`/registration/form/${row.role}/${row.user_id}/edit`}>
+                                            <EditIcon />
+                                            Edit Profile
+                                        </Button>
+                                    }
                                 </Grid>
                                 <Grid
                                     align="right"
@@ -256,7 +259,7 @@ class Accounts extends Component {
                         direction="row">
                         <Grid
                             item
-                            md={9}
+                            md={8}
                             xs={10}>
                             <Tabs
                                 className="tabs"
@@ -333,6 +336,7 @@ const mapStateToProps = (state) => ({
     "parents": state.Users.ParentList,
     "receptionist": state.Users.ReceptionistList,
     "students": state.Users.StudentList,
+    "isAdmin": state.auth.isAdmin,
 });
 
 const mapDispatchToProps = (dispatch) => ({

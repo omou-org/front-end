@@ -61,10 +61,10 @@ const SearchResults = (props) => {
     //Endpoints
     // /search/account/?query=query?profileFilter=profileFilter?gradeFilter=gradeFilter?sortAlpha=asc?sortID=desc
     // /search/courses/?query=query?courseTypeFilter=courseType?availability=availability?dateSort=desc
-    const accountSearchURL = "http://localhost:8000/search/account/";
-    const courseSearchURL = "http://localhost:8000/search/courses/";
-    // const accountSearchURL = "http://api.omoulearning.com:8000/search/account/";
-    // const courseSearchURL = "http://api.omoulearning.com:8000/search/courses/";
+    // const accountSearchURL = "http://localhost:8000/search/account/";
+    // const courseSearchURL = "http://localhost:8000/search/courses/";
+    const accountSearchURL = `${process.env.REACT_APP_DOMAIN}/search/account/`;
+    const courseSearchURL = `${process.env.REACT_APP_DOMAIN}/search/courses/`;
     const requestConfig = { params: { query: params.query }, headers: {"Authorization": `Token ${props.auth.token}`,} };
 
     useEffect(() => {
@@ -113,7 +113,7 @@ const SearchResults = (props) => {
                                 <Typography variant={"h4"} align={"left"}>
                                 <span style={{fontFamily:"Roboto Slab", fontWeight:"500"}}>
                                 {accountResults.length + courseResults.length} Search Results for </span>
-                                     "{params.query}" 
+                                     "{params.query}"
                                      </Typography>
                             </Grid>
                             <hr />
@@ -123,7 +123,9 @@ const SearchResults = (props) => {
                                       direction={"row"}
                                       alignItems="center">
                                     <Grid item className="searchResults" >
-                                        <Typography className={"resultsColor"} align={'left'} gutterBottom>Accounts</Typography>
+                                        <Typography className={"resultsColor"} align={'left'} gutterBottom>
+                                            {accountResults.length > 0 ? "Accounts":""}
+                                        </Typography>
                                     </Grid>
                                     {/*<Grid item >*/}
                                     {/*    <Chip label="See All Accounts"*/}
@@ -141,7 +143,7 @@ const SearchResults = (props) => {
                                 </Grid>
                             </Grid>
                             {/* </Grid> */}
-                            <hr />
+                            { accountResults.length > 0 ? <hr /> : ""}
                             {/*<Grid item xs={12}>*/}
                             {/*    <Grid container*/}
                             {/*        justify={"space-between"}*/}
@@ -170,7 +172,11 @@ const SearchResults = (props) => {
                                       direction={"row"}
                                       alignItems="center">
                                     <Grid item className="searchResults">
-                                        <Typography className={"resultsColor"} align={'left'} >Courses</Typography>
+                                        <Typography className={"resultsColor"} align={'left'} >
+                                            {courseResults.length > 0 ?
+                                                "Courses" : ""
+                                            }
+                                        </Typography>
                                     </Grid>
                                     {/*<Grid item style={{ "paddingRight": "1vh" }}>*/}
                                     {/*    <Chip label="See All Courses"*/}
