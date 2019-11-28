@@ -861,7 +861,7 @@ class Form extends Component {
                     <TimePicker autoOk
                                 error={!this.state[label + "_validated"][field.name]}
                                 label={fieldTitle}
-                                value={this.state[label][fieldTitle]}
+                                value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : new Date()}
                                 onChange={(date) =>{ this.setState((prevState)=>{
                                     prevState[label][fieldTitle] = date;
                                     return prevState;
