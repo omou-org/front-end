@@ -51,6 +51,8 @@ export default function registration(state = initialState.RegistrationForms, {pa
             return newState;
         case actions.ADD_CLASS_REGISTRATION:
             return addClassRegistration(newState, payload);
+        case actions.ADD_TUTORING_REGISTRATION:
+            return addTutoringRegistration(newState, payload);
         case actions.INIT_COURSE_REGISTRATION:
             return initializeRegistration(newState);
         default:
@@ -180,14 +182,10 @@ const addClassRegistration = (prevState, form) => {
     let courseID = form["Course Selection"].Course.value;
     let courseName = form["Course Selection"].Course.label;
     let isStudentCurrentlyRegistered = Object.keys(prevState.registered_courses).includes(studentID);
-
-    let studentInfoList = Object.entries(form["Student Information"]);
-    let studentInfoNote = "";
-    studentInfoList.forEach((infoPair) => {
-        studentInfoNote += infoPair[0] + ": " + infoPair[1] + "\n";
-    });
+    let studentInfoNote = stringifyStudentInformation(form);
 
     let enrollmentObject = {
+        type: "class",
         student_id: studentID,
         course_id: courseID,
         enrollment_note: studentInfoNote,
@@ -227,6 +225,102 @@ const addClassRegistration = (prevState, form) => {
     prevState.submitStatus = "success";
     // console.log(prevState);
     return prevState;
+};
+
+const addTutoringRegistration = (prevState, form) => {
+    console.log(form);
+    let studentID = form["Student"].Student.value;
+    let studentName = form["Student"].Student.label;
+    let subject = form["Tutor Selection"]["Course / Subject"];
+    let instructorID = form["Tutor Selection"].Instructor.value;
+    let instructorName = form["Tutor Selection"].Instructor.label;
+    let courseName = instructorName.substring(0,instructorName.indexOf(" ")) + " x " +
+                        studentName.substring(0,studentName.indexOf(" ")) + " - " + subject;
+    let studentInfoNote = stringifyStudentInformation(form);
+    let startDate = form["Schedule"]["Start Date"];
+    let dayOfWeek = new Date(startDate).getDay();
+    let startTime = new Date(form["Schedule"]["Session Start Time"]);
+    let duration = () => {
+        switch(form["Schedule"]["Duration"]){
+            case "0.5 Hours": {
+                return 0.5;
+            }
+            case "1 Hour": {
+                return 1;
+            }
+            case "1.5 Hours": {
+                return 1.5;
+            }
+            case "2 Hours": {
+                return 2;
+            }
+        }
+    };
+    let numSessions = form["Schedule"]["Number of Sessions"];
+    let endTime = startTime;
+    endTime.setHours(endTime.getHours()+duration());
+    let endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate()+(7*numSessions));
+    let isStudentCurrentlyRegistered = Object.keys(prevState.registered_courses).includes(studentID);
+    let enrollmentObject = {
+        type: "tutoring",
+        new_course: {
+            subject: subject,
+            title: courseName, // create class with instructor and name as INSTRUCTOR-LASTNAME x STUDENT-FIRSTNAME - SUBJECT
+            type: "T",
+            instructor: instructorID,
+            //tuition: //default subject + grade price on backend?
+            schedule:{
+                start_date: startDate,
+                start_time: dateToTimeString(startTime),
+                end_date: endDate.toUTCString(),
+                end_time: dateToTimeString(endTime), //generated from course duration
+            },
+            day_of_week: dayOfWeek,
+            max_capacity: 1,
+            enrollment_id_list: [studentID], //array with student_id
+        },
+        student_id: studentID,
+        course_id: "T" + (isStudentCurrentlyRegistered ? (prevState.registered_courses.length + 1).toString() : "0"),
+        enrollment_note: studentInfoNote,
+        display:{
+            student_name: studentName,
+            course_name: courseName,
+        }
+    };
+
+    let enrollmentExists = false;
+    prevState.registered_courses[studentID] && prevState.registered_courses[studentID].forEach((enrollment)=>{
+        if(enrollment.student_id === enrollmentObject.student_id &&
+            enrollment.new_course.subject === enrollmentObject.new_course.subject){
+            enrollmentExists = true;
+        }
+    });
+
+    if(!enrollmentExists){
+        if(isStudentCurrentlyRegistered){
+            prevState.registered_courses[studentID].push(enrollmentObject);
+        } else {
+            prevState.registered_courses[studentID] = [enrollmentObject];
+        }
+    }
+    sessionStorage.setItem("registered_courses",JSON.stringify(prevState.registered_courses));
+    prevState.submitStatus = "success";
+    console.log(prevState);
+    return prevState;
+}
+
+const stringifyStudentInformation = (form)=>{
+    let studentInfoList = Object.entries(form["Student Information"]);
+    let studentInfoNote = "";
+    studentInfoList.forEach((infoPair) => {
+        studentInfoNote += infoPair[0] + ": " + infoPair[1] + "\n";
+    });
+    return studentInfoNote;
+}
+
+const dateToTimeString = (date) => {
+    return date.getHours().toString()+":"+ (date.getMinutes() !== 0 ? date.getMinutes().toString(): "00")
 }
 
 const initializeRegistration = (prevState)=>{
@@ -235,4 +329,4 @@ const initializeRegistration = (prevState)=>{
         prevState.registered_courses = prevRegisteredCourses;
     }
     return prevState;
-}
+};

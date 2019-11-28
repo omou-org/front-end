@@ -40,6 +40,8 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import {DatePicker, TimePicker, MuiPickersUtilsProvider,} from "material-ui-pickers";
+import DateFnsUtils from "@date-io/date-fns";
 
 const parseGender = {
     "M": "Male",
@@ -443,6 +445,7 @@ class Form extends Component {
         if (Array.isArray(section)) {
             return section;
         } else {
+            console.log(section);
             return section[this.state.conditional];
         }
     }
@@ -676,37 +679,13 @@ class Form extends Component {
         }
     }
 
-    // removes duplicates with arr1 from arr2 from search select field
-    removeDuplicates(arr1, arr2) {
-        let stringValue, stringOtherValue;
-        arr1.forEach((value) => {
-            if (value) {
-                stringValue = value.value;
-            } else {
-                stringValue = "";
-            }
-            arr2.forEach((otherValue, j) => {
-                if (otherValue) {
-                    stringOtherValue = otherValue.value;
-                } else {
-                    stringOtherValue = "";
-                }
-                if (stringValue === stringOtherValue) {
-                    arr2[j] = "1";
-                }
-            });
-        });
-        let uniqueVals = [...new Set(arr2)], indexOfString = -1;
-        uniqueVals.forEach((value, i) => {
-            if (typeof value === "string") {
-                indexOfString = i;
-            }
-        });
-        if (indexOfString > -1) {
-            uniqueVals.splice(indexOfString, 1);
-        }
-        return uniqueVals;
-    }
+    handleDateChange = (date) =>{
+        console.log(date, "date changed!");
+        // this.setState((prevState)=> {
+        //         prevState[label][field] = e;
+        //         return prevState;
+        //     });
+    };
 
     renderField(field, label, fieldIndex) {
         const fieldTitle = field.name;
@@ -735,7 +714,7 @@ class Form extends Component {
                             }
                         </Select>
                     </FormControl>
-            );
+                );
             case "course": {
                 let courseList = Object.keys(this.props.courses)
                     .filter((courseID) =>
@@ -764,13 +743,13 @@ class Form extends Component {
                             {
                                 (fieldCount > 1) && !disabled &&
                                 <RemoveIcon color="primary" aria-label="Add" variant="extended"
-                                    className="button-remove-student"
-                                    onClick={(event) => {
-                                        event.preventDefault();
-                                        // deletes answer field from state
-                                        this.removeField(fieldIndex);
-                                        this.forceUpdate();
-                                    }}>
+                                            className="button-remove-student"
+                                            onClick={(event) => {
+                                                event.preventDefault();
+                                                // deletes answer field from state
+                                                this.removeField(fieldIndex);
+                                                this.forceUpdate();
+                                            }}>
                                 </RemoveIcon>
                             }
                         </Grid>
@@ -804,13 +783,13 @@ class Form extends Component {
                             {
                                 studentCount > 1 && !disabled &&
                                 <RemoveIcon color="primary" aria-label="Add" variant="extended"
-                                    className="button-remove-student"
-                                    onClick={(event) => {
-                                        event.preventDefault();
-                                        // deletes answer field
-                                        this.removeField(fieldIndex);
-                                        this.forceUpdate();
-                                    }}>
+                                            className="button-remove-student"
+                                            onClick={(event) => {
+                                                event.preventDefault();
+                                                // deletes answer field
+                                                this.removeField(fieldIndex);
+                                                this.forceUpdate();
+                                            }}>
                                 </RemoveIcon>
                             }
                         </Grid>
@@ -860,6 +839,34 @@ class Form extends Component {
                     />
                 );
             }
+            case "date":
+                return <Grid container>
+                        <DatePicker
+                            animateYearScrolling
+                            margin="normal"
+                            label={fieldTitle}
+                            value={this.state[label][fieldTitle]}
+                            onChange={(date) =>{ this.setState((prevState)=>{
+                                prevState[label][fieldTitle] = date;
+                                return prevState;
+                            }) }}
+                            openTo={fieldTitle==="Birthday" ? "year" :"day"}
+                            error={!this.state[label + "_validated"][field.name]}
+                            format="MM/dd/yyyy"
+                            views={["year", "month", "date"]}
+                        />
+                    </Grid>;
+            case "time":
+                return <Grid container>
+                    <TimePicker autoOk
+                                error={!this.state[label + "_validated"][field.name]}
+                                label={fieldTitle}
+                                value={this.state[label][fieldTitle]}
+                                onChange={(date) =>{ this.setState((prevState)=>{
+                                    prevState[label][fieldTitle] = date;
+                                    return prevState;
+                                }) } }/>
+                </Grid>;
             default:
                 return <TextField
                     label={field.name}
@@ -885,6 +892,38 @@ class Form extends Component {
                     }}
                 />
         }
+    }
+
+    // removes duplicates with arr1 from arr2 from search select field
+    removeDuplicates(arr1, arr2) {
+        let stringValue, stringOtherValue;
+        arr1.forEach((value) => {
+            if (value) {
+                stringValue = value.value;
+            } else {
+                stringValue = "";
+            }
+            arr2.forEach((otherValue, j) => {
+                if (otherValue) {
+                    stringOtherValue = otherValue.value;
+                } else {
+                    stringOtherValue = "";
+                }
+                if (stringValue === stringOtherValue) {
+                    arr2[j] = "1";
+                }
+            });
+        });
+        let uniqueVals = [...new Set(arr2)], indexOfString = -1;
+        uniqueVals.forEach((value, i) => {
+            if (typeof value === "string") {
+                indexOfString = i;
+            }
+        });
+        if (indexOfString > -1) {
+            uniqueVals.splice(indexOfString, 1);
+        }
+        return uniqueVals;
     }
 
     addField(field, fieldIndex) {
@@ -1032,6 +1071,7 @@ class Form extends Component {
 
     // view after a submitted form
     renderSubmitted() {
+        console.log("normal submitted");
         const currentForm = this.props.registrationForm[this.state.form];
         const steps = currentForm.section_titles;
         sessionStorage.removeItem("form");
@@ -1096,8 +1136,10 @@ class Form extends Component {
     }
 
     renderCourseRegistrationSubmission(){
+
         let currentStudentID = this.state.Student.Student.value;
         let registeredCourseForm = this.props.registeredCourses[currentStudentID];
+        console.log("receipt", registeredCourseForm);
         registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
 
         let currentStudentName = registeredCourseForm.display.student_name;
@@ -1137,6 +1179,10 @@ class Form extends Component {
                 title = course ? course.title + " " : "";
                 break;
             }
+            case "tutoring":{
+                title = "New ";
+                break;
+            }
             default:
                 title = "";
                 break;
@@ -1173,7 +1219,7 @@ class Form extends Component {
                                     <Typography>
                                         Sorry! The form is unavailable.
                                     </Typography>
-                                : this.state.form !== "course" ?
+                                : this.state.form !== "course"  && this.state.form !== "tutoring" ?
                                     this.renderSubmitted() :
                                     this.renderCourseRegistrationSubmission()
                         }

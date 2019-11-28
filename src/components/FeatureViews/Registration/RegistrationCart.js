@@ -96,8 +96,14 @@ function RegistrationCart(props) {
                 <Grid item xs={12}>
                     <Grid container >
                         {
-                            registrations.map(({course_id}) => {
-                                let course = props.courseList[course_id];
+                            registrations.map((registration) => {
+                                let course;
+                                if (registration.new_course){ //if tutoring
+                                    course = registration.new_course;
+                                } else {
+                                    course = props.courseList[registration.course_id];
+                                }
+                                console.log(course);
 
                                 let dateOptions = {year: "numeric", month: "short", day: "numeric"};
                                 let startDate = new Date(course.schedule.start_date + course.schedule.start_time),
@@ -108,8 +114,8 @@ function RegistrationCart(props) {
                                     <Paper square={true} >
                                         <Grid container>
                                             <Grid item xs={1} md={1}>
-                                                <Checkbox checked={selectedCourses[student_id][course_id]}
-                                                          onChange={handleCourseSelect(student_id, course_id)}  />
+                                                <Checkbox checked={selectedCourses[student_id][registration.course_id]}
+                                                          onChange={handleCourseSelect(student_id, registration.course_id)}  />
                                             </Grid>
                                             <Grid item xs={3} md={3} >
                                                 <Typography align={'left'}>

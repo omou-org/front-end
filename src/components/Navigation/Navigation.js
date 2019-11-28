@@ -26,6 +26,8 @@ import NavBarRoutes from "../Routes/NavBarRoutes";
 import LoginPage from "../Authentication/LoginPage";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../actions/registrationActions";
+import DateFnsUtils from "@date-io/date-fns";
+import {MuiPickersUtilsProvider} from "material-ui-pickers";
 
 // const NavList = [
 //     // {
@@ -149,7 +151,9 @@ const Navigation = (props) => {
                 }
                 {
                     token ? <main className="OmouMain">
-                        <Routes />
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <Routes />
+                        </MuiPickersUtilsProvider>
                     </main> : <LoginPage/>
 
                 }

@@ -12,8 +12,7 @@ const parseDate = (date) => {
     if (!date) {
         return null;
     }
-    const [month, day, year] = date.split("/");
-    return `${year}-${month}-${day}`;
+    return date.substring(0,10);
 };
 
 const parseTime = (time) => {
@@ -172,9 +171,15 @@ export const submitForm = (state, id) => {
                 return patchData("course", course, id);
             }
         }
+        case "tutoring":{
+            console.log("a tutoring!")
+            return { type: types.ADD_TUTORING_REGISTRATION, payload: state }
+        }
         case "course": {
+            console.log("a course!")
             return { type: types.ADD_CLASS_REGISTRATION, payload: state }
         }
+
         default:
             console.error(`Invalid form type ${state.form}`);
     }
