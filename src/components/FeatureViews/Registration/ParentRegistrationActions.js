@@ -78,6 +78,12 @@ function ParentRegistrationActions(props) {
                         <NewTutor className="icon innerIcon" />
                         <ListItemText primary="TUTORING" />
                     </MenuItem>
+                 <MenuItem
+                     component={NavLink}
+                     to={`/registration/form/small_group/${courseRoute}`}>
+                     <NewTutor className="icon innerIcon" />
+                     <ListItemText primary="SMALL GROUP" />
+                 </MenuItem>
                 </StyledMenu>
          </Grid>
     );

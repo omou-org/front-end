@@ -4594,8 +4594,8 @@ function initRegistrationForm() {
     };
     const courseInfoQuestions = [
         {
-            field: "Name",
-            name: "Name",
+            field: "Course Name",
+            name: "Course Name",
             type: "short text",
             conditional: false,
             required: true,
@@ -5142,12 +5142,44 @@ function initRegistrationForm() {
             small_group: {
                 form_type:"small_group",
                 section_titles: [ "Group Type", "Group Details", "Student" ],
-                "Group Type":{
-
-                },
+                "Group Type":[
+                    {
+                        field: "Group Type",
+                        name: "Select Group Type",
+                        type: "select",
+                        options:
+                            ["Existing Small Group", "New Small Group"],
+                        conditional: true,
+                        required: true,
+                        full: false,
+                        field_limit: 1,
+                    },
+                ],
                 "Group Details":{
-
-                }
+                    "Existing Small Group":[
+                        {
+                            field: "Group Name",
+                            name: "Select Group",
+                            type: "small_group",
+                            conditional: false,
+                            required: true,
+                            full: false,
+                            field_limit: 1,
+                        }
+                    ],
+                    "New Small Group": courseInfoQuestions,
+                },
+                "Student":[
+                    {
+                        field: "Student",
+                        name: "Student",
+                        type: "student",
+                        conditional: false,
+                        required: false,
+                        full: false,
+                        field_limit: 1,
+                    },
+                ]
             }
         },
         submitStatus: null,
