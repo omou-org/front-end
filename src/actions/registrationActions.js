@@ -1,6 +1,6 @@
 import * as types from "./actionTypes";
 import {submitParentAndStudent, postData, patchData} from "./rootActions";
-import {wrapGet} from "./apiActions";
+import {wrapGet, postCourse} from "./apiActions";
 
 const parseGender = {
     "Male": "M",
@@ -172,14 +172,11 @@ export const submitForm = (state, id) => {
             }
         }
         case "tutoring":{
-            console.log("a tutoring!")
             return { type: types.ADD_TUTORING_REGISTRATION, payload: state }
         }
         case "course": {
-            console.log("a course!")
             return { type: types.ADD_CLASS_REGISTRATION, payload: state }
         }
-
         default:
             console.error(`Invalid form type ${state.form}`);
     }

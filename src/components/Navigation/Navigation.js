@@ -88,6 +88,8 @@ const Navigation = (props) => {
     const [mobileOpen, setMobileOpen] = useState(false);
     const {pathname} = useLocation();
 
+    console.log(token);
+
     const drawer = (
         <div className="DrawerList">
             <List className="list">

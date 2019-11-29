@@ -27,7 +27,7 @@ const typeToFetchActions = {
     ],
 };
 
-const typeToPostActions = {
+export const typeToPostActions = {
     "student": [
         types.POST_STUDENT_SUCCESSFUL,
         types.POST_STUDENT_FAILED,
@@ -184,3 +184,4 @@ export const submitParentAndStudent = (parent, student, parentID, studentID) => 
             });
     });
 };
+

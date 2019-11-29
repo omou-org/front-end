@@ -504,6 +504,8 @@ class Form extends Component {
                     if (!oldState.submitPending) {
                         if (this.props.match.params.edit === "edit") {
                             this.props.registrationActions.submitForm(this.state, this.props.match.params.id);
+                        } else if(this.state.form === "small_group") {
+                            this.props.apiActions.submitSmallGroup(this.state);
                         } else {
                             this.props.registrationActions.submitForm(this.state);
                         }

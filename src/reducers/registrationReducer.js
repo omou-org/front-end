@@ -53,6 +53,9 @@ export default function registration(state = initialState.RegistrationForms, {pa
             return addClassRegistration(newState, payload);
         case actions.ADD_TUTORING_REGISTRATION:
             return addTutoringRegistration(newState, payload);
+        case actions.ADD_SMALL_GROUP_REGISTRATION:
+            console.log("add small group registration reducer")
+            return addSmallGroupRegistration(newState, payload);
         case actions.INIT_COURSE_REGISTRATION:
             return initializeRegistration(newState);
         default:
@@ -176,7 +179,6 @@ const failedSubmit = (state) => ({
 });
 
 const addClassRegistration = (prevState, form) => {
-    console.log(form);
     let studentID = form["Student"].Student.value;
     let studentName = form["Student"].Student.label;
     let courseID = form["Course Selection"].Course.value;
@@ -228,7 +230,6 @@ const addClassRegistration = (prevState, form) => {
 };
 
 const addTutoringRegistration = (prevState, form) => {
-    console.log(form);
     let studentID = form["Student"].Student.value;
     let studentName = form["Student"].Student.label;
     let subject = form["Tutor Selection"]["Course / Subject"];
@@ -308,6 +309,13 @@ const addTutoringRegistration = (prevState, form) => {
     prevState.submitStatus = "success";
     console.log(prevState);
     return prevState;
+}
+
+const addSmallGroupRegistration = (prevState, form) => {
+    console.log(form,"small group registration");
+    let studentID = form["Student"].Student.value;
+    let studentName = form["Student"].Student.label;
+    return {};
 }
 
 const stringifyStudentInformation = (form)=>{
