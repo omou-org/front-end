@@ -11,7 +11,7 @@ export const instance = axios.create({
 export const REQUEST_ALL = -1;
 export const REQUEST_STARTED = 1;
 
-export const wrapGet = (endpoint, [startType, successType, failType], id) =>
+export const wrapGet = (endpoint, [startType, successType, failType], {id, config}) =>
     async (dispatch, getState) => {
         // creates a new action based on the response given
         const newAction = (type, response) => {
@@ -29,7 +29,7 @@ export const wrapGet = (endpoint, [startType, successType, failType], id) =>
 
         const requestURL = id ? `${endpoint}${id}/` : endpoint;
         try {
-            const response = await instance.get(requestURL, {
+            const response = await instance.get(requestURL, config || {
                 "headers": {
                     "Authorization": `Token ${getState().auth.token}`,
                 },
@@ -71,7 +71,7 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
         }
     };
 
-export const wrapPatch = (endpoint, [startType, successType, failType], id, data) =>
+export const wrapPatch = (endpoint, [startType, successType, failType], {id, data, config}) =>
     async (dispatch, getState) => {
         // creates a new action based on the response given
         const newAction = (type, response) => {
@@ -88,7 +88,7 @@ export const wrapPatch = (endpoint, [startType, successType, failType], id, data
         newAction(startType, {});
 
         try {
-            const response = await instance.patch(`${endpoint}${id}/`, data, {
+            const response = await instance.patch(`${endpoint}${id}/`, data, config || {
                 "headers": {
                     "Authorization": `Token ${getState().auth.token}`,
                 },
@@ -111,7 +111,7 @@ export const fetchCourses = (id) =>
             types.FETCH_COURSE_SUCCESSFUL,
             types.FETCH_COURSE_FAILED,
         ],
-        id,
+        {id:id},
     );
 export const submitSmallGroup = (form) => {
     const [courseSuccessAction, courseFailAction] = typeToPostActions["course"];

@@ -623,6 +623,15 @@
   position:relative;
   z-index:2000;
 }
+.active-parent-dialog-content{
+  @include respond-to(medium-up-screens){
+    width:28vw;
+  }
+  @include respond-to(handhelds){
+    width:auto;
+  }
+  padding: 0 10% 10% 10%;
+}
 
 // Registration Cart Styling
 .registration-cart {

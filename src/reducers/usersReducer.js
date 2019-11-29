@@ -70,7 +70,7 @@ const handleNotesFetch = (state, {userID, userType, response}) => {
     return newState;
 };
 
-const handleParentsFetch = (state, {id, response}) => {
+export const handleParentsFetch = (state, {id, response}) => {
     const {data} = response;
     let {ParentList} = state;
     if (id !== REQUEST_ALL) {
@@ -109,7 +109,7 @@ export const updateParent = (parents, id, parent) => ({
     },
 });
 
-const handleStudentsFetch = (state, {id, response}) => {
+export const handleStudentsFetch = (state, {id, response}) => {
     const {data} = response;
     let {StudentList} = state;
     if (id === REQUEST_ALL) {
@@ -156,7 +156,7 @@ export const updateStudent = (students, id, student) => ({
     },
 });
 
-const handleInstructorsFetch = (state, {id, response}) => {
+export const handleInstructorsFetch = (state, {id, response}) => {
     const {data} = response;
     let {InstructorList} = state;
     if (id !== REQUEST_ALL) {

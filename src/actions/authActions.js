@@ -12,7 +12,7 @@ export const login = (email, password, savePassword) => async (dispatch) => {
                 "username": email,
                 password,
             });
-        // succesful request
+        // successful request
         dispatch({
             "type": types.LOGIN_SUCCESSFUL,
             "payload": {

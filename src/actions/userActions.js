@@ -8,8 +8,7 @@ export const patchInstructor = (id, data) => wrapPatch(
         types.PATCH_INSTRUCTOR_SUCCESSFUL,
         types.PATCH_INSTRUCTOR_FAILED,
     ],
-    id,
-    data,
+    {id:id, data: data}
 );
 
 export const fetchStudents = (id) => wrapGet(
@@ -19,7 +18,7 @@ export const fetchStudents = (id) => wrapGet(
         types.FETCH_STUDENT_SUCCESSFUL,
         types.FETCH_STUDENT_FAILED,
     ],
-    id,
+    {id:id},
 );
 
 export const fetchParents = (id) => wrapGet(
@@ -29,7 +28,7 @@ export const fetchParents = (id) => wrapGet(
         types.FETCH_PARENT_SUCCESSFUL,
         types.FETCH_PARENT_FAILED,
     ],
-    id,
+    {id:id},
 );
 
 export const fetchInstructors = (id) => wrapGet(
@@ -39,7 +38,7 @@ export const fetchInstructors = (id) => wrapGet(
         types.FETCH_INSTRUCTOR_SUCCESSFUL,
         types.FETCH_INSTRUCTOR_FAILED,
     ],
-    id,
+    {id:id},
 );
 
 const notesEndpoint = "/account/note/";

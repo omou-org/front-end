@@ -193,6 +193,7 @@ export const fetchEnrollments = () => wrapGet(
         types.FETCH_ENROLLMENT_FAILED,
     ],
     // enrollmentId
+    {}
 );
 
 export const initializeRegistration = () =>

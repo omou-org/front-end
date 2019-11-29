@@ -111,20 +111,26 @@ class SelectParentDialog extends React.Component {
         });
 
         return (
-            <Grid container>
-                <AccountsCards user={this.props.registration.CurrentParent}/>
-                {/*<h3>{this.props.registration.CurrentParent.user.name}</h3>*/}
-                <Grid item xs={6}>
-                    <Button color={"primary"} className={"button"}
-                        onClick={this.handleExitParent()}>
-                        Exit Parent
-                    </Button>
+            <div className={"active-parent-dialog-content"}>
+                <Grid container>
+                    <Grid item xs={10}
+                          sm={12}
+                    >
+                        <AccountsCards user={this.props.registration.CurrentParent}/>
+                    </Grid>
+                    {/*<h3>{this.props.registration.CurrentParent.user.name}</h3>*/}
+                    <Grid item xs={5}>
+                        <Button color={"primary"} className={"button"}
+                                onClick={this.handleExitParent()}>
+                            Exit Parent
+                        </Button>
+                    </Grid>
+                    <Grid item xs={7}>
+                        <Button component={NavLinkNoDup} to={"/registration/cart"}
+                                color={"primary"} className={"button"}>Checkout {allCourses} Courses</Button>
+                    </Grid>
                 </Grid>
-                <Grid item xs={6}>
-                    <Button component={NavLinkNoDup} to={"/registration/cart"}
-                        color={"primary"} className={"button"}>Checkout {allCourses} Courses</Button>
-                </Grid>
-            </Grid>
+            </div>
         )
     }
 
@@ -153,12 +159,12 @@ class SelectParentDialog extends React.Component {
                 aria-labelledby="simple-dialog-title" open={this.props.open}>
                 <DialogTitle id="simple-dialog-title">
                     <h3>Currently helping...</h3>
-                    {
-                        this.props.registration.CurrentParent ?
-                            this.ActiveParentDialog() :
-                            this.SetParentDialog()
-                    }
                 </DialogTitle>
+                {
+                    this.props.registration.CurrentParent ?
+                        this.ActiveParentDialog() :
+                        this.SetParentDialog()
+                }
             </Dialog>
         );
     }
