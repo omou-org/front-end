@@ -16,6 +16,22 @@ export default {
                 tuition: 450,
                 capacity: 20,
                 grade: 5,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test. " +
                     " The material will cover all material from the fifth grade curriculum as well as some sixth grade content" +
                     " to comprehensively prepare students for the placement exam. The placement exam will vary by school district " +
@@ -31,6 +47,22 @@ export default {
                 tuition: 500,
                 capacity: 15,
                 grade: 8,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
             {
@@ -43,6 +75,22 @@ export default {
                 tuition: 1480,
                 capacity: 12,
                 grade: 10,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
             {
@@ -55,6 +103,22 @@ export default {
                 tuition: 1480,
                 capacity: 15,
                 grade: 10,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             }, {
                 course_id: 5,
@@ -66,6 +130,22 @@ export default {
                 tuition: 450,
                 capacity: 8,
                 grade: 10,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
             {
@@ -78,6 +158,22 @@ export default {
                 tuition: 1440,
                 capacity: 12,
                 grade: 8,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             }, {
                 course_id: 7,
@@ -89,6 +185,22 @@ export default {
                 tuition: 700,
                 capacity: 15,
                 grade: 10,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
             {
@@ -101,6 +213,22 @@ export default {
                 tuition: 700,
                 capacity: 15,
                 grade: 10,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
             {
@@ -113,6 +241,22 @@ export default {
                 tuition: 700,
                 capacity: 15,
                 grade: 10,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
             {
@@ -125,6 +269,22 @@ export default {
                 tuition: 700,
                 capacity: 15,
                 grade: 10,
+                notes: {
+                    1: {
+                        timestamp: "2020-01-02T12:05",
+                        body: "wants to take bio",
+                        important: false,
+                        complete: false,
+                        active: true,
+                    },
+                    2: {
+                        timestamp: "2020-01-10T13:11",
+                        body: "sister is interested in taking 7th grade english",
+                        important: true,
+                        complete: false,
+                        active: true,
+                    },
+                },
                 description: "This course is to prepare 5th grade students to pass the 6th grade math placement test.",
             },
         ],
@@ -4125,85 +4285,10 @@ export default {
     },
     "RequestStatus": initRequests(),
     "SearchResults": {
-        accounts: [
-            {
-                first_name: "Daniel",
-                last_name: "Huang",
-                role: "instructor",
-                id: 10,
-                email: "daniel.huang@gmail.com",
-            },
-            {
-                first_name: "Danny",
-                last_name: "Long",
-                role: "student",
-                id: 10,
-                email: "dannylong@omou.com",
-            },
-            {
-                first_name: "Gale",
-                last_name: "Long",
-                role: "parent",
-                id: 78,
-                email: "gale.long@omou.com",
-            },
-            {
-                first_name: "Katie",
-                last_name: "Ho",
-                role: "instructor",
-                id: 13,
-                email: "katie@omou.com",
-            },
-            {
-                first_name: "Calvin",
-                last_name: "Fronda",
-                role: "instructor",
-                id: 15,
-                email: "cfronda@omou.com",
-            },
-        ],
-        courses: [
-            {
-                date_start: "2020-01-08",
-                date_end: "2020-04-01",
-                course: {
-                    title: "6th Grade Math Placement Test Prep",
-                    course_id: "6GMPTP-A",
-                    subject: "Math",
-                    instructor: "Daniel Huang",
-                },
-            },
-            {
-                date_start: "2020-08-19",
-                date_end: "2020-11-04",
-                course: {
-                    title: "Honors Pre-Calculus - Amador",
-                    course_id: "HPC-A",
-                    subject: "Calculus",
-                    instructor: "Daniel Huang",
-                },
-            },
-            {
-                date_start: "2020-03-21",
-                date_end: "2020-06-27",
-                course: {
-                    title: "AP Calc A/B",
-                    course_id: "APCAB-A",
-                    subject: "Calculus",
-                    instructor: "Daniel Huang",
-                },
-            },
-            {
-                date_start: "2020-05-21",
-                date_end: "2020-09-27",
-                course: {
-                    title: "AP History",
-                    course_id: "APH-A",
-                    subject: "History",
-                    instructor: "Calvin Fronda",
-                },
-            },
-        ],
+        SearchQuery:{},
+        searchQueryStatus: "",
+        accounts: [],
+        courses: [],
     }
 };
 
@@ -4243,15 +4328,18 @@ function initRequests() {
         "note": {
             [GET]: {},
             [PATCH]: {},
-        }
+        },
+        "courseNote": {
+            [GET]: {},
+            [PATCH]: {},
+        },
     };
 }
 
 function initAuth() {
-    const token = localStorage.getItem("authToken") || null;
-    sessionStorage.setItem("authToken", token);
     return {
-        token,
+        token: null,
+        isAdmin: false,
     };
 }
 
@@ -4428,7 +4516,101 @@ function initRegistrationForm() {
                 field_limit: 1,
             },
         ],
-    }
+    };
+    const courseInfoQuestions = [
+        {
+            field: "Course Name",
+            name: "Course Name",
+            type: "short text",
+            conditional: false,
+            required: true,
+            full: true,
+            field_limit: 1,
+        },
+        {
+            field: "Description",
+            name: "Description",
+            type: "short text",
+            multiline: true,
+            conditional: false,
+            required: false,
+            full: true,
+            field_limit: 1,
+        },
+        {
+            field: "Instructor",
+            name: "Instructor",
+            type: "instructor",
+            conditional: false,
+            required: false,
+            full: true,
+            field_limit: 1,
+        },
+        {
+            field: "Tuition",
+            name: "Tuition",
+            type: "number",
+            conditional: false,
+            required: false,
+            full: false,
+            field_limit: 1,
+        },
+        {
+            field: "Day",
+            name: "Day",
+            type: "select",
+            options: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+            conditional: false,
+            required: false,
+            full: false,
+            field_limit: 1,
+        },
+        {
+            field: "Start Date",
+            name: "Start Date",
+            type: "date",
+            conditional: false,
+            required: false,
+            full: false,
+            field_limit: 1,
+        },
+        {
+            field: "End Date",
+            name: "End Date",
+            type: "date",
+            conditional: false,
+            required: false,
+            full: false,
+            field_limit: 1,
+        },
+        {
+            field: "Start Time",
+            name: "Start Time",
+            type: "time",
+            conditional: false,
+            required: false,
+            full: false,
+            field_limit: 1,
+        },
+        {
+            field: "End Time",
+            name: "End Time",
+            type: "time",
+            conditional: false,
+            required: false,
+            full: false,
+            field_limit: 1,
+        },
+        {
+            field: "Capacity",
+            name: "Capacity",
+            type: "number",
+            conditional: false,
+            required: false,
+            full: false,
+            field_limit: 1,
+        }
+    ];
     return {
         registration_form: {
             student: {
@@ -4604,21 +4786,8 @@ function initRegistrationForm() {
             },
             tutoring: {
                 form_type: "tutoring",
-                section_titles: ["Tutoring Session Type", "Student(s)", "Student Information", "Tutor Selection", "Schedule", "Payment"],
-                "Tutoring Session Type": [
-                    {
-                        field: "Select tutoring type",
-                        type: "select",
-                        conditional: true,
-                        options: ["Private Tutoring", "Small Group"],
-                        required: false,
-                        full: false,
-                        name: "Select tutoring type",
-                        field_limit: 1,
-                    },
-                ],
-                "Student(s)": {
-                    "Private Tutoring": [
+                section_titles: [ "Student", "Student Information", "Tutor Selection", "Schedule"],
+                "Student": [
                         {
                             field: "Student",
                             name: "Student",
@@ -4628,28 +4797,8 @@ function initRegistrationForm() {
                             full: false,
                             field_limit: 1,
                         },
-                    ],
-                    "Small Group": [
-                        {
-                            field: "Student",
-                            name: "Student",
-                            type: "student",
-                            conditional: false,
-                            required: false,
-                            full: false,
-                            field_limit: 5,
-                        },
-                        {
-                            field: "Student",
-                            name: "Student 2",
-                            type: "student",
-                            conditional: false,
-                            required: false,
-                            full: false,
-                            field_limit: 5,
-                        },
-                    ],
-                },
+                    ]
+                ,
                 ...studentInfoSection,
                 "Tutor Selection": [
                     {
@@ -4668,17 +4817,37 @@ function initRegistrationForm() {
                         conditional: false,
                         required: false,
                         full: true,
-                        field_limit: 2,
+                        field_limit: 1,
                     },
                 ],
                 "Schedule": [
                     {
-                        field: "Day",
-                        name: "Day",
-                        type: "short text",
+                        field: "Start Date",
+                        name: "Start Date",
+                        type: "date",
                         conditional: false,
-                        required: false,
-                        full: true,
+                        required: true,
+                        full: false,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Session Start Time",
+                        name: "Session Start Time",
+                        type: "time",
+                        conditional: false,
+                        required: true,
+                        full: false,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Duration",
+                        name: "Duration",
+                        type: "select",
+                        options:
+                            ["1 Hour", "1.5 Hours", "0.5 Hours", "2 Hours"],
+                        conditional: false,
+                        required: true,
+                        full: false,
                         field_limit: 1,
                     },
                     {
@@ -4686,56 +4855,7 @@ function initRegistrationForm() {
                         name: "Number of Sessions",
                         type: "number",
                         conditional: false,
-                        required: false,
-                        full: false,
-                        field_limit: 1,
-                    },
-                ],
-                "Payment": [
-                    {
-                        field: "Session Price",
-                        name: "Amount",
-                        type: "select",
-                        options: ["High School", "Middle School", "Elementary School", "Test"],
-                        conditional: false,
-                        required: false,
-                        full: false,
-                        field_limit: 1,
-                    },
-                    {
-                        field: "Payment Method",
-                        name: "Payment Method",
-                        type: "select",
-                        options: ["Credit Card", "Check", "Cash", "Account Balance"],
-                        conditional: false,
-                        required: false,
-                        full: true,
-                        field_limit: 1,
-                    },
-                    {
-                        field: "Discount Code 1",
-                        name: "Discount Code",
-                        type: "short text",
-                        conditional: false,
-                        required: false,
-                        full: false,
-                        field_limit: 1,
-                    },
-                    {
-                        field: "Discount Code 2",
-                        name: "Discount Code",
-                        type: "short text",
-                        conditional: false,
-                        required: false,
-                        full: false,
-                        field_limit: 1,
-                    },
-                    {
-                        field: "Discount Code 3",
-                        name: "Discount Code",
-                        type: "short text",
-                        conditional: false,
-                        required: false,
+                        required: true,
                         full: false,
                         field_limit: 1,
                     },
@@ -4743,7 +4863,7 @@ function initRegistrationForm() {
             },
             course: {
                 form_type: "course",
-                section_titles: ["Student", "Student Information", "Course Selection", "Payment"],
+                section_titles: ["Student", "Student Information", "Course Selection"],
                 "Student": [
                     {
                         field: "Student",
@@ -4765,45 +4885,6 @@ function initRegistrationForm() {
                         required: false,
                         full: true,
                         field_limit: 5,
-                    },
-                ],
-                "Payment": [
-                    {
-                        field: "Payment Method",
-                        name: "Payment Method",
-                        type: "select",
-                        options: ["Credit Card", "Check", "Cash", "Account Balance"],
-                        conditional: false,
-                        required: false,
-                        full: true,
-                        field_limit: 1,
-                    },
-                    {
-                        field: "Discount Code",
-                        name: "Discount Code 1",
-                        type: "short text",
-                        conditional: false,
-                        required: false,
-                        full: false,
-                        field_limit: 3,
-                    },
-                    {
-                        field: "Discount Code",
-                        name: "Discount Code 2",
-                        type: "short text",
-                        conditional: false,
-                        required: false,
-                        full: false,
-                        field_limit: 3,
-                    },
-                    {
-                        field: "Discount Code",
-                        name: "Discount Code 3",
-                        type: "short text",
-                        conditional: false,
-                        required: false,
-                        full: false,
-                        field_limit: 3,
                     },
                 ],
             },
@@ -4981,103 +5062,54 @@ function initRegistrationForm() {
             course_details: {
                 form_type: "course_details",
                 section_titles: ["Course Info"],
-                "Course Info": [
-                    {
-                        field: "Name",
-                        name: "Name",
-                        type: "short text",
-                        conditional: false,
-                        required: true,
-                        full: true,
-                        field_limit: 1,
-                    },
-                    {
-                        field: "Description",
-                        name: "Description",
-                        type: "short text",
-                        multiline: true,
-                        conditional: false,
-                        required: false,
-                        full: true,
-                        field_limit: 1,
-                    },
-                    {
-                        field: "Instructor",
-                        name: "Instructor",
-                        type: "instructor",
-                        conditional: false,
-                        required: false,
-                        full: true,
-                        field_limit: 1,
-                    },
-                    {
-                        field: "Tuition",
-                        name: "Tuition",
-                        type: "number",
-                        conditional: false,
-                        required: false,
-                        full: false,
-                        field_limit: 1,
-                    },
-                    {
-                        field: "Day",
-                        name: "Day",
-                        type: "select",
-                        options: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-                        conditional: false,
-                        required: false,
-                        full: false,
-                        field_limit: 1,
-                    },
-                    {
-                        field: "Start Date",
-                        name: "Start Date",
-                        type: "date",
-                        conditional: false,
-                        required: false,
-                        full: false,
-                        field_limit: 1,
-                    },
-                    {
-                        field: "End Date",
-                        name: "End Date",
-                        type: "date",
-                        conditional: false,
-                        required: false,
-                        full: false,
-                        field_limit: 1,
-                    },
-                    {
-                        field: "Start Time",
-                        name: "Start Time",
-                        type: "time",
-                        conditional: false,
-                        required: false,
-                        full: false,
-                        field_limit: 1,
-                    },
-                    {
-                        field: "End Time",
-                        name: "End Time",
-                        type: "time",
-                        conditional: false,
-                        required: false,
-                        full: false,
-                        field_limit: 1,
-                    },
-                    {
-                        field: "Capacity",
-                        name: "Capacity",
-                        type: "number",
-                        conditional: false,
-                        required: false,
-                        full: false,
-                        field_limit: 1,
-                    }
-                ],
+                "Course Info": courseInfoQuestions,
             },
+            small_group: {
+                form_type:"small_group",
+                section_titles: [ "Group Type", "Group Details", "Student" ],
+                "Group Type":[
+                    {
+                        field: "Group Type",
+                        name: "Select Group Type",
+                        type: "select",
+                        options:
+                            ["Existing Small Group", "New Small Group"],
+                        conditional: true,
+                        required: true,
+                        full: false,
+                        field_limit: 1,
+                    },
+                ],
+                "Group Details":{
+                    "Existing Small Group":[
+                        {
+                            field: "Group Name",
+                            name: "Select Group",
+                            type: "small_group",
+                            conditional: false,
+                            required: true,
+                            full: false,
+                            field_limit: 1,
+                        }
+                    ],
+                    "New Small Group": courseInfoQuestions,
+                },
+                "Student":[
+                    {
+                        field: "Student",
+                        name: "Student",
+                        type: "student",
+                        conditional: false,
+                        required: false,
+                        full: false,
+                        field_limit: 1,
+                    },
+                ]
+            }
         },
         submitStatus: null,
+        CurrentParent: "",
+        registered_courses: {},
     };
 }
 

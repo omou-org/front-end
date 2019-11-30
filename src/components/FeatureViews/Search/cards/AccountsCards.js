@@ -1,24 +1,11 @@
 import { connect } from "react-redux";
-import React, { useState } from "react";
-import BackButton from "../../../BackButton";
+import React, { useState, useEffect } from "react";
 import Grid from "@material-ui/core/Grid";
 import { Card, Paper, Typography } from "@material-ui/core";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import ListView from "@material-ui/icons/ViewList";
-import CardView from "@material-ui/icons/ViewModule";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
 import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
 import Chip from "@material-ui/core/Chip";
-import CardActions from "@material-ui/core/CardActions";
 import { withRouter } from "react-router-dom";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
-import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import {truncateStrings} from "../../../truncateStrings"
 
@@ -28,9 +15,6 @@ import { ReactComponent as IDIcon } from "../../../identifier.svg";
 
 
 import Avatar from "@material-ui/core/Avatar";
-
-
-
 
 function AccountsCards(props) {
 
@@ -71,24 +55,22 @@ function AccountsCards(props) {
 
     });
 
-    console.log(props.user);
+    // console.log(props.user);
 
-    const fullName = `${props.user.user.first_name} ${props.user.user.last_name}`
-    // const role = ()=>{
-    //   if(props.user.relationship) {
-    //       return "parent";
-    //   }
-    //   // }  else if ( props.user.)
-    // };
+    const fullName = `${props.user.user.first_name} ${props.user.user.last_name}`;
+
+    useEffect(()=>{
+
+    })
 
     return (
-        <Grid item xs={12} sm={3} className={"AccountsCards"} style={{ padding: "10px" }}>
             <Card key={props.user.id}
                 style={{ cursor: "pointer" }}
+                  className={"AccountsCards"}
+                  style={{ padding: "10px" }}
                 onClick={(event) => {
                     event.preventDefault();
-                     goToRoute(`accounts/${(props.user.account_type).toLowerCase}/${props.user.id}`);
-                    console.log(props.user)
+                     goToRoute(`/accounts/${props.user.account_type.toLowerCase()}/${props.user.user.id}`);
                 }}>
                 <Grid container>
                     <Hidden mdDown>
@@ -145,7 +127,6 @@ function AccountsCards(props) {
                     </Grid>
                 </Grid>
             </Card>
-        </Grid>
     )
 }
 

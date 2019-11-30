@@ -11,11 +11,7 @@ import InputBase from "@material-ui/core/InputBase";
 import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
 import AccountsCards from "./cards/AccountsCards"
-import UpcomingSessionCards from './cards/UpcomingSessionCards'
-import Divider from '@material-ui/core/Divider';
-import Fab from '@material-ui/core/Fab';
 import CoursesCards from "./cards/CoursesCards"
-import Chip from "@material-ui/core/Chip";
 import "./Search.scss";
 import axios from "axios"
 import { useParams } from "react-router-dom"
@@ -26,6 +22,8 @@ import { truncateStrings } from "../../truncateStrings";
 import AccountFilters from "./AccountFilters"
 import CourseFilters from "./CourseFilters"
 import NoResultsPage from './NoResults/NoResultsPage';
+import Loading from "../../Loading";
+import { number } from "prop-types";
 
 const SearchResults = (props) => {
     const dispatch = useDispatch();
@@ -64,45 +62,29 @@ const SearchResults = (props) => {
     //Endpoints
     // /search/account/?query=query?profileFilter=profileFilter?gradeFilter=gradeFilter?sortAlpha=asc?sortID=desc
     // /search/courses/?query=query?courseTypeFilter=courseType?availability=availability?dateSort=desc
-    // const accountSearchURL = "http://localhost:8000/search/account/";
-    // const courseSearchURL = "http://localhost:8000/search/courses/";
-    const accountSearchURL = "http://api.omoulearning.com:8000/search/account/";
-    const courseSearchURL = "http://api.omoulearning.com:8000/search/courses/";
-    const requestConfig = { params: { query: params.query }, headers: { "Authorization": `Token ${props.auth.token}`, } };
+    const accountSearchURL = `${process.env.REACT_APP_DOMAIN}/search/account/`;
+    const courseSearchURL = `${process.env.REACT_APP_DOMAIN}/search/course/`;
+    const requestConfig = { params: { query: params.query, page: 1 }, headers: { "Authorization": `Token ${props.auth.token}`, } };
 
     useEffect(() => {
-        (async () => {
-            try {
-                const accountResponse = await axios.get(accountSearchURL, requestConfig);
-                axios.interceptors.request.use(function (config) {
-                    setLoading(true);
-                    return config
-                }, (error) => {
-                    return Promise.reject(error);
-                });
+        props.searchActions.fetchSearchAccountQuery(requestConfig);
+        props.searchActions.fetchSearchCourseQuery(requestConfig);
+        console.log(params.type)
+    }, [params.type, props.searchActions, requestConfig]);
 
-                if (accountResponse.data === []) {
-                    console.log("account hit")
-                } else {
-                    let rawAccountResults = accountResponse.data;
-                    let accountResults = rawAccountResults.map((rawAccountResult) => {
-                        return { user: rawAccountResult, type: "user", user_id: rawAccountResult.user.id }
-                    });
-                    setAccountResults(accountResults);
-                }
-                const courseResponse = await axios.get(courseSearchURL, requestConfig);
-                if (courseResponse.data === []) {
-                    console.log("course hit");
-                } else {
-                    setCourseResults(courseResponse.data)
-                }
-            } catch (err) {
-                console.log(err)
-            } finally {
-                setLoading(false)
+    const numberOfResults = () => {
+        switch (params.type) {
+            case "all": {
+                return props.search.accounts.length + props.search.courses.length;
             }
-        })()
-    }, [params.query, props.auth.token, requestConfig]);
+            case "account": {
+                return props.search.accounts.length;
+            }
+            case "course": {
+                return props.search.courses.length
+            }
+        }
+    }
 
 
     const handleFilter = (filter) => {
@@ -112,28 +94,52 @@ const SearchResults = (props) => {
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
         <Grid container className={'search-results'} style={{ "padding": "1em" }}>
-            {loading ?
-                <h2>Loading...</h2> :
-                // : accountResults.length + courseResults.length !== 0 ?
-                <Grid item xs={12}>
-                    <Paper className={'main-search-view'} >
-                        <Grid item xs={12} className="searchResults">
-                            <Typography variant={"h4"} align={"left"}>
-                                <span style={{ fontFamily: "Roboto Slab", fontWeight: "500" }}>
-                                    {accountResults.length + courseResults.length} Search Results for </span>
-                                "{params.query}"
+            {props.search.searchQueryStatus !== "success" ?
+                <Loading />
+                : (numberOfResults() !== 0) ?
+                    <Grid item xs={12}>
+                        <Paper className={'main-search-view'} >
+                            <Grid item xs={12} className="searchResults">
+                                <Typography variant={"h4"} align={"left"}>
+                                    <span style={{ fontFamily: "Roboto Slab", fontWeight: "500" }}>
+                                        {numberOfResults()} Search Results for </span>
+                                    "{params.query}"
                                      </Typography>
-                            {params.type === "account" ? <AccountFilters onFilterChange={handleFilter} /> : ""}
-                            {params.type === "course" ? <CourseFilters /> : ""}
-                        </Grid>
-                        <hr />
-                        <Grid item xs={12}>
-                            <Grid container
-                                justify={"space-between"}
-                                direction={"row"}
-                                alignItems="center">
-                                <Grid item className="searchResults" >
-                                    <Typography className={"resultsColor"} align={'left'} gutterBottom>Accounts</Typography>
+                            </Grid>
+                            {params.type === "account" ?
+                                <Grid item xs={12}>
+                                    <Grid container>
+                                        <AccountFilters />
+                                    </Grid>
+                                </Grid>
+                                : ""}
+                            <hr />
+                            <Grid item xs={12}>
+                                <Grid container
+                                    justify={"space-between"}
+                                    direction={"row"}
+                                    alignItems="center">
+                                    <Grid item className="searchResults" >
+                                        <Typography className={"resultsColor"} align={'left'} gutterBottom>
+                                            {props.search.accounts.length > 0 ? "Accounts" : ""}
+                                        </Typography>
+                                    </Grid>
+                                    {/*<Grid item >*/}
+                                    {/*    <Chip label="See All Accounts"*/}
+                                    {/*        className="searchChip"*/}
+                                    {/*    />*/}
+                                    {/*</Grid>*/}
+                                </Grid>
+                                <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} direction={"row"}>
+                                    {props.search.accounts.length > 0 ?
+                                        props.search.accounts.slice(0, 4).map((account) => (
+                                            <Grid item xs={12}
+                                                sm={3}>
+                                                <AccountsCards user={account} key={account.user_id} />
+                                            </Grid>))
+                                        :
+                                        ""
+                                    }
                                 </Grid>
                                 {/*<Grid item >*/}
                                 {/*    <Chip label="See All Accounts"*/}
@@ -141,63 +147,59 @@ const SearchResults = (props) => {
                                 {/*    />*/}
                                 {/*</Grid>*/}
                             </Grid>
-                            <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} direction={"row"}>
-                                {accountResults.length > 0 ?
-                                    accountResults.slice(0, 4).map((account) => (
-                                        <AccountsCards user={account.user} key={account.user_id} />))
-                                    :
-                                    ""
-                                }
-                            </Grid>
-                        </Grid>
-                        {/* </Grid> */}
-                        <hr />
-                        {/*<Grid item xs={12}>*/}
-                        {/*    <Grid container*/}
-                        {/*        justify={"space-between"}*/}
-                        {/*        direction={"row"}*/}
-                        {/*        alignItems="center">*/}
-                        {/*        <Grid item style={{ "paddingLeft": "25px" }}>*/}
-                        {/*            <Typography variant={"h5"} align={'left'} >Upcoming Sessions</Typography>*/}
-                        {/*        </Grid>*/}
-                        {/*        /!*<Grid item style={{ "padding": "1vh" }}>*!/*/}
-                        {/*        /!*<Chip label="See All Upcoming Sessions"*!/*/}
-                        {/*        /!*    className="searchChip"*!/*/}
-                        {/*        /!*    />*!/*/}
-                        {/*        /!*</Grid>*!/*/}
-                        {/*    </Grid>*/}
-                        {/*    <Grid container spacing={16} style={{ paddingLeft: 20, paddingRight: 20 }} direction={"row"}>*/}
-                        {/*        {Object.values(props.instructors).slice(0, 4).map((user) => (*/}
-                        {/*            <UpcomingSessionCards user={user} key={user.user_id} />)*/}
-                        {/*        )}*/}
-                        {/*    </Grid>*/}
-                        {/*</Grid>*/}
-                        {/*<hr />*/}
+                            {/* </Grid> */}
+                            {props.search.accounts.length > 0 ? <hr /> : ""}
+                            {/*<Grid item xs={12}>*/}
+                            {/*    <Grid container*/}
+                            {/*        justify={"space-between"}*/}
+                            {/*        direction={"row"}*/}
+                            {/*        alignItems="center">*/}
+                            {/*        <Grid item style={{ "paddingLeft": "25px" }}>*/}
+                            {/*            <Typography variant={"h5"} align={'left'} >Upcoming Sessions</Typography>*/}
+                            {/*        </Grid>*/}
+                            {/*        /!*<Grid item style={{ "padding": "1vh" }}>*!/*/}
+                            {/*        /!*<Chip label="See All Upcoming Sessions"*!/*/}
+                            {/*        /!*    className="searchChip"*!/*/}
+                            {/*        /!*    />*!/*/}
+                            {/*        /!*</Grid>*!/*/}
+                            {/*    </Grid>*/}
+                            {/*    <Grid container spacing={16} style={{ paddingLeft: 20, paddingRight: 20 }} direction={"row"}>*/}
+                            {/*        {Object.values(props.instructors).slice(0, 4).map((user) => (*/}
+                            {/*            <UpcomingSessionCards user={user} key={user.user_id} />)*/}
+                            {/*        )}*/}
+                            {/*    </Grid>*/}
+                            {/*</Grid>*/}
+                            {/*<hr />*/}
+                            {
+                                params.type !== "account" ? <Grid item xs={12}>
+                                    <Grid container
+                                        justify={"space-between"}
+                                        direction={"row"}
+                                        alignItems="center">
+                                        <Grid item className="searchResults">
+                                            <Typography className={"resultsColor"} align={'left'} >
+                                                {props.search.courses.length > 0 ?
+                                                    "Courses" : ""
+                                                }
+                                            </Typography>
+                                        </Grid>
+                                        {/*<Grid item style={{ "paddingRight": "1vh" }}>*/}
+                                        {/*    <Chip label="See All Courses"*/}
+                                        {/*        className="searchChip"*/}
+                                        {/*    />*/}
+                                        {/*</Grid>*/}
+                                    </Grid>
+                                    <Grid container direction={"row"} style={{ paddingLeft: 20, paddingRight: 20 }}>
+                                        {props.search.courses.slice(0, 4).map((course) => (
+                                            <CoursesCards course={course} key={course.course_id} />)
+                                        )}
+                                    </Grid>
+                                </Grid> : ""
+                            }
 
-                        <Grid item xs={12}>
-                            <Grid container
-                                justify={"space-between"}
-                                direction={"row"}
-                                alignItems="center">
-                                <Grid item className="searchResults">
-                                    <Typography className={"resultsColor"} align={'left'} >Courses</Typography>
-                                </Grid>
-                                {/*<Grid item style={{ "paddingRight": "1vh" }}>*/}
-                                {/*    <Chip label="See All Courses"*/}
-                                {/*        className="searchChip"*/}
-                                {/*    />*/}
-                                {/*</Grid>*/}
-                            </Grid>
-                            <Grid container direction={"row"} style={{ paddingLeft: 20, paddingRight: 20 }}>
-                                {courseResults.slice(0, 4).map((course) => (
-                                    <CoursesCards course={course} key={course.course_id} />)
-                                )}
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                </Grid>
-                // : <NoResultsPage />
-            }
+                        </Paper>
+                    </Grid>
+                    : <NoResultsPage />}
         </Grid>
     )
 };
@@ -211,11 +213,14 @@ const mapStateToProps = (state) => ({
     "parents": state.Users["ParentList"],
     "courseRoster": state.Course["CourseRoster"],
     "enrollments": state.Enrollments,
-    "accounts": state.Search.accounts,
-    "course": state.Search.courses,
+    "search": state.Search,
     "auth": state.auth
+});
+const mapDispatchToProps = (dispatch) => ({
+    "searchActions": bindActionCreators(searchActions, dispatch),
 });
 
 export default connect(
-    mapStateToProps
+    mapStateToProps,
+    mapDispatchToProps,
 )(SearchResults);

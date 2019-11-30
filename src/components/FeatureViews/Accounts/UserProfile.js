@@ -1,10 +1,10 @@
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import * as userActions from "../../../actions/userActions";
 import * as apiActions from "../../../actions/apiActions";
-import {GET} from "../../../actions/actionTypes";
-import React, {Component} from "react";
-import {Redirect} from "react-router-dom";
+import { GET } from "../../../actions/actionTypes";
+import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 
 import { stringToColor } from "./accountUtils";
 import Grid from "@material-ui/core/Grid";
@@ -31,6 +31,7 @@ import PastSessionsIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import ContactIcon from "@material-ui/icons/ContactPhoneOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
+import Loading from "../../Loading";
 
 const userTabs = {
     "instructor": [
@@ -52,7 +53,7 @@ const userTabs = {
         {
             "tab_heading": "Notes",
             "tab_id": 7,
-            "icon": <NoteIcon className="TabIcon" />,
+            "icon": <notificationIcon className="TabIcon" />,
         },
     ],
     "student": [
@@ -99,6 +100,7 @@ const userTabs = {
             "tab_id": 7,
             "icon": <NoteIcon className="TabIcon" />,
         },
+
     ],
 };
 
@@ -108,14 +110,15 @@ class UserProfile extends Component {
         this.state = {
             "user": {},
             "value": 0,
+            "alert": false,
         };
-        this.currID = props.computedMatch.params.accountID;
+        this.currID = props.match.params.accountID;
         this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount() {
         let user;
-        const {accountType, accountID} = this.props.computedMatch.params;
+        const { accountType, accountID } = this.props.match.params;
         switch (accountType) {
             case "student":
                 this.props.userActions.fetchStudents(accountID);
@@ -138,15 +141,34 @@ class UserProfile extends Component {
         const {
             "accountType": currAccType,
             "accountID": currAccID
-        } = this.props.computedMatch.params;
+        } = this.props.match.params;
 
         const {
             "accountType": prevAccType,
             "accountID": prevAccID
-        } = prevProps.computedMatch.params;
+        } = prevProps.match.params;
 
         // if looking at new profile, reset tab to the first one
         if (currAccType !== prevAccType || currAccID !== prevAccID) {
+            const {accountType, accountID} = this.props.match.params;
+            this.props.userActions.fetchNotes(accountID, accountType);
+            let user;
+            switch (accountType) {
+                case "student":
+                    this.props.userActions.fetchStudents(accountID);
+                    break;
+                case "parent":
+                    this.props.userActions.fetchParents(accountID);
+                    break;
+                case "instructor":
+                    this.props.userActions.fetchInstructors(accountID);
+                    break;
+                case "receptionist":
+                    // future request for receptionists
+                    break;
+                // no default
+            }
+            return user;
             this.setState({
                 "value": 0,
             });
@@ -155,7 +177,7 @@ class UserProfile extends Component {
 
     getUser = () => {
         let user;
-        const { accountType, accountID } = this.props.computedMatch.params;
+        const { accountType, accountID } = this.props.match.params;
         switch (accountType) {
             case "student":
                 user = this.props.students[accountID];
@@ -170,13 +192,13 @@ class UserProfile extends Component {
                 user = this.props.receptionist[accountID];
                 break;
             default:
-                user = -1;
+                user = null;
         }
         return user;
     }
 
     getRequestStatus = () => {
-        const {accountType, accountID} = this.props.computedMatch.params;
+        const { accountType, accountID } = this.props.match.params;
         return accountType === "receptionist"
             ? 200
             : this.props.requestStatus[accountType][GET][accountID];
@@ -187,10 +209,40 @@ class UserProfile extends Component {
         this.setState({ "value": newTabIndex });
     }
 
+    filter() {
+        const filterHelper = (obj, predicate) =>
+            Object.keys(obj)
+                .filter(key => predicate(obj[key]))
+                .reduce((res, key) => (res[key] = obj[key], res), {});
+
+        // Example use:
+        let filtered = filterHelper(this.getUser().notes, note => note.important === true)
+        if (Object.keys(filtered).length != 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    }
+    renderNoteIcon() {
+        if (this.getUser() && this.getUser().role != "receptionist") {
+            if (this.filter()) {
+                userTabs[this.getUser().role].filter(tab => tab.tab_id === 7)[0].icon =
+                    <><Avatar style={{ width: 10, height: 10 }} className="notification" /><NoteIcon className="TabIcon" /></>
+            }
+            else {
+                userTabs[this.getUser().role].filter(tab => tab.tab_id === 7)[0].icon =
+                    <NoteIcon className="TabIcon" />
+            }
+        }
+    }
+
     render() {
+        this.renderNoteIcon();
         const status = this.getRequestStatus();
         if (!status || status === apiActions.REQUEST_STARTED) {
-            return "Loading...";
+            return <Loading/>
         }
 
         const user = this.getUser();
@@ -198,7 +250,7 @@ class UserProfile extends Component {
         if ((!user || user === -1) && (status < 200 || status >= 300)) {
             return <Redirect to="/PageNotFound" />;
         }
-        const { accountType, accountID } = this.props.computedMatch.params;
+        const { accountType, accountID } = this.props.match.params;
         const styles = {
             "backgroundColor": stringToColor(user.name),
             "color": "white",
@@ -292,7 +344,7 @@ class UserProfile extends Component {
                         <Grid item md={2}>
                             <Hidden smDown>
                                 <Avatar style={styles}>
-                                    {user.name.match(/\b(\w)/g).join("")}
+                                    {user.name.toUpperCase().match(/\b(\w)/g).join("")}
                                 </Avatar>
                             </Hidden>
                         </Grid>

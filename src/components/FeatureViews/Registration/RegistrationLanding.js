@@ -16,9 +16,10 @@ import SearchSelect from "react-select";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Hidden from "@material-ui/core/Hidden";
-
+import Loading from "../../Loading";
 import CourseList from "./CourseList";
 import TutoringList from "./TutoringList";
+import RegistrationActions from "./RegistrationActions";
 
 const NUM_GRADES = 13;
 
@@ -95,15 +96,13 @@ const RegistrationLanding = () => {
         !requestStatus.course[GET][apiActions.REQUEST_ALL] ||
         requestStatus.instructor[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED ||
         requestStatus.course[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED) {
-        return "LOADING";
+        return <Loading/>;
     }
 
     if (requestStatus.instructor[GET][apiActions.REQUEST_ALL] < 200 ||
         requestStatus.instructor[GET][apiActions.REQUEST_ALL] >= 300 ||
         requestStatus.course[GET][apiActions.REQUEST_ALL] < 200 ||
         requestStatus.course[GET][apiActions.REQUEST_ALL] >= 300) {
-        // console.log(requestStatus.instructor[GET]);
-        // console.log(requestStatus.course[GET][apiActions.REQUEST_ALL]);
         return "ERROR LOADING COURSES";
     }
 
@@ -186,6 +185,7 @@ const RegistrationLanding = () => {
         <Paper className="RegistrationLanding paper">
             <BackButton />
             <hr />
+            <RegistrationActions/>
             <Grid
                 container
                 layout="row">

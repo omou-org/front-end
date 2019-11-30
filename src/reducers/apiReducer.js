@@ -8,7 +8,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
         ({status} = payload.response);
     } else {
         // general server error
-        status = 500;
+        status = 600;
     }
     switch (type) {
         case actions.LOGIN_STARTED:
@@ -78,6 +78,27 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
         case actions.FETCH_NOTE_FAILED:
             return updateNoteFetch(state, payload.userID, status);
 
+        case actions.FETCH_COURSE_NOTE_STARTED:
+            return updateCourseNoteFetch(state, payload.courseID, api.REQUEST_STARTED);
+        case actions.FETCH_COURSE_NOTE_SUCCESSFUL:
+            return updateCourseNoteFetch(state, payload.courseID, status);
+        case actions.FETCH_COURSE_NOTE_FAILED:
+            return updateCourseNoteFetch(state, payload.courseID, status);
+
+        case actions.POST_COURSE_NOTE_STARTED:
+            return updateCourseNotePost(state, api.REQUEST_STARTED);
+        case actions.POST_COURSE_NOTE_SUCCESSFUL:
+            return updateCourseNotePost(state, status);
+        case actions.POST_COURSE_NOTE_FAILED:
+            return updateCourseNotePost(state, status);
+
+        case actions.PATCH_COURSE_NOTE_STARTED:
+            return updateCourseNotePatch(state, payload.courseID, api.REQUEST_STARTED);
+        case actions.PATCH_COURSE_NOTE_SUCCESSFUL:
+            return updateCourseNotePatch(state, payload.courseID, status);
+        case actions.PATCH_COURSE_NOTE_FAILED:
+            return updateCourseNotePatch(state, payload.courseID, status);
+
         case actions.POST_NOTE_STARTED:
             return updateNotePost(state, api.REQUEST_STARTED);
         case actions.POST_NOTE_SUCCESSFUL:
@@ -91,6 +112,13 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             return updateNotePatch(state, payload.userID, status);
         case actions.PATCH_NOTE_FAILED:
             return updateNotePatch(state, payload.userID, status);
+
+        case actions.FETCH_USER_STARTED:
+            return updateUserFetch(state, api.REQUEST_STARTED);
+        case actions.FETCH_USER_SUCCESSFUL:
+            return updateUserFetch(state, status);
+        case actions.FETCH_USER_FAILED:
+            return updateUserFetch(state, status);
 
         default:
             return state;
@@ -164,5 +192,28 @@ const updateNotePost = (state, status) => {
 const updateNotePatch = (state, userID, status) => {
     let newState = JSON.parse(JSON.stringify(state));
     newState.note[actions.PATCH][userID] = status;
+    return newState;
+};
+
+const updateUserFetch = (state, status) => ({
+    ...state,
+    "userFetch": status,
+});
+
+const updateCourseNoteFetch = (state, userID, status) => {
+    let newState = JSON.parse(JSON.stringify(state));
+    newState.courseNote[actions.GET][userID] = status;
+    return newState;
+};
+
+const updateCourseNotePost = (state, status) => {
+    let newState = JSON.parse(JSON.stringify(state));
+    newState.courseNote[actions.POST] = status;
+    return newState;
+};
+
+const updateCourseNotePatch = (state, userID, status) => {
+    let newState = JSON.parse(JSON.stringify(state));
+    newState.courseNote[actions.PATCH][userID] = status;
     return newState;
 };

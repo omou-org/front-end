@@ -3,6 +3,7 @@ import {bindActionCreators} from "redux";
 import * as userActions from "../../../actions/userActions";
 import React, {Component} from "react";
 import BackButton from "../../BackButton";
+import Truncate from 'react-truncate';
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
@@ -162,11 +163,11 @@ class Accounts extends Component {
                                     container
                                     layout="row">
                                     <Avatar
-                                        style={styles(row.name)}>{row.name.match(/\b(\w)/g).join("")}
+                                        style={styles(row.name)}>{row.name.toUpperCase().match(/\b(\w)/g).join("")}
                                     </Avatar>
-                                    <Typography>
+                                    <Truncate lines={1} ellipsis={<span>... <a href='/link/to/article'>Read more</a></span>}>
                                         {row.name}
-                                    </Typography>
+                                    </Truncate>
                                 </Grid>
                             </TableCell>
                             <TableCell
@@ -187,13 +188,16 @@ class Accounts extends Component {
                                     align="right"
                                     component={Hidden}
                                     mdDown>
-                                    <Button
-                                        className="editButton"
-                                        component={NavLink}
-                                        to={`/registration/form/${row.role}/${row.user_id}/edit`}>
-                                        <EditIcon />
-                                        Edit Profile
-                                    </Button>
+                                    {
+                                        (row.role === "student" || row.role === "parent" || this.props.isAdmin) &&
+                                        <Button
+                                            className="editButton"
+                                            component={NavLink}
+                                            to={`/registration/form/${row.role}/${row.user_id}/edit`}>
+                                            <EditIcon />
+                                            Edit Profile
+                                        </Button>
+                                    }
                                 </Grid>
                                 <Grid
                                     align="right"
@@ -255,7 +259,7 @@ class Accounts extends Component {
                         direction="row">
                         <Grid
                             item
-                            md={9}
+                            md={8}
                             xs={10}>
                             <Tabs
                                 className="tabs"
@@ -332,6 +336,7 @@ const mapStateToProps = (state) => ({
     "parents": state.Users.ParentList,
     "receptionist": state.Users.ReceptionistList,
     "students": state.Users.StudentList,
+    "isAdmin": state.auth.isAdmin,
 });
 
 const mapDispatchToProps = (dispatch) => ({

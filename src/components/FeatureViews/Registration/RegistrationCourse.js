@@ -7,6 +7,7 @@ import {GET} from "../../../actions/actionTypes.js";
 import React, {Fragment, useEffect, useMemo, useState} from "react";
 import BackButton from "../../BackButton.js";
 import RegistrationActions from "./RegistrationActions";
+import {useStudent} from "actions/hooks";
 import "../../../theme/theme.scss";
 
 // Material UI Imports
@@ -15,6 +16,10 @@ import Paper from "@material-ui/core/Paper";
 import ClassIcon from "@material-ui/icons/Class";
 import {Divider, LinearProgress, TableBody, Typography} from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
+import NoteIcon from "@material-ui/icons/NoteOutlined";
 import Chip from "@material-ui/core/Chip";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -26,8 +31,11 @@ import EmailIcon from "@material-ui/icons/Email";
 import EditIcon from "@material-ui/icons/Edit";
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 import Button from "@material-ui/core/Button";
+import Note from "../Notes/Notes";
+import "./registration.scss"
 import {Link, useRouteMatch} from "react-router-dom";
 import {stringToColor} from "components/FeatureViews/Accounts/accountUtils";
+import Loading from "../../Loading";
 
 const dayConverter = {
     "0": "Sunday",
@@ -104,14 +112,19 @@ const RegistrationCourse = () => {
         "schedule": {
             "days": [],
         },
+        "notes": []
     };
     const instructor = instructors[course.instructor_id];
     const days = course.schedule.days.map((day) => dayConverter[day]);
 
     const [expanded, setExpanded] = useState({});
+    const [value, setValue] = useState(0);
+
+    const studentStatus = useStudent();
 
     useEffect(() => {
         api.fetchCourses(courseID);
+        api.fetchCourseNotes(courseID);
         api.fetchStudents();
         api.fetchParents();
     }, [api, courseID]);
@@ -135,7 +148,7 @@ const RegistrationCourse = () => {
         requestStatus.parent[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED ||
         !requestStatus.student[GET][apiActions.REQUEST_ALL] ||
         requestStatus.student[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED) {
-        return "LOADING";
+        return <Loading/>;
     }
 
     const startDate = new Date(course.schedule.start_date +
@@ -147,87 +160,172 @@ const RegistrationCourse = () => {
         startDay = formatDate(course.schedule.start_date),
         endDay = formatDate(course.schedule.end_date);
 
-    const rows = course.roster.map((student_id) => {
-        const student = students[student_id];
-        const parent = parents[student.parent_id];
-        const {notes, session_payment_status} = enrollments[student_id][course.course_id];
-        const paymentStatus = Object.values(session_payment_status).every((status) => status !== 0);
-        return [
-            (
-                <Link
-                    key={student_id}
-                    style={{
-                        "textDecoration": "none",
-                        "color": "inherit",
-                    }}
-                    to={`/accounts/student/${student_id}`}>
-                    {student.name}
-                </Link>
-            ),
-            (
-                <Link
-                    key={student_id}
-                    style={{
-                        "textDecoration": "none",
-                        "color": "inherit",
-                    }}
-                    to={`/accounts/parent/${student.parent_id}`}>
-                    {parent.name}
-                </Link>
-            ),
-            formatPhone(parent.phone_number),
-            (
-                <div
-                    key={student_id}
-                    style={{
-                        "padding": "5px 0",
-                        "borderRadius": "10px",
-                        "backgroundColor": paymentStatus ? "#28D52A" : "#E9515B",
-                        "textAlign": "center",
-                        "width": "7vw",
-                        "color": "white",
-                    }}>
-                    {paymentStatus ? "Paid" : "Unpaid"}
-                </div>
-            ),
-            (
-                <div
-                    className="actions"
-                    key={student_id}>
-                    <a href={`mailto:${parent.email}`}>
-                        <EmailIcon />
-                    </a>
-                    <span>
-                        <EditIcon />
-                    </span>
-                    <span>
-                        {expanded[student_id]
-                            ? <UpArrow onClick={() => {
-                                setExpanded({
-                                    ...expanded,
-                                    [student_id]: false,
-                                });
-                            }} />
-                            : <DownArrow onClick={() => {
-                                setExpanded({
-                                    ...expanded,
-                                    [student_id]: true,
-                                });
-                            }} />
-                        }
-                    </span>
-                </div>
-            ),
-            {
-                notes,
-                student,
-            },
-        ];
-    });
+    // const rows = course.roster.map((student_id) => {
+    //     // console.log(student_id, students);
+    //     const student = students[student_id];
+    //     const parent = parents[student.parent_id];
+    //     const {notes, session_payment_status} = enrollments[student_id][course.course_id];
+    //     const paymentStatus = Object.values(session_payment_status).every((status) => status !== 0);
+    //     return [
+    //         (
+    //             <Link
+    //                 key={student_id}
+    //                 style={{
+    //                     "textDecoration": "none",
+    //                     "color": "inherit",
+    //                 }}
+    //                 to={`/accounts/student/${student_id}`}>
+    //                 {student.name}
+    //             </Link>
+    //         ),
+    //         (
+    //             <Link
+    //                 key={student_id}
+    //                 style={{
+    //                     "textDecoration": "none",
+    //                     "color": "inherit",
+    //                 }}
+    //                 to={`/accounts/parent/${student.parent_id}`}>
+    //                 {parent.name}
+    //             </Link>
+    //         ),
+    //         formatPhone(parent.phone_number),
+    //         (
+    //             <div
+    //                 key={student_id}
+    //                 style={{
+    //                     "padding": "5px 0",
+    //                     "borderRadius": "10px",
+    //                     "backgroundColor": paymentStatus ? "#28D52A" : "#E9515B",
+    //                     "textAlign": "center",
+    //                     "width": "7vw",
+    //                     "color": "white",
+    //                 }}>
+    //                 {paymentStatus ? "Paid" : "Unpaid"}
+    //             </div>
+    //         ),
+    //         (
+    //             <div
+    //                 className="actions"
+    //                 key={student_id}>
+    //                 <a href={`mailto:${parent.email}`}>
+    //                     <EmailIcon />
+    //                 </a>
+    //                 <span>
+    //                     <EditIcon />
+    //                 </span>
+    //                 <span>
+    //                     {expanded[student_id]
+    //                         ? <UpArrow onClick={() => {
+    //                             setExpanded({
+    //                                 ...expanded,
+    //                                 [student_id]: false,
+    //                             });
+    //                         }} />
+    //                         : <DownArrow onClick={() => {
+    //                             setExpanded({
+    //                                 ...expanded,
+    //                                 [student_id]: true,
+    //                             });
+    //                         }} />
+    //                     }
+    //                 </span>
+    //             </div>
+    //         ),
+    //         {
+    //             notes,
+    //             student,
+    //         },
+    //     ];
+    // });
+
+    const handleChange = (event, value) => {
+        setValue(value);
+    }
+
+    const displayComponent = () => {
+        let component;
+        switch (value) {
+            case 0:
+                component = (<div>
+                    <Table>
+                        <TableToolbar />
+                        <TableBody>
+                            {
+                                // rows.map((row, i) => (
+                                //     <Fragment key={i}>
+                                //         <TableRow>
+                                //             {
+                                //                 row.slice(0, 5).map((data, j) => (
+                                //                     <TableCell
+                                //                         className={j === 0 ? "bold" : ""}
+                                //                         key={j}>
+                                //                         {data}
+                                //                     </TableCell>
+                                //                 ))
+                                //             }
+                                //         </TableRow>
+                                //         {
+                                //             expanded[course.roster[i]] &&
+                                //             <TableRow align="left">
+                                //                 <TableCell colSpan={5}>
+                                //                     <Paper
+                                //                         elevation={0}
+                                //                         square>
+                                //                         <Typography
+                                //                             style={{
+                                //                                 "padding": "10px",
+                                //                             }}>
+                                //                             <span style={{"padding": "5px"}}>
+                                //                                 <b>School</b>: {
+                                //                                     row[5].student.school
+                                //                                 }
+                                //                                 <br />
+                                //                             </span>
+                                //                             <span style={{"padding": "5px"}}>
+                                //                                 <b>School Teacher</b>: {
+                                //                                     row[5].notes["Current Instructor in School"]
+                                //                                 }
+                                //                                 <br />
+                                //                             </span>
+                                //                             <span style={{"padding": "5px"}}>
+                                //                                 <b>Textbook:</b> {
+                                //                                     row[5].notes["Textbook Used"]
+                                //                                 }
+                                //                                 <br />
+                                //                             </span>
+                                //                         </Typography>
+                                //                     </Paper>
+                                //                 </TableCell>
+                                //             </TableRow>
+                                //         }
+                                //     </Fragment>
+                                // ))
+                            }
+                        </TableBody>
+                    </Table>
+                </div>)
+                break;
+            case 1:
+                component = (<div
+                    style={{paddingTop: 30}}>
+                    <Note
+                        userID={courseID}
+                        userRole="course"
+                    />
+                </div>)
+                break;
+            default:
+                component = (<div>wee woo wee woo we have a problem in aisle 6</div>)
+
+        }
+        return component;
+    }
 
 
     return (
         <Grid
+            className={"registrationCourse"}
             item
             xs={12}>
             <Paper className="paper">
@@ -329,6 +427,20 @@ const RegistrationCourse = () => {
                     className="description text">
                     {course.description}
                 </Typography>
+                <Tabs className={"registration-course-tabs"}
+                      onChange={handleChange}
+                      value={value}
+                      indicatorColor="primary">
+                    <Tab
+                        label={<><RegistrationIcon className="NoteIcon" /> Registration</>}
+                    />
+                    <Tab
+                        label={
+                            course.notes && Object.values(course.notes).some(({important}) => important)
+                                ? <><Avatar style={{width: 10, height: 10}} className="notificationCourse" /><NoteIcon className="TabIcon" />  Notes</>
+                                : <><NoteIcon className="NoteIcon" /> Notes</>} />
+
+                </Tabs>
                 <div className="course-status">
                     <div className="status">
                         <div className="text">
@@ -341,62 +453,7 @@ const RegistrationCourse = () => {
                         valueBuffer={100}
                         variant="buffer" />
                 </div>
-                <Table>
-                    <TableToolbar />
-                    <TableBody>
-                        {
-                            rows.map((row, i) => (
-                                <Fragment key={i}>
-                                    <TableRow>
-                                        {
-                                            row.slice(0, 5).map((data, j) => (
-                                                <TableCell
-                                                    className={j === 0 ? "bold" : ""}
-                                                    key={j}>
-                                                    {data}
-                                                </TableCell>
-                                            ))
-                                        }
-                                    </TableRow>
-                                    {
-                                        expanded[course.roster[i]] &&
-                                        <TableRow align="left">
-                                            <TableCell colSpan={5}>
-                                                <Paper
-                                                    elevation={0}
-                                                    square>
-                                                    <Typography
-                                                        style={{
-                                                            "padding": "10px",
-                                                        }}>
-                                                        <span style={{"padding": "5px"}}>
-                                                            <b>School</b>: {
-                                                                row[5].student.school
-                                                            }
-                                                            <br />
-                                                        </span>
-                                                        <span style={{"padding": "5px"}}>
-                                                            <b>School Teacher</b>: {
-                                                                row[5].notes["Current Instructor in School"]
-                                                            }
-                                                            <br />
-                                                        </span>
-                                                        <span style={{"padding": "5px"}}>
-                                                            <b>Textbook:</b> {
-                                                                row[5].notes["Textbook Used"]
-                                                            }
-                                                            <br />
-                                                        </span>
-                                                    </Typography>
-                                                </Paper>
-                                            </TableCell>
-                                        </TableRow>
-                                    }
-                                </Fragment>
-                            ))
-                        }
-                    </TableBody>
-                </Table>
+                {displayComponent()}
             </Paper>
         </Grid>
     );

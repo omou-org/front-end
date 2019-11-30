@@ -85,9 +85,8 @@ const SearchResultFilter = (props) => {
 
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
-
-        <div className="accountFilters">
-            <Grid item style={{ padding: "10px" }}>
+        <>
+            <Grid item style={{ padding: "10px" }} className={"searchFilters"}>
                 <FilterIcon />
             </Grid>
             <Grid item style={{ paddingTop: '5px', marginRight: '10px' }}>
@@ -173,7 +172,7 @@ const SearchResultFilter = (props) => {
                     </Select>
                 </FormControl>
             </Grid>
-        </div>
+        </>
     )
 };
 
