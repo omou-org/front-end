@@ -35,7 +35,7 @@ class ProfileHeading extends Component {
                     </Grid>
                     <Grid item xs={5} md={5} className="rowPadding">
                         <Typography className="rowText">
-                            #{this.props.user.user_id}
+                            #{this.props.user.summit_id ? this.props.user.summit_id : this.props.user.user_id}
                         </Typography>
                     </Grid>
                     <Grid item xs={1} md={1} className="rowPadding">
@@ -228,7 +228,7 @@ class ProfileHeading extends Component {
                         </Grid>
                     </Grid>
                     <Grid item xs={3} align="right">
-                        {this.renderEditButton()}
+                        {this.props.isAdmin && this.renderEditButton()}
                     </Grid>
                 </Grid>
                 {profileDetails}
@@ -237,4 +237,8 @@ class ProfileHeading extends Component {
     }
 }
 
-export default ProfileHeading;
+const mapStateToProps = (state) => ({
+    "isAdmin": state.auth.isAdmin,
+});
+
+export default connect(mapStateToProps)(ProfileHeading);

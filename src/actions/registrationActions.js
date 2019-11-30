@@ -1,6 +1,6 @@
 import * as types from "./actionTypes";
 import {submitParentAndStudent, postData, patchData} from "./rootActions";
-import {wrapGet} from "./apiActions";
+import {wrapGet, postCourse} from "./apiActions";
 
 const parseGender = {
     "Male": "M",
@@ -12,8 +12,7 @@ const parseDate = (date) => {
     if (!date) {
         return null;
     }
-    const [month, day, year] = date.split("/");
-    return `${year}-${month}-${day}`;
+    return date.substring(0,10);
 };
 
 const parseTime = (time) => {
@@ -33,6 +32,12 @@ const parseTime = (time) => {
 export const getRegistrationForm = () =>
     ({type: types.ALERT, payload: "alert stuff"});
 
+export const setRegisteringParent = (parent) =>
+    ({type: types.SET_PARENT, payload: parent});
+
+export const resetRegistration = () =>
+    ({type: types.RESET_REGISTRATION, payload: ""});
+
 export const addStudentField = () =>
     ({type: types.ADD_STUDENT_FIELD, payload: ""});
 
@@ -46,6 +51,7 @@ export const removeField = (path, fieldIndex, conditional) =>
     ({type: types.REMOVE_FIELD, payload: [path, fieldIndex, conditional]});
 
 export const submitForm = (state, id) => {
+    console.log(state.form);
     switch (state.form) {
         case "student": {
             const student = {
@@ -168,6 +174,12 @@ export const submitForm = (state, id) => {
                 return patchData("course", course, id);
             }
         }
+        case "tutoring":{
+            return { type: types.ADD_TUTORING_REGISTRATION, payload: state }
+        }
+        case "course": {
+            return { type: types.ADD_CLASS_REGISTRATION, payload: state }
+        }
         default:
             console.error(`Invalid form type ${state.form}`);
     }
@@ -177,10 +189,15 @@ export const resetSubmitStatus = () =>
     ({type: types.RESET_SUBMIT_STATUS, payload: null});
 
 export const fetchEnrollments = () => wrapGet(
-    "/courses/enrollment/",
+    "/course/enrollment/",
     [
         types.FETCH_ENROLLMENT_STARTED,
         types.FETCH_ENROLLMENT_SUCCESSFUL,
         types.FETCH_ENROLLMENT_FAILED,
-    ]
+    ],
+    // enrollmentId
+    {}
 );
+
+export const initializeRegistration = () =>
+    ({type: types.INIT_COURSE_REGISTRATION, payload:""});

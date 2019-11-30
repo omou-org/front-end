@@ -7,6 +7,7 @@ import * as types from "actions/actionTypes";
 import React, {Component} from "react";
 import {Prompt} from "react-router";
 import {NavLink, withRouter} from "react-router-dom";
+import CreatableSelect, {makeCreatableSelect} from 'react-select/creatable';
 import {updateStudent, updateParent} from "reducers/usersReducer";
 import {updateCourse} from "reducers/courseReducer";
 
@@ -39,6 +40,8 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import {DatePicker, TimePicker, MuiPickersUtilsProvider,} from "material-ui-pickers";
+import DateFnsUtils from "@date-io/date-fns";
 
 const parseGender = {
     "M": "Male",
@@ -77,14 +80,15 @@ class Form extends Component {
             submitPending: false,
             preLoaded: false,
             existingUser: false,
+            "hasLoaded": false,
         };
     }
 
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
-        const formType = this.props.computedMatch.params.type;
-        const {id} = this.props.computedMatch.params;
-        if (this.props.computedMatch.params.edit === "edit") {
+        const formType = this.props.match.params.type;
+        const {id} = this.props.match.params;
+        if (this.props.match.params.edit === "edit") {
             switch (formType) {
                 case "instructor": {
                     const instructor = this.props.instructors[id];
@@ -151,7 +155,7 @@ class Form extends Component {
         if (!prevState ||
             formType !== prevState.form ||
             prevState["submitPending"] ||
-            (id && this.props.computedMatch.params.edit !== "edit")) {
+            (id && this.props.match.params.edit !== "edit")) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
                     const formContents = JSON.parse(
@@ -165,7 +169,7 @@ class Form extends Component {
                     let course = null;
                     if (this.props.courses.hasOwnProperty(id)) {
                         const {course_id, title} =
-                            this.props.courses[this.props.computedMatch.params.id];
+                            this.props.courses[this.props.match.params.id];
                         // convert it to a format that onselectChange can use
                         course = {
                             "value": course_id,
@@ -210,10 +214,18 @@ class Form extends Component {
             }
             this.setState(prevState);
         }
+        this.props.userActions.fetchStudents();
+        this.props.userActions.fetchParents();
     }
 
     componentDidMount() {
-        const {id, edit, "type": formType} = this.props.computedMatch.params;
+        const {id, edit, "type": formType} = this.props.match.params;
+        if (!this.props.isAdmin && (formType === "instructor" || formType === "course_details")) {
+            this.props.history.replace("/PageNotFound");
+        }
+        this.props.userActions.fetchParents();
+        this.props.userActions.fetchStudents();
+        this.props.userActions.fetchInstructors();
         if (edit === "edit") {
             switch (formType) {
                 case "student": {
@@ -314,7 +326,7 @@ class Form extends Component {
                         let course;
                         try {
                             const response = await apiActions.instance.get(
-                                `/courses/catalog/${id}/`, {
+                                `/course/catalog/${id}/`, {
                                     "headers": {
                                         "Authorization": `Token ${this.props.token}`,
                                     },
@@ -424,6 +436,9 @@ class Form extends Component {
                 // no default
             }
         }
+        this.setState({
+            "hasLoaded": true,
+        })
     }
 
     getFormObject() {
@@ -435,6 +450,7 @@ class Form extends Component {
         if (Array.isArray(section)) {
             return section;
         } else {
+            console.log(section);
             return section[this.state.conditional];
         }
     }
@@ -491,8 +507,10 @@ class Form extends Component {
             if (this.validateSection()) {
                 if (oldState.activeStep === this.getFormObject().section_titles.length - 1) {
                     if (!oldState.submitPending) {
-                        if (this.props.computedMatch.params.edit === "edit") {
-                            this.props.registrationActions.submitForm(this.state, this.props.computedMatch.params.id);
+                        if (this.props.match.params.edit === "edit") {
+                            this.props.registrationActions.submitForm(this.state, this.props.match.params.id);
+                        } else if(this.state.form === "small_group") {
+                            this.props.apiActions.submitSmallGroup(this.state);
                         } else {
                             this.props.registrationActions.submitForm(this.state);
                         }
@@ -621,7 +639,7 @@ class Form extends Component {
                         "State": parent.state,
                         "Zip Code": parent.zipcode,
                         "Relationship to Student": parent.relationship,
-                        "Parent Phone Number": parent.phone_number,
+                        "Phone Number": parent.phone_number,
                         "user_id": selectedParentID,
                     };
                     Object.keys(NewState[label]).forEach((key) => {
@@ -642,11 +660,12 @@ class Form extends Component {
                         "Gender": "",
                         "Parent Email": "",
                         "Address": "",
+                        "Parent Birthday": "",
                         "City": "",
                         "State": "",
                         "Zip Code": "",
                         "Relationship to Student": "",
-                        "Parent Phone Number": "",
+                        "Phone Number": "",
                         "user_id": "",
                     };
                     Object.keys(NewState[label]).forEach((key) => {
@@ -664,6 +683,234 @@ class Form extends Component {
             }, () => {
                 this.validateField(this.state.activeSection, field, value);
             });
+        }
+    }
+
+    handleDateChange = (date) =>{
+        console.log(date, "date changed!");
+        // this.setState((prevState)=> {
+        //         prevState[label][field] = e;
+        //         return prevState;
+        //     });
+    };
+
+    renderField(field, label, fieldIndex) {
+        const fieldTitle = field.name;
+        const disabled = this.state["Parent Information"] && Boolean(this.state["Parent Information"]["Select Parent"]) && this.state.activeSection === "Parent Information";
+        switch (field.type) {
+            case "select":
+                return (
+                    <FormControl className="form-control">
+                        <InputLabel shrink={Boolean(this.state[label][fieldTitle])}>
+                            {fieldTitle}
+                        </InputLabel>
+                        <Select
+                            disabled={disabled}
+                            onChange={({"target": {value}}) => {
+                                this.onSelectChange(value, label, field);
+                            }}
+                            value={this.state[label][fieldTitle]}>
+                            {
+                                field.options.map((option) => (
+                                    <MenuItem
+                                        key={option}
+                                        value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))
+                            }
+                        </Select>
+                    </FormControl>
+                );
+            case "course": {
+                let courseList = Object.keys(this.props.courses)
+                    .filter((courseID) =>
+                        this.props.courses[courseID].capacity >
+                        this.props.courses[courseID].roster.length)
+                    .map((courseID) => ({
+                        "value": courseID,
+                        "label": this.props.courses[courseID].title,
+                    }));
+                // remove preselected courses
+                courseList = this.removeDuplicates(Object.values(this.state[label]), courseList);
+                // count # of course fields in current section
+                const fieldCount = this.getActiveSection()
+                    .reduce((total, {type}) => total + (type === "course"), 0);
+                return (
+                    <div style={{width: "inherit"}}>
+                        <Grid container className={"student-align"} spacing={2000}>
+                            <SearchSelect
+                                disabled={disabled}
+                                value={this.state[label][fieldTitle]}
+                                onChange={(value) => {
+                                    this.onSelectChange(value, label, field);
+                                }}
+                                options={courseList}
+                                className="search-options" />
+                            {
+                                (fieldCount > 1) && !disabled &&
+                                <RemoveIcon color="primary" aria-label="Add" variant="extended"
+                                            className="button-remove-student"
+                                            onClick={(event) => {
+                                                event.preventDefault();
+                                                // deletes answer field from state
+                                                this.removeField(fieldIndex);
+                                                this.forceUpdate();
+                                            }}>
+                                </RemoveIcon>
+                            }
+                        </Grid>
+                    </div>
+                );
+            }
+            case "student": {
+                let studentList = [];
+
+                if(this.props.currentParent){
+                    this.props.currentParent.student_list.forEach((studentID) => {
+                        let {user_id, name, email} = this.props.students[studentID];
+                        studentList.push({
+                            value: user_id,
+                            label: `${name} - ${email}`,
+                        });
+                    });
+                } else {
+                    studentList = Object.values(this.props.students)
+                        .map(({user_id, name, email}) => ({
+                            value: user_id,
+                            label: `${name} - ${email}`,
+                        }));
+                }
+
+
+                studentList = this.removeDuplicates(Object.values(this.state[label]), studentList);
+
+                // count # of course fields in current section
+                const studentCount = this.getActiveSection()
+                    .reduce((total, {type}) => total + (type === "student"), 0);
+
+                return (
+                    <div style={{width: "inherit"}}>
+                        <Grid container className={"student-align"} spacing={2000}>
+                            <SearchSelect
+                                disabled={disabled}
+                                value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
+                                onChange={(value) => {
+                                    this.onSelectChange(value, label, field);
+                                }}
+                                options={studentList}
+                                className="search-options" />
+                            {
+                                studentCount > 1 && !disabled &&
+                                <RemoveIcon color="primary" aria-label="Add" variant="extended"
+                                            className="button-remove-student"
+                                            onClick={(event) => {
+                                                event.preventDefault();
+                                                // deletes answer field
+                                                this.removeField(fieldIndex);
+                                                this.forceUpdate();
+                                            }}>
+                                </RemoveIcon>
+                            }
+                        </Grid>
+                    </div>
+                );
+            }
+            case "instructor": {
+                let instructorList = this.props.instructors;
+
+                instructorList = Object.values(instructorList).map(({user_id, name, email}) => ({
+                    value: user_id,
+                    label: `${name} - ${email}`,
+                }));
+                instructorList = this.removeDuplicates(Object.values(this.state[label]), instructorList);
+                return (<div style={{width: "inherit"}}>
+                    <Grid container className="student-align">
+                        <SearchSelect
+                            disabled={disabled}
+                            value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
+                            onChange={(value) => {
+                                this.onSelectChange(value, label, field);
+                            }}
+                            options={instructorList}
+                            className="search-options" />
+                    </Grid>
+                </div>);
+            }
+            case "select parent": {
+                const currParentList = Object.values(this.props.parents)
+                    .map(({user_id, name, email}) => ({
+                        value: user_id,
+                        label: `${name} - ${email}`,
+                    }));
+                return (
+                    <CreatableSelect
+                        createOptionPosition="first"
+                        className="search-options"
+                        isClearable
+                        onChange={(value) => {
+                            this.onSelectChange(value, label, field);
+                        }}
+                        onCreateOption={() => {
+                            this.onSelectChange(null, label, field);
+                        }}
+                        value={this.state[label][fieldTitle]}
+                        options={currParentList}
+                    />
+                );
+            }
+            case "date":
+                return <Grid container>
+                        <DatePicker
+                            animateYearScrolling
+                            margin="normal"
+                            label={fieldTitle}
+                            value={this.state[label][fieldTitle]}
+                            onChange={(date) =>{ this.setState((prevState)=>{
+                                prevState[label][fieldTitle] = date;
+                                return prevState;
+                            }) }}
+                            openTo={fieldTitle==="Birthday" ? "year" :"day"}
+                            error={!this.state[label + "_validated"][field.name]}
+                            format="MM/dd/yyyy"
+                            views={["year", "month", "date"]}
+                        />
+                    </Grid>;
+            case "time":
+                return <Grid container>
+                    <TimePicker autoOk
+                                error={!this.state[label + "_validated"][field.name]}
+                                label={fieldTitle}
+                                value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : new Date()}
+                                onChange={(date) =>{ this.setState((prevState)=>{
+                                    prevState[label][fieldTitle] = date;
+                                    return prevState;
+                                }) } }/>
+                </Grid>;
+            default:
+                return <TextField
+                    label={field.name}
+                    multiline={field.multiline}
+                    margin="normal"
+                    disabled={disabled}
+                    value={this.state[label][field.name]}
+                    error={!this.state[label + "_validated"][field.name]}
+                    helperText={!this.state[label + "_validated"][field.name] ? field.name + " invalid" : ""}
+                    type={field.type === "number" ? "Number" : "text"}
+                    required={field.required}
+                    InputLabelProps={{
+                        "shrink": Boolean(this.state[label][field.name])
+                    }}
+                    fullWidth={field.full}
+                    onChange={(e) => {
+                        e.preventDefault();
+                        this.handleFieldUpdate.bind(this)(label, field, e.target.value);
+                    }}
+                    onBlur={(e) => {
+                        e.preventDefault();
+                        this.validateField.bind(this)(label, field, e.target.value);
+                    }}
+                />
         }
     }
 
@@ -697,175 +944,6 @@ class Form extends Component {
             uniqueVals.splice(indexOfString, 1);
         }
         return uniqueVals;
-    }
-
-    renderField(field, label, fieldIndex) {
-        const fieldTitle = field.name;
-        switch (field.type) {
-            case "select":
-                return (
-                    <FormControl className="form-control">
-                        <InputLabel shrink={Boolean(this.state[label][fieldTitle])}>
-                            {fieldTitle}
-                        </InputLabel>
-                        <Select
-                            onChange={({"target": {value}}) => {
-                                this.onSelectChange(value, label, field);
-                            }}
-                            value={this.state[label][fieldTitle]}>
-                            {
-                                field.options.map((option) => (
-                                    <MenuItem
-                                        key={option}
-                                        value={option}>
-                                        {option}
-                                    </MenuItem>
-                                ))
-                            }
-                        </Select>
-                    </FormControl>
-            );
-            case "course": {
-                let courseList = Object.keys(this.props.courses)
-                    .filter((courseID) =>
-                        this.props.courses[courseID].capacity >
-                        this.props.courses[courseID].roster.length)
-                    .map((courseID) => ({
-                        "value": courseID,
-                        "label": this.props.courses[courseID].title,
-                    }));
-                // remove preselected courses
-                courseList = this.removeDuplicates(Object.values(this.state[label]), courseList);
-                // count # of course fields in current section
-                const fieldCount = this.getActiveSection()
-                    .reduce((total, {type}) => total + (type === "course"), 0);
-                return (
-                    <div style={{width: "inherit"}}>
-                        <Grid container className={"student-align"} spacing={2000}>
-                            <SearchSelect
-                                value={this.state[label][fieldTitle]}
-                                onChange={(value) => {
-                                    this.onSelectChange(value, label, field);
-                                }}
-                                options={courseList}
-                                className="search-options" />
-                            {
-                                (fieldCount > 1) &&
-                                <RemoveIcon color="primary" aria-label="Add" variant="extended"
-                                    className="button-remove-student"
-                                    onClick={(event) => {
-                                        event.preventDefault();
-                                        // deletes answer field from state
-                                        this.removeField(fieldIndex);
-                                        this.forceUpdate();
-                                    }}>
-                                </RemoveIcon>
-                            }
-                        </Grid>
-                    </div>
-                );
-            }
-            case "student": {
-                let studentList = Object.values(this.props.students)
-                    .map(({user_id, name, email}) => ({
-                        value: user_id,
-                        label: `${name} - ${email}`,
-                    }));
-
-                studentList = this.removeDuplicates(Object.values(this.state[label]), studentList);
-
-                // count # of course fields in current section
-                const studentCount = this.getActiveSection()
-                    .reduce((total, {type}) => total + (type === "student"), 0);
-
-                return (
-                    <div style={{width: "inherit"}}>
-                        <Grid container className={"student-align"} spacing={2000}>
-                            <SearchSelect
-                                value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
-                                onChange={(value) => {
-                                    this.onSelectChange(value, label, field);
-                                }}
-                                options={studentList}
-                                className="search-options" />
-                            {
-                                studentCount > 1 &&
-                                <RemoveIcon color="primary" aria-label="Add" variant="extended"
-                                    className="button-remove-student"
-                                    onClick={(event) => {
-                                        event.preventDefault();
-                                        // deletes answer field
-                                        this.removeField(fieldIndex);
-                                        this.forceUpdate();
-                                    }}>
-                                </RemoveIcon>
-                            }
-                        </Grid>
-                    </div>
-                );
-            }
-            case "instructor": {
-                let instructorList = this.props.instructors;
-
-                instructorList = Object.values(instructorList).map(({user_id, name, email}) => ({
-                    value: user_id,
-                    label: `${name} - ${email}`,
-                }));
-                instructorList = this.removeDuplicates(Object.values(this.state[label]), instructorList);
-                return (<div style={{width: "inherit"}}>
-                    <Grid container className="student-align">
-                        <SearchSelect
-                            value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
-                            onChange={(value) => {
-                                this.onSelectChange(value, label, field);
-                            }}
-                            options={instructorList}
-                            className="search-options" />
-                    </Grid>
-                </div>);
-            }
-            case "select parent": {
-                const currParentList = Object.values(this.props.parents)
-                    .map(({user_id, name, email}) => ({
-                        value: user_id,
-                        label: `${name} - ${email}`,
-                    }));
-                return (
-                    <SearchSelect
-                        className="search-options"
-                        isClearable
-                        onChange={(value) => {
-                            this.onSelectChange(value, label, field);
-                        }}
-                        value={this.state[label][fieldTitle]}
-                        options={currParentList}
-                    />
-                );
-            }
-            default:
-                return <TextField
-                    label={field.name}
-                    multiline={field.multiline}
-                    margin="normal"
-                    value={this.state[label][field.name]}
-                    error={!this.state[label + "_validated"][field.name]}
-                    helperText={!this.state[label + "_validated"][field.name] ? field.name + " invalid" : ""}
-                    type={field.type === "number" ? "Number" : "text"}
-                    required={field.required}
-                    InputLabelProps={{
-                        "shrink": Boolean(this.state[label][field.name])
-                    }}
-                    fullWidth={field.full}
-                    onChange={(e) => {
-                        e.preventDefault();
-                        this.handleFieldUpdate.bind(this)(label, field, e.target.value);
-                    }}
-                    onBlur={(e) => {
-                        e.preventDefault();
-                        this.validateField.bind(this)(label, field, e.target.value);
-                    }}
-                />
-        }
     }
 
     addField(field, fieldIndex) {
@@ -963,7 +1041,7 @@ class Form extends Component {
                                                 </Grid>
                                                 <br />
                                                 {
-                                                    !this.props.computedMatch.params.course && numSameTypeFields < field.field_limit &&
+                                                    !this.props.match.params.course && numSameTypeFields < field.field_limit &&
                                                     field === lastFieldOfType &&
                                                     <Fab color="primary" aria-label="Add" variant="extended"
                                                         className="button add-student"
@@ -1013,6 +1091,7 @@ class Form extends Component {
 
     // view after a submitted form
     renderSubmitted() {
+        console.log("normal submitted");
         const currentForm = this.props.registrationForm[this.state.form];
         const steps = currentForm.section_titles;
         sessionStorage.removeItem("form");
@@ -1076,6 +1155,27 @@ class Form extends Component {
         );
     }
 
+    renderCourseRegistrationSubmission(){
+
+        let currentStudentID = this.state.Student.Student.value;
+        let registeredCourseForm = this.props.registeredCourses[currentStudentID];
+        console.log("receipt", registeredCourseForm);
+        registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
+
+        let currentStudentName = registeredCourseForm.display.student_name;
+        let currentCourseTitle = registeredCourseForm.display.course_name;
+
+
+        return <div>
+            <h3>{currentStudentName}</h3>
+            <h3>{currentCourseTitle}</h3>
+            <Button component={NavLink} to={"/registration"}
+                className={"button"}>Register More</Button>
+            {/*<Button component={NavLink} to={"/registration"}*/}
+            {/*        className={"button"}>Register More</Button>*/}
+        </div>
+    }
+
     renderTitle(id, type) {
         let title = "";
         switch (type) {
@@ -1099,14 +1199,21 @@ class Form extends Component {
                 title = course ? course.title + " " : "";
                 break;
             }
+            case "tutoring":{
+                title = "New ";
+                break;
+            }
             default:
                 title = "";
                 break;
         }
-        return title + type.split("_").join(" ") + " Registration"
+        return `${title} ${type.split("_").join(" ")} ${this.props.match.params.edit === "edit" ? "Edit" : "Registration"}`
     }
 
     render() {
+        if (!this.state.hasLoaded) {
+            return "Loading...";
+        }
         return (
             <Grid container className="">
                 {/* Determine if finished component is displayed. If not, then don't prompt */}
@@ -1123,7 +1230,7 @@ class Form extends Component {
                             denyAction={"default"}
                         />
                         <Typography className="heading" align="left">
-                            {this.renderTitle(this.props.computedMatch.params.id, this.state.form)}
+                            {this.renderTitle(this.props.match.params.id, this.state.form)}
                         </Typography>
                         {
                             this.props.submitStatus !== "success" ?
@@ -1132,7 +1239,9 @@ class Form extends Component {
                                     <Typography>
                                         Sorry! The form is unavailable.
                                     </Typography>
-                                : this.renderSubmitted()
+                                : this.state.form !== "course"  && this.state.form !== "tutoring" ?
+                                    this.renderSubmitted() :
+                                    this.renderCourseRegistrationSubmission()
                         }
                         <Modal
                             aria-labelledby="simple-modal-title"
@@ -1200,12 +1309,15 @@ const mapStateToProps = (state) => ({
     "courses": state.Course["NewCourseList"],
     "courseCategories": state.Course["CourseCategories"],
     "registrationForm": state.Registration["registration_form"],
+    "registeredCourses": state.Registration["registered_courses"],
+    "currentParent": state.Registration["CurrentParent"],
     "submitStatus": state.Registration["submitStatus"],
     "parents": state.Users["ParentList"],
     "students": state.Users["StudentList"],
     "instructors": state.Users["InstructorList"],
     "requestStatus": state.RequestStatus,
     "token": state.auth.token,
+    "isAdmin": state.auth.isAdmin,
 });
 
 const mapDispatchToProps = (dispatch) => ({

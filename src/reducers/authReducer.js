@@ -7,10 +7,18 @@ export default function auth(state = initialState.Authentication, {payload, type
             return onSuccess(state, payload);
         case actions.LOGOUT:
             return onLogout(state);
+        case actions.FETCH_USER_SUCCESSFUL:
+            return onDetailFetch(state, payload);
         default:
             return state;
     }
 }
+
+const onDetailFetch = (state, {response, token}) => ({
+    ...state,
+    "isAdmin": response.data.is_staff,
+    token,
+});
 
 const onSuccess = (state, {response, savePassword}) => {
     if (savePassword) {
