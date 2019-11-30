@@ -18,21 +18,13 @@ import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse"
 import LoginPage from "../Authentication/LoginPage.js";
 import ProtectedRoute from "./ProtectedRoute";
 import SearchResults from "../FeatureViews/Search/SearchResults";
-import FilterAccountsPage from "../FeatureViews/Search/FilterAccountsPage";
-import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage";
-// import ProtectedRoute from "./ProtectedRoute";
-
 import SessionView from "../FeatureViews/Scheduler/SessionView"
-
-
-
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
 import ParentPayment from "../Form/ParentPayment";
 import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage"
 import FilterAccountsPage from "../FeatureViews/Search/FilterAccountsPage";
-import AccountResults from '../FeatureViews/Search/FilterAccountsPage'
 import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
 import AdminRoute from "./AdminRoute";
 import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";

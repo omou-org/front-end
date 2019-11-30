@@ -75,7 +75,7 @@ const SearchResults = (props) => {
             <Grid container className={'search-results'} style={{ "padding": "1em" }}>
                 { props.search.searchQueryStatus !== "success" ?
                     <Loading/>
-                    :  accountResults.length + courseResults.length !== 0 ?
+                    :  (props.search.accounts.length + props.search.courses.length !== 0) ?
                     <Grid item xs={12}>
                         <Paper className={'main-search-view'} >
                             <Grid item xs={12} className="searchResults">
