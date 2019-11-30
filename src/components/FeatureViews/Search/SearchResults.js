@@ -19,7 +19,7 @@ import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 import * as registrationActions from "../../../actions/registrationActions";
 import { truncateStrings } from "../../truncateStrings";
-import AccountFilters from "../../FeatureViews/Search/Filters"
+import AccountFilters from "../../FeatureViews/Search/AccountFilters"
 import NoResultsPage from './NoResults/NoResultsPage';
 import Loading from "../../Loading";
 import MoreResultsIcon from "@material-ui/icons/KeyboardArrowRight";
