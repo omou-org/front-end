@@ -22,7 +22,7 @@ import { truncateStrings } from "../../truncateStrings";
 import AccountFilters from "../../FeatureViews/Search/Filters"
 import NoResultsPage from './NoResults/NoResultsPage';
 import Loading from "../../Loading";
-import {number} from "prop-types";
+import MoreResultsIcon from "@material-ui/icons/KeyboardArrowRight";
 
 const SearchResults = (props) => {
     const dispatch = useDispatch();
@@ -108,7 +108,7 @@ const SearchResults = (props) => {
                                 </Grid>
                                 : ""}
                             <hr />
-                            <Grid item xs={12}>
+                            <Grid item xs={12} style={{"position":"relative"}}>
                                 <Grid container
                                     justify={"space-between"}
                                     direction={"row"}
@@ -124,7 +124,7 @@ const SearchResults = (props) => {
                                     {/*    />*/}
                                     {/*</Grid>*/}
                                 </Grid>
-                                <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} direction={"row"}>
+                                <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} spacing={16} direction={"row"}>
                                     { props.search.accounts.length > 0 ?
                                         props.search.accounts.slice(0, 4).map((account) => (
                                             <Grid item xs={12}
@@ -135,6 +135,7 @@ const SearchResults = (props) => {
                                         ""
                                     }
                                 </Grid>
+                                <MoreResultsIcon/>
                             </Grid>
                             {/* </Grid> */}
                             { props.search.accounts.length > 0 ? <hr /> : ""}
