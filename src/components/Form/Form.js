@@ -214,6 +214,8 @@ class Form extends Component {
             }
             this.setState(prevState);
         }
+        this.props.userActions.fetchStudents();
+        this.props.userActions.fetchParents();
     }
 
     componentDidMount() {
@@ -759,11 +761,24 @@ class Form extends Component {
                 );
             }
             case "student": {
-                let studentList = Object.values(this.props.students)
-                    .map(({user_id, name, email}) => ({
-                        value: user_id,
-                        label: `${name} - ${email}`,
-                    }));
+                let studentList = [];
+
+                if(this.props.currentParent){
+                    this.props.currentParent.student_list.forEach((studentID) => {
+                        let {user_id, name, email} = this.props.students[studentID];
+                        studentList.push({
+                            value: user_id,
+                            label: `${name} - ${email}`,
+                        });
+                    });
+                } else {
+                    studentList = Object.values(this.props.students)
+                        .map(({user_id, name, email}) => ({
+                            value: user_id,
+                            label: `${name} - ${email}`,
+                        }));
+                }
+
 
                 studentList = this.removeDuplicates(Object.values(this.state[label]), studentList);
 
