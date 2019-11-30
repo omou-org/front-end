@@ -74,15 +74,16 @@ const Search = (props) => {
 
     const handleFilterChange = (filter) => (e) => {
         setPrimaryFilter(e.target.value);
+        return () => {
+            filterSuggestions();
+            return ()=> searchList();
+        };
     };
 
     const handleSearchChange = () => (e) => {
       if(e){
           setQuery(e);
-      } else {
-          // setQuery("");
       }
-
     };
 
     const filterSuggestions = ()=>{
@@ -104,9 +105,8 @@ const Search = (props) => {
     }
 
     const handleQuery = () => (e) =>{
-      e.preventDefault();
       filterSuggestions();
-      props.history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
+      return () => props.history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
     };
 
     const handleInputChange = () => (e)=>{
@@ -115,8 +115,10 @@ const Search = (props) => {
             label: e
         };
         setQuery(input);
-        filterSuggestions();
-        // searchList();
+        return ()=>{
+            filterSuggestions();
+            return () => searchList();
+        }
     };
 
     const renderSearchIcon = props =>{
