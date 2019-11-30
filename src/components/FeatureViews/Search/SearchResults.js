@@ -19,11 +19,10 @@ import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 import * as registrationActions from "../../../actions/registrationActions";
 import { truncateStrings } from "../../truncateStrings";
-import AccountFilters from "./AccountFilters"
-import CourseFilters from "./CourseFilters"
+import AccountFilters from "../../FeatureViews/Search/Filters"
 import NoResultsPage from './NoResults/NoResultsPage';
 import Loading from "../../Loading";
-import { number } from "prop-types";
+import MoreResultsIcon from "@material-ui/icons/KeyboardArrowRight";
 
 const SearchResults = (props) => {
     const dispatch = useDispatch();
@@ -64,46 +63,41 @@ const SearchResults = (props) => {
     // /search/courses/?query=query?courseTypeFilter=courseType?availability=availability?dateSort=desc
     const accountSearchURL = `${process.env.REACT_APP_DOMAIN}/search/account/`;
     const courseSearchURL = `${process.env.REACT_APP_DOMAIN}/search/course/`;
-    const requestConfig = { params: { query: params.query, page: 1 }, headers: { "Authorization": `Token ${props.auth.token}`, } };
+    const requestConfig = { params: { query: params.query, page: 1 }, headers: {"Authorization": `Token ${props.auth.token}`,} };
 
     useEffect(() => {
         props.searchActions.fetchSearchAccountQuery(requestConfig);
         props.searchActions.fetchSearchCourseQuery(requestConfig);
         console.log(params.type)
-    }, [params.type, props.searchActions, requestConfig]);
+    }, []);
 
-    const numberOfResults = () => {
-        switch (params.type) {
-            case "all": {
+    const numberOfResults = () =>{
+        switch(params.type){
+            case "all":{
                 return props.search.accounts.length + props.search.courses.length;
             }
-            case "account": {
+            case "account":{
                 return props.search.accounts.length;
             }
-            case "course": {
+            case "course":{
                 return props.search.courses.length
             }
         }
     }
 
-
-    const handleFilter = (filter) => {
-        console.log(filter, "hello ")
-    }
-
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
-        <Grid container className={'search-results'} style={{ "padding": "1em" }}>
-            {props.search.searchQueryStatus !== "success" ?
-                <Loading />
-                : (numberOfResults() !== 0) ?
+            <Grid container className={'search-results'} style={{ "padding": "1em" }}>
+                { props.search.searchQueryStatus !== "success" ?
+                    <Loading/>
+                    :  (numberOfResults() !== 0) ?
                     <Grid item xs={12}>
                         <Paper className={'main-search-view'} >
                             <Grid item xs={12} className="searchResults">
                                 <Typography variant={"h4"} align={"left"}>
-                                    <span style={{ fontFamily: "Roboto Slab", fontWeight: "500" }}>
-                                        {numberOfResults()} Search Results for </span>
-                                    "{params.query}"
+                                <span style={{fontFamily:"Roboto Slab", fontWeight:"500"}}>
+                                {numberOfResults()} Search Results for </span>
+                                     "{params.query}"
                                      </Typography>
                             </Grid>
                             {params.type === "account" ?
@@ -114,14 +108,14 @@ const SearchResults = (props) => {
                                 </Grid>
                                 : ""}
                             <hr />
-                            <Grid item xs={12}>
+                            <Grid item xs={12} style={{"position":"relative"}}>
                                 <Grid container
                                     justify={"space-between"}
                                     direction={"row"}
                                     alignItems="center">
                                     <Grid item className="searchResults" >
                                         <Typography className={"resultsColor"} align={'left'} gutterBottom>
-                                            {props.search.accounts.length > 0 ? "Accounts" : ""}
+                                            {props.search.accounts.length > 0 ? "Accounts":""}
                                         </Typography>
                                     </Grid>
                                     {/*<Grid item >*/}
@@ -130,25 +124,21 @@ const SearchResults = (props) => {
                                     {/*    />*/}
                                     {/*</Grid>*/}
                                 </Grid>
-                                <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} direction={"row"}>
-                                    {props.search.accounts.length > 0 ?
+                                <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} spacing={16} direction={"row"}>
+                                    { props.search.accounts.length > 0 ?
                                         props.search.accounts.slice(0, 4).map((account) => (
                                             <Grid item xs={12}
-                                                sm={3}>
+                                                  sm={3}>
                                                 <AccountsCards user={account} key={account.user_id} />
                                             </Grid>))
                                         :
                                         ""
                                     }
                                 </Grid>
-                                {/*<Grid item >*/}
-                                {/*    <Chip label="See All Accounts"*/}
-                                {/*        className="searchChip"*/}
-                                {/*    />*/}
-                                {/*</Grid>*/}
+                                <MoreResultsIcon/>
                             </Grid>
                             {/* </Grid> */}
-                            {props.search.accounts.length > 0 ? <hr /> : ""}
+                            { props.search.accounts.length > 0 ? <hr /> : ""}
                             {/*<Grid item xs={12}>*/}
                             {/*    <Grid container*/}
                             {/*        justify={"space-between"}*/}
@@ -173,9 +163,9 @@ const SearchResults = (props) => {
                             {
                                 params.type !== "account" ? <Grid item xs={12}>
                                     <Grid container
-                                        justify={"space-between"}
-                                        direction={"row"}
-                                        alignItems="center">
+                                          justify={"space-between"}
+                                          direction={"row"}
+                                          alignItems="center">
                                         <Grid item className="searchResults">
                                             <Typography className={"resultsColor"} align={'left'} >
                                                 {props.search.courses.length > 0 ?
