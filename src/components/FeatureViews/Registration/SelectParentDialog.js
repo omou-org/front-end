@@ -71,7 +71,6 @@ class SelectParentDialog extends React.Component {
             this.props.registrationActions.setRegisteringParent(pastParent);
         }
         this.props.userActions.fetchParents();
-
     }
 
     handleClose = () => {

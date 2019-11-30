@@ -223,6 +223,9 @@ class Form extends Component {
         if (!this.props.isAdmin && (formType === "instructor" || formType === "course_details")) {
             this.props.history.replace("/PageNotFound");
         }
+        this.props.userActions.fetchParents();
+        this.props.userActions.fetchStudents();
+        this.props.userActions.fetchInstructors();
         if (edit === "edit") {
             switch (formType) {
                 case "student": {

@@ -9,6 +9,7 @@ import "./registration.scss";
 
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
+import * as userActions from "../../../actions/userActions.js"
 import {connect} from "react-redux";
 import {Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
@@ -42,6 +43,8 @@ function RegistrationCart(props) {
 
     useEffect(()=>{
         props.registrationActions.initializeRegistration();
+        props.userActions.fetchParents();
+        props.userActions.fetchStudents();
     },[]);
     const goToCourse = (courseID) => () => {
         props.history.push(`/registration/course/${courseID}`);
@@ -103,7 +106,6 @@ function RegistrationCart(props) {
                                 } else {
                                     course = props.courseList[registration.course_id];
                                 }
-                                console.log(course);
 
                                 let dateOptions = {year: "numeric", month: "short", day: "numeric"};
                                 let startDate = new Date(course.schedule.start_date + course.schedule.start_time),
@@ -181,6 +183,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     "registrationActions": bindActionCreators(registrationActions, dispatch),
+    "userActions": bindActionCreators(userActions, dispatch),
 });
 
 export default withRouter(connect(

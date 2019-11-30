@@ -186,7 +186,7 @@ const addClassRegistration = (prevState, form) => {
     let studentName = form["Student"].Student.label;
     let courseID = form["Course Selection"].Course.value;
     let courseName = form["Course Selection"].Course.label;
-    let isStudentCurrentlyRegistered = Object.keys(prevState.registered_courses).includes(studentID);
+    let isStudentCurrentlyRegistered = Object.keys(prevState.registered_courses).includes(studentID.toString());
     let studentInfoNote = stringifyStudentInformation(form);
 
     let enrollmentObject = {
@@ -265,7 +265,7 @@ const addTutoringRegistration = (prevState, form) => {
     endTime.setHours(endTime.getHours()+duration());
     let endDate = new Date(startDate);
     endDate.setDate(endDate.getDate()+(7*numSessions));
-    let isStudentCurrentlyRegistered = Object.keys(prevState.registered_courses).includes(studentID);
+    let isStudentCurrentlyRegistered = Object.keys(prevState.registered_courses).includes(studentID.toString());
     let enrollmentObject = {
         type: "tutoring",
         new_course: {
