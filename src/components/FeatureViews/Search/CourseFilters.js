@@ -57,20 +57,25 @@ const BootstrapInput = withStyles(theme => ({
 
 
 
-const SearchResultFilter = (props) => {
+const CourseFilters = (props) => {
 
-    const [profileTypeFilter, setProfileTypeFilter] = useState("");
-    const [gradeFilter, setGradeFilter] = useState("");
+    const [classFilter, setClassFilter] = useState("");
+    const [subjectFilter, setSubjetFilter] = useState("")
+    const [availability, setAvailability] = useState();
     const [sortFilter, setSortFilter] = useState("");
 
     const handleFilterChange = event => {
         console.log(event)
+        props.onFilterChange(event.target.name)
         switch (event.target.name) {
-            case "profileType":
-                setProfileTypeFilter(event.target.value);
+            case "classFilter":
+                setClassFilter(event.target.value);
                 break;
-            case "gradeFilter":
-                setGradeFilter(event.target.value);
+            case "subjectFilter":
+                setSubjetFilter(event.target.value);
+                break;
+            case "availability":
+                setAvailability(event.target.value);
                 break;
             case "sortFilter":
                 setSortFilter(event.target.value);
@@ -86,44 +91,77 @@ const SearchResultFilter = (props) => {
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
 
-
-
-        <div className="searchFilters">
+        <div className="courseFilters">
             <Grid item style={{ padding: "10px" }}>
                 <FilterIcon />
             </Grid>
             <Grid item style={{ paddingTop: '5px', marginRight: '10px' }}>
                 <Typography variant={"subtitle1"}> Filter | </Typography>
             </Grid>
-            <Grid item style={{ marginRight: "10px" }}>
+            <Grid item className="spacing">
                 <FormControl>
-                    <InputLabel htmlFor="ptf" className="input-title">Profile Type</InputLabel>
+                    <InputLabel htmlFor="classFilter" className="input-title">Profile Type</InputLabel>
                     <Select
-                        value={profileTypeFilter}
+                        value={classFilter}
                         onChange={handleFilterChange}
                         input={<BootstrapInput />}
-                        name={"profileType"}
+                        name={"classFilter"}
+                        MenuProps={{
+                            getContentAnchorEl: null,
+                            anchorOrigin: {
+                                vertical: "bottom",
+                                horizontal: "left",
+                            }
+                        }}
                     >
-                        <MenuItem value={"student"}>Student</MenuItem>
-                        <MenuItem value={"instructor"}>Instructor</MenuItem>
-                        <MenuItem value={"receptionist"}>Receptionist</MenuItem>
-                        <MenuItem value={"administrator"}>Administrator</MenuItem>
+                        <MenuItem value={"class"}>Classes</MenuItem>
+                        <MenuItem value={"1x1"}>1 x 1 Session</MenuItem>
                     </Select>
                 </FormControl>
             </Grid>
-            <Grid item>
+            <Grid item className="spacing">
                 <FormControl className={""}>
-                    <InputLabel htmlFor="gradeFilter" className="input-title" > Grade </InputLabel>
+                    <InputLabel htmlFor="subjectFilter" className="input-title" > Grade </InputLabel>
                     <Select
-                        value={gradeFilter}
+                        value={subjectFilter}
                         onChange={handleFilterChange}
                         input={<BootstrapInput />}
-                        name={"gradeFilter"}
+                        name={"subjectFilter"}
+                        MenuProps={{
+                            getContentAnchorEl: null,
+                            anchorOrigin: {
+                                vertical: "bottom",
+                                horizontal: "left",
+                            }
+                        }}
                     >
                         <MenuItem value={"1"}>1</MenuItem>
                         <MenuItem value={"2"}>2</MenuItem>
                         <MenuItem value={"3"}>3</MenuItem>
                         <MenuItem value={"4"}>4</MenuItem>
+                    </Select>
+                </FormControl>
+
+            </Grid>
+            <Grid item>
+                <FormControl className={""}>
+                    <InputLabel htmlFor="availability" className="input-title">Availability</InputLabel>
+                    <Select
+                        value={availability}
+                        onChange={handleFilterChange}
+                        input={<BootstrapInput />}
+                        name={"availability"}
+                        MenuProps={{
+                            getContentAnchorEl: null,
+                            anchorOrigin: {
+                                vertical: "bottom",
+                                horizontal: "left",
+                            }
+                        }}
+                    >
+                        <MenuItem value={false}>Full</MenuItem>
+                        <MenuItem value={true}>Open</MenuItem>
+
                     </Select>
                 </FormControl>
             </Grid>
@@ -138,6 +176,13 @@ const SearchResultFilter = (props) => {
                         onChange={handleFilterChange}
                         input={<BootstrapInput />}
                         name={"sortFilter"}
+                        MenuProps={{
+                            getContentAnchorEl: null,
+                            anchorOrigin: {
+                                vertical: "bottom",
+                                horizontal: "left",
+                            }
+                        }}
                     >
                         <MenuItem value={"relevance"}>Relevance</MenuItem>
                         <MenuItem value={"a-z"}>Name: A - Z</MenuItem>
@@ -154,4 +199,4 @@ const SearchResultFilter = (props) => {
 
 
 
-export default SearchResultFilter;
+export default CourseFilters;
