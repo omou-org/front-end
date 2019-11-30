@@ -49,6 +49,9 @@ export default function registration(state = initialState.RegistrationForms, {pa
         case actions.SET_PARENT:
             newState["CurrentParent"] = payload;
             return newState;
+        case actions.RESET_REGISTRATION:
+            newState["registered_courses"] = {};
+            return newState;
         case actions.ADD_CLASS_REGISTRATION:
             return addClassRegistration(newState, payload);
         case actions.ADD_TUTORING_REGISTRATION:

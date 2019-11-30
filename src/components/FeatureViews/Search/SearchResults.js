@@ -98,9 +98,7 @@ const SearchResults = (props) => {
                                     { props.search.accounts.length > 0 ?
                                         props.search.accounts.slice(0, 4).map((account) => (
                                             <Grid item xs={12}
-                                                  sm={3}
-                                                // md={8}
-                                            >
+                                                  sm={3}>
                                                 <AccountsCards user={account} key={account.user_id} />
                                             </Grid>))
                                         :

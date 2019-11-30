@@ -35,6 +35,9 @@ export const getRegistrationForm = () =>
 export const setRegisteringParent = (parent) =>
     ({type: types.SET_PARENT, payload: parent});
 
+export const resetRegistration = () =>
+    ({type: types.RESET_REGISTRATION, payload: ""});
+
 export const addStudentField = () =>
     ({type: types.ADD_STUDENT_FIELD, payload: ""});
 

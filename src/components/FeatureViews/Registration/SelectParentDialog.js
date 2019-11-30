@@ -1,22 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import Avatar from '@material-ui/core/Avatar';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
-import PersonIcon from '@material-ui/icons/Person';
-import AddIcon from '@material-ui/icons/Add';
-import Typography from '@material-ui/core/Typography';
 import blue from '@material-ui/core/colors/blue';
 import ReactSelect from 'react-select';
 import AccountsCards from "../Search/cards/AccountsCards";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
+import * as searchActions from "../../../actions/searchActions";
+import * as userActions from "../../../actions/userActions";
 import {connect} from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
@@ -67,39 +60,76 @@ class SelectParentDialog extends React.Component {
         super(props);
         this.state = {
             "inputParent": { value: "", label:""},
+            "parentOptions": [],
         };
-
     }
 
     componentWillMount() {
-        let pastParent = JSON.parse(sessionStorage.getItem("CurrentParent"));
-        if(pastParent){
+        let pastParent = sessionStorage.getItem("CurrentParent");
+        if(pastParent !== "none"){
+            pastParent = JSON.parse(pastParent);
             this.props.registrationActions.setRegisteringParent(pastParent);
         }
+        this.props.userActions.fetchParents();
+
     }
 
     handleClose = () => {
+        // if there's something in the input
         if(this.state.inputParent.value !== ""){
             let idStartIndex = this.state.inputParent.value.indexOf("-")+1;
-            let parentID = this.state.inputParent.value.substring(idStartIndex);
-            // TODO: get parent by parent ID
-            this.props.registrationActions.setRegisteringParent(testParent);
-            sessionStorage.setItem("CurrentParent", JSON.stringify(testParent));
+            let parentID = Number(this.state.inputParent.value.substring(idStartIndex));
+            let selectedParent = this.props.users.ParentList[parentID];
+
+            selectedParent = {
+                user: {
+                    id: selectedParent.user_id,
+                    email: selectedParent.email,
+                    first_name: selectedParent.first_name,
+                    last_name: selectedParent.last_name,
+                    name: selectedParent.name,
+                },
+                user_uuid: selectedParent.user_id,
+                gender: selectedParent.gender,
+                birth_date: selectedParent.birthday,
+                student_list: selectedParent.student_ids,
+                account_type: "PARENT",
+            };
+            console.log(selectedParent);
+
+            this.props.registrationActions.setRegisteringParent(selectedParent);
+            sessionStorage.setItem("CurrentParent", JSON.stringify(selectedParent));
         }
+        // close the dialogue
         this.props.onClose();
     };
 
     handleOnChange = ()=>(e) => {
         this.setState((oldState)=>{
+            // update field with what's being typed by the user
             oldState.inputParent = e;
+
+            // make search parent api call
+            // let requestConfig = { params: { query: this.state.inputParent, page: 1, profileFilter: "parent" },
+            //     headers: {"Authorization": `Token ${this.props.auth.token}`,} };
+            // this.props.searchActions.fetchSearchAccountQuery()
             return oldState;
         });
     }
 
     handleExitParent = () => (e) =>{
         e.preventDefault();
-        this.props.registrationActions.setRegisteringParent(null);
-        this.handleClose();
+
+        this.setState((oldState)=>{
+            oldState.inputParent = { value: "", label:""};
+            this.props.registrationActions.setRegisteringParent("");
+            return oldState
+        }, ()=>{
+            sessionStorage.setItem("CurrentParent", "none");
+            sessionStorage.setItem("registered_courses",JSON.stringify({}));
+            this.handleClose();
+        });
+
     }
 
     ActiveParentDialog = () =>{
@@ -139,18 +169,29 @@ class SelectParentDialog extends React.Component {
         this.handleClose();
     }
 
+    renderParentSuggestionList = ()=>{
+        return Object.values(this.props.users.ParentList).map((parent)=>{
+            return {
+                value: parent.name + " - " + parent.user_id.toString(),
+                label: parent.name,
+            }
+        });;
+    }
+
     SetParentDialog = () =>{
         return (
             <>
                 <ReactSelect classNamePrefix={"select-parent-search"}
                              value = {this.state.inputParent}
-                             options={parents}
+                             options={this.renderParentSuggestionList()}
                              onChange={this.handleOnChange()}
                 />
                 <Button onClick={this.handleSetParentButton()}>Set Parent</Button>
             </>
         )
     }
+
+
 
     render() {
         return (
@@ -176,10 +217,14 @@ SelectParentDialog.propTypes = {
 
 const mapStateToProps = (state) => ({
     "registration": state.Registration,
+    "users": state.Users,
+    "auth": state.auth,
 });
 
 const mapDispatchToProps = (dispatch) => ({
     "registrationActions": bindActionCreators(registrationActions, dispatch),
+    "searchActions": bindActionCreators(searchActions, dispatch),
+    "userActions": bindActionCreators(userActions, dispatch),
 });
 
 export default connect(

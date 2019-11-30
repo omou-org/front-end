@@ -57,7 +57,6 @@ const handleAccountSearchResults = (state, {id, response}) =>{
 
 const handleCourseSearchResults = (state, {id, response}) =>{
     let {data} = response;
-    console.log(data);
     return {
         ...state,
         courses:data,
