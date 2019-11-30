@@ -24,16 +24,17 @@ const Search = (props) => {
 
     const searchList = () => {
         let suggestions;
+        console.log(primaryFilter);
         switch(primaryFilter){
             case "All":{
                 suggestions = props.search.accounts.concat(props.search.courses);
                 break;
             }
-            case "Accounts":{
+            case "Account":{
                 suggestions = props.search.accounts;
                 break;
             }
-            case "Courses":{
+            case "Course":{
                 suggestions =props.search.courses;
             }
         }
@@ -85,20 +86,7 @@ const Search = (props) => {
 
     };
 
-    const handleQuery = () => (e) =>{
-      e.preventDefault();
-      props.history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
-      props.searchActions.fetchSearchAccountQuery(requestConfig);
-      props.searchActions.fetchSearchCourseQuery(requestConfig);
-    };
-
-    const handleInputChange = () => (e)=>{
-        let input = {
-            value: e,
-            label: e
-        };
-        setQuery(input);
-        searchList();
+    const filterSuggestions = ()=>{
         switch(primaryFilter){
             case "All":{
                 props.searchActions.fetchSearchAccountQuery(requestConfig);
@@ -114,34 +102,22 @@ const Search = (props) => {
                 break;
             }
         }
+    }
 
+    const handleQuery = () => (e) =>{
+      e.preventDefault();
+      filterSuggestions();
+      props.history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
     };
 
-    const handleOnFocus = (primaryFilter) => (e) => {
-        setQuery("");
-        switch (primaryFilter) {
-            case "All":
-                let suggestions = [];
-                suggestions = suggestions.concat(Object.values(props.students).map((student) => { return { ...student, type: "student" } }));
-                suggestions = suggestions.concat(Object.values(props.parents).map((parent) => { return { ...parent, type: "parent" } }));
-                suggestions = suggestions.concat(Object.values(props.instructors).map((instructor) => { return { ...instructor, type: "instructor" } }));
-                suggestions = suggestions.concat(Object.values(props.courses));
-                setSearchSuggestions(suggestions);
-                break;
-            case "Accounts":
-                let accountSuggestions = [];
-                accountSuggestions = accountSuggestions.concat(Object.values(props.students).map((student) => { return { ...student, type: "student" } }));
-                accountSuggestions = accountSuggestions.concat(Object.values(props.parents).map((parent) => { return { ...parent, type: "parent" } }));
-                accountSuggestions = accountSuggestions.concat(Object.values(props.instructors).map((instructor) => { return { ...instructor, type: "instructor" } }));
-                setSearchSuggestions(accountSuggestions);
-                break;
-            case "Courses":
-                setSearchSuggestions(Object.values(props.courses));
-                break;
-            default:
-                return
-
-        }
+    const handleInputChange = () => (e)=>{
+        let input = {
+            value: e,
+            label: e
+        };
+        setQuery(input);
+        filterSuggestions();
+        searchList();
     };
 
     const renderSearchIcon = props =>{
@@ -195,7 +171,6 @@ const Search = (props) => {
                                 classNamePrefix="main-search"
                                 options={searchSuggestions}
                                 value={query}
-                                onFocus={handleOnFocus(primaryFilter)}
                                 onChange={handleSearchChange()}
                                 onInputChange={handleInputChange()}
                                 components={{DropdownIndicator: renderSearchIcon}}

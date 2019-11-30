@@ -22,6 +22,7 @@ import { truncateStrings } from "../../truncateStrings";
 import AccountFilters from "../../FeatureViews/Search/Filters"
 import NoResultsPage from './NoResults/NoResultsPage';
 import Loading from "../../Loading";
+import {number} from "prop-types";
 
 const SearchResults = (props) => {
     const dispatch = useDispatch();
@@ -67,25 +68,45 @@ const SearchResults = (props) => {
     useEffect(() => {
         props.searchActions.fetchSearchAccountQuery(requestConfig);
         props.searchActions.fetchSearchCourseQuery(requestConfig);
+        console.log(params.type)
     }, []);
 
+    const numberOfResults = () =>{
+        switch(params.type){
+            case "all":{
+                return props.search.accounts.length + props.search.courses.length;
+            }
+            case "account":{
+                return props.search.accounts.length;
+            }
+            case "course":{
+                return props.search.courses.length
+            }
+        }
+    }
 
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
             <Grid container className={'search-results'} style={{ "padding": "1em" }}>
                 { props.search.searchQueryStatus !== "success" ?
                     <Loading/>
-                    :  (props.search.accounts.length + props.search.courses.length !== 0) ?
+                    :  (numberOfResults() !== 0) ?
                     <Grid item xs={12}>
                         <Paper className={'main-search-view'} >
                             <Grid item xs={12} className="searchResults">
                                 <Typography variant={"h4"} align={"left"}>
                                 <span style={{fontFamily:"Roboto Slab", fontWeight:"500"}}>
-                                {props.search.accounts.length + props.search.courses.length} Search Results for </span>
+                                {numberOfResults()} Search Results for </span>
                                      "{params.query}"
                                      </Typography>
-                                {params.type === "account" ? <AccountFilters /> : ""}
                             </Grid>
+                            {params.type === "account" ?
+                                <Grid item xs={12}>
+                                    <Grid container>
+                                        <AccountFilters />
+                                    </Grid>
+                                </Grid>
+                                : ""}
                             <hr />
                             <Grid item xs={12}>
                                 <Grid container
@@ -138,31 +159,33 @@ const SearchResults = (props) => {
                             {/*    </Grid>*/}
                             {/*</Grid>*/}
                             {/*<hr />*/}
-
-                            <Grid item xs={12}>
-                                <Grid container
-                                    justify={"space-between"}
-                                    direction={"row"}
-                                    alignItems="center">
-                                    <Grid item className="searchResults">
-                                        <Typography className={"resultsColor"} align={'left'} >
-                                            {props.search.courses.length > 0 ?
-                                                "Courses" : ""
-                                            }
-                                        </Typography>
+                            {
+                                params.type !== "account" ? <Grid item xs={12}>
+                                    <Grid container
+                                          justify={"space-between"}
+                                          direction={"row"}
+                                          alignItems="center">
+                                        <Grid item className="searchResults">
+                                            <Typography className={"resultsColor"} align={'left'} >
+                                                {props.search.courses.length > 0 ?
+                                                    "Courses" : ""
+                                                }
+                                            </Typography>
+                                        </Grid>
+                                        {/*<Grid item style={{ "paddingRight": "1vh" }}>*/}
+                                        {/*    <Chip label="See All Courses"*/}
+                                        {/*        className="searchChip"*/}
+                                        {/*    />*/}
+                                        {/*</Grid>*/}
                                     </Grid>
-                                    {/*<Grid item style={{ "paddingRight": "1vh" }}>*/}
-                                    {/*    <Chip label="See All Courses"*/}
-                                    {/*        className="searchChip"*/}
-                                    {/*    />*/}
-                                    {/*</Grid>*/}
-                                </Grid>
-                                <Grid container direction={"row"} style={{ paddingLeft: 20, paddingRight: 20 }}>
-                                    {props.search.courses.slice(0, 4).map((course) => (
-                                        <CoursesCards course={course} key={course.course_id} />)
-                                    )}
-                                </Grid>
-                            </Grid>
+                                    <Grid container direction={"row"} style={{ paddingLeft: 20, paddingRight: 20 }}>
+                                        {props.search.courses.slice(0, 4).map((course) => (
+                                            <CoursesCards course={course} key={course.course_id} />)
+                                        )}
+                                    </Grid>
+                                </Grid> : ""
+                            }
+
                         </Paper>
                     </Grid>
                     : <NoResultsPage />}
