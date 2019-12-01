@@ -216,7 +216,7 @@ const addClassRegistration = (prevState, form) => {
     addStudentRegistration(studentID, prevState.registered_courses, "class", enrollmentObject);
     prevState.submitStatus = "success";
 
-    return prevState;
+    return {...prevState};
 };
 
 const addTutoringRegistration = (prevState, form) => {
@@ -283,7 +283,7 @@ const addTutoringRegistration = (prevState, form) => {
     addStudentRegistration(studentID, prevState.registered_courses, "tutoring", enrollmentObject);
     prevState.submitStatus = "success";
 
-    return prevState;
+    return {...prevState};
 }
 
 const addSmallGroupRegistration = (prevState, {form, new_course}) => {
@@ -306,7 +306,7 @@ const addSmallGroupRegistration = (prevState, {form, new_course}) => {
     prevState.submitStatus = "success";
     console.log(prevState);
 
-    return prevState;
+    return {...prevState};
 };
 
 const addStudentRegistration = (studentID, registeredCourses, courseType, enrollmentObject) =>{
@@ -349,5 +349,5 @@ const initializeRegistration = (prevState)=>{
     if(prevRegisteredCourses){
         prevState.registered_courses = prevRegisteredCourses;
     }
-    return prevState;
+    return {...prevState};
 };
