@@ -35,11 +35,12 @@ export default function registration(state = initialState.RegistrationForms, {pa
         case actions.POST_INSTRUCTOR_FAILED:
             return failedSubmit(state);
         case actions.PATCH_COURSE_SUCCESSFUL:
-            return successSubmit(state);
+            return successSubmit(state, payload);
         case actions.PATCH_COURSE_FAILED:
             return failedSubmit(state);
         case actions.POST_COURSE_SUCCESSFUL:
-            return successSubmit(state);
+            console.log("Posted a course!")
+            return successSubmit(state,payload);
         case actions.POST_COURSE_FAILED:
             return failedSubmit(state);
         case actions.SUBMIT_INITIATED:
@@ -57,7 +58,6 @@ export default function registration(state = initialState.RegistrationForms, {pa
         case actions.ADD_TUTORING_REGISTRATION:
             return addTutoringRegistration(newState, payload);
         case actions.ADD_SMALL_GROUP_REGISTRATION:
-            console.log("add small group registration reducer");
             return addSmallGroupRegistration(newState, payload);
         case actions.INIT_COURSE_REGISTRATION:
             return initializeRegistration(newState);

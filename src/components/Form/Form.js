@@ -86,10 +86,12 @@ class Form extends Component {
 
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
-        const formType = this.props.match.params.type;
-        const {id} = this.props.match.params;
+        const formType = this.props.computedMatch.params.type;
+        const {id} = this.props.computedMatch.params;
 
-        if (this.props.match.params.edit === "edit") {
+        this.props.userActions.fetchStudents();
+        this.props.userActions.fetchInstructors();
+        if (this.props.computedMatch.params.edit === "edit") {
             switch (formType) {
                 case "instructor": {
                     const instructor = this.props.instructors[id];
@@ -156,7 +158,7 @@ class Form extends Component {
         if (!prevState ||
             formType !== prevState.form ||
             prevState["submitPending"] ||
-            (id && this.props.match.params.edit !== "edit")) {
+            (id && this.props.computedMatch.params.edit !== "edit")) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
                     const formContents = JSON.parse(
@@ -170,7 +172,7 @@ class Form extends Component {
                     let course = null;
                     if (this.props.courses.hasOwnProperty(id)) {
                         const {course_id, title} =
-                            this.props.courses[this.props.match.params.id];
+                            this.props.courses[this.props.computedMatch.params.id];
                         // convert it to a format that onselectChange can use
                         course = {
                             "value": course_id,
@@ -218,7 +220,7 @@ class Form extends Component {
     }
 
     componentDidMount() {
-        const {id, edit, "type": formType} = this.props.match.params;
+        const {id, edit, "type": formType} = this.props.computedMatch.params;
         if (!this.props.isAdmin && (formType === "instructor" || formType === "course_details")) {
             this.props.history.replace("/PageNotFound");
         }
@@ -449,7 +451,6 @@ class Form extends Component {
         if (Array.isArray(section)) {
             return section;
         } else {
-            console.log(section);
             return section[this.state.conditional];
         }
     }
@@ -506,8 +507,8 @@ class Form extends Component {
             if (this.validateSection()) {
                 if (oldState.activeStep === this.getFormObject().section_titles.length - 1) {
                     if (!oldState.submitPending) {
-                        if (this.props.match.params.edit === "edit") {
-                            this.props.registrationActions.submitForm(this.state, this.props.match.params.id);
+                        if (this.props.computedMatch.params.edit === "edit") {
+                            this.props.registrationActions.submitForm(this.state, this.props.computedMatch.params.id);
                         } else if(this.state.form === "small_group") {
                             if(this.state["Group Type"]["Select Group Type"] === "New Small Group"){
                                 this.props.apiActions.submitNewSmallGroup(this.state);
@@ -690,14 +691,6 @@ class Form extends Component {
         }
     }
 
-    handleDateChange = (date) =>{
-        console.log(date, "date changed!");
-        // this.setState((prevState)=> {
-        //         prevState[label][field] = e;
-        //         return prevState;
-        //     });
-    };
-
     renderField(field, label, fieldIndex) {
         const fieldTitle = field.name;
         const disabled = this.state["Parent Information"] && Boolean(this.state["Parent Information"]["Select Parent"]) && this.state.activeSection === "Parent Information";
@@ -788,7 +781,6 @@ class Form extends Component {
 
                 if(this.props.currentParent){
                     this.props.currentParent.student_list.forEach((studentID) => {
-                        console.log(this.props.students[studentID], studentID)
                         let {user_id, name, email} = this.props.students[studentID];
                         studentList.push({
                             value: user_id,
@@ -1062,7 +1054,7 @@ class Form extends Component {
                                                 </Grid>
                                                 <br />
                                                 {
-                                                    !this.props.match.params.course && numSameTypeFields < field.field_limit &&
+                                                    !this.props.computedMatch.params.course && numSameTypeFields < field.field_limit &&
                                                     field === lastFieldOfType &&
                                                     <Fab color="primary" aria-label="Add" variant="extended"
                                                         className="button add-student"
@@ -1226,7 +1218,7 @@ class Form extends Component {
                 title = "";
                 break;
         }
-        return `${title} ${type.split("_").join(" ")} ${this.props.match.params.edit === "edit" ? "Edit" : "Registration"}`
+        return `${title} ${type.split("_").join(" ")} ${this.props.computedMatch.params.edit === "edit" ? "Edit" : "Registration"}`
     }
 
     render() {
@@ -1249,7 +1241,7 @@ class Form extends Component {
                             denyAction={"default"}
                         />
                         <Typography className="heading" align="left">
-                            {this.renderTitle(this.props.match.params.id, this.state.form)}
+                            {this.renderTitle(this.props.computedMatch.params.id, this.state.form)}
                         </Typography>
                         {
                             this.props.submitStatus !== "success" ?

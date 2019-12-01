@@ -122,45 +122,7 @@ export const submitNewSmallGroup = (form) => {
         });
         resolve();
     }).then(() => {
-        console.log(form);
-        let formCourse = form["Group Details"];
-        let startDate = new Date(formCourse["Start Date"]);
-
-        let dayOfWeek = ()=>{
-            switch(startDate.getDay()){
-                case 0:
-                    return "Sun";
-                case 1:
-                    return "Mon";
-                case 2:
-                    return "Tue";
-                case 3:
-                    return "Wed";
-                case 4:
-                    return "Thu";
-                case 5:
-                    return "Fri";
-                case 6:
-                    return "Sat";
-            }
-        }
-        let endDate = new Date(formCourse["End Date"]).toISOString().substring(0,10);
-        let startTime = new Date(formCourse["Start Time"]).toTimeString();
-        let endTime = new Date(formCourse["End Time"]).toTimeString();
-
-        let newCourse = {
-            "subject": formCourse["Course Name"],
-            "type": "T",
-            "description": formCourse["Description"],
-            "instructor": formCourse["Instructor"].value,
-            "day_of_week": dayOfWeek(),
-            "start_date": startDate.toISOString().substring(0,10),
-            "end_date": endDate,
-            "start_time": startTime.substring(0,5),
-            "end_time": endTime.substring(0,5),
-            "max_capacity": formCourse["Capacity"],
-            "course_id": "14"
-        };
+        let newCourse = formatCourse(form["Group Details"]);
         console.log(newCourse);
         instance.request({
             "data": newCourse,
@@ -173,10 +135,50 @@ export const submitNewSmallGroup = (form) => {
                 console.log(courseResponse);
                 dispatch({
                     type: types.ADD_SMALL_GROUP_REGISTRATION,
-                    payload: {form: form, new_course: courseResponse},
+                    payload: {form: form, new_course: courseResponse.data},
                 });
             }, (error) => {
                 dispatch({type: courseFailAction, payload: error});
             });
     });
 };
+
+export const formatCourse = (formCourse) =>{
+    let startDate = new Date(formCourse["Start Date"]);
+
+    let dayOfWeek = ()=>{
+        switch(startDate.getDay()){
+            case 0:
+                return "Sun";
+            case 1:
+                return "Mon";
+            case 2:
+                return "Tue";
+            case 3:
+                return "Wed";
+            case 4:
+                return "Thu";
+            case 5:
+                return "Fri";
+            case 6:
+                return "Sat";
+        }
+    }
+    let endDate = new Date(formCourse["End Date"]).toISOString().substring(0,10);
+    let startTime = new Date(formCourse["Start Time"]).toTimeString();
+    let endTime = new Date(formCourse["End Time"]).toTimeString();
+
+    return {
+        "subject": formCourse["Course Name"],
+        "type": "T",
+        "description": formCourse["Description"],
+        "instructor": formCourse["Instructor"].value,
+        "day_of_week": dayOfWeek(),
+        "start_date": startDate.toISOString().substring(0,10),
+        "end_date": endDate,
+        "start_time": startTime.substring(0,5),
+        "end_time": endTime.substring(0,5),
+        "max_capacity": formCourse["Capacity"],
+        "course_id": "20"
+    };
+}

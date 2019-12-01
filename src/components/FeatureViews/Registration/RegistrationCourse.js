@@ -329,13 +329,6 @@ const RegistrationCourse = () => {
             className={"registrationCourse"}
             item
             xs={12}>
-            <Paper className="paper">
-                <Grid
-                    item
-                    lg={12}>
-                    <RegistrationActions courseTitle={course.course_title} />
-                </Grid>
-            </Paper>
             <Paper className="paper content">
                 <Grid
                     container
@@ -362,6 +355,11 @@ const RegistrationCourse = () => {
                     </Grid>
                 </Grid>
                 <Divider className="top-divider" />
+                <Grid
+                    item
+                    lg={12}>
+                    <RegistrationActions courseTitle={course.course_title} />
+                </Grid>
                 <div className="course-heading">
                     <Typography
                         align="left"
