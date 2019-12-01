@@ -5083,9 +5083,9 @@ function initRegistrationForm() {
                 "Group Details":{
                     "Existing Small Group":[
                         {
-                            field: "Group Name",
+                            field: "Select Group",
                             name: "Select Group",
-                            type: "small_group",
+                            type: "course",
                             conditional: false,
                             required: true,
                             full: false,

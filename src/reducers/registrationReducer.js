@@ -184,10 +184,17 @@ const failedSubmit = (state) => ({
 const addClassRegistration = (prevState, form) => {
     let studentID = form["Student"].Student.value;
     let studentName = form["Student"].Student.label;
-    let courseID = form["Course Selection"].Course.value;
-    let courseName = form["Course Selection"].Course.label;
-    let isStudentCurrentlyRegistered = Object.keys(prevState.registered_courses).includes(studentID.toString());
-    let studentInfoNote = stringifyStudentInformation(form);
+    let courseID;
+    let courseName;
+    let studentInfoNote = "";
+    if(form["Course Selection"]){
+        courseID = form["Course Selection"].Course.value;
+        courseName = form["Course Selection"].Course.label;
+        studentInfoNote = stringifyStudentInformation(form);
+    } else {
+        courseID = form["Group Details"]["Select Group"].value;
+        courseName = form["Group Details"]["Select Group"].label;
+    }
 
     let enrollmentObject = {
         type: "class",

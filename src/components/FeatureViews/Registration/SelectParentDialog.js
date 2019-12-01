@@ -182,6 +182,7 @@ class SelectParentDialog extends React.Component {
     }
 
     SetParentDialog = () =>{
+        this.props.userActions.fetchParents();
         return (
             <>
                 <ReactSelect classNamePrefix={"select-parent-search"}

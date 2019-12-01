@@ -510,7 +510,13 @@ class Form extends Component {
                         if (this.props.match.params.edit === "edit") {
                             this.props.registrationActions.submitForm(this.state, this.props.match.params.id);
                         } else if(this.state.form === "small_group") {
-                            this.props.apiActions.submitSmallGroup(this.state);
+                            console.log(this.state);
+                            if(this.state["Group Type"]["Select Group Type"] === "New Small Group"){
+                                this.props.apiActions.submitNewSmallGroup(this.state);
+                            } else {
+                                this.props.registrationActions.submitForm(this.state);
+                            }
+
                         } else {
                             this.props.registrationActions.submitForm(this.state);
                         }
@@ -723,14 +729,30 @@ class Form extends Component {
                     </FormControl>
                 );
             case "course": {
-                let courseList = Object.keys(this.props.courses)
-                    .filter((courseID) =>
-                        this.props.courses[courseID].capacity >
-                        this.props.courses[courseID].roster.length)
-                    .map((courseID) => ({
-                        "value": courseID,
-                        "label": this.props.courses[courseID].title,
-                    }));
+                let courseList;
+                if(fieldTitle === "Select Group"){
+                    // filter for all of the groups
+                    courseList = Object.keys(this.props.courses)
+                        .filter((courseID) =>
+                            this.props.courses[courseID].capacity >
+                            this.props.courses[courseID].roster.length &&
+                            this.props.courses[courseID].capacity <= 5
+                        )
+                        .map((courseID) => ({
+                            "value": courseID,
+                            "label": this.props.courses[courseID].title,
+                        }));
+                } else {
+                    courseList = Object.keys(this.props.courses)
+                        .filter((courseID) =>
+                            this.props.courses[courseID].capacity >
+                            this.props.courses[courseID].roster.length)
+                        .map((courseID) => ({
+                            "value": courseID,
+                            "label": this.props.courses[courseID].title,
+                        }));
+                }
+
                 // remove preselected courses
                 courseList = this.removeDuplicates(Object.values(this.state[label]), courseList);
                 // count # of course fields in current section
@@ -1172,8 +1194,8 @@ class Form extends Component {
             <h3>{currentCourseTitle}</h3>
             <Button component={NavLink} to={"/registration"}
                 className={"button"}>Register More</Button>
-            {/*<Button component={NavLink} to={"/registration"}*/}
-            {/*        className={"button"}>Register More</Button>*/}
+            <Button component={NavLink} to={"/registration/cart"}
+                    className={"button"}>Checkout</Button>
         </div>
     }
 
@@ -1240,7 +1262,8 @@ class Form extends Component {
                                     <Typography>
                                         Sorry! The form is unavailable.
                                     </Typography>
-                                : this.state.form !== "course"  && this.state.form !== "tutoring" ?
+                                : this.state.form !== "course"  && this.state.form !== "tutoring"
+                                    && this.state.form !== "small_group" ?
                                     this.renderSubmitted() :
                                     this.renderCourseRegistrationSubmission()
                         }

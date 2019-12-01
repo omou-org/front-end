@@ -180,6 +180,9 @@ export const submitForm = (state, id) => {
         case "course": {
             return { type: types.ADD_CLASS_REGISTRATION, payload: state }
         }
+        case "small_group":{
+            return { type: types.ADD_CLASS_REGISTRATION, payload: state }
+        }
         default:
             console.error(`Invalid form type ${state.form}`);
     }

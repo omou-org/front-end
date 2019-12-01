@@ -34,7 +34,7 @@ export const wrapGet = (endpoint, [startType, successType, failType], {id, confi
                     "Authorization": `Token ${getState().auth.token}`,
                 },
             });
-            // succesful request
+            // successful request
             newAction(successType, response);
         } catch ({response}) {
             // failed request
@@ -113,7 +113,7 @@ export const fetchCourses = (id) =>
         ],
         {id:id},
     );
-export const submitSmallGroup = (form) => {
+export const submitNewSmallGroup = (form) => {
     const [courseSuccessAction, courseFailAction] = typeToPostActions["course"];
     return (dispatch, getState) => new Promise((resolve) => {
         dispatch({

@@ -71,7 +71,12 @@ function AdminPortal(props) {
                             <Grid item xs={2}>
                                 <Button component={NavLinkNoDup} to={"/registration/form/instructor"}
                                         color={"primary"}
-                                    className={"button"}> Add Instructor</Button>
+                                    className={"button"}>Add Instructor</Button>
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Button component={NavLinkNoDup} to={"/registration/form/course_details"}
+                                        color={"primary"}
+                                        className={"button"}>Add Course</Button>
                             </Grid>
                         </Grid>
                     </Grid>
