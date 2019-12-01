@@ -45,6 +45,7 @@ const notesEndpoint = "/account/note/";
 
 export const fetchNotes = (userID, userType) => async (dispatch, getState) => {
     // creates a new action based on the response given
+    console.log("fetching notes for: ", userID, userType);
     const newAction = (type, response) => {
         dispatch({
             type,

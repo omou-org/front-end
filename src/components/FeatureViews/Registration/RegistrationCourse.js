@@ -34,7 +34,7 @@ import Button from "@material-ui/core/Button";
 import Note from "../Notes/Notes";
 import "./registration.scss"
 import {Link, useRouteMatch} from "react-router-dom";
-import {stringToColor} from "components/FeatureViews/Accounts/accountUtils";
+import {stringToColor} from "./../Accounts/accountUtils";
 import Loading from "../../Loading";
 
 const dayConverter = {
@@ -160,86 +160,87 @@ const RegistrationCourse = () => {
         startDay = formatDate(course.schedule.start_date),
         endDay = formatDate(course.schedule.end_date);
 
-    // const rows = course.roster.map((student_id) => {
-    //     // console.log(student_id, students);
-    //     const student = students[student_id];
-    //     const parent = parents[student.parent_id];
-    //     const {notes, session_payment_status} = enrollments[student_id][course.course_id];
-    //     const paymentStatus = Object.values(session_payment_status).every((status) => status !== 0);
-    //     return [
-    //         (
-    //             <Link
-    //                 key={student_id}
-    //                 style={{
-    //                     "textDecoration": "none",
-    //                     "color": "inherit",
-    //                 }}
-    //                 to={`/accounts/student/${student_id}`}>
-    //                 {student.name}
-    //             </Link>
-    //         ),
-    //         (
-    //             <Link
-    //                 key={student_id}
-    //                 style={{
-    //                     "textDecoration": "none",
-    //                     "color": "inherit",
-    //                 }}
-    //                 to={`/accounts/parent/${student.parent_id}`}>
-    //                 {parent.name}
-    //             </Link>
-    //         ),
-    //         formatPhone(parent.phone_number),
-    //         (
-    //             <div
-    //                 key={student_id}
-    //                 style={{
-    //                     "padding": "5px 0",
-    //                     "borderRadius": "10px",
-    //                     "backgroundColor": paymentStatus ? "#28D52A" : "#E9515B",
-    //                     "textAlign": "center",
-    //                     "width": "7vw",
-    //                     "color": "white",
-    //                 }}>
-    //                 {paymentStatus ? "Paid" : "Unpaid"}
-    //             </div>
-    //         ),
-    //         (
-    //             <div
-    //                 className="actions"
-    //                 key={student_id}>
-    //                 <a href={`mailto:${parent.email}`}>
-    //                     <EmailIcon />
-    //                 </a>
-    //                 <span>
-    //                     <EditIcon />
-    //                 </span>
-    //                 <span>
-    //                     {expanded[student_id]
-    //                         ? <UpArrow onClick={() => {
-    //                             setExpanded({
-    //                                 ...expanded,
-    //                                 [student_id]: false,
-    //                             });
-    //                         }} />
-    //                         : <DownArrow onClick={() => {
-    //                             setExpanded({
-    //                                 ...expanded,
-    //                                 [student_id]: true,
-    //                             });
-    //                         }} />
-    //                     }
-    //                 </span>
-    //             </div>
-    //         ),
-    //         {
-    //             notes,
-    //             student,
-    //         },
-    //     ];
-    // });
+    const rows = course.roster.map((student_id) => {
+        // console.log(student_id, students);
+        const student = students[student_id];
+        const parent = parents[student.parent_id];
+        const {notes, session_payment_status} = enrollments[student_id][course.course_id];
+        const paymentStatus = Object.values(session_payment_status).every((status) => status !== 0);
+        return [
+            (
+                <Link
+                    key={student_id}
+                    style={{
+                        "textDecoration": "none",
+                        "color": "inherit",
+                    }}
+                    to={`/accounts/student/${student_id}`}>
+                    {student.name}
+                </Link>
+            ),
+            (
+                <Link
+                    key={student_id}
+                    style={{
+                        "textDecoration": "none",
+                        "color": "inherit",
+                    }}
+                    to={`/accounts/parent/${student.parent_id}`}>
+                    {parent.name}
+                </Link>
+            ),
+            formatPhone(parent.phone_number),
+            (
+                <div
+                    key={student_id}
+                    style={{
+                        "padding": "5px 0",
+                        "borderRadius": "10px",
+                        "backgroundColor": paymentStatus ? "#28D52A" : "#E9515B",
+                        "textAlign": "center",
+                        "width": "7vw",
+                        "color": "white",
+                    }}>
+                    {paymentStatus ? "Paid" : "Unpaid"}
+                </div>
+            ),
+            (
+                <div
+                    className="actions"
+                    key={student_id}>
+                    <a href={`mailto:${parent.email}`}>
+                        <EmailIcon />
+                    </a>
+                    <span>
+                        <EditIcon />
+                    </span>
+                    <span>
+                        {expanded[student_id]
+                            ? <UpArrow onClick={() => {
+                                setExpanded({
+                                    ...expanded,
+                                    [student_id]: false,
+                                });
+                            }} />
+                            : <DownArrow onClick={() => {
+                                setExpanded({
+                                    ...expanded,
+                                    [student_id]: true,
+                                });
+                            }} />
+                        }
+                    </span>
+                </div>
+            ),
+            {
+                notes,
+                student,
+            },
+        ];
+    });
 
     const handleChange = (event, value) => {
+        event.preventDefault();
         setValue(value);
     }
 

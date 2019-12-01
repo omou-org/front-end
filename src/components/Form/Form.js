@@ -88,6 +88,7 @@ class Form extends Component {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
         const formType = this.props.match.params.type;
         const {id} = this.props.match.params;
+
         if (this.props.match.params.edit === "edit") {
             switch (formType) {
                 case "instructor": {
@@ -214,8 +215,6 @@ class Form extends Component {
             }
             this.setState(prevState);
         }
-        this.props.userActions.fetchStudents();
-        this.props.userActions.fetchParents();
     }
 
     componentDidMount() {
@@ -223,6 +222,7 @@ class Form extends Component {
         if (!this.props.isAdmin && (formType === "instructor" || formType === "course_details")) {
             this.props.history.replace("/PageNotFound");
         }
+        console.log(this.props.students)
         this.props.userActions.fetchParents();
         this.props.userActions.fetchStudents();
         this.props.userActions.fetchInstructors();
@@ -768,6 +768,7 @@ class Form extends Component {
 
                 if(this.props.currentParent){
                     this.props.currentParent.student_list.forEach((studentID) => {
+                        console.log(this.props.students[studentID], studentID)
                         let {user_id, name, email} = this.props.students[studentID];
                         studentList.push({
                             value: user_id,

@@ -57,7 +57,7 @@ export default function registration(state = initialState.RegistrationForms, {pa
         case actions.ADD_TUTORING_REGISTRATION:
             return addTutoringRegistration(newState, payload);
         case actions.ADD_SMALL_GROUP_REGISTRATION:
-            console.log("add small group registration reducer")
+            console.log("add small group registration reducer");
             return addSmallGroupRegistration(newState, payload);
         case actions.INIT_COURSE_REGISTRATION:
             return initializeRegistration(newState);
@@ -200,13 +200,6 @@ const addClassRegistration = (prevState, form) => {
         }
     };
 
-    let enrollmentExists = false;
-    prevState.registered_courses[studentID] && prevState.registered_courses[studentID].forEach((enrollment)=>{
-        if(enrollment.student_id === enrollmentObject.student_id && enrollment.course_id === enrollmentObject.course_id){
-            enrollmentExists = true;
-        }
-    });
-
     // Registration Model:
     // Registration: {
     //     CurrentParent: "Eileen Hong",
@@ -219,17 +212,11 @@ const addClassRegistration = (prevState, form) => {
     //         ]
     //     }
     // }
-    if(!enrollmentExists){
-        if(isStudentCurrentlyRegistered){
-            prevState.registered_courses[studentID].push(enrollmentObject);
-        } else {
-            prevState.registered_courses[studentID] = [enrollmentObject];
-        }
-    }
-    sessionStorage.setItem("registered_courses",JSON.stringify(prevState.registered_courses));
+
+    addStudentRegistration(studentID, prevState.registered_courses, "class", enrollmentObject);
     prevState.submitStatus = "success";
-    // console.log(prevState);
-    return prevState;
+
+    return {...prevState};
 };
 
 const addTutoringRegistration = (prevState, form) => {
@@ -293,32 +280,55 @@ const addTutoringRegistration = (prevState, form) => {
         }
     };
 
-    let enrollmentExists = false;
-    prevState.registered_courses[studentID] && prevState.registered_courses[studentID].forEach((enrollment)=>{
-        if(enrollment.student_id === enrollmentObject.student_id &&
-            enrollment.new_course.subject === enrollmentObject.new_course.subject){
-            enrollmentExists = true;
-        }
-    });
-
-    if(!enrollmentExists){
-        if(isStudentCurrentlyRegistered){
-            prevState.registered_courses[studentID].push(enrollmentObject);
-        } else {
-            prevState.registered_courses[studentID] = [enrollmentObject];
-        }
-    }
-    sessionStorage.setItem("registered_courses",JSON.stringify(prevState.registered_courses));
+    addStudentRegistration(studentID, prevState.registered_courses, "tutoring", enrollmentObject);
     prevState.submitStatus = "success";
-    console.log(prevState);
-    return prevState;
+
+    return {...prevState};
 }
 
-const addSmallGroupRegistration = (prevState, form) => {
-    console.log(form,"small group registration");
+const addSmallGroupRegistration = (prevState, {form, new_course}) => {
+    console.log(form, new_course, "small group registration");
     let studentID = form["Student"].Student.value;
     let studentName = form["Student"].Student.label;
-    return {};
+
+    let enrollmentObject = {
+        type: "class",
+        student_id: studentID,
+        course_id: new_course.course_id,
+        enrollment_note: "",
+        display:{
+            student_name: studentName,
+            course_name: new_course.subject,
+        }
+    };
+
+    addStudentRegistration(studentID, prevState.registered_courses, "small group", enrollmentObject);
+    prevState.submitStatus = "success";
+    console.log(prevState);
+
+    return {...prevState};
+};
+
+const addStudentRegistration = (studentID, registeredCourses, courseType, enrollmentObject) =>{
+    let enrollmentExists = false;
+    let isStudentCurrentlyRegistered = Object.keys(registeredCourses).includes(studentID.toString());
+    if(isStudentCurrentlyRegistered){
+        registeredCourses[studentID] && registeredCourses[studentID].forEach((enrollment)=>{
+            if(courseType !== "tutoring" && enrollment.student_id === enrollmentObject.student_id &&
+                enrollment.course_id === enrollmentObject.course_id){
+                enrollmentExists = true;
+            } else if( courseType === "tutoring" && enrollment.student_id === enrollmentObject.student_id &&
+                enrollment.new_course.subject === enrollmentObject.new_course.subject){
+                enrollmentExists = true;
+            }
+        });
+        if(!enrollmentExists) {
+            registeredCourses[studentID].push(enrollmentObject);
+        }
+    } else {
+        registeredCourses[studentID] = [enrollmentObject];
+    }
+    sessionStorage.setItem("registered_courses",JSON.stringify(registeredCourses));
 }
 
 const stringifyStudentInformation = (form)=>{
@@ -339,5 +349,5 @@ const initializeRegistration = (prevState)=>{
     if(prevRegisteredCourses){
         prevState.registered_courses = prevRegisteredCourses;
     }
-    return prevState;
+    return {...prevState};
 };

@@ -5,8 +5,7 @@ import {REQUEST_ALL} from "../actions/apiActions";
 export default (state = initialState.Course, {payload, type}) => {
     switch (type) {
         case actions.FETCH_COURSE_SUCCESSFUL:
-            const n = handleCoursesFetch(state, payload);
-            return n;
+            return handleCoursesFetch(state, payload);
         case actions.FETCH_ENROLLMENT_SUCCESSFUL:
             return handleEnrollmentFetch(state, payload);
         case actions.FETCH_COURSE_NOTE_SUCCESSFUL:
