@@ -70,7 +70,7 @@ class SelectParentDialog extends React.Component {
             pastParent = JSON.parse(pastParent);
             this.props.registrationActions.setRegisteringParent(pastParent);
         }
-        this.props.userActions.fetchParents();
+        // this.props.userActions.fetchParents();
     }
 
     handleClose = () => {
@@ -97,6 +97,10 @@ class SelectParentDialog extends React.Component {
             console.log(selectedParent);
 
             this.props.registrationActions.setRegisteringParent(selectedParent);
+            // Add students to redux once the registered parent has been set
+            selectedParent.student_list.forEach((studentID)=>{
+               this.props.userActions.fetchStudents(studentID);
+            });
             sessionStorage.setItem("CurrentParent", JSON.stringify(selectedParent));
         }
         // close the dialogue
@@ -163,7 +167,7 @@ class SelectParentDialog extends React.Component {
         )
     }
 
-    handleSetParentButton = ()=>(e)=>{
+    handleSetParentButton = () => (e)=>{
         e.preventDefault();
         this.handleClose();
     }
@@ -174,7 +178,7 @@ class SelectParentDialog extends React.Component {
                 value: parent.name + " - " + parent.user_id.toString(),
                 label: parent.name,
             }
-        });;
+        });
     }
 
     SetParentDialog = () =>{

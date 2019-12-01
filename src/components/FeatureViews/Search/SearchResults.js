@@ -31,6 +31,7 @@ const SearchResults = (props) => {
             ...bindActionCreators(apiActions, dispatch),
             ...bindActionCreators(userActions, dispatch),
             ...bindActionCreators(registrationActions, dispatch),
+            ...bindActionCreators(searchActions, dispatch),
         }),
         [dispatch]
     );
@@ -66,10 +67,9 @@ const SearchResults = (props) => {
     const requestConfig = { params: { query: params.query, page: 1 }, headers: {"Authorization": `Token ${props.auth.token}`,} };
 
     useEffect(() => {
-        props.searchActions.fetchSearchAccountQuery(requestConfig);
-        props.searchActions.fetchSearchCourseQuery(requestConfig);
-        console.log(params.type)
-    }, []);
+        api.fetchSearchAccountQuery(requestConfig);
+        api.fetchSearchCourseQuery(requestConfig);
+    }, [params.query]);
 
     const numberOfResults = () =>{
         switch(params.type){

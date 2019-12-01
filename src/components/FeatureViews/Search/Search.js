@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import ReactSelect from 'react-select/creatable';
 import {components} from 'react-select';
 import { Button, Grid, Select } from "@material-ui/core";
 import { bindActionCreators } from "redux";
 import * as searchActions from "../../../actions/searchActions";
 import * as userActions from "../../../actions/userActions";
-import { connect } from "react-redux";
+import {connect, useDispatch} from "react-redux";
 import MenuItem from "@material-ui/core/MenuItem";
 import "./Search.scss";
 import FormControl from "@material-ui/core/FormControl";
@@ -14,13 +14,26 @@ import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
 import { withRouter, Link } from 'react-router-dom';
 import axios from "axios";
+import * as apiActions from "../../../actions/apiActions";
+import * as registrationActions from "../../../actions/registrationActions";
 
 const Search = (props) => {
+    const dispatch = useDispatch();
     const [query, setQuery] = useState("");
     const [primaryFilter, setPrimaryFilter] = useState("All");
     const [searchSuggestions, setSearchSuggestions] = useState([]);
     const requestConfig = { params: { query: query.value, page: 1,  },
         headers: {"Authorization": `Token ${props.auth.token}`,} };
+
+    const api = useMemo(
+        () => ({
+            ...bindActionCreators(apiActions, dispatch),
+            ...bindActionCreators(userActions, dispatch),
+            ...bindActionCreators(registrationActions, dispatch),
+            ...bindActionCreators(searchActions, dispatch),
+        }),
+        [dispatch]
+    );
 
     const searchList = () => {
         let suggestions;
@@ -87,40 +100,45 @@ const Search = (props) => {
       }
     };
 
-    const filterSuggestions = ()=>{
+    const filterSuggestions = ()=> (e)=>{
+        e.preventDefault();
         switch(primaryFilter){
             case "All":{
-                props.searchActions.fetchSearchAccountQuery(requestConfig);
-                props.searchActions.fetchSearchCourseQuery(requestConfig);
+                api.fetchSearchAccountQuery(requestConfig);
+                api.fetchSearchCourseQuery(requestConfig);
                 break;
             }
             case "Accounts":{
-                props.searchActions.fetchSearchAccountQuery(requestConfig);
+                api.fetchSearchAccountQuery(requestConfig);
                 break;
             }
             case "Courses":{
-                props.searchActions.fetchSearchCourseQuery(requestConfig);
+                api.fetchSearchCourseQuery(requestConfig);
                 break;
             }
         }
     }
 
-    const handleQuery = () => (e) =>{
-      filterSuggestions();
-      return () => props.history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
+    const handleQuery = () => (e) => {
+        e.preventDefault();
+      // filterSuggestions();
+      console.log(query,"handling query");
+      props.history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
     };
 
     const handleInputChange = () => (e)=>{
+        console.log(e,"input changed!");
         let input = {
             value: e,
             label: e
         };
         setQuery(input);
-        return ()=>{
-            filterSuggestions();
-            return () => searchList();
-        }
     };
+
+    useEffect(()=>{
+        filterSuggestions();
+        searchList();
+    },[query]);
 
     const renderSearchIcon = props =>{
         return (

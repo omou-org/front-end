@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useMemo} from "react";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -17,8 +17,11 @@ import AssignmentIcon from "@material-ui/icons/Assignment";
 import SelectParentDialog from "./SelectParentDialog";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
-import {connect} from "react-redux";
+import {connect, useDispatch} from "react-redux";
 import {stringToColor} from "../Accounts/accountUtils";
+import * as apiActions from "../../../actions/apiActions";
+import * as userActions from "../../../actions/userActions";
+import * as searchActions from "../../../actions/searchActions";
 
 const useStyles = makeStyles({
     setParent: {
@@ -29,6 +32,16 @@ const useStyles = makeStyles({
 })
 
 function SetRegistrationActions(props) {
+    const dispatch = useDispatch();
+    const api = useMemo(
+        () => ({
+            ...bindActionCreators(apiActions, dispatch),
+            ...bindActionCreators(userActions, dispatch),
+            ...bindActionCreators(registrationActions, dispatch),
+            ...bindActionCreators(searchActions, dispatch),
+        }),
+        [dispatch]
+    );
     const [anchorEl, setAnchorEl] = useState(null);
     const [dialogOpen, setDialog] = useState(false);
     const classes = useStyles();
@@ -48,7 +61,7 @@ function SetRegistrationActions(props) {
     }
 
     useEffect(()=>{
-        props.registrationActions.initializeRegistration();
+        api.initializeRegistration();
     },[]);
 
     return (

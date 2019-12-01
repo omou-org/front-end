@@ -125,7 +125,7 @@ export const submitSmallGroup = (form) => {
         console.log(form);
         let formCourse = form["Group Details"];
         let startDate = new Date(formCourse["Start Date"]);
-        console.log(startDate);
+
         let dayOfWeek = ()=>{
             switch(startDate.getDay()){
                 case 0:
@@ -156,10 +156,10 @@ export const submitSmallGroup = (form) => {
             "day_of_week": dayOfWeek(),
             "start_date": startDate.toISOString().substring(0,10),
             "end_date": endDate,
-            "start_time": startTime,
-            "end_time": endTime,
+            "start_time": startTime.substring(0,5),
+            "end_time": endTime.substring(0,5),
             "max_capacity": formCourse["Capacity"],
-            "course_id": "10"
+            "course_id": "14"
         };
         console.log(newCourse);
         instance.request({
@@ -169,30 +169,12 @@ export const submitSmallGroup = (form) => {
             },
             "method": "post",
             "url": `${courseEndpoint}` ,
-        })
-            .then((courseResponse) => {
+        }).then((courseResponse) => {
                 console.log(courseResponse);
-                let actions = [
-                    {
-                        type: courseSuccessAction,
-                        payload: courseResponse.data,
-                    },{
-                        type: types.ADD_SMALL_GROUP_REGISTRATION,
-                        payload: form,
-                    }
-                ]
-                return (dispatch) => {
-                    dispatch(actions[0])
-                    dispatch(actions[1])
-                }
-                // dispatch({
-                //     type: courseSuccessAction,
-                //     payload: courseResponse.data,
-                // });
-                // dispatch({
-                //     type: types.ADD_SMALL_GROUP_REGISTRATION,
-                //     payload: form,
-                // });
+                dispatch({
+                    type: types.ADD_SMALL_GROUP_REGISTRATION,
+                    payload: {form: form, new_course: courseResponse},
+                });
             }, (error) => {
                 dispatch({type: courseFailAction, payload: error});
             });
