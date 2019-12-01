@@ -1,9 +1,5 @@
 // React Imports
-
-import { connect } from "react-redux";
 import { Route, Switch, Redirect } from "react-router-dom";
-
-import PropTypes from "prop-types";
 import React from "react";
 import UnauthenticatedNav from "../Navigation/UnauthenticatedNav";
 import AuthenticatedNav from "../Navigation/AuthenticatedNav";
@@ -26,7 +22,5 @@ function NavBarRoutes(props) {
         </Switch>
     );
 }
-
-const mapStateToProps = (state) => ({});
 
 export default NavBarRoutes;

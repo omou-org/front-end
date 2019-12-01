@@ -16,8 +16,6 @@ import {withRouter} from "react-router-dom";
 import Checkbox from "@material-ui/core/Checkbox";
 import BackButton from "../../BackButton";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
-import AdminActionCenter from "./AdminActionCenter";
-import AdminViewsRoutes from "../../Routes/AdminViewsRoutes";
 
 const useStyles = makeStyles({
     setParent: {
@@ -27,34 +25,17 @@ const useStyles = makeStyles({
     }
 })
 
-function AdminPortal(props) {
+function ManageTuition(props) {
     const [anchorEl, setAnchorEl] = useState(null);
 
     return (
-        <form>
-            <Paper className={"registration-cart paper"}>
-                <Grid container layout={"row"}>
-                    <Grid item xs={12}>
-                        <BackButton/>
-                        <hr/>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Typography variant={"h3"} align={"left"}>Admin Portal</Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <AdminActionCenter/>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <AdminViewsRoutes/>
-                    </Grid>
-                </Grid>
-            </Paper>
-        </form>
-
+        <div>
+            <h1>Manage Tuition</h1>
+        </div>
     );
 }
 
-AdminPortal.propTypes = {
+ManageTuition.propTypes = {
     // courseTitle: PropTypes.string,
     // admin: PropTypes.bool,
 };
@@ -66,4 +47,4 @@ const mapStateToProps = (state) => ({
 
 export default withRouter(connect(
     mapStateToProps
-)(AdminPortal));
+)(ManageTuition));

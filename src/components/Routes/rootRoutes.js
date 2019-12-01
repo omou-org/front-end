@@ -112,7 +112,7 @@ function rootRoutes(props) {
             {/* Admin Routes */}
             <AdminRoute
                 exact
-                path="/adminportal"
+                path="/adminportal/:view?/:type?/:id?/:edit?"
                 render={(passedProps) => <AdminPortal/>}/>
 
             <Route path="/PageNotFound" component={ErrorNotFoundPage}/>
