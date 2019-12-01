@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useMemo} from "react";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -10,12 +10,19 @@ import "./registration.scss";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import * as userActions from "../../../actions/userActions.js"
-import {connect} from "react-redux";
-import {Typography} from "@material-ui/core";
+import {connect, useDispatch, useSelector} from "react-redux";
+import {FormControl, Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import {withRouter} from "react-router-dom";
 import Checkbox from "@material-ui/core/Checkbox";
 import BackButton from "../../BackButton";
+import FormLabel from "@material-ui/core/FormLabel";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import * as apiActions from "../../../actions/apiActions";
+import * as searchActions from "../../../actions/searchActions";
+import {GET} from "../../../actions/actionTypes";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles({
     setParent: {
@@ -26,7 +33,23 @@ const useStyles = makeStyles({
 })
 
 function RegistrationCart(props) {
-    const [anchorEl, setAnchorEl] = useState(null);
+    const dispatch = useDispatch();
+    const api = useMemo(
+        () => ({
+            ...bindActionCreators(apiActions, dispatch),
+            ...bindActionCreators(userActions, dispatch),
+            ...bindActionCreators(registrationActions, dispatch),
+        }),
+        [dispatch]
+    );
+
+    const [paymentMethod, setPaymentMethod] = useState(()=>{
+        return {
+            cash: false,
+            creditCard: false,
+            check: false,
+        }
+    });
     const [selectedCourses, selectCourse] = useState(()=>{
         // Get student id's
         let studentIDs = Object.keys(props.registration.registered_courses);
@@ -38,14 +61,17 @@ function RegistrationCart(props) {
             });
         });
         return checkedCourses;
-    })
+    });
+    const [usersLoaded, setLoadingUsers] = useState(true);
+    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
     const classes = useStyles();
 
     useEffect(()=>{
-        props.registrationActions.initializeRegistration();
-        props.userActions.fetchParents();
-        props.userActions.fetchStudents();
+        api.fetchStudents();
+        api.initializeRegistration();
+        api.fetchParents();
     },[]);
+
     const goToCourse = (courseID) => () => {
         props.history.push(`/registration/course/${courseID}`);
     }
@@ -55,9 +81,11 @@ function RegistrationCart(props) {
         let currentlySelectedCourses = JSON.parse(JSON.stringify(selectedCourses));
         currentlySelectedCourses[studentID][courseID] = !currentlySelectedCourses[studentID][courseID];
         selectCourse(currentlySelectedCourses);
+
+
     }
 
-    const renderStudentRegistrations = () =>{
+    const renderStudentRegistrations = () => {
         return Object.keys(props.registration.registered_courses).map((student_id) =>{
             let registrations = props.registration.registered_courses[student_id];
             return <Grid container>
@@ -148,12 +176,59 @@ function RegistrationCart(props) {
                 </Grid>
             </Grid>
         });
+    };
+
+    const handlePayMethodChange = method => e =>{
+        setPaymentMethod({ [method]: e.target.checked })
+    }
+
+    const selectedCourseOptions = () => {
+        const {cash, creditCard, check} = paymentMethod;
+        let displaySelectionOptions = false;
+        Object.keys(selectedCourses).forEach((studentID)=>{
+            Object.values(selectedCourses[studentID]).forEach((checkbox)=>{
+                if(checkbox){
+                    displaySelectionOptions = true;
+                }
+            })
+        });
+        if(displaySelectionOptions){
+            return <Grid container>
+                    <Grid item xs={3}>
+                        <FormControl>
+                            <FormLabel>Select Payment Method</FormLabel>
+                            <FormGroup>
+                                <FormControlLabel
+                                    label={"Cash"}
+                                    control={<Checkbox checked={cash} onChange={handlePayMethodChange('cash')} value={"Cash"}/>}
+                                />
+                                <FormControlLabel
+                                    label={"Check"}
+                                    control={<Checkbox checked={check} onChange={handlePayMethodChange('check')} value={"Check"}/>}
+                                />
+                                <FormControlLabel
+                                    label={"Credit Card"}
+                                    control={<Checkbox checked={creditCard} onChange={handlePayMethodChange('creditCard')} value={"Credit Card"}/>}
+                                />
+                            </FormGroup>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={3}/>
+                    <Grid/>
+                    <Grid item xs={3}>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Button className={"button"}>PAY</Button>
+                    </Grid>
+                </Grid>
+        }
+        return "";
     }
 
     return (
         <form>
             <Paper className={"registration-cart paper"}>
-                <Grid container layout={"row"}>
+                <Grid container layout={"row"} spacing={8}>
                     <Grid item xs={12}>
                         <BackButton/>
                         <hr/>
@@ -162,7 +237,10 @@ function RegistrationCart(props) {
                         <Typography variant={"h3"} align={"left"}>Select Course(s) to Pay</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                        {renderStudentRegistrations()}
+                        {usersLoaded && renderStudentRegistrations()}
+                    </Grid>
+                    <Grid item xs={12}>
+                        {selectedCourseOptions()}
                     </Grid>
                 </Grid>
             </Paper>

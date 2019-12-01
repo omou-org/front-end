@@ -32,6 +32,7 @@
     "react-scripts": "3.0.1",
     "react-select": "^3.0.8",
     "react-truncate": "^2.4.0",
+    "react-window-size": "^1.2.2",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
     "tar": "^4.4.11",

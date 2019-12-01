@@ -222,10 +222,9 @@ class Form extends Component {
         if (!this.props.isAdmin && (formType === "instructor" || formType === "course_details")) {
             this.props.history.replace("/PageNotFound");
         }
-        console.log(this.props.students)
-        this.props.userActions.fetchParents();
-        this.props.userActions.fetchStudents();
-        this.props.userActions.fetchInstructors();
+        // this.props.userActions.fetchParents();
+        // this.props.userActions.fetchStudents();
+        // this.props.userActions.fetchInstructors();
         if (edit === "edit") {
             switch (formType) {
                 case "student": {
@@ -510,7 +509,6 @@ class Form extends Component {
                         if (this.props.match.params.edit === "edit") {
                             this.props.registrationActions.submitForm(this.state, this.props.match.params.id);
                         } else if(this.state.form === "small_group") {
-                            console.log(this.state);
                             if(this.state["Group Type"]["Select Group Type"] === "New Small Group"){
                                 this.props.apiActions.submitNewSmallGroup(this.state);
                             } else {
@@ -1179,10 +1177,8 @@ class Form extends Component {
     }
 
     renderCourseRegistrationSubmission(){
-
         let currentStudentID = this.state.Student.Student.value;
         let registeredCourseForm = this.props.registeredCourses[currentStudentID];
-        console.log("receipt", registeredCourseForm);
         registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
 
         let currentStudentName = registeredCourseForm.display.student_name;

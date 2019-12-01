@@ -16,15 +16,17 @@ import { withRouter, Link } from 'react-router-dom';
 import axios from "axios";
 import * as apiActions from "../../../actions/apiActions";
 import * as registrationActions from "../../../actions/registrationActions";
+import windowSize from 'react-window-size';
 
 const Search = (props) => {
-    const dispatch = useDispatch();
     const [query, setQuery] = useState("");
     const [primaryFilter, setPrimaryFilter] = useState("All");
     const [searchSuggestions, setSearchSuggestions] = useState([]);
     const requestConfig = { params: { query: query.value, page: 1,  },
         headers: {"Authorization": `Token ${props.auth.token}`,} };
+    const [isMobileSearching, setMobileSearching] = useState(false);
 
+    const dispatch = useDispatch();
     const api = useMemo(
         () => ({
             ...bindActionCreators(apiActions, dispatch),
@@ -122,17 +124,23 @@ const Search = (props) => {
     const handleQuery = () => (e) => {
         e.preventDefault();
       // filterSuggestions();
-      console.log(query,"handling query");
       props.history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
     };
 
     const handleInputChange = () => (e)=>{
-        console.log(e,"input changed!");
         let input = {
             value: e,
             label: e
         };
         setQuery(input);
+        if(props.windowWidth < 800 && e !== ""){
+            setMobileSearching(true);
+            props.onMobile(true);
+        } else if(props.windowWidth < 800 && e === ""){
+            setMobileSearching(false);
+            props.onMobile(false);
+        }
+
     };
 
     useEffect(()=>{
@@ -155,8 +163,8 @@ const Search = (props) => {
         <Grid container
             className={'search'}
         >
-            <Grid item xs={2} />
-            <Grid item xs={10} >
+            { !isMobileSearching && <Grid item xs={2} />}
+            <Grid item xs={isMobileSearching ? 12 : 10} >
                 <form onSubmit={handleQuery()}>
                     <Grid container >
                         <Grid item >
@@ -184,7 +192,7 @@ const Search = (props) => {
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item md={10} xs={7}>
+                        <Grid item md={10} xs={isMobileSearching ? 10 : 7}>
                             <ReactSelect
                                 // isClearable
                                 className={"search-input"}
@@ -195,7 +203,6 @@ const Search = (props) => {
                                 onInputChange={handleInputChange()}
                                 components={{DropdownIndicator: renderSearchIcon}}
                             />
-
                         </Grid>
                     </Grid>
                 </form>
@@ -223,7 +230,8 @@ const mapDispatchToProps = (dispatch) => ({
     "userActions": bindActionCreators(userActions, dispatch)
 });
 
-export default withRouter(
+export default windowSize(
+    withRouter(
     connect(mapStateToProps,
         mapDispatchToProps)
-        (Search));
+        (Search)));

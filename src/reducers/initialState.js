@@ -5105,7 +5105,102 @@ function initRegistrationForm() {
                         field_limit: 1,
                     },
                 ]
-            }
+            },
+            pricing: {
+                form_type: "pricing",
+                section_titles: [ "Course Type Selection", "Pricing" ],
+                "Course Type Selection":[
+                    {
+                        field: "Select Course Type",
+                        name: "Select Course Type",
+                        type: "select",
+                        options:
+                            ["Class or Small Group", "Tutoring"],
+                        conditional: true,
+                        required: true,
+                        full: false,
+                        field_limit: 1,
+                    },
+                ],
+                "Pricing":{
+                    "Class or Small Group": [
+                        {
+                            field: "Select Course",
+                            name: "Select Course",
+                            type: "course",
+                            conditional: false,
+                            required: true,
+                            full: false,
+                            field_limit: 1,
+                        },
+                        {
+                            field: "Set Tuition Per Hour",
+                            name: "Set Tuition Per Hour",
+                            type: "number",
+                            conditional: false,
+                            required: true,
+                            full: false,
+                            field_limit: 1,
+                        },
+                    ],
+                    "Tutoring":[
+                        {
+                            field: "Select Course Category",
+                            name: "Select Course Category",
+                            type: "select",
+                            options: [],
+                            conditional: false,
+                            required: true,
+                            full: false,
+                            field_limit: 1,
+                        },
+                        {
+                            field: "Select Grade",
+                            name: "Select Grade",
+                            type: "select",
+                            options: [1,2,3,4,5,6,7,8,9,10,11,12,13],
+                            conditional: false,
+                            required: true,
+                            full: false,
+                            field_limit: 1,
+                        },
+                        {
+                            field: "Set Tuition Per Hour",
+                            name: "Set Tuition Per Hour",
+                            type: "number",
+                            conditional: false,
+                            required: true,
+                            full: false,
+                            field_limit: 1,
+                        },
+                    ],
+                }
+
+            },
+            course_category: {
+                form_type: "course_category",
+                section_titles: [ "Category Details" ],
+                "Category Details":[
+                    {
+                        field: "Category Name",
+                        name: "Category Name",
+                        type: "text",
+                        conditional: false,
+                        required: true,
+                        full: true,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Description",
+                        name: "Description",
+                        type: "text",
+                        conditional: false,
+                        required: false,
+                        full: true,
+                        field_limit: 1,
+                    },
+                ]
+            },
         },
         submitStatus: null,
         CurrentParent: "",
