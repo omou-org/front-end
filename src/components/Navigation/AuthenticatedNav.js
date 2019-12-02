@@ -28,6 +28,7 @@ const AuthenticatedNav = (props) => {
     const authToken = useSelector(({auth}) => auth).token;
 
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [isMobileSearching, setMobileSearching] = useState(false);
     const {pathname} = useLocation();
 
     const handleDrawerToggle = useCallback((event) => {
@@ -40,9 +41,14 @@ const AuthenticatedNav = (props) => {
     }, [dispatch]);
 
     const redirectToLogin = () => (e) => {
+        console.log('hi')
         e.preventDefault();
         props.history.push("/login");
     };
+
+    const handleSearch = (searchState) =>{
+        setMobileSearching(searchState);
+    }
 
     return (<AppBar
                     className="OmouBar"
@@ -50,29 +56,34 @@ const AuthenticatedNav = (props) => {
                     position="sticky">
             {authToken ?
                 <Toolbar>
+                    {
+                        !isMobileSearching && <>
+                            <Hidden lgUp>
+                                <IconButton
+                                    aria-label="Open Drawer"
+                                    color="inherit"
+                                    onClick={handleDrawerToggle}>
+                                    <MenuIcon />
+                                </IconButton>
+                            </Hidden>
 
-                <Hidden lgUp>
-                    <IconButton
-                        aria-label="Open Drawer"
-                        color="inherit"
-                        onClick={handleDrawerToggle}>
-                        <MenuIcon />
-                    </IconButton>
-                </Hidden>
-
-                <Typography
-                    className="title"
-                    component={NavLinkNoDup}
-                    to="/">
-                    omou
-                </Typography>
-                <div style={{
-                    "flex": 1,
-                }} />
-                <Search/>
-                <LogoutIcon
-                    className={"logout-icon"}
-                    onClick={handleLogout}/>
+                            <Typography
+                                className="title"
+                                component={NavLinkNoDup}
+                                to="/">
+                                omou
+                            </Typography>
+                            <div style={{
+                                "flex": 1,
+                            }} />
+                        </>
+                    }
+                    <Search onMobile={handleSearch}/>
+                    {
+                        !isMobileSearching && <LogoutIcon
+                            className={"logout-icon"}
+                            onClick={handleLogout}/>
+                    }
             </Toolbar> :
                 redirectToLogin()
             }

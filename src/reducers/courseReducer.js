@@ -10,9 +10,14 @@ export default (state = initialState.Course, {payload, type}) => {
             return handleEnrollmentFetch(state, payload);
         case actions.FETCH_COURSE_NOTE_SUCCESSFUL:
             return handleNotesFetch(state, payload);
+        case actions.POST_COURSE_SUCCESSFUL:
+            return handleCoursePost(state, payload);
         case actions.POST_COURSE_NOTE_SUCCESSFUL:
         case actions.PATCH_COURSE_NOTE_SUCCESSFUL:
             return handleNotesPost(state, payload);
+        case actions.ADD_SMALL_GROUP_REGISTRATION:
+            let {new_course} = payload;
+            return handleCoursePost(state,new_course);
         default:
             return state;
     }
@@ -21,6 +26,15 @@ export default (state = initialState.Course, {payload, type}) => {
 const parseTime = (time) => {
     const [hours, mins] = time.split(":");
     return `T${hours}:${mins}`;
+};
+
+const handleCoursePost = (state, payload) =>{
+    console.log("handling course posting!", payload,);
+    let {NewCourseList} = state;
+    NewCourseList = updateCourse(NewCourseList, payload.course_id, payload);
+    return {...state,
+       NewCourseList,
+    };
 };
 
 const handleEnrollmentFetch = (state, {response}) => {

@@ -86,10 +86,12 @@ class Form extends Component {
 
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
-        const formType = this.props.match.params.type;
-        const {id} = this.props.match.params;
+        const formType = this.props.computedMatch.params.type;
+        const {id} = this.props.computedMatch.params;
 
-        if (this.props.match.params.edit === "edit") {
+        this.props.userActions.fetchStudents();
+        this.props.userActions.fetchInstructors();
+        if (this.props.computedMatch.params.edit === "edit") {
             switch (formType) {
                 case "instructor": {
                     const instructor = this.props.instructors[id];
@@ -150,13 +152,58 @@ class Form extends Component {
                     }
                     break;
                 }
+                case "course":{
+                    if(id && this.props.registeredCourses){
+                        if(id.indexOf("+")>=0){
+                            let studentID = id.substring(0,id.indexOf("+"));
+                            let courseID = id.substring(id.indexOf("+")+1);
+                            let {form} = this.props.registeredCourses[studentID].find(({course_id}) => {
+                                return course_id === courseID;
+                            });
+                            prevState = {
+                                ...form
+                            };
+                        }
+                    }
+                    break;
+                }
+                case "tutoring":{
+                    if(id && this.props.registeredCourses){
+                        if(id.indexOf("+")>=0){
+                            let studentID = id.substring(0,id.indexOf("+"));
+                            let courseID = id.substring(id.indexOf("+")+1);
+                            let {form} = this.props.registeredCourses[studentID].find(({course_id}) => {
+                                return course_id === courseID;
+                            });
+                            prevState = {
+                                ...form
+                            };
+                        }
+                    }
+                    break;
+                }
+                case "small_group":{
+                    if(id && this.props.registeredCourses){
+                        if(id.indexOf("+")>=0){
+                            let studentID = id.substring(0,id.indexOf("+"));
+                            let courseID = id.substring(id.indexOf("+")+1);
+                            let {form} = this.props.registeredCourses[studentID].find(({course_id}) => {
+                                return course_id === courseID;
+                            });
+                            prevState = {
+                                ...form
+                            };
+                        }
+                    }
+                    break;
+                }
                 default: console.warn("Invalid form type!");
             }
         }
         if (!prevState ||
             formType !== prevState.form ||
             prevState["submitPending"] ||
-            (id && this.props.match.params.edit !== "edit")) {
+            (id && this.props.computedMatch.params.edit !== "edit")) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
                     const formContents = JSON.parse(
@@ -170,7 +217,7 @@ class Form extends Component {
                     let course = null;
                     if (this.props.courses.hasOwnProperty(id)) {
                         const {course_id, title} =
-                            this.props.courses[this.props.match.params.id];
+                            this.props.courses[this.props.computedMatch.params.id];
                         // convert it to a format that onselectChange can use
                         course = {
                             "value": course_id,
@@ -218,14 +265,13 @@ class Form extends Component {
     }
 
     componentDidMount() {
-        const {id, edit, "type": formType} = this.props.match.params;
+        const {id, edit, "type": formType} = this.props.computedMatch.params;
         if (!this.props.isAdmin && (formType === "instructor" || formType === "course_details")) {
             this.props.history.replace("/PageNotFound");
         }
-        console.log(this.props.students)
-        this.props.userActions.fetchParents();
-        this.props.userActions.fetchStudents();
-        this.props.userActions.fetchInstructors();
+        // this.props.userActions.fetchParents();
+        // this.props.userActions.fetchStudents();
+        // this.props.userActions.fetchInstructors();
         if (edit === "edit") {
             switch (formType) {
                 case "student": {
@@ -450,7 +496,6 @@ class Form extends Component {
         if (Array.isArray(section)) {
             return section;
         } else {
-            console.log(section);
             return section[this.state.conditional];
         }
     }
@@ -459,10 +504,6 @@ class Form extends Component {
         // clear session storage
         sessionStorage.removeItem("form");
         this.props.registrationActions.resetSubmitStatus();
-    }
-
-    getStepContent(step, formType) {
-        return this.props.registrationForm[formType][step];
     }
 
     validateSection() {
@@ -507,10 +548,15 @@ class Form extends Component {
             if (this.validateSection()) {
                 if (oldState.activeStep === this.getFormObject().section_titles.length - 1) {
                     if (!oldState.submitPending) {
-                        if (this.props.match.params.edit === "edit") {
-                            this.props.registrationActions.submitForm(this.state, this.props.match.params.id);
+                        if (this.props.computedMatch.params.edit === "edit") {
+                            this.props.registrationActions.submitForm(this.state, this.props.computedMatch.params.id);
                         } else if(this.state.form === "small_group") {
-                            this.props.apiActions.submitSmallGroup(this.state);
+                            if(this.state["Group Type"]["Select Group Type"] === "New Small Group"){
+                                this.props.apiActions.submitNewSmallGroup(this.state);
+                            } else {
+                                this.props.registrationActions.submitForm(this.state);
+                            }
+
                         } else {
                             this.props.registrationActions.submitForm(this.state);
                         }
@@ -686,14 +732,6 @@ class Form extends Component {
         }
     }
 
-    handleDateChange = (date) =>{
-        console.log(date, "date changed!");
-        // this.setState((prevState)=> {
-        //         prevState[label][field] = e;
-        //         return prevState;
-        //     });
-    };
-
     renderField(field, label, fieldIndex) {
         const fieldTitle = field.name;
         const disabled = this.state["Parent Information"] && Boolean(this.state["Parent Information"]["Select Parent"]) && this.state.activeSection === "Parent Information";
@@ -723,14 +761,30 @@ class Form extends Component {
                     </FormControl>
                 );
             case "course": {
-                let courseList = Object.keys(this.props.courses)
-                    .filter((courseID) =>
-                        this.props.courses[courseID].capacity >
-                        this.props.courses[courseID].roster.length)
-                    .map((courseID) => ({
-                        "value": courseID,
-                        "label": this.props.courses[courseID].title,
-                    }));
+                let courseList;
+                if(fieldTitle === "Select Group"){
+                    // filter for all of the groups
+                    courseList = Object.keys(this.props.courses)
+                        .filter((courseID) =>
+                            this.props.courses[courseID].capacity >
+                            this.props.courses[courseID].roster.length &&
+                            this.props.courses[courseID].capacity <= 5
+                        )
+                        .map((courseID) => ({
+                            "value": courseID,
+                            "label": this.props.courses[courseID].title,
+                        }));
+                } else {
+                    courseList = Object.keys(this.props.courses)
+                        .filter((courseID) =>
+                            this.props.courses[courseID].capacity >
+                            this.props.courses[courseID].roster.length)
+                        .map((courseID) => ({
+                            "value": courseID,
+                            "label": this.props.courses[courseID].title,
+                        }));
+                }
+
                 // remove preselected courses
                 courseList = this.removeDuplicates(Object.values(this.state[label]), courseList);
                 // count # of course fields in current section
@@ -768,12 +822,13 @@ class Form extends Component {
 
                 if(this.props.currentParent){
                     this.props.currentParent.student_list.forEach((studentID) => {
-                        console.log(this.props.students[studentID], studentID)
-                        let {user_id, name, email} = this.props.students[studentID];
-                        studentList.push({
-                            value: user_id,
-                            label: `${name} - ${email}`,
-                        });
+                        if(this.props.students[studentID]){
+                            let {user_id, name, email} = this.props.students[studentID];
+                            studentList.push({
+                                value: user_id,
+                                label: `${name} - ${email}`,
+                            });
+                        }
                     });
                 } else {
                     studentList = Object.values(this.props.students)
@@ -1042,7 +1097,7 @@ class Form extends Component {
                                                 </Grid>
                                                 <br />
                                                 {
-                                                    !this.props.match.params.course && numSameTypeFields < field.field_limit &&
+                                                    !this.props.computedMatch.params.course && numSameTypeFields < field.field_limit &&
                                                     field === lastFieldOfType &&
                                                     <Fab color="primary" aria-label="Add" variant="extended"
                                                         className="button add-student"
@@ -1092,7 +1147,6 @@ class Form extends Component {
 
     // view after a submitted form
     renderSubmitted() {
-        console.log("normal submitted");
         const currentForm = this.props.registrationForm[this.state.form];
         const steps = currentForm.section_titles;
         sessionStorage.removeItem("form");
@@ -1157,24 +1211,45 @@ class Form extends Component {
     }
 
     renderCourseRegistrationSubmission(){
+        if(this.props.registeredCourses){
+            let currentStudentID = this.state.Student.Student.value;
+            let registeredCourseForm = this.props.registeredCourses[currentStudentID];
+            registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
 
-        let currentStudentID = this.state.Student.Student.value;
-        let registeredCourseForm = this.props.registeredCourses[currentStudentID];
-        console.log("receipt", registeredCourseForm);
-        registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
-
-        let currentStudentName = registeredCourseForm.display.student_name;
-        let currentCourseTitle = registeredCourseForm.display.course_name;
+            let currentStudentName = registeredCourseForm.display.student_name;
+            let currentCourseTitle = registeredCourseForm.display.course_name;
 
 
-        return <div>
-            <h3>{currentStudentName}</h3>
-            <h3>{currentCourseTitle}</h3>
-            <Button component={NavLink} to={"/registration"}
-                className={"button"}>Register More</Button>
-            {/*<Button component={NavLink} to={"/registration"}*/}
-            {/*        className={"button"}>Register More</Button>*/}
-        </div>
+            return <div>
+                <h3>{currentStudentName}</h3>
+                <h3>{currentCourseTitle}</h3>
+                <Button component={NavLink} to={"/registration"}
+                        className={"button"}>Register More</Button>
+                <Button component={NavLink} to={"/registration/cart"}
+                        className={"button"}>Checkout</Button>
+            </div>
+        } else {
+            this.props.registrationActions.initializeRegistration();
+            return () => {
+                let currentStudentID = this.state.Student.Student.value;
+                let registeredCourseForm = this.props.registeredCourses[currentStudentID];
+                registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
+
+                let currentStudentName = registeredCourseForm.display.student_name;
+                let currentCourseTitle = registeredCourseForm.display.course_name;
+
+
+                return <div>
+                    <h3>{currentStudentName}</h3>
+                    <h3>{currentCourseTitle}</h3>
+                    <Button component={NavLink} to={"/registration"}
+                            className={"button"}>Register More</Button>
+                    <Button component={NavLink} to={"/registration/cart"}
+                            className={"button"}>Checkout</Button>
+                </div>
+            }
+        }
+
     }
 
     renderTitle(id, type) {
@@ -1208,7 +1283,7 @@ class Form extends Component {
                 title = "";
                 break;
         }
-        return `${title} ${type.split("_").join(" ")} ${this.props.match.params.edit === "edit" ? "Edit" : "Registration"}`
+        return `${title} ${type.split("_").join(" ")} ${this.props.computedMatch.params.edit === "edit" ? "Edit" : "Registration"}`
     }
 
     render() {
@@ -1231,7 +1306,7 @@ class Form extends Component {
                             denyAction={"default"}
                         />
                         <Typography className="heading" align="left">
-                            {this.renderTitle(this.props.match.params.id, this.state.form)}
+                            {this.renderTitle(this.props.computedMatch.params.id, this.state.form)}
                         </Typography>
                         {
                             this.props.submitStatus !== "success" ?
@@ -1240,7 +1315,8 @@ class Form extends Component {
                                     <Typography>
                                         Sorry! The form is unavailable.
                                     </Typography>
-                                : this.state.form !== "course"  && this.state.form !== "tutoring" ?
+                                : this.state.form !== "course"  && this.state.form !== "tutoring"
+                                    && this.state.form !== "small_group" ?
                                     this.renderSubmitted() :
                                     this.renderCourseRegistrationSubmission()
                         }

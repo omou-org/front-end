@@ -1,8 +1,8 @@
 // react/redux imports
-import * as apiActions from "actions/apiActions";
-import * as userActions from "actions/userActions";
-import * as registrationActions from "actions/registrationActions";
-import {GET} from "actions/actionTypes";
+import * as apiActions from "../../../actions/apiActions";
+import * as userActions from "../../../actions/userActions";
+import * as registrationActions from "../../../actions/registrationActions";
+import {GET} from "../../../actions/actionTypes";
 import React, {useEffect, useMemo, useState} from "react";
 import {bindActionCreators} from "redux";
 import {useDispatch, useSelector} from "react-redux";
@@ -11,7 +11,7 @@ import {useDispatch, useSelector} from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import {Typography} from "@material-ui/core";
-import BackButton from "components/BackButton";
+import BackButton from "../../BackButton";
 import SearchSelect from "react-select";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
@@ -57,6 +57,7 @@ const RegistrationLanding = () => {
     useEffect(() => {
         api.fetchCourses();
         api.fetchInstructors();
+        api.initializeRegistration();
     }, [api]);
 
 

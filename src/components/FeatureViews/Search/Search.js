@@ -16,15 +16,18 @@ import { withRouter, Link } from 'react-router-dom';
 import axios from "axios";
 import * as apiActions from "../../../actions/apiActions";
 import * as registrationActions from "../../../actions/registrationActions";
+import windowSize from 'react-window-size';
 
 const Search = (props) => {
-    const dispatch = useDispatch();
     const [query, setQuery] = useState("");
     const [primaryFilter, setPrimaryFilter] = useState("All");
     const [searchSuggestions, setSearchSuggestions] = useState([]);
-    const requestConfig = { params: { query: query.value, page: 1,  },
+    const requestConfig = { params: { query: query.label, page: 1,  },
         headers: {"Authorization": `Token ${props.auth.token}`,} };
+    const [isMobileSearching, setMobileSearching] = useState(false);
+    const [searchStatus, setSearchStatus] = useState(false);
 
+    const dispatch = useDispatch();
     const api = useMemo(
         () => ({
             ...bindActionCreators(apiActions, dispatch),
@@ -35,7 +38,7 @@ const Search = (props) => {
         [dispatch]
     );
 
-    const searchList = () => {
+    const searchList = (newItem) => {
         let suggestions;
         switch(primaryFilter){
             case "All":{
@@ -54,7 +57,7 @@ const Search = (props) => {
             (data) => {
                 if (data.user) {
                     return {
-                        value: "account_" + data.account_type.toLowerCase() + "+" + data.user.name + "-" + data.user.id,
+                        value: "account_" + data.account_type.toLowerCase() + "+" + data.user.first_name+" "+data.user.last_name + "-" + data.user.id,
                         label: data.user.first_name + " " + data.user.last_name,
                     }
                 } else if (data.course_id) {
@@ -70,6 +73,9 @@ const Search = (props) => {
                 }
             }
         );
+        if(newItem){
+            suggestions.push(newItem);
+        }
         setSearchSuggestions(suggestions);
     };
     
@@ -85,22 +91,29 @@ const Search = (props) => {
         })
     };
 
+    useEffect(()=>{
+        setSearchStatus(false);
+        if(query.label!==""){
+            filterSuggestions()();
+        }
+    },[query]);
+    useEffect(()=>{
+        searchList();
+    },[props.search.searchQueryStatus]);
+
     const handleFilterChange = (filter) => (e) => {
         setPrimaryFilter(e.target.value);
-        return () => {
-            filterSuggestions();
-            return ()=> searchList();
-        };
     };
 
     const handleSearchChange = () => (e) => {
-      if(e){
-          setQuery(e);
-      }
+        if(e){
+            handleQuery()();
+            setQuery(e);
+        }
     };
 
     const filterSuggestions = ()=> (e)=>{
-        e.preventDefault();
+        // e.preventDefault();
         switch(primaryFilter){
             case "All":{
                 api.fetchSearchAccountQuery(requestConfig);
@@ -119,25 +132,27 @@ const Search = (props) => {
     }
 
     const handleQuery = () => (e) => {
-        e.preventDefault();
-      // filterSuggestions();
-      console.log(query,"handling query");
-      props.history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
+        // console.log(primaryFilter.toLowerCase(),query.label);
+        props.history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
     };
 
     const handleInputChange = () => (e)=>{
-        console.log(e,"input changed!");
         let input = {
             value: e,
             label: e
         };
+        searchList(input);
+        handleQuery()();
         setQuery(input);
-    };
+        if(props.windowWidth < 800 && e !== ""){
+            setMobileSearching(true);
+            props.onMobile(true);
+        } else if(props.windowWidth < 800 && e === ""){
+            setMobileSearching(false);
+            props.onMobile(false);
+        }
 
-    useEffect(()=>{
-        filterSuggestions();
-        searchList();
-    },[query]);
+    };
 
     const renderSearchIcon = props =>{
         return (
@@ -154,8 +169,8 @@ const Search = (props) => {
         <Grid container
             className={'search'}
         >
-            <Grid item xs={2} />
-            <Grid item xs={10} >
+            { !isMobileSearching && <Grid item xs={2} />}
+            <Grid item xs={isMobileSearching ? 12 : 10} >
                 <form onSubmit={handleQuery()}>
                     <Grid container >
                         <Grid item >
@@ -183,18 +198,17 @@ const Search = (props) => {
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item md={10} xs={7}>
+                        <Grid item md={10} xs={isMobileSearching ? 10 : 7}>
                             <ReactSelect
-                                // isClearable
                                 className={"search-input"}
                                 classNamePrefix="main-search"
                                 options={searchSuggestions}
                                 value={query}
                                 onChange={handleSearchChange()}
                                 onInputChange={handleInputChange()}
+                                // onCreateOption={handleInputChange()}
                                 components={{DropdownIndicator: renderSearchIcon}}
                             />
-
                         </Grid>
                     </Grid>
                 </form>
@@ -222,7 +236,8 @@ const mapDispatchToProps = (dispatch) => ({
     "userActions": bindActionCreators(userActions, dispatch)
 });
 
-export default withRouter(
+export default windowSize(
+    withRouter(
     connect(mapStateToProps,
         mapDispatchToProps)
-        (Search));
+        (Search)));

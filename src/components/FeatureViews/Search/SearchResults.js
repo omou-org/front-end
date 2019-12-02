@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo, } from 'react';
-import ReactSelect from 'react-select';
 import { Grid, Select, Button } from "@material-ui/core";
 import { bindActionCreators } from "redux";
 import * as searchActions from "../../../actions/searchActions";
@@ -13,7 +12,6 @@ import Typography from "@material-ui/core/Typography"
 import AccountsCards from "./cards/AccountsCards"
 import CoursesCards from "./cards/CoursesCards"
 import "./Search.scss";
-import axios from "axios"
 import { useParams } from "react-router-dom"
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
@@ -23,6 +21,7 @@ import AccountFilters from "../../FeatureViews/Search/AccountFilters"
 import NoResultsPage from './NoResults/NoResultsPage';
 import Loading from "../../Loading";
 import MoreResultsIcon from "@material-ui/icons/KeyboardArrowRight";
+import {Link, useRouteMatch} from "react-router-dom";
 
 const SearchResults = (props) => {
     const dispatch = useDispatch();
@@ -46,15 +45,10 @@ const SearchResults = (props) => {
         api.fetchStudents();
     }, [api]);
 
-    useEffect(() => {
-        api.fetchCourses();
-        api.fetchInstructors();
-        api.fetchStudents();
-    }, [api]);
-
     const [data, setData] = useState("");
     const [accountResults, setAccountResults] = useState([]);
     const [courseResults, setCourseResults] = useState([]);
+    const {"params": {query}} = useRouteMatch();
     const [loading, setLoading] = useState(true);
 
     const params = useParams();
@@ -62,25 +56,28 @@ const SearchResults = (props) => {
     //Endpoints
     // /search/account/?query=query?profileFilter=profileFilter?gradeFilter=gradeFilter?sortAlpha=asc?sortID=desc
     // /search/courses/?query=query?courseTypeFilter=courseType?availability=availability?dateSort=desc
-    const accountSearchURL = `${process.env.REACT_APP_DOMAIN}/search/account/`;
-    const courseSearchURL = `${process.env.REACT_APP_DOMAIN}/search/course/`;
+
     const requestConfig = { params: { query: params.query, page: 1 }, headers: {"Authorization": `Token ${props.auth.token}`,} };
 
     useEffect(() => {
         api.fetchSearchAccountQuery(requestConfig);
         api.fetchSearchCourseQuery(requestConfig);
-    }, [params.query]);
+    }, [query]);
+    useEffect(()=>{
+        setAccountResults(props.search.accounts);
+        setCourseResults(props.search.courses);
+    },[props.search]);
 
     const numberOfResults = () =>{
         switch(params.type){
             case "all":{
-                return props.search.accounts.length + props.search.courses.length;
+                return accountResults.length + courseResults.length;
             }
             case "account":{
-                return props.search.accounts.length;
+                return accountResults.length;
             }
             case "course":{
-                return props.search.courses.length
+                return courseResults.length
             }
         }
     }
@@ -97,7 +94,7 @@ const SearchResults = (props) => {
                                 <Typography variant={"h4"} align={"left"}>
                                 <span style={{fontFamily:"Roboto Slab", fontWeight:"500"}}>
                                 {numberOfResults()} Search Results for </span>
-                                     "{params.query}"
+                                     "{query}"
                                      </Typography>
                             </Grid>
                             {params.type === "account" ?
@@ -115,7 +112,7 @@ const SearchResults = (props) => {
                                     alignItems="center">
                                     <Grid item className="searchResults" >
                                         <Typography className={"resultsColor"} align={'left'} gutterBottom>
-                                            {props.search.accounts.length > 0 ? "Accounts":""}
+                                            {accountResults.length > 0 ? "Accounts":""}
                                         </Typography>
                                     </Grid>
                                     {/*<Grid item >*/}
@@ -125,8 +122,8 @@ const SearchResults = (props) => {
                                     {/*</Grid>*/}
                                 </Grid>
                                 <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} spacing={16} direction={"row"}>
-                                    { props.search.accounts.length > 0 ?
-                                        props.search.accounts.slice(0, 4).map((account) => (
+                                    { accountResults.length > 0 ?
+                                        accountResults.slice(0, 4).map((account) => (
                                             <Grid item xs={12}
                                                   sm={3}>
                                                 <AccountsCards user={account} key={account.user_id} />
@@ -138,7 +135,7 @@ const SearchResults = (props) => {
                                 <MoreResultsIcon/>
                             </Grid>
                             {/* </Grid> */}
-                            { props.search.accounts.length > 0 ? <hr /> : ""}
+                            { accountResults.length > 0 ? <hr /> : ""}
                             {/*<Grid item xs={12}>*/}
                             {/*    <Grid container*/}
                             {/*        justify={"space-between"}*/}
@@ -180,7 +177,7 @@ const SearchResults = (props) => {
                                         {/*</Grid>*/}
                                     </Grid>
                                     <Grid container direction={"row"} style={{ paddingLeft: 20, paddingRight: 20 }}>
-                                        {props.search.courses.slice(0, 4).map((course) => (
+                                        {courseResults.slice(0, 4).map((course) => (
                                             <CoursesCards course={course} key={course.course_id} />)
                                         )}
                                     </Grid>

@@ -7,7 +7,7 @@ import {GET} from "../../../actions/actionTypes.js";
 import React, {Fragment, useEffect, useMemo, useState} from "react";
 import BackButton from "../../BackButton.js";
 import RegistrationActions from "./RegistrationActions";
-import {useStudent} from "actions/hooks";
+import {useStudent} from "../../../actions/hooks";
 import "../../../theme/theme.scss";
 
 // Material UI Imports
@@ -99,6 +99,7 @@ const RegistrationCourse = () => {
         [dispatch]
     );
     const {"params": {courseID}} = useRouteMatch();
+    const {token, isAdmin} = useSelector(({auth}) => auth);
     const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
 
     const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
@@ -329,13 +330,6 @@ const RegistrationCourse = () => {
             className={"registrationCourse"}
             item
             xs={12}>
-            <Paper className="paper">
-                <Grid
-                    item
-                    lg={12}>
-                    <RegistrationActions courseTitle={course.course_title} />
-                </Grid>
-            </Paper>
             <Paper className="paper content">
                 <Grid
                     container
@@ -348,26 +342,32 @@ const RegistrationCourse = () => {
                     <Grid
                         item
                         sm={2}>
-                        <Button
-                            className="button"
-                            style={{
-                                "padding": "6px 10px 6px 10px",
-                                "backgroundColor": "white",
-                            }}
-                            component={Link}
-                            to={`/registration/form/course_details/${courseID}/edit`}>
-                            <EditIcon style={{"fontSize": "16px"}} />
-                            Edit Course
-                        </Button>
+
                     </Grid>
                 </Grid>
                 <Divider className="top-divider" />
+                <Grid
+                    item
+                    lg={12}>
+                    <RegistrationActions courseTitle={course.course_title} />
+                </Grid>
                 <div className="course-heading">
                     <Typography
                         align="left"
                         style={{"fontWeight": "500"}}
                         variant="h3">
                         {course.title}
+                        {isAdmin && <Button
+                        className="button"
+                        style={{
+                            "padding": "6px 10px 6px 10px",
+                            "backgroundColor": "white",
+                        }}
+                        component={Link}
+                        to={`/registration/form/course_details/${courseID}/edit`}>
+                        <EditIcon style={{"fontSize": "16px"}} />
+                        Edit Course
+                    </Button>}
                     </Typography>
                     <div className="date">
                         <CalendarIcon

@@ -24,6 +24,7 @@ import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
 import ParentPayment from "../Form/ParentPayment";
 import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage"
+import FilterAccountsPage from "../FeatureViews/Search/FilterAccountsPage";
 import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
 import AdminRoute from "./AdminRoute";
 import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
@@ -64,6 +65,7 @@ function rootRoutes(props) {
             {/*    render={(passedProps) => <ResourceView {...passedProps} />} /> */}
 
             <ProtectedRoute
+                exact
                 path='/noresults'
                 render={(passedProps) => <NoResultsPage {...passedProps} />} />
 
@@ -107,7 +109,7 @@ function rootRoutes(props) {
             {/* Admin Routes */}
             <AdminRoute
                 exact
-                path="/adminportal"
+                path="/adminportal/:view?/:type?/:id?/:edit?"
                 render={(passedProps) => <AdminPortal/>}/>
 
             <Route path="/PageNotFound" component={ErrorNotFoundPage}/>

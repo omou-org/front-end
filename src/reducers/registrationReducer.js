@@ -35,11 +35,12 @@ export default function registration(state = initialState.RegistrationForms, {pa
         case actions.POST_INSTRUCTOR_FAILED:
             return failedSubmit(state);
         case actions.PATCH_COURSE_SUCCESSFUL:
-            return successSubmit(state);
+            return successSubmit(state, payload);
         case actions.PATCH_COURSE_FAILED:
             return failedSubmit(state);
         case actions.POST_COURSE_SUCCESSFUL:
-            return successSubmit(state);
+            console.log("Posted a course!")
+            return successSubmit(state,payload);
         case actions.POST_COURSE_FAILED:
             return failedSubmit(state);
         case actions.SUBMIT_INITIATED:
@@ -57,7 +58,6 @@ export default function registration(state = initialState.RegistrationForms, {pa
         case actions.ADD_TUTORING_REGISTRATION:
             return addTutoringRegistration(newState, payload);
         case actions.ADD_SMALL_GROUP_REGISTRATION:
-            console.log("add small group registration reducer");
             return addSmallGroupRegistration(newState, payload);
         case actions.INIT_COURSE_REGISTRATION:
             return initializeRegistration(newState);
@@ -184,20 +184,32 @@ const failedSubmit = (state) => ({
 const addClassRegistration = (prevState, form) => {
     let studentID = form["Student"].Student.value;
     let studentName = form["Student"].Student.label;
-    let courseID = form["Course Selection"].Course.value;
-    let courseName = form["Course Selection"].Course.label;
-    let isStudentCurrentlyRegistered = Object.keys(prevState.registered_courses).includes(studentID.toString());
-    let studentInfoNote = stringifyStudentInformation(form);
+    let courseID;
+    let courseName;
+    let studentInfoNote = "";
+    if(form["Course Selection"]){
+        courseID = form["Course Selection"].Course.value;
+        courseName = form["Course Selection"].Course.label;
+        studentInfoNote = stringifyStudentInformation(form);
+    } else {
+        courseID = form["Group Details"]["Select Group"].value;
+        courseName = form["Group Details"]["Select Group"].label;
+    }
 
     let enrollmentObject = {
         type: "class",
         student_id: studentID,
         course_id: courseID,
         enrollment_note: studentInfoNote,
+        sessions: 0,
         display:{
             student_name: studentName,
             course_name: courseName,
-        }
+        },
+        form:{
+            ...form,
+            activeStep:0,
+        },
     };
 
     // Registration Model:
@@ -215,6 +227,8 @@ const addClassRegistration = (prevState, form) => {
 
     addStudentRegistration(studentID, prevState.registered_courses, "class", enrollmentObject);
     prevState.submitStatus = "success";
+
+    console.log(prevState);
 
     return {...prevState};
 };
@@ -274,10 +288,15 @@ const addTutoringRegistration = (prevState, form) => {
         student_id: studentID,
         course_id: "T" + (isStudentCurrentlyRegistered ? (prevState.registered_courses.length + 1).toString() : "0"),
         enrollment_note: studentInfoNote,
+        sessions: numSessions,
         display:{
             student_name: studentName,
             course_name: courseName,
-        }
+        },
+        form:{
+            ...form,
+            activeStep:0,
+        },
     };
 
     addStudentRegistration(studentID, prevState.registered_courses, "tutoring", enrollmentObject);
@@ -292,14 +311,19 @@ const addSmallGroupRegistration = (prevState, {form, new_course}) => {
     let studentName = form["Student"].Student.label;
 
     let enrollmentObject = {
-        type: "class",
+        type: "course",
         student_id: studentID,
         course_id: new_course.course_id,
         enrollment_note: "",
+        sessions: new_course.max_capacity,
         display:{
             student_name: studentName,
             course_name: new_course.subject,
-        }
+        },
+        form:{
+            ...form,
+            activeStep:0,
+        },
     };
 
     addStudentRegistration(studentID, prevState.registered_courses, "small group", enrollmentObject);
@@ -311,7 +335,7 @@ const addSmallGroupRegistration = (prevState, {form, new_course}) => {
 
 const addStudentRegistration = (studentID, registeredCourses, courseType, enrollmentObject) =>{
     let enrollmentExists = false;
-    let isStudentCurrentlyRegistered = Object.keys(registeredCourses).includes(studentID.toString());
+    let isStudentCurrentlyRegistered = registeredCourses ? Object.keys(registeredCourses).includes(studentID.toString()) : false;
     if(isStudentCurrentlyRegistered){
         registeredCourses[studentID] && registeredCourses[studentID].forEach((enrollment)=>{
             if(courseType !== "tutoring" && enrollment.student_id === enrollmentObject.student_id &&
@@ -326,6 +350,7 @@ const addStudentRegistration = (studentID, registeredCourses, courseType, enroll
             registeredCourses[studentID].push(enrollmentObject);
         }
     } else {
+        registeredCourses = {};
         registeredCourses[studentID] = [enrollmentObject];
     }
     sessionStorage.setItem("registered_courses",JSON.stringify(registeredCourses));
@@ -349,5 +374,8 @@ const initializeRegistration = (prevState)=>{
     if(prevRegisteredCourses){
         prevState.registered_courses = prevRegisteredCourses;
     }
-    return {...prevState};
+    return {
+        ...prevState,
+        registered_courses: prevRegisteredCourses,
+    };
 };
