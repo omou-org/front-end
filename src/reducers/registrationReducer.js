@@ -262,11 +262,11 @@ const addTutoringRegistration = (prevState, form) => {
         }
     };
     let numSessions = form["Schedule"]["Number of Sessions"];
-    let endTime = startTime;
+    let endTime = new Date(startTime);
     endTime.setHours(endTime.getHours()+duration());
     let endDate = new Date(startDate);
     endDate.setDate(endDate.getDate()+(7*numSessions));
-    let isStudentCurrentlyRegistered = Object.keys(prevState.registered_courses).includes(studentID.toString());
+    let isStudentCurrentlyRegistered = prevState.registered_courses ? Object.keys(prevState.registered_courses).includes(studentID.toString()):false;
     let enrollmentObject = {
         type: "tutoring",
         new_course: {
@@ -278,7 +278,7 @@ const addTutoringRegistration = (prevState, form) => {
             schedule:{
                 start_date: startDate,
                 start_time: dateToTimeString(startTime),
-                end_date: endDate.toUTCString(),
+                end_date: endDate,
                 end_time: dateToTimeString(endTime), //generated from course duration
             },
             day_of_week: dayOfWeek,
@@ -298,6 +298,7 @@ const addTutoringRegistration = (prevState, form) => {
             activeStep:0,
         },
     };
+    console.log(enrollmentObject);
 
     addStudentRegistration(studentID, prevState.registered_courses, "tutoring", enrollmentObject);
     prevState.submitStatus = "success";
@@ -338,6 +339,7 @@ const addStudentRegistration = (studentID, registeredCourses, courseType, enroll
     let isStudentCurrentlyRegistered = registeredCourses ? Object.keys(registeredCourses).includes(studentID.toString()) : false;
     if(isStudentCurrentlyRegistered){
         registeredCourses[studentID] && registeredCourses[studentID].forEach((enrollment)=>{
+            console.log(enrollmentObject.new_course);
             if(courseType !== "tutoring" && enrollment.student_id === enrollmentObject.student_id &&
                 enrollment.course_id === enrollmentObject.course_id){
                 enrollmentExists = true;
