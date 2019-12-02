@@ -11,12 +11,23 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import Notes from '../Notes/Notes.js';
 
 class DashboardNotes extends Component {
     render() {
+
+        const noteStyle = () => ({
+            "height": 'auto',
+            "width": 300,
+            'background': 'gray'
+        })
+
         return (<div className="notes">
-                <Card>
-                    <CardActionArea>
+                <Card style={noteStyle()}>
+                    <Notes style={{width: 200}}>
+
+                    </Notes>
+                    {/* <CardActionArea>
                         <CardMedia>
                         </CardMedia>
                         <CardContent>
@@ -26,7 +37,7 @@ class DashboardNotes extends Component {
                         </CardContent>
                     </CardActionArea>
                     <CardActions>
-                    </CardActions>
+                    </CardActions> */}
                 </Card>
         </div>)
     }

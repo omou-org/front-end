@@ -11,22 +11,60 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Avatar from "@material-ui/core/Avatar";
+import {stringToColor} from "../Accounts/accountUtils";
+
+
 
 class DashboardAccounts extends Component {
     render() {
+
+        const styles = (username) => ({
+            "backgroundColor": stringToColor(username),
+            "color": "white",
+            "margin": 9,
+            "width": 38,
+            "height": 38,
+            "fontSize": 14,
+            "alignSelf": "center"
+        });
+
+        const roleStyle = (role) => ({
+            "backgroundColor": stringToColor(role),
+            "borderRadius": "50px",
+            "color": "white",
+            "height": 30,
+            "margin": 10,
+            "padding": 5,   
+            "fontSize": 14,
+            "alignSelf": "center"
+        })
+
+        const cardStyle = ()=> ({
+            "height": 250,
+            "width": 200,
+            "textAlign": "center",
+            "display": "inline-block"
+        })
+
         return (<div className="`DashboardAccounts`">
-                <Card>
+                <Card style={cardStyle()}>
                     <CardActionArea>
-                        <CardMedia>
-                            <Avatar>
-                                {(this.props.fName).charAt(0) + (this.props.lName).charAt(0)}
+                        <CardMedia style={{textAlign:'center'}}>
+                        <Grid
+                            alignItems="center"
+                        >
+                        <Avatar                                 
+                            style={styles(this.props.fName + this.props.lName)}
+                            >{(this.props.fName).charAt(0) + (this.props.lName).charAt(0)}
                             </Avatar>
+                        </Grid>
+
                             </CardMedia>
                         <CardContent>
                             <Typography gutterBottom variant="h5" component="h2">
                             {this.props.fName + " " + this.props.lName}
                             </Typography>
-                            <Typography gutterBottom variant="p" component='p'>
+                            <Typography gutterBottom variant="p" component='p' style={roleStyle(this.props.role)} >
                                 {this.props.role}
                                 </Typography>
                             <Typography gutterBottom variant="p" component="p">

@@ -16,6 +16,7 @@ import DashboardAccounts from './DashboardAccounts';
 import DashboardOP from './DashboardOP';
 import DashboardNotes from './DashboardNotes';
 import Avatar from "@material-ui/core/Avatar";
+import {stringToColor} from "../Accounts/accountUtils";
 
 
 class Dashboard extends Component {
@@ -94,14 +95,22 @@ class Dashboard extends Component {
     }
 
     render() {
+
+ 
+
         return (<div className="`Dashboard`">
                <Paper className={"Paper"}>
-                    <Typography variant="h3" align="left">Hello Sharon!</Typography>
-                    <br />
-                    <Typography variant="h6" align="left">Summit Education</Typography>
-                    <br/>
-                    <Grid container direction="row" spacing={16}>
-                    <Grid container xs={9} sm={9} direction="row">
+
+                   <Grid container>
+                      <Grid item xs={12}>
+                        <Typography variant="h3" align="left">Hello Sharon!</Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Typography variant="h6" align="left">Summit Education</Typography>
+                      </Grid>
+                    </Grid>
+
+                    <Grid container spacing={16} direction="row">
                     {this.state.MainPanel.Classes.map(c=>(
                         <DashboardMainPanel
                         cName={c.cName}
@@ -110,23 +119,31 @@ class Dashboard extends Component {
                         >
                         </DashboardMainPanel>
                     ))}
+                    <Grid item xs={3}>
+                        {/* <DashboardNotes>
+                        </DashboardNotes> */}
                     </Grid>
-                    <DashboardNotes>
-                    </DashboardNotes>
                     </Grid>
                 </Paper>
                     <Paper>
                         <br></br>
+                    <Grid container>
+                    <Grid item xs={6}>
                     <Typography variant="h5" align="left">
                         Recently Updated Accounts
                     </Typography>
-
-                    <Typography variant="h5" align="right">
+                    </Grid>
+                    <Grid item xs={6}>
+                    <Typography variant="h5" align="left">
                         Outstanding Payments
                     </Typography>
+                    </Grid>
+                    </Grid>
 
                         <br></br>
                     <Grid container spacing={16}>
+                    <Grid item xs={6}>
+                        <Grid container>
                     {this.state.Accounts.map(a=>(
                        <DashboardAccounts
                        fName={a.fName}
@@ -137,8 +154,11 @@ class Dashboard extends Component {
                        >
                        </DashboardAccounts>
                     ))}
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Grid container>
                     {this.state.OP.map(op=>(
-
                        <DashboardOP
                         fName={op.fName}
                         lName={op.lName}
@@ -149,6 +169,8 @@ class Dashboard extends Component {
                         >
                        </DashboardOP>
                     ))}
+                        </Grid>
+                    </Grid>
                     </Grid>
                 {/* contact */}
                 {/* <Card>
