@@ -152,6 +152,51 @@ class Form extends Component {
                     }
                     break;
                 }
+                case "course":{
+                    if(id && this.props.registeredCourses){
+                        if(id.indexOf("+")>=0){
+                            let studentID = id.substring(0,id.indexOf("+"));
+                            let courseID = id.substring(id.indexOf("+")+1);
+                            let {form} = this.props.registeredCourses[studentID].find(({course_id}) => {
+                                return course_id === courseID;
+                            });
+                            prevState = {
+                                ...form
+                            };
+                        }
+                    }
+                    break;
+                }
+                case "tutoring":{
+                    if(id && this.props.registeredCourses){
+                        if(id.indexOf("+")>=0){
+                            let studentID = id.substring(0,id.indexOf("+"));
+                            let courseID = id.substring(id.indexOf("+")+1);
+                            let {form} = this.props.registeredCourses[studentID].find(({course_id}) => {
+                                return course_id === courseID;
+                            });
+                            prevState = {
+                                ...form
+                            };
+                        }
+                    }
+                    break;
+                }
+                case "small_group":{
+                    if(id && this.props.registeredCourses){
+                        if(id.indexOf("+")>=0){
+                            let studentID = id.substring(0,id.indexOf("+"));
+                            let courseID = id.substring(id.indexOf("+")+1);
+                            let {form} = this.props.registeredCourses[studentID].find(({course_id}) => {
+                                return course_id === courseID;
+                            });
+                            prevState = {
+                                ...form
+                            };
+                        }
+                    }
+                    break;
+                }
                 default: console.warn("Invalid form type!");
             }
         }
@@ -459,10 +504,6 @@ class Form extends Component {
         // clear session storage
         sessionStorage.removeItem("form");
         this.props.registrationActions.resetSubmitStatus();
-    }
-
-    getStepContent(step, formType) {
-        return this.props.registrationForm[formType][step];
     }
 
     validateSection() {
@@ -781,11 +822,13 @@ class Form extends Component {
 
                 if(this.props.currentParent){
                     this.props.currentParent.student_list.forEach((studentID) => {
-                        let {user_id, name, email} = this.props.students[studentID];
-                        studentList.push({
-                            value: user_id,
-                            label: `${name} - ${email}`,
-                        });
+                        if(this.props.students[studentID]){
+                            let {user_id, name, email} = this.props.students[studentID];
+                            studentList.push({
+                                value: user_id,
+                                label: `${name} - ${email}`,
+                            });
+                        }
                     });
                 } else {
                     studentList = Object.values(this.props.students)
@@ -1168,22 +1211,45 @@ class Form extends Component {
     }
 
     renderCourseRegistrationSubmission(){
-        let currentStudentID = this.state.Student.Student.value;
-        let registeredCourseForm = this.props.registeredCourses[currentStudentID];
-        registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
+        if(this.props.registeredCourses){
+            let currentStudentID = this.state.Student.Student.value;
+            let registeredCourseForm = this.props.registeredCourses[currentStudentID];
+            registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
 
-        let currentStudentName = registeredCourseForm.display.student_name;
-        let currentCourseTitle = registeredCourseForm.display.course_name;
+            let currentStudentName = registeredCourseForm.display.student_name;
+            let currentCourseTitle = registeredCourseForm.display.course_name;
 
 
-        return <div>
-            <h3>{currentStudentName}</h3>
-            <h3>{currentCourseTitle}</h3>
-            <Button component={NavLink} to={"/registration"}
-                className={"button"}>Register More</Button>
-            <Button component={NavLink} to={"/registration/cart"}
-                    className={"button"}>Checkout</Button>
-        </div>
+            return <div>
+                <h3>{currentStudentName}</h3>
+                <h3>{currentCourseTitle}</h3>
+                <Button component={NavLink} to={"/registration"}
+                        className={"button"}>Register More</Button>
+                <Button component={NavLink} to={"/registration/cart"}
+                        className={"button"}>Checkout</Button>
+            </div>
+        } else {
+            this.props.registrationActions.initializeRegistration();
+            return () => {
+                let currentStudentID = this.state.Student.Student.value;
+                let registeredCourseForm = this.props.registeredCourses[currentStudentID];
+                registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
+
+                let currentStudentName = registeredCourseForm.display.student_name;
+                let currentCourseTitle = registeredCourseForm.display.course_name;
+
+
+                return <div>
+                    <h3>{currentStudentName}</h3>
+                    <h3>{currentCourseTitle}</h3>
+                    <Button component={NavLink} to={"/registration"}
+                            className={"button"}>Register More</Button>
+                    <Button component={NavLink} to={"/registration/cart"}
+                            className={"button"}>Checkout</Button>
+                </div>
+            }
+        }
+
     }
 
     renderTitle(id, type) {

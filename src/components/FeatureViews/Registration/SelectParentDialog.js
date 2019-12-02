@@ -136,8 +136,7 @@ class SelectParentDialog extends React.Component {
     }
 
     ActiveParentDialog = () =>{
-        let numCourses = 0;
-        let allCoursesPerStudent = Object.values(this.props.registration.registered_courses);
+        let allCoursesPerStudent =  this.props.registration.registered_courses ? Object.values(this.props.registration.registered_courses):[];
         let allCourses = 0;
         allCoursesPerStudent.forEach((studentCourses) => {
             allCourses += studentCourses.length;

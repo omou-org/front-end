@@ -57,6 +57,7 @@ const RegistrationLanding = () => {
     useEffect(() => {
         api.fetchCourses();
         api.fetchInstructors();
+        api.initializeRegistration();
     }, [api]);
 
 
