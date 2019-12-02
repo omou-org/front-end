@@ -83,7 +83,6 @@ const SearchResults = (props) => {
         }
     }
 
-    // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
             <Grid container className={'search-results'} style={{ "padding": "1em" }}>
                 { props.search.searchQueryStatus !== "success" ?
