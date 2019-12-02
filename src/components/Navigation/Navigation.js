@@ -60,16 +60,16 @@ const Navigation = (props) => {
     const {token, isAdmin} = useSelector(({auth}) => auth);
     // const isAdmin = useSelector(({auth}) => auth).isAdmin;
     const NavList = isAdmin ? [
-            {
-                "name": "Dashboard",
-                "link": "/",
-                "icon": <DashboardIcon />,
-            },
-            {
-                "name": "Scheduler",
-                "link": "/scheduler",
-                "icon": <EventIcon />,
-            },
+            // {
+            //     "name": "Dashboard",
+            //     "link": "/",
+            //     "icon": <DashboardIcon />,
+            // },
+            // {
+            //     "name": "Scheduler",
+            //     "link": "/scheduler",
+            //     "icon": <EventIcon />,
+            // },
             {
                 "name": "Accounts",
                 "link": "/accounts",
