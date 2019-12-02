@@ -62,8 +62,6 @@ const SearchResults = (props) => {
     //Endpoints
     // /search/account/?query=query?profileFilter=profileFilter?gradeFilter=gradeFilter?sortAlpha=asc?sortID=desc
     // /search/courses/?query=query?courseTypeFilter=courseType?availability=availability?dateSort=desc
-    const accountSearchURL = `${process.env.REACT_APP_DOMAIN}/search/account/`;
-    const courseSearchURL = `${process.env.REACT_APP_DOMAIN}/search/course/`;
     const requestConfig = { params: { query: params.query, page: 1 }, headers: {"Authorization": `Token ${props.auth.token}`,} };
 
     useEffect(() => {
