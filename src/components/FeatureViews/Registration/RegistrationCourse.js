@@ -7,7 +7,7 @@ import {GET} from "../../../actions/actionTypes.js";
 import React, {Fragment, useEffect, useMemo, useState} from "react";
 import BackButton from "../../BackButton.js";
 import RegistrationActions from "./RegistrationActions";
-import {useStudent} from "actions/hooks";
+import {useStudent} from "../../../actions/hooks";
 import "../../../theme/theme.scss";
 
 // Material UI Imports

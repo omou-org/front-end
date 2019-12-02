@@ -107,8 +107,8 @@ const Search = (props) => {
     };
 
     const handleSearchChange = () => (e) => {
-        console.log("search changed!", e);
         if(e){
+            handleQuery()();
             setQuery(e);
         }
     };
@@ -133,7 +133,7 @@ const Search = (props) => {
     }
 
     const handleQuery = () => (e) => {
-        e.preventDefault();
+        // console.log(primaryFilter.toLowerCase(),query.label);
         props.history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
     };
 
@@ -143,6 +143,7 @@ const Search = (props) => {
             label: e
         };
         searchList(input);
+        handleQuery()();
         setQuery(input);
         if(props.windowWidth < 800 && e !== ""){
             setMobileSearching(true);
