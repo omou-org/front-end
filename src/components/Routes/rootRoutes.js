@@ -65,10 +65,12 @@ function rootRoutes(props) {
             {/*    render={(passedProps) => <ResourceView {...passedProps} />} /> */}
 
             <ProtectedRoute
+                exact
                 path="/filterAccount"
                 render={(passedProps) => <FilterAccountsPage {...passedProps} />} />
 
             <ProtectedRoute
+                exact
                 path='/noresults'
                 render={(passedProps) => <NoResultsPage {...passedProps} />} />
 

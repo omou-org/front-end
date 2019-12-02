@@ -41,6 +41,7 @@ const AuthenticatedNav = (props) => {
     }, [dispatch]);
 
     const redirectToLogin = () => (e) => {
+        console.log('hi')
         e.preventDefault();
         props.history.push("/login");
     };

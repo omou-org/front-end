@@ -16,6 +16,8 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import AdminIcon from "@material-ui/icons/Face"
 import ListItemText from "@material-ui/core/ListItemText";
 import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import EventIcon from "@material-ui/icons/Event";
 
 // Local Component Imports
 import "./Navigation.scss";
@@ -57,7 +59,18 @@ const Navigation = (props) => {
     const dispatch = useDispatch();
     const {token, isAdmin} = useSelector(({auth}) => auth);
     // const isAdmin = useSelector(({auth}) => auth).isAdmin;
-    const NavList = isAdmin ? [{
+    const NavList = isAdmin ? [
+            {
+                "name": "Dashboard",
+                "link": "/",
+                "icon": <DashboardIcon />,
+            },
+            {
+                "name": "Scheduler",
+                "link": "/scheduler",
+                "icon": <EventIcon />,
+            },
+            {
                 "name": "Accounts",
                 "link": "/accounts",
                 "icon": <AccountsIcon />,
@@ -98,7 +111,9 @@ const Navigation = (props) => {
                         button
                         className="listItem"
                         component={NavLinkNoDup}
-                        isActive={(match, location) => match || (NavItem.name === "Accounts" && location.pathname === "/")}
+                        isActive={(match, location) => match
+                            // || (NavItem.name === "Accounts" && location.pathname === "/")
+                        }
                         key={NavItem.name}
                         to={NavItem.link}>
                         <ListItemIcon className="icon">{NavItem.icon}</ListItemIcon>
