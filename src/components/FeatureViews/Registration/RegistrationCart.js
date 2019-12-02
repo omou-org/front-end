@@ -23,6 +23,7 @@ import * as apiActions from "../../../actions/apiActions";
 import * as searchActions from "../../../actions/searchActions";
 import {GET} from "../../../actions/actionTypes";
 import Button from "@material-ui/core/Button";
+import Loading from "../../Loading";
 
 const useStyles = makeStyles({
     setParent: {
@@ -50,27 +51,42 @@ function RegistrationCart(props) {
             check: false,
         }
     });
-    const [selectedCourses, selectCourse] = useState(()=>{
-        // Get student id's
-        let studentIDs = Object.keys(props.registration.registered_courses);
-        let checkedCourses = {};
-        studentIDs.forEach((studentID)=>{
-            checkedCourses[studentID] = {};
-            props.registration.registered_courses[studentID].forEach((registrationForm) => {
-                checkedCourses[studentID][registrationForm.course_id] = false;
-            });
-        });
-        return checkedCourses;
-    });
-    const [usersLoaded, setLoadingUsers] = useState(true);
-    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
-    const classes = useStyles();
+    const [viewPaymentOptions, setPaymentOptions] = useState(false);
+    const [selectedCourses, selectCourse] = useState({});
+    const [usersLoaded, setLoadingUsers] = useState(false);
 
     useEffect(()=>{
-        api.fetchStudents();
+        console.log("triggered");
         api.initializeRegistration();
-        api.fetchParents();
-    },[]);
+        api.fetchCourses();
+    },[api]);
+
+    useEffect(()=>{
+        if(props.registration.registered_courses){
+            console.log(props.registration);
+            // Get student id's
+            let studentIDs = Object.keys(props.registration.registered_courses);
+            let checkedCourses = {};
+            studentIDs.forEach((studentID)=>{
+                checkedCourses[studentID] = {};
+                props.registration.registered_courses[studentID].forEach((registrationForm) => {
+                    checkedCourses[studentID][registrationForm.course_id] = false;
+                });
+            });
+            // Set-up checkboxes
+            selectCourse(checkedCourses);
+
+            studentIDs.forEach((studentID)=>{
+                api.fetchStudents(studentID);
+            });
+
+            setLoadingUsers(true);
+        }
+
+    },[props.registration.registered_courses, api]);
+
+    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
+    const classes = useStyles();
 
     const goToCourse = (courseID) => () => {
         props.history.push(`/registration/course/${courseID}`);
@@ -81,14 +97,12 @@ function RegistrationCart(props) {
         let currentlySelectedCourses = JSON.parse(JSON.stringify(selectedCourses));
         currentlySelectedCourses[studentID][courseID] = !currentlySelectedCourses[studentID][courseID];
         selectCourse(currentlySelectedCourses);
-
-
     }
 
     const renderStudentRegistrations = () => {
         return Object.keys(props.registration.registered_courses).map((student_id) =>{
             let registrations = props.registration.registered_courses[student_id];
-            return <Grid container>
+            return props.studentAccounts[student_id] && <Grid container>
                 <Grid item xs={12}>
                     <Typography variant={"h5"} align={"left"}>
                         {props.studentAccounts[student_id].name}
@@ -102,23 +116,23 @@ function RegistrationCart(props) {
                                 Session
                             </Typography>
                         </Grid>
-                        <Grid item xs={2} md={2}>
+                        <Grid item xs={3} md={3}>
                             <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
                                 Dates
                             </Typography>
                         </Grid>
-                        <Grid item xs={2} md={2}>
-                            <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                        <Grid item xs={1} md={1}>
+                            <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
                                 Sessions
                             </Typography>
                         </Grid>
                         <Grid item xs={2} md={2}>
-                            <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                            <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
                                 Tuition
                             </Typography>
                         </Grid>
                         <Grid item xs={2} md={2}>
-                            <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                            <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
                                 Material Fee
                             </Typography>
                         </Grid>
@@ -134,42 +148,43 @@ function RegistrationCart(props) {
                                 } else {
                                     course = props.courseList[registration.course_id];
                                 }
-
-                                let dateOptions = {year: "numeric", month: "short", day: "numeric"};
-                                let startDate = new Date(course.schedule.start_date + course.schedule.start_time),
-                                    endDate = new Date(course.schedule.end_date + course.schedule.end_time);
-                                startDate = startDate.toLocaleDateString("en-US", dateOptions);
-                                endDate = endDate.toLocaleDateString("en-US", dateOptions);
-                                return (<Grid item xs={12} md={12} className={'accounts-table-row'}>
-                                    <Paper square={true} >
-                                        <Grid container>
-                                            <Grid item xs={1} md={1}>
-                                                <Checkbox checked={selectedCourses[student_id][registration.course_id]}
-                                                          onChange={handleCourseSelect(student_id, registration.course_id)}  />
+                                if(course){
+                                    let dateOptions = {year: "numeric", month: "short", day: "numeric"};
+                                    let startDate = new Date(course.schedule.start_date + course.schedule.start_time),
+                                        endDate = new Date(course.schedule.end_date + course.schedule.end_time);
+                                    startDate = startDate.toLocaleDateString("en-US", dateOptions);
+                                    endDate = endDate.toLocaleDateString("en-US", dateOptions);
+                                    return (<Grid item xs={12} md={12}>
+                                        <Paper square={true} >
+                                            <Grid container alignItems="center">
+                                                <Grid item xs={1} md={1}>
+                                                    <Checkbox checked={selectedCourses[student_id][registration.course_id]}
+                                                              onChange={handleCourseSelect(student_id, registration.course_id)}  />
+                                                </Grid>
+                                                <Grid item xs={3} md={3} >
+                                                    <Typography align={'left'}>
+                                                        {course.title}
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={3} md={3}>
+                                                    <Typography align={'left'}>
+                                                        {startDate} - {endDate}
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={1} md={1}>
+                                                    <Typography align={'center'}>
+                                                        ??
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={2} md={2}>
+                                                    <Typography align={'center'}>
+                                                        {course.tuition}
+                                                    </Typography>
+                                                </Grid>
                                             </Grid>
-                                            <Grid item xs={3} md={3} >
-                                                <Typography align={'left'}>
-                                                    {course.title}
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={2} md={2}>
-                                                <Typography align={'left'}>
-                                                    {startDate} - {endDate}
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={2} md={2}>
-                                                <Typography align={'left'}>
-                                                    ??
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={2} md={2}>
-                                                <Typography align={'left'}>
-                                                    {course.tuition}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Paper>
-                                </Grid>);
+                                        </Paper>
+                                    </Grid>);
+                                }
                             })
                         }
                     </Grid>
@@ -182,45 +197,59 @@ function RegistrationCart(props) {
         setPaymentMethod({ [method]: e.target.checked })
     }
 
-    const selectedCourseOptions = () => {
+    const renderPayment = () =>{
         const {cash, creditCard, check} = paymentMethod;
-        let displaySelectionOptions = false;
-        Object.keys(selectedCourses).forEach((studentID)=>{
-            Object.values(selectedCourses[studentID]).forEach((checkbox)=>{
-                if(checkbox){
-                    displaySelectionOptions = true;
-                }
-            })
-        });
-        if(displaySelectionOptions){
-            return <Grid container>
-                    <Grid item xs={3}>
-                        <FormControl>
-                            <FormLabel>Select Payment Method</FormLabel>
-                            <FormGroup>
-                                <FormControlLabel
-                                    label={"Cash"}
-                                    control={<Checkbox checked={cash} onChange={handlePayMethodChange('cash')} value={"Cash"}/>}
-                                />
-                                <FormControlLabel
-                                    label={"Check"}
-                                    control={<Checkbox checked={check} onChange={handlePayMethodChange('check')} value={"Check"}/>}
-                                />
-                                <FormControlLabel
-                                    label={"Credit Card"}
-                                    control={<Checkbox checked={creditCard} onChange={handlePayMethodChange('creditCard')} value={"Credit Card"}/>}
-                                />
-                            </FormGroup>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={3}/>
-                    <Grid/>
-                    <Grid item xs={3}>
-                    </Grid>
-                    <Grid item xs={3}>
+        return <Grid container>
+            <Grid item xs={3}>
+                <FormControl>
+                    <FormLabel>Select Payment Method</FormLabel>
+                    <FormGroup>
+                        <FormControlLabel
+                            label={"Cash"}
+                            control={<Checkbox checked={cash} onChange={handlePayMethodChange('cash')} value={"Cash"}/>}
+                        />
+                        <FormControlLabel
+                            label={"Check"}
+                            control={<Checkbox checked={check} onChange={handlePayMethodChange('check')} value={"Check"}/>}
+                        />
+                        <FormControlLabel
+                            label={"Credit Card"}
+                            control={<Checkbox checked={creditCard} onChange={handlePayMethodChange('creditCard')} value={"Credit Card"}/>}
+                        />
+                    </FormGroup>
+                </FormControl>
+            </Grid>
+            <Grid item xs={9}>
+                <Grid container>
+                    <Grid item xs={10}/>
+                    <Grid item xs={2}>
                         <Button className={"button"}>PAY</Button>
                     </Grid>
                 </Grid>
+            </Grid>
+        </Grid>
+    }
+
+    const selectedCourseOptions = () => {
+        let displaySelectionOptions = 0;
+        Object.keys(selectedCourses).forEach((studentID)=>{
+            Object.values(selectedCourses[studentID]).forEach((checkbox)=>{
+                if(checkbox){
+                    displaySelectionOptions++;
+                }
+            })
+        });
+        if(displaySelectionOptions === 1){
+            return <Grid container>
+                <Grid item xs={10}/>
+                <Grid item xs={2}>
+                    <Button className={"button"}>
+                        Edit Registration
+                    </Button>
+                </Grid>
+            </Grid>
+        } else if(displaySelectionOptions > 1){
+            return renderPayment();
         }
         return "";
     }
@@ -237,7 +266,7 @@ function RegistrationCart(props) {
                         <Typography variant={"h3"} align={"left"}>Select Course(s) to Pay</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                        {usersLoaded && renderStudentRegistrations()}
+                        {usersLoaded ? renderStudentRegistrations() : <Loading/>}
                     </Grid>
                     <Grid item xs={12}>
                         {selectedCourseOptions()}

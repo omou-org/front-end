@@ -1104,7 +1104,6 @@ class Form extends Component {
 
     // view after a submitted form
     renderSubmitted() {
-        console.log("normal submitted");
         const currentForm = this.props.registrationForm[this.state.form];
         const steps = currentForm.section_titles;
         sessionStorage.removeItem("form");

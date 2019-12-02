@@ -204,7 +204,8 @@ const addClassRegistration = (prevState, form) => {
         display:{
             student_name: studentName,
             course_name: courseName,
-        }
+        },
+        form:form,
     };
 
     // Registration Model:
@@ -284,7 +285,8 @@ const addTutoringRegistration = (prevState, form) => {
         display:{
             student_name: studentName,
             course_name: courseName,
-        }
+        },
+        form:form,
     };
 
     addStudentRegistration(studentID, prevState.registered_courses, "tutoring", enrollmentObject);
@@ -299,14 +301,15 @@ const addSmallGroupRegistration = (prevState, {form, new_course}) => {
     let studentName = form["Student"].Student.label;
 
     let enrollmentObject = {
-        type: "class",
+        type: "small_group",
         student_id: studentID,
         course_id: new_course.course_id,
         enrollment_note: "",
         display:{
             student_name: studentName,
             course_name: new_course.subject,
-        }
+        },
+        form:form,
     };
 
     addStudentRegistration(studentID, prevState.registered_courses, "small group", enrollmentObject);
@@ -356,5 +359,8 @@ const initializeRegistration = (prevState)=>{
     if(prevRegisteredCourses){
         prevState.registered_courses = prevRegisteredCourses;
     }
-    return {...prevState};
+    return {
+        ...prevState,
+        registered_courses: prevRegisteredCourses,
+    };
 };
