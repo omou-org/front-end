@@ -99,6 +99,7 @@ const RegistrationCourse = () => {
         [dispatch]
     );
     const {"params": {courseID}} = useRouteMatch();
+    const {token, isAdmin} = useSelector(({auth}) => auth);
     const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
 
     const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
@@ -341,17 +342,7 @@ const RegistrationCourse = () => {
                     <Grid
                         item
                         sm={2}>
-                        <Button
-                            className="button"
-                            style={{
-                                "padding": "6px 10px 6px 10px",
-                                "backgroundColor": "white",
-                            }}
-                            component={Link}
-                            to={`/registration/form/course_details/${courseID}/edit`}>
-                            <EditIcon style={{"fontSize": "16px"}} />
-                            Edit Course
-                        </Button>
+
                     </Grid>
                 </Grid>
                 <Divider className="top-divider" />
@@ -366,6 +357,17 @@ const RegistrationCourse = () => {
                         style={{"fontWeight": "500"}}
                         variant="h3">
                         {course.title}
+                        {isAdmin && <Button
+                        className="button"
+                        style={{
+                            "padding": "6px 10px 6px 10px",
+                            "backgroundColor": "white",
+                        }}
+                        component={Link}
+                        to={`/registration/form/course_details/${courseID}/edit`}>
+                        <EditIcon style={{"fontSize": "16px"}} />
+                        Edit Course
+                    </Button>}
                     </Typography>
                     <div className="date">
                         <CalendarIcon

@@ -22,9 +22,10 @@ const Search = (props) => {
     const [query, setQuery] = useState("");
     const [primaryFilter, setPrimaryFilter] = useState("All");
     const [searchSuggestions, setSearchSuggestions] = useState([]);
-    const requestConfig = { params: { query: query.value, page: 1,  },
+    const requestConfig = { params: { query: query.label, page: 1,  },
         headers: {"Authorization": `Token ${props.auth.token}`,} };
     const [isMobileSearching, setMobileSearching] = useState(false);
+    const [searchStatus, setSearchStatus] = useState(false);
 
     const dispatch = useDispatch();
     const api = useMemo(
@@ -37,7 +38,7 @@ const Search = (props) => {
         [dispatch]
     );
 
-    const searchList = () => {
+    const searchList = (newItem) => {
         let suggestions;
         // console.log(primaryFilter);
         switch(primaryFilter){
@@ -57,7 +58,7 @@ const Search = (props) => {
             (data) => {
                 if (data.user) {
                     return {
-                        value: "account_" + data.account_type.toLowerCase() + "+" + data.user.name + "-" + data.user.id,
+                        value: "account_" + data.account_type.toLowerCase() + "+" + data.user.first_name+" "+data.user.last_name + "-" + data.user.id,
                         label: data.user.first_name + " " + data.user.last_name,
                     }
                 } else if (data.course_id) {
@@ -73,6 +74,9 @@ const Search = (props) => {
                 }
             }
         );
+        if(newItem){
+            suggestions.push(newItem);
+        }
         setSearchSuggestions(suggestions);
     };
     
@@ -88,22 +92,29 @@ const Search = (props) => {
         })
     };
 
+    useEffect(()=>{
+        setSearchStatus(false);
+        if(query.label!==""){
+            filterSuggestions()();
+        }
+    },[query]);
+    useEffect(()=>{
+        searchList();
+    },[props.search.searchQueryStatus]);
+
     const handleFilterChange = (filter) => (e) => {
         setPrimaryFilter(e.target.value);
-        return () => {
-            filterSuggestions();
-            return ()=> searchList();
-        };
     };
 
     const handleSearchChange = () => (e) => {
-      if(e){
-          setQuery(e);
-      }
+        console.log("search changed!", e);
+        if(e){
+            setQuery(e);
+        }
     };
 
     const filterSuggestions = ()=> (e)=>{
-        e.preventDefault();
+        // e.preventDefault();
         switch(primaryFilter){
             case "All":{
                 api.fetchSearchAccountQuery(requestConfig);
@@ -123,8 +134,7 @@ const Search = (props) => {
 
     const handleQuery = () => (e) => {
         e.preventDefault();
-      // filterSuggestions();
-      props.history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
+        props.history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
     };
 
     const handleInputChange = () => (e)=>{
@@ -132,6 +142,7 @@ const Search = (props) => {
             value: e,
             label: e
         };
+        searchList(input);
         setQuery(input);
         if(props.windowWidth < 800 && e !== ""){
             setMobileSearching(true);
@@ -142,11 +153,6 @@ const Search = (props) => {
         }
 
     };
-
-    useEffect(()=>{
-        filterSuggestions();
-        searchList();
-    },[query]);
 
     const renderSearchIcon = props =>{
         return (
@@ -194,13 +200,13 @@ const Search = (props) => {
                         </Grid>
                         <Grid item md={10} xs={isMobileSearching ? 10 : 7}>
                             <ReactSelect
-                                // isClearable
                                 className={"search-input"}
                                 classNamePrefix="main-search"
                                 options={searchSuggestions}
                                 value={query}
                                 onChange={handleSearchChange()}
                                 onInputChange={handleInputChange()}
+                                // onCreateOption={handleInputChange()}
                                 components={{DropdownIndicator: renderSearchIcon}}
                             />
                         </Grid>
