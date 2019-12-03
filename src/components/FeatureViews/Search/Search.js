@@ -108,8 +108,8 @@ const Search = (props) => {
 
     const handleSearchChange = () => (e) => {
         if(e){
-            handleQuery()();
             setQuery(e);
+            handleQuery()();
         }
     };
 
@@ -143,7 +143,6 @@ const Search = (props) => {
             label: e
         };
         searchList(input);
-        handleQuery()();
         setQuery(input);
         if(props.windowWidth < 800 && e !== ""){
             setMobileSearching(true);

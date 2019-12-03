@@ -61,6 +61,8 @@ export default function registration(state = initialState.RegistrationForms, {pa
             return addSmallGroupRegistration(newState, payload);
         case actions.INIT_COURSE_REGISTRATION:
             return initializeRegistration(newState);
+        case actions.EDIT_COURSE_REGISTRATION:
+            return editCourseRegistration(newState, payload);
         default:
             return state;
     }
@@ -267,6 +269,7 @@ const addTutoringRegistration = (prevState, form) => {
     let endDate = new Date(startDate);
     endDate.setDate(endDate.getDate()+(7*numSessions));
     let isStudentCurrentlyRegistered = prevState.registered_courses ? Object.keys(prevState.registered_courses).includes(studentID.toString()):false;
+    // console.log(prevState.registered_courses[studentID]);
     let enrollmentObject = {
         type: "tutoring",
         new_course: {
@@ -286,7 +289,7 @@ const addTutoringRegistration = (prevState, form) => {
             enrollment_id_list: [studentID], //array with student_id
         },
         student_id: studentID,
-        course_id: "T" + (isStudentCurrentlyRegistered ? (prevState.registered_courses.length + 1).toString() : "0"),
+        course_id: "T" + (isStudentCurrentlyRegistered ? (prevState.registered_courses[studentID].length + 1).toString() : "0"),
         enrollment_note: studentInfoNote,
         sessions: numSessions,
         display:{
@@ -298,7 +301,6 @@ const addTutoringRegistration = (prevState, form) => {
             activeStep:0,
         },
     };
-    console.log(enrollmentObject);
 
     addStudentRegistration(studentID, prevState.registered_courses, "tutoring", enrollmentObject);
     prevState.submitStatus = "success";
@@ -307,7 +309,6 @@ const addTutoringRegistration = (prevState, form) => {
 }
 
 const addSmallGroupRegistration = (prevState, {form, new_course}) => {
-    console.log(form, new_course, "small group registration");
     let studentID = form["Student"].Student.value;
     let studentName = form["Student"].Student.label;
 
@@ -381,3 +382,85 @@ const initializeRegistration = (prevState)=>{
         registered_courses: prevRegisteredCourses,
     };
 };
+
+const editCourseRegistration = (prevState, {student_id, course_id, enrollment_note, new_course, sessions, form}) => {
+    let editedRegistration = prevState.registered_courses[student_id].find((course)=>{return course.course_id === course_id});
+    let studentName;
+    if(form){
+        studentName = form["Student"].Student.label;
+    }
+    const renderCourseName = (type, form, new_course) => {
+        if(type === "tutoring"){
+            return new_course.subject;
+        } else {
+            return  form["Course Selection"].Course.label;
+        }
+    };
+
+    // SMALL GROUPS + CLASSES - edits to course information must be done through the "EDIT COURSE" action
+    for(let [key, value] of Object.entries(editedRegistration)){
+        switch(key){
+            case "student_id":
+                if(value !== student_id){
+                    editedRegistration = {
+                        ...editedRegistration,
+                        student_id : student_id,
+                        display: {
+                            ...editedRegistration.display,
+                            student_name: studentName ? studentName : "Invalid Student",
+                        }
+                    }
+                }
+                break;
+            case "course_id":
+                if(value !== course_id){
+                    editedRegistration = {
+                        ...editedRegistration,
+                        course_id : course_id,
+                        display: {
+                            ...editedRegistration.display,
+                            course_name: renderCourseName(editedRegistration.type, form, new_course),
+                        }
+                    }
+                }
+                break;
+            case "sessions":
+                if(value !== sessions){
+                    editedRegistration = {
+                        ...editedRegistration,
+                        sessions: sessions,
+                    }
+                }
+                break;
+            case "enrollment_note":
+                if(value !== enrollment_note){
+                    editedRegistration = {
+                        ...editedRegistration,
+                        enrollment_note: enrollment_note,
+                    }
+                }
+                break;
+            case "new_course":
+                if(new_course){
+                    editedRegistration = {
+                        ...editedRegistration,
+                        new_course: new_course,
+                    }
+                }
+                break;
+        }
+    }
+    let updated_registered_courses = prevState.registered_courses[student_id].map((registration) => {
+        if(registration.course_id === course_id){
+            return editedRegistration;
+        } else {
+            return registration;
+        }
+    });
+    return {
+        ...prevState,
+        registered_courses:{
+            [student_id]: updated_registered_courses,
+        }
+    }
+}

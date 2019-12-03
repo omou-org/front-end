@@ -55,6 +55,7 @@ function RegistrationCart(props) {
     });
     const [selectedCourses, selectCourse] = useState({});
     const [usersLoaded, setLoadingUsers] = useState(false);
+    const [updatedCourses, addUpdatedCourse] = useState([]);
 
     useEffect(()=>{
         api.initializeRegistration();
@@ -94,7 +95,6 @@ function RegistrationCart(props) {
     const handleCourseSelect = (studentID, courseID) => (e) => {
         // e.preventDefault();
         let currentlySelectedCourses = {...selectedCourses};
-        console.log(currentlySelectedCourses);
         currentlySelectedCourses[studentID][courseID] = {
             sessions: currentlySelectedCourses[studentID][courseID].sessions,
             checked: !currentlySelectedCourses[studentID][courseID].checked
@@ -116,6 +116,13 @@ function RegistrationCart(props) {
             }
         });
         //update registration in redux
+        let updatedRegisteredCourse = {
+            ...props.registration.registered_courses[studentID].find((course)=>{return courseID === course.course_id}),
+            sessions:Number(value),
+        };
+        let courses = updatedCourses;
+        courses.push(updatedRegisteredCourse);
+        addUpdatedCourse(courses);
     };
 
     const renderCourseSessions = (selected, course, studentID) => {
@@ -128,7 +135,7 @@ function RegistrationCart(props) {
 
         return !selected.checked ? selected.sessions : <TextField
                   id="outlined-number"
-                  label="Number of Sessions"
+                  label="No. Sessions"
                   value={selected.sessions}
                   onChange={handleCourseSessionsChange(selected,registration)}
                   type="number"
@@ -223,7 +230,7 @@ function RegistrationCart(props) {
                                                                 :
                                                                 <TextField
                                                                     id="outlined-number"
-                                                                    label="Number of Sessions"
+                                                                    label="Quantity"
                                                                     value={selectedCourses[student_id][registration.course_id].sessions}
                                                                     onChange={handleCourseSessionsChange(
                                                                         selectedCourses[student_id][registration.course_id],
@@ -307,7 +314,7 @@ function RegistrationCart(props) {
                     <Grid container>
                         <Grid item xs={10}/>
                         <Grid item xs={2}>
-                            <Button className={"button"}>
+                            <Button className={"button"} onClick={handlePay()}>
                                 PAY
                             </Button>
                         </Grid>
@@ -316,6 +323,13 @@ function RegistrationCart(props) {
                 </Grid>
             </Grid>
         </Grid>
+    }
+
+    const handlePay = () => (e)=>{
+        e.preventDefault();
+        updatedCourses.forEach((updatedCourse)=>{
+            api.editRegistration(updatedCourse);
+        });
     }
 
     const selectedCourseOptions = () => {
@@ -330,25 +344,8 @@ function RegistrationCart(props) {
                 }
             }
         });
-        if(displaySelectionOptions === 1 && selectedCourseID !== -1 &&
-            props.registration.registered_courses[selectedStudentID].length !== 1){
-            let selectedRegistration = props.registration.registered_courses[selectedStudentID].find(({course_id})=>{
-                return course_id === selectedCourseID});
-            let {form, course_id} = selectedRegistration;
-            let formType = form.form;
-            return <Grid container>
-                <Grid item xs={10}/>
-                <Grid item xs={2}>
-                    <Button className={"button"}
-                            component={NavLinkNoDup}
-                            to={`/registration/form/${formType}/${selectedStudentID}+${course_id}/edit`}
-                    >
-                        Edit Registration
-                    </Button>
-                </Grid>
-            </Grid>
-        } else if(displaySelectionOptions >= 1){
-            return renderPayment(displaySelectionOptions===1, selectedStudentID, selectedCourseID);
+        if(selectedCourseID !== -1) {
+            return renderPayment(displaySelectionOptions === 1, selectedStudentID, selectedCourseID);
         }
         return "";
     }
