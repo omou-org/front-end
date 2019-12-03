@@ -207,3 +207,6 @@ export const fetchEnrollments = () => wrapGet(
 
 export const initializeRegistration = () =>
     ({type: types.INIT_COURSE_REGISTRATION, payload:""});
+
+export const editRegistration = (editedRegistration) =>
+    ({type: types.EDIT_COURSE_REGISTRATION, payload: editedRegistration});

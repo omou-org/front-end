@@ -55,6 +55,7 @@ function RegistrationCart(props) {
     });
     const [selectedCourses, selectCourse] = useState({});
     const [usersLoaded, setLoadingUsers] = useState(false);
+    const [updatedCourses, addUpdatedCourse] = useState([]);
 
     useEffect(()=>{
         api.initializeRegistration();
@@ -95,20 +96,33 @@ function RegistrationCart(props) {
         // e.preventDefault();
         let currentlySelectedCourses = {...selectedCourses};
         currentlySelectedCourses[studentID][courseID] = {
-            ...currentlySelectedCourses,
+            sessions: currentlySelectedCourses[studentID][courseID].sessions,
             checked: !currentlySelectedCourses[studentID][courseID].checked
         };
         selectCourse(currentlySelectedCourses);
     };
 
-    const handleCourseSessionsChange = (selectedCourse) => (e) =>{
+    const handleCourseSessionsChange = (selectedCourse, studentID, courseID) => (e) =>{
         // registration.sessions = e.target.value;
         let {value} = e.target;
         selectCourse({
-            ...selectedCourse,
-            sessions:value,
+            ...selectedCourses,
+            [studentID]:{
+                ...selectedCourses[studentID],
+                [courseID]:{
+                    ...selectedCourse,
+                    sessions:value,
+                }
+            }
         });
         //update registration in redux
+        let updatedRegisteredCourse = {
+            ...props.registration.registered_courses[studentID].find((course)=>{return courseID === course.course_id}),
+            sessions:Number(value),
+        };
+        let courses = updatedCourses;
+        courses.push(updatedRegisteredCourse);
+        addUpdatedCourse(courses);
     };
 
     const renderCourseSessions = (selected, course, studentID) => {
@@ -121,7 +135,7 @@ function RegistrationCart(props) {
 
         return !selected.checked ? selected.sessions : <TextField
                   id="outlined-number"
-                  label="Number of Sessions"
+                  label="No. Sessions"
                   value={selected.sessions}
                   onChange={handleCourseSessionsChange(selected,registration)}
                   type="number"
@@ -132,7 +146,7 @@ function RegistrationCart(props) {
                   margin="normal"
                   variant="outlined"
                 />;
-    }
+    };
 
     const renderStudentRegistrations = () => {
         return Object.keys(props.registration.registered_courses).map((student_id) =>{
@@ -185,10 +199,11 @@ function RegistrationCart(props) {
                                 }
                                 if(course){
                                     let dateOptions = {year: "numeric", month: "short", day: "numeric"};
-                                    let startDate = new Date(course.schedule.start_date + course.schedule.start_time),
-                                        endDate = new Date(course.schedule.end_date + course.schedule.end_time);
+                                    let startDate = new Date(course.schedule.start_date),
+                                        endDate = new Date(course.schedule.end_date);
                                     startDate = startDate.toLocaleDateString("en-US", dateOptions);
                                     endDate = endDate.toLocaleDateString("en-US", dateOptions);
+
                                     return (<Grid item xs={12} md={12}>
                                         <Paper square={true} >
                                             <Grid container alignItems="center">
@@ -207,7 +222,6 @@ function RegistrationCart(props) {
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item xs={1} md={1}>
-
                                                         {
                                                             !selectedCourses[student_id][registration.course_id].checked ?
                                                                 <Typography align={'center'}>
@@ -216,9 +230,12 @@ function RegistrationCart(props) {
                                                                 :
                                                                 <TextField
                                                                     id="outlined-number"
-                                                                    label="Number of Sessions"
+                                                                    label="Quantity"
                                                                     value={selectedCourses[student_id][registration.course_id].sessions}
-                                                                    onChange={handleCourseSessionsChange(selectedCourses[student_id][registration.course_id])}
+                                                                    onChange={handleCourseSessionsChange(
+                                                                        selectedCourses[student_id][registration.course_id],
+                                                                        student_id,
+                                                                        registration.course_id)}
                                                                     type="number"
                                                                     // className={classes.textField}
                                                                     InputLabelProps={{
@@ -250,39 +267,69 @@ function RegistrationCart(props) {
         setPaymentMethod({ [method]: e.target.checked })
     }
 
-    const renderPayment = () =>{
+    const renderPayment = (isOneCourse, selectedStudentID, selectedCourseID) =>{
         const {cash, creditCard, check} = paymentMethod;
+        let selectedRegistration = props.registration.registered_courses[selectedStudentID].find(({course_id})=>{
+            return course_id === selectedCourseID});
+        let {form, course_id} = selectedRegistration;
+        let formType = form.form;
         return <Grid container>
-            <Grid item xs={3}>
-                <FormControl>
-                    <FormLabel>Select Payment Method</FormLabel>
-                    <FormGroup>
-                        <FormControlLabel
-                            label={"Cash"}
-                            control={<Checkbox checked={cash} onChange={handlePayMethodChange('cash')} value={"Cash"}/>}
-                        />
-                        <FormControlLabel
-                            label={"Check"}
-                            control={<Checkbox checked={check} onChange={handlePayMethodChange('check')} value={"Check"}/>}
-                        />
-                        <FormControlLabel
-                            label={"Credit Card"}
-                            control={<Checkbox checked={creditCard} onChange={handlePayMethodChange('creditCard')} value={"Credit Card"}/>}
-                        />
-                    </FormGroup>
-                </FormControl>
-            </Grid>
-            <Grid item xs={9}>
-                <Grid container>
-                    <Grid item xs={10}/>
-                    <Grid item xs={2}>
-                        <Button className={"button"}>
-                            PAY
-                        </Button>
+            {
+                isOneCourse ? <Grid item xs={12}>
+                    <Grid container>
+                        <Grid item xs={9}/>
+                        <Grid item xs={3}>
+                            <Button className={"button"}
+                                    component={NavLinkNoDup}
+                                    to={`/registration/form/${formType}/${selectedStudentID}+${course_id}/edit`}
+                            >
+                                Edit Registration
+                            </Button>
+                        </Grid>
                     </Grid>
+                </Grid> : ""
+            }
+            <Grid item xs={12}>
+                <Grid container>
+                    <Grid item xs={3}>
+                        <FormControl>
+                            <FormLabel>Select Payment Method</FormLabel>
+                            <FormGroup>
+                                <FormControlLabel
+                                    label={"Cash"}
+                                    control={<Checkbox checked={cash} onChange={handlePayMethodChange('cash')} value={"Cash"}/>}
+                                />
+                                <FormControlLabel
+                                    label={"Check"}
+                                    control={<Checkbox checked={check} onChange={handlePayMethodChange('check')} value={"Check"}/>}
+                                />
+                                <FormControlLabel
+                                    label={"Credit Card"}
+                                    control={<Checkbox checked={creditCard} onChange={handlePayMethodChange('creditCard')} value={"Credit Card"}/>}
+                                />
+                            </FormGroup>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={9}>
+                    <Grid container>
+                        <Grid item xs={10}/>
+                        <Grid item xs={2}>
+                            <Button className={"button"} onClick={handlePay()}>
+                                PAY
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
                 </Grid>
             </Grid>
         </Grid>
+    }
+
+    const handlePay = () => (e)=>{
+        e.preventDefault();
+        updatedCourses.forEach((updatedCourse)=>{
+            api.editRegistration(updatedCourse);
+        });
     }
 
     const selectedCourseOptions = () => {
@@ -297,24 +344,8 @@ function RegistrationCart(props) {
                 }
             }
         });
-        if(displaySelectionOptions === 1 && selectedCourseID !== -1){
-            let selectedRegistration = props.registration.registered_courses[selectedStudentID].find(({course_id})=>{
-                return course_id === selectedCourseID});
-            let {form, course_id} = selectedRegistration;
-            let formType = form.form;
-            return <Grid container>
-                <Grid item xs={10}/>
-                <Grid item xs={2}>
-                    <Button className={"button"}
-                            component={NavLinkNoDup}
-                            to={`/registration/form/${formType}/${selectedStudentID}+${course_id}/edit`}
-                    >
-                        Edit Registration
-                    </Button>
-                </Grid>
-            </Grid>
-        } else if(displaySelectionOptions > 1){
-            return renderPayment();
+        if(selectedCourseID !== -1) {
+            return renderPayment(displaySelectionOptions === 1, selectedStudentID, selectedCourseID);
         }
         return "";
     }
@@ -328,7 +359,7 @@ function RegistrationCart(props) {
                         <hr/>
                     </Grid>
                     <Grid item xs={12}>
-                        <Typography variant={"h3"} align={"left"}>Select Course(s) to Pay</Typography>
+                        <Typography variant={"h3"} align={"left"}>Select Course(s)</Typography>
                     </Grid>
                     <Grid item xs={12}>
                         {usersLoaded ? renderStudentRegistrations() : <Loading/>}

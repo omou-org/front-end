@@ -62,11 +62,11 @@ const SearchResults = (props) => {
     useEffect(() => {
         api.fetchSearchAccountQuery(requestConfig);
         api.fetchSearchCourseQuery(requestConfig);
-    }, [query]);
+    }, []);
     useEffect(()=>{
         setAccountResults(props.search.accounts);
         setCourseResults(props.search.courses);
-    },[props.search]);
+    },[params.query,props.search]);
 
     const numberOfResults = () =>{
         switch(params.type){
