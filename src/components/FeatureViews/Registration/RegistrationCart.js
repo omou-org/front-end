@@ -3,7 +3,7 @@ import React, {useState, useEffect, useMemo} from "react";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
-
+import BackArrow from "@material-ui/icons/ArrowBack";
 import { makeStyles } from "@material-ui/styles";
 import "./registration.scss";
 
@@ -269,6 +269,7 @@ function RegistrationCart(props) {
 
     const renderPayment = (isOneCourse, selectedStudentID, selectedCourseID) =>{
         const {cash, creditCard, check} = paymentMethod;
+        console.log(props.registration.registered_courses);
         let selectedRegistration = props.registration.registered_courses[selectedStudentID].find(({course_id})=>{
             return course_id === selectedCourseID});
         let {form, course_id} = selectedRegistration;
@@ -330,6 +331,11 @@ function RegistrationCart(props) {
         updatedCourses.forEach((updatedCourse)=>{
             api.editRegistration(updatedCourse);
         });
+        console.log("paying!");
+        console.log("updated Courses?",props.registration.registered_courses);
+        return ()=>{
+          console.log("updated Courses?",props.registration.registered_courses);
+        };
     }
 
     const selectedCourseOptions = () => {
@@ -355,7 +361,16 @@ function RegistrationCart(props) {
             <Paper className={"registration-cart paper"}>
                 <Grid container layout={"row"} spacing={8}>
                     <Grid item xs={12}>
-                        <BackButton/>
+                        <Grid container>
+                            <Grid item={3}>
+                                <Button
+                                    className={"button"}
+                                    component={NavLinkNoDup} to={"/registration"}>
+                                    <BackArrow/>
+                                    Register
+                                </Button>
+                            </Grid>
+                        </Grid>
                         <hr/>
                     </Grid>
                     <Grid item xs={12}>

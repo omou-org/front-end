@@ -181,7 +181,7 @@ export const submitForm = (state, id) => {
             return { type: types.ADD_TUTORING_REGISTRATION, payload: {...state} }
         }
         case "course": {
-            return { type: types.ADD_CLASS_REGISTRATION, payload: {...state} }
+            return { type: types.ADD_CLASS_REGISTRATION, payload: {...state, id} }
         }
         case "small_group":{
             return { type: types.ADD_CLASS_REGISTRATION, payload: {...state} }

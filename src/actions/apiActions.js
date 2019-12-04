@@ -135,7 +135,7 @@ export const submitNewSmallGroup = (form) => {
                 console.log(courseResponse);
                 dispatch({
                     type: types.ADD_SMALL_GROUP_REGISTRATION,
-                    payload: {form: form, new_course: courseResponse.data},
+                    payload: {formMain: form, new_course: courseResponse.data},
                 });
             }, (error) => {
                 dispatch({type: courseFailAction, payload: error});
@@ -179,6 +179,6 @@ export const formatCourse = (formCourse) =>{
         "start_time": startTime.substring(0,5),
         "end_time": endTime.substring(0,5),
         "max_capacity": formCourse["Capacity"],
-        "course_id": "20"
+        "course_id": "29"
     };
 }
