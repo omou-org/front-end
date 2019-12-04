@@ -163,14 +163,13 @@ export const submitForm = (state, id) => {
             }
         }
         case "course_details": {
-            const course = formatCourse(state["Course Info"]);
+            const course = formatCourse(state["Course Info"],"C");
 
             for (const key in course) {
                 if (course.hasOwnProperty(key) && !course[key]) {
                     delete course[key];
                 }
             }
-            console.log(course);
             if (id) {
                 return patchData("course", course, id);
             } else {

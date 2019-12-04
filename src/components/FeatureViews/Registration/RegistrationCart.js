@@ -269,16 +269,26 @@ function RegistrationCart(props) {
 
     const renderPayment = (isOneCourse, selectedStudentID, selectedCourseID) =>{
         const {cash, creditCard, check} = paymentMethod;
-        console.log(props.registration.registered_courses);
         let selectedRegistration = props.registration.registered_courses[selectedStudentID].find(({course_id})=>{
             return course_id === selectedCourseID});
+        let isSmallGroup = props.courseList[selectedCourseID].capacity < 5;
         let {form, course_id} = selectedRegistration;
         let formType = form.form;
         return <Grid container>
             {
                 isOneCourse ? <Grid item xs={12}>
                     <Grid container>
-                        <Grid item xs={9}/>
+                        <Grid item xs={6}/>
+                        <Grid item xs={3}>
+                            {
+                                isSmallGroup ?
+                                    <Button
+                                        className={"button"}
+                                        component={NavLinkNoDup}
+                                        to={`/registration/form/course_details/${selectedCourseID}/edit`}
+                                        >Edit Group Course</Button> : ""
+                            }
+                        </Grid>
                         <Grid item xs={3}>
                             <Button className={"button"}
                                     component={NavLinkNoDup}
