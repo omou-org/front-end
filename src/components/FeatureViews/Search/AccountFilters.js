@@ -75,8 +75,6 @@ const SearchResultFilter = (props) => {
     const [sortFilter, setSortFilter] = useState("");
 
     const handleFilterChange = event => {
-        console.log(event);
-        // props.onFilterChange(event.target.name)
         switch (event.target.name) {
             case "profileType":
                 api.updateSearchFilter("account","profile",event.target.value);
@@ -95,8 +93,6 @@ const SearchResultFilter = (props) => {
         }
     };
 
-
-    // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
         <>
             <Grid item style={{ padding: "10px" }} className={"searchFilters"}>
