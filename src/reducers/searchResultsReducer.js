@@ -40,7 +40,9 @@ export default function course(state = initialState.SearchResults, {payload, typ
             return {
                 ...state,
                 "searchQueryStatus":"failed",
-            }
+            };
+        case actions.UPDATE_SEARCH_FILTER:
+            return handleSearchFilterChange(state, payload);
         default:
             return state;
     }
@@ -63,3 +65,12 @@ const handleCourseSearchResults = (state, {id, response}) =>{
         searchQueryStatus: "success"
     }
 };
+
+const handleSearchFilterChange = (state, {searchType, filter, value}) =>{
+    let newState = {...state};
+    newState.filter[searchType][filter] = value;
+    if(filter==="grade"){
+        newState.filter[searchType].profile = "student";
+    }
+    return newState
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Grid, Select, Button } from "@material-ui/core";
 import { bindActionCreators } from "redux";
 import * as searchActions from "../../../actions/searchActions";
@@ -23,6 +23,14 @@ import Loading from "../../Loading";
 import MoreResultsIcon from "@material-ui/icons/KeyboardArrowRight";
 import {Link, useRouteMatch} from "react-router-dom";
 
+const usePrevious = value => {
+    const ref = useRef();
+    useEffect(() => {
+        ref.current = value;
+    });
+    return ref.current;
+};
+
 const SearchResults = (props) => {
     const dispatch = useDispatch();
     const api = useMemo(
@@ -35,10 +43,6 @@ const SearchResults = (props) => {
         [dispatch]
     );
 
-    const courses = useSelector(({ "Course": { NewCourseList } }) => NewCourseList);
-    const instructors = useSelector(({ "Users": { InstructorList } }) => InstructorList);
-    const requestStatus = useSelector(({ RequestStatus }) => RequestStatus);
-
     useEffect(() => {
         api.fetchCourses();
         api.fetchInstructors();
@@ -50,6 +54,7 @@ const SearchResults = (props) => {
     const [courseResults, setCourseResults] = useState([]);
     const {"params": {query}} = useRouteMatch();
     const [loading, setLoading] = useState(true);
+    const previousSearchFilters = usePrevious(props.search.filter);
 
     const params = useParams();
 
@@ -67,6 +72,10 @@ const SearchResults = (props) => {
         setAccountResults(props.search.accounts);
         setCourseResults(props.search.courses);
     },[params.query,props.search]);
+    useEffect(()=>{
+        console.log("updated filter", props.search.filter)
+
+    },[props.search]);
 
     const numberOfResults = () =>{
         switch(params.type){
@@ -80,9 +89,8 @@ const SearchResults = (props) => {
                 return courseResults.length
             }
         }
-    }
+    };
 
-    // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
             <Grid container className={'search-results'} style={{ "padding": "1em" }}>
                 { props.search.searchQueryStatus !== "success" ?
@@ -100,7 +108,7 @@ const SearchResults = (props) => {
                             {params.type === "account" ?
                                 <Grid item xs={12}>
                                     <Grid container>
-                                        <AccountFilters />
+                                        <AccountFilters/>
                                     </Grid>
                                 </Grid>
                                 : ""}
@@ -110,7 +118,7 @@ const SearchResults = (props) => {
                                     justify={"space-between"}
                                     direction={"row"}
                                     alignItems="center">
-                                    <Grid item className="searchResults" >
+                                    <Grid item className="searchResults">
                                         <Typography className={"resultsColor"} align={'left'} gutterBottom>
                                             {accountResults.length > 0 ? "Accounts":""}
                                         </Typography>

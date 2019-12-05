@@ -477,11 +477,16 @@ const editCourseRegistration = (prevState, {student_id, course_id, enrollment_no
             return registration;
         }
     });
-    return {
+
+    let updatedRegistration = {
         ...prevState,
         registered_courses:{
             ...prevState.registered_courses,
             [student_id]: updated_registered_courses,
         }
     }
+
+    sessionStorage.setItem("registered_courses", JSON.stringify(updatedRegistration.registered_courses));
+
+    return updatedRegistration;
 }

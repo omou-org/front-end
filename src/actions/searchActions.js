@@ -29,3 +29,7 @@ export const fetchSearchCourseQuery = (searchConfig) => wrapGet(
 export function setSearchQuery(event) {
     return { type: types.SET_SEARCH_QUERY, payload: event}
 }
+
+export const updateSearchFilter = (searchType,filter, value) => {
+    return {type: types.UPDATE_SEARCH_FILTER, payload: { searchType: searchType, filter: filter, value: value}};
+}
