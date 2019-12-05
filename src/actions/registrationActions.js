@@ -1,6 +1,6 @@
 import * as types from "./actionTypes";
-import {submitParentAndStudent, postData, patchData} from "./rootActions";
-import {wrapGet, postCourse, formatCourse, wrapPost} from "./apiActions";
+import {submitParentAndStudent, postData, patchData, typeToPostActions} from "./rootActions";
+import {wrapGet, postCourse, formatCourse, wrapPost, instance} from "./apiActions";
 
 const parseGender = {
     "Male": "M",
@@ -222,3 +222,52 @@ export const submitClassRegistration = (studentID, courseID) => wrapPost(
         student:studentID,
     }
 );
+
+export const submitTutoringRegistration = (newTutoringCourse, studentID) => {
+    const enrollmentEndpoint = "/course/enrollment/";
+    const courseEndpoint = "/course/catalog/";
+
+    return (dispatch, getState) => new Promise((resolve) => {
+        dispatch({
+            type: types.POST_TUTORING_ENROLLMENT_STARTED,
+            payload: null,
+        });
+        resolve();
+    }).then(() => {
+        instance.request({
+            "data": {...newTutoringCourse, course_id:"30"},
+            "headers": {
+                "Authorization": `Token ${getState().auth.token}`,
+            },
+            "method": "post",
+            "url": courseEndpoint,
+        })
+            .then((tutoringCourseResponse) => {
+                dispatch({
+                    type: types.POST_COURSE_SUCCESSFUL,
+                    payload: tutoringCourseResponse.data,
+                });
+                instance.request({
+                    "data": {
+                        "student": studentID,
+                        "course_id": tutoringCourseResponse.data.course_id,
+                    },
+                    "headers": {
+                        "Authorization": `Token ${getState().auth.token}`,
+                    },
+                    "method": "post",
+                    "url": enrollmentEndpoint,
+                })
+                    .then((enrollmentResponse) => {
+                        dispatch({
+                            type: types.POST_ENROLLMENT_STARTED,
+                            payload: enrollmentResponse,
+                        });
+                    }, (error) => {
+                        dispatch({type: types.POST_ENROLLMENT_FAILED, payload: error});
+                    });
+            }, (error) => {
+                dispatch({type: types.POST_COURSE_FAILED, payload: error});
+            });
+    });
+};

@@ -365,6 +365,28 @@ function RegistrationCart(props) {
                             api.submitClassRegistration(studentID, course_id);
                             break;
                         case "tutoring":
+                            let schedule = {
+                                ...new_course.schedule,
+                                start_date:new_course.schedule.start_date.substring(0,10),
+                                end_date: new_course.schedule.end_date.substring(0,10),
+                            }
+                            new_course = {
+                                ...new_course,
+                                ...schedule,
+                            };
+                            delete new_course["schedule"];
+                            let dayOfWeek = {
+                                0: "Sun",
+                                1: "Mon",
+                                2: "Tue",
+                                3: "Wed",
+                                4: "Thu",
+                                5: "Fri",
+                                6: "Sat",
+                            };
+                            new_course.day_of_week = dayOfWeek[new_course.day_of_week];
+                            console.log(new_course);
+                            api.submitTutoringRegistration(new_course,studentID);
                             break;
                     }
                 }
