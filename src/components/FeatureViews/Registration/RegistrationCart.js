@@ -26,6 +26,7 @@ import Button from "@material-ui/core/Button";
 import Loading from "../../Loading";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
 import TextField from "@material-ui/core/TextField";
+import Prompt from "react-router-dom/es/Prompt";
 
 const useStyles = makeStyles({
     setParent: {
@@ -56,6 +57,7 @@ function RegistrationCart(props) {
     const [selectedCourses, selectCourse] = useState({});
     const [usersLoaded, setLoadingUsers] = useState(false);
     const [updatedCourses, addUpdatedCourse] = useState([]);
+    const [selectionPendingStatus, setSelectionPending] = useState(false);
 
     useEffect(()=>{
         api.initializeRegistration();
@@ -269,16 +271,26 @@ function RegistrationCart(props) {
 
     const renderPayment = (isOneCourse, selectedStudentID, selectedCourseID) =>{
         const {cash, creditCard, check} = paymentMethod;
-        console.log(props.registration.registered_courses);
         let selectedRegistration = props.registration.registered_courses[selectedStudentID].find(({course_id})=>{
             return course_id === selectedCourseID});
+        let isSmallGroup = props.courseList[selectedCourseID].capacity < 5;
         let {form, course_id} = selectedRegistration;
         let formType = form.form;
         return <Grid container>
             {
                 isOneCourse ? <Grid item xs={12}>
                     <Grid container>
-                        <Grid item xs={9}/>
+                        <Grid item xs={6}/>
+                        <Grid item xs={3}>
+                            {
+                                isSmallGroup ?
+                                    <Button
+                                        className={"button"}
+                                        component={NavLinkNoDup}
+                                        to={`/registration/form/course_details/${selectedCourseID}/edit`}
+                                        >Edit Group Course</Button> : ""
+                            }
+                        </Grid>
                         <Grid item xs={3}>
                             <Button className={"button"}
                                     component={NavLinkNoDup}
@@ -313,7 +325,12 @@ function RegistrationCart(props) {
                     </Grid>
                     <Grid item xs={9}>
                     <Grid container>
-                        <Grid item xs={10}/>
+                        <Grid item xs={6}/>
+                        <Grid item xs={4}>
+                            <Button className={"button"} onClick={updateQuantity()}>
+                                UPDATE SESSIONS
+                            </Button>
+                        </Grid>
                         <Grid item xs={2}>
                             <Button className={"button"} onClick={handlePay()}>
                                 PAY
@@ -326,16 +343,19 @@ function RegistrationCart(props) {
         </Grid>
     }
 
-    const handlePay = () => (e)=>{
+    const updateQuantity = () => (e) => {
         e.preventDefault();
         updatedCourses.forEach((updatedCourse)=>{
             api.editRegistration(updatedCourse);
         });
+    }
+
+    const handlePay = () => (e)=>{
+        e.preventDefault();
+        setSelectionPending(false);
+
         console.log("paying!");
-        console.log("updated Courses?",props.registration.registered_courses);
-        return ()=>{
-          console.log("updated Courses?",props.registration.registered_courses);
-        };
+        console.log("updated Courses?", props.registration.registered_courses);
     }
 
     const selectedCourseOptions = () => {

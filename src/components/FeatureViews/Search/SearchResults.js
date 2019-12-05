@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Grid, Select, Button } from "@material-ui/core";
 import { bindActionCreators } from "redux";
 import * as searchActions from "../../../actions/searchActions";
@@ -22,7 +22,6 @@ import NoResultsPage from './NoResults/NoResultsPage';
 import Loading from "../../Loading";
 import MoreResultsIcon from "@material-ui/icons/KeyboardArrowRight";
 import { Link, useRouteMatch } from "react-router-dom";
-import { eventTupleToStore } from '@fullcalendar/core';
 
 const SearchResults = (props) => {
     const dispatch = useDispatch();
@@ -35,10 +34,6 @@ const SearchResults = (props) => {
         }),
         [dispatch]
     );
-
-    const courses = useSelector(({ "Course": { NewCourseList } }) => NewCourseList);
-    const instructors = useSelector(({ "Users": { InstructorList } }) => InstructorList);
-    const requestStatus = useSelector(({ RequestStatus }) => RequestStatus);
 
     useEffect(() => {
         api.fetchCourses();
@@ -67,7 +62,11 @@ const SearchResults = (props) => {
     useEffect(() => {
         setAccountResults(props.search.accounts);
         setCourseResults(props.search.courses);
-    }, [params.query, props.search]);
+    },[params.query,props.search]);
+    useEffect(()=>{
+        console.log("updated filter", props.search.filter)
+
+    },[props.search]);
 
     const numberOfResults = () => {
         switch (params.type) {
@@ -81,8 +80,8 @@ const SearchResults = (props) => {
                 return courseResults.length
             }
         }
-    }
-    // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
+    };
+
     return (
         <Grid container className={'search-results'} style={{ "padding": "1em" }}>
             {props.search.searchQueryStatus !== "success" ?
@@ -100,7 +99,7 @@ const SearchResults = (props) => {
                             {params.type === "account" ?
                                 <Grid item xs={12}>
                                     <Grid container>
-                                        <AccountFilters />
+                                        <AccountFilters/>
                                     </Grid>
                                 </Grid>
                                 : ""}
@@ -110,7 +109,7 @@ const SearchResults = (props) => {
                                     justify={"space-between"}
                                     direction={"row"}
                                     alignItems="center">
-                                    <Grid item className="searchResults" >
+                                    <Grid item className="searchResults">
                                         <Typography className={"resultsColor"} align={'left'} gutterBottom>
                                             {accountResults.length > 0 ? "Accounts" : ""}
                                         </Typography>
@@ -132,7 +131,7 @@ const SearchResults = (props) => {
                                         ""
                                     }
                                 </Grid>
-                                <MoreResultsIcon />
+                                <MoreResultsIcon/>
                             </Grid>
                             {/* </Grid> */}
                             {accountResults.length > 0 ? <hr /> : ""}

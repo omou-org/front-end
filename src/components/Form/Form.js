@@ -408,7 +408,7 @@ class Form extends Component {
                                 const inst = this.props.instructors[course.instructor_id];
                                 this.setState({
                                     "Course Info": {
-                                        "Name": course.title,
+                                        "Course Name": course.title,
                                         "Description": course.description,
                                         "Instructor":
                                             inst
@@ -562,7 +562,7 @@ class Form extends Component {
                 if (oldState.activeStep === this.getFormObject().section_titles.length - 1 || oldState.isSmallGroup) {
                     if (!oldState.submitPending) {
                         if (this.props.computedMatch.params.edit === "edit") {
-                            console.log(this.props.computedMatch.params);
+                            console.log(this.props.computedMatch.params.id);
                             this.props.registrationActions.submitForm(this.state, this.props.computedMatch.params.id);
                         } else if(this.state.form === "small_group") {
                             if(this.state["Group Type"]["Select Group Type"] === "New Small Group"){
@@ -947,11 +947,20 @@ class Form extends Component {
                         />
                     </Grid>;
             case "time":
+                let time;
+                if(this.state[label][fieldTitle] && typeof this.state[label][fieldTitle] !== "string"){
+                    time = this.state[label][fieldTitle];
+                } else if(typeof this.state[label][fieldTitle] === "string"){
+                    time = new Date();
+                    time.setHours(Number(this.state[label][fieldTitle].substring(0,this.state[label][fieldTitle].indexOf(":"))));
+                    time.setMinutes(Number(this.state[label][fieldTitle].substring(this.state[label][fieldTitle].indexOf(":")+1,this.state[label][fieldTitle].indexOf(" "))));
+                    time.setSeconds(0);
+                }
                 return <Grid container>
                     <TimePicker autoOk
                                 error={!this.state[label + "_validated"][field.name]}
                                 label={fieldTitle}
-                                value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : new Date()}
+                                value={time}
                                 onChange={(date) =>{ this.setState((prevState)=>{
                                     prevState[label][fieldTitle] = date;
                                     return prevState;

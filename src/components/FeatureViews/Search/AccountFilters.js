@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import ReactSelect from 'react-select';
 import { Grid, Select, Button } from "@material-ui/core";
 import { bindActionCreators } from "redux";
 import * as searchActions from "../../../actions/searchActions";
-import { connect } from "react-redux";
+import {connect, useDispatch} from "react-redux";
 
 import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
@@ -19,6 +19,9 @@ import FormControl from '@material-ui/core/FormControl';
 import InputBase from '@material-ui/core/InputBase';
 import { makeStyles, withStyles } from '@material-ui/styles';
 import "./Search.scss";
+import * as apiActions from "../../../actions/apiActions";
+import * as userActions from "../../../actions/userActions";
+import * as registrationActions from "../../../actions/registrationActions";
 
 const BootstrapInput = withStyles(theme => ({
     input: {
@@ -63,22 +66,31 @@ const customSelect = makeStyles(theme => ({
 
 
 const SearchResultFilter = (props) => {
-    const classes = customSelect()
+    const dispatch = useDispatch();
+    const api = useMemo(
+        () => ({
+            ...bindActionCreators(searchActions, dispatch),
+        }),
+        [dispatch]
+    );
+
+    const classes = customSelect();
     const [profileTypeFilter, setProfileTypeFilter] = useState("");
     const [gradeFilter, setGradeFilter] = useState("");
     const [sortFilter, setSortFilter] = useState("");
-    console.log(props)
+
     const handleFilterChange = event => {
-        console.log(props)
-        // props.onFilterChange(event.target.name)
         switch (event.target.name) {
             case "profileType":
+                api.updateSearchFilter("account","profile",event.target.value);
                 setProfileTypeFilter(event.target.value);
                 break;
             case "gradeFilter":
+                api.updateSearchFilter("account","grade",event.target.value);
                 setGradeFilter(event.target.value);
                 break;
             case "sortFilter":
+                api.updateSearchFilter("account","sort",event.target.value);
                 setSortFilter(event.target.value);
                 break;
             default:
@@ -86,8 +98,6 @@ const SearchResultFilter = (props) => {
         }
     };
 
-
-    // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
         <>
             <Grid item sm={6} >
