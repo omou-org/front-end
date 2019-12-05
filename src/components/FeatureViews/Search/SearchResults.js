@@ -58,7 +58,7 @@ const SearchResults = (props) => {
     useEffect(() => {
         api.fetchSearchAccountQuery(requestConfig);
         api.fetchSearchCourseQuery(requestConfig);
-    }, [api, requestConfig]);
+    }, []);
     useEffect(() => {
         setAccountResults(props.search.accounts);
         setCourseResults(props.search.courses);
