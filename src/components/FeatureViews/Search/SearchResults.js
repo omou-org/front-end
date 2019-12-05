@@ -21,7 +21,8 @@ import AccountFilters from "../../FeatureViews/Search/AccountFilters"
 import NoResultsPage from './NoResults/NoResultsPage';
 import Loading from "../../Loading";
 import MoreResultsIcon from "@material-ui/icons/KeyboardArrowRight";
-import {Link, useRouteMatch} from "react-router-dom";
+import { Link, useRouteMatch } from "react-router-dom";
+import { eventTupleToStore } from '@fullcalendar/core';
 
 const SearchResults = (props) => {
     const dispatch = useDispatch();
@@ -48,7 +49,7 @@ const SearchResults = (props) => {
     const [data, setData] = useState("");
     const [accountResults, setAccountResults] = useState([]);
     const [courseResults, setCourseResults] = useState([]);
-    const {"params": {query}} = useRouteMatch();
+    const { "params": { query } } = useRouteMatch();
     const [loading, setLoading] = useState(true);
 
     const params = useParams();
@@ -57,44 +58,43 @@ const SearchResults = (props) => {
     // /search/account/?query=query?profileFilter=profileFilter?gradeFilter=gradeFilter?sortAlpha=asc?sortID=desc
     // /search/courses/?query=query?courseTypeFilter=courseType?availability=availability?dateSort=desc
 
-    const requestConfig = { params: { query: params.query, page: 1 }, headers: {"Authorization": `Token ${props.auth.token}`,} };
+    const requestConfig = { params: { query: params.query, page: 1 }, headers: { "Authorization": `Token ${props.auth.token}`, } };
 
     useEffect(() => {
         api.fetchSearchAccountQuery(requestConfig);
         api.fetchSearchCourseQuery(requestConfig);
-    }, []);
-    useEffect(()=>{
+    }, [api, requestConfig]);
+    useEffect(() => {
         setAccountResults(props.search.accounts);
         setCourseResults(props.search.courses);
-    },[params.query,props.search]);
+    }, [params.query, props.search]);
 
-    const numberOfResults = () =>{
-        switch(params.type){
-            case "all":{
+    const numberOfResults = () => {
+        switch (params.type) {
+            case "all": {
                 return accountResults.length + courseResults.length;
             }
-            case "account":{
+            case "account": {
                 return accountResults.length;
             }
-            case "course":{
+            case "course": {
                 return courseResults.length
             }
         }
     }
-
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
-            <Grid container className={'search-results'} style={{ "padding": "1em" }}>
-                { props.search.searchQueryStatus !== "success" ?
-                    <Loading/>
-                    :  (numberOfResults() !== 0) ?
+        <Grid container className={'search-results'} style={{ "padding": "1em" }}>
+            {props.search.searchQueryStatus !== "success" ?
+                <Loading />
+                : (numberOfResults() !== 0) ?
                     <Grid item xs={12}>
                         <Paper className={'main-search-view'} >
                             <Grid item xs={12} className="searchResults">
                                 <Typography variant={"h4"} align={"left"}>
-                                <span style={{fontFamily:"Roboto Slab", fontWeight:"500"}}>
-                                {numberOfResults()} Search Results for </span>
-                                     "{query}"
+                                    <span style={{ fontFamily: "Roboto Slab", fontWeight: "500" }}>
+                                        {numberOfResults()} Search Results for </span>
+                                    "{query}"
                                      </Typography>
                             </Grid>
                             {params.type === "account" ?
@@ -105,14 +105,14 @@ const SearchResults = (props) => {
                                 </Grid>
                                 : ""}
                             <hr />
-                            <Grid item xs={12} style={{"position":"relative"}}>
+                            <Grid item xs={12} style={{ "position": "relative" }}>
                                 <Grid container
                                     justify={"space-between"}
                                     direction={"row"}
                                     alignItems="center">
                                     <Grid item className="searchResults" >
                                         <Typography className={"resultsColor"} align={'left'} gutterBottom>
-                                            {accountResults.length > 0 ? "Accounts":""}
+                                            {accountResults.length > 0 ? "Accounts" : ""}
                                         </Typography>
                                     </Grid>
                                     {/*<Grid item >*/}
@@ -122,20 +122,20 @@ const SearchResults = (props) => {
                                     {/*</Grid>*/}
                                 </Grid>
                                 <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} spacing={16} direction={"row"}>
-                                    { accountResults.length > 0 ?
+                                    {accountResults.length > 0 ?
                                         accountResults.slice(0, 4).map((account) => (
                                             <Grid item xs={12}
-                                                  sm={3}>
+                                                sm={3}>
                                                 <AccountsCards user={account} key={account.user_id} />
                                             </Grid>))
                                         :
                                         ""
                                     }
                                 </Grid>
-                                <MoreResultsIcon/>
+                                <MoreResultsIcon />
                             </Grid>
                             {/* </Grid> */}
-                            { accountResults.length > 0 ? <hr /> : ""}
+                            {accountResults.length > 0 ? <hr /> : ""}
                             {/*<Grid item xs={12}>*/}
                             {/*    <Grid container*/}
                             {/*        justify={"space-between"}*/}
@@ -160,9 +160,9 @@ const SearchResults = (props) => {
                             {
                                 params.type !== "account" ? <Grid item xs={12}>
                                     <Grid container
-                                          justify={"space-between"}
-                                          direction={"row"}
-                                          alignItems="center">
+                                        justify={"space-between"}
+                                        direction={"row"}
+                                        alignItems="center">
                                         <Grid item className="searchResults">
                                             <Typography className={"resultsColor"} align={'left'} >
                                                 {props.search.courses.length > 0 ?
