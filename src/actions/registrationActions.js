@@ -1,6 +1,6 @@
 import * as types from "./actionTypes";
 import {submitParentAndStudent, postData, patchData} from "./rootActions";
-import {wrapGet, postCourse, formatCourse} from "./apiActions";
+import {wrapGet, postCourse, formatCourse, wrapPost} from "./apiActions";
 
 const parseGender = {
     "Male": "M",
@@ -209,3 +209,16 @@ export const initializeRegistration = () =>
 
 export const editRegistration = (editedRegistration) =>
     ({type: types.EDIT_COURSE_REGISTRATION, payload: editedRegistration});
+let courseEnrollmentEP = "/course/enrollment/"
+export const submitClassRegistration = (studentID, courseID) => wrapPost(
+    "/course/enrollment/",
+    [
+        types.POST_ENROLLMENT_STARTED,
+        types.POST_ENROLLMENT_SUCCESS,
+        types.POST_ENROLLMENT_FAILED,
+    ],
+    {
+        course:courseID,
+        student:studentID,
+    }
+);

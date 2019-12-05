@@ -273,7 +273,7 @@ function RegistrationCart(props) {
         const {cash, creditCard, check} = paymentMethod;
         let selectedRegistration = props.registration.registered_courses[selectedStudentID].find(({course_id})=>{
             return course_id === selectedCourseID});
-        let isSmallGroup = props.courseList[selectedCourseID].capacity < 5;
+        let isSmallGroup = selectedCourseID.indexOf("T") === -1 ? props.courseList[selectedCourseID].capacity < 5: false;
         let {form, course_id} = selectedRegistration;
         let formType = form.form;
         return <Grid container>
@@ -355,7 +355,21 @@ function RegistrationCart(props) {
         setSelectionPending(false);
 
         console.log("paying!");
-        console.log("updated Courses?", props.registration.registered_courses);
+        // console.log("updated Courses?", props.registration.registered_courses);
+        Object.keys(props.registration.registered_courses).forEach((studentID)=>{
+            props.registration.registered_courses[studentID].forEach(({type, course_id, new_course})=>{
+                console.log(new_course, course_id, studentID);
+                if(selectedCourses[studentID][course_id].checked){
+                    switch(type){
+                        case "class":
+                            api.submitClassRegistration(studentID, course_id);
+                            break;
+                        case "tutoring":
+                            break;
+                    }
+                }
+            })
+        })
     }
 
     const selectedCourseOptions = () => {

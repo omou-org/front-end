@@ -5,12 +5,22 @@ export default function enrollment(state = initialState.Enrollments, {payload, t
     switch (type) {
         case actions.FETCH_ENROLLMENT_SUCCESSFUL:
             return handleEnrollmentFetch(state, payload);
+        case actions.POST_ENROLLMENT_STARTED:
+            console.log("posting enrollment");
+            return state;
+        case actions.POST_ENROLLMENT_SUCCESS:
+            console.log("POST enrollment success!");
+            return handleEnrollmentFetch(state, payload);
+        case actions.POST_ENROLLMENT_FAILED:
+            console.log("POST enrollment failed");
+            return state;
         default:
             return state;
     }
 }
 
 const handleEnrollmentFetch = (state, {response}) => {
+    console.log(state, response);
     const {data} = response;
     const newState = JSON.parse(JSON.stringify(state));
 
