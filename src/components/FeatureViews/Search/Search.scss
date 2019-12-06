@@ -125,13 +125,15 @@
 
 // Filters 
 
-.accountFilters{
-  display : flex;
-  padding-top: 20px;
-  .input-title{
+  .account-dropdown-title{
     top: -15px;
     left: 7px;
   }
+
+.accountFilters{
+  display : flex;
+  padding-top: 20px;
+
 }
 
 
@@ -149,3 +151,9 @@
 }
 
 
+.search-filter-wrapper{
+  width: 100%;
+  .label{
+    padding-left: 10px;
+  }
+}

@@ -48,7 +48,6 @@ function SetRegistrationActions(props) {
 
     const handleClick = () => (e) => {
         e.preventDefault();
-
         setDialog(true);
     }
 
