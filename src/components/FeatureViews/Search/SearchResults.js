@@ -131,7 +131,9 @@ const SearchResults = (props) => {
                                         ""
                                     }
                                 </Grid>
-                                <MoreResultsIcon/>
+                                <div onClick={(e)=>{e.preventDefault(); console.log("clicked on more results")}}>
+                                    <MoreResultsIcon/>
+                                </div>
                             </Grid>
                             {/* </Grid> */}
                             {accountResults.length > 0 ? <hr /> : ""}
