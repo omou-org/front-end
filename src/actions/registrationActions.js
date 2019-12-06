@@ -235,7 +235,7 @@ export const submitTutoringRegistration = (newTutoringCourse, studentID) => {
         resolve();
     }).then(() => {
         instance.request({
-            "data": {...newTutoringCourse, course_id:"30"},
+            "data": {...newTutoringCourse, course_id:"33"},
             "headers": {
                 "Authorization": `Token ${getState().auth.token}`,
             },
@@ -250,7 +250,7 @@ export const submitTutoringRegistration = (newTutoringCourse, studentID) => {
                 instance.request({
                     "data": {
                         "student": studentID,
-                        "course_id": tutoringCourseResponse.data.course_id,
+                        "course": tutoringCourseResponse.data.course_id
                     },
                     "headers": {
                         "Authorization": `Token ${getState().auth.token}`,

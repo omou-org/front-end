@@ -385,7 +385,6 @@ function RegistrationCart(props) {
                                 6: "Sat",
                             };
                             new_course.day_of_week = dayOfWeek[new_course.day_of_week];
-                            console.log(new_course);
                             api.submitTutoringRegistration(new_course,studentID);
                             break;
                     }
