@@ -52,20 +52,17 @@ const SearchResults = (props) => {
     useEffect(() => {
         api.fetchSearchAccountQuery(requestConfig);
         api.fetchSearchCourseQuery(requestConfig);
-    }, [api]);
-    useEffect(() => {
-        setAccountResults(props.search.accounts);
-        setCourseResults(props.search.courses);
-    },[params.query,props.search]);
-    useEffect(() => {
-        api.fetchCourses();
         api.fetchInstructors();
         api.fetchStudents();
-    }, [api, props.search.searchQueryStatus]);
+    }, []);
+    useEffect(() => {
+        api.fetchCourses();
+        setAccountResults(props.search.accounts);
+        setCourseResults(props.search.courses);
+    },[props.search]);
     useEffect(()=>{
         console.log("updated filter", props.search.filter)
-
-    },[props.search]);
+    },[props.search.filter]);
 
     const numberOfResults = () => {
         switch (params.type) {

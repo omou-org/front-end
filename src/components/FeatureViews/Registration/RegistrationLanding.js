@@ -56,13 +56,13 @@ const RegistrationLanding = () => {
 
     useEffect(() => {
         api.fetchCourses();
+        api.fetchInstructors();
+        api.fetchParents();
     }, [api]);
 
 
     useEffect(() => {
         api.fetchEnrollments();
-        api.fetchInstructors();
-        api.fetchParents();
     }, [api, requestStatus.course[GET][apiActions.REQUEST_ALL]]);
 
     const instructorOptions = useMemo(() => Object.values(instructors)
