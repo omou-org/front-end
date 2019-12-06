@@ -373,9 +373,8 @@ const addStudentRegistration = (studentID, registeredCourses, courseType, enroll
         registeredCourses = {};
         registeredCourses[studentID] = [enrollmentObject];
     }
-    console.log(registeredCourses);
     sessionStorage.setItem("registered_courses",JSON.stringify(registeredCourses));
-    return registeredCourses;
+    return {...registeredCourses};
 }
 
 const stringifyStudentInformation = (form)=>{
@@ -403,7 +402,6 @@ const initializeRegistration = (prevState)=>{
 };
 
 const editCourseRegistration = (prevState, {student_id, course_id, enrollment_note, new_course, sessions, form}) => {
-    console.log(prevState.registered_courses);
     let editedRegistration = prevState.registered_courses[student_id].find((course)=>{return course.course_id === course_id});
     let studentName;
     if(form){
@@ -488,5 +486,5 @@ const editCourseRegistration = (prevState, {student_id, course_id, enrollment_no
 
     sessionStorage.setItem("registered_courses", JSON.stringify(updatedRegistration.registered_courses));
 
-    return updatedRegistration;
+    return {...updatedRegistration};
 }

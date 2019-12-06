@@ -31,7 +31,8 @@ const parseTime = (time) => {
 const handleCoursePost = (state, payload) =>{
     let {NewCourseList} = state;
     NewCourseList = updateCourse(NewCourseList, payload.course_id, payload);
-    return {...state,
+    return {
+        ...state,
        NewCourseList,
     };
 };

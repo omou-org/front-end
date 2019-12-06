@@ -60,7 +60,10 @@ function SetRegistrationActions(props) {
     }
 
     useEffect(()=>{
-        api.initializeRegistration();
+        let pastRegisteredCourses = JSON.parse(sessionStorage.getItem("registered_courses"));
+        if(pastRegisteredCourses === null || pastRegisteredCourses === undefined || pastRegisteredCourses === ""){
+            api.initializeRegistration();
+        }
     },[]);
 
     return (
