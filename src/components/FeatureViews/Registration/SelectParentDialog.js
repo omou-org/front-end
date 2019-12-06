@@ -64,13 +64,12 @@ class SelectParentDialog extends React.Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount(){
         let pastParent = sessionStorage.getItem("CurrentParent");
         if(pastParent !== "none"){
             pastParent = JSON.parse(pastParent);
             this.props.registrationActions.setRegisteringParent(pastParent);
         }
-        // this.props.userActions.fetchParents();
     }
 
     handleClose = () => {
@@ -181,7 +180,6 @@ class SelectParentDialog extends React.Component {
     }
 
     SetParentDialog = () =>{
-        this.props.userActions.fetchParents();
         return (
             <>
                 <ReactSelect classNamePrefix={"select-parent-search"}

@@ -35,12 +35,6 @@ const SearchResults = (props) => {
         [dispatch]
     );
 
-    useEffect(() => {
-        api.fetchCourses();
-        api.fetchInstructors();
-        api.fetchStudents();
-    }, [api]);
-
     const [data, setData] = useState("");
     const [accountResults, setAccountResults] = useState([]);
     const [courseResults, setCourseResults] = useState([]);
@@ -58,11 +52,16 @@ const SearchResults = (props) => {
     useEffect(() => {
         api.fetchSearchAccountQuery(requestConfig);
         api.fetchSearchCourseQuery(requestConfig);
-    }, []);
+    }, [api]);
     useEffect(() => {
         setAccountResults(props.search.accounts);
         setCourseResults(props.search.courses);
     },[params.query,props.search]);
+    useEffect(() => {
+        api.fetchCourses();
+        api.fetchInstructors();
+        api.fetchStudents();
+    }, [api, props.search.searchQueryStatus]);
     useEffect(()=>{
         console.log("updated filter", props.search.filter)
 
