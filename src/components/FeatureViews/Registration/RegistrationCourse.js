@@ -93,8 +93,8 @@ const RegistrationCourse = () => {
     const api = useMemo(
         () => ({
             ...bindActionCreators(apiActions, dispatch),
-            ...bindActionCreators(registrationActions, dispatch),
             ...bindActionCreators(userActions, dispatch),
+            ...bindActionCreators(registrationActions, dispatch),
         }),
         [dispatch]
     );
@@ -116,7 +116,13 @@ const RegistrationCourse = () => {
         "notes": []
     };
     const instructor = instructors[course.instructor_id];
-    const days = course.schedule.days.map((day) => dayConverter[day]);
+    const days = course.schedule.days.map((day) => {
+        if(day){
+            return dayConverter;
+        } else {
+            return "";
+        }
+    });
 
     const [expanded, setExpanded] = useState({});
     const [value, setValue] = useState(0);
@@ -125,7 +131,6 @@ const RegistrationCourse = () => {
 
     useEffect(() => {
         api.fetchCourses(courseID);
-        api.fetchCourseNotes(courseID);
         api.fetchStudents();
         api.fetchParents();
     }, [api, courseID]);
@@ -133,7 +138,11 @@ const RegistrationCourse = () => {
     useEffect(() => {
         if (course) {
             api.fetchEnrollments();
+            api.fetchCourseNotes(courseID);
             api.fetchInstructors(course.instructor_id);
+            course.roster.forEach((studentID)=>{
+                api.fetchStudents(studentID);
+            });
             setExpanded(course.roster.reduce((object, studentID) => ({
                 ...object,
                 [studentID]: false,
@@ -162,60 +171,61 @@ const RegistrationCourse = () => {
         endDay = formatDate(course.schedule.end_date);
 
     const rows = course.roster.map((student_id) => {
-        // console.log(student_id, students);
-        const student = students[student_id];
-        const parent = parents[student.parent_id];
-        const {notes, session_payment_status} = enrollments[student_id][course.course_id];
-        const paymentStatus = Object.values(session_payment_status).every((status) => status !== 0);
-        return [
-            (
-                <Link
-                    key={student_id}
-                    style={{
-                        "textDecoration": "none",
-                        "color": "inherit",
-                    }}
-                    to={`/accounts/student/${student_id}`}>
-                    {student.name}
-                </Link>
-            ),
-            (
-                <Link
-                    key={student_id}
-                    style={{
-                        "textDecoration": "none",
-                        "color": "inherit",
-                    }}
-                    to={`/accounts/parent/${student.parent_id}`}>
-                    {parent.name}
-                </Link>
-            ),
-            formatPhone(parent.phone_number),
-            (
-                <div
-                    key={student_id}
-                    style={{
-                        "padding": "5px 0",
-                        "borderRadius": "10px",
-                        "backgroundColor": paymentStatus ? "#28D52A" : "#E9515B",
-                        "textAlign": "center",
-                        "width": "7vw",
-                        "color": "white",
-                    }}>
-                    {paymentStatus ? "Paid" : "Unpaid"}
-                </div>
-            ),
-            (
-                <div
-                    className="actions"
-                    key={student_id}>
-                    <a href={`mailto:${parent.email}`}>
-                        <EmailIcon />
-                    </a>
-                    <span>
+        if(students && JSON.stringify(enrollments) !== JSON.stringify({})){
+            const student = students[student_id];
+            const parent = parents[student.parent_id];
+
+            const {notes, session_payment_status} = enrollments[student_id][course.course_id];
+            const paymentStatus = Object.values(session_payment_status).every((status) => status !== 0);
+            return [
+                (
+                    <Link
+                        key={student_id}
+                        style={{
+                            "textDecoration": "none",
+                            "color": "inherit",
+                        }}
+                        to={`/accounts/student/${student_id}`}>
+                        {student.name}
+                    </Link>
+                ),
+                (
+                    <Link
+                        key={student_id}
+                        style={{
+                            "textDecoration": "none",
+                            "color": "inherit",
+                        }}
+                        to={`/accounts/parent/${student.parent_id}`}>
+                        {parent.name}
+                    </Link>
+                ),
+                formatPhone(parent.phone_number),
+                (
+                    <div
+                        key={student_id}
+                        style={{
+                            "padding": "5px 0",
+                            "borderRadius": "10px",
+                            "backgroundColor": paymentStatus ? "#28D52A" : "#E9515B",
+                            "textAlign": "center",
+                            "width": "7vw",
+                            "color": "white",
+                        }}>
+                        {paymentStatus ? "Paid" : "Unpaid"}
+                    </div>
+                ),
+                (
+                    <div
+                        className="actions"
+                        key={student_id}>
+                        <a href={`mailto:${parent.email}`}>
+                            <EmailIcon />
+                        </a>
+                        <span>
                         <EditIcon />
                     </span>
-                    <span>
+                        <span>
                         {expanded[student_id]
                             ? <UpArrow onClick={() => {
                                 setExpanded({
@@ -231,13 +241,14 @@ const RegistrationCourse = () => {
                             }} />
                         }
                     </span>
-                </div>
-            ),
-            {
-                notes,
-                student,
-            },
-        ];
+                    </div>
+                ),
+                {
+                    notes,
+                    student,
+                },
+            ];
+        }
     });
 
     const handleChange = (event, value) => {
@@ -254,55 +265,55 @@ const RegistrationCourse = () => {
                         <TableToolbar />
                         <TableBody>
                             {
-                                // rows.map((row, i) => (
-                                //     <Fragment key={i}>
-                                //         <TableRow>
-                                //             {
-                                //                 row.slice(0, 5).map((data, j) => (
-                                //                     <TableCell
-                                //                         className={j === 0 ? "bold" : ""}
-                                //                         key={j}>
-                                //                         {data}
-                                //                     </TableCell>
-                                //                 ))
-                                //             }
-                                //         </TableRow>
-                                //         {
-                                //             expanded[course.roster[i]] &&
-                                //             <TableRow align="left">
-                                //                 <TableCell colSpan={5}>
-                                //                     <Paper
-                                //                         elevation={0}
-                                //                         square>
-                                //                         <Typography
-                                //                             style={{
-                                //                                 "padding": "10px",
-                                //                             }}>
-                                //                             <span style={{"padding": "5px"}}>
-                                //                                 <b>School</b>: {
-                                //                                     row[5].student.school
-                                //                                 }
-                                //                                 <br />
-                                //                             </span>
-                                //                             <span style={{"padding": "5px"}}>
-                                //                                 <b>School Teacher</b>: {
-                                //                                     row[5].notes["Current Instructor in School"]
-                                //                                 }
-                                //                                 <br />
-                                //                             </span>
-                                //                             <span style={{"padding": "5px"}}>
-                                //                                 <b>Textbook:</b> {
-                                //                                     row[5].notes["Textbook Used"]
-                                //                                 }
-                                //                                 <br />
-                                //                             </span>
-                                //                         </Typography>
-                                //                     </Paper>
-                                //                 </TableCell>
-                                //             </TableRow>
-                                //         }
-                                //     </Fragment>
-                                // ))
+                                rows.map((row, i) => (
+                                    <Fragment key={i}>
+                                        <TableRow>
+                                            {
+                                                row.slice(0, 5).map((data, j) => (
+                                                    <TableCell
+                                                        className={j === 0 ? "bold" : ""}
+                                                        key={j}>
+                                                        {data}
+                                                    </TableCell>
+                                                ))
+                                            }
+                                        </TableRow>
+                                        {
+                                            expanded[course.roster[i]] &&
+                                            <TableRow align="left">
+                                                <TableCell colSpan={5}>
+                                                    <Paper
+                                                        elevation={0}
+                                                        square>
+                                                        <Typography
+                                                            style={{
+                                                                "padding": "10px",
+                                                            }}>
+                                                            <span style={{"padding": "5px"}}>
+                                                                <b>School</b>: {
+                                                                    row[5].student.school
+                                                                }
+                                                                <br />
+                                                            </span>
+                                                            <span style={{"padding": "5px"}}>
+                                                                <b>School Teacher</b>: {
+                                                                    row[5].notes["Current Instructor in School"]
+                                                                }
+                                                                <br />
+                                                            </span>
+                                                            <span style={{"padding": "5px"}}>
+                                                                <b>Textbook:</b> {
+                                                                    row[5].notes["Textbook Used"]
+                                                                }
+                                                                <br />
+                                                            </span>
+                                                        </Typography>
+                                                    </Paper>
+                                                </TableCell>
+                                            </TableRow>
+                                        }
+                                    </Fragment>
+                                ))
                             }
                         </TableBody>
                     </Table>
