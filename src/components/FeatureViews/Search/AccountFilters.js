@@ -79,7 +79,7 @@ const SearchResultFilter = (props) => {
     const [gradeFilter, setGradeFilter] = useState("");
     const [sortFilter, setSortFilter] = useState("");
 
-    const handleFilterChange = event => {
+    const handleFilterChange = () => (event)=> {
         switch (event.target.name) {
             case "profileType":
                 api.updateSearchFilter("account","profile",event.target.value);

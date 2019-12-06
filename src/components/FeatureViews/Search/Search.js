@@ -94,6 +94,7 @@ const Search = (props) => {
     useEffect(()=>{
         setSearchStatus(false);
         if(query.label!==""){
+            console.log("searching")
             filterSuggestions()();
         }
     },[query]);
