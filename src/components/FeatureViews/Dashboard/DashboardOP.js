@@ -39,18 +39,19 @@ class DashboardOP extends Component {
         })
 
         const cardStyle = ()=> ({
-            "height": 250,
-            "width": 200
+            "height": 200,
+            "width": 220
         })
 
         return (<div className="`DashboardOP`">
-            <Grid container spacing={16} className="Root">
                 <Card style = {cardStyle()}> 
                     <CardActionArea>
                         <CardMedia>
+                            <Grid alignItems="center">
                             <Avatar style={styles(this.props.fName+ this.props.lName)}>
                             {(this.props.fName).charAt(0) + (this.props.lName).charAt(0)}
                             </Avatar>
+                            </Grid>
                         </CardMedia>
                         <CardContent>
                         <Typography gutterBottom variant="h5" component="h2">
@@ -73,7 +74,6 @@ class DashboardOP extends Component {
                     <CardActions>
                     </CardActions>
                 </Card>
-            </Grid>
         </div>)
     }
 }

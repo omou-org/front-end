@@ -18,7 +18,6 @@ import DashboardNotes from './DashboardNotes';
 import Avatar from "@material-ui/core/Avatar";
 import {stringToColor} from "../Accounts/accountUtils";
 
-
 class Dashboard extends Component {
 
     state = {
@@ -96,21 +95,24 @@ class Dashboard extends Component {
 
     render() {
 
- 
-
         return (<div className="`Dashboard`">
-               <Paper className={"Paper"}>
-
-                   <Grid container>
-                      <Grid item xs={12}>
-                        <Typography variant="h3" align="left">Hello Sharon!</Typography>
+            <Grid container style={{padding:"50px"}}>
+               <Paper className={"Paper"} style={{background:"lightblue", padding:"50px", opacity: "80%"}}>
+                   <Grid container >
+                      <Grid item xs={6} >
+                        <Typography variant="h3" align="left" style={{fontSize: "36px", fontStyleFamily:"Roboto Slab"}}>Hello Sharon!</Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                          <Button variant="contained">Open in Scheduler</Button>
                       </Grid>
                       <Grid item xs={12}>
-                        <Typography variant="h6" align="left">Summit Education</Typography>
+                        <Typography variant="h6" align="left" style={{fontSize: "18px", fontStyleFamily: "Roboto SLab"}}>Summit Education</Typography>
                       </Grid>
                     </Grid>
 
                     <Grid container spacing={16} direction="row">
+                        <Grid item xs={9}>
+                            <Grid container>
                     {this.state.MainPanel.Classes.map(c=>(
                         <DashboardMainPanel
                         cName={c.cName}
@@ -119,80 +121,72 @@ class Dashboard extends Component {
                         >
                         </DashboardMainPanel>
                     ))}
-                    <Grid item xs={3}>
-                        {/* <DashboardNotes>
-                        </DashboardNotes> */}
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <Grid container>
+                            {/* <DashboardNotes>
+                            </DashboardNotes> */}
+                            </Grid>
+                        </Grid>
                     </Grid>
-                    </Grid>
-                </Paper>
-                    <Paper>
-                        <br></br>
+                    <Paper style={{background:"lightblue"}}>
                     <Grid container>
                     <Grid item xs={6}>
-                    <Typography variant="h5" align="left">
-                        Recently Updated Accounts
-                    </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                    <Typography variant="h5" align="left">
-                        Outstanding Payments
-                    </Typography>
-                    </Grid>
-                    </Grid>
-
-                        <br></br>
-                    <Grid container spacing={16}>
-                    <Grid item xs={6}>
-                        <Grid container>
-                    {this.state.Accounts.map(a=>(
-                       <DashboardAccounts
-                       fName={a.fName}
-                       lName={a.lName}
-                       phone={a.phone}
-                       email={a.email}
-                       role={a.role}
-                       >
-                       </DashboardAccounts>
-                    ))}
+                        <Paper style={{background:"white", opacity:"100%", zIndex: "0"}}>
+                        <Grid container style={{zIndex: "500"}}>
+                            <Grid item xs={12} style={{zIndex: "500"}}>
+                                <Typography variant="h5" align="left" style={{padding: "10px", zIndex:"500"}}>
+                                    Recently Updated Accounts
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Grid container>
+                            {this.state.Accounts.map(a=>(
+                                <DashboardAccounts
+                                fName={a.fName}
+                                lName={a.lName}
+                                phone={a.phone}
+                                email={a.email}
+                                role={a.role}
+                                >
+                                </DashboardAccounts>
+                                ))}
+                                </Grid>
+                            </Grid>
                         </Grid>
+                        </Paper>
                     </Grid>
                     <Grid item xs={6}>
+                        <Paper style={{background:'white', opacity:"100%", zIndex: "0"}}>
                         <Grid container>
-                    {this.state.OP.map(op=>(
-                       <DashboardOP
-                        fName={op.fName}
-                        lName={op.lName}
-                        status={op.status}
-                        amt={op.amt}
-                        course={op.course}
-                        role={op.role}
-                        >
-                       </DashboardOP>
-                    ))}
+                            <Grid item xs={12}>
+                                <Typography variant="h5" align="left" style={{padding: "10px"}}>
+                                    Outstanding Payments
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Grid container>
+                                {this.state.OP.map(op=>(
+                                <DashboardOP
+                                    fName={op.fName}
+                                    lName={op.lName}
+                                    status={op.status}
+                                    amt={op.amt}
+                                    course={op.course}
+                                    role={op.role}
+                                    >
+                                </DashboardOP>
+                                ))}
+                                </Grid>
+                            </Grid>
                         </Grid>
+                        </Paper>
                     </Grid>
-                    </Grid>
-                {/* contact */}
-                {/* <Card>
-                    <CardActionArea>
-                        <CardMedia>
-                        </CardMedia>
-                        <CardContent>
-                            <Typography gutterBottom variant="h5" component="h2">
-                                Contact Us
-                            </Typography>
-                        </CardContent>
-                    </CardActionArea>
-                    <CardActions>
-                        <Button size="small" color="primary">
-                            Share
-                        </Button>
-                        <Button size="small" color="primary">
-                            Learn More
-                        </Button>
-                    </CardActions>
-                </Card> */}
+                </Grid>
             </Paper>
+            </Paper>
+            </Grid>
         </div>)
     }
 }

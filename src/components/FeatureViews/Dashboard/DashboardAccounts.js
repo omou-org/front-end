@@ -40,47 +40,39 @@ class DashboardAccounts extends Component {
         })
 
         const cardStyle = ()=> ({
-            "height": 250,
-            "width": 200,
-            "textAlign": "center",
-            "display": "inline-block"
+            "height": 200,
+            "width": 220,
         })
 
         return (<div className="`DashboardAccounts`">
                 <Card style={cardStyle()}>
                     <CardActionArea>
-                        <CardMedia style={{textAlign:'center'}}>
-                        <Grid
-                            alignItems="center"
-                        >
-                        <Avatar                                 
-                            style={styles(this.props.fName + this.props.lName)}
-                            >{(this.props.fName).charAt(0) + (this.props.lName).charAt(0)}
-                            </Avatar>
-                        </Grid>
-
-                            </CardMedia>
+                        <CardMedia>
+                            <Grid alignItems="center">
+                                <Avatar alignItems="center"                         
+                                    style={styles(this.props.fName + this.props.lName)}
+                                    >{(this.props.fName).charAt(0) + (this.props.lName).charAt(0)}
+                                </Avatar>
+                            </Grid>
+                        </CardMedia>
                         <CardContent>
                             <Typography gutterBottom variant="h5" component="h2">
                             {this.props.fName + " " + this.props.lName}
                             </Typography>
                             <Typography gutterBottom variant="p" component='p' style={roleStyle(this.props.role)} >
                                 {this.props.role}
-                                </Typography>
+                            </Typography>
                             <Typography gutterBottom variant="p" component="p">
                                 <br></br>
                                 {this.props.phone}
                                 <br></br>
                                 {this.props.email}
-                            
                             </Typography>
-
                         </CardContent>
                     </CardActionArea>
                     <CardActions>
                     </CardActions>
                 </Card>
-
         </div>)
     }
 }

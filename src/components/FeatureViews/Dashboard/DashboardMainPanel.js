@@ -34,7 +34,7 @@ class DashboardMainPanel extends Component {
                         <CardMedia>
                         </CardMedia>
                         <CardContent>
-                            <Grid container>
+                            <Grid container style={{textAlign:'left', fontStyleFamily:"Roboto"}}>
                                 <Grid item xs={12}>
                                     <Typography gutterBottom variant="h5" component="h2">
                                         {this.props.cName}
