@@ -27,6 +27,7 @@ import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage"
 import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
 import AdminRoute from "./AdminRoute";
 import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
+import RegistrationReceipt from "../FeatureViews/Registration/RegistrationReceipt";
 
 
 function rootRoutes(props) {
@@ -103,6 +104,10 @@ function rootRoutes(props) {
             <ProtectedRoute
                 path="/registration/cart/"
                 render={(passedProps) => <RegistrationCart {...passedProps}/>}
+            />
+            <ProtectedRoute
+                path="/registration/receipt/:paymentID?"
+                render={(passedProps) => <RegistrationReceipt {...passedProps}/> }
             />
 
             {/* Admin Routes */}

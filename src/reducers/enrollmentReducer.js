@@ -4,12 +4,14 @@ import * as actions from "./../actions/actionTypes"
 export default function enrollment(state = initialState.Enrollments, {payload, type}) {
     switch (type) {
         case actions.FETCH_ENROLLMENT_SUCCESSFUL:
+            console.log("fetch enrollment successful")
             return handleEnrollmentFetch(state, payload);
         case actions.POST_ENROLLMENT_STARTED:
             return state;
         case actions.POST_ENROLLMENT_SUCCESS:
             return handleEnrollmentFetch(state, payload);
         case actions.POST_ENROLLMENT_FAILED:
+            console.log("enrollment failed", payload);
             return state;
         default:
             return state;
@@ -19,10 +21,10 @@ export default function enrollment(state = initialState.Enrollments, {payload, t
 const handleEnrollmentFetch = (state, {response}) => {
     const {data} = response;
     const newState = JSON.parse(JSON.stringify(state));
-
     data.forEach(({student, course}) => {
         let newStudentData = state[student] || {};
         let newCourseData = newStudentData[course] || {
+            "enrollment_id": data.id,
             "student_id": student,
             "notes": {},
             "session_payment_status": {

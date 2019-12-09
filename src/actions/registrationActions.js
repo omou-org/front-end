@@ -260,7 +260,7 @@ export const submitTutoringRegistration = (newTutoringCourse, studentID) => {
                 })
                     .then((enrollmentResponse) => {
                         dispatch({
-                            type: types.POST_ENROLLMENT_STARTED,
+                            type: types.POST_ENROLLMENT_SUCCESS,
                             payload: enrollmentResponse,
                         });
                     }, (error) => {
