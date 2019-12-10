@@ -24,6 +24,12 @@ const useStyles = makeStyles({
 function RegistrationReceipt(props) {
     const [anchorEl, setAnchorEl] = useState(null);
 
+    // useEffect(()=>{
+    //     return ()=>{
+    //
+    //     }
+    // }, [])
+
     return (
         <Grid container>
             <Grid item xs={12}>

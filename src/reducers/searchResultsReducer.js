@@ -8,7 +8,6 @@ export default function course(state = initialState.SearchResults, {payload, typ
         case actions.GET_SEARCH_QUERY_FAILED:
             return state;
         case actions.SET_SEARCH_QUERY:
-            console.log(payload);
             state["SearchQuery"] = payload;
             return state;
         case actions.GET_ACCOUNT_SEARCH_QUERY_STARTED:

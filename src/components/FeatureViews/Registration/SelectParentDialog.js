@@ -77,26 +77,26 @@ class SelectParentDialog extends React.Component {
         if(this.state.inputParent.value !== ""){
             let idStartIndex = this.state.inputParent.value.indexOf("-")+1;
             let parentID = Number(this.state.inputParent.value.substring(idStartIndex));
-            let selectedParent = this.props.users.ParentList[parentID];
-
+            let selectedParent = this.props.search.accounts.find((account)=>{ return parentID === account.user.id});
+            console.log(selectedParent);
             selectedParent = {
                 user: {
-                    id: selectedParent.user_id,
-                    email: selectedParent.email,
-                    first_name: selectedParent.first_name,
-                    last_name: selectedParent.last_name,
-                    name: selectedParent.name,
+                    id: selectedParent.user.id,
+                    email: selectedParent.user.email,
+                    first_name: selectedParent.user.first_name,
+                    last_name: selectedParent.user.last_name,
+                    name: selectedParent.user.first_name + " " + selectedParent.user.last_name,
                 },
-                user_uuid: selectedParent.user_id,
+                user_uuid: selectedParent.user.id,
                 gender: selectedParent.gender,
-                birth_date: selectedParent.birthday,
-                student_list: selectedParent.student_ids,
+                birth_date: selectedParent.birth_day,
+                student_list: selectedParent.student_list,
                 account_type: "PARENT",
             };
-            console.log(selectedParent);
 
             this.props.registrationActions.setRegisteringParent(selectedParent);
             // Add students to redux once the registered parent has been set
+            console.log(selectedParent);
             selectedParent.student_list.forEach((studentID)=>{
                this.props.userActions.fetchStudents(studentID);
             });
@@ -110,11 +110,6 @@ class SelectParentDialog extends React.Component {
         this.setState((oldState)=>{
             // update field with what's being typed by the user
             oldState.inputParent = e;
-
-            // make search parent api call
-            // let requestConfig = { params: { query: this.state.inputParent, page: 1, profileFilter: "parent" },
-            //     headers: {"Authorization": `Token ${this.props.auth.token}`,} };
-            // this.props.searchActions.fetchSearchAccountQuery()
             return oldState;
         });
     }
@@ -127,8 +122,7 @@ class SelectParentDialog extends React.Component {
             this.props.registrationActions.setRegisteringParent("");
             return oldState
         }, ()=>{
-            sessionStorage.setItem("CurrentParent", "none");
-            sessionStorage.setItem("registered_courses",JSON.stringify({}));
+            this.props.registrationActions.closeRegistration("");
             this.handleClose();
         });
 
@@ -171,12 +165,37 @@ class SelectParentDialog extends React.Component {
     }
 
     renderParentSuggestionList = ()=>{
-        return Object.values(this.props.users.ParentList).map((parent)=>{
-            return {
-                value: parent.name + " - " + parent.user_id.toString(),
-                label: parent.name,
-            }
-        });
+        if(this.props.search){
+            return Object.values(this.props.search.accounts).map((parent)=>{
+                return {
+                    value: parent.user.first_name+ " " + parent.user.last_name + " - " + parent.user.id.toString(),
+                    label: parent.user.first_name+ " " + parent.user.last_name,
+                };
+            });
+        } else {
+            return [];
+        }
+
+    };
+
+    handleOnInputChange = () => (e) => {
+        let input;
+        if(e!==""){
+            input = {
+                value: e,
+                label: e
+            };
+            this.setState({inputParent: input},()=>{
+                if(e!==""){
+                    const requestConfig = { params: { query: this.state.inputParent.label, page: 1, profile: "parent" },
+                        headers: {"Authorization": `Token ${this.props.auth.token}`,} };
+                    this.props.searchActions.fetchSearchAccountQuery(requestConfig);
+                    this.setState({
+                        parentOptions: this.renderParentSuggestionList()
+                    },)
+                }
+            });
+        }
     }
 
     SetParentDialog = () =>{
@@ -184,8 +203,9 @@ class SelectParentDialog extends React.Component {
             <>
                 <ReactSelect classNamePrefix={"select-parent-search"}
                              value = {this.state.inputParent}
-                             options={this.renderParentSuggestionList()}
-                             onChange={this.handleOnChange()}
+                             options = {this.state.parentOptions}
+                             onChange = {this.handleOnChange()}
+                             onInputChange = {this.handleOnInputChange()}
                 />
                 <Button onClick={this.handleSetParentButton()}>Set Parent</Button>
             </>
@@ -220,6 +240,7 @@ const mapStateToProps = (state) => ({
     "registration": state.Registration,
     "users": state.Users,
     "auth": state.auth,
+    "search": state.Search,
 });
 
 const mapDispatchToProps = (dispatch) => ({

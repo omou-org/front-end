@@ -42,12 +42,12 @@ export const fetchUserStatus = (token) => async (dispatch) => {
             },
         });
     };
-
+    console.log(token);
     // request starting
     newAction(types.FETCH_USER_STARTED, {});
 
     try {
-        const response = await instance.get("/account/user", {
+        const response = await instance.get("/account/user/", {
             "headers": {
                 "Authorization": `Token ${token}`,
             },

@@ -57,13 +57,8 @@ const RegistrationLanding = () => {
     useEffect(() => {
         api.fetchCourses();
         api.fetchInstructors();
-        api.fetchParents();
-    }, [api]);
-
-
-    useEffect(() => {
         api.fetchEnrollments();
-    }, [api, requestStatus.course[GET][apiActions.REQUEST_ALL]]);
+    }, [api]);
 
     const instructorOptions = useMemo(() => Object.values(instructors)
         .map(({name, user_id}) => ({

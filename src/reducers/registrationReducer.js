@@ -60,6 +60,8 @@ export default function registration(state = initialState.RegistrationForms, {pa
             return addSmallGroupRegistration(newState, payload);
         case actions.INIT_COURSE_REGISTRATION:
             return initializeRegistration(newState);
+        case actions.CLOSE_COURSE_REGISTRATION:
+            return closeRegistration(newState);
         case actions.EDIT_COURSE_REGISTRATION:
             return editCourseRegistration(newState, payload);
         default:
@@ -487,4 +489,14 @@ const editCourseRegistration = (prevState, {student_id, course_id, enrollment_no
     sessionStorage.setItem("registered_courses", JSON.stringify(updatedRegistration.registered_courses));
 
     return {...updatedRegistration};
+};
+
+const closeRegistration = (state) =>{
+    sessionStorage.setItem("registered_courses","");
+    sessionStorage.setItem("CurrentParent","none");
+    return {
+        ...state,
+        CurrentParent:"none",
+        registered_courses: null,
+    }
 }
