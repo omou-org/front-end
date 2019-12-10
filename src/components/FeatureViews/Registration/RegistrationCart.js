@@ -272,7 +272,7 @@ function RegistrationCart(props) {
     const renderPayment = (isOneCourse, selectedStudentID, selectedCourseID) =>{
         const {cash, creditCard, check} = paymentMethod;
         let selectedRegistration = props.registration.registered_courses[selectedStudentID].find(({course_id})=>{
-            return course_id === selectedCourseID});
+            return course_id === Number(selectedCourseID)});
         let isSmallGroup = selectedCourseID.indexOf("T") === -1 ? props.courseList[selectedCourseID].capacity < 5: false;
         let {form, course_id} = selectedRegistration;
         let formType = form.form;
@@ -393,6 +393,7 @@ function RegistrationCart(props) {
     const selectedCourseOptions = () => {
         let displaySelectionOptions = 0;
         let selectedCourseID=-1, selectedStudentID = -1;
+        console.log(selectedCourses);
         Object.keys(selectedCourses).forEach((studentID)=>{
             for (let [courseID, checkbox] of Object.entries(selectedCourses[studentID])){
                 if(checkbox.checked){

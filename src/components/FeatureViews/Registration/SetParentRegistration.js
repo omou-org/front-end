@@ -61,15 +61,18 @@ function SetRegistrationActions(props) {
 
     useEffect(()=>{
         let pastRegisteredCourses = JSON.parse(sessionStorage.getItem("registered_courses"));
-        if(pastRegisteredCourses === null || pastRegisteredCourses === undefined || pastRegisteredCourses === ""){
-            api.initializeRegistration();
+        let pastParent = JSON.parse(sessionStorage.getItem("CurrentParent"));
+        if(pastParent !== "none"){
+            if(pastRegisteredCourses === null || pastRegisteredCourses === undefined || pastRegisteredCourses === ""){
+                api.initializeRegistration();
+            }
         }
-    },[]);
 
+    },[]);
     return (
         <Grid item xs={2}>
             {
-               props.registration.CurrentParent ?
+               props.registration.CurrentParent && props.registration.CurrentParent !== "none" ?
                     <Button className={"button"} onClick={handleClick()}>
                         <div className={"circle-icon"} style={{backgroundColor:stringToColor(props.registration.CurrentParent.user.name)}} />
                         {props.registration.CurrentParent.user.name}

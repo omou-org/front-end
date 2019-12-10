@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useMemo} from "react";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -8,10 +8,12 @@ import { makeStyles } from "@material-ui/styles";
 
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
-import {connect} from "react-redux";
+import {connect, useDispatch} from "react-redux";
 import {Button, Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import {withRouter} from "react-router-dom";
+import * as apiActions from "../../../actions/apiActions";
+import * as userActions from "../../../actions/userActions";
 
 const useStyles = makeStyles({
     setParent: {
@@ -23,12 +25,19 @@ const useStyles = makeStyles({
 
 function RegistrationReceipt(props) {
     const [anchorEl, setAnchorEl] = useState(null);
+    const dispatch = useDispatch();
+    const api = useMemo(
+        () => ({
+            ...bindActionCreators(registrationActions, dispatch),
+        }),
+        [dispatch]
+    );
 
-    // useEffect(()=>{
-    //     return ()=>{
-    //
-    //     }
-    // }, [])
+    const handleCloseReceipt = ()=> (e)=> {
+        e.preventDefault();
+        api.closeRegistration("");
+        props.history.push("/registration");
+    }
 
     return (
         <Grid container>
@@ -68,6 +77,14 @@ function RegistrationReceipt(props) {
                             </Grid>
                         </Grid>
                     </Grid>
+                </Grid>
+            </Grid>
+            <Grid item xs={12}>
+                <Grid item xs={8}/>
+                <Grid item xs={4}>
+                    <Button onClick={handleCloseReceipt()} className={"button"}>
+                        End Registration
+                    </Button>
                 </Grid>
             </Grid>
         </Grid>

@@ -5,6 +5,7 @@ import {REQUEST_ALL} from "../actions/apiActions";
 export default (state = initialState.Course, {payload, type}) => {
     switch (type) {
         case actions.FETCH_COURSE_SUCCESSFUL:
+            console.log("fetch course successful!",payload);
             return handleCoursesFetch(state, payload);
         case actions.FETCH_ENROLLMENT_SUCCESSFUL:
             return handleEnrollmentFetch(state, payload);
@@ -69,10 +70,10 @@ const handleCoursesFetch = (state, {id, response}) => {
     const {data} = response;
     let {NewCourseList} = state;
     if (id !== REQUEST_ALL) {
-        NewCourseList = updateCourse(NewCourseList, id, data);
+        NewCourseList = updateCourse(NewCourseList, data.id, data);
     } else {
         data.forEach((course) => {
-            NewCourseList = updateCourse(NewCourseList, course.course_id, course);
+            NewCourseList = updateCourse(NewCourseList, course.id, course);
         });
     }
     return {

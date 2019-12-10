@@ -492,11 +492,11 @@ const editCourseRegistration = (prevState, {student_id, course_id, enrollment_no
 };
 
 const closeRegistration = (state) =>{
-    sessionStorage.setItem("registered_courses","");
-    sessionStorage.setItem("CurrentParent","none");
+    sessionStorage.removeItem("registered_courses");
+    sessionStorage.removeItem("CurrentParent");
     return {
         ...state,
         CurrentParent:"none",
         registered_courses: null,
-    }
+    };
 }

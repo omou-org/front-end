@@ -67,6 +67,7 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
             newAction(successType, response);
         } catch ({response}) {
             // failed request
+            console.log(response);
             newAction(failType, response);
         }
     };
