@@ -3,7 +3,7 @@ import React, {useState, useEffect, useMemo} from "react";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
-
+import BackArrow from "@material-ui/icons/ArrowBack";
 import { makeStyles } from "@material-ui/styles";
 import "./registration.scss";
 
@@ -26,6 +26,7 @@ import Button from "@material-ui/core/Button";
 import Loading from "../../Loading";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
 import TextField from "@material-ui/core/TextField";
+import Prompt from "react-router-dom/es/Prompt";
 
 const useStyles = makeStyles({
     setParent: {
@@ -56,6 +57,7 @@ function RegistrationCart(props) {
     const [selectedCourses, selectCourse] = useState({});
     const [usersLoaded, setLoadingUsers] = useState(false);
     const [updatedCourses, addUpdatedCourse] = useState([]);
+    const [selectionPendingStatus, setSelectionPending] = useState(false);
 
     useEffect(()=>{
         api.initializeRegistration();
@@ -270,14 +272,25 @@ function RegistrationCart(props) {
     const renderPayment = (isOneCourse, selectedStudentID, selectedCourseID) =>{
         const {cash, creditCard, check} = paymentMethod;
         let selectedRegistration = props.registration.registered_courses[selectedStudentID].find(({course_id})=>{
-            return course_id === selectedCourseID});
+            return course_id === Number(selectedCourseID)});
+        let isSmallGroup = selectedCourseID.indexOf("T") === -1 ? props.courseList[selectedCourseID].capacity < 5: false;
         let {form, course_id} = selectedRegistration;
         let formType = form.form;
         return <Grid container>
             {
                 isOneCourse ? <Grid item xs={12}>
                     <Grid container>
-                        <Grid item xs={9}/>
+                        <Grid item xs={6}/>
+                        <Grid item xs={3}>
+                            {
+                                isSmallGroup ?
+                                    <Button
+                                        className={"button"}
+                                        component={NavLinkNoDup}
+                                        to={`/registration/form/course_details/${selectedCourseID}/edit`}
+                                        >Edit Group Course</Button> : ""
+                            }
+                        </Grid>
                         <Grid item xs={3}>
                             <Button className={"button"}
                                     component={NavLinkNoDup}
@@ -312,7 +325,12 @@ function RegistrationCart(props) {
                     </Grid>
                     <Grid item xs={9}>
                     <Grid container>
-                        <Grid item xs={10}/>
+                        <Grid item xs={6}/>
+                        <Grid item xs={4}>
+                            <Button className={"button"} onClick={updateQuantity()}>
+                                UPDATE SESSIONS
+                            </Button>
+                        </Grid>
                         <Grid item xs={2}>
                             <Button className={"button"} onClick={handlePay()}>
                                 PAY
@@ -325,16 +343,57 @@ function RegistrationCart(props) {
         </Grid>
     }
 
-    const handlePay = () => (e)=>{
+    const updateQuantity = () => (e) => {
         e.preventDefault();
         updatedCourses.forEach((updatedCourse)=>{
             api.editRegistration(updatedCourse);
         });
     }
 
+    const handlePay = () => (e)=>{
+        e.preventDefault();
+        setSelectionPending(false);
+        Object.keys(props.registration.registered_courses).forEach((studentID)=>{
+            props.registration.registered_courses[studentID].forEach(({type, course_id, new_course})=>{
+                if(selectedCourses[studentID][course_id].checked){
+                    switch(type){
+                        case "class":
+                            api.submitClassRegistration(studentID, course_id);
+                            break;
+                        case "tutoring":
+                            let schedule = {
+                                ...new_course.schedule,
+                                start_date:new_course.schedule.start_date.substring(0,10),
+                                end_date: new_course.schedule.end_date.substring(0,10),
+                            }
+                            new_course = {
+                                ...new_course,
+                                ...schedule,
+                            };
+                            delete new_course["schedule"];
+                            let dayOfWeek = {
+                                0: "Sun",
+                                1: "Mon",
+                                2: "Tue",
+                                3: "Wed",
+                                4: "Thu",
+                                5: "Fri",
+                                6: "Sat",
+                            };
+                            new_course.day_of_week = dayOfWeek[new_course.day_of_week];
+                            api.submitTutoringRegistration(new_course,studentID);
+                            break;
+                    }
+                }
+            })
+        });
+        props.history.push(`/registration/receipt/`);
+    }
+
     const selectedCourseOptions = () => {
         let displaySelectionOptions = 0;
         let selectedCourseID=-1, selectedStudentID = -1;
+        console.log(selectedCourses);
         Object.keys(selectedCourses).forEach((studentID)=>{
             for (let [courseID, checkbox] of Object.entries(selectedCourses[studentID])){
                 if(checkbox.checked){
@@ -355,7 +414,16 @@ function RegistrationCart(props) {
             <Paper className={"registration-cart paper"}>
                 <Grid container layout={"row"} spacing={8}>
                     <Grid item xs={12}>
-                        <BackButton/>
+                        <Grid container>
+                            <Grid item={3}>
+                                <Button
+                                    className={"button"}
+                                    component={NavLinkNoDup} to={"/registration"}>
+                                    <BackArrow/>
+                                    Register
+                                </Button>
+                            </Grid>
+                        </Grid>
                         <hr/>
                     </Grid>
                     <Grid item xs={12}>

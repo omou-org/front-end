@@ -1,6 +1,6 @@
 import * as types from "./actionTypes";
-import {submitParentAndStudent, postData, patchData} from "./rootActions";
-import {wrapGet, postCourse, formatCourse} from "./apiActions";
+import {submitParentAndStudent, postData, patchData, typeToPostActions} from "./rootActions";
+import {wrapGet, postCourse, formatCourse, wrapPost, instance} from "./apiActions";
 
 const parseGender = {
     "Male": "M",
@@ -163,14 +163,13 @@ export const submitForm = (state, id) => {
             }
         }
         case "course_details": {
-            const course = formatCourse(state["Course Info"]);
+            const course = formatCourse(state["Course Info"],"C");
 
             for (const key in course) {
                 if (course.hasOwnProperty(key) && !course[key]) {
                     delete course[key];
                 }
             }
-            console.log(course);
             if (id) {
                 return patchData("course", course, id);
             } else {
@@ -181,7 +180,7 @@ export const submitForm = (state, id) => {
             return { type: types.ADD_TUTORING_REGISTRATION, payload: {...state} }
         }
         case "course": {
-            return { type: types.ADD_CLASS_REGISTRATION, payload: {...state} }
+            return { type: types.ADD_CLASS_REGISTRATION, payload: {...state, id} }
         }
         case "small_group":{
             return { type: types.ADD_CLASS_REGISTRATION, payload: {...state} }
@@ -207,6 +206,70 @@ export const fetchEnrollments = () => wrapGet(
 
 export const initializeRegistration = () =>
     ({type: types.INIT_COURSE_REGISTRATION, payload:""});
+export const closeRegistration = () =>
+    ({type: types.CLOSE_COURSE_REGISTRATION, payload: ""});
 
 export const editRegistration = (editedRegistration) =>
     ({type: types.EDIT_COURSE_REGISTRATION, payload: editedRegistration});
+let courseEnrollmentEP = "/course/enrollment/"
+export const submitClassRegistration = (studentID, courseID) => wrapPost(
+    "/course/enrollment/",
+    [
+        types.POST_ENROLLMENT_STARTED,
+        types.POST_ENROLLMENT_SUCCESS,
+        types.POST_ENROLLMENT_FAILED,
+    ],
+    {
+        course:courseID,
+        student:studentID,
+    }
+);
+
+export const submitTutoringRegistration = (newTutoringCourse, studentID) => {
+    const enrollmentEndpoint = "/course/enrollment/";
+    const courseEndpoint = "/course/catalog/";
+
+    return (dispatch, getState) => new Promise((resolve) => {
+        dispatch({
+            type: types.POST_TUTORING_ENROLLMENT_STARTED,
+            payload: null,
+        });
+        resolve();
+    }).then(() => {
+        instance.request({
+            "data": {...newTutoringCourse},
+            "headers": {
+                "Authorization": `Token ${getState().auth.token}`,
+            },
+            "method": "post",
+            "url": courseEndpoint,
+        })
+            .then((tutoringCourseResponse) => {
+                dispatch({
+                    type: types.POST_COURSE_SUCCESSFUL,
+                    payload: tutoringCourseResponse.data,
+                });
+                instance.request({
+                    "data": {
+                        "student": studentID,
+                        "course": tutoringCourseResponse.data.course_id
+                    },
+                    "headers": {
+                        "Authorization": `Token ${getState().auth.token}`,
+                    },
+                    "method": "post",
+                    "url": enrollmentEndpoint,
+                })
+                    .then((enrollmentResponse) => {
+                        dispatch({
+                            type: types.POST_ENROLLMENT_SUCCESS,
+                            payload: enrollmentResponse,
+                        });
+                    }, (error) => {
+                        dispatch({type: types.POST_ENROLLMENT_FAILED, payload: error});
+                    });
+            }, (error) => {
+                dispatch({type: types.POST_COURSE_FAILED, payload: error});
+            });
+    });
+};

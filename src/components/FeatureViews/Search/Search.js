@@ -40,7 +40,6 @@ const Search = (props) => {
 
     const searchList = (newItem) => {
         let suggestions;
-        // console.log(primaryFilter);
         switch(primaryFilter){
             case "All":{
                 suggestions = props.search.accounts.concat(props.search.courses);
@@ -95,6 +94,7 @@ const Search = (props) => {
     useEffect(()=>{
         setSearchStatus(false);
         if(query.label!==""){
+            console.log("searching")
             filterSuggestions()();
         }
     },[query]);

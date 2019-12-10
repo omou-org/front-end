@@ -24,10 +24,10 @@ import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
 import ParentPayment from "../Form/ParentPayment";
 import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage"
-import FilterAccountsPage from "../FeatureViews/Search/FilterAccountsPage";
 import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
 import AdminRoute from "./AdminRoute";
 import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
+import RegistrationReceipt from "../FeatureViews/Registration/RegistrationReceipt";
 
 
 function rootRoutes(props) {
@@ -63,11 +63,6 @@ function rootRoutes(props) {
             {/*<ProtectedRoute*/}
             {/*    path='/scheduler/resource'*/}
             {/*    render={(passedProps) => <ResourceView {...passedProps} />} /> */}
-
-            <ProtectedRoute
-                exact
-                path="/filterAccount"
-                render={(passedProps) => <FilterAccountsPage {...passedProps} />} />
 
             <ProtectedRoute
                 exact
@@ -109,6 +104,10 @@ function rootRoutes(props) {
             <ProtectedRoute
                 path="/registration/cart/"
                 render={(passedProps) => <RegistrationCart {...passedProps}/>}
+            />
+            <ProtectedRoute
+                path="/registration/receipt/:paymentID?"
+                render={(passedProps) => <RegistrationReceipt {...passedProps}/> }
             />
 
             {/* Admin Routes */}

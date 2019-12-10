@@ -64,13 +64,12 @@ class SelectParentDialog extends React.Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount(){
         let pastParent = sessionStorage.getItem("CurrentParent");
         if (pastParent !== "none") {
             pastParent = JSON.parse(pastParent);
             this.props.registrationActions.setRegisteringParent(pastParent);
         }
-        // this.props.userActions.fetchParents();
     }
 
     handleClose = () => {
@@ -78,24 +77,22 @@ class SelectParentDialog extends React.Component {
         if (this.state.inputParent.value !== "") {
             let idStartIndex = this.state.inputParent.value.indexOf("-") + 1;
             let parentID = Number(this.state.inputParent.value.substring(idStartIndex));
-            let selectedParent = this.props.users.ParentList[parentID];
-
+            let selectedParent = this.props.search.accounts.find((account)=>{ return parentID === account.user.id});
+            console.log(selectedParent);
             selectedParent = {
                 user: {
-                    id: selectedParent.user_id,
-                    email: selectedParent.email,
-                    first_name: selectedParent.first_name,
-                    last_name: selectedParent.last_name,
-                    name: selectedParent.name,
+                    id: selectedParent.user.id,
+                    email: selectedParent.user.email,
+                    first_name: selectedParent.user.first_name,
+                    last_name: selectedParent.user.last_name,
+                    name: selectedParent.user.first_name + " " + selectedParent.user.last_name,
                 },
-                user_uuid: selectedParent.user_id,
+                user_uuid: selectedParent.user.id,
                 gender: selectedParent.gender,
-                birth_date: selectedParent.birthday,
-                student_list: selectedParent.student_ids,
-                phone_number: SelectParentDialog.phone_number,
+                birth_date: selectedParent.birth_day,
+                student_list: selectedParent.student_list,
                 account_type: "PARENT",
             };
-            console.log(selectedParent);
 
             this.props.registrationActions.setRegisteringParent(selectedParent);
             // Add students to redux once the registered parent has been set
@@ -112,11 +109,6 @@ class SelectParentDialog extends React.Component {
         this.setState((oldState) => {
             // update field with what's being typed by the user
             oldState.inputParent = e;
-
-            // make search parent api call
-            // let requestConfig = { params: { query: this.state.inputParent, page: 1, profileFilter: "parent" },
-            //     headers: {"Authorization": `Token ${this.props.auth.token}`,} };
-            // this.props.searchActions.fetchSearchAccountQuery()
             return oldState;
         });
     }
@@ -128,9 +120,8 @@ class SelectParentDialog extends React.Component {
             oldState.inputParent = { value: "", label: "" };
             this.props.registrationActions.setRegisteringParent("");
             return oldState
-        }, () => {
-            sessionStorage.setItem("CurrentParent", "none");
-            sessionStorage.setItem("registered_courses", JSON.stringify({}));
+        }, ()=>{
+            this.props.registrationActions.closeRegistration("");
             this.handleClose();
         });
 
@@ -170,25 +161,50 @@ class SelectParentDialog extends React.Component {
         this.handleClose();
     }
 
-    renderParentSuggestionList = () => {
-        return Object.values(this.props.users.ParentList).map((parent) => {
-            return {
-                value: parent.name + " - " + parent.user_id.toString(),
-                label: parent.name + " | " + parent.phone_number,
-            }
-        });
+    renderParentSuggestionList = ()=>{
+        if(this.props.search){
+            return Object.values(this.props.search.accounts).map((parent)=>{
+                return {
+                    value: parent.user.first_name+ " " + parent.user.last_name + " - " + parent.user.id.toString(),
+                    label: parent.user.first_name+ " " + parent.user.last_name,
+                };
+            });
+        } else {
+            return [];
+        }
+
+    };
+
+    handleOnInputChange = () => (e) => {
+        let input;
+        if(e!==""){
+            input = {
+                value: e,
+                label: e
+            };
+            this.setState({inputParent: input},()=>{
+                if(e!==""){
+                    const requestConfig = { params: { query: this.state.inputParent.label, page: 1, profile: "parent" },
+                        headers: {"Authorization": `Token ${this.props.auth.token}`,} };
+                    this.props.searchActions.fetchSearchAccountQuery(requestConfig);
+                    this.setState({
+                        parentOptions: this.renderParentSuggestionList()
+                    },)
+                }
+            });
+        }
     }
 
     SetParentDialog = () => {
-        this.props.userActions.fetchParents();
         return (
             <>
-                <ReactSelect
-                    options={this.renderParentSuggestionList()}
-                    onChange={this.handleOnChange()}
-                    className="select"
-                    placeholder="Select Existing Parent"
-                    value={this.state.inputParent}
+                <ReactSelect classNamePrefix={"select-parent-search"}
+                             value = {this.state.inputParent}
+                             options = {this.state.parentOptions}
+                             onChange = {this.handleOnChange()}
+                             onInputChange = {this.handleOnInputChange()}
+                             classname = "seect"
+                             placeholder = "Select Existing Parent"
                 />
                 <div className="selectButton">
                 <Button onClick={this.handleSetParentButton()}>Set Parent</Button>
@@ -200,7 +216,6 @@ class SelectParentDialog extends React.Component {
 
 
     render() {
-        console.log(this.state.inputParent)
         return (
             <Dialog
                 className={"select-parent-dialog"}
@@ -229,6 +244,7 @@ const mapStateToProps = (state) => ({
     "registration": state.Registration,
     "users": state.Users,
     "auth": state.auth,
+    "search": state.Search,
 });
 
 const mapDispatchToProps = (dispatch) => ({

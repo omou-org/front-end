@@ -67,6 +67,7 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
             newAction(successType, response);
         } catch ({response}) {
             // failed request
+            console.log(response);
             newAction(failType, response);
         }
     };
@@ -122,7 +123,7 @@ export const submitNewSmallGroup = (form) => {
         });
         resolve();
     }).then(() => {
-        let newCourse = formatCourse(form["Group Details"]);
+        let newCourse = formatCourse(form["Group Details"],"T");
         console.log(newCourse);
         instance.request({
             "data": newCourse,
@@ -135,7 +136,7 @@ export const submitNewSmallGroup = (form) => {
                 console.log(courseResponse);
                 dispatch({
                     type: types.ADD_SMALL_GROUP_REGISTRATION,
-                    payload: {form: form, new_course: courseResponse.data},
+                    payload: {formMain: form, new_course: courseResponse.data},
                 });
             }, (error) => {
                 dispatch({type: courseFailAction, payload: error});
@@ -143,7 +144,7 @@ export const submitNewSmallGroup = (form) => {
     });
 };
 
-export const formatCourse = (formCourse) =>{
+export const formatCourse = (formCourse, type) =>{
     let startDate = new Date(formCourse["Start Date"]);
 
     let dayOfWeek = ()=>{
@@ -165,12 +166,14 @@ export const formatCourse = (formCourse) =>{
         }
     }
     let endDate = new Date(formCourse["End Date"]).toISOString().substring(0,10);
-    let startTime = new Date(formCourse["Start Time"]).toTimeString();
-    let endTime = new Date(formCourse["End Time"]).toTimeString();
+    let startTime = parseTime(formCourse["Start Time"]);
+    let endTime = parseTime(formCourse["End Time"]);
+
+    // console.log(startDate, parseTime(formCourse["Start Time"]), endTime, endDate);
 
     return {
         "subject": formCourse["Course Name"],
-        "type": "T",
+        "type": type,
         "description": formCourse["Description"],
         "instructor": formCourse["Instructor"].value,
         "day_of_week": dayOfWeek(),
@@ -179,6 +182,21 @@ export const formatCourse = (formCourse) =>{
         "start_time": startTime.substring(0,5),
         "end_time": endTime.substring(0,5),
         "max_capacity": formCourse["Capacity"],
-        "course_id": "20"
+        // "course_id": "29"
     };
+}
+
+const parseTime = (time) =>{
+    let formattedTime;
+    if(typeof time === "string"){
+        if(time.indexOf("AM") > -1 || time.indexOf("PM") > -1){
+            formattedTime = new Date();
+            formattedTime.setHours(Number(time.substring(0,time.indexOf(":"))));
+            formattedTime.setMinutes(Number(time.substring(time.indexOf(":")+1,time.indexOf(" "))));
+            formattedTime.setSeconds(0);
+        }
+    } else {
+        formattedTime = time;
+    }
+    return formattedTime.toTimeString().substring(0,5)
 }

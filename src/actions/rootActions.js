@@ -147,7 +147,6 @@ export const submitParentAndStudent = (parent, student, parentID, studentID) => 
         });
         resolve();
     }).then(() => {
-        console.log(parent);
         let formatDate = new Date(parent.birth_date).toISOString().substring(0,10);
         instance.request({
             "data": {...parent, birth_date: formatDate},
