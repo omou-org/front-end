@@ -42,6 +42,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import {DatePicker, TimePicker, MuiPickersUtilsProvider,} from "material-ui-pickers";
 import DateFnsUtils from "@date-io/date-fns";
+import {durationParser, numSessionsParser, timeParser} from "./FormUtils";
 
 const parseGender = {
     "M": "Male",
@@ -154,7 +155,6 @@ class Form extends Component {
                     break;
                 }
                 case "course":{
-                    console.log("editing a course!");
                     if(id && this.props.registeredCourses){
                         if(id.indexOf("+")>=0){
                             let studentID = id.substring(0,id.indexOf("+"));
@@ -162,11 +162,9 @@ class Form extends Component {
                             let {form} = this.props.registeredCourses[studentID].find(({course_id}) => {
                                 return course_id === courseID;
                             });
-                            console.log(form);
                             prevState = {
                                 ...form,
                             };
-                            console.log(prevState);
                         }
                     }
                     break;
@@ -562,7 +560,6 @@ class Form extends Component {
                 if (oldState.activeStep === this.getFormObject().section_titles.length - 1 || oldState.isSmallGroup) {
                     if (!oldState.submitPending) {
                         if (this.props.computedMatch.params.edit === "edit") {
-                            console.log(this.props.computedMatch.params.id);
                             this.props.registrationActions.submitForm(this.state, this.props.computedMatch.params.id);
                         } else if(this.state.form === "small_group") {
                             if(this.state["Group Type"]["Select Group Type"] === "New Small Group"){
@@ -751,9 +748,12 @@ class Form extends Component {
         const disabled = this.state["Parent Information"] && Boolean(this.state["Parent Information"]["Select Parent"]) && this.state.activeSection === "Parent Information";
         switch (field.type) {
             case "select":
+                let parsedDuration = durationParser(this.state[label],fieldTitle);
+                let value = parsedDuration.duration || this.state[label][fieldTitle];
+                let options = parsedDuration.options || field.options;
                 return (
                     <FormControl className="form-control">
-                        <InputLabel shrink={Boolean(this.state[label][fieldTitle])}>
+                        <InputLabel shrink={Boolean(value)}>
                             {fieldTitle}
                         </InputLabel>
                         <Select
@@ -761,9 +761,9 @@ class Form extends Component {
                             onChange={({"target": {value}}) => {
                                 this.onSelectChange(value, label, field);
                             }}
-                            value={this.state[label][fieldTitle]}>
+                            value={value}>
                             {
-                                field.options.map((option) => (
+                                options.map((option) => (
                                     <MenuItem
                                         key={option}
                                         value={option}>
@@ -951,10 +951,7 @@ class Form extends Component {
                 if(this.state[label][fieldTitle] && typeof this.state[label][fieldTitle] !== "string"){
                     time = this.state[label][fieldTitle];
                 } else if(typeof this.state[label][fieldTitle] === "string"){
-                    time = new Date();
-                    time.setHours(Number(this.state[label][fieldTitle].substring(0,this.state[label][fieldTitle].indexOf(":"))));
-                    time.setMinutes(Number(this.state[label][fieldTitle].substring(this.state[label][fieldTitle].indexOf(":")+1,this.state[label][fieldTitle].indexOf(" "))));
-                    time.setSeconds(0);
+                    time = timeParser(this.state[label][fieldTitle]);
                 }
                 return <Grid container>
                     <TimePicker autoOk
@@ -967,18 +964,19 @@ class Form extends Component {
                                 }) } }/>
                 </Grid>;
             default:
+                let textValue = numSessionsParser(this.state[label],field.name) || this.state[label][field.name];
                 return <TextField
                     label={field.name}
                     multiline={field.multiline}
                     margin="normal"
                     disabled={disabled}
-                    value={this.state[label][field.name]}
+                    value={textValue}
                     error={!this.state[label + "_validated"][field.name]}
                     helperText={!this.state[label + "_validated"][field.name] ? field.name + " invalid" : ""}
                     type={field.type === "number" ? "Number" : "text"}
                     required={field.required}
                     InputLabelProps={{
-                        "shrink": Boolean(this.state[label][field.name])
+                        "shrink": Boolean(textValue)
                     }}
                     fullWidth={field.full}
                     onChange={(e) => {
