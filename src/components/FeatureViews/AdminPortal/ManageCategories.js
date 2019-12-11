@@ -23,7 +23,9 @@ const useStyles = makeStyles({
         color: "white",
         // padding: "",
     }
-})
+});
+
+
 
 function ManageCategories(props) {
     const [anchorEl, setAnchorEl] = useState(null);
