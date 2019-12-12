@@ -4301,6 +4301,9 @@ export default {
                 sort:"",
             }
         }
+    },
+    "Admin":{
+
     }
 };
 
@@ -4317,6 +4320,7 @@ function initRequests() {
         "category": {
             [GET]: {},
             [PATCH]: {},
+            [POST]: {},
         },
         "instructor": {
             [GET]: {},
