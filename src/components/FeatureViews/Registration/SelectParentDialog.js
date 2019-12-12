@@ -145,22 +145,22 @@ class SelectParentDialog extends React.Component {
 
         return (
             <div className={"active-parent-dialog-content"}>
-                        <div className="cardsPadding">
-                        <AccountsCards user={this.props.registration.CurrentParent} />
-                        </div>
-                    {/*<h3>{this.props.registration.CurrentParent.user.name}</h3>*/}
-                    <div className="buttons">
-                    <div className="buttonLeft">
+                <div className="cardsPadding">
+                    <AccountsCards user={this.props.registration.CurrentParent} />
+                </div>
+                {/*<h3>{this.props.registration.CurrentParent.user.name}</h3>*/}
+                <div className="exit-buttons-wrapper">
+                    <div className="buttons left">
                         <Button color={"primary"} className={"button"}
                             onClick={this.handleExitParent()}>
                             Exit Parent
                         </Button>
-                        </div>
-                        <div className="buttonRight">
+                    </div>
+                    <div className="buttons right">
                         <Button component={NavLinkNoDup} to={"/registration/cart"}
                             color={"primary"} className={"button"}>Checkout {allCourses} Courses</Button>
-                            </div>
-                            </div>
+                    </div>
+                </div>
             </div>
         )
     }
@@ -191,7 +191,7 @@ class SelectParentDialog extends React.Component {
                     value={this.state.inputParent}
                 />
                 <div className="selectButton">
-                <Button onClick={this.handleSetParentButton()}>Set Parent</Button>
+                    <Button onClick={this.handleSetParentButton()}>Set Parent</Button>
                 </div>
             </>
         )
@@ -200,7 +200,7 @@ class SelectParentDialog extends React.Component {
 
 
     render() {
-        console.log(this.state.inputParent)
+        console.log()
         return (
             <Dialog
                 className={"select-parent-dialog"}

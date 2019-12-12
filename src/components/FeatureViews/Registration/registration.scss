@@ -629,9 +629,9 @@
   }
   .select {
     position: fixed;
-    width: 400px;
+    width: 30%;
     left: 50%;
-    margin-left: -200px;
+    margin-left: -15%;
     top: 50%;
     z-index: 90000;
   }
@@ -661,15 +661,17 @@
   .cardsPadding {
     padding: 5%;
   }
-  .buttons{
-    .buttonLeft {
+  .exit-buttons-wrapper{
+    .buttons{
+    &.left {
       left: 20px;
       position: absolute;
     }
-    .buttonRight {
+    &.right {
       right: 20px;
       position: absolute;
     }
+  }
     padding-bottom:5%;
   }
 }
