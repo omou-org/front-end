@@ -19,6 +19,7 @@ import Avatar from "@material-ui/core/Avatar";
 import {stringToColor} from "../Accounts/accountUtils";
 import MenuList from "@material-ui/core/MenuList";
 import SessionMenu from "./SessionMenu";
+import OPMenu from "./OPMenu";
 
 class Dashboard extends Component {
 
@@ -153,7 +154,7 @@ class Dashboard extends Component {
 
         return (<div className="`Dashboard`">
             <Grid container style={{padding:"50px"}}>
-               <Paper className={"Paper"} style={{backgroundImage: "url('./assets/dashboard-bg.jpg')", margin:"10px"}}>
+               <Paper className={"Paper"} style={{backgroundColor: "lightblue", margin:"10px"}}>
                    <Grid container >
                       <Grid item xs={6} >
                         <Typography variant="h3" align="left" style={{fontSize: "36px", fontStyleFamily:"Roboto Slab"}}>Hello Sharon!</Typography>
@@ -165,7 +166,7 @@ class Dashboard extends Component {
 
                     <Grid container>
                         <Grid item xs={9}>
-                    <Paper style={{padding: "10px", margin:"10px"}}>
+                    <Paper style={{padding: "10px", margin:"10px", backgroundColor: "#E1F5FE", opacity: .9}}>
                     <Grid container spacing={16} direction="row">
                         
 
@@ -201,17 +202,17 @@ class Dashboard extends Component {
                     </Paper>
                     </Grid>
                     <Grid item xs={3}>
-                        <Paper style={{margin:"10px"}}>
+                        <Paper style={{margin:"10px", backgroundColor: "#E1F5FE", opacity: .9}}>
                                Notes here
                         </Paper>
                     </Grid>
                     </Grid>
                     <Grid container>
                     <Grid item xs={6}>
-                        <Paper style={{background:"white", opacity:"100%", zIndex: "0", margin:"10px"}}>
+                        <Paper style={{backgroundColor: "#E1F5FE", opacity: .9, zIndex: "0", margin:"10px"}}>
                         <Grid container style={{zIndex: "500"}}>
                             <Grid item xs={12} style={{zIndex: "500"}}>
-                                <Typography variant="h5" align="left" style={{padding: "10px", zIndex:"500"}}>
+                                <Typography variant="h5" align="left" style={{padding: "10px", zIndex:"500", fontFamily: "Roboto", fontStyle: "normal", fontWeight: 500, fontSize: "18px", lineHeight: "21px",display:"flex", alignItems: "center"}}>
                                     Recently Updated Accounts
                                 </Typography>
                             </Grid>
@@ -233,13 +234,18 @@ class Dashboard extends Component {
                         </Paper>
                     </Grid>
                     <Grid item xs={6}>
-                        <Paper style={{background:'white', opacity:"100%", zIndex: "0", margin:"10px"}}>
+                        <Paper style={{backgroundColor: "#E1F5FE", opacity: .9, zIndex: "0", margin:"10px"}}>
                         <Grid container>
-                            <Grid item xs={12}>
-                                <Typography variant="h5" align="left" style={{padding: "10px"}}>
+                            <Grid item xs={6}>
+                            <Typography variant="h5" align="left" style={{padding: "10px", zIndex:"500", fontFamily: "Roboto", fontStyle: "normal", fontWeight: 500, fontSize: "18px", lineHeight: "21px",display:"flex", alignItems: "center"}}>
                                     Outstanding Payments
                                 </Typography>
                             </Grid>
+
+                            <Grid Item xs={6} >
+                            <OPMenu style={{float: "right"}}></OPMenu>
+                            </Grid>
+
                             <Grid item xs={12}>
                                 <Grid container style={{flexWrap: 'nowrap', overflow:"scroll", overflowY:"hidden"}}>
                                 {this.state.OP.map(op=>(
