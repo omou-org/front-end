@@ -48,14 +48,15 @@ function ManageCategories(props) {
 
     useEffect(()=>{
         api.fetchCategories();
-    },[api])
+    },[api]);
+
     useEffect(()=>{
         if(categories.length > categoryList.length){
             let parsedCategoryList = categories.map((category)=>({
                 ...category,
                 editing: false,
             }));
-            setCategoryList(categories);
+            setCategoryList(parsedCategoryList);
         }
     }, [requestStatus.category[GET],requestStatus.category[POST]]);
 
