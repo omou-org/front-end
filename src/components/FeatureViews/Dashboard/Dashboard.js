@@ -17,10 +17,13 @@ import DashboardOP from './DashboardOP';
 import DashboardNotes from './DashboardNotes';
 import Avatar from "@material-ui/core/Avatar";
 import {stringToColor} from "../Accounts/accountUtils";
+import MenuList from "@material-ui/core/MenuList";
+import SessionMenu from "./SessionMenu";
 
 class Dashboard extends Component {
 
     state = {
+        session: 'classes',
         MainPanel: {
             Classes:[{
                 cName: 'G7 Writing',
@@ -31,12 +34,39 @@ class Dashboard extends Component {
                 cName: 'G10 Biology',
                 time: '1p-2p',
                 location: 'Room 10a'
-            }
+            },
+            {
+                cName: 'G10 Biology',
+                time: '1p-2p',
+                location: 'Room 10a'
+            },
+            {
+                cName: 'G10 Biology',
+                time: '1p-2p',
+                location: 'Room 10a'
+            },
+            {
+                cName: 'G10 Biology',
+                time: '1p-2p',
+                location: 'Room 10a'
+            },
+
         ],
         Tutoring:[{
             sName: 'AP Calculus',
-            time: '3p-4p'
-        }
+            time: '3p-4p',
+            location: 'Room 10a'
+        },
+        {
+            sName: 'G7 Trigonometry',
+            time: '1p-2p',
+            location: 'Room 66'
+        },
+        {
+            sName: 'AP European History',
+            time: '12p-2p',
+            location: 'Room 5a'
+        },
         ],
         Events:[{
             event: 'BYU Course Training',
@@ -93,47 +123,92 @@ class Dashboard extends Component {
        ]
     }
 
+     handleSessionSelect = (session) => {
+        console.log('state.session' + session)
+        if (session = 'classes') {
+            //display classes
+            {this.state.MainPanel.Classes.map(c=>(
+                <DashboardMainPanel
+                cName={c.cName}
+                time={c.time}
+                location={c.location}
+                >
+                </DashboardMainPanel>
+            ))}
+        }
+
+        else if (session = 'tutoring') {
+            //display tutoring
+            {this.state.MainPanel.Tutoring.map(s=>(
+                <DashboardMainPanel
+                cName={s.sName}
+                time={s.time}
+                location={s.location}
+                ></DashboardMainPanel>
+            ))}
+        }
+    }
+
     render() {
 
         return (<div className="`Dashboard`">
             <Grid container style={{padding:"50px"}}>
-               <Paper className={"Paper"} style={{background:"lightblue", padding:"50px", opacity: "80%"}}>
+               <Paper className={"Paper"} style={{backgroundImage: "url('./assets/dashboard-bg.jpg')", margin:"10px"}}>
                    <Grid container >
                       <Grid item xs={6} >
                         <Typography variant="h3" align="left" style={{fontSize: "36px", fontStyleFamily:"Roboto Slab"}}>Hello Sharon!</Typography>
                       </Grid>
-                      <Grid item xs={6}>
-                          <Button variant="contained">Open in Scheduler</Button>
-                      </Grid>
                       <Grid item xs={12}>
-                        <Typography variant="h6" align="left" style={{fontSize: "18px", fontStyleFamily: "Roboto SLab"}}>Summit Education</Typography>
+                        <Typography variant="h6" align="left" style={{fontSize: "18px", fontStyleFamily: "Roboto SLab"}}>Summit Tutoring</Typography>
                       </Grid>
                     </Grid>
 
-                    <Grid container spacing={16} direction="row">
+                    <Grid container>
                         <Grid item xs={9}>
-                            <Grid container>
-                    {this.state.MainPanel.Classes.map(c=>(
-                        <DashboardMainPanel
-                        cName={c.cName}
-                        time={c.time}
-                        location={c.location}
-                        >
-                        </DashboardMainPanel>
-                    ))}
-                            </Grid>
+                    <Paper style={{padding: "10px", margin:"10px"}}>
+                    <Grid container spacing={16} direction="row">
+                        
+
+                        <Grid item xs={7}>
+                            <Typography variant="h3" align="left" style={{fontFamily: "Roboto", fontStyle:"normal", fontWeight:"500", fontSize:"27px", color:"#404143"}}>
+                                Saturday, December 7
+                            </Typography>
                         </Grid>
-                        <Grid item xs={3}>
-                            <Grid container>
-                            {/* <DashboardNotes>
-                            </DashboardNotes> */}
+
+                        <Grid item xs={5}>
+                          <Button variant="contained" style={{float: "right"}}>View in Scheduling</Button>
+                        </Grid>
+
+                        <Grid Item xs={12} >
+                            <SessionMenu style={{margin: "20px"}}></SessionMenu>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Grid container style={{flexWrap:"nowrap", overflow:"scroll", overflowY: "hidden"}}>
+                            {this.handleSessionSelect(this.state.session)}
+                            {this.state.MainPanel.Classes.map(c=>(
+                            <DashboardMainPanel
+                            cName={c.cName}
+                            time={c.time}
+                            location={c.location}
+                            >
+                            </DashboardMainPanel>
+            ))}
+
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Paper style={{background:"lightblue"}}>
+                    </Paper>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Paper style={{margin:"10px"}}>
+                               Notes here
+                        </Paper>
+                    </Grid>
+                    </Grid>
                     <Grid container>
                     <Grid item xs={6}>
-                        <Paper style={{background:"white", opacity:"100%", zIndex: "0"}}>
+                        <Paper style={{background:"white", opacity:"100%", zIndex: "0", margin:"10px"}}>
                         <Grid container style={{zIndex: "500"}}>
                             <Grid item xs={12} style={{zIndex: "500"}}>
                                 <Typography variant="h5" align="left" style={{padding: "10px", zIndex:"500"}}>
@@ -141,7 +216,7 @@ class Dashboard extends Component {
                                 </Typography>
                             </Grid>
                             <Grid item xs={12}>
-                                <Grid container>
+                                <Grid container style={{flexWrap: 'nowrap', overflow:"scroll", overflowY:"hidden"}}>
                             {this.state.Accounts.map(a=>(
                                 <DashboardAccounts
                                 fName={a.fName}
@@ -158,7 +233,7 @@ class Dashboard extends Component {
                         </Paper>
                     </Grid>
                     <Grid item xs={6}>
-                        <Paper style={{background:'white', opacity:"100%", zIndex: "0"}}>
+                        <Paper style={{background:'white', opacity:"100%", zIndex: "0", margin:"10px"}}>
                         <Grid container>
                             <Grid item xs={12}>
                                 <Typography variant="h5" align="left" style={{padding: "10px"}}>
@@ -166,7 +241,7 @@ class Dashboard extends Component {
                                 </Typography>
                             </Grid>
                             <Grid item xs={12}>
-                                <Grid container>
+                                <Grid container style={{flexWrap: 'nowrap', overflow:"scroll", overflowY:"hidden"}}>
                                 {this.state.OP.map(op=>(
                                 <DashboardOP
                                     fName={op.fName}
@@ -184,7 +259,6 @@ class Dashboard extends Component {
                         </Paper>
                     </Grid>
                 </Grid>
-            </Paper>
             </Paper>
             </Grid>
         </div>)

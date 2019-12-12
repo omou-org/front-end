@@ -47,7 +47,7 @@ class DashboardOP extends Component {
                 <Card style = {cardStyle()}> 
                     <CardActionArea>
                         <CardMedia>
-                            <Grid alignItems="center">
+                            <Grid container style={{justifyContent:"center"}}>
                             <Avatar style={styles(this.props.fName+ this.props.lName)}>
                             {(this.props.fName).charAt(0) + (this.props.lName).charAt(0)}
                             </Avatar>
