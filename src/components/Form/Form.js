@@ -3,6 +3,7 @@ import {bindActionCreators} from "redux";
 import * as registrationActions from "../../actions/registrationActions";
 import * as userActions from "../../actions/userActions";
 import * as apiActions from "../../actions/apiActions";
+import * as adminActions from "../../actions/adminActions";
 import * as types from "actions/actionTypes";
 import React, {Component} from "react";
 import {Prompt} from "react-router";
@@ -93,6 +94,7 @@ class Form extends Component {
         this.props.userActions.fetchStudents();
         this.props.userActions.fetchInstructors();
         this.props.registrationActions.initializeRegistration();
+        this.props.adminActions.fetchCategories();
         if (this.props.computedMatch.params.edit === "edit") {
             switch (formType) {
                 case "instructor": {
@@ -868,6 +870,7 @@ class Form extends Component {
                                 onChange={(value) => {
                                     this.onSelectChange(value, label, field);
                                 }}
+                                placeholder={"Choose a Student"}
                                 options={studentList}
                                 className="search-options" />
                             {
@@ -902,10 +905,30 @@ class Form extends Component {
                             onChange={(value) => {
                                 this.onSelectChange(value, label, field);
                             }}
+                            placeholder={"Choose an Instructor"}
                             options={instructorList}
                             className="search-options" />
                     </Grid>
                 </div>);
+            }
+            case "category" : {
+                const categoriesList = this.props.courseCategories
+                    .map(({id,name})=> ({
+                        value: id,
+                        label: name,
+                    }));
+                return (
+                    <SearchSelect
+                        className="search-options"
+                        isClearable
+                        onChange={(value) => {
+                            this.onSelectChange(value, label, field);
+                        }}
+                        placeholder={"Choose a Category"}
+                        value={this.state[label][fieldTitle]}
+                        options={categoriesList}
+                    />
+                );
             }
             case "select parent": {
                 const currParentList = Object.values(this.props.parents)
@@ -1434,6 +1457,7 @@ const mapDispatchToProps = (dispatch) => ({
     "registrationActions": bindActionCreators(registrationActions, dispatch),
     "userActions": bindActionCreators(userActions, dispatch),
     "apiActions": bindActionCreators(apiActions, dispatch),
+    "adminActions": bindActionCreators(adminActions, dispatch),
     dispatch,
 });
 

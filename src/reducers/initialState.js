@@ -4563,6 +4563,16 @@ function initRegistrationForm() {
             field_limit: 1,
         },
         {
+            field: "Category",
+            name: "Category",
+            type: "category",
+            options: [],
+            conditional: false,
+            required: true,
+            full: false,
+            field_limit: 1,
+        },
+        {
             field: "Start Date",
             name: "Start Date",
             type: "date",

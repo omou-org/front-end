@@ -83,9 +83,8 @@ function ManageCategories(props) {
 
     const categoryForm = () => {
         return (
-            <form onSubmit={submitCategory()}>
                 <Paper className={"category-row new-category"}>
-                    <Grid container itemAlign={"center"}>
+                    <Grid container alignItems={"center"}>
                         <Grid item xs={3}>
                             <TextField
                                 className={"field"}
@@ -112,7 +111,6 @@ function ManageCategories(props) {
                         </Grid>
                     </Grid>
                 </Paper>
-            </form>
         )
     };
 

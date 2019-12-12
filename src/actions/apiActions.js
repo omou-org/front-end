@@ -3,6 +3,7 @@ import * as types from "./actionTypes";
 import axios from "axios";
 import {POST_COURSE_SUCCESSFUL} from "./actionTypes";
 import {typeToPostActions} from "./rootActions";
+import {fetchCategories} from "./adminActions";
 
 export const instance = axios.create({
     "baseURL": process.env.REACT_APP_DOMAIN,
@@ -192,6 +193,7 @@ export const formatCourse = (formCourse, type) =>{
         "start_time": startTime,
         "end_time": endTime,
         "max_capacity": formCourse["Capacity"],
+        "category": formCourse["Category"].value,
         // "course_id": "29"
     };
 }

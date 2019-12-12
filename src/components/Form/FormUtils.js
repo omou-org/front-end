@@ -45,6 +45,6 @@ export const numSessionsParser = (form, fieldTitle) => {
         let dateDifference = Math.abs(startDate - endDate) / (1000*60*60*24);
         return dateDifference / 7;
     } else {
-        return form["Number of Weekly Sessions"];
+        return form[fieldTitle];
     }
 }
