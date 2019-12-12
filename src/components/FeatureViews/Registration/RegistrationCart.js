@@ -272,7 +272,12 @@ function RegistrationCart(props) {
     const renderPayment = (isOneCourse, selectedStudentID, selectedCourseID) =>{
         const {cash, creditCard, check} = paymentMethod;
         let selectedRegistration = props.registration.registered_courses[selectedStudentID].find(({course_id})=>{
-            return course_id === Number(selectedCourseID)});
+            if(selectedCourseID.indexOf("T") > -1){
+                return course_id === selectedCourseID;
+            } else {
+                return course_id === Number(selectedCourseID)
+            }
+        });
         let isSmallGroup = selectedCourseID.indexOf("T") === -1 ? props.courseList[selectedCourseID].capacity < 5: false;
         let {form, course_id} = selectedRegistration;
         let formType = form.form;

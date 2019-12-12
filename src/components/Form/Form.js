@@ -90,6 +90,7 @@ class Form extends Component {
         const {id} = this.props.computedMatch.params;
 
         this.props.userActions.fetchStudents();
+        this.props.userActions.fetchParents();
         this.props.userActions.fetchInstructors();
         this.props.registrationActions.initializeRegistration();
         if (this.props.computedMatch.params.edit === "edit") {
