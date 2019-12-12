@@ -4289,6 +4289,18 @@ export default {
         searchQueryStatus: "",
         accounts: [],
         courses: [],
+        filter: {
+            account:{
+                profile:"",
+                grade:"",
+                sort:"",
+            },
+            course:{
+                course:"",
+                availability:"",
+                sort:"",
+            }
+        }
     }
 };
 

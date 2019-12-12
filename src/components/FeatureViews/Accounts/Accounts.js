@@ -63,9 +63,11 @@ class Accounts extends Component {
     }
 
     componentDidMount() {
-        this.props.userActions.fetchParents();
-        this.props.userActions.fetchInstructors();
-        this.props.userActions.fetchStudents();
+        if(Object.keys(this.state.usersList)[0] !== Object.keys(this.props.parents)[0]){
+            this.props.userActions.fetchParents();
+            this.props.userActions.fetchInstructors();
+            this.props.userActions.fetchStudents();
+        }
     }
 
     resize() {

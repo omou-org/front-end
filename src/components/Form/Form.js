@@ -91,6 +91,7 @@ class Form extends Component {
 
         this.props.userActions.fetchStudents();
         this.props.userActions.fetchInstructors();
+        this.props.registrationActions.initializeRegistration();
         if (this.props.computedMatch.params.edit === "edit") {
             switch (formType) {
                 case "instructor": {
@@ -153,6 +154,7 @@ class Form extends Component {
                     break;
                 }
                 case "course":{
+                    console.log("editing a course!");
                     if(id && this.props.registeredCourses){
                         if(id.indexOf("+")>=0){
                             let studentID = id.substring(0,id.indexOf("+"));
@@ -160,9 +162,11 @@ class Form extends Component {
                             let {form} = this.props.registeredCourses[studentID].find(({course_id}) => {
                                 return course_id === courseID;
                             });
+                            console.log(form);
                             prevState = {
-                                ...form
+                                ...form,
                             };
+                            console.log(prevState);
                         }
                     }
                     break;
@@ -404,7 +408,7 @@ class Form extends Component {
                                 const inst = this.props.instructors[course.instructor_id];
                                 this.setState({
                                     "Course Info": {
-                                        "Name": course.title,
+                                        "Course Name": course.title,
                                         "Description": course.description,
                                         "Instructor":
                                             inst
@@ -507,7 +511,12 @@ class Form extends Component {
     }
 
     validateSection() {
-        const currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
+        let currSectionTitle;
+        if(this.state.isSmallGroup){
+            currSectionTitle = "Student";
+        } else {
+            currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
+        }
         return (
             this.getActiveSection()
                 .filter(({required}) => required)
@@ -536,8 +545,12 @@ class Form extends Component {
 
     // Progresses to next section in registration form
     handleNext() {
-        const currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
+        let currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
         let section = this.props.registrationForm[this.state.form][this.state.activeSection];
+        if(this.state.isSmallGroup){
+            currSectionTitle = "Student";
+            section = this.props.registrationForm[this.state.form]["Student"];
+        }
         if (!Array.isArray(section)) {
             section = section[this.state.conditional];
         }
@@ -546,9 +559,10 @@ class Form extends Component {
         });
         this.setState((oldState) => {
             if (this.validateSection()) {
-                if (oldState.activeStep === this.getFormObject().section_titles.length - 1) {
+                if (oldState.activeStep === this.getFormObject().section_titles.length - 1 || oldState.isSmallGroup) {
                     if (!oldState.submitPending) {
                         if (this.props.computedMatch.params.edit === "edit") {
+                            console.log(this.props.computedMatch.params.id);
                             this.props.registrationActions.submitForm(this.state, this.props.computedMatch.params.id);
                         } else if(this.state.form === "small_group") {
                             if(this.state["Group Type"]["Select Group Type"] === "New Small Group"){
@@ -933,11 +947,20 @@ class Form extends Component {
                         />
                     </Grid>;
             case "time":
+                let time;
+                if(this.state[label][fieldTitle] && typeof this.state[label][fieldTitle] !== "string"){
+                    time = this.state[label][fieldTitle];
+                } else if(typeof this.state[label][fieldTitle] === "string"){
+                    time = new Date();
+                    time.setHours(Number(this.state[label][fieldTitle].substring(0,this.state[label][fieldTitle].indexOf(":"))));
+                    time.setMinutes(Number(this.state[label][fieldTitle].substring(this.state[label][fieldTitle].indexOf(":")+1,this.state[label][fieldTitle].indexOf(" "))));
+                    time.setSeconds(0);
+                }
                 return <Grid container>
                     <TimePicker autoOk
                                 error={!this.state[label + "_validated"][field.name]}
                                 label={fieldTitle}
-                                value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : new Date()}
+                                value={time}
                                 onChange={(date) =>{ this.setState((prevState)=>{
                                     prevState[label][fieldTitle] = date;
                                     return prevState;
@@ -1070,9 +1093,20 @@ class Form extends Component {
     }
 
     renderForm() {
-        let {activeStep, nextSection} = this.state,
-            currentForm = this.props.registrationForm[this.state.form],
+        let {activeStep, nextSection} = this.state;
+        let currentForm,
+            steps;
+        if(this.state.isSmallGroup){
+            let {form_type, Student} = this.props.registrationForm[this.state.form];
+            currentForm = {
+                form_type: form_type,
+                Student: Student,
+            };
+            steps = ["Student"];
+        } else {
+            currentForm = this.props.registrationForm[this.state.form];
             steps = currentForm.section_titles;
+        }
         let section = this.getActiveSection();
         return (
             <Stepper
@@ -1212,6 +1246,7 @@ class Form extends Component {
 
     renderCourseRegistrationSubmission(){
         if(this.props.registeredCourses){
+
             let currentStudentID = this.state.Student.Student.value;
             let registeredCourseForm = this.props.registeredCourses[currentStudentID];
             registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
@@ -1229,7 +1264,7 @@ class Form extends Component {
                         className={"button"}>Checkout</Button>
             </div>
         } else {
-            this.props.registrationActions.initializeRegistration();
+            // this.props.registrationActions.initializeRegistration();
             return () => {
                 let currentStudentID = this.state.Student.Student.value;
                 let registeredCourseForm = this.props.registeredCourses[currentStudentID];

@@ -11,8 +11,13 @@ import Paper from "@material-ui/core/Paper";
 import Hidden from "@material-ui/core/Hidden";
 
 class CourseViewer extends Component {
-    componentDidMount() {
-        this.props.apiActions.fetchCourses();
+
+    componentDidUpdate(prevProps) {
+        const lastPrevCourseIndex = Object.keys(prevProps.courses).length - 1;
+        const lastCourseIndex = Object.keys(this.props.courses).length - 1;
+        if(Object.keys(prevProps.courses)[lastPrevCourseIndex].course_id !== Object.keys(this.props.courses)[lastCourseIndex].course_id){
+            this.props.apiActions.fetchCourses();
+        }
     }
 
     goToRoute(route) {
