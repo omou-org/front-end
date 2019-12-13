@@ -839,7 +839,8 @@ class Form extends Component {
                 let studentList = [];
 
                 if(this.props.currentParent){
-                    this.props.currentParent.student_list.forEach((studentID) => {
+                    this.props.parents[this.props.currentParent.user.id] &&
+                    this.props.parents[this.props.currentParent.user.id].student_ids.forEach((studentID) => {
                         if(this.props.students[studentID]){
                             let {user_id, name, email} = this.props.students[studentID];
                             studentList.push({

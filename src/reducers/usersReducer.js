@@ -15,6 +15,8 @@ export default function users(state = initialState.Users, {payload, type}) {
         case actions.POST_NOTE_SUCCESSFUL:
         case actions.PATCH_NOTE_SUCCESSFUL:
             return handleNotesPost(state, payload);
+        case actions.POST_STUDENT_SUCCESSFUL:
+            return handleStudentPost(state,payload);
         default:
             return state;
     }
@@ -128,6 +130,19 @@ export const handleStudentsFetch = (state, {id, response}) => {
         StudentList,
     };
 };
+
+export const handleStudentPost = (state, data) => {
+    let {StudentList, ParentList} = state;
+    StudentList = updateStudent(StudentList, data.user.id, data);
+    // Add student to parent in state
+    let currentStudent = StudentList[data.user.id];
+    ParentList[currentStudent.parent_id].student_ids.push(data.user.id);
+    return {
+        ...state,
+        StudentList,
+        ParentList,
+    };
+}
 
 export const updateStudent = (students, id, student) => ({
     ...students,

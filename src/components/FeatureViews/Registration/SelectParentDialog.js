@@ -14,47 +14,6 @@ import {connect} from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
 
-const parents = [
-    {
-        value: "Eileen Hong-123",
-        label: "Eileen Hong"
-    },
-    {
-        value: "Eileen Wang-125",
-        label: "Eileen Wang"
-    },
-    {
-        value: "Eileen Harrison-133",
-        label: "Eileen Harrison"
-    },
-    {
-        value: "Eileen Grant-123",
-        label: "Eileen Grant"
-    },
-];
-
-const testParent = {
-    user: {
-        id: 123,
-        email: "parent@school.com",
-        first_name: "Eileen",
-        last_name: "Hong",
-        name: "Eileen Hong",
-    },
-    user_uuid: 12,
-    gender: "F",
-    birth_date: "12/12/1963",
-    student_list: [ 1, 2 ],
-    account_type: "PARENT",
-};
-
-const styles = {
-    avatar: {
-        backgroundColor: blue[100],
-        color: blue[600],
-    },
-};
-
 class SelectParentDialog extends React.Component {
     constructor(props) {
         super(props);
