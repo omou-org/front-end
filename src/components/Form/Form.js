@@ -752,9 +752,17 @@ class Form extends Component {
         switch (field.type) {
             case "select":
                 let parsedDuration = durationParser(this.state[label],fieldTitle);
-                let value = parsedDuration || this.state[label][fieldTitle];
-                let options = parsedDuration || field.options;
-                Array.isArray(options) ? options = field.options : options = parsedDuration.options;
+                let value, options;
+                if(parsedDuration){
+                    if(parsedDuration.duration){
+                        value = parsedDuration.duration;
+                        options = parsedDuration.options;
+                    }
+                } else {
+                    value = this.state[label][fieldTitle];
+                    options = field.options;
+                }
+
                 return (
                     <FormControl className="form-control">
                         <InputLabel shrink={Boolean(value)}>
