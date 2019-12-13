@@ -751,8 +751,9 @@ class Form extends Component {
         switch (field.type) {
             case "select":
                 let parsedDuration = durationParser(this.state[label],fieldTitle);
-                let value = parsedDuration.duration || this.state[label][fieldTitle];
-                let options = parsedDuration.options || field.options;
+                let value = parsedDuration || this.state[label][fieldTitle];
+                let options = parsedDuration || field.options;
+                Array.isArray(options) ? options = field.options : options = parsedDuration.options;
                 return (
                     <FormControl className="form-control">
                         <InputLabel shrink={Boolean(value)}>
@@ -788,7 +789,7 @@ class Form extends Component {
                         )
                         .map((courseID) => ({
                             "value": courseID,
-                            "label": this.props.courses[courseID].title,
+                            "label": this.props.courses[courseID].title + " #" + courseID,
                         }));
                 } else {
                     courseList = Object.keys(this.props.courses)
