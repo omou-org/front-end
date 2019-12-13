@@ -92,6 +92,9 @@ const Search = (props) => {
     };
 
     useEffect(()=>{
+        api.fetchInstructors();
+    },[])
+    useEffect(()=>{
         setSearchStatus(false);
         if(query.label){
             filterSuggestions()();

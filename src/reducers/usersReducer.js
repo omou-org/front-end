@@ -17,6 +17,8 @@ export default function users(state = initialState.Users, {payload, type}) {
             return handleNotesPost(state, payload);
         case actions.POST_STUDENT_SUCCESSFUL:
             return handleStudentPost(state,payload);
+        case actions.GET_ACCOUNT_SEARCH_QUERY_SUCCESS:
+            return handleAccountSearchResults(state,payload);
         default:
             return state;
     }
@@ -135,8 +137,11 @@ export const handleStudentPost = (state, data) => {
     let {StudentList, ParentList} = state;
     StudentList = updateStudent(StudentList, data.user.id, data);
     // Add student to parent in state
-    let currentStudent = StudentList[data.user.id];
-    ParentList[currentStudent.parent_id].student_ids.push(data.user.id);
+    if(ParentList[data.user.id]){
+        let currentStudent = StudentList[data.user.id];
+        ParentList[currentStudent.parent_id].student_ids.push(data.user.id);
+    }
+
     return {
         ...state,
         StudentList,
@@ -266,3 +271,30 @@ export const updateInstructor = (instructors, id, instructor) => {
         },
     };
 };
+
+
+const handleAccountSearchResults = (state, {response}) => {
+    let {StudentList, ParentList, InstructorList} = state;
+    let {data} = response;
+    data.forEach((account)=>{
+        switch(account.account_type){
+            case "STUDENT":{
+                StudentList = updateStudent(StudentList, account.user.id, account);
+                break;
+            }
+            case "PARENT":{
+                ParentList = updateParent(ParentList, account.user.id, account);
+                break;
+            }
+            case "INSTRUCTOR":{
+                InstructorList = updateInstructor(InstructorList, account.user.id, account);
+            }
+        }
+    });
+    return {
+        ...state,
+        StudentList,
+        ParentList,
+        InstructorList,
+    };
+}

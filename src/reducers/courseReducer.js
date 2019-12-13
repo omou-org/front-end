@@ -19,6 +19,8 @@ export default (state = initialState.Course, {payload, type}) => {
         case actions.ADD_SMALL_GROUP_REGISTRATION:
             let {new_course} = payload;
             return handleCoursePost(state,new_course);
+        case actions.GET_COURSE_SEARCH_QUERY_SUCCESS:
+            return handleCourseSearchResults(state, payload);
         default:
             return state;
     }
@@ -133,3 +135,17 @@ const handleNotesFetch = (state, {courseID, response}) => {
     });
     return newState;
 };
+
+const handleCourseSearchResults = (state, {response}) =>{
+    let {data} = response;
+    let {NewCourseList} = state;
+
+    data.forEach((course)=>{
+        NewCourseList = updateCourse(NewCourseList, course.id, course);
+    });
+
+    return {
+        ...state,
+        NewCourseList,
+    }
+}
