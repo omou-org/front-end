@@ -72,7 +72,9 @@ function RegistrationCart(props) {
             studentIDs.forEach((studentID)=>{
                 checkedCourses[studentID] = {};
                 props.registration.registered_courses[studentID].forEach((registrationForm) => {
-                    checkedCourses[studentID][registrationForm.course_id] = {checked:false,sessions:registrationForm.sessions};
+                    if(registrationForm.course_id){
+                        checkedCourses[studentID][registrationForm.course_id] = {checked:false,sessions:registrationForm.sessions};
+                    }
                 });
             });
             // Set-up checkboxes

@@ -24,7 +24,7 @@ class CourseSessionStatus extends Component {
 
     componentWillMount() {
         this.setState(() => {
-            let {accountID, courseID} = this.props.match.params;
+            let {accountID, courseID} = this.props.computedMatch.params;
             let calendarSessions = this.props.courseSessions[courseID],
                 paymentSessionStatus = this.props.enrollments[accountID][courseID].session_payment_status,
                 statusKey = (status) => {
@@ -265,7 +265,7 @@ class CourseSessionStatus extends Component {
         }
     }
 
-    render() {console.log(this.props)
+    render() {
         return (<Paper className={'paper'}>
             <Grid container className={'course-session-status'}>
                 <Grid item xs={12} md={12}>

@@ -3,6 +3,7 @@ import * as types from "./actionTypes";
 import axios from "axios";
 import {POST_COURSE_SUCCESSFUL} from "./actionTypes";
 import {typeToPostActions} from "./rootActions";
+import {fetchCategories} from "./adminActions";
 
 export const instance = axios.create({
     "baseURL": process.env.REACT_APP_DOMAIN,
@@ -145,8 +146,6 @@ export const submitNewSmallGroup = (form) => {
 };
 
 export const formatCourse = (formCourse, type) =>{
-    let startDate = new Date(formCourse["Start Date"]);
-
     let dayOfWeek = ()=>{
         switch(startDate.getDay()){
             case 0:
@@ -165,23 +164,36 @@ export const formatCourse = (formCourse, type) =>{
                 return "Sat";
         }
     }
-    let endDate = new Date(formCourse["End Date"]).toISOString().substring(0,10);
-    let startTime = parseTime(formCourse["Start Time"]);
-    let endTime = parseTime(formCourse["End Time"]);
-
-    // console.log(startDate, parseTime(formCourse["Start Time"]), endTime, endDate);
+    let startDate = new Date(formCourse["Start Date"]);
+    let day = dayOfWeek();
+    let endDate = new Date(startDate);
+    endDate = new Date(endDate.setDate(startDate.getDate() + 7*formCourse["Number of Weekly Sessions"]));
+    startDate = startDate.toISOString().substring(0,10);
+    endDate = endDate.toISOString().substring(0,10);
+    let startTime = new Date(formCourse["Start Time"]);
+    let endTime = new Date(startTime);
+    let duration = {
+        "0.5 Hours": 0.5,
+        "1 Hour": 1,
+        "1.5 Hours": 1.5,
+        "2 Hours": 2,
+    };
+    endTime = new Date(endTime.setTime(endTime.getTime() + duration[formCourse["Duration"]]*60*60*1000));
+    endTime = endTime.toTimeString().substring(0,5);
+    startTime = startTime.toTimeString().substring(0,5);
 
     return {
         "subject": formCourse["Course Name"],
         "type": type,
         "description": formCourse["Description"],
         "instructor": formCourse["Instructor"].value,
-        "day_of_week": dayOfWeek(),
-        "start_date": startDate.toISOString().substring(0,10),
+        "day_of_week": day,
+        "start_date": startDate,
         "end_date": endDate,
-        "start_time": startTime.substring(0,5),
-        "end_time": endTime.substring(0,5),
+        "start_time": startTime,
+        "end_time": endTime,
         "max_capacity": formCourse["Capacity"],
+        "category": formCourse["Category"].value,
         // "course_id": "29"
     };
 }

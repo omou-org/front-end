@@ -4301,6 +4301,9 @@ export default {
                 sort:"",
             }
         }
+    },
+    "Admin":{
+
     }
 };
 
@@ -4317,6 +4320,7 @@ function initRequests() {
         "category": {
             [GET]: {},
             [PATCH]: {},
+            [POST]: {},
         },
         "instructor": {
             [GET]: {},
@@ -4559,21 +4563,12 @@ function initRegistrationForm() {
             field_limit: 1,
         },
         {
-            field: "Tuition",
-            name: "Tuition",
-            type: "number",
+            field: "Category",
+            name: "Category",
+            type: "category",
+            options: [],
             conditional: false,
-            required: false,
-            full: false,
-            field_limit: 1,
-        },
-        {
-            field: "Day",
-            name: "Day",
-            type: "select",
-            options: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-            conditional: false,
-            required: false,
+            required: true,
             full: false,
             field_limit: 1,
         },
@@ -4587,29 +4582,31 @@ function initRegistrationForm() {
             field_limit: 1,
         },
         {
-            field: "End Date",
-            name: "End Date",
-            type: "date",
-            conditional: false,
-            required: false,
-            full: false,
-            field_limit: 1,
-        },
-        {
             field: "Start Time",
             name: "Start Time",
             type: "time",
             conditional: false,
-            required: false,
+            required: true,
             full: false,
             field_limit: 1,
         },
         {
-            field: "End Time",
-            name: "End Time",
-            type: "time",
+            field: "Duration",
+            name: "Duration",
+            type: "select",
+            options:
+                ["1 Hour", "1.5 Hours", "0.5 Hours", "2 Hours"],
             conditional: false,
-            required: false,
+            required: true,
+            full: false,
+            field_limit: 1,
+        },
+        {
+            field: "Number of Weekly Sessions",
+            name: "Number of Weekly Sessions",
+            type: "number",
+            conditional: false,
+            required: true,
             full: false,
             field_limit: 1,
         },
