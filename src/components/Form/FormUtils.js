@@ -12,7 +12,7 @@ export const durationParser = (form, fieldTitle)=> {
         let startTime = timeParser(form["Start Time"]);
         let endTime = timeParser(form["End Time"]);
         let duration = Math.abs(endTime - startTime)/3600000;
-        return { duration: durationString[duration], options: ["1 Hour", "1.5 Hours", "0.5 Hours", "2 Hours"]}
+        return { duration: durationString[duration] || "1 Hour", options: ["1 Hour", "1.5 Hours", "0.5 Hours", "2 Hours"]}
     } else {
         return null;
     }
