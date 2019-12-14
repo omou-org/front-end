@@ -1,9 +1,9 @@
-import React, {useState, useEffect, useMemo} from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import ReactSelect from 'react-select';
 import { Grid, Select, Button } from "@material-ui/core";
 import { bindActionCreators } from "redux";
 import * as searchActions from "../../../actions/searchActions";
-import {connect, useDispatch} from "react-redux";
+import { connect, useDispatch } from "react-redux";
 
 import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
@@ -23,34 +23,7 @@ import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 import * as registrationActions from "../../../actions/registrationActions";
 
-const BootstrapInput = withStyles(theme => ({
-    input: {
-        // borderRadius: 10,
-        border: '1px solid #ced4da',
-        fontSize: 16,
-        minWidth: 80,
 
-        // padding: '4px 17px 7px',
-        // Use the system font instead of the default Roboto font.
-        fontFamily: [
-            '-apple-system',
-            'BlinkMacSystemFont',
-            '"Segoe UI"',
-            'Roboto',
-            '"Helvetica Neue"',
-            'Arial',
-            'sans-serif',
-            '"Apple Color Emoji"',
-            '"Segoe UI Emoji"',
-            '"Segoe UI Symbol"',
-        ].join(','),
-        '&:focus': {
-            borderRadius: 10,
-            borderColor: '#80bdff',
-            boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
-        },
-    },
-}))(InputBase);
 
 const customSelect = makeStyles(theme => ({
     outlined: {
@@ -79,18 +52,18 @@ const SearchResultFilter = (props) => {
     const [gradeFilter, setGradeFilter] = useState("");
     const [sortFilter, setSortFilter] = useState("");
 
-    const handleFilterChange = () => (event)=> {
+    const handleFilterChange = () => (event) => {
         switch (event.target.name) {
             case "profileType":
-                api.updateSearchFilter("account","profile",event.target.value);
+                api.updateSearchFilter("account", "profile", event.target.value);
                 setProfileTypeFilter(event.target.value);
                 break;
             case "gradeFilter":
-                api.updateSearchFilter("account","grade",event.target.value);
+                api.updateSearchFilter("account", "grade", event.target.value);
                 setGradeFilter(event.target.value);
                 break;
             case "sortFilter":
-                api.updateSearchFilter("account","sort",event.target.value);
+                api.updateSearchFilter("account", "sort", event.target.value);
                 setSortFilter(event.target.value);
                 break;
             default:
@@ -100,12 +73,12 @@ const SearchResultFilter = (props) => {
 
     return (
         <>
-            <Grid item sm={6} >
+            <Grid item xs={12} md={6} >
                 <Grid container>
-                    <Grid item sm={1} style={{}}>
+                    <Grid item sm={1} style={{ marginTop: "1em" }}>
                         <FilterIcon />
                     </Grid>
-                    <Grid item sm={1} style={{ paddingTop: '5px' }}>
+                    <Grid item sm={1} style={{ marginTop: "1em" }}>
                         <Typography variant={"subtitle1"} align="left"> Filter | </Typography>
                     </Grid>
                     <Grid item sm={2} style={{ marginRight: "10px" }}>
@@ -165,7 +138,7 @@ const SearchResultFilter = (props) => {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item style={{ paddingTop: '5px', margin: '0px 20px 0px 20px' }}>
+                    <Grid item style={{ margin: '1em 20px 0px 20px' }}>
                         <Typography variant={"subtitle1"}> Sort | </Typography>
                     </Grid>
                     <Grid item sm={2}>

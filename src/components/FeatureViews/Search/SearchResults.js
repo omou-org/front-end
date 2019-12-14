@@ -40,6 +40,9 @@ const SearchResults = (props) => {
     const [courseResults, setCourseResults] = useState([]);
     const { "params": { query } } = useRouteMatch();
     const [loading, setLoading] = useState(true);
+    const [start, setStart] = useState(0);
+    const [end, setEnd] = useState(4);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const params = useParams();
 
@@ -47,19 +50,26 @@ const SearchResults = (props) => {
     // /search/account/?query=query?profileFilter=profileFilter?gradeFilter=gradeFilter?sortAlpha=asc?sortID=desc
     // /search/courses/?query=query?courseTypeFilter=courseType?availability=availability?dateSort=desc
 
-    const requestConfig = { params: { query: params.query, page: 1 }, headers: { "Authorization": `Token ${props.auth.token}`, } };
+    const requestConfig = { params: { query: params.query, page: currentPage }, headers: { "Authorization": `Token ${props.auth.token}`, } };
 
     useEffect(() => {
         api.fetchSearchAccountQuery(requestConfig);
         api.fetchSearchCourseQuery(requestConfig);
         api.fetchInstructors();
         api.fetchStudents();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
         api.fetchCourses();
         setAccountResults(props.search.accounts);
         setCourseResults(props.search.courses);
-    },[props.search]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    useEffect(() => {
+
+        console.log("updated filter", props.search.filter)
+    }, [props.search.filter]);
 
     const numberOfResults = () => {
         switch (params.type) {
@@ -75,6 +85,37 @@ const SearchResults = (props) => {
         }
     };
 
+
+    const displayMoreResults = () => (e) => {
+        e.preventDefault()
+        setStart(4);
+        setEnd(8);
+        if (end === 8) {
+            setCurrentPage(currentPage + 1);
+            api.fetchSearchAccountQuery(requestConfig);
+            setAccountResults(props.search.accounts);
+            setStart(0)
+            setEnd(4);
+        }
+    };
+
+
+    /*
+        first : 0
+        second : 4
+        page : 1 
+        user presses ">" button
+            setFirst = 4
+            setSecond = * 2
+
+        // display next 4 results when user presses button
+        // set slice to (4,8) when pressed 
+        // if the second page === 16
+        // make a call to the api and check for more results
+        // if more results set account results to new results  
+        // reset slice to (0,4)
+        // if not return 
+    */
     return (
         <Grid container className={'search-results'} style={{ "padding": "1em" }}>
             {props.search.searchQueryStatus !== "success" ?
@@ -92,7 +133,7 @@ const SearchResults = (props) => {
                             {params.type === "account" ?
                                 <Grid item xs={12}>
                                     <Grid container>
-                                        <AccountFilters/>
+                                        <AccountFilters />
                                     </Grid>
                                 </Grid>
                                 : ""}
@@ -114,22 +155,38 @@ const SearchResults = (props) => {
                                     {/*</Grid>*/}
                                 </Grid>
                                 <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} spacing={16} direction={"row"}>
-                                    {accountResults.length > 0 ?
-                                        accountResults.slice(0, 4).map((account) => (
-                                            <Grid item xs={12}
+                                    {params.type === "account" ?
+                                        accountResults.map((account) => (
+                                            <Grid item
                                                 sm={3}>
                                                 <AccountsCards user={account} key={account.user_id} />
-                                            </Grid>))
+                                            </Grid>
+                                        ))
                                         :
-                                        ""
-                                    }
+                                        accountResults.length > 0 ?
+                                            accountResults.slice(start, end).map((account) => (
+                                                <Grid item
+                                                    sm={3}>
+                                                    <AccountsCards user={account} key={account.user_id} />
+                                                </Grid>
+                                            ))
+                                            :
+                                            ""}
+                                    <Grid >
+                                        {accountResults.length > 6 ?
+                                            <div onClick={displayMoreResults()}>
+                                                <MoreResultsIcon />
+                                            </div>
+                                            : ""
+                                        }
+                                    </Grid>
+
                                 </Grid>
-                                <div>
-                                    <MoreResultsIcon/>
-                                </div>
+
+
                             </Grid>
                             {/* </Grid> */}
-                            {accountResults.length > 0 ? <hr /> : ""}
+                            {accountResults.length ? <hr /> : ""}
                             {/*<Grid item xs={12}>*/}
                             {/*    <Grid container*/}
                             {/*        justify={"space-between"}*/}
