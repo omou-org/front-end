@@ -116,13 +116,13 @@ const RegistrationCourse = () => {
         "notes": []
     };
     const instructor = instructors[course.instructor_id];
-    const days = course.schedule.days.map((day) => {
-        if(day){
-            return dayConverter;
-        } else {
-            return "";
-        }
-    });
+    // const days = course.schedule.days.map((day) => {
+    //     if(day){
+    //         return dayConverter[day];
+    //     } else {
+    //         return "";
+    //     }
+    // });
 
     const [expanded, setExpanded] = useState({});
     const [value, setValue] = useState(0);
@@ -424,7 +424,7 @@ const RegistrationCourse = () => {
                             <Typography
                                 align="left"
                                 className="text">
-                                {days}
+                                {course.schedule.days}
                             </Typography>
                             <Typography
                                 align="left"

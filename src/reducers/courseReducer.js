@@ -97,7 +97,7 @@ export const updateCourse = (courses, id, course) => ({
             "end_date": course.end_date,
             "start_time": parseTime(course.start_time),
             "end_time": parseTime(course.end_time),
-            "days": [dayToNum[course.day_of_week]],
+            "days": course.day_of_week,
         },
         "instructor_id": course.instructor,
         "tuition": course.tuition,
