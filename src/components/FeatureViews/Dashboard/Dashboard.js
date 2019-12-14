@@ -20,8 +20,16 @@ import {stringToColor} from "../Accounts/accountUtils";
 import MenuList from "@material-ui/core/MenuList";
 import SessionMenu from "./SessionMenu";
 import OPMenu from "./OPMenu";
+import bg from "./assets/dashboard-bg.jpg";
 
 class Dashboard extends Component {
+
+    omouURL = process.env.REACT_APP_DOMAIN
+
+    hStyle = {
+        textColor:"#404143",
+        fontStyleFamily:"Roboto Slab"
+    }
 
     state = {
         session: 'classes',
@@ -153,20 +161,21 @@ class Dashboard extends Component {
     render() {
 
         return (<div className="`Dashboard`">
-            <Grid container style={{padding:"50px"}}>
-               <Paper className={"Paper"} style={{backgroundColor: "lightblue", margin:"10px"}}>
+            <Grid container >
+               <Paper className={"Paper"} style={{backgroundImage: `url(${bg}`, backgroundSize: "100%", padding: "20px"}}>
                    <Grid container >
                       <Grid item xs={6} >
-                        <Typography variant="h3" align="left" style={{fontSize: "36px", fontStyleFamily:"Roboto Slab"}}>Hello Sharon!</Typography>
+                        <Typography variant="h3" align="left" style={{fontSize: "36px", fontStyleFamily:"Roboto Slab", textColor: "#404143", fontWeight:"bold"}}>Hello Sharon!</Typography>
                       </Grid>
                       <Grid item xs={12}>
-                        <Typography variant="h6" align="left" style={{fontSize: "18px", fontStyleFamily: "Roboto SLab"}}>Summit Tutoring</Typography>
+                        <Typography variant="h6" align="left" style={{fontSize: "18px", fontStyleFamily: "Roboto SLab", textColor: "#404143", fontWeight: 500}}>Summit Tutoring</Typography>
                       </Grid>
                     </Grid>
+                    <br></br>
 
                     <Grid container>
                         <Grid item xs={9}>
-                    <Paper style={{padding: "10px", margin:"10px", backgroundColor: "#E1F5FE", opacity: .9}}>
+                    <Paper style={{padding: "10px", backgroundColor: "#E1F5FE", opacity: .7}}>
                     <Grid container spacing={16} direction="row">
                         
 
@@ -202,14 +211,14 @@ class Dashboard extends Component {
                     </Paper>
                     </Grid>
                     <Grid item xs={3}>
-                        <Paper style={{margin:"10px", backgroundColor: "#E1F5FE", opacity: .9}}>
+                        <Paper style={{margin:"10px", marginTop:"0px", backgroundColor: "#E1F5FE", opacity: .7}}>
                                Notes here
                         </Paper>
                     </Grid>
                     </Grid>
                     <Grid container>
                     <Grid item xs={6}>
-                        <Paper style={{backgroundColor: "#E1F5FE", opacity: .9, zIndex: "0", margin:"10px"}}>
+                        <Paper style={{backgroundColor: "#E1F5FE", opacity: .7, zIndex: "0", margin:"10px", marginLeft:"0px"}}>
                         <Grid container style={{zIndex: "500"}}>
                             <Grid item xs={12} style={{zIndex: "500"}}>
                                 <Typography variant="h5" align="left" style={{padding: "10px", zIndex:"500", fontFamily: "Roboto", fontStyle: "normal", fontWeight: 500, fontSize: "18px", lineHeight: "21px",display:"flex", alignItems: "center"}}>
@@ -217,7 +226,7 @@ class Dashboard extends Component {
                                 </Typography>
                             </Grid>
                             <Grid item xs={12}>
-                                <Grid container style={{flexWrap: 'nowrap', overflow:"scroll", overflowY:"hidden"}}>
+                                <Grid container style={{flexWrap: 'nowrap', overflowY:"hidden"}}>
                             {this.state.Accounts.map(a=>(
                                 <DashboardAccounts
                                 fName={a.fName}
@@ -234,16 +243,16 @@ class Dashboard extends Component {
                         </Paper>
                     </Grid>
                     <Grid item xs={6}>
-                        <Paper style={{backgroundColor: "#E1F5FE", opacity: .9, zIndex: "0", margin:"10px"}}>
+                        <Paper style={{backgroundColor: "#E1F5FE", opacity: .7, zIndex: "0", margin:"10px"}}>
                         <Grid container>
-                            <Grid item xs={6}>
+                            <Grid item xs={9}>
                             <Typography variant="h5" align="left" style={{padding: "10px", zIndex:"500", fontFamily: "Roboto", fontStyle: "normal", fontWeight: 500, fontSize: "18px", lineHeight: "21px",display:"flex", alignItems: "center"}}>
                                     Outstanding Payments
                                 </Typography>
                             </Grid>
 
-                            <Grid Item xs={6} >
-                            <OPMenu style={{float: "right"}}></OPMenu>
+                            <Grid Item xs={3} >
+                            <OPMenu style={{float: "right", maxHeight: '41px'}}></OPMenu>
                             </Grid>
 
                             <Grid item xs={12}>

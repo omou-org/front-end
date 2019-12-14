@@ -12,6 +12,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Avatar from "@material-ui/core/Avatar";
 import {stringToColor} from "../Accounts/accountUtils";
+import {roleColor} from "./dashboardUtils";
 
 
 
@@ -22,14 +23,15 @@ class DashboardAccounts extends Component {
             "backgroundColor": stringToColor(username),
             "color": "white",
             "margin": 9,
-            "width": 38,
-            "height": 38,
-            "fontSize": 14,
-            "alignSelf": "center"
+            "width": 47,
+            "height": 47,
+            "fontSize": 20,
+            "alignSelf": "center",
+            "fontFamily": "Roboto"
         });
 
         const roleStyle = (role) => ({
-            "backgroundColor": stringToColor(role),
+            "backgroundColor": roleColor(role),
             "borderRadius": "50px",
             "color": "white",
             "height": 30,

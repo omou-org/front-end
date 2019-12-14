@@ -13,6 +13,8 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Avatar from '@material-ui/core/Avatar';
 import {stringToColor} from "../Accounts/accountUtils";
+import {roleColor} from "./dashboardUtils";
+
 
 
 class DashboardOP extends Component {
@@ -28,7 +30,7 @@ class DashboardOP extends Component {
         });
 
         const roleStyle = (role) => ({
-            "backgroundColor": stringToColor(role),
+            "backgroundColor": roleColor(role),
             "borderRadius": "50px",
             "color": "white",
             "height": 30,
