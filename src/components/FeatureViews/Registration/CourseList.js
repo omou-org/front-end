@@ -1,10 +1,11 @@
+import PropTypes from "prop-types";
 import React from "react";
-import {Link} from "react-router-dom";
 import {useSelector} from "react-redux";
 
 // Material UI Imports
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
+import {Link} from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 
@@ -53,12 +54,10 @@ const CourseList = ({filteredCourses}) => {
                         </Typography>
                     </Grid>
                     <Grid
-                        // component={Link}
                         item
                         md={5}
                         style={{"textDecoration": "none",
                             "cursor": "pointer"}}
-                        // to={`/registration/course/${course.course_id}`}
                         xs={12}>
                         <Grid
                             className="course-detail"
@@ -95,7 +94,7 @@ const CourseList = ({filteredCourses}) => {
                                 item
                                 md={8}
                                 xs={9}>
-                                {instructors[course.instructor_id].name}
+                                {course.instructor_id && instructors[course.instructor_id].name}
                             </Grid>
                         </Grid>
                         <Grid
@@ -114,7 +113,7 @@ const CourseList = ({filteredCourses}) => {
                                 item
                                 md={8}
                                 xs={9}>
-                                {course.tuition && `$ ${course.tuition}`}
+                                {course.tuition && `$${course.tuition}`}
                             </Grid>
                         </Grid>
                     </Grid>
@@ -132,30 +131,35 @@ const CourseList = ({filteredCourses}) => {
                                 className="course-status"
                                 item
                                 xs={6}>
-                                {/*<span className="stats">*/}
-                                {/*    {course.enrollment_id_list.length} / {course.max_capacity}*/}
-                                {/*</span>*/}
+                                <span className="stats">
+                                    {course.roster.length} / {course.capacity}
+                                </span>
                                 <span className="label">
                                     Status
                                 </span>
                             </Grid>
-                            {/*<Grid*/}
-                            {/*    item*/}
-                            {/*    xs={6}>*/}
-                            {/*    <Button*/}
-                            {/*        className="button primary"*/}
-                            {/*        component={Link}*/}
-                            {/*        disabled={course.capacity <= course.filled}*/}
-                            {/*        to={`/registration/form/course/${course.course_id}`}*/}
-                            {/*        variant="contained">+ REGISTER*/}
-                            {/*    </Button>*/}
-                            {/*</Grid>*/}
+                            <Grid
+                                item
+                                xs={6}>
+                                <Button
+                                    className="button primary"
+                                    component={Link}
+                                    disabled={course.capacity <= course.filled}
+                                    to={`/registration/form/course/${course.course_id}`}
+                                    variant="contained">
+                                    + REGISTER
+                                </Button>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
             </Paper>
         );
     });
+};
+
+CourseList.propTypes = {
+    "filteredCourses": PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default CourseList;

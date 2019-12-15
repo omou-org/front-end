@@ -1,5 +1,8 @@
+/* eslint-disable max-lines-per-function */
+/* eslint-disable complexity */
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import * as userActions from "../../../actions/userActions";
+import * as hooks from "actions/hooks";
 import {useDispatch, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
 import PropTypes from "prop-types";
@@ -20,48 +23,68 @@ import "../Accounts/TabComponents/TabComponents.scss";
 import {GET, PATCH, POST} from "../../../actions/actionTypes";
 import {REQUEST_STARTED} from "../../../actions/apiActions";
 
-const numericDateString = (date) => {
-    const DateObject = new Date(date);
-    return DateObject.toLocaleTimeString("en-US", {
+const numericDateString = (date) =>
+    (new Date(date)).toLocaleTimeString("en-US", {
         "day": "numeric",
         "hour": "2-digit",
         "minute": "2-digit",
         "month": "numeric",
     });
-};
 
-const Notes = ({userRole, userID}) => {
+const Notes = ({ownerType, ownerID}) => {
     const dispatch = useDispatch();
     const api = useMemo(() => bindActionCreators(userActions, dispatch), [dispatch]);
-    const user = useSelector(({Users, Course}) => {
-        switch (userRole) {
+    const notes = useSelector(({Users, Course, Enrollments}) => {
+        switch (ownerType) {
             case "student":
-                return Users.StudentList[userID];
+                return Users.StudentList[ownerID].notes;
             case "parent":
-                return Users.ParentList[userID];
+                return Users.ParentList[ownerID].notes;
             case "instructor":
-                return Users.InstructorList[userID];
+                return Users.InstructorList[ownerID].notes;
             case "receptionist":
-                return Users.ReceptionistList[userID];
+                return Users.ReceptionistList[ownerID].notes;
             case "course":
-                return Course.NewCourseList[userID];
+                return Course.NewCourseList[ownerID].notes;
+            case "enrollment":
+                return Enrollments[ownerID.studentID][ownerID.courseID].notes;
             default:
-                return -1;
+                return null;
         }
     });
 
-    const getRequestStatus = useSelector(({RequestStatus}) =>
-        userRole === "course"
-            ? RequestStatus.courseNote[GET][userID]
-            : RequestStatus.note[GET][userID]);
-    const postRequestStatus = useSelector(({RequestStatus}) =>
-        userRole === "course"
-            ? RequestStatus.courseNote[POST]
-            : RequestStatus.note[POST]);
-    const patchRequestStatus = useSelector(({RequestStatus}) =>
-        userRole === "course"
-            ? RequestStatus.courseNote[PATCH][userID]
-            : RequestStatus.note[PATCH][userID]);
+    const getRequestStatus = useSelector(({RequestStatus}) => {
+        switch (ownerType) {
+            case "course":
+                return RequestStatus.courseNote[GET][ownerID];
+            case "enrollment":
+                return RequestStatus.enrollmentNote[GET][ownerID.enrollmentID];
+            default:
+                return RequestStatus.accountNote[GET][ownerID];
+        }
+    });
+
+    const postRequestStatus = useSelector(({RequestStatus}) => {
+        switch (ownerType) {
+            case "course":
+                return RequestStatus.courseNote[POST];
+            case "enrollment":
+                return RequestStatus.enrollmentNote[POST];
+            default:
+                return RequestStatus.accountNote[POST];
+        }
+    });
+
+    const patchRequestStatus = useSelector(({RequestStatus}) => {
+        switch (ownerType) {
+            case "course":
+                return RequestStatus.courseNote[PATCH][ownerID];
+            case "enrollment":
+                return RequestStatus.enrollmentNote[PATCH][ownerID.enrollmentID];
+            default:
+                return RequestStatus.accountNote[PATCH][ownerID];
+        }
+    });
 
     const [alert, setAlert] = useState(false);
     const [noteBody, setNoteBody] = useState("");
@@ -73,12 +96,14 @@ const Notes = ({userRole, userID}) => {
     const [error, setError] = useState(false);
 
     useEffect(() => {
-        if (userRole === "course") {
-            api.fetchCourseNotes(userID);
+        if (ownerType === "course") {
+            api.fetchCourseNotes(ownerID);
+        } else if (ownerType === "enrollment") {
+            api.fetchEnrollmentNotes(ownerID.enrollmentID, ownerID.studentID, ownerID.courseID);
         } else {
-            api.fetchNotes(userID, userRole);
+            api.fetchAccountNotes(ownerID, ownerType);
         }
-    }, [api, userID, userRole]);
+    }, [api, ownerID, ownerType]);
 
     const openNewNote = useCallback(() => {
         setAlert(true);
@@ -118,46 +143,68 @@ const Notes = ({userRole, userID}) => {
     };
 
     const saveNote = useCallback(() => {
-        if (userRole === "course") {
-            const note = {
-                "body": noteBody,
-                "complete": false,
-                "important": notification,
-                "title": noteTitle,
-                "course": userID,
-            };
-            if (editID) {
-                api.patchCourseNote(editID, note, userRole);
-                setIsPost(false);
-            } else {
-                api.postCourseNote(note, userRole);
-                setIsPost(true);
+        switch (ownerType) {
+            case "enrollment": {
+                const note = {
+                    "body": noteBody,
+                    "complete": false,
+                    "important": notification,
+                    "title": noteTitle,
+                    "enrollment": ownerID.enrollmentID,
+                };
+                if (editID) {
+                    api.patchEnrollmentNote(editID, note, ownerID.enrollmentID, ownerID.studentID, ownerID.courseID);
+                    setIsPost(false);
+                } else {
+                    api.postEnrollmentNote(note, ownerID.enrollmentID, ownerID.studentID, ownerID.courseID);
+                    setIsPost(true);
+                }
+                setSubmitting(true);
+                break;
             }
-            setSubmitting(true);
-        } else {
-            const note = {
-                "body": noteBody,
-                "complete": false,
-                "important": notification,
-                "title": noteTitle,
-                "user": userID,
-            };
-            if (editID) {
-                api.patchNote(editID, note, userRole);
-                setIsPost(false);
-            } else {
-                api.postNote(note, userRole);
-                setIsPost(true);
+            case "course": {
+                const note = {
+                    "body": noteBody,
+                    "complete": false,
+                    "important": notification,
+                    "title": noteTitle,
+                    "course": ownerID,
+                };
+                if (editID) {
+                    api.patchCourseNote(editID, note, ownerType, ownerID);
+                    setIsPost(false);
+                } else {
+                    api.postCourseNote(note, ownerType);
+                    setIsPost(true);
+                }
+                setSubmitting(true);
+                break;
             }
-            setSubmitting(true);
+            default: {
+                const note = {
+                    "body": noteBody,
+                    "complete": false,
+                    "important": notification,
+                    "title": noteTitle,
+                    "user": ownerID,
+                };
+                if (editID) {
+                    api.patchAccountNote(editID, note, ownerType, ownerID);
+                    setIsPost(false);
+                } else {
+                    api.postAccountNote(note, ownerType);
+                    setIsPost(true);
+                }
+                setSubmitting(true);
+            }
         }
-    }, [api, noteBody, notification, noteTitle, userID, userRole, editID]);
+    }, [api, noteBody, notification, noteTitle, ownerID, ownerType, editID]);
 
-    if (!getRequestStatus || getRequestStatus === REQUEST_STARTED) {
+    if (hooks.isLoading(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {
         return "Loading notes...";
     }
 
-    if (getRequestStatus < 200 || getRequestStatus >= 300) {
+    if (hooks.isFail(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {
         return "Error loading notes!";
     }
 
@@ -197,7 +244,6 @@ const Notes = ({userRole, userID}) => {
                             className="textfield"
                             id="standard-name"
                             label="Subject"
-                            margin="normal"
                             onChange={handleTitleUpdate}
                             value={noteTitle} />
                         <NotificationIcon
@@ -254,7 +300,7 @@ const Notes = ({userRole, userID}) => {
                     </Typography>
                 </div>
             </Grid>
-            {user.notes && Object.values(user.notes).map((note) => (
+            {notes && Object.values(notes).map((note) => (
                 <Grid
                     item
                     key={note.id || note.body}
@@ -292,11 +338,32 @@ const Notes = ({userRole, userID}) => {
 };
 
 Notes.propTypes = {
-    "userID": PropTypes.oneOfType([
+    "ownerID": PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number,
+        PropTypes.shape({
+            "courseID": PropTypes.oneOfType([
+                PropTypes.string,
+                PropTypes.number,
+            ]),
+            "enrollmentID": PropTypes.oneOfType([
+                PropTypes.string,
+                PropTypes.number,
+            ]),
+            "studentID": PropTypes.oneOfType([
+                PropTypes.string,
+                PropTypes.number,
+            ]),
+        }),
     ]).isRequired,
-    "userRole": PropTypes.string.isRequired,
+    "ownerType": PropTypes.oneOf([
+        "course",
+        "enrollment",
+        "instructor",
+        "parent",
+        "receptionist",
+        "student",
+    ]).isRequired,
 };
 
 export default Notes;

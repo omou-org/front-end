@@ -1,6 +1,5 @@
 import * as types from "./actionTypes";
-import {instance, wrapGet} from "./apiActions";
-import {wrap} from "module";
+import {instance} from "./apiActions";
 
 export const login = (email, password, savePassword) => async (dispatch) => {
     // request starting
@@ -47,7 +46,7 @@ export const fetchUserStatus = (token) => async (dispatch) => {
     newAction(types.FETCH_USER_STARTED, {});
 
     try {
-        const response = await instance.get("/account/user", {
+        const response = await instance.get("/account/user/", {
             "headers": {
                 "Authorization": `Token ${token}`,
             },

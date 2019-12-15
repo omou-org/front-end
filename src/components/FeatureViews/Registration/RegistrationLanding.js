@@ -1,21 +1,15 @@
-// react/redux imports
-import * as apiActions from "actions/apiActions";
-import * as userActions from "actions/userActions";
-import * as registrationActions from "actions/registrationActions";
-import {GET} from "actions/actionTypes";
-import React, {useEffect, useMemo, useState} from "react";
-import {bindActionCreators} from "redux";
-import {useDispatch, useSelector} from "react-redux";
+import * as hooks from "actions/hooks";
+import React, {useCallback, useMemo, useState} from "react";
+import {useSelector} from "react-redux";
 
-// Material UI Imports
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import {Typography} from "@material-ui/core";
 import BackButton from "components/BackButton";
-import SearchSelect from "react-select";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
+import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
+import Paper from "@material-ui/core/Paper";
+import SearchSelect from "react-select";
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
+import Typography from "@material-ui/core/Typography";
 
 import CourseList from "./CourseList";
 import TutoringList from "./TutoringList";
@@ -28,19 +22,10 @@ const gradeOptions = Array(NUM_GRADES).map((_, gradeNum) => ({
 }));
 
 const RegistrationLanding = () => {
-    const dispatch = useDispatch();
-    const api = useMemo(
-        () => ({
-            ...bindActionCreators(apiActions, dispatch),
-            ...bindActionCreators(userActions, dispatch),
-            ...bindActionCreators(registrationActions, dispatch),
-        }),
-        [dispatch]
-    );
-
     const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
     const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
-    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
+    const courseStatus = hooks.useCourse();
+    hooks.useInstructor();
 
     const [view, setView] = useState(0);
     const [courseFilters, setCourseFilters] = useState({
@@ -49,19 +34,9 @@ const RegistrationLanding = () => {
         "subject": [],
     });
 
-    const updateView = (view) => () => {
-        setView(view);
-    };
-
-    useEffect(() => {
-        api.fetchCourses();
-        api.fetchInstructors();
-    }, [api]);
-
-
-    useEffect(() => {
-        api.fetchEnrollments();
-    }, [api, requestStatus.course[GET][apiActions.REQUEST_ALL]]);
+    const updateView = useCallback((newView) => () => {
+        setView(newView);
+    }, []);
 
     const instructorOptions = useMemo(() => Object.values(instructors)
         .map(({name, user_id}) => ({
@@ -91,28 +66,20 @@ const RegistrationLanding = () => {
         , [courses, courseFilters]
     );
 
-    if (!requestStatus.instructor[GET][apiActions.REQUEST_ALL] ||
-        !requestStatus.course[GET][apiActions.REQUEST_ALL] ||
-        requestStatus.instructor[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED ||
-        requestStatus.course[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED) {
+    const handleFilterChange = useCallback((filterType) => (filters) => {
+        setCourseFilters((prevFilters) => ({
+            ...prevFilters,
+            [filterType]: filters || [],
+        }));
+    }, []);
+
+    if (hooks.isLoading(courseStatus) && Object.entries(courses).length === 0) {
         return "LOADING";
     }
 
-    if (requestStatus.instructor[GET][apiActions.REQUEST_ALL] < 200 ||
-        requestStatus.instructor[GET][apiActions.REQUEST_ALL] >= 300 ||
-        requestStatus.course[GET][apiActions.REQUEST_ALL] < 200 ||
-        requestStatus.course[GET][apiActions.REQUEST_ALL] >= 300) {
-        // console.log(requestStatus.instructor[GET]);
-        // console.log(requestStatus.course[GET][apiActions.REQUEST_ALL]);
-        return "ERROR LOADING COURSES";
+    if (hooks.isFail(courseStatus) && Object.entries(courses).length) {
+        return "Unable to load courses!";
     }
-
-    const handleFilterChange = (filterType) => (filters) => {
-        setCourseFilters({
-            ...courseFilters,
-            [filterType]: filters || [],
-        });
-    };
 
     const renderFilter = (filterType) => {
         let options = [];
@@ -197,10 +164,10 @@ const RegistrationLanding = () => {
                         align="left"
                         className="heading"
                         variant="h3">
-                            Registration Catalog
+                        Registration Catalog
                     </Typography>
                 </Grid>
-                {/* <Grid
+                <Grid
                     className="catalog-setting-wrapper"
                     item
                     md={5}
@@ -215,7 +182,7 @@ const RegistrationLanding = () => {
                             label="Tutoring"
                             onClick={updateView(1)} />
                     </Tabs>
-                </Grid> */}
+                </Grid>
             </Grid>
             <Grid
                 container

@@ -1,41 +1,36 @@
-import {useDispatch, useSelector} from "react-redux";
-import {bindActionCreators} from "redux";
+import * as hooks from "actions/hooks";
 import PropTypes from "prop-types";
-import React, {useCallback, useEffect, useMemo} from "react";
-import {useHistory} from "react-router-dom";
-import {GET} from "../../../../actions/actionTypes";
-import {REQUEST_STARTED} from "../../../../actions/apiActions";
-import * as userActions from "../../../../actions/userActions";
+import React from "react";
+import {useSelector} from "react-redux";
 
 
 import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import "./TabComponents.scss";
-import Paper from "@material-ui/core/Paper";
-import EditIcon from "@material-ui/icons/EditOutlined";
 import ProfileCard from "../ProfileCard";
-import {addDashes} from "../accountUtils";
+import "./TabComponents.scss";
 
-const ParentContact = (props) => {
-    const {parent_id} = props;
-    const dispatch = useDispatch();
-    const api = useMemo(() => bindActionCreators(userActions, dispatch), [dispatch]);
-
-    useEffect(() => {
-        api.fetchParents(parent_id);
-    }, [api, parent_id]);
-
+const ParentContact = ({parent_id}) => {
+    const parentStatus = hooks.useParent(parent_id);
     const parent = useSelector(({Users}) => Users.ParentList[parent_id]);
-    const requestStatus = useSelector(({RequestStatus}) => RequestStatus.parent[GET][parent_id]);
 
-    if (!requestStatus || requestStatus === REQUEST_STARTED) {
+    if (hooks.isLoading(parentStatus) && !parent) {
         return "Loading parent...";
     }
 
+    if (hooks.isFail(parentStatus) && !parent) {
+        return "Error loading parent!";
+    }
+
     return (
-        <Grid item md={12}>
-            <Grid container spacing={16}>
-                <Grid item md={10} xs={12} >
+        <Grid
+            item
+            md={12}>
+            <Grid
+                container
+                spacing={16}>
+                <Grid
+                    item
+                    md={10}
+                    xs={12} >
                     <ProfileCard
                         route={`/accounts/parent/${parent_id}`}
                         user={parent} />

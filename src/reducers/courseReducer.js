@@ -6,8 +6,6 @@ export default (state = initialState.Course, {payload, type}) => {
     switch (type) {
         case actions.FETCH_COURSE_SUCCESSFUL:
             return handleCoursesFetch(state, payload);
-        case actions.FETCH_ENROLLMENT_SUCCESSFUL:
-            return handleEnrollmentFetch(state, payload);
         case actions.FETCH_COURSE_NOTE_SUCCESSFUL:
             return handleNotesFetch(state, payload);
         case actions.POST_COURSE_NOTE_SUCCESSFUL:
@@ -19,26 +17,11 @@ export default (state = initialState.Course, {payload, type}) => {
 };
 
 const parseTime = (time) => {
-    const [hours, mins] = time.split(":");
-    return `T${hours}:${mins}`;
-};
-
-const handleEnrollmentFetch = (state, {response}) => {
-    const {data} = response;
-
-    const newCourses = JSON.parse(JSON.stringify(state.NewCourseList));
-
-    data.forEach(({student, course}) => {
-        const rost = newCourses[course].roster;
-        if (!rost.includes(student)) {
-            newCourses[course].roster = [...rost, student];
-        }
-    });
-
-    return {
-        ...state,
-        "NewCourseList": newCourses,
-    };
+    if (time) {
+        const [hours, mins] = time.split(":");
+        return `T${hours}:${mins}`;
+    }
+    return null;
 };
 
 const dayToNum = {
@@ -58,6 +41,7 @@ const handleCoursesFetch = (state, {id, response}) => {
         NewCourseList = updateCourse(NewCourseList, id, data);
     } else {
         data.forEach((course) => {
+            course.course_id = 1;
             NewCourseList = updateCourse(NewCourseList, course.course_id, course);
         });
     }
@@ -69,8 +53,8 @@ const handleCoursesFetch = (state, {id, response}) => {
 
 export const updateCourse = (courses, id, course) => ({
     ...courses,
-    [course.course_id]: {
-        "course_id": course.course_id,
+    [id]: {
+        "course_id": id,
         "title": course.subject ? course.subject : "",
         "schedule": {
             "start_date": course.start_date,
@@ -98,15 +82,15 @@ const handleNotesPost = (state, {response, ...rest}) => handleNotesFetch(state, 
         ...response,
         "data": [response.data],
     },
-    "courseID": response.data.course,
+    "ownerID": response.data.course,
     ...rest,
 });
 
-const handleNotesFetch = (state, {courseID, response}) => {
+const handleNotesFetch = (state, {ownerID, response}) => {
     const {data} = response;
     const newState = JSON.parse(JSON.stringify(state));
     data.forEach((note) => {
-        newState.NewCourseList[courseID].notes[note.id] = note;
+        newState.NewCourseList[ownerID].notes[note.id] = note;
     });
     return newState;
 };

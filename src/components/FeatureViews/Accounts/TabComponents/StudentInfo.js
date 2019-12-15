@@ -25,12 +25,14 @@ const StudentInfo = ({user}) => {
             spacing={40}
             xs={10}>
             {
-                user.student_ids.map((studentID) => (
-                    <ProfileCard
-                        key={studentID}
-                        route={`/accounts/student/${studentID}`}
-                        user={studentList[studentID]} />
-                ))
+                user.student_ids
+                    .filter((studentID) => studentList[studentID])
+                    .map((studentID) => (
+                        <ProfileCard
+                            key={studentID}
+                            route={`/accounts/student/${studentID}`}
+                            user={studentList[studentID]} />
+                    ))
             }
         </Grid>
     );
@@ -38,10 +40,10 @@ const StudentInfo = ({user}) => {
 
 StudentInfo.propTypes = {
     "user": PropTypes.shape({
-        "student_ids": PropTypes.arrayOf(PropTypes.oneOfType(
+        "student_ids": PropTypes.arrayOf(PropTypes.oneOfType([
             PropTypes.string,
-            PropTypes.number
-        )),
+            PropTypes.number,
+        ])).isRequired,
     }).isRequired,
 };
 

@@ -1,282 +1,293 @@
-import {connect} from 'react-redux';
-import React, {Component} from 'react';
-
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Paper from "@material-ui/core/Paper";
+import {Link, useParams} from "react-router-dom";
 import BackButton from "../../../BackButton";
-import {Link} from "react-router-dom";
+import React, {useCallback, useMemo} from "react";
+import {useSelector} from "react-redux";
+import * as hooks from "actions/hooks";
 
-class CourseSessionStatus extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
+import Notes from "components/FeatureViews/Notes/Notes";
+
+const DayConverter = {
+    "0": "Sunday",
+    "1": "Monday",
+    "2": "Tuesday",
+    "3": "Wednesday",
+    "4": "Thursday",
+    "5": "Friday",
+    "6": "Saturday",
+};
+
+const timeOptions = {
+    "hour": "2-digit",
+    "minute": "2-digit",
+};
+const dateOptions = {
+    "year": "numeric",
+    "month": "numeric",
+    "day": "numeric",
+};
+
+const courseDataParser = ({schedule, status, tuition}) => {
+    const DaysString = schedule.days
+        .reduce((string, day) => `${string}${DayConverter[day]}, `, "")
+        .slice(0, -2);
+
+    const endDate = new Date(schedule.end_date + schedule.end_time),
+        startDate = new Date(schedule.start_date + schedule.start_time);
+
+    return {
+        "date": `${startDate.toLocaleDateString("en-US", dateOptions)} - ${endDate.toLocaleDateString("en-US", dateOptions)}`,
+        "day": DaysString,
+        "endTime": endDate.toLocaleTimeString("en-US", timeOptions),
+        "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
+        status,
+        tuition,
+    };
+};
+
+const CourseSessionStatus = () => {
+    const {"accountID": studentID, courseID} = useParams();
+    const courseSessions = useSelector(({Course}) => Course.CourseSessions);
+    const usersList = useSelector(({Users}) => Users);
+    const courses = useSelector(({Course}) => Course.NewCourseList);
+    const enrollments = useSelector(({Enrollments}) => Enrollments);
+    const course = courses[courseID];
+
+    const studentStatus = hooks.useStudent(studentID);
+    const courseStatus = hooks.useCourse(courseID);
+    const instructorStatus = hooks.useInstructor(course && course.instructor_id);
+    const enrollmentStatus = hooks.useEnrollmentByCourse(courseID);
+
+    const enrollment = (enrollments[studentID] && enrollments[studentID][courseID]) || {};
+
+    const noteInfo = useMemo(() => ({
+        courseID,
+        "enrollmentID": enrollment.enrollment_id,
+        studentID,
+    }), [courseID, enrollment.enrollment_id, studentID]);
+
+    const sessionDataParse = useCallback(({start, end, course_id, status}) => {
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+
+        return {
+            "date": startDate.toLocaleDateString("en-US", dateOptions),
+            "day": DayConverter[startDate.getDay()],
+            "endTime": endDate.toLocaleTimeString("en-US", timeOptions),
+            "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
+            status,
+            "tuition": courses[course_id].tuition,
+        };
+    }, [courses]);
+
+    if (hooks.isFail(courseStatus, enrollmentStatus, studentStatus)) {
+        return "Error loading data";
+    } else if (hooks.isLoading(courseStatus, enrollmentStatus, studentStatus)) {
+        return "Loading...";
     }
 
-    componentWillMount() {
-        this.setState(() => {
-            let {accountID, courseID} = this.props.match.params;
-            let calendarSessions = this.props.courseSessions[courseID],
-                paymentSessionStatus = this.props.enrollments[accountID][courseID].session_payment_status,
-                statusKey = (status) => {
-                    if (status === 1) {
-                        return "Paid";
-                    } else if (status === 0) {
-                        return "Unpaid";
-                    } else {
-                        return "Waived";
-                    }
-                };
-            let course = this.props.courses[courseID];
-            if (course.type === "T") {
-                calendarSessions = Object.values(calendarSessions).map((session) => {
-                    return {
-                        ...session,
-                        status: statusKey(paymentSessionStatus[session.session_id]),
-
-                    }
-                });
-                return {
-                    sessions: calendarSessions,
-                    type: "T",
-                    studentID: accountID,
-                    course: course,
-                };
-            } else {
-                let status = "Paid";
-                Object.values(paymentSessionStatus).forEach((session) => {
-                    if (session === 0) {
-                        status = "Unpaid";
-                    }
-                });
-                return {
-                    sessions: [
-                        {
-                            ...course,
-                            status: status,
-                            type: "C",
-                        }
-                    ],
-                    type: "C",
-                    course: course,
-                    studentID: accountID,
-                }
+    const calendarSessions = courseSessions[courseID],
+        paymentSessionStatus = enrollment.session_payment_status,
+        statusKey = (status) => {
+            if (status === 1) {
+                return "Paid";
+            } else if (status === 0) {
+                return "Unpaid";
             }
+            return "Waived";
 
-        })
-    }
-
-    courseDataParser(course) {
-        let DayConverter = {
-            0: "Sunday",
-            1: "Monday",
-            2: "Tuesday",
-            3: "Wednesday",
-            4: "Thursday",
-            5: "Friday",
-            6: "Saturday",
-        };
-        let Days = course.schedule.days.map((day) => {
-            return DayConverter[day];
-        });
-        let DaysString = "";
-        if (Days.length > 1) {
-            Days.forEach((day) => {
-                DaysString += day + ", "
-            });
-        } else {
-            DaysString = Days[0];
-        }
-
-        let timeOptions = {hour: "2-digit", minute: "2-digit"};
-        let dateOptions = {year: "numeric", month: "numeric", day: "numeric"};
-        let startDate = new Date(course.schedule.start_date + course.schedule.start_time),
-            endDate = new Date(course.schedule.end_date + course.schedule.end_time),
-            startTime = startDate.toLocaleTimeString("en-US", timeOptions),
-            endTime = endDate.toLocaleTimeString("en-US", timeOptions);
-        startDate = startDate.toLocaleDateString("en-US", dateOptions);
-        endDate = endDate.toLocaleDateString("en-US", dateOptions);
-
-        let date = startDate + " - " + endDate;
-
-        return {
-            day: DaysString,
-            startTime: startTime,
-            endTime: endTime,
-            date: date,
-            tuition: course.tuition,
-            status: course.status,
-        }
-    }
-
-    sessionDataParse(session) {
-        let {start, end, course_id, status} = session;
-        let startDate = new Date(start);
-        let endDate = new Date(end);
-
-        let timeOptions = {hour: "2-digit", minute: "2-digit"};
-        let dateOptions = {year: "numeric", month: "numeric", day: "numeric"};
-
-        let DayConverter = {
-            0: "Sunday",
-            1: "Monday",
-            2: "Tuesday",
-            3: "Wednesday",
-            4: "Thursday",
-            5: "Friday",
-            6: "Saturday",
         };
 
-        let day = DayConverter[startDate.getDay()];
+    const sessions = course.type === "T"
+        ? Object.values(calendarSessions).map((session) => ({
+            ...session,
+            "status": statusKey(paymentSessionStatus[session.session_id]),
+        }))
+        : [
+            {
+                ...course,
+                "status": Object.values(paymentSessionStatus).some((session) => session === 0)
+                    ? "Unpaid"
+                    : "Paid",
+                "type": "C",
+            },
+        ];
 
-        let startTime = startDate.toLocaleTimeString("en-US", timeOptions),
-            endTime = endDate.toLocaleTimeString("en-US", timeOptions),
-            date = startDate.toLocaleDateString("en-US", dateOptions);
-
-        let courseTuition = this.props.courses[course_id].tuition;
-
-        return {
-            day: day,
-            startTime: startTime,
-            endTime: endTime,
-            date: date,
-            tuition: courseTuition,
-            status: status,
-        }
-    }
-
-    render() {
-        return (<Paper className={'paper'}>
-            <Grid container className={'course-session-status'}>
-                <Grid item xs={12} md={12}>
+    return (
+        <Paper className="paper">
+            <Grid
+                className="course-session-status"
+                container>
+                <Grid
+                    item
+                    xs={12}>
                     <BackButton />
                     <hr />
                 </Grid>
-
-                <Grid item xs={12} md={12}>
-                    <Typography variant={'h4'} align={'left'}>
-                        {this.state.course.title}
+                <Grid
+                    item
+                    xs={12}>
+                    <Typography
+                        align="left"
+                        variant="h4">
+                        {course.title}
                     </Typography>
-
-                    <Typography align={'left'}>
+                    <Typography align="left">
                         Student:
-                        <Link to={'/accounts/student/' + this.state.studentID}>
-                            {this.props.usersList.StudentList[this.state.studentID].name}
+                        <Link to={`/accounts/student/${studentID}`}>
+                            {usersList.StudentList[studentID].name}
                         </Link>
                     </Typography>
-
-                    <Typography align={'left'}>
-                        Instructor:
-                        <Link to={'/accounts/instructor/' + this.state.course.instructor_id}>
-                            {this.props.usersList.InstructorList[this.state.course.instructor_id].name}
-                        </Link>
-                    </Typography>
-
+                    {
+                        hooks.isSuccessful(instructorStatus) &&
+                        <Typography align="left">
+                            Instructor:
+                            <Link to={`/accounts/instructor/${course.instructor_id}`}>
+                                {usersList.InstructorList[course.instructor_id].name}
+                            </Link>
+                        </Typography>
+                    }
                 </Grid>
-
-                <Grid item xs={12} md={12}>
-                    <Grid container className={'accounts-table-heading'}>
-                        <Grid item xs={1} md={1}>
-
-                        </Grid>
-                        <Grid item xs={3} md={3}>
-                            <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                <Grid
+                    item
+                    xs={12}>
+                    <Grid
+                        className="accounts-table-heading"
+                        container>
+                        <Grid
+                            item
+                            xs={1} />
+                        <Grid
+                            item
+                            xs={3}>
+                            <Typography
+                                align="left"
+                                className="table-text">
                                 Session Date
                             </Typography>
                         </Grid>
-                        <Grid item xs={2} md={2}>
-                            <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                        <Grid
+                            item
+                            xs={2}>
+                            <Typography
+                                align="left"
+                                className="table-text">
                                 Day
                             </Typography>
                         </Grid>
-                        <Grid item xs={2} md={2}>
-                            <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                        <Grid
+                            item
+                            xs={2}>
+                            <Typography
+                                align="left"
+                                className="table-text">
                                 Time
                             </Typography>
                         </Grid>
-                        <Grid item xs={2} md={2}>
-                            <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                        <Grid
+                            item
+                            xs={2}>
+                            <Typography
+                                align="left"
+                                className="table-text">
                                 Tuition
                             </Typography>
                         </Grid>
-                        <Grid item xs={2} md={2}>
-                            <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                        <Grid
+                            item
+                            xs={2}>
+                            <Typography
+                                align="left"
+                                className="table-text">
                                 Status
                             </Typography>
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid container spacing={8}>
-                    {this.state.sessions.length !== 0 ?
-                        this.state.sessions.map((session, i) => {
-                            let {day, date, startTime, endTime, status, tuition} = this.state.type === "T" ?
-                                this.sessionDataParse(session) : this.courseDataParser(session);
-                            return (<Grid item xs={12} md={12}
-                                className={'accounts-table-row'}
-                                key={i}>
-                                <Paper square={true}>
-                                    <Grid container>
-                                        <Grid item xs={1} md={1}></Grid>
-                                        <Grid item xs={3} md={3}>
-                                            <Typography align={'left'}>
-                                                {date}
-                                            </Typography>
+                <Grid
+                    container
+                    spacing={8}>
+                    {sessions
+                        ? sessions.map((session) => {
+                            const {day, date, startTime, endTime, status, tuition} =
+                                course.type === "T" ? sessionDataParse(session) : courseDataParser(session);
+                            return (
+                                <Grid
+                                    className="accounts-table-row"
+                                    item
+                                    key={session}
+                                    xs={12}>
+                                    <Paper square>
+                                        <Grid container>
+                                            <Grid
+                                                item
+                                                xs={1} />
+                                            <Grid
+                                                item
+                                                xs={3}>
+                                                <Typography align="left">
+                                                    {date}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid
+                                                item
+                                                xs={2}>
+                                                <Typography align="left">
+                                                    {day}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid
+                                                item
+                                                xs={2}>
+                                                <Typography align="left">
+                                                    {startTime} - {endTime}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid
+                                                item
+                                                xs={2}>
+                                                <Typography align="left">
+                                                    ${tuition}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid
+                                                item
+                                                xs={2}>
+                                                <div className={`sessions-left-chip ${status}`}>
+                                                    {status}
+                                                </div>
+                                            </Grid>
                                         </Grid>
-                                        <Grid item xs={2} md={2}>
-                                            <Typography align={'left'}>
-                                                {day}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={2} md={2}>
-                                            <Typography align={'left'}>
-                                                {startTime} - {endTime}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={2} md={2}>
-                                            <Typography align={'left'}>
-                                                ${tuition}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={2} md={2}>
-                                            <div className={`sessions-left-chip ${status}`}>
-                                                {status}
-                                            </div>
-                                        </Grid>
-                                    </Grid>
-                                </Paper>
-                            </Grid>);
-                        }) :
-                        <Grid item xs={12} md={12}>
-                            <Paper className={'info'}>
-                                <Typography style={{fontWeight: 700}}>
+                                    </Paper>
+                                </Grid>
+                            );
+                        })
+                        : <Grid
+                            item
+                            xs={12}>
+                            <Paper className="info">
+                                <Typography style={{"fontWeight": 700}}>
                                     No Courses Yet!
                                 </Typography>
                             </Paper>
                         </Grid>
                     }
                 </Grid>
+                <Grid
+                    item
+                    style={{
+                        "marginTop": "10px",
+                    }}
+                    xs={12}>
+                    <Notes
+                        ownerID={noteInfo}
+                        ownerType="enrollment" />
+                </Grid>
             </Grid>
-        </Paper>)
-    }
+        </Paper>
+    );
+};
 
-}
-
-CourseSessionStatus.propTypes = {};
-
-function mapStateToProps(state) {
-    return {
-        usersList: state.Users,
-        courseSessions: state.Course.CourseSessions,
-        courses: state.Course.NewCourseList,
-        enrollments: state.Enrollments,
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {};
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(CourseSessionStatus);
+export default CourseSessionStatus;
