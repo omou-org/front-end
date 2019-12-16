@@ -1,5 +1,5 @@
 // React Imports
-import React, {useCallback} from "react";
+import React, {useCallback, useState} from "react";
 import {Redirect, useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../../actions/authActions";
@@ -23,10 +23,22 @@ const AuthenticatedNav = ({toggleDrawer}) => {
     const history = useHistory();
     const authToken = useSelector(({auth}) => auth.token);
 
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const [isMobileSearching, setMobileSearching] = useState(false);
+
+    const handleDrawerToggle = useCallback((event) => {
+        event.preventDefault();
+        setMobileOpen((open) => !open);
+    }, []);
+
     const handleLogout = useCallback(() => {
         dispatch(logout());
         history.push("/login");
     }, [dispatch, history]);
+
+    const handleSearch = (searchState) => {
+        setMobileSearching(searchState);
+    };
 
     if (!authToken) {
         return (
@@ -42,27 +54,34 @@ const AuthenticatedNav = ({toggleDrawer}) => {
             color="default"
             position="sticky">
             <Toolbar>
-                <Hidden lgUp>
-                    <IconButton
-                        aria-label="Open Drawer"
-                        color="inherit"
-                        onClick={toggleDrawer}>
-                        <MenuIcon />
-                    </IconButton>
-                </Hidden>
-                <Typography
-                    className="title"
-                    component={NavLinkNoDup}
-                    to="/">
-                    omou
-                </Typography>
-                <div style={{
-                    "flex": 1,
-                }} />
-                <Search />
-                <LogoutIcon
-                    className="logout-icon"
-                    onClick={handleLogout} />
+                {
+                    !isMobileSearching &&
+                    <>
+                        <Hidden lgUp>
+                            <IconButton
+                                aria-label="Open Drawer"
+                                color="inherit"
+                                onClick={handleDrawerToggle}>
+                                <MenuIcon />
+                            </IconButton>
+                        </Hidden>
+                        <Typography
+                            className="title"
+                            component={NavLinkNoDup}
+                            to="/">
+                                omou
+                        </Typography>
+                        <div style={{
+                            "flex": 1,
+                        }} />
+                    </>
+                }
+                <Search onMobile={handleSearch} />
+                {
+                    !isMobileSearching && <LogoutIcon
+                        className="logout-icon"
+                        onClick={handleLogout} />
+                }
             </Toolbar>
         </AppBar>
     );

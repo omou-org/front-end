@@ -56,9 +56,15 @@ let ZipCodeValidation = (input) => {
 
 // Birthday format to MM/DD/YYYY
 let DateValidation = (input) => {
-    return !!input.match(/^((0|1)\d{1})\/((0|1|2|3)\d{1})\/((19|20)\d{2})/)
+    // TODO: proper date validation
+    // return !!input.match(/^((0|1)\d{1})\/((0|1|2|3)\d{1})\/((19|20)\d{2})/)
+    return true;
 }
 
-// Time format of HH:MM AM/PM
-const timeValidation = (input) =>
-    (/^(1[0-2]|0?[1-9]):[0-5][0-9] (a|A|p|P)(m|M)$/u).test(input);
+// Time format of HH:MM TODO: make actual time validation
+const timeValidation = (input) => {
+    // console.log(input.substring(16,20), (/^(1[0-2]|0?[1-9]):[0-5][0-9]$/u).test(input))
+    // (/^(1[0-2]|0?[1-9]):[0-5][0-9] (a|A|p|P)(m|M)$/u).test(input);
+    return true;
+}
+

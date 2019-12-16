@@ -11,10 +11,10 @@ const NavBarRoutes = ({toggleDrawer}) => (
     <Switch>
         <Route
             path="/login"
-            render={(passedProps) => <UnauthenticatedNav />} />
+            render={() => <UnauthenticatedNav />} />
         <Route
             path="/"
-            render={(passedProps) => <AuthenticatedNav toggleDrawer={toggleDrawer} />} />
+            render={() => <AuthenticatedNav toggleDrawer={toggleDrawer} />} />
     </Switch>
 );
 

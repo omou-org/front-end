@@ -141,6 +141,20 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
         case actions.FETCH_USER_FAILED:
             return updateUserFetch(state, status);
 
+        case actions.GET_CATEGORY_STARTED:
+            return updateCategoryFetch(state, payload.id ,api.REQUEST_STARTED);
+        case actions.GET_CATEGORY_SUCCESS:
+            return updateCategoryFetch(state, payload.id ,status);
+        case actions.GET_CATEGORY_FAILED:
+            return updateCategoryFetch(state, payload.id ,status);
+
+        case actions.POST_CATEGORY_STARTED:
+            return updateCategoryPost(state, payload.id, api.REQUEST_STARTED);
+        case actions.POST_CATEGORY_SUCCESS:
+            return updateCategoryPost(state,payload.id, status);
+        case actions.POST_CATEGORY_FAILED:
+            return updateCategoryPost(state,payload.id, status);
+
         default:
             return state;
     }
@@ -155,6 +169,18 @@ const updateLogin = (state, status) => ({
     ...state,
     "login": status,
 });
+
+const updateCategoryPost = (state, payload, status) =>{
+    let newState = {...state};
+    newState.category[actions.POST]= status;
+    return newState;
+}
+
+const updateCategoryFetch = (state, payload, status) =>{
+    let newState = {...state};
+    newState.category[actions.GET]= status;
+    return newState;
+}
 
 const updateCourseFetch = (state, id, status) => {
     let newState = JSON.parse(JSON.stringify(state));

@@ -1,6 +1,12 @@
 import * as hooks from "actions/hooks";
-import React, {useCallback, useMemo, useState} from "react";
-import {useSelector} from "react-redux";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+// react/redux imports
+import * as apiActions from "../../../actions/apiActions";
+import * as userActions from "../../../actions/userActions";
+import * as registrationActions from "../../../actions/registrationActions";
+import {GET} from "../../../actions/actionTypes";
+import {bindActionCreators} from "redux";
+import {useDispatch, useSelector} from "react-redux";
 
 import BackButton from "components/BackButton";
 import Grid from "@material-ui/core/Grid";
@@ -11,8 +17,10 @@ import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
 
+import Loading from "../../Loading";
 import CourseList from "./CourseList";
 import TutoringList from "./TutoringList";
+import RegistrationActions from "./RegistrationActions";
 
 const NUM_GRADES = 13;
 
@@ -74,7 +82,7 @@ const RegistrationLanding = () => {
     }, []);
 
     if (hooks.isLoading(courseStatus) && Object.entries(courses).length === 0) {
-        return "LOADING";
+        return <Loading />;
     }
 
     if (hooks.isFail(courseStatus) && Object.entries(courses).length) {
@@ -153,6 +161,7 @@ const RegistrationLanding = () => {
         <Paper className="RegistrationLanding paper">
             <BackButton />
             <hr />
+            <RegistrationActions/>
             <Grid
                 container
                 layout="row">

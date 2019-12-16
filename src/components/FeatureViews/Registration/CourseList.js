@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
-import {useSelector} from "react-redux";
+import {connect, useSelector} from "react-redux";
 
 // Material UI Imports
 import Button from "@material-ui/core/Button";
@@ -8,6 +8,8 @@ import Grid from "@material-ui/core/Grid";
 import {Link} from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import {bindActionCreators} from "redux";
+import * as registrationActions from "../../../actions/registrationActions";
 
 const weekday = {
     "0": "Sun",
@@ -19,14 +21,15 @@ const weekday = {
     "6": "Sat",
 };
 
-const CourseList = ({filteredCourses}) => {
+const CourseList = (props) => {
+    let filteredCourses = props.filteredCourses;
     const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
     return filteredCourses.map((course) => {
         let start_date = new Date(course.schedule.start_date),
             end_date = new Date(course.schedule.end_date),
             start_time = course.schedule.start_time && course.schedule.start_time.substr(1),
             end_time = course.schedule.end_time && course.schedule.end_time.substr(1),
-            days = course.schedule.days && course.schedule.days.map((day) => weekday[day]);
+            days = course.schedule.days;
         start_date = start_date && start_date.toDateString().substr(3);
         end_date = end_date && end_date.toDateString().substr(3);
         const date = `${start_date} - ${end_date}`,
@@ -131,9 +134,9 @@ const CourseList = ({filteredCourses}) => {
                                 className="course-status"
                                 item
                                 xs={6}>
-                                <span className="stats">
+                                {/*<span className="stats">*/}
                                     {course.roster.length} / {course.capacity}
-                                </span>
+                                {/*</span>*/}
                                 <span className="label">
                                     Status
                                 </span>
@@ -141,14 +144,15 @@ const CourseList = ({filteredCourses}) => {
                             <Grid
                                 item
                                 xs={6}>
-                                <Button
-                                    className="button primary"
-                                    component={Link}
-                                    disabled={course.capacity <= course.filled}
-                                    to={`/registration/form/course/${course.course_id}`}
-                                    variant="contained">
-                                    + REGISTER
-                                </Button>
+                                {
+                                    props.registration.CurrentParent && <Button
+                                        className="button primary"
+                                        component={Link}
+                                        disabled={course.capacity <= course.filled}
+                                        to={`/registration/form/course/${course.course_id}`}
+                                        variant="contained">+ REGISTER
+                                    </Button>
+                                }
                             </Grid>
                         </Grid>
                     </Grid>
@@ -162,4 +166,15 @@ CourseList.propTypes = {
     "filteredCourses": PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default CourseList;
+const mapStateToProps = (state) => ({
+    "registration": state.Registration,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    "registrationActions": bindActionCreators(registrationActions, dispatch),
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CourseList);

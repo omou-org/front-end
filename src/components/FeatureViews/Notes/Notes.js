@@ -1,5 +1,3 @@
-/* eslint-disable max-lines-per-function */
-/* eslint-disable complexity */
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import * as userActions from "../../../actions/userActions";
 import * as hooks from "actions/hooks";
@@ -13,6 +11,7 @@ import DoneIcon from "@material-ui/icons/CheckCircleOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import Grid from "@material-ui/core/Grid";
 import InputBase from "@material-ui/core/InputBase";
+import Loading from "components/Loading";
 import Modal from "@material-ui/core/Modal";
 import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
@@ -201,7 +200,7 @@ const Notes = ({ownerType, ownerID}) => {
     }, [api, noteBody, notification, noteTitle, ownerID, ownerType, editID]);
 
     if (hooks.isLoading(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {
-        return "Loading notes...";
+        return <Loading />;
     }
 
     if (hooks.isFail(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {

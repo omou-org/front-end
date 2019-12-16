@@ -1,13 +1,22 @@
+/* eslint-disable max-lines-per-function */
+/* eslint-disable react/no-multi-comp */
+/* eslint-disable max-len */
 import {Link, useParams} from "react-router-dom";
 import BackButton from "../../../BackButton";
-import React, {useCallback, useMemo} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 import {useSelector} from "react-redux";
 import * as hooks from "actions/hooks";
 
 import Grid from "@material-ui/core/Grid";
+import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
+import Avatar from "@material-ui/core/Avatar";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Notes from "components/FeatureViews/Notes/Notes";
+import NoteIcon from "@material-ui/icons/NoteOutlined";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import Loading from "components/Loading";
 
 const DayConverter = {
     "0": "Sunday",
@@ -49,6 +58,7 @@ const courseDataParser = ({schedule, status, tuition}) => {
 
 const CourseSessionStatus = () => {
     const {"accountID": studentID, courseID} = useParams();
+    const [activeTab, setActiveTab] = useState(0);
     const courseSessions = useSelector(({Course}) => Course.CourseSessions);
     const usersList = useSelector(({Users}) => Users);
     const courses = useSelector(({Course}) => Course.NewCourseList);
@@ -85,7 +95,7 @@ const CourseSessionStatus = () => {
     if (hooks.isFail(courseStatus, enrollmentStatus, studentStatus)) {
         return "Error loading data";
     } else if (hooks.isLoading(courseStatus, enrollmentStatus, studentStatus)) {
-        return "Loading...";
+        return <Loading />;
     }
 
     const calendarSessions = courseSessions[courseID],
@@ -99,6 +109,10 @@ const CourseSessionStatus = () => {
             return "Waived";
 
         };
+
+    const handleTabChange = (newTab) => {
+        setActiveTab(newTab);
+    };
 
     const sessions = course.type === "T"
         ? Object.values(calendarSessions).map((session) => ({
@@ -115,6 +129,135 @@ const CourseSessionStatus = () => {
             },
         ];
 
+    const renderMain = () => {
+        switch (activeTab) {
+            case 0:
+                return (
+                    <>
+                        <Grid
+                            item
+                            md={12}
+                            xs={12}>
+                            <Grid
+                                className="accounts-table-heading"
+                                container>
+                                <Grid
+                                    item
+                                    xs={1} />
+                                <Grid
+                                    item
+                                    xs={3}>
+                                    <Typography
+                                        align="left"
+                                        className="table-text">
+                                        Session Date
+                                    </Typography>
+                                </Grid>
+                                {
+                                    ["Day", "Time", "Tuition", "Status"].map((header) => (
+                                        <Grid
+                                            item
+                                            key={header}
+                                            xs={2}>
+                                            <Typography
+                                                align="left"
+                                                className="table-text">
+                                                {header}
+                                        </Typography>
+                                        </Grid>
+                                    ))
+                                }
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            container
+                            spacing={8}>
+                            {sessions.length !== 0
+                                ? sessions.map((session, i) => {
+                                    const {day, date, startTime, endTime, status, tuition} =
+                                        course.type === "T"
+                                        ? sessionDataParse(session) : courseDataParser(session);
+                                    return (
+                                        <Grid
+                                            className="accounts-table-row"
+                                            item
+                                            key={i}
+                                            xs={12}>
+                                            <Paper square>
+                                                <Grid container>
+                                                    <Grid
+                                                        item
+                                                        xs={1} />
+                                                    <Grid
+                                                        item
+                                                        xs={3}>
+                                                        <Typography align="left">
+                                                            {date}
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid
+                                                        item
+                                                        xs={2}>
+                                                        <Typography align="left">
+                                                            {day}
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid
+                                                        item
+                                                        xs={2}>
+                                                        <Typography align="left">
+                                                            {startTime} - {endTime}
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid
+                                                        item
+                                                        xs={2}>
+                                                        <Typography align="left">
+                                                    ${tuition}
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid
+                                                        item
+                                                        xs={2}>
+                                                        <div className={`sessions-left-chip ${status}`}>
+                                                            {status}
+                                                        </div>
+                                                    </Grid>
+                                                </Grid>
+                                            </Paper>
+                                        </Grid>
+                                    );
+                                })
+                                : <Grid
+                                    item
+                                    xs={12}>
+                                    <Paper className="info">
+                                        <Typography style={{"fontWeight": 700}}>
+                                        No Courses Yet!
+                                        </Typography>
+                                    </Paper>
+                                  </Grid>
+                            }
+                        </Grid>
+                    </>
+                );
+            case 1:
+                return (
+                    <div
+                        style={{"paddingTop": 30}}>
+                        <Notes
+                            userID={{
+                                "course": courseID,
+                                "student": studentID,
+                            }}
+                            userRole="enrollment" />
+                    </div>
+                );
+            // no default
+        }
+    };
+
+
     return (
         <Paper className="paper">
             <Grid
@@ -122,169 +265,55 @@ const CourseSessionStatus = () => {
                 container>
                 <Grid
                     item
+                    md={12}
                     xs={12}>
                     <BackButton />
                     <hr />
                 </Grid>
+
                 <Grid
                     item
+                    md={12}
                     xs={12}>
                     <Typography
                         align="left"
                         variant="h4">
                         {course.title}
                     </Typography>
+
                     <Typography align="left">
                         Student:
                         <Link to={`/accounts/student/${studentID}`}>
                             {usersList.StudentList[studentID].name}
                         </Link>
                     </Typography>
-                    {
-                        hooks.isSuccessful(instructorStatus) &&
-                        <Typography align="left">
-                            Instructor:
-                            <Link to={`/accounts/instructor/${course.instructor_id}`}>
-                                {usersList.InstructorList[course.instructor_id].name}
-                            </Link>
-                        </Typography>
-                    }
+
+                    <Typography align="left">
+                        Instructor:
+                        <Link to={`/accounts/instructor/${course.instructor_id}`}>
+                            {usersList.InstructorList[course.instructor_id].name}
+                        </Link>
+                    </Typography>
+
                 </Grid>
-                <Grid
-                    item
-                    xs={12}>
-                    <Grid
-                        className="accounts-table-heading"
-                        container>
-                        <Grid
-                            item
-                            xs={1} />
-                        <Grid
-                            item
-                            xs={3}>
-                            <Typography
-                                align="left"
-                                className="table-text">
-                                Session Date
-                            </Typography>
-                        </Grid>
-                        <Grid
-                            item
-                            xs={2}>
-                            <Typography
-                                align="left"
-                                className="table-text">
-                                Day
-                            </Typography>
-                        </Grid>
-                        <Grid
-                            item
-                            xs={2}>
-                            <Typography
-                                align="left"
-                                className="table-text">
-                                Time
-                            </Typography>
-                        </Grid>
-                        <Grid
-                            item
-                            xs={2}>
-                            <Typography
-                                align="left"
-                                className="table-text">
-                                Tuition
-                            </Typography>
-                        </Grid>
-                        <Grid
-                            item
-                            xs={2}>
-                            <Typography
-                                align="left"
-                                className="table-text">
-                                Status
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                </Grid>
-                <Grid
-                    container
-                    spacing={8}>
-                    {sessions
-                        ? sessions.map((session) => {
-                            const {day, date, startTime, endTime, status, tuition} =
-                                course.type === "T" ? sessionDataParse(session) : courseDataParser(session);
-                            return (
-                                <Grid
-                                    className="accounts-table-row"
-                                    item
-                                    key={session}
-                                    xs={12}>
-                                    <Paper square>
-                                        <Grid container>
-                                            <Grid
-                                                item
-                                                xs={1} />
-                                            <Grid
-                                                item
-                                                xs={3}>
-                                                <Typography align="left">
-                                                    {date}
-                                                </Typography>
-                                            </Grid>
-                                            <Grid
-                                                item
-                                                xs={2}>
-                                                <Typography align="left">
-                                                    {day}
-                                                </Typography>
-                                            </Grid>
-                                            <Grid
-                                                item
-                                                xs={2}>
-                                                <Typography align="left">
-                                                    {startTime} - {endTime}
-                                                </Typography>
-                                            </Grid>
-                                            <Grid
-                                                item
-                                                xs={2}>
-                                                <Typography align="left">
-                                                    ${tuition}
-                                                </Typography>
-                                            </Grid>
-                                            <Grid
-                                                item
-                                                xs={2}>
-                                                <div className={`sessions-left-chip ${status}`}>
-                                                    {status}
-                                                </div>
-                                            </Grid>
-                                        </Grid>
-                                    </Paper>
-                                </Grid>
-                            );
-                        })
-                        : <Grid
-                            item
-                            xs={12}>
-                            <Paper className="info">
-                                <Typography style={{"fontWeight": 700}}>
-                                    No Courses Yet!
-                                </Typography>
-                            </Paper>
-                        </Grid>
-                    }
-                </Grid>
-                <Grid
-                    item
-                    style={{
-                        "marginTop": "10px",
-                    }}
-                    xs={12}>
-                    <Notes
-                        ownerID={noteInfo}
-                        ownerType="enrollment" />
-                </Grid>
+                <Tabs
+                    indicatorColor="primary"
+                    onChange={handleTabChange}
+                    value={activeTab}>
+                    <Tab
+                        label={<><RegistrationIcon className="NoteIcon" /> Registration</>} />
+                    <Tab
+                        label={
+                            Object.values({}).some(({important}) => important)
+                                ? <><Avatar
+                                    className="notificationCourse"
+                                    style={{"width": 10,
+                                        "height": 10}} /><NoteIcon className="TabIcon" />  Notes
+                                  </>
+                                : <><NoteIcon className="NoteIcon" /> Notes</>} />
+                </Tabs>
+                <br />
+                {renderMain()}
             </Grid>
         </Paper>
     );

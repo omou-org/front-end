@@ -27,7 +27,7 @@ const typeToFetchActions = {
     ],
 };
 
-const typeToPostActions = {
+export const typeToPostActions = {
     "student": [
         types.POST_STUDENT_SUCCESSFUL,
         types.POST_STUDENT_FAILED,
@@ -45,7 +45,7 @@ const typeToPostActions = {
         types.POST_COURSE_FAILED,
     ],
     "course category": [
-        types.POST_CATEGORY_SUCCESSFUL,
+        types.POST_CATEGORY_SUCCESS,
         types.POST_CATEGORY_FAILED,
     ],
 };
@@ -147,8 +147,9 @@ export const submitParentAndStudent = (parent, student, parentID, studentID) => 
         });
         resolve();
     }).then(() => {
+        let formatDate = new Date(parent.birth_date).toISOString().substring(0,10);
         instance.request({
-            "data": parent,
+            "data": {...parent, birth_date: formatDate},
             "headers": {
                 "Authorization": `Token ${getState().auth.token}`,
             },
@@ -184,3 +185,4 @@ export const submitParentAndStudent = (parent, student, parentID, studentID) => 
             });
     });
 };
+

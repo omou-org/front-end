@@ -10,6 +10,12 @@ export default function enrollment(state = initialState.Enrollments, {payload, t
         case actions.POST_ENROLLMENT_NOTE_SUCCESSFUL:
         case actions.PATCH_ENROLLMENT_NOTE_SUCCESSFUL:
             return handleEnrollmentNotesPost(state, payload);
+        case actions.POST_ENROLLMENT_STARTED:
+            return state;
+        case actions.POST_ENROLLMENT_SUCCESS:
+            return handleEnrollmentFetch(state, payload);
+        case actions.POST_ENROLLMENT_FAILED:
+            return state;
         default:
             return state;
     }

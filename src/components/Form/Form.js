@@ -3,6 +3,7 @@ import {bindActionCreators} from "redux";
 import * as registrationActions from "../../actions/registrationActions";
 import * as userActions from "../../actions/userActions";
 import * as apiActions from "../../actions/apiActions";
+import * as adminActions from "../../actions/adminActions";
 import * as types from "actions/actionTypes";
 import React, {Component} from "react";
 import {Prompt} from "react-router";
@@ -12,6 +13,7 @@ import {updateStudent, updateParent} from "reducers/usersReducer";
 import {updateCourse} from "reducers/courseReducer";
 
 // Material UI Imports
+import Loading from "components/Loading";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
@@ -40,6 +42,9 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import {DatePicker, TimePicker, MuiPickersUtilsProvider,} from "material-ui-pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import {durationParser, numSessionsParser, timeParser} from "./FormUtils";
 
 const parseGender = {
     "M": "Male",
@@ -86,6 +91,11 @@ class Form extends Component {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
         const formType = this.props.computedMatch.params.type;
         const {id} = this.props.computedMatch.params;
+        this.props.userActions.fetchStudents();
+        this.props.userActions.fetchParents();
+        this.props.userActions.fetchInstructors();
+        this.props.registrationActions.initializeRegistration();
+        this.props.adminActions.fetchCategories();
         if (this.props.computedMatch.params.edit === "edit") {
             switch (formType) {
                 case "instructor": {
@@ -144,6 +154,51 @@ class Form extends Component {
                             "nextSection": true,
                             "preLoaded": true,
                         };
+                    }
+                    break;
+                }
+                case "course":{
+                    if(id && this.props.registeredCourses){
+                        if(id.indexOf("+")>=0){
+                            let studentID = id.substring(0,id.indexOf("+"));
+                            let courseID = id.substring(id.indexOf("+")+1);
+                            let {form} = this.props.registeredCourses[studentID].find(({course_id}) => {
+                                return course_id === courseID;
+                            });
+                            prevState = {
+                                ...form,
+                            };
+                        }
+                    }
+                    break;
+                }
+                case "tutoring":{
+                    if(id && this.props.registeredCourses){
+                        if(id.indexOf("+")>=0){
+                            let studentID = id.substring(0,id.indexOf("+"));
+                            let courseID = id.substring(id.indexOf("+")+1);
+                            let {form} = this.props.registeredCourses[studentID].find(({course_id}) => {
+                                return course_id === courseID;
+                            });
+                            prevState = {
+                                ...form
+                            };
+                        }
+                    }
+                    break;
+                }
+                case "small_group":{
+                    if(id && this.props.registeredCourses){
+                        if(id.indexOf("+")>=0){
+                            let studentID = id.substring(0,id.indexOf("+"));
+                            let courseID = id.substring(id.indexOf("+")+1);
+                            let {form} = this.props.registeredCourses[studentID].find(({course_id}) => {
+                                return course_id === courseID;
+                            });
+                            prevState = {
+                                ...form
+                            };
+                        }
                     }
                     break;
                 }
@@ -219,6 +274,9 @@ class Form extends Component {
         if (!this.props.isAdmin && (formType === "instructor" || formType === "course_details")) {
             this.props.history.replace("/PageNotFound");
         }
+        // this.props.userActions.fetchParents();
+        // this.props.userActions.fetchStudents();
+        // this.props.userActions.fetchInstructors();
         if (edit === "edit") {
             switch (formType) {
                 case "student": {
@@ -351,7 +409,7 @@ class Form extends Component {
                                 const inst = this.props.instructors[course.instructor_id];
                                 this.setState({
                                     "Course Info": {
-                                        "Name": course.title,
+                                        "Course Name": course.title,
                                         "Description": course.description,
                                         "Instructor":
                                             inst
@@ -457,12 +515,13 @@ class Form extends Component {
         this.props.registrationActions.resetSubmitStatus();
     }
 
-    getStepContent(step, formType) {
-        return this.props.registrationForm[formType][step];
-    }
-
     validateSection() {
-        const currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
+        let currSectionTitle;
+        if(this.state.isSmallGroup){
+            currSectionTitle = "Student";
+        } else {
+            currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
+        }
         return (
             this.getActiveSection()
                 .filter(({required}) => required)
@@ -491,8 +550,12 @@ class Form extends Component {
 
     // Progresses to next section in registration form
     handleNext() {
-        const currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
+        let currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
         let section = this.props.registrationForm[this.state.form][this.state.activeSection];
+        if(this.state.isSmallGroup){
+            currSectionTitle = "Student";
+            section = this.props.registrationForm[this.state.form]["Student"];
+        }
         if (!Array.isArray(section)) {
             section = section[this.state.conditional];
         }
@@ -501,10 +564,16 @@ class Form extends Component {
         });
         this.setState((oldState) => {
             if (this.validateSection()) {
-                if (oldState.activeStep === this.getFormObject().section_titles.length - 1) {
+                if (oldState.activeStep === this.getFormObject().section_titles.length - 1 || oldState.isSmallGroup) {
                     if (!oldState.submitPending) {
                         if (this.props.computedMatch.params.edit === "edit") {
                             this.props.registrationActions.submitForm(this.state, this.props.computedMatch.params.id);
+                        } else if(this.state.form === "small_group") {
+                            if(this.state["Group Type"]["Select Group Type"] === "New Small Group"){
+                                this.props.apiActions.submitNewSmallGroup(this.state);
+                            } else {
+                                this.props.registrationActions.submitForm(this.state);
+                            }
                         } else {
                             this.props.registrationActions.submitForm(this.state);
                         }
@@ -680,6 +749,285 @@ class Form extends Component {
         }
     }
 
+    renderField(field, label, fieldIndex) {
+        const fieldTitle = field.name;
+        const disabled = this.state["Parent Information"] && Boolean(this.state["Parent Information"]["Select Parent"]) && this.state.activeSection === "Parent Information";
+        switch (field.type) {
+            case "select":
+                let parsedDuration = durationParser(this.state[label],fieldTitle);
+                let value, options;
+                if(parsedDuration){
+                    if(parsedDuration.duration){
+                        value = parsedDuration.duration;
+                        options = parsedDuration.options;
+                    }
+                } else {
+                    value = this.state[label][fieldTitle];
+                    options = field.options;
+                }
+
+                return (
+                    <FormControl className="form-control">
+                        <InputLabel shrink={Boolean(value)}>
+                            {fieldTitle}
+                        </InputLabel>
+                        <Select
+                            disabled={disabled}
+                            onChange={({"target": {value}}) => {
+                                this.onSelectChange(value, label, field);
+                            }}
+                            value={value}>
+                            {
+                                options.map((option) => (
+                                    <MenuItem
+                                        key={option}
+                                        value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))
+                            }
+                        </Select>
+                    </FormControl>
+                );
+            case "course": {
+                let courseList;
+                if(fieldTitle === "Select Group"){
+                    // filter for all of the groups
+                    courseList = Object.keys(this.props.courses)
+                        .filter((courseID) =>
+                            this.props.courses[courseID].capacity >
+                            this.props.courses[courseID].roster.length &&
+                            this.props.courses[courseID].capacity <= 5
+                        )
+                        .map((courseID) => ({
+                            "value": courseID,
+                            "label": this.props.courses[courseID].title + " #" + courseID,
+                        }));
+                } else {
+                    courseList = Object.keys(this.props.courses)
+                        .filter((courseID) =>
+                            this.props.courses[courseID].capacity >
+                            this.props.courses[courseID].roster.length)
+                        .map((courseID) => ({
+                            "value": courseID,
+                            "label": this.props.courses[courseID].title,
+                        }));
+                }
+
+                // remove preselected courses
+                courseList = this.removeDuplicates(Object.values(this.state[label]), courseList);
+                // count # of course fields in current section
+                const fieldCount = this.getActiveSection()
+                    .reduce((total, {type}) => total + (type === "course"), 0);
+                return (
+                    <div style={{width: "inherit"}}>
+                        <Grid container className={"student-align"} spacing={2000}>
+                            <SearchSelect
+                                disabled={disabled}
+                                value={this.state[label][fieldTitle]}
+                                onChange={(value) => {
+                                    this.onSelectChange(value, label, field);
+                                }}
+                                options={courseList}
+                                className="search-options" />
+                            {
+                                (fieldCount > 1) && !disabled &&
+                                <RemoveIcon color="primary" aria-label="Add" variant="extended"
+                                            className="button-remove-student"
+                                            onClick={(event) => {
+                                                event.preventDefault();
+                                                // deletes answer field from state
+                                                this.removeField(fieldIndex);
+                                                this.forceUpdate();
+                                            }}>
+                                </RemoveIcon>
+                            }
+                        </Grid>
+                    </div>
+                );
+            }
+            case "student": {
+                let studentList = [];
+
+                if(this.props.currentParent){
+                    this.props.parents[this.props.currentParent.user.id] &&
+                    this.props.parents[this.props.currentParent.user.id].student_ids.forEach((studentID) => {
+                        if(this.props.students[studentID]){
+                            let {user_id, name, email} = this.props.students[studentID];
+                            studentList.push({
+                                value: user_id,
+                                label: `${name} - ${email}`,
+                            });
+                        }
+                    });
+                } else {
+                    studentList = Object.values(this.props.students)
+                        .map(({user_id, name, email}) => ({
+                            value: user_id,
+                            label: `${name} - ${email}`,
+                        }));
+                }
+
+
+                studentList = this.removeDuplicates(Object.values(this.state[label]), studentList);
+
+                // count # of course fields in current section
+                const studentCount = this.getActiveSection()
+                    .reduce((total, {type}) => total + (type === "student"), 0);
+
+                return (
+                    <div style={{width: "inherit"}}>
+                        <Grid container className={"student-align"} spacing={2000}>
+                            <SearchSelect
+                                disabled={disabled}
+                                value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
+                                onChange={(value) => {
+                                    this.onSelectChange(value, label, field);
+                                }}
+                                placeholder={"Choose a Student"}
+                                options={studentList}
+                                className="search-options" />
+                            {
+                                studentCount > 1 && !disabled &&
+                                <RemoveIcon color="primary" aria-label="Add" variant="extended"
+                                            className="button-remove-student"
+                                            onClick={(event) => {
+                                                event.preventDefault();
+                                                // deletes answer field
+                                                this.removeField(fieldIndex);
+                                                this.forceUpdate();
+                                            }}>
+                                </RemoveIcon>
+                            }
+                        </Grid>
+                    </div>
+                );
+            }
+            case "instructor": {
+                let instructorList = this.props.instructors;
+
+                instructorList = Object.values(instructorList).map(({user_id, name, email}) => ({
+                    value: user_id,
+                    label: `${name} - ${email}`,
+                }));
+                instructorList = this.removeDuplicates(Object.values(this.state[label]), instructorList);
+                return (<div style={{width: "inherit"}}>
+                    <Grid container className="student-align">
+                        <SearchSelect
+                            disabled={disabled}
+                            value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
+                            onChange={(value) => {
+                                this.onSelectChange(value, label, field);
+                            }}
+                            placeholder={"Choose an Instructor"}
+                            options={instructorList}
+                            className="search-options" />
+                    </Grid>
+                </div>);
+            }
+            case "category" : {
+                const categoriesList = this.props.courseCategories
+                    .map(({id,name})=> ({
+                        value: id,
+                        label: name,
+                    }));
+                return (
+                    <SearchSelect
+                        className="search-options"
+                        isClearable
+                        onChange={(value) => {
+                            this.onSelectChange(value, label, field);
+                        }}
+                        placeholder={"Choose a Category"}
+                        value={this.state[label][fieldTitle]}
+                        options={categoriesList}
+                    />
+                );
+            }
+            case "select parent": {
+                const currParentList = Object.values(this.props.parents)
+                    .map(({user_id, name, email}) => ({
+                        value: user_id,
+                        label: `${name} - ${email}`,
+                    }));
+                return (
+                    <CreatableSelect
+                        createOptionPosition="first"
+                        className="search-options"
+                        isClearable
+                        onChange={(value) => {
+                            this.onSelectChange(value, label, field);
+                        }}
+                        onCreateOption={() => {
+                            this.onSelectChange(null, label, field);
+                        }}
+                        value={this.state[label][fieldTitle]}
+                        options={currParentList}
+                    />
+                );
+            }
+            case "date":
+                return <Grid container>
+                        <DatePicker
+                            animateYearScrolling
+                            margin="normal"
+                            label={fieldTitle}
+                            value={this.state[label][fieldTitle]}
+                            onChange={(date) =>{ this.setState((prevState)=>{
+                                prevState[label][fieldTitle] = date;
+                                return prevState;
+                            }) }}
+                            openTo={fieldTitle==="Birthday" ? "year" :"day"}
+                            error={!this.state[label + "_validated"][field.name]}
+                            format="MM/dd/yyyy"
+                            views={["year", "month", "date"]}
+                        />
+                    </Grid>;
+            case "time":
+                let time;
+                if(this.state[label][fieldTitle] && typeof this.state[label][fieldTitle] !== "string"){
+                    time = this.state[label][fieldTitle];
+                } else if(typeof this.state[label][fieldTitle] === "string"){
+                    time = timeParser(this.state[label][fieldTitle]);
+                }
+                return <Grid container>
+                    <TimePicker autoOk
+                                error={!this.state[label + "_validated"][field.name]}
+                                label={fieldTitle}
+                                value={time}
+                                onChange={(date) =>{ this.setState((prevState)=>{
+                                    prevState[label][fieldTitle] = date;
+                                    return prevState;
+                                }) } }/>
+                </Grid>;
+            default:
+                let textValue = numSessionsParser(this.state[label],field.name) || this.state[label][field.name];
+                return <TextField
+                    label={field.name}
+                    multiline={field.multiline}
+                    margin="normal"
+                    disabled={disabled}
+                    value={textValue}
+                    error={!this.state[label + "_validated"][field.name]}
+                    helperText={!this.state[label + "_validated"][field.name] ? field.name + " invalid" : ""}
+                    type={field.type === "number" ? "Number" : "text"}
+                    required={field.required}
+                    InputLabelProps={{
+                        "shrink": Boolean(textValue)
+                    }}
+                    fullWidth={field.full}
+                    onChange={(e) => {
+                        e.preventDefault();
+                        this.handleFieldUpdate.bind(this)(label, field, e.target.value);
+                    }}
+                    onBlur={(e) => {
+                        e.preventDefault();
+                        this.validateField.bind(this)(label, field, e.target.value);
+                    }}
+                />
+        }
+    }
+
     // removes duplicates with arr1 from arr2 from search select field
     removeDuplicates(arr1, arr2) {
         let stringValue, stringOtherValue;
@@ -710,185 +1058,6 @@ class Form extends Component {
             uniqueVals.splice(indexOfString, 1);
         }
         return uniqueVals;
-    }
-
-    renderField(field, label, fieldIndex) {
-        const fieldTitle = field.name;
-        const disabled = this.state["Parent Information"] && Boolean(this.state["Parent Information"]["Select Parent"]) && this.state.activeSection === "Parent Information";
-        switch (field.type) {
-            case "select":
-                return (
-                    <FormControl className="form-control">
-                        <InputLabel shrink={Boolean(this.state[label][fieldTitle])}>
-                            {fieldTitle}
-                        </InputLabel>
-                        <Select
-                            disabled={disabled}
-                            onChange={({"target": {value}}) => {
-                                this.onSelectChange(value, label, field);
-                            }}
-                            value={this.state[label][fieldTitle]}>
-                            {
-                                field.options.map((option) => (
-                                    <MenuItem
-                                        key={option}
-                                        value={option}>
-                                        {option}
-                                    </MenuItem>
-                                ))
-                            }
-                        </Select>
-                    </FormControl>
-            );
-            case "course": {
-                let courseList = Object.keys(this.props.courses)
-                    .filter((courseID) =>
-                        this.props.courses[courseID].capacity >
-                        this.props.courses[courseID].roster.length)
-                    .map((courseID) => ({
-                        "value": courseID,
-                        "label": this.props.courses[courseID].title,
-                    }));
-                // remove preselected courses
-                courseList = this.removeDuplicates(Object.values(this.state[label]), courseList);
-                // count # of course fields in current section
-                const fieldCount = this.getActiveSection()
-                    .reduce((total, {type}) => total + (type === "course"), 0);
-                return (
-                    <div style={{width: "inherit"}}>
-                        <Grid container className={"student-align"} spacing={2000}>
-                            <SearchSelect
-                                disabled={disabled}
-                                value={this.state[label][fieldTitle]}
-                                onChange={(value) => {
-                                    this.onSelectChange(value, label, field);
-                                }}
-                                options={courseList}
-                                className="search-options" />
-                            {
-                                (fieldCount > 1) && !disabled &&
-                                <RemoveIcon color="primary" aria-label="Add" variant="extended"
-                                    className="button-remove-student"
-                                    onClick={(event) => {
-                                        event.preventDefault();
-                                        // deletes answer field from state
-                                        this.removeField(fieldIndex);
-                                        this.forceUpdate();
-                                    }}>
-                                </RemoveIcon>
-                            }
-                        </Grid>
-                    </div>
-                );
-            }
-            case "student": {
-                let studentList = Object.values(this.props.students)
-                    .map(({user_id, name, email}) => ({
-                        value: user_id,
-                        label: `${name} - ${email}`,
-                    }));
-
-                studentList = this.removeDuplicates(Object.values(this.state[label]), studentList);
-
-                // count # of course fields in current section
-                const studentCount = this.getActiveSection()
-                    .reduce((total, {type}) => total + (type === "student"), 0);
-
-                return (
-                    <div style={{width: "inherit"}}>
-                        <Grid container className={"student-align"} spacing={2000}>
-                            <SearchSelect
-                                disabled={disabled}
-                                value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
-                                onChange={(value) => {
-                                    this.onSelectChange(value, label, field);
-                                }}
-                                options={studentList}
-                                className="search-options" />
-                            {
-                                studentCount > 1 && !disabled &&
-                                <RemoveIcon color="primary" aria-label="Add" variant="extended"
-                                    className="button-remove-student"
-                                    onClick={(event) => {
-                                        event.preventDefault();
-                                        // deletes answer field
-                                        this.removeField(fieldIndex);
-                                        this.forceUpdate();
-                                    }}>
-                                </RemoveIcon>
-                            }
-                        </Grid>
-                    </div>
-                );
-            }
-            case "instructor": {
-                let instructorList = this.props.instructors;
-
-                instructorList = Object.values(instructorList).map(({user_id, name, email}) => ({
-                    value: user_id,
-                    label: `${name} - ${email}`,
-                }));
-                instructorList = this.removeDuplicates(Object.values(this.state[label]), instructorList);
-                return (<div style={{width: "inherit"}}>
-                    <Grid container className="student-align">
-                        <SearchSelect
-                            disabled={disabled}
-                            value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
-                            onChange={(value) => {
-                                this.onSelectChange(value, label, field);
-                            }}
-                            options={instructorList}
-                            className="search-options" />
-                    </Grid>
-                </div>);
-            }
-            case "select parent": {
-                const currParentList = Object.values(this.props.parents)
-                    .map(({user_id, name, email}) => ({
-                        value: user_id,
-                        label: `${name} - ${email}`,
-                    }));
-                return (
-                    <CreatableSelect
-                        createOptionPosition="first"
-                        className="search-options"
-                        isClearable
-                        onChange={(value) => {
-                            this.onSelectChange(value, label, field);
-                        }}
-                        onCreateOption={() => {
-                            this.onSelectChange(null, label, field);
-                        }}
-                        value={this.state[label][fieldTitle]}
-                        options={currParentList}
-                    />
-                );
-            }
-            default:
-                return <TextField
-                    label={field.name}
-                    multiline={field.multiline}
-                    margin="normal"
-                    disabled={disabled}
-                    value={this.state[label][field.name]}
-                    error={!this.state[label + "_validated"][field.name]}
-                    helperText={!this.state[label + "_validated"][field.name] ? field.name + " invalid" : ""}
-                    type={field.type === "number" ? "Number" : "text"}
-                    required={field.required}
-                    InputLabelProps={{
-                        "shrink": Boolean(this.state[label][field.name])
-                    }}
-                    fullWidth={field.full}
-                    onChange={(e) => {
-                        e.preventDefault();
-                        this.handleFieldUpdate.bind(this)(label, field, e.target.value);
-                    }}
-                    onBlur={(e) => {
-                        e.preventDefault();
-                        this.validateField.bind(this)(label, field, e.target.value);
-                    }}
-                />
-        }
     }
 
     addField(field, fieldIndex) {
@@ -959,9 +1128,20 @@ class Form extends Component {
     }
 
     renderForm() {
-        let {activeStep, nextSection} = this.state,
-            currentForm = this.props.registrationForm[this.state.form],
+        let {activeStep, nextSection} = this.state;
+        let currentForm,
+            steps;
+        if(this.state.isSmallGroup){
+            let {form_type, Student} = this.props.registrationForm[this.state.form];
+            currentForm = {
+                form_type: form_type,
+                Student: Student,
+            };
+            steps = ["Student"];
+        } else {
+            currentForm = this.props.registrationForm[this.state.form];
             steps = currentForm.section_titles;
+        }
         let section = this.getActiveSection();
         return (
             <Stepper
@@ -1085,7 +1265,7 @@ class Form extends Component {
                                                     {field || ""}
                                                 </Typography>
                                                 <Typography className="field-value" align="left">
-                                                    {fieldVal || "N/A"}
+                                                    { typeof fieldVal === "object" ? new Date(fieldVal).toISOString().substring(0,10) :  fieldVal || "N/A"}
                                                 </Typography>
                                             </div>
                                         );
@@ -1097,6 +1277,49 @@ class Form extends Component {
                 </div>
             </div>
         );
+    }
+
+    renderCourseRegistrationSubmission(){
+        if(this.props.registeredCourses){
+
+            let currentStudentID = this.state.Student.Student.value;
+            let registeredCourseForm = this.props.registeredCourses[currentStudentID];
+            registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
+
+            let currentStudentName = registeredCourseForm.display.student_name;
+            let currentCourseTitle = registeredCourseForm.display.course_name;
+
+
+            return <div>
+                <h3>{currentStudentName}</h3>
+                <h3>{currentCourseTitle}</h3>
+                <Button component={NavLink} to={"/registration"}
+                        className={"button"}>Register More</Button>
+                <Button component={NavLink} to={"/registration/cart"}
+                        className={"button"}>Checkout</Button>
+            </div>
+        } else {
+            // this.props.registrationActions.initializeRegistration();
+            return () => {
+                let currentStudentID = this.state.Student.Student.value;
+                let registeredCourseForm = this.props.registeredCourses[currentStudentID];
+                registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
+
+                let currentStudentName = registeredCourseForm.display.student_name;
+                let currentCourseTitle = registeredCourseForm.display.course_name;
+
+
+                return <div>
+                    <h3>{currentStudentName}</h3>
+                    <h3>{currentCourseTitle}</h3>
+                    <Button component={NavLink} to={"/registration"}
+                            className={"button"}>Register More</Button>
+                    <Button component={NavLink} to={"/registration/cart"}
+                            className={"button"}>Checkout</Button>
+                </div>
+            }
+        }
+
     }
 
     renderTitle(id, type) {
@@ -1122,6 +1345,10 @@ class Form extends Component {
                 title = course ? course.title + " " : "";
                 break;
             }
+            case "tutoring":{
+                title = "New ";
+                break;
+            }
             default:
                 title = "";
                 break;
@@ -1131,7 +1358,7 @@ class Form extends Component {
 
     render() {
         if (!this.state.hasLoaded) {
-            return "Loading...";
+            return <Loading />;
         }
         return (
             <Grid container className="">
@@ -1158,7 +1385,10 @@ class Form extends Component {
                                     <Typography>
                                         Sorry! The form is unavailable.
                                     </Typography>
-                                : this.renderSubmitted()
+                                : this.state.form !== "course"  && this.state.form !== "tutoring"
+                                    && this.state.form !== "small_group" ?
+                                    this.renderSubmitted() :
+                                    this.renderCourseRegistrationSubmission()
                         }
                         <Modal
                             aria-labelledby="simple-modal-title"
@@ -1226,6 +1456,8 @@ const mapStateToProps = (state) => ({
     "courses": state.Course["NewCourseList"],
     "courseCategories": state.Course["CourseCategories"],
     "registrationForm": state.Registration["registration_form"],
+    "registeredCourses": state.Registration["registered_courses"],
+    "currentParent": state.Registration["CurrentParent"],
     "submitStatus": state.Registration["submitStatus"],
     "parents": state.Users["ParentList"],
     "students": state.Users["StudentList"],
@@ -1239,6 +1471,7 @@ const mapDispatchToProps = (dispatch) => ({
     "registrationActions": bindActionCreators(registrationActions, dispatch),
     "userActions": bindActionCreators(userActions, dispatch),
     "apiActions": bindActionCreators(apiActions, dispatch),
+    "adminActions": bindActionCreators(adminActions, dispatch),
     dispatch,
 });
 

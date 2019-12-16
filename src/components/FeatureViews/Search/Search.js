@@ -1,77 +1,83 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import ReactSelect from 'react-select/creatable';
+import {components} from 'react-select';
 import { Button, Grid, Select } from "@material-ui/core";
 import { bindActionCreators } from "redux";
 import * as searchActions from "../../../actions/searchActions";
 import * as userActions from "../../../actions/userActions";
-import { connect } from "react-redux";
+import {connect, useDispatch} from "react-redux";
 import MenuItem from "@material-ui/core/MenuItem";
 import "./Search.scss";
 import FormControl from "@material-ui/core/FormControl";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
-import {withRouter, Link} from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import axios from "axios";
+import * as apiActions from "../../../actions/apiActions";
+import * as registrationActions from "../../../actions/registrationActions";
+import windowSize from 'react-window-size';
 
 const Search = (props) => {
     const [query, setQuery] = useState("");
     const [primaryFilter, setPrimaryFilter] = useState("All");
-    const [searchSuggestions, setSearchSuggestions] = useState(()=>{
-        let suggestions = [];
-        suggestions = suggestions.concat(Object.values(props.students).map((student)=>{ return {...student, type:"student"}}));
-        suggestions = suggestions.concat(Object.values(props.parents).map((parent)=>{ return {...parent, type:"parent"}}));
-        suggestions = suggestions.concat(Object.values(props.instructors).map((instructor)=>{ return {...instructor, type:"instructor"}}));
-        suggestions = suggestions.concat(Object.values(props.courses));
-        return suggestions;
-    });
+    const [searchSuggestions, setSearchSuggestions] = useState([]);
+    const requestConfig = { params: { query: query.label, page: 1,  },
+        headers: {"Authorization": `Token ${props.auth.token}`,} };
+    const [isMobileSearching, setMobileSearching] = useState(false);
+    const [searchStatus, setSearchStatus] = useState(false);
 
-    const searchList = searchSuggestions.map(
-        (data) => {
-            if (data.gender) {
-                return {
-                    value: "account_"+data.type+"+"+ data.name+"-"+ data.user_id,
-                    label: data.name
-                }
-            } else if (data.tuition) {
-                return {
-                    value: "course_"+data.course_id + "-" +data.title,
-                    label: data.title,
-                }
-            } else{
-                return {
-                    value: "",
-                    label: "",
-                }
-            }
-        }
+    const dispatch = useDispatch();
+    const api = useMemo(
+        () => ({
+            ...bindActionCreators(apiActions, dispatch),
+            ...bindActionCreators(userActions, dispatch),
+            ...bindActionCreators(registrationActions, dispatch),
+            ...bindActionCreators(searchActions, dispatch),
+        }),
+        [dispatch]
     );
 
-    const searchFilterChange = (primaryFilter) => () =>{
-        switch (primaryFilter) {
-            case "All":
-                let suggestions = [];
-                suggestions = suggestions.concat(Object.values(props.students).map((student)=>{ return {...student, type:"student"}}));
-                suggestions = suggestions.concat(Object.values(props.parents).map((parent)=>{ return {...parent, type:"parent"}}));
-                suggestions = suggestions.concat(Object.values(props.instructors).map((instructor)=>{ return {...instructor, type:"instructor"}}));
-                suggestions = suggestions.concat(Object.values(props.courses));
-                setSearchSuggestions(suggestions);
+    const searchList = (newItem) => {
+        let suggestions;
+        switch(primaryFilter){
+            case "All":{
+                suggestions = props.search.accounts.concat(props.search.courses);
                 break;
-            case "Accounts":
-                let accountSuggestions = [];
-                accountSuggestions = accountSuggestions.concat(Object.values(props.students).map((student)=>{ return {...student, type:"student"}}));
-                accountSuggestions = accountSuggestions.concat(Object.values(props.parents).map((parent)=>{ return {...parent, type:"parent"}}));
-                accountSuggestions = accountSuggestions.concat(Object.values(props.instructors).map((instructor)=>{ return {...instructor, type:"instructor"}}));
-                setSearchSuggestions(accountSuggestions);
+            }
+            case "Account":{
+                suggestions = props.search.accounts;
                 break;
-            case "Courses":
-                setSearchSuggestions(Object.values(props.courses));
-                break;
-            default:
-                return
-
+            }
+            case "Course":{
+                suggestions =props.search.courses;
+            }
         }
-    }
+        suggestions = suggestions.map(
+            (data) => {
+                if (data.user) {
+                    return {
+                        value: "account_" + data.account_type.toLowerCase() + "+" + data.user.first_name+" "+data.user.last_name + "-" + data.user.id,
+                        label: data.user.first_name + " " + data.user.last_name,
+                    }
+                } else if (data.course_id) {
+                    return {
+                        value: "course_" + data.course_id + "-" + data.title,
+                        label: data.subject,
+                    }
+                } else {
+                    return {
+                        value: "",
+                        label: "",
+                    }
+                }
+            }
+        );
+        if(newItem){
+            suggestions.push(newItem);
+        }
+        setSearchSuggestions(suggestions);
+    };
     
     const customStyles = {
         control: (base, state) => ({
@@ -81,67 +87,56 @@ const Search = (props) => {
             boxShadow: '0 !important',
             '&:hover': {
                 border: '0 !important'
-             }
-         })
-      };
+            }
+        })
+    };
+
+    useEffect(()=>{
+        api.fetchInstructors();
+    },[])
+    useEffect(()=>{
+        setSearchStatus(false);
+        if(query.label){
+            filterSuggestions()();
+        }
+    },[query]);
+    useEffect(()=>{
+        searchList();
+    },[props.search.searchQueryStatus]);
 
     const handleFilterChange = (filter) => (e) => {
         setPrimaryFilter(e.target.value);
-        searchFilterChange(e.target.value)
     };
 
     const handleSearchChange = () => (e) => {
-      if(e){
-          // let value = e.value;
-          // let endTypeIndex = value.indexOf("_");
-          // let type = value.substring(0,endTypeIndex);
-          // switch(type){
-          //     case "account":
-          //         let startTypeIndex = value.indexOf("_")+1;
-          //         endTypeIndex = value.indexOf("+");
-          //         let startIDIndex = value.indexOf("-")+1;
-          //         type = value.substring(startTypeIndex,endTypeIndex);
-          //         let accountID = value.substring(startIDIndex, value.length);
-          //         props.history.push("/accounts/"+type+"/"+accountID);
-          //         break;
-          //     case "course":
-          //         let startTitleIndex = value.indexOf("-");
-          //         let courseID = value.substring(endTypeIndex+1,startTitleIndex);
-          //         let courseTitle = value.substring(startTitleIndex+1, value.length);
-          //         props.history.push("/registration/course/"+courseID+"/"+courseTitle);
-          // }
-          setQuery(e);
-      } else {
-          // setQuery("");
-      }
-
+        if(e){
+            setQuery(e);
+            handleQuery()();
+        }
     };
 
-    const handleMenuClick = () => (e) => {
-        e.preventDefault();
-        let value = query.value;
-        let endTypeIndex = value.indexOf("_");
-        let type = value.substring(0,endTypeIndex);
-        switch(type){
-            case "account":
-                let startTypeIndex = value.indexOf("_")+1;
-                endTypeIndex = value.indexOf("+");
-                let startIDIndex = value.indexOf("-")+1;
-                type = value.substring(startTypeIndex,endTypeIndex);
-                let accountID = value.substring(startIDIndex, value.length);
-                props.history.push("/accounts/"+type+"/"+accountID);
+    const filterSuggestions = ()=> (e)=>{
+        // e.preventDefault();
+        switch(primaryFilter){
+            case "All":{
+                api.fetchSearchAccountQuery(requestConfig);
+                api.fetchSearchCourseQuery(requestConfig);
                 break;
-            case "course":
-                let startTitleIndex = value.indexOf("-");
-                let courseID = value.substring(endTypeIndex+1,startTitleIndex);
-                let courseTitle = value.substring(startTitleIndex+1, value.length);
-                props.history.push("/registration/course/"+courseID+"/"+courseTitle);
+            }
+            case "Accounts":{
+                api.fetchSearchAccountQuery(requestConfig);
+                break;
+            }
+            case "Courses":{
+                api.fetchSearchCourseQuery(requestConfig);
+                break;
+            }
         }
     }
 
-    const handleQuery = () => (e) =>{
-      e.preventDefault();
-      props.history.push("/search/"+query.label);
+    const handleQuery = () => (e) => {
+        // console.log(primaryFilter.toLowerCase(),query.label);
+        props.history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
     };
 
     const handleInputChange = () => (e)=>{
@@ -149,34 +144,26 @@ const Search = (props) => {
             value: e,
             label: e
         };
+        searchList(input);
         setQuery(input);
+        if(props.windowWidth < 800 && e !== ""){
+            setMobileSearching(true);
+            props.onMobile(true);
+        } else if(props.windowWidth < 800 && e === ""){
+            setMobileSearching(false);
+            props.onMobile(false);
+        }
+
     };
 
-    const handleOnFocus = (primaryFilter) => (e)=>{
-        // setQuery("");
-        switch (primaryFilter) {
-            case "All":
-                let suggestions = [];
-                suggestions = suggestions.concat(Object.values(props.students).map((student)=>{ return {...student, type:"student"}}));
-                suggestions = suggestions.concat(Object.values(props.parents).map((parent)=>{ return {...parent, type:"parent"}}));
-                suggestions = suggestions.concat(Object.values(props.instructors).map((instructor)=>{ return {...instructor, type:"instructor"}}));
-                suggestions = suggestions.concat(Object.values(props.courses));
-                setSearchSuggestions(suggestions);
-                break;
-            case "Accounts":
-                let accountSuggestions = [];
-                accountSuggestions = accountSuggestions.concat(Object.values(props.students).map((student)=>{ return {...student, type:"student"}}));
-                accountSuggestions = accountSuggestions.concat(Object.values(props.parents).map((parent)=>{ return {...parent, type:"parent"}}));
-                accountSuggestions = accountSuggestions.concat(Object.values(props.instructors).map((instructor)=>{ return {...instructor, type:"instructor"}}));
-                setSearchSuggestions(accountSuggestions);
-                break;
-            case "Courses":
-                setSearchSuggestions(Object.values(props.courses));
-                break;
-            default:
-                return
-
-        }
+    const renderSearchIcon = props =>{
+        return (
+            components.DropdownIndicator && (
+                <components.DropdownIndicator {...props}>
+                    <SearchIcon className={"search-icon-main"}/>
+                </components.DropdownIndicator>
+            )
+        );
     }
 
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
@@ -184,8 +171,8 @@ const Search = (props) => {
         <Grid container
             className={'search'}
         >
-            <Grid item xs={2} />
-            <Grid item xs={10} >
+            { !isMobileSearching && <Grid item xs={2} />}
+            <Grid item xs={isMobileSearching ? 12 : 10} >
                 <form onSubmit={handleQuery()}>
                     <Grid container >
                         <Grid item >
@@ -204,36 +191,26 @@ const Search = (props) => {
                                     <MenuItem value={"All"} key={"All"} >
                                         All
                                     </MenuItem>
-                                    <MenuItem value={"Accounts"} key={"Accounts"}>
+                                    <MenuItem value={"Account"} key={"Accounts"}>
                                         Account
                                     </MenuItem>
-                                    <MenuItem value={"Courses"} key={"Courses"}>
-                                        Courses
+                                    <MenuItem value={"Course"} key={"Courses"}>
+                                        Course
                                     </MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item md={10} xs={7}>
+                        <Grid item md={10} xs={isMobileSearching ? 10 : 7}>
                             <ReactSelect
-                                isClearable
                                 className={"search-input"}
                                 classNamePrefix="main-search"
-                                options={searchList}
+                                options={searchSuggestions}
                                 value={query}
-                                onFocus={handleOnFocus(primaryFilter)}
                                 onChange={handleSearchChange()}
                                 onInputChange={handleInputChange()}
-                                onMenuSelect
-                                closeMenuOnScroll={true}
+                                // onCreateOption={handleInputChange()}
+                                components={{DropdownIndicator: renderSearchIcon}}
                             />
-                            
-                        </Grid>
-                        <Grid item style={{ paddingTop: "1px" }}>
-                            <Button
-                                className={"button-background"}
-                                component={Link}
-                                onClick={handleQuery()}
-                            > <SearchIcon className={"searchIcon"} /> </Button>
                         </Grid>
                     </Grid>
                 </form>
@@ -252,9 +229,8 @@ const mapStateToProps = (state) => ({
     "parents": state.Users["ParentList"],
     "courseRoster": state.Course["CourseRoster"],
     "enrollments": state.Enrollments,
-    "accounts": state.Search.accounts,
-    "course": state.Search.courses,
-    "state": state,
+    "search": state.Search,
+    "auth": state.auth,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -262,7 +238,8 @@ const mapDispatchToProps = (dispatch) => ({
     "userActions": bindActionCreators(userActions, dispatch)
 });
 
-export default withRouter(
+export default windowSize(
+    withRouter(
     connect(mapStateToProps,
-    mapDispatchToProps,)
-(Search));
+        mapDispatchToProps)
+        (Search)));

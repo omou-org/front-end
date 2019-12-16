@@ -2,7 +2,7 @@
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable max-lines-per-function */
 import {useSelector} from "react-redux";
-import React, {useCallback, useMemo, useState} from "react";
+import React, {useCallback, useState} from "react";
 import BackButton from "../../BackButton.js";
 import RegistrationActions from "./RegistrationActions";
 import * as hooks from "actions/hooks";
@@ -12,7 +12,7 @@ import "../../../theme/theme.scss";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import ClassIcon from "@material-ui/icons/Class";
-import {Divider, LinearProgress, Typography} from "@material-ui/core";
+import {Divider, Typography} from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
@@ -27,16 +27,8 @@ import Note from "../Notes/Notes";
 import "./registration.scss";
 import {Link, Redirect, useRouteMatch} from "react-router-dom";
 import {stringToColor} from "components/FeatureViews/Accounts/accountUtils";
-
-const dayConverter = {
-    "0": "Sunday",
-    "1": "Monday",
-    "2": "Tuesday",
-    "3": "Wednesday",
-    "4": "Thursday",
-    "5": "Friday",
-    "6": "Saturday",
-};
+import "./registration.scss";
+import Loading from "../../Loading";
 
 const formatDate = (date) => {
     if (!date) {
@@ -67,6 +59,7 @@ const styles = (username) => ({
 const RegistrationCourse = () => {
     const {"params": {courseID}} = useRouteMatch();
 
+    const isAdmin = useSelector(({auth}) => auth.isAdmin);
     const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
     const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
     const course = courses[courseID];
@@ -77,12 +70,12 @@ const RegistrationCourse = () => {
     hooks.useStudent(course && course.roster);
     hooks.useInstructor(course && course.instructor_id);
 
-    const handleChange = useCallback((_, value) => {
-        setActiveTab(value);
+    const handleTabChange = useCallback((_, newTab) => {
+        setActiveTab(newTab);
     }, []);
 
     if (hooks.isLoading(courseStatus) && !course) {
-        return "Loading...";
+        return <Loading />
     }
 
     if (hooks.isFail(courseStatus) && !course) {
@@ -94,7 +87,6 @@ const RegistrationCourse = () => {
     }
 
     const instructor = instructors[course && course.instructor_id];
-    const days = course.schedule.days.map((day) => dayConverter[day]);
 
     const endDay = formatDate(course.schedule.end_date),
         endTime = formatTime(course.schedule.end_time),
@@ -103,15 +95,9 @@ const RegistrationCourse = () => {
 
     return (
         <Grid
+            className="registrationCourse"
             item
             xs={12}>
-            <Paper className="paper">
-                <Grid
-                    item
-                    lg={12}>
-                    <RegistrationActions courseTitle={course.course_title} />
-                </Grid>
-            </Paper>
             <Paper className="paper content">
                 <Grid
                     container
@@ -138,12 +124,28 @@ const RegistrationCourse = () => {
                     </Grid>
                 </Grid>
                 <Divider className="top-divider" />
+                <Grid
+                    item
+                    lg={12}>
+                    <RegistrationActions courseTitle={course.course_title} />
+                </Grid>
                 <div className="course-heading">
                     <Typography
                         align="left"
                         style={{"fontWeight": "500"}}
                         variant="h3">
                         {course.title}
+                        {isAdmin && <Button
+                            className="button"
+                            component={Link}
+                            style={{
+                                "padding": "6px 10px 6px 10px",
+                                "backgroundColor": "white",
+                            }}
+                            to={`/registration/form/course_details/${courseID}/edit`}>
+                            <EditIcon style={{"fontSize": "16px"}} />
+                        Edit Course
+                        </Button>}
                     </Typography>
                     <div className="date">
                         <CalendarIcon
@@ -192,7 +194,7 @@ const RegistrationCourse = () => {
                             <Typography
                                 align="left"
                                 className="text">
-                                {days}
+                                {course.schedule.days}
                             </Typography>
                             <Typography
                                 align="left"
@@ -207,32 +209,26 @@ const RegistrationCourse = () => {
                     className="description text">
                     {course.description}
                 </Typography>
-                <div className="course-status">
-                    <div className="status">
-                        <div className="text">
-                            {course.roster.length} / {course.capacity} Spaces Taken
-                        </div>
-                    </div>
-                    <LinearProgress
-                        color="primary"
-                        value={course.roster.length / course.capacity * 100}
-                        valueBuffer={100}
-                        variant="buffer" />
-                </div>
-
                 <Tabs
-                    onChange={handleChange}
+                    className="registration-course-tabs"
+                    indicatorColor="primary"
+                    onChange={handleTabChange}
                     value={activeTab}>
-                    <Tab label={
-                        <>
-                            <RegistrationIcon className="NoteIcon" /> Registration
-                        </>
-                    } />
-                    <Tab label={
-                        <>
-                            <NoteIcon className="NoteIcon" /> Notes
-                        </>
-                    } />
+                    <Tab
+                        label={<><RegistrationIcon className="NoteIcon" /> Registration</>} />
+                    <Tab
+                        label={
+                            course.notes && Object.values(course.notes).some(({important}) => important)
+                                ? <>
+                                    <Avatar
+                                        className="notificationCourse"
+                                        style={{"width": 10,
+                                            "height": 10}} /><NoteIcon className="TabIcon" />  Notes
+                                  </>
+                                : <>
+                                    <NoteIcon className="NoteIcon" /> Notes
+                                  </>
+                        } />
                 </Tabs>
                 {activeTab === 0 && <RegistrationCourseEnrollments courseID={courseID} />}
                 {activeTab === 1 &&

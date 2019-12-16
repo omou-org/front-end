@@ -11,7 +11,7 @@ export const login = (email, password, savePassword) => async (dispatch) => {
                 "username": email,
                 password,
             });
-        // succesful request
+        // successful request
         dispatch({
             "type": types.LOGIN_SUCCESSFUL,
             "payload": {
@@ -41,7 +41,7 @@ export const fetchUserStatus = (token) => async (dispatch) => {
             },
         });
     };
-
+    console.log(token);
     // request starting
     newAction(types.FETCH_USER_STARTED, {});
 
