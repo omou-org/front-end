@@ -4320,7 +4320,6 @@ function initRequests() {
         "category": {
             [GET]: {},
             [PATCH]: {},
-            [POST]: {},
         },
         "instructor": {
             [GET]: {},
@@ -4339,6 +4338,7 @@ function initRequests() {
             [PATCH]: {},
         },
         "enrollment": {
+            [GET]: {},
             [PATCH]: {},
         },
         "accountNote": {

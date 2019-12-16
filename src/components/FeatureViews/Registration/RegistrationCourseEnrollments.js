@@ -8,6 +8,7 @@ import {useSelector} from "react-redux";
 import DownArrow from "@material-ui/icons/KeyboardArrowDown";
 import EditIcon from "@material-ui/icons/Edit";
 import EmailIcon from "@material-ui/icons/Email";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -51,7 +52,8 @@ const RegistrationCourseEnrollments = ({courseID}) => {
     }, []);
 
     hooks.useEnrollmentByCourse(courseID);
-    const roster = courses[courseID] && courses[courseID].roster;
+    const course = courses[courseID];
+    const roster = course && courses[courseID].roster;
 
     const parentList = useMemo(() => roster
         ? roster
@@ -74,6 +76,18 @@ const RegistrationCourseEnrollments = ({courseID}) => {
 
     return (
         <div>
+            <div className="course-status">
+                <div className="status">
+                    <div className="text">
+                        {course.roster.length} / {course.capacity} Spaces Taken
+                    </div>
+                </div>
+                <LinearProgress
+                    color="primary"
+                    value={course.roster.length / course.capacity * 100}
+                    valueBuffer={100}
+                    variant="buffer" />
+            </div>
             <Table>
                 {TableToolbar}
                 <TableBody>

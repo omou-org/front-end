@@ -12,40 +12,49 @@ export const isLoading = (...statuses) =>
 export const isSuccessful = (...statuses) =>
     statuses.every((status) => status && (status >= 200 && status < 300));
 
-export const wrapUseEndpoint = (endpoint, successType) => (id) => {
+/**
+ * Wrapper for hooks to use certain GET endpoints
+ * For the function used by the components:
+ * @param {Number} id Single ID to fetch, array of IDs to fetch data for, or undefined/null/falsey to fetch all (see second parameter)
+ * @param {Boolean} noFetchOnUndef If true, undefined/null/falsey does NOT fetch all (nothing is fetched). Useful with an ID that may be undefined until some other data comes in, in order to avoid a fetch all being called (Optimization).
+ * @returns {Number} status of the request (null if not started/canceled)
+ */
+export const wrapUseEndpoint = (endpoint, successType) => (id, noFetchOnUndef) => {
     const token = useSelector(({auth}) => auth.token);
     const [status, setStatus] = useState(null);
     const dispatch = useDispatch();
     useEffect(() => {
         let aborted = false;
-        if (typeof id === "undefined") {
-            (async () => {
-                try {
-                    setStatus(REQUEST_STARTED);
-                    const response = await instance.get(
-                        endpoint,
-                        {
-                            "headers": {
-                                "Authorization": `Token ${token}`,
-                            },
+        if (!id) {
+            if (!noFetchOnUndef) {
+                (async () => {
+                    try {
+                        setStatus(REQUEST_STARTED);
+                        const response = await instance.get(
+                            endpoint,
+                            {
+                                "headers": {
+                                    "Authorization": `Token ${token}`,
+                                },
+                            }
+                        );
+                        if (!aborted) {
+                            dispatch({
+                                "type": successType,
+                                "payload": {
+                                    "id": REQUEST_ALL,
+                                    response,
+                                },
+                            });
+                            setStatus(response.status);
                         }
-                    );
-                    if (!aborted) {
-                        dispatch({
-                            "type": successType,
-                            "payload": {
-                                "id": REQUEST_ALL,
-                                response,
-                            },
-                        });
-                        setStatus(response.status);
+                    } catch (err) {
+                        if (!aborted) {
+                            setStatus((err && err.response && err.response.status) || MISC_FAIL);
+                        }
                     }
-                } catch (err) {
-                    if (!aborted) {
-                        setStatus((err && err.response && err.response.status) || MISC_FAIL);
-                    }
-                }
-            })();
+                })();
+            }
         } else if (!Array.isArray(id)) {
             (async () => {
                 try {
@@ -109,7 +118,7 @@ export const wrapUseEndpoint = (endpoint, successType) => (id) => {
             setStatus(null);
             aborted = true;
         };
-    }, [dispatch, id, token]);
+    }, [dispatch, id, token, noFetchOnUndef]);
     return status;
 };
 

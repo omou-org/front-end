@@ -1,18 +1,18 @@
-/* eslint-disable max-statements */
-/* eslint-disable react/no-multi-comp */
-/* eslint-disable max-lines-per-function */
-import {useSelector} from "react-redux";
-import React, {useCallback, useState} from "react";
+import {useSelector, useDispatch} from "react-redux";
+import React, {useCallback, useState, useMemo} from "react";
 import BackButton from "../../BackButton.js";
 import RegistrationActions from "./RegistrationActions";
 import * as hooks from "actions/hooks";
+import * as userActions from "actions/userActions";
+import {bindActionCreators} from "redux";
 import "../../../theme/theme.scss";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import ClassIcon from "@material-ui/icons/Class";
-import {Divider, Typography} from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import Divider from "@material-ui/core/Divider";
 import Avatar from "@material-ui/core/Avatar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
@@ -27,8 +27,8 @@ import Note from "../Notes/Notes";
 import "./registration.scss";
 import {Link, Redirect, useRouteMatch} from "react-router-dom";
 import {stringToColor} from "components/FeatureViews/Accounts/accountUtils";
-import "./registration.scss";
 import Loading from "../../Loading";
+import {useEffect} from "react";
 
 const formatDate = (date) => {
     if (!date) {
@@ -58,6 +58,13 @@ const styles = (username) => ({
 
 const RegistrationCourse = () => {
     const {"params": {courseID}} = useRouteMatch();
+    const dispatch = useDispatch();
+    const api = useMemo(
+        () => ({
+            ...bindActionCreators(userActions, dispatch),
+        }),
+        [dispatch]
+    );
 
     const isAdmin = useSelector(({auth}) => auth.isAdmin);
     const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
@@ -65,6 +72,10 @@ const RegistrationCourse = () => {
     const course = courses[courseID];
 
     const [activeTab, setActiveTab] = useState(0);
+
+    useEffect(() => {
+        api.fetchCourseNotes(courseID);
+    }, [api, courseID]);
 
     const courseStatus = hooks.useCourse(courseID);
     hooks.useStudent(course && course.roster);
@@ -74,16 +85,19 @@ const RegistrationCourse = () => {
         setActiveTab(newTab);
     }, []);
 
-    if (hooks.isLoading(courseStatus) && !course) {
-        return <Loading />
-    }
+    // either doesn't exist or only has notes defined
+    if (!course || Object.keys(course).length <= 1) {
+        if (hooks.isLoading(courseStatus)) {
+            return <Loading />;
+        }
 
-    if (hooks.isFail(courseStatus) && !course) {
-        return (
-            <Redirect
-                push
-                to="/PageNotFound" />
-        );
+        if (hooks.isFail(courseStatus)) {
+            return (
+                <Redirect
+                    push
+                    to="/PageNotFound" />
+            );
+        }
     }
 
     const instructor = instructors[course && course.instructor_id];

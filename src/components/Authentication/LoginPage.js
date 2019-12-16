@@ -10,6 +10,7 @@ import React, {useMemo, useState, useCallback} from "react";
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
 import Grid from "@material-ui/core/Grid";
+import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -52,11 +53,10 @@ const LoginPage = () => {
 
     const fetchUserStatus = requestStatus.userFetch;
     if (!requestStatus.login && (!fetchUserStatus || fetchUserStatus === REQUEST_STARTED)) {
-        return "Loading...";
+        return <Loading />;
     }
 
-    const goBack = () => {
-        // to avoid multiple go-backs
+    if (fetchUserStatus >= 200 && fetchUserStatus < 300) {
         if (!hasGoneBack) {
             if (history.length > 2) {
                 history.goBack();
@@ -65,15 +65,18 @@ const LoginPage = () => {
             }
             setHasGoneBack(true);
         }
-    };
-
-    if (fetchUserStatus >= 200 && fetchUserStatus < 300) {
-        goBack();
     } else if (requestStatus.login >= 200 && requestStatus.login < 300) {
         if (!fetchUserStatus || fetchUserStatus !== REQUEST_STARTED) {
             actions.fetchUserStatus();
         }
-        goBack();
+        if (!hasGoneBack) {
+            if (history.length > 2) {
+                history.goBack();
+            } else {
+                return <Redirect to="/" />;
+            }
+            setHasGoneBack(true);
+        }
     }
 
     return (
@@ -82,10 +85,7 @@ const LoginPage = () => {
             container
             direction="column"
             justify="center"
-            spacing={0}
-            style={{
-                // "minHeight": "100vh",
-            }}>
+            spacing={0}>
             <Grid
                 item
                 xs={3}>
@@ -124,13 +124,6 @@ const LoginPage = () => {
                                     Remember me
                                 </label>
                             </Grid>
-                            {/*<Grid item>*/}
-                            {/*    <Button*/}
-                            {/*        className="forgot"*/}
-                            {/*        color="secondary">*/}
-                            {/*        <span className="forgotText">Forgot Password?</span>*/}
-                            {/*    </Button>*/}
-                            {/*</Grid>*/}
                         </Grid>
                         <Button
                             className="signIn"

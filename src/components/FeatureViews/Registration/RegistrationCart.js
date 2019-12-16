@@ -400,7 +400,6 @@ function RegistrationCart(props) {
     const selectedCourseOptions = () => {
         let displaySelectionOptions = 0;
         let selectedCourseID=-1, selectedStudentID = -1;
-        console.log(selectedCourses);
         Object.keys(selectedCourses).forEach((studentID)=>{
             for (let [courseID, checkbox] of Object.entries(selectedCourses[studentID])){
                 if(checkbox.checked){

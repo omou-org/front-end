@@ -1,10 +1,10 @@
-/* eslint-disable max-lines-per-function */
-/* eslint-disable react/no-multi-comp */
-/* eslint-disable max-len */
+
 import {Link, useParams} from "react-router-dom";
 import BackButton from "../../../BackButton";
-import React, {useCallback, useMemo, useState} from "react";
-import {useSelector} from "react-redux";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import * as userActions from "actions/userActions";
+import {bindActionCreators} from "redux";
 import * as hooks from "actions/hooks";
 
 import Grid from "@material-ui/core/Grid";
@@ -39,9 +39,7 @@ const dateOptions = {
 };
 
 const courseDataParser = ({schedule, status, tuition}) => {
-    const DaysString = schedule.days
-        .reduce((string, day) => `${string}${DayConverter[day]}, `, "")
-        .slice(0, -2);
+    const DaysString = schedule.days;
 
     const endDate = new Date(schedule.end_date + schedule.end_time),
         startDate = new Date(schedule.start_date + schedule.start_time);
@@ -65,12 +63,23 @@ const CourseSessionStatus = () => {
     const enrollments = useSelector(({Enrollments}) => Enrollments);
     const course = courses[courseID];
 
+    const dispatch = useDispatch();
+    const api = useMemo(
+        () => ({
+            ...bindActionCreators(userActions, dispatch),
+        }),
+        [dispatch]
+    );
+
     const studentStatus = hooks.useStudent(studentID);
     const courseStatus = hooks.useCourse(courseID);
-    const instructorStatus = hooks.useInstructor(course && course.instructor_id);
+    const instructorStatus = hooks.useInstructor(course && course.instructor_id, true);
     const enrollmentStatus = hooks.useEnrollmentByCourse(courseID);
 
     const enrollment = (enrollments[studentID] && enrollments[studentID][courseID]) || {};
+    useEffect(() => {
+        api.fetchEnrollmentNotes(enrollment.enrollment_id, studentID, courseID);
+    }, [api, enrollment.enrollment_id, studentID, courseID]);
 
     const noteInfo = useMemo(() => ({
         courseID,
@@ -92,10 +101,16 @@ const CourseSessionStatus = () => {
         };
     }, [courses]);
 
+
+    // either doesn't exist or only has notes defined
+    if (!enrollment || Object.keys(enrollment).length <= 1) {
+        return <Loading />;
+    }
+    if (hooks.isLoading(courseStatus, enrollmentStatus, studentStatus)) {
+        return <Loading />;
+    }
     if (hooks.isFail(courseStatus, enrollmentStatus, studentStatus)) {
         return "Error loading data";
-    } else if (hooks.isLoading(courseStatus, enrollmentStatus, studentStatus)) {
-        return <Loading />;
     }
 
     const calendarSessions = courseSessions[courseID],
@@ -110,7 +125,7 @@ const CourseSessionStatus = () => {
 
         };
 
-    const handleTabChange = (newTab) => {
+    const handleTabChange = (_, newTab) => {
         setActiveTab(newTab);
     };
 
@@ -122,7 +137,8 @@ const CourseSessionStatus = () => {
         : [
             {
                 ...course,
-                "status": Object.values(paymentSessionStatus).some((session) => session === 0)
+                "status": Object.values(paymentSessionStatus)
+                    .some((session) => session === 0)
                     ? "Unpaid"
                     : "Paid",
                 "type": "C",
@@ -163,7 +179,7 @@ const CourseSessionStatus = () => {
                                                 align="left"
                                                 className="table-text">
                                                 {header}
-                                        </Typography>
+                                            </Typography>
                                         </Grid>
                                     ))
                                 }
@@ -176,7 +192,7 @@ const CourseSessionStatus = () => {
                                 ? sessions.map((session, i) => {
                                     const {day, date, startTime, endTime, status, tuition} =
                                         course.type === "T"
-                                        ? sessionDataParse(session) : courseDataParser(session);
+                                            ? sessionDataParse(session) : courseDataParser(session);
                                     return (
                                         <Grid
                                             className="accounts-table-row"
@@ -236,27 +252,20 @@ const CourseSessionStatus = () => {
                                         No Courses Yet!
                                         </Typography>
                                     </Paper>
-                                  </Grid>
+                                </Grid>
                             }
                         </Grid>
                     </>
                 );
             case 1:
                 return (
-                    <div
-                        style={{"paddingTop": 30}}>
-                        <Notes
-                            userID={{
-                                "course": courseID,
-                                "student": studentID,
-                            }}
-                            userRole="enrollment" />
-                    </div>
+                    <Notes
+                        ownerID={noteInfo}
+                        ownerType="enrollment" />
                 );
             // no default
         }
     };
-
 
     return (
         <Paper className="paper">
@@ -265,51 +274,48 @@ const CourseSessionStatus = () => {
                 container>
                 <Grid
                     item
-                    md={12}
                     xs={12}>
                     <BackButton />
                     <hr />
                 </Grid>
-
                 <Grid
                     item
-                    md={12}
                     xs={12}>
                     <Typography
                         align="left"
                         variant="h4">
                         {course.title}
                     </Typography>
-
                     <Typography align="left">
                         Student:
                         <Link to={`/accounts/student/${studentID}`}>
                             {usersList.StudentList[studentID].name}
                         </Link>
                     </Typography>
-
                     <Typography align="left">
                         Instructor:
                         <Link to={`/accounts/instructor/${course.instructor_id}`}>
                             {usersList.InstructorList[course.instructor_id].name}
                         </Link>
                     </Typography>
-
                 </Grid>
                 <Tabs
                     indicatorColor="primary"
                     onChange={handleTabChange}
+                    style={{
+                        "marginBottom": "10px",
+                    }}
                     value={activeTab}>
                     <Tab
                         label={<><RegistrationIcon className="NoteIcon" /> Registration</>} />
                     <Tab
                         label={
-                            Object.values({}).some(({important}) => important)
+                            Object.values(enrollment.notes).some(({important}) => important)
                                 ? <><Avatar
                                     className="notificationCourse"
                                     style={{"width": 10,
                                         "height": 10}} /><NoteIcon className="TabIcon" />  Notes
-                                  </>
+                                </>
                                 : <><NoteIcon className="NoteIcon" /> Notes</>} />
                 </Tabs>
                 <br />

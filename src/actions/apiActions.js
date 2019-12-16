@@ -31,10 +31,11 @@ export const wrapGet = (endpoint, [startType, successType, failType], {id, confi
 
         const requestURL = id ? `${endpoint}${id}/` : endpoint;
         try {
-            const response = await instance.get(requestURL, config || {
+            const response = await instance.get(requestURL, {
                 "headers": {
                     "Authorization": `Token ${getState().auth.token}`,
                 },
+                ...(config || {}),
             });
             // successful request
             newAction(successType, response);
@@ -69,7 +70,6 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
             newAction(successType, response);
         } catch ({response}) {
             // failed request
-            console.log(response);
             newAction(failType, response);
         }
     };
@@ -126,7 +126,6 @@ export const submitNewSmallGroup = (form) => {
         resolve();
     }).then(() => {
         let newCourse = formatCourse(form["Group Details"],"T");
-        console.log(newCourse);
         instance.request({
             "data": newCourse,
             "headers": {
@@ -135,7 +134,6 @@ export const submitNewSmallGroup = (form) => {
             "method": "post",
             "url": `${courseEndpoint}` ,
         }).then((courseResponse) => {
-                console.log(courseResponse);
                 dispatch({
                     type: types.ADD_SMALL_GROUP_REGISTRATION,
                     payload: {formMain: form, new_course: courseResponse.data},
