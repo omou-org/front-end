@@ -4,8 +4,11 @@
         flex-grow: 1;
     }
 
-    .Paper {
-        height: 140;
-        width: 100;
-    }
+}
+.notes {
+    float: right
+}
+
+.DashboardMainPanel {
+    display:"inline-block";
 }
