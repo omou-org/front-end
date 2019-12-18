@@ -150,14 +150,14 @@ const RegistrationCourse = () => {
         }
     }, [api, requestStatus.course[GET][courseID]]);
 
-    if (!requestStatus.course[GET][courseID] ||
+    if ((!requestStatus.course[GET][courseID] ||
         requestStatus.course[GET][courseID] === apiActions.REQUEST_STARTED ||
         !requestStatus.instructor[GET][course.instructor_id] ||
         requestStatus.instructor[GET][course.instructor_id] === apiActions.REQUEST_STARTED ||
         !requestStatus.parent[GET][apiActions.REQUEST_ALL] ||
         requestStatus.parent[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED ||
         !requestStatus.student[GET][apiActions.REQUEST_ALL] ||
-        requestStatus.student[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED) {
+        requestStatus.student[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED)){
         return <Loading/>;
     }
 

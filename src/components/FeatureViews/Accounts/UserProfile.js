@@ -241,11 +241,10 @@ class UserProfile extends Component {
     render() {
         this.renderNoteIcon();
         const status = this.getRequestStatus();
-        if (!status || status === apiActions.REQUEST_STARTED) {
+        const user = this.getUser();
+        if ((!status || status === apiActions.REQUEST_STARTED)){
             return <Loading/>
         }
-
-        const user = this.getUser();
 
         if ((!user || user === -1) && (status < 200 || status >= 300)) {
             return <Redirect to="/PageNotFound" />;

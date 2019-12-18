@@ -88,17 +88,18 @@ const RegistrationLanding = () => {
         , [courses, courseFilters]
     );
 
-    if (!requestStatus.instructor[GET][apiActions.REQUEST_ALL] ||
+    if ((!requestStatus.instructor[GET][apiActions.REQUEST_ALL] ||
         !requestStatus.course[GET][apiActions.REQUEST_ALL] ||
         requestStatus.instructor[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED ||
-        requestStatus.course[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED) {
+        requestStatus.course[GET][apiActions.REQUEST_ALL] === apiActions.REQUEST_STARTED) &&
+        courses.length === 0){
         return <Loading/>;
     }
 
-    if (requestStatus.instructor[GET][apiActions.REQUEST_ALL] < 200 ||
+    if ((requestStatus.instructor[GET][apiActions.REQUEST_ALL] < 200 ||
         requestStatus.instructor[GET][apiActions.REQUEST_ALL] >= 300 ||
         requestStatus.course[GET][apiActions.REQUEST_ALL] < 200 ||
-        requestStatus.course[GET][apiActions.REQUEST_ALL] >= 300) {
+        requestStatus.course[GET][apiActions.REQUEST_ALL] >= 300) && courses.length === 0){
         return "ERROR LOADING COURSES";
     }
 
