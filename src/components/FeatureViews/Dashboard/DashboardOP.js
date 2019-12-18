@@ -41,8 +41,9 @@ class DashboardOP extends Component {
         })
 
         const cardStyle = ()=> ({
-            "height": 200,
-            "width": 220
+            "height": 250,
+            "width": 220,
+            "margin": '10px'
         })
 
         return (<div className="`DashboardOP`">

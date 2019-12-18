@@ -25,7 +25,8 @@ class DashboardMainPanel extends Component {
             "height": 180,
             "width": 200,
             "textAlign": "center",
-            "display": "inline-block"
+            "display": "inline-block",
+            "margin": "10px"
         })
 
         return (<div className="DashboardMainPanel">

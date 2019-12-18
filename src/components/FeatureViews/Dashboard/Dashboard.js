@@ -21,6 +21,9 @@ import MenuList from "@material-ui/core/MenuList";
 import SessionMenu from "./SessionMenu";
 import OPMenu from "./OPMenu";
 import bg from "./assets/dashboard-bg.jpg";
+import Notes from "../Notes/Notes";
+import {Link} from "react-router-dom";
+import {useSelector} from "react-redux";
 
 class Dashboard extends Component {
 
@@ -31,106 +34,167 @@ class Dashboard extends Component {
         fontStyleFamily:"Roboto Slab"
     }
 
-    state = {
-        session: 'classes',
-        MainPanel: {
-            Classes:[{
-                cName: 'G7 Writing',
-                time: '9a-10a',
-                location: 'Room 7'
-            },
-            {
-                cName: 'G10 Biology',
-                time: '1p-2p',
-                location: 'Room 10a'
-            },
-            {
-                cName: 'G10 Biology',
-                time: '1p-2p',
-                location: 'Room 10a'
-            },
-            {
-                cName: 'G10 Biology',
-                time: '1p-2p',
-                location: 'Room 10a'
-            },
-            {
-                cName: 'G10 Biology',
-                time: '1p-2p',
-                location: 'Room 10a'
-            },
+    
+    constructor(props) {
+            super(props);
+            this.state = {
 
-        ],
-        Tutoring:[{
-            sName: 'AP Calculus',
-            time: '3p-4p',
-            location: 'Room 10a'
-        },
-        {
-            sName: 'G7 Trigonometry',
-            time: '1p-2p',
-            location: 'Room 66'
-        },
-        {
-            sName: 'AP European History',
-            time: '12p-2p',
-            location: 'Room 5a'
-        },
-        ],
-        Events:[{
-            event: 'BYU Course Training',
-            time: '1p-2p',
-            room: 'Room 12b'
-        },
-        {
-            event: 'BYU Course Training',
-            time: '3p-4p',
-            room: 'Room 2'
-        }]
-        },
-        Accounts:[{
-            fName: 'Ryan',
-            lName: 'Liou',
-            initials: 'RL',
-            phone: '555-555-5555',
-            email: 'ryanliou@email.com',
-            role: 'Receptionist'
-        },
-        {
-            fName: 'Daniel',
-            lName: 'Huang',
-            intials: 'DH',
-            phone: '555-555-5555',
-            email: 'dHuang@email.com',
-            role: 'Instructor'
-        },
-        {
-            fName: 'Selina',
-            lName: 'Che',
-            initials: 'SC',
-            phone: '555-555-5555',
-            email: 'selinache@email.com',
-            role: 'Student'
+                session : "classes",
+                "usersList": [],
+        
+                MainPanel: {
+                    Classes:[{
+                        cName: 'G7 Writing',
+                        time: '9a-10a',
+                        location: 'Room 7'
+                    },
+                    {
+                        cName: 'G10 Biology',
+                        time: '1p-2p',
+                        location: 'Room 10a'
+                    },
+                    {
+                        cName: 'G10 Biology',
+                        time: '1p-2p',
+                        location: 'Room 10a'
+                    },
+                    {
+                        cName: 'G10 Biology',
+                        time: '1p-2p',
+                        location: 'Room 10a'
+                    },
+                    {
+                        cName: 'G10 Biology',
+                        time: '1p-2p',
+                        location: 'Room 10a'
+                    },
+        
+                ],
+                Tutoring:[{
+                    sName: 'AP Calculus',
+                    time: '3p-4p',
+                    location: 'Room 10a'
+                },
+                {
+                    sName: 'G7 Trigonometry',
+                    time: '1p-2p',
+                    location: 'Room 66'
+                },
+                {
+                    sName: 'AP European History',
+                    time: '12p-2p',
+                    location: 'Room 5a'
+                },
+                ],
+                Events:[{
+                    event: 'BYU Course Training',
+                    time: '1p-2p',
+                    room: 'Room 12b'
+                },
+                {
+                    event: 'BYU Course Training',
+                    time: '3p-4p',
+                    room: 'Room 2'
+                }]
+                },
+                Accounts:[{
+                    fName: 'Ryan',
+                    lName: 'Liou',
+                    initials: 'RL',
+                    phone: '555-555-5555',
+                    email: 'ryanliou@email.com',
+                    role: 'Receptionist'
+                },
+                {
+                    fName: 'Daniel',
+                    lName: 'Huang',
+                    intials: 'DH',
+                    phone: '555-555-5555',
+                    email: 'dHuang@email.com',
+                    role: 'Instructor'
+                },
+                {
+                    fName: 'Selina',
+                    lName: 'Che',
+                    initials: 'SC',
+                    phone: '555-555-5555',
+                    email: 'selinache@email.com',
+                    role: 'Student'
+                },
+                {
+                    fName: 'Calvin',
+                    lName: 'Fronda',
+                    initials: 'CF',
+                    phone: '555-555-5555',
+                    email: 'clavin@gmail.com',
+                    role: 'Parent'
+                }
+                ],
+                OP:[{
+                    fName: 'Selina',
+                    lName: 'Che',
+                    role: 'Student',
+                    status: 'Overdue',
+                    amt: '$50',
+                    course: 'AP Calclus'
+                },
+                {
+                    fName: 'Jerry',
+                    lName: 'Li',
+                    role: 'Student',
+                    status:'Due',
+                    amt: '$35',
+                    course: 'AP Calculus'
+                }
+               ]
+            }
+        
         }
-        ],
-        OP:[{
-            fName: 'Selina',
-            lName: 'Che',
-            role: 'Student',
-            status: 'Overdue',
-            amt: '$50',
-            course: 'AP Calclus'
-        },
-        {
-            fName: 'Jerry',
-            lName: 'Li',
-            role: 'Student',
-            status:'Due',
-            amt: '$35',
-            course: 'AP Calculus'
+    // componentWillMount() {
+    //     const prevState = JSON.parse(sessionStorage.getItem("AccountState"));
+    //     window.addEventListener("resize", this.resize.bind(this));
+    //     this.resize();
+    //     if (prevState) {
+    //         this.setState(prevState);
+    //         console.log('beep')
+    //     } else {
+    //         this.setState(() => {
+    //             let usersList = {};
+    //             Object.assign(usersList, this.props.parents);
+    //             Object.assign(usersList, this.props.students);
+    //             Object.assign(usersList, this.props.instructors);
+    //             Object.assign(usersList, this.props.receptionist);
+    //             usersList=Object.values(usersList).sort(function( a, b) {
+    //                 return (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0;
+    //             })
+    //             console.log('boop')
+    //             return {usersList: usersList, }
+    //         });
+    //     }
+    // }
+
+    // componentDidMount() {
+    //     this.props.userActions.fetchParents();
+    //     this.props.userActions.fetchInstrutors();
+    //     this.props.userActions.fetchStudents();
+    // }
+    
+    resize() {
+        const currentHideNav = window.innerWidth <= 760;
+        if (currentHideNav !== this.state.mobileView) {
+            this.setState(({mobileView}) => ({
+                "mobileView": !mobileView,
+            }));
         }
-       ]
     }
+
+    parseDate = (date) => {
+        if (!date) {
+            return null;
+        }
+        const [month, day, year] = date.split("/");
+        return `${year}-${month}-${day}`;
+    };
 
      handleSessionSelect = (session) => {
         console.log('state.session' + session)
@@ -211,8 +275,8 @@ class Dashboard extends Component {
                     </Paper>
                     </Grid>
                     <Grid item xs={3}>
-                        <Paper style={{margin:"10px", marginTop:"0px", backgroundColor: "#E1F5FE", opacity: .7}}>
-                               Notes here
+                        <Paper style={{padding: "10px", margin:"10px", marginTop:"0px", backgroundColor: "#E1F5FE", opacity: .7}}>
+                               <Notes></Notes>
                         </Paper>
                     </Grid>
                     </Grid>
@@ -226,7 +290,7 @@ class Dashboard extends Component {
                                 </Typography>
                             </Grid>
                             <Grid item xs={12}>
-                                <Grid container style={{flexWrap: 'nowrap', overflowY:"hidden"}}>
+                                <Grid container style={{flexWrap: 'nowrap', overflow:"hidden"}}>
                             {this.state.Accounts.map(a=>(
                                 <DashboardAccounts
                                 fName={a.fName}
@@ -256,7 +320,7 @@ class Dashboard extends Component {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Grid container style={{flexWrap: 'nowrap', overflow:"scroll", overflowY:"hidden"}}>
+                                <Grid container style={{flexWrap: 'nowrap', overflowY:"hidden"}}>
                                 {this.state.OP.map(op=>(
                                 <DashboardOP
                                     fName={op.fName}
