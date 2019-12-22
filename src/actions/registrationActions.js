@@ -28,7 +28,7 @@ const parseTime = (time) => {
     // const hourNum = parseInt(hourStr, 10);
     // const hour = hourNum === 12 ? hourNum - 12 : hourNum;
     // const [minute, dayHalf] = secondPart.split(" ");
-    // console.log(time, typeof time);
+
     // if (dayHalf.toUpperCase() === "PM") {
     //     return `${hour + 12}:${minute}`;
     // }
@@ -61,7 +61,6 @@ export const removeField = (path, fieldIndex, conditional) =>
     ({type: types.REMOVE_FIELD, payload: [path, fieldIndex, conditional]});
 
 export const submitForm = (state, id) => {
-    console.log(state.form);
     switch (state.form) {
         case "student": {
             const student = {

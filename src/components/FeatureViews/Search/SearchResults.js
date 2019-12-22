@@ -60,9 +60,6 @@ const SearchResults = (props) => {
         setAccountResults(props.search.accounts);
         setCourseResults(props.search.courses);
     },[props.search]);
-    useEffect(()=>{
-        console.log("updated filter", props.search.filter)
-    },[props.search.filter]);
 
     const numberOfResults = () => {
         switch (params.type) {
@@ -127,7 +124,7 @@ const SearchResults = (props) => {
                                         ""
                                     }
                                 </Grid>
-                                <div onClick={(e)=>{e.preventDefault(); console.log("clicked on more results")}}>
+                                <div>
                                     <MoreResultsIcon/>
                                 </div>
                             </Grid>

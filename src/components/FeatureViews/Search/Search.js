@@ -78,7 +78,7 @@ const Search = (props) => {
         }
         setSearchSuggestions(suggestions);
     };
-    
+
     const customStyles = {
         control: (base, state) => ({
             ...base,
@@ -135,7 +135,6 @@ const Search = (props) => {
     }
 
     const handleQuery = () => (e) => {
-        // console.log(primaryFilter.toLowerCase(),query.label);
         props.history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
     };
 

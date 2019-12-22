@@ -11,31 +11,25 @@ export default function course(state = initialState.SearchResults, {payload, typ
             state["SearchQuery"] = payload;
             return state;
         case actions.GET_ACCOUNT_SEARCH_QUERY_STARTED:
-            // console.log("search account query loading...");
             return {
                 ...state,
                 "searchQueryStatus":"loading",
             };
         case actions.GET_COURSE_SEARCH_QUERY_STARTED:
-            // console.log("search course query loading...");
             return {
                 ...state,
                 "searchQueryStatus":"loading",
             }
         case actions.GET_ACCOUNT_SEARCH_QUERY_SUCCESS:
-            // console.log("search account query success!");
             return handleAccountSearchResults(state, payload);
         case actions.GET_ACCOUNT_SEARCH_QUERY_FAILED:
-            // console.log("search account query fail!");
             return {
                 ...state,
                 "searchQueryStatus":"failed",
             };
         case actions.GET_COURSE_SEARCH_QUERY_SUCCESS:
-            // console.log("search course query success!");
             return handleCourseSearchResults(state,payload);
         case actions.GET_COURSE_SEARCH_QUERY_FAILED:
-            // console.log("search course query fail!");
             return {
                 ...state,
                 "searchQueryStatus":"failed",

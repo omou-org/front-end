@@ -5,10 +5,7 @@ import {REQUEST_ALL} from "../actions/apiActions";
 export default (state = initialState.Course, {payload, type}) => {
     switch (type) {
         case actions.FETCH_COURSE_SUCCESSFUL:
-            console.log("fetch course successful!",payload);
             return handleCoursesFetch(state, payload);
-        case actions.FETCH_ENROLLMENT_SUCCESSFUL:
-            return handleEnrollmentFetch(state, payload);
         case actions.FETCH_COURSE_NOTE_SUCCESSFUL:
             return handleNotesFetch(state, payload);
         case actions.POST_COURSE_SUCCESSFUL:
@@ -17,8 +14,8 @@ export default (state = initialState.Course, {payload, type}) => {
         case actions.PATCH_COURSE_NOTE_SUCCESSFUL:
             return handleNotesPost(state, payload);
         case actions.ADD_SMALL_GROUP_REGISTRATION:
-            let {new_course} = payload;
-            return handleCoursePost(state,new_course);
+            const {new_course} = payload;
+            return handleCoursePost(state, new_course);
         case actions.GET_COURSE_SEARCH_QUERY_SUCCESS:
             return handleCourseSearchResults(state, payload);
         default:
@@ -27,45 +24,20 @@ export default (state = initialState.Course, {payload, type}) => {
 };
 
 const parseTime = (time) => {
-    const [hours, mins] = time.split(":");
-    return `T${hours}:${mins}`;
+    if (time) {
+        const [hours, mins] = time.split(":");
+        return `T${hours}:${mins}`;
+    }
+    return null;
 };
 
-const handleCoursePost = (state, payload) =>{
+const handleCoursePost = (state, payload) => {
     let {NewCourseList} = state;
     NewCourseList = updateCourse(NewCourseList, payload.id, payload);
     return {
         ...state,
-       NewCourseList,
+        NewCourseList,
     };
-};
-
-const handleEnrollmentFetch = (state, {response}) => {
-    const {data} = response;
-
-    const newCourses = JSON.parse(JSON.stringify(state.NewCourseList));
-
-    data.forEach(({student, course}) => {
-        const rost = newCourses[course].roster;
-        if (!rost.includes(student)) {
-            newCourses[course].roster = [...rost, student];
-        }
-    });
-
-    return {
-        ...state,
-        "NewCourseList": newCourses,
-    };
-};
-
-const dayToNum = {
-    "Sunday": 0,
-    "Monday": 1,
-    "Tuesday": 2,
-    "Wednesday": 3,
-    "Thursday": 4,
-    "Friday": 5,
-    "Saturday": 6,
 };
 
 const handleCoursesFetch = (state, {id, response}) => {
@@ -87,11 +59,11 @@ const handleCoursesFetch = (state, {id, response}) => {
 export const updateCourse = (courses, id, course) => ({
     ...courses,
     [id]: {
-        ...(courses[id] || {
+        ...courses[id] || {
             "notes": {},
-        }),
+        },
         "course_id": id,
-        "title": course.subject ? course.subject : "",
+        "title": course.subject || "",
         "schedule": {
             "start_date": course.start_date,
             "end_date": course.end_date,
@@ -117,35 +89,35 @@ const handleNotesPost = (state, {response, ...rest}) => handleNotesFetch(state, 
         ...response,
         "data": [response.data],
     },
-    "courseID": response.data.course,
+    "ownerID": response.data.course,
     ...rest,
 });
 
-const handleNotesFetch = (state, {courseID, response}) => {
+const handleNotesFetch = (state, {ownerID, response}) => {
     const {data} = response;
     const newState = JSON.parse(JSON.stringify(state));
-    if (!newState.NewCourseList[courseID]) {
-        newState.NewCourseList[courseID] = {};
+    if (!newState.NewCourseList[ownerID]) {
+        newState.NewCourseList[ownerID] = {};
     }
-    if (!newState.NewCourseList[courseID].notes) {
-        newState.NewCourseList[courseID].notes = {};
+    if (!newState.NewCourseList[ownerID].notes) {
+        newState.NewCourseList[ownerID].notes = {};
     }
     data.forEach((note) => {
-        newState.NewCourseList[courseID].notes[note.id] = note;
+        newState.NewCourseList[ownerID].notes[note.id] = note;
     });
     return newState;
 };
 
-const handleCourseSearchResults = (state, {response}) =>{
-    let {data} = response;
+const handleCourseSearchResults = (state, {response}) => {
+    const {data} = response;
     let {NewCourseList} = state;
 
-    data.forEach((course)=>{
+    data.forEach((course) => {
         NewCourseList = updateCourse(NewCourseList, course.id, course);
     });
 
     return {
         ...state,
         NewCourseList,
-    }
-}
+    };
+};

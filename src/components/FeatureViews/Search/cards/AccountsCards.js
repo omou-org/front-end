@@ -55,13 +55,7 @@ function AccountsCards(props) {
 
     });
 
-    // console.log(props.user);
-
     const fullName = `${props.user.user.first_name} ${props.user.user.last_name}`;
-
-    useEffect(()=>{
-
-    })
 
     return (
             <Card key={props.user.id}

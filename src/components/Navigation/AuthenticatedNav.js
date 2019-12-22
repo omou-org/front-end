@@ -1,35 +1,30 @@
 // React Imports
+import React, {useCallback, useState} from "react";
+import {Redirect, useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../../actions/authActions";
-import {useLocation} from "react-router-dom";
-import React, {useCallback, useState} from "react";
 import NavLinkNoDup from "../Routes/NavLinkNoDup";
+import PropTypes from "prop-types";
 
 // Material UI Imports
 import AppBar from "@material-ui/core/AppBar";
 import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
-
-import LogoutIcon from "@material-ui/icons/ExitToAppOutlined"
+import LogoutIcon from "@material-ui/icons/ExitToAppOutlined";
 import MenuIcon from "@material-ui/icons/Menu";
-
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 
 // Local Component Imports
 import Search from "../../components/FeatureViews/Search/Search";
-import {withRouter, NavLink} from "react-router-dom"
 
-const AuthenticatedNav = (props) => {
-    // for (let i = 0; i < sessionStorage.length; i++){
-    //     console.log(sessionStorage.key(i));
-    // }
+const AuthenticatedNav = ({toggleDrawer}) => {
     const dispatch = useDispatch();
-    const authToken = useSelector(({auth}) => auth).token;
+    const history = useHistory();
+    const authToken = useSelector(({auth}) => auth.token);
 
     const [mobileOpen, setMobileOpen] = useState(false);
     const [isMobileSearching, setMobileSearching] = useState(false);
-    const {pathname} = useLocation();
 
     const handleDrawerToggle = useCallback((event) => {
         event.preventDefault();
@@ -38,58 +33,62 @@ const AuthenticatedNav = (props) => {
 
     const handleLogout = useCallback(() => {
         dispatch(logout());
-    }, [dispatch]);
+        history.push("/login");
+    }, [dispatch, history]);
 
-    const redirectToLogin = () => (e) => {
-        console.log('hi')
-        e.preventDefault();
-        props.history.push("/login");
+    const handleSearch = (searchState) => {
+        setMobileSearching(searchState);
     };
 
-    const handleSearch = (searchState) =>{
-        setMobileSearching(searchState);
+    if (!authToken) {
+        return (
+            <Redirect
+                push
+                to="/login" />
+        );
     }
 
-    return (<AppBar
-                    className="OmouBar"
-                    color="default"
-                    position="sticky">
-            {authToken ?
-                <Toolbar>
-                    {
-                        !isMobileSearching && <>
-                            <Hidden lgUp>
-                                <IconButton
-                                    aria-label="Open Drawer"
-                                    color="inherit"
-                                    onClick={handleDrawerToggle}>
-                                    <MenuIcon />
-                                </IconButton>
-                            </Hidden>
-
-                            <Typography
-                                className="title"
-                                component={NavLinkNoDup}
-                                to="/">
+    return (
+        <AppBar
+            className="OmouBar"
+            color="default"
+            position="sticky">
+            <Toolbar>
+                {
+                    !isMobileSearching &&
+                    <>
+                        <Hidden lgUp>
+                            <IconButton
+                                aria-label="Open Drawer"
+                                color="inherit"
+                                onClick={handleDrawerToggle}>
+                                <MenuIcon />
+                            </IconButton>
+                        </Hidden>
+                        <Typography
+                            className="title"
+                            component={NavLinkNoDup}
+                            to="/">
                                 omou
-                            </Typography>
-                            <div style={{
-                                "flex": 1,
-                            }} />
-                        </>
-                    }
-                    <Search onMobile={handleSearch}/>
-                    {
-                        !isMobileSearching && <LogoutIcon
-                            className={"logout-icon"}
-                            onClick={handleLogout}/>
-                    }
-            </Toolbar> :
-                redirectToLogin()
-            }
-
-                </AppBar>
+                        </Typography>
+                        <div style={{
+                            "flex": 1,
+                        }} />
+                    </>
+                }
+                <Search onMobile={handleSearch} />
+                {
+                    !isMobileSearching && <LogoutIcon
+                        className="logout-icon"
+                        onClick={handleLogout} />
+                }
+            </Toolbar>
+        </AppBar>
     );
 };
 
-export default withRouter(AuthenticatedNav);
+AuthenticatedNav.propTypes = {
+    "toggleDrawer": PropTypes.func.isRequired,
+};
+
+export default AuthenticatedNav;

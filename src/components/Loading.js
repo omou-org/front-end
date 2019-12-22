@@ -1,27 +1,6 @@
-import penguin from "./penguin.gif"
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import React, { useState } from "react";
+import Penguin from "./penguin.gif";
+import React from "react";
 
-function Loading(props) {
-    return (
-    <img src={penguin}></img>
-    );
-}
+const Loading = () => <img src={Penguin} />;
 
-
-Loading.propTypes = {};
-
-function mapStateToProps(state) {
-    return {
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {};
-}
-
-export default withRouter(connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Loading));
+export default Loading;

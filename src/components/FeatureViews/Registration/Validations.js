@@ -63,8 +63,6 @@ let DateValidation = (input) => {
 
 // Time format of HH:MM TODO: make actual time validation
 const timeValidation = (input) => {
-    // console.log(input.substring(16,20), (/^(1[0-2]|0?[1-9]):[0-5][0-9]$/u).test(input))
     // (/^(1[0-2]|0?[1-9]):[0-5][0-9] (a|A|p|P)(m|M)$/u).test(input);
     return true;
 }
-
