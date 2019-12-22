@@ -50,7 +50,12 @@ const SearchResults = (props) => {
     // /search/account/?query=query?profileFilter=profileFilter?gradeFilter=gradeFilter?sortAlpha=asc?sortID=desc
     // /search/courses/?query=query?courseTypeFilter=courseType?availability=availability?dateSort=desc
 
-    const requestConfig = { params: { query: params.query, page: currentPage }, headers: { "Authorization": `Token ${props.auth.token}`, } };
+    const { account, course } = props.search.filter
+
+    const requestConfig = { params: { query: params.query, page: currentPage, profile: account.profile, gradeFilter: account.grade, sortAlpha: account.sort }, headers: { "Authorization": `Token ${props.auth.token}`, } };
+
+    let filterConfig = { params: { query: params.query, page: currentPage, profile: account.profile, gradeFilter: account.grade, sortAlpha: account.sort }, headers: { "Authorization": `Token ${props.auth.token}`, } };
+
 
     useEffect(() => {
         api.fetchSearchAccountQuery(requestConfig);
@@ -67,8 +72,8 @@ const SearchResults = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
-
         console.log("updated filter", props.search.filter)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.search.filter]);
 
     const numberOfResults = () => {
@@ -99,22 +104,14 @@ const SearchResults = (props) => {
         }
     };
 
-
+    console.log(props.search)
     /*
-        first : 0
-        second : 4
-        page : 1 
-        user presses ">" button
-            setFirst = 4
-            setSecond = * 2
 
-        // display next 4 results when user presses button
-        // set slice to (4,8) when pressed 
-        // if the second page === 16
-        // make a call to the api and check for more results
-        // if more results set account results to new results  
-        // reset slice to (0,4)
-        // if not return 
+        
+        when a user changes the filter,
+            changes request config 
+            updates account && course results 
+
     */
     return (
         <Grid container className={'search-results'} style={{ "padding": "1em" }}>

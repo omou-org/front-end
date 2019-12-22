@@ -98,8 +98,8 @@ const SearchResultFilter = (props) => {
                                         horizontal: "left",
                                     }
                                 }}>
-                                <MenuItem value={"student"}>Student</MenuItem>
-                                <MenuItem value={"instructor"}>Instructor</MenuItem>
+                                <MenuItem value={"STUDENT"}>Student</MenuItem>
+                                <MenuItem value={"INSTRUCTOR"}>Instructor</MenuItem>
                                 <MenuItem value={"receptionist"}>Receptionist</MenuItem>
                                 <MenuItem value={"administrator"}>Administrator</MenuItem>
                             </Select>
