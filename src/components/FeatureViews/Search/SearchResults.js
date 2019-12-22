@@ -43,7 +43,7 @@ const SearchResults = (props) => {
     const [start, setStart] = useState(0);
     const [end, setEnd] = useState(4);
     const [currentPage, setCurrentPage] = useState(1);
-
+    const [searchConfig, setSearchConfig] = useState({ params: { query: "", page: 1, profile: "", gradeFilter: "", sortAlpha: "" }, headers: "" });
     const params = useParams();
 
     //Endpoints
@@ -52,27 +52,48 @@ const SearchResults = (props) => {
 
     const { account, course } = props.search.filter
 
-    const requestConfig = { params: { query: params.query, page: currentPage, profile: account.profile, gradeFilter: account.grade, sortAlpha: account.sort }, headers: { "Authorization": `Token ${props.auth.token}`, } };
-
-    let filterConfig = { params: { query: params.query, page: currentPage, profile: account.profile, gradeFilter: account.grade, sortAlpha: account.sort }, headers: { "Authorization": `Token ${props.auth.token}`, } };
 
 
     useEffect(() => {
-        api.fetchSearchAccountQuery(requestConfig);
-        api.fetchSearchCourseQuery(requestConfig);
+        setSearchConfig({
+            params: {
+                query: params.query,
+                page: currentPage,
+                profile: account.profile,
+                gradeFilter: account.grade,
+                sortAlpha: account.sort
+            },
+            headers: { "Authorization": `Token ${props.auth.token}`, }
+        })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+    useEffect(() => {
+        console.log(searchConfig);
+        api.fetchSearchAccountQuery(searchConfig);
+        api.fetchSearchCourseQuery(searchConfig);
         api.fetchInstructors();
         api.fetchStudents();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [searchConfig]);
     useEffect(() => {
         api.fetchCourses();
         setAccountResults(props.search.accounts);
         setCourseResults(props.search.courses);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [searchConfig]);
     useEffect(() => {
-        console.log("updated filter", props.search.filter)
+        console.log("updated filter", props.search.filter);
+        setSearchConfig({
+            params: {
+                query: params.query,
+                page: currentPage,
+                profile: account.profile,
+                gradeFilter: account.grade,
+                sortAlpha: account.sort
+            },
+            headers: { "Authorization": `Token ${props.auth.token}`, }
+        })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.search.filter]);
 
@@ -97,7 +118,7 @@ const SearchResults = (props) => {
         setEnd(8);
         if (end === 8) {
             setCurrentPage(currentPage + 1);
-            api.fetchSearchAccountQuery(requestConfig);
+            api.fetchSearchAccountQuery(searchConfig);
             setAccountResults(props.search.accounts);
             setStart(0)
             setEnd(4);
