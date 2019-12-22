@@ -8,7 +8,7 @@
   height: 250px;
   position: relative;
   padding: 7%;
-  
+
   .noteNotification {
     float: right;
     color: red;
@@ -242,8 +242,13 @@
 .course-session-status {
   padding: 3%;
 
+  .table-text {
+    color: white;
+    font-weight: 500;
+  }
+
   .sessions-left-chip {
-    border-radius: 15px;
+    border-radius: 150px;
     width: 150px;
     top: 23%;
     right: 8%;

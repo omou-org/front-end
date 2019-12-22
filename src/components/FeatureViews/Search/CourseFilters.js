@@ -11,7 +11,7 @@ import AccountsCards from "./cards/AccountsCards"
 import BackButton from '../../BackButton';
 import { ReactComponent as FilterIcon } from "./filter.svg";
 
-//Material-ui Select 
+//Material-ui Select
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -65,7 +65,6 @@ const CourseFilters = (props) => {
     const [sortFilter, setSortFilter] = useState("");
 
     const handleFilterChange = event => {
-        console.log(event)
         props.onFilterChange(event.target.name)
         switch (event.target.name) {
             case "classFilter":

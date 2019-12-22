@@ -4,14 +4,17 @@ import * as actions from "./../actions/actionTypes"
 export default function enrollment(state = initialState.Enrollments, {payload, type}) {
     switch (type) {
         case actions.FETCH_ENROLLMENT_SUCCESSFUL:
-            console.log("fetch enrollment successful")
             return handleEnrollmentFetch(state, payload);
+        case actions.FETCH_ENROLLMENT_NOTE_SUCCESSFUL:
+            return handleEnrollmentNoteFetch(state, payload);
+        case actions.POST_ENROLLMENT_NOTE_SUCCESSFUL:
+        case actions.PATCH_ENROLLMENT_NOTE_SUCCESSFUL:
+            return handleEnrollmentNotesPost(state, payload);
         case actions.POST_ENROLLMENT_STARTED:
             return state;
         case actions.POST_ENROLLMENT_SUCCESS:
             return handleEnrollmentFetch(state, payload);
         case actions.POST_ENROLLMENT_FAILED:
-            console.log("enrollment failed", payload);
             return state;
         default:
             return state;
@@ -21,10 +24,12 @@ export default function enrollment(state = initialState.Enrollments, {payload, t
 const handleEnrollmentFetch = (state, {response}) => {
     const {data} = response;
     const newState = JSON.parse(JSON.stringify(state));
-    data.forEach(({student, course}) => {
-        let newStudentData = state[student] || {};
+
+    data.forEach(({student, course, id}) => {
+        let newStudentData = newState[student] || {};
         let newCourseData = newStudentData[course] || {
-            "enrollment_id": data.id,
+            "enrollment_id": id,
+            "course_id": course,
             "student_id": student,
             "notes": {},
             "session_payment_status": {
@@ -47,6 +52,23 @@ const handleEnrollmentFetch = (state, {response}) => {
         };
         newStudentData[course] = newCourseData;
         newState[student] = newStudentData;
+    });
+    return newState;
+};
+
+const handleEnrollmentNotesPost = (state, {response, ...rest}) => handleEnrollmentNoteFetch(state, {
+    "response": {
+        ...response,
+        "data": [response.data],
+    },
+    ...rest,
+});
+
+const handleEnrollmentNoteFetch = (state, {courseID, studentID, response}) => {
+    const {data} = response;
+    const newState = JSON.parse(JSON.stringify(state));
+    data.forEach((note) => {
+        newState[studentID][courseID].notes[note.id] = note;
     });
     return newState;
 };

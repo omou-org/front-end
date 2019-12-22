@@ -8,14 +8,12 @@ import * as apiActions from "../../../../actions/apiActions";
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Paper from "@material-ui/core/Paper";
-import Hidden from "@material-ui/core/Hidden";
 
 class CourseViewer extends Component {
-
     componentDidUpdate(prevProps) {
         const lastPrevCourseIndex = Object.keys(prevProps.courses).length - 1;
         const lastCourseIndex = Object.keys(this.props.courses).length - 1;
-        if(Object.keys(prevProps.courses)[lastPrevCourseIndex].course_id !== Object.keys(this.props.courses)[lastCourseIndex].course_id){
+        if (!Object.keys(prevProps.courses)[lastPrevCourseIndex] || Object.keys(prevProps.courses)[lastPrevCourseIndex].course_id !== Object.keys(this.props.courses)[lastCourseIndex].course_id){
             this.props.apiActions.fetchCourses();
         }
     }
@@ -63,9 +61,7 @@ class CourseViewer extends Component {
             5: "Friday",
             6: "Saturday",
         };
-        let Days = course.schedule.days.map((day) => {
-            return DayConverter[day];
-        });
+        let Days = course.schedule.days;
 
         let timeOptions = {hour: "2-digit", minute: "2-digit"};
         let dateOptions = {year: "numeric", month: "short", day: "numeric"};

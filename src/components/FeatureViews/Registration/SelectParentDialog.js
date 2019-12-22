@@ -37,7 +37,6 @@ class SelectParentDialog extends React.Component {
             let idStartIndex = this.state.inputParent.value.indexOf("-")+1;
             let parentID = Number(this.state.inputParent.value.substring(idStartIndex));
             let selectedParent = this.props.search.accounts.find((account)=>{ return parentID === account.user.id});
-            console.log(selectedParent);
             selectedParent = {
                 user: {
                     id: selectedParent.user.id,
@@ -55,7 +54,6 @@ class SelectParentDialog extends React.Component {
 
             this.props.registrationActions.setRegisteringParent(selectedParent);
             // Add students to redux once the registered parent has been set
-            console.log(selectedParent);
             selectedParent.student_list.forEach((studentID)=>{
                this.props.userActions.fetchStudents(studentID);
             });

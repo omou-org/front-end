@@ -21,15 +21,14 @@ import EventIcon from "@material-ui/icons/Event";
 
 // Local Component Imports
 import "./Navigation.scss";
-import Routes from "../Routes/rootRoutes";
 import CustomTheme from "../../theme/muiTheme";
-import Search from "../../components/FeatureViews/Search/Search";
-import NavBarRoutes from "../Routes/NavBarRoutes";
 import LoginPage from "../Authentication/LoginPage";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../actions/registrationActions";
 import DateFnsUtils from "@date-io/date-fns";
 import {MuiPickersUtilsProvider} from "material-ui-pickers";
+import Routes from "../Routes/rootRoutes";
+import NavBarRoutes from "../Routes/NavBarRoutes";
 
 // const NavList = [
 //     // {
@@ -55,7 +54,7 @@ import {MuiPickersUtilsProvider} from "material-ui-pickers";
 // ];
 
 const Navigation = (props) => {
-
+    const {pathname} = useLocation();
     const dispatch = useDispatch();
     const {token, isAdmin} = useSelector(({auth}) => auth);
     // const isAdmin = useSelector(({auth}) => auth).isAdmin;
@@ -99,9 +98,6 @@ const Navigation = (props) => {
         ];
 
     const [mobileOpen, setMobileOpen] = useState(false);
-    const {pathname} = useLocation();
-
-    console.log(token);
 
     const drawer = (
         <div className="DrawerList">
@@ -135,7 +131,7 @@ const Navigation = (props) => {
     return (
         <MuiThemeProvider theme={CustomTheme}>
             <div className="Navigation">
-                <NavBarRoutes/>
+                <NavBarRoutes toggleDrawer={handleDrawerToggle} />
                 {
                     pathname !== "/login" && (
                         <nav className="OmouDrawer">
