@@ -756,7 +756,7 @@ class Form extends Component {
             case "select":
                 let parsedDuration = durationParser(this.state[label],fieldTitle);
                 let value, options;
-                if(parsedDuration){
+                if (parsedDuration && this.state[label][fieldTitle]){
                     if(parsedDuration.duration){
                         value = parsedDuration.duration;
                         options = parsedDuration.options;

@@ -1,124 +1,141 @@
 import * as types from "./actionTypes";
 import {instance, MISC_FAIL, REQUEST_ALL, REQUEST_STARTED} from "./apiActions";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect, useState} from "react";
 
 export const isFail = (...statuses) =>
-    statuses.some((status) => status && status !== REQUEST_STARTED && (status < 200 || status >= 300));
+    statuses.some((status) =>
+        status && status !== REQUEST_STARTED &&
+        (status < 200 || status >= 300));
 
 export const isLoading = (...statuses) =>
-    statuses.some((status) => !status || status === REQUEST_STARTED) && !isFail(...statuses);
+    statuses.some((status) => !status || status === REQUEST_STARTED) &&
+    !isFail(...statuses);
 
 export const isSuccessful = (...statuses) =>
     statuses.every((status) => status && (status >= 200 && status < 300));
 
 /**
  * Wrapper for hooks to use certain GET endpoints
+ * config is optional object passed to the request
  * For the function used by the components:
- * @param {Number} id Single ID to fetch, array of IDs to fetch data for, or undefined/null/falsey to fetch all (see second parameter)
- * @param {Boolean} noFetchOnUndef If true, undefined/null/falsey does NOT fetch all (nothing is fetched). Useful with an ID that may be undefined until some other data comes in, in order to avoid a fetch all being called (Optimization).
+ * @param {Number} id Single ID to fetch, array of IDs to fetch data for,
+ * or undefined/null/falsey to fetch all (see second parameter)
+ * @param {Boolean} noFetchOnUndef If true, undefined/null/falsey does NOT
+ * fetch all (nothing is fetched). Useful with an ID that may be undefined
+ * until some other data comes in, in order to avoid a fetch all being called
+ * (Optimization).
  * @returns {Number} status of the request (null if not started/canceled)
  */
-export const wrapUseEndpoint = (endpoint, successType) => (id, noFetchOnUndef) => {
+export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOnUndef) => {
     const token = useSelector(({auth}) => auth.token);
     const [status, setStatus] = useState(null);
     const dispatch = useDispatch();
+
+    const handleError = useCallback((error) => {
+        setStatus(
+            (error && error.response && error.response.status) ||
+            MISC_FAIL
+        );
+    }, []);
+
+    const requestSettings = useMemo(() => ({
+        "headers": {
+            "Authorization": `Token ${token}`,
+        },
+        ...config,
+    }), [token]);
+
     useEffect(() => {
         let aborted = false;
-        if (!id) {
+        // no id passed
+        if (typeof id === "undefined" || id === null) {
+            // if not to be optimized (i.e. a request_all is wanted)
             if (!noFetchOnUndef) {
                 (async () => {
                     try {
                         setStatus(REQUEST_STARTED);
                         const response = await instance.get(
                             endpoint,
-                            {
-                                "headers": {
-                                    "Authorization": `Token ${token}`,
-                                },
-                            }
+                            requestSettings
                         );
                         if (!aborted) {
                             dispatch({
-                                "type": successType,
                                 "payload": {
                                     "id": REQUEST_ALL,
                                     response,
                                 },
+                                "type": successType,
                             });
                             setStatus(response.status);
                         }
-                    } catch (err) {
+                    } catch (error) {
                         if (!aborted) {
-                            setStatus((err && err.response && err.response.status) || MISC_FAIL);
+                            handleError(error);
                         }
                     }
                 })();
             }
         } else if (!Array.isArray(id)) {
+            // standard single item request
             (async () => {
                 try {
                     setStatus(REQUEST_STARTED);
                     const response = await instance.get(
                         `${endpoint}${id}/`,
-                        {
-                            "headers": {
-                                "Authorization": `Token ${token}`,
-                            },
-                        }
+                        requestSettings
                     );
                     if (!aborted) {
                         dispatch({
-                            "type": successType,
                             "payload": {
                                 id,
                                 response,
                             },
+                            "type": successType,
                         });
                         setStatus(response.status);
                     }
-                } catch (err) {
+                } catch (error) {
                     if (!aborted) {
-                        setStatus((err && err.response && err.response.status) || MISC_FAIL);
+                        handleError(error);
                     }
                 }
             })();
         } else if (id.length > 0) {
+            // array of IDs to request (list of results requested)
             (async () => {
                 try {
                     setStatus(REQUEST_STARTED);
                     const response = await Promise.all(id.map(
                         (individual) => instance.get(
                             `${endpoint}${individual}/`,
-                            {
-                                "headers": {
-                                    "Authorization": `Token ${token}`,
-                                },
-                            }
+                            requestSettings
                         )
                     ));
                     if (!aborted) {
                         dispatch({
-                            "type": successType,
                             "payload": {
                                 id,
                                 response,
                             },
+                            "type": successType,
                         });
                         setStatus(response[0].status);
                     }
-                } catch (err) {
+                } catch (error) {
                     if (!aborted) {
-                        setStatus((err && err.response && err.response.status) || MISC_FAIL);
+                        handleError(error);
                     }
                 }
             })();
         }
+        // if something about request changed (item to request, settings, etc.)
+        // discard old results and make new request
         return () => {
             setStatus(null);
             aborted = true;
         };
-    }, [dispatch, id, token, noFetchOnUndef]);
+    }, [dispatch, id, token, noFetchOnUndef, requestSettings, handleError]);
     return status;
 };
 
@@ -142,44 +159,12 @@ export const useCourse = wrapUseEndpoint(
     types.FETCH_COURSE_SUCCESSFUL
 );
 
-export const useEnrollmentByCourse = (courseID) => {
-    const token = useSelector(({auth}) => auth.token);
-    const [status, setStatus] = useState(REQUEST_STARTED);
-    const dispatch = useDispatch();
-    useEffect(() => {
-        let aborted = false;
-        (async () => {
-            try {
-                const response = await instance.get(
-                    "/course/enrollment/",
-                    {
-                        "headers": {
-                            "Authorization": `Token ${token}`,
-                        },
-                        "params": {
-                            "course_id": courseID,
-                        },
-                    }
-                );
-                if (!aborted) {
-                    setStatus(response.status);
-                    dispatch({
-                        "type": types.FETCH_ENROLLMENT_SUCCESSFUL,
-                        "payload": {
-                            "id": courseID || REQUEST_ALL,
-                            response,
-                        },
-                    });
-                }
-            } catch (err) {
-                if (!aborted) {
-                    setStatus((err && err.response && err.response.status) || MISC_FAIL);
-                }
-            }
-        })();
-        return () => {
-            aborted = true;
-        };
-    }, [dispatch, courseID, token]);
-    return status;
-};
+export const useEnrollmentByCourse = (courseID) => wrapUseEndpoint(
+    "/course/enrollment/",
+    types.FETCH_ENROLLMENT_SUCCESSFUL,
+    {
+        "params": {
+            "course_id": courseID,
+        },
+    }
+)(null);
