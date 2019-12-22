@@ -8,11 +8,12 @@ import * as types from "actions/actionTypes";
 import React, {Component} from "react";
 import {Prompt} from "react-router";
 import {NavLink, withRouter} from "react-router-dom";
-import CreatableSelect, {makeCreatableSelect} from 'react-select/creatable';
+import CreatableSelect from 'react-select/creatable';
 import {updateStudent, updateParent} from "reducers/usersReducer";
 import {updateCourse} from "reducers/courseReducer";
 
 // Material UI Imports
+import Loading from "components/Loading";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
@@ -90,7 +91,6 @@ class Form extends Component {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
         const formType = this.props.computedMatch.params.type;
         const {id} = this.props.computedMatch.params;
-
         this.props.userActions.fetchStudents();
         this.props.userActions.fetchParents();
         this.props.userActions.fetchInstructors();
@@ -492,6 +492,10 @@ class Form extends Component {
         })
     }
 
+    componentWillUnmount = () => {
+        this.props.registrationActions.resetSubmitStatus();
+    }
+
     getFormObject() {
         return this.props.registrationForm[this.state.form];
     }
@@ -570,7 +574,6 @@ class Form extends Component {
                             } else {
                                 this.props.registrationActions.submitForm(this.state);
                             }
-
                         } else {
                             this.props.registrationActions.submitForm(this.state);
                         }
@@ -753,7 +756,7 @@ class Form extends Component {
             case "select":
                 let parsedDuration = durationParser(this.state[label],fieldTitle);
                 let value, options;
-                if(parsedDuration){
+                if (parsedDuration && this.state[label][fieldTitle]){
                     if(parsedDuration.duration){
                         value = parsedDuration.duration;
                         options = parsedDuration.options;
@@ -1355,7 +1358,7 @@ class Form extends Component {
 
     render() {
         if (!this.state.hasLoaded) {
-            return "Loading...";
+            return <Loading />;
         }
         return (
             <Grid container className="">

@@ -349,7 +349,6 @@ const addSmallGroupRegistration = (prevState, {formMain, new_course}) => {
 const addStudentRegistration = (studentID, registeredCourses, courseType, enrollmentObject) =>{
     let enrollmentExists = false;
     let isStudentCurrentlyRegistered = registeredCourses ? Object.keys(registeredCourses).includes(studentID.toString()) : false;
-    console.log(isStudentCurrentlyRegistered, registeredCourses);
     if(isStudentCurrentlyRegistered){
         registeredCourses[studentID] && registeredCourses[studentID].forEach((enrollment)=>{
             if(courseType !== "tutoring" && enrollment.student_id === enrollmentObject.student_id &&
@@ -369,7 +368,6 @@ const addStudentRegistration = (studentID, registeredCourses, courseType, enroll
             registeredCourses[studentID].push(enrollmentObject);
         }
     } else if(registeredCourses){ // new student, same parent
-        console.log("new student!", enrollmentObject);
         registeredCourses[studentID] = [enrollmentObject];
     } else { // new student, first one registered by parent
         registeredCourses = {};

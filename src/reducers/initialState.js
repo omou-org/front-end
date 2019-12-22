@@ -1,4 +1,4 @@
-import {GET, PATCH, POST} from "../actions/actionTypes";
+import {GET, PATCH} from "../actions/actionTypes";
 
 export default {
     "Authentication": initAuth(),
@@ -4320,7 +4320,6 @@ function initRequests() {
         "category": {
             [GET]: {},
             [PATCH]: {},
-            [POST]: {},
         },
         "instructor": {
             [GET]: {},
@@ -4339,13 +4338,18 @@ function initRequests() {
             [PATCH]: {},
         },
         "enrollment": {
+            [GET]: {},
             [PATCH]: {},
         },
-        "note": {
+        "accountNote": {
             [GET]: {},
             [PATCH]: {},
         },
         "courseNote": {
+            [GET]: {},
+            [PATCH]: {},
+        },
+        "enrollmentNote": {
             [GET]: {},
             [PATCH]: {},
         },

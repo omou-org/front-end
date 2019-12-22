@@ -10,7 +10,6 @@ export default function auth(state = initialState.Authentication, {payload, type
         case actions.FETCH_USER_SUCCESSFUL:
             return onDetailFetch(state, payload);
         case actions.FETCH_USER_FAILED:
-            console.log("failed fetching user",payload);
             return state;
         default:
             return state;

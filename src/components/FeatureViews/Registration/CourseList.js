@@ -1,10 +1,11 @@
+import PropTypes from "prop-types";
 import React from "react";
-import {Link} from "react-router-dom";
 import {connect, useSelector} from "react-redux";
 
 // Material UI Imports
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
+import {Link} from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import {bindActionCreators} from "redux";
@@ -56,12 +57,10 @@ const CourseList = (props) => {
                         </Typography>
                     </Grid>
                     <Grid
-                        // component={Link}
                         item
                         md={5}
                         style={{"textDecoration": "none",
                             "cursor": "pointer"}}
-                        // to={`/registration/course/${course.course_id}`}
                         xs={12}>
                         <Grid
                             className="course-detail"
@@ -98,7 +97,7 @@ const CourseList = (props) => {
                                 item
                                 md={8}
                                 xs={9}>
-                                { course.instructor_id && instructors[course.instructor_id].name}
+                                {course.instructor_id && instructors[course.instructor_id].name}
                             </Grid>
                         </Grid>
                         <Grid
@@ -117,7 +116,7 @@ const CourseList = (props) => {
                                 item
                                 md={8}
                                 xs={9}>
-                                {course.tuition && `$ ${course.tuition}`}
+                                {course.tuition && `$${course.tuition}`}
                             </Grid>
                         </Grid>
                     </Grid>
@@ -161,6 +160,10 @@ const CourseList = (props) => {
             </Paper>
         );
     });
+};
+
+CourseList.propTypes = {
+    "filteredCourses": PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 const mapStateToProps = (state) => ({

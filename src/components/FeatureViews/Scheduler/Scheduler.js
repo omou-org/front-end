@@ -290,7 +290,6 @@ class Scheduler extends Component {
                 // sessionKey is the variable named inside the map, this is mapping over each coursekey
                 // session is the matched pairs of course and session objects
                 let session = this.props.sessions[courseKey][sessionKey];
-                console.log(session, this.props.courses[session.course_id]);
                 session["title"] = session.title;
                 session["description"] = session.description ? session.description : "";
                 session["type"] = this.props.courses[session.course_id].type;
