@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import React from "react";
 
 import Bio from "./TabComponents/Bio";
-import CourseViewer from "./TabComponents/CourseViewer";
 import Grid from "@material-ui/core/Grid";
 import InstructorCourses from "./TabComponents/InstructorCourses";
 import Notes from "../Notes/Notes";
@@ -10,6 +9,7 @@ import ParentContact from "./TabComponents/ParentContact";
 import PayCourses from "./TabComponents/PayCourses";
 import PaymentHistory from "./TabComponents/PaymentHistory";
 import Schedule from "./TabComponents/Schedule.js";
+import StudentCourseViewer from "./TabComponents/StudentCourseViewer";
 import StudentInfo from "./TabComponents/StudentInfo";
 
 const ComponentViewer = (props) => {
@@ -25,7 +25,7 @@ const ComponentViewer = (props) => {
             break;
         case 1:
             component = (
-                <InstructorCourses user_id={props.user.user_id} />
+                <InstructorCourses instructorID={props.user.user_id} />
             );
             break;
         case 2:
@@ -35,19 +35,16 @@ const ComponentViewer = (props) => {
             break;
         case 3:
             component = (
-                <CourseViewer
+                <StudentCourseViewer
                     current
-                    key={props.inView}
-                    user_id={props.user.user_id}
-                    user_role={props.user.role} />
+                    studentID={props.user.user_id} />
             );
             break;
         case 4:
             component = (
-                <CourseViewer
+                <StudentCourseViewer
                     current={false}
-                    user_id={props.user.user_id}
-                    user_role={props.user.role} />
+                    studentID={props.user.user_id} />
             );
             break;
         case 5:

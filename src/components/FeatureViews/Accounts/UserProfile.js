@@ -143,25 +143,19 @@ class UserProfile extends Component {
     }
 
     getUser = () => {
-        let user;
         const {accountType, accountID} = this.props.computedMatch.params;
         switch (accountType) {
             case "student":
-                user = this.props.students[accountID];
-                break;
+                return this.props.students[accountID];
             case "parent":
-                user = this.props.parents[accountID];
-                break;
+                return this.props.parents[accountID];
             case "instructor":
-                user = this.props.instructors[accountID];
-                break;
+                return this.props.instructors[accountID];
             case "receptionist":
-                user = this.props.receptionist[accountID];
-                break;
+                return this.props.receptionist[accountID];
             default:
-                user = null;
+                return null;
         }
-        return user;
     }
 
     getRequestStatus = () => {
@@ -179,8 +173,9 @@ class UserProfile extends Component {
     }
 
     hasImportantNotes() {
-        return this.getUser() && Object.values(this.getUser().notes)
-            .some(({important}) => important);
+        return this.getUser() && this.getUser().notes &&
+            Object.values(this.getUser().notes)
+                .some(({important}) => important);
     }
 
     renderNoteIcon() {
@@ -207,17 +202,18 @@ class UserProfile extends Component {
 
     render() {
         const status = this.getRequestStatus();
-        if (!status || status === apiActions.REQUEST_STARTED) {
-            return <Loading/>
+        const user = this.getUser();
+        if (!user || Object.keys(user).length <= 1) {
+            if (!status || status === apiActions.REQUEST_STARTED) {
+                return <Loading />;
+            }
+
+            if (status < 200 || status >= 300) {
+                return <Redirect to="/PageNotFound" />;
+            }
         }
 
         this.renderNoteIcon();
-
-        const user = this.getUser();
-
-        if ((!user || user === -1) && (status < 200 || status >= 300)) {
-            return <Redirect to="/PageNotFound" />;
-        }
         const {accountType} = this.props.computedMatch.params;
         const {activeTab} = this.state;
         const styles = {
@@ -312,7 +308,8 @@ class UserProfile extends Component {
                             md={2}>
                             <Hidden smDown>
                                 <Avatar style={styles}>
-                                    {user.name.toUpperCase().match(/\b(\w)/g).join("")}
+                                    {user.name.toUpperCase().match(/\b(\w)/g)
+                                        .join("")}
                                 </Avatar>
                             </Hidden>
                         </Grid>

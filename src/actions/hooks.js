@@ -33,10 +33,12 @@ export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOn
     const dispatch = useDispatch();
 
     const handleError = useCallback((error) => {
-        setStatus(
-            (error && error.response && error.response.status) ||
-            MISC_FAIL
-        );
+        if (error && error.response && error.response.status) {
+            setStatus(error.response.status);
+        } else {
+            setStatus(MISC_FAIL);
+            console.error(error);
+        }
     }, []);
 
     const requestSettings = useMemo(() => ({
@@ -120,7 +122,11 @@ export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOn
                             },
                             "type": successType,
                         });
-                        setStatus(response[0].status);
+                        setStatus(response.reduce((finalStatus, {status}) =>
+                            isFail(status) ? status :
+                            isFail(finalStatus) ? finalStatus :
+                            isLoading(status) ? status :
+                            finalStatus, 200));
                     }
                 } catch (error) {
                     if (!aborted) {
@@ -165,6 +171,16 @@ export const useEnrollmentByCourse = (courseID) => wrapUseEndpoint(
     {
         "params": {
             "course_id": courseID,
+        },
+    }
+)(null);
+
+export const useEnrollmentByStudent = (studentID) => wrapUseEndpoint(
+    "/course/enrollment/",
+    types.FETCH_ENROLLMENT_SUCCESSFUL,
+    {
+        "params": {
+            "user_id": studentID,
         },
     }
 )(null);

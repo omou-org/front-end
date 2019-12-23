@@ -9,6 +9,7 @@ import DownArrow from "@material-ui/icons/KeyboardArrowDown";
 import EditIcon from "@material-ui/icons/Edit";
 import EmailIcon from "@material-ui/icons/Email";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -51,28 +52,36 @@ const RegistrationCourseEnrollments = ({courseID}) => {
         }));
     }, []);
 
-    hooks.useEnrollmentByCourse(courseID);
+    const enrollmentStatus = hooks.useEnrollmentByCourse(courseID);
     const course = courses[courseID];
-    const roster = course && courses[courseID].roster;
+    const studentStatus = hooks.useStudent(course.roster);
 
-    const parentList = useMemo(() => roster
-        ? roster
-            .filter((studentID) => students[studentID])
-            .map((studentID) => students[studentID].parent_id)
-        : []
-    , [roster, students]);
-    hooks.useParent(parentList);
+    const parentList = useMemo(() => course.roster
+        .filter((studentID) => students[studentID])
+        .map((studentID) => students[studentID].parent_id)
+    , [course.roster, students]);
+    const parentStatus = hooks.useParent(parentList);
 
     useEffect(() => {
-        if (roster) {
-            setExpanded(roster.reduce((object, studentID) => ({
+        setExpanded((prevExpanded) =>
+            course.roster.reduce((object, studentID) => ({
                 ...object,
-                [studentID]: false,
+                [studentID]: prevExpanded[studentID] || false,
             }), {}));
+    }, [course.roster]);
+
+    const loadedStudents = useMemo(() =>
+        course.roster.filter((studentID) => students[studentID])
+    , [course.roster, students]);
+
+    if (loadedStudents.length === 0) {
+        if (hooks.isLoading(studentStatus)) {
+            return <Loading />;
         }
-    }, [roster]);
-    const loadedStudents =
-        (roster && roster.filter((studentID) => students[studentID])) || [];
+        if (hooks.isFail(studentStatus)) {
+            return "Error loading enrollment details!";
+        }
+    }
 
     return (
         <div>
@@ -112,30 +121,44 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                                             </Link>
                                         </TableCell>
                                         <TableCell>
-                                            {parent && (
-                                                <Link
-                                                    className="no-underline"
-                                                    to={`/accounts/parent/${student.parent_id}`}>
-                                                    {parent.name}
-                                                </Link>
-                                            )}
+                                            {
+                                                parent ?
+                                                    <Link
+                                                        className="no-underline"
+                                                        to={`/accounts/parent/${student.parent_id}`}>
+                                                        {parent.name}
+                                                    </Link>
+                                                    : hooks.isLoading(parentStatus) ?
+                                                        "Loading..." : "Error"
+                                            }
                                         </TableCell>
                                         <TableCell>
-                                            {parent && addDashes(parent.phone_number)}
+                                            {
+                                                parent ?
+                                                    addDashes(parent.phone_number)
+                                                    : hooks.isLoading(parentStatus) ?
+                                                        "Loading..." : "Error"
+                                            }
                                         </TableCell>
                                         <TableCell>
-                                            <div
-                                                key={studentID}
-                                                style={{
-                                                    "padding": "5px 0",
-                                                    "borderRadius": "10px",
-                                                    "backgroundColor": paymentStatus ? "#28D52A" : "#E9515B",
-                                                    "textAlign": "center",
-                                                    "width": "7vw",
-                                                    "color": "white",
-                                                }}>
-                                                {paymentStatus ? "Paid" : "Unpaid"}
-                                            </div>
+                                            {
+                                                enrollment
+                                                    ? <div
+                                                        key={studentID}
+                                                        style={{
+                                                            "padding": "5px 0",
+                                                            "borderRadius": "10px",
+                                                            "backgroundColor": paymentStatus ? "#28D52A" : "#E9515B",
+                                                            "textAlign": "center",
+                                                            "width": "7vw",
+                                                            "color": "white",
+                                                        }}>
+                                                        {paymentStatus ? "Paid" : "Unpaid"}
+                                                      </div>
+                                                    : hooks.isFail(enrollmentStatus)
+                                                        ? "Error!"
+                                                        : "Loading..."
+                                            }
                                         </TableCell>
                                         <TableCell>
                                             <div
@@ -143,9 +166,9 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                                                 key={studentID}>
                                                 {
                                                     parent &&
-                                                    <a href={`mailto:${parent.email}`}>
-                                                        <EmailIcon />
-                                                    </a>
+                                                        <a href={`mailto:${parent.email}`}>
+                                                            <EmailIcon />
+                                                        </a>
                                                 }
                                                 <span><EditIcon /></span>
                                                 <span>
@@ -159,37 +182,37 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                                     </TableRow>
                                     {
                                         expanded[studentID] &&
-                                        <TableRow align="left">
-                                            <TableCell colSpan={5}>
-                                                <Paper
-                                                    elevation={0}
-                                                    square>
-                                                    <Typography
-                                                        style={{
-                                                            "padding": "10px",
-                                                        }}>
-                                                        <span style={{"padding": "5px"}}>
-                                                            <b>School</b>: {
-                                                                student.school
-                                                            }
-                                                            <br />
-                                                        </span>
-                                                        <span style={{"padding": "5px"}}>
-                                                            <b>School Teacher</b>: {
-                                                                notes["Current Instructor in School"]
-                                                            }
-                                                            <br />
-                                                        </span>
-                                                        <span style={{"padding": "5px"}}>
-                                                            <b>Textbook:</b> {
-                                                                notes["Textbook Used"]
-                                                            }
-                                                            <br />
-                                                        </span>
-                                                    </Typography>
-                                                </Paper>
-                                            </TableCell>
-                                        </TableRow>
+                                            <TableRow align="left">
+                                                <TableCell colSpan={5}>
+                                                    <Paper
+                                                        elevation={0}
+                                                        square>
+                                                        <Typography
+                                                            style={{
+                                                                "padding": "10px",
+                                                            }}>
+                                                            <span style={{"padding": "5px"}}>
+                                                                <b>School</b>: {
+                                                                    student.school
+                                                                }
+                                                                <br />
+                                                            </span>
+                                                            <span style={{"padding": "5px"}}>
+                                                                <b>School Teacher</b>: {
+                                                                    notes["Current Instructor in School"]
+                                                                }
+                                                                <br />
+                                                            </span>
+                                                            <span style={{"padding": "5px"}}>
+                                                                <b>Textbook:</b> {
+                                                                    notes["Textbook Used"]
+                                                                }
+                                                                <br />
+                                                            </span>
+                                                        </Typography>
+                                                    </Paper>
+                                                </TableCell>
+                                            </TableRow>
                                     }
                                 </Fragment>
                             );
