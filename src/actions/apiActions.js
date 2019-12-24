@@ -197,6 +197,12 @@ export const formatCourse = (formCourse, type) =>{
     };
 }
 
+const courseName = (form, type) => {
+    if(type === "T"){
+        return "1:1 " + form["Instructor"].value + form[""]
+    }
+}
+
 export const parseTime = (time) =>{
     let formattedTime;
     if(typeof time === "string"){
