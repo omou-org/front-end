@@ -78,18 +78,21 @@ class Scheduler extends Component {
         });
     }
 
-    componentDidUpdate() {
-        console.log(this.props.sessions, Object.entries(this.props.courses).length === 0 && this.props.courses.constructor === Object);
-        if(this.props.sessions !== "" &&
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(this.props !== prevProps && this.props.sessions !== "" &&
             !(Object.entries(this.props.courses).length === 0 &&
                 this.props.courses.constructor === Object)){
             const initialSessions = this.props.sessions.map((session)=>{
                 // console.log(this.props.courses, session.course, this.props.courses[session.course])
-                session["title"] =this.props.courses[session.course].title;
-                session["description"] = session.description ? session.description : "";
-                session["type"] = this.props.courses[session.course].type;
-                session["resourceId"] = this.props.courses[session.course].room_id;
-                return session;
+                const newSession = {};
+                newSession["title"] =this.props.courses[session.course].title;
+                newSession["description"] = session.description ? session.description : "";
+                newSession["type"] = this.props.courses[session.course].type;
+                newSession["resourceId"] = this.props.courses[session.course].room_id;
+                newSession["start"] = new Date(session.start_datetime);
+                newSession["end"] = new Date(session.end_datetime);
+                console.log(newSession)
+                return newSession;
             });
                 // .filter((session)=>{ return session.type === "C" });
             console.log(initialSessions);
