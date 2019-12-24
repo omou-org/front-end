@@ -10,7 +10,8 @@ import listViewPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 
-import * as calenderActions from "../../../actions/calenderActions";
+import * as calendarActions from "../../../actions/calendarActions";
+import * as courseActions from "../../../actions/apiActions"
 
 // Material-Ui dependencies
 
@@ -58,17 +59,44 @@ class Scheduler extends Component {
     calendarComponentRef = React.createRef();
 
     componentWillMount() {
-        this.setState({
-            "calendarEvents": this.getEvents(),
-        });
+        // this.setState({
+        //     "calendarEvents": this.getEvents(),
+        // });
 
-        this.getFirstFilteredList();
+        // this.getFirstFilteredList();
     }
 
     componentDidMount() {
+        this.props.calendarActions.fetchSessions({
+            params:{
+                time_frame:"day"
+            }
+        });
+        this.props.courseActions.fetchCourses();
         this.setState({
             "currentDate": this.currentDate(),
         });
+    }
+
+    componentDidUpdate() {
+        console.log(this.props.sessions, Object.entries(this.props.courses).length === 0 && this.props.courses.constructor === Object);
+        if(this.props.sessions !== "" &&
+            !(Object.entries(this.props.courses).length === 0 &&
+                this.props.courses.constructor === Object)){
+            const initialSessions = this.props.sessions.map((session)=>{
+                // console.log(this.props.courses, session.course, this.props.courses[session.course])
+                session["title"] =this.props.courses[session.course].title;
+                session["description"] = session.description ? session.description : "";
+                session["type"] = this.props.courses[session.course].type;
+                session["resourceId"] = this.props.courses[session.course].room_id;
+                return session;
+            });
+                // .filter((session)=>{ return session.type === "C" });
+            console.log(initialSessions);
+            this.setState({
+                calendarEvents:initialSessions,
+            })
+        }
     }
 
     // helper function filtering by Class and setting the calendarEvents state, Which is read by Full calendar
@@ -534,7 +562,7 @@ Scheduler.propTypes = {};
 function mapStateToProps(state) {
     return {
         "courses": state.Course.NewCourseList,
-        "sessions": state.Course.CourseSessions,
+        "sessions": state.Calendar.CourseSessions,
         "instructors": state.Users.InstructorList,
 
     };
@@ -542,7 +570,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        "calenderActions": bindActionCreators(calenderActions, dispatch),
+        "calendarActions": bindActionCreators(calendarActions, dispatch),
+        "courseActions": bindActionCreators(courseActions, dispatch),
     };
 }
 

@@ -1,7 +1,7 @@
 import initialState from './initialState';
 import * as actions from "../actions/actionTypes"
 
-export default function calender(state = initialState.CalenderData, { payload, type, }) {
+export default function Calendar(state = initialState.CalendarData, { payload, type, }) {
     let newState = state;
 
     switch (type) {
@@ -38,8 +38,18 @@ export default function calender(state = initialState.CalenderData, { payload, t
 
 
             return newState;
+        case actions.GET_SESSIONS_SUCCESS:
+            return getSessions(state, payload);
 
         default:
             return newState;
+    }
+}
+
+const getSessions = (state,{response}) => {
+    const {data} = response;
+    return {
+        ...state,
+        CourseSessions: data,
     }
 }

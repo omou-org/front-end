@@ -47,12 +47,12 @@ function rootRoutes(props) {
                 path="/registration"
                 render={(passedProps) => <Registration {...passedProps} />} />
             {/* Scheduler Routes */}
-             {/* <ProtectedRoute
+             <ProtectedRoute
                 exact path="/scheduler"
                 render={(passedProps) => <Scheduler {...passedProps} />} />
             <Route
                 path="/scheduler/view-session/:course_id/:session_id"
-                render={(passedProps) => <SessionView {...passedProps} />} /> */}
+                render={(passedProps) => <SessionView {...passedProps} />} />
             <ProtectedRoute
                 exact
                 path="/search/:type/:query?"
