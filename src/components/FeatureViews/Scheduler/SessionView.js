@@ -28,6 +28,7 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import Typography from "@material-ui/core/Typography";
 import {parseTime} from "../../../actions/apiActions";
+import {GET} from "../../../actions/actionTypes";
 
 class SessionView extends Component {
     constructor(props) {
@@ -50,16 +51,12 @@ class SessionView extends Component {
     componentDidMount() {
         this.props.calendarActions.fetchSessions({id:this.props.match.params.session_id});
         this.props.courseActions.fetchCourses(this.props.match.params.course_id);
-        // this.props.userActions.fetchInstructors();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log("Updated!", this.props)
-
         if(this.props !== prevProps &&
             this.props.courseSessions.length !==0 &&
-            Object.entries(this.props.courses).length!==0
-        ){
+            Object.entries(this.props.courses).length!==0){
             this.setState(()=>{
                 const sessionData = this.props.courseSessions.find((session)=>{
                     return session.course === Number(this.props.match.params.course_id) &&
@@ -69,13 +66,11 @@ class SessionView extends Component {
                     .toISOString().slice(0, 19).replace(/-/g, "/")
                     .replace("T", " ");
                 let sessionTime = sessionData.start.substring(sessionData.start.indexOf(" "));
-                sessionData["start"] = sessionData.start.replace(sessionTime, " " +parseTime(sessionData.start_datetime));
+                sessionData["start"] = sessionData.start.replace(sessionTime, " | " +parseTime(new Date(sessionData.start_datetime).toUTCString()));
 
                 let courseData = this.props.courses[this.props.match.params.course_id];
-                if(!this.props.instructors[courseData.instructor_id]){
+                if(courseData && !this.props.requestStatus["instructor"][GET][courseData.instructor_id]){
                     this.props.userActions.fetchInstructors(courseData.instructor_id);
-                } else {
-                    courseData.instructor = this.props.instructors[courseData.instructor_id];
                 }
 
                 return {
@@ -88,6 +83,8 @@ class SessionView extends Component {
     }
 
     render() {
+        let instructor = this.state.courseData && this.props.instructors[this.state.courseData.instructor_id] ? this.props.instructors[this.state.courseData.instructor_id] : {name:"N/A"};
+
         return (
             <Grid
                 className="main-session-view"
@@ -140,7 +137,7 @@ class SessionView extends Component {
                                 item
                                 xs={12}>
                                 <Typography variant="h5"> Instructor </Typography>
-                                <Typography variant="body1">{this.state.courseData && this.state.courseData.instructor.name}</Typography>
+                                <Typography variant="body1">{this.state.courseData && instructor.name}</Typography>
                             </Grid>
                             <Grid
                                 item
@@ -244,7 +241,7 @@ function mapStateToProps(state) {
         "students": state.Users.StudentList,
         "instructors": state.Users.InstructorList,
         "courseSessions": state.Calendar.CourseSessions,
-
+        "requestStatus": state.RequestStatus,
     };
 }
 

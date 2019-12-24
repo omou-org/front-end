@@ -9,6 +9,7 @@ export default function users(state = initialState.Users, {payload, type}) {
         case actions.FETCH_PARENT_SUCCESSFUL:
             return handleParentsFetch(state, payload);
         case actions.FETCH_INSTRUCTOR_SUCCESSFUL:
+            console.log("success instructor")
             return handleInstructorsFetch(state, payload);
         case actions.FETCH_ACCOUNT_NOTE_SUCCESSFUL:
             return handleAccountNotesFetch(state, payload);

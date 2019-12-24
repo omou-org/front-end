@@ -180,7 +180,7 @@ export const formatCourse = (formCourse, type) =>{
     endTime = new Date(endTime.setTime(endTime.getTime() + duration[formCourse["Duration"]]*60*60*1000));
     endTime = endTime.toTimeString().substring(0,5);
     startTime = startTime.toTimeString().substring(0,5);
-
+    // console.log(endTime, startTime)
     return {
         "subject": formCourse["Course Name"],
         "type": type,
@@ -200,9 +200,12 @@ export const formatCourse = (formCourse, type) =>{
 export const parseTime = (time) =>{
     let formattedTime;
     if(typeof time === "string"){
-        formattedTime = new Date(time);
+        let Hour = time.substr(17, 2);
+        let to12HourTime = (Hour % 12) || 12;
+        let ampm = Hour < 12 ? " am" : " pm";
+        formattedTime = to12HourTime + time.substr(19, 3) + ampm;
     } else {
         formattedTime = time;
     }
-    return formattedTime.toTimeString().substring(0,5);
+    return formattedTime;
 }
