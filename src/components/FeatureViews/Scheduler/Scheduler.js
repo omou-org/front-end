@@ -71,7 +71,7 @@ class Scheduler extends Component {
             config:{
                 params:{
                     time_frame:"day",
-                    view: this.state.calendarFilterValue,
+                    view_option: "tutoring",
                     timeShift: this.state.timeShift,
                 }
             }
@@ -182,7 +182,6 @@ class Scheduler extends Component {
             // Converts 24hr to 12 hr time
             function timeConverter(time) {
                 let Hour = time.substr(0, 2);
-                console.log(Hour)
                 let to12HourTime = (Hour % 12) || 12;
                 let ampm = Hour < 12 ? " am" : " pm";
                 time = to12HourTime + time.substr(2, 3) + ampm;
@@ -395,12 +394,26 @@ class Scheduler extends Component {
     handleFilterChange = (name) => (event) => {
         if (event.target.value) {
             const items = this.state.calendarEvents;
-            const newEvents = items.filter((item) => item.type === event.target.value);
+            // const newEvents = items.filter((item) => item.type === event.target.value);
+            // console.log(name, event.target.value);
+            const viewOptions = {
+                "T":"tutoring",
+                "C":"class",
+            };
+            this.props.calendarActions.fetchSessions({
+                config:{
+                    params:{
+                        time_frame: this.calendarViewToFilterVal[this.state.viewValue],
+                        view_option: viewOptions[event.target.value],
+                        time_shift: this.state.timeShift,
+                    }
+                }
+            });
             this.setState({
-                    "calendarEvents": newEvents,
+                    // "calendarEvents": newEvents,
                     [name]: event.target.value,
                 });
-            sessionStorage.setItem("calendarEvent", JSON.stringify(newEvents));
+            // sessionStorage.setItem("calendarEvent", JSON.stringify(newEvents));
         }
 
     }
