@@ -130,7 +130,7 @@ export const updateParent = (parents, id, parent) => ({
         "name": `${parent.user.first_name} ${parent.user.last_name}`,
         "email": parent.user.email,
         "student_ids": parent.student_list,
-        "updated_at": student.updated_at,
+        "updated_at": parent.updated_at,
         // below is not from database
         "role": "parent",
         "notes": (parents[id] && parents[id].notes) || {},
@@ -193,7 +193,7 @@ export const updateStudent = (students, id, student) => ({
         "name": `${student.user.first_name} ${student.user.last_name}`,
         "email": student.user.email,
         "parent_id": student.primary_parent,
-        "updated_at": parent.updated_at,
+        "updated_at": student.updated_at,
         // below is not from database
         "role": "student",
         "balance": 0,
