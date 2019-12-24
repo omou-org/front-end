@@ -197,17 +197,12 @@ export const formatCourse = (formCourse, type) =>{
     };
 }
 
-const parseTime = (time) =>{
+export const parseTime = (time) =>{
     let formattedTime;
     if(typeof time === "string"){
-        if(time.indexOf("AM") > -1 || time.indexOf("PM") > -1){
-            formattedTime = new Date();
-            formattedTime.setHours(Number(time.substring(0,time.indexOf(":"))));
-            formattedTime.setMinutes(Number(time.substring(time.indexOf(":")+1,time.indexOf(" "))));
-            formattedTime.setSeconds(0);
-        }
+        formattedTime = new Date(time);
     } else {
         formattedTime = time;
     }
-    return formattedTime.toTimeString().substring(0,5)
+    return formattedTime.toTimeString().substring(0,5);
 }

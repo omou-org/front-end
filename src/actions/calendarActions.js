@@ -17,7 +17,7 @@ export function filterEvent(event) {
     return { type: types.FILTER_EVENT, payload: event }
 }
 
-export const fetchSessions = (config) => wrapGet(
+export const fetchSessions = ({config, id}) => wrapGet(
     "/scheduler/session/",
     [
         types.GET_SESSIONS_STARTED,
@@ -26,5 +26,6 @@ export const fetchSessions = (config) => wrapGet(
     ],
     {
         config:config,
+        id: id,
     }
 )

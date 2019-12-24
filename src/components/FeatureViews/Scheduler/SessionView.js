@@ -10,6 +10,10 @@ import "./scheduler.scss";
 import {NavLink} from "react-router-dom";
 // import TimeSelector from "../../Form/TimeSelector";
 
+import * as calendarActions from "../../../actions/calendarActions";
+import * as courseActions from "../../../actions/apiActions";
+import * as userActions from "../../../actions/userActions";
+
 // Material UI Imports
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -23,6 +27,7 @@ import Paper from "@material-ui/core/Paper";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import Typography from "@material-ui/core/Typography";
+import {parseTime} from "../../../actions/apiActions";
 
 class SessionView extends Component {
     constructor(props) {
@@ -42,15 +47,44 @@ class SessionView extends Component {
         this.setState({"open": false});
     }
 
-    componentWillMount() {
-        this.setState(() => {
-            const sessionData = this.props.courseSessions[this.props.computedMatch.params.course_id][this.props.computedMatch.params.session_id];
-            const courseData = this.props.courses[this.props.computedMatch.params.course_id];
-            return {
-                sessionData,
-                courseData,
-            };
-        });
+    componentDidMount() {
+        this.props.calendarActions.fetchSessions({id:this.props.match.params.session_id});
+        this.props.courseActions.fetchCourses(this.props.match.params.course_id);
+        // this.props.userActions.fetchInstructors();
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log("Updated!", this.props)
+
+        if(this.props !== prevProps &&
+            this.props.courseSessions.length !==0 &&
+            Object.entries(this.props.courses).length!==0
+        ){
+            this.setState(()=>{
+                const sessionData = this.props.courseSessions.find((session)=>{
+                    return session.course === Number(this.props.match.params.course_id) &&
+                        session.id === Number(this.props.match.params.session_id);
+                });
+                sessionData["start"] = new Date(sessionData.start_datetime)
+                    .toISOString().slice(0, 19).replace(/-/g, "/")
+                    .replace("T", " ");
+                let sessionTime = sessionData.start.substring(sessionData.start.indexOf(" "));
+                sessionData["start"] = sessionData.start.replace(sessionTime, " " +parseTime(sessionData.start_datetime));
+
+                let courseData = this.props.courses[this.props.match.params.course_id];
+                if(!this.props.instructors[courseData.instructor_id]){
+                    this.props.userActions.fetchInstructors(courseData.instructor_id);
+                } else {
+                    courseData.instructor = this.props.instructors[courseData.instructor_id];
+                }
+
+                return {
+                    sessionData,
+                    courseData,
+                };
+            });
+
+        }
     }
 
     render() {
@@ -80,7 +114,7 @@ class SessionView extends Component {
                                 align="left"
                                 className="session-view-title"
                                 variant="h3">
-                                {this.state.courseData.title}
+                                {this.state.courseData && this.state.courseData.title}
                             </Typography>
                         </Grid>
                         <Grid
@@ -94,19 +128,19 @@ class SessionView extends Component {
                                 md={7}
                                 xs={6}>
                                 <Typography variant="h5"> Subject </Typography>
-                                <Typography varient="body1">{this.state.courseData.subject} </Typography>
+                                <Typography varient="body1">{ this.state.courseData && this.state.courseData.subject} </Typography>
                             </Grid>
                             <Grid
                                 item
                                 xs="auto">
                                 <Typography variant="h5"> Date & Time </Typography>
-                                <Typography variant="body1">{this.state.sessionData.start}</Typography>
+                                <Typography variant="body1">{this.state.courseData && this.state.sessionData.start}</Typography>
                             </Grid>
                             <Grid
                                 item
                                 xs={12}>
-                                <Typography variant="h5"> Teacher </Typography>
-                                <Typography variant="body1">{this.state.courseData.instructor_id}</Typography>
+                                <Typography variant="h5"> Instructor </Typography>
+                                <Typography variant="body1">{this.state.courseData && this.state.courseData.instructor.name}</Typography>
                             </Grid>
                             <Grid
                                 item
@@ -114,7 +148,7 @@ class SessionView extends Component {
                                 <Typography variant="h5"> Description </Typography>
                                 <Typography
                                     style={{"width": "75%"}}
-                                    variant="body1" > {this.state.courseData.description}
+                                    variant="body1" > {this.state.courseData && this.state.courseData.description}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -209,14 +243,16 @@ function mapStateToProps(state) {
         "courseCategories": state.Course.CourseCategories,
         "students": state.Users.StudentList,
         "instructors": state.Users.InstructorList,
-        "courseSessions": state.Course.CourseSessions,
+        "courseSessions": state.Calendar.CourseSessions,
 
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        "calenderActions": bindActionCreators(calenderActions, dispatch),
+        "calendarActions": bindActionCreators(calendarActions, dispatch),
+        "courseActions": bindActionCreators(courseActions, dispatch),
+        "userActions": bindActionCreators(userActions, dispatch),
     };
 }
 

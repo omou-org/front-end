@@ -1,5 +1,6 @@
 import initialState from './initialState';
 import * as actions from "../actions/actionTypes"
+import {REQUEST_ALL} from "../actions/apiActions";
 
 export default function Calendar(state = initialState.CalendarData, { payload, type, }) {
     let newState = state;
@@ -39,17 +40,30 @@ export default function Calendar(state = initialState.CalendarData, { payload, t
 
             return newState;
         case actions.GET_SESSIONS_SUCCESS:
+            // console.log("Succeeded", payload)
             return getSessions(state, payload);
-
+        case actions.GET_SESSIONS_FAILED:
+            // console.log("failed to get sessions", payload);
+            return newState;
         default:
             return newState;
     }
 }
 
-const getSessions = (state,{response}) => {
+const getSessions = (state,{id,response}) => {
     const {data} = response;
-    return {
-        ...state,
-        CourseSessions: data,
+    if(id !== REQUEST_ALL){
+        const updatedState = {...state};
+        if(updatedState["CourseSessions"]){
+            updatedState["CourseSessions"].push(data);
+        } else {
+            updatedState["CourseSessions"] = [data];
+        }
+        return updatedState;
+    } else {
+        return {
+            ...state,
+            CourseSessions: data,
+        }
     }
 }

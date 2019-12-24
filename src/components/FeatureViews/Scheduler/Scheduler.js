@@ -2,6 +2,7 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import PropTypes, {bool} from "prop-types";
 import React, {Component} from "react";
+import {withRouter} from "react-router-dom";
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -11,7 +12,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 
 import * as calendarActions from "../../../actions/calendarActions";
-import * as courseActions from "../../../actions/apiActions"
+import * as courseActions from "../../../actions/apiActions";
+import * as userActions from "../../../actions/userActions";
 
 // Material-Ui dependencies
 
@@ -35,6 +37,7 @@ import TodayIcon from "@material-ui/icons/Today";
 import tippy from "tippy.js";
 import "tippy.js/themes/google.css";
 import "./scheduler.scss";
+import {parseTime} from "../../../actions/apiActions";
 
 class Scheduler extends Component {
     constructor(props) {
@@ -68,11 +71,14 @@ class Scheduler extends Component {
 
     componentDidMount() {
         this.props.calendarActions.fetchSessions({
-            params:{
-                time_frame:"day"
+            config:{
+                params:{
+                    time_frame:"day"
+                }
             }
         });
         this.props.courseActions.fetchCourses();
+        this.props.userActions.fetchInstructors();
         this.setState({
             "currentDate": this.currentDate(),
         });
@@ -81,24 +87,28 @@ class Scheduler extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if(this.props !== prevProps && this.props.sessions !== "" &&
             !(Object.entries(this.props.courses).length === 0 &&
-                this.props.courses.constructor === Object)){
+                this.props.courses.constructor === Object) &&
+            !(Object.entries(this.props.instructors).length === 0 &&
+                this.props.instructors === Object) &&
+            Object.entries(this.props.instructors).length !== 0
+        ){
             const initialSessions = this.props.sessions.map((session)=>{
-                // console.log(this.props.courses, session.course, this.props.courses[session.course])
                 const newSession = {};
+                newSession["id"] = session.id;
+                newSession["courseID"] = session.course;
                 newSession["title"] =this.props.courses[session.course].title;
                 newSession["description"] = session.description ? session.description : "";
                 newSession["type"] = this.props.courses[session.course].type;
-                newSession["resourceId"] = this.props.courses[session.course].room_id;
+                newSession["resourceId"] = this.props.courses[session.course].room_id ? this.props.courses[session.course_id].room_id : 1;
                 newSession["start"] = new Date(session.start_datetime);
                 newSession["end"] = new Date(session.end_datetime);
-                console.log(newSession)
+                newSession["instructor"] = this.props.instructors[this.props.courses[session.course].instructor_id].name
                 return newSession;
             });
                 // .filter((session)=>{ return session.type === "C" });
-            console.log(initialSessions);
             this.setState({
                 calendarEvents:initialSessions,
-            })
+            });
         }
     }
 
@@ -172,8 +182,8 @@ class Scheduler extends Component {
             const Month = MonthConverter[startMonth];
 
             //Start times and end times variable
-            let startTime = start.slice(11);
-            let endTime = end.slice(11);
+            let startTime = parseTime(start);
+            let endTime = parseTime(end);
 
             // Converts 24hr to 12 hr time
             function timeConverter(time) {
@@ -191,16 +201,17 @@ class Scheduler extends Component {
             return finalTime;
 
         }
+
         new tippy(info.el, {
             "content":
                 `
                 <div class="toolTip">
                     <div class='title'><h3> ${info.event.title} </h3></div>
                     <div class="container">
-                        <div class='clock'><span class='clock_icon'>  ${formatDate(info.event.extendedProps.start_time, info.event.extendedProps.end_time)}</span></div>
-                        <div class='pin_icon'><span class=''>Room # ${info.event.extendedProps.room_id}</span></div>
+                        <div class='clock'><span class='clock_icon'>  ${formatDate(info.el.fcSeg.start, info.el.fcSeg.end)}</span></div>
+                        <div class='pin_icon'><span class=''>Room # ${info.el.fcSeg.room_id}</span></div>
                         <div class='teacher_icon'><span class=''>${info.event.extendedProps.instructor ? info.event.extendedProps.instructor : "No teacher Yet"}</span></div>
-                        <div class='discription_icon'><span class='description-text'>${truncate(info.event.extendedProps.description)}</span></div>
+                        <div class='discription_icon'><span class='description-text'>${info.el.fcSeg.description && truncate(info.el.fcSeg.description)}</span></div>
                     </div>
                 </div>
             `
@@ -324,7 +335,7 @@ class Scheduler extends Component {
                 session["title"] = session.title;
                 session["description"] = session.description ? session.description : "";
                 session["type"] = this.props.courses[session.course_id].type;
-                session["resourceId"] = this.props.courses[session.course_id].room_id;
+                session["resourceId"] = this.props.courses[session.course_id].room_id ?  this.props.courses[session.course_id].room_id  : 1;
 
                 return session;
 
@@ -398,6 +409,15 @@ class Scheduler extends Component {
             "id": inst.user_id,
             "title": inst.name,
         }));
+
+    // go to session view
+    goToSessionView = () => (e) =>{
+        // e.preventDefault();
+        console.log(e.event.id, e.event.extendedProps);
+        const sessionID = e.event.id;
+        const courseID = e.event.extendedProps.courseID;
+        this.props.history.push(`/scheduler/view-session/${courseID}/${sessionID}`);
+    }
 
     render() {
         return (
@@ -545,6 +565,7 @@ class Scheduler extends Component {
                                 }}
                                 timeZone={"local"}
                                 eventMouseEnter={(this.state.resourceIcon) ? null : this.handleToolTip}
+                                eventClick={this.goToSessionView()}
                                 eventLimit={4}
                                 nowIndicator={true}
                                 resourceOrder={"title"}
@@ -575,10 +596,11 @@ function mapDispatchToProps(dispatch) {
     return {
         "calendarActions": bindActionCreators(calendarActions, dispatch),
         "courseActions": bindActionCreators(courseActions, dispatch),
+        "userActions": bindActionCreators(userActions, dispatch),
     };
 }
 
-export default connect(
+export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps,
-)(Scheduler);
+)(Scheduler));
