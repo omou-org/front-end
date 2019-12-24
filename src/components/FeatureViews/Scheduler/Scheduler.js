@@ -86,10 +86,13 @@ class Scheduler extends Component {
             Object.entries(this.props.instructors).length !== 0
         ){
             const initialSessions = this.props.sessions.map((session)=>{
-                let utcSeconds = Date.parse(session.start_datetime);
-                var date = new Date(0);
-                date.setUTCSeconds(utcSeconds);
-                console.log(date);
+                let startUTCString = new Date(session.start_datetime).toUTCString();
+                let endUTCString = new Date(session.end_datetime).toUTCString();
+                let startTime = startUTCString.substr(17,8);
+                let endTime = endUTCString.substr(17,8);
+                let date = session.start_datetime.substr(0,10);
+                startTime = new Date(date + "T" + startTime);
+                endTime = new Date(date+"T"+endTime);
                 return {
                     id: session.id,
                     courseID: session.course,
@@ -97,8 +100,8 @@ class Scheduler extends Component {
                     description: session.description ? session.description : "",
                     type: this.props.courses[session.course].type,
                     resourceId: this.props.courses[session.course].room_id ? this.props.courses[session.course_id].room_id : 1,
-                    start: session.start_datetime,
-                    end: session.end_datetime,
+                    start: startTime,
+                    end: endTime,
                     instructor: this.props.instructors[this.props.courses[session.course].instructor_id].name,
                     isConfirmed: session.is_confirmed,
                 };
@@ -168,15 +171,15 @@ class Scheduler extends Component {
             const Month = MonthConverter[startMonth];
 
             //Start times and end times variable
-
-            let startTime = new Date(start).toUTCString();
-            let endTime = new Date(end).toUTCString();
+            let startTime = new Date(start).toTimeString();
+            let endTime = new Date(end).toTimeString();
             // Converts 24hr to 12 hr time
             function timeConverter(time) {
-                let Hour = time.substr(17, 2);
+                let Hour = time.substr(0, 2);
+                console.log(Hour)
                 let to12HourTime = (Hour % 12) || 12;
-                let ampm = Hour < 12 ? "a" : "p";
-                time = to12HourTime + time.substr(19, 3) + ampm;
+                let ampm = Hour < 12 ? " am" : " pm";
+                time = to12HourTime + time.substr(2, 3) + ampm;
                 return time;
 
             }

@@ -180,7 +180,7 @@ export const formatCourse = (formCourse, type) =>{
     endTime = new Date(endTime.setTime(endTime.getTime() + duration[formCourse["Duration"]]*60*60*1000));
     endTime = endTime.toTimeString().substring(0,5);
     startTime = startTime.toTimeString().substring(0,5);
-    // console.log(endTime, startTime)
+
     return {
         "subject": formCourse["Course Name"],
         "type": type,
