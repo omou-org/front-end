@@ -283,6 +283,38 @@ function RegistrationCart(props) {
         let isSmallGroup = selectedCourseID.indexOf("T") === -1 ? props.courseList[selectedCourseID].capacity < 5: false;
         let {form, course_id} = selectedRegistration;
         let formType = form.form;
+
+        let selectedCoursesHaveSession = () =>{
+            let haveSession = true;
+            Object.values(selectedCourses).forEach((student) => {
+                Object.values(student).forEach((course)=>{
+                    if(course.checked && course.sessions < 1 ){
+                        haveSession = false;
+                    }
+                })
+            });
+            return haveSession;
+        };
+
+        // This determines if there's been an update to the number of sessions to checkout for any course
+        let selectedCourseSameAsRedux = () =>{
+            // go to each selectedCourses
+            // get selectedCourse from registered_courses
+            // compare if both sessions are equal
+            let sameSessions = true;
+            Object.entries(selectedCourses).forEach(([studentID, studentVal])=>{
+                Object.entries(studentVal).forEach(([courseID, courseVal])=>{
+                    let reduxCourse = props.registration.registered_courses[studentID].find(({course_id})=>{
+                        return course_id === Number(courseID);
+                    });
+                    if(reduxCourse.sessions !== courseVal.sessions){
+                        sameSessions = false;
+                    }
+                });
+            });
+            return sameSessions;
+        };
+
         return <Grid container>
             {
                 isOneCourse ? <Grid item xs={12}>
@@ -333,15 +365,20 @@ function RegistrationCart(props) {
                     <Grid item xs={9}>
                     <Grid container>
                         <Grid item xs={6}/>
+                        <Grid item xs={2}/>
                         <Grid item xs={4}>
-                            <Button className={"button"} onClick={updateQuantity()}>
-                                UPDATE SESSIONS
-                            </Button>
-                        </Grid>
-                        <Grid item xs={2}>
-                            <Button className={"button"} onClick={handlePay()}>
-                                PAY
-                            </Button>
+                            {
+                                !selectedCourseSameAsRedux() &&
+                                <Button className={"button"} onClick={updateQuantity()}>
+                                    UPDATE SESSIONS
+                                </Button>
+                            }
+                            {
+                                selectedCoursesHaveSession() && selectedCourseSameAsRedux() &&
+                                <Button className={"button"} onClick={handlePay()}>
+                                    PAY
+                                </Button>
+                            }
                         </Grid>
                     </Grid>
                 </Grid>
