@@ -55,8 +55,13 @@ class Scheduler extends Component {
             "calendarIcon": true,
             "resourceIcon": false,
             "filterTypeCalendar": "",
+            "timeShift":0,
         };
-
+        this.calendarViewToFilterVal = {
+            "timeGridDay":"day",
+            "timeGridWeek":"week",
+            "dayGridMonth":"month",
+        }
     }
 
     calendarComponentRef = React.createRef();
@@ -67,6 +72,7 @@ class Scheduler extends Component {
                 params:{
                     time_frame:"day",
                     view: this.state.calendarFilterValue,
+                    timeShift: this.state.timeShift,
                 }
             }
         });
@@ -229,19 +235,7 @@ class Scheduler extends Component {
         let calendarApi = this.calendarComponentRef.current.getApi();
         calendarApi.changeView(value);
         let filter;
-        switch(value){
-            case "timeGridDay":
-                filter = "day";
-                break;
-            case "timeGridWeek":
-                filter = "week";
-                break;
-            case "dayGridMonth":
-                filter = "month";
-                break;
-            default:
-                filter = "day";
-        }
+
         let date = this.currentDate();
         this.setState(() => {
             this.props.calendarActions.fetchSessions({
@@ -261,11 +255,22 @@ class Scheduler extends Component {
 
     goToNext = () => {
         let calendarApi = this.calendarComponentRef.current.getApi();
-
         calendarApi.next();
         let date = this.currentDate();
-        this.setState({
-            "currentDate": date,
+        this.props.calendarActions.fetchSessions({
+            config:{
+                params:{
+                    time_frame: this.calendarViewToFilterVal[this.state.viewValue],
+                    view: this.state.calendarFilterValue,
+                    time_shift: this.state.timeShift + 1,
+                }
+            }
+        });
+        this.setState( (state) =>{
+            return {
+                "currentDate": date,
+                "timeShift": state.timeShift + 1,
+            }
         });
     }
 
@@ -273,8 +278,20 @@ class Scheduler extends Component {
         let calendarApi = this.calendarComponentRef.current.getApi();
         calendarApi.prev();
         let date = this.currentDate();
-        this.setState({
-            "currentDate": date,
+        this.props.calendarActions.fetchSessions({
+            config:{
+                params:{
+                    time_frame: this.calendarViewToFilterVal[this.state.viewValue],
+                    view: this.state.calendarFilterValue,
+                    time_shift: this.state.timeShift - 1,
+                }
+            }
+        });
+        this.setState( (state) =>{
+            return {
+                "currentDate": date,
+                "timeShift": state.timeShift - 1,
+            }
         });
     }
 
@@ -282,8 +299,18 @@ class Scheduler extends Component {
         let calendarApi = this.calendarComponentRef.current.getApi();
         calendarApi.today();
         const date = this.currentDate();
+        this.props.calendarActions.fetchSessions({
+            config:{
+                params:{
+                    time_frame: this.calendarViewToFilterVal[this.state.viewValue],
+                    view: this.state.calendarFilterValue,
+                    time_shift: 0,
+                }
+            }
+        });
         this.setState({
             "currentDate": date,
+            "timeShift":0,
         });
     }
 
