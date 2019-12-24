@@ -123,8 +123,7 @@ const Navigation = (props) => {
     );
 
 
-    const handleDrawerToggle = useCallback((event) => {
-        event.preventDefault();
+    const handleDrawerToggle = useCallback(() => {
         setMobileOpen((open) => !open);
     }, []);
 
@@ -136,7 +135,7 @@ const Navigation = (props) => {
                     pathname !== "/login" && (
                         <nav className="OmouDrawer">
                             {
-                                token ? <div>
+                                token ? <>
                                     <Hidden
                                         implementation="css"
                                         smUp>
@@ -156,9 +155,8 @@ const Navigation = (props) => {
                                             {drawer}
                                         </Drawer>
                                     </Hidden>
-                                </div> : ""
+                                </> : ""
                             }
-
                         </nav>
                     )
                 }
