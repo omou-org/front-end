@@ -190,6 +190,11 @@
 .accounts-table-row>* {
   padding: 15px;
   cursor: pointer;
+
+  .table-header {
+    color: white;
+    font-weight: 500;
+  }
 }
 
 .accounts-table-heading,

@@ -41,14 +41,17 @@ const handleCoursePost = (state, payload) => {
 };
 
 const handleCoursesFetch = (state, {id, response}) => {
-    const {data} = response;
     let {NewCourseList} = state;
-    if (id !== REQUEST_ALL) {
-        NewCourseList = updateCourse(NewCourseList, data.id, data);
-    } else {
-        data.forEach((course) => {
+    if (id === REQUEST_ALL) {
+        response.data.forEach((course) => {
             NewCourseList = updateCourse(NewCourseList, course.id, course);
         });
+    } else if (Array.isArray(id)) {
+        response.forEach(({data}) => {
+            NewCourseList = updateCourse(NewCourseList, data.id, data);
+        });
+    } else {
+        NewCourseList = updateCourse(NewCourseList, response.data.id, response.data);
     }
     return {
         ...state,

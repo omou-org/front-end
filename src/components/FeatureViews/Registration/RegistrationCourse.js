@@ -78,7 +78,6 @@ const RegistrationCourse = () => {
     }, [api, courseID]);
 
     const courseStatus = hooks.useCourse(courseID);
-    hooks.useStudent(course && course.roster);
     hooks.useInstructor(course && course.instructor_id);
 
     const handleTabChange = useCallback((_, newTab) => {
