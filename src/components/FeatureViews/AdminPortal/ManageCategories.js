@@ -38,7 +38,6 @@ function ManageCategories(props) {
         [dispatch]
     );
 
-    const [anchorEl, setAnchorEl] = useState(null);
     const [categoryName , setCategoryName] = useState("");
     const [categoryDescription, setCategoryDescription] = useState("");
     const [categoryList, setCategoryList] = useState([]);

@@ -55,17 +55,16 @@ function AccountsCards(props) {
 
     });
 
-    const fullName = `${props.user.user.first_name} ${props.user.user.last_name}`;
+    const fullName = props.user.user ? `${props.user.user.first_name} ${props.user.user.last_name}`: "a";
 
-    return (
-            <Card key={props.user.id}
-                style={{ cursor: "pointer" }}
+    return (<>{
+        props.user.user && <Card key={props.user.id}
+                  style={{ cursor: "pointer", padding: "10px" }}
                   className={"AccountsCards"}
-                  style={{ padding: "10px" }}
-                onClick={(event) => {
-                    event.preventDefault();
-                     goToRoute(`/accounts/${props.user.account_type.toLowerCase()}/${props.user.user.id}`);
-                }}>
+                  onClick={(event) => {
+                      event.preventDefault();
+                      goToRoute(`/accounts/${props.user.account_type.toLowerCase()}/${props.user.user.id}`);
+                  }}>
                 <Grid container>
                     <Hidden mdDown>
                         <Grid item xs={4} md={3}>
@@ -93,7 +92,7 @@ function AccountsCards(props) {
 
                             <Grid item xs={12} style={{ marginTop: 10 }}>
                                 <Grid container
-                                    justify={'flex-start'}
+                                      justify={'flex-start'}
                                 >
                                     <Grid item xs={2}>
                                         <IDIcon
@@ -104,8 +103,8 @@ function AccountsCards(props) {
                                         # {props.user.user.id}
                                     </Grid>
                                 </Grid>
-                              {props.user.account_type!=="STUDENT"&&  <Grid container
-                                    justify={'flex-start'}
+                                {props.user.account_type!=="STUDENT"&&  <Grid container
+                                                                              justify={'flex-start'}
                                 >
                                     <Grid item xs={2}>
                                         <EmailIcon style={{ fontSize: 14 }} />
@@ -121,6 +120,9 @@ function AccountsCards(props) {
                     </Grid>
                 </Grid>
             </Card>
+        }
+
+        </>
     )
 }
 

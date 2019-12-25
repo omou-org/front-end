@@ -270,6 +270,7 @@ class Form extends Component {
     }
 
     componentDidMount() {
+        this.props.adminActions.fetchCategories();
         const {id, edit, "type": formType} = this.props.match.params;
         if (!this.props.isAdmin && (formType === "instructor" || formType === "course_details")) {
             this.props.history.replace("/PageNotFound");

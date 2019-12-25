@@ -37,27 +37,29 @@ class SelectParentDialog extends React.Component {
             let idStartIndex = this.state.inputParent.value.indexOf("-")+1;
             let parentID = Number(this.state.inputParent.value.substring(idStartIndex));
             let selectedParent = this.props.search.accounts.find((account)=>{ return parentID === account.user.id});
-            selectedParent = {
-                user: {
-                    id: selectedParent.user.id,
-                    email: selectedParent.user.email,
-                    first_name: selectedParent.user.first_name,
-                    last_name: selectedParent.user.last_name,
-                    name: selectedParent.user.first_name + " " + selectedParent.user.last_name,
-                },
-                user_uuid: selectedParent.user.id,
-                gender: selectedParent.gender,
-                birth_date: selectedParent.birth_day,
-                student_list: selectedParent.student_list,
-                account_type: "PARENT",
-            };
+            if(selectedParent){
+                selectedParent = {
+                    user: {
+                        id: selectedParent.user.id,
+                        email: selectedParent.user.email,
+                        first_name: selectedParent.user.first_name,
+                        last_name: selectedParent.user.last_name,
+                        name: selectedParent.user.first_name + " " + selectedParent.user.last_name,
+                    },
+                    user_uuid: selectedParent.user.id,
+                    gender: selectedParent.gender,
+                    birth_date: selectedParent.birth_day,
+                    student_list: selectedParent.student_list,
+                    account_type: "PARENT",
+                };
 
-            this.props.registrationActions.setRegisteringParent(selectedParent);
-            // Add students to redux once the registered parent has been set
-            selectedParent.student_list.forEach((studentID)=>{
-               this.props.userActions.fetchStudents(studentID);
-            });
-            sessionStorage.setItem("CurrentParent", JSON.stringify(selectedParent));
+                this.props.registrationActions.setRegisteringParent(selectedParent);
+                // Add students to redux once the registered parent has been set
+                selectedParent.student_list.forEach((studentID)=>{
+                    this.props.userActions.fetchStudents(studentID);
+                });
+                sessionStorage.setItem("CurrentParent", JSON.stringify(selectedParent));
+            }
         }
         // close the dialogue
         this.props.onClose();
@@ -180,7 +182,8 @@ class SelectParentDialog extends React.Component {
                     <h3>Currently helping...</h3>
                 </DialogTitle>
                 {
-                    this.props.registration.CurrentParent ?
+                    this.props.registration.CurrentParent &&
+                    this.props.registration.CurrentParent !== "none" ?
                         this.ActiveParentDialog() :
                         this.SetParentDialog()
                 }
