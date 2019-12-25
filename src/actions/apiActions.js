@@ -4,6 +4,7 @@ import axios from "axios";
 import {POST_COURSE_SUCCESSFUL} from "./actionTypes";
 import {typeToPostActions} from "./rootActions";
 import {fetchCategories} from "./adminActions";
+import {academicLevelParse} from "../reducers/registrationReducer";
 
 export const instance = axios.create({
     "baseURL": "http://localhost:8000/" //process.env.REACT_APP_DOMAIN,
@@ -193,7 +194,7 @@ export const formatCourse = (formCourse, type) =>{
         "end_time": endTime,
         "max_capacity": formCourse["Capacity"],
         "category": formCourse["Category"].value,
-        // "course_id": "29"
+        "academic_level": academicLevelParse[formCourse["Grade Level"]],
     };
 }
 

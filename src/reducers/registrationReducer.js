@@ -46,6 +46,8 @@ export default function registration(state = initialState.RegistrationForms, {pa
             return onSubmit(state);
         case actions.RESET_SUBMIT_STATUS:
             return onSubmit(state);
+        case actions.POST_PRICE_RULE_SUCCESS:
+            return successSubmit(state);
         case actions.SET_PARENT:
             newState["CurrentParent"] = payload;
             return newState;
@@ -237,10 +239,27 @@ const addClassRegistration = (prevState, form) => {
     return {...prevState};
 };
 
+export const academicLevelParse = {
+    "Elementary School":"elementary_lvl",
+    "Middle School":"middle_lvl",
+    "High School":"high_lvl",
+    "College":"college_lvl",
+    "elementary_lvl": "Elementary School",
+    "middle_lvl": "Middle School",
+    "high_lvl":"High School",
+    "college_lvl":"College"
+};
+export const courseTypeParse = {
+    "Tutoring":"tutoring",
+    "Small Group":"small_group",
+    "tutoring": "Tutoring",
+    "small_group": "Small Group"
+}
+
 const addTutoringRegistration = (prevState, form) => {
     let studentID = form["Student"].Student.value;
     let studentName = form["Student"].Student.label;
-    let subject = form["Tutor Selection"]["Course / Subject"];
+    let subject = form["Tutor Selection"]["Course Name"];
     let instructorID = form["Tutor Selection"].Instructor.value;
     let instructorName = form["Tutor Selection"].Instructor.label;
     let courseName = instructorName.substring(0,instructorName.indexOf(" ")) + " x " +
@@ -265,7 +284,10 @@ const addTutoringRegistration = (prevState, form) => {
             }
         }
     };
+
     let numSessions = form["Schedule"]["Number of Sessions"];
+    let academicLevel = academicLevelParse[form["Student"]["Grade Level"]];
+    let category = form["Tutor Selection"]["Category"].value;
     let endTime = new Date(startTime);
     endTime.setHours(endTime.getHours()+duration());
     let endDate = new Date(startDate);
@@ -293,6 +315,8 @@ const addTutoringRegistration = (prevState, form) => {
         course_id: "T" + (isStudentCurrentlyRegistered ? (prevState.registered_courses[studentID].length + 1).toString() : "0"),
         enrollment_note: studentInfoNote,
         sessions: numSessions,
+        academic_level: academicLevel,
+        category: category,
         display:{
             student_name: studentName,
             course_name: courseName,

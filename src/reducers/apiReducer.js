@@ -155,6 +155,12 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
         case actions.POST_CATEGORY_FAILED:
             return updateCategoryPost(state,payload.id, status);
 
+        case actions.GET_PRICE_RULE_STARTED:
+            return updatePriceRuleStatus(state, payload.id, api.REQUEST_STARTED, actions.GET);
+        case actions.GET_PRICE_RULE_SUCCESS:
+            return updatePriceRuleStatus(state, payload.id, status, actions.GET);
+        case actions.POST_PRICE_RULE_FAILED:
+            return updatePriceRuleStatus(state, payload.id, status, actions.GET);
         default:
             return state;
     }
@@ -282,3 +288,9 @@ const updateEnrollmentNotePatch = (state, ownerID, status) => {
     newState.enrollmentNote[actions.PATCH][ownerID] = status;
     return newState;
 };
+
+const updatePriceRuleStatus = (state, id, status, requestType) => {
+    let newState = {...state};
+    newState.priceRule[requestType][id] = status;
+    return newState;
+}

@@ -27,6 +27,7 @@ import Loading from "../../Loading";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
 import TextField from "@material-ui/core/TextField";
 import Prompt from "react-router-dom/es/Prompt";
+import PriceQuoteForm from "../../Form/PriceQuoteForm";
 
 const useStyles = makeStyles({
     setParent: {
@@ -305,7 +306,11 @@ function RegistrationCart(props) {
             Object.entries(selectedCourses).forEach(([studentID, studentVal])=>{
                 Object.entries(studentVal).forEach(([courseID, courseVal])=>{
                     let reduxCourse = props.registration.registered_courses[studentID].find(({course_id})=>{
-                        return course_id === Number(courseID);
+                        if(courseID.indexOf("T") > -1) {
+                            return course_id === courseID;
+                        } else {
+                            return course_id === Number(courseID);
+                        }
                     });
                     if(reduxCourse.sessions !== courseVal.sessions){
                         sameSessions = false;
@@ -315,12 +320,30 @@ function RegistrationCart(props) {
             return sameSessions;
         };
 
-        return <Grid container>
+        // generate student list
+        let registeredStudents = () => {
+            return Object.keys(selectedCourses);
+        };
+        // generate registered course object split by class and tutoring
+        let registeredCourses = () => {
+            let courses = {};
+            Object.entries(selectedCourses).forEach(([studentID, studentVal])=>{
+                Object.entries(studentVal).forEach(([courseID, courseVal])=>{
+                    if(courseID.indexOf("T") > -1){
+                        props.registration.registered_courses[studentID].find((course)=>{
+
+                        })
+                    }
+                });
+            });
+        }
+
+        return <Grid container spacing={8}>
             {
                 isOneCourse ? <Grid item xs={12}>
-                    <Grid container>
+                    <Grid container justify={"flex-end"}>
                         <Grid item xs={6}/>
-                        <Grid item xs={3}>
+                        <Grid item>
                             {
                                 isSmallGroup ?
                                     <Button
@@ -330,7 +353,7 @@ function RegistrationCart(props) {
                                         >Edit Group Course</Button> : ""
                             }
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item>
                             <Button className={"button"}
                                     component={NavLinkNoDup}
                                     to={`/registration/form/${formType}/${selectedStudentID}+${course_id}/edit`}
@@ -342,6 +365,7 @@ function RegistrationCart(props) {
                 </Grid> : ""
             }
             <Grid item xs={12}>
+                {/*<PriceQuoteForm students={registeredStudents()} courses={} tutoring={}/>*/}
                 <Grid container>
                     <Grid item xs={3}>
                         <FormControl>
@@ -363,22 +387,28 @@ function RegistrationCart(props) {
                         </FormControl>
                     </Grid>
                     <Grid item xs={9}>
-                    <Grid container>
-                        <Grid item xs={6}/>
-                        <Grid item xs={2}/>
-                        <Grid item xs={4}>
-                            {
-                                !selectedCourseSameAsRedux() &&
-                                <Button className={"button"} onClick={updateQuantity()}>
-                                    UPDATE SESSIONS
-                                </Button>
-                            }
-                            {
-                                selectedCoursesHaveSession() && selectedCourseSameAsRedux() &&
-                                <Button className={"button"} onClick={handlePay()}>
+                    <Grid container spacing={8}>
+                        <Grid item xs={12}>
+                            <Grid container justify={"flex-end"}>
+                                {
+                                    !selectedCourseSameAsRedux() &&
+                                    <Button className={"button"} onClick={updateQuantity()}>
+                                        UPDATE SESSIONS
+                                    </Button>
+                                }
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={12}>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Grid container justify={"flex-end"}>
+                                <Button
+                                    disabled={!(selectedCoursesHaveSession() && selectedCourseSameAsRedux())}
+                                    className={"button"}
+                                    onClick={handlePay()}>
                                     PAY
                                 </Button>
-                            }
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>

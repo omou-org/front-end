@@ -53,7 +53,8 @@ const StyledMenu = withStyles({
 ));
 
 function AdminActionCenter(props) {
-    const [anchorEl, setAnchorEl] = useState(null);
+    const [courseAnchor, setCourseAnchor] = useState(null);
+    const [tuitionAnchor, setTuitionAnchor] = useState(null);
     const dispatch = useDispatch();
     let {location} = props;
     const api = useMemo(
@@ -69,20 +70,38 @@ function AdminActionCenter(props) {
         api.initializeRegistration();
     },[]);
 
-    function handleClick(event) {
-        setAnchorEl(event.currentTarget);
+    const handleClick = (menu) => (event) => {
+        switch(menu){
+            case "course":{
+                setCourseAnchor(event.currentTarget);
+                break;
+            }
+            case "tuition":{
+                setTuitionAnchor(event.currentTarget);
+            }
+        }
+
     }
 
-    function handleClose() {
-        setAnchorEl(null);
+    const handleClose = (menu) => () => {
+        switch(menu){
+            case "course":{
+                setCourseAnchor(null);
+                break;
+            }
+            case "tuition":{
+                setTuitionAnchor(null);
+            }
+        }
     }
 
     useEffect(()=>{
-        setAnchorEl(null)
+        setCourseAnchor(null);
+        setTuitionAnchor(null);
     },[location]);
 
     return (<Grid container>
-                <Grid item xs={2}>
+                <Grid item xs={3}>
                     <Button component={NavLinkNoDup} to={"/registration/form/instructor"}
                             color={"primary"}
                             className={"button"}>Add Instructor</Button>
@@ -94,24 +113,30 @@ function AdminActionCenter(props) {
                         className="button"
                         aria-controls="simple-menu"
                         aria-haspopup="true"
-                        onClick={handleClick}>
-                        Manage Courses
+                        onClick={handleClick("course")}>
+                        Manage Course
+                    </Button>
+                </Grid>
+                <Grid item xs={3}>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        className="button"
+                        aria-controls="simple-menu"
+                        aria-haspopup="true"
+                        onClick={handleClick("tuition")}>
+                        Manage Tuition
                     </Button>
                 </Grid>
                 <StyledMenu
-                    anchorEl={anchorEl}
+                    anchorEl={courseAnchor}
                     keepMounted
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}>
+                    open={Boolean(courseAnchor)}
+                    onClose={handleClose("course")}>
                     <MenuItem
                         component={NavLink}
                         to={`/registration/form/course_details`}>
                         <ListItemText primary="NEW COURSE" />
-                    </MenuItem>
-                    <MenuItem
-                        component={NavLink}
-                        to={`/adminportal/manage-tuition`}>
-                        <ListItemText primary="TUITION" />
                     </MenuItem>
                     <MenuItem
                         component={NavLink}
@@ -120,7 +145,22 @@ function AdminActionCenter(props) {
                         <ListItemText primary="COURSE CATEGORIES" />
                     </MenuItem>
                 </StyledMenu>
-
+                <StyledMenu
+                    anchorEl={tuitionAnchor}
+                    keepMounted
+                    open={Boolean(tuitionAnchor)}
+                    onClose={handleClose("tuition")}>
+                    <MenuItem
+                        component={NavLink}
+                        to={`/adminportal/form/pricing`}>
+                        <ListItemText primary="SET TUITION RULES" />
+                    </MenuItem>
+                    <MenuItem
+                        component={NavLink}
+                        to={`/adminportal/tuition-rules`}>
+                        <ListItemText primary="TUITION RULES" />
+                    </MenuItem>
+                </StyledMenu>
         </Grid>);
 }
 
