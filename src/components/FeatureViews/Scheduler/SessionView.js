@@ -1,13 +1,13 @@
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import * as calenderActions from "../../../actions/calendarActions";
 import PropTypes from "prop-types";
-import React, {Component} from "react";
+import React, { Component } from "react";
 import BackButton from "../../BackButton.js";
 import SessionActions from "./SessionActions";
 import "../../../theme/theme.scss";
 import "./scheduler.scss";
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 // import TimeSelector from "../../Form/TimeSelector";
 
 import * as calendarActions from "../../../actions/calendarActions";
@@ -27,8 +27,10 @@ import Paper from "@material-ui/core/Paper";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import Typography from "@material-ui/core/Typography";
-import {parseTime} from "../../../actions/apiActions";
-import {GET} from "../../../actions/actionTypes";
+import { parseTime } from "../../../actions/apiActions";
+import { GET } from "../../../actions/actionTypes";
+import ClassSessionView from "./ClassSessionView";
+import TutoringSessionView from "./TutoringSessionView";
 
 class SessionView extends Component {
     constructor(props) {
@@ -41,24 +43,24 @@ class SessionView extends Component {
     }
 
     handleOpen = () => {
-        this.setState({"open": true});
+        this.setState({ "open": true });
     }
 
     handleClose = () => {
-        this.setState({"open": false});
+        this.setState({ "open": false });
     }
 
     componentDidMount() {
-        this.props.calendarActions.fetchSessions({id:this.props.match.params.session_id});
+        this.props.calendarActions.fetchSessions({ id: this.props.match.params.session_id });
         this.props.courseActions.fetchCourses(this.props.match.params.course_id);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(this.props !== prevProps &&
-            this.props.courseSessions.length !==0 &&
-            Object.entries(this.props.courses).length!==0){
-            this.setState(()=>{
-                const sessionData = this.props.courseSessions.find((session)=>{
+        if (this.props !== prevProps &&
+            this.props.courseSessions.length !== 0 &&
+            Object.entries(this.props.courses).length !== 0) {
+            this.setState(() => {
+                const sessionData = this.props.courseSessions.find((session) => {
                     return session.course === Number(this.props.match.params.course_id) &&
                         session.id === Number(this.props.match.params.session_id);
                 });
@@ -66,13 +68,12 @@ class SessionView extends Component {
                     .toISOString().slice(0, 19).replace(/-/g, "/")
                     .replace("T", " ");
                 let sessionTime = sessionData.start.substring(sessionData.start.indexOf(" "));
-                sessionData["start"] = sessionData.start.replace(sessionTime, " | " +parseTime(new Date(sessionData.start_datetime).toUTCString()));
+                sessionData["start"] = sessionData.start.replace(sessionTime, " | " + parseTime(new Date(sessionData.start_datetime).toUTCString()));
 
                 let courseData = this.props.courses[this.props.match.params.course_id];
-                if(courseData && !this.props.requestStatus["instructor"][GET][courseData.instructor_id]){
+                if (courseData && !this.props.requestStatus["instructor"][GET][courseData.instructor_id]) {
                     this.props.userActions.fetchInstructors(courseData.instructor_id);
                 }
-
                 return {
                     sessionData,
                     courseData,
@@ -83,7 +84,7 @@ class SessionView extends Component {
     }
 
     render() {
-        let instructor = this.state.courseData && this.props.instructors[this.state.courseData.instructor_id] ? this.props.instructors[this.state.courseData.instructor_id] : {name:"N/A"};
+        let instructor = this.state.courseData && this.props.instructors[this.state.courseData.instructor_id] ? this.props.instructors[this.state.courseData.instructor_id] : { name: "N/A" };
 
         return (
             <Grid
@@ -125,7 +126,7 @@ class SessionView extends Component {
                                 md={7}
                                 xs={6}>
                                 <Typography variant="h5"> Subject </Typography>
-                                <Typography varient="body1">{ this.state.courseData && this.state.courseData.subject} </Typography>
+                                <Typography varient="body1">{this.state.courseData && this.state.courseData.subject} </Typography>
                             </Grid>
                             <Grid
                                 item
@@ -144,7 +145,7 @@ class SessionView extends Component {
                                 xs={10}>
                                 <Typography variant="h5"> Description </Typography>
                                 <Typography
-                                    style={{"width": "75%"}}
+                                    style={{ "width": "75%" }}
                                     variant="body1" > {this.state.courseData && this.state.courseData.description}
                                 </Typography>
                             </Grid>
@@ -185,6 +186,7 @@ class SessionView extends Component {
                         </Grid>
                     </Grid>
                 </Paper>
+                {this.state.courseData && this.state.courseData.type === "C" ? <ClassSessionView courseData={this.state.courseData} /> : <TutoringSessionView />}
                 <Dialog
                     aria-describedby="alert-dialog-description"
                     aria-labelledby="alert-dialog-title"
