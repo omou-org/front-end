@@ -300,23 +300,25 @@ function RegistrationCart(props) {
             };
             Object.entries(selectedCourses).forEach(([studentID, studentVal])=>{
                 Object.entries(studentVal).forEach(([courseID, courseVal])=>{
-                    if(courseID.indexOf("T") > -1){
-                        //{category, academic_level, sessions, form}
-                        let tutoringCourse = props.registration.registered_courses[studentID].find((course)=>{
-                            return course.course_id === courseID
-                        });
-                        let {category, academic_level, form} = tutoringCourse;
-                        courses["tutoring"].push({
-                            category_id: category,
-                            academic_level: academic_level,
-                            sessions: courseVal.sessions,
-                            duration: durationParser[form["Schedule"]["Duration"]],
-                        });
-                    } else {
-                        courses["courses"].push({
-                            course_id: courseID,
-                            sessions: courseVal.sessions,
-                        });
+                    if(courseVal.checked){
+                        if(courseID.indexOf("T") > -1){
+                            //{category, academic_level, sessions, form}
+                            let tutoringCourse = props.registration.registered_courses[studentID].find((course)=>{
+                                return course.course_id === courseID
+                            });
+                            let {category, academic_level, form} = tutoringCourse;
+                            courses["tutoring"].push({
+                                category_id: category,
+                                academic_level: academic_level,
+                                sessions: courseVal.sessions,
+                                duration: durationParser[form["Schedule"]["Duration"]],
+                            });
+                        } else {
+                            courses["courses"].push({
+                                course_id: courseID,
+                                sessions: courseVal.sessions,
+                            });
+                        }
                     }
                 });
             });

@@ -20,11 +20,13 @@ import Add from "@material-ui/icons/CheckCircle";
 
 // Local Component Imports
 import "./Form.scss"
+import TextField from "@material-ui/core/es/TextField/TextField";
 
 
 const PriceQuoteForm = ({courses, tutoring, students, disablePay}) => {
     const dispatch = useDispatch();
     const history = useHistory();
+    const isAdmin = useSelector(({auth}) => auth.isAdmin);
     const [priceQuote, setPriceQuote] = useState({
         sub_total: 1000,
         total: 980,
@@ -37,6 +39,7 @@ const PriceQuoteForm = ({courses, tutoring, students, disablePay}) => {
             id: 1,
         },
     ]);
+    const [priceAdjustment, setPriceAdjustment] = useState(0);
 
     useEffect(()=>{
         console.log(courses, tutoring, students)
@@ -67,7 +70,7 @@ const PriceQuoteForm = ({courses, tutoring, students, disablePay}) => {
             }),
         }
         // make price quote request
-    },[paymentMethod,payment, courses, tutoring]);
+    },[paymentMethod,payment, courses, tutoring, discounts]);
 
     const handlePay = () => (e)=>{
         e.preventDefault();
@@ -117,6 +120,10 @@ const PriceQuoteForm = ({courses, tutoring, students, disablePay}) => {
                 enable: discount.id === id ? !discount.enable : discount.enable,
             }
         }));
+    };
+
+    const handlePriceAdjustment = () => (e) => {
+        setPriceAdjustment(e.target.value);
     }
 
     return (
@@ -192,6 +199,27 @@ const PriceQuoteForm = ({courses, tutoring, students, disablePay}) => {
                                 })
                             }
                             <Grid item>
+                                {/*Manual Price Adjustment for Admins*/}
+                                {
+                                    isAdmin &&
+                                    <Grid container direction={"row"} justify={"flex-end"}>
+                                        <Grid item xs={2}>
+                                            <Typography align={"right"} className={"price-label"}>
+                                                Price Adjustment
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            <Typography align={"right"}>
+                                                <TextField
+                                                    value = {priceAdjustment}
+                                                    onChange={ handlePriceAdjustment() }
+                                                    type={"number"}
+                                                    className={"price-adjustment"}
+                                                />
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                }
                                 <Grid container direction={"row"} justify={"flex-end"}>
                                     <Grid item xs={2}>
                                         <Typography align={"right"} className={"price-label"}>
