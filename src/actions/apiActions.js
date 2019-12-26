@@ -145,6 +145,13 @@ export const submitNewSmallGroup = (form) => {
     });
 };
 
+export const durationParser = {
+    "0.5 Hours": 0.5,
+    "1 Hour": 1,
+    "1.5 Hours": 1.5,
+    "2 Hours": 2,
+};
+
 export const formatCourse = (formCourse, type) =>{
     let dayOfWeek = ()=>{
         switch(startDate.getDay()){
@@ -172,13 +179,8 @@ export const formatCourse = (formCourse, type) =>{
     endDate = endDate.toISOString().substring(0,10);
     let startTime = new Date(formCourse["Start Time"]);
     let endTime = new Date(startTime);
-    let duration = {
-        "0.5 Hours": 0.5,
-        "1 Hour": 1,
-        "1.5 Hours": 1.5,
-        "2 Hours": 2,
-    };
-    endTime = new Date(endTime.setTime(endTime.getTime() + duration[formCourse["Duration"]]*60*60*1000));
+
+    endTime = new Date(endTime.setTime(endTime.getTime() + durationParser[formCourse["Duration"]]*60*60*1000));
     endTime = endTime.toTimeString().substring(0,5);
     startTime = startTime.toTimeString().substring(0,5);
 

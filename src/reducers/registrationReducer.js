@@ -341,9 +341,9 @@ const addSmallGroupRegistration = (prevState, {formMain, new_course}) => {
     let {Student, Student_validated, existingUser, hasLoaded, nextSection, preLoaded, submitPending} = formMain;
 
     let enrollmentObject = {
-        type: "course",
+        type: "class",
         student_id: studentID,
-        course_id: new_course.course_id,
+        course_id: new_course.id,
         enrollment_note: "",
         sessions: new_course.max_capacity,
         display:{
@@ -354,7 +354,7 @@ const addSmallGroupRegistration = (prevState, {formMain, new_course}) => {
             Student: Student,
             Student_validated: Student_validated,
             existingUser: existingUser,
-            form: "course",
+            form: "class",
             hasLoaded: hasLoaded,
             nextSection: nextSection,
             preLoaded: preLoaded,
@@ -373,10 +373,11 @@ const addSmallGroupRegistration = (prevState, {formMain, new_course}) => {
 const addStudentRegistration = (studentID, registeredCourses, courseType, enrollmentObject) =>{
     let enrollmentExists = false;
     let isStudentCurrentlyRegistered = registeredCourses ? Object.keys(registeredCourses).includes(studentID.toString()) : false;
+
     if(isStudentCurrentlyRegistered){
         registeredCourses[studentID] && registeredCourses[studentID].forEach((enrollment)=>{
             if(courseType !== "tutoring" && enrollment.student_id === enrollmentObject.student_id &&
-                enrollment.course_id === enrollmentObject.course_id && !enrollmentObject.isSmallGroup){
+                enrollment.course_id === enrollmentObject.course_id && !enrollmentObject.form.isSmallGroup){
                 enrollmentExists = true;
             } else if( courseType === "tutoring" && enrollment.student_id === enrollmentObject.student_id && enrollment.new_course){
                 if(enrollment.new_course.subject === enrollmentObject.new_course.subject){
@@ -387,7 +388,6 @@ const addStudentRegistration = (studentID, registeredCourses, courseType, enroll
                 enrollment = enrollmentObject.student_id;
             }
         });
-
         if(!enrollmentExists) {
             registeredCourses[studentID].push(enrollmentObject);
         }
@@ -397,6 +397,7 @@ const addStudentRegistration = (studentID, registeredCourses, courseType, enroll
         registeredCourses = {};
         registeredCourses[studentID] = [enrollmentObject];
     }
+
     sessionStorage.setItem("registered_courses",JSON.stringify(registeredCourses));
     return {...registeredCourses};
 }
