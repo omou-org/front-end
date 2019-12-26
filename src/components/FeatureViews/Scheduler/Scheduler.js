@@ -51,12 +51,21 @@ class Scheduler extends Component {
             "viewValue": "timeGridDay",
             "filterValue": "class",
             "resourceFilterValue": "R",
-            "calendarFilterValue": "C",
+            "calendarFilterValue": "T",
             "calendarIcon": true,
             "resourceIcon": false,
             "filterTypeCalendar": "",
+            "timeShift":0,
         };
-
+        this.calendarViewToFilterVal = {
+            "timeGridDay":"day",
+            "timeGridWeek":"week",
+            "dayGridMonth":"month",
+        };
+        this.viewOptions = {
+            "T":"tutoring",
+            "C":"class",
+        };
     }
 
     calendarComponentRef = React.createRef();
@@ -66,7 +75,8 @@ class Scheduler extends Component {
             config:{
                 params:{
                     time_frame:"day",
-                    view: this.state.calendarFilterValue,
+                    view_option: "tutoring",
+                    timeShift: this.state.timeShift,
                 }
             }
         });
@@ -86,10 +96,13 @@ class Scheduler extends Component {
             Object.entries(this.props.instructors).length !== 0
         ){
             const initialSessions = this.props.sessions.map((session)=>{
-                let utcSeconds = Date.parse(session.start_datetime);
-                var date = new Date(0);
-                date.setUTCSeconds(utcSeconds);
-                console.log(date);
+                let startUTCString = new Date(session.start_datetime).toUTCString();
+                let endUTCString = new Date(session.end_datetime).toUTCString();
+                let startTime = startUTCString.substr(17,8);
+                let endTime = endUTCString.substr(17,8);
+                let date = session.start_datetime.substr(0,10);
+                startTime = new Date(date + "T" + startTime);
+                endTime = new Date(date+"T"+endTime);
                 return {
                     id: session.id,
                     courseID: session.course,
@@ -97,8 +110,8 @@ class Scheduler extends Component {
                     description: session.description ? session.description : "",
                     type: this.props.courses[session.course].type,
                     resourceId: this.props.courses[session.course].room_id ? this.props.courses[session.course_id].room_id : 1,
-                    start: session.start_datetime,
-                    end: session.end_datetime,
+                    start: startTime,
+                    end: endTime,
                     instructor: this.props.instructors[this.props.courses[session.course].instructor_id].name,
                     isConfirmed: session.is_confirmed,
                 };
@@ -168,15 +181,14 @@ class Scheduler extends Component {
             const Month = MonthConverter[startMonth];
 
             //Start times and end times variable
-
-            let startTime = new Date(start).toUTCString();
-            let endTime = new Date(end).toUTCString();
+            let startTime = new Date(start).toTimeString();
+            let endTime = new Date(end).toTimeString();
             // Converts 24hr to 12 hr time
             function timeConverter(time) {
-                let Hour = time.substr(17, 2);
+                let Hour = time.substr(0, 2);
                 let to12HourTime = (Hour % 12) || 12;
-                let ampm = Hour < 12 ? "a" : "p";
-                time = to12HourTime + time.substr(19, 3) + ampm;
+                let ampm = Hour < 12 ? " am" : " pm";
+                time = to12HourTime + time.substr(2, 3) + ampm;
                 return time;
 
             }
@@ -226,26 +238,14 @@ class Scheduler extends Component {
         let calendarApi = this.calendarComponentRef.current.getApi();
         calendarApi.changeView(value);
         let filter;
-        switch(value){
-            case "timeGridDay":
-                filter = "day";
-                break;
-            case "timeGridWeek":
-                filter = "week";
-                break;
-            case "dayGridMonth":
-                filter = "month";
-                break;
-            default:
-                filter = "day";
-        }
+
         let date = this.currentDate();
         this.setState(() => {
             this.props.calendarActions.fetchSessions({
                 config:{
                     params:{
                         time_frame: filter,
-                        view: this.state.calendarFilterValue,
+                        view_option: this.viewOptions[this.state.calendarFilterValue],
                     }
                 }
             });
@@ -258,11 +258,22 @@ class Scheduler extends Component {
 
     goToNext = () => {
         let calendarApi = this.calendarComponentRef.current.getApi();
-
         calendarApi.next();
         let date = this.currentDate();
-        this.setState({
-            "currentDate": date,
+        this.props.calendarActions.fetchSessions({
+            config:{
+                params:{
+                    time_frame: this.calendarViewToFilterVal[this.state.viewValue],
+                    view_option: this.viewOptions[this.state.calendarFilterValue],
+                    time_shift: this.state.timeShift + 1,
+                }
+            }
+        });
+        this.setState( (state) =>{
+            return {
+                "currentDate": date,
+                "timeShift": state.timeShift + 1,
+            }
         });
     }
 
@@ -270,8 +281,20 @@ class Scheduler extends Component {
         let calendarApi = this.calendarComponentRef.current.getApi();
         calendarApi.prev();
         let date = this.currentDate();
-        this.setState({
-            "currentDate": date,
+        this.props.calendarActions.fetchSessions({
+            config:{
+                params:{
+                    time_frame: this.calendarViewToFilterVal[this.state.viewValue],
+                    view_option: this.viewOptions[this.state.calendarFilterValue],
+                    time_shift: this.state.timeShift - 1,
+                }
+            }
+        });
+        this.setState( (state) =>{
+            return {
+                "currentDate": date,
+                "timeShift": state.timeShift - 1,
+            }
         });
     }
 
@@ -279,8 +302,18 @@ class Scheduler extends Component {
         let calendarApi = this.calendarComponentRef.current.getApi();
         calendarApi.today();
         const date = this.currentDate();
+        this.props.calendarActions.fetchSessions({
+            config:{
+                params:{
+                    time_frame: this.calendarViewToFilterVal[this.state.viewValue],
+                    view_option: this.viewOptions[this.state.calendarFilterValue],
+                    time_shift: 0,
+                }
+            }
+        });
         this.setState({
             "currentDate": date,
+            "timeShift":0,
         });
     }
 
@@ -365,12 +398,22 @@ class Scheduler extends Component {
     handleFilterChange = (name) => (event) => {
         if (event.target.value) {
             const items = this.state.calendarEvents;
-            const newEvents = items.filter((item) => item.type === event.target.value);
+            // const newEvents = items.filter((item) => item.type === event.target.value);
+            // console.log(name, event.target.value);
+            this.props.calendarActions.fetchSessions({
+                config:{
+                    params:{
+                        time_frame: this.calendarViewToFilterVal[this.state.viewValue],
+                        view_option: this.viewOptions[event.target.value],
+                        time_shift: this.state.timeShift,
+                    }
+                }
+            });
             this.setState({
-                    "calendarEvents": newEvents,
+                    // "calendarEvents": newEvents,
                     [name]: event.target.value,
                 });
-            sessionStorage.setItem("calendarEvent", JSON.stringify(newEvents));
+            // sessionStorage.setItem("calendarEvent", JSON.stringify(newEvents));
         }
 
     }

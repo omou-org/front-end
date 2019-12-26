@@ -376,6 +376,8 @@ function RegistrationCart(props) {
                             new_course = {
                                 ...new_course,
                                 ...schedule,
+                                subject: "1:1 " + props.instructorAccounts[new_course.instructor].name +
+                                    " & " + props.studentAccounts[studentID].name,
                             };
                             delete new_course["schedule"];
                             let dayOfWeek = {
@@ -455,6 +457,7 @@ RegistrationCart.propTypes = {
 const mapStateToProps = (state) => ({
     "registration": state.Registration,
     "studentAccounts": state.Users.StudentList,
+    "instructorAccounts": state.Users.InstructorList,
     "courseList": state.Course.NewCourseList,
 });
 
