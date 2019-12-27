@@ -89,10 +89,13 @@ class SessionView extends Component {
         return (
             <Grid
                 className="main-session-view"
-                container>
+                container
+
+            >
                 <Paper
                     className="paper"
-                    mt="2em" >
+                    mt="2em"
+                    style={{ width: "100%" }}>
                     <Grid
                         className="session-button"
                         item>
@@ -103,11 +106,12 @@ class SessionView extends Component {
                     <Grid
                         className="session-view"
                         container
-                        ml={10}
-                        spacing={2}>
+                        spacing={2}
+                        direction={"row"}>
                         <Grid
                             item
-                            xs={12}>
+                            sm={12}
+                        >
                             <Typography
                                 align="left"
                                 className="session-view-title"
@@ -119,38 +123,58 @@ class SessionView extends Component {
                             align="left"
                             className="session-view-details"
                             container
-                            spacing={10}>
+                            xs={6}
+                        >
                             <Grid
                                 item
-                                lg={2}
-                                md={7}
                                 xs={6}>
                                 <Typography variant="h5"> Subject </Typography>
                                 <Typography varient="body1">{this.state.courseData && this.state.courseData.subject} </Typography>
                             </Grid>
                             <Grid
                                 item
-                                xs="auto">
-                                <Typography variant="h5"> Date & Time </Typography>
-                                <Typography variant="body1">{this.state.courseData && this.state.sessionData.start}</Typography>
+                                xs={6}>
+                                <Typography variant="h5"> Room</Typography>
+                                <Typography variant="body1">{this.state.courseData && this.state.courseData.room_id}</Typography>
                             </Grid>
+
                             <Grid
                                 item
-                                xs={12}>
+                                xs={6}>
                                 <Typography variant="h5"> Instructor </Typography>
                                 <Typography variant="body1">{this.state.courseData && instructor.name}</Typography>
                             </Grid>
                             <Grid
                                 item
-                                xs={10}>
+                                xs={12}>
                                 <Typography variant="h5"> Description </Typography>
                                 <Typography
-                                    style={{ "width": "75%" }}
-                                    variant="body1" > {this.state.courseData && this.state.courseData.description}
+                                    variant="body1"> {this.state.courseData && this.state.courseData.description}
                                 </Typography>
                             </Grid>
+                            <Grid
+                                item
+                                xs={6}>
+                                <Typography variant="h5"> Day(s)</Typography>
+                                <Typography variant="body1">{this.state.courseData && this.state.sessionData.start}</Typography>
+                            </Grid>
+                            <Grid
+                                item
+                                xs={6}>
+                                <Typography variant="h5"> Time </Typography>
+                                <Typography variant="body1">{this.state.courseData && this.state.sessionData.start}</Typography>
+                            </Grid>
+
                         </Grid>
+                        <Grid
+                            item
+                            xs="auto">
+                            <Typography variant="h5"> Students Enrolled  </Typography>
+                            <Typography variant="body1">{this.state.courseData && this.state.courseData.roster}</Typography>
+                        </Grid>
+
                     </Grid>
+
                     <Grid
                         className="session-detail-action-control"
                         container
@@ -186,7 +210,7 @@ class SessionView extends Component {
                         </Grid>
                     </Grid>
                 </Paper>
-                {this.state.courseData && this.state.courseData.type === "C" ? <ClassSessionView courseData={this.state.courseData} /> : <TutoringSessionView />}
+                {/* {this.state.courseData && this.state.courseData.type === "C" ? <ClassSessionView courseData={this.state.courseData} /> : <TutoringSessionView />} */}
                 <Dialog
                     aria-describedby="alert-dialog-description"
                     aria-labelledby="alert-dialog-title"

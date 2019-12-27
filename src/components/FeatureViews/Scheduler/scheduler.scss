@@ -18,7 +18,7 @@
 }
 
 .main-session-view{
-  margin-top: 2em
+  margin-top: 2em;
 }
 
 .session-footer-buttons{
@@ -32,7 +32,7 @@
 }
 
 .session-view-details{
-  padding-left: 1%;
+  padding: 1%;
   @include respond-to(handhelds){
     margin-top: 50px;
   }
