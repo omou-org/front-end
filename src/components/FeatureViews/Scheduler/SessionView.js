@@ -220,10 +220,7 @@ class SessionView extends Component {
 
                         <Grid
                             item
-                            xs="auto"
-
-                        >
-
+                            xs={6}>
                             <Typography variant="h5" align="left"> Students Enrolled  </Typography>
                             <Grid container direction='row'>
                                 {studentKeys.map(key => <NavLink to={`/accounts/student/${this.state.students[key].id}`} style={{ textDecoration: "none" }}>

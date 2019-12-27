@@ -32,6 +32,7 @@ import DateRangeOutlinedIcon from "@material-ui/icons/DateRangeOutlined";
 import ViewListIcon from "@material-ui/icons/ViewList";
 import SearchIcon from "@material-ui/icons/Search";
 import TodayIcon from "@material-ui/icons/Today";
+import { stringToColor } from "../Accounts/accountUtils";
 
 // Tool tip dependencies
 import tippy from "tippy.js";
@@ -106,6 +107,7 @@ class Scheduler extends Component {
                 let date = session.start_datetime.substr(0, 10);
                 startTime = new Date(date + "T" + startTime);
                 endTime = new Date(date + "T" + endTime);
+                let instructorName = this.props.instructors[this.props.courses[session.course].instructor_id].name;
                 return {
                     id: session.id,
                     courseID: session.course,
@@ -115,8 +117,9 @@ class Scheduler extends Component {
                     resourceId: this.props.courses[session.course].room_id ? this.props.courses[session.course_id].room_id : 1,
                     start: startTime,
                     end: endTime,
-                    instructor: this.props.instructors[this.props.courses[session.course].instructor_id].name,
+                    instructor: instructorName,
                     isConfirmed: session.is_confirmed,
+                    color: stringToColor(instructorName),
                 };
             });
             this.setState({
@@ -379,6 +382,7 @@ class Scheduler extends Component {
                 session["description"] = session.description ? session.description : "";
                 session["type"] = this.props.courses[session.course_id].type;
                 session["resourceId"] = this.props.courses[session.course_id].room_id ? this.props.courses[session.course_id].room_id : 1;
+
 
                 return session;
 
