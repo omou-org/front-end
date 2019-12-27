@@ -68,9 +68,10 @@ const PriceQuoteForm = ({courses, tutoring, students, disablePay}) => {
             disabled_discounts: discounts.filter((discount) => {
                 return !discount.enable;
             }),
-        }
+            price_adjustment: priceAdjustment,
+        };
         // make price quote request
-    },[paymentMethod,payment, courses, tutoring, discounts]);
+    },[paymentMethod,payment, courses, tutoring, discounts, priceAdjustment]);
 
     const handlePay = () => (e)=>{
         e.preventDefault();

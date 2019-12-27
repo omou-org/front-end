@@ -45,6 +45,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import {DatePicker, TimePicker, MuiPickersUtilsProvider,} from "material-ui-pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import {durationParser, numSessionsParser, timeParser} from "./FormUtils";
+import TutoringPriceQuote from "./TutoringPriceQuote";
 
 const parseGender = {
     "M": "Male",
@@ -758,6 +759,8 @@ class Form extends Component {
         const fieldTitle = field.name;
         const disabled = this.state["Parent Information"] && Boolean(this.state["Parent Information"]["Select Parent"]) && this.state.activeSection === "Parent Information";
         switch (field.type) {
+            case "price quote":
+                return <TutoringPriceQuote/>;
             case "select":
                 let parsedDuration = durationParser(this.state[label],fieldTitle);
                 let value, options;

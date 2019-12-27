@@ -36,7 +36,7 @@ const useStyles = makeStyles({
         color: "white",
         // padding: "",
     }
-})
+});
 
 function RegistrationCart(props) {
     const dispatch = useDispatch();
