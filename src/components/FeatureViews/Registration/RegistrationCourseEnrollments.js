@@ -74,6 +74,11 @@ const RegistrationCourseEnrollments = ({courseID}) => {
         course.roster.filter((studentID) => students[studentID])
     , [course.roster, students]);
 
+    // no students enrolled
+    if (course.roster.length === 0) {
+        return "No students enrolled";
+    }
+
     if (loadedStudents.length === 0) {
         if (hooks.isLoading(studentStatus)) {
             return <Loading />;

@@ -58,7 +58,7 @@ const StudentCourseViewer = ({studentID, current = true}) => {
             filterCourseByDate(courses[courseID].schedule.end_date)),
     [courseList, courses, filterCourseByDate]);
 
-    if (!enrollments[studentID]) {
+    if (!enrollments[studentID] && !hooks.isSuccessful(enrollmentStatus)) {
         if (hooks.isLoading(enrollmentStatus, courseStatus)) {
             return <Loading />;
         }
