@@ -171,6 +171,7 @@ class SessionView extends Component {
                             align="left"
                             className="session-view-details"
                             container
+                            spacing={16}
                             xs={6}
                         >
                             <Grid
@@ -188,20 +189,12 @@ class SessionView extends Component {
 
                             <Grid
                                 item
-                                xs={6}>
+                                xs={12}>
                                 <Typography variant="h5"> Instructor </Typography>
                                 <NavLink to={`/accounts/instructor/${instructor.user_id}`}
                                 >
                                     <Typography variant="body1" color="primary">{this.state.courseData && instructor.name}</Typography>
                                 </NavLink>
-                            </Grid>
-                            <Grid
-                                item
-                                xs={12}>
-                                <Typography variant="h5"> Description </Typography>
-                                <Typography
-                                    variant="body1"> {this.state.courseData && this.state.courseData.description}
-                                </Typography>
                             </Grid>
                             <Grid
                                 item
