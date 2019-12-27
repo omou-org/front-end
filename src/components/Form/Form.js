@@ -760,7 +760,7 @@ class Form extends Component {
         const disabled = this.state["Parent Information"] && Boolean(this.state["Parent Information"]["Select Parent"]) && this.state.activeSection === "Parent Information";
         switch (field.type) {
             case "price quote":
-                return <TutoringPriceQuote/>;
+                return <TutoringPriceQuote courseType={this.state.form}/>;
             case "select":
                 let parsedDuration = durationParser(this.state[label],fieldTitle);
                 let value, options;

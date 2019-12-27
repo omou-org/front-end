@@ -610,7 +610,7 @@ function initRegistrationForm() {
             },
             tutoring: {
                 form_type: "tutoring",
-                section_titles: [ "Student", "Student Information", "Tutor Selection", "Schedule", "Price Quote"],
+                section_titles: [ "Student", "Student Information", "Tutor Selection", "Schedule", "Tuition Quote Tool"],
                 "Student": [
                     {
                         field: "Student",
@@ -704,7 +704,7 @@ function initRegistrationForm() {
                         field_limit: 1,
                     },
                 ],
-                "Price Quote": [
+                "Tuition Quote Tool": [
                     {
                         field: "Price Quote",
                         name: "Price Quote",

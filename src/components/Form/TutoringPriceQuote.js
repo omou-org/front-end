@@ -27,9 +27,11 @@ import {bindActionCreators} from "redux";
 import * as adminActions from "../../actions/adminActions";
 import {GET} from "../../actions/actionTypes";
 import {REQUEST_ALL} from "../../actions/apiActions";
+import {academicLevelParse} from "../../reducers/registrationReducer";
+import InputLabel from "@material-ui/core/InputLabel";
 
 
-const TutoringPriceQuote = ({courses, tutoring, students, disablePay}) => {
+const TutoringPriceQuote = ({courseType}) => {
     const dispatch = useDispatch();
     const history = useHistory();
     const api = useMemo(
@@ -38,19 +40,19 @@ const TutoringPriceQuote = ({courses, tutoring, students, disablePay}) => {
         }),
         [dispatch]
     );
-    const [priceQuote, setPriceQuote] = useState({
-        sub_total: 1000,
-        total: 980,
-    });
-    const [category, setCategory] = useState("");
+    const [priceQuote, setPriceQuote] = useState(null);
+    const [hourlyTuition, setHourlyTuition] = useState(null);
+    const [duration, setDuration] = useState(null);
+    const [sessions, setSessions] = useState(null);
+    const [category, setCategory] = useState(null);
     const [categoryList, setCategoryList] = useState([]);
-    const [academic_level, setAcademicLevel] = useState("");
+    const [academic_level, setAcademicLevel] = useState(null);
     const [academicList, setAcademicList] = useState([]);
-    const [priceRules, setPriceRules] = useState([]);
+    const [priceRules, setPriceRules] = useState(null);
 
     const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
     const adminPriceRules = useSelector(({"Admin": {PriceRules}}) => PriceRules);
-    const categories = useSelector(({"Course":CourseCategories}) => CourseCategories);
+    const categories = useSelector(({"Course":{CourseCategories}}) => CourseCategories);
 
     useEffect(()=>{
         api.fetchCategories();
@@ -65,46 +67,155 @@ const TutoringPriceQuote = ({courses, tutoring, students, disablePay}) => {
     useEffect(()=>{
         if(requestStatus.priceRule[GET][REQUEST_ALL] === 200 &&
         requestStatus.category[GET] === 200){
-            setPriceRules(adminPriceRules.map((rule) =>({
+            setPriceRules(adminPriceRules
+                .filter(rule => rule.course_type === courseType)
+                .map((rule) =>({
                 ...rule,
                 category: categories.find((category) => {return category.id === rule.category}),
             })));
         }
     },[requestStatus.priceRule[GET][REQUEST_ALL], api]);
 
+    // get list of unique category objects from price rules
+    const uniqueCategories = (rules) => Array.from(new Set(rules.map(rule => rule.category.id)))
+        .map(id => {
+            return {
+                ...priceRules.find(rule => rule.category.id === id).category
+            }
+        });
+    // get list of unique academic grades from price rules
+    const uniqueAcademicGrades = (rules, categoryID) => {
+        let filteredCategoryRules = rules.filter( rule => rule.category.id === categoryID);
+        let stuff=Array.from(new Set(filteredCategoryRules.map(rule => rule.academic_level)))
+            .map(grade => academicLevelParse[grade]);
+        console.log(stuff);
+        return stuff
+    }
+
     useEffect(()=>{
         if(priceRules && priceRules.length > 0){
-            setCategoryList(()=>{
-                let uniqueCategories = [...new Set(categoryList.map( category => category.category))];
-                console.log(uniqueCategories, priceRules);
-                return uniqueCategories.map((rule) => ({
-                   name: rule.category.name,
-                   id: rule.category.id,
-                }));
-            });
-            // setAcademicList(()=>{
-            //     let uniqueAcademicGrades = priceRules
-            // })
-        }
+            setCategoryList(uniqueCategories(priceRules));
+        };
     },[priceRules]);
+
+    useEffect(()=>{
+        if(category === null && academic_level === null &&
+            categoryList.length > 0){
+            setCategory(categoryList[0]);
+            // set tuition
+            setHourlyTuition(()=>{
+                let matchingPriceRule = priceRules.find(rule => rule.category.id === categoryList[0].id);
+                return matchingPriceRule.hourly_tuition;
+            });
+        }
+    },[academicList, categoryList]);
+
+    useEffect(()=>{
+        if(category){
+            let uniqueGradesList = uniqueAcademicGrades(priceRules, category.id);
+            setAcademicList(uniqueGradesList);
+            setAcademicLevel(uniqueGradesList[0]);
+        }
+    },[category])
+
+    const generatePriceQuote = ({tuition, duration, sessions}) => {
+        if(tuition && duration && sessions){
+            setPriceQuote(()=>{
+                let quote = duration * sessions * tuition;
+                return `$ ${quote.toString()}`
+            });
+        }
+    }
 
     const onCategoryChange = () => event => {
         setCategory(event.target.value);
-        // console.log(cat)
+        // filter academic levels so only academic levels with the current category get displayed
+        setAcademicList(()=>{
+            let filteredByCategoryPriceRules = priceRules.filter(rule => rule.category.id === event.target.value.id);
+            let filteredAcademicLevels = uniqueAcademicGrades(filteredByCategoryPriceRules, event.target.value.id);
+
+            // if current academic level is unavailable, default to first one
+            let academicLevel;
+            if(filteredAcademicLevels.indexOf(academic_level) < 0){
+                setAcademicLevel(filteredAcademicLevels[0]);
+                academicLevel = filteredAcademicLevels[0];
+            } else {
+                academicLevel = academic_level;
+            }
+            setHourlyTuition(()=>{
+                let matchingPriceRule = priceRules.find(rule => {
+                    return rule.category.id === event.target.value.id &&
+                        rule.academic_level === academicLevelParse[academicLevel]
+                });
+                generatePriceQuote(
+                    {
+                        duration: duration,
+                        sessions: sessions,
+                        tuition: matchingPriceRule.hourly_tuition
+                    }
+                );
+                return matchingPriceRule.hourly_tuition;
+            });
+
+            return filteredAcademicLevels;
+        });
     };
 
     const onAcademicLevelChange = () => event => {
-        setAcademicLevel(event.target.value)
-    }
+        setAcademicLevel(event.target.value);
+        setHourlyTuition(()=>{
+            let matchingPriceRule = priceRules.find(rule =>
+                rule.category.id === category.id &&
+                rule.academic_level === academicLevelParse[event.target.value]);
+            generatePriceQuote(
+                {
+                    duration: duration,
+                    sessions: sessions,
+                    tuition: matchingPriceRule.hourly_tuition
+                }
+            );
+            return matchingPriceRule.hourly_tuition;
+        });
+    };
 
+    const onDurationChange = () => event => {
+        setDuration(event.target.value);
+        generatePriceQuote(
+            {
+                duration: event.target.value,
+                sessions: sessions,
+                tuition: hourlyTuition
+            }
+        );
+    };
+
+    const onSessionsChange = () => event => {
+        setSessions(event.target.value);
+        generatePriceQuote(
+            {
+                duration: duration,
+                sessions: event.target.value,
+                tuition: hourlyTuition,
+            }
+        );
+    };
     return (
-        <Grid container className={"tutoring-price-quote"} direction={"column"}>
+        <Grid container
+              className={"tutoring-price-quote"}
+              direction={"column"}
+              justify={"flex-end"}
+              spacing={32}>
             <Grid item>
-                <Grid container direction={"row"}>
-                    <Grid item>
+                <Grid container direction={"row"} justify={"flex-end"}>
+                    <Grid item xs={3}>
+                        <InputLabel htmlFor={"category"}>Category</InputLabel>
                         <Select
                             value={category}
                             onChange={onCategoryChange()}
+                            className={"field"}
+                            inputProps={{
+                                id:"category"
+                            }}
                         >
                             {
                                 categoryList.map((category) =>
@@ -117,10 +228,15 @@ const TutoringPriceQuote = ({courses, tutoring, students, disablePay}) => {
                             }
                         </Select>
                     </Grid>
-                    <Grid item>
+                    <Grid item xs={3}>
+                        <InputLabel htmlFor={"academic-level"}>Academic Level</InputLabel>
                         <Select
                             value={academic_level}
                             onChange={onAcademicLevelChange()}
+                            className={"field"}
+                            inputProps={{
+                                id:"academic-level"
+                            }}
                         >
                             {
                                 academicList.map((grade) =>
@@ -133,6 +249,79 @@ const TutoringPriceQuote = ({courses, tutoring, students, disablePay}) => {
                             }
                         </Select>
                     </Grid>
+                    <Grid item xs={3}>
+                        <TextField
+                            label={"Hourly Tuition"}
+                            value={hourlyTuition || ''}
+                            InputProps={{readOnly:true}}
+                            variant={"outlined"}
+                        />
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Grid item>
+                <Grid container direction={"row"} justify={"flex-end"}>
+                    <Grid item xs={3}>
+                        <InputLabel htmlFor={"duration"}>Duration</InputLabel>
+                        <Select
+                            value={duration}
+                            onChange={onDurationChange()}
+                            className={"field"}
+                            inputProps={{
+                                id:"academic-level"
+                            }}
+                        >
+                            <MenuItem
+                                value={1}
+                                key={1}
+                            >
+                                1 Hour
+                            </MenuItem>
+                            <MenuItem
+                                value={1.5}
+                                key={2}
+                            >
+                                1.5 Hours
+                            </MenuItem>
+                            <MenuItem
+                                value={2}
+                                key={3}
+                            >
+                                2 Hours
+                            </MenuItem>
+                            <MenuItem
+                                value={0.5}
+                                key={4}
+                            >
+                                0.5 Hour
+                            </MenuItem>
+                        </Select>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Grid item>
+                <Grid container direction={"row"} justify={"flex-end"}>
+                    <Grid item xs={3}>
+                        <TextField
+                            className={"field"}
+                            label="Sessions"
+                            value={sessions}
+                            onChange={onSessionsChange()}
+                            type={"number"}
+                        />
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Grid item>
+                <Grid container direction={"row"} justify={"flex-end"}>
+                    <Grid item xs={3}>
+                        <TextField
+                            label={"Total Tuition"}
+                            value={priceQuote || ''}
+                            InputProps={{readOnly:true}}
+                            variant={"outlined"}
+                        />
+                    </Grid>
                 </Grid>
             </Grid>
         </Grid>
@@ -140,7 +329,7 @@ const TutoringPriceQuote = ({courses, tutoring, students, disablePay}) => {
 };
 
 TutoringPriceQuote.propTypes = {
-    // "courses": PropTypes.array.isRequired,
+    "courseType": PropTypes.string.isRequired,
 };
 
 export default TutoringPriceQuote;
