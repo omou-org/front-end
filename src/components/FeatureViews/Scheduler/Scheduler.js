@@ -88,7 +88,6 @@ class Scheduler extends Component {
         this.setState({
             "currentDate": this.currentDate(),
         });
-        console.log(this.calendarComponentRef)
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -122,6 +121,7 @@ class Scheduler extends Component {
                     color: stringToColor(instructorName),
                 };
             });
+
             this.setState({
                 calendarEvents: initialSessions,
             });
@@ -243,15 +243,17 @@ class Scheduler extends Component {
     changeView = (value) => {
         let calendarApi = this.calendarComponentRef.current.getApi();
         calendarApi.changeView(value);
-        let filter;
+        let filter = this.calendarViewToFilterVal[value];
 
         let date = this.currentDate();
+        calendarApi.today();
         this.setState(() => {
             this.props.calendarActions.fetchSessions({
                 config: {
                     params: {
                         time_frame: filter,
                         view_option: this.viewOptions[this.state.calendarFilterValue],
+                        time_shift: 0,
                     }
                 }
             });
@@ -403,22 +405,24 @@ class Scheduler extends Component {
 
     // This function is used in material-ui for the eventhandler
     handleFilterChange = (name) => (event) => {
+        const date = this.currentDate();
         if (event.target.value) {
-            const items = this.state.calendarEvents;
-            // const newEvents = items.filter((item) => item.type === event.target.value);
-            // console.log(name, event.target.value);
-            this.props.calendarActions.fetchSessions({
-                config: {
-                    params: {
-                        time_frame: this.calendarViewToFilterVal[this.state.viewValue],
-                        view_option: this.viewOptions[event.target.value],
-                        time_shift: this.state.timeShift,
+            this.setState(()=>{
+                // console.log(this.calendarViewToFilterVal[this.state.viewValue], this.viewOptions[event.target.value], this.state.timeShift);
+                this.props.calendarActions.fetchSessions({
+                    config: {
+                        params: {
+                            time_frame: this.calendarViewToFilterVal[this.state.viewValue],
+                            view_option: this.viewOptions[event.target.value],
+                            time_shift: this.state.timeShift,
+                        }
                     }
+                });
+                return {
+                    // "calendarEvents": newEvents,
+                    "currentDate": date,
+                    [name]: event.target.value,
                 }
-            });
-            this.setState({
-                // "calendarEvents": newEvents,
-                [name]: event.target.value,
             });
             // sessionStorage.setItem("calendarEvent", JSON.stringify(newEvents));
         }
@@ -479,7 +483,7 @@ class Scheduler extends Component {
                 <Paper className="paper" style={{ padding: "2%" }}>
                     <Typography variant="h3" align="left">Scheduler</Typography>
                     <br />
-                    <Grid conatiner className="scheduler-wrapper">
+                    <Grid container className="scheduler-wrapper">
                         <Grid item xs={12} className="scheduler-header">
                             <Grid container className="scheduler-header-firstSet">
                                 <Grid item >
@@ -585,16 +589,16 @@ class Scheduler extends Component {
                                         </Select>
                                     </FormControl>
                                 </Grid>
-                                <Grid item>
-                                    <Button
-                                        onClick={() => { this.changeViewToCalendar(); }}
-                                    >Course</Button>
-                                </Grid>
-                                <Grid item >
-                                    <Button
-                                        onClick={() => { this.changeViewToResource(); }}
-                                    >Resource</Button>
-                                </Grid>
+                                {/*<Grid item>*/}
+                                {/*    <Button*/}
+                                {/*        onClick={this.changeViewToCalendar}*/}
+                                {/*    >Course</Button>*/}
+                                {/*</Grid>*/}
+                                {/*<Grid item >*/}
+                                {/*    <Button*/}
+                                {/*        onClick={this.changeViewToResource}*/}
+                                {/*    >Resource</Button>*/}
+                                {/*</Grid>*/}
                             </div>
                         </Grid>
                         <Grid item xs={12} className='omou-calendar'>
@@ -619,8 +623,8 @@ class Scheduler extends Component {
                                     },
                                 }}
                                 timeZone={"local"}
-                                eventMouseEnter={(this.state.resourceIcon) ? null : this.handleToolTip}
-                                eventClick={this.goToSessionView()}
+                                eventMouseEnter={!this.state.resourceIcon && this.handleToolTip}
+                                eventClick={this.goToSessionView}
                                 eventLimit={4}
                                 nowIndicator={true}
                                 resourceOrder={"title"}

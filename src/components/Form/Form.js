@@ -1265,7 +1265,7 @@ class Form extends Component {
                                                     {field || ""}
                                                 </Typography>
                                                 <Typography className="field-value" align="left">
-                                                    { typeof fieldVal === "object" ? new Date(fieldVal).toISOString().substring(0,10) :  fieldVal || "N/A"}
+                                                    { typeof fieldVal === "object" ? new Date(fieldVal).toLocaleString("eng-US") :  fieldVal || "N/A"}
                                                 </Typography>
                                             </div>
                                         );

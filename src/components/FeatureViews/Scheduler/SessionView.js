@@ -11,7 +11,7 @@ import { NavLink } from "react-router-dom";
 // import TimeSelector from "../../Form/TimeSelector";
 
 import * as calendarActions from "../../../actions/calendarActions";
-import * as courseActions from "../../../actions/apiActions";
+import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 
 // Material UI Imports
@@ -72,7 +72,7 @@ class SessionView extends Component {
 
     componentDidMount() {
         this.props.calendarActions.fetchSessions({ id: this.props.match.params.session_id });
-        this.props.courseActions.fetchCourses(this.props.match.params.course_id);
+        this.props.apiActions.fetchCourses(this.props.match.params.course_id);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -81,8 +81,8 @@ class SessionView extends Component {
             Object.entries(this.props.courses).length !== 0) {
             this.setState(() => {
                 const sessionData = this.props.courseSessions.find((session) => {
-                    return session.course === Number(this.props.match.params.course_id) &&
-                        session.id === Number(this.props.match.params.session_id);
+                    return Number(session.course) === Number(this.props.match.params.course_id) &&
+                        Number(session.id) === Number(this.props.match.params.session_id);
                 });
                 sessionData["start"] = new Date(sessionData.start_datetime)
                     .getDay()
@@ -108,9 +108,6 @@ class SessionView extends Component {
 
         }
     }
-
-
-
 
     render() {
         let instructor = this.state.courseData && this.props.instructors[this.state.courseData.instructor_id] ? this.props.instructors[this.state.courseData.instructor_id] : { name: "N/A" };
@@ -325,7 +322,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         "calendarActions": bindActionCreators(calendarActions, dispatch),
-        "courseActions": bindActionCreators(courseActions, dispatch),
+        "apiActions": bindActionCreators(apiActions, dispatch),
         "userActions": bindActionCreators(userActions, dispatch),
     };
 }

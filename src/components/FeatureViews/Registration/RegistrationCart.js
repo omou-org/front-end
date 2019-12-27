@@ -376,8 +376,8 @@ function RegistrationCart(props) {
                             new_course = {
                                 ...new_course,
                                 ...schedule,
-                                subject: "1:1 " + props.instructorAccounts[new_course.instructor].name +
-                                    " & " + props.studentAccounts[studentID].name,
+                                subject: `1:1 ${props.instructorAccounts[new_course.instructor].name}
+                                     & ${props.studentAccounts[studentID].name}`,
                             };
                             delete new_course["schedule"];
                             let dayOfWeek = {

@@ -167,8 +167,13 @@ export const formatCourse = (formCourse, type) =>{
     let day = dayOfWeek();
     let endDate = new Date(startDate);
     endDate = new Date(endDate.setDate(startDate.getDate() + 7*formCourse["Number of Weekly Sessions"]));
-    startDate = startDate.toISOString().substring(0,10);
-    endDate = endDate.toISOString().substring(0,10);
+    let dateFormat = {
+        year:"numeric",
+        month:"2-digit",
+        day:"2-digit",
+    }
+    startDate = startDate.toLocaleString("sv-SE",dateFormat);
+    endDate = endDate.toLocaleString("sv-SE",dateFormat);
     let startTime = new Date(formCourse["Start Time"]);
     let endTime = new Date(startTime);
     let duration = {
@@ -178,9 +183,13 @@ export const formatCourse = (formCourse, type) =>{
         "2 Hours": 2,
     };
     endTime = new Date(endTime.setTime(endTime.getTime() + duration[formCourse["Duration"]]*60*60*1000));
-    endTime = endTime.toTimeString().substring(0,5);
-    startTime = startTime.toTimeString().substring(0,5);
-
+    let timeFormat = {
+        hour12:false,
+        hour:"2-digit",
+        minute:"2-digit",
+    }
+    endTime = endTime.toLocaleString("eng-US",timeFormat);
+    startTime = startTime.toLocaleString("eng-US", timeFormat);
     return {
         "subject": formCourse["Course Name"],
         "type": type,
