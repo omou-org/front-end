@@ -45,36 +45,6 @@ export default {
                     },
                 },
             },
-            130: {
-                user_id: 130,
-                name: "Lian Ryou",
-                phone_number: "9921351863",
-                email: "lianryou@gmail.com",
-                role: 'receptionist',
-                birthday: "10/8/1965",
-                action_log: {
-                    1: {
-                        date: "6/26/2018",
-                        time: "2:00PM",
-                        description: "Unregistered English 7 sessions with Danny Hong",
-                    },
-                    2: {
-                        date: "6/10/2018",
-                        time: "4:00PM",
-                        description: "Registered AP Calc tutoring with Daniel Huang",
-                    },
-                    3: {
-                        date: "4/9/2018",
-                        time: "3:00PM",
-                        description: "Registered AP Calc tutoring with Daniel Huang",
-                    },
-                    4: {
-                        date: "3/24/2018",
-                        time: "8:00PM",
-                        description: "Registered AP Calc tutoring with Daniel Huang",
-                    },
-                },
-            },
         },
         "InstructorList": {},
     },
@@ -100,6 +70,7 @@ export default {
     },
     "Admin":{
         PriceRules: [],
+        Discounts: [],
     }
 };
 
@@ -932,7 +903,7 @@ function initRegistrationForm() {
             },
             small_group: {
                 form_type:"small_group",
-                section_titles: [ "Student", "Group Type", "Group Details", "Price Quote"],
+                section_titles: [ "Student", "Group Type", "Group Details", "Tuition Quote Tool"],
                 "Student":[
                     {
                         field: "Student",
@@ -971,7 +942,7 @@ function initRegistrationForm() {
                     ],
                     "New Small Group": courseInfoQuestions,
                 },
-                "Price Quote": [
+                "Tuition Quote Tool": [
                     {
                         field: "Price Quote",
                         name: "Price Quote",
@@ -1035,6 +1006,115 @@ function initRegistrationForm() {
                         full: false,
                         field_limit: 1,
                     },
+                ],
+            },
+            discount: {
+                form_type: "discount",
+                section_titles: ["Discount Description", "Discount Rules", "Discount Amount"],
+                "Discount Description":[
+                    {
+                        field: "Discount Name",
+                        name: "Discount Name",
+                        type: "short text",
+                        conditional: false,
+                        required: false,
+                        full: true,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Discount Description",
+                        name: "Discount Description",
+                        type: "short text",
+                        conditional: false,
+                        required: false,
+                        full: true,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Discount Type",
+                        name: "Discount Type",
+                        type: "select",
+                        options:[
+                            "Bulk Order Discount",
+                            "Date Range Discount",
+                            "Payment Method Discount",
+                        ],
+                        conditional: true,
+                        required: true,
+                        full: false,
+                        field_limit: 1,
+                    },
+                ],
+                "Discount Rules": {
+                        "Bulk Order Discount":[
+                            {
+                                field: "Minimum number of sessions",
+                                name: "Minimum number of sessions",
+                                type: "number",
+                                conditional: false,
+                                required: true,
+                                full: false,
+                                field_limit: 1,
+                            },
+                        ],
+                        "Date Range Discount":[
+                            {
+                                field: "Discount Start Date",
+                                name: "Discount Start Date",
+                                type: "date",
+                                conditional: false,
+                                required: true,
+                                full: false,
+                                field_limit: 1,
+                            },
+                            {
+                                field: "Discount End Date",
+                                name: "Discount End Date",
+                                type: "date",
+                                conditional: false,
+                                required: true,
+                                full: false,
+                                field_limit: 1,
+                            },
+                        ],
+                        "Payment Method Discount":[
+                            {
+                                field: "Payment Method",
+                                name: "Payment Method",
+                                type: "select",
+                                options:[
+                                    "Cash",
+                                    "Check",
+                                    "Credit Card",
+                                    "International Credit Card",
+                                ],
+                                conditional: false,
+                                required: true,
+                                full: false,
+                                field_limit: 1,
+                            },
+                        ],
+                    },
+                "Discount Amount": [
+                    {
+                        field: "Discount Type",
+                        name: "Discount Type",
+                        type: "select",
+                        options:["Percent", "Fixed"],
+                        conditional: false,
+                        required: true,
+                        full: false,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Discount Amount",
+                        name: "Discount Amount",
+                        type: "number",
+                        conditional: false,
+                        required: true,
+                        full: false,
+                        field_limit: 1,
+                    }
                 ],
             },
             course_category: {

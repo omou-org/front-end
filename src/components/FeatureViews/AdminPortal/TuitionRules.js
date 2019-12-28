@@ -108,7 +108,7 @@ function TuitionRules(props) {
                 <Grid container spacing={8} alignItems={"center"}>
                     {
                         tuitionRules.map((tuition)=> {
-                            return (<Grid item xs={12} md={12} key={tuition.id}>
+                            return (tuition && <Grid item xs={12} md={12} key={tuition.id}>
                                 {   tuition.editing ?
                                     editTuitionRow(tuition) :
                                     viewTuitionRow(tuition)

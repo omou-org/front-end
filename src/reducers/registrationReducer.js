@@ -48,6 +48,12 @@ export default function registration(state = initialState.RegistrationForms, {pa
             return onSubmit(state);
         case actions.POST_PRICE_RULE_SUCCESS:
             return successSubmit(state);
+        case actions.POST_DISCOUNT_DATE_RANGE_SUCCESS:
+            return successSubmit(state);
+        case actions.POST_DISCOUNT_MULTI_COURSE_SUCCESS:
+            return successSubmit(state);
+        case actions.POST_DISCOUNT_PAYMENT_METHOD_SUCCESS:
+            return successSubmit(state);
         case actions.SET_PARENT:
             newState["CurrentParent"] = payload;
             return newState;

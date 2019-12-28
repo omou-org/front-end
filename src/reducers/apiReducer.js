@@ -160,7 +160,9 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
         case actions.GET_PRICE_RULE_SUCCESS:
             return updatePriceRuleStatus(state, payload.id, status, actions.GET);
         case actions.POST_PRICE_RULE_FAILED:
-            return updatePriceRuleStatus(state, payload.id, status, actions.GET);
+            return updatePriceRuleStatus(state, payload.id, status, actions.POST);
+        case actions.POST_PRICE_RULE_SUCCESS:
+            return updatePriceRuleStatus(state, payload.id, status, actions.POST);
         default:
             return state;
     }

@@ -22,6 +22,12 @@ export default function admin(state = initialState, { payload, type, }) {
         case actions.POST_PRICE_RULE_FAILED:
             console.log("Failed posting price rule");
             return {...newState};
+        case actions.POST_DISCOUNT_PAYMENT_METHOD_SUCCESS:
+            return updateDiscount(newState, payload, "POST");
+        case actions.POST_DISCOUNT_MULTI_COURSE_SUCCESS:
+            return updateDiscount(newState, payload, "POST");
+        case actions.POST_DISCOUNT_DATE_RANGE_SUCCESS:
+            return updateDiscount(newState, payload, "POST");
         default:
             return newState;
     }
@@ -61,7 +67,11 @@ const updatePriceRule = (state, payload, action) => {
     let {PriceRules} = Admin;
     switch(action){
         case "GET":{
-            PriceRules = data;
+            if(Array.isArray(PriceRules)){
+                PriceRules.push(data);
+            } else {
+                PriceRules = data;
+            }
             break;
         }
         case "POST":{
@@ -82,5 +92,38 @@ const updatePriceRule = (state, payload, action) => {
     return {
         ...Admin,
         PriceRules,
+    }
+};
+
+const updateDiscount = (state, payload, action) => {
+    let {response} = payload;
+    let {data} = response;
+    let {Admin} = state;
+    let {Discounts} = Admin;
+
+    switch(action){
+        case "GET":{
+            Discounts = data;
+            break;
+        }
+        case "POST":{
+            Discounts.push(data);
+            break;
+        }
+        case "PATCH":{
+            let updatedDiscount = Discounts.find((discount)=>{return discount.id === data.id});
+            Discounts = Discounts.map((discount)=>{
+                if(discount.id === data.id){
+                    return updatedDiscount;
+                } else {
+                    return discount;
+                }
+            });
+            break;
+        }
+    }
+    return {
+        ...Admin,
+        Discounts,
     }
 };

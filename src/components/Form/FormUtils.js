@@ -48,3 +48,51 @@ export const numSessionsParser = (form, fieldTitle) => {
         return form[fieldTitle];
     }
 }
+
+/**
+ * @description: parses form to create discount payload
+ * */
+export const createDiscountPayload = (form) => {
+    console.log(form["Discount Description"]["Discount Type"]);
+    const discountType = form["Discount Description"]["Discount Type"];
+    let discountPayload = {
+        name: form["Discount Description"]["Discount Name"],
+        description: form["Discount Description"]["Discount Description"],
+        amount: form["Discount Amount"]["Discount Amount"],
+        amount_type: form["Discount Amount"]["Discount Type"].toLowerCase(),
+        active: true,
+    };
+    switch(discountType){
+        case "Bulk Order Discount":{
+            return {
+                ...discountPayload,
+                num_sessions: form["Discount Rules"]["Minimum number of sessions"],
+            }
+        }
+        case "Date Range Discount":{
+            let startDate = dateParser(form["Discount Rules"]["Discount Start Date"]).substring(0,10);
+            let endDate = dateParser(form["Discount Rules"]["Discount End Date"]).substring(0,10);
+            return {
+                ...discountPayload,
+                start_date: startDate,
+                end_date: endDate,
+            }
+        }
+        case "Payment Method Discount":{
+            return {
+                ...discountPayload,
+                payment_method: form["Discount Rules"]["Payment Method"],
+            }
+        }
+    }
+};
+
+export const dateParser = (date) =>{
+    let dateSetting = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    };
+    return new Date(date)
+        .toLocaleTimeString('sv-SE',dateSetting);
+};

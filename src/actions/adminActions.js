@@ -77,3 +77,40 @@ export const updatePriceRule = (id, updatedPriceRule) => wrapPatch(
         data:updatedPriceRule,
     }
 );
+
+export const setDiscount = (discountType, discountPayload) => {
+    switch(discountType){
+        case "Bulk Order Discount":{
+            return wrapPost(
+                'pricing/discount-multi-course/',
+                [
+                    types.POST_DISCOUNT_MULTI_COURSE_STARTED,
+                    types.POST_DISCOUNT_MULTI_COURSE_SUCCESS,
+                    types.POST_DISCOUNT_MULTI_COURSE_FAILED,
+                ],
+                discountPayload,
+            );
+        }
+        case "Date Range Discount":{
+            return wrapPost(
+                'pricing/discount-date-range/',
+                [
+                    types.POST_DISCOUNT_DATE_RANGE_START,
+                    types.POST_DISCOUNT_DATE_RANGE_SUCCESS,
+                    types.POST_DISCOUNT_DATE_RANGE_FAILED,
+                ],
+                discountPayload,
+            )
+        }
+        case "Payment Method Discount":{
+            return wrapPost(
+                'pricing/discount-payment-method/',
+                [
+                    types.POST_DISCOUNT_PAYMENT_METHOD_STARTED,
+                    types.POST_DISCOUNT_PAYMENT_METHOD_SUCCESS,
+                    types.POST_DISCOUNT_PAYMENT_METHOD_FAILED,
+                ]
+            )
+        }
+    }
+}

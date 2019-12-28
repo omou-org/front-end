@@ -51,12 +51,13 @@ const PriceQuoteForm = ({courses, tutoring, students, disablePay}) => {
             cash: false,
             creditCard: false,
             check: false,
+            internationalCreditCard: false,
         }
     });
     const handlePayMethodChange = method => e =>{
         setPaymentMethod({ [method]: e.target.checked })
     }
-    const {cash, creditCard, check} = paymentMethod;
+    const {cash, creditCard, check, internationalCreditCard} = paymentMethod;
 
     // get updated price quote
     useEffect(()=>{
@@ -144,6 +145,12 @@ const PriceQuoteForm = ({courses, tutoring, students, disablePay}) => {
                         <FormControlLabel
                             label={"Credit Card"}
                             control={<Checkbox checked={creditCard} onChange={handlePayMethodChange('creditCard')} value={"Credit Card"}/>}
+                        />
+                        <FormControlLabel
+                            label={"International Credit Card"}
+                            control={<Checkbox checked={internationalCreditCard}
+                                               onChange={handlePayMethodChange('internationalCreditCard')}
+                                               value={"International Credit Card"}/>}
                         />
                     </FormGroup>
                 </FormControl>

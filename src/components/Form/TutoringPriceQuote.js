@@ -86,10 +86,8 @@ const TutoringPriceQuote = ({courseType}) => {
     // get list of unique academic grades from price rules
     const uniqueAcademicGrades = (rules, categoryID) => {
         let filteredCategoryRules = rules.filter( rule => rule.category.id === categoryID);
-        let stuff=Array.from(new Set(filteredCategoryRules.map(rule => rule.academic_level)))
+        return Array.from(new Set(filteredCategoryRules.map(rule => rule.academic_level)))
             .map(grade => academicLevelParse[grade]);
-        console.log(stuff);
-        return stuff
     }
 
     useEffect(()=>{
@@ -200,127 +198,135 @@ const TutoringPriceQuote = ({courseType}) => {
         );
     };
     return (
-        <Grid container
-              className={"tutoring-price-quote"}
-              direction={"column"}
-              justify={"flex-end"}
-              spacing={32}>
-            <Grid item>
-                <Grid container direction={"row"} justify={"flex-end"}>
-                    <Grid item xs={3}>
-                        <InputLabel htmlFor={"category"}>Category</InputLabel>
-                        <Select
-                            value={category}
-                            onChange={onCategoryChange()}
-                            className={"field"}
-                            inputProps={{
-                                id:"category"
-                            }}
-                        >
-                            {
-                                categoryList.map((category) =>
+        <Grid container>
+            <Grid item xs={12}>
+                <Typography>
+                    Use the Tuition Quote Tool to give the customer an estimate of how much the total tuition
+                    will be. This tool DOES NOT set the final price of the course.
+                </Typography>
+                <Grid container
+                      className={"tutoring-price-quote"}
+                      direction={"column"}
+                      justify={"flex-end"}
+                      spacing={32}>
+                    <Grid item>
+                        <Grid container direction={"row"} justify={"flex-end"}>
+                            <Grid item xs={3}>
+                                <InputLabel htmlFor={"category"}>Category</InputLabel>
+                                <Select
+                                    value={category}
+                                    onChange={onCategoryChange()}
+                                    className={"field"}
+                                    inputProps={{
+                                        id:"category"
+                                    }}
+                                >
+                                    {
+                                        categoryList.map((category) =>
+                                            <MenuItem
+                                                value={category}
+                                                key={category.id}
+                                            >
+                                                {category.name}
+                                        </MenuItem>)
+                                    }
+                                </Select>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <InputLabel htmlFor={"academic-level"}>Academic Level</InputLabel>
+                                <Select
+                                    value={academic_level}
+                                    onChange={onAcademicLevelChange()}
+                                    className={"field"}
+                                    inputProps={{
+                                        id:"academic-level"
+                                    }}
+                                >
+                                    {
+                                        academicList.map((grade) =>
+                                            <MenuItem
+                                                value={grade}
+                                                key={grade}
+                                            >
+                                                {grade}
+                                            </MenuItem>)
+                                    }
+                                </Select>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <TextField
+                                    label={"Hourly Tuition"}
+                                    value={hourlyTuition || ''}
+                                    InputProps={{readOnly:true}}
+                                    variant={"outlined"}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item>
+                        <Grid container direction={"row"} justify={"flex-end"}>
+                            <Grid item xs={3}>
+                                <InputLabel htmlFor={"duration"}>Duration</InputLabel>
+                                <Select
+                                    value={duration}
+                                    onChange={onDurationChange()}
+                                    className={"field"}
+                                    inputProps={{
+                                        id:"academic-level"
+                                    }}
+                                >
                                     <MenuItem
-                                        value={category}
-                                        key={category.id}
+                                        value={1}
+                                        key={1}
                                     >
-                                        {category.name}
-                                </MenuItem>)
-                            }
-                        </Select>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <InputLabel htmlFor={"academic-level"}>Academic Level</InputLabel>
-                        <Select
-                            value={academic_level}
-                            onChange={onAcademicLevelChange()}
-                            className={"field"}
-                            inputProps={{
-                                id:"academic-level"
-                            }}
-                        >
-                            {
-                                academicList.map((grade) =>
+                                        1 Hour
+                                    </MenuItem>
                                     <MenuItem
-                                        value={grade}
-                                        key={grade}
+                                        value={1.5}
+                                        key={2}
                                     >
-                                        {grade}
-                                    </MenuItem>)
-                            }
-                        </Select>
+                                        1.5 Hours
+                                    </MenuItem>
+                                    <MenuItem
+                                        value={2}
+                                        key={3}
+                                    >
+                                        2 Hours
+                                    </MenuItem>
+                                    <MenuItem
+                                        value={0.5}
+                                        key={4}
+                                    >
+                                        0.5 Hour
+                                    </MenuItem>
+                                </Select>
+                            </Grid>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={3}>
-                        <TextField
-                            label={"Hourly Tuition"}
-                            value={hourlyTuition || ''}
-                            InputProps={{readOnly:true}}
-                            variant={"outlined"}
-                        />
+                    <Grid item>
+                        <Grid container direction={"row"} justify={"flex-end"}>
+                            <Grid item xs={3}>
+                                <TextField
+                                    className={"field"}
+                                    label="Sessions"
+                                    value={sessions}
+                                    onChange={onSessionsChange()}
+                                    type={"number"}
+                                />
+                            </Grid>
+                        </Grid>
                     </Grid>
-                </Grid>
-            </Grid>
-            <Grid item>
-                <Grid container direction={"row"} justify={"flex-end"}>
-                    <Grid item xs={3}>
-                        <InputLabel htmlFor={"duration"}>Duration</InputLabel>
-                        <Select
-                            value={duration}
-                            onChange={onDurationChange()}
-                            className={"field"}
-                            inputProps={{
-                                id:"academic-level"
-                            }}
-                        >
-                            <MenuItem
-                                value={1}
-                                key={1}
-                            >
-                                1 Hour
-                            </MenuItem>
-                            <MenuItem
-                                value={1.5}
-                                key={2}
-                            >
-                                1.5 Hours
-                            </MenuItem>
-                            <MenuItem
-                                value={2}
-                                key={3}
-                            >
-                                2 Hours
-                            </MenuItem>
-                            <MenuItem
-                                value={0.5}
-                                key={4}
-                            >
-                                0.5 Hour
-                            </MenuItem>
-                        </Select>
-                    </Grid>
-                </Grid>
-            </Grid>
-            <Grid item>
-                <Grid container direction={"row"} justify={"flex-end"}>
-                    <Grid item xs={3}>
-                        <TextField
-                            className={"field"}
-                            label="Sessions"
-                            value={sessions}
-                            onChange={onSessionsChange()}
-                            type={"number"}
-                        />
-                    </Grid>
-                </Grid>
-            </Grid>
-            <Grid item>
-                <Grid container direction={"row"} justify={"flex-end"}>
-                    <Grid item xs={3}>
-                        <TextField
-                            label={"Total Tuition"}
-                            value={priceQuote || ''}
-                            InputProps={{readOnly:true}}
-                            variant={"outlined"}
-                        />
+                    <Grid item>
+                        <Grid container direction={"row"} justify={"flex-end"}>
+                            <Grid item xs={3}>
+                                <TextField
+                                    label={"Total Tuition"}
+                                    value={priceQuote || ''}
+                                    InputProps={{readOnly:true}}
+                                    variant={"outlined"}
+                                />
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>

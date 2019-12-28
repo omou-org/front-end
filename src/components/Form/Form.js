@@ -44,7 +44,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import {DatePicker, TimePicker, MuiPickersUtilsProvider,} from "material-ui-pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import {durationParser, numSessionsParser, timeParser} from "./FormUtils";
+import {createDiscountPayload, durationParser, numSessionsParser, timeParser} from "./FormUtils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
 
 const parseGender = {
@@ -577,10 +577,15 @@ class Form extends Component {
                                 this.props.registrationActions.submitForm(this.state);
                             }
                         } else {
-                            if(this.state.form !== "pricing"){
-                                this.props.registrationActions.submitForm(this.state);
-                            } else {
+                            if(this.state.form === "pricing"){
                                 this.props.adminActions.setPrice(this.state);
+                            } else if( this.state.form === "discount"){
+                                let discountType = this.state["Discount Description"]["Discount Type"];
+                                let discountPayload = createDiscountPayload(this.state, discountType);
+                                console.log(discountPayload);
+                                this.props.adminActions.setDiscount(discountType, discountPayload);
+                            } else {
+                                this.props.registrationActions.submitForm(this.state);
                             }
                         }
                     }
@@ -676,6 +681,7 @@ class Form extends Component {
             } else {
                 oldState[`${sectionTitle}_validated`][field.name] = false;
             }
+
             return oldState;
         }, () => {
             this.setState({
@@ -753,6 +759,16 @@ class Form extends Component {
                 this.validateField(this.state.activeSection, field, value);
             });
         }
+    }
+
+    onDateChange(date, label, fieldTitle) {
+        this.setState((prevState)=>{
+            prevState[label][fieldTitle] = date;
+            return {
+                ...prevState,
+                nextSection: this.validateSection(),
+            };
+        })
     }
 
     renderField(field, label, fieldIndex) {
@@ -981,10 +997,7 @@ class Form extends Component {
                             margin="normal"
                             label={fieldTitle}
                             value={this.state[label][fieldTitle]}
-                            onChange={(date) =>{ this.setState((prevState)=>{
-                                prevState[label][fieldTitle] = date;
-                                return prevState;
-                            }) }}
+                            onChange={(date) =>{ this.onDateChange(date, label, fieldTitle) }}
                             openTo={fieldTitle==="Birthday" ? "year" :"day"}
                             error={!this.state[label + "_validated"][field.name]}
                             format="MM/dd/yyyy"
@@ -1266,7 +1279,12 @@ class Form extends Component {
                 <div className="confirmation-copy">
                     <Typography className="title" align="left">Confirmation</Typography>
                     {
-                        steps.map((sectionTitle) => (
+                        steps.map((sectionTitle) => {
+                            let sectionFields = this.state.conditional &&
+                                !Array.isArray(this.getFormObject()[sectionTitle])
+                                ? this.getFormObject()[sectionTitle][this.state.conditional]:
+                                this.getFormObject()[sectionTitle];
+                            return(
                             <div key={sectionTitle}>
                                 <Typography
                                     className="section-title"
@@ -1274,7 +1292,7 @@ class Form extends Component {
                                     {sectionTitle}
                                 </Typography>
                                 {
-                                    this.getFormObject()[sectionTitle].map(({field, type}) => {
+                                    sectionFields.map(({field, type}) => {
                                         let fieldVal = this.state[sectionTitle][field];
                                         if (fieldVal && fieldVal.hasOwnProperty("value")) {
                                             fieldVal = fieldVal.value;
@@ -1296,7 +1314,8 @@ class Form extends Component {
                                     })
                                 }
                             </div>
-                        ))
+                        )
+                    })
                     }
                 </div>
             </div>
