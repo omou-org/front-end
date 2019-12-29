@@ -1,5 +1,5 @@
 // React Imports
-import React, {useCallback, useState, useEffect} from "react";
+import React, {useCallback, useState, useEffect, useMemo} from "react";
 import {Redirect, useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../../actions/authActions";
@@ -21,10 +21,23 @@ import Add from "@material-ui/icons/CheckCircle";
 // Local Component Imports
 import "./Form.scss"
 import TextField from "@material-ui/core/es/TextField/TextField";
+import {bindActionCreators} from "redux";
+import * as apiActions from "../../actions/apiActions";
+import * as userActions from "../../actions/userActions";
+import * as registrationActions from "../../actions/registrationActions";
+import {dayOfWeek} from "./FormUtils";
 
 
-const PriceQuoteForm = ({courses, tutoring, students, disablePay}) => {
+const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
     const dispatch = useDispatch();
+    const api = useMemo(
+        () => ({
+            ...bindActionCreators(apiActions, dispatch),
+            ...bindActionCreators(userActions, dispatch),
+            ...bindActionCreators(registrationActions, dispatch),
+        }),
+        [dispatch]
+    );
     const history = useHistory();
     const isAdmin = useSelector(({auth}) => auth.isAdmin);
     const [priceQuote, setPriceQuote] = useState({
@@ -42,8 +55,8 @@ const PriceQuoteForm = ({courses, tutoring, students, disablePay}) => {
     const [priceAdjustment, setPriceAdjustment] = useState(0);
 
     useEffect(()=>{
-        console.log(courses, tutoring, students)
-    },[courses, tutoring, students]);
+        console.log(courses, tutoring)
+    },[courses, tutoring]);
 
     const [payment, setPayment] = useState(1000);
     const [paymentMethod, setPaymentMethod] = useState(()=>{
@@ -65,7 +78,6 @@ const PriceQuoteForm = ({courses, tutoring, students, disablePay}) => {
             payment_method: paymentMethod,
             courses: courses,
             tutoring: tutoring,
-            students: students,
             disabled_discounts: discounts.filter((discount) => {
                 return !discount.enable;
             }),
@@ -76,41 +88,29 @@ const PriceQuoteForm = ({courses, tutoring, students, disablePay}) => {
 
     const handlePay = () => (e)=>{
         e.preventDefault();
-        // setSelectionPending(false);
-        // Object.keys(props.registration.registered_courses).forEach((studentID)=>{
-        //     props.registration.registered_courses[studentID].forEach(({type, course_id, new_course})=>{
-        //         if(selectedCourses[studentID][course_id].checked){
-        //             switch(type){
-        //                 case "class":
-        //                     api.submitClassRegistration(studentID, course_id);
-        //                     break;
-        //                 case "tutoring":
-        //                     let schedule = {
-        //                         ...new_course.schedule,
-        //                         start_date:new_course.schedule.start_date.substring(0,10),
-        //                         end_date: new_course.schedule.end_date.substring(0,10),
-        //                     }
-        //                     new_course = {
-        //                         ...new_course,
-        //                         ...schedule,
-        //                     };
-        //                     delete new_course["schedule"];
-        //                     let dayOfWeek = {
-        //                         0: "Sun",
-        //                         1: "Mon",
-        //                         2: "Tue",
-        //                         3: "Wed",
-        //                         4: "Thu",
-        //                         5: "Fri",
-        //                         6: "Sat",
-        //                     };
-        //                     new_course.day_of_week = dayOfWeek[new_course.day_of_week];
-        //                     api.submitTutoringRegistration(new_course,studentID);
-        //                     break;
-        //             }
-        //         }
-        //     })
-        // });
+        // create course enrollments
+        courses.forEach(course => {
+            api.submitClassRegistration(course.student_id, course.course_id);
+        });
+        tutoring.forEach(tutoring => {
+            let tutoringCourse = {
+                subject: tutoring.new_course.title,
+                day_of_week: dayOfWeek[tutoring.new_course.day_of_week],
+                start_time: tutoring.new_course.schedule.start_time,
+                end_time: tutoring.new_course.schedule.end_time,
+                start_date: tutoring.new_course.schedule.start_date.substring(0,10),
+                end_date: tutoring.new_course.schedule.end_date.substring(0,10),
+                max_capacity: 1,
+                course_category: tutoring.category_id,
+                instructor: tutoring.new_course.instructor,
+                type:"T",
+                description: tutoring.new_course.description,
+                // need to add academic level
+            };
+            console.log(tutoringCourse, tutoring.student_id)
+            api.submitTutoringRegistration(tutoringCourse, Number(tutoring.student_id));
+        });
+
         history.push(`/registration/receipt/`);
     }
 
@@ -262,7 +262,6 @@ const PriceQuoteForm = ({courses, tutoring, students, disablePay}) => {
 PriceQuoteForm.propTypes = {
     "courses": PropTypes.array.isRequired,
     "tutoring": PropTypes.array.isRequired,
-    "students": PropTypes.array.isRequired,
 };
 
 export default PriceQuoteForm;

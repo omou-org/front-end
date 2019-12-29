@@ -316,10 +316,10 @@ const addTutoringRegistration = (prevState, form) => {
             day_of_week: dayOfWeek,
             max_capacity: 1,
             enrollment_id_list: [studentID], //array with student_id
+            description: studentInfoNote,
         },
         student_id: studentID,
         course_id: "T" + (isStudentCurrentlyRegistered ? (prevState.registered_courses[studentID].length + 1).toString() : "0"),
-        enrollment_note: studentInfoNote,
         sessions: numSessions,
         academic_level: academicLevel,
         category: category,

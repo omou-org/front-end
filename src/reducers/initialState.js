@@ -148,6 +148,11 @@ function initRequests() {
             },
             [DELETE]:"",
             [PATCH]: "",
+        },
+        "registration":{
+            "enrollment":{
+                [POST]:{},
+            }
         }
     };
 }

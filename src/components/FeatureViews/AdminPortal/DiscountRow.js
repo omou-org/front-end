@@ -22,8 +22,24 @@ import Done from "@material-ui/icons/Done";
 import {DatePicker, TimePicker, } from "material-ui-pickers";
 import Select from "@material-ui/core/Select";
 import {dateParser} from "../../Form/FormUtils";
+import { withStyles } from '@material-ui/core/styles';
+import blue from "@material-ui/core/es/colors/blue";
 
-function DiscountRow({discount, type}){
+const styles = theme => ({
+    colorSwitchBase: {
+        color: blue[300],
+        '&$colorChecked':{
+            color: blue[500],
+            '& + $colorBar': {
+                backgroundColor: blue[500],
+            }
+        }
+    },
+    colorBar: {},
+    colorChecked: {},
+});
+
+function DiscountRow({discount, type, classes}){
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -48,7 +64,7 @@ function DiscountRow({discount, type}){
         "Percent":"percent",
         "fixed":"Fixed",
         "percent":"Percent",
-    }
+    };
 
     useEffect(()=>{
         setDiscountFields(()=>{
@@ -158,7 +174,13 @@ function DiscountRow({discount, type}){
                 <Switch
                     onClick={handleDiscountToggle(discount.id, type, discount.active)}
                     checked={discount.active}
-                    value={`${discount.name} is ${discount.active ? "active":"inactive"}`}/>
+                    value={`${discount.name} is ${discount.active ? "active":"inactive"}`}
+                    classes={{
+                        switchBase: classes.colorSwitchBase,
+                        checked: classes.colorChecked,
+                        bar: classes.colorBar,
+                    }}
+                />
             </Grid>
             <Grid item xs={2} md={2}>
                 <IconButton
@@ -365,4 +387,4 @@ function DiscountRow({discount, type}){
     </Grid>)
 }
 
-export default DiscountRow;
+export default withStyles(styles)(DiscountRow);

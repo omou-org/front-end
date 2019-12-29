@@ -312,11 +312,14 @@ function RegistrationCart(props) {
                                 academic_level: academic_level,
                                 sessions: courseVal.sessions,
                                 duration: durationParser[form["Schedule"]["Duration"]],
+                                student_id: studentID,
+                                new_course: tutoringCourse.new_course,
                             });
                         } else {
                             courses["courses"].push({
                                 course_id: courseID,
                                 sessions: courseVal.sessions,
+                                student_id: studentID,
                             });
                         }
                     }
@@ -368,7 +371,6 @@ function RegistrationCart(props) {
             }
             <Grid item xs={12}>
                 <PriceQuoteForm
-                    students={registeredStudents()}
                     courses={registeredCourses()["courses"]}
                     tutoring={registeredCourses()["tutoring"]}
                     disablePay={!(selectedCoursesHaveSession() && selectedCourseSameAsRedux())}

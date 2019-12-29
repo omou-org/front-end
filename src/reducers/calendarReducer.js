@@ -35,7 +35,7 @@ export default function Calendar(state = initialState.CalendarData, { payload, t
                     return {
                         ...finalResult
                     }
-                })
+                });
 
 
             return newState;
@@ -53,7 +53,7 @@ export default function Calendar(state = initialState.CalendarData, { payload, t
 const getSessions = (state,{id,response}) => {
     const {data} = response;
     if(id !== REQUEST_ALL){
-        const updatedState = {...state};
+        let updatedState = {...state};
         if(updatedState["CourseSessions"]){
             updatedState["CourseSessions"].push(data);
         } else {

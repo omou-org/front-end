@@ -11,16 +11,10 @@ import {bindActionCreators} from "redux";
 import * as adminActions from "../../../actions/adminActions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import {Button, Typography} from "@material-ui/core";
-import Paper from "@material-ui/core/Paper";
 import {withRouter} from "react-router-dom";
 import {DELETE, GET, PATCH, POST} from "../../../actions/actionTypes";
 import Loading from "../../Loading";
 import {REQUEST_ALL} from "../../../actions/apiActions";
-import Switch from "@material-ui/core/es/Switch/Switch";
-import Options from "@material-ui/icons/MoreVert"
-import IconButton from "@material-ui/core/es/IconButton/IconButton";
-import Menu from "@material-ui/core/es/Menu/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
 import DiscountRow from "./DiscountRow";
 
 const useStyles = makeStyles({
