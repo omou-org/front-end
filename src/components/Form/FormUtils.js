@@ -53,7 +53,6 @@ export const numSessionsParser = (form, fieldTitle) => {
  * @description: parses form to create discount payload
  * */
 export const createDiscountPayload = (form) => {
-    console.log(form["Discount Description"]["Discount Type"]);
     const discountType = form["Discount Description"]["Discount Type"];
     let discountPayload = {
         name: form["Discount Description"]["Discount Name"],

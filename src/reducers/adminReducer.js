@@ -1,18 +1,9 @@
 import initialState from './initialState';
 import * as actions from "../actions/actionTypes"
 
-export default function admin(state = initialState, { payload, type, }) {
+export default function admin(state = initialState.Admin, { payload, type, }) {
     let newState = state;
-
     switch (type) {
-        case actions.POST_CATEGORY_SUCCESS:
-            return updateCourseCategories(newState, payload, "POST");
-        case actions.POST_CATEGORY_FAILED:
-            return newState;
-        case actions.GET_CATEGORY_SUCCESS:
-            return updateCourseCategories(newState, payload,"GET");
-        case actions.PATCH_CATEGORY_SUCCESS:
-            return updateCourseCategories(newState, payload, "PATCH");
         case actions.GET_PRICE_RULE_SUCCESS:
             return updatePriceRule(newState, payload, "GET");
         case actions.POST_PRICE_RULE_SUCCESS:
@@ -23,55 +14,38 @@ export default function admin(state = initialState, { payload, type, }) {
             console.log("Failed posting price rule");
             return {...newState};
         case actions.POST_DISCOUNT_PAYMENT_METHOD_SUCCESS:
-            return updateDiscount(newState, payload, "POST");
+            return updateDiscount(newState, payload, "POST", "PaymentMethod");
         case actions.POST_DISCOUNT_MULTI_COURSE_SUCCESS:
-            return updateDiscount(newState, payload, "POST");
+            return updateDiscount(newState, payload, "POST", "MultiCourse");
         case actions.POST_DISCOUNT_DATE_RANGE_SUCCESS:
-            return updateDiscount(newState, payload, "POST");
+            return updateDiscount(newState, payload, "POST", "DateRange");
+
+        case actions.GET_DISCOUNT_PAYMENT_METHOD_SUCCESS:
+            return updateDiscount(newState, payload, "GET", "PaymentMethod");
+        case actions.GET_DISCOUNT_MULTI_COURSE_SUCCESS:
+            return updateDiscount(newState, payload, "GET", "MultiCourse");
+        case actions.GET_DISCOUNT_DATE_RANGE_SUCCESS:
+            return updateDiscount(newState, payload, "GET", "DateRange");
+
+        case actions.DELETE_DISCOUNT_PAYMENT_METHOD_SUCCESS:
+            return updateDiscount(newState, payload, "DELETE", "PaymentMethod");
+        case actions.DELETE_DISCOUNT_MULTI_COURSE_SUCCESS:
+            return updateDiscount(newState, payload, "DELETE", "MultiCourse");
+        case actions.DELETE_DISCOUNT_DATE_RANGE_SUCCESS:
+            return updateDiscount(newState, payload, "DELETE", "DateRange");
+
         default:
-            return newState;
+            return state;
     }
 }
-
-const updateCourseCategories = (state, payload, action) => {
-    let {response} = payload;
-    let {data} = response;
-    switch(action){
-        case "GET":{
-            state["Course"]["CourseCategories"] = data;
-            break;
-        }
-        case "POST":{
-            state["Course"]["CourseCategories"].push(data);
-            break;
-        }
-        case "PATCH":{
-            let categoryList = state["Course"]["CourseCategories"];
-            let updatedCategory = categoryList.find((category)=>{return category.id === data.id});
-            state["Course"]["CourseCategories"] = categoryList.map((category)=>{
-                if(category.id === data.id){
-                    return updatedCategory;
-                } else {
-                    return category;
-                }
-            });
-        }
-    }
-    return {...state};
-};
 
 const updatePriceRule = (state, payload, action) => {
     let {response} = payload;
     let {data} = response;
-    let {Admin} = state;
-    let {PriceRules} = Admin;
+    let {PriceRules} = state;
     switch(action){
         case "GET":{
-            if(Array.isArray(PriceRules)){
-                PriceRules.push(data);
-            } else {
-                PriceRules = data;
-            }
+            PriceRules.push(data);
             break;
         }
         case "POST":{
@@ -90,29 +64,27 @@ const updatePriceRule = (state, payload, action) => {
         }
     }
     return {
-        ...Admin,
+        ...state,
         PriceRules,
     }
 };
 
-const updateDiscount = (state, payload, action) => {
-    let {response} = payload;
+const updateDiscount = (state, payload, action, discountType) => {
+    let {response, id} = payload;
     let {data} = response;
-    let {Admin} = state;
-    let {Discounts} = Admin;
-
+    let {Discounts} = state;
     switch(action){
         case "GET":{
-            Discounts = data;
+            Discounts[discountType] = data;
             break;
         }
         case "POST":{
-            Discounts.push(data);
+            Discounts[discountType].push(data);
             break;
         }
         case "PATCH":{
-            let updatedDiscount = Discounts.find((discount)=>{return discount.id === data.id});
-            Discounts = Discounts.map((discount)=>{
+            let updatedDiscount = Discounts[discountType].find((discount)=>{return discount.id === data.id});
+            Discounts[discountType] = Discounts[discountType].map((discount)=>{
                 if(discount.id === data.id){
                     return updatedDiscount;
                 } else {
@@ -121,9 +93,14 @@ const updateDiscount = (state, payload, action) => {
             });
             break;
         }
+        case "DELETE":{
+            Discounts[discountType] = Discounts[discountType].filter((discount)=>{
+                return discount.id !== id;
+            });
+        }
     }
     return {
-        ...Admin,
+        ...state,
         Discounts,
     }
 };

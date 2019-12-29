@@ -1,6 +1,6 @@
 import * as types from "./actionTypes";
 import {submitParentAndStudent, postData, patchData, typeToPostActions} from "./rootActions";
-import {wrapGet, postCourse, formatCourse, wrapPost, instance, wrapPatch} from "./apiActions";
+import {wrapGet, postCourse, formatCourse, wrapPost, instance, wrapPatch, wrapDelete} from "./apiActions";
 import {academicLevelParse, courseTypeParse} from "../reducers/registrationReducer";
 
 export const addCategory = (categoryName, categoryDescription) => wrapPost(
@@ -113,4 +113,70 @@ export const setDiscount = (discountType, discountPayload) => {
             )
         }
     }
-}
+};
+
+export const fetchMultiCourseDiscount = (id) => wrapGet(
+    '/pricing/discount-multi-course/',
+    [
+        types.GET_DISCOUNT_MULTI_COURSE_STARTED,
+        types.GET_DISCOUNT_MULTI_COURSE_SUCCESS,
+        types.GET_DISCOUNT_MULTI_COURSE_FAILED,
+    ],
+    {}
+);
+
+export const fetchPaymentMethodDiscount = (id) => wrapGet(
+    '/pricing/discount-payment-method/',
+    [
+        types.GET_DISCOUNT_PAYMENT_METHOD_STARTED,
+        types.GET_DISCOUNT_PAYMENT_METHOD_SUCCESS,
+        types.GET_DISCOUNT_PAYMENT_METHOD_FAILED,
+    ],
+    {}
+);
+
+export const fetchDateRangeDiscount = (id) => wrapGet(
+    '/pricing/discount-date-range/',
+    [
+        types.GET_DISCOUNT_DATE_RANGE_START,
+        types.GET_DISCOUNT_DATE_RANGE_SUCCESS,
+        types.GET_DISCOUNT_DATE_RANGE_FAILED,
+    ],
+    {}
+);
+
+export const deleteMultiCourseDiscount= (id)=> wrapDelete(
+    '/pricing/discount-multi-course/',
+    [
+        types.DELETE_DISCOUNT_MULTI_COURSE_STARTED,
+        types.DELETE_DISCOUNT_MULTI_COURSE_SUCCESS,
+        types.DELETE_DISCOUNT_MULTI_COURSE_FAILED,
+    ],
+    {
+        id:id,
+    }
+);
+
+export const deletePaymentMethodDiscount = (id) => wrapDelete(
+    '/pricing/discount-payment-method/',
+    [
+        types.DELETE_DISCOUNT_PAYMENT_METHOD_STARTED,
+        types.DELETE_DISCOUNT_PAYMENT_METHOD_SUCCESS,
+        types.DELETE_DISCOUNT_PAYMENT_METHOD_FAILED,
+    ],
+    {
+        id:id,
+    }
+);
+
+export const deleteDateRangeDiscount = (id) => wrapDelete(
+    '/pricing/discount-date-range/',
+    [
+        types.DELETE_DISCOUNT_DATE_RANGE_STARTED,
+        types.DELETE_DISCOUNT_DATE_RANGE_SUCCESS,
+        types.DELETE_DISCOUNT_DATE_RANGE_FAILED,
+    ],
+    {
+        id:id,
+    }
+);

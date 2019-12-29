@@ -160,6 +160,16 @@ function AdminActionCenter(props) {
                         to={`/adminportal/tuition-rules`}>
                         <ListItemText primary="TUITION RULES" />
                     </MenuItem>
+                    <MenuItem
+                        component={NavLink}
+                        to={`/adminportal/form/discount`}>
+                        <ListItemText primary="SET DISCOUNTS" />
+                    </MenuItem>
+                    <MenuItem
+                        component={NavLink}
+                        to={`/adminportal/manage-discounts`}>
+                        <ListItemText primary="DISCOUNTS" />
+                    </MenuItem>
                 </StyledMenu>
         </Grid>);
 }

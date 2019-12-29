@@ -5,6 +5,7 @@ import TuitionRules from "../FeatureViews/AdminPortal/TuitionRules";
 import AdminRoute from "./AdminRoute";
 import Form from "../Form/Form";
 import ManageCategories from "../FeatureViews/AdminPortal/ManageCategories";
+import ManageDiscounts from "../FeatureViews/AdminPortal/ManageDiscounts";
 
 // Local Component Imports
 
@@ -18,7 +19,9 @@ function AdminViewsRoutes(props) {
             <AdminRoute
                 path="/adminportal/manage-course-categories"
                 render={(passedProps) => <ManageCategories {...passedProps}/>}/>
-            {/*<AdminRoute*/}
+            <AdminRoute
+                path={"/adminportal/manage-discounts"}
+                render={(passedProps) => <ManageDiscounts {...passedProps}/> }/>
             {/*    path="/adminportal/form/instructor"*/}
             {/*    render={(passedProps) => <Form {...passedProps}/> }/>*/}
             <AdminRoute

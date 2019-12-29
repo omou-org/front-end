@@ -1,4 +1,4 @@
-import {GET, PATCH, POST} from "../actions/actionTypes";
+import {DELETE, GET, PATCH, POST} from "../actions/actionTypes";
 
 export default {
     "Authentication": initAuth(),
@@ -70,7 +70,11 @@ export default {
     },
     "Admin":{
         PriceRules: [],
-        Discounts: [],
+        Discounts: {
+            MultiCourse: [],
+            DateRange: [],
+            PaymentMethod: [],
+        },
     }
 };
 
@@ -124,6 +128,26 @@ function initRequests() {
             [GET]: {},
             [PATCH]: {},
             [POST]: {},
+        },
+        "discount":{
+            "dateRange":{
+                [GET]: {},
+                [PATCH]: {},
+                [POST]: {},
+                [DELETE]:"",
+            },
+            "multiCourse":{
+                [GET]: {},
+                [PATCH]: {},
+                [POST]: {},
+                [DELETE]:"",
+            },
+            "paymentMethod":{
+                [GET]: {},
+                [PATCH]: {},
+                [POST]: {},
+                [DELETE]:"",
+            }
         }
     };
 }

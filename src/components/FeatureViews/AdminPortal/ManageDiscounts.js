@@ -13,13 +13,15 @@ import {connect, useDispatch, useSelector} from "react-redux";
 import {Button, Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import {withRouter} from "react-router-dom";
-import Checkbox from "@material-ui/core/Checkbox";
-import BackButton from "../../BackButton";
-import NavLinkNoDup from "../../Routes/NavLinkNoDup";
-import TextField from "@material-ui/core/TextField";
-import * as apiActions from "../../../actions/apiActions";
-import * as userActions from "../../../actions/userActions";
-import {GET, POST} from "../../../actions/actionTypes";
+import {DELETE, GET, POST} from "../../../actions/actionTypes";
+import Loading from "../../Loading";
+import {REQUEST_ALL} from "../../../actions/apiActions";
+import Switch from "@material-ui/core/es/Switch/Switch";
+import Options from "@material-ui/icons/MoreVert"
+import IconButton from "@material-ui/core/es/IconButton/IconButton";
+import Menu from "@material-ui/core/es/Menu/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import DiscountRow from "./DiscountRow";
 
 const useStyles = makeStyles({
     setParent: {
@@ -38,224 +40,86 @@ function ManageDiscounts(props) {
         [dispatch]
     );
 
-    const [categoryName , setCategoryName] = useState("");
-    const [categoryDescription, setCategoryDescription] = useState("");
-    const [categoryList, setCategoryList] = useState([]);
-
-    const categories = useSelector(({"Course": {CourseCategories}}) => CourseCategories);
     const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
+    const discountList = useSelector(({"Admin":{Discounts}}) => Discounts);
+    const [stateDiscountList , setStateDiscountList ] = useState(null);
 
     useEffect(()=>{
-        api.fetchCategories();
+        api.fetchMultiCourseDiscount();
+        api.fetchPaymentMethodDiscount();
+        api.fetchDateRangeDiscount();
     },[api]);
 
     useEffect(()=>{
-        if(categories.length > categoryList.length){
-            let parsedCategoryList = categories.map((category)=>({
-                ...category,
-                editing: false,
-            }));
-            setCategoryList(parsedCategoryList);
+        if(requestStatus.discount["dateRange"][GET][REQUEST_ALL] === 200 &&
+            requestStatus.discount["multiCourse"][GET][REQUEST_ALL]  === 200 &&
+            requestStatus.discount["paymentMethod"][GET][REQUEST_ALL]  === 200
+        ){
+            setStateDiscountList(discountList);
         }
-    }, [requestStatus.category[GET],requestStatus.category[POST]]);
+    }, [requestStatus.discount.dateRange[GET][REQUEST_ALL],
+        requestStatus.discount.multiCourse[GET][REQUEST_ALL],
+        requestStatus.discount.paymentMethod[GET][REQUEST_ALL]]);
 
-    const handleChange = (field) => (e) =>{
-        switch(field){
-            case "name":{
-                setCategoryName(e.target.value);
-                break;
-            }
-            case "description":{
-                setCategoryDescription(e.target.value);
-                break;
-            }
-        }
-    };
-
-    const submitCategory = () => (e) =>{
-        e.preventDefault();
-        if(categoryName !== ""){
-            api.addCategory(categoryName, categoryDescription);
-            setCategoryName("");
-            setCategoryDescription("");
-        }
+    if(requestStatus.discount["dateRange"][GET][REQUEST_ALL]  !== 200 &&
+        requestStatus.discount["multiCourse"][GET][REQUEST_ALL]  !== 200 &&
+        requestStatus.discount["paymentMethod"][GET][REQUEST_ALL]  !== 200
+    ){
+        return <Loading/>
     }
 
-    const categoryForm = () => {
-        return (
-                <Paper className={"category-row new-category"}>
-                    <Grid container alignItems={"center"}>
-                        <Grid item xs={3}>
-                            <TextField
-                                className={"field"}
-                                label="Category Name"
-                                value={categoryName}
-                                onChange={handleChange("name")}
-                                required={true}
-                            />
-                        </Grid>
-                        <Grid item xs={7}>
-                            <TextField
-                                className={"field"}
-                                multiline={true}
-                                label="Category Description"
-                                value={categoryDescription}
-                                onChange={handleChange("description")}
-                            />
-                        </Grid>
-                        <Grid item xs={2}>
-                            <Button className="add-category"
-                                    onClick={submitCategory()}>
-                                Add Category
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </Paper>
-        )
+    const discountTypeParser = {
+        "MultiCourse": "Bulk Order Discount",
+        "DateRange": "Date Range Discount",
+        "PaymentMethod": "Payment Method Discount",
+        "Bulk Order Discount": "MultiCourse",
+        "Date Range Discount": "DateRange",
+        "Payment Method Discount": "PaymentMethod",
     };
 
-    const displayCategories = () => {
+    const displayDiscountType = (discountType, discountList) => {
         return <Grid container>
             <Grid item xs={12}>
+                <Typography variant={"h6"} align={"left"}>
+                    {discountTypeParser[discountType]}
+                </Typography>
                 <Grid container className={'accounts-table-heading'}>
                     <Grid item xs={3} md={3}>
                         <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
-                            Category Name
+                            Discount Name
                         </Typography>
                     </Grid>
-                    <Grid item xs={7} md={7}>
+                    <Grid item xs={5} md={5}>
                         <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
                             Description
                         </Typography>
                     </Grid>
                     <Grid item xs={2} md={2}>
                         <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
-                            Edit
+                            Active
                         </Typography>
                     </Grid>
+                    <Grid item xs={2} md={2}/>
                 </Grid>
             </Grid>
             <Grid item xs={12}>
                 <Grid container spacing={8} alignItems={"center"}>
                     {
-                        categoryList.map((category) => {
-                                return (<Grid item xs={12} md={12} key={category.id}>
-                                    {
-                                        category.editing ? editCategoryRow(category) : viewCategoryRow(category)
-                                    }
-                                </Grid>);
-                        })
+                        // display discounts with name + description
+                        discountList.map(discount =>
+                            <DiscountRow discount={discount} type={discountType}/>)
                     }
                 </Grid>
             </Grid>
         </Grid>
     };
 
-    const editCategory = (id) => (e) => {
-        e.preventDefault();
-        let editingCategory = categoryList.find((category)=>{return category.id === id});
-        let categoryToUpload;
-        if(editingCategory){ //if we're about to update/we were just editing
-            categoryToUpload = {
-                id: editingCategory.id,
-                name: editingCategory.name,
-                description: editingCategory.description,
-            }
-            api.updateCategory(id, categoryToUpload);
-        }
-        editingCategory.editing = !editingCategory.editing;
-        let updatedCategoryList = categoryList.map((category)=>{
-            if(category.id === id){
-                return editingCategory;
-            } else {
-                return category;
-            }
-        });
-        setCategoryList(updatedCategoryList);
-    };
-
-    const viewCategoryRow = (category) => {
-        return (<Paper square={true} className={"category-row"} >
-            <Grid container alignItems={"center"}>
-                <Grid item xs={3} md={3} >
-                    <Typography align={'left'}>
-                        {category.name}
-                    </Typography>
-                </Grid>
-                <Grid item xs={7} md={7}>
-                    <Typography align={'left'}>
-                        {category.description}
-                    </Typography>
-                </Grid>
-                <Grid item xs={2} md={2}>
-                    <Button
-                        onClick={editCategory(category.id)}
-                        className={"button"}>
-                        EDIT
-                    </Button>
-                </Grid>
-            </Grid>
-        </Paper>)
-    };
-
-    const handleEditCategory = (type, id) => (e) =>{
-        let editingCategory = categoryList.find((category)=>{return category.id === id});
-        switch(type){
-            case "name":
-                editingCategory.name = e.target.value;
-                break;
-            case "description":
-                editingCategory.description = e.target.value;
-                break;
-        }
-        let updatedCategoryList = categoryList.map((category)=>{
-            if(category.id === id){
-                return editingCategory;
-            } else {
-                return category;
-            }
-        });
-        setCategoryList(updatedCategoryList);
-    };
-
-    const editCategoryRow = (category) => {
-        return(<Paper square={true} className={"category-row"} >
-            <Grid container alignItems={"center"}>
-                <Grid item xs={3} md={3} >
-                    <TextField
-                        value={category.name}
-                        defaultValue={category.name}
-                        label={"Name"}
-                        onChange={handleEditCategory("name",category.id)}
-                    />
-                </Grid>
-                <Grid item xs={7} md={7}>
-                    <TextField
-                        value={category.description}
-                        defaultValue={category.description}
-                        label={"Description"}
-                        onChange={handleEditCategory("description",category.id)}
-                    />
-                </Grid>
-                <Grid item xs={2} md={2}>
-                    <Button
-                        onClick={editCategory(category.id)}
-                        className={"button"}>
-                        UPDATE
-                    </Button>
-                </Grid>
-            </Grid>
-        </Paper>)
-    }
-
     return (
         <div>
-            <Typography variant={"h4"} align={"left"}>Manage Categories</Typography>
+            <Typography variant={"h4"} align={"left"}>Manage Discounts</Typography>
             {
-                categoryForm()
-            }
-            {
-                displayCategories()
+                stateDiscountList && Object.entries(discountList).map(([discountType, discountList]) =>
+                    displayDiscountType(discountType, discountList))
             }
         </div>
     );

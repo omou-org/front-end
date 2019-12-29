@@ -97,10 +97,39 @@ export const wrapPatch = (endpoint, [startType, successType, failType], {id, dat
                     "Authorization": `Token ${getState().auth.token}`,
                 },
             });
-            // succesful request
+            // successful request
             newAction(successType, response);
         } catch ({response}) {
             // failed request
+            newAction(failType, response);
+        }
+    };
+
+export const wrapDelete = (endpoint, [startType, successType, failType], {id, config}) =>
+    async (dispatch, getState) => {
+        // creates a new actions based on the response given
+        const newAction = (type, response) => {
+            dispatch({
+                type,
+                "payload": {
+                    id,
+                    response,
+                },
+            });
+        };
+
+        //request starting
+        newAction(startType, {});
+
+        try{
+            const response = await instance.delete(`${endpoint}${id}/`, config || {
+                "headers": {
+                    "Authorization": `Token ${getState().auth.token}`,
+                },
+            });
+            // successful response
+            newAction(successType, response);
+        } catch ({response}) {
             newAction(failType, response);
         }
     };

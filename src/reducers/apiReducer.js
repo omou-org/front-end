@@ -163,6 +163,27 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             return updatePriceRuleStatus(state, payload.id, status, actions.POST);
         case actions.POST_PRICE_RULE_SUCCESS:
             return updatePriceRuleStatus(state, payload.id, status, actions.POST);
+
+        case actions.GET_DISCOUNT_DATE_RANGE_START:
+            return updateDiscountStatus(state, payload.id, api.REQUEST_STARTED, actions.GET, "dateRange");
+        case actions.GET_DISCOUNT_PAYMENT_METHOD_STARTED:
+            return updateDiscountStatus(state, payload.id, api.REQUEST_STARTED, actions.GET, "paymentMethod");
+        case actions.GET_DISCOUNT_MULTI_COURSE_STARTED:
+            return updateDiscountStatus(state, payload.id, api.REQUEST_STARTED, actions.GET, "multiCourse");
+
+        case actions.GET_DISCOUNT_DATE_RANGE_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.GET, "dateRange");
+        case actions.GET_DISCOUNT_MULTI_COURSE_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.GET, "multiCourse");
+        case actions.GET_DISCOUNT_PAYMENT_METHOD_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.GET, "paymentMethod");
+
+        case actions.DELETE_DISCOUNT_PAYMENT_METHOD_SUCCESS:
+            return updateDiscountStatus(state, payload.id, status, actions.DELETE, "paymentMethod");
+        case actions.DELETE_DISCOUNT_DATE_RANGE_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.DELETE, "dateRange");
+        case actions.DELETE_DISCOUNT_MULTI_COURSE_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.DELETE, "multiCourse");
         default:
             return state;
     }
@@ -295,4 +316,15 @@ const updatePriceRuleStatus = (state, id, status, requestType) => {
     let newState = {...state};
     newState.priceRule[requestType][id] = status;
     return newState;
-}
+};
+
+const updateDiscountStatus = (state, id, status, requestType, discountType) => {
+    let newState = {...state};
+    if(requestType !== actions.DELETE){
+        newState.discount[discountType][requestType][id] = status;
+    } else {
+        newState.discount[discountType][requestType] = status;
+    }
+
+    return newState;
+};
