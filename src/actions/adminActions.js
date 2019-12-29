@@ -109,7 +109,8 @@ export const setDiscount = (discountType, discountPayload) => {
                     types.POST_DISCOUNT_PAYMENT_METHOD_STARTED,
                     types.POST_DISCOUNT_PAYMENT_METHOD_SUCCESS,
                     types.POST_DISCOUNT_PAYMENT_METHOD_FAILED,
-                ]
+                ],
+                discountPayload,
             )
         }
     }
@@ -178,5 +179,44 @@ export const deleteDateRangeDiscount = (id) => wrapDelete(
     ],
     {
         id:id,
+    }
+);
+
+export const patchMultiCourseDiscount = (id, payload) => wrapPatch(
+    '/pricing/discount-multi-course/',
+    [
+        types.PATCH_DISCOUNT_MULTI_COURSE_STARTED,
+        types.PATCH_DISCOUNT_MULTI_COURSE_SUCCESS,
+        types.PATCH_DISCOUNT_MULTI_COURSE_FAILED,
+    ],
+    {
+        id:id,
+        data: payload,
+    }
+);
+
+export const patchPaymentMethodDiscount = (id, payload) => wrapPatch(
+    '/pricing/discount-payment-method/',
+    [
+        types.PATCH_DISCOUNT_PAYMENT_METHOD_STARTED,
+        types.PATCH_DISCOUNT_PAYMENT_METHOD_SUCCESS,
+        types.PATCH_DISCOUNT_PAYMENT_METHOD_FAILED,
+    ],
+    {
+        id:id,
+        data: payload,
+    }
+);
+
+export const patchDateRangeDiscount = (id, payload) => wrapPatch(
+    '/pricing/discount-date-range/',
+    [
+        types.PATCH_DISCOUNT_DATE_RANGE_STARTED,
+        types.PATCH_DISCOUNT_DATE_RANGE_SUCCESS,
+        types.PATCH_DISCOUNT_DATE_RANGE_FAILED,
+    ],
+    {
+        id: id,
+        data: payload,
     }
 );

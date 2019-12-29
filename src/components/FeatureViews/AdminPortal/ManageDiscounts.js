@@ -13,7 +13,7 @@ import {connect, useDispatch, useSelector} from "react-redux";
 import {Button, Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import {withRouter} from "react-router-dom";
-import {DELETE, GET, POST} from "../../../actions/actionTypes";
+import {DELETE, GET, PATCH, POST} from "../../../actions/actionTypes";
 import Loading from "../../Loading";
 import {REQUEST_ALL} from "../../../actions/apiActions";
 import Switch from "@material-ui/core/es/Switch/Switch";
@@ -51,15 +51,17 @@ function ManageDiscounts(props) {
     },[api]);
 
     useEffect(()=>{
-        if(requestStatus.discount["dateRange"][GET][REQUEST_ALL] === 200 &&
-            requestStatus.discount["multiCourse"][GET][REQUEST_ALL]  === 200 &&
-            requestStatus.discount["paymentMethod"][GET][REQUEST_ALL]  === 200
+        const reduxDiscounts = JSON.stringify(discountList);
+        const stateDiscounts = JSON.stringify(stateDiscountList);
+        if(reduxDiscounts !== stateDiscounts &&
+            (requestStatus.discount["dateRange"][GET][REQUEST_ALL]  == 200 ||
+            requestStatus.discount[PATCH]  == 200 ||
+            requestStatus.discount[DELETE] == 200)
         ){
             setStateDiscountList(discountList);
         }
-    }, [requestStatus.discount.dateRange[GET][REQUEST_ALL],
-        requestStatus.discount.multiCourse[GET][REQUEST_ALL],
-        requestStatus.discount.paymentMethod[GET][REQUEST_ALL]]);
+    }, [discountList, requestStatus.discount["dateRange"][GET][REQUEST_ALL],
+        requestStatus.discount[PATCH],requestStatus.discount[DELETE]]);
 
     if(requestStatus.discount["dateRange"][GET][REQUEST_ALL]  !== 200 &&
         requestStatus.discount["multiCourse"][GET][REQUEST_ALL]  !== 200 &&
@@ -118,7 +120,7 @@ function ManageDiscounts(props) {
         <div>
             <Typography variant={"h4"} align={"left"}>Manage Discounts</Typography>
             {
-                stateDiscountList && Object.entries(discountList).map(([discountType, discountList]) =>
+                stateDiscountList && Object.entries(stateDiscountList).map(([discountType, discountList]) =>
                     displayDiscountType(discountType, discountList))
             }
         </div>

@@ -132,22 +132,20 @@ function initRequests() {
         "discount":{
             "dateRange":{
                 [GET]: {},
-                [PATCH]: {},
                 [POST]: {},
-                [DELETE]:"",
             },
             "multiCourse":{
                 [GET]: {},
                 [PATCH]: {},
                 [POST]: {},
-                [DELETE]:"",
             },
             "paymentMethod":{
                 [GET]: {},
-                [PATCH]: {},
                 [POST]: {},
-                [DELETE]:"",
-            }
+
+            },
+            [DELETE]:"",
+            [PATCH]: "",
         }
     };
 }

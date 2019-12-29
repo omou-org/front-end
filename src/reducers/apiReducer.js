@@ -184,6 +184,15 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             return updateDiscountStatus(state,payload.id, status, actions.DELETE, "dateRange");
         case actions.DELETE_DISCOUNT_MULTI_COURSE_SUCCESS:
             return updateDiscountStatus(state,payload.id, status, actions.DELETE, "multiCourse");
+
+        case actions.PATCH_DISCOUNT_PAYMENT_METHOD_SUCCESS:
+            return updateDiscountStatus(state, payload.id, status, actions.PATCH, "paymentMethod");
+        case actions.PATCH_DISCOUNT_DATE_RANGE_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.PATCH, "dateRange");
+        case actions.PATCH_DISCOUNT_MULTI_COURSE_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.PATCH, "multiCourse");
+
+
         default:
             return state;
     }
@@ -320,10 +329,10 @@ const updatePriceRuleStatus = (state, id, status, requestType) => {
 
 const updateDiscountStatus = (state, id, status, requestType, discountType) => {
     let newState = {...state};
-    if(requestType !== actions.DELETE){
+    if(requestType !== actions.DELETE && requestType !== actions.PATCH){
         newState.discount[discountType][requestType][id] = status;
     } else {
-        newState.discount[discountType][requestType] = status;
+        newState.discount[requestType] = status;
     }
 
     return newState;

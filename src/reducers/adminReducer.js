@@ -34,6 +34,13 @@ export default function admin(state = initialState.Admin, { payload, type, }) {
         case actions.DELETE_DISCOUNT_DATE_RANGE_SUCCESS:
             return updateDiscount(newState, payload, "DELETE", "DateRange");
 
+        case actions.PATCH_DISCOUNT_PAYMENT_METHOD_SUCCESS:
+            return updateDiscount(newState, payload, "PATCH", "PaymentMethod");
+        case actions.PATCH_DISCOUNT_MULTI_COURSE_SUCCESS:
+            return updateDiscount(newState, payload, "PATCH", "MultiCourse");
+        case actions.PATCH_DISCOUNT_DATE_RANGE_SUCCESS:
+            return updateDiscount(newState, payload, "PATCH", "DateRange");
+
         default:
             return state;
     }
@@ -83,9 +90,9 @@ const updateDiscount = (state, payload, action, discountType) => {
             break;
         }
         case "PATCH":{
-            let updatedDiscount = Discounts[discountType].find((discount)=>{return discount.id === data.id});
+            let updatedDiscount = data;
             Discounts[discountType] = Discounts[discountType].map((discount)=>{
-                if(discount.id === data.id){
+                if(discount.id === id){
                     return updatedDiscount;
                 } else {
                     return discount;
