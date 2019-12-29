@@ -113,7 +113,7 @@ class Scheduler extends Component {
                     title: this.props.courses[session.course].title,
                     description: session.description ? session.description : "",
                     type: this.props.courses[session.course].type,
-                    resourceId: this.props.courses[session.course].room_id ? this.props.courses[session.course_id].room_id : 1,
+                    resourceId: this.props.courses[session.course_id] ? this.props.courses[session.course_id].room_id : 1,
                     start: startTime,
                     end: endTime,
                     instructor: instructorName,
@@ -470,8 +470,9 @@ class Scheduler extends Component {
         }));
 
     // go to session view
-    goToSessionView = () => (e) => {
+    goToSessionView = (e) => {
         // e.preventDefault();
+        console.log("hi")
         const sessionID = e.event.id;
         const courseID = e.event.extendedProps.courseID;
         this.props.history.push(`/scheduler/view-session/${courseID}/${sessionID}`);

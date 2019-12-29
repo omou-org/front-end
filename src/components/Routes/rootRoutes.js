@@ -67,13 +67,6 @@ function rootRoutes(props) {
                 path='/noresults'
                 render={(passedProps) => <NoResultsPage {...passedProps} />} />
 
-
-            {/* <ProtectedRoute
-                exact
-                path="/scheduler"
-                render={(passedProps) => <Scheduler {...passedProps} />}/> */}
-
-
             {/* Accounts */}
             <ProtectedRoute
                 exact
