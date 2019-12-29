@@ -30,29 +30,6 @@ import {MuiPickersUtilsProvider} from "material-ui-pickers";
 import Routes from "../Routes/rootRoutes";
 import NavBarRoutes from "../Routes/NavBarRoutes";
 
-// const NavList = [
-//     // {
-//     //     "name": "Dashboard",
-//     //     "link": "/",
-//     //     "icon": <DashboardIcon />,
-//     // },
-//     // {
-//     //     "name": "Scheduler",
-//     //     "link": "/scheduler",
-//     //     "icon": <EventIcon />,
-//     // },
-//     {
-//     "name": "Accounts",
-//     "link": "/accounts",
-//     "icon": <AccountsIcon />,
-//     },
-//     {
-//         "name": "Registration",
-//         "link": "/registration",
-//         "icon": <AssignmentIcon />,
-//     },
-// ];
-
 const Navigation = (props) => {
     const {pathname} = useLocation();
     const dispatch = useDispatch();
@@ -64,11 +41,11 @@ const Navigation = (props) => {
             //     "link": "/",
             //     "icon": <DashboardIcon />,
             // },
-            // {
-            //     "name": "Scheduler",
-            //     "link": "/scheduler",
-            //     "icon": <EventIcon />,
-            // },
+            {
+                "name": "Scheduler",
+                "link": "/scheduler",
+                "icon": <EventIcon />,
+            },
             {
                 "name": "Accounts",
                 "link": "/accounts",

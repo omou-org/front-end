@@ -444,6 +444,7 @@ RegistrationCart.propTypes = {
 const mapStateToProps = (state) => ({
     "registration": state.Registration,
     "studentAccounts": state.Users.StudentList,
+    "instructorAccounts": state.Users.InstructorList,
     "courseList": state.Course.NewCourseList,
 });
 

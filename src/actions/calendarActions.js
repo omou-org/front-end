@@ -1,4 +1,5 @@
 import * as types from './actionTypes';
+import {wrapGet} from "./apiActions";
 
 export function fetchTeacherAvailabilities(event){
 
@@ -15,3 +16,16 @@ export function deleteEvent(event) {
 export function filterEvent(event) {
     return { type: types.FILTER_EVENT, payload: event }
 }
+
+export const fetchSessions = ({config, id}) => wrapGet(
+    "/scheduler/session/",
+    [
+        types.GET_SESSIONS_STARTED,
+        types.GET_SESSIONS_SUCCESS,
+        types.GET_SESSIONS_FAILED,
+    ],
+    {
+        config:config,
+        id: id,
+    }
+)

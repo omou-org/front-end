@@ -48,7 +48,9 @@ export default {
         },
         "InstructorList": {},
     },
-    "CalenderData": {},
+    "CalendarData": {
+        "CourseSessions": "",
+    },
     "RequestStatus": initRequests(),
     "SearchResults": {
         SearchQuery:{},

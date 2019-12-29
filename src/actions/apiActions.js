@@ -204,15 +204,29 @@ export const formatCourse = (formCourse, type) =>{
     let day = dayOfWeek();
     let endDate = new Date(startDate);
     endDate = new Date(endDate.setDate(startDate.getDate() + 7*formCourse["Number of Weekly Sessions"]));
-    startDate = startDate.toISOString().substring(0,10);
-    endDate = endDate.toISOString().substring(0,10);
+    let dateFormat = {
+        year:"numeric",
+        month:"2-digit",
+        day:"2-digit",
+    }
+    startDate = startDate.toLocaleString("sv-SE",dateFormat);
+    endDate = endDate.toLocaleString("sv-SE",dateFormat);
     let startTime = new Date(formCourse["Start Time"]);
     let endTime = new Date(startTime);
-
-    endTime = new Date(endTime.setTime(endTime.getTime() + durationParser[formCourse["Duration"]]*60*60*1000));
-    endTime = endTime.toTimeString().substring(0,5);
-    startTime = startTime.toTimeString().substring(0,5);
-
+    let duration = {
+        "0.5 Hours": 0.5,
+        "1 Hour": 1,
+        "1.5 Hours": 1.5,
+        "2 Hours": 2,
+    };
+    endTime = new Date(endTime.setTime(endTime.getTime() + duration[formCourse["Duration"]]*60*60*1000));
+    let timeFormat = {
+        hour12:false,
+        hour:"2-digit",
+        minute:"2-digit",
+    }
+    endTime = endTime.toLocaleString("eng-US",timeFormat);
+    startTime = startTime.toLocaleString("eng-US", timeFormat);
     return {
         "subject": formCourse["Course Name"],
         "type": type,
@@ -229,17 +243,21 @@ export const formatCourse = (formCourse, type) =>{
     };
 }
 
-const parseTime = (time) =>{
+const courseName = (form, type) => {
+    if(type === "T"){
+        return "1:1 " + form["Instructor"].value + form[""]
+    }
+}
+
+export const parseTime = (time) =>{
     let formattedTime;
     if(typeof time === "string"){
-        if(time.indexOf("AM") > -1 || time.indexOf("PM") > -1){
-            formattedTime = new Date();
-            formattedTime.setHours(Number(time.substring(0,time.indexOf(":"))));
-            formattedTime.setMinutes(Number(time.substring(time.indexOf(":")+1,time.indexOf(" "))));
-            formattedTime.setSeconds(0);
-        }
+        let Hour = time.substr(17, 2);
+        let to12HourTime = (Hour % 12) || 12;
+        let ampm = Hour < 12 ? " am" : " pm";
+        formattedTime = to12HourTime + time.substr(19, 3) + ampm;
     } else {
         formattedTime = time;
     }
-    return formattedTime.toTimeString().substring(0,5)
+    return formattedTime;
 }
