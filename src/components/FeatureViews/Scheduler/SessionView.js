@@ -29,10 +29,10 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import Typography from "@material-ui/core/Typography";
 import { parseTime } from "../../../actions/apiActions";
 import { GET } from "../../../actions/actionTypes";
-import ClassSessionView from "./ClassSessionView";
-import TutoringSessionView from "./TutoringSessionView";
 import Avatar from "@material-ui/core/Avatar";
 import { stringToColor } from "../Accounts/accountUtils";
+import DisplaySessionView from "./DisplaySessionView";
+import EditSessionView from "./EditSessionView";
 
 class SessionView extends Component {
     constructor(props) {
@@ -41,6 +41,7 @@ class SessionView extends Component {
             "open": false,
             "current": "current",
             "all": "all",
+            "editing": false,
             "students": {
                 0: {
                     name: "Calvin Fronda",
@@ -110,155 +111,27 @@ class SessionView extends Component {
     }
 
     render() {
-        let instructor = this.state.courseData && this.props.instructors[this.state.courseData.instructor_id] ? this.props.instructors[this.state.courseData.instructor_id] : { name: "N/A" };
-        let dayConverter = {
-            0: "Sunday",
-            1: "Monday",
-            2: "Tuesday",
-            3: "Wednesday",
-            4: "Thursday",
-            5: "Friday",
-            6: "Saturday"
-        }
-        const styles = (username) => ({
-            "backgroundColor": stringToColor(username),
-            "color": "white",
-            "width": "3vw",
-            "height": "3vw",
-            "fontSize": 15,
-            "margin-right": 10,
-        });
-
-        const studentKeys = Object.keys(this.state.students);
-
-
         return (
-            <Grid
-                className="main-session-view"
-                container
-            >
+            <Grid className="main-session-view" container>
                 <Paper
                     className="paper"
-                    mt="2em"
-                    style={{ width: "100%" }}>
-                    <Grid
-                        className="session-button"
-                        item>
+                    mt="2em" style={{ width: "100%" }}>
+                    <Grid className="session-button" item>
                         <BackButton />
                     </Grid>
-                    <Divider />
-
-                    <Grid
-                        className="session-view"
-                        container
-                        spacing={2}
-                        direction={"row"}>
-                        <Grid
-                            item
-                            sm={12}
-                        >
-                            <Typography
-                                align="left"
-                                className="session-view-title"
-                                variant="h3">
-                                {this.state.courseData && this.state.courseData.title}
-                            </Typography>
-                        </Grid>
-                        <Grid
-                            align="left"
-                            className="session-view-details"
-                            container
-                            spacing={16}
-                            xs={6}
-                        >
-                            <Grid
-                                item
-                                xs={6}>
-                                <Typography variant="h5"> Subject </Typography>
-                                <Typography varient="body1">{this.state.courseData && this.state.courseData.subject} </Typography>
-                            </Grid>
-                            <Grid
-                                item
-                                xs={6}>
-                                <Typography variant="h5"> Room</Typography>
-                                <Typography variant="body1">{this.state.courseData && (this.state.courseData.room_id || "TBA")}</Typography>
-                            </Grid>
-
-                            <Grid
-                                item
-                                xs={12}>
-                                <Typography variant="h5"> Instructor </Typography>
-                                <NavLink to={`/accounts/instructor/${instructor.user_id}`}
-                                >
-                                    <Typography variant="body1" color="primary">{this.state.courseData && instructor.name}</Typography>
-                                </NavLink>
-                            </Grid>
-                            <Grid
-                                item
-                                xs={6}>
-                                <Typography variant="h5"> Day(s)</Typography>
-                                <Typography variant="body1">{this.state.courseData && dayConverter[this.state.sessionData.start]}</Typography>
-                            </Grid>
-                            <Grid
-                                item
-                                xs={6}>
-                                <Typography variant="h5"> Time </Typography>
-                                <Typography variant="body1">{this.state.courseData && `${this.state.sessionData.startTime} - ${this.state.sessionData.endTime}`}</Typography>
-                            </Grid>
-
-                        </Grid>
-
-                        <Grid
-                            item
-                            xs={6}>
-                            <Typography variant="h5" align="left"> Students Enrolled  </Typography>
-                            <Grid container direction='row'>
-                                {studentKeys.map(key => <NavLink to={`/accounts/student/${this.state.students[key].id}`} style={{ textDecoration: "none" }}>
-                                    <Avatar
-                                        style={styles(this.state.students[key].name)}>{this.state.students[key].name.match(/\b(\w)/g).join("")}
-                                    </Avatar>
-                                </NavLink>)}
-                            </Grid>
-                        </Grid>
-
-                    </Grid>
-
-                    <Grid
-                        className="session-detail-action-control"
-                        container
-                        direction="row"
-                        justify="flex-end">
-                        <Grid item>
-                            <Button
-                                className="button"
-                                color="secondary"
-                                to="/"
-                                variant="outlined">
-                                Edit Session
-                            </Button>
-                        </Grid>
-                        <Grid item>
-                            <Button
-                                className="button"
-                                color="secondary"
-                                onClick={this.handleOpen}
-                                variant="outlined">
-                                Delete
-                            </Button>
-                        </Grid>
-                        <Grid item>
-                            <Button
-                                className="button"
-                                color="secondary"
-                                component={NavLink}
-                                to="/scheduler"
-                                variant="outlined">
-                                Return to scheduling
-                            </Button>
-                        </Grid>
-                    </Grid>
+                    <Divider/>
+                    {
+                        // this.state.editing ?
+                        //     <DisplaySessionView
+                        //         course = {this.state.courseData}
+                        //         session = {this.state.sessionData}
+                        //     /> :
+                        //     <EditSessionView
+                        //         course = {this.state.courseData}
+                        //         session = {this.state.sessionData}
+                        //     />
+                    }
                 </Paper>
-                {/* {this.state.courseData && this.state.courseData.type === "C" ? <ClassSessionView courseData={this.state.courseData} /> : <TutoringSessionView />} */}
                 <Dialog
                     aria-describedby="alert-dialog-description"
                     aria-labelledby="alert-dialog-title"

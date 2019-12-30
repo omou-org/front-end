@@ -52,7 +52,7 @@ const updatePriceRule = (state, payload, action) => {
     let {PriceRules} = state;
     switch(action){
         case "GET":{
-            PriceRules.push(data);
+            PriceRules = data;
             break;
         }
         case "POST":{

@@ -88,10 +88,12 @@ const TutoringPriceQuote = ({courseType}) => {
         let filteredCategoryRules = rules.filter( rule => rule.category.id === categoryID);
         return Array.from(new Set(filteredCategoryRules.map(rule => rule.academic_level)))
             .map(grade => academicLevelParse[grade]);
-    }
+    };
 
     useEffect(()=>{
+        console.log(priceRules)
         if(priceRules && priceRules.length > 0){
+            console.log(priceRules, uniqueCategories(priceRules));
             setCategoryList(uniqueCategories(priceRules));
         };
     },[priceRules]);
