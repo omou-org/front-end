@@ -13,6 +13,7 @@ import { NavLink } from "react-router-dom";
 import * as calendarActions from "../../../actions/calendarActions";
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
+import * as adminActions from "../../../actions/adminActions";
 
 // Material UI Imports
 import Button from "@material-ui/core/Button";
@@ -33,14 +34,13 @@ import Avatar from "@material-ui/core/Avatar";
 import { stringToColor } from "../Accounts/accountUtils";
 import DisplaySessionView from "./DisplaySessionView";
 import EditSessionView from "./EditSessionView";
+import admin from "../../../reducers/adminReducer";
 
 class SessionView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            "open": false,
-            "current": "current",
-            "all": "all",
+            "editSelection": "current",
             "editing": false,
             "students": {
                 0: {
@@ -63,17 +63,10 @@ class SessionView extends Component {
         };
     }
 
-    handleOpen = () => {
-        this.setState({ "open": true });
-    }
-
-    handleClose = () => {
-        this.setState({ "open": false });
-    }
-
     componentDidMount() {
         this.props.calendarActions.fetchSessions({ id: this.props.match.params.session_id });
         this.props.apiActions.fetchCourses(this.props.match.params.course_id);
+        this.props.adminActions.fetchCategories();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -85,11 +78,7 @@ class SessionView extends Component {
                     return Number(session.course) === Number(this.props.match.params.course_id) &&
                         Number(session.id) === Number(this.props.match.params.session_id);
                 });
-                sessionData["start"] = new Date(sessionData.start_datetime)
-                    .getDay()
-                // let sessionTime = sessionData.start.substring(sessionData.start.indexOf(" "));
-
-                // sessionData["start"] = sessionData.start.replace(sessionTime, " | " + parseTime(new Date(sessionData.start_datetime).toUTCString()));
+                sessionData["start"] = new Date(sessionData.start_datetime).getDay();
 
                 const startTime = parseTime(new Date(sessionData.start_datetime).toUTCString());
                 const endTime = parseTime(new Date(sessionData.end_datetime).toUTCString());
@@ -110,6 +99,16 @@ class SessionView extends Component {
         }
     }
 
+    toggleEditing = (editSelection) =>{
+        this.setState((oldState=>{
+            return {
+                ...oldState,
+                editing: !oldState.editing,
+                editSelection: editSelection,
+            }
+        }))
+    }
+
     render() {
         return (
             <Grid className="main-session-view" container>
@@ -121,57 +120,22 @@ class SessionView extends Component {
                     </Grid>
                     <Divider/>
                     {
-                        // this.state.editing ?
-                        //     <DisplaySessionView
-                        //         course = {this.state.courseData}
-                        //         session = {this.state.sessionData}
-                        //     /> :
-                        //     <EditSessionView
-                        //         course = {this.state.courseData}
-                        //         session = {this.state.sessionData}
-                        //     />
+                        this.state.editing ?
+                            <EditSessionView
+                                course = {this.state.courseData}
+                                session = {this.state.sessionData}
+                                enrolledStudents = {this.state.students}
+                                editSelection = {this.state.editSelection}
+                                handleToggleEditing = {this.toggleEditing}
+                            /> :
+                            <DisplaySessionView
+                                course = {this.state.courseData}
+                                session = {this.state.sessionData}
+                                enrolledStudents = {this.state.students}
+                                handleToggleEditing = {this.toggleEditing}
+                            />
                     }
                 </Paper>
-                <Dialog
-                    aria-describedby="alert-dialog-description"
-                    aria-labelledby="alert-dialog-title"
-                    className="session-view-modal"
-                    fullWidth
-                    maxWidth="xs"
-                    onClose={this.handleClose}
-                    open={this.state.open}>
-                    <DialogTitle id="form-dialog-title">Delete</DialogTitle>
-                    <Divider />
-                    <DialogContent>
-                        <RadioGroup
-                            aria-label="delete"
-                            name="delete"
-                            onChange={this.handleChange}>
-                            <FormControlLabel
-                                control={<Radio color="primary" />}
-                                label="This Session"
-                                labelPlacement="end"
-                                value="current" />
-                            <FormControlLabel
-                                control={<Radio color="primary" />}
-                                label="All Sessions"
-                                labelPlacement="end"
-                                value="all" />
-                        </RadioGroup>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button
-                            color="primary"
-                            onClick={this.handleClose}>
-                            Cancel
-                        </Button>
-                        <Button
-                            color="primary"
-                            onClick={this.handleClose}>
-                            Apply
-                        </Button>
-                    </DialogActions>
-                </Dialog>
             </Grid >
         );
     }
@@ -197,6 +161,7 @@ function mapDispatchToProps(dispatch) {
         "calendarActions": bindActionCreators(calendarActions, dispatch),
         "apiActions": bindActionCreators(apiActions, dispatch),
         "userActions": bindActionCreators(userActions, dispatch),
+        "adminActions":bindActionCreators(adminActions, dispatch),
     };
 }
 

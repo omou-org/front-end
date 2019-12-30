@@ -100,13 +100,13 @@ function AdminActionCenter(props) {
         setTuitionAnchor(null);
     },[location]);
 
-    return (<Grid container>
-                <Grid item xs={3}>
+    return (<Grid container spacing={16}>
+                <Grid item>
                     <Button component={NavLinkNoDup} to={"/registration/form/instructor"}
                             color={"primary"}
                             className={"button"}>Add Instructor</Button>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item>
                     <Button
                         variant="outlined"
                         color="primary"
@@ -117,7 +117,7 @@ function AdminActionCenter(props) {
                         Manage Course
                     </Button>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item>
                     <Button
                         variant="outlined"
                         color="primary"

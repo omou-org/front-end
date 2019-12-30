@@ -16,14 +16,16 @@ export const addCategory = (categoryName, categoryDescription) => wrapPost(
     }
 );
 
-export const fetchCategories = () => wrapGet(
+export const fetchCategories = (id) => wrapGet(
     '/course/categories/',
     [
         types.GET_CATEGORY_STARTED,
         types.GET_CATEGORY_SUCCESS,
         types.GET_CATEGORY_FAILED,
     ],
-    {}
+    {
+        id:id,
+    }
 );
 
 export const updateCategory = (id, updatedCategory) => wrapPatch(

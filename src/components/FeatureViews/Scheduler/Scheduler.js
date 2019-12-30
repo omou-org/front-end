@@ -101,11 +101,18 @@ class Scheduler extends Component {
             const initialSessions = this.props.sessions.map((session) => {
                 let startUTCString = new Date(session.start_datetime).toUTCString();
                 let endUTCString = new Date(session.end_datetime).toUTCString();
-                let startTime = startUTCString.substr(17, 8);
-                let endTime = endUTCString.substr(17, 8);
-                let date = session.start_datetime.substr(0, 10);
-                startTime = new Date(date + "T" + startTime);
-                endTime = new Date(date + "T" + endTime);
+                let startTimeHour = Number(startUTCString.substr(17, 2));
+                let startTimeMin = Number(startUTCString.substr(20,2));
+                let endTimeHour = Number(endUTCString.substr(17, 2));
+                let endTimeMin = Number(endUTCString.substr(20, 2));
+                let date = new Date(session.start_datetime);
+                date.setDate(date.getDate()-1);
+                date.setHours(startTimeHour);
+                date.setMinutes(startTimeMin);
+                let startTime = date;
+                let endTime = new Date(date);
+                endTime.setHours(endTimeHour);
+                endTime.setMinutes(endTimeMin);
                 let instructorName = this.props.instructors[this.props.courses[session.course].instructor_id].name;
                 return {
                     id: session.id,

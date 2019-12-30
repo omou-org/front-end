@@ -91,9 +91,7 @@ const TutoringPriceQuote = ({courseType}) => {
     };
 
     useEffect(()=>{
-        console.log(priceRules)
         if(priceRules && priceRules.length > 0){
-            console.log(priceRules, uniqueCategories(priceRules));
             setCategoryList(uniqueCategories(priceRules));
         };
     },[priceRules]);

@@ -31,6 +31,14 @@ import PriceQuoteForm from "../../Form/PriceQuoteForm";
 import {durationParser} from "../../../actions/apiActions";
 import Avatar from "@material-ui/core/Avatar";
 import {stringToColor} from "../Accounts/accountUtils";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Divider from "@material-ui/core/Divider";
+import DialogContent from "@material-ui/core/DialogContent";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import Radio from "@material-ui/core/Radio";
+import DialogActions from "@material-ui/core/DialogActions";
+import Dialog from "@material-ui/core/Dialog";
+import {dayOfWeek} from "../../Form/FormUtils";
 
 const useStyles = makeStyles({
     setParent: {
@@ -40,7 +48,7 @@ const useStyles = makeStyles({
     }
 });
 
-function DisplaySessionView({course, session}) {
+function DisplaySessionView({course, session, enrolledStudents, handleToggleEditing}) {
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -51,10 +59,15 @@ function DisplaySessionView({course, session}) {
         [dispatch]
     );
 
+    const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
+    const categories = useSelector(({"Course": {CourseCategories}}) => CourseCategories);
+
     const [selectedCourses, selectCourse] = useState({});
     const [usersLoaded, setLoadingUsers] = useState(false);
     const [updatedCourses, addUpdatedCourse] = useState([]);
     const [selectionPendingStatus, setSelectionPending] = useState(false);
+    const [editAll, setEditAll] = useState(false);
+    const [editSelection, setEditSelection] = useState('current');
 
     useEffect(()=>{
         api.initializeRegistration();
@@ -68,16 +81,7 @@ function DisplaySessionView({course, session}) {
         // props.history.push(`/registration/course/${courseID}`);
     };
 
-    let instructor = this.state.courseData && this.props.instructors[this.state.courseData.instructor_id] ? this.props.instructors[this.state.courseData.instructor_id] : { name: "N/A" };
-    let dayConverter = {
-        0: "Sunday",
-        1: "Monday",
-        2: "Tuesday",
-        3: "Wednesday",
-        4: "Thursday",
-        5: "Friday",
-        6: "Saturday"
-    };
+    let instructor = course && instructors[course.instructor_id] ? instructors[course.instructor_id] : { name: "N/A" };
 
     const styles = (username) => ({
         "backgroundColor": stringToColor(username),
@@ -88,17 +92,37 @@ function DisplaySessionView({course, session}) {
         "margin-right": 10,
     });
 
-    const studentKeys = Object.keys(this.state.students);
+    const studentKeys = Object.keys(enrolledStudents);
+
+    const currentAllInverse = {
+        "current": "all",
+        "all":"current",
+    };
+
+    const handleEditToggle = (cancel) => event =>{
+        event.preventDefault();
+        if(cancel){
+            // if we're cancelling, then we apply edit to whatever it was before
+            setEditSelection(currentAllInverse[editSelection]);
+        }
+        setEditAll(!editAll);
+        if(editAll){
+            handleToggleEditing(editSelection);
+        }
+    };
+
+    const handleEditSelection = event => {
+        setEditSelection(event.target.value);
+    };
 
     return (<>
-        <Grid
-            className="session-view"
+        <Grid className="session-view"
             container spacing={2} direction={"row"}>
             <Grid item sm={12}>
                 <Typography align="left" variant="h3"
                             className="session-view-title"
                 >
-                    {this.state.courseData && this.state.courseData.title}
+                    {course && course.title}
                 </Typography>
             </Grid>
             <Grid
@@ -110,7 +134,10 @@ function DisplaySessionView({course, session}) {
                     <Typography variant="h5"> Subject </Typography>
                     <Typography varient="body1">
                         {
-                            this.state.courseData && this.state.courseData.subject
+                            (categories.length !== 0 && course) &&
+                            categories
+                                .find(category => category.id === course.category)
+                                .name
                         }
                     </Typography>
                 </Grid>
@@ -118,7 +145,7 @@ function DisplaySessionView({course, session}) {
                     <Typography variant="h5"> Room</Typography>
                     <Typography variant="body1">
                         {
-                            this.state.courseData && (this.state.courseData.room_id || "TBA")
+                            course && (course.room_id || "TBA")
                         }
                     </Typography>
                 </Grid>
@@ -129,7 +156,7 @@ function DisplaySessionView({course, session}) {
                     >
                         <Typography variant="body1" color="primary">
                             {
-                                this.state.courseData && instructor.name
+                                course && instructor.name
                             }
                         </Typography>
                     </NavLink>
@@ -138,7 +165,7 @@ function DisplaySessionView({course, session}) {
                     <Typography variant="h5"> Day(s)</Typography>
                     <Typography variant="body1">
                         {
-                            this.state.courseData && dayConverter[this.state.sessionData.start]
+                            course && dayOfWeek[session.start]
                         }
                     </Typography>
                 </Grid>
@@ -148,8 +175,8 @@ function DisplaySessionView({course, session}) {
                     <Typography variant="h5"> Time </Typography>
                     <Typography variant="body1">
                         {
-                            this.state.courseData &&
-                            `${this.state.sessionData.startTime} - ${this.state.sessionData.endTime}`
+                            course &&
+                            `${session.startTime} - ${session.endTime}`
                         }
                     </Typography>
                 </Grid>
@@ -160,12 +187,12 @@ function DisplaySessionView({course, session}) {
                 <Typography variant="h5" align="left"> Students Enrolled  </Typography>
                 <Grid container direction='row'>
                     {studentKeys.map(key =>
-                        <NavLink to={`/accounts/student/${this.state.students[key].id}`}
+                        <NavLink to={`/accounts/student/${enrolledStudents[key].id}`}
                                  style={{ textDecoration: "none" }}>
                             <Avatar
-                                style={styles(this.state.students[key].name)}>
+                                style={styles(enrolledStudents[key].name)}>
                                 {
-                                    this.state.students[key].name.match(/\b(\w)/g).join("")
+                                    enrolledStudents[key].name.match(/\b(\w)/g).join("")
                                 }
                             </Avatar>
                         </NavLink>)}
@@ -181,19 +208,20 @@ function DisplaySessionView({course, session}) {
                     className="button"
                     color="secondary"
                     to="/"
+                    onClick={handleEditToggle(false)}
                     variant="outlined">
                     Edit Session
                 </Button>
             </Grid>
-            <Grid item>
-                <Button
-                    className="button"
-                    color="secondary"
-                    onClick={this.handleOpen}
-                    variant="outlined">
-                    Delete
-                </Button>
-            </Grid>
+            {/*<Grid item>*/}
+            {/*    <Button*/}
+            {/*        className="button"*/}
+            {/*        color="secondary"*/}
+            {/*        onClick={handleEditToggle}*/}
+            {/*        variant="outlined">*/}
+            {/*        Delete*/}
+            {/*    </Button>*/}
+            {/*</Grid>*/}
             <Grid item>
                 <Button
                     className="button"
@@ -205,6 +233,47 @@ function DisplaySessionView({course, session}) {
                 </Button>
             </Grid>
         </Grid>
+        <Dialog
+            aria-describedby="alert-dialog-description"
+            aria-labelledby="alert-dialog-title"
+            className="session-view-modal"
+            fullWidth
+            maxWidth="xs"
+            onClose={handleEditToggle(false)}
+            open={editAll}>
+            <DialogTitle id="form-dialog-title">Delete</DialogTitle>
+            <Divider />
+            <DialogContent>
+                <RadioGroup
+                    aria-label="delete"
+                    name="delete"
+                    value={editSelection}
+                    onChange={handleEditSelection}>
+                    <FormControlLabel
+                        control={<Radio color="primary" />}
+                        label="This Session"
+                        labelPlacement="end"
+                        value="current" />
+                    <FormControlLabel
+                        control={<Radio color="primary" />}
+                        label="All Sessions"
+                        labelPlacement="end"
+                        value="all" />
+                </RadioGroup>
+            </DialogContent>
+            <DialogActions>
+                <Button
+                    color="primary"
+                    onClick={handleEditToggle(true)}>
+                    Cancel
+                </Button>
+                <Button
+                    color="primary"
+                    onClick={handleEditToggle(false)}>
+                    Apply
+                </Button>
+            </DialogActions>
+        </Dialog>
     </>);
 }
 
