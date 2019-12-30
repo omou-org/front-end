@@ -272,6 +272,7 @@ const addTutoringRegistration = (prevState, form) => {
                         studentName.substring(0,studentName.indexOf(" ")) + " - " + subject;
     let studentInfoNote = stringifyStudentInformation(form);
     let startDate = form["Schedule"]["Start Date"];
+    console.log(startDate);
     let dayOfWeek = new Date(startDate).getDay();
     let startTime = new Date(form["Schedule"]["Session Start Time"]);
     let duration = () => {

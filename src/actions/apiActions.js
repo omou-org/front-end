@@ -208,7 +208,8 @@ export const formatCourse = (formCourse, type) =>{
         year:"numeric",
         month:"2-digit",
         day:"2-digit",
-    }
+    };
+    console.log(startDate);
     startDate = startDate.toLocaleString("sv-SE",dateFormat);
     endDate = endDate.toLocaleString("sv-SE",dateFormat);
     let startTime = new Date(formCourse["Start Time"]);

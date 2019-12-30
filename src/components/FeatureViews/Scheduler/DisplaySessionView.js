@@ -39,6 +39,7 @@ import Radio from "@material-ui/core/Radio";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 import {dayOfWeek} from "../../Form/FormUtils";
+import {REQUEST_ALL} from "../../../actions/apiActions";
 
 const useStyles = makeStyles({
     setParent: {
@@ -115,6 +116,9 @@ function DisplaySessionView({course, session, enrolledStudents, handleToggleEdit
         setEditSelection(event.target.value);
     };
 
+    if(!course || !categories){
+        return <Loading/>
+    }
     return (<>
         <Grid className="session-view"
             container spacing={2} direction={"row"}>
@@ -134,7 +138,7 @@ function DisplaySessionView({course, session, enrolledStudents, handleToggleEdit
                     <Typography variant="h5"> Subject </Typography>
                     <Typography varient="body1">
                         {
-                            (categories.length !== 0 && course) &&
+                            categories.length !== 0 &&
                             categories
                                 .find(category => category.id === course.category)
                                 .name
@@ -165,7 +169,7 @@ function DisplaySessionView({course, session, enrolledStudents, handleToggleEdit
                     <Typography variant="h5"> Day(s)</Typography>
                     <Typography variant="body1">
                         {
-                            course && dayOfWeek[session.start]
+                            course && dayOfWeek[session.start-1 >= 0 ? session.start-1 : 6]
                         }
                     </Typography>
                 </Grid>

@@ -107,7 +107,6 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
                 description: tutoring.new_course.description,
                 // need to add academic level
             };
-            console.log(tutoringCourse, tutoring.student_id)
             api.submitTutoringRegistration(tutoringCourse, Number(tutoring.student_id));
         });
 

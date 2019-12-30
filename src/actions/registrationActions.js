@@ -1,6 +1,6 @@
 import * as types from "./actionTypes";
 import {submitParentAndStudent, postData, patchData, typeToPostActions} from "./rootActions";
-import {wrapGet, postCourse, formatCourse, wrapPost, instance} from "./apiActions";
+import {wrapGet, postCourse, formatCourse, wrapPost, instance, wrapPatch} from "./apiActions";
 
 const parseGender = {
     "Male": "M",
@@ -188,6 +188,19 @@ export const submitForm = (state, id) => {
             console.error(`Invalid form type ${state.form}`);
     }
 };
+
+export const patchCourse = (id,data) => wrapPatch(
+    '/course/catalog/',
+    [
+        types.PATCH_COURSE_STARTED,
+        types.PATCH_COURSE_SUCCESSFUL,
+        types.PATCH_COURSE_FAILED,
+    ],
+    {
+        id:id,
+        data:data,
+    }
+);
 
 export const resetSubmitStatus = () =>
     ({type: types.RESET_SUBMIT_STATUS, payload: null});

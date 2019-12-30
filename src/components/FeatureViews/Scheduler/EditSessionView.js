@@ -1,24 +1,24 @@
-import PropTypes from "prop-types";
 import React, {useState, useEffect, useMemo} from "react";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
-import BackArrow from "@material-ui/icons/ArrowBack";
 import { makeStyles } from "@material-ui/styles";
 
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
+import * as calendarActions from "../../../actions/calendarActions";
 import * as userActions from "../../../actions/userActions.js"
-import {connect, useDispatch, useSelector} from "react-redux";
-import {FormControl, Typography} from "@material-ui/core";
+import { useDispatch, useSelector} from "react-redux";
+import {Typography} from "@material-ui/core";
 import {NavLink, withRouter} from "react-router-dom";
 import * as apiActions from "../../../actions/apiActions";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Avatar from "@material-ui/core/Avatar";
-import {dayOfWeek} from "../../Form/FormUtils";
 import {DatePicker, TimePicker} from "material-ui-pickers";
 import {stringToColor} from "../Accounts/accountUtils";
+import SearchSelect from "react-select";
+import {useHistory} from "react-router-dom"
 
 const useStyles = makeStyles({
     setParent: {
@@ -35,17 +35,16 @@ function EditSessionView({course, session, enrolledStudents, handleToggleEditing
             ...bindActionCreators(apiActions, dispatch),
             ...bindActionCreators(userActions, dispatch),
             ...bindActionCreators(registrationActions, dispatch),
+            ...bindActionCreators(calendarActions, dispatch)
         }),
         [dispatch]
     );
+    const history = useHistory();
 
     const [sessionFields, setSessionFields] = useState({
-        category:"",
         start_time:"",
-    });
-
-    const [courseFields, setCourseFields] = useState({
-        subject:"",
+        title:"",
+        category:"",
     });
 
     useEffect(()=>{
@@ -64,10 +63,6 @@ function EditSessionView({course, session, enrolledStudents, handleToggleEditing
         "margin-right": 10,
     });
     const categories = useSelector(({"Course": {CourseCategories}}) => CourseCategories);
-
-    const goToCourse = (courseID) => () => {
-        // props.history.push(`/registration/course/${courseID}`);
-    };
     const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
 
     let instructor = course && instructors[course.instructor_id] ? instructors[course.instructor_id] : { name: "N/A" };
@@ -76,17 +71,63 @@ function EditSessionView({course, session, enrolledStudents, handleToggleEditing
         if(course && session) {
             let startTime = new Date(session.start_datetime);
             // console.log(session.start_datetime.substr(5,2));
+            startTime.setDate(startTime.getDate()-1);
             startTime.setHours(Number(session.start_datetime.substr(11,2)));
             startTime.setMinutes(Number(session.start_datetime.substr(14,2)));
+            let category = categories.find(category => category.id === course.category);
             setSessionFields({
-                category: categories.find(category => category.id === course.category),
+                category: {value: category.id, label: category.name} ,
                 start_time: startTime,
+                title: course.title,
             });
-            console.log(course, session, startTime)
         }
     }, [course,session]);
 
     const studentKeys = Object.keys(enrolledStudents);
+
+    const handleDateTimeChange = date => {
+        setSessionFields({
+            ...sessionFields,
+            start_time:date,
+        });
+    };
+
+    const categoriesList = categories
+        .map(({id,name})=> ({
+            value: id,
+            label: name,
+        }));
+
+    const handleCategoryChange = event => {
+        console.log(event);
+        setSessionFields({
+            ...sessionFields,
+            category: event,
+        });
+    };
+
+    const handleTextChange = (field) => event => {
+        setSessionFields({
+            ...sessionFields,
+            [field]:event.target.value,
+        });
+    };
+
+    const updateSession = event => {
+        event.preventDefault();
+        let patchedSession = {
+            start_datetime: sessionFields.start_time,
+        };
+        api.patchSession(session.id, patchedSession);
+
+        let patchedCourse = {
+            course_category: sessionFields.category.value,
+            subject: sessionFields.title,
+        };
+        api.patchCourse(course.course_id, patchedCourse);
+        history.push("/scheduler/")
+    };
+
     return (
         <>
             <Grid className="session-view"
@@ -94,7 +135,8 @@ function EditSessionView({course, session, enrolledStudents, handleToggleEditing
                 <Grid item sm={12}>
                     <TextField
                         fullWidth={true}
-                        value={course.title}
+                        value={sessionFields.title}
+                        onChange={handleTextChange("title")}
                     />
                 </Grid>
                 <Grid
@@ -104,8 +146,13 @@ function EditSessionView({course, session, enrolledStudents, handleToggleEditing
                 >
                     <Grid item xs={6}>
                         <Typography variant="h5"> Subject </Typography>
-                        <TextField
-                            value={sessionFields.category.name}
+                        <SearchSelect
+                            className="search-options"
+                            isClearable
+                            onChange={handleCategoryChange}
+                            placeholder={"Choose a Category"}
+                            value={sessionFields.category}
+                            options={categoriesList}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -124,27 +171,21 @@ function EditSessionView({course, session, enrolledStudents, handleToggleEditing
                     <Grid item xs={6}>
                         <Typography variant="h5"> Date</Typography>
                         <DatePicker
-                            animateYearScrolling
                             margin="normal"
                             label={"Date"}
                             value={sessionFields.start_time}
-                            onChange={(date) =>{ console.log("hi") }}
-                            openTo={"day"}
-                            format="MM/dd/yyyy"
-                            views={["year", "month", "date"]}
+                            onChange={handleDateTimeChange}
+                            inputVariant={"outlined"}
                         />
                     </Grid>
-                    <Grid
-                        item
-                        xs={6}>
-                        <Typography variant="h5"> Time </Typography>
-                        <TimePicker autoOk
-                                    label={"Start Time"}
-                                    value={sessionFields.start_time}
-                                    // onChange={(date) =>{ this.setState((prevState)=>{
-                                    //     prevState[label][fieldTitle] = date;
-                                    //     return prevState;
-                                    // }) } }
+                    <Grid item xs={6}>
+                        <Typography variant="h5"> Start Time</Typography>
+                        <TimePicker
+                            margin="normal"
+                            label={"Start Time"}
+                            value={sessionFields.start_time}
+                            onChange={handleDateTimeChange}
+                            inputVariant={"outlined"}
                         />
                     </Grid>
 
@@ -175,8 +216,7 @@ function EditSessionView({course, session, enrolledStudents, handleToggleEditing
                     <Button
                         className="button"
                         color="secondary"
-                        component={NavLink}
-                        to="/scheduler"
+                        onClick={updateSession}
                         variant="outlined">
                         Save
                     </Button>

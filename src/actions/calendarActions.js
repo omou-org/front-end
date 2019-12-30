@@ -1,5 +1,5 @@
 import * as types from './actionTypes';
-import {wrapGet} from "./apiActions";
+import {wrapGet, wrapPatch} from "./apiActions";
 
 export function fetchTeacherAvailabilities(event){
 
@@ -28,4 +28,17 @@ export const fetchSessions = ({config, id}) => wrapGet(
         config:config,
         id: id,
     }
-)
+);
+
+export const patchSession = (id, data) => wrapPatch(
+    '/scheduler/session/',
+    [
+        types.PATCH_SESSION_STARTED,
+        types.PATCH_SESSION_SUCCESS,
+        types.PATCH_SESSION_FAILED,
+    ],
+    {
+        id:id,
+        data:data,
+    }
+);
