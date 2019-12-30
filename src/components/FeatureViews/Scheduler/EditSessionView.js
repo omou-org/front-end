@@ -83,6 +83,7 @@ function EditSessionView({course, session}) {
             let endTime = new Date(session.end_datetime);
             endTime = setDateInPSTDate(endTime, session.end_datetime);
             let durationHours = Math.abs(endTime - startTime)/ 36e5;
+            durationHours === 0 ? durationHours = 1 : durationHours = durationHours;
             let category = categories.find(category => category.id === course.category);
             setSessionFields({
                 category: {value: category.id, label: category.name} ,
@@ -96,12 +97,8 @@ function EditSessionView({course, session}) {
 
     const handleDateTimeChange = date => {
         let {end_time, duration} = sessionFields;
-        if(10%duration === 0) {
-            end_time.setHours(date.getHours()+duration);
-        } else {
-            end_time.setHours(date.getHours() + duration);
-            end_time.setMinutes(date.getMinutes() + ((duration%1) * 60))
-        }
+        end_time.setHours(date.getHours()+duration);
+        end_time.setMinutes(date.getMinutes());
 
         setSessionFields({
             ...sessionFields,
