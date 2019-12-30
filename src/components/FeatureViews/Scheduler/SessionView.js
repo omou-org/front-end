@@ -42,24 +42,6 @@ class SessionView extends Component {
         this.state = {
             "editSelection": "current",
             "editing": false,
-            "students": {
-                0: {
-                    name: "Calvin Fronda",
-                    id: 8,
-                },
-                1: {
-                    name: "Alex McGuire",
-                    id: 6,
-                },
-                2: {
-                    name: "Joe Buddy",
-                    id: 4,
-                },
-                3: {
-                    name: "Able Strong Body",
-                    id: 11,
-                }
-            }
         };
     }
 
@@ -128,10 +110,9 @@ class SessionView extends Component {
                                 editSelection = {this.state.editSelection}
                                 handleToggleEditing = {this.toggleEditing}
                             /> :
-                            <DisplaySessionView
+                            this.state.courseData && <DisplaySessionView
                                 course = {this.state.courseData}
                                 session = {this.state.sessionData}
-                                enrolledStudents = {this.state.students}
                                 handleToggleEditing = {this.toggleEditing}
                             />
                     }

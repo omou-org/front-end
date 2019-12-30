@@ -74,20 +74,23 @@ class Scheduler extends Component {
 
 
     componentDidMount() {
-        this.props.calendarActions.fetchSessions({
-            config: {
-                params: {
-                    time_frame: "day",
-                    view_option: "tutoring",
-                    timeShift: this.state.timeShift,
-                }
-            }
-        });
+
         this.props.courseActions.fetchCourses();
         this.props.userActions.fetchInstructors();
         this.setState({
             "currentDate": this.currentDate(),
         });
+        this.props.calendarActions.fetchSessions({
+            config: {
+                params: {
+                    time_frame: "day",
+                    view_option: "tutoring",
+                    time_shift: this.state.timeShift,
+                }
+            }
+        });
+        let prevState = JSON.parse(sessionStorage.getItem("schedulerState"));
+        this.setState({"currentDate": this.currentDate(),});
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -106,7 +109,10 @@ class Scheduler extends Component {
                 let endTimeHour = Number(endUTCString.substr(17, 2));
                 let endTimeMin = Number(endUTCString.substr(20, 2));
                 let date = new Date(session.start_datetime);
-                date.setDate(date.getDate()-1);
+                // console.log(prevState.timeShift)
+                // if(date.getDate() !== new Date().getDate()+ prevState.timeShift){ // weird UTC conversion necessary when at night
+                //     date.setDate(date.getDate()-1);
+                // }
                 date.setHours(startTimeHour);
                 date.setMinutes(startTimeMin);
                 let startTime = date;
@@ -128,11 +134,14 @@ class Scheduler extends Component {
                     color: stringToColor(instructorName),
                 };
             });
-
             this.setState({
                 calendarEvents: initialSessions,
             });
         }
+    }
+
+    componentWillUnmount() {
+        // sessionStorage.setItem("schedulerState", JSON.stringify(this.state));
     }
 
     getInstructorSchedule = () => {
@@ -267,6 +276,7 @@ class Scheduler extends Component {
             return {
                 "viewValue": value,
                 "currentDate": date,
+                "timeShift":0
             }
         });
     }

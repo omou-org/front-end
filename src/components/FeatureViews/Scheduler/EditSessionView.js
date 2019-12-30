@@ -28,7 +28,7 @@ const useStyles = makeStyles({
     }
 });
 
-function EditSessionView({course, session, enrolledStudents, handleToggleEditing}) {
+function EditSessionView({course, session}) {
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -43,6 +43,7 @@ function EditSessionView({course, session, enrolledStudents, handleToggleEditing
 
     const [sessionFields, setSessionFields] = useState({
         start_time:"",
+        end_time:"",
         title:"",
         category:"",
     });
@@ -67,28 +68,45 @@ function EditSessionView({course, session, enrolledStudents, handleToggleEditing
 
     let instructor = course && instructors[course.instructor_id] ? instructors[course.instructor_id] : { name: "N/A" };
 
+    const setDateInPSTDate = (date, time) => {
+        let PSTDate = new Date(date);
+        PSTDate.setDate(date.getDate()-1);
+        PSTDate.setHours(Number(time.substr(11,2)));
+        PSTDate.setMinutes(Number(time.substr(14,2)));
+        return PSTDate;
+    }
+
     useEffect(()=>{
         if(course && session) {
             let startTime = new Date(session.start_datetime);
-            // console.log(session.start_datetime.substr(5,2));
-            startTime.setDate(startTime.getDate()-1);
-            startTime.setHours(Number(session.start_datetime.substr(11,2)));
-            startTime.setMinutes(Number(session.start_datetime.substr(14,2)));
+            startTime = setDateInPSTDate(startTime,session.start_datetime);
+            let endTime = new Date(session.end_datetime);
+            endTime = setDateInPSTDate(endTime, session.end_datetime);
+            let durationHours = Math.abs(endTime - startTime)/ 36e5;
             let category = categories.find(category => category.id === course.category);
             setSessionFields({
                 category: {value: category.id, label: category.name} ,
                 start_time: startTime,
+                end_time: endTime,
+                duration: durationHours,
                 title: course.title,
             });
         }
     }, [course,session]);
 
-    const studentKeys = Object.keys(enrolledStudents);
-
     const handleDateTimeChange = date => {
+        let {end_time, duration} = sessionFields;
+        if(10%duration === 0) {
+            end_time.setHours(date.getHours()+duration);
+        } else {
+            end_time.setHours(date.getHours() + duration);
+            end_time.setMinutes(date.getMinutes() + ((duration%1) * 60))
+        }
+
         setSessionFields({
             ...sessionFields,
             start_time:date,
+            end_time:end_time,
         });
     };
 
@@ -99,7 +117,6 @@ function EditSessionView({course, session, enrolledStudents, handleToggleEditing
         }));
 
     const handleCategoryChange = event => {
-        console.log(event);
         setSessionFields({
             ...sessionFields,
             category: event,
@@ -112,11 +129,25 @@ function EditSessionView({course, session, enrolledStudents, handleToggleEditing
             [field]:event.target.value,
         });
     };
-
+    const stringifyDateInPST = (date) => {
+        let dateISO = date.toISOString();
+        let dateISOHour = date.getHours();
+        dateISOHour = dateISOHour === 0 ? "00" : dateISOHour.toString();
+        let dateISOMinute = date.getMinutes();
+        dateISOMinute = dateISOMinute === 0 ? "00" : dateISOMinute.toString();
+        let dateISOTime = dateISO.substr(11,5);
+        return dateISO.replace(dateISOTime, dateISOHour + ":" + dateISOMinute)
+    }
     const updateSession = event => {
         event.preventDefault();
+        let {start_time, end_time} = sessionFields;
+        let start = new Date(start_time);
+        start = stringifyDateInPST(start);
+        let end = new Date(end_time);
+        end = stringifyDateInPST(end);
         let patchedSession = {
-            start_datetime: sessionFields.start_time,
+            start_datetime: start,
+            end_datetime: end,
         };
         api.patchSession(session.id, patchedSession);
 
@@ -190,24 +221,6 @@ function EditSessionView({course, session, enrolledStudents, handleToggleEditing
                     </Grid>
 
                 </Grid>
-
-                <Grid item xs={6}>
-                    <Typography variant="h5" align="left"> Students Enrolled  </Typography>
-                    <Grid container direction='row'>
-                        {studentKeys.map(key =>
-                            <NavLink to={`/accounts/student/${enrolledStudents[key].id}`}
-                                     style={{ textDecoration: "none" }}>
-                                <Avatar
-                                    style={styles(enrolledStudents[key].name)}
-                                >
-                                    {
-                                        enrolledStudents[key].name.match(/\b(\w)/g).join("")
-                                    }
-                                </Avatar>
-                            </NavLink>)}
-                    </Grid>
-                </Grid>
-
             </Grid>
 
             <Grid className="session-detail-action-control"

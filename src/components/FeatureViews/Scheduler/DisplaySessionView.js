@@ -12,23 +12,11 @@ import * as registrationActions from "../../../actions/registrationActions";
 import * as userActions from "../../../actions/userActions.js"
 import {connect, useDispatch, useSelector} from "react-redux";
 import {FormControl, Typography} from "@material-ui/core";
-import Paper from "@material-ui/core/Paper";
 import {NavLink, withRouter} from "react-router-dom";
-import Checkbox from "@material-ui/core/Checkbox";
-import BackButton from "../../BackButton";
-import FormLabel from "@material-ui/core/FormLabel";
-import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import * as apiActions from "../../../actions/apiActions";
-import * as searchActions from "../../../actions/searchActions";
-import {GET} from "../../../actions/actionTypes";
 import Button from "@material-ui/core/Button";
 import Loading from "../../Loading";
-import NavLinkNoDup from "../../Routes/NavLinkNoDup";
-import TextField from "@material-ui/core/TextField";
-import Prompt from "react-router-dom/es/Prompt";
-import PriceQuoteForm from "../../Form/PriceQuoteForm";
-import {durationParser} from "../../../actions/apiActions";
 import Avatar from "@material-ui/core/Avatar";
 import {stringToColor} from "../Accounts/accountUtils";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -39,7 +27,7 @@ import Radio from "@material-ui/core/Radio";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 import {dayOfWeek} from "../../Form/FormUtils";
-import {REQUEST_ALL} from "../../../actions/apiActions";
+import * as hooks from "actions/hooks";
 
 const useStyles = makeStyles({
     setParent: {
@@ -49,7 +37,7 @@ const useStyles = makeStyles({
     }
 });
 
-function DisplaySessionView({course, session, enrolledStudents, handleToggleEditing}) {
+function DisplaySessionView({course, session, handleToggleEditing}) {
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -59,14 +47,12 @@ function DisplaySessionView({course, session, enrolledStudents, handleToggleEdit
         }),
         [dispatch]
     );
-
     const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
     const categories = useSelector(({"Course": {CourseCategories}}) => CourseCategories);
+    const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
+    const students = useSelector(({"Users": {StudentList}}) => StudentList);
 
-    const [selectedCourses, selectCourse] = useState({});
-    const [usersLoaded, setLoadingUsers] = useState(false);
-    const [updatedCourses, addUpdatedCourse] = useState([]);
-    const [selectionPendingStatus, setSelectionPending] = useState(false);
+    const [enrolledStudents, setEnrolledStudents] = useState(false);
     const [editAll, setEditAll] = useState(false);
     const [editSelection, setEditSelection] = useState('current');
 
@@ -81,6 +67,30 @@ function DisplaySessionView({course, session, enrolledStudents, handleToggleEdit
     const goToCourse = (courseID) => () => {
         // props.history.push(`/registration/course/${courseID}`);
     };
+    const enrollmentStatus = hooks.useEnrollmentByCourse(course.course_id);
+    const reduxCourse = courses[course.course_id];
+    const studentStatus = hooks.useStudent(reduxCourse.roster);
+
+    const loadedStudents = useMemo(() =>
+            reduxCourse.roster.filter((studentID) => students[studentID])
+        , [reduxCourse.roster, students]);
+
+    useEffect(()=>{
+        if(studentStatus === 200){
+            setEnrolledStudents(loadedStudents.map(studentID => ({
+                ...students[studentID]
+            })))
+        }
+    }, [loadedStudents, studentStatus, students]);
+
+    if (loadedStudents.length === 0) {
+        if (hooks.isLoading(studentStatus)) {
+            return <Loading />;
+        }
+        if (hooks.isFail(studentStatus)) {
+            return "Error loading enrollment details!";
+        }
+    }
 
     let instructor = course && instructors[course.instructor_id] ? instructors[course.instructor_id] : { name: "N/A" };
 
@@ -119,6 +129,12 @@ function DisplaySessionView({course, session, enrolledStudents, handleToggleEdit
     if(!course || !categories){
         return <Loading/>
     }
+
+    let sessionStart = new Date(session.start_datetime);
+    let day = sessionStart.getDate() !== new Date().getDate() ?
+        (session.start-1 >= 0 ? session.start-1 : 6) :
+        session.start;
+
     return (<>
         <Grid className="session-view"
             container spacing={2} direction={"row"}>
@@ -169,7 +185,7 @@ function DisplaySessionView({course, session, enrolledStudents, handleToggleEdit
                     <Typography variant="h5"> Day(s)</Typography>
                     <Typography variant="body1">
                         {
-                            course && dayOfWeek[session.start-1 >= 0 ? session.start-1 : 6]
+                            course && dayOfWeek[day]
                         }
                     </Typography>
                 </Grid>
@@ -196,7 +212,11 @@ function DisplaySessionView({course, session, enrolledStudents, handleToggleEdit
                             <Avatar
                                 style={styles(enrolledStudents[key].name)}>
                                 {
-                                    enrolledStudents[key].name.match(/\b(\w)/g).join("")
+                                    enrolledStudents ?
+                                        enrolledStudents[key].name.match(/\b(\w)/g).join("")
+                                    : hooks.isFail(enrollmentStatus)
+                                    ? "Error!"
+                                    : "Loading..."
                                 }
                             </Avatar>
                         </NavLink>)}

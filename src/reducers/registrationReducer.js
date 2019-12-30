@@ -339,7 +339,7 @@ const addTutoringRegistration = (prevState, form) => {
     prevState.submitStatus = "success";
 
     return {...prevState};
-}
+};
 
 const addSmallGroupRegistration = (prevState, {formMain, new_course}) => {
     let studentID = formMain["Student"].Student.value;
