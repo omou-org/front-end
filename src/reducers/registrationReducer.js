@@ -1,5 +1,6 @@
 import initialState from './initialState';
 import * as actions from "./../actions/actionTypes"
+import {dateParser} from "../components/Form/FormUtils";
 
 export default function registration(state = initialState.RegistrationForms, {payload, type}) {
     let newState = JSON.parse(JSON.stringify(state));
@@ -272,7 +273,6 @@ const addTutoringRegistration = (prevState, form) => {
                         studentName.substring(0,studentName.indexOf(" ")) + " - " + subject;
     let studentInfoNote = stringifyStudentInformation(form);
     let startDate = form["Schedule"]["Start Date"];
-    console.log(startDate);
     let dayOfWeek = new Date(startDate).getDay();
     let startTime = new Date(form["Schedule"]["Session Start Time"]);
     let duration = () => {
@@ -309,9 +309,9 @@ const addTutoringRegistration = (prevState, form) => {
             instructor: instructorID,
             //tuition: //default subject + grade price on backend?
             schedule:{
-                start_date: startDate,
+                start_date: dateParser(startDate).substring(0,10),
                 start_time: dateToTimeString(startTime),
-                end_date: endDate,
+                end_date: dateParser(endDate).substring(0,10),
                 end_time: dateToTimeString(endTime), //generated from course duration
             },
             day_of_week: dayOfWeek,

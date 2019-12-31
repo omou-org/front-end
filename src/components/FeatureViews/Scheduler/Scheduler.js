@@ -16,8 +16,6 @@ import * as courseActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 
 // Material-Ui dependencies
-
-import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
@@ -38,7 +36,9 @@ import { stringToColor } from "../Accounts/accountUtils";
 import tippy from "tippy.js";
 import "tippy.js/themes/google.css";
 import "./scheduler.scss";
-import { parseTime } from "../../../actions/apiActions";
+import ReactSelect from "react-select";
+import Menu from "@material-ui/core/Menu";
+import SessionFilters from "./SessionFilters";
 
 class Scheduler extends Component {
     constructor(props) {
@@ -57,6 +57,10 @@ class Scheduler extends Component {
             "resourceIcon": false,
             "filterTypeCalendar": "",
             "timeShift": 0,
+            "instructorFilter": "",
+            "instructorOptions": [],
+            "sessionFilter": false,
+            "sessionFilterAnchor": null,
         };
         this.calendarViewToFilterVal = {
             "timeGridDay": "day",
@@ -101,41 +105,13 @@ class Scheduler extends Component {
                 this.props.instructors === Object) &&
             Object.entries(this.props.instructors).length !== 0
         ) {
-            const initialSessions = this.props.sessions.map((session) => {
-                let startUTCString = new Date(session.start_datetime).toUTCString();
-                let endUTCString = new Date(session.end_datetime).toUTCString();
-                let startTimeHour = Number(startUTCString.substr(17, 2));
-                let startTimeMin = Number(startUTCString.substr(20,2));
-                let endTimeHour = Number(endUTCString.substr(17, 2));
-                let endTimeMin = Number(endUTCString.substr(20, 2));
-                let date = new Date(session.start_datetime);
-                // console.log(prevState.timeShift)
-                // if(date.getDate() !== new Date().getDate()+ prevState.timeShift){ // weird UTC conversion necessary when at night
-                //     date.setDate(date.getDate()-1);
-                // }
-                date.setHours(startTimeHour);
-                date.setMinutes(startTimeMin);
-                let startTime = date;
-                let endTime = new Date(date);
-                endTime.setHours(endTimeHour);
-                endTime.setMinutes(endTimeMin);
-                let instructorName = this.props.instructors[this.props.courses[session.course].instructor_id].name;
-                return {
-                    id: session.id,
-                    courseID: session.course,
-                    title: this.props.courses[session.course].title,
-                    description: session.description ? session.description : "",
-                    type: this.props.courses[session.course].type,
-                    resourceId: this.props.courses[session.course_id] ? this.props.courses[session.course_id].room_id : 1,
-                    start: startTime,
-                    end: endTime,
-                    instructor: instructorName,
-                    isConfirmed: session.is_confirmed,
-                    color: stringToColor(instructorName),
-                };
-            });
+            const initialSessions = this.formatSessions(this.props.sessions, prevState);
+
             this.setState({
                 calendarEvents: initialSessions,
+                instructorOptions: Object.entries(this.props.instructors).map(
+                    ([instructorID, instructor])=>
+                        ({ value:instructorID, label: instructor.name }))
             });
         }
     }
@@ -143,6 +119,45 @@ class Scheduler extends Component {
     componentWillUnmount() {
         // sessionStorage.setItem("schedulerState", JSON.stringify(this.state));
     }
+
+    formatSessions = (sessions, timeShift) => {
+        return sessions.map((session) => {
+            let startUTCString = new Date(session.start_datetime).toUTCString();
+            let endUTCString = new Date(session.end_datetime).toUTCString();
+            let startTimeHour = Number(startUTCString.substr(17, 2));
+            let startTimeMin = Number(startUTCString.substr(20,2));
+            let endTimeHour = Number(endUTCString.substr(17, 2));
+            let endTimeMin = Number(endUTCString.substr(20, 2));
+            let date = new Date(session.start_datetime);
+            // console.log(prevState.timeShift)
+            if(date.getDate() !== new Date().getDate()+ timeShift) { // weird UTC conversion necessary when at night
+                date.setDate(date.getDate() - 1);
+            }
+            date.setHours(startTimeHour);
+            date.setMinutes(startTimeMin);
+            let startTime = date;
+            let endTime = new Date(date);
+            endTime.setHours(endTimeHour);
+            endTime.setMinutes(endTimeMin);
+            let instructorName = this.props.instructors[this.props.courses[session.course].instructor_id].name;
+            return {
+                id: session.id,
+                courseID: session.course,
+                title: this.props.courses[session.course].title,
+                description: session.description ? session.description : "",
+                type: this.props.courses[session.course].type,
+                resourceId: this.props.courses[session.course_id] ? this.props.courses[session.course_id].room_id : 1,
+                start: startTime,
+                end: endTime,
+                // start: new Date(session.start_datetime),
+                // end: new Date(session.end_datetime),
+                instructor: instructorName,
+                instructor_id: this.props.courses[session.course].instructor_id,
+                isConfirmed: session.is_confirmed,
+                color: stringToColor(instructorName),
+            };
+        });
+    };
 
     getInstructorSchedule = () => {
         let instructor = this.props.instructors;
@@ -488,12 +503,27 @@ class Scheduler extends Component {
 
     // go to session view
     goToSessionView = (e) => {
-        // e.preventDefault();
-        console.log("hi")
         const sessionID = e.event.id;
         const courseID = e.event.extendedProps.courseID;
         this.props.history.push(`/scheduler/view-session/${courseID}/${sessionID}`);
-    }
+    };
+
+    onInstructorSelect = event => {
+        this.setState(()=>{
+            let filteredEvents = event && event.length > 0 ? this.props.sessions.filter(
+                session => {
+                    let instructor = this.props.courses[session.course].instructor_id;
+                    return event.map(event => Number(event.value))
+                        .includes(instructor);
+                }
+            ) : this.props.sessions;
+
+            return {
+                "instructorFilter": event,
+                "calendarEvents": this.formatSessions(filteredEvents, this.state.timeShift),
+            }
+        });
+    };
 
     render() {
         return (
@@ -503,121 +533,161 @@ class Scheduler extends Component {
                     <br />
                     <Grid container className="scheduler-wrapper">
                         <Grid item xs={12} className="scheduler-header">
-                            <Grid container className="scheduler-header-firstSet">
-                                <Grid item >
-                                    <IconButton
-                                        color={this.state.calendarIcon ? "primary" : "default"}
-                                        onClick={this.changeViewToCalendar}
-                                        className={"calendar-icon"} aria-label='next-month'>
-                                        <DateRangeOutlinedIcon />
-                                    </IconButton>
+                            <Grid container>
+                                <Grid item xs={3}>
+                                    <Grid container className="scheduler-header-firstSet">
+                                        {/*<Grid item >*/}
+                                        {/*    <IconButton*/}
+                                        {/*        color={this.state.calendarIcon ? "primary" : "default"}*/}
+                                        {/*        onClick={this.changeViewToCalendar}*/}
+                                        {/*        className={"calendar-icon"} aria-label='next-month'>*/}
+                                        {/*        <DateRangeOutlinedIcon />*/}
+                                        {/*    </IconButton>*/}
+                                        {/*</Grid>*/}
+                                        {/*<Grid item >*/}
+                                        {/*    <IconButton*/}
+                                        {/*        color={this.state.resourceIcon ? "primary" : "default"}*/}
+                                        {/*        onClick={this.changeViewToResource}*/}
+                                        {/*        className={"resource-icon"}*/}
+                                        {/*        aria-label='next-month'>*/}
+                                        {/*        <ViewListIcon />*/}
+                                        {/*    </IconButton>*/}
+                                        {/*</Grid>*/}
+                                        {/*<Grid item>*/}
+                                        {/*    <IconButton*/}
+                                        {/*        className={"next-month"}*/}
+                                        {/*        aria-label='next-month'>*/}
+                                        {/*        <SearchIcon />*/}
+                                        {/*    </IconButton>*/}
+                                        {/*</Grid>*/}
+
+                                        <Grid item >
+                                            {(this.state.calendarIcon) ?
+                                                <FormControl className={"filter-select"} >
+                                                    <InputLabel htmlFor="filter-calendar-type"></InputLabel>
+
+                                                    <Select
+                                                        value={this.state.calendarFilterValue}
+                                                        onChange={this.handleFilterChange("calendarFilterValue")}
+                                                        inputProps={{
+                                                            "name": "calendarFilterValue",
+                                                            "id": "filter-calendar-type",
+                                                        }}
+                                                    >
+                                                        <MenuItem value={"C"}>Class</MenuItem>
+                                                        <MenuItem value={"T"}>Tutor</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                                :
+                                                <FormControl className={"filter-select"} >
+                                                    <InputLabel htmlFor="filter-resource-type"></InputLabel>
+
+                                                    <Select
+
+                                                        value={this.state.resourceFilterValue}
+                                                        onChange={this.handleResourceFilterChange("resourceFilterValue")}
+                                                        inputProps={{
+                                                            "name": "resourceFilterValue",
+                                                            "id": "filter-resource-type",
+                                                        }}
+                                                    >
+                                                        <MenuItem value={"R"}>Room</MenuItem>
+                                                        <MenuItem value={"I"}>Instructors</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                            }
+                                        </Grid>
+                                        <Grid item xs={4}>
+                                            {/*<IconButton*/}
+                                            {/*    onClick={this.onFilterToggle(true)}*/}
+                                            {/*    // aria-owns={sessionFilterAnchor ? 'sessionFilters' : undefined }*/}
+                                            {/*    aria-haspopup={"true"}*/}
+                                            {/*    aria-label={"filters"}*/}
+                                            {/*    aria-controls={"sessionFilters"}*/}
+                                            {/*>*/}
+                                            {/*    <FilterIcon*/}
+
+                                            {/*    />*/}
+                                            {/*</IconButton>*/}
+                                            {/*<Menu*/}
+                                            {/*    id={"sessionFilters"}*/}
+                                            {/*    anchorEl={sessionFilterAnchor}*/}
+                                            {/*    open={Boolean(sessionFilterAnchor)}*/}
+                                            {/*    onClose={this.onFilterToggle(false)}*/}
+                                            {/*    keepMounted*/}
+                                            {/*>*/}
+                                            {/*    <ReactSelect*/}
+                                            {/*        // style={{width:"100%"}}*/}
+                                            {/*        value = { this.state.instructorFilter }*/}
+                                            {/*        options={ this.state.instructorOptions }*/}
+                                            {/*        onChange={ this.onInstructorSelect }*/}
+                                            {/*        clearable*/}
+                                            {/*        isMulti*/}
+                                            {/*    />*/}
+                                            {/*</Menu>*/}
+                                            <SessionFilters
+                                                InstructorValue = { this.state.instructorFilter }
+                                                InstructorOptions={ this.state.instructorOptions }
+                                                onInstructorSelect = {this.onInstructorSelect }
+                                            />
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
-                                <Grid item >
-                                    <IconButton
-                                        color={this.state.resourceIcon ? "primary" : "default"}
-                                        onClick={this.changeViewToResource}
-                                        className={"resource-icon"}
-                                        aria-label='next-month'>
-                                        <ViewListIcon />
-                                    </IconButton>
+                                <Grid item xs={6}>
+                                    <div className="scheduler-header-date">
+                                        <Grid item >
+                                            <IconButton onClick={this.goToPrev} className={"prev-month"} aria-label="prev-month">
+                                                <ChevronLeftOutlinedIcon />
+                                            </IconButton>
+                                        </Grid>
+                                        <Grid item >
+                                            <Typography variant={"h6"} >{this.state.currentDate}</Typography>
+                                        </Grid>
+                                        <Grid item>
+                                            <IconButton onClick={this.goToNext} className={"next-month"} aria-label='next-month'>
+                                                <ChevronRightOutlinedIcon />
+                                            </IconButton>
+                                        </Grid>
+                                    </div>
                                 </Grid>
-                                <Grid item>
-                                    <IconButton
-                                        className={"next-month"}
-                                        aria-label='next-month'>
-                                        <SearchIcon />
-                                    </IconButton>
-                                </Grid>
+                                <Grid item xs={2}>
+                                    <div className="scheduler-header-last">
+                                        <Grid item>
+                                            <IconButton onClick={this.goToToday} className={"current-date-button"} aria-label='current-date-button'>
+                                                <TodayIcon />
+                                            </IconButton>
 
-                                <Grid item >
-                                    {(this.state.calendarIcon) ?
-                                        <FormControl className={"filter-select"} >
-                                            <InputLabel htmlFor="filter-calendar-type"></InputLabel>
+                                        </Grid>
+                                        <Grid item  >
+                                            <FormControl className={"change-view"} >
+                                                <InputLabel htmlFor="change-view-select"></InputLabel>
+                                                <Select
+                                                    value={this.state.viewValue}
+                                                    onChange={(event) =>
+                                                        // event.target.value === the values below
+                                                        this.changeView(event.target.value)
+                                                    }
 
-                                            <Select
-                                                value={this.state.calendarFilterValue}
-                                                onChange={this.handleFilterChange("calendarFilterValue")}
-                                                inputProps={{
-                                                    "name": "calendarFilterValue",
-                                                    "id": "filter-calendar-type",
-                                                }}
-                                            >
-                                                <MenuItem value={"C"}>Class</MenuItem>
-                                                <MenuItem value={"T"}>Tutor</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                        :
-                                        <FormControl className={"filter-select"} >
-                                            <InputLabel htmlFor="filter-resource-type"></InputLabel>
-
-                                            <Select
-
-                                                value={this.state.resourceFilterValue}
-                                                onChange={this.handleResourceFilterChange("resourceFilterValue")}
-                                                inputProps={{
-                                                    "name": "resourceFilterValue",
-                                                    "id": "filter-resource-type",
-                                                }}
-                                            >
-                                                <MenuItem value={"R"}>Room</MenuItem>
-                                                <MenuItem value={"I"}>Instructors</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    }
-
+                                                >
+                                                    <MenuItem value={"timeGridDay"}>Day</MenuItem>
+                                                    <MenuItem value={"timeGridWeek"}>Week</MenuItem>
+                                                    <MenuItem value={"dayGridMonth"}>Month</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        {/*<Grid item>*/}
+                                        {/*    <Button*/}
+                                        {/*        onClick={this.changeViewToCalendar}*/}
+                                        {/*    >Course</Button>*/}
+                                        {/*</Grid>*/}
+                                        {/*<Grid item >*/}
+                                        {/*    <Button*/}
+                                        {/*        onClick={this.changeViewToResource}*/}
+                                        {/*    >Resource</Button>*/}
+                                        {/*</Grid>*/}
+                                    </div>
                                 </Grid>
                             </Grid>
-
-                            <div className="scheduler-header-date">
-                                <Grid item >
-                                    <IconButton onClick={this.goToPrev} className={"prev-month"} aria-label="prev-month">
-                                        <ChevronLeftOutlinedIcon />
-                                    </IconButton>
-                                </Grid>
-                                <Grid item >
-                                    <Typography variant={"h6"} >{this.state.currentDate}</Typography>
-                                </Grid>
-                                <Grid item>
-                                    <IconButton onClick={this.goToNext} className={"next-month"} aria-label='next-month'>
-                                        <ChevronRightOutlinedIcon />
-                                    </IconButton>
-                                </Grid>
-                            </div>
-                            <div className="scheduler-header-last">
-                                <Grid item>
-                                    <IconButton onClick={this.goToToday} className={"current-date-button"} aria-label='current-date-button'>
-                                        <TodayIcon />
-                                    </IconButton>
-
-                                </Grid>
-                                <Grid item  >
-                                    <FormControl className={"change-view"} >
-                                        <InputLabel htmlFor="change-view-select"></InputLabel>
-                                        <Select
-                                            value={this.state.viewValue}
-                                            onChange={(event) =>
-                                                // event.target.value === the values below
-                                                this.changeView(event.target.value)
-                                            }
-
-                                        >
-                                            <MenuItem value={"timeGridDay"}>Day</MenuItem>
-                                            <MenuItem value={"timeGridWeek"}>Week</MenuItem>
-                                            <MenuItem value={"dayGridMonth"}>Month</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </Grid>
-                                {/*<Grid item>*/}
-                                {/*    <Button*/}
-                                {/*        onClick={this.changeViewToCalendar}*/}
-                                {/*    >Course</Button>*/}
-                                {/*</Grid>*/}
-                                {/*<Grid item >*/}
-                                {/*    <Button*/}
-                                {/*        onClick={this.changeViewToResource}*/}
-                                {/*    >Resource</Button>*/}
-                                {/*</Grid>*/}
-                            </div>
                         </Grid>
                         <Grid item xs={12} className='omou-calendar'>
                             <FullCalendar
