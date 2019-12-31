@@ -147,7 +147,7 @@ const CourseSessionStatus = (props) => {
             return "Waived";
 
         };
-    console.log("course sessions",courseSessions, calendarSessions)
+
     const handleTabChange = (_, newTab) => {
         setActiveTab(newTab);
     };

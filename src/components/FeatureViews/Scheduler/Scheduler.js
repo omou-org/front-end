@@ -134,7 +134,7 @@ class Scheduler extends Component {
             let endTime = new Date(date);
             endTime.setHours(endTimeHour);
             endTime.setMinutes(endTimeMin);
-            let instructorName = this.props.instructors[this.props.courses[session.course].instructor_id].name;
+            let instructorName = this.props.courses && this.props.instructors[this.props.courses[session.course].instructor_id].name;
             return {
                 id: session.id,
                 courseID: session.course,

@@ -4,7 +4,6 @@ import * as actions from "./../actions/actionTypes"
 export default function enrollment(state = initialState.Enrollments, {payload, type}) {
     switch (type) {
         case actions.FETCH_ENROLLMENT_SUCCESSFUL:
-            console.log("successful enrollment fetch");
             return handleEnrollment(state, payload, "GET");
         case actions.FETCH_ENROLLMENT_NOTE_SUCCESSFUL:
             return handleEnrollmentNoteFetch(state, payload);
@@ -57,7 +56,7 @@ const handleEnrollment = (state, payload, requestType) => {
                         15: 1,
                     },
                 };
-                console.log(newStudentData,newState)
+
                 newStudentData[course] = newCourseData;
                 newState[student] = newStudentData;
             });

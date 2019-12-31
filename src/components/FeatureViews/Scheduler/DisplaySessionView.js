@@ -207,7 +207,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                 <Typography variant="h5" align="left"> Students Enrolled  </Typography>
                 <Grid container direction='row'>
                     {studentKeys.map(key =>
-                        <NavLink to={`/accounts/student/${enrolledStudents[key].id}`}
+                        <NavLink to={`/accounts/student/${enrolledStudents[key].user_id}/${course.course_id}`}
                                  style={{ textDecoration: "none" }}>
                             <Avatar
                                 style={styles(enrolledStudents[key].name)}>
