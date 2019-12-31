@@ -4,6 +4,7 @@ import BackButton from "../../../BackButton";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import * as userActions from "actions/userActions";
+import * as calendarActions from "../../../../actions/calendarActions"
 import {bindActionCreators} from "redux";
 import * as hooks from "actions/hooks";
 
@@ -54,10 +55,10 @@ const courseDataParser = ({schedule, status, tuition}) => {
     };
 };
 
-const CourseSessionStatus = () => {
+const CourseSessionStatus = (props) => {
     const {"accountID": studentID, courseID} = useParams();
     const [activeTab, setActiveTab] = useState(0);
-    const courseSessions = useSelector(({Course}) => Course.CourseSessions);
+    const courseSessions = useSelector(({Calendar}) => Calendar.CourseSessions);
     const usersList = useSelector(({Users}) => Users);
     const courses = useSelector(({Course}) => Course.NewCourseList);
     const enrollments = useSelector(({Enrollments}) => Enrollments);
@@ -67,6 +68,7 @@ const CourseSessionStatus = () => {
     const api = useMemo(
         () => ({
             ...bindActionCreators(userActions, dispatch),
+            ...bindActionCreators(calendarActions, dispatch),
         }),
         [dispatch]
     );
@@ -75,6 +77,10 @@ const CourseSessionStatus = () => {
     const courseStatus = hooks.useCourse(courseID);
     const instructorStatus = hooks.useInstructor(course && course.instructor_id, true);
     const enrollmentStatus = hooks.useEnrollmentByCourse(courseID);
+    const courseTypeParse = {
+        "T":"tutoring",
+        "C":"course",
+    };
 
     const enrollment = (enrollments[studentID] && enrollments[studentID][courseID]) || {};
     useEffect(() => {
@@ -86,21 +92,37 @@ const CourseSessionStatus = () => {
         "enrollmentID": enrollment.enrollment_id,
         studentID,
     }), [courseID, enrollment.enrollment_id, studentID]);
+    useEffect(()=>{
+        if(course){
+            api.fetchSessions({
+                config: {
+                    params: {
+                        time_frame: "month",
+                        view_option: courseTypeParse[course.type],
+                        time_shift: 1,
+                    }
+                }
+            });
+        }
+    },[course, api]);
 
-    const sessionDataParse = useCallback(({start, end, course_id, status}) => {
-        const startDate = new Date(start);
-        const endDate = new Date(end);
+    const sessionDataParse = useCallback(({start_datetime, end_datetime, course, status}) => {
+        // let {start, end, course, status} = paramCourse
+        const startDate = start_datetime && new Date(start_datetime);
+        const endDate = end_datetime && new Date(end_datetime);
 
-        return {
-            "date": startDate.toLocaleDateString("en-US", dateOptions),
-            "day": DayConverter[startDate.getDay()],
-            "endTime": endDate.toLocaleTimeString("en-US", timeOptions),
-            "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
-            status,
-            "tuition": courses[course_id].tuition,
-        };
-    }, [courses]);
-
+        if(start_datetime && end_datetime && course){
+            return {
+                "date": startDate.toLocaleDateString("en-US", dateOptions),
+                "day": DayConverter[startDate.getDay()],
+                "endTime": endDate.toLocaleTimeString("en-US", timeOptions),
+                "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
+                status,
+                "tuition": course && courses[course].tuition,
+            };
+        }
+        return {};
+    }, [courses, api]);
 
     // either doesn't exist or only has notes defined
     if (!enrollment || Object.keys(enrollment).length <= 1) {
@@ -113,7 +135,8 @@ const CourseSessionStatus = () => {
         return "Error loading data";
     }
 
-    const calendarSessions = courseSessions[courseID],
+    const calendarSessions = courseSessions ? courseSessions
+            .filter(session => session.course === Number(courseID)) : [],
         paymentSessionStatus = enrollment.session_payment_status,
         statusKey = (status) => {
             if (status === 1) {
@@ -124,13 +147,13 @@ const CourseSessionStatus = () => {
             return "Waived";
 
         };
-
+    console.log("course sessions",courseSessions, calendarSessions)
     const handleTabChange = (_, newTab) => {
         setActiveTab(newTab);
     };
-
-    const sessions = course.type === "T"
-        ? Object.values(calendarSessions).map((session) => ({
+    // console.log(course, calendarSessions)
+    const sessions = course.type === "T" && courseSessions
+        ? calendarSessions.map((session) => ({
             ...session,
             "status": statusKey(paymentSessionStatus[session.session_id]),
         }))

@@ -26,9 +26,6 @@ import ChevronLeftOutlinedIcon from "@material-ui/icons/ChevronLeftOutlined";
 import ChevronRightOutlinedIcon from "@material-ui/icons/ChevronRightOutlined";
 import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
-import DateRangeOutlinedIcon from "@material-ui/icons/DateRangeOutlined";
-import ViewListIcon from "@material-ui/icons/ViewList";
-import SearchIcon from "@material-ui/icons/Search";
 import TodayIcon from "@material-ui/icons/Today";
 import { stringToColor } from "../Accounts/accountUtils";
 
@@ -36,8 +33,6 @@ import { stringToColor } from "../Accounts/accountUtils";
 import tippy from "tippy.js";
 import "tippy.js/themes/google.css";
 import "./scheduler.scss";
-import ReactSelect from "react-select";
-import Menu from "@material-ui/core/Menu";
 import SessionFilters from "./SessionFilters";
 
 class Scheduler extends Component {
