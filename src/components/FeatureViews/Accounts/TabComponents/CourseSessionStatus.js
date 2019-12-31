@@ -342,13 +342,16 @@ const CourseSessionStatus = (props) => {
                                 </Grid>
                             }
                         </Grid>
-                        <Grid item md={12}>
+                        <Grid item md={12} >
                             <Grid container
+                                  className={"session-actions"}
                                   direction={"row"}
+                                  alignItems={"center"}
                                   justify={"flex-end"}>
                                 <Grid item>
                                     <Button
                                         onClick={initRegisterMoreSessions}
+                                        className={"button add-sessions"}
                                     >
                                         Add Sessions
                                     </Button>

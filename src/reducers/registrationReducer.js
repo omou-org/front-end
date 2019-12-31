@@ -426,7 +426,6 @@ const dateToTimeString = (date) => {
 const initializeRegistration = (prevState)=>{
     let prevRegisteredCourses = JSON.parse(sessionStorage.getItem("registered_courses"));
     let prevParent = JSON.parse(sessionStorage.getItem("CurrentParent"));
-    console.log(prevRegisteredCourses, prevParent)
     if(prevRegisteredCourses && prevParent){
         prevState.registered_courses = prevRegisteredCourses;
         prevState.CurrentParent = prevParent;
