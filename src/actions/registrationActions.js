@@ -223,7 +223,52 @@ export const closeRegistration = () =>
 
 export const editRegistration = (editedRegistration) =>
     ({type: types.EDIT_COURSE_REGISTRATION, payload: editedRegistration});
-let courseEnrollmentEP = "/course/enrollment/"
+
+export const addCourseRegistration = (form) =>
+    ({type: types.ADD_CLASS_REGISTRATION, payload:{...form}});
+
+export const setParentAddCourseRegistration = (parentID, form) => {
+    const parentEndpoint = `/account/parent/${parentID}/`;
+    return (dispatch, getState) => new Promise((resolve) =>{
+        dispatch({
+            type:types.FETCH_PARENT_STARTED,
+            payload:parentID,
+        });
+        resolve();
+    }).then(()=>{
+        instance.request({
+            "headers":{
+                "Authorization": `Token ${getState().auth.token}`,
+            },
+            "method":"get",
+            "url":parentEndpoint,
+        })
+            .then((parentResponse)=>{
+                dispatch({
+                    type: types.FETCH_PARENT_SUCCESSFUL,
+                    payload:{ id:parentID, response:parentResponse},
+                });
+                const {data} = parentResponse;
+                const parent = {
+                    ...data,
+                    user:{
+                        ...data.user,
+                        user_uuid: data.user.id,
+                        name: data.user.first_name + " " + data.user.last_name,
+                    }
+                };
+                dispatch({
+                    type: types.SET_PARENT,
+                    payload: parent,
+                });
+                dispatch({
+                    type: types.ADD_CLASS_REGISTRATION,
+                    payload: {...form},
+                });
+            })
+    })
+}
+
 export const submitClassRegistration = (studentID, courseID) => wrapPost(
     "/course/enrollment/",
     [

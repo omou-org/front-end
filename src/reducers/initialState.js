@@ -153,7 +153,8 @@ function initRequests() {
             "enrollment":{
                 [POST]:{},
             }
-        }
+        },
+        "registeringParent":"",
     };
 }
 

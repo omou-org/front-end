@@ -16,25 +16,13 @@ import * as userActions from "../../../actions/userActions";
 import * as adminActions from "../../../actions/adminActions";
 
 // Material UI Imports
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import Divider from "@material-ui/core/Divider";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Typography from "@material-ui/core/Typography";
 import { parseTime } from "../../../actions/apiActions";
 import { GET } from "../../../actions/actionTypes";
-import Avatar from "@material-ui/core/Avatar";
-import { stringToColor } from "../Accounts/accountUtils";
 import DisplaySessionView from "./DisplaySessionView";
 import EditSessionView from "./EditSessionView";
-import admin from "../../../reducers/adminReducer";
 
 class SessionView extends Component {
     constructor(props) {

@@ -57,7 +57,7 @@ export default function registration(state = initialState.RegistrationForms, {pa
             return successSubmit(state);
         case actions.SET_PARENT:
             newState["CurrentParent"] = payload;
-            return newState;
+            return {...newState};
         case actions.RESET_REGISTRATION:
             newState["registered_courses"] = {};
             return newState;
@@ -194,6 +194,7 @@ const failedSubmit = (state) => ({
 });
 
 const addClassRegistration = (prevState, form) => {
+    console.log(form);
     let studentID = form["Student"].Student.value;
     let studentName = form["Student"].Student.label;
     let courseID;
@@ -424,13 +425,13 @@ const dateToTimeString = (date) => {
 
 const initializeRegistration = (prevState)=>{
     let prevRegisteredCourses = JSON.parse(sessionStorage.getItem("registered_courses"));
-    if(prevRegisteredCourses){
+    let prevParent = JSON.parse(sessionStorage.getItem("CurrentParent"));
+    console.log(prevRegisteredCourses, prevParent)
+    if(prevRegisteredCourses && prevParent){
         prevState.registered_courses = prevRegisteredCourses;
+        prevState.CurrentParent = prevParent;
     }
-    return {
-        ...prevState,
-        registered_courses: prevRegisteredCourses,
-    };
+    return { ...prevState };
 };
 
 const editCourseRegistration = (prevState, {student_id, course_id, enrollment_note, new_course, sessions, form}) => {

@@ -1,5 +1,5 @@
 
-import {Link, useParams} from "react-router-dom";
+import {Link, useParams, useHistory} from "react-router-dom";
 import BackButton from "../../../BackButton";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
@@ -7,6 +7,7 @@ import * as userActions from "actions/userActions";
 import * as calendarActions from "../../../../actions/calendarActions"
 import {bindActionCreators} from "redux";
 import * as hooks from "actions/hooks";
+import * as registrationActions from "../../../../actions/registrationActions";
 
 import Grid from "@material-ui/core/Grid";
 import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
@@ -18,6 +19,10 @@ import NoteIcon from "@material-ui/icons/NoteOutlined";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Loading from "components/Loading";
+import Button from "@material-ui/core/Button";
+import {GET} from "../../../../actions/actionTypes";
+import {NEW_REGISTERING_PARENT} from "../../../../reducers/apiReducer";
+
 
 const DayConverter = {
     "0": "Sunday",
@@ -56,12 +61,15 @@ const courseDataParser = ({schedule, status, tuition}) => {
 };
 
 const CourseSessionStatus = (props) => {
+    const history = useHistory();
+
     const {"accountID": studentID, courseID} = useParams();
     const [activeTab, setActiveTab] = useState(0);
     const courseSessions = useSelector(({Calendar}) => Calendar.CourseSessions);
     const usersList = useSelector(({Users}) => Users);
     const courses = useSelector(({Course}) => Course.NewCourseList);
     const enrollments = useSelector(({Enrollments}) => Enrollments);
+    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
     const course = courses[courseID];
 
     const dispatch = useDispatch();
@@ -69,6 +77,7 @@ const CourseSessionStatus = (props) => {
         () => ({
             ...bindActionCreators(userActions, dispatch),
             ...bindActionCreators(calendarActions, dispatch),
+            ...bindActionCreators(registrationActions, dispatch),
         }),
         [dispatch]
     );
@@ -84,8 +93,12 @@ const CourseSessionStatus = (props) => {
 
     const enrollment = (enrollments[studentID] && enrollments[studentID][courseID]) || {};
     useEffect(() => {
+        api.initializeRegistration();
         api.fetchEnrollmentNotes(enrollment.enrollment_id, studentID, courseID);
     }, [api, enrollment.enrollment_id, studentID, courseID]);
+
+    const registeringParent = useSelector(({Registration}) => Registration.CurrentParent);
+    // const registeredCourses = useSelector(({Registration}) => Registration.registered_courses);
 
     const noteInfo = useMemo(() => ({
         courseID,
@@ -128,7 +141,7 @@ const CourseSessionStatus = (props) => {
     if (!enrollment || Object.keys(enrollment).length <= 1) {
         return <Loading />;
     }
-    if (hooks.isLoading(courseStatus, enrollmentStatus, studentStatus)) {
+    if (hooks.isLoading(courseStatus, enrollmentStatus, studentStatus, instructorStatus)) {
         return <Loading />;
     }
     if (hooks.isFail(courseStatus, enrollmentStatus, studentStatus)) {
@@ -167,6 +180,57 @@ const CourseSessionStatus = (props) => {
                 "type": "C",
             },
         ];
+
+    let parentOfCurrentStudent = usersList.StudentList[studentID].parent_id;
+
+    const courseToRegister = {
+        "Course Selection":{
+            "Course":{
+                label: course.title,
+                value: course.course_id,
+            },
+        },
+        "Course Selection_validated":{
+            "Course": true,
+        },
+        "Student":{
+            "Student":{
+                label: usersList.StudentList[studentID].name,
+                value: studentID,
+            }
+        },
+        "Student_validated":{
+            "Student": true,
+        },
+        "Student Information":{},
+        "activeSection":"Student",
+        "activeStep":0,
+        "conditional": "",
+        "existingUser": false,
+        "form": "course",
+        "hasLoaded":true,
+        "preLoaded":false,
+        "submitPending":false,
+    };
+
+    const initRegisterMoreSessions = event => {
+        event.preventDefault();
+        // check if registering parent is the current student's parent
+        console.log(registeringParent, parentOfCurrentStudent);
+        if(registeringParent && registeringParent.user.id !== parentOfCurrentStudent){
+            // if not, warn user they're about to discard everything with the current registering parent
+            // set current parent to current student's parent
+            console.log("Different parent!", registeringParent, parentOfCurrentStudent)
+        } else if(registeringParent && registeringParent.user.id === parentOfCurrentStudent){
+            //registering parent is the same as the current student's parent
+            api.addCourseRegistration(courseToRegister);
+            history.push("/registration/cart/")
+        } else if(!registeringParent) {
+            // api.fetchParents(parentOfCurrentStudent);
+            api.setParentAddCourseRegistration(parentOfCurrentStudent, courseToRegister);
+            history.push("/registration/cart/")
+        }
+    };
 
     const renderMain = () => {
         switch (activeTab) {
@@ -277,6 +341,19 @@ const CourseSessionStatus = (props) => {
                                     </Paper>
                                 </Grid>
                             }
+                        </Grid>
+                        <Grid item md={12}>
+                            <Grid container
+                                  direction={"row"}
+                                  justify={"flex-end"}>
+                                <Grid item>
+                                    <Button
+                                        onClick={initRegisterMoreSessions}
+                                    >
+                                        Add Sessions
+                                    </Button>
+                                </Grid>
+                            </Grid>
                         </Grid>
                     </>
                 );

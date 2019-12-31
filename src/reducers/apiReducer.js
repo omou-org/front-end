@@ -192,11 +192,17 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
         case actions.PATCH_DISCOUNT_MULTI_COURSE_SUCCESS:
             return updateDiscountStatus(state,payload.id, status, actions.PATCH, "multiCourse");
 
-
+        case actions.SET_PARENT:
+            return {
+                ...state,
+                "registeringParent": NEW_REGISTERING_PARENT,
+            };
         default:
             return state;
     }
 };
+
+export const NEW_REGISTERING_PARENT = 2;
 
 const clearLogin = (state) => ({
     ...state,

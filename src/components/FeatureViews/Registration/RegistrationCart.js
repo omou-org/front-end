@@ -384,9 +384,7 @@ function RegistrationCart(props) {
         updatedCourses.forEach((updatedCourse)=>{
             api.editRegistration(updatedCourse);
         });
-    }
-
-
+    ;}
 
     const selectedCourseOptions = () => {
         let displaySelectionOptions = 0;
@@ -404,7 +402,17 @@ function RegistrationCart(props) {
             return renderPayment(displaySelectionOptions === 1, selectedStudentID, selectedCourseID);
         }
         return "";
-    }
+    };
+
+    useEffect(()=>{
+       return ()=>{
+           if(props.registration.registered_courses &&
+           props.registration.CurrentParent){
+               sessionStorage.setItem("registered_courses", props.registration.registered_courses);
+               sessionStorage.setItem("CurrentParent", props.registration.CurrentParent);
+           }
+       }
+    },[])
 
     return (
         <form>

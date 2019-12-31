@@ -95,6 +95,7 @@ const handleAccountNotesFetch = (state, {ownerID, ownerType, response}) => {
 };
 
 export const handleParentsFetch = (state, {id, response}) => {
+    console.log(response);
     let {ParentList} = state;
     if (id === REQUEST_ALL) {
         response.data.forEach((parent) => {
