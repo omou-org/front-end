@@ -36,6 +36,7 @@ import RemoveIcon from "@material-ui/icons/Clear";
 import SearchSelect from "react-select";
 import BackButton from "../BackButton.js";
 import Modal from "@material-ui/core/Modal";
+import CompleteCourseRegistration from"./CompleteCourseRegistration";
 
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -1280,23 +1281,25 @@ class Form extends Component {
     }
 
     renderCourseRegistrationSubmission(){
+        console.log(this.state)
         if(this.props.registeredCourses){
 
             let currentStudentID = this.state.Student.Student.value;
             let registeredCourseForm = this.props.registeredCourses[currentStudentID];
             registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
-
             let currentStudentName = registeredCourseForm.display.student_name;
             let currentCourseTitle = registeredCourseForm.display.course_name;
+            let student=currentStudentName.slice(0,currentStudentName.indexOf(" -"));
+            let email=currentStudentName.slice(currentStudentName.indexOf("- "), currentStudentName.length);
+            let instructorName=this.props.instructors[registeredCourseForm.new_course.instructor].name;
+            let studentID=registeredCourseForm.student_id;
+            let courseName=currentCourseTitle.slice(currentCourseTitle.indexOf("- "), currentCourseTitle.length);
+            let startDate=registeredCourseForm.new_course.schedule.start_date;
+            console.log(instructorName);
 
-
+            console.log(registeredCourseForm);
             return <div>
-                <h3>{currentStudentName}</h3>
-                <h3>{currentCourseTitle}</h3>
-                <Button component={NavLink} to={"/registration"}
-                        className={"button"}>Register More</Button>
-                <Button component={NavLink} to={"/registration/cart"}
-                        className={"button"}>Checkout</Button>
+                <CompleteCourseRegistration startDate={startDate} student={student} studentID={studentID} courseName={courseName} email={email} instructorName={instructorName} courseName={courseName} currentStudentName={currentStudentName} currentCourseTitle={currentCourseTitle}/>
             </div>
         } else {
             // this.props.registrationActions.initializeRegistration();
@@ -1376,7 +1379,7 @@ class Form extends Component {
                             denyAction={"default"}
                         />
                         <Typography className="heading" align="left">
-                            {this.renderTitle(this.props.computedMatch.params.id, this.state.form)}
+                            Class Registration Confirmation
                         </Typography>
                         {
                             this.props.submitStatus !== "success" ?

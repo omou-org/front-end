@@ -57,6 +57,7 @@ const Navigation = (props) => {
     const {pathname} = useLocation();
     const dispatch = useDispatch();
     const {token, isAdmin} = useSelector(({auth}) => auth);
+    console.log(token);
     // const isAdmin = useSelector(({auth}) => auth).isAdmin;
     const NavList = isAdmin ? [
             // {
