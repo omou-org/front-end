@@ -22,6 +22,11 @@ import Loading from "components/Loading";
 import Button from "@material-ui/core/Button";
 import {GET} from "../../../../actions/actionTypes";
 import {NEW_REGISTERING_PARENT} from "../../../../reducers/apiReducer";
+import Dialog from "@material-ui/core/es/Dialog/Dialog";
+import DialogTitle from "@material-ui/core/es/DialogTitle/DialogTitle";
+import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
+import DialogContentText from "@material-ui/core/es/DialogContentText/DialogContentText";
+import DialogActions from "@material-ui/core/DialogActions";
 
 
 const DayConverter = {
@@ -98,7 +103,7 @@ const CourseSessionStatus = (props) => {
     }, [api, enrollment.enrollment_id, studentID, courseID]);
 
     const registeringParent = useSelector(({Registration}) => Registration.CurrentParent);
-    // const registeredCourses = useSelector(({Registration}) => Registration.registered_courses);
+    const [discardParentWarning, setDiscardParentWarning] = useState(false);
 
     const noteInfo = useMemo(() => ({
         courseID,
@@ -216,20 +221,27 @@ const CourseSessionStatus = (props) => {
     const initRegisterMoreSessions = event => {
         event.preventDefault();
         // check if registering parent is the current student's parent
-        console.log(registeringParent, parentOfCurrentStudent);
         if(registeringParent && registeringParent.user.id !== parentOfCurrentStudent){
             // if not, warn user they're about to discard everything with the current registering parent
-            // set current parent to current student's parent
-            console.log("Different parent!", registeringParent, parentOfCurrentStudent)
+            setDiscardParentWarning(true);
         } else if(registeringParent && registeringParent.user.id === parentOfCurrentStudent){
             //registering parent is the same as the current student's parent
             api.addCourseRegistration(courseToRegister);
-            history.push("/registration/cart/")
+            history.push("/registration/cart/");
         } else if(!registeringParent) {
-            // api.fetchParents(parentOfCurrentStudent);
             api.setParentAddCourseRegistration(parentOfCurrentStudent, courseToRegister);
-            history.push("/registration/cart/")
+            history.push("/registration/cart/");
         }
+    };
+
+    const closeDiscardParentWarning = (toContinue) => event =>{
+        event.preventDefault();
+        setDiscardParentWarning(false);
+        if(toContinue){
+            api.setParentAddCourseRegistration(parentOfCurrentStudent, courseToRegister);
+            history.push("/registration/cart/");
+        }
+
     };
 
     const renderMain = () => {
@@ -424,6 +436,35 @@ const CourseSessionStatus = (props) => {
                 <br />
                 {renderMain()}
             </Grid>
+            <Dialog
+                open={discardParentWarning}
+                onClose={closeDiscardParentWarning(false)}
+                aria-labelledby="warn-discard-parent"
+            >
+                <DialogTitle id="warn-discard-parent">
+                    {"Finished registering parent?"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        {`
+                        You are currently registering ${registeringParent && registeringParent.user.name}. If you wish to continue to add sessions, you will
+                        discard all of the currently registered courses with this parent.
+                        `}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        color={"secondary"}
+                        onClick={closeDiscardParentWarning(true)}>
+                        Continue & Add Session
+                    </Button>
+                    <Button
+                        color={"primary"}
+                        onClick={closeDiscardParentWarning(false)}>
+                        Cancel
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Paper>
     );
 };

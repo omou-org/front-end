@@ -125,9 +125,9 @@ class Scheduler extends Component {
             let endTimeMin = Number(endUTCString.substr(20, 2));
             let date = new Date(session.start_datetime);
             // console.log(prevState.timeShift)
-            if(date.getDate() !== new Date().getDate()+ timeShift) { // weird UTC conversion necessary when at night
-                date.setDate(date.getDate() - 1);
-            }
+            // if(date.getDate() !== new Date().getDate()+ timeShift) { // weird UTC conversion necessary when at night
+            //     date.setDate(date.getDate() - 1);
+            // }
             date.setHours(startTimeHour);
             date.setMinutes(startTimeMin);
             let startTime = date;
