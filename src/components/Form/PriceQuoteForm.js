@@ -125,7 +125,11 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
 
     const handlePriceAdjustment = () => (e) => {
         setPriceAdjustment(e.target.value);
-    }
+    };
+
+    const handlePayment = event => {
+        setPayment(event.target.value);
+    };
 
     return (
         <Grid container className={"price-quote-form"}>
@@ -237,6 +241,14 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
                                         <Typography align={"right"}>
                                             {priceQuote.total}
                                         </Typography>
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <TextField
+                                            value = {payment}
+                                            onChange={ handlePayment }
+                                            type={"number"}
+                                            className={"price-adjustment"}
+                                        />
                                     </Grid>
                                 </Grid>
                             </Grid>

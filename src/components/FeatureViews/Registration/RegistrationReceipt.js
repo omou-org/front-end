@@ -33,61 +33,135 @@ function RegistrationReceipt(props) {
         [dispatch]
     );
 
+    const [transactionParent, setTransactionParent] = useState({
+        user_id: 2,
+        gender: "F",
+        birthday: "12/12/1970",
+        relationship: "Mother",
+        first_name: "Elle",
+        last_name: "Ho",
+        name: "Elle Ho",
+        email: "elle@ho.com",
+        student_ids: [7],
+        role: "parent",
+    });
+
+    const [payment, setPayment] = useState({
+        parent:2,
+        enrollments:[32, 24],
+        payment: {
+            received: 1000,
+            method: "credit card",
+        },
+        disabled_discounts: [1],
+        enabled_discounts: [3],
+        date: "1/1/2020",
+        id: 123,
+    });
+
+    const [enrollment, setEnrollment] = useState({
+        32:{
+            // course_id:
+        }
+    });
+
     const handleCloseReceipt = ()=> (e)=> {
         e.preventDefault();
         api.closeRegistration("");
         props.history.push("/registration");
-    }
+    };
 
     return (
-        <Grid container>
-            <Grid item xs={12}>
-                <Typography variant={"h2"} align={"left"}>
-                    Payment Confirmation
-                </Typography>
-                <Typography varient={"h4"} align={"left"}>
-                    Thank you for your payment, //Temp Parent Name
-                </Typography>
-            </Grid>
-            <Grid item xs={12}>
-                <Grid container>
-                    <Grid item xs={6}>
-                        <Grid container>
-                            <Grid item xs={2}>
-                                <Typography align={"left"}>
-                                    Order ID#:
-                                </Typography>
+        <Paper className={"paper registration-receipt"} >
+            <Grid container
+                  direction={"row"}
+                  spacing={16}
+            >
+                <Grid item>
+                    <Typography variant={"h2"} align={"left"}>
+                        Payment Confirmation
+                    </Typography>
+                </Grid>
+                <Grid item>
+                    <Typography variant={"h5"} align={"left"}>
+                        Thank you for your payment, {transactionParent.name}
+                    </Typography>
+                </Grid>
+                <Grid item xs={12}
+                    className={"receipt-info"}
+                >
+                    <Grid container direction={"column"}>
+                        <Grid item xs={8}>
+                            <Grid container direction={"row"}>
+                                <Grid item xs={3}>
+                                    <Typography
+                                        className={"label"}
+                                        align={"left"}>
+                                        Order ID#:
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <Typography align={"left"}>
+                                        {payment.id}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <Typography
+                                        className={"label"}
+                                        align={"left"}>
+                                        Paid By:
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <Typography align={"left"}>
+                                        {`
+                                        ${transactionParent.name} - ID#:
+                                        ${transactionParent.user_id}
+                                    `}
+                                    </Typography>
+                                </Grid>
                             </Grid>
-                            <Grid item xs={4}>
-                                <Typography align={"left"}>
-                                    // future payment ID
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={2}>
-                                <Typography align={"left"}>
-                                    Paid By:
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Typography align={"left"}>
-                                    {/*{props.parent.name} */}
-                                    - ID#:
-                                    {/*{props.parent.user_id}*/}
-                                </Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <Grid container direction={"row"}>
+                                <Grid item xs={3}>
+                                    <Typography
+                                        className={"label"}
+                                        align={"left"}>
+                                        Order Date:
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <Typography align={"left"}>
+                                        {payment.date}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <Typography
+                                        className={"label"}
+                                        align={"left"}>
+                                        Payment Method:
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <Typography align={"left"}>
+                                        {payment.payment.method}
+                                    </Typography>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
-            <Grid item xs={12}>
-                <Grid item xs={8}/>
-                <Grid item xs={4}>
-                    <Button onClick={handleCloseReceipt()} className={"button"}>
-                        End Registration
-                    </Button>
+                <Grid item xs={12}>
+                    <Grid item xs={8}/>
+                    <Grid item xs={4}>
+                        <Button onClick={handleCloseReceipt()} className={"button"}>
+                            End Registration
+                        </Button>
+                    </Grid>
                 </Grid>
             </Grid>
-        </Grid>
+        </Paper>
     );
 }
 

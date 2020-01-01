@@ -642,6 +642,19 @@
 // Registration Cart Styling
 .registration-cart {
   &.paper{
-    padding:3%;
+    padding:$paperPadding;
+  }
+}
+
+// Registration Receipt
+.registration-receipt {
+  &.paper{
+    padding: $paperPadding;
+  }
+  .receipt-info{
+    margin-top:20px;
+    .label{
+      font-weight:bold;
+    }
   }
 }
