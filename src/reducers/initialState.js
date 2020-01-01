@@ -53,20 +53,22 @@ export default {
     },
     "RequestStatus": initRequests(),
     "SearchResults": {
-        SearchQuery:{},
+        SearchQuery:"",
         searchQueryStatus: "",
         accounts: [],
         courses: [],
-        filter: {
+        params: {
             account:{
                 profile:"",
-                grade:"",
-                sort:"",
+                gradeFilter:"",
+                sortAlpha:"",
+                accountPage: 1,
             },
             course:{
                 course:"",
                 availability:"",
                 sort:"",
+                coursePage: 1,
             }
         }
     },

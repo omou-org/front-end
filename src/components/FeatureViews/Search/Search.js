@@ -5,7 +5,7 @@ import { Button, Grid, Select } from "@material-ui/core";
 import { bindActionCreators } from "redux";
 import * as searchActions from "../../../actions/searchActions";
 import * as userActions from "../../../actions/userActions";
-import {connect, useDispatch} from "react-redux";
+import {connect, useDispatch, useSelector} from "react-redux";
 import MenuItem from "@material-ui/core/MenuItem";
 import "./Search.scss";
 import FormControl from "@material-ui/core/FormControl";
@@ -24,6 +24,7 @@ const Search = (props) => {
     const [searchSuggestions, setSearchSuggestions] = useState([]);
     const requestConfig = { params: { query: query.label, page: 1,  },
         headers: {"Authorization": `Token ${props.auth.token}`,} };
+    const searchState = useSelector(({Search}) => Search);
     const [isMobileSearching, setMobileSearching] = useState(false);
     const [searchStatus, setSearchStatus] = useState(false);
 
@@ -78,7 +79,7 @@ const Search = (props) => {
         }
         setSearchSuggestions(suggestions);
     };
-
+    
     const customStyles = {
         control: (base, state) => ({
             ...base,
@@ -92,16 +93,15 @@ const Search = (props) => {
     };
 
     useEffect(()=>{
-        api.fetchInstructors();
-    },[])
-    useEffect(()=>{
         setSearchStatus(false);
-        if(query.label){
+        if(query.label!==""){
             filterSuggestions()();
         }
     },[query]);
     useEffect(()=>{
-        searchList();
+        if(searchState.searchQueryStatus === "success"){
+            searchList();
+        }
     },[props.search.searchQueryStatus]);
 
     const handleFilterChange = (filter) => (e) => {
@@ -135,6 +135,7 @@ const Search = (props) => {
     }
 
     const handleQuery = () => (e) => {
+        api.setSearchQuery(query.label);
         props.history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
     };
 
