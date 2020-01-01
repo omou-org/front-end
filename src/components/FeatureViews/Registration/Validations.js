@@ -45,7 +45,7 @@ let ShortTextValidation = (input) => {
 // Address
 let AddressValidation = (input) => {
     // Old regex /\d{1,5}\s\w\s(\b\w*\b\s){1,2}?.\w*/
-    return !!input.match(/\d+[ ](?:[A-Za-z0-9.-]+[ ]?)+/);
+    return !!input.match(/^[a-zA-Z0-9\s,.'-]{3,}$/ );
 
 };
 

@@ -294,7 +294,7 @@ function initRegistrationForm() {
             {
                 field: "Address",
                 name: "Address",
-                type: "short text",
+                type: "address",
                 full: false,
                 required: false,
                 field_limit: 1,

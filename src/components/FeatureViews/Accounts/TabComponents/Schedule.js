@@ -35,7 +35,7 @@ function Schedule(){
         allDaySlot={false}
         columnHeaderFormat={{"weekday": "short"}}
         defaultView="timeGridWeek"
-        events={Object.values(work_hours)}
+        // events={Object.values(work_hours)}
         header={false}
         height={337}
         plugins={[timeGridPlugin]} />)
