@@ -221,7 +221,7 @@ export const formatCourse = (formCourse, type) =>{
         "1.5 Hours": 1.5,
         "2 Hours": 2,
     };
-    console.log(duration[formCourse["Duration"]]*60*60*1000, formCourse["Duration"])
+
     endTime = new Date(endTime.setTime(endTime.getTime() + duration[formCourse["Duration"]]*60*60*1000));
     let timeFormat = {
         hour12:false,
@@ -230,6 +230,7 @@ export const formatCourse = (formCourse, type) =>{
     };
     endTime = endTime.toLocaleString("eng-US",timeFormat);
     startTime = startTime.toLocaleString("eng-US", timeFormat);
+
     return {
         "subject": formCourse["Course Name"],
         "type": type.toLowerCase(),

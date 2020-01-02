@@ -7,9 +7,6 @@
 @import '../../../theme/sizes';
 
 // Session view
-
-
-
 .session-button{
    .button {
      left: 30px;
@@ -48,12 +45,8 @@
 
 
 .scheduler-header{
-  display: flex;
-  margin: 0 auto;
-  max-width: 1100px;
   background-color : white;
-  @include respond-to(wide-screens){
-  }
+  margin-bottom: 20px;
 }
 
 
@@ -240,6 +233,8 @@ body .fc {
 .scheduler-wrapper{
   padding:2%;
   background-color:white;
+  -webkit-box-shadow: -1px 0px 3px 2px rgba(0,0,0,0.22);
+  box-shadow: -1px 0px 3px 2px rgba(0,0,0,0.22);
 }
 
 .session-filter{
@@ -250,4 +245,13 @@ body .fc {
   .instructor-session-filter{
     width:200px;
   }
+}
+
+.filter-select{
+  width:60%;
+  display: flex;
+}
+
+.scheduler.paper{
+  padding:$paperPadding;
 }
