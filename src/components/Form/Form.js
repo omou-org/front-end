@@ -44,7 +44,15 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import {DatePicker, TimePicker, MuiPickersUtilsProvider,} from "material-ui-pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import {createDiscountPayload, durationParser, numSessionsParser, timeParser} from "./FormUtils";
+import {
+    categorySelectObject,
+    convertTimeStrToDate,
+    createDiscountPayload,
+    durationParser, gradeConverter, loadEditCourseState,
+    numSessionsParser,
+    timeParser,
+    weeklySessionsParser
+} from "./FormUtils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
 
 const parseGender = {
@@ -52,25 +60,6 @@ const parseGender = {
     "F": "Female",
     "U": "Do not disclose",
 };
-
-const numToDay = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-const formatDate = (date) => {
-    if (!date) {
-        return null;
-    }
-    const [year, month, day] = date.split("-");
-    return `${month}/${day}/${year}`;
-};
-
-const formatTime = (time) => {
-    if (!time) {
-        return null;
-    }
-    const [hrs, mins] = time.substring(1).split(":");
-    const hours = parseInt(hrs, 10);
-    return `${hours % 12 === 0 ? 12 : hours % 12}:${mins} ${hours >= 12 ? "PM" : "AM"}`
-}
 
 class Form extends Component {
     constructor(props) {
@@ -409,27 +398,7 @@ class Form extends Component {
                         } finally {
                             if (course) {
                                 const inst = this.props.instructors[course.instructor_id];
-                                this.setState({
-                                    "Course Info": {
-                                        "Course Name": course.title,
-                                        "Description": course.description,
-                                        "Instructor":
-                                            inst
-                                                ? {
-                                                    "value": course.instructor_id,
-                                                    "label": `${inst.name} - ${inst.email}`,
-                                                }
-                                                : null,
-                                        "Tuition": Math.round(course.tuition),
-                                        "Day": numToDay[course.schedule.days[0]],
-                                        "Start Date": formatDate(course.schedule.start_date),
-                                        "End Date": formatDate(course.schedule.end_date),
-                                        "Start Time": formatTime(course.schedule.start_time),
-                                        "End Time": formatTime(course.schedule.end_time),
-                                        "Capacity": course.capacity,
-                                    },
-                                    "preLoaded": true,
-                                });
+                                this.setState(loadEditCourseState(course,inst));
                             }
                         }
                     })();
@@ -582,7 +551,6 @@ class Form extends Component {
                             } else if( this.state.form === "discount"){
                                 let discountType = this.state["Discount Description"]["Discount Type"];
                                 let discountPayload = createDiscountPayload(this.state, discountType);
-                                console.log(discountPayload);
                                 this.props.adminActions.setDiscount(discountType, discountPayload);
                             } else {
                                 this.props.registrationActions.submitForm(this.state);
@@ -778,7 +746,9 @@ class Form extends Component {
             case "price quote":
                 return <TutoringPriceQuote courseType={this.state.form}/>;
             case "select":
-                let parsedDuration = durationParser(this.state[label],fieldTitle);
+                let startTime = this.state[label]["Start Time"];
+                let endTime = this.state[label]["End Time"];
+                let parsedDuration = durationParser({start: startTime, end: endTime},fieldTitle, true);
                 let value, options;
                 if (parsedDuration && this.state[label][fieldTitle]){
                     if(parsedDuration.duration){

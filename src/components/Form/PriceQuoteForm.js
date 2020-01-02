@@ -103,7 +103,7 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
                 max_capacity: 1,
                 course_category: tutoring.category_id,
                 instructor: tutoring.new_course.instructor,
-                type:"T",
+                type:"tutoring",
                 description: tutoring.new_course.description,
                 // need to add academic level
             };

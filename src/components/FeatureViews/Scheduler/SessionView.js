@@ -50,12 +50,18 @@ class SessionView extends Component {
                 });
                 sessionData["start"] = new Date(sessionData.start_datetime).getDay();
 
-                const startTime = parseTime(new Date(sessionData.start_datetime).toUTCString());
-                const endTime = parseTime(new Date(sessionData.end_datetime).toUTCString());
-                sessionData["startTime"] = startTime;
-                sessionData["endTime"] = endTime;
-
-
+                sessionData["startTime"] = new Date(sessionData.start_datetime)
+                                                .toLocaleTimeString("en-US",{
+                                                    hour12: true,
+                                                    timeStyle: "short",
+                                                });
+                sessionData["endTime"] = new Date(sessionData.end_datetime)
+                                                .toLocaleTimeString("en-US",{
+                                                    hour12: true,
+                                                    timeStyle: "short",
+                                                });
+                sessionData.start_datetime = new Date(sessionData.start_datetime);
+                sessionData.end_datetime = new Date(sessionData.end_datetime);
                 let courseData = this.props.courses[this.props.match.params.course_id];
                 if (courseData && !this.props.requestStatus["instructor"][GET][courseData.instructor_id]) {
                     this.props.userActions.fetchInstructors(courseData.instructor_id);

@@ -69,7 +69,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
     };
     const enrollmentStatus = hooks.useEnrollmentByCourse(course.course_id);
     const reduxCourse = courses[course.course_id];
-    const studentStatus = hooks.useStudent(reduxCourse.roster);
+    const studentStatus = reduxCourse.roster.length > 0 && hooks.useStudent(reduxCourse.roster);
 
     const loadedStudents = useMemo(() =>
             reduxCourse.roster.filter((studentID) => students[studentID])
@@ -83,7 +83,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
         }
     }, [loadedStudents, studentStatus, students]);
 
-    if (loadedStudents.length === 0) {
+    if (loadedStudents.length === 0 && reduxCourse.roster.length > 1) {
         if (hooks.isLoading(studentStatus)) {
             return <Loading />;
         }
@@ -206,7 +206,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
             <Grid item xs={6}>
                 <Typography variant="h5" align="left"> Students Enrolled  </Typography>
                 <Grid container direction='row'>
-                    {studentKeys.map(key =>
+                    { studentKeys.map(key =>
                         <NavLink to={`/accounts/student/${enrolledStudents[key].user_id}/${course.course_id}`}
                                  style={{ textDecoration: "none" }}>
                             <Avatar

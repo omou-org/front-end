@@ -1,18 +1,20 @@
 /**
  * @description: parses a form to convert start and end time from a form to a duration
  * */
-export const durationParser = (form, fieldTitle)=> {
+export const durationParser = ({start, end}, fieldTitle, field)=> {
     let durationString = {
         0.5:"0.5 Hours",
         1: "1 Hour",
         1.5: "1.5 Hours",
         2: "2 Hours"
     };
-    if(fieldTitle === "Duration"){
-        let startTime = timeParser(form["Start Time"]);
-        let endTime = timeParser(form["End Time"]);
+    if(fieldTitle === "Duration" ){
+        let startTime = timeParser(start);
+        let endTime = timeParser(end);
         let duration = Math.abs(endTime - startTime)/3600000;
-        return { duration: durationString[duration] || "1 Hour", options: ["1 Hour", "1.5 Hours", "0.5 Hours", "2 Hours"]}
+        // If it's a field, return it in a format where it can be selected, if not, just return the duration string
+        return field ? { duration: durationString[duration] || "1 Hour", options: ["1 Hour", "1.5 Hours", "0.5 Hours", "2 Hours"]} :
+                durationString[duration]
     } else {
         return null;
     }
@@ -105,3 +107,81 @@ export const dayOfWeek = {
                         5: "Fri",
                         6: "Sat",
                     };
+
+export const weeklySessionsParser = (startDate, endDate) =>{
+    let start = new Date(startDate);
+    let end = new Date(endDate);
+    return (end.getTime() - start.getTime()) / (1000 * 3600 * 24 * 7);
+};
+
+export const convertTimeStrToDate = (time) => {
+    return new Date("01/01/2020 "+time.substr(1,5));
+};
+
+export const categorySelectObject = (category) => {
+    if(category){
+        return {
+            value: category.id,
+            label: category.name,
+        }
+    } else {
+        return null;
+    }
+};
+
+export const gradeConverter = (grade) => {
+    if(grade < 6){
+        return "Elementary School"
+    } else if ( 5 < grade && grade < 9) {
+        return "Middle School";
+    } else if ( 8 < grade && grade < 13){
+        return "High School";
+    } else {
+        return "College"
+    }
+};
+
+const numToDay = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+const formatDate = (date) => {
+    if (!date) {
+        return null;
+    }
+    const [year, month, day] = date.split("-");
+    return `${month}/${day}/${year}`;
+};
+
+const formatTime = (time) => {
+    if (!time) {
+        return null;
+    }
+    const [hrs, mins] = time.substring(1).split(":");
+    const hours = parseInt(hrs, 10);
+    return `${hours % 12 === 0 ? 12 : hours % 12}:${mins} ${hours >= 12 ? "PM" : "AM"}`
+};
+
+export const loadEditCourseState = (course, inst) => ({
+    "Course Info": {
+        "Course Name": course.title,
+        "Description": course.description,
+        "Instructor":
+            inst
+                ? {
+                    "value": course.instructor_id,
+                    "label": `${inst.name} - ${inst.email}`,
+                }
+                : null,
+        "Grade Level": course.academic_level && course.academic_level.charAt(0).toUpperCase() + course.academic_level.slice(1),
+        "Category": categorySelectObject(course.category),
+        "Start Date": formatDate(course.schedule.start_date),
+        "Duration": durationParser({start:course.schedule.start_time, end: course.schedule.end_time},'Duration', false),
+        "Start Time": convertTimeStrToDate(course.schedule.start_time),
+        "Number of Weekly Sessions": weeklySessionsParser(course.schedule.start_date, course.schedule.end_date),
+        "Capacity": course.capacity,
+    },
+    "Tuition":{
+        "Hourly Tuition": course.hourly_tuition,
+        "Total Tuition": course.total_tuition,
+    },
+    "preLoaded": true,
+});

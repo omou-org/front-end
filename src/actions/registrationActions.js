@@ -3,9 +3,9 @@ import {submitParentAndStudent, postData, patchData, typeToPostActions} from "./
 import {wrapGet, postCourse, formatCourse, wrapPost, instance, wrapPatch} from "./apiActions";
 
 const parseGender = {
-    "Male": "M",
-    "Female": "F",
-    "Do not disclose": "U",
+    "Male": "male",
+    "Female": "female",
+    "Do not disclose": "unspecified",
 };
 
 const parseDate = (date) => {
@@ -103,7 +103,7 @@ export const submitForm = (state, id) => {
                 "zipcode": state["Parent Information"]["Zip Code"],
                 "relationship":
                     state["Parent Information"]["Relationship to Student"]
-                        .toUpperCase(),
+                        .toLowerCase(),
                 "birth_date": parseDate(state["Parent Information"]["Parent Birthday"]),
             };
             const selectedParent = state["Parent Information"]["Select Parent"];
@@ -162,17 +162,22 @@ export const submitForm = (state, id) => {
             }
         }
         case "course_details": {
-            const course = formatCourse(state["Course Info"],"C");
+            const course = formatCourse(state["Course Info"],"class");
 
             for (const key in course) {
                 if (course.hasOwnProperty(key) && !course[key]) {
                     delete course[key];
                 }
             }
+            const updatedCourse = {
+                ...course,
+                hourly_tuition: state["Tuition"]["Hourly Tuition"],
+                total_tuition: state["Tuition"]["Total Tuition"]
+            };
             if (id) {
-                return patchData("course", course, id);
+                return patchData("course", updatedCourse, id);
             } else {
-                return postData("course", course);
+                return postData("course", updatedCourse);
             }
         }
         case "tutoring":{

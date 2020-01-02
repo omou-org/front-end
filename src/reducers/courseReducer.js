@@ -110,7 +110,8 @@ export const updateCourse = (courses, id, course) => ({
             "days": course.day_of_week,
         },
         "instructor_id": course.instructor,
-        "tuition": course.tuition,
+        "total_tuition": course.total_tuition,
+        "hourly_tuition": course.hourly_tuition,
         "capacity": course.max_capacity,
         "grade": 10,
         "description": course.description,
@@ -119,6 +120,7 @@ export const updateCourse = (courses, id, course) => ({
         "category": course.course_category,
         "tags": [],
         "roster": course.enrollment_list,
+        "academic_level": course.academic_level,
     },
 });
 

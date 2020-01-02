@@ -251,7 +251,7 @@ export const academicLevelParse = {
     "Elementary School":"elementary_lvl",
     "Middle School":"middle_lvl",
     "High School":"high_lvl",
-    "College":"college_lvl",
+    "College":"college",
     "elementary_lvl": "Elementary School",
     "middle_lvl": "Middle School",
     "high_lvl":"High School",

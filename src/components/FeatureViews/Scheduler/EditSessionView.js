@@ -53,16 +53,6 @@ function EditSessionView({course, session}) {
         api.fetchCourses();
     },[api]);
 
-    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
-    const classes = useStyles();
-    const styles = (username) => ({
-        "backgroundColor": stringToColor(username),
-        "color": "white",
-        "width": "3vw",
-        "height": "3vw",
-        "fontSize": 15,
-        "margin-right": 10,
-    });
     const categories = useSelector(({"Course": {CourseCategories}}) => CourseCategories);
     const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
 
@@ -78,17 +68,14 @@ function EditSessionView({course, session}) {
 
     useEffect(()=>{
         if(course && session) {
-            let startTime = new Date(session.start_datetime);
-            startTime = setDateInPSTDate(startTime,session.start_datetime);
-            let endTime = new Date(session.end_datetime);
-            endTime = setDateInPSTDate(endTime, session.end_datetime);
-            let durationHours = Math.abs(endTime - startTime)/ 36e5;
+            let durationHours = Math.abs(session.end_datetime - session.start_datetime)/ 36e5;
             durationHours === 0 ? durationHours = 1 : durationHours = durationHours;
             let category = categories.find(category => category.id === course.category);
+
             setSessionFields({
                 category: {value: category.id, label: category.name} ,
-                start_time: startTime,
-                end_time: endTime,
+                start_time: session.start_datetime,
+                end_time: session.end_datetime,
                 duration: durationHours,
                 title: course.title,
             });
@@ -134,17 +121,13 @@ function EditSessionView({course, session}) {
         dateISOMinute = dateISOMinute === 0 ? "00" : dateISOMinute.toString();
         let dateISOTime = dateISO.substr(11,5);
         return dateISO.replace(dateISOTime, dateISOHour + ":" + dateISOMinute)
-    }
+    };
     const updateSession = event => {
         event.preventDefault();
         let {start_time, end_time} = sessionFields;
-        let start = new Date(start_time);
-        start = stringifyDateInPST(start);
-        let end = new Date(end_time);
-        end = stringifyDateInPST(end);
         let patchedSession = {
-            start_datetime: start,
-            end_datetime: end,
+            start_datetime: start_time.toISOString(),
+            end_datetime: end_time.toISOString(),
         };
         api.patchSession(session.id, patchedSession);
 

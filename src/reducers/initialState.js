@@ -923,8 +923,17 @@ function initRegistrationForm() {
                 "Course Info": courseInfoQuestions,
                 "Tuition": [
                     {
-                        field: "Tuition",
-                        name: "Tuition",
+                        field: "Hourly Tuition",
+                        name: "Hourly Tuition",
+                        type: "number",
+                        conditional: false,
+                        required: true,
+                        full: false,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Total Tuition",
+                        name: "Total Tuition",
                         type: "number",
                         conditional: false,
                         required: true,

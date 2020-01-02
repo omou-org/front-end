@@ -117,23 +117,6 @@ class Scheduler extends Component {
 
     formatSessions = (sessions, timeShift) => {
         return sessions.map((session) => {
-            let startUTCString = new Date(session.start_datetime).toUTCString();
-            let endUTCString = new Date(session.end_datetime).toUTCString();
-            let startTimeHour = Number(startUTCString.substr(17, 2));
-            let startTimeMin = Number(startUTCString.substr(20,2));
-            let endTimeHour = Number(endUTCString.substr(17, 2));
-            let endTimeMin = Number(endUTCString.substr(20, 2));
-            let date = new Date(session.start_datetime);
-            // console.log(prevState.timeShift)
-            // if(date.getDate() !== new Date().getDate()+ timeShift) { // weird UTC conversion necessary when at night
-            //     date.setDate(date.getDate() - 1);
-            // }
-            date.setHours(startTimeHour);
-            date.setMinutes(startTimeMin);
-            let startTime = date;
-            let endTime = new Date(date);
-            endTime.setHours(endTimeHour);
-            endTime.setMinutes(endTimeMin);
             let instructorName = this.props.courses && this.props.instructors[this.props.courses[session.course].instructor_id].name;
             return {
                 id: session.id,
@@ -142,10 +125,10 @@ class Scheduler extends Component {
                 description: session.description ? session.description : "",
                 type: this.props.courses[session.course].type,
                 resourceId: this.props.courses[session.course_id] ? this.props.courses[session.course_id].room_id : 1,
-                start: startTime,
-                end: endTime,
-                // start: new Date(session.start_datetime),
-                // end: new Date(session.end_datetime),
+                // start: startTime,
+                // end: endTime,
+                start: new Date(session.start_datetime),
+                end: new Date(session.end_datetime),
                 instructor: instructorName,
                 instructor_id: this.props.courses[session.course].instructor_id,
                 isConfirmed: session.is_confirmed,
