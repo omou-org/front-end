@@ -750,6 +750,12 @@ class Form extends Component {
                     prevState["Schedule"]["Number of Sessions"] = numSessions;
                     break;
                 }
+                case "small_group":{
+                    prevState["Group Details"]["Category"] = category;
+                    prevState["Group Details"]["Grade Level"] = academicLevel;
+                    prevState["Group Details"]["Duration"] = sessionDuration;
+                    prevState["Group Details"]["Number of Weekly Sessions"] = numSessions;
+                }
             }
             return {...prevState};
         })
