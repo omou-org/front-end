@@ -251,7 +251,7 @@ export const academicLevelParse = {
     "Elementary School":"elementary_lvl",
     "Middle School":"middle_lvl",
     "High School":"high_lvl",
-    "College":"college",
+    "College":"college_lvl",
     "elementary_lvl": "Elementary School",
     "middle_lvl": "Middle School",
     "high_lvl":"High School",
@@ -302,13 +302,12 @@ const addTutoringRegistration = (prevState, form) => {
     endDate.setDate(endDate.getDate()+(7*numSessions));
     let isStudentCurrentlyRegistered = prevState.registered_courses ? Object.keys(prevState.registered_courses).includes(studentID.toString()):false;
     let enrollmentObject = {
-        type: "tutoring",
+        course_type: "tutoring",
         new_course: {
             subject: subject,
             title: courseName, // create class with instructor and name as INSTRUCTOR-LASTNAME x STUDENT-FIRSTNAME - SUBJECT
-            type: "T",
+            course_type: "tutoring",
             instructor: instructorID,
-            //tuition: //default subject + grade price on backend?
             schedule:{
                 start_date: dateParser(startDate).substring(0,10),
                 start_time: dateToTimeString(startTime),
@@ -319,6 +318,8 @@ const addTutoringRegistration = (prevState, form) => {
             max_capacity: 1,
             enrollment_id_list: [studentID], //array with student_id
             description: studentInfoNote,
+            academic_level: academicLevel,
+            course_category: category,
         },
         student_id: studentID,
         course_id: "T" + (isStudentCurrentlyRegistered ? (prevState.registered_courses[studentID].length + 1).toString() : "0"),

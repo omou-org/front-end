@@ -116,7 +116,7 @@ export const updateCourse = (courses, id, course) => ({
         "grade": 10,
         "description": course.description,
         "room_id": course.room,
-        "type": course.type,
+        "course_type": course.course_type,
         "category": course.course_category,
         "tags": [],
         "roster": course.enrollment_list,

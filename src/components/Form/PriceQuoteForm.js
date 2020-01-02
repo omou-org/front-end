@@ -102,8 +102,9 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
                 end_date: tutoring.new_course.schedule.end_date.substring(0,10),
                 max_capacity: 1,
                 course_category: tutoring.category_id,
+                academic_level: tutoring.academic_level,
                 instructor: tutoring.new_course.instructor,
-                type:"tutoring",
+                course_type:"tutoring",
                 description: tutoring.new_course.description,
                 // need to add academic level
             };

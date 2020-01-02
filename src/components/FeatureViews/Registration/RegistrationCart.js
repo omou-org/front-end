@@ -408,8 +408,8 @@ function RegistrationCart(props) {
        return ()=>{
            if(props.registration.registered_courses &&
            props.registration.CurrentParent){
-               sessionStorage.setItem("registered_courses", props.registration.registered_courses);
-               sessionStorage.setItem("CurrentParent", props.registration.CurrentParent);
+               sessionStorage.setItem("registered_courses", JSON.stringify(props.registration.registered_courses));
+               sessionStorage.setItem("CurrentParent", JSON.stringify(props.registration.CurrentParent));
            }
        }
     },[])

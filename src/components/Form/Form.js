@@ -739,12 +739,33 @@ class Form extends Component {
         })
     }
 
+    updatePriceFields(category, academicLevel, sessionDuration, numSessions){
+        console.log(category, academicLevel, sessionDuration, numSessions, this.state);
+        this.setState((prevState)=>{
+            switch(prevState.form){
+                case "tutoring":{
+                    prevState["Student"]["Grade Level"] = academicLevel;
+                    prevState["Tutor Selection"]["Category"] = category;
+                    prevState["Schedule"]["Duration"] = sessionDuration;
+                    prevState["Schedule"]["Number of Sessions"] = numSessions;
+                    break;
+                }
+            }
+            return {...prevState};
+        })
+    }
+
     renderField(field, label, fieldIndex) {
         const fieldTitle = field.name;
-        const disabled = this.state["Parent Information"] && Boolean(this.state["Parent Information"]["Select Parent"]) && this.state.activeSection === "Parent Information";
+        let disabled = this.state["Parent Information"] &&
+            Boolean(this.state["Parent Information"]["Select Parent"]) &&
+            this.state.activeSection === "Parent Information";
         switch (field.type) {
             case "price quote":
-                return <TutoringPriceQuote courseType={this.state.form}/>;
+                return <TutoringPriceQuote
+                    handleUpdatePriceFields={this.updatePriceFields.bind(this)}
+                    courseType={this.state.form}
+                />;
             case "select":
                 let startTime = this.state[label]["Start Time"];
                 let endTime = this.state[label]["End Time"];
@@ -759,7 +780,7 @@ class Form extends Component {
                     value = this.state[label][fieldTitle];
                     options = field.options;
                 }
-
+                disabled = disabled && fieldTitle!== "Relationship to Student" && fieldTitle !=="Gender";
                 return (
                     <FormControl className="form-control">
                         <InputLabel shrink={Boolean(value)}>

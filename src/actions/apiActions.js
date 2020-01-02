@@ -179,6 +179,10 @@ export const durationParser = {
     "1 Hour": 1,
     "1.5 Hours": 1.5,
     "2 Hours": 2,
+    0.5 : "0.5 Hours",
+    1: "1 Hour",
+    1.5 : "1.5 Hours",
+    2: "2 Hours",
 };
 
 export const formatCourse = (formCourse, type) =>{
@@ -233,7 +237,7 @@ export const formatCourse = (formCourse, type) =>{
 
     return {
         "subject": formCourse["Course Name"],
-        "type": type.toLowerCase(),
+        "course_type": type.toLowerCase(),
         "description": formCourse["Description"],
         "instructor": formCourse["Instructor"].value,
         "day_of_week": day,
