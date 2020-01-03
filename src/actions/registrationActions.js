@@ -274,23 +274,20 @@ export const setParentAddCourseRegistration = (parentID, form) => {
     })
 }
 
-export const submitClassRegistration = (studentID, courseID) => wrapPost(
-    "/course/enrollment/",
+const enrollmentEndpoint = "/course/enrollment/";
+const courseEndpoint = "/course/catalog/";
+
+export const addCourse = (course) => wrapPost(
+    '/course/catalog/',
     [
-        types.POST_ENROLLMENT_STARTED,
-        types.POST_ENROLLMENT_SUCCESS,
-        types.POST_ENROLLMENT_FAILED,
+        types.POST_COURSE_STARTED,
+        types.POST_COURSE_SUCCESSFUL,
+        types.POST_COURSE_FAILED,
     ],
-    {
-        course:courseID,
-        student:studentID,
-    }
+    course,
 );
 
 export const submitTutoringRegistration = (newTutoringCourse, studentID) => {
-    const enrollmentEndpoint = "/course/enrollment/";
-    const courseEndpoint = "/course/catalog/";
-
     return (dispatch, getState) => new Promise((resolve) => {
         dispatch({
             type: types.POST_TUTORING_ENROLLMENT_STARTED,

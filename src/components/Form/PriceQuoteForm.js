@@ -25,8 +25,15 @@ import {bindActionCreators} from "redux";
 import * as apiActions from "../../actions/apiActions";
 import * as userActions from "../../actions/userActions";
 import * as registrationActions from "../../actions/registrationActions";
-import {dayOfWeek} from "./FormUtils";
+import {submitRegistration} from "../../actions/registrationHook";
+import {dayOfWeek, weeklySessionsParser} from "./FormUtils";
+import {instance} from "../../actions/apiActions";
 
+const submitReg = (tutoring, classes, payment) => submitRegistration({
+    tutoringRegistrations: tutoring,
+    classRegistrations: classes,
+    payment: payment
+})();
 
 const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
     const dispatch = useDispatch();
@@ -39,6 +46,7 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
         [dispatch]
     );
     const history = useHistory();
+    const token = useSelector(({auth}) => auth.token);
     const isAdmin = useSelector(({auth}) => auth.isAdmin);
     const [priceQuote, setPriceQuote] = useState({
         sub_total: 1000,
@@ -53,11 +61,6 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
         },
     ]);
     const [priceAdjustment, setPriceAdjustment] = useState(0);
-
-    useEffect(()=>{
-        console.log(courses, tutoring)
-    },[courses, tutoring]);
-
     const [payment, setPayment] = useState(1000);
     const [paymentMethod, setPaymentMethod] = useState(()=>{
         return {
@@ -67,39 +70,69 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
             internationalCreditCard: false,
         }
     });
+    const activeMethod = Object.entries(paymentMethod)
+        .filter(([paymentMethod, active]) => active)
+        .map(([paymentMethod, active]) => paymentMethod)[0];
     const handlePayMethodChange = method => e =>{
         setPaymentMethod({ [method]: e.target.checked })
     }
     const {cash, creditCard, check, internationalCreditCard} = paymentMethod;
-
+    const cleanTutoring = JSON.parse(JSON.stringify(tutoring));
     // get updated price quote
     useEffect(()=>{
-        let requestedQuote = {
-            payment_method: paymentMethod,
-            courses: courses,
-            tutoring: tutoring,
-            disabled_discounts: discounts.filter((discount) => {
-                return !discount.enable;
-            }),
-            price_adjustment: priceAdjustment,
-        };
-        // make price quote request
-    },[paymentMethod,payment, courses, tutoring, discounts, priceAdjustment]);
+        if(activeMethod){
+            let requestedQuote = {
+                payment_method: activeMethod,
+                classes: courses,
+                tutoring: cleanTutoring.map((tutoring)=>
+                    {
+                        delete tutoring.new_course;
+                        return tutoring
+                    }
+                ),
+                disabled_discounts: discounts.filter((discount) => {
+                    return !discount.enable;
+                }),
+                price_adjustment: priceAdjustment,
+            };
+
+            console.log(requestedQuote)
+            // make price quote request
+            const quote = instance.request({
+                'url':'/pricing/quote/',
+                "headers": {
+                    "Authorization": `Token ${token}`,
+                },
+                "data":requestedQuote,
+                'method':'get',
+            });
+            console.log(quote);
+        }
+    },[activeMethod, courses, tutoring, discounts, priceAdjustment]);
 
     const handlePay = () => (e)=>{
         e.preventDefault();
+        let courseRegistrations = [];
+        let tutoringRegistrations = [];
         // create course enrollments
         courses.forEach(course => {
-            api.submitClassRegistration(course.student_id, course.course_id);
+            courseRegistrations.push(
+                {
+                    student: course.student_id,
+                    course: course.course_id,
+                    sessions: course.sessions,
+                });
         });
         tutoring.forEach(tutoring => {
+            const startDate = tutoring.new_course.schedule.start_date.substring(0,10);
+            const endDate = tutoring.new_course.schedule.end_date.substring(0,10);
             let tutoringCourse = {
                 subject: tutoring.new_course.title,
                 day_of_week: dayOfWeek[tutoring.new_course.day_of_week],
                 start_time: tutoring.new_course.schedule.start_time,
                 end_time: tutoring.new_course.schedule.end_time,
-                start_date: tutoring.new_course.schedule.start_date.substring(0,10),
-                end_date: tutoring.new_course.schedule.end_date.substring(0,10),
+                start_date: startDate,
+                end_date: endDate,
                 max_capacity: 1,
                 course_category: tutoring.category_id,
                 academic_level: tutoring.academic_level,
@@ -108,11 +141,20 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
                 description: tutoring.new_course.description,
                 // need to add academic level
             };
-            api.submitTutoringRegistration(tutoringCourse, Number(tutoring.student_id));
+            tutoringRegistrations.push({
+                newTutoringCourse: tutoringCourse,
+                sessions: weeklySessionsParser(startDate, endDate),
+                student: tutoring.student_id,
+            });
         });
 
-        history.push(`/registration/receipt/`);
-    }
+        let paymentInfo = {
+            "base_amount": 0,
+            "price_adjustment": priceAdjustment,
+            "method": activeMethod,
+        };
+        submitReg(tutoringRegistrations, courseRegistrations, paymentInfo)
+    };
 
     const toggleDiscount = (id) => (e) =>{
         e.preventDefault();

@@ -67,7 +67,6 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
     useEffect(()=>{
         if(requestStatus.priceRule[GET][REQUEST_ALL] === 200 &&
         requestStatus.category[GET] === 200){
-            console.log(adminPriceRules, courseType)
             setPriceRules(adminPriceRules
                 .filter(rule => rule.course_type === courseType)
                 .map((rule) =>({
