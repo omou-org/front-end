@@ -98,7 +98,7 @@ class Scheduler extends Component {
             config: {
                 params: {
                     time_frame: "day",
-                    view_option: "tutoring",
+                    type: "tutoring",
                     time_shift: this.state.timeShift,
                 }
             }
@@ -278,7 +278,7 @@ class Scheduler extends Component {
                 config: {
                     params: {
                         time_frame: filter,
-                        view_option: this.viewOptions[this.state.calendarFilterValue],
+                        type: this.viewOptions[this.state.calendarFilterValue],
                         time_shift: 0,
                     }
                 }
@@ -299,7 +299,7 @@ class Scheduler extends Component {
             config: {
                 params: {
                     time_frame: this.calendarViewToFilterVal[this.state.viewValue],
-                    view_option: this.viewOptions[this.state.calendarFilterValue],
+                    type: this.viewOptions[this.state.calendarFilterValue],
                     time_shift: this.state.timeShift + 1,
                 }
             }
@@ -320,7 +320,7 @@ class Scheduler extends Component {
             config: {
                 params: {
                     time_frame: this.calendarViewToFilterVal[this.state.viewValue],
-                    view_option: this.viewOptions[this.state.calendarFilterValue],
+                    type: this.viewOptions[this.state.calendarFilterValue],
                     time_shift: this.state.timeShift - 1,
                 }
             }
@@ -341,7 +341,7 @@ class Scheduler extends Component {
             config: {
                 params: {
                     time_frame: this.calendarViewToFilterVal[this.state.viewValue],
-                    view_option: this.viewOptions[this.state.calendarFilterValue],
+                    type: this.viewOptions[this.state.calendarFilterValue],
                     time_shift: 0,
                 }
             }
@@ -440,7 +440,7 @@ class Scheduler extends Component {
                     config: {
                         params: {
                             time_frame: this.calendarViewToFilterVal[this.state.viewValue],
-                            view_option: this.viewOptions[event.target.value],
+                            type: this.viewOptions[event.target.value],
                             time_shift: this.state.timeShift,
                         }
                     }
