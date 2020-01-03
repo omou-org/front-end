@@ -7,7 +7,6 @@ export default function users(state = initialState.Users, {payload, type}) {
         case actions.FETCH_STUDENT_SUCCESSFUL:
             return handleStudentsFetch(state, payload);
         case actions.FETCH_PARENT_SUCCESSFUL:
-            console.log("parent fetched", payload)
             return handleParentsFetch(state, payload);
         case actions.FETCH_INSTRUCTOR_SUCCESSFUL:
             return handleInstructorsFetch(state, payload);
@@ -96,7 +95,6 @@ const handleAccountNotesFetch = (state, {ownerID, ownerType, response}) => {
 };
 
 export const handleParentsFetch = (state, {id, response}) => {
-    console.log(response);
     let {ParentList} = state;
     if (id === REQUEST_ALL) {
         response.data.forEach((parent) => {
@@ -139,8 +137,19 @@ export const updateParent = (parents, id, parent) => ({
     },
 });
 
-export const handleStudentsFetch = (state, {id, response}) => {
-    const {data} = response;
+export const handleStudentsFetch = (state, payload) => {
+    let data;
+    let id;
+    let response;
+    if(payload.id) {
+        id = payload.id;
+        data = payload.response.data;
+        response = payload.response;
+    } else {
+        data = payload.data;
+        id = payload.data.user.id;
+        response = payload;
+    }
     let {StudentList} = state;
     if (id === REQUEST_ALL) {
         data.forEach((student) => {

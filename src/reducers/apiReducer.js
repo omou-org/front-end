@@ -25,7 +25,6 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
         case actions.FETCH_COURSE_STARTED:
             return updateCourseFetch(state, payload.id, api.REQUEST_STARTED);
         case actions.FETCH_COURSE_SUCCESSFUL:
-            console.log("fetched course!")
             return updateCourseFetch(state, payload.id, status);
         case actions.FETCH_COURSE_FAILED:
             return updateCourseFetch(state, payload.id, status);
@@ -200,7 +199,6 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             };
 
         case actions.GET_PAYMENT_SUCCESS:
-            console.log("successful payment!")
             return updatePaymentStatus(state, payload.id, status);
         case actions.GET_PAYMENT_STARTED:
             return updatePaymentStatus(state, payload.id, status);

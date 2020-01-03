@@ -40,7 +40,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         instance.request(
                             {
                                 'url':courseEndpoint,
-                                requestSettings,
+                                ...requestSettings,
                                 'data': newTutoringCourse,
                                 'method':'post',
                             }
@@ -59,7 +59,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         instance.request(
                             {
                                 'url':enrollmentEndpoint,
-                                requestSettings,
+                                ...requestSettings,
                                 'data':enrollment,
                                 'method':'post',
                             }
@@ -81,7 +81,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                     );
                     const finalPayment = await instance.request({
                         'url': paymentEndpoint,
-                        requestSettings,
+                        ...requestSettings,
                         'data':{
                             ...payment,
                             registrations: registrations,
@@ -132,30 +132,42 @@ export const usePayment = (id) => {
 
         (async ()=>{
            try {
+
                 setStatus(REQUEST_STARTED);
+
                const Payment = await instance.request({
-                   'url': `${paymentEndpoint}/${id}`,
-                   requestSettings,
+                   'url': `${paymentEndpoint}${id}/`,
+                   ...requestSettings,
                    'method':'get',
                });
+
                dispatch({
                    type: types.GET_PAYMENT_SUCCESS,
                    payload: Payment,
                });
 
-               const {enrollments} = Payment.data;
+               const enrollments = Payment.data.enrollments;
                // get students
                const uniqueStudentIDs = [...new Set(enrollments.map(enrollment => enrollment.student))];
                const StudentResponses = await Promise.all(uniqueStudentIDs.map( studentID =>
-                   instance.get(`/account/student/${studentID}/`)
+                   instance.request({
+                       'url':`/account/student/${studentID.toString()}/`,
+                       ...requestSettings,
+                       'method':'get',
+                   })
                ));
                StudentResponses.forEach(studentResponse => {
                        dispatch({type: types.FETCH_STUDENT_SUCCESSFUL, payload: studentResponse})
                });
+
                // get courses
                const uniqueCourseIDs = [...new Set(enrollments.map(enrollment => enrollment.course))];
                const CourseResponses = await Promise.all(uniqueCourseIDs.map( courseID =>
-                    instance.get(`/course/catalog/${courseID}/`)
+                    instance.request({
+                        "url": `/course/catalog/${courseID}/`,
+                        ...requestSettings,
+                        'method':'get',
+                    })
                ));
                CourseResponses.forEach(courseResponse=> {
                        dispatch({type:types.FETCH_COURSE_SUCCESSFUL, payload: courseResponse})
@@ -167,6 +179,6 @@ export const usePayment = (id) => {
                }
            }
         })();
-        return status;
-    },[dispatch, requestSettings])
+    },[dispatch, requestSettings]);
+    return status;
 }

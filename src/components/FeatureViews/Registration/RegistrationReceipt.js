@@ -19,6 +19,7 @@ import Loading from "../../Loading";
 import {isFail, isLoading, isSuccessful, useParent, usePrevious} from "../../../actions/hooks";
 import {weeklySessionsParser} from "../../Form/FormUtils";
 import {GET} from "../../../actions/actionTypes";
+import BackButton from "../../BackButton";
 
 const useStyles = makeStyles({
     setParent: {
@@ -54,15 +55,6 @@ function RegistrationReceipt(props) {
 
     const parent = parents[params.parentID];
     const parentStatus = useParent(params.parentID && params.parentID);
-
-    const isFromAccount = params.parentID && params.paymentID;
-    if(isFromAccount){
-        let parentPayments = Payments && Payments[params.parentID];
-        let payment = parentPayments && parentPayments[params.paymentID];
-        if(!payment && RequestStatus.payment[GET][params.paymentID] !== 600){
-            api.fetchPayments(params.paymentID);
-        }
-    }
 
     const paymentStatus = usePayment(params.paymentID && params.paymentID);
 
@@ -113,10 +105,6 @@ function RegistrationReceipt(props) {
         let {enrollments} = payment;
         setCourseReceipt(courseReceiptInitializer(enrollments));
     }
-    // If we're coming from a parent's account and the payment is loaded
-    if(isFromAccount && RequestStatus.payment[GET][params.paymentID] !== 200){
-        return <Loading/>;
-    }
 
     const handleCloseReceipt = ()=> (e)=> {
         e.preventDefault();
@@ -127,7 +115,8 @@ function RegistrationReceipt(props) {
     if(Object.keys(paymentReceipt).length < 1 || isLoading(paymentStatus)){
         return <Loading/>;
     }
-    const renderCourse = (enrolledCourse) => (<Grid item>
+
+    const renderCourse = (enrolledCourse) => (<Grid item key={enrolledCourse.id}>
         <Grid
             className={"enrolled-course"}
             container
@@ -196,9 +185,8 @@ function RegistrationReceipt(props) {
 
     const renderStudentReceipt = (studentID, enrolledCourses) => {
         let student = students[studentID];
-        console.log(enrolledCourses);
         return (
-            <Grid container direction="column">
+            <Grid container direction="column" key={studentID}>
                 <Paper className={"course-receipt"}>
                     <Grid item>
                         <Typography
@@ -230,6 +218,12 @@ function RegistrationReceipt(props) {
 
     return (
         <Paper className={"paper registration-receipt"}>
+            {
+                params.paymentID && <>
+                    <BackButton/>
+                    <hr/>
+                </>
+            }
             <Grid container
                   direction={"row"}
                   spacing={16}
@@ -273,7 +267,7 @@ function RegistrationReceipt(props) {
                                     <Typography align={"left"}>
                                         {`
                                         ${renderParent().name} - ID#:
-                                        ${renderParent().id}
+                                        ${renderParent().user_id || renderParent().id}
                                     `}
                                     </Typography>
                                 </Grid>

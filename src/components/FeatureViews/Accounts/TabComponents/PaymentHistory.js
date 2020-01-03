@@ -12,6 +12,7 @@ import Loading from "../../../Loading";
 import Redirect from "react-router-dom/es/Redirect";
 import {bindActionCreators} from "redux";
 import * as courseActions from "../../../../actions/apiActions"
+import NavLinkNoDup from "../../../Routes/NavLinkNoDup";
 
 function PaymentHistory({user_id})  {
     const Payments = useSelector(({Payments})=>Payments);
@@ -68,7 +69,10 @@ function PaymentHistory({user_id})  {
                 <TableBody>
                     {
                         payments.map((payment) => {
-                            return <TableRow key={payment.id}>
+                            return <TableRow
+                                component={NavLinkNoDup}
+                                to={`/accounts/parent/payment/${payment.parent}/${payment.id}`}
+                                key={payment.id}>
                                 <TableCell>
                                     {payment.id}
                                 </TableCell>
