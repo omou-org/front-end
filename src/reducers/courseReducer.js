@@ -4,6 +4,14 @@ import {REQUEST_ALL} from "../actions/apiActions";
 
 export default (state = initialState.Course, {payload, type}) => {
     switch (type) {
+        case actions.POST_CATEGORY_SUCCESS:
+            return updateCourseCategories(state, payload, "POST");
+        case actions.POST_CATEGORY_FAILED:
+            return state;
+        case actions.GET_CATEGORY_SUCCESS:
+            return updateCourseCategories(state, payload,"GET");
+        case actions.PATCH_CATEGORY_SUCCESS:
+            return updateCourseCategories(state, payload, "PATCH");
         case actions.FETCH_COURSE_SUCCESSFUL:
             return handleCoursesFetch(state, payload);
         case actions.FETCH_COURSE_NOTE_SUCCESSFUL:
@@ -29,6 +37,33 @@ const parseTime = (time) => {
         return `T${hours}:${mins}`;
     }
     return null;
+};
+
+const updateCourseCategories = (state, payload, action) => {
+    let {response} = payload;
+    let {data} = response;
+    switch(action){
+        case "GET":{
+            state["CourseCategories"] = data;
+            break;
+        }
+        case "POST":{
+            state["CourseCategories"].push(data);
+            break;
+        }
+        case "PATCH":{
+            let categoryList = state["CourseCategories"];
+            let updatedCategory = categoryList.find((category)=>{return category.id === data.id});
+            state["CourseCategories"] = categoryList.map((category)=>{
+                if(category.id === data.id){
+                    return updatedCategory;
+                } else {
+                    return category;
+                }
+            });
+        }
+    }
+    return {...state};
 };
 
 const handleCoursePost = (state, payload) => {
@@ -80,8 +115,8 @@ export const updateCourse = (courses, id, course) => ({
         "grade": 10,
         "description": course.description,
         "room_id": course.room,
-        "type": "C",
-        "subject": "Math",
+        "type": course.type,
+        "category": course.course_category,
         "tags": [],
         "roster": course.enrollment_list,
     },

@@ -167,7 +167,7 @@ class Accounts extends Component {
                                     <Avatar
                                         style={styles(row.name)}>{row.name.toUpperCase().match(/\b(\w)/g).join("")}
                                     </Avatar>
-                                    <Truncate lines={1} ellipsis={<span>... <a href='/link/to/article'>Read more</a></span>}>
+                                    <Truncate lines={1} ellipsis={<span>...</span>}>
                                         {row.name}
                                     </Truncate>
                                 </Grid>

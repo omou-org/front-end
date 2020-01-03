@@ -155,6 +155,44 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
         case actions.POST_CATEGORY_FAILED:
             return updateCategoryPost(state,payload.id, status);
 
+        case actions.GET_PRICE_RULE_STARTED:
+            return updatePriceRuleStatus(state, payload.id, api.REQUEST_STARTED, actions.GET);
+        case actions.GET_PRICE_RULE_SUCCESS:
+            return updatePriceRuleStatus(state, payload.id, status, actions.GET);
+        case actions.POST_PRICE_RULE_FAILED:
+            return updatePriceRuleStatus(state, payload.id, status, actions.POST);
+        case actions.POST_PRICE_RULE_SUCCESS:
+            return updatePriceRuleStatus(state, payload.id, status, actions.POST);
+
+        case actions.GET_DISCOUNT_DATE_RANGE_START:
+            return updateDiscountStatus(state, payload.id, api.REQUEST_STARTED, actions.GET, "dateRange");
+        case actions.GET_DISCOUNT_PAYMENT_METHOD_STARTED:
+            return updateDiscountStatus(state, payload.id, api.REQUEST_STARTED, actions.GET, "paymentMethod");
+        case actions.GET_DISCOUNT_MULTI_COURSE_STARTED:
+            return updateDiscountStatus(state, payload.id, api.REQUEST_STARTED, actions.GET, "multiCourse");
+
+        case actions.GET_DISCOUNT_DATE_RANGE_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.GET, "dateRange");
+        case actions.GET_DISCOUNT_MULTI_COURSE_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.GET, "multiCourse");
+        case actions.GET_DISCOUNT_PAYMENT_METHOD_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.GET, "paymentMethod");
+
+        case actions.DELETE_DISCOUNT_PAYMENT_METHOD_SUCCESS:
+            return updateDiscountStatus(state, payload.id, status, actions.DELETE, "paymentMethod");
+        case actions.DELETE_DISCOUNT_DATE_RANGE_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.DELETE, "dateRange");
+        case actions.DELETE_DISCOUNT_MULTI_COURSE_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.DELETE, "multiCourse");
+
+        case actions.PATCH_DISCOUNT_PAYMENT_METHOD_SUCCESS:
+            return updateDiscountStatus(state, payload.id, status, actions.PATCH, "paymentMethod");
+        case actions.PATCH_DISCOUNT_DATE_RANGE_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.PATCH, "dateRange");
+        case actions.PATCH_DISCOUNT_MULTI_COURSE_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.PATCH, "multiCourse");
+
+
         default:
             return state;
     }
@@ -280,5 +318,22 @@ const updateEnrollmentNotePost = (state, status) => {
 const updateEnrollmentNotePatch = (state, ownerID, status) => {
     let newState = JSON.parse(JSON.stringify(state));
     newState.enrollmentNote[actions.PATCH][ownerID] = status;
+    return newState;
+};
+
+const updatePriceRuleStatus = (state, id, status, requestType) => {
+    let newState = {...state};
+    newState.priceRule[requestType][id] = status;
+    return newState;
+};
+
+const updateDiscountStatus = (state, id, status, requestType, discountType) => {
+    let newState = {...state};
+    if(requestType !== actions.DELETE && requestType !== actions.PATCH){
+        newState.discount[discountType][requestType][id] = status;
+    } else {
+        newState.discount[requestType] = status;
+    }
+
     return newState;
 };

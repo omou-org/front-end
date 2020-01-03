@@ -4,6 +4,7 @@ import axios from "axios";
 import {POST_COURSE_SUCCESSFUL} from "./actionTypes";
 import {typeToPostActions} from "./rootActions";
 import {fetchCategories} from "./adminActions";
+import {academicLevelParse} from "../reducers/registrationReducer";
 
 export const instance = axios.create({
     "baseURL": "http://localhost:8000/" //process.env.REACT_APP_DOMAIN,
@@ -96,10 +97,39 @@ export const wrapPatch = (endpoint, [startType, successType, failType], {id, dat
                     "Authorization": `Token ${getState().auth.token}`,
                 },
             });
-            // succesful request
+            // successful request
             newAction(successType, response);
         } catch ({response}) {
             // failed request
+            newAction(failType, response);
+        }
+    };
+
+export const wrapDelete = (endpoint, [startType, successType, failType], {id, config}) =>
+    async (dispatch, getState) => {
+        // creates a new actions based on the response given
+        const newAction = (type, response) => {
+            dispatch({
+                type,
+                "payload": {
+                    id,
+                    response,
+                },
+            });
+        };
+
+        //request starting
+        newAction(startType, {});
+
+        try{
+            const response = await instance.delete(`${endpoint}${id}/`, config || {
+                "headers": {
+                    "Authorization": `Token ${getState().auth.token}`,
+                },
+            });
+            // successful response
+            newAction(successType, response);
+        } catch ({response}) {
             newAction(failType, response);
         }
     };
@@ -144,6 +174,13 @@ export const submitNewSmallGroup = (form) => {
     });
 };
 
+export const durationParser = {
+    "0.5 Hours": 0.5,
+    "1 Hour": 1,
+    "1.5 Hours": 1.5,
+    "2 Hours": 2,
+};
+
 export const formatCourse = (formCourse, type) =>{
     let dayOfWeek = ()=>{
         switch(startDate.getDay()){
@@ -167,8 +204,13 @@ export const formatCourse = (formCourse, type) =>{
     let day = dayOfWeek();
     let endDate = new Date(startDate);
     endDate = new Date(endDate.setDate(startDate.getDate() + 7*formCourse["Number of Weekly Sessions"]));
-    startDate = startDate.toISOString().substring(0,10);
-    endDate = endDate.toISOString().substring(0,10);
+    let dateFormat = {
+        year:"numeric",
+        month:"2-digit",
+        day:"2-digit",
+    }
+    startDate = startDate.toLocaleString("sv-SE",dateFormat);
+    endDate = endDate.toLocaleString("sv-SE",dateFormat);
     let startTime = new Date(formCourse["Start Time"]);
     let endTime = new Date(startTime);
     let duration = {
@@ -178,9 +220,13 @@ export const formatCourse = (formCourse, type) =>{
         "2 Hours": 2,
     };
     endTime = new Date(endTime.setTime(endTime.getTime() + duration[formCourse["Duration"]]*60*60*1000));
-    endTime = endTime.toTimeString().substring(0,5);
-    startTime = startTime.toTimeString().substring(0,5);
-
+    let timeFormat = {
+        hour12:false,
+        hour:"2-digit",
+        minute:"2-digit",
+    }
+    endTime = endTime.toLocaleString("eng-US",timeFormat);
+    startTime = startTime.toLocaleString("eng-US", timeFormat);
     return {
         "subject": formCourse["Course Name"],
         "type": type,
@@ -193,21 +239,25 @@ export const formatCourse = (formCourse, type) =>{
         "end_time": endTime,
         "max_capacity": formCourse["Capacity"],
         "category": formCourse["Category"].value,
-        // "course_id": "29"
+        "academic_level": academicLevelParse[formCourse["Grade Level"]],
     };
 }
 
-const parseTime = (time) =>{
+const courseName = (form, type) => {
+    if(type === "T"){
+        return "1:1 " + form["Instructor"].value + form[""]
+    }
+}
+
+export const parseTime = (time) =>{
     let formattedTime;
     if(typeof time === "string"){
-        if(time.indexOf("AM") > -1 || time.indexOf("PM") > -1){
-            formattedTime = new Date();
-            formattedTime.setHours(Number(time.substring(0,time.indexOf(":"))));
-            formattedTime.setMinutes(Number(time.substring(time.indexOf(":")+1,time.indexOf(" "))));
-            formattedTime.setSeconds(0);
-        }
+        let Hour = time.substr(17, 2);
+        let to12HourTime = (Hour % 12) || 12;
+        let ampm = Hour < 12 ? " am" : " pm";
+        formattedTime = to12HourTime + time.substr(19, 3) + ampm;
     } else {
         formattedTime = time;
     }
-    return formattedTime.toTimeString().substring(0,5)
+    return formattedTime;
 }

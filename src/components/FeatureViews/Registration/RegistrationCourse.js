@@ -123,17 +123,6 @@ const RegistrationCourse = () => {
                     <Grid
                         item
                         sm={2}>
-                        <Button
-                            className="button"
-                            component={Link}
-                            style={{
-                                "padding": "6px 10px 6px 10px",
-                                "backgroundColor": "white",
-                            }}
-                            to={`/registration/form/course_details/${courseID}/edit`}>
-                            <EditIcon style={{"fontSize": "16px"}} />
-                            Edit Course
-                        </Button>
                     </Grid>
                 </Grid>
                 <Divider className="top-divider" />

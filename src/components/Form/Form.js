@@ -45,7 +45,8 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import {DatePicker, TimePicker, MuiPickersUtilsProvider,} from "material-ui-pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import {durationParser, numSessionsParser, timeParser} from "./FormUtils";
+import {createDiscountPayload, durationParser, numSessionsParser, timeParser} from "./FormUtils";
+import TutoringPriceQuote from "./TutoringPriceQuote";
 
 const parseGender = {
     "M": "Male",
@@ -90,14 +91,14 @@ class Form extends Component {
 
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
-        const formType = this.props.computedMatch.params.type;
-        const {id} = this.props.computedMatch.params;
+        const formType = this.props.match.params.type;
+        const {id} = this.props.match.params;
         this.props.userActions.fetchStudents();
         this.props.userActions.fetchParents();
         this.props.userActions.fetchInstructors();
         this.props.registrationActions.initializeRegistration();
         this.props.adminActions.fetchCategories();
-        if (this.props.computedMatch.params.edit === "edit") {
+        if (this.props.match.params.edit === "edit") {
             switch (formType) {
                 case "instructor": {
                     const instructor = this.props.instructors[id];
@@ -209,7 +210,7 @@ class Form extends Component {
         if (!prevState ||
             formType !== prevState.form ||
             prevState["submitPending"] ||
-            (id && this.props.computedMatch.params.edit !== "edit")) {
+            (id && this.props.match.params.edit !== "edit")) {
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
                     const formContents = JSON.parse(
@@ -223,7 +224,7 @@ class Form extends Component {
                     let course = null;
                     if (this.props.courses.hasOwnProperty(id)) {
                         const {course_id, title} =
-                            this.props.courses[this.props.computedMatch.params.id];
+                            this.props.courses[this.props.match.params.id];
                         // convert it to a format that onselectChange can use
                         course = {
                             "value": course_id,
@@ -271,7 +272,8 @@ class Form extends Component {
     }
 
     componentDidMount() {
-        const {id, edit, "type": formType} = this.props.computedMatch.params;
+        this.props.adminActions.fetchCategories();
+        const {id, edit, "type": formType} = this.props.match.params;
         if (!this.props.isAdmin && (formType === "instructor" || formType === "course_details")) {
             this.props.history.replace("/PageNotFound");
         }
@@ -567,8 +569,8 @@ class Form extends Component {
             if (this.validateSection()) {
                 if (oldState.activeStep === this.getFormObject().section_titles.length - 1 || oldState.isSmallGroup) {
                     if (!oldState.submitPending) {
-                        if (this.props.computedMatch.params.edit === "edit") {
-                            this.props.registrationActions.submitForm(this.state, this.props.computedMatch.params.id);
+                        if (this.props.match.params.edit === "edit") {
+                            this.props.registrationActions.submitForm(this.state, this.props.match.params.id);
                         } else if(this.state.form === "small_group") {
                             if(this.state["Group Type"]["Select Group Type"] === "New Small Group"){
                                 this.props.apiActions.submitNewSmallGroup(this.state);
@@ -576,7 +578,16 @@ class Form extends Component {
                                 this.props.registrationActions.submitForm(this.state);
                             }
                         } else {
-                            this.props.registrationActions.submitForm(this.state);
+                            if(this.state.form === "pricing"){
+                                this.props.adminActions.setPrice(this.state);
+                            } else if( this.state.form === "discount"){
+                                let discountType = this.state["Discount Description"]["Discount Type"];
+                                let discountPayload = createDiscountPayload(this.state, discountType);
+                                console.log(discountPayload);
+                                this.props.adminActions.setDiscount(discountType, discountPayload);
+                            } else {
+                                this.props.registrationActions.submitForm(this.state);
+                            }
                         }
                     }
                     return {
@@ -671,6 +682,7 @@ class Form extends Component {
             } else {
                 oldState[`${sectionTitle}_validated`][field.name] = false;
             }
+
             return oldState;
         }, () => {
             this.setState({
@@ -750,10 +762,22 @@ class Form extends Component {
         }
     }
 
+    onDateChange(date, label, fieldTitle) {
+        this.setState((prevState)=>{
+            prevState[label][fieldTitle] = date;
+            return {
+                ...prevState,
+                nextSection: this.validateSection(),
+            };
+        })
+    }
+
     renderField(field, label, fieldIndex) {
         const fieldTitle = field.name;
         const disabled = this.state["Parent Information"] && Boolean(this.state["Parent Information"]["Select Parent"]) && this.state.activeSection === "Parent Information";
         switch (field.type) {
+            case "price quote":
+                return <TutoringPriceQuote courseType={this.state.form}/>;
             case "select":
                 let parsedDuration = durationParser(this.state[label],fieldTitle);
                 let value, options;
@@ -974,10 +998,7 @@ class Form extends Component {
                             margin="normal"
                             label={fieldTitle}
                             value={this.state[label][fieldTitle]}
-                            onChange={(date) =>{ this.setState((prevState)=>{
-                                prevState[label][fieldTitle] = date;
-                                return prevState;
-                            }) }}
+                            onChange={(date) =>{ this.onDateChange(date, label, fieldTitle) }}
                             openTo={fieldTitle==="Birthday" ? "year" :"day"}
                             error={!this.state[label + "_validated"][field.name]}
                             format="MM/dd/yyyy"
@@ -1167,7 +1188,7 @@ class Form extends Component {
                                                 </Grid>
                                                 <br />
                                                 {
-                                                    !this.props.computedMatch.params.course && numSameTypeFields < field.field_limit &&
+                                                    !this.props.match.params.course && numSameTypeFields < field.field_limit &&
                                                     field === lastFieldOfType &&
                                                     <Fab color="primary" aria-label="Add" variant="extended"
                                                         className="button add-student"
@@ -1225,25 +1246,46 @@ class Form extends Component {
                 margin: "2%",
                 padding: "5px",
             }}>
-                <Typography align="left" style={{fontSize: "24px"}}>
-                    You have successfully registered!
-                </Typography>
-                <Typography align="left" style={{fontSize: "14px"}}>
-                    An email will be sent to you to confirm your registration
-                </Typography>
-                <Button
-                    align="left"
-                    component={NavLink}
-                    to="/registration"
-                    onClick={() => {
-                        this.props.registrationActions.resetSubmitStatus();
-                    }}
-                    style={{margin: "20px"}}
-                    className="button">Back to Registration</Button>
+                {
+                    this.state.form !== "pricing" && <>
+                        <Typography align="left" style={{fontSize: "24px"}}>
+                            You have successfully registered!
+                        </Typography>
+                        <Typography align="left" style={{fontSize: "14px"}}>
+                            An email will be sent to you to confirm your registration
+                        </Typography>
+                        <Button
+                            align="left"
+                            component={NavLink}
+                            to="/registration"
+                            onClick={() => {
+                                this.props.registrationActions.resetSubmitStatus();
+                            }}
+                            style={{margin: "20px"}}
+                            className="button">REGISTER MORE</Button>
+                    </>
+                }
+                {
+                    this.state.form === "pricing" &&
+                    <Button
+                        align="left"
+                        component={NavLink}
+                        to="/adminportal/tuition-rules"
+                        onClick={() => {
+                            this.props.registrationActions.resetSubmitStatus();
+                        }}
+                        style={{margin: "20px"}}
+                        className="button">VIEW PRICE RULES</Button>
+                }
                 <div className="confirmation-copy">
-                    <Typography className="title" align="left">Confirmation Copy</Typography>
+                    <Typography className="title" align="left">Confirmation</Typography>
                     {
-                        steps.map((sectionTitle) => (
+                        steps.map((sectionTitle) => {
+                            let sectionFields = this.state.conditional &&
+                                !Array.isArray(this.getFormObject()[sectionTitle])
+                                ? this.getFormObject()[sectionTitle][this.state.conditional]:
+                                this.getFormObject()[sectionTitle];
+                            return(
                             <div key={sectionTitle}>
                                 <Typography
                                     className="section-title"
@@ -1251,7 +1293,7 @@ class Form extends Component {
                                     {sectionTitle}
                                 </Typography>
                                 {
-                                    this.getFormObject()[sectionTitle].map(({field, type}) => {
+                                    sectionFields.map(({field, type}) => {
                                         let fieldVal = this.state[sectionTitle][field];
                                         if (fieldVal && fieldVal.hasOwnProperty("value")) {
                                             fieldVal = fieldVal.value;
@@ -1266,14 +1308,15 @@ class Form extends Component {
                                                     {field || ""}
                                                 </Typography>
                                                 <Typography className="field-value" align="left">
-                                                    { typeof fieldVal === "object" ? new Date(fieldVal).toISOString().substring(0,10) :  fieldVal || "N/A"}
+                                                    { typeof fieldVal === "object" ? new Date(fieldVal).toLocaleString("eng-US") :  fieldVal || "N/A"}
                                                 </Typography>
                                             </div>
                                         );
                                     })
                                 }
                             </div>
-                        ))
+                        )
+                    })
                     }
                 </div>
             </div>
@@ -1326,6 +1369,9 @@ class Form extends Component {
     }
 
     renderTitle(id, type) {
+        if(this.props.title){
+            return this.props.title;
+        }
         let title = "";
         switch (type) {
             case "course": {
@@ -1356,7 +1402,7 @@ class Form extends Component {
                 title = "";
                 break;
         }
-        return `${title} ${type.split("_").join(" ")} ${this.props.computedMatch.params.edit === "edit" ? "Edit" : "Registration"}`
+        return `${title} ${type.split("_").join(" ")} ${this.props.match.params.edit === "edit" ? "Edit" : "Registration"}`
     }
 
     render() {
@@ -1369,15 +1415,18 @@ class Form extends Component {
                 {this.state.submitPending ? "" : <Prompt message="Are you sure you want to leave?" />}
                 <Grid item xs={12}>
                     <Paper className={"registration-form paper"}>
-                        <BackButton
-                            warn={true}
-                            onBack={this.onBack}
-                            alertMessage={"Do you want to save your changes?"}
-                            alertConfirmText={"Yes, save changes"}
-                            confirmAction={"saveForm"}
-                            alertDenyText={"No, don't save changes"}
-                            denyAction={"default"}
-                        />
+                        {
+                            !this.props.location.pathname.includes("adminportal") &&
+                            <BackButton
+                                warn={true}
+                                onBack={this.onBack}
+                                alertMessage={"Do you want to save your changes?"}
+                                alertConfirmText={"Yes, save changes"}
+                                confirmAction={"saveForm"}
+                                alertDenyText={"No, don't save changes"}
+                                denyAction={"default"}
+                            />
+                        }
                         <Typography className="heading" align="left">
                             Class Registration Confirmation
                         </Typography>

@@ -1,0 +1,38 @@
+@import '../../theme/colors';
+@import '../../theme/sizes';
+@import url('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700');
+
+.price-quote-form{
+  .price-label{
+    font-weight: 600 !important;
+  }
+  .discount{
+    color: $primaryColor !important;
+  }
+  .icon {
+    cursor: pointer;
+    &.remove{
+      color: rgba(208, 0, 0, 0.82);
+    }
+    &.add{
+      color: #008000;
+    }
+  }
+  .discount-amount {
+    color: lightgray;
+    &.enable{
+      color: black;
+    }
+  }
+  .price-adjustment{
+    width:80%;
+  }
+}
+
+.tutoring-price-quote{
+  padding-top:4%;
+  padding-bottom:2%;
+  .field{
+    width:80%;
+  }
+}

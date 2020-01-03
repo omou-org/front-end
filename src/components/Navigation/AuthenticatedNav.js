@@ -26,9 +26,10 @@ const AuthenticatedNav = ({toggleDrawer}) => {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [isMobileSearching, setMobileSearching] = useState(false);
 
-    const handleDrawerToggle = useCallback((event) => {
-        event.preventDefault();
+    const handleDrawerToggle = useCallback(() => {
+        toggleDrawer(!mobileOpen);
         setMobileOpen((open) => !open);
+
     }, []);
 
     const handleLogout = useCallback(() => {

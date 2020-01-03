@@ -38,7 +38,6 @@ function ManageCategories(props) {
         [dispatch]
     );
 
-    const [anchorEl, setAnchorEl] = useState(null);
     const [categoryName , setCategoryName] = useState("");
     const [categoryDescription, setCategoryDescription] = useState("");
     const [categoryList, setCategoryList] = useState([]);
@@ -121,7 +120,7 @@ function ManageCategories(props) {
                 <Grid container className={'accounts-table-heading'}>
                     <Grid item xs={3} md={3}>
                         <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
-                            Name
+                            Category Name
                         </Typography>
                     </Grid>
                     <Grid item xs={7} md={7}>
