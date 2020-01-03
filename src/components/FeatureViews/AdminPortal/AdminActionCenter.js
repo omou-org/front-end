@@ -1,36 +1,21 @@
-import PropTypes from "prop-types";
 import React, {useState, useEffect, useMemo} from "react";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
-import { makeStyles } from "@material-ui/styles";
 import "./AdminPortal.scss";
 
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import {connect, useDispatch} from "react-redux";
-import {Button, Typography, withStyles} from "@material-ui/core";
-import Paper from "@material-ui/core/Paper";
+import {Button, withStyles} from "@material-ui/core";
 import {NavLink, withRouter} from "react-router-dom";
-import Checkbox from "@material-ui/core/Checkbox";
-import BackButton from "../../BackButton";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
-import * as searchActions from "../../../actions/searchActions";
-import AssignmentIcon from "@material-ui/core/SvgIcon/SvgIcon";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Menu from "@material-ui/core/Menu";
-
-const useStyles = makeStyles({
-    setParent: {
-        backgroundColor:"#39A1C2",
-        color: "white",
-        // padding: "",
-    }
-});
 
 const StyledMenu = withStyles({
     paper: {

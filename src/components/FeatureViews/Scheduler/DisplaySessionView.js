@@ -1,17 +1,14 @@
-import PropTypes from "prop-types";
 import React, {useState, useEffect, useMemo} from "react";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
-import BackArrow from "@material-ui/icons/ArrowBack";
 import { makeStyles } from "@material-ui/styles";
-// import "./registration.scss";
 
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import * as userActions from "../../../actions/userActions.js"
 import {connect, useDispatch, useSelector} from "react-redux";
-import {FormControl, Typography} from "@material-ui/core";
+import {Typography} from "@material-ui/core";
 import {NavLink, withRouter} from "react-router-dom";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import * as apiActions from "../../../actions/apiActions";
@@ -61,12 +58,6 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
         api.fetchCourses();
     },[api]);
 
-    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
-    const classes = useStyles();
-
-    const goToCourse = (courseID) => () => {
-        // props.history.push(`/registration/course/${courseID}`);
-    };
     const enrollmentStatus = hooks.useEnrollmentByCourse(course.course_id);
     const reduxCourse = courses[course.course_id];
     const studentStatus = reduxCourse.roster.length > 0 && hooks.useStudent(reduxCourse.roster);

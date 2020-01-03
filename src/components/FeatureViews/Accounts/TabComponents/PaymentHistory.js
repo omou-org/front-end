@@ -1,4 +1,4 @@
-import {connect, useDispatch, useSelector} from 'react-redux';
+import {connect, useSelector} from 'react-redux';
 import React, {Component, useState, useEffect, useMemo} from 'react';
 
 import Grid from '@material-ui/core/Grid';
@@ -7,12 +7,11 @@ import Table from "@material-ui/core/Table";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import {isFail, isLoading, isSuccessful, useCourse, usePaymentByParent, usePrevious} from "../../../../actions/hooks";
+import {isFail, isLoading, usePaymentByParent, } from "../../../../actions/hooks";
 import Loading from "../../../Loading";
-import Redirect from "react-router-dom/es/Redirect";
-import {bindActionCreators} from "redux";
-import * as courseActions from "../../../../actions/apiActions"
+import {Redirect} from "react-router-dom";
 import NavLinkNoDup from "../../../Routes/NavLinkNoDup";
+import Typography from "@material-ui/core/Typography";
 
 function PaymentHistory({user_id})  {
     const Payments = useSelector(({Payments})=>Payments);
@@ -40,12 +39,22 @@ function PaymentHistory({user_id})  {
             )
         }
     }
-    const payments = Object.entries(parentPayment).map( ([paymentID, payment]) => {
+    const payments = parentPayment && Object.entries(parentPayment).map( ([paymentID, payment]) => {
         return payment;
     });
 
-    if(payments.length < 1 ){
+    if(payments && payments.length < 1){
         return <Loading/>
+    } else if(!payments) {
+        return <Grid
+            item
+            xs={12}>
+            <Paper className="info">
+                <Typography style={{"fontWeight": 700}}>
+                    No Payments Yet!
+                </Typography>
+            </Paper>
+        </Grid>
     }
     const numericDateString = (date) => {
         let DateObject = new Date(date),

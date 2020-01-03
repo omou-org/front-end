@@ -11,16 +11,6 @@ import Typography from "@material-ui/core/Typography";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 
-const weekday = {
-    "0": "Sun",
-    "1": "Mon",
-    "2": "Tue",
-    "3": "Wed",
-    "4": "Thu",
-    "5": "Fri",
-    "6": "Sat",
-};
-
 const CourseList = (props) => {
     let filteredCourses = props.filteredCourses;
     const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);

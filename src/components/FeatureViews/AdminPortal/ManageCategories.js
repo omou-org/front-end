@@ -1,10 +1,8 @@
-import PropTypes from "prop-types";
 import React, {useState, useEffect, useMemo} from "react";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
-import { makeStyles } from "@material-ui/styles";
 import "./AdminPortal.scss";
 
 import {bindActionCreators} from "redux";
@@ -13,23 +11,9 @@ import {connect, useDispatch, useSelector} from "react-redux";
 import {Button, Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import {withRouter} from "react-router-dom";
-import Checkbox from "@material-ui/core/Checkbox";
-import BackButton from "../../BackButton";
-import NavLinkNoDup from "../../Routes/NavLinkNoDup";
 import TextField from "@material-ui/core/TextField";
-import * as apiActions from "../../../actions/apiActions";
-import * as userActions from "../../../actions/userActions";
-import {GET, POST} from "../../../actions/actionTypes";
 
-const useStyles = makeStyles({
-    setParent: {
-        backgroundColor:"#39A1C2",
-        color: "white",
-        // padding: "",
-    }
-});
-
-function ManageCategories(props) {
+function ManageCategories() {
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -43,11 +27,11 @@ function ManageCategories(props) {
     const [categoryList, setCategoryList] = useState([]);
 
     const categories = useSelector(({"Course": {CourseCategories}}) => CourseCategories);
-    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
-
     useEffect(()=>{
         api.fetchCategories();
     },[api]);
+
+
 
     useEffect(()=>{
         if(categories.length > categoryList.length){
@@ -57,7 +41,7 @@ function ManageCategories(props) {
             }));
             setCategoryList(parsedCategoryList);
         }
-    }, [requestStatus.category[GET],requestStatus.category[POST]]);
+    }, [categories, categoryList.length]);
 
     const handleChange = (field) => (e) =>{
         switch(field){

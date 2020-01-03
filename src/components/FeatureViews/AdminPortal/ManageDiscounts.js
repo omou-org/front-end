@@ -17,15 +17,7 @@ import Loading from "../../Loading";
 import {REQUEST_ALL} from "../../../actions/apiActions";
 import DiscountRow from "./DiscountRow";
 
-const useStyles = makeStyles({
-    setParent: {
-        backgroundColor:"#39A1C2",
-        color: "white",
-        // padding: "",
-    }
-});
-
-function ManageDiscounts(props) {
+function ManageDiscounts() {
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -48,9 +40,9 @@ function ManageDiscounts(props) {
         const reduxDiscounts = JSON.stringify(discountList);
         const stateDiscounts = JSON.stringify(stateDiscountList);
         if(reduxDiscounts !== stateDiscounts &&
-            (requestStatus.discount["dateRange"][GET][REQUEST_ALL]  == 200 ||
-            requestStatus.discount[PATCH]  == 200 ||
-            requestStatus.discount[DELETE] == 200)
+            (requestStatus.discount["dateRange"][GET][REQUEST_ALL]  === 200 ||
+            requestStatus.discount[PATCH]  === 200 ||
+            requestStatus.discount[DELETE] === 200)
         ){
             setStateDiscountList(discountList);
         }

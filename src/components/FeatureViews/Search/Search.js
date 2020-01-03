@@ -238,8 +238,8 @@ const mapDispatchToProps = (dispatch) => ({
     "userActions": bindActionCreators(userActions, dispatch)
 });
 
-export default windowSize(
+export default
     withRouter(
     connect(mapStateToProps,
         mapDispatchToProps)
-        (Search)));
+        (windowSize(Search)));

@@ -1,27 +1,18 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import ReactSelect from 'react-select';
-import { Grid, Select, Button } from "@material-ui/core";
+import React, { useState, useMemo } from 'react';
+import { Grid, Select} from "@material-ui/core";
 import { bindActionCreators } from "redux";
 import * as searchActions from "../../../actions/searchActions";
-import { connect, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
-import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
-import AccountsCards from "./cards/AccountsCards"
-import BackButton from '../../BackButton';
 import { ReactComponent as FilterIcon } from "./filter.svg";
 
 //Material-ui Select 
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
-import InputBase from '@material-ui/core/InputBase';
-import { makeStyles, withStyles } from '@material-ui/styles';
+import { makeStyles} from '@material-ui/styles';
 import "./Search.scss";
-import * as apiActions from "../../../actions/apiActions";
-import * as userActions from "../../../actions/userActions";
-import * as registrationActions from "../../../actions/registrationActions";
 
 
 
@@ -38,7 +29,7 @@ const customSelect = makeStyles(theme => ({
 
 
 
-const SearchResultFilter = (props) => {
+const SearchResultFilter = () => {
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({

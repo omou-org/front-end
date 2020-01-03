@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import Link from "@material-ui/core/Link"
 import Paper from "@material-ui/core/Paper"
@@ -8,9 +8,7 @@ import BackButton from "../../../BackButton"
 import "./NoResultsPage.scss";
 import Grid from "@material-ui/core/Grid";
 
-const NoResultsPage = (props) => {
-
-
+const NoResultsPage = () => {
     // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
     return (
         <Grid container className={'no-results'}>

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Grid, Select, Button } from "@material-ui/core";
+import React, { useState, useEffect, useMemo } from 'react';
+import { Grid } from "@material-ui/core";
 import { bindActionCreators } from "redux";
 import * as searchActions from "../../../actions/searchActions";
 import { connect, useDispatch, useSelector } from "react-redux";
@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography"
 import AccountsCards from "./cards/AccountsCards"
 import CoursesCards from "./cards/CoursesCards"
 import "./Search.scss";
-import { useParams, useLocation } from "react-router-dom"
+import { useParams} from "react-router-dom"
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 import * as registrationActions from "../../../actions/registrationActions";
@@ -30,13 +30,11 @@ const SearchResults = (props) => {
         [dispatch]
     );
     const searchState = useSelector(({Search}) => Search);
-    const {profile, gradeFilter, sortAlpha, accountPage} = searchState.params.account;
-    const {course, availability, sort, coursePage} = searchState.params.course;
-    const queryStore = searchState.SearchQuery;
-    const [data, setData] = useState("");
+    const {profile, gradeFilter, sortAlpha} = searchState.params.account;
+    const {course, availability, sort, } = searchState.params.course;
     const [accountResults, setAccountResults] = useState([]);
     const [courseResults, setCourseResults] = useState([]);
-    const [loading, setLoading] = useState(true);
+
     const [start, setStart] = useState(0);
     const [end, setEnd] = useState(4);
     const [currentPage, setCurrentPage] = useState(1);
