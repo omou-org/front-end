@@ -165,6 +165,11 @@ export const useCourse = wrapUseEndpoint(
     types.FETCH_COURSE_SUCCESSFUL
 );
 
+export const useEnrollment = wrapUseEndpoint(
+    "/course/enrollment/",
+    types.FETCH_ENROLLMENT_SUCCESSFUL,
+);
+
 export const useEnrollmentByCourse = (courseID) => wrapUseEndpoint(
     "/course/enrollment/",
     types.FETCH_ENROLLMENT_SUCCESSFUL,

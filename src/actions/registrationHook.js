@@ -95,7 +95,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         type: types.POST_PAYMENT_SUCCESS,
                         payload: finalPayment,
                     });
-                    console.log(finalPayment.status);
+                    console.log(finalPayment);
                     setStatus({status:finalPayment.status, paymentID:finalPayment.data.id});
                 } catch (error){
                     if(!aborted){

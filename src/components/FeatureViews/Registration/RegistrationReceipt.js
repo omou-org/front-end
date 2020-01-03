@@ -16,7 +16,7 @@ import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 import {submitRegistration, useSubmitRegistration} from "../../../actions/registrationHook";
 import Loading from "../../Loading";
-import {isFail} from "../../../actions/hooks";
+import {isFail, useEnrollment} from "../../../actions/hooks";
 
 const useStyles = makeStyles({
     setParent: {
@@ -27,8 +27,8 @@ const useStyles = makeStyles({
 });
 
 function RegistrationReceipt(props) {
-    const [anchorEl, setAnchorEl] = useState(null);
     const currentPayingParent = useSelector((({Registration}) => Registration.CurrentParent));
+    const Enrollments = useSelector(({Enrollments})=> Enrollments);
     const Payments = useSelector(({Payments})=> Payments);
     const params = useParams();
     const dispatch = useDispatch();
@@ -39,7 +39,6 @@ function RegistrationReceipt(props) {
         [dispatch]
     );
     const [paymentReceipt, setPaymentReceipt] = useState({});
-
     const Registration = useSelector(({Registration}) => Registration);
     const registrationStatus = useSubmitRegistration(Registration.registration);
 

@@ -1,5 +1,5 @@
 // React Imports
-import React, {useCallback, useState, useEffect, useMemo} from "react";
+import React, {useCallback, useState, useEffect, useMemo, useRef} from "react";
 import {Redirect, useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../../actions/authActions";
@@ -27,6 +27,7 @@ import * as userActions from "../../actions/userActions";
 import * as registrationActions from "../../actions/registrationActions";
 import {dayOfWeek, weeklySessionsParser} from "./FormUtils";
 import {instance} from "../../actions/apiActions";
+import {usePrevious} from "../../actions/hooks";
 
 const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
     const dispatch = useDispatch();
@@ -41,19 +42,12 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
     const history = useHistory();
     const token = useSelector(({auth}) => auth.token);
     const isAdmin = useSelector(({auth}) => auth.isAdmin);
-    const [priceQuote, setPriceQuote] = useState({
-        sub_total: 1000,
-        total: 980,
-    });
-    const [discounts, setDiscounts] = useState([
-        {
-            amount: 20,
-            title:"EARLY BIRD",
-            enable: true,
-            id: 1,
-        },
-    ]);
+    const [priceQuote, setPriceQuote] = useState({});
+    const prevPriceQuote = usePrevious(priceQuote);
+    const [discounts, setDiscounts] = useState([]);
+    const prevDiscounts = usePrevious(discounts);
     const [priceAdjustment, setPriceAdjustment] = useState(0);
+    const prevPriceAdjustment = usePrevious(priceAdjustment);
     const [payment, setPayment] = useState(1000);
     const [paymentMethod, setPaymentMethod] = useState(()=>{
         return {
@@ -68,12 +62,23 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
         .map(([paymentMethod, active]) => paymentMethod)[0];
     const handlePayMethodChange = method => e =>{
         setPaymentMethod({ [method]: e.target.checked })
-    }
+    };
     const {cash, creditCard, check, internationalCreditCard} = paymentMethod;
     const cleanTutoring = JSON.parse(JSON.stringify(tutoring));
+
+    const stateUpdated = (currentState, prevState) => {
+        const initialValues = ["{}","[]"];
+        // if the state has updated or we need to update because there's a value that hasn't been updated
+        return (JSON.stringify(currentState) !== JSON.stringify(prevState) ||
+            initialValues.indexOf(JSON.stringify(prevState)) >= 0);
+    };
     // get updated price quote
     useEffect(()=>{
-        if(activeMethod){
+        if(activeMethod && (
+            stateUpdated(priceQuote,prevPriceQuote) ||
+            stateUpdated(discounts,prevDiscounts) ||
+            stateUpdated(priceAdjustment, prevPriceAdjustment)
+        ) && priceAdjustment !== ""){
             let requestedQuote = {
                 payment_method: activeMethod,
                 classes: courses,
@@ -85,11 +90,9 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
                 ),
                 disabled_discounts: discounts.filter((discount) => {
                     return !discount.enable;
-                }),
-                price_adjustment: priceAdjustment,
+                }).map(discount => discount.id),
+                price_adjustment: Number(priceAdjustment),
             };
-
-            console.log(requestedQuote)
             // make price quote request
             instance.request({
                 'url':'/pricing/quote/',
@@ -99,7 +102,34 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
                 "data":requestedQuote,
                 'method':'post',
             }).then((quoteResponse) => {
-                console.log(quoteResponse.data);
+                const responseDiscounts = JSON.stringify(quoteResponse.data.discounts);
+                const stateDiscounts = JSON.stringify(discounts);
+                if(responseDiscounts !== stateDiscounts){
+                    let ResponseDiscounts = quoteResponse.data.discounts.map( (discount, i) => {
+                        console.log(discount, discounts.find(sDiscount => sDiscount.id === discount.id));
+                        return {
+                        ...discount,
+                            enable: discounts.find(sDiscount => sDiscount.id === discount.id) ?
+                            discounts.find(sDiscount => sDiscount.id === discount.id).enable : true,
+                        }
+                    });
+                    let ResponseDiscountIDs = ResponseDiscounts.map( discount => discount.id)
+                    let discountNotInResponseButInState = discounts.filter(discount => {
+                        return !ResponseDiscountIDs.includes(discount.id);
+                    });
+                    ResponseDiscounts = ResponseDiscounts.concat(discountNotInResponseButInState);
+                    setDiscounts(ResponseDiscounts);
+                }
+                delete quoteResponse.data.discounts;
+                if(quoteResponse.data.price_adjustment !== priceAdjustment){
+                    setPriceAdjustment(quoteResponse.data.price_adjustment);
+                }
+                delete quoteResponse.data.price_adjustment;
+                const responseQuote = JSON.stringify(quoteResponse.data);
+                const stateQuote = JSON.stringify(priceQuote);
+                if(responseQuote !== stateQuote){
+                    setPriceQuote(quoteResponse.data);
+                }
             });
         }
     },[activeMethod, courses, tutoring, discounts, priceAdjustment]);
@@ -143,9 +173,10 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
         });
 
         let paymentInfo = {
-            "base_amount": 0,
+            "base_amount": priceQuote.total,
             "price_adjustment": priceAdjustment,
             "method": activeMethod,
+            "disabled_discounts": discounts.filter(discount=> !discount.enable)
         };
         api.initRegistration(tutoringRegistrations, courseRegistrations, paymentInfo);
         history.push("/registration/receipt/");
@@ -233,7 +264,7 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
                                                 <Typography align={"right"}
                                                             className={`price-label 
                                                             ${ discount.enable && "discount"}`}>
-                                                    {discount.title} Discount
+                                                    {discount.name} Discount
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={2}>
@@ -279,14 +310,6 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
                                         <Typography align={"right"}>
                                             {priceQuote.total}
                                         </Typography>
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <TextField
-                                            value = {payment}
-                                            onChange={ handlePayment }
-                                            type={"number"}
-                                            className={"price-adjustment"}
-                                        />
                                     </Grid>
                                 </Grid>
                             </Grid>
