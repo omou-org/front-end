@@ -7,6 +7,7 @@ export default function users(state = initialState.Users, {payload, type}) {
         case actions.FETCH_STUDENT_SUCCESSFUL:
             return handleStudentsFetch(state, payload);
         case actions.FETCH_PARENT_SUCCESSFUL:
+            console.log("parent fetched", payload)
             return handleParentsFetch(state, payload);
         case actions.FETCH_INSTRUCTOR_SUCCESSFUL:
             return handleInstructorsFetch(state, payload);

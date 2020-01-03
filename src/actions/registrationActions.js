@@ -207,6 +207,18 @@ export const patchCourse = (id,data) => wrapPatch(
     }
 );
 
+export const fetchPayments = (id) => wrapGet(
+    '/payment/payment/',
+    [
+        types.GET_PAYMENT_STARTED,
+        types.GET_PAYMENT_SUCCESS,
+        types.GET_PAYMENT_FAILED,
+    ],
+    {
+        id:id,
+    }
+)
+
 export const resetSubmitStatus = () =>
     ({type: types.RESET_SUBMIT_STATUS, payload: null});
 

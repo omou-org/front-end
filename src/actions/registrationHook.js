@@ -54,7 +54,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         ({student: tutoringReg.student, course: TutoringCourses[i].data.id}));
                     const courseEnrollments = classRegistrations.map( classReg =>
                         ({student: classReg.student, course: classReg.course})).concat(tutoringEnrollments);
-                    console.log(tutoringEnrollments, courseEnrollments)
+
                     const Enrollments = await Promise.all(courseEnrollments.map(enrollment =>
                         instance.request(
                             {
@@ -70,7 +70,6 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         payload: Enrollments,
                     });
                     const enrollmentSessions = (index) => {
-                        console.log(classRegistrations, tutoringRegistrations, index)
                         if(index < classRegistrations.length){
                             return classRegistrations[index].sessions;
                         } else {
@@ -107,3 +106,67 @@ export const useSubmitRegistration = (registrationDependencies) => {
     },[dispatch, requestSettings, registrationDependencies]);
     return status;
 };
+
+export const usePayment = (id) => {
+    const token = useSelector(({auth}) => auth.token);
+    const [status, setStatus] = useState(null);
+    const dispatch = useDispatch();
+
+    const handleError = useCallback((error) => {
+        if (error && error.response && error.response.status) {
+            setStatus(error.response.status);
+        } else {
+            setStatus(MISC_FAIL);
+            console.error(error);
+        }
+    }, []);
+
+    const requestSettings = useMemo(() => ({
+        "headers": {
+            "Authorization": `Token ${token}`,
+        },
+    }), [token]);
+
+    useEffect(()=>{
+        let aborted = false;
+
+        (async ()=>{
+           try {
+                setStatus(REQUEST_STARTED);
+               const Payment = await instance.request({
+                   'url': `${paymentEndpoint}/${id}`,
+                   requestSettings,
+                   'method':'get',
+               });
+               dispatch({
+                   type: types.GET_PAYMENT_SUCCESS,
+                   payload: Payment,
+               });
+
+               const {enrollments} = Payment.data;
+               // get students
+               const uniqueStudentIDs = [...new Set(enrollments.map(enrollment => enrollment.student))];
+               const StudentResponses = await Promise.all(uniqueStudentIDs.map( studentID =>
+                   instance.get(`/account/student/${studentID}/`)
+               ));
+               StudentResponses.forEach(studentResponse => {
+                       dispatch({type: types.FETCH_STUDENT_SUCCESSFUL, payload: studentResponse})
+               });
+               // get courses
+               const uniqueCourseIDs = [...new Set(enrollments.map(enrollment => enrollment.course))];
+               const CourseResponses = await Promise.all(uniqueCourseIDs.map( courseID =>
+                    instance.get(`/course/catalog/${courseID}/`)
+               ));
+               CourseResponses.forEach(courseResponse=> {
+                       dispatch({type:types.FETCH_COURSE_SUCCESSFUL, payload: courseResponse})
+               });
+               setStatus(200);
+           } catch (error){
+               if(!aborted){
+                   handleError(error)
+               }
+           }
+        })();
+        return status;
+    },[dispatch, requestSettings])
+}

@@ -9,6 +9,8 @@ export default function course(state = initialState.Payments, {payload, type}) {
             return handlePayments(state, payload);
         case actions.GET_PAYMENT_PARENT_SUCCESS:
             return handlePayments(state, payload);
+        case actions.GET_PAYMENT_SUCCESS:
+            return handlePayments(state,payload);
         default:
             return state;
     }

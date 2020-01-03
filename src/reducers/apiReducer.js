@@ -25,6 +25,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
         case actions.FETCH_COURSE_STARTED:
             return updateCourseFetch(state, payload.id, api.REQUEST_STARTED);
         case actions.FETCH_COURSE_SUCCESSFUL:
+            console.log("fetched course!")
             return updateCourseFetch(state, payload.id, status);
         case actions.FETCH_COURSE_FAILED:
             return updateCourseFetch(state, payload.id, status);
@@ -197,6 +198,12 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
                 ...state,
                 "registeringParent": NEW_REGISTERING_PARENT,
             };
+
+        case actions.GET_PAYMENT_SUCCESS:
+            console.log("successful payment!")
+            return updatePaymentStatus(state, payload.id, status);
+        case actions.GET_PAYMENT_STARTED:
+            return updatePaymentStatus(state, payload.id, status);
         default:
             return state;
     }
@@ -341,5 +348,11 @@ const updateDiscountStatus = (state, id, status, requestType, discountType) => {
         newState.discount[requestType] = status;
     }
 
+    return newState;
+};
+
+const updatePaymentStatus = (state, paymentID, status) => {
+    let newState = JSON.parse(JSON.stringify(state));
+    newState.payment[actions.GET][paymentID] = status;
     return newState;
 };

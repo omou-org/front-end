@@ -157,6 +157,9 @@ function initRequests() {
             }
         },
         "registeringParent":"",
+        "payment":{
+            [GET]: {},
+        }
     };
 }
 

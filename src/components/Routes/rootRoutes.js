@@ -72,10 +72,10 @@ function rootRoutes(props) {
                 exact
                 path="/accounts/:accountType/:accountID"
                 render={(passedProps) => <UserProfile {...passedProps} />} />
-            {/* <ProtectedRoute
+            <ProtectedRoute
                 exact
-                path="/accounts/parents/:parentID/pay"
-                render={(passedProps) => <ParentPayment {...passedProps} />}/> */}
+                path="/accounts/parent/payment/:parentID/:paymentID"
+                render={(passedProps) => <RegistrationReceipt {...passedProps} />}/>
             <ProtectedRoute
                 exact
                 path="/accounts"

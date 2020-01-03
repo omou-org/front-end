@@ -14,10 +14,11 @@ import Paper from "@material-ui/core/Paper";
 import {withRouter, useParams} from "react-router-dom";
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
-import {submitRegistration, useSubmitRegistration} from "../../../actions/registrationHook";
+import {usePayment, useSubmitRegistration} from "../../../actions/registrationHook";
 import Loading from "../../Loading";
-import {isFail, useEnrollment} from "../../../actions/hooks";
+import {isFail, isLoading, isSuccessful, useParent, usePrevious} from "../../../actions/hooks";
 import {weeklySessionsParser} from "../../Form/FormUtils";
+import {GET} from "../../../actions/actionTypes";
 
 const useStyles = makeStyles({
     setParent: {
@@ -29,49 +30,92 @@ const useStyles = makeStyles({
 
 function RegistrationReceipt(props) {
     const currentPayingParent = useSelector((({Registration}) => Registration.CurrentParent));
+    const parents = useSelector(({Users})=> Users.ParentList);
+
     const courses = useSelector(({Course})=> Course.NewCourseList);
     const Payments = useSelector(({Payments})=> Payments);
     const students = useSelector(({Users})=>Users.StudentList);
+    const RequestStatus = useSelector(({RequestStatus}) => RequestStatus);
     const params = useParams();
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
             ...bindActionCreators(registrationActions, dispatch),
             ...bindActionCreators(userActions, dispatch),
+            ...bindActionCreators(apiActions, dispatch),
         }),
         [dispatch]
     );
     const [paymentReceipt, setPaymentReceipt] = useState({});
+    const prevPaymentReceipt = usePrevious(paymentReceipt);
     const [courseReceipt, setCourseReceipt] = useState({});
     const Registration = useSelector(({Registration}) => Registration);
     const registrationStatus = useSubmitRegistration(Registration.registration);
+
+    const parent = parents[params.parentID];
+    const parentStatus = useParent(params.parentID && params.parentID);
+
+    const isFromAccount = params.parentID && params.paymentID;
+    if(isFromAccount){
+        let parentPayments = Payments && Payments[params.parentID];
+        let payment = parentPayments && parentPayments[params.paymentID];
+        if(!payment && RequestStatus.payment[GET][params.paymentID] !== 600){
+            api.fetchPayments(params.paymentID);
+        }
+    }
+
+    const paymentStatus = usePayment(params.paymentID && params.paymentID);
+
+    useEffect(()=>{
+        if(isSuccessful(paymentStatus )&&
+            (JSON.stringify(prevPaymentReceipt) !== JSON.stringify(paymentReceipt) ||
+                JSON.stringify(prevPaymentReceipt) === "{}"
+            )
+        ){
+            let payment = Payments[params.parentID][params.paymentID];
+            let {enrollments} = payment;
+            setPaymentReceipt(payment);
+            setCourseReceipt(courseReceiptInitializer(enrollments));
+        }
+    },[paymentStatus, paymentReceipt]);
 
     if((!registrationStatus || isFail(registrationStatus)) && !params.paymentID){
         return <Loading/>
     }
 
+    const courseReceiptInitializer = (enrollments)=>{
+        let receipt = {};
+        let studentIDs = [...new Set(enrollments.map(enrollment => enrollment.student))];
+        studentIDs.forEach(id => {
+            if(RequestStatus.student[GET][id] !== 200){
+                api.fetchStudents(id);
+            }
+
+            enrollments.forEach(enrollment => {
+
+                if(enrollment.student === id){
+                    if(Array.isArray(receipt[id])){
+                        receipt[id].push(courses[enrollment.course])
+                    } else {
+                        receipt[id] =[courses[enrollment.course]]
+                    }
+                }
+            });
+        });
+        return receipt;
+    }
+
+    // If we're coming from the registration cart, set-up state variables after we've completed registration requests
     if(registrationStatus && registrationStatus.status >= 200 &&
         Object.keys(paymentReceipt).length < 1){
         let payment = Payments[currentPayingParent.user.id][registrationStatus.paymentID];
         setPaymentReceipt(payment);
         let {enrollments} = payment;
-        setCourseReceipt(()=>{
-            let receipt = {};
-            let studentIDs = [...new Set(enrollments.map(enrollment => enrollment.student))];
-            studentIDs.forEach(id => {
-                api.fetchStudents(id);
-                enrollments.forEach(enrollment => {
-                   if(enrollment.student === id){
-                       if(Array.isArray(receipt[id])){
-                           receipt[id].push(courses[enrollment.course])
-                       } else {
-                           receipt[id] =[courses[enrollment.course]]
-                       }
-                   }
-                });
-            });
-            return receipt;
-        });
+        setCourseReceipt(courseReceiptInitializer(enrollments));
+    }
+    // If we're coming from a parent's account and the payment is loaded
+    if(isFromAccount && RequestStatus.payment[GET][params.paymentID] !== 200){
+        return <Loading/>;
     }
 
     const handleCloseReceipt = ()=> (e)=> {
@@ -80,10 +124,9 @@ function RegistrationReceipt(props) {
         props.history.push("/registration");
     };
 
-    if(Object.keys(paymentReceipt).length < 1){
+    if(Object.keys(paymentReceipt).length < 1 || isLoading(paymentStatus)){
         return <Loading/>;
     }
-
     const renderCourse = (enrolledCourse) => (<Grid item>
         <Grid
             className={"enrolled-course"}
@@ -153,6 +196,7 @@ function RegistrationReceipt(props) {
 
     const renderStudentReceipt = (studentID, enrolledCourses) => {
         let student = students[studentID];
+        console.log(enrolledCourses);
         return (
             <Grid container direction="column">
                 <Paper className={"course-receipt"}>
@@ -176,6 +220,14 @@ function RegistrationReceipt(props) {
         window.print();
     }
 
+    const renderParent = () => {
+        if(currentPayingParent.user){
+            return currentPayingParent.user
+        } else {
+            return parent;
+        }
+    };
+
     return (
         <Paper className={"paper registration-receipt"}>
             <Grid container
@@ -189,7 +241,7 @@ function RegistrationReceipt(props) {
                 </Grid>
                 <Grid item>
                     <Typography variant={"h5"} align={"left"}>
-                        Thank you for your payment, {currentPayingParent.user.name}
+                        Thank you for your payment, {renderParent().name}
                     </Typography>
                 </Grid>
                 <Grid item xs={12}
@@ -220,8 +272,8 @@ function RegistrationReceipt(props) {
                                 <Grid item xs={3}>
                                     <Typography align={"left"}>
                                         {`
-                                        ${currentPayingParent.user.name} - ID#:
-                                        ${currentPayingParent.user.id}
+                                        ${renderParent().name} - ID#:
+                                        ${renderParent().id}
                                     `}
                                     </Typography>
                                 </Grid>
