@@ -17,6 +17,7 @@ import * as userActions from "../../../actions/userActions";
 import {submitRegistration, useSubmitRegistration} from "../../../actions/registrationHook";
 import Loading from "../../Loading";
 import {isFail, useEnrollment} from "../../../actions/hooks";
+import {weeklySessionsParser} from "../../Form/FormUtils";
 
 const useStyles = makeStyles({
     setParent: {
@@ -28,17 +29,20 @@ const useStyles = makeStyles({
 
 function RegistrationReceipt(props) {
     const currentPayingParent = useSelector((({Registration}) => Registration.CurrentParent));
-    const Enrollments = useSelector(({Enrollments})=> Enrollments);
+    const courses = useSelector(({Course})=> Course.NewCourseList);
     const Payments = useSelector(({Payments})=> Payments);
+    const students = useSelector(({Users})=>Users.StudentList);
     const params = useParams();
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
             ...bindActionCreators(registrationActions, dispatch),
+            ...bindActionCreators(userActions, dispatch),
         }),
         [dispatch]
     );
     const [paymentReceipt, setPaymentReceipt] = useState({});
+    const [courseReceipt, setCourseReceipt] = useState({});
     const Registration = useSelector(({Registration}) => Registration);
     const registrationStatus = useSubmitRegistration(Registration.registration);
 
@@ -48,7 +52,30 @@ function RegistrationReceipt(props) {
 
     if(registrationStatus && registrationStatus.status >= 200 &&
         Object.keys(paymentReceipt).length < 1){
-        setPaymentReceipt(Payments[currentPayingParent.user.id][registrationStatus.paymentID])
+        let payment = Payments[currentPayingParent.user.id][registrationStatus.paymentID];
+        console.log(payment);
+        setPaymentReceipt(payment);
+        let {enrollments} = payment;
+        setCourseReceipt(()=>{
+            let receipt = {};
+            let studentIDs = [...new Set(enrollments.map(enrollment => enrollment.student))];
+            studentIDs.forEach(id => {
+                api.fetchStudents(id);
+                enrollments.forEach(enrollment => {
+                    console.log(enrollment);
+                   if(enrollment.student === id){
+                       if(Array.isArray(receipt[id])){
+                           receipt[id].push(courses[enrollment.course])
+                       } else {
+                           receipt[id] =[courses[enrollment.course]]
+                       }
+                       console.log(receipt[id])
+                   }
+                });
+            });
+            console.log(receipt);
+            return receipt;
+        });
     }
 
     const handleCloseReceipt = ()=> (e)=> {
@@ -61,8 +88,100 @@ function RegistrationReceipt(props) {
         return <Loading/>;
     }
 
+    const renderCourse = (enrolledCourse) => (<Grid item>
+        <Grid
+            className={"enrolled-course"}
+            container
+            direction="column"
+            justify="flex-start">
+            <Grid item>
+                <Typography align="left" className={"enrolled-course-title"}>
+                   {enrolledCourse.title}
+                </Typography>
+            </Grid>
+            <Grid item>
+                <Grid container direction="column" justify="flex-start">
+                    <Grid item>
+                        <Grid container direction="row">
+                            <Grid item xs={2}>
+                                <Typography align="left" className={"course-label"}>
+                                    Dates
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Typography align="left">
+                                    {new Date(enrolledCourse.schedule.start_date).toLocaleDateString()} -
+                                    {new Date(enrolledCourse.schedule.end_date).toLocaleDateString()}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={2} className={"course-label"}>
+                                <Typography align="left" className={"course-label"}>
+                                   Tuition
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Typography align="left">
+                                    ${enrolledCourse.total_tuition}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item>
+                        <Grid container direction="row">
+                            <Grid item xs={2}>
+                                <Typography align="left" className={"course-label"}>
+                                    Sessions
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Typography align="left">
+                                    {weeklySessionsParser(enrolledCourse.schedule.start_date, enrolledCourse.schedule.end_date)}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Typography align="left" className={"course-label"}>
+                                    Hourly Tuition
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Typography align="left">
+                                    ${enrolledCourse.hourly_tuition}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>)
+
+    const renderStudentReceipt = (studentID, enrolledCourses) => {
+        let student = students[studentID];
+        return (
+            <Grid container direction="column">
+                <Paper className={"course-receipt"}>
+                    <Grid item>
+                        <Typography
+                            className={"student-name"}
+                            variant="h5"
+                            align="left">
+                            {student.name} <span>- ID# {student.user_id}</span>
+                        </Typography>
+                    </Grid>
+                    {
+                        enrolledCourses.map(enrolledCourse => renderCourse(enrolledCourse))
+                    }
+                 </Paper>
+            </Grid>)
+    };
+
+    const handlePrint = event =>{
+        event.preventDefault();
+        window.print();
+    }
+
     return (
-        <Paper className={"paper registration-receipt"} >
+        <Paper className={"paper registration-receipt"}>
             <Grid container
                   direction={"row"}
                   spacing={16}
@@ -123,7 +242,7 @@ function RegistrationReceipt(props) {
                                 </Grid>
                                 <Grid item xs={3}>
                                     <Typography align={"left"}>
-                                        {new Date(paymentReceipt.created_at).toLocaleTimeString()}
+                                        {new Date(paymentReceipt.created_at).toLocaleDateString()}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
@@ -143,11 +262,35 @@ function RegistrationReceipt(props) {
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                    <Grid item xs={8}/>
-                    <Grid item xs={4}>
-                        <Button onClick={handleCloseReceipt()} className={"button"}>
-                            End Registration
-                        </Button>
+                    <Grid container
+                          direction="column"
+                          justify="center"
+                          spacing={8}
+                    >
+                        <Grid item xs={10}>
+                            {
+                                Object.entries(courseReceipt)
+                                    .map(([studentID, enrolledCourses]) =>
+                                        renderStudentReceipt(studentID, enrolledCourses))
+                            }
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item xs={10} style={{marginTop:"30px"}}>
+                    <Grid container
+                          spacing={8}
+                          direction="row"
+                          justify="flex-end">
+                        <Grid item>
+                            <Button onClick={handlePrint} className={"button"}>
+                                Print
+                            </Button>
+                        </Grid>
+                        <Grid item>
+                            <Button onClick={handleCloseReceipt()} className={"button"}>
+                                End Registration
+                            </Button>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>

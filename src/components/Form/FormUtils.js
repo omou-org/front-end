@@ -111,7 +111,7 @@ export const dayOfWeek = {
 export const weeklySessionsParser = (startDate, endDate) =>{
     let start = new Date(startDate);
     let end = new Date(endDate);
-    return (end.getTime() - start.getTime()) / (1000 * 3600 * 24 * 7);
+    return Math.floor((end.getTime() - start.getTime()) / (1000 * 3600 * 24 * 7));
 };
 
 export const convertTimeStrToDate = (time) => {

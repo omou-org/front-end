@@ -657,4 +657,26 @@
       font-weight:bold;
     }
   }
+  .course-receipt{
+    padding: $paperPadding;
+    background-color:white !important;
+  }
+  .enrolled-course{
+    .enrolled-course-title{
+      color:$primaryColor;
+      font-weight:500;
+      margin-bottom:10px;
+      font-size:14px;
+    }
+    .course-label{
+      color:$lightPrimaryFontColor;
+      font-weight:600;
+    }
+  }
+  .student-name{
+    span{
+      color:$lightPrimaryFontColor;
+    }
+    margin-bottom:20px;
+  }
 }

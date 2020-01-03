@@ -70,17 +70,16 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         payload: Enrollments,
                     });
                     const enrollmentSessions = (index) => {
+                        console.log(classRegistrations, tutoringRegistrations, index)
                         if(index < classRegistrations.length){
                             return classRegistrations[index].sessions;
                         } else {
-                            return tutoringRegistrations[index].sessions;
+                            return tutoringRegistrations[index-(classRegistrations.length)].sessions;
                         }
                     };
-                    console.log(Enrollments);
                     const registrations = Enrollments.map((enrollment, i) =>
                         ({ enrollment:enrollment.data.id, num_sessions: enrollmentSessions(i)})
                     );
-                    console.log(registrations, payment, currentPayingParent);
                     const finalPayment = await instance.request({
                         'url': paymentEndpoint,
                         requestSettings,

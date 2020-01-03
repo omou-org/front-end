@@ -65,6 +65,7 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
     };
     const {cash, creditCard, check, internationalCreditCard} = paymentMethod;
     const cleanTutoring = JSON.parse(JSON.stringify(tutoring));
+    console.log(cleanTutoring);
 
     const stateUpdated = (currentState, prevState) => {
         const initialValues = ["{}","[]"];
@@ -105,8 +106,7 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
                 const responseDiscounts = JSON.stringify(quoteResponse.data.discounts);
                 const stateDiscounts = JSON.stringify(discounts);
                 if(responseDiscounts !== stateDiscounts){
-                    let ResponseDiscounts = quoteResponse.data.discounts.map( (discount, i) => {
-                        console.log(discount, discounts.find(sDiscount => sDiscount.id === discount.id));
+                    let ResponseDiscounts = quoteResponse.data.discounts.map( (discount) => {
                         return {
                         ...discount,
                             enable: discounts.find(sDiscount => sDiscount.id === discount.id) ?
