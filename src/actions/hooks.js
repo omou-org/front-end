@@ -190,6 +190,16 @@ export const useEnrollmentByStudent = (studentID) => wrapUseEndpoint(
     }
 )(null);
 
+export const usePaymentByParent = (parentID) => wrapUseEndpoint(
+    "/payment/payment/",
+    types.GET_PAYMENT_PARENT_SUCCESS,
+    {
+        "params":{
+            "parent": parentID,
+        }
+    }
+)(null);
+
 // Hook
 export function usePrevious(value) {
     // The ref object is a generic container whose current property is mutable ...

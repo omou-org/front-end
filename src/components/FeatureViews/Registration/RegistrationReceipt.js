@@ -53,7 +53,6 @@ function RegistrationReceipt(props) {
     if(registrationStatus && registrationStatus.status >= 200 &&
         Object.keys(paymentReceipt).length < 1){
         let payment = Payments[currentPayingParent.user.id][registrationStatus.paymentID];
-        console.log(payment);
         setPaymentReceipt(payment);
         let {enrollments} = payment;
         setCourseReceipt(()=>{
@@ -62,18 +61,15 @@ function RegistrationReceipt(props) {
             studentIDs.forEach(id => {
                 api.fetchStudents(id);
                 enrollments.forEach(enrollment => {
-                    console.log(enrollment);
                    if(enrollment.student === id){
                        if(Array.isArray(receipt[id])){
                            receipt[id].push(courses[enrollment.course])
                        } else {
                            receipt[id] =[courses[enrollment.course]]
                        }
-                       console.log(receipt[id])
                    }
                 });
             });
-            console.log(receipt);
             return receipt;
         });
     }

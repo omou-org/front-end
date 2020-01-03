@@ -7,45 +7,44 @@ export default function course(state = initialState.Payments, {payload, type}) {
     switch (type) {
         case actions.POST_PAYMENT_SUCCESS:
             return handlePayments(state, payload);
+        case actions.GET_PAYMENT_PARENT_SUCCESS:
+            return handlePayments(state, payload);
         default:
             return state;
     }
 };
 
-const handlePayments = (state, response) => {
+const handlePayments = (state, payload) => {
     let Payments = {...state};
-    console.log(response.data.id);
-    if(response.data.id === REQUEST_ALL){
+    let id;
+    let response;
+    if(payload.id){
+        id = payload.id;
+        response = payload.response;
+    } else {
+        id = payload.data.id;
+        response = payload;
+    }
+    if(id === REQUEST_ALL){
         response.data.forEach((payment)=>{
             Payments = updatePayment(Payments, payment.id, payment)
         });
-    } else if (Array.isArray(response.data.id)) {
+    } else if (Array.isArray(id)) {
         response.data.forEach(({data})=>{
             Payments = updatePayment(Payments, data.id, data)
         });
     } else {
-        console.log("updating payment", response.data, response.data.id)
-        Payments = updatePayment(Payments, response.data.id, response.data);
+        Payments = updatePayment(Payments, id, response.data);
     }
     return {
         ...Payments,
     }
 };
 
-const updatePayment = (payments, id, payment) => {
-    console.log(payments, payment.parent, );
-    console.log({
+const updatePayment = (payments, id, payment) => ({
         ...payments,
         [payment.parent]: {
             ...payments[payment.parent],
             [id]: payment,
         }
     });
-    return {
-        ...payments,
-        [payment.parent]: {
-            ...payments[payment.parent],
-            [id]: payment,
-        }
-    }
-};
