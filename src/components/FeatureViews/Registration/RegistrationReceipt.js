@@ -318,7 +318,7 @@ function RegistrationReceipt(props) {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={10} style={{marginTop:"30px"}}>
+                <Grid item xs={10} className={"receipt-actions"}>
                     <Grid container
                           spacing={8}
                           direction="row"
