@@ -8,12 +8,15 @@ import { makeStyles } from "@material-ui/styles";
 
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
-import {connect, useDispatch} from "react-redux";
+import {connect, useDispatch, useSelector} from "react-redux";
 import {Button, Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
-import {withRouter} from "react-router-dom";
+import {withRouter, useParams} from "react-router-dom";
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
+import {submitRegistration, useSubmitRegistration} from "../../../actions/registrationHook";
+import Loading from "../../Loading";
+import {isFail} from "../../../actions/hooks";
 
 const useStyles = makeStyles({
     setParent: {
@@ -25,6 +28,9 @@ const useStyles = makeStyles({
 
 function RegistrationReceipt(props) {
     const [anchorEl, setAnchorEl] = useState(null);
+    const currentPayingParent = useSelector((({Registration}) => Registration.CurrentParent));
+    const Payments = useSelector(({Payments})=> Payments);
+    const params = useParams();
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -32,44 +38,29 @@ function RegistrationReceipt(props) {
         }),
         [dispatch]
     );
+    const [paymentReceipt, setPaymentReceipt] = useState({});
 
-    const [transactionParent, setTransactionParent] = useState({
-        user_id: 2,
-        gender: "F",
-        birthday: "12/12/1970",
-        relationship: "Mother",
-        first_name: "Elle",
-        last_name: "Ho",
-        name: "Elle Ho",
-        email: "elle@ho.com",
-        student_ids: [7],
-        role: "parent",
-    });
+    const Registration = useSelector(({Registration}) => Registration);
+    const registrationStatus = useSubmitRegistration(Registration.registration);
 
-    const [payment, setPayment] = useState({
-        parent:2,
-        enrollments:[32, 24],
-        payment: {
-            received: 1000,
-            method: "credit card",
-        },
-        disabled_discounts: [1],
-        enabled_discounts: [3],
-        date: "1/1/2020",
-        id: 123,
-    });
+    if((!registrationStatus || isFail(registrationStatus)) && !params.paymentID){
+        return <Loading/>
+    }
 
-    const [enrollment, setEnrollment] = useState({
-        32:{
-            // course_id:
-        }
-    });
+    if(registrationStatus && registrationStatus.status >= 200 &&
+        Object.keys(paymentReceipt).length < 1){
+        setPaymentReceipt(Payments[currentPayingParent.user.id][registrationStatus.paymentID])
+    }
 
     const handleCloseReceipt = ()=> (e)=> {
         e.preventDefault();
         api.closeRegistration("");
         props.history.push("/registration");
     };
+
+    if(Object.keys(paymentReceipt).length < 1){
+        return <Loading/>;
+    }
 
     return (
         <Paper className={"paper registration-receipt"} >
@@ -84,7 +75,7 @@ function RegistrationReceipt(props) {
                 </Grid>
                 <Grid item>
                     <Typography variant={"h5"} align={"left"}>
-                        Thank you for your payment, {transactionParent.name}
+                        Thank you for your payment, {currentPayingParent.user.name}
                     </Typography>
                 </Grid>
                 <Grid item xs={12}
@@ -102,7 +93,7 @@ function RegistrationReceipt(props) {
                                 </Grid>
                                 <Grid item xs={3}>
                                     <Typography align={"left"}>
-                                        {payment.id}
+                                        {paymentReceipt.id}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
@@ -115,8 +106,8 @@ function RegistrationReceipt(props) {
                                 <Grid item xs={3}>
                                     <Typography align={"left"}>
                                         {`
-                                        ${transactionParent.name} - ID#:
-                                        ${transactionParent.user_id}
+                                        ${currentPayingParent.user.name} - ID#:
+                                        ${currentPayingParent.user.id}
                                     `}
                                     </Typography>
                                 </Grid>
@@ -133,7 +124,7 @@ function RegistrationReceipt(props) {
                                 </Grid>
                                 <Grid item xs={3}>
                                     <Typography align={"left"}>
-                                        {payment.date}
+                                        {new Date(paymentReceipt.created_at).toLocaleTimeString()}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
@@ -145,7 +136,7 @@ function RegistrationReceipt(props) {
                                 </Grid>
                                 <Grid item xs={3}>
                                     <Typography align={"left"}>
-                                        {payment.payment.method}
+                                        {paymentReceipt.method}
                                     </Typography>
                                 </Grid>
                             </Grid>

@@ -8,8 +8,9 @@ const enrollmentEndpoint = "/course/enrollment/";
 const courseEndpoint = "/course/catalog/";
 const paymentEndpoint = "/payment/payment/";
 
-export const submitRegistration = ({tutoringRegistrations, classRegistrations, payment}) => () =>{
+export const useSubmitRegistration = (registrationDependencies) => {
     const token = useSelector(({auth}) => auth.token);
+    const currentPayingParent = useSelector((({Registration}) => Registration.CurrentParent));
     const [status, setStatus] = useState(null);
     const dispatch = useDispatch();
 
@@ -27,76 +28,83 @@ export const submitRegistration = ({tutoringRegistrations, classRegistrations, p
             "Authorization": `Token ${token}`,
         },
     }), [token]);
-    console.log("hi from registration hook")
 
     useEffect(()=>{
         let aborted = false;
-        console.log("hi")
+
         (async ()=> {
-            try {
-                const TutoringCourses = await Promise.all(tutoringRegistrations.map( ({newTutoringCourse}) =>
-                    instance.request(
-                        {
-                            'url':courseEndpoint,
-                            requestSettings,
-                            'data': newTutoringCourse,
-                            'method':'post',
+            if(typeof registrationDependencies !== "undefined"){
+                const {tutoringRegistrations, classRegistrations, payment} = registrationDependencies;
+                try {
+                    const TutoringCourses = await Promise.all(tutoringRegistrations.map( ({newTutoringCourse}) =>
+                        instance.request(
+                            {
+                                'url':courseEndpoint,
+                                requestSettings,
+                                'data': newTutoringCourse,
+                                'method':'post',
+                            }
+                        )
+                    ));
+                    dispatch({
+                        type: types.POST_COURSE_SUCCESSFUL,
+                        payload: TutoringCourses,
+                    });
+                    const tutoringEnrollments = tutoringRegistrations.map((tutoringReg,i) =>
+                        ({student: tutoringReg.student, course: TutoringCourses[i].data.id}));
+                    const courseEnrollments = classRegistrations.map( classReg =>
+                        ({student: classReg.student, course: classReg.course})).concat(tutoringEnrollments);
+                    console.log(tutoringEnrollments, courseEnrollments)
+                    const Enrollments = await Promise.all(courseEnrollments.map(enrollment =>
+                        instance.request(
+                            {
+                                'url':enrollmentEndpoint,
+                                requestSettings,
+                                'data':enrollment,
+                                'method':'post',
+                            }
+                        )
+                    ));
+                    dispatch({
+                        type: types.POST_ENROLLMENT_SUCCESS,
+                        payload: Enrollments,
+                    });
+                    const enrollmentSessions = (index) => {
+                        if(index < classRegistrations.length){
+                            return classRegistrations[index].sessions;
+                        } else {
+                            return tutoringRegistrations[index].sessions;
                         }
-                    )
-                ));
-                console.log(TutoringCourses)
-                dispatch({
-                    type: types.POST_COURSE_SUCCESSFUL,
-                    payload: TutoringCourses,
-                });
-                const tutoringEnrollments = tutoringRegistrations.map((tutoringReg,i) =>
-                    ({student: tutoringReg.student, course: TutoringCourses[i]}));
-                const courseEnrollments = classRegistrations.map( classReg =>
-                    ({student: classReg.student, course: classReg.course})).concat(tutoringEnrollments);
-                const Enrollments = await Promise.all(courseEnrollments.map(enrollment =>
-                    instance.request(
-                        {
-                            'url':enrollmentEndpoint,
-                            requestSettings,
-                            'data':enrollment,
-                            'method':'post',
-                        }
-                    )
-                ));
-                dispatch({
-                    type: types.POST_ENROLLMENT_SUCCESS,
-                    payload: Enrollments,
-                });
-                const enrollmentSessions = (index) => {
-                    if(index < courseEnrollments.length){
-                        return courseEnrollments[index].sessions;
-                    } else {
-                        return tutoringEnrollments[index].sessions;
+                    };
+                    console.log(Enrollments);
+                    const registrations = Enrollments.map((enrollment, i) =>
+                        ({ enrollment:enrollment.data.id, num_sessions: enrollmentSessions(i)})
+                    );
+                    console.log(registrations, payment, currentPayingParent);
+                    const finalPayment = await instance.request({
+                        'url': paymentEndpoint,
+                        requestSettings,
+                        'data':{
+                            ...payment,
+                            registrations: registrations,
+                            parent: currentPayingParent.user.id,
+                        },
+                        'method':'post',
+                    });
+                    dispatch({
+                        type: types.POST_PAYMENT_SUCCESS,
+                        payload: finalPayment,
+                    });
+                    console.log(finalPayment.status);
+                    setStatus({status:finalPayment.status, paymentID:finalPayment.data.id});
+                } catch (error){
+                    if(!aborted){
+                        handleError(error)
                     }
-                };
-                const registrations = Enrollments.map((enrollment, i) =>
-                    ({...enrollment, num_sessions: enrollmentSessions(i)})
-                );
-                const finalPayment = await instance.request({
-                    'url': paymentEndpoint,
-                    requestSettings,
-                    'data':{
-                        ...payment,
-                        registrations: registrations,
-                    }
-                });
-                dispatch({
-                    type: types.POST_PAYMENT_SUCCESS,
-                    payload: finalPayment,
-                });
-                console.log(finalPayment, registrations, enrollmentSessions, Enrollments, TutoringCourses)
-            } catch (error){
-                if(!aborted){
-                    handleError(error)
                 }
             }
         })();
 
-    },[dispatch, token, requestSettings]);
+    },[dispatch, requestSettings, registrationDependencies]);
     return status;
 };

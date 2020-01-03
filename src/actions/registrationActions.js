@@ -272,7 +272,17 @@ export const setParentAddCourseRegistration = (parentID, form) => {
                 });
             })
     })
-}
+};
+
+export const initRegistration = (tutoringRegistrations, classRegistrations, paymentInfo) =>
+    ({
+        type: types.SET_REGISTRATION,
+        payload: {
+            tutoringRegistrations: tutoringRegistrations,
+            classRegistrations: classRegistrations,
+            payment: paymentInfo,
+        }
+    });
 
 const enrollmentEndpoint = "/course/enrollment/";
 const courseEndpoint = "/course/catalog/";

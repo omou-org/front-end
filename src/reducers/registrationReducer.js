@@ -73,6 +73,9 @@ export default function registration(state = initialState.RegistrationForms, {pa
             return closeRegistration(newState);
         case actions.EDIT_COURSE_REGISTRATION:
             return editCourseRegistration(newState, payload);
+        case actions.SET_REGISTRATION:
+            newState.registration = payload;
+            return {...newState};
         default:
             return state;
     }

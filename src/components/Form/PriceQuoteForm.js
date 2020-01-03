@@ -25,15 +25,8 @@ import {bindActionCreators} from "redux";
 import * as apiActions from "../../actions/apiActions";
 import * as userActions from "../../actions/userActions";
 import * as registrationActions from "../../actions/registrationActions";
-import {submitRegistration} from "../../actions/registrationHook";
 import {dayOfWeek, weeklySessionsParser} from "./FormUtils";
 import {instance} from "../../actions/apiActions";
-
-const submitReg = (tutoring, classes, payment) => submitRegistration({
-    tutoringRegistrations: tutoring,
-    classRegistrations: classes,
-    payment: payment
-})();
 
 const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
     const dispatch = useDispatch();
@@ -98,15 +91,16 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
 
             console.log(requestedQuote)
             // make price quote request
-            const quote = instance.request({
+            instance.request({
                 'url':'/pricing/quote/',
                 "headers": {
                     "Authorization": `Token ${token}`,
                 },
                 "data":requestedQuote,
-                'method':'get',
+                'method':'post',
+            }).then((quoteResponse) => {
+                console.log(quoteResponse.data);
             });
-            console.log(quote);
         }
     },[activeMethod, courses, tutoring, discounts, priceAdjustment]);
 
@@ -153,7 +147,8 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
             "price_adjustment": priceAdjustment,
             "method": activeMethod,
         };
-        submitReg(tutoringRegistrations, courseRegistrations, paymentInfo)
+        api.initRegistration(tutoringRegistrations, courseRegistrations, paymentInfo);
+        history.push("/registration/receipt/");
     };
 
     const toggleDiscount = (id) => (e) =>{
