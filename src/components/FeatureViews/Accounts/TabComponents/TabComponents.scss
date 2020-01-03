@@ -268,3 +268,19 @@
 .payments-history {
   padding: 15px;
 }
+
+.session-actions{
+  height:100px;
+  .button {
+    &.add-sessions{
+      background-color: $primaryColor;
+      border:none !important;
+      color:white;
+      padding-left: 1.7em !important;
+      padding-right: 2.3em !important;
+      font-weight:600;
+      margin-right:0;
+    }
+  }
+}
+

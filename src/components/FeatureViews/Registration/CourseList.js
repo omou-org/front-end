@@ -97,7 +97,7 @@ const CourseList = (props) => {
                                 item
                                 md={8}
                                 xs={9}>
-                                {course.instructor_id && instructors[course.instructor_id].name}
+                                {course.instructor_id && (instructors[course.instructor_id] && instructors[course.instructor_id].name)}
                             </Grid>
                         </Grid>
                         <Grid
@@ -116,7 +116,7 @@ const CourseList = (props) => {
                                 item
                                 md={8}
                                 xs={9}>
-                                {course.tuition && `$${course.tuition}`}
+                                {course.total_tuition && `$${course.total_tuition}`}
                             </Grid>
                         </Grid>
                     </Grid>
@@ -145,10 +145,11 @@ const CourseList = (props) => {
                                 item
                                 xs={6}>
                                 {
-                                    props.registration.CurrentParent && <Button
+                                    (props.registration.CurrentParent !== "none" && props.registration.CurrentParent) &&
+                                    <Button
                                         className="button primary"
                                         component={Link}
-                                        disabled={course.capacity <= course.filled}
+                                        disabled={course.capacity <= course.roster.length}
                                         to={`/registration/form/course/${course.course_id}`}
                                         variant="contained">+ REGISTER
                                     </Button>

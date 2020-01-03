@@ -1,5 +1,6 @@
 import initialState from './initialState';
 import * as actions from "./../actions/actionTypes"
+import {dateParser} from "../components/Form/FormUtils";
 
 export default function registration(state = initialState.RegistrationForms, {payload, type}) {
     let newState = JSON.parse(JSON.stringify(state));
@@ -56,7 +57,7 @@ export default function registration(state = initialState.RegistrationForms, {pa
             return successSubmit(state);
         case actions.SET_PARENT:
             newState["CurrentParent"] = payload;
-            return newState;
+            return {...newState};
         case actions.RESET_REGISTRATION:
             newState["registered_courses"] = {};
             return newState;
@@ -72,6 +73,9 @@ export default function registration(state = initialState.RegistrationForms, {pa
             return closeRegistration(newState);
         case actions.EDIT_COURSE_REGISTRATION:
             return editCourseRegistration(newState, payload);
+        case actions.SET_REGISTRATION:
+            newState.registration = payload;
+            return {...newState};
         default:
             return state;
     }
@@ -193,6 +197,7 @@ const failedSubmit = (state) => ({
 });
 
 const addClassRegistration = (prevState, form) => {
+    console.log(form);
     let studentID = form["Student"].Student.value;
     let studentName = form["Student"].Student.label;
     let courseID;
@@ -300,23 +305,24 @@ const addTutoringRegistration = (prevState, form) => {
     endDate.setDate(endDate.getDate()+(7*numSessions));
     let isStudentCurrentlyRegistered = prevState.registered_courses ? Object.keys(prevState.registered_courses).includes(studentID.toString()):false;
     let enrollmentObject = {
-        type: "tutoring",
+        course_type: "tutoring",
         new_course: {
             subject: subject,
             title: courseName, // create class with instructor and name as INSTRUCTOR-LASTNAME x STUDENT-FIRSTNAME - SUBJECT
-            type: "T",
+            course_type: "tutoring",
             instructor: instructorID,
-            //tuition: //default subject + grade price on backend?
             schedule:{
-                start_date: startDate,
+                start_date: dateParser(startDate).substring(0,10),
                 start_time: dateToTimeString(startTime),
-                end_date: endDate,
+                end_date: dateParser(endDate).substring(0,10),
                 end_time: dateToTimeString(endTime), //generated from course duration
             },
             day_of_week: dayOfWeek,
             max_capacity: 1,
             enrollment_id_list: [studentID], //array with student_id
             description: studentInfoNote,
+            academic_level: academicLevel,
+            course_category: category,
         },
         student_id: studentID,
         course_id: "T" + (isStudentCurrentlyRegistered ? (prevState.registered_courses[studentID].length + 1).toString() : "0"),
@@ -338,7 +344,7 @@ const addTutoringRegistration = (prevState, form) => {
     prevState.submitStatus = "success";
 
     return {...prevState};
-}
+};
 
 const addSmallGroupRegistration = (prevState, {formMain, new_course}) => {
     let studentID = formMain["Student"].Student.value;
@@ -423,13 +429,12 @@ const dateToTimeString = (date) => {
 
 const initializeRegistration = (prevState)=>{
     let prevRegisteredCourses = JSON.parse(sessionStorage.getItem("registered_courses"));
-    if(prevRegisteredCourses){
+    let prevParent = JSON.parse(sessionStorage.getItem("CurrentParent"));
+    if(prevRegisteredCourses && prevParent){
         prevState.registered_courses = prevRegisteredCourses;
+        prevState.CurrentParent = prevParent;
     }
-    return {
-        ...prevState,
-        registered_courses: prevRegisteredCourses,
-    };
+    return { ...prevState };
 };
 
 const editCourseRegistration = (prevState, {student_id, course_id, enrollment_note, new_course, sessions, form}) => {

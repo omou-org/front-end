@@ -61,9 +61,10 @@ const handleCourseSearchResults = (state, {id, response}) =>{
 
 const handleSearchFilterChange = (state, {searchType, filter, value}) =>{
     let newState = {...state};
-    newState.filter[searchType][filter] = value;
+    newState.params[searchType][filter] = value;
     if(filter==="grade"){
         newState.filter[searchType].profile = "student";
     }
+    newState.searchQueryStatus = "";
     return newState
 }

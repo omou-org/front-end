@@ -1,5 +1,5 @@
 // React Imports
-import React, {useCallback, useState, useEffect, useMemo} from "react";
+import React, {useCallback, useState, useEffect, useMemo, useRef} from "react";
 import {Redirect, useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../../actions/authActions";
@@ -25,8 +25,9 @@ import {bindActionCreators} from "redux";
 import * as apiActions from "../../actions/apiActions";
 import * as userActions from "../../actions/userActions";
 import * as registrationActions from "../../actions/registrationActions";
-import {dayOfWeek} from "./FormUtils";
-
+import {dayOfWeek, weeklySessionsParser} from "./FormUtils";
+import {instance} from "../../actions/apiActions";
+import {usePrevious} from "../../actions/hooks";
 
 const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
     const dispatch = useDispatch();
@@ -39,25 +40,14 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
         [dispatch]
     );
     const history = useHistory();
+    const token = useSelector(({auth}) => auth.token);
     const isAdmin = useSelector(({auth}) => auth.isAdmin);
-    const [priceQuote, setPriceQuote] = useState({
-        sub_total: 1000,
-        total: 980,
-    });
-    const [discounts, setDiscounts] = useState([
-        {
-            amount: 20,
-            title:"EARLY BIRD",
-            enable: true,
-            id: 1,
-        },
-    ]);
+    const [priceQuote, setPriceQuote] = useState({});
+    const prevPriceQuote = usePrevious(priceQuote);
+    const [discounts, setDiscounts] = useState([]);
+    const prevDiscounts = usePrevious(discounts);
     const [priceAdjustment, setPriceAdjustment] = useState(0);
-
-    useEffect(()=>{
-        console.log(courses, tutoring)
-    },[courses, tutoring]);
-
+    const prevPriceAdjustment = usePrevious(priceAdjustment);
     const [payment, setPayment] = useState(1000);
     const [paymentMethod, setPaymentMethod] = useState(()=>{
         return {
@@ -67,52 +57,130 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
             internationalCreditCard: false,
         }
     });
+    const activeMethod = Object.entries(paymentMethod)
+        .filter(([paymentMethod, active]) => active)
+        .map(([paymentMethod, active]) => paymentMethod)[0];
     const handlePayMethodChange = method => e =>{
         setPaymentMethod({ [method]: e.target.checked })
-    }
+    };
     const {cash, creditCard, check, internationalCreditCard} = paymentMethod;
+    const cleanTutoring = JSON.parse(JSON.stringify(tutoring));
+    console.log(cleanTutoring);
 
+    const stateUpdated = (currentState, prevState) => {
+        const initialValues = ["{}","[]"];
+        // if the state has updated or we need to update because there's a value that hasn't been updated
+        return (JSON.stringify(currentState) !== JSON.stringify(prevState) ||
+            initialValues.indexOf(JSON.stringify(prevState)) >= 0);
+    };
     // get updated price quote
     useEffect(()=>{
-        let requestedQuote = {
-            payment_method: paymentMethod,
-            courses: courses,
-            tutoring: tutoring,
-            disabled_discounts: discounts.filter((discount) => {
-                return !discount.enable;
-            }),
-            price_adjustment: priceAdjustment,
-        };
-        // make price quote request
-    },[paymentMethod,payment, courses, tutoring, discounts, priceAdjustment]);
+        if(activeMethod && (
+            stateUpdated(priceQuote,prevPriceQuote) ||
+            stateUpdated(discounts,prevDiscounts) ||
+            stateUpdated(priceAdjustment, prevPriceAdjustment)
+        ) && priceAdjustment !== ""){
+            let requestedQuote = {
+                payment_method: activeMethod,
+                classes: courses,
+                tutoring: cleanTutoring.map((tutoring)=>
+                    {
+                        delete tutoring.new_course;
+                        return tutoring
+                    }
+                ),
+                disabled_discounts: discounts.filter((discount) => {
+                    return !discount.enable;
+                }).map(discount => discount.id),
+                price_adjustment: Number(priceAdjustment),
+            };
+            // make price quote request
+            instance.request({
+                'url':'/pricing/quote/',
+                "headers": {
+                    "Authorization": `Token ${token}`,
+                },
+                "data":requestedQuote,
+                'method':'post',
+            }).then((quoteResponse) => {
+                const responseDiscounts = JSON.stringify(quoteResponse.data.discounts);
+                const stateDiscounts = JSON.stringify(discounts);
+                if(responseDiscounts !== stateDiscounts){
+                    let ResponseDiscounts = quoteResponse.data.discounts.map( (discount) => {
+                        return {
+                        ...discount,
+                            enable: discounts.find(sDiscount => sDiscount.id === discount.id) ?
+                            discounts.find(sDiscount => sDiscount.id === discount.id).enable : true,
+                        }
+                    });
+                    let ResponseDiscountIDs = ResponseDiscounts.map( discount => discount.id)
+                    let discountNotInResponseButInState = discounts.filter(discount => {
+                        return !ResponseDiscountIDs.includes(discount.id);
+                    });
+                    ResponseDiscounts = ResponseDiscounts.concat(discountNotInResponseButInState);
+                    setDiscounts(ResponseDiscounts);
+                }
+                delete quoteResponse.data.discounts;
+                if(quoteResponse.data.price_adjustment !== priceAdjustment){
+                    setPriceAdjustment(quoteResponse.data.price_adjustment);
+                }
+                delete quoteResponse.data.price_adjustment;
+                const responseQuote = JSON.stringify(quoteResponse.data);
+                const stateQuote = JSON.stringify(priceQuote);
+                if(responseQuote !== stateQuote){
+                    setPriceQuote(quoteResponse.data);
+                }
+            });
+        }
+    },[activeMethod, courses, tutoring, discounts, priceAdjustment]);
 
     const handlePay = () => (e)=>{
         e.preventDefault();
+        let courseRegistrations = [];
+        let tutoringRegistrations = [];
         // create course enrollments
         courses.forEach(course => {
-            api.submitClassRegistration(course.student_id, course.course_id);
+            courseRegistrations.push(
+                {
+                    student: course.student_id,
+                    course: course.course_id,
+                    sessions: course.sessions,
+                });
         });
         tutoring.forEach(tutoring => {
+            const startDate = tutoring.new_course.schedule.start_date.substring(0,10);
+            const endDate = tutoring.new_course.schedule.end_date.substring(0,10);
             let tutoringCourse = {
                 subject: tutoring.new_course.title,
                 day_of_week: dayOfWeek[tutoring.new_course.day_of_week],
                 start_time: tutoring.new_course.schedule.start_time,
                 end_time: tutoring.new_course.schedule.end_time,
-                start_date: tutoring.new_course.schedule.start_date.substring(0,10),
-                end_date: tutoring.new_course.schedule.end_date.substring(0,10),
+                start_date: startDate,
+                end_date: endDate,
                 max_capacity: 1,
                 course_category: tutoring.category_id,
+                academic_level: tutoring.academic_level,
                 instructor: tutoring.new_course.instructor,
-                type:"T",
+                course_type:"tutoring",
                 description: tutoring.new_course.description,
                 // need to add academic level
             };
-            console.log(tutoringCourse, tutoring.student_id)
-            api.submitTutoringRegistration(tutoringCourse, Number(tutoring.student_id));
+            tutoringRegistrations.push({
+                newTutoringCourse: tutoringCourse,
+                sessions: weeklySessionsParser(startDate, endDate),
+                student: tutoring.student_id,
+            });
         });
 
-        history.push(`/registration/receipt/`);
-    }
+        let paymentInfo = {
+            "base_amount": priceQuote.total,
+            "price_adjustment": priceAdjustment,
+            "method": activeMethod,
+            "disabled_discounts": discounts.filter(discount=> !discount.enable)
+        };
+        api.initRegistration(tutoringRegistrations, courseRegistrations, paymentInfo);
+        history.push("/registration/receipt/");
+    };
 
     const toggleDiscount = (id) => (e) =>{
         e.preventDefault();
@@ -126,7 +194,11 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
 
     const handlePriceAdjustment = () => (e) => {
         setPriceAdjustment(e.target.value);
-    }
+    };
+
+    const handlePayment = event => {
+        setPayment(event.target.value);
+    };
 
     return (
         <Grid container className={"price-quote-form"}>
@@ -192,7 +264,7 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
                                                 <Typography align={"right"}
                                                             className={`price-label 
                                                             ${ discount.enable && "discount"}`}>
-                                                    {discount.title} Discount
+                                                    {discount.name} Discount
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={2}>

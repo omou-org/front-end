@@ -25,7 +25,8 @@ class SelectParentDialog extends React.Component {
 
     componentDidMount(){
         let pastParent = sessionStorage.getItem("CurrentParent");
-        if(pastParent !== "none"){
+        let reduxPastParent = this.props.registration.CurrentParent;
+        if(pastParent !== "none" && !reduxPastParent){
             pastParent = JSON.parse(pastParent);
             this.props.registrationActions.setRegisteringParent(pastParent);
         }

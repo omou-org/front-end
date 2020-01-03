@@ -192,11 +192,22 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
         case actions.PATCH_DISCOUNT_MULTI_COURSE_SUCCESS:
             return updateDiscountStatus(state,payload.id, status, actions.PATCH, "multiCourse");
 
+        case actions.SET_PARENT:
+            return {
+                ...state,
+                "registeringParent": NEW_REGISTERING_PARENT,
+            };
 
+        case actions.GET_PAYMENT_SUCCESS:
+            return updatePaymentStatus(state, payload.id, status);
+        case actions.GET_PAYMENT_STARTED:
+            return updatePaymentStatus(state, payload.id, status);
         default:
             return state;
     }
 };
+
+export const NEW_REGISTERING_PARENT = 2;
 
 const clearLogin = (state) => ({
     ...state,
@@ -335,5 +346,11 @@ const updateDiscountStatus = (state, id, status, requestType, discountType) => {
         newState.discount[requestType] = status;
     }
 
+    return newState;
+};
+
+const updatePaymentStatus = (state, paymentID, status) => {
+    let newState = JSON.parse(JSON.stringify(state));
+    newState.payment[actions.GET][paymentID] = status;
     return newState;
 };

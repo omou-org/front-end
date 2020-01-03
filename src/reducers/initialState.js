@@ -53,20 +53,22 @@ export default {
     },
     "RequestStatus": initRequests(),
     "SearchResults": {
-        SearchQuery:{},
+        SearchQuery:"",
         searchQueryStatus: "",
         accounts: [],
         courses: [],
-        filter: {
+        params: {
             account:{
                 profile:"",
-                grade:"",
-                sort:"",
+                gradeFilter:"",
+                sortAlpha:"",
+                accountPage: 1,
             },
             course:{
                 course:"",
                 availability:"",
                 sort:"",
+                coursePage: 1,
             }
         }
     },
@@ -153,6 +155,10 @@ function initRequests() {
             "enrollment":{
                 [POST]:{},
             }
+        },
+        "registeringParent":"",
+        "payment":{
+            [GET]: {},
         }
     };
 }
@@ -293,7 +299,7 @@ function initRegistrationForm() {
             {
                 field: "Address",
                 name: "Address",
-                type: "short text",
+                type: "address",
                 full: false,
                 required: false,
                 field_limit: 1,
@@ -745,7 +751,7 @@ function initRegistrationForm() {
             },
             instructor: {
                 form_type: "instructor",
-                section_titles: ["Basic Information", "Education", "Experience"],
+                section_titles: ["Basic Information",  "Experience"],
                 "Basic Information": [
                     {
                         field: "First Name",
@@ -851,32 +857,32 @@ function initRegistrationForm() {
                         field_limit: 1,
                     },
                 ],
-                "Education": [
-                    {
-                        field: "College",
-                        name: "College",
-                        type: "short text",
-                        full: true,
-                        required: false,
-                        field_limit: 1,
-                    },
-                    {
-                        field: "Degree(s)",
-                        name: "Degree(s)",
-                        type: "short text",
-                        full: true,
-                        required: false,
-                        field_limit: 1,
-                    },
-                    {
-                        field: "Minor(s)",
-                        name: "Minor(s)",
-                        type: "short text",
-                        full: true,
-                        required: false,
-                        field_limit: 1,
-                    },
-                ],
+                // "Education": [
+                //     {
+                //         field: "College",
+                //         name: "College",
+                //         type: "short text",
+                //         full: true,
+                //         required: false,
+                //         field_limit: 1,
+                //     },
+                //     {
+                //         field: "Degree(s)",
+                //         name: "Degree(s)",
+                //         type: "short text",
+                //         full: true,
+                //         required: false,
+                //         field_limit: 1,
+                //     },
+                //     {
+                //         field: "Minor(s)",
+                //         name: "Minor(s)",
+                //         type: "short text",
+                //         full: true,
+                //         required: false,
+                //         field_limit: 1,
+                //     },
+                // ],
                 "Experience": [
                     {
                         field: "Subject(s) Tutor Can Teach",
@@ -887,8 +893,8 @@ function initRegistrationForm() {
                         field_limit: 1,
                     },
                     {
-                        field: "Specialties",
-                        name: "Specialties",
+                        field: "Teaching Experience (Years)",
+                        name: "Teaching Experience (Years)",
                         type: "string",
                         full: true,
                         required: false,
@@ -904,8 +910,8 @@ function initRegistrationForm() {
                         multiline: true,
                     },
                     {
-                        field: "Notes",
-                        name: "Notes",
+                        field: "Languages",
+                        name: "Languages",
                         type: "string",
                         full: true,
                         required: false,
@@ -920,8 +926,17 @@ function initRegistrationForm() {
                 "Course Info": courseInfoQuestions,
                 "Tuition": [
                     {
-                        field: "Tuition",
-                        name: "Tuition",
+                        field: "Hourly Tuition",
+                        name: "Hourly Tuition",
+                        type: "number",
+                        conditional: false,
+                        required: true,
+                        full: false,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Total Tuition",
+                        name: "Total Tuition",
                         type: "number",
                         conditional: false,
                         required: true,

@@ -26,12 +26,12 @@ import MenuItem from "@material-ui/core/MenuItem";
 import {bindActionCreators} from "redux";
 import * as adminActions from "../../actions/adminActions";
 import {GET} from "../../actions/actionTypes";
-import {REQUEST_ALL} from "../../actions/apiActions";
+import {durationParser, REQUEST_ALL} from "../../actions/apiActions";
 import {academicLevelParse} from "../../reducers/registrationReducer";
 import InputLabel from "@material-ui/core/InputLabel";
 
 
-const TutoringPriceQuote = ({courseType}) => {
+const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
     const dispatch = useDispatch();
     const history = useHistory();
     const api = useMemo(
@@ -114,7 +114,7 @@ const TutoringPriceQuote = ({courseType}) => {
             setAcademicList(uniqueGradesList);
             setAcademicLevel(uniqueGradesList[0]);
         }
-    },[category])
+    },[category]);
 
     const generatePriceQuote = ({tuition, duration, sessions}) => {
         if(tuition && duration && sessions){
@@ -123,7 +123,7 @@ const TutoringPriceQuote = ({courseType}) => {
                 return `$ ${quote.toString()}`
             });
         }
-    }
+    };
 
     const onCategoryChange = () => event => {
         setCategory(event.target.value);
@@ -197,6 +197,17 @@ const TutoringPriceQuote = ({courseType}) => {
             }
         );
     };
+
+    const onUpdateFields = event => {
+        event.preventDefault();
+        let formattedCategory = {
+            value: category.id,
+            label: category.name
+        };
+        handleUpdatePriceFields(formattedCategory, academic_level, durationParser[duration], sessions);
+    };
+
+    const validFields = duration && sessions && academic_level && category;
     return (
         <Grid container>
             <Grid item xs={12}>
@@ -233,7 +244,7 @@ const TutoringPriceQuote = ({courseType}) => {
                                 </Select>
                             </Grid>
                             <Grid item xs={3}>
-                                <InputLabel htmlFor={"academic-level"}>Academic Level</InputLabel>
+                                <InputLabel htmlFor={"academic-level"}>Grade Level</InputLabel>
                                 <Select
                                     value={academic_level}
                                     onChange={onAcademicLevelChange()}
@@ -317,7 +328,9 @@ const TutoringPriceQuote = ({courseType}) => {
                         </Grid>
                     </Grid>
                     <Grid item>
-                        <Grid container direction={"row"} justify={"flex-end"}>
+                        <Grid container
+                              direction={"row"}
+                              justify={"flex-end"}>
                             <Grid item xs={3}>
                                 <TextField
                                     label={"Total Tuition"}
@@ -325,6 +338,21 @@ const TutoringPriceQuote = ({courseType}) => {
                                     InputProps={{readOnly:true}}
                                     variant={"outlined"}
                                 />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item>
+                        {/*This button will update previously filled fields if you changed any field here.*/}
+                        <Grid container
+                              direction={"row"}
+                              justify={"flex-end"}>
+                            <Grid item xs={2}>
+                                <Button
+                                    disabled={!validFields}
+                                    onClick={onUpdateFields}
+                                >
+                                    Update Fields
+                                </Button>
                             </Grid>
                         </Grid>
                     </Grid>

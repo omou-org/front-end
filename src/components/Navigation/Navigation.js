@@ -63,7 +63,13 @@ const Navigation = (props) => {
                     "icon": <AdminIcon/>,
                 }
             ] :
-        [{
+        [
+            {
+                "name": "Scheduler",
+                "link": "/scheduler",
+                "icon": <EventIcon />,
+            },
+            {
             "name": "Accounts",
             "link": "/accounts",
             "icon": <AccountsIcon />,

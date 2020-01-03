@@ -1,6 +1,6 @@
 import * as types from "./actionTypes";
 import {instance, MISC_FAIL, REQUEST_ALL, REQUEST_STARTED} from "./apiActions";
-import {useCallback, useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useMemo, useState, useRef} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
 export const isFail = (...statuses) =>
@@ -165,6 +165,11 @@ export const useCourse = wrapUseEndpoint(
     types.FETCH_COURSE_SUCCESSFUL
 );
 
+export const useEnrollment = wrapUseEndpoint(
+    "/course/enrollment/",
+    types.FETCH_ENROLLMENT_SUCCESSFUL,
+);
+
 export const useEnrollmentByCourse = (courseID) => wrapUseEndpoint(
     "/course/enrollment/",
     types.FETCH_ENROLLMENT_SUCCESSFUL,
@@ -184,3 +189,28 @@ export const useEnrollmentByStudent = (studentID) => wrapUseEndpoint(
         },
     }
 )(null);
+
+export const usePaymentByParent = (parentID) => wrapUseEndpoint(
+    "/payment/payment/",
+    types.GET_PAYMENT_PARENT_SUCCESS,
+    {
+        "params":{
+            "parent": parentID,
+        }
+    }
+)(null);
+
+// Hook
+export function usePrevious(value) {
+    // The ref object is a generic container whose current property is mutable ...
+    // ... and can hold any value, similar to an instance property on a class
+    const ref = useRef();
+
+    // Store current value in ref
+    useEffect(() => {
+        ref.current = value;
+    }, [value]); // Only re-run if value changes
+
+    // Return previous value (happens before update in useEffect above)
+    return ref.current;
+}

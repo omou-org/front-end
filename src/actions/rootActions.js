@@ -89,7 +89,8 @@ export const postData = (type, body) => {
                     "Authorization": `Token ${getState().auth.token}`,
                 },
             })
-                .then(({data}) => {
+                .then((response) => {
+                    let {data} = response;
                     dispatch({
                         type: successAction,
                         payload: data,

@@ -66,17 +66,32 @@ const updateCourseCategories = (state, payload, action) => {
     return {...state};
 };
 
-const handleCoursePost = (state, payload) => {
+const handleCoursePost = (state, response) => {
     let {NewCourseList} = state;
-    NewCourseList = updateCourse(NewCourseList, payload.id, payload);
+    if(Array.isArray(response)){
+        response.forEach(({data})=>{
+            NewCourseList = updateCourse(NewCourseList, data.id, data);
+        });
+    } else {
+        NewCourseList = updateCourse(NewCourseList, response.id, response.data ? response.data : response);
+    }
+
     return {
         ...state,
         NewCourseList,
     };
 };
 
-const handleCoursesFetch = (state, {id, response}) => {
+const handleCoursesFetch = (state, payload) => {
     let {NewCourseList} = state;
+    let id, response;
+    if(payload.id){
+        id = payload.id;
+        response = payload.response;
+    } else {
+        id = payload.data.id;
+        response = payload;
+    }
     if (id === REQUEST_ALL) {
         response.data.forEach((course) => {
             NewCourseList = updateCourse(NewCourseList, course.id, course);
@@ -86,7 +101,7 @@ const handleCoursesFetch = (state, {id, response}) => {
             NewCourseList = updateCourse(NewCourseList, data.id, data);
         });
     } else {
-        NewCourseList = updateCourse(NewCourseList, response.data.id, response.data);
+        NewCourseList = updateCourse(NewCourseList, id, response.data);
     }
     return {
         ...state,
@@ -110,15 +125,17 @@ export const updateCourse = (courses, id, course) => ({
             "days": course.day_of_week,
         },
         "instructor_id": course.instructor,
-        "tuition": course.tuition,
+        "total_tuition": course.total_tuition,
+        "hourly_tuition": course.hourly_tuition,
         "capacity": course.max_capacity,
         "grade": 10,
         "description": course.description,
         "room_id": course.room,
-        "type": course.type,
+        "course_type": course.course_type,
         "category": course.course_category,
         "tags": [],
         "roster": course.enrollment_list,
+        "academic_level": course.academic_level,
     },
 });
 

@@ -16,25 +16,13 @@ import * as userActions from "../../../actions/userActions";
 import * as adminActions from "../../../actions/adminActions";
 
 // Material UI Imports
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import Divider from "@material-ui/core/Divider";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Typography from "@material-ui/core/Typography";
 import { parseTime } from "../../../actions/apiActions";
 import { GET } from "../../../actions/actionTypes";
-import Avatar from "@material-ui/core/Avatar";
-import { stringToColor } from "../Accounts/accountUtils";
 import DisplaySessionView from "./DisplaySessionView";
 import EditSessionView from "./EditSessionView";
-import admin from "../../../reducers/adminReducer";
 
 class SessionView extends Component {
     constructor(props) {
@@ -42,24 +30,6 @@ class SessionView extends Component {
         this.state = {
             "editSelection": "current",
             "editing": false,
-            "students": {
-                0: {
-                    name: "Calvin Fronda",
-                    id: 8,
-                },
-                1: {
-                    name: "Alex McGuire",
-                    id: 6,
-                },
-                2: {
-                    name: "Joe Buddy",
-                    id: 4,
-                },
-                3: {
-                    name: "Able Strong Body",
-                    id: 11,
-                }
-            }
         };
     }
 
@@ -80,12 +50,18 @@ class SessionView extends Component {
                 });
                 sessionData["start"] = new Date(sessionData.start_datetime).getDay();
 
-                const startTime = parseTime(new Date(sessionData.start_datetime).toUTCString());
-                const endTime = parseTime(new Date(sessionData.end_datetime).toUTCString());
-                sessionData["startTime"] = startTime;
-                sessionData["endTime"] = endTime;
-
-
+                sessionData["startTime"] = new Date(sessionData.start_datetime)
+                                                .toLocaleTimeString("en-US",{
+                                                    hour12: true,
+                                                    timeStyle: "short",
+                                                });
+                sessionData["endTime"] = new Date(sessionData.end_datetime)
+                                                .toLocaleTimeString("en-US",{
+                                                    hour12: true,
+                                                    timeStyle: "short",
+                                                });
+                sessionData.start_datetime = new Date(sessionData.start_datetime);
+                sessionData.end_datetime = new Date(sessionData.end_datetime);
                 let courseData = this.props.courses[this.props.match.params.course_id];
                 if (courseData && !this.props.requestStatus["instructor"][GET][courseData.instructor_id]) {
                     this.props.userActions.fetchInstructors(courseData.instructor_id);
@@ -128,10 +104,9 @@ class SessionView extends Component {
                                 editSelection = {this.state.editSelection}
                                 handleToggleEditing = {this.toggleEditing}
                             /> :
-                            <DisplaySessionView
+                            this.state.courseData && <DisplaySessionView
                                 course = {this.state.courseData}
                                 session = {this.state.sessionData}
-                                enrolledStudents = {this.state.students}
                                 handleToggleEditing = {this.toggleEditing}
                             />
                     }

@@ -57,7 +57,7 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
                 },
             });
         };
-
+        console.log("posting course")
         // request starting
         newAction(startType, {});
 
@@ -67,7 +67,8 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
                     "Authorization": `Token ${getState().auth.token}`,
                 },
             });
-            // succesful request
+            console.log(response);
+            // successful request
             newAction(successType, response);
         } catch ({response}) {
             // failed request
@@ -155,7 +156,7 @@ export const submitNewSmallGroup = (form) => {
         });
         resolve();
     }).then(() => {
-        let newCourse = formatCourse(form["Group Details"],"T");
+        let newCourse = formatCourse(form["Group Details"],"small_group");
         instance.request({
             "data": newCourse,
             "headers": {
@@ -179,9 +180,14 @@ export const durationParser = {
     "1 Hour": 1,
     "1.5 Hours": 1.5,
     "2 Hours": 2,
+    0.5 : "0.5 Hours",
+    1: "1 Hour",
+    1.5 : "1.5 Hours",
+    2: "2 Hours",
 };
 
 export const formatCourse = (formCourse, type) =>{
+    console.log(formCourse)
     let dayOfWeek = ()=>{
         switch(startDate.getDay()){
             case 0:
@@ -208,28 +214,31 @@ export const formatCourse = (formCourse, type) =>{
         year:"numeric",
         month:"2-digit",
         day:"2-digit",
-    }
+    };
     startDate = startDate.toLocaleString("sv-SE",dateFormat);
     endDate = endDate.toLocaleString("sv-SE",dateFormat);
-    let startTime = new Date(formCourse["Start Time"]);
-    let endTime = new Date(startTime);
+    let startString = formCourse["Start Time"];
+    let startTime = new Date(startString);
+    let endTime = new Date(startString);
     let duration = {
         "0.5 Hours": 0.5,
         "1 Hour": 1,
         "1.5 Hours": 1.5,
         "2 Hours": 2,
     };
+
     endTime = new Date(endTime.setTime(endTime.getTime() + duration[formCourse["Duration"]]*60*60*1000));
     let timeFormat = {
         hour12:false,
         hour:"2-digit",
         minute:"2-digit",
-    }
+    };
     endTime = endTime.toLocaleString("eng-US",timeFormat);
     startTime = startTime.toLocaleString("eng-US", timeFormat);
+
     return {
         "subject": formCourse["Course Name"],
-        "type": type,
+        "course_type": type.toLowerCase(),
         "description": formCourse["Description"],
         "instructor": formCourse["Instructor"].value,
         "day_of_week": day,
@@ -238,10 +247,10 @@ export const formatCourse = (formCourse, type) =>{
         "start_time": startTime,
         "end_time": endTime,
         "max_capacity": formCourse["Capacity"],
-        "category": formCourse["Category"].value,
+        "course_category": formCourse["Category"].value,
         "academic_level": academicLevelParse[formCourse["Grade Level"]],
     };
-}
+};
 
 const courseName = (form, type) => {
     if(type === "T"){

@@ -1,11 +1,13 @@
 
-import {Link, useParams} from "react-router-dom";
+import {Link, useParams, useHistory} from "react-router-dom";
 import BackButton from "../../../BackButton";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import * as userActions from "actions/userActions";
+import * as calendarActions from "../../../../actions/calendarActions"
 import {bindActionCreators} from "redux";
 import * as hooks from "actions/hooks";
+import * as registrationActions from "../../../../actions/registrationActions";
 
 import Grid from "@material-ui/core/Grid";
 import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
@@ -17,6 +19,15 @@ import NoteIcon from "@material-ui/icons/NoteOutlined";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Loading from "components/Loading";
+import Button from "@material-ui/core/Button";
+import {GET} from "../../../../actions/actionTypes";
+import {NEW_REGISTERING_PARENT} from "../../../../reducers/apiReducer";
+import Dialog from "@material-ui/core/es/Dialog/Dialog";
+import DialogTitle from "@material-ui/core/es/DialogTitle/DialogTitle";
+import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
+import DialogContentText from "@material-ui/core/es/DialogContentText/DialogContentText";
+import DialogActions from "@material-ui/core/DialogActions";
+
 
 const DayConverter = {
     "0": "Sunday",
@@ -54,19 +65,24 @@ const courseDataParser = ({schedule, status, tuition}) => {
     };
 };
 
-const CourseSessionStatus = () => {
+const CourseSessionStatus = (props) => {
+    const history = useHistory();
+
     const {"accountID": studentID, courseID} = useParams();
     const [activeTab, setActiveTab] = useState(0);
-    const courseSessions = useSelector(({Course}) => Course.CourseSessions);
+    const courseSessions = useSelector(({Calendar}) => Calendar.CourseSessions);
     const usersList = useSelector(({Users}) => Users);
     const courses = useSelector(({Course}) => Course.NewCourseList);
     const enrollments = useSelector(({Enrollments}) => Enrollments);
+    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
     const course = courses[courseID];
 
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
             ...bindActionCreators(userActions, dispatch),
+            ...bindActionCreators(calendarActions, dispatch),
+            ...bindActionCreators(registrationActions, dispatch),
         }),
         [dispatch]
     );
@@ -75,45 +91,70 @@ const CourseSessionStatus = () => {
     const courseStatus = hooks.useCourse(courseID);
     const instructorStatus = hooks.useInstructor(course && course.instructor_id, true);
     const enrollmentStatus = hooks.useEnrollmentByCourse(courseID);
+    const courseTypeParse = {
+        "T":"tutoring",
+        "C":"course",
+    };
 
     const enrollment = (enrollments[studentID] && enrollments[studentID][courseID]) || {};
     useEffect(() => {
+        api.initializeRegistration();
         api.fetchEnrollmentNotes(enrollment.enrollment_id, studentID, courseID);
     }, [api, enrollment.enrollment_id, studentID, courseID]);
+
+    const registeringParent = useSelector(({Registration}) => Registration.CurrentParent);
+    const [discardParentWarning, setDiscardParentWarning] = useState(false);
 
     const noteInfo = useMemo(() => ({
         courseID,
         "enrollmentID": enrollment.enrollment_id,
         studentID,
     }), [courseID, enrollment.enrollment_id, studentID]);
+    useEffect(()=>{
+        if(course){
+            api.fetchSessions({
+                config: {
+                    params: {
+                        time_frame: "month",
+                        view_option: courseTypeParse[course.type],
+                        time_shift: 1,
+                    }
+                }
+            });
+        }
+    },[course, api]);
 
-    const sessionDataParse = useCallback(({start, end, course_id, status}) => {
-        const startDate = new Date(start);
-        const endDate = new Date(end);
+    const sessionDataParse = useCallback(({start_datetime, end_datetime, course, status}) => {
+        // let {start, end, course, status} = paramCourse
+        const startDate = start_datetime && new Date(start_datetime);
+        const endDate = end_datetime && new Date(end_datetime);
 
-        return {
-            "date": startDate.toLocaleDateString("en-US", dateOptions),
-            "day": DayConverter[startDate.getDay()],
-            "endTime": endDate.toLocaleTimeString("en-US", timeOptions),
-            "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
-            status,
-            "tuition": courses[course_id].tuition,
-        };
-    }, [courses]);
-
+        if(start_datetime && end_datetime && course){
+            return {
+                "date": startDate.toLocaleDateString("en-US", dateOptions),
+                "day": DayConverter[startDate.getDay()],
+                "endTime": endDate.toLocaleTimeString("en-US", timeOptions),
+                "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
+                status,
+                "tuition": course && courses[course].tuition,
+            };
+        }
+        return {};
+    }, [courses, api]);
 
     // either doesn't exist or only has notes defined
     if (!enrollment || Object.keys(enrollment).length <= 1) {
         return <Loading />;
     }
-    if (hooks.isLoading(courseStatus, enrollmentStatus, studentStatus)) {
+    if (hooks.isLoading(courseStatus, enrollmentStatus, studentStatus, instructorStatus)) {
         return <Loading />;
     }
     if (hooks.isFail(courseStatus, enrollmentStatus, studentStatus)) {
         return "Error loading data";
     }
 
-    const calendarSessions = courseSessions[courseID],
+    const calendarSessions = courseSessions ? courseSessions
+            .filter(session => session.course === Number(courseID)) : [],
         paymentSessionStatus = enrollment.session_payment_status,
         statusKey = (status) => {
             if (status === 1) {
@@ -128,9 +169,9 @@ const CourseSessionStatus = () => {
     const handleTabChange = (_, newTab) => {
         setActiveTab(newTab);
     };
-
-    const sessions = course.type === "T"
-        ? Object.values(calendarSessions).map((session) => ({
+    // console.log(course, calendarSessions)
+    const sessions = course.type === "T" && courseSessions
+        ? calendarSessions.map((session) => ({
             ...session,
             "status": statusKey(paymentSessionStatus[session.session_id]),
         }))
@@ -144,6 +185,64 @@ const CourseSessionStatus = () => {
                 "type": "C",
             },
         ];
+
+    let parentOfCurrentStudent = usersList.StudentList[studentID].parent_id;
+
+    const courseToRegister = {
+        "Course Selection":{
+            "Course":{
+                label: course.title,
+                value: course.course_id,
+            },
+        },
+        "Course Selection_validated":{
+            "Course": true,
+        },
+        "Student":{
+            "Student":{
+                label: usersList.StudentList[studentID].name,
+                value: studentID,
+            }
+        },
+        "Student_validated":{
+            "Student": true,
+        },
+        "Student Information":{},
+        "activeSection":"Student",
+        "activeStep":0,
+        "conditional": "",
+        "existingUser": false,
+        "form": "course",
+        "hasLoaded":true,
+        "preLoaded":false,
+        "submitPending":false,
+    };
+
+    const initRegisterMoreSessions = event => {
+        event.preventDefault();
+        // check if registering parent is the current student's parent
+        if(registeringParent && registeringParent.user.id !== parentOfCurrentStudent){
+            // if not, warn user they're about to discard everything with the current registering parent
+            setDiscardParentWarning(true);
+        } else if(registeringParent && registeringParent.user.id === parentOfCurrentStudent){
+            //registering parent is the same as the current student's parent
+            api.addCourseRegistration(courseToRegister);
+            history.push("/registration/cart/");
+        } else if(!registeringParent) {
+            api.setParentAddCourseRegistration(parentOfCurrentStudent, courseToRegister);
+            history.push("/registration/cart/");
+        }
+    };
+
+    const closeDiscardParentWarning = (toContinue) => event =>{
+        event.preventDefault();
+        setDiscardParentWarning(false);
+        if(toContinue){
+            api.setParentAddCourseRegistration(parentOfCurrentStudent, courseToRegister);
+            history.push("/registration/cart/");
+        }
+
+    };
 
     const renderMain = () => {
         switch (activeTab) {
@@ -255,6 +354,22 @@ const CourseSessionStatus = () => {
                                 </Grid>
                             }
                         </Grid>
+                        <Grid item md={12} >
+                            <Grid container
+                                  className={"session-actions"}
+                                  direction={"row"}
+                                  alignItems={"center"}
+                                  justify={"flex-end"}>
+                                <Grid item>
+                                    <Button
+                                        onClick={initRegisterMoreSessions}
+                                        className={"button add-sessions"}
+                                    >
+                                        Add Sessions
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
                     </>
                 );
             case 1:
@@ -321,6 +436,35 @@ const CourseSessionStatus = () => {
                 <br />
                 {renderMain()}
             </Grid>
+            <Dialog
+                open={discardParentWarning}
+                onClose={closeDiscardParentWarning(false)}
+                aria-labelledby="warn-discard-parent"
+            >
+                <DialogTitle id="warn-discard-parent">
+                    {"Finished registering parent?"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        {`
+                        You are currently registering ${registeringParent && registeringParent.user.name}. If you wish to continue to add sessions, you will
+                        discard all of the currently registered courses with this parent.
+                        `}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        color={"secondary"}
+                        onClick={closeDiscardParentWarning(true)}>
+                        Continue & Add Session
+                    </Button>
+                    <Button
+                        color={"primary"}
+                        onClick={closeDiscardParentWarning(false)}>
+                        Cancel
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Paper>
     );
 };
