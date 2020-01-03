@@ -740,7 +740,6 @@ class Form extends Component {
     }
 
     updatePriceFields(category, academicLevel, sessionDuration, numSessions){
-        console.log(category, academicLevel, sessionDuration, numSessions, this.state);
         this.setState((prevState)=>{
             switch(prevState.form){
                 case "tutoring":{

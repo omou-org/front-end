@@ -73,7 +73,7 @@ const handleCoursePost = (state, response) => {
             NewCourseList = updateCourse(NewCourseList, data.id, data);
         });
     } else {
-        NewCourseList = updateCourse(NewCourseList, response.id, response.data);
+        NewCourseList = updateCourse(NewCourseList, response.id, response.data ? response.data : response);
     }
 
     return {

@@ -57,7 +57,7 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
                 },
             });
         };
-
+        console.log("posting course")
         // request starting
         newAction(startType, {});
 
@@ -67,7 +67,8 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
                     "Authorization": `Token ${getState().auth.token}`,
                 },
             });
-            // succesful request
+            console.log(response);
+            // successful request
             newAction(successType, response);
         } catch ({response}) {
             // failed request
