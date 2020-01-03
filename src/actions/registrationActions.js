@@ -154,6 +154,10 @@ export const submitForm = (state, id) => {
                 "zipcode": state["Basic Information"]["Zip Code"],
                 "age": 21,
                 "birth_date": parseDate(state["Basic Information"]["Date of Birth"]),
+                "subjects": state["Experience"]["Subject(s) Tutor Can Teach"],
+                "biography": state["Experience"]["Background"],
+                "experience": state["Experience"]["Teaching Experience (Years)"],
+                "language": state["Experience"]["Languages"],
             };
             if (id) {
                 return patchData("instructor", instructor, id);

@@ -214,6 +214,7 @@ export const updateStudent = (students, id, student) => ({
 
 export const handleInstructorsFetch = (state, {id, response}) => {
     const {data} = response;
+    console.log(data);
     let {InstructorList} = state;
     if (id !== REQUEST_ALL) {
         InstructorList = updateInstructor(InstructorList, id, data);
@@ -231,7 +232,10 @@ export const handleInstructorsFetch = (state, {id, response}) => {
 
 
 export const updateInstructor = (instructors, id, instructor) => {
-    let {address, birth_date, city, gender, phone_number, state, user, user_uuid, zipcode} = instructor;
+    let {address, birth_date, city, gender, phone_number,
+        state, user, user_uuid, zipcode,
+        biography, experience, subjects, language
+    } = instructor;
     return {
         ...instructors,
         [id]: {
@@ -252,10 +256,10 @@ export const updateInstructor = (instructors, id, instructor) => {
             // below is not from database
             "role": "instructor",
             "background": {
-                "bio": "",
-                "experience": 0,
-                "subjects": [],
-                "languages": [],
+                "bio": biography,
+                "experience": experience,
+                "subjects": subjects,
+                "languages": language,
             },
             "schedule": {
                 "work_hours": {

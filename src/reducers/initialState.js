@@ -751,7 +751,7 @@ function initRegistrationForm() {
             },
             instructor: {
                 form_type: "instructor",
-                section_titles: ["Basic Information", "Education", "Experience"],
+                section_titles: ["Basic Information",  "Experience"],
                 "Basic Information": [
                     {
                         field: "First Name",
@@ -857,32 +857,32 @@ function initRegistrationForm() {
                         field_limit: 1,
                     },
                 ],
-                "Education": [
-                    {
-                        field: "College",
-                        name: "College",
-                        type: "short text",
-                        full: true,
-                        required: false,
-                        field_limit: 1,
-                    },
-                    {
-                        field: "Degree(s)",
-                        name: "Degree(s)",
-                        type: "short text",
-                        full: true,
-                        required: false,
-                        field_limit: 1,
-                    },
-                    {
-                        field: "Minor(s)",
-                        name: "Minor(s)",
-                        type: "short text",
-                        full: true,
-                        required: false,
-                        field_limit: 1,
-                    },
-                ],
+                // "Education": [
+                //     {
+                //         field: "College",
+                //         name: "College",
+                //         type: "short text",
+                //         full: true,
+                //         required: false,
+                //         field_limit: 1,
+                //     },
+                //     {
+                //         field: "Degree(s)",
+                //         name: "Degree(s)",
+                //         type: "short text",
+                //         full: true,
+                //         required: false,
+                //         field_limit: 1,
+                //     },
+                //     {
+                //         field: "Minor(s)",
+                //         name: "Minor(s)",
+                //         type: "short text",
+                //         full: true,
+                //         required: false,
+                //         field_limit: 1,
+                //     },
+                // ],
                 "Experience": [
                     {
                         field: "Subject(s) Tutor Can Teach",
@@ -893,8 +893,8 @@ function initRegistrationForm() {
                         field_limit: 1,
                     },
                     {
-                        field: "Specialties",
-                        name: "Specialties",
+                        field: "Teaching Experience (Years)",
+                        name: "Teaching Experience (Years)",
                         type: "string",
                         full: true,
                         required: false,
@@ -910,8 +910,8 @@ function initRegistrationForm() {
                         multiline: true,
                     },
                     {
-                        field: "Notes",
-                        name: "Notes",
+                        field: "Languages",
+                        name: "Languages",
                         type: "string",
                         full: true,
                         required: false,
