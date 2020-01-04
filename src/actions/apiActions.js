@@ -7,7 +7,7 @@ import {fetchCategories} from "./adminActions";
 import {academicLevelParse} from "../reducers/registrationReducer";
 
 export const instance = axios.create({
-    "baseURL": "http://localhost:8000/" //process.env.REACT_APP_DOMAIN,
+    "baseURL": process.env.REACT_APP_DOMAIN,
 });
 
 export const MISC_FAIL = 600;

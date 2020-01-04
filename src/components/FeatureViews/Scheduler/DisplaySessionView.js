@@ -41,7 +41,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
     const students = useSelector(({"Users": {StudentList}}) => StudentList);
 
     const [enrolledStudents, setEnrolledStudents] = useState(false);
-    const [editAll, setEditAll] = useState(false);
+    const [edit, setEdit] = useState(false);
     const [editSelection, setEditSelection] = useState('current');
 
     useEffect(()=>{
@@ -94,13 +94,12 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
 
     const handleEditToggle = (cancel) => event =>{
         event.preventDefault();
-        if(cancel){
-            // if we're cancelling, then we apply edit to whatever it was before
-            setEditSelection(currentAllInverse[editSelection]);
-        }
-        setEditAll(!editAll);
-        if(editAll){
+        if(!cancel){
+            // if we're applying to edit session then toggle to edit view
             handleToggleEditing(editSelection);
+        } else {
+            setEdit(!edit);
+            setEditSelection(currentAllInverse[editSelection]);
         }
     };
 
@@ -214,7 +213,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                     className="button"
                     color="secondary"
                     to="/"
-                    onClick={handleEditToggle(false)}
+                    onClick={handleEditToggle(true)}
                     variant="outlined">
                     Edit Session
                 </Button>
@@ -245,8 +244,8 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
             className="session-view-modal"
             fullWidth
             maxWidth="xs"
-            onClose={handleEditToggle(false)}
-            open={editAll}>
+            onClose={handleEditToggle(true)}
+            open={edit}>
             <DialogTitle id="form-dialog-title">Edit Session</DialogTitle>
             <Divider />
             <DialogContent>
@@ -276,7 +275,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                 <Button
                     color="primary"
                     onClick={handleEditToggle(false)}>
-                    Apply
+                    Confirm to Edit
                 </Button>
             </DialogActions>
         </Dialog>
