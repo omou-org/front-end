@@ -134,7 +134,6 @@ export const usePayment = (id) => {
            try {
 
                 setStatus(REQUEST_STARTED);
-
                const Payment = await instance.request({
                    'url': `${paymentEndpoint}${id}/`,
                    ...requestSettings,
@@ -144,6 +143,16 @@ export const usePayment = (id) => {
                dispatch({
                    type: types.GET_PAYMENT_SUCCESS,
                    payload: Payment,
+               });
+               const ParentResponse = await instance.request({
+                   "url":`/account/parent/${Payment.data.parent}/`,
+                   ...requestSettings,
+                   "method":"get",
+               });
+               console.log(ParentResponse);
+               dispatch({
+                   type: types.FETCH_PARENT_SUCCESSFUL,
+                   payload: ParentResponse,
                });
 
                const enrollments = Payment.data.enrollments;

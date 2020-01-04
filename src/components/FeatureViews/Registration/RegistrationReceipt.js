@@ -43,7 +43,6 @@ function RegistrationReceipt(props) {
     const registrationStatus = useSubmitRegistration(Registration.registration);
 
     const parent = parents[params.parentID];
-
     const paymentStatus = usePayment(params.paymentID && params.paymentID);
 
     useEffect(()=>{
@@ -197,7 +196,7 @@ function RegistrationReceipt(props) {
     }
 
     const renderParent = () => {
-        if(currentPayingParent.user){
+        if(currentPayingParent){
             return currentPayingParent.user
         } else {
             return parent;
