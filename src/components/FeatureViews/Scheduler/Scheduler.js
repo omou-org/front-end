@@ -475,8 +475,7 @@ class Scheduler extends Component {
                 "calendarEvents": instructorsSchedule,
             });
         }
-    }
-
+    };
 
     // gets the values of course object
     getRoomResources = () =>
@@ -646,15 +645,15 @@ class Scheduler extends Component {
                                 </div>
                             </Grid>
                             <Grid item xs={2}>
-                                <div className="scheduler-header-last">
-                                    <Grid item>
+                                <Grid container className="scheduler-header-last">
+                                    <Grid item xs={4}>
                                         <IconButton onClick={this.goToToday} className={"current-date-button"} aria-label='current-date-button'>
                                             <TodayIcon />
                                         </IconButton>
 
                                     </Grid>
-                                    <Grid item  >
-                                        <FormControl className={"change-view"} >
+                                    <Grid item xs={8}>
+                                        <FormControl className={"filter-select"} >
                                             <Select
                                                 input={
                                                     <BootstrapInput name={"courseFilter"} id={"filter-calendar-type"}/>
@@ -682,7 +681,7 @@ class Scheduler extends Component {
                                     {/*        onClick={this.changeViewToResource}*/}
                                     {/*    >Resource</Button>*/}
                                     {/*</Grid>*/}
-                                </div>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>

@@ -247,7 +247,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
             maxWidth="xs"
             onClose={handleEditToggle(false)}
             open={editAll}>
-            <DialogTitle id="form-dialog-title">Delete</DialogTitle>
+            <DialogTitle id="form-dialog-title">Edit Session</DialogTitle>
             <Divider />
             <DialogContent>
                 <RadioGroup

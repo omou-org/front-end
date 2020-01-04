@@ -252,10 +252,14 @@ body .fc {
 }
 
 .filter-select{
-  width:60%;
+  width:85%;
   display: flex;
 }
 
 .scheduler.paper{
   padding:$paperPadding;
+}
+
+.search-options{
+  width:80%;
 }

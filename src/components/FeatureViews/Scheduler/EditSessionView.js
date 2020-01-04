@@ -2,7 +2,6 @@ import React, {useState, useEffect, useMemo} from "react";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
-import { makeStyles } from "@material-ui/styles";
 
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
@@ -10,7 +9,7 @@ import * as calendarActions from "../../../actions/calendarActions";
 import * as userActions from "../../../actions/userActions.js"
 import { useDispatch, useSelector} from "react-redux";
 import {Typography} from "@material-ui/core";
-import {NavLink, withRouter} from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import * as apiActions from "../../../actions/apiActions";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
