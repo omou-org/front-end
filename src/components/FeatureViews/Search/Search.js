@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import ReactSelect from 'react-select/creatable';
 import {components} from 'react-select';
-import { Button, Grid, Select } from "@material-ui/core";
+import {  Grid, Select } from "@material-ui/core";
 import { bindActionCreators } from "redux";
 import * as searchActions from "../../../actions/searchActions";
 import * as userActions from "../../../actions/userActions";
@@ -9,11 +9,8 @@ import {connect, useDispatch, useSelector} from "react-redux";
 import MenuItem from "@material-ui/core/MenuItem";
 import "./Search.scss";
 import FormControl from "@material-ui/core/FormControl";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
-import { withRouter, Link } from 'react-router-dom';
-import axios from "axios";
+import { withRouter, useHistory, } from 'react-router-dom';
 import * as apiActions from "../../../actions/apiActions";
 import * as registrationActions from "../../../actions/registrationActions";
 import windowSize from 'react-window-size';
@@ -22,11 +19,19 @@ const Search = (props) => {
     const [query, setQuery] = useState("");
     const [primaryFilter, setPrimaryFilter] = useState("All");
     const [searchSuggestions, setSearchSuggestions] = useState([]);
-    const requestConfig = { params: { query: query.label, page: 1,  },
-        headers: {"Authorization": `Token ${props.auth.token}`,} };
+
+    const [accountRequestConfig, setAccountRequestConfig] = useState({
+        params: { query: query.label, page: 1,  },
+        headers: {"Authorization": `Token ${props.auth.token}`,}
+    });
+    const [courseRequestConfig, setCourseRequestConfig] = useState({
+        params: { query: query.label, page: 1,  },
+        headers: {"Authorization": `Token ${props.auth.token}`,}
+    });
     const searchState = useSelector(({Search}) => Search);
+    const history = useHistory();
+
     const [isMobileSearching, setMobileSearching] = useState(false);
-    const [searchStatus, setSearchStatus] = useState(false);
 
     const dispatch = useDispatch();
     const api = useMemo(
@@ -38,6 +43,57 @@ const Search = (props) => {
         }),
         [dispatch]
     );
+    const {SearchQuery, "params":{account, course}} = searchState;
+    const {profile, gradeFilter, sortAccount, accountPage} = account;
+    const {courseType, availability, sortCourse, coursePage} = course;
+
+    // Fetching account results
+    useEffect(()=>{
+        if(searchState.SearchQuery){
+            let quickQuery = {
+                value: searchState.SearchQuery,
+                label: searchState.SearchQuery,
+            };
+            setQuery(quickQuery);
+            let baseConfig = {
+                ...accountRequestConfig,
+                params: {
+                    query:SearchQuery,
+                    page: accountPage,
+                }
+            };
+            if(profile){
+                baseConfig.params["profile"] = profile;
+            }
+            if(gradeFilter){
+                baseConfig.params["grade"] = Number(gradeFilter);
+            }
+            if(sortAccount){
+                baseConfig.params["sort"] = sortAccount;
+            }
+            setAccountRequestConfig(baseConfig);
+            filterSuggestions();
+        }
+    },[SearchQuery, profile, gradeFilter, sortAccount, accountPage]);
+
+    //Fetch Course results
+    useEffect(()=>{
+        if(SearchQuery){
+            let quickQuery = {
+                value: SearchQuery,
+                label: SearchQuery,
+            };
+            setQuery(quickQuery);
+            setCourseRequestConfig({
+                ...courseRequestConfig,
+                params: {
+                    query: SearchQuery,
+                    page: coursePage,
+                }
+            });
+            filterSuggestions();
+        }
+    },[SearchQuery, courseType, availability, coursePage]);
 
     const searchList = (newItem) => {
         let suggestions;
@@ -79,21 +135,8 @@ const Search = (props) => {
         }
         setSearchSuggestions(suggestions);
     };
-    
-    const customStyles = {
-        control: (base, state) => ({
-            ...base,
-            border: '0 !important',
-            // This line disable the blue border
-            boxShadow: '0 !important',
-            '&:hover': {
-                border: '0 !important'
-            }
-        })
-    };
 
     useEffect(()=>{
-        setSearchStatus(false);
         if(query.label!==""){
             filterSuggestions()();
         }
@@ -111,7 +154,9 @@ const Search = (props) => {
     const handleSearchChange = () => (e) => {
         if(e){
             setQuery(e);
-            handleQuery()();
+            if(e.value){
+                handleQuery();
+            }
         }
     };
 
@@ -119,24 +164,28 @@ const Search = (props) => {
         // e.preventDefault();
         switch(primaryFilter){
             case "All":{
-                api.fetchSearchAccountQuery(requestConfig);
-                api.fetchSearchCourseQuery(requestConfig);
+                api.fetchSearchAccountQuery(accountRequestConfig);
+                api.fetchSearchCourseQuery(courseRequestConfig);
+                api.fetchInstructors();
                 break;
             }
             case "Accounts":{
-                api.fetchSearchAccountQuery(requestConfig);
+                api.fetchSearchAccountQuery(accountRequestConfig);
                 break;
             }
             case "Courses":{
-                api.fetchSearchCourseQuery(requestConfig);
+                api.fetchSearchCourseQuery(courseRequestConfig);
+                api.fetchInstructors();
                 break;
             }
         }
     }
 
-    const handleQuery = () => (e) => {
-        api.setSearchQuery(query.label);
-        props.history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
+    const handleQuery = e => {
+        if(query.label){
+            api.setSearchQuery(query.label);
+            history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
+        }
     };
 
     const handleInputChange = () => (e)=>{
@@ -173,7 +222,7 @@ const Search = (props) => {
         >
             { !isMobileSearching && <Grid item xs={2} />}
             <Grid item xs={isMobileSearching ? 12 : 10} >
-                <form onSubmit={handleQuery()}>
+                <form onSubmit={handleQuery}>
                     <Grid container >
                         <Grid item >
                             <FormControl required variant="outlined" className={"search-selector"}>

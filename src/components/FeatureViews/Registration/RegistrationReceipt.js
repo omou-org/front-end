@@ -11,7 +11,7 @@ import Paper from "@material-ui/core/Paper";
 import {withRouter, useParams} from "react-router-dom";
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
-import {usePayment, useSubmitRegistration} from "../../../actions/registrationHook";
+import {usePayment, useSubmitRegistration} from "../../../actions/multiCallHooks";
 import Loading from "../../Loading";
 import {isFail, isLoading, isSuccessful, usePrevious} from "../../../actions/hooks";
 import {weeklySessionsParser} from "../../Form/FormUtils";

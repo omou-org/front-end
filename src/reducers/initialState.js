@@ -61,13 +61,13 @@ export default {
             account:{
                 profile:"",
                 gradeFilter:"",
-                sortAlpha:"",
+                sortAccount:"",
                 accountPage: 1,
             },
             course:{
-                course:"",
+                courseType:"",
                 availability:"",
-                sort:"",
+                sortCourse:"",
                 coursePage: 1,
             }
         }

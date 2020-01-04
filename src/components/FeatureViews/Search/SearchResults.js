@@ -16,7 +16,7 @@ import AccountFilters from "../../FeatureViews/Search/AccountFilters"
 import NoResultsPage from './NoResults/NoResultsPage';
 import Loading from "../../Loading";
 import MoreResultsIcon from "@material-ui/icons/KeyboardArrowRight";
-import {usePrevious} from "../../../actions/hooks";
+import {isLoading, isSuccessful, usePrevious} from "../../../actions/hooks";
 
 const SearchResults = (props) => {
     const dispatch = useDispatch();
@@ -30,67 +30,31 @@ const SearchResults = (props) => {
         [dispatch]
     );
     const searchState = useSelector(({Search}) => Search);
-    const {profile, gradeFilter, sortAlpha} = searchState.params.account;
-    const {course, availability, sort, } = searchState.params.course;
-    const [accountResults, setAccountResults] = useState([]);
-    const [courseResults, setCourseResults] = useState([]);
 
     const [start, setStart] = useState(0);
     const [end, setEnd] = useState(4);
     const [currentPage, setCurrentPage] = useState(1);
-    const [searchConfig, setSearchConfig] = useState({ params: { query: "", page: 1, profile: "", gradeFilter: "", sortAlpha: "" }, headers: "" });
     const params = useParams();
     const {query} = params;
-    const prevParams = usePrevious(params);
-
-
-    //Endpoints
-    // /search/account/?query=query?profileFilter=profileFilter?gradeFilter=gradeFilter?sortAlpha=asc?sortID=desc
-    // /search/courses/?query=query?courseTypeFilter=courseType?availability=availability?dateSort=desc
 
     const { accounts, courses } = searchState;
 
     useEffect(()=>{
-        let requestConfig;
-        // there's a valid query and the searchQueryStatus is an empty string
-        if(params.query && !searchState.searchQueryStatus) {
-            requestConfig = {
-                params: {
-                    query: params.query,
-                    profile: profile && profile.toLowerCase(),
-                    gradeFilter: gradeFilter,
-                },
-                headers: {"Authorization": `Token ${props.auth.token}`,}
-            };
-            api.fetchSearchAccountQuery(requestConfig);
+        if(params.query){
+            api.setSearchQuery(params.query);
         }
-    },[profile, gradeFilter, sortAlpha, course, availability, sort]);
-
-    useEffect(() => {
-        if(searchState.searchQueryStatus === "success" &&
-            (prevParams !== params || profile || gradeFilter || sortAlpha)
-        ){
-            setAccountResults(accounts);
-            setCourseResults(courses);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [params,searchState.searchQueryStatus, profile, gradeFilter, sortAlpha, course, availability, sort]);
-
-    if(searchState.searchQueryStatus !== "success" &&
-        prevParams !== params){
-        return <Loading/>;
-    }
+    },[params.query]);
 
     const numberOfResults = () => {
         switch (params.type) {
             case "all": {
-                return accountResults.length + courseResults.length;
+                return accounts.length + courses.length;
             }
             case "account": {
-                return accountResults.length;
+                return accounts.length;
             }
             case "course": {
-                return courseResults.length
+                return courses.length
             }
         }
     };
@@ -102,25 +66,28 @@ const SearchResults = (props) => {
         setEnd(8);
         if (end === 8) {
             setCurrentPage(currentPage + 1);
-            api.fetchSearchAccountQuery(searchConfig);
-            setAccountResults(props.search.accounts);
+            // TODO: change this to updating page in redux
+            // api.fetchSearchAccountQuery(searchConfig);
             setStart(0);
             setEnd(4);
         }
     };
 
     return (
-        <Grid container className={'search-results'} style={{ "padding": "1em" }}>
-            {(numberOfResults() !== 0) ?
+        <Grid container className={'search-results'} >
+
                     <Grid item xs={12}>
                         <Paper className={'main-search-view'} >
                             <Grid item xs={12} className="searchResults">
-                                <Typography variant={"h4"} align={"left"}>
-                                    <span style={{ fontFamily: "Roboto Slab", fontWeight: "500" }}>
-                                        {numberOfResults()} Search Results for </span>
-                                    "{query}"
-                                     </Typography>
+                                <Typography
+                                    className={"search-title"}
+                                    variant={"h3"}
+                                    align={"left"}>
+                                    {numberOfResults()} Search Results for "{query}"
+                                </Typography>
                             </Grid>
+                            {(numberOfResults() !== 0) ?
+                            <>
                             {params.type === "account" ?
                                 <Grid item xs={12}>
                                     <Grid container>
@@ -136,7 +103,7 @@ const SearchResults = (props) => {
                                     alignItems="center">
                                     <Grid item className="searchResults">
                                         <Typography className={"resultsColor"} align={'left'} gutterBottom>
-                                            {accountResults.length > 0 ? "Accounts" : ""}
+                                            {accounts.length > 0 ? "Accounts" : ""}
                                         </Typography>
                                     </Grid>
                                     {/*<Grid item >*/}
@@ -147,15 +114,15 @@ const SearchResults = (props) => {
                                 </Grid>
                                 <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} spacing={16} direction={"row"}>
                                     {params.type === "account" ?
-                                        accountResults.map((account) => (
+                                        accounts.map((account) => (
                                             <Grid item
                                                 sm={3}>
                                                 <AccountsCards user={account} key={account.user_id} />
                                             </Grid>
                                         ))
                                         :
-                                        accountResults.length > 0 ?
-                                            accountResults.slice(start, end).map((account) => (
+                                        accounts.length > 0 ?
+                                            accounts.slice(start, end).map((account) => (
                                                 <Grid item
                                                     sm={3}>
                                                     <AccountsCards user={account} key={account.user_id} />
@@ -164,7 +131,7 @@ const SearchResults = (props) => {
                                             :
                                             ""}
                                     <Grid >
-                                        {accountResults.length > 6 ?
+                                        {accounts.length > 6 ?
                                             <div onClick={displayMoreResults()}>
                                                 <MoreResultsIcon />
                                             </div>
@@ -176,29 +143,7 @@ const SearchResults = (props) => {
 
 
                             </Grid>
-                            {/* </Grid> */}
-                            {accountResults.length ? <hr /> : ""}
-                            {/*<Grid item xs={12}>*/}
-                            {/*    <Grid container*/}
-                            {/*        justify={"space-between"}*/}
-                            {/*        direction={"row"}*/}
-                            {/*        alignItems="center">*/}
-                            {/*        <Grid item style={{ "paddingLeft": "25px" }}>*/}
-                            {/*            <Typography variant={"h5"} align={'left'} >Upcoming Sessions</Typography>*/}
-                            {/*        </Grid>*/}
-                            {/*        /!*<Grid item style={{ "padding": "1vh" }}>*!/*/}
-                            {/*        /!*<Chip label="See All Upcoming Sessions"*!/*/}
-                            {/*        /!*    className="searchChip"*!/*/}
-                            {/*        /!*    />*!/*/}
-                            {/*        /!*</Grid>*!/*/}
-                            {/*    </Grid>*/}
-                            {/*    <Grid container spacing={16} style={{ paddingLeft: 20, paddingRight: 20 }} direction={"row"}>*/}
-                            {/*        {Object.values(props.instructors).slice(0, 4).map((user) => (*/}
-                            {/*            <UpcomingSessionCards user={user} key={user.user_id} />)*/}
-                            {/*        )}*/}
-                            {/*    </Grid>*/}
-                            {/*</Grid>*/}
-                            {/*<hr />*/}
+                            {accounts.length && params.type !== "account"? <hr /> : ""}
                             {
                                 params.type !== "account" ? <Grid item xs={12}>
                                     <Grid container
@@ -207,7 +152,7 @@ const SearchResults = (props) => {
                                         alignItems="center">
                                         <Grid item className="searchResults">
                                             <Typography className={"resultsColor"} align={'left'} >
-                                                {props.search.courses.length > 0 ?
+                                                {courses.length > 0 ?
                                                     "Courses" : ""
                                                 }
                                             </Typography>
@@ -219,16 +164,16 @@ const SearchResults = (props) => {
                                         {/*</Grid>*/}
                                     </Grid>
                                     <Grid container direction={"row"} style={{ paddingLeft: 20, paddingRight: 20 }}>
-                                        {courseResults.slice(0, 4).map((course) => (
+                                        {courses.slice(0, 4).map((course) => (
                                             <CoursesCards course={course} key={course.course_id} />)
                                         )}
                                     </Grid>
                                 </Grid> : ""
                             }
-
+                            </> :
+                                <NoResultsPage /> }
                         </Paper>
                     </Grid>
-                    : <NoResultsPage />}
         </Grid>
     )
 };

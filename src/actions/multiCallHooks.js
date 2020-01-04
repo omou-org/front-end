@@ -181,4 +181,73 @@ export const usePayment = (id) => {
         })();
     },[dispatch, requestSettings]);
     return status;
-}
+};
+
+export const useCourseSearch = (query) => {
+    const token = useSelector(({auth}) => auth.token);
+    const [status, setStatus] = useState(null);
+    const dispatch = useDispatch();
+
+    const handleError = useCallback((error) => {
+        if (error && error.response && error.response.status) {
+            setStatus(error.response.status);
+        } else {
+            setStatus(MISC_FAIL);
+            console.error(error);
+        }
+    }, []);
+
+    const requestSettings = useMemo(() => ({
+        "headers": {
+            "Authorization": `Token ${token}`,
+        },
+        "params":{
+            "query": query,
+        }
+    }), [token]);
+
+    useEffect(()=>{
+        if(typeof query !== "undefined"){
+            (async ()=>{
+                let aborted = false;
+                try {
+                    setStatus(REQUEST_STARTED);
+                    const courseSearchResults = await instance.request({
+                        'url':`/search/course/`,
+                        ...requestSettings,
+                        'method':'get'
+                    });
+                    console.log(courseSearchResults);
+                    dispatch({
+                        type:types.GET_COURSE_SEARCH_QUERY_SUCCESS,
+                        payload:courseSearchResults,
+                    });
+                    console.log("dispatched results");
+                    const instructors = courseSearchResults.map(({data}) => data.instructor);
+
+                    const instructorResults = await Promise.all(instructors.map(instructorID => {
+                        instance.request({
+                            'url':`/account/instructor/${instructorID}/`,
+                            "headers": {
+                                "Authorization": `Token ${token}`,
+                            },
+                            'method':'get',
+                        })
+                    }));
+                    console.log(instructorResults);
+                    dispatch({
+                        type: types.FETCH_INSTRUCTOR_SUCCESSFUL,
+                        payload: instructorResults,
+                    });
+                    setStatus(200);
+                } catch(error) {
+                    if(!aborted){
+                        handleError(error)
+                    }
+                }
+            })();
+        }
+    },[query, dispatch,requestSettings])
+
+    return status;
+};
