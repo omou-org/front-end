@@ -1,87 +1,51 @@
-import { connect } from 'react-redux';
-import React, { Component } from 'react';
-
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 import "./TabComponents.scss";
-import Paper from "@material-ui/core/Paper";
-import EditIcon from "@material-ui/icons/EditOutlined";
+import * as hooks from "actions/hooks";
+import Grid from "@material-ui/core/Grid";
+import Loading from "components/Loading";
+import ProfileCard from "../ProfileCard";
+import PropTypes from "prop-types";
+import React from "react";
+import {useSelector} from "react-redux";
 
-class ParentContact extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            parent: {},
-        };
+const ParentContact = ({parent_id}) => {
+    const parentStatus = hooks.useParent(parent_id);
+    const parent = useSelector(({Users}) => Users.ParentList[parent_id]);
+
+    if (!parent) {
+        if (hooks.isLoading(parentStatus)) {
+            return <Loading />;
+        }
+
+        if (hooks.isFail(parentStatus)) {
+            return "Error loading parent!";
+        }
     }
 
-    componentWillMount() {
-        this.setState({
-            parent: this.props.parents[this.props.parent_id]
-        })
-    }
-
-    addDashes(f){
-        return("("+f.slice(0,3)+"-"+f.slice(3,6)+"-"+f.slice(6,15)+")");
-    }
-
-    render() {
-        //this.state.parent.name
-        return (
-            <Grid item xs={12}>
-                <Grid container spacing={16}>
-                    <Grid item xs={12} md={4}>
-                        <Paper className={"ParentContact"}>
-                            <div className="parent-header" align="left">
-                                <Typography className="header-text">
-                                    {this.state.parent.name}
-                                </Typography>
-                            </div>
-                            <div className={"actions"} align="right">
-                                <EditIcon />
-                            </div>
-                            <Grid container spacing={16} className="bodyText">
-                                    <Grid item xs={5} align="left" className="bold">
-                                        Relation
-                                    </Grid>
-                                    <Grid item xs={5} align="left">
-                                        {this.state.parent.relationship}
-                                    </Grid>
-                                    <Grid item xs={5} align="left" className="bold">
-                                        Phone
-                                    </Grid>
-                                    <Grid item xs={5} align="left">
-                                        {this.addDashes(this.state.parent.phone_number)}
-                                    </Grid>
-                                    <Grid item xs={5} align="left" className="bold">
-                                        Email
-                                    </Grid>
-                                    <Grid item xs={5} align="left">
-                                        {this.state.parent.email}
-                                    </Grid>
-                                </Grid>
-                        </Paper>
-                    </Grid>
+    return (
+        <Grid
+            item
+            md={12}>
+            <Grid
+                container
+                spacing={16}>
+                <Grid
+                    item
+                    md={10}
+                    xs={12}>
+                    <ProfileCard
+                        route={`/accounts/parent/${parent_id}`}
+                        user={parent} />
                 </Grid>
             </Grid>
-        );
-    }
+        </Grid>
+    );
+};
 
-}
+ParentContact.propTypes = {
+    "parent_id": PropTypes.oneOf([
+        PropTypes.string,
+        PropTypes.number,
+    ]).isRequired,
+};
 
-ParentContact.propTypes = {};
-
-function mapStateToProps(state) {
-    return {
-        parents: state.Users.ParentList,
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {};
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ParentContact);
+export default ParentContact;

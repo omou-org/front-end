@@ -1,122 +1,142 @@
-import React, {useEffect, useState} from "react";
 import * as authActions from "../../actions/authActions.js";
-import {connect} from "react-redux";
+import {REQUEST_STARTED} from "../../actions/apiActions";
 import {bindActionCreators} from "redux";
-import {withRouter} from "react-router";
-import PropTypes from "prop-types";
+import {useSelector, useDispatch} from "react-redux";
+import {Redirect, useHistory} from "react-router-dom";
+import React, {useMemo, useState, useCallback} from "react";
 
-// Material UI Imports
-import Grid from "@material-ui/core/Grid";
+
+// material UI Imports
 import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
-import {Typography} from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
+import Grid from "@material-ui/core/Grid";
+import Loading from "components/Loading";
+import Paper from "@material-ui/core/Paper";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
 
 import "./LoginPage.scss";
 
-function LoginPage(props) {
+const LoginPage = () => {
+    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
+    const dispatch = useDispatch();
+
+    const actions = useMemo(() => bindActionCreators(authActions, dispatch), [dispatch]);
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [savePassword, setSavePassword] = useState(false);
     const [emailEmpty, setEmailEmpty] = useState(false);
     const [passwordEmpty, setPasswordEmpty] = useState(false);
+    const [hasGoneBack, setHasGoneBack] = useState(false);
+    const history = useHistory();
 
-    const handleTextInput = (setter, validator, {target}) => {
+    const handleTextInput = useCallback((setter, validator) => ({target}) => {
         setter(target.value);
-        props.authActions.resetAttemptStatus();
+        actions.resetAttemptStatus();
         validator(!target.value);
-    };
+    }, [actions]);
 
-    const login = () => {
-        props.authActions.login(email, password, savePassword);
-    };
+    const login = useCallback((event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        actions.login(email, password, savePassword);
+    }, [actions, email, password, savePassword]);
 
-    useEffect(() => {
-        props.setLogin(true);
-        return () => {
-            props.setLogin(false);
-        };
-    });
+    const toggleSavePassword = useCallback(() => {
+        setSavePassword((prevPassword) => !prevPassword);
+    }, []);
 
-    if (props.auth.token) {
-        props.history.push("/accounts");
+    const failedLogin = requestStatus.login &&
+        requestStatus.login !== REQUEST_STARTED &&
+        (requestStatus.login < 200 || requestStatus.login > 300);
+
+    const fetchUserStatus = requestStatus.userFetch;
+    if (!requestStatus.login && (!fetchUserStatus || fetchUserStatus === REQUEST_STARTED)) {
+        return <Loading />;
+    }
+
+    if (fetchUserStatus >= 200 && fetchUserStatus < 300) {
+        if (!hasGoneBack) {
+            if (history.length > 2) {
+                history.goBack();
+            } else {
+                return <Redirect to="/" />;
+            }
+            setHasGoneBack(true);
+        }
+    } else if (requestStatus.login >= 200 && requestStatus.login < 300) {
+        if (!fetchUserStatus || fetchUserStatus !== REQUEST_STARTED) {
+            actions.fetchUserStatus();
+        }
+        if (!hasGoneBack) {
+            if (history.length > 2) {
+                history.goBack();
+            } else {
+                return <Redirect to="/" />;
+            }
+            setHasGoneBack(true);
+        }
     }
 
     return (
         <Grid
-            container
-            spacing={0}
-            direction="column"
             alignItems="center"
+            container
+            direction="column"
             justify="center"
-            style={{
-                minHeight: "100vh",
-            }}>
-            <Grid item xs={3}>
+            spacing={0}>
+            <Grid
+                item
+                xs={3}>
                 <Paper className="bg">
                     <Typography
                         align="center"
                         color="primary">
                         <span className="header">sign in</span>
                     </Typography>
-                    <form onSubmit={(event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        login();
-                    }}>
+                    <form onSubmit={login}>
                         <TextField
-                            error={props.auth.failedLogin || emailEmpty}
-                            label="E-Mail"
                             className="email"
+                            error={failedLogin || emailEmpty}
+                            label="E-Mail"
                             margin="dense"
-                            value={email}
-                            onChange={(event) => {
-                                handleTextInput(setEmail, setEmailEmpty, event);
-                            }}
-                        />
+                            onChange={handleTextInput(setEmail, setEmailEmpty)}
+                            value={email} />
                         <TextField
+                            autoComplete="current-password"
+                            className="password"
+                            error={failedLogin || passwordEmpty}
                             id="standard-password-input"
                             label="Password"
-                            className="password"
-                            type="password"
-                            autoComplete="current-password"
                             margin="normal"
-                            value={password}
-                            error={props.auth.failedLogin || passwordEmpty}
-                            onChange={(event) => {
-                                handleTextInput(setPassword, setPasswordEmpty, event);
-                            }}
-                        />
+                            onChange={handleTextInput(setPassword, setPasswordEmpty)}
+                            type="password"
+                            value={password} />
                         <Grid container>
-                            <Grid item className="remember">
+                            <Grid
+                                className="remember"
+                                item>
                                 <label>
                                     <Checkbox
                                         checked={savePassword}
-                                        onClick={() => {
-                                            setSavePassword(!savePassword);
-                                        }} />
+                                        onClick={toggleSavePassword} />
                                     Remember me
                                 </label>
                             </Grid>
-                            <Grid item>
-                                <Button color="secondary" className="forgot">
-                                    <span className="forgotText">Forgot Password?</span>
-                                </Button>
-                            </Grid>
                         </Grid>
                         <Button
-                            type="submit"
-                            variant="contained"
+                            className="signIn"
                             color="primary"
-                            className="button signIn"
                             disabled={!email || !password}
-                            onClick={login}>
+                            onClick={login}
+                            type="submit"
+                            variant="contained">
                             sign in
                         </Button>
                     </form>
                     {
-                        props.auth.failedLogin &&
+                        failedLogin &&
                         <Typography color="error">
                             Invalid credentials
                         </Typography>
@@ -125,30 +145,6 @@ function LoginPage(props) {
             </Grid>
         </Grid>
     );
-}
-
-LoginPage.propTypes = {
-    "auth": PropTypes.shape({
-        "failedLogin": PropTypes.bool,
-        "token": PropTypes.string,
-    }),
-    "authActions": PropTypes.shape({
-        "login": PropTypes.func,
-        "resetAttemptStatus": PropTypes.func,
-    }),
-    "history": PropTypes.shape({
-        "push": PropTypes.func,
-    }),
-    "setLogin": PropTypes.func,
 };
 
-const mapStateToProps = ({auth}) => ({auth});
-
-const mapDispatchToProps = (dispatch) => ({
-    "authActions": bindActionCreators(authActions, dispatch),
-});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(withRouter(LoginPage));
+export default LoginPage;

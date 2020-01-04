@@ -1,9 +1,15 @@
-import { connect } from 'react-redux';
-import React, { Component } from 'react';
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import * as userActions from "../../../actions/userActions";
+import * as apiActions from "../../../actions/apiActions";
+import {GET} from "../../../actions/actionTypes";
+import React, {Component} from "react";
+import {Redirect} from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
+import {stringToColor} from "./accountUtils";
+import Grid from "@material-ui/core/Grid";
 import {Paper, Typography} from "@material-ui/core";
-import './Accounts.scss';
+import "./Accounts.scss";
 
 import BackButton from "../../BackButton";
 import ComponentViewer from "./ComponentViewer.js";
@@ -16,7 +22,6 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
-import Chip from "@material-ui/core/Chip";
 import BioIcon from "@material-ui/icons/PersonOutlined";
 import CoursesIcon from "@material-ui/icons/SchoolOutlined";
 import ScheduleIcon from "@material-ui/icons/CalendarTodayOutlined";
@@ -26,244 +31,316 @@ import PastSessionsIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import ContactIcon from "@material-ui/icons/ContactPhoneOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
+import Loading from "../../Loading";
 
 const userTabs = {
     "instructor": [
         {
-            tab_heading: "Courses",
-            tab_id: 1,
-            icon: <CoursesIcon className="TabIcon" />,
+            "icon": <ScheduleIcon className="TabIcon" />,
+            "tab_heading": "Schedule",
+            "tab_id": 0,
         },
         {
-            tab_heading: "Bio",
-            tab_id: 2,
-            icon: <BioIcon className="TabIcon" />,
+            "icon": <CoursesIcon className="TabIcon" />,
+            "tab_heading": "Courses",
+            "tab_id": 1,
         },
         {
-            tab_heading: "Notes",
-            tab_id: 7,
-            icon: <NoteIcon className="TabIcon" />,
+            "icon": <BioIcon className="TabIcon" />,
+            "tab_heading": "Bio",
+            "tab_id": 2,
+        },
+        {
+            "icon": <notificationIcon className="TabIcon" />,
+            "tab_heading": "Notes",
+            "tab_id": 7,
+        },
+    ],
+    "parent": [
+        {
+            "icon": <CurrentSessionsIcon className="TabIcon" />,
+            "tab_heading": "Student Info",
+            "tab_id": 8,
+        },
+        {
+            "icon": <CurrentSessionsIcon className="TabIcon" />,
+            "tab_heading": "Pay Courses",
+            "tab_id": 9,
+        },
+        {
+            "icon": <PaymentIcon className="TabIcon" />,
+            "tab_heading": "Payment History",
+            "tab_id": 5,
+        },
+        {
+            "icon": <NoteIcon className="TabIcon" />,
+            "tab_heading": "Notes",
+            "tab_id": 7,
         },
     ],
     "student": [
         {
-            tab_heading: "Current Sessions",
-            tab_id: 3,
-            icon: <CurrentSessionsIcon className="TabIcon" />,
+            "icon": <CurrentSessionsIcon className="TabIcon" />,
+            "tab_heading": "Current Sessions",
+            "tab_id": 3,
         },
         {
-            tab_heading: "Past Sessions",
-            tab_id: 4,
-            icon: <PastSessionsIcon className="TabIcon" />,
+            "icon": <PastSessionsIcon className="TabIcon" />,
+            "tab_heading": "Past Sessions",
+            "tab_id": 4,
         },
         {
-            tab_heading: "Parent Contact",
-            tab_id: 6,
-            icon: <ContactIcon className="TabIcon" />,
+            "icon": <ContactIcon className="TabIcon" />,
+            "tab_heading": "Parent Contact",
+            "tab_id": 6,
         },
         {
-            tab_heading: "Notes",
-            tab_id: 7,
-            icon: <NoteIcon className="TabIcon" />,
-        }],
-
-        "parent": [
-            {
-                tab_heading: "Student Info",
-                tab_id: 8,
-                icon: <CurrentSessionsIcon className="TabIcon"/>,
-            },
-            {
-                tab_heading: "Notes",
-                tab_id: 7,
-                icon: <NoteIcon className="TabIcon"/>,
-            },
-        ],
-}
+            "icon": <NoteIcon className="TabIcon" />,
+            "tab_heading": "Notes",
+            "tab_id": 7,
+        },
+    ],
+};
 
 class UserProfile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            user: {},
-            tabs: [],
-            value: 0,
+            "activeTab": 0,
         };
-        this.handleChange = this.handleChange.bind(this);
     }
 
-    componentWillMount() {
-        let user;
-        let accountType = this.props.match.params.accountType, accountID = this.props.match.params.accountID;
+    componentDidMount() {
+        this.fetchUserData();
+    }
+
+    componentDidUpdate(prevProps) {
+        const {accountType, accountID} = this.props.computedMatch.params;
+        if (prevProps.computedMatch.params.accountType !== accountType ||
+            prevProps.computedMatch.params.accountID !== accountID) {
+            this.fetchUserData();
+        }
+    }
+
+    fetchUserData() {
+        const {accountType, accountID} = this.props.computedMatch.params;
+        this.props.userActions.fetchAccountNotes(accountID, accountType);
         switch (accountType) {
             case "student":
-                user = this.props.students[accountID];
+                this.props.userActions.fetchStudents(accountID);
                 break;
             case "parent":
-                user = this.props.parents[accountID];
+                this.props.userActions.fetchParents(accountID);
                 break;
             case "instructor":
-                user = this.props.instructors[accountID];
+                this.props.userActions.fetchInstructors(accountID);
                 break;
             case "receptionist":
-                user = this.props.receptionist[accountID];
+                // future request for receptionists
                 break;
+            // no default
+        }
+    }
+
+    getUser = () => {
+        const {accountType, accountID} = this.props.computedMatch.params;
+        switch (accountType) {
+            case "student":
+                return this.props.students[accountID];
+            case "parent":
+                return this.props.parents[accountID];
+            case "instructor":
+                return this.props.instructors[accountID];
+            case "receptionist":
+                return this.props.receptionist[accountID];
             default:
-                user = -1;
-        }
-        // this.setState({ ...CourseInView });
-        if (user != "receptionist") {
-            this.setState({
-                user: user,
-                tabs: userTabs[accountType],
-            })
-        }
-        else {
-            this.setState({
-                user: user,
-            })
+                return null;
         }
     }
 
-    handleChange(e, newTabIndex) {
-        e.preventDefault();
-        this.setState({ value: newTabIndex });
+    getRequestStatus = () => {
+        const {accountType, accountID} = this.props.computedMatch.params;
+        return accountType === "receptionist"
+            ? 200
+            : this.props.requestStatus[accountType][GET][accountID];
     }
 
-    stringToColor(string) {
-        let hash = 0;
-        let i;
+    handleChange = (event, activeTab) => {
+        event.preventDefault();
+        this.setState({
+            activeTab,
+        });
+    }
 
-        /* eslint-disable no-bitwise */
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    hasImportantNotes() {
+        return this.getUser() && this.getUser().notes &&
+            Object.values(this.getUser().notes)
+                .some(({important}) => important);
+    }
+
+    renderNoteIcon() {
+        if (this.getUser() && this.getUser().role !== "receptionist") {
+            if (this.hasImportantNotes()) {
+                userTabs[this.getUser().role].find((tab) => tab.tab_id === 7).icon =
+                    (
+                        <>
+                            <Avatar
+                                className="notification"
+                                style={{
+                                    "height": 10,
+                                    "width": 10,
+                                }} />
+                            <NoteIcon className="TabIcon" />
+                        </>
+                    );
+            } else {
+                userTabs[this.getUser().role].find((tab) => tab.tab_id === 7).icon =
+                    <NoteIcon className="TabIcon" />;
+            }
         }
-
-        let colour = '#';
-
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            colour += `00${value.toString(16)}`.substr(-2);
-        }
-        /* eslint-enable no-bitwise */
-
-        return colour;
     }
 
     render() {
+        const status = this.getRequestStatus();
+        const user = this.getUser();
+        if (!user || Object.keys(user).length <= 1) {
+            if (!status || status === apiActions.REQUEST_STARTED) {
+                return <Loading />;
+            }
+
+            if (status < 200 || status >= 300) {
+                return <Redirect to="/PageNotFound" />;
+            }
+        }
+
+        this.renderNoteIcon();
+        const {accountType} = this.props.computedMatch.params;
+        const {activeTab} = this.state;
         const styles = {
-            "backgroundColor": this.stringToColor(this.state.user.name),
+            "backgroundColor": stringToColor(user.name),
             "color": "white",
-            "width": "10vw",
-            "height": "10vw",
             "fontSize": "3.5vw",
+            "height": "9vw",
             "margin": 20,
+            "width": "9vw",
         };
         let tabs;
-        if (this.state.user.role !== "receptionist") {
-            tabs =
-                (<div>
+        if (user.role !== "receptionist") {
+            tabs = (
+                <div>
                     <Tabs
-                    key={this.props.inView}
-                    value={this.state.value}
-                    onChange={this.handleChange}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    variant={'scrollable'}
-                >
-                    {this.state.tabs.map((tab) => {
-                        return <Tab
-                            label={<>{tab.icon} {tab.tab_heading}</>}
-                            key={this.props.inView}
-                        />
-                    })}
-                </Tabs>
-                <ComponentViewer user={this.state.user} inView={this.state.tabs[this.state.value].tab_id} />
-                </div>)
-        }
-        else {
-            tabs=(<div>
-                <Grid align="left">
-                    Action Log
-                </Grid>
-
-                <Paper className={'paper'}>
-            <Table className="ActionTable">
-            <TableHead>
-                <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Time</TableCell>
-                    <TableCell>Description</TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {Object.keys(this.state.user.action_log).map(rowID => {
-                    let row = this.state.user.action_log[rowID];
-                    return (
-                        <TableRow key={row.date}
-                                //   onClick={(e) => {
-                                //       e.preventDefault();
-                                //       this.goToRoute(`/${row.role}/${row.user_id}`)
-                                //   }}
-                                  className="row">
-                            <TableCell component="th" scope="row">
-                                <Grid container layout={'row'} alignItems={'center'}>
-                                    <Grid item md={3}>
-                                    </Grid>
-                                    <Grid item md={9}>
-                                        <Typography>
-                                            {row.date}
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
-                            </TableCell>
-                            <TableCell>{row.time}</TableCell>
-                            <TableCell>{row.description}</TableCell>
-                        </TableRow>
-                    )
-                })}
-            </TableBody>
-            </Table>
-            </Paper>
-            </div>
+                        indicatorColor="primary"
+                        onChange={this.handleChange}
+                        textColor="primary"
+                        value={activeTab}>
+                        {userTabs[accountType].map((tab) => (
+                            <Tab
+                                key={tab.tab_id}
+                                label={<>{tab.icon} {tab.tab_heading}</>} />
+                        ))}
+                    </Tabs>
+                    <ComponentViewer
+                        inView={userTabs[accountType][activeTab].tab_id}
+                        user={user} />
+                </div>
+            );
+        } else {
+            tabs = (
+                <div>
+                    <Grid align="left">
+                        Action Log
+                    </Grid>
+                    <Paper className="paper">
+                        <Table className="ActionTable">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Date</TableCell>
+                                    <TableCell>Time</TableCell>
+                                    <TableCell>Description</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {Object.values(user.action_log).map((row) => (
+                                    <TableRow
+                                        className="row"
+                                        key={row.date}>
+                                        <TableCell
+                                            component="th"
+                                            scope="row">
+                                            <Grid
+                                                alignItems="center"
+                                                container
+                                                layout="row">
+                                                <Grid
+                                                    item
+                                                    md={3} />
+                                                <Grid
+                                                    item
+                                                    md={9}>
+                                                    <Typography>
+                                                        {row.date}
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid>
+                                        </TableCell>
+                                        <TableCell>{row.time}</TableCell>
+                                        <TableCell>{row.description}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </Paper>
+                </div>
             );
         }
-        return (<div className="UserProfile">
-            <Paper className={'paper'}>
-                <BackButton
-                    warn={false}
-                />
-                <hr />
-                <Grid container layout="row" className={'padding'}>
-                    <Grid item md={2} component={Hidden} xsDown>
-                        <Avatar style={styles}>{this.state.user.name.match(/\b(\w)/g).join('')}</Avatar>
+        return (
+            <div className="UserProfile">
+                <Paper className="paper">
+                    <BackButton
+                        warn={false} />
+                    <hr />
+                    <Grid
+                        className="padding"
+                        container
+                        layout="row" >
+                        <Grid
+                            item
+                            md={2}>
+                            <Hidden smDown>
+                                <Avatar style={styles}>
+                                    {user.name.toUpperCase().match(/\b(\w)/g)
+                                        .join("")}
+                                </Avatar>
+                            </Hidden>
+                        </Grid>
+                        <Grid
+                            className="headingPadding"
+                            item
+                            md={10}
+                            xs={12} >
+                            <ProfileHeading user={user} />
+                        </Grid>
                     </Grid>
-                    <Grid item md={8} className="headingPadding">
-                        <ProfileHeading user={this.state.user} />
-                    </Grid>
-                </Grid>
-                {tabs}
-            </Paper>
-        </div>
-        )
+                    {tabs}
+                </Paper>
+            </div>
+        );
     }
-
 }
 
 UserProfile.propTypes = {};
 
-function mapStateToProps(state) {
-    return {
-        students: state.Users.StudentList,
-        parents: state.Users.ParentList,
-        instructors: state.Users.InstructorList,
-        receptionist: state.Users.ReceptionistList,
-    };
-}
+const mapStateToProps = (state) => ({
+    "students": state.Users.StudentList,
+    "parents": state.Users.ParentList,
+    "instructors": state.Users.InstructorList,
+    "receptionist": state.Users.ReceptionistList,
+    "requestStatus": state.RequestStatus,
+});
 
-function mapDispatchToProps(dispatch) {
-    return {};
-}
+const mapDispatchToProps = (dispatch) => ({
+    "userActions": bindActionCreators(userActions, dispatch),
+});
 
 export default connect(
     mapStateToProps,

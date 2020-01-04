@@ -1,32 +1,29 @@
 // React Imports
-
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { Route, Switch, Redirect } from "react-router-dom";
+import {Redirect, Route, Switch} from "react-router-dom";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
 import * as registrationActions from "../../actions/registrationActions";
-
-import PropTypes from "prop-types";
 import React from "react";
 
 // Local Component Imports
-import Dashboard from "../FeatureViews/Dashboard/Dashboard";
+import Accounts from "../FeatureViews/Accounts/Accounts";
+import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
+// import Dashboard from "../FeatureViews/Dashboard/Dashboard";
+import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
+import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
+import LoginPage from "../Authentication/LoginPage.js";
+import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage";
+import ProtectedRoute from "./ProtectedRoute";
 import Registration from "../FeatureViews/Registration/Registration";
 import RegistrationForm from "../Form/Form";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
-import Accounts from "../FeatureViews/Accounts/Accounts";
-import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
-import CourseCategory from "../FeatureViews/Registration/CourseCategory";
-import LoginPage from "../Authentication/LoginPage.js";
-import ProtectedRoute from "./ProtectedRoute";
-
-import SessionView from "../FeatureViews/Scheduler/SessionView"
-
-
-
-import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
+import SearchResults from "../FeatureViews/Search/SearchResults";
+import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
-import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
-import ParentPayment from "../Form/ParentPayment";
+import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
+import AdminRoute from "./AdminRoute";
+import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
+import RegistrationReceipt from "../FeatureViews/Registration/RegistrationReceipt";
 
 
 function rootRoutes(props) {
@@ -35,68 +32,84 @@ function rootRoutes(props) {
         <Switch>
             <Route
                 path="/login"
-                render={(passedProps) => <LoginPage setLogin={props.setLogin} {...passedProps} />} />
+                render={(passedProps) => <LoginPage {...passedProps} />} />
 
             {/* Main Feature Views */}
-            {/* Registration Routes */}
-            <Route
-                path="/registration/form/:type/:id?/:edit?"
-                render={(passedProps) => <RegistrationForm {...passedProps} />} />
-            <Route
-                path="/registration/course/:courseID?/:courseTitle?"
-                render={(passedProps) => <RegistrationCourse {...passedProps} />} />
-            <Route
-                path="/registration/category/:categoryID"
-                render={(passedProps) => <CourseCategory {...passedProps} />}/>
-            <Route
-                exact
-                path="/front-end"
-                render={(passedProps) => <Accounts {...passedProps} />} />
-            <Route
+            <ProtectedRoute
                 exact
                 path="/"
                 render={(passedProps) => <Accounts {...passedProps} />} />
-            <Route
+
+            <ProtectedRoute
                 exact
                 path="/registration"
                 render={(passedProps) => <Registration {...passedProps} />} />
-
-            render={(passedProps) => <Registration {...passedProps} />}/>
-
+            {/* Scheduler Routes */}
+             <ProtectedRoute
+                exact path="/scheduler"
+                render={(passedProps) => <Scheduler {...passedProps} />} />
             <Route
+                path="/scheduler/view-session/:course_id/:session_id"
+                render={(passedProps) => <SessionView {...passedProps} />} />
+            <ProtectedRoute
                 exact
-                path="/scheduler"
-                render={(passedProps) => <Scheduler {...passedProps} />}/>
+                path="/search/:type/:query?"
+                render={(passedProps) => <SearchResults {...passedProps} />} />
 
+            {/*<ProtectedRoute*/}
+            {/*    path='/scheduler/resource'*/}
+            {/*    render={(passedProps) => <ResourceView {...passedProps} />} /> */}
+
+            <ProtectedRoute
+                exact
+                path='/noresults'
+                render={(passedProps) => <NoResultsPage {...passedProps} />} />
 
             {/* Accounts */}
-            <Route
+            <ProtectedRoute
                 exact
-                path="/:accountType/:accountID"
+                path="/accounts/:accountType/:accountID"
                 render={(passedProps) => <UserProfile {...passedProps} />} />
-            <Route
+            <ProtectedRoute
                 exact
-                path="/parents/:parentID/pay"
-                render={(passedProps) => <ParentPayment {...passedProps} />}/>
-            {/*<Route*/}
-            {/*    exact*/}
-            {/*    path="/accounts"*/}
-            {/*    render={(passedProps) => <Accounts {...passedProps} />} />*/}
-            <Route
+                path="/accounts/parent/payment/:parentID/:paymentID"
+                render={(passedProps) => <RegistrationReceipt {...passedProps} />}/>
+            <ProtectedRoute
                 exact
-                path="/:accountType/:accountID/:courseID"
+                path="/accounts"
+                render={(passedProps) => <Accounts {...passedProps} />} />
+            <ProtectedRoute
+                exact
+                path="/accounts/:accountType/:accountID/:courseID"
                 render={(passedProps) => <CourseSessionStatus {...passedProps} />}/>
 
+            {/* Registration Routes */}
+            <ProtectedRoute
+                path="/registration/form/:type/:id?/:edit?"
+                render={(passedProps) => <RegistrationForm {...passedProps} />} />
+            <ProtectedRoute
+                path="/registration/course/:courseID?/:courseTitle?"
+                render={(passedProps) => <RegistrationCourse {...passedProps} />} />
+            <ProtectedRoute
+                path="/registration/cart/"
+                render={(passedProps) => <RegistrationCart {...passedProps}/>}
+            />
+            <ProtectedRoute
+                path="/registration/receipt/:paymentID?"
+                render={(passedProps) => <RegistrationReceipt {...passedProps}/> }
+            />
+
+            {/* Admin Routes */}
+            <AdminRoute
+                exact
+                path="/adminportal/:view?/:type?/:id?/:edit?"
+                render={(passedProps) => <AdminPortal/>}/>
 
             <Route path="/PageNotFound" component={ErrorNotFoundPage}/>
             <Redirect to="/PageNotFound"/>
         </Switch>
     );
 }
-
-rootRoutes.propTypes = {
-    "setLogin": PropTypes.func,
-};
 
 const mapStateToProps = (state) => ({});
 

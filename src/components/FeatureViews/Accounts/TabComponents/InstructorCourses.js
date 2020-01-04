@@ -1,134 +1,142 @@
-import { connect } from 'react-redux';
-import React, { Component } from 'react';
+import * as hooks from "actions/hooks";
+import React, {useMemo} from "react";
+import {courseDataParser} from "utils";
+import {Link} from "react-router-dom";
+import PropTypes from "prop-types";
+import {useSelector} from "react-redux";
 
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import Grid from "@material-ui/core/Grid";
+import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
-import Hidden from "@material-ui/core/Hidden";
+import Typography from "@material-ui/core/Typography";
 
-class InstructorCourses extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            courseIDs: [],
-        };
+const InstructorCourses = ({instructorID}) => {
+    const courses = useSelector(({Course}) => Course.NewCourseList);
+    const courseStatus = hooks.useCourse();
+
+    const courseIDs = useMemo(() =>
+        Object.keys(courses).filter((courseID) =>
+            instructorID === courses[courseID].instructor_id)
+    , [courses, instructorID]);
+
+    if (Object.keys(courses).length === 0) {
+        if (hooks.isLoading(courseStatus)) {
+            return <Loading />;
+        }
+        if (hooks.isFail(courseStatus)) {
+            return "Error loading courses!";
+        }
     }
 
-    componentWillMount() {
-        this.setState(()=>{
-            let CoursesTaughtByInstructor = Object.keys(this.props.courseList).filter((courseID)=>{
-               let courseInstructorID = this.props.courseList[courseID].instructor_id;
-               return this.props.user_id === courseInstructorID;
-            });
-            return {
-                courseIDs: CoursesTaughtByInstructor,
-            }
-        })
-    }
-
-    render() {
-        return(<Grid container>
-            <Grid item md={12}>
-                <Hidden xsDown>
-                    <Grid container className={'accounts-table-heading'}>
-                        <Grid item md={1}>
-                        </Grid>
-                        <Grid item md={3}>
-                            <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
-                                Session
-                            </Typography>
-                        </Grid>
-                        <Grid item md={3}>
-                            <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
-                                Dates
-                            </Typography>
-                        </Grid>
-                        <Grid item md={2}>
-                            <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
-                                Class Day(s)
-                            </Typography>
-                        </Grid>
-                        <Grid item md={3}>
-                            <Typography align={'left'} style={{color:'white', fontWeight:'500'}}>
-                                Time
-                            </Typography>
-                        </Grid>
+    return (
+        <Grid container>
+            <Grid
+                item
+                xs={12}>
+                <Grid
+                    className="accounts-table-heading"
+                    container>
+                    <Grid
+                        item
+                        xs={3}>
+                        <Typography
+                            align="left"
+                            className="table-header">
+                            Session
+                        </Typography>
                     </Grid>
-                </Hidden>
+                    <Grid
+                        item
+                        xs={3}>
+                        <Typography
+                            align="left"
+                            className="table-header">
+                            Dates
+                        </Typography>
+                    </Grid>
+                    <Grid
+                        item
+                        md={2}
+                        xs={3}>
+                        <Typography
+                            align="left"
+                            className="table-header">
+                            Class Day(s)
+                        </Typography>
+                    </Grid>
+                    <Grid
+                        item
+                        xs={3}>
+                        <Typography
+                            align="left"
+                            className="table-header">
+                            Time
+                        </Typography>
+                    </Grid>
+                </Grid>
             </Grid>
-            <Grid container spacing={8}>
-            {
-                this.state.courseIDs.map((courseID)=>{
-                    let course = this.props.courseList[courseID];
-                    let DayConverter = {
-                        1: "Monday",
-                        2: "Tuesday",
-                        3: "Wednesday",
-                        4: "Thursday",
-                        5: "Friday",
-                        6: "Saturday",
-                    };
-                    let Days = course.schedule.days.map((day) => {
-                        return DayConverter[day];
-                    });
-
-                    let timeOptions = { hour: "2-digit", minute: "2-digit" };
-                    let dateOptions = { year: "numeric", month: "short", day: "numeric"};
-                    let startDate = new Date(course.schedule.start_date + course.schedule.start_time),
-                        endDate = new Date(course.schedule.end_date + course.schedule.end_time),
-                        startTime = startDate.toLocaleTimeString("en-US",timeOptions),
-                        endTime = endDate.toLocaleTimeString("en-US",timeOptions);
-                    startDate = startDate.toLocaleDateString("en-US",dateOptions);
-                    endDate = endDate.toLocaleDateString("en-US", dateOptions);
-                    return (<Grid item md={12} className={'accounts-table-row'}>
-                        <Paper square={true} >
-                            <Grid container>
-                                <Grid item md={1}>
-                                </Grid>
-                                <Grid item md={3} xs={12}>
-                                    <Typography align={'left'} style={{fontWeight:'700'}}>
-                                        {course.title}
-                                    </Typography>
-                                </Grid>
-                                <Grid item md={3} xs={12}>
-                                    <Typography align={'left'}>
-                                        {startDate} - {endDate}
-                                    </Typography>
-                                </Grid>
-                                <Grid item md={2} xs={12}>
-                                    <Typography align={'left'}>
-                                        {Days}
-                                    </Typography>
-                                </Grid>
-                                <Grid item md={3} xs={12}>
-                                    <Typography align={'left'}>
-                                        {startTime} - {endTime}
-                                    </Typography>
-                                </Grid>
+            <Grid
+                container
+                spacing={8}>
+                {
+                    courseIDs.map((courseID) => {
+                        const course = courses[courseID];
+                        const {days, startDate, endDate, startTime, endTime} = courseDataParser(course);
+                        return (
+                            <Grid
+                                className="accounts-table-row"
+                                component={Link}
+                                item
+                                key={courseID}
+                                to={`/registration/course/${courseID}`}
+                                xs={12}>
+                                <Paper square >
+                                    <Grid container>
+                                        <Grid
+                                            item
+                                            xs={3}>
+                                            <Typography align="left">
+                                                {course.title}
+                                            </Typography>
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={3}>
+                                            <Typography align="left">
+                                                {startDate} - {endDate}
+                                            </Typography>
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            md={2}
+                                            xs={3}>
+                                            <Typography align="left">
+                                                {days}
+                                            </Typography>
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={3}>
+                                            <Typography align="left">
+                                                {startTime} - {endTime}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                </Paper>
                             </Grid>
-                        </Paper>
-                    </Grid>);
-                })
-            }
+                        );
+                    })
+                }
             </Grid>
-        </Grid>)
-    }
+        </Grid>
+    );
+};
 
-}
+InstructorCourses.propTypes = {
+    "instructorID": PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.string,
+    ]).isRequired,
+};
 
-InstructorCourses.propTypes = {};
-
-function mapStateToProps(state) {
-    return {
-        courseList: state.Course.NewCourseList,
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {};
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(InstructorCourses);
+export default InstructorCourses;

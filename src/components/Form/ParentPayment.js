@@ -266,7 +266,7 @@ const ParentPayment = (props) => {
 };
 
 ParentPayment.propTypes = {
-    "computedMatch": PropTypes.shape({
+    "match": PropTypes.shape({
         "params": PropTypes.shape({
             "parentID": PropTypes.string.isRequired,
         }).isRequired,

@@ -1,42 +1,33 @@
 import * as types from "./actionTypes";
-import axios from "axios";
-
-const instance = axios.create({
-    baseURL: "http://localhost:8000",
-});
+import {instance} from "./apiActions";
 
 const typeToEndpoint = {
-    "student": "/account/students/",
-    "parent": "/account/parents/",
-    "instructor": "/account/instructors/",
-    "course": "/courses/catalog/",
-    "course category": "/courses/categories/",
+    "student": "/account/student/",
+    "parent": "/account/parent/",
+    "instructor": "/account/instructor/",
+    "course": "/course/catalog/",
 };
 
 const typeToFetchActions = {
     "student": [
-        types.FETCH_STUDENTS_SUCCESSFUL,
-        types.FETCH_STUDENTS_FAILED,
+        types.FETCH_STUDENT_SUCCESSFUL,
+        types.FETCH_STUDENT_FAILED,
     ],
     "parent": [
-        types.FETCH_PARENTS_SUCCESSFUL,
-        types.FETCH_PARENTS_FAILED,
+        types.FETCH_PARENT_SUCCESSFUL,
+        types.FETCH_PARENT_FAILED,
     ],
     "instructor": [
-        types.FETCH_INSTRUCTORS_SUCCESSFUL,
-        types.FETCH_INSTRUCTORS_FAILED,
+        types.FETCH_INSTRUCTOR_SUCCESSFUL,
+        types.FETCH_INSTRUCTOR_FAILED,
     ],
     "course": [
-        types.FETCH_COURSES_SUCCESSFUL,
-        types.FETCH_COURSES_FAILED,
-    ],
-    "course category": [
-        types.FETCH_CATEGORIES_SUCCESSFUL,
-        types.FETCH_CATEGORIES_FAILED,
+        types.FETCH_COURSE_SUCCESSFUL,
+        types.FETCH_COURSE_FAILED,
     ],
 };
 
-const typeToPostActions = {
+export const typeToPostActions = {
     "student": [
         types.POST_STUDENT_SUCCESSFUL,
         types.POST_STUDENT_FAILED,
@@ -54,7 +45,7 @@ const typeToPostActions = {
         types.POST_COURSE_FAILED,
     ],
     "course category": [
-        types.POST_CATEGORY_SUCCESSFUL,
+        types.POST_CATEGORY_SUCCESS,
         types.POST_CATEGORY_FAILED,
     ],
 };
@@ -63,9 +54,9 @@ export const fetchData = (type) => {
     if (typeToEndpoint.hasOwnProperty(type)) {
         const endpoint = typeToEndpoint[type];
         const [successAction, failAction] = typeToFetchActions[type];
-        return (dispatch) => instance.get(endpoint, {
-            headers: {
-                "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
+        return (dispatch, getState) => instance.get(endpoint, {
+            "headers": {
+                "Authorization": `Token ${getState().auth.token}`,
             },
         })
             .then(({data}) => {
@@ -86,7 +77,7 @@ export const postData = (type, body) => {
     if (typeToEndpoint.hasOwnProperty(type)) {
         const endpoint = typeToEndpoint[type];
         const [successAction, failAction] = typeToPostActions[type];
-        return (dispatch) => new Promise((resolve) => {
+        return (dispatch, getState) => new Promise((resolve) => {
             dispatch({
                 type: types.SUBMIT_INITIATED,
                 payload: null,
@@ -94,12 +85,12 @@ export const postData = (type, body) => {
             resolve();
         }).then(() => {
             instance.post(endpoint, body, {
-                headers: {
-                    "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
-                    "Content-Type": "application/json",
+                "headers": {
+                    "Authorization": `Token ${getState().auth.token}`,
                 },
             })
-                .then(({data}) => {
+                .then((response) => {
+                    let {data} = response;
                     dispatch({
                         type: successAction,
                         payload: data,
@@ -118,7 +109,7 @@ export const patchData = (type, body, id) => {
     if (typeToEndpoint.hasOwnProperty(type)) {
         const endpoint = typeToEndpoint[type];
         const [successAction, failAction] = typeToPostActions[type];
-        return (dispatch) => new Promise((resolve) => {
+        return (dispatch, getState) => new Promise((resolve) => {
             dispatch({
                 type: types.SUBMIT_INITIATED,
                 payload: null,
@@ -126,9 +117,8 @@ export const patchData = (type, body, id) => {
             resolve();
         }).then(() => {
             instance.patch(`${endpoint}${id}/`, body, {
-                headers: {
-                    "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
-                    "Content-Type": "application/json",
+                "headers": {
+                    "Authorization": `Token ${getState().auth.token}`,
                 },
             })
                 .then(({data}) => {
@@ -151,18 +141,18 @@ export const submitParentAndStudent = (parent, student, parentID, studentID) => 
     const parentEndpoint = typeToEndpoint["parent"];
     const [studentSuccessAction, studentFailAction] = typeToPostActions["student"];
     const [parentSuccessAction, parentFailAction] = typeToPostActions["parent"];
-    return (dispatch) => new Promise((resolve) => {
+    return (dispatch, getState) => new Promise((resolve) => {
         dispatch({
             type: types.SUBMIT_INITIATED,
             payload: null,
         });
         resolve();
     }).then(() => {
+        let formatDate = new Date(parent.birth_date).toISOString().substring(0,10);
         instance.request({
-            "data": parent,
+            "data": {...parent, birth_date: formatDate},
             "headers": {
-                "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
-                "Content-Type": "application/json",
+                "Authorization": `Token ${getState().auth.token}`,
             },
             "method": parentID ? "patch" : "post",
             "url": parentID ? `${parentEndpoint}${parentID}/` : parentEndpoint,
@@ -175,11 +165,10 @@ export const submitParentAndStudent = (parent, student, parentID, studentID) => 
                 instance.request({
                     "data": {
                         ...student,
-                        "parent": parentResponse.data.user.id,
+                        "primary_parent": parentResponse.data.user.id,
                     },
                     "headers": {
-                        "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
-                        "Content-Type": "application/json",
+                        "Authorization": `Token ${getState().auth.token}`,
                     },
                     "method": studentID ? "patch" : "post",
                     "url": studentID ? `${studentEndpoint}${studentID}/` : studentEndpoint,
@@ -197,3 +186,4 @@ export const submitParentAndStudent = (parent, student, parentID, studentID) => 
             });
     });
 };
+

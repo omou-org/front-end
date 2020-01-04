@@ -1,4 +1,5 @@
-/*Validations for various text inputs*/
+/* eslint-disable no-control-regex */
+/* Validations for various text inputs */
 
 export let InputValidation = (input, type) => {
     switch (type) {
@@ -14,8 +15,10 @@ export let InputValidation = (input, type) => {
             return AddressValidation(input);
         case "zipcode":
             return ZipCodeValidation(input);
-        case "birthday":
-            return BirthdayValidation(input);
+        case "date":
+            return DateValidation(input);
+        case "time":
+            return timeValidation(input);
         default:
             return Boolean(input);
     }
@@ -42,7 +45,7 @@ let ShortTextValidation = (input) => {
 // Address
 let AddressValidation = (input) => {
     // Old regex /\d{1,5}\s\w\s(\b\w*\b\s){1,2}?.\w*/
-    return !!input.match(/\d+[ ](?:[A-Za-z0-9.-]+[ ]?)+/);
+    return !!input.match(/^[a-zA-Z0-9\s,.'-]{3,}$/ );
 
 };
 
@@ -52,6 +55,14 @@ let ZipCodeValidation = (input) => {
 }
 
 // Birthday format to MM/DD/YYYY
-let BirthdayValidation = (input) => {
-    return !!input.match(/^((0|1)\d{1})\/((0|1|2)\d{1})\/((19|20)\d{2})/)
+let DateValidation = (input) => {
+    // TODO: proper date validation
+    // return !!input.match(/^((0|1)\d{1})\/((0|1|2|3)\d{1})\/((19|20)\d{2})/)
+    return true;
+}
+
+// Time format of HH:MM TODO: make actual time validation
+const timeValidation = (input) => {
+    // (/^(1[0-2]|0?[1-9]):[0-5][0-9] (a|A|p|P)(m|M)$/u).test(input);
+    return true;
 }

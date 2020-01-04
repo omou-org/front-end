@@ -1,11 +1,19 @@
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../actions/registrationActions";
+import * as userActions from "../../actions/userActions";
+import * as apiActions from "../../actions/apiActions";
+import * as adminActions from "../../actions/adminActions";
+import * as types from "actions/actionTypes";
 import React, {Component} from "react";
 import {Prompt} from "react-router";
-import {NavLink} from "react-router-dom";
+import {NavLink, withRouter} from "react-router-dom";
+import CreatableSelect from 'react-select/creatable';
+import {updateStudent, updateParent} from "reducers/usersReducer";
+import {updateCourse} from "reducers/courseReducer";
 
 // Material UI Imports
+import Loading from "components/Loading";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
@@ -34,6 +42,18 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import {DatePicker, TimePicker, MuiPickersUtilsProvider,} from "material-ui-pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+    categorySelectObject,
+    convertTimeStrToDate,
+    createDiscountPayload,
+    durationParser, gradeConverter, loadEditCourseState,
+    numSessionsParser,
+    timeParser,
+    weeklySessionsParser
+} from "./FormUtils";
+import TutoringPriceQuote from "./TutoringPriceQuote";
 
 const parseGender = {
     "M": "Male",
@@ -53,6 +73,7 @@ class Form extends Component {
             submitPending: false,
             preLoaded: false,
             existingUser: false,
+            "hasLoaded": false,
         };
     }
 
@@ -60,70 +81,13 @@ class Form extends Component {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
         const formType = this.props.match.params.type;
         const {id} = this.props.match.params;
+        this.props.userActions.fetchStudents();
+        this.props.userActions.fetchParents();
+        this.props.userActions.fetchInstructors();
+        this.props.registrationActions.initializeRegistration();
+        this.props.adminActions.fetchCategories();
         if (this.props.match.params.edit === "edit") {
             switch (formType) {
-                case "student": {
-                    const student = this.props.students[id];
-                    if (student) {
-                        const parent = this.props.parents[student.parent_id];
-                        prevState = {
-                            ...this.state,
-                            "Basic Information": {
-                                "Student First Name": student.first_name,
-                                "Student Last Name": student.last_name,
-                                "Gender": parseGender[student.gender],
-                                "Grade": student.grade,
-                                "Age": student.age,
-                                "School": student.school,
-                                "Student Email": student.email,
-                                "Student Phone Number": student.phone_number,
-                            },
-                            "Parent Information": {
-                                "Select Parent": {
-                                    value: parent.user_id,
-                                    label: `${parent.user_id}: ${parent.name} - ${parent.email}`,
-                                },
-                                "Parent First Name": parent.first_name,
-                                "Parent Last Name": parent.last_name,
-                                "Gender": parseGender[parent.gender],
-                                "Parent Email": parent.email,
-                                "Address": parent.address,
-                                "City": parent.city,
-                                "State": parent.state,
-                                "Zip Code": parent.zipcode,
-                                "Relationship to Student": parent.relationship,
-                                "Phone Number": parent.phone_number,
-                            },
-                            "Basic Information_validated": {
-                                "Student First Name": true,
-                                "Student Last Name": true,
-                                "Gender": true,
-                                "Grade": true,
-                                "Age": true,
-                                "School": true,
-                                "Student Email": true,
-                                "Student Phone Number": true,
-                            },
-                            "Parent Information_validated": {
-                                "Parent First Name": true,
-                                "Parent Last Name": true,
-                                "Gender": true,
-                                "Parent Email": true,
-                                "Address": true,
-                                "City": true,
-                                "State": true,
-                                "Zip Code": true,
-                                "Relationship to Student": true,
-                                "Phone Number": true,
-                            },
-                            "form": formType,
-                            "activeSection": "Basic Information",
-                            "nextSection": true,
-                            "preLoaded": true,
-                        };
-                    }
-                    break;
-                }
                 case "instructor": {
                     const instructor = this.props.instructors[id];
                     if (instructor) {
@@ -180,6 +144,51 @@ class Form extends Component {
                             "nextSection": true,
                             "preLoaded": true,
                         };
+                    }
+                    break;
+                }
+                case "course":{
+                    if(id && this.props.registeredCourses){
+                        if(id.indexOf("+")>=0){
+                            let studentID = id.substring(0,id.indexOf("+"));
+                            let courseID = id.substring(id.indexOf("+")+1);
+                            let {form} = this.props.registeredCourses[studentID].find(({course_id}) => {
+                                return course_id === courseID;
+                            });
+                            prevState = {
+                                ...form,
+                            };
+                        }
+                    }
+                    break;
+                }
+                case "tutoring":{
+                    if(id && this.props.registeredCourses){
+                        if(id.indexOf("+")>=0){
+                            let studentID = id.substring(0,id.indexOf("+"));
+                            let courseID = id.substring(id.indexOf("+")+1);
+                            let {form} = this.props.registeredCourses[studentID].find(({course_id}) => {
+                                return course_id === courseID;
+                            });
+                            prevState = {
+                                ...form
+                            };
+                        }
+                    }
+                    break;
+                }
+                case "small_group":{
+                    if(id && this.props.registeredCourses){
+                        if(id.indexOf("+")>=0){
+                            let studentID = id.substring(0,id.indexOf("+"));
+                            let courseID = id.substring(id.indexOf("+")+1);
+                            let {form} = this.props.registeredCourses[studentID].find(({course_id}) => {
+                                return course_id === courseID;
+                            });
+                            prevState = {
+                                ...form
+                            };
+                        }
                     }
                     break;
                 }
@@ -250,6 +259,214 @@ class Form extends Component {
         }
     }
 
+    componentDidMount() {
+        this.props.adminActions.fetchCategories();
+        const {id, edit, "type": formType} = this.props.match.params;
+        if (!this.props.isAdmin && (formType === "instructor" || formType === "course_details")) {
+            this.props.history.replace("/PageNotFound");
+        }
+        // this.props.userActions.fetchParents();
+        // this.props.userActions.fetchStudents();
+        // this.props.userActions.fetchInstructors();
+        if (edit === "edit") {
+            switch (formType) {
+                case "student": {
+                    this.props.userActions.fetchParents();
+                    (async () => {
+                        // creates a new action based on the response given
+                        const newAction = (type, response) => {
+                            this.props.dispatch({
+                                type,
+                                "payload": {
+                                    id,
+                                    response,
+                                },
+                            });
+                        };
+                        let student;
+                        try {
+                            const response = await apiActions.instance.get(
+                                `/account/student/${id}/`, {
+                                "headers": {
+                                    "Authorization": `Token ${this.props.token}`,
+                                },
+                            });
+                            // succesful request
+                            newAction(types.FETCH_STUDENT_SUCCESSFUL, response);
+                            student = updateStudent({}, id, response.data)[id];
+                            const parents = await apiActions.instance.get(
+                                `/account/parent/`, {
+                                "headers": {
+                                    "Authorization": `Token ${this.props.token}`,
+                                },
+                            });
+                            this.props.dispatch({
+                                "type": types.FETCH_PARENT_SUCCESSFUL,
+                                "payload": {
+                                    "id": -1,
+                                    "response": parents,
+                                },
+                            });
+                        } catch ({response}) {
+                            if (this.props.students[id]) {
+                                student = this.props.courses[id];
+                            } else {
+                                this.props.history.replace("/PageNotFound");
+                            }
+                        } finally {
+                            if (student) {
+                                const parent = this.props.parents[student.parent_id];
+                                this.setState((prevState) => ({
+                                    "Basic Information": {
+                                        "Student First Name": student.first_name,
+                                        "Student Last Name": student.last_name,
+                                        "Gender": parseGender[student.gender],
+                                        "Birthday": student.birthday,
+                                        "Grade": student.grade,
+                                        "School": student.school,
+                                        "Student Email": student.email,
+                                        "Student Phone Number": student.phone_number,
+                                    },
+                                    "Parent Information":
+                                        parent ? {
+                                        "Select Parent":{
+                                            "value": parent.user_id,
+                                            "label": `${parent.user_id}: ${parent.name} - ${parent.email}`,
+                                        },
+                                        "Parent First Name": parent.first_name,
+                                        "Parent Last Name": parent.last_name,
+                                        "Parent Birthday": parent.birthday,
+                                        "Gender": parseGender[parent.gender],
+                                        "Parent Email": parent.email,
+                                        "Address": parent.address,
+                                        "City": parent.city,
+                                        "State": parent.state,
+                                        "Zip Code": parent.zipcode,
+                                        "Relationship to Student": parent.relationship,
+                                         "Phone Number": parent.phone_number,
+                                        }: prevState["Parent Information"],
+                                    "preLoaded": true,
+                                }));
+                            }
+                        }
+                    })();
+                    break;
+                }
+                case "course_details": {
+                    this.props.userActions.fetchInstructors();
+                    (async () => {
+                        // creates a new action based on the response given
+                        const newAction = (type, response) => {
+                            this.props.dispatch({
+                                type,
+                                "payload": {
+                                    id,
+                                    response,
+                                },
+                            });
+                        };
+                        let course;
+                        try {
+                            const response = await apiActions.instance.get(
+                                `/course/catalog/${id}/`, {
+                                    "headers": {
+                                        "Authorization": `Token ${this.props.token}`,
+                                    },
+                                });
+                            // succesful request
+                            newAction(types.FETCH_COURSE_SUCCESSFUL, response);
+                            course = updateCourse({}, id, response.data)[id];
+                            const instructors = await apiActions.instance.get(
+                                `/account/parent/`, {
+                                "headers": {
+                                    "Authorization": `Token ${this.props.token}`,
+                                },
+                            });
+                            this.props.dispatch({
+                                "type": types.FETCH_INSTRUCTOR_SUCCESSFUL,
+                                "payload": {
+                                    "id": -1,
+                                    "response": instructors,
+                                },
+                            });
+                        } catch ({response}) {
+                            if (this.props.courses[id]) {
+                                course = this.props.courses[id];
+                            } else {
+                                this.props.history.replace("/PageNotFound");
+                            }
+                        } finally {
+                            if (course) {
+                                const inst = this.props.instructors[course.instructor_id];
+                                this.setState(loadEditCourseState(course,inst));
+                            }
+                        }
+                    })();
+                    break;
+                }
+                case "parent": {
+                    (async () => {
+                        // creates a new action based on the response given
+                        const newAction = (type, response) => {
+                            this.props.dispatch({
+                                type,
+                                "payload": {
+                                    id,
+                                    response,
+                                },
+                            });
+                        };
+                        let parent;
+                        try {
+                            const response = await apiActions.instance.get(
+                                `/account/parent/${id}/`, {
+                                    "headers": {
+                                        "Authorization": `Token ${this.props.token}`,
+                                    },
+                                });
+                            // succesful request
+                            newAction(types.FETCH_PARENT_SUCCESSFUL, response);
+                            parent = updateParent({}, id, response.data)[id];
+                        } catch {
+                            if (this.props.parents[id]) {
+                                parent = this.props.parents[id];
+                            } else {
+                                this.props.history.replace("/PageNotFound");
+                            }
+                        } finally {
+                            if (parent) {
+                                this.setState({
+                                    "Parent Information": {
+                                        "First Name": parent.first_name,
+                                        "Last Name": parent.last_name,
+                                        "Gender": parseGender[parent.gender],
+                                        "Email": parent.email,
+                                        "Address": parent.address,
+                                        "Birthday": parent.birthday,
+                                        "City": parent.city,
+                                        "State": parent.state,
+                                        "Zip Code": parent.zipcode,
+                                        "Relationship to Student(s)": parent.relationship,
+                                        "Phone Number": parent.phone_number,
+                                    },
+                                    "preLoaded": true,
+                                });
+                            }
+                        }
+                    })();
+                }
+                // no default
+            }
+        }
+        this.setState({
+            "hasLoaded": true,
+        })
+    }
+
+    componentWillUnmount = () => {
+        this.props.registrationActions.resetSubmitStatus();
+    }
+
     getFormObject() {
         return this.props.registrationForm[this.state.form];
     }
@@ -269,12 +486,13 @@ class Form extends Component {
         this.props.registrationActions.resetSubmitStatus();
     }
 
-    getStepContent(step, formType) {
-        return this.props.registrationForm[formType][step];
-    }
-
     validateSection() {
-        const currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
+        let currSectionTitle;
+        if(this.state.isSmallGroup){
+            currSectionTitle = "Student";
+        } else {
+            currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
+        }
         return (
             this.getActiveSection()
                 .filter(({required}) => required)
@@ -303,8 +521,12 @@ class Form extends Component {
 
     // Progresses to next section in registration form
     handleNext() {
-        const currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
+        let currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
         let section = this.props.registrationForm[this.state.form][this.state.activeSection];
+        if(this.state.isSmallGroup){
+            currSectionTitle = "Student";
+            section = this.props.registrationForm[this.state.form]["Student"];
+        }
         if (!Array.isArray(section)) {
             section = section[this.state.conditional];
         }
@@ -313,13 +535,26 @@ class Form extends Component {
         });
         this.setState((oldState) => {
             if (this.validateSection()) {
-                if (oldState.activeStep === this.getFormObject().section_titles.length - 1) {
+                if (oldState.activeStep === this.getFormObject().section_titles.length - 1 || oldState.isSmallGroup) {
                     if (!oldState.submitPending) {
                         if (this.props.match.params.edit === "edit") {
-                            this.props.registrationActions.submitForm(this.state,
-                                this.props.match.params.id);
+                            this.props.registrationActions.submitForm(this.state, this.props.match.params.id);
+                        } else if(this.state.form === "small_group") {
+                            if(this.state["Group Type"]["Select Group Type"] === "New Small Group"){
+                                this.props.apiActions.submitNewSmallGroup(this.state);
+                            } else {
+                                this.props.registrationActions.submitForm(this.state);
+                            }
                         } else {
-                            this.props.registrationActions.submitForm(this.state);
+                            if(this.state.form === "pricing"){
+                                this.props.adminActions.setPrice(this.state);
+                            } else if( this.state.form === "discount"){
+                                let discountType = this.state["Discount Description"]["Discount Type"];
+                                let discountPayload = createDiscountPayload(this.state, discountType);
+                                this.props.adminActions.setDiscount(discountType, discountPayload);
+                            } else {
+                                this.props.registrationActions.submitForm(this.state);
+                            }
                         }
                     }
                     return {
@@ -405,7 +640,7 @@ class Form extends Component {
                         emails = Object.values(this.props.students).map(({email}) => email);
                     }
                     // validate that email doesn't exist in database already
-                    isValid = !emails.includes(fieldValue) || this.state.preLoaded;
+                    isValid = !emails.includes(fieldValue) || oldState.preLoaded;
                     if (!isValid) {
                         oldState.existingUser = true;
                     }
@@ -414,6 +649,7 @@ class Form extends Component {
             } else {
                 oldState[`${sectionTitle}_validated`][field.name] = false;
             }
+
             return oldState;
         }, () => {
             this.setState({
@@ -438,14 +674,15 @@ class Form extends Component {
                         },
                         "Parent First Name": parent.first_name,
                         "Parent Last Name": parent.last_name,
-                        "Gender": parent.gender,
+                        "Gender": parseGender[parent.gender],
                         "Parent Email": parent.email,
+                        "Parent Birthday": parent.birthday,
                         "Address": parent.address,
                         "City": parent.city,
                         "State": parent.state,
                         "Zip Code": parent.zipcode,
                         "Relationship to Student": parent.relationship,
-                        "Parent Phone Number": parent.phone_number,
+                        "Phone Number": parent.phone_number,
                         "user_id": selectedParentID,
                     };
                     Object.keys(NewState[label]).forEach((key) => {
@@ -466,11 +703,12 @@ class Form extends Component {
                         "Gender": "",
                         "Parent Email": "",
                         "Address": "",
+                        "Parent Birthday": "",
                         "City": "",
                         "State": "",
                         "Zip Code": "",
                         "Relationship to Student": "",
-                        "Parent Phone Number": "",
+                        "Phone Number": "",
                         "user_id": "",
                     };
                     Object.keys(NewState[label]).forEach((key) => {
@@ -488,6 +726,322 @@ class Form extends Component {
             }, () => {
                 this.validateField(this.state.activeSection, field, value);
             });
+        }
+    }
+
+    onDateChange(date, label, fieldTitle) {
+        this.setState((prevState)=>{
+            prevState[label][fieldTitle] = date;
+            return {
+                ...prevState,
+                nextSection: this.validateSection(),
+            };
+        })
+    }
+
+    updatePriceFields(category, academicLevel, sessionDuration, numSessions){
+        this.setState((prevState)=>{
+            switch(prevState.form){
+                case "tutoring":{
+                    prevState["Student"]["Grade Level"] = academicLevel;
+                    prevState["Tutor Selection"]["Category"] = category;
+                    prevState["Schedule"]["Duration"] = sessionDuration;
+                    prevState["Schedule"]["Number of Sessions"] = numSessions;
+                    break;
+                }
+                case "small_group":{
+                    prevState["Group Details"]["Category"] = category;
+                    prevState["Group Details"]["Grade Level"] = academicLevel;
+                    prevState["Group Details"]["Duration"] = sessionDuration;
+                    prevState["Group Details"]["Number of Weekly Sessions"] = numSessions;
+                }
+            }
+            return {...prevState};
+        })
+    }
+
+    renderField(field, label, fieldIndex) {
+        const fieldTitle = field.name;
+        let disabled = this.state["Parent Information"] &&
+            Boolean(this.state["Parent Information"]["Select Parent"]) &&
+            this.state.activeSection === "Parent Information";
+        switch (field.type) {
+            case "price quote":
+                return <TutoringPriceQuote
+                    handleUpdatePriceFields={this.updatePriceFields.bind(this)}
+                    courseType={this.state.form}
+                />;
+            case "select":
+                let startTime = this.state[label]["Start Time"];
+                let endTime = this.state[label]["End Time"];
+                let parsedDuration = durationParser({start: startTime, end: endTime},fieldTitle, true);
+                let value, options;
+                if (parsedDuration && this.state[label][fieldTitle]){
+                    if(parsedDuration.duration){
+                        value = parsedDuration.duration;
+                        options = parsedDuration.options;
+                    }
+                } else {
+                    value = this.state[label][fieldTitle];
+                    options = field.options;
+                }
+                disabled = disabled && fieldTitle!== "Relationship to Student" && fieldTitle !=="Gender";
+                return (
+                    <FormControl className="form-control">
+                        <InputLabel shrink={Boolean(value)}>
+                            {fieldTitle}
+                        </InputLabel>
+                        <Select
+                            disabled={disabled}
+                            onChange={({"target": {value}}) => {
+                                this.onSelectChange(value, label, field);
+                            }}
+                            value={value}>
+                            {
+                                options.map((option) => (
+                                    <MenuItem
+                                        key={option}
+                                        value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))
+                            }
+                        </Select>
+                    </FormControl>
+                );
+            case "course": {
+                let courseList;
+                if(fieldTitle === "Select Group"){
+                    // filter for all of the groups
+                    courseList = Object.keys(this.props.courses)
+                        .filter((courseID) =>
+                            this.props.courses[courseID].capacity >
+                            this.props.courses[courseID].roster.length &&
+                            this.props.courses[courseID].capacity <= 5
+                        )
+                        .map((courseID) => ({
+                            "value": courseID,
+                            "label": this.props.courses[courseID].title + " #" + courseID,
+                        }));
+                } else {
+                    courseList = Object.keys(this.props.courses)
+                        .filter((courseID) =>
+                            this.props.courses[courseID].capacity >
+                            this.props.courses[courseID].roster.length)
+                        .map((courseID) => ({
+                            "value": courseID,
+                            "label": this.props.courses[courseID].title,
+                        }));
+                }
+
+                // remove preselected courses
+                courseList = this.removeDuplicates(Object.values(this.state[label]), courseList);
+                // count # of course fields in current section
+                const fieldCount = this.getActiveSection()
+                    .reduce((total, {type}) => total + (type === "course"), 0);
+                return (
+                    <div style={{width: "inherit"}}>
+                        <Grid container className={"student-align"} spacing={2000}>
+                            <SearchSelect
+                                disabled={disabled}
+                                value={this.state[label][fieldTitle]}
+                                onChange={(value) => {
+                                    this.onSelectChange(value, label, field);
+                                }}
+                                options={courseList}
+                                className="search-options" />
+                            {
+                                (fieldCount > 1) && !disabled &&
+                                <RemoveIcon color="primary" aria-label="Add" variant="extended"
+                                            className="button-remove-student"
+                                            onClick={(event) => {
+                                                event.preventDefault();
+                                                // deletes answer field from state
+                                                this.removeField(fieldIndex);
+                                                this.forceUpdate();
+                                            }}>
+                                </RemoveIcon>
+                            }
+                        </Grid>
+                    </div>
+                );
+            }
+            case "student": {
+                let studentList = [];
+
+                if(this.props.currentParent){
+                    this.props.parents[this.props.currentParent.user.id] &&
+                    this.props.parents[this.props.currentParent.user.id].student_ids.forEach((studentID) => {
+                        if(this.props.students[studentID]){
+                            let {user_id, name, email} = this.props.students[studentID];
+                            studentList.push({
+                                value: user_id,
+                                label: `${name} - ${email}`,
+                            });
+                        }
+                    });
+                } else {
+                    studentList = Object.values(this.props.students)
+                        .map(({user_id, name, email}) => ({
+                            value: user_id,
+                            label: `${name} - ${email}`,
+                        }));
+                }
+
+
+                studentList = this.removeDuplicates(Object.values(this.state[label]), studentList);
+
+                // count # of course fields in current section
+                const studentCount = this.getActiveSection()
+                    .reduce((total, {type}) => total + (type === "student"), 0);
+
+                return (
+                    <div style={{width: "inherit"}}>
+                        <Grid container className={"student-align"} spacing={2000}>
+                            <SearchSelect
+                                disabled={disabled}
+                                value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
+                                onChange={(value) => {
+                                    this.onSelectChange(value, label, field);
+                                }}
+                                placeholder={"Choose a Student"}
+                                options={studentList}
+                                className="search-options" />
+                            {
+                                studentCount > 1 && !disabled &&
+                                <RemoveIcon color="primary" aria-label="Add" variant="extended"
+                                            className="button-remove-student"
+                                            onClick={(event) => {
+                                                event.preventDefault();
+                                                // deletes answer field
+                                                this.removeField(fieldIndex);
+                                                this.forceUpdate();
+                                            }}>
+                                </RemoveIcon>
+                            }
+                        </Grid>
+                    </div>
+                );
+            }
+            case "instructor": {
+                let instructorList = this.props.instructors;
+
+                instructorList = Object.values(instructorList).map(({user_id, name, email}) => ({
+                    value: user_id,
+                    label: `${name} - ${email}`,
+                }));
+                instructorList = this.removeDuplicates(Object.values(this.state[label]), instructorList);
+                return (<div style={{width: "inherit"}}>
+                    <Grid container className="student-align">
+                        <SearchSelect
+                            disabled={disabled}
+                            value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
+                            onChange={(value) => {
+                                this.onSelectChange(value, label, field);
+                            }}
+                            placeholder={"Choose an Instructor"}
+                            options={instructorList}
+                            className="search-options" />
+                    </Grid>
+                </div>);
+            }
+            case "category" : {
+                const categoriesList = this.props.courseCategories
+                    .map(({id,name})=> ({
+                        value: id,
+                        label: name,
+                    }));
+                return (
+                    <SearchSelect
+                        className="search-options"
+                        isClearable
+                        onChange={(value) => {
+                            this.onSelectChange(value, label, field);
+                        }}
+                        placeholder={"Choose a Category"}
+                        value={this.state[label][fieldTitle]}
+                        options={categoriesList}
+                    />
+                );
+            }
+            case "select parent": {
+                const currParentList = Object.values(this.props.parents)
+                    .map(({user_id, name, email}) => ({
+                        value: user_id,
+                        label: `${name} - ${email}`,
+                    }));
+                return (
+                    <CreatableSelect
+                        createOptionPosition="first"
+                        className="search-options"
+                        isClearable
+                        onChange={(value) => {
+                            this.onSelectChange(value, label, field);
+                        }}
+                        onCreateOption={() => {
+                            this.onSelectChange(null, label, field);
+                        }}
+                        value={this.state[label][fieldTitle]}
+                        options={currParentList}
+                    />
+                );
+            }
+            case "date":
+                return <Grid container>
+                        <DatePicker
+                            animateYearScrolling
+                            margin="normal"
+                            label={fieldTitle}
+                            value={this.state[label][fieldTitle]}
+                            onChange={(date) =>{ this.onDateChange(date, label, fieldTitle) }}
+                            openTo={fieldTitle==="Birthday" ? "year" :"day"}
+                            error={!this.state[label + "_validated"][field.name]}
+                            format="MM/dd/yyyy"
+                            views={["year", "month", "date"]}
+                        />
+                    </Grid>;
+            case "time":
+                let time;
+                if(this.state[label][fieldTitle] && typeof this.state[label][fieldTitle] !== "string"){
+                    time = this.state[label][fieldTitle];
+                } else if(typeof this.state[label][fieldTitle] === "string"){
+                    time = timeParser(this.state[label][fieldTitle]);
+                }
+                return <Grid container>
+                    <TimePicker autoOk
+                                error={!this.state[label + "_validated"][field.name]}
+                                label={fieldTitle}
+                                value={time}
+                                onChange={(date) =>{ this.setState((prevState)=>{
+                                    prevState[label][fieldTitle] = date;
+                                    return prevState;
+                                }) } }/>
+                </Grid>;
+            default:
+                let textValue = numSessionsParser(this.state[label],field.name) || this.state[label][field.name];
+                return <TextField
+                    label={field.name}
+                    multiline={field.multiline}
+                    margin="normal"
+                    disabled={disabled}
+                    value={textValue}
+                    error={!this.state[label + "_validated"][field.name]}
+                    helperText={!this.state[label + "_validated"][field.name] ? field.name + " invalid" : ""}
+                    type={field.type === "number" ? "Number" : "text"}
+                    required={field.required}
+                    InputLabelProps={{
+                        "shrink": Boolean(textValue)
+                    }}
+                    fullWidth={field.full}
+                    onChange={(e) => {
+                        e.preventDefault();
+                        this.handleFieldUpdate.bind(this)(label, field, e.target.value);
+                    }}
+                    onBlur={(e) => {
+                        e.preventDefault();
+                        this.validateField.bind(this)(label, field, e.target.value);
+                    }}
+                />
         }
     }
 
@@ -523,169 +1077,6 @@ class Form extends Component {
         return uniqueVals;
     }
 
-    renderField(field, label, fieldIndex) {
-        let fieldTitle = field.name;
-        switch (field.type) {
-            case "select":
-                return <FormControl className={"form-control"}>
-                    <InputLabel htmlFor={fieldTitle}>{fieldTitle}</InputLabel>
-                    <Select
-                        displayEmpty={false}
-                        value={this.state[label][fieldTitle]}
-                        onChange={({target}) => {
-                            this.onSelectChange(target.value, label, field);
-                        }}>
-                        {
-                            field.options.map((option) => {
-                                return <MenuItem value={option} key={option}>
-                                    <em>{option}</em>
-                                </MenuItem>
-                            }
-
-                            )
-                        }
-                    </Select>
-                </FormControl>;
-            case "course": {
-                let courseList = Object.keys(this.props.courses)
-                    .filter((courseID) =>
-                        this.props.courses[courseID].capacity >
-                        this.props.courses[courseID].roster.length)
-                    .map((courseID) => ({
-                        "value": courseID,
-                        "label": this.props.courses[courseID].title,
-                    }));
-                // remove preselected courses
-                courseList = this.removeDuplicates(Object.values(this.state[label]), courseList);
-                // count # of course fields in current section
-                const fieldCount = this.getActiveSection()
-                    .reduce((total, {type}) => total + (type === "course"), 0);
-                return (
-                    <div style={{width: "inherit"}}>
-                        <Grid container className={"student-align"} spacing={2000}>
-                            <SearchSelect
-                                value={this.state[label][fieldTitle]}
-                                onChange={(value) => {
-                                    this.onSelectChange(value, label, field);
-                                }}
-                                options={courseList}
-                                className="search-options" />
-                            {
-                                (fieldCount > 1) &&
-                                <RemoveIcon color="primary" aria-label="Add" variant="extended"
-                                    className="button-remove-student"
-                                    onClick={(event) => {
-                                        event.preventDefault();
-                                        // deletes answer field from state
-                                        this.removeField(fieldIndex);
-                                        this.forceUpdate();
-                                    }}>
-                                </RemoveIcon>
-                            }
-                        </Grid>
-                    </div>
-                );
-            }
-            case "student": {
-                let studentList = Object.values(this.props.students)
-                    .map(({user_id, name, email}) => ({
-                        value: user_id,
-                        label: `${name} - ${email}`,
-                    }));
-
-                studentList = this.removeDuplicates(Object.values(this.state[label]), studentList);
-
-                // count # of course fields in current section
-                const studentCount = this.getActiveSection()
-                    .reduce((total, {type}) => total + (type === "student"), 0);
-
-                return (
-                    <div style={{width: "inherit"}}>
-                        <Grid container className={"student-align"} spacing={2000}>
-                            <SearchSelect
-                                value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
-                                onChange={(value) => {
-                                    this.onSelectChange(value, label, field);
-                                }}
-                                options={studentList}
-                                className="search-options" />
-                            {
-                                studentCount > 1 &&
-                                <RemoveIcon color="primary" aria-label="Add" variant="extended"
-                                    className="button-remove-student"
-                                    onClick={(event) => {
-                                        event.preventDefault();
-                                        // deletes answer field
-                                        this.removeField(fieldIndex);
-                                        this.forceUpdate();
-                                    }}>
-                                </RemoveIcon>
-                            }
-                        </Grid>
-                    </div>
-                );
-            }
-            case "instructor": {
-                let instructorList = this.props.instructors;
-
-                instructorList = Object.values(instructorList).map(({user_id, name, email}) => ({
-                    value: user_id,
-                    label: `${name} - ${email}`,
-                }));
-                instructorList = this.removeDuplicates(Object.values(this.state[label]), instructorList);
-                return (<div style={{width: "inherit"}}>
-                    <Grid container className="student-align" spacing={2000}>
-                        <SearchSelect
-                            value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
-                            onChange={(value) => {
-                                this.onSelectChange(value, label, field);
-                            }}
-                            options={instructorList}
-                            className="search-options" />
-                    </Grid>
-                </div>);
-            }
-            case "select parent": {
-                const currParentList = Object.values(this.props.parents)
-                    .map(({user_id, name, email}) => ({
-                        value: user_id,
-                        label: `${name} - ${email}`,
-                    }));
-                return (
-                    <SearchSelect
-                        className="search-options"
-                        isClearable
-                        onChange={(value) => {
-                            this.onSelectChange(value, label, field);
-                        }}
-                        value={this.state[label][fieldTitle]}
-                        options={currParentList}
-                    />
-                );
-            }
-            default:
-                return <TextField
-                    label={field.name}
-                    multiline={field.multiline}
-                    margin="normal"
-                    value={this.state[label][field.name]}
-                    error={!this.state[label + "_validated"][field.name]}
-                    helperText={!this.state[label + "_validated"][field.name] ? field.name + " invalid" : ""}
-                    type={field.type === "number" ? "Number" : "text"}
-                    required={field.required}
-                    fullWidth={field.full}
-                    onChange={(e) => {
-                        e.preventDefault();
-                        this.handleFieldUpdate.bind(this)(label, field, e.target.value);
-                    }}
-                    onBlur={(e) => {
-                        e.preventDefault();
-                        this.validateField.bind(this)(label, field, e.target.value);
-                    }}
-                />
-        }
-    }
-
     addField(field, fieldIndex) {
         const currentForm = this.getFormObject();
         let param = [this.state.form, this.state.activeSection, fieldIndex];
@@ -713,7 +1104,6 @@ class Form extends Component {
         }, () => {
             sessionStorage.setItem("form", JSON.stringify(this.state));
         });
-        // for some reason it isn't rerendering automatically
     }
 
     removeField(fieldIndex) {
@@ -755,9 +1145,20 @@ class Form extends Component {
     }
 
     renderForm() {
-        let {activeStep, nextSection} = this.state,
-            currentForm = this.props.registrationForm[this.state.form],
+        let {activeStep, nextSection} = this.state;
+        let currentForm,
+            steps;
+        if(this.state.isSmallGroup){
+            let {form_type, Student} = this.props.registrationForm[this.state.form];
+            currentForm = {
+                form_type: form_type,
+                Student: Student,
+            };
+            steps = ["Student"];
+        } else {
+            currentForm = this.props.registrationForm[this.state.form];
             steps = currentForm.section_titles;
+        }
         let section = this.getActiveSection();
         return (
             <Stepper
@@ -767,27 +1168,7 @@ class Form extends Component {
                 {
                     steps.map((label) => (
                         <Step key={label}>
-                            <StepLabel>
-                                {label}
-                                {/* {activeStep !== i &&
-                                    Object.entries(this.state[label]).map(([field, value]) => {
-                                        if (!value) {
-                                            return null;
-                                        }
-                                        if (value && value.hasOwnProperty("label")) {
-                                            value = value.label;
-                                        }
-
-                                        return (
-                                            <div key={field}>
-                                                <Typography className="field-title" align="left">
-                                                    {field}: {value}
-                                                </Typography>
-                                            </div>
-                                        );
-                                    })
-                                } */}
-                            </StepLabel>
+                            <StepLabel>{label}</StepLabel>
                             <StepContent>
                                 {
                                     section.map((field, j) => {
@@ -860,25 +1241,46 @@ class Form extends Component {
                 margin: "2%",
                 padding: "5px",
             }}>
-                <Typography align="left" style={{fontSize: "24px"}}>
-                    You have successfully registered!
-                </Typography>
-                <Typography align="left" style={{fontSize: "14px"}}>
-                    An email will be sent to you to confirm your registration
-                </Typography>
-                <Button
-                    align="left"
-                    component={NavLink}
-                    to="/registration"
-                    onClick={() => {
-                        this.props.registrationActions.resetSubmitStatus();
-                    }}
-                    style={{margin: "20px"}}
-                    className="button">Back to Registration</Button>
+                {
+                    this.state.form !== "pricing" && <>
+                        <Typography align="left" style={{fontSize: "24px"}}>
+                            You have successfully registered!
+                        </Typography>
+                        <Typography align="left" style={{fontSize: "14px"}}>
+                            An email will be sent to you to confirm your registration
+                        </Typography>
+                        <Button
+                            align="left"
+                            component={NavLink}
+                            to="/registration"
+                            onClick={() => {
+                                this.props.registrationActions.resetSubmitStatus();
+                            }}
+                            style={{margin: "20px"}}
+                            className="button">REGISTER MORE</Button>
+                    </>
+                }
+                {
+                    this.state.form === "pricing" &&
+                    <Button
+                        align="left"
+                        component={NavLink}
+                        to="/adminportal/tuition-rules"
+                        onClick={() => {
+                            this.props.registrationActions.resetSubmitStatus();
+                        }}
+                        style={{margin: "20px"}}
+                        className="button">VIEW PRICE RULES</Button>
+                }
                 <div className="confirmation-copy">
-                    <Typography className="title" align="left">Confirmation Copy</Typography>
+                    <Typography className="title" align="left">Confirmation</Typography>
                     {
-                        steps.map((sectionTitle) => (
+                        steps.map((sectionTitle) => {
+                            let sectionFields = this.state.conditional &&
+                                !Array.isArray(this.getFormObject()[sectionTitle])
+                                ? this.getFormObject()[sectionTitle][this.state.conditional]:
+                                this.getFormObject()[sectionTitle];
+                            return(
                             <div key={sectionTitle}>
                                 <Typography
                                     className="section-title"
@@ -886,7 +1288,7 @@ class Form extends Component {
                                     {sectionTitle}
                                 </Typography>
                                 {
-                                    this.getActiveSection().map(({field, type}) => {
+                                    sectionFields.map(({field, type}) => {
                                         let fieldVal = this.state[sectionTitle][field];
                                         if (fieldVal && fieldVal.hasOwnProperty("value")) {
                                             fieldVal = fieldVal.value;
@@ -901,60 +1303,137 @@ class Form extends Component {
                                                     {field || ""}
                                                 </Typography>
                                                 <Typography className="field-value" align="left">
-                                                    {fieldVal || "N/A"}
+                                                    { typeof fieldVal === "object" ? new Date(fieldVal).toLocaleString("eng-US") :  fieldVal || "N/A"}
                                                 </Typography>
                                             </div>
                                         );
                                     })
                                 }
                             </div>
-                        ))
+                        )
+                    })
                     }
                 </div>
             </div>
         );
     }
 
+    renderCourseRegistrationSubmission(){
+        if(this.props.registeredCourses){
+
+            let currentStudentID = this.state.Student.Student.value;
+            let registeredCourseForm = this.props.registeredCourses[currentStudentID];
+            registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
+
+            let currentStudentName = registeredCourseForm.display.student_name;
+            let currentCourseTitle = registeredCourseForm.display.course_name;
+
+
+            return <div>
+                <h3>{currentStudentName}</h3>
+                <h3>{currentCourseTitle}</h3>
+                <Button component={NavLink} to={"/registration"}
+                        className={"button"}>Register More</Button>
+                <Button component={NavLink} to={"/registration/cart"}
+                        className={"button"}>Checkout</Button>
+            </div>
+        } else {
+            // this.props.registrationActions.initializeRegistration();
+            return () => {
+                let currentStudentID = this.state.Student.Student.value;
+                let registeredCourseForm = this.props.registeredCourses[currentStudentID];
+                registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
+
+                let currentStudentName = registeredCourseForm.display.student_name;
+                let currentCourseTitle = registeredCourseForm.display.course_name;
+
+
+                return <div>
+                    <h3>{currentStudentName}</h3>
+                    <h3>{currentCourseTitle}</h3>
+                    <Button component={NavLink} to={"/registration"}
+                            className={"button"}>Register More</Button>
+                    <Button component={NavLink} to={"/registration/cart"}
+                            className={"button"}>Checkout</Button>
+                </div>
+            }
+        }
+
+    }
+
     renderTitle(id, type) {
+        if(this.props.title){
+            return this.props.title;
+        }
+        let title = "";
         switch (type) {
-            case "course":
-                return id ? this.props.courses[id].title : "";
+            case "course": {
+                const course = this.props.courses[id];
+                title = course ? course.title + " ": "";
+                break;
+            }
             case "student": {
                 const student = this.props.students[id];
-                return student ? student.name : "";
+                title = student ? student.name + " " : "";
+                break;
+            }
+            case "parent": {
+                const parent = this.props.parents[id];
+                title = parent ? parent.name + " ": "";
+                break;
+            }
+            case "course_details": {
+                const course = this.props.courses[id];
+                title = course ? course.title + " " : "";
+                break;
+            }
+            case "tutoring":{
+                title = "New ";
+                break;
             }
             default:
-                return "";
+                title = "";
+                break;
         }
+        return `${title} ${type.split("_").join(" ")} ${this.props.match.params.edit === "edit" ? "Edit" : "Registration"}`
     }
 
     render() {
+        if (!this.state.hasLoaded) {
+            return <Loading />;
+        }
         return (
             <Grid container className="">
                 {/* Determine if finished component is displayed. If not, then don't prompt */}
                 {this.state.submitPending ? "" : <Prompt message="Are you sure you want to leave?" />}
                 <Grid item xs={12}>
                     <Paper className={"registration-form paper"}>
-                        <BackButton
-                            warn={true}
-                            onBack={this.onBack}
-                            alertMessage={"Do you want to save your changes?"}
-                            alertConfirmText={"Yes, save changes"}
-                            confirmAction={"saveForm"}
-                            alertDenyText={"No, don't save changes"}
-                            denyAction={"default"}
-                        />
+                        {
+                            !this.props.location.pathname.includes("adminportal") &&
+                            <BackButton
+                                warn={true}
+                                onBack={this.onBack}
+                                alertMessage={"Do you want to save your changes?"}
+                                alertConfirmText={"Yes, save changes"}
+                                confirmAction={"saveForm"}
+                                alertDenyText={"No, don't save changes"}
+                                denyAction={"default"}
+                            />
+                        }
                         <Typography className="heading" align="left">
-                            {this.renderTitle(this.props.match.params.id, this.state.form)} {this.props.match.params.type} Registration
+                            {this.renderTitle(this.props.match.params.id, this.state.form)}
                         </Typography>
                         {
                             this.props.submitStatus !== "success" ?
                                 this.props.registrationForm[this.state.form] ?
-                                    this.renderForm.bind(this)() :
+                                    this.renderForm() :
                                     <Typography>
                                         Sorry! The form is unavailable.
                                     </Typography>
-                                : this.renderSubmitted()
+                                : this.state.form !== "course"  && this.state.form !== "tutoring"
+                                    && this.state.form !== "small_group" ?
+                                    this.renderSubmitted() :
+                                    this.renderCourseRegistrationSubmission()
                         }
                         <Modal
                             aria-labelledby="simple-modal-title"
@@ -1018,25 +1497,30 @@ class Form extends Component {
     }
 }
 
-function mapStateToProps(state) {
-    return {
-        courses: state.Course["NewCourseList"],
-        courseCategories: state.Course["CourseCategories"],
-        registrationForm: state.Registration["registration_form"],
-        submitStatus: state.Registration["submitStatus"],
-        parents: state.Users["ParentList"],
-        students: state.Users["StudentList"],
-        instructors: state.Users["InstructorList"],
-    };
-}
+const mapStateToProps = (state) => ({
+    "courses": state.Course["NewCourseList"],
+    "courseCategories": state.Course["CourseCategories"],
+    "registrationForm": state.Registration["registration_form"],
+    "registeredCourses": state.Registration["registered_courses"],
+    "currentParent": state.Registration["CurrentParent"],
+    "submitStatus": state.Registration["submitStatus"],
+    "parents": state.Users["ParentList"],
+    "students": state.Users["StudentList"],
+    "instructors": state.Users["InstructorList"],
+    "requestStatus": state.RequestStatus,
+    "token": state.auth.token,
+    "isAdmin": state.auth.isAdmin,
+});
 
-function mapDispatchToProps(dispatch) {
-    return {
-        registrationActions: bindActionCreators(registrationActions, dispatch),
-    };
-}
+const mapDispatchToProps = (dispatch) => ({
+    "registrationActions": bindActionCreators(registrationActions, dispatch),
+    "userActions": bindActionCreators(userActions, dispatch),
+    "apiActions": bindActionCreators(apiActions, dispatch),
+    "adminActions": bindActionCreators(adminActions, dispatch),
+    dispatch,
+});
 
-export default connect(
+export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps,
-)(Form);
+)(Form));

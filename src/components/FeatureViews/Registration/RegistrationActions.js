@@ -14,6 +14,11 @@ import { withStyles } from "@material-ui/core/styles";
 import "./registration.scss";
 import ListItemText from "@material-ui/core/ListItemText";
 import AssignmentIcon from "@material-ui/icons/Assignment";
+import SetParent from "./SetParentRegistration";
+import {bindActionCreators} from "redux";
+import * as registrationActions from "../../../actions/registrationActions";
+import {connect} from "react-redux";
+import ParentRegistrationActions from "./ParentRegistrationActions";
 
 const StyledMenu = withStyles({
     paper: {
@@ -52,7 +57,7 @@ function RegistrationActions(props) {
             direction="row"
             justify="flex-start"
             className="registration-action-control">
-            <Grid item>
+            <Grid item md={2}>
                 <Button component={NavLink} to="/registration/form/student"
                     variant="outlined"
                     color="secondary"
@@ -61,13 +66,29 @@ function RegistrationActions(props) {
                     New Student
                 </Button>
             </Grid>
+            <Grid item md={8}>
+                {
+                    props.registration.CurrentParent && <ParentRegistrationActions/>
+                }
+            </Grid>
+            <SetParent/>
         </Grid>
     );
 }
-
 RegistrationActions.propTypes = {
     courseTitle: PropTypes.string,
     admin: PropTypes.bool,
 };
 
-export default RegistrationActions;
+const mapStateToProps = (state) => ({
+    "registration": state.Registration,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    "registrationActions": bindActionCreators(registrationActions, dispatch),
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(RegistrationActions);

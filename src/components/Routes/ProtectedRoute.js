@@ -1,34 +1,31 @@
-import React from "react";
+import React, {useCallback} from "react";
+import {Redirect, Route} from "react-router-dom";
 import PropTypes from "prop-types";
-import {Route, Redirect} from "react-router-dom";
-import {connect} from "react-redux";
+import {useSelector} from "react-redux";
 
-function ProtectedRoute({component, render, auth, ...rest}) {
+const ProtectedRoute = ({component, render, ...rest}) => {
+    const token = useSelector(({auth}) => auth.token);
+
+    const renderFunc = useCallback(
+        () => token
+            ? component || render && render(rest)
+            : <Redirect
+                push
+                to="/login" />,
+        [token, component, render, rest]
+    );
+
     return (
         <Route
             {...rest}
             exact
-            render={() =>
-                auth.token
-                    ? component || (render && render(rest))
-                    : <Redirect push to="/login" />
-            } />
+            render={renderFunc} />
     );
-}
-
-ProtectedRoute.propTypes = {
-    component: PropTypes.any,
-    render: PropTypes.func,
-    auth: PropTypes.object,
 };
 
-const mapStateToProps = (state) => ({
-    auth: state.auth,
-});
+ProtectedRoute.propTypes = {
+    "component": PropTypes.any,
+    "render": PropTypes.func,
+};
 
-const mapDispatchToProps = () => ({});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ProtectedRoute);
+export default ProtectedRoute;

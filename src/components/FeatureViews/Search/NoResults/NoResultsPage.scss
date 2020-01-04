@@ -1,0 +1,29 @@
+@import "../../../../theme/colors";
+@import "../../../../theme/sizes.scss";
+
+@import url("https://fonts.googleapis.com/css?family=Roboto+Slab:400,700");
+
+.no-results{
+  width: 100%;
+  .paper {
+    padding: 3%;
+    .center {
+      margin: 10% 0 10% 0;
+      font-family: Roboto Slab;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 32px;
+      line-height: 52px;
+      text-align: center;
+     .left {
+      display: inline-block;
+      text-align: left;
+     }
+      .space {
+        padding: 1%;
+      }
+    }
+  }
+ 
+}
+

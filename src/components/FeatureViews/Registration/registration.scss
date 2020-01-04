@@ -2,6 +2,11 @@
 @import '../../../theme/sizes';
 /*Registration*/
 
+.no-underline {
+  text-decoration: none!important;
+  color: inherit;
+}
+
 .registration-action-control {
   padding: 1%;
 
@@ -37,7 +42,27 @@
         font-size: 1.5em;
       }
     }
+
+    &.set-parent{
+      background-color: $primaryDarkColor;
+      border:none !important;
+      color:white;
+      padding-left: 1.7em !important;
+      padding-right: 2.3em !important;
+      font-weight:600;
+      margin-right:0;
+      .circle-icon{
+        background-color: white;
+      }
+    }
   }
+}
+
+.circle-icon{
+  height: 20px;
+  width: 20px;
+  margin-right: 10px;
+  border-radius:100%;
 }
 
 .button.mobile-toggle {
@@ -54,6 +79,17 @@
 
 .paper.content {
   padding: 2%;
+}
+
+
+.NoteIcon{
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.TabIcon {
+  display: inline-flex;
+  vertical-align: middle;
 }
 
 .course-categories {
@@ -277,12 +313,6 @@
   padding: 2%;
   margin-top: 4%;
 
-  .fields-wrapper {
-    //-webkit-animation: 1s ease 1 fade-in;
-    //-o-animation: 1s ease 1 fade-in;
-    //animation: 1s ease 1 fade-in;
-  }
-
   .heading {
     margin-top: 50px;
     margin-left: 2%;
@@ -378,7 +408,23 @@
   font-size: 18px !important;
 }
 
+.notificationCourse {
+  background-color: orange!important;
+  position: absolute!important;
+  top: 10px!important;
+  left: 2.9em!important;
+
+  @include respond-to(medium-screens) {
+    left: 1.4em!important;
+  }
+
+  @include respond-to(handhelds) {
+    left: 1.4em!important;
+  }
+}
+
 .course-heading {
+  margin-top:10px;
   .icon {
     color: $lightPrimaryFontColor
   }
@@ -414,12 +460,11 @@
 
       .text, .chip {
         margin: 3px 55px 3px 0;
-        cursor: pointer;
       }
 
       .chip {
-        //width:auto;
         display: inline-flex;
+        cursor: pointer;
       }
     }
   }
@@ -443,6 +488,7 @@
   @include respond-to(handhelds){
     margin-top:35px;
   }
+  margin-top:5px;
 
   .status {
     top: -40px;
@@ -483,6 +529,7 @@
 
 // Registration Landing
 .RegistrationLanding {
+  min-height: 75vh;
   padding: 2%;
 
   .catalog-setting-wrapper{
@@ -518,7 +565,7 @@
 
       .course-detail {
         color: $secondaryFontColor;
-        font-size: 12px;
+        font-size: 14px;
         margin: 3px;
 
         .heading-det {
@@ -528,7 +575,8 @@
 
       .course-action {
         background-color: #F5F5F5;
-        height: 100px;
+        height: 120px;
+        overflow-y: hidden;
 
         .course-status {
           .stats, .label {
@@ -542,14 +590,10 @@
         }
       }
     }
-  }
-}
 
-.registration-filter {
-  .filter-options {
-    margin: 10px;
-    width: 300px;
-    text-align: left;
+    .row:hover {
+        border-left: solid 5px $primaryColor;
+    }
   }
 }
 
@@ -566,4 +610,78 @@
   display: flex;
   align-items: center;
   text-decoration: none;
+}
+
+// Registration Course Styling
+
+.registrationCourse{
+  .registration-course-tabs{
+    margin-bottom:10px;
+  }
+}
+
+// Registration Parent Styling
+.select-parent-dialog{
+  overflow-y: visible;
+  padding:10px;
+}
+.select-parent-search__menu{
+  position:relative;
+  z-index:2000;
+}
+.active-parent-dialog-content{
+  @include respond-to(medium-up-screens){
+    width:28vw;
+  }
+  @include respond-to(handhelds){
+    width:auto;
+  }
+  padding: 0 10% 10% 10%;
+}
+
+// Registration Cart Styling
+.registration-cart {
+  &.paper{
+    padding:$paperPadding;
+  }
+}
+
+// Registration Receipt
+.registration-receipt {
+  &.paper{
+    padding: $paperPadding;
+  }
+  .receipt-info{
+    margin-top:20px;
+    .label{
+      font-weight:bold;
+    }
+  }
+  .course-receipt{
+    padding: $paperPadding;
+    background-color:white !important;
+    margin-top: 10px;
+    margin-bottom:10px;
+  }
+  .enrolled-course{
+    .enrolled-course-title{
+      color:$primaryColor;
+      font-weight:500;
+      margin-bottom:10px;
+      font-size:14px;
+    }
+    .course-label{
+      color:$lightPrimaryFontColor;
+      font-weight:600;
+    }
+  }
+  .student-name{
+    span{
+      color:$lightPrimaryFontColor;
+    }
+    margin-bottom:20px;
+  }
+  .receipt-actions{
+    margin-top:60px;
+  }
 }
