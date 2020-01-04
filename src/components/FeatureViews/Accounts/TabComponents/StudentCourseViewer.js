@@ -37,7 +37,7 @@ const StudentCourseViewer = ({studentID, current = true}) => {
         if (!enrollments[studentID][courseID]) {
             return 0;
         }
-        console.log(enrollments[studentID][courseID].payment_list.map(payment=>payment));
+        // console.log(enrollments[studentID][courseID].payment_list.map(payment=>payment));
         return Object.values(
             enrollments[studentID][courseID].session_payment_status
         ).reduce(

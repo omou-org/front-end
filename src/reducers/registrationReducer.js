@@ -216,7 +216,7 @@ const addClassRegistration = (prevState, form) => {
     let enrollmentObject = {
         type: "class",
         student_id: studentID,
-        course_id: courseID,
+        course_id: Number(courseID),
         enrollment_note: studentInfoNote,
         sessions: 0,
         display:{

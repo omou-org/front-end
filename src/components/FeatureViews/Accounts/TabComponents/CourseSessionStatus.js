@@ -190,7 +190,7 @@ const CourseSessionStatus = (props) => {
         "Course Selection":{
             "Course":{
                 label: course.title,
-                value: course.course_id,
+                value: Number(course.course_id),
             },
         },
         "Course Selection_validated":{
@@ -210,7 +210,7 @@ const CourseSessionStatus = (props) => {
         "activeStep":0,
         "conditional": "",
         "existingUser": false,
-        "form": "course",
+        "form": "class",
         "hasLoaded":true,
         "preLoaded":false,
         "submitPending":false,

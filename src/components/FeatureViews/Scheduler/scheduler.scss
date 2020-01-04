@@ -7,132 +7,138 @@
 @import '../../../theme/sizes';
 
 // Session view
-.session-button{
-   .button {
-     left: 30px;
-     top: 15px;
-   }
-}
+.scheduler{
+  .scheduler-title{
+    margin-bottom:15px;
+  }
+  .session-button{
+    .button {
+      left: 30px;
+      top: 15px;
+    }
+  }
 
-.main-session-view{
-  margin-top: 2em;
-}
+  .main-session-view{
+    margin-top: 2em;
+  }
 
-.session-footer-buttons{
+  .session-footer-buttons{
     display: flex;
     width: 50%;
 
-}
-.session-view{
-  padding-left:
-  2%
-}
-
-.session-view-details{
-  padding: 1%;
-  @include respond-to(handhelds){
-    margin-top: 50px;
+  }
+  .session-view{
+    padding-left:
+            2%
   }
 
-  h5{
-    font-weight: 500
-  }
+  .session-view-details{
+    padding: 1%;
+    @include respond-to(handhelds){
+      margin-top: 50px;
+    }
 
-}
-
-
-
-
-
-.scheduler-header{
-  background-color : white;
-  margin-bottom: 20px;
-}
-
-
-.scheduler-header-firstSet{
-  flex: 1;          /* shorthand for: flex-grow: 1, flex-shrink: 1, flex-basis: 0 */
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-
-}
-
-.scheduler-header-date{
-
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-}
-
-.scheduler-header-last{
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-.fc-now-indicator{
-  border : 0 solid #43B5D9;
-}
-
-// ToolTip css are styled ul's
-.toolTip{
-  .ul{
-    padding-inline-start: 0 !important;
-    list-style : none;
+    h5{
+      font-weight: 500
+    }
 
   }
-  .container{
-    line-height: 2rem;
-
-  .clock_icon{
-  background-image: url('./icons/icons8-clock-64.png');
-  margin: 0;
-	padding-left: 25px ;
-	list-style: none;
-	background-repeat: no-repeat;
-	background-position: left center;
-  background-size: 20px;
 
 
-}
 
-.pin_icon{
-    background-image: url('./icons/icons8-place-marker-50.png');
-    margin: 0;
-    padding-left: 25px ;
-    list-style: none;
-    background-repeat: no-repeat;
-    background-position: left center;
-    background-size: 20px;
-}
 
-.teacher_icon{
-  background-image: url('./icons/icons8-teacher-24.png');
-  margin: 0;
-  padding-left: 25px ;
-  list-style: none;
-  background-repeat: no-repeat;
-  background-position: left center;
-  background-size: 20px;
-}
-.discription_icon{
-  background-image: url('./icons/icons8-topic-32.png');
-  margin: 0;
-  padding-left: 25px ;
-  list-style: none;
-  background-repeat: no-repeat;
-  background-position: left center;
-  background-size: 20px;
-  line-height: 1.2rem;
 
- }
+  .scheduler-header{
+    background-color : white;
+    margin-bottom: 20px;
+  }
 
+
+  .scheduler-header-firstSet{
+    flex: 1;          /* shorthand for: flex-grow: 1, flex-shrink: 1, flex-basis: 0 */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 
   }
+
+  .scheduler-header-date{
+
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+
+  .scheduler-header-last{
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .fc-now-indicator{
+    border : 0 solid #43B5D9;
+  }
+
+  // ToolTip css are styled ul's
+  .toolTip{
+    .ul{
+      padding-inline-start: 0 !important;
+      list-style : none;
+
+    }
+    .container{
+      line-height: 2rem;
+
+      .clock_icon{
+        background-image: url('./icons/icons8-clock-64.png');
+        margin: 0;
+        padding-left: 25px ;
+        list-style: none;
+        background-repeat: no-repeat;
+        background-position: left center;
+        background-size: 20px;
+
+
+      }
+
+      .pin_icon{
+        background-image: url('./icons/icons8-place-marker-50.png');
+        margin: 0;
+        padding-left: 25px ;
+        list-style: none;
+        background-repeat: no-repeat;
+        background-position: left center;
+        background-size: 20px;
+      }
+
+      .teacher_icon{
+        background-image: url('./icons/icons8-teacher-24.png');
+        margin: 0;
+        padding-left: 25px ;
+        list-style: none;
+        background-repeat: no-repeat;
+        background-position: left center;
+        background-size: 20px;
+      }
+      .discription_icon{
+        background-image: url('./icons/icons8-topic-32.png');
+        margin: 0;
+        padding-left: 25px ;
+        list-style: none;
+        background-repeat: no-repeat;
+        background-position: left center;
+        background-size: 20px;
+        line-height: 1.2rem;
+
+      }
+
+
+    }
+  }
+
 }
 
 

@@ -519,7 +519,12 @@ class Scheduler extends Component {
     render() {
         return (
             <Paper className="paper scheduler">
-                <Typography variant="h3" align="left">Scheduler</Typography>
+                <Typography
+                    className="scheduler-title"
+                    variant="h3"
+                    align="left">
+                    Scheduler
+                </Typography>
                 <br />
                 <Grid container
                       className="scheduler-wrapper"
