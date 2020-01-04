@@ -214,7 +214,6 @@ export const updateStudent = (students, id, student) => ({
 
 export const handleInstructorsFetch = (state, {id, response}) => {
     const {data} = response;
-    console.log(data);
     let {InstructorList} = state;
     if (id !== REQUEST_ALL) {
         InstructorList = updateInstructor(InstructorList, id, data);

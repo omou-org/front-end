@@ -63,7 +63,6 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
     };
     const {cash, creditCard, check, internationalCreditCard} = paymentMethod;
     const cleanTutoring = JSON.parse(JSON.stringify(tutoring));
-    console.log(cleanTutoring);
 
     const stateUpdated = (currentState, prevState) => {
         const initialValues = ["{}","[]"];

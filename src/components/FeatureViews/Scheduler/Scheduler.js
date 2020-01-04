@@ -63,7 +63,7 @@ class Scheduler extends Component {
             "viewValue": "timeGridDay",
             "filterValue": "class",
             "resourceFilterValue": "R",
-            "calendarFilterValue": "T",
+            "calendarFilterValue": "tutoring",
             "calendarIcon": true,
             "resourceIcon": false,
             "filterTypeCalendar": "",
@@ -77,10 +77,6 @@ class Scheduler extends Component {
             "timeGridDay": "day",
             "timeGridWeek": "week",
             "dayGridMonth": "month",
-        };
-        this.viewOptions = {
-            "T": "tutoring",
-            "C": "class",
         };
     }
 
@@ -278,7 +274,7 @@ class Scheduler extends Component {
                 config: {
                     params: {
                         time_frame: filter,
-                        view_option: this.viewOptions[this.state.calendarFilterValue],
+                        view_option: this.state.calendarFilterValue,
                         time_shift: 0,
                     }
                 }
@@ -299,7 +295,7 @@ class Scheduler extends Component {
             config: {
                 params: {
                     time_frame: this.calendarViewToFilterVal[this.state.viewValue],
-                    view_option: this.viewOptions[this.state.calendarFilterValue],
+                    view_option: this.state.calendarFilterValue,
                     time_shift: this.state.timeShift + 1,
                 }
             }
@@ -320,7 +316,7 @@ class Scheduler extends Component {
             config: {
                 params: {
                     time_frame: this.calendarViewToFilterVal[this.state.viewValue],
-                    view_option: this.viewOptions[this.state.calendarFilterValue],
+                    view_option: this.state.calendarFilterValue,
                     time_shift: this.state.timeShift - 1,
                 }
             }
@@ -341,7 +337,7 @@ class Scheduler extends Component {
             config: {
                 params: {
                     time_frame: this.calendarViewToFilterVal[this.state.viewValue],
-                    view_option: this.viewOptions[this.state.calendarFilterValue],
+                    view_option: this.state.calendarFilterValue,
                     time_shift: 0,
                 }
             }
@@ -440,7 +436,7 @@ class Scheduler extends Component {
                     config: {
                         params: {
                             time_frame: this.calendarViewToFilterVal[this.state.viewValue],
-                            view_option: this.viewOptions[event.target.value],
+                            view_option: event.target.value,
                             time_shift: this.state.timeShift,
                         }
                     }
@@ -570,8 +566,8 @@ class Scheduler extends Component {
                                                         <BootstrapInput name={"courseFilter"} id={"filter-calendar-type"}/>
                                                     }
                                                 >
-                                                    <MenuItem value={"C"}>Class</MenuItem>
-                                                    <MenuItem value={"T"}>Tutor</MenuItem>
+                                                    <MenuItem value={"course"}>Class</MenuItem>
+                                                    <MenuItem value={"tutoring"}>Tutoring</MenuItem>
                                                 </Select>
                                             </FormControl>
                                             :
