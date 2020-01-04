@@ -566,7 +566,7 @@ class Scheduler extends Component {
                                                         <BootstrapInput name={"courseFilter"} id={"filter-calendar-type"}/>
                                                     }
                                                 >
-                                                    <MenuItem value={"course"}>Class</MenuItem>
+                                                    <MenuItem value={"class"}>Class</MenuItem>
                                                     <MenuItem value={"tutoring"}>Tutoring</MenuItem>
                                                 </Select>
                                             </FormControl>

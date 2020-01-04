@@ -197,7 +197,6 @@ const failedSubmit = (state) => ({
 });
 
 const addClassRegistration = (prevState, form) => {
-    console.log(form);
     let studentID = form["Student"].Student.value;
     let studentName = form["Student"].Student.label;
     let courseID;
