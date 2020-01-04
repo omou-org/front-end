@@ -1,5 +1,5 @@
 import {connect, useSelector} from 'react-redux';
-import React, {Component, useState, useEffect, useMemo} from 'react';
+import React from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import {TableBody, TableHead} from "@material-ui/core";
@@ -15,16 +15,15 @@ import Typography from "@material-ui/core/Typography";
 
 function PaymentHistory({user_id})  {
     const Payments = useSelector(({Payments})=>Payments);
-    const Courses = useSelector(({Course})=>Course.NewCourseList);
     const parentPayment = Payments[user_id];
     const paymentStatus = usePaymentByParent(user_id);
-    let uniqueEnrolledCourses = parentPayment && [...new Set(Object.values(parentPayment).reduce((allEnrollments, payment)=> {
-        if(Array.isArray(allEnrollments)){
-            return allEnrollments.concat(payment.enrollments)
-        } else {
-            return payment.enrollments;
-        }
-    }).map(enrollment=>enrollment.course))];
+    // let uniqueEnrolledCourses = parentPayment && [...new Set(Object.values(parentPayment).reduce((allEnrollments, payment)=> {
+    //     if(Array.isArray(allEnrollments)){
+    //         return allEnrollments.concat(payment.enrollments)
+    //     } else {
+    //         return payment.enrollments;
+    //     }
+    // }).map(enrollment=>enrollment.course))];
 
     if(!paymentStatus || paymentStatus===1 ){
         if(isLoading(paymentStatus)){

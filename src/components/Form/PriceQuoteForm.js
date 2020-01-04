@@ -1,9 +1,7 @@
 // React Imports
-import React, {useCallback, useState, useEffect, useMemo, useRef} from "react";
-import {Redirect, useHistory} from "react-router-dom";
+import React, {useState, useEffect, useMemo} from "react";
+import {useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {logout} from "../../actions/authActions";
-import NavLinkNoDup from "../Routes/NavLinkNoDup";
 import PropTypes from "prop-types";
 
 // Material UI Imports

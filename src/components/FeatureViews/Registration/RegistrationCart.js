@@ -3,7 +3,6 @@ import React, {useState, useEffect, useMemo} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import BackArrow from "@material-ui/icons/ArrowBack";
-import { makeStyles } from "@material-ui/styles";
 import "./registration.scss";
 
 import {bindActionCreators} from "redux";
@@ -21,14 +20,6 @@ import NavLinkNoDup from "../../Routes/NavLinkNoDup";
 import TextField from "@material-ui/core/TextField";
 import PriceQuoteForm from "../../Form/PriceQuoteForm";
 import {durationParser} from "../../../actions/apiActions";
-
-const useStyles = makeStyles({
-    setParent: {
-        backgroundColor:"#39A1C2",
-        color: "white",
-        // padding: "",
-    }
-});
 
 function RegistrationCart(props) {
     const dispatch = useDispatch();

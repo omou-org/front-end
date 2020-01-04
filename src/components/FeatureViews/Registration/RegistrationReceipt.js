@@ -1,10 +1,7 @@
-import PropTypes from "prop-types";
 import React, {useState, useEffect, useMemo} from "react";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
-
-import { makeStyles } from "@material-ui/styles";
 
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
@@ -16,18 +13,10 @@ import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 import {usePayment, useSubmitRegistration} from "../../../actions/registrationHook";
 import Loading from "../../Loading";
-import {isFail, isLoading, isSuccessful, useParent, usePrevious} from "../../../actions/hooks";
+import {isFail, isLoading, isSuccessful, usePrevious} from "../../../actions/hooks";
 import {weeklySessionsParser} from "../../Form/FormUtils";
 import {GET} from "../../../actions/actionTypes";
 import BackButton from "../../BackButton";
-
-const useStyles = makeStyles({
-    setParent: {
-        backgroundColor:"#39A1C2",
-        color: "white",
-        // padding: "",
-    }
-});
 
 function RegistrationReceipt(props) {
     const currentPayingParent = useSelector((({Registration}) => Registration.CurrentParent));
@@ -54,7 +43,6 @@ function RegistrationReceipt(props) {
     const registrationStatus = useSubmitRegistration(Registration.registration);
 
     const parent = parents[params.parentID];
-    const parentStatus = useParent(params.parentID && params.parentID);
 
     const paymentStatus = usePayment(params.paymentID && params.paymentID);
 

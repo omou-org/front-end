@@ -1,10 +1,7 @@
-import React, {useMemo, useState, useEffect} from "react";
+import React, {useState} from "react";
 import IconButton from "@material-ui/core/es/IconButton";
 import FilterIcon from "@material-ui/icons/FilterList";
 import Menu from "@material-ui/core/es/Menu";
-import {useDispatch, useSelector} from "react-redux";
-import {bindActionCreators} from "redux";
-import * as adminActions from "../../../actions/adminActions";
 import { withStyles } from '@material-ui/core/styles';
 import blue from "@material-ui/core/es/colors/blue";
 import ReactSelect from "react-select";
@@ -24,20 +21,8 @@ const styles = theme => ({
 });
 
 function SessionFilters({onInstructorSelect, InstructorValue, InstructorOptions }){
-    const dispatch = useDispatch();
-    const api = useMemo(
-        () => ({
-            ...bindActionCreators(adminActions, dispatch),
-        }),
-        [dispatch]
-    );
     let [anchorEl, setAnchorEl ] = useState(null);
     let [open, setOpen] = useState(false);
-
-    const handleToggle = () => (e) =>{
-        e.preventDefault();
-        setOpen(!open);
-    };
 
     const handleClick = event => {
         setAnchorEl(event.currentTarget);

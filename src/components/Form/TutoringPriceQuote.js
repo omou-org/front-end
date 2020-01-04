@@ -1,22 +1,13 @@
 // React Imports
-import React, {useCallback, useState, useEffect, useMemo} from "react";
-import {Redirect, useHistory} from "react-router-dom";
+import React, {useState, useEffect, useMemo} from "react";
+import {useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {logout} from "../../actions/authActions";
-import NavLinkNoDup from "../Routes/NavLinkNoDup";
 import PropTypes from "prop-types";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
-import {FormControl} from "@material-ui/core";
-import FormLabel from "@material-ui/core/FormLabel";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/es/Typography/Typography";
-import Remove from "@material-ui/icons/Cancel"
-import Add from "@material-ui/icons/CheckCircle";
 
 // Local Component Imports
 import "./Form.scss"
@@ -33,7 +24,6 @@ import InputLabel from "@material-ui/core/InputLabel";
 
 const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
     const dispatch = useDispatch();
-    const history = useHistory();
     const api = useMemo(
         () => ({
             ...bindActionCreators(adminActions, dispatch),

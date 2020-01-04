@@ -2,7 +2,6 @@ import React, {useState, useEffect, useMemo} from "react";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
-import { makeStyles } from "@material-ui/styles";
 
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
@@ -25,14 +24,6 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 import {dayOfWeek} from "../../Form/FormUtils";
 import * as hooks from "actions/hooks";
-
-const useStyles = makeStyles({
-    setParent: {
-        backgroundColor:"#39A1C2",
-        color: "white",
-        // padding: "",
-    }
-});
 
 function DisplaySessionView({course, session, handleToggleEditing}) {
     const dispatch = useDispatch();

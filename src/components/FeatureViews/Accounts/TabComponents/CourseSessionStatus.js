@@ -20,8 +20,6 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Loading from "components/Loading";
 import Button from "@material-ui/core/Button";
-import {GET} from "../../../../actions/actionTypes";
-import {NEW_REGISTERING_PARENT} from "../../../../reducers/apiReducer";
 import Dialog from "@material-ui/core/es/Dialog/Dialog";
 import DialogTitle from "@material-ui/core/es/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
