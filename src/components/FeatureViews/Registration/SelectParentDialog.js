@@ -203,7 +203,7 @@ class SelectParentDialog extends React.Component {
                              options = {this.state.parentOptions}
                              onChange = {this.handleOnChange()}
                              onInputChange = {this.handleOnInputChange()}
-                             classname = "seect"
+                             className = "select"
                              placeholder = "Select Existing Parent"
                 />
                 <div className="selectButton">
