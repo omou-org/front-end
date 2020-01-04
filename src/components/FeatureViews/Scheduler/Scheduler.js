@@ -130,7 +130,7 @@ class Scheduler extends Component {
 
     formatSessions = (sessions, timeShift) => {
         return sessions.map((session) => {
-            let instructorName = this.props.courses && this.props.instructors[this.props.courses[session.course].instructor_id].name;
+            let instructorName = this.props.courses[session.course] && this.props.instructors[this.props.courses[session.course].instructor_id].name;
             return {
                 id: session.id,
                 courseID: session.course,
@@ -726,7 +726,6 @@ function mapStateToProps(state) {
         "courses": state.Course.NewCourseList,
         "sessions": state.Calendar.CourseSessions,
         "instructors": state.Users.InstructorList,
-
     };
 }
 

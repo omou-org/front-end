@@ -28,7 +28,6 @@ export default function course(state = initialState.SearchResults, {payload, typ
                 "searchQueryStatus":"failed",
             };
         case actions.GET_COURSE_SEARCH_QUERY_SUCCESS:
-            console.log(payload);
             return handleCourseSearchResults(state,payload);
         case actions.GET_COURSE_SEARCH_QUERY_FAILED:
             return {

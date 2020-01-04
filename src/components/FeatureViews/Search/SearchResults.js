@@ -14,9 +14,8 @@ import * as userActions from "../../../actions/userActions";
 import * as registrationActions from "../../../actions/registrationActions";
 import AccountFilters from "../../FeatureViews/Search/AccountFilters"
 import NoResultsPage from './NoResults/NoResultsPage';
-import Loading from "../../Loading";
 import MoreResultsIcon from "@material-ui/icons/KeyboardArrowRight";
-import {isLoading, isSuccessful, usePrevious} from "../../../actions/hooks";
+import CourseFilters from "./CourseFilters";
 
 const SearchResults = (props) => {
     const dispatch = useDispatch();
@@ -75,105 +74,110 @@ const SearchResults = (props) => {
 
     return (
         <Grid container className={'search-results'} >
-
-                    <Grid item xs={12}>
-                        <Paper className={'main-search-view'} >
-                            <Grid item xs={12} className="searchResults">
-                                <Typography
-                                    className={"search-title"}
-                                    variant={"h3"}
-                                    align={"left"}>
-                                    {numberOfResults()} Search Results for "{query}"
+            <Grid item xs={12}>
+                {(numberOfResults() !== 0) ?
+                <Paper className={'main-search-view'} >
+                    <Grid item xs={12} className="searchResults">
+                        <Typography
+                            className={"search-title"}
+                            variant={"h3"}
+                            align={"left"}>
+                            {numberOfResults()} Search Results for "{query}"
+                        </Typography>
+                    </Grid>
+                    <>
+                    {params.type === "account" ?
+                        <Grid item xs={12}>
+                            <Grid container>
+                                <AccountFilters />
+                            </Grid>
+                        </Grid>
+                        : ""}
+                    <hr />
+                    <Grid item xs={12} style={{ "position": "relative" }}>
+                        <Grid container
+                            justify={"space-between"}
+                            direction={"row"}
+                            alignItems="center">
+                            <Grid item className="searchResults">
+                                <Typography className={"resultsColor"} align={'left'} gutterBottom>
+                                    {accounts.length > 0 ? "Accounts" : ""}
                                 </Typography>
                             </Grid>
-                            {(numberOfResults() !== 0) ?
-                            <>
+                            {/*<Grid item >*/}
+                            {/*    <Chip label="See All Accounts"*/}
+                            {/*        className="searchChip"*/}
+                            {/*    />*/}
+                            {/*</Grid>*/}
+                        </Grid>
+                        <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} spacing={16} direction={"row"}>
                             {params.type === "account" ?
-                                <Grid item xs={12}>
-                                    <Grid container>
-                                        <AccountFilters />
+                                accounts.map((account) => (
+                                    <Grid item
+                                        sm={3}>
+                                        <AccountsCards user={account} key={account.user_id} />
                                     </Grid>
-                                </Grid>
-                                : ""}
-                            <hr />
-                            <Grid item xs={12} style={{ "position": "relative" }}>
-                                <Grid container
-                                    justify={"space-between"}
-                                    direction={"row"}
-                                    alignItems="center">
-                                    <Grid item className="searchResults">
-                                        <Typography className={"resultsColor"} align={'left'} gutterBottom>
-                                            {accounts.length > 0 ? "Accounts" : ""}
-                                        </Typography>
-                                    </Grid>
-                                    {/*<Grid item >*/}
-                                    {/*    <Chip label="See All Accounts"*/}
-                                    {/*        className="searchChip"*/}
-                                    {/*    />*/}
-                                    {/*</Grid>*/}
-                                </Grid>
-                                <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} spacing={16} direction={"row"}>
-                                    {params.type === "account" ?
-                                        accounts.map((account) => (
-                                            <Grid item
-                                                sm={3}>
-                                                <AccountsCards user={account} key={account.user_id} />
-                                            </Grid>
-                                        ))
-                                        :
-                                        accounts.length > 0 ?
-                                            accounts.slice(start, end).map((account) => (
-                                                <Grid item
-                                                    sm={3}>
-                                                    <AccountsCards user={account} key={account.user_id} />
-                                                </Grid>
-                                            ))
-                                            :
-                                            ""}
-                                    <Grid >
-                                        {accounts.length > 6 ?
-                                            <div onClick={displayMoreResults()}>
-                                                <MoreResultsIcon />
-                                            </div>
-                                            : ""
-                                        }
-                                    </Grid>
-
-                                </Grid>
-
-
-                            </Grid>
-                            {accounts.length && params.type !== "account"? <hr /> : ""}
-                            {
-                                params.type !== "account" ? <Grid item xs={12}>
-                                    <Grid container
-                                        justify={"space-between"}
-                                        direction={"row"}
-                                        alignItems="center">
-                                        <Grid item className="searchResults">
-                                            <Typography className={"resultsColor"} align={'left'} >
-                                                {courses.length > 0 ?
-                                                    "Courses" : ""
-                                                }
-                                            </Typography>
+                                ))
+                                :
+                                accounts.length > 0 ?
+                                    accounts.slice(start, end).map((account) => (
+                                        <Grid item
+                                            sm={3}>
+                                            <AccountsCards user={account} key={account.user_id} />
                                         </Grid>
-                                        {/*<Grid item style={{ "paddingRight": "1vh" }}>*/}
-                                        {/*    <Chip label="See All Courses"*/}
-                                        {/*        className="searchChip"*/}
-                                        {/*    />*/}
-                                        {/*</Grid>*/}
-                                    </Grid>
-                                    <Grid container direction={"row"} style={{ paddingLeft: 20, paddingRight: 20 }}>
-                                        {courses.slice(0, 4).map((course) => (
-                                            <CoursesCards course={course} key={course.course_id} />)
-                                        )}
-                                    </Grid>
-                                </Grid> : ""
-                            }
-                            </> :
-                                <NoResultsPage /> }
-                        </Paper>
+                                    ))
+                                    :
+                                    ""}
+                            <Grid >
+                                {accounts.length > 6 ?
+                                    <div onClick={displayMoreResults()}>
+                                        <MoreResultsIcon />
+                                    </div>
+                                    : ""
+                                }
+                            </Grid>
+
+                        </Grid>
+
+
                     </Grid>
+                    {accounts.length && params.type !== "account"? <hr /> : ""}
+                    {
+                        params.type !== "account" ? <Grid item xs={12}>
+                            <Grid container
+                                justify={"space-between"}
+                                direction={"row"}
+                                alignItems="center">
+                                <Grid item className="searchResults">
+                                    <Typography className={"resultsColor"} align={'left'} >
+                                        {courses.length > 0 && params.type !== "course" ? "Courses" : "" }
+                                    </Typography>
+                                    {
+                                        params.type === "course" ?
+                                            <Grid item xs={12}>
+                                                <Grid container>
+                                                    <CourseFilters />
+                                                </Grid>
+                                            </Grid> : ""
+                                    }
+                                </Grid>
+                                {/*<Grid item style={{ "paddingRight": "1vh" }}>*/}
+                                {/*    <Chip label="See All Courses"*/}
+                                {/*        className="searchChip"*/}
+                                {/*    />*/}
+                                {/*</Grid>*/}
+                            </Grid>
+                            <Grid container direction={"row"} style={{ paddingLeft: 20, paddingRight: 20 }}>
+                                {courses.slice(0, 4).map((course) => (
+                                    <CoursesCards course={course} key={course.course_id} />)
+                                )}
+                            </Grid>
+                        </Grid> : ""
+                    }
+                    </>
+                </Paper>:
+                        <NoResultsPage /> }
+            </Grid>
         </Grid>
     )
 };

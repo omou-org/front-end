@@ -21,7 +21,7 @@ const Search = (props) => {
     const [searchSuggestions, setSearchSuggestions] = useState([]);
 
     const [accountRequestConfig, setAccountRequestConfig] = useState({
-        params: { query: query.label, page: 1,  },
+        params: { query: query.label, page: 1, },
         headers: {"Authorization": `Token ${props.auth.token}`,}
     });
     const [courseRequestConfig, setCourseRequestConfig] = useState({
@@ -67,6 +67,8 @@ const Search = (props) => {
             }
             if(gradeFilter){
                 baseConfig.params["grade"] = Number(gradeFilter);
+                baseConfig.params["profile"] = "student";
+                api.updateSearchParam("account", "profile", "student");
             }
             if(sortAccount){
                 baseConfig.params["sort"] = sortAccount;
@@ -84,16 +86,26 @@ const Search = (props) => {
                 label: SearchQuery,
             };
             setQuery(quickQuery);
-            setCourseRequestConfig({
+            let baseConfig = {
                 ...courseRequestConfig,
                 params: {
                     query: SearchQuery,
                     page: coursePage,
                 }
-            });
+            };
+            if(courseType){
+                baseConfig.params["course"] = courseType;
+            }
+            if(availability){
+                baseConfig.params["availability"] = availability;
+            }
+            if(sortCourse){
+                baseConfig.params["sort"] = sortCourse;
+            }
+            setCourseRequestConfig(baseConfig);
             filterSuggestions();
         }
-    },[SearchQuery, courseType, availability, coursePage]);
+    },[SearchQuery, courseType, availability, sortCourse, coursePage]);
 
     const searchList = (newItem) => {
         let suggestions;
