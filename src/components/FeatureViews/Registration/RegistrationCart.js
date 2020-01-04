@@ -218,7 +218,6 @@ function RegistrationCart(props) {
 
     const renderPayment = (isOneCourse, selectedStudentID, selectedCourseID) =>{
         let selectedRegistration = props.registration.registered_courses[selectedStudentID].find(({course_id})=>{
-            console.log(selectedStudentID, selectedCourseID, course_id)
             if(selectedCourseID.indexOf("T") > -1){
                 return course_id === selectedCourseID;
             } else {
@@ -273,25 +272,30 @@ function RegistrationCart(props) {
             Object.entries(selectedCourses).forEach(([studentID, studentVal])=>{
                 Object.entries(studentVal).forEach(([courseID, courseVal])=>{
                     if(courseVal.checked){
+                        let course = props.registration.registered_courses[studentID].find((course)=>{
+                            if(course.type === "class" || course.type === "course") {
+                                return course.course_id === Number(courseID)
+                            } else {
+                                return course.course_id === courseID
+                            }
+                        });
                         if(courseID.indexOf("T") > -1){
                             //{category, academic_level, sessions, form}
-                            let tutoringCourse = props.registration.registered_courses[studentID].find((course)=>{
-                                return course.course_id === courseID
-                            });
-                            let {category, academic_level, form} = tutoringCourse;
+                            let {category, academic_level, form} = course;
                             courses["tutoring"].push({
                                 category_id: category,
                                 academic_level: academic_level,
                                 sessions: courseVal.sessions,
                                 duration: durationParser[form["Schedule"]["Duration"]],
                                 student_id: studentID,
-                                new_course: tutoringCourse.new_course,
+                                new_course: course.new_course,
                             });
                         } else {
                             courses["courses"].push({
                                 course_id: courseID,
                                 sessions: courseVal.sessions,
                                 student_id: studentID,
+                                enrollment: course.form.Enrollment,
                             });
                         }
                     }

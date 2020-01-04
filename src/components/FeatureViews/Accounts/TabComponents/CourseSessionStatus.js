@@ -186,7 +186,10 @@ const CourseSessionStatus = (props) => {
 
     let parentOfCurrentStudent = usersList.StudentList[studentID].parent_id;
 
+    console.log(enrollment);
+
     const courseToRegister = {
+        "Enrollment": enrollment.enrollment_id,
         "Course Selection":{
             "Course":{
                 label: course.title,

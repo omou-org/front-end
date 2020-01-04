@@ -135,6 +135,7 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
         e.preventDefault();
         let courseRegistrations = [];
         let tutoringRegistrations = [];
+
         // create course enrollments
         courses.forEach(course => {
             courseRegistrations.push(
@@ -142,6 +143,7 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
                     student: course.student_id,
                     course: course.course_id,
                     sessions: course.sessions,
+                    enrollment: course.enrollment,
                 });
         });
         tutoring.forEach(tutoring => {

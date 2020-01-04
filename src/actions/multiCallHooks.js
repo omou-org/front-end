@@ -52,8 +52,12 @@ export const useSubmitRegistration = (registrationDependencies) => {
                     });
                     const tutoringEnrollments = tutoringRegistrations.map((tutoringReg,i) =>
                         ({student: tutoringReg.student, course: TutoringCourses[i].data.id}));
-                    const courseEnrollments = classRegistrations.map( classReg =>
-                        ({student: classReg.student, course: classReg.course})).concat(tutoringEnrollments);
+                    // filter out classes were we're adding additional enrollments (there should be a valid enrollment id)
+                    const courseEnrollments = classRegistrations
+                        .filter( classReg => !classReg.enrollment)
+                        .map( classReg => ({student: classReg.student, course: classReg.course}))
+                            .concat(tutoringEnrollments);
+                    console.log(courseEnrollments);
 
                     const Enrollments = await Promise.all(courseEnrollments.map(enrollment =>
                         instance.request(
@@ -69,6 +73,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         type: types.POST_ENROLLMENT_SUCCESS,
                         payload: Enrollments,
                     });
+
                     const enrollmentSessions = (index) => {
                         if(index < classRegistrations.length){
                             return classRegistrations[index].sessions;
@@ -76,9 +81,19 @@ export const useSubmitRegistration = (registrationDependencies) => {
                             return tutoringRegistrations[index-(classRegistrations.length)].sessions;
                         }
                     };
-                    const registrations = Enrollments.map((enrollment, i) =>
+
+                    // Add back in filtered out existing enrollments
+                    const previouslyEnrolledCourses = classRegistrations
+                        .filter( classReg => classReg.enrollment);
+
+                    let registrations = Enrollments.map((enrollment, i) =>
                         ({ enrollment:enrollment.data.id, num_sessions: enrollmentSessions(i)})
                     );
+
+                    previouslyEnrolledCourses.forEach(({enrollment, sessions}) => {
+                       registrations.push({enrollment: enrollment, num_sessions: sessions});
+                    });
+
                     const finalPayment = await instance.request({
                         'url': paymentEndpoint,
                         ...requestSettings,
@@ -93,7 +108,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         type: types.POST_PAYMENT_SUCCESS,
                         payload: finalPayment,
                     });
-                    console.log(finalPayment);
+
                     setStatus({status:finalPayment.status, paymentID:finalPayment.data.id});
                 } catch (error){
                     if(!aborted){
