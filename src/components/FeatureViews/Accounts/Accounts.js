@@ -7,7 +7,6 @@ import Truncate from 'react-truncate';
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import { Card } from "@material-ui/core";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import ListView from "@material-ui/icons/ViewList";
@@ -21,7 +20,6 @@ import Button from "@material-ui/core/Button";
 import {NavLink, withRouter} from "react-router-dom";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import {addDashes, stringToColor} from "./accountUtils";
-import CardActions from "@material-ui/core/CardActions";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 
 import "./Accounts.scss";
@@ -167,7 +165,7 @@ class Accounts extends Component {
                                     <Avatar
                                         style={styles(row.name)}>{row.name.toUpperCase().match(/\b(\w)/g).join("")}
                                     </Avatar>
-                                    <Truncate lines={1} ellipsis={<span>... <a href='/link/to/article'>Read more</a></span>}>
+                                    <Truncate lines={1} ellipsis={<span>...</span>}>
                                         {row.name}
                                     </Truncate>
                                 </Grid>
@@ -187,7 +185,6 @@ class Accounts extends Component {
                                     event.stopPropagation();
                                 }}>
                                 <Grid
-                                    align="right"
                                     component={Hidden}
                                     mdDown>
                                     {
@@ -202,7 +199,6 @@ class Accounts extends Component {
                                     }
                                 </Grid>
                                 <Grid
-                                    align="right"
                                     component={Hidden}
                                     lgUp>
                                     <Button

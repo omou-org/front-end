@@ -1,11 +1,11 @@
 import * as types from "./actionTypes";
 import {submitParentAndStudent, postData, patchData, typeToPostActions} from "./rootActions";
-import {wrapGet, postCourse, formatCourse, wrapPost, instance} from "./apiActions";
+import {wrapGet, postCourse, formatCourse, wrapPost, instance, wrapPatch} from "./apiActions";
 
 const parseGender = {
-    "Male": "M",
-    "Female": "F",
-    "Do not disclose": "U",
+    "Male": "male",
+    "Female": "female",
+    "Do not disclose": "unspecified",
 };
 
 const parseDate = (date) => {
@@ -28,7 +28,7 @@ const parseTime = (time) => {
     // const hourNum = parseInt(hourStr, 10);
     // const hour = hourNum === 12 ? hourNum - 12 : hourNum;
     // const [minute, dayHalf] = secondPart.split(" ");
-    // console.log(time, typeof time);
+
     // if (dayHalf.toUpperCase() === "PM") {
     //     return `${hour + 12}:${minute}`;
     // }
@@ -61,7 +61,6 @@ export const removeField = (path, fieldIndex, conditional) =>
     ({type: types.REMOVE_FIELD, payload: [path, fieldIndex, conditional]});
 
 export const submitForm = (state, id) => {
-    console.log(state.form);
     switch (state.form) {
         case "student": {
             const student = {
@@ -104,7 +103,7 @@ export const submitForm = (state, id) => {
                 "zipcode": state["Parent Information"]["Zip Code"],
                 "relationship":
                     state["Parent Information"]["Relationship to Student"]
-                        .toUpperCase(),
+                        .toLowerCase(),
                 "birth_date": parseDate(state["Parent Information"]["Parent Birthday"]),
             };
             const selectedParent = state["Parent Information"]["Select Parent"];
@@ -155,6 +154,10 @@ export const submitForm = (state, id) => {
                 "zipcode": state["Basic Information"]["Zip Code"],
                 "age": 21,
                 "birth_date": parseDate(state["Basic Information"]["Date of Birth"]),
+                "subjects": state["Experience"]["Subject(s) Tutor Can Teach"],
+                "biography": state["Experience"]["Background"],
+                "experience": state["Experience"]["Teaching Experience (Years)"],
+                "language": state["Experience"]["Languages"],
             };
             if (id) {
                 return patchData("instructor", instructor, id);
@@ -163,17 +166,22 @@ export const submitForm = (state, id) => {
             }
         }
         case "course_details": {
-            const course = formatCourse(state["Course Info"],"C");
+            const course = formatCourse(state["Course Info"],"class");
 
             for (const key in course) {
                 if (course.hasOwnProperty(key) && !course[key]) {
                     delete course[key];
                 }
             }
+            const updatedCourse = {
+                ...course,
+                hourly_tuition: state["Tuition"]["Hourly Tuition"],
+                total_tuition: state["Tuition"]["Total Tuition"]
+            };
             if (id) {
-                return patchData("course", course, id);
+                return patchData("course", updatedCourse, id);
             } else {
-                return postData("course", course);
+                return postData("course", updatedCourse);
             }
         }
         case "tutoring":{
@@ -189,6 +197,31 @@ export const submitForm = (state, id) => {
             console.error(`Invalid form type ${state.form}`);
     }
 };
+
+export const patchCourse = (id,data) => wrapPatch(
+    '/course/catalog/',
+    [
+        types.PATCH_COURSE_STARTED,
+        types.PATCH_COURSE_SUCCESSFUL,
+        types.PATCH_COURSE_FAILED,
+    ],
+    {
+        id:id,
+        data:data,
+    }
+);
+
+export const fetchPayments = (id) => wrapGet(
+    '/payment/payment/',
+    [
+        types.GET_PAYMENT_STARTED,
+        types.GET_PAYMENT_SUCCESS,
+        types.GET_PAYMENT_FAILED,
+    ],
+    {
+        id:id,
+    }
+)
 
 export const resetSubmitStatus = () =>
     ({type: types.RESET_SUBMIT_STATUS, payload: null});
@@ -211,65 +244,71 @@ export const closeRegistration = () =>
 
 export const editRegistration = (editedRegistration) =>
     ({type: types.EDIT_COURSE_REGISTRATION, payload: editedRegistration});
-let courseEnrollmentEP = "/course/enrollment/"
-export const submitClassRegistration = (studentID, courseID) => wrapPost(
-    "/course/enrollment/",
-    [
-        types.POST_ENROLLMENT_STARTED,
-        types.POST_ENROLLMENT_SUCCESS,
-        types.POST_ENROLLMENT_FAILED,
-    ],
-    {
-        course:courseID,
-        student:studentID,
-    }
-);
 
-export const submitTutoringRegistration = (newTutoringCourse, studentID) => {
-    const enrollmentEndpoint = "/course/enrollment/";
-    const courseEndpoint = "/course/catalog/";
+export const addCourseRegistration = (form) =>
+    ({type: types.ADD_CLASS_REGISTRATION, payload:{...form}});
 
-    return (dispatch, getState) => new Promise((resolve) => {
+export const setParentAddCourseRegistration = (parentID, form) => {
+    const parentEndpoint = `/account/parent/${parentID}/`;
+    return (dispatch, getState) => new Promise((resolve) =>{
         dispatch({
-            type: types.POST_TUTORING_ENROLLMENT_STARTED,
-            payload: null,
+            type:types.FETCH_PARENT_STARTED,
+            payload:parentID,
         });
         resolve();
-    }).then(() => {
+    }).then(()=>{
         instance.request({
-            "data": {...newTutoringCourse},
-            "headers": {
+            "headers":{
                 "Authorization": `Token ${getState().auth.token}`,
             },
-            "method": "post",
-            "url": courseEndpoint,
+            "method":"get",
+            "url":parentEndpoint,
         })
-            .then((tutoringCourseResponse) => {
+            .then((parentResponse)=>{
                 dispatch({
-                    type: types.POST_COURSE_SUCCESSFUL,
-                    payload: tutoringCourseResponse.data,
+                    type: types.FETCH_PARENT_SUCCESSFUL,
+                    payload:{ id:parentID, response:parentResponse},
                 });
-                instance.request({
-                    "data": {
-                        "student": studentID,
-                        "course": tutoringCourseResponse.data.course_id
-                    },
-                    "headers": {
-                        "Authorization": `Token ${getState().auth.token}`,
-                    },
-                    "method": "post",
-                    "url": enrollmentEndpoint,
-                })
-                    .then((enrollmentResponse) => {
-                        dispatch({
-                            type: types.POST_ENROLLMENT_SUCCESS,
-                            payload: enrollmentResponse,
-                        });
-                    }, (error) => {
-                        dispatch({type: types.POST_ENROLLMENT_FAILED, payload: error});
-                    });
-            }, (error) => {
-                dispatch({type: types.POST_COURSE_FAILED, payload: error});
-            });
-    });
+                const {data} = parentResponse;
+                const parent = {
+                    ...data,
+                    user:{
+                        ...data.user,
+                        user_uuid: data.user.id,
+                        name: data.user.first_name + " " + data.user.last_name,
+                    }
+                };
+                dispatch({
+                    type: types.SET_PARENT,
+                    payload: parent,
+                });
+                dispatch({
+                    type: types.ADD_CLASS_REGISTRATION,
+                    payload: {...form},
+                });
+            })
+    })
 };
+
+export const initRegistration = (tutoringRegistrations, classRegistrations, paymentInfo) =>
+    ({
+        type: types.SET_REGISTRATION,
+        payload: {
+            tutoringRegistrations: tutoringRegistrations,
+            classRegistrations: classRegistrations,
+            payment: paymentInfo,
+        }
+    });
+
+const enrollmentEndpoint = "/course/enrollment/";
+const courseEndpoint = "/course/catalog/";
+
+export const addCourse = (course) => wrapPost(
+    '/course/catalog/',
+    [
+        types.POST_COURSE_STARTED,
+        types.POST_COURSE_SUCCESSFUL,
+        types.POST_COURSE_FAILED,
+    ],
+    course,
+);

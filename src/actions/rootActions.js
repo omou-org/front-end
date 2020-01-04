@@ -45,7 +45,7 @@ export const typeToPostActions = {
         types.POST_COURSE_FAILED,
     ],
     "course category": [
-        types.POST_CATEGORY_SUCCESSFUL,
+        types.POST_CATEGORY_SUCCESS,
         types.POST_CATEGORY_FAILED,
     ],
 };
@@ -89,7 +89,8 @@ export const postData = (type, body) => {
                     "Authorization": `Token ${getState().auth.token}`,
                 },
             })
-                .then(({data}) => {
+                .then((response) => {
+                    let {data} = response;
                     dispatch({
                         type: successAction,
                         payload: data,

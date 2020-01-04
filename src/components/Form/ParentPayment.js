@@ -39,7 +39,7 @@ const calcSessionCost = ({
 };
 
 const ParentPayment = (props) => {
-    const parent = props.parents[props.match.params.parentID];
+    const parent = props.parents[props.computedMatch.params.parentID];
 
     const sessionsMax = {};
     const initialSelectedRows = {};

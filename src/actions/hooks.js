@@ -1,89 +1,216 @@
 import * as types from "./actionTypes";
-import {instance, REQUEST_ALL, REQUEST_STARTED} from "./apiActions";
+import {instance, MISC_FAIL, REQUEST_ALL, REQUEST_STARTED} from "./apiActions";
+import {useCallback, useEffect, useMemo, useState, useRef} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {useState, useEffect} from "react";
+
+export const isFail = (...statuses) =>
+    statuses.some((status) =>
+        status && status !== REQUEST_STARTED &&
+        (status < 200 || status >= 300));
+
+export const isLoading = (...statuses) =>
+    statuses.some((status) => !status || status === REQUEST_STARTED) &&
+    !isFail(...statuses);
+
+export const isSuccessful = (...statuses) =>
+    statuses.every((status) => status && (status >= 200 && status < 300));
 
 /**
- * Get a student and status of the request
- * @param {*} studentID ID of student to fetch, empty to fetch all, or can be an array of IDs to fetch
- * @returns status
+ * Wrapper for hooks to use certain GET endpoints
+ * config is optional object passed to the request
+ * For the function used by the components:
+ * @param {Number} id Single ID to fetch, array of IDs to fetch data for,
+ * or undefined/null/falsey to fetch all (see second parameter)
+ * @param {Boolean} noFetchOnUndef If true, undefined/null/falsey does NOT
+ * fetch all (nothing is fetched). Useful with an ID that may be undefined
+ * until some other data comes in, in order to avoid a fetch all being called
+ * (Optimization).
+ * @returns {Number} status of the request (null if not started/canceled)
  */
-export const useStudent = (studentID) => {
+export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOnUndef) => {
     const token = useSelector(({auth}) => auth.token);
-    const [status, setStatus] = useState(REQUEST_STARTED);
+    const [status, setStatus] = useState(null);
     const dispatch = useDispatch();
+
+    const handleError = useCallback((error) => {
+        if (error && error.response && error.response.status) {
+            setStatus(error.response.status);
+        } else {
+            setStatus(MISC_FAIL);
+            console.error(error);
+        }
+    }, []);
+
+    const requestSettings = useMemo(() => ({
+        "headers": {
+            "Authorization": `Token ${token}`,
+        },
+        ...config,
+    }), [token]);
+
     useEffect(() => {
         let aborted = false;
-        if (!Array.isArray(studentID)) {
+        // no id passed
+        if (typeof id === "undefined" || id === null) {
+            // if not to be optimized (i.e. a request_all is wanted)
+            if (!noFetchOnUndef) {
+                (async () => {
+                    try {
+                        setStatus(REQUEST_STARTED);
+                        const response = await instance.get(
+                            endpoint,
+                            requestSettings
+                        );
+                        if (!aborted) {
+                            dispatch({
+                                "payload": {
+                                    "id": REQUEST_ALL,
+                                    response,
+                                },
+                                "type": successType,
+                            });
+                            setStatus(response.status);
+                        }
+                    } catch (error) {
+                        if (!aborted) {
+                            handleError(error);
+                        }
+                    }
+                })();
+            }
+        } else if (!Array.isArray(id)) {
+            // standard single item request
             (async () => {
-                const requestURL = studentID ? `/account/student/${studentID}/` : "/account/student/";
-
                 try {
-                    const response = await instance.get(requestURL, {
-                        "headers": {
-                            "Authorization": `Token ${token}`,
-                        },
-                    });
+                    setStatus(REQUEST_STARTED);
+                    const response = await instance.get(
+                        `${endpoint}${id}/`,
+                        requestSettings
+                    );
                     if (!aborted) {
-                        setStatus(response.status);
                         dispatch({
-                            "type": types.FETCH_STUDENT_SUCCESSFUL,
                             "payload": {
-                                "id": studentID || REQUEST_ALL,
+                                id,
                                 response,
                             },
+                            "type": successType,
                         });
+                        setStatus(response.status);
                     }
-                } catch (err) {
+                } catch (error) {
                     if (!aborted) {
-                        setStatus((err && err.response && err.response.status) || 600);
+                        handleError(error);
                     }
                 }
             })();
-        } else {
+        } else if (id.length > 0) {
+            // array of IDs to request (list of results requested)
             (async () => {
-                // creates a new action based on the response given
-                const newAction = (type, response) => {
-                    dispatch({
-                        type,
-                        "payload": {
-                            "id": studentID || REQUEST_ALL,
-                            response,
-                        },
-                    });
-                };
-
                 try {
-                    const response = await Promise.all(studentID.map((student) =>
-                        instance.get(`/account/student/${student}/`, {
-                            "headers": {
-                                "Authorization": `Token ${token}`,
-                            },
-                        })
+                    setStatus(REQUEST_STARTED);
+                    const response = await Promise.all(id.map(
+                        (individual) => instance.get(
+                            `${endpoint}${individual}/`,
+                            requestSettings
+                        )
                     ));
                     if (!aborted) {
-                        setStatus(response[0].status);
                         dispatch({
-                            "type": types.FETCH_STUDENT_SUCCESSFUL,
                             "payload": {
-                                "id": studentID,
+                                id,
                                 response,
                             },
+                            "type": successType,
                         });
-                        newAction(types.FETCH_STUDENT_SUCCESSFUL, response);
+                        setStatus(response.reduce((finalStatus, {status}) =>
+                            isFail(status) ? status :
+                            isFail(finalStatus) ? finalStatus :
+                            isLoading(status) ? status :
+                            finalStatus, 200));
                     }
-                } catch (err) {
+                } catch (error) {
                     if (!aborted) {
-                        setStatus((err && err.response && err.response.status) || 600);
+                        handleError(error);
                     }
                 }
             })();
         }
-
+        // if something about request changed (item to request, settings, etc.)
+        // discard old results and make new request
         return () => {
+            setStatus(null);
             aborted = true;
         };
-    }, [dispatch, studentID, token]);
-
+    }, [dispatch, id, token, noFetchOnUndef, requestSettings, handleError]);
     return status;
 };
+
+export const useStudent = wrapUseEndpoint(
+    "/account/student/",
+    types.FETCH_STUDENT_SUCCESSFUL
+);
+
+export const useParent = wrapUseEndpoint(
+    "/account/parent/",
+    types.FETCH_PARENT_SUCCESSFUL
+);
+
+export const useInstructor = wrapUseEndpoint(
+    "/account/instructor/",
+    types.FETCH_INSTRUCTOR_SUCCESSFUL
+);
+
+export const useCourse = wrapUseEndpoint(
+    "/course/catalog/",
+    types.FETCH_COURSE_SUCCESSFUL
+);
+
+export const useEnrollment = wrapUseEndpoint(
+    "/course/enrollment/",
+    types.FETCH_ENROLLMENT_SUCCESSFUL,
+);
+
+export const useEnrollmentByCourse = (courseID) => wrapUseEndpoint(
+    "/course/enrollment/",
+    types.FETCH_ENROLLMENT_SUCCESSFUL,
+    {
+        "params": {
+            "course_id": courseID,
+        },
+    }
+)(null);
+
+export const useEnrollmentByStudent = (studentID) => wrapUseEndpoint(
+    "/course/enrollment/",
+    types.FETCH_ENROLLMENT_SUCCESSFUL,
+    {
+        "params": {
+            "user_id": studentID,
+        },
+    }
+)(null);
+
+export const usePaymentByParent = (parentID) => wrapUseEndpoint(
+    "/payment/payment/",
+    types.GET_PAYMENT_PARENT_SUCCESS,
+    {
+        "params":{
+            "parent": parentID,
+        }
+    }
+)(null);
+
+// Hook
+export function usePrevious(value) {
+    // The ref object is a generic container whose current property is mutable ...
+    // ... and can hold any value, similar to an instance property on a class
+    const ref = useRef();
+
+    // Store current value in ref
+    useEffect(() => {
+        ref.current = value;
+    }, [value]); // Only re-run if value changes
+
+    // Return previous value (happens before update in useEffect above)
+    return ref.current;
+}

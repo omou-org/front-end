@@ -8,7 +8,7 @@
   height: 250px;
   position: relative;
   padding: 7%;
-  
+
   .noteNotification {
     float: right;
     color: red;
@@ -190,6 +190,11 @@
 .accounts-table-row>* {
   padding: 15px;
   cursor: pointer;
+
+  .table-header {
+    color: white;
+    font-weight: 500;
+  }
 }
 
 .accounts-table-heading,
@@ -242,8 +247,13 @@
 .course-session-status {
   padding: 3%;
 
+  .table-text {
+    color: white;
+    font-weight: 500;
+  }
+
   .sessions-left-chip {
-    border-radius: 15px;
+    border-radius: 150px;
     width: 150px;
     top: 23%;
     right: 8%;
@@ -258,3 +268,19 @@
 .payments-history {
   padding: 15px;
 }
+
+.session-actions{
+  height:100px;
+  .button {
+    &.add-sessions{
+      background-color: $primaryColor;
+      border:none !important;
+      color:white;
+      padding-left: 1.7em !important;
+      padding-right: 2.3em !important;
+      font-weight:600;
+      margin-right:0;
+    }
+  }
+}
+

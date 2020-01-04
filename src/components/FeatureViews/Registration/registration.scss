@@ -2,6 +2,11 @@
 @import "../../../theme/sizes";
 /*Registration*/
 
+.no-underline {
+  text-decoration: none!important;
+  color: inherit;
+}
+
 .registration-action-control {
   padding: 1%;
 
@@ -678,7 +683,47 @@
 
 // Registration Cart Styling
 .registration-cart {
-  &.paper {
-    padding: 3%;
+  &.paper{
+    padding:$paperPadding;
+  }
+}
+
+// Registration Receipt
+.registration-receipt {
+  &.paper{
+    padding: $paperPadding;
+  }
+  .receipt-info{
+    margin-top:20px;
+    .label{
+      font-weight:bold;
+    }
+  }
+  .course-receipt{
+    padding: $paperPadding;
+    background-color:white !important;
+    margin-top: 10px;
+    margin-bottom:10px;
+  }
+  .enrolled-course{
+    .enrolled-course-title{
+      color:$primaryColor;
+      font-weight:500;
+      margin-bottom:10px;
+      font-size:14px;
+    }
+    .course-label{
+      color:$lightPrimaryFontColor;
+      font-weight:600;
+    }
+  }
+  .student-name{
+    span{
+      color:$lightPrimaryFontColor;
+    }
+    margin-bottom:20px;
+  }
+  .receipt-actions{
+    margin-top:60px;
   }
 }

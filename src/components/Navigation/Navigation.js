@@ -21,41 +21,17 @@ import EventIcon from "@material-ui/icons/Event";
 
 // Local Component Imports
 import "./Navigation.scss";
-import Routes from "../Routes/rootRoutes";
 import CustomTheme from "../../theme/muiTheme";
-import Search from "../../components/FeatureViews/Search/Search";
-import NavBarRoutes from "../Routes/NavBarRoutes";
 import LoginPage from "../Authentication/LoginPage";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../actions/registrationActions";
 import DateFnsUtils from "@date-io/date-fns";
 import {MuiPickersUtilsProvider} from "material-ui-pickers";
-
-// const NavList = [
-//     // {
-//     //     "name": "Dashboard",
-//     //     "link": "/",
-//     //     "icon": <DashboardIcon />,
-//     // },
-//     // {
-//     //     "name": "Scheduler",
-//     //     "link": "/scheduler",
-//     //     "icon": <EventIcon />,
-//     // },
-//     {
-//     "name": "Accounts",
-//     "link": "/accounts",
-//     "icon": <AccountsIcon />,
-//     },
-//     {
-//         "name": "Registration",
-//         "link": "/registration",
-//         "icon": <AssignmentIcon />,
-//     },
-// ];
+import Routes from "../Routes/rootRoutes";
+import NavBarRoutes from "../Routes/NavBarRoutes";
 
 const Navigation = (props) => {
-
+    const {pathname} = useLocation();
     const dispatch = useDispatch();
     const {token, isAdmin} = useSelector(({auth}) => auth);
     // const isAdmin = useSelector(({auth}) => auth).isAdmin;
@@ -65,11 +41,11 @@ const Navigation = (props) => {
             //     "link": "/",
             //     "icon": <DashboardIcon />,
             // },
-            // {
-            //     "name": "Scheduler",
-            //     "link": "/scheduler",
-            //     "icon": <EventIcon />,
-            // },
+            {
+                "name": "Scheduler",
+                "link": "/scheduler",
+                "icon": <EventIcon />,
+            },
             {
                 "name": "Accounts",
                 "link": "/accounts",
@@ -86,7 +62,13 @@ const Navigation = (props) => {
                     "icon": <AdminIcon/>,
                 }
             ] :
-        [{
+        [
+            {
+                "name": "Scheduler",
+                "link": "/scheduler",
+                "icon": <EventIcon />,
+            },
+            {
             "name": "Accounts",
             "link": "/accounts",
             "icon": <AccountsIcon />,
@@ -99,9 +81,6 @@ const Navigation = (props) => {
         ];
 
     const [mobileOpen, setMobileOpen] = useState(false);
-    const {pathname} = useLocation();
-
-    console.log(token);
 
     const drawer = (
         <div className="DrawerList">
@@ -127,20 +106,19 @@ const Navigation = (props) => {
     );
 
 
-    const handleDrawerToggle = useCallback((event) => {
-        event.preventDefault();
+    const handleDrawerToggle = useCallback(() => {
         setMobileOpen((open) => !open);
     }, []);
 
     return (
         <MuiThemeProvider theme={CustomTheme}>
             <div className="Navigation">
-                <NavBarRoutes/>
+                <NavBarRoutes toggleDrawer={handleDrawerToggle} />
                 {
                     pathname !== "/login" && (
                         <nav className="OmouDrawer">
                             {
-                                token ? <div>
+                                token ? <>
                                     <Hidden
                                         implementation="css"
                                         smUp>
@@ -160,9 +138,8 @@ const Navigation = (props) => {
                                             {drawer}
                                         </Drawer>
                                     </Hidden>
-                                </div> : ""
+                                </> : ""
                             }
-
                         </nav>
                     )
                 }

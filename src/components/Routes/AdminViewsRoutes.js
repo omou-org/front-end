@@ -1,26 +1,33 @@
 // React Imports
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Switch } from "react-router-dom";
 import React from "react";
-import ManageTuition from "../FeatureViews/AdminPortal/ManageTuition";
+import TuitionRules from "../FeatureViews/AdminPortal/TuitionRules";
 import AdminRoute from "./AdminRoute";
 import Form from "../Form/Form";
 import ManageCategories from "../FeatureViews/AdminPortal/ManageCategories";
+import ManageDiscounts from "../FeatureViews/AdminPortal/ManageDiscounts";
 
 // Local Component Imports
 
-function AdminViewsRoutes(props) {
+function AdminViewsRoutes() {
 
     return (
         <Switch>
             <AdminRoute
-                path="/adminportal/manage-tuition"
-                render={(passedProps) => <ManageTuition {...passedProps}/> }/>
+                path="/adminportal/tuition-rules"
+                render={(passedProps) => <TuitionRules {...passedProps}/> }/>
             <AdminRoute
                 path="/adminportal/manage-course-categories"
                 render={(passedProps) => <ManageCategories {...passedProps}/>}/>
-            {/*<AdminRoute*/}
+            <AdminRoute
+                path={"/adminportal/manage-discounts"}
+                render={(passedProps) => <ManageDiscounts {...passedProps}/> }/>
             {/*    path="/adminportal/form/instructor"*/}
             {/*    render={(passedProps) => <Form {...passedProps}/> }/>*/}
+            <AdminRoute
+                exact
+                path={"/adminportal/form/:type?"}
+                render={(passedProps) => <Form title={"Set Price Rule"}/>}/>
             <AdminRoute
                 path="/adminportal/"
                 render={(passedProps) => <div/> }/>

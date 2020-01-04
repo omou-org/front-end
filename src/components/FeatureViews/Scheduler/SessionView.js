@@ -1,215 +1,142 @@
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as calenderActions from '../../../actions/calenderActions';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import * as calenderActions from "../../../actions/calendarActions";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
 import BackButton from "../../BackButton.js";
 import SessionActions from "./SessionActions";
-import '../../../theme/theme.scss';
-import './scheduler.scss'
+import "../../../theme/theme.scss";
+import "./scheduler.scss";
 import { NavLink } from "react-router-dom";
 // import TimeSelector from "../../Form/TimeSelector";
 
-//Material UI Imports
+import * as calendarActions from "../../../actions/calendarActions";
+import * as apiActions from "../../../actions/apiActions";
+import * as userActions from "../../../actions/userActions";
+import * as adminActions from "../../../actions/adminActions";
+
+// Material UI Imports
+import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-
-
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Radio from '@material-ui/core/Radio';
-import Typography from "@material-ui/core/Typography"
-
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Divider from "@material-ui/core/Divider"
-
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-
-import DialogTitle from '@material-ui/core/DialogTitle';
-
-
-import Button from "@material-ui/core/Button";
+import { parseTime } from "../../../actions/apiActions";
+import { GET } from "../../../actions/actionTypes";
+import DisplaySessionView from "./DisplaySessionView";
+import EditSessionView from "./EditSessionView";
 
 class SessionView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            open: false,
-            current: "current",
-            all: "all"
+            "editSelection": "current",
+            "editing": false,
+        };
+    }
+
+    componentDidMount() {
+        this.props.calendarActions.fetchSessions({ id: this.props.match.params.session_id });
+        this.props.apiActions.fetchCourses(this.props.match.params.course_id);
+        this.props.adminActions.fetchCategories();
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props !== prevProps &&
+            this.props.courseSessions.length !== 0 &&
+            Object.entries(this.props.courses).length !== 0) {
+            this.setState(() => {
+                const sessionData = this.props.courseSessions.find((session) => {
+                    return Number(session.course) === Number(this.props.match.params.course_id) &&
+                        Number(session.id) === Number(this.props.match.params.session_id);
+                });
+                sessionData["start"] = new Date(sessionData.start_datetime).getDay();
+
+                sessionData["startTime"] = new Date(sessionData.start_datetime)
+                                                .toLocaleTimeString("en-US",{
+                                                    hour12: true,
+                                                    timeStyle: "short",
+                                                });
+                sessionData["endTime"] = new Date(sessionData.end_datetime)
+                                                .toLocaleTimeString("en-US",{
+                                                    hour12: true,
+                                                    timeStyle: "short",
+                                                });
+                sessionData.start_datetime = new Date(sessionData.start_datetime);
+                sessionData.end_datetime = new Date(sessionData.end_datetime);
+                let courseData = this.props.courses[this.props.match.params.course_id];
+                if (courseData && !this.props.requestStatus["instructor"][GET][courseData.instructor_id]) {
+                    this.props.userActions.fetchInstructors(courseData.instructor_id);
+                }
+                return {
+                    sessionData,
+                    courseData,
+                };
+            });
+
         }
     }
 
-
-
-    handleOpen = () => {
-        this.setState({ open: true });
-    }
-
-    handleClose = () => {
-        this.setState({ open: false });
-    }
-
-
-
-    componentWillMount() {
-        this.setState(() => {
-            let sessionData = this.props.courseSessions[this.props.match.params.course_id][this.props.match.params.session_id]
-            let courseData = this.props.courses[this.props.match.params.course_id]
+    toggleEditing = (editSelection) =>{
+        this.setState((oldState=>{
             return {
-                sessionData: sessionData,
-                courseData: courseData
+                ...oldState,
+                editing: !oldState.editing,
+                editSelection: editSelection,
             }
-        })
-
-
+        }))
     }
 
     render() {
-
         return (
-            <Grid container className={'main-session-view'}>
-                <Paper className={'paper'} mt={"2em"} >
-                    <Grid item className={'session-button'}>
+            <Grid className="main-session-view" container>
+                <Paper
+                    className="paper session"
+                    mt="2em" style={{ width: "100%" }}>
+                    <Grid className="session-button" item>
                         <BackButton />
                     </Grid>
-                    <Divider />
-
-                    <Grid container className={'session-view'} ml={10} spacing={2}>
-                        <Grid item xs={12}>
-                            <Typography className={'session-view-title'} align={'left'} variant={'h3'}>
-                                {this.state.courseData.title}
-                            </Typography>
-                        </Grid>
-
-                        <Grid container className={"session-view-details"} spacing={10} align={'left'} >
-                            <Grid item xs={6} md={7} lg={2}>
-                                <Typography variant="h5"> Subject </Typography>
-                                <Typography varient="body1">{this.state.courseData.subject} </Typography>
-                            </Grid>
-
-                            <Grid item xs={'auto'}>
-                                <Typography variant="h5"> Date & Time </Typography>
-                                <Typography variant="body1">{this.state.sessionData.start}</Typography>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Typography variant="h5"> Teacher </Typography>
-                                <Typography variant="body1">{this.state.courseData.instructor_id}</Typography>
-                            </Grid>
-                            <Grid item xs={10}>
-                                <Typography variant="h5"> Description </Typography>
-                                <Typography variant="body1" style={{ width: "75%" }} > {this.state.courseData.description}   </Typography>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid container
-                        direction="row"
-                        justify="flex-end"
-                        className="session-detail-action-control"
-                    >
-                        <Grid item>
-                            <Button
-                                to="/"
-                                variant="outlined"
-                                color="secondary"
-                                className="button">
-                                Edit Session
-                            </Button>
-                        </Grid>
-                        <Grid item >
-                            <Button
-                                onClick={this.handleOpen}
-                                variant="outlined"
-                                color="secondary"
-                                className="button">
-                                Delete
-                            </Button>
-                        </Grid>
-                        <Grid item >
-                            <Button
-                                component={NavLink} to="/scheduler"
-                                variant="outlined"
-                                color="secondary"
-                                className="button">
-                                Return to scheduling
-                            </Button>
-                        </Grid>
-                    </Grid>
-
+                    <Divider/>
+                    {
+                        this.state.editing ?
+                            <EditSessionView
+                                course = {this.state.courseData}
+                                session = {this.state.sessionData}
+                                enrolledStudents = {this.state.students}
+                                editSelection = {this.state.editSelection}
+                                handleToggleEditing = {this.toggleEditing}
+                            /> :
+                            this.state.courseData && <DisplaySessionView
+                                course = {this.state.courseData}
+                                session = {this.state.sessionData}
+                                handleToggleEditing = {this.toggleEditing}
+                            />
+                    }
                 </Paper>
-
-
-
-                <Dialog
-                    maxWidth={'xs'}
-                    fullWidth={true}
-                    open={this.state.open}
-                    onClose={this.handleClose}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                    className="session-view-modal"
-                >
-                    <DialogTitle id="form-dialog-title">Delete</DialogTitle>
-                    <Divider />
-                    <DialogContent>
-                        <RadioGroup
-                            aria-label="delete"
-                            name="delete"
-                            onChange={this.handleChange}
-                        >
-                            <FormControlLabel
-                                value="current"
-                                control={<Radio color="primary" />}
-                                label="This Session"
-                                labelPlacement="end"
-                            />
-                            <FormControlLabel
-                                value="all"
-                                control={<Radio color="primary" />}
-                                label="All Sessions"
-                                labelPlacement="end"
-                            />
-                        </RadioGroup>
-
-                    </DialogContent>
-
-
-                    <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">
-                            Cancel
-          </Button>
-                        <Button onClick={this.handleClose} color="primary">
-                            Apply
-          </Button>
-                    </DialogActions>
-                </Dialog>
-
-            </Grid>
-
-        )
-
+            </Grid >
+        );
     }
 }
 
 SessionView.propTypes = {
-    sessionView: PropTypes.string
+    "sessionView": PropTypes.string,
 };
 
 function mapStateToProps(state) {
     return {
-        courses: state.Course["NewCourseList"],
-        courseCategories: state.Course["CourseCategories"],
-        students: state.Users["StudentList"],
-        instructors: state.Users["InstructorList"],
-        courseSessions: state.Course["CourseSessions"],
-
+        "courses": state.Course.NewCourseList,
+        "courseCategories": state.Course.CourseCategories,
+        "students": state.Users.StudentList,
+        "instructors": state.Users.InstructorList,
+        "courseSessions": state.Calendar.CourseSessions,
+        "requestStatus": state.RequestStatus,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        calenderActions: bindActionCreators(calenderActions, dispatch)
+        "calendarActions": bindActionCreators(calendarActions, dispatch),
+        "apiActions": bindActionCreators(apiActions, dispatch),
+        "userActions": bindActionCreators(userActions, dispatch),
+        "adminActions":bindActionCreators(adminActions, dispatch),
     };
 }
 

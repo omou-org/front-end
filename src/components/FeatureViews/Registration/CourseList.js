@@ -1,24 +1,15 @@
+import PropTypes from "prop-types";
 import React from "react";
-import {Link} from "react-router-dom";
 import {connect, useSelector} from "react-redux";
 
 // Material UI Imports
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
+import {Link} from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
-
-const weekday = {
-    "0": "Sun",
-    "1": "Mon",
-    "2": "Tue",
-    "3": "Wed",
-    "4": "Thu",
-    "5": "Fri",
-    "6": "Sat",
-};
 
 const CourseList = (props) => {
     let filteredCourses = props.filteredCourses;
@@ -28,7 +19,7 @@ const CourseList = (props) => {
             end_date = new Date(course.schedule.end_date),
             start_time = course.schedule.start_time && course.schedule.start_time.substr(1),
             end_time = course.schedule.end_time && course.schedule.end_time.substr(1),
-            days = course.schedule.days && course.schedule.days.map((day) => weekday[day]);
+            days = course.schedule.days;
         start_date = start_date && start_date.toDateString().substr(3);
         end_date = end_date && end_date.toDateString().substr(3);
         const date = `${start_date} - ${end_date}`,
@@ -56,12 +47,10 @@ const CourseList = (props) => {
                         </Typography>
                     </Grid>
                     <Grid
-                        // component={Link}
                         item
                         md={5}
                         style={{"textDecoration": "none",
                             "cursor": "pointer"}}
-                        // to={`/registration/course/${course.course_id}`}
                         xs={12}>
                         <Grid
                             className="course-detail"
@@ -98,7 +87,7 @@ const CourseList = (props) => {
                                 item
                                 md={8}
                                 xs={9}>
-                                { course.instructor_id && instructors[course.instructor_id].name}
+                                {course.instructor_id && (instructors[course.instructor_id] && instructors[course.instructor_id].name)}
                             </Grid>
                         </Grid>
                         <Grid
@@ -117,7 +106,7 @@ const CourseList = (props) => {
                                 item
                                 md={8}
                                 xs={9}>
-                                {course.tuition && `$ ${course.tuition}`}
+                                {course.total_tuition && `$${course.total_tuition}`}
                             </Grid>
                         </Grid>
                     </Grid>
@@ -146,10 +135,11 @@ const CourseList = (props) => {
                                 item
                                 xs={6}>
                                 {
-                                    props.registration.CurrentParent && <Button
+                                    (props.registration.CurrentParent !== "none" && props.registration.CurrentParent) &&
+                                    <Button
                                         className="button primary"
                                         component={Link}
-                                        disabled={course.capacity <= course.filled}
+                                        disabled={course.capacity <= course.roster.length}
                                         to={`/registration/form/course/${course.course_id}`}
                                         variant="contained">+ REGISTER
                                     </Button>
@@ -161,6 +151,10 @@ const CourseList = (props) => {
             </Paper>
         );
     });
+};
+
+CourseList.propTypes = {
+    "filteredCourses": PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 const mapStateToProps = (state) => ({

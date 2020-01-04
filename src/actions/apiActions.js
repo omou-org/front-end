@@ -3,11 +3,14 @@ import * as types from "./actionTypes";
 import axios from "axios";
 import {POST_COURSE_SUCCESSFUL} from "./actionTypes";
 import {typeToPostActions} from "./rootActions";
+import {fetchCategories} from "./adminActions";
+import {academicLevelParse} from "../reducers/registrationReducer";
 
 export const instance = axios.create({
     "baseURL": process.env.REACT_APP_DOMAIN,
 });
 
+export const MISC_FAIL = 600;
 export const REQUEST_ALL = -1;
 export const REQUEST_STARTED = 1;
 
@@ -29,10 +32,11 @@ export const wrapGet = (endpoint, [startType, successType, failType], {id, confi
 
         const requestURL = id ? `${endpoint}${id}/` : endpoint;
         try {
-            const response = await instance.get(requestURL, config || {
+            const response = await instance.get(requestURL, {
                 "headers": {
                     "Authorization": `Token ${getState().auth.token}`,
                 },
+                ...(config || {}),
             });
             // successful request
             newAction(successType, response);
@@ -53,7 +57,7 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
                 },
             });
         };
-
+        console.log("posting course")
         // request starting
         newAction(startType, {});
 
@@ -63,11 +67,11 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
                     "Authorization": `Token ${getState().auth.token}`,
                 },
             });
-            // succesful request
+            console.log(response);
+            // successful request
             newAction(successType, response);
         } catch ({response}) {
             // failed request
-            console.log(response);
             newAction(failType, response);
         }
     };
@@ -94,10 +98,39 @@ export const wrapPatch = (endpoint, [startType, successType, failType], {id, dat
                     "Authorization": `Token ${getState().auth.token}`,
                 },
             });
-            // succesful request
+            // successful request
             newAction(successType, response);
         } catch ({response}) {
             // failed request
+            newAction(failType, response);
+        }
+    };
+
+export const wrapDelete = (endpoint, [startType, successType, failType], {id, config}) =>
+    async (dispatch, getState) => {
+        // creates a new actions based on the response given
+        const newAction = (type, response) => {
+            dispatch({
+                type,
+                "payload": {
+                    id,
+                    response,
+                },
+            });
+        };
+
+        //request starting
+        newAction(startType, {});
+
+        try{
+            const response = await instance.delete(`${endpoint}${id}/`, config || {
+                "headers": {
+                    "Authorization": `Token ${getState().auth.token}`,
+                },
+            });
+            // successful response
+            newAction(successType, response);
+        } catch ({response}) {
             newAction(failType, response);
         }
     };
@@ -123,8 +156,7 @@ export const submitNewSmallGroup = (form) => {
         });
         resolve();
     }).then(() => {
-        let newCourse = formatCourse(form["Group Details"],"T");
-        console.log(newCourse);
+        let newCourse = formatCourse(form["Group Details"],"small_group");
         instance.request({
             "data": newCourse,
             "headers": {
@@ -133,7 +165,6 @@ export const submitNewSmallGroup = (form) => {
             "method": "post",
             "url": `${courseEndpoint}` ,
         }).then((courseResponse) => {
-                console.log(courseResponse);
                 dispatch({
                     type: types.ADD_SMALL_GROUP_REGISTRATION,
                     payload: {formMain: form, new_course: courseResponse.data},
@@ -144,9 +175,19 @@ export const submitNewSmallGroup = (form) => {
     });
 };
 
-export const formatCourse = (formCourse, type) =>{
-    let startDate = new Date(formCourse["Start Date"]);
+export const durationParser = {
+    "0.5 Hours": 0.5,
+    "1 Hour": 1,
+    "1.5 Hours": 1.5,
+    "2 Hours": 2,
+    0.5 : "0.5 Hours",
+    1: "1 Hour",
+    1.5 : "1.5 Hours",
+    2: "2 Hours",
+};
 
+export const formatCourse = (formCourse, type) =>{
+    console.log(formCourse)
     let dayOfWeek = ()=>{
         switch(startDate.getDay()){
             case 0:
@@ -165,38 +206,67 @@ export const formatCourse = (formCourse, type) =>{
                 return "Sat";
         }
     }
-    let endDate = new Date(formCourse["End Date"]).toISOString().substring(0,10);
-    let startTime = parseTime(formCourse["Start Time"]);
-    let endTime = parseTime(formCourse["End Time"]);
+    let startDate = new Date(formCourse["Start Date"]);
+    let day = dayOfWeek();
+    let endDate = new Date(startDate);
+    endDate = new Date(endDate.setDate(startDate.getDate() + 7*formCourse["Number of Weekly Sessions"]));
+    let dateFormat = {
+        year:"numeric",
+        month:"2-digit",
+        day:"2-digit",
+    };
+    startDate = startDate.toLocaleString("sv-SE",dateFormat);
+    endDate = endDate.toLocaleString("sv-SE",dateFormat);
+    let startString = formCourse["Start Time"];
+    let startTime = new Date(startString);
+    let endTime = new Date(startString);
+    let duration = {
+        "0.5 Hours": 0.5,
+        "1 Hour": 1,
+        "1.5 Hours": 1.5,
+        "2 Hours": 2,
+    };
 
-    // console.log(startDate, parseTime(formCourse["Start Time"]), endTime, endDate);
+    endTime = new Date(endTime.setTime(endTime.getTime() + duration[formCourse["Duration"]]*60*60*1000));
+    let timeFormat = {
+        hour12:false,
+        hour:"2-digit",
+        minute:"2-digit",
+    };
+    endTime = endTime.toLocaleString("eng-US",timeFormat);
+    startTime = startTime.toLocaleString("eng-US", timeFormat);
 
     return {
         "subject": formCourse["Course Name"],
-        "type": type,
+        "course_type": type.toLowerCase(),
         "description": formCourse["Description"],
         "instructor": formCourse["Instructor"].value,
-        "day_of_week": dayOfWeek(),
-        "start_date": startDate.toISOString().substring(0,10),
+        "day_of_week": day,
+        "start_date": startDate,
         "end_date": endDate,
-        "start_time": startTime.substring(0,5),
-        "end_time": endTime.substring(0,5),
+        "start_time": startTime,
+        "end_time": endTime,
         "max_capacity": formCourse["Capacity"],
-        // "course_id": "29"
+        "course_category": formCourse["Category"].value,
+        "academic_level": academicLevelParse[formCourse["Grade Level"]],
     };
+};
+
+const courseName = (form, type) => {
+    if(type === "T"){
+        return "1:1 " + form["Instructor"].value + form[""]
+    }
 }
 
-const parseTime = (time) =>{
+export const parseTime = (time) =>{
     let formattedTime;
     if(typeof time === "string"){
-        if(time.indexOf("AM") > -1 || time.indexOf("PM") > -1){
-            formattedTime = new Date();
-            formattedTime.setHours(Number(time.substring(0,time.indexOf(":"))));
-            formattedTime.setMinutes(Number(time.substring(time.indexOf(":")+1,time.indexOf(" "))));
-            formattedTime.setSeconds(0);
-        }
+        let Hour = time.substr(17, 2);
+        let to12HourTime = (Hour % 12) || 12;
+        let ampm = Hour < 12 ? " am" : " pm";
+        formattedTime = to12HourTime + time.substr(19, 3) + ampm;
     } else {
         formattedTime = time;
     }
-    return formattedTime.toTimeString().substring(0,5)
+    return formattedTime;
 }

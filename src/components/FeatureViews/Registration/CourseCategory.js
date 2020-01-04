@@ -1,73 +1,50 @@
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as registrationActions from '../../../actions/registrationActions';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import {connect} from "react-redux";
+import React, {Component} from "react";
 
-//Material UI Imports
+// Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import { Typography } from "@material-ui/core";
+import {Typography} from "@material-ui/core";
 import BackButton from "../../BackButton";
 import RegistrationActions from "./RegistrationActions";
 
 class CourseCategory extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
-
     componentWillMount() {
-        let CategoryInView = this.props.courseCategories.find((category) => {
-            return category.id.toString() === this.props.match.params.categoryID;
-        });
-        this.setState({ ...CategoryInView });
+        const CategoryInView = this.props.courseCategories.find((category) => category.id.toString() === this.props.computedMatch.params.categoryID);
+        this.setState({...CategoryInView});
     }
 
     render() {
         return (
-            <Grid item xs={12}>
-                <Paper className={"paper"}>
-                    <Grid item lg={12}>
-                        <RegistrationActions
-                        //admin={false}
-                        />
+            <Grid
+                item
+                xs={12}>
+                <Paper className="paper">
+                    <Grid
+                        item
+                        lg={12}>
+                        <RegistrationActions />
                     </Grid>
                 </Paper>
-                <Paper className={"paper content"}>
+                <Paper className="paper content">
                     <BackButton />
-                    <Typography style={{ fontWeight: 500 }} variant={'h4'} align={'left'}>
+                    <Typography
+                        align="left"
+                        style={{"fontWeight": 500}}
+                        variant="h4">
                         {this.state.cat_title}
                     </Typography>
                 </Paper>
             </Grid>
-        )
+        );
     }
 }
 
-CourseCategory.propTypes = {
-    stuffActions: PropTypes.object,
-    RegistrationForms: PropTypes.array
-};
-
 function mapStateToProps(state) {
     return {
-        courses: state.Course["CourseList"],
-        courseCategories: state.Course["CourseCategories"],
-        students: state.Users["StudentList"],
-        teachers: state.Users["TeacherList"],
-        parents: state.Users["ParentList"],
-        courseRoster: state.Course["CourseRoster"],
+        "courseCategories": state.Course.CourseCategories,
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        registrationActions: bindActionCreators(registrationActions, dispatch)
-    };
-}
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(CourseCategory);
+export default connect(mapStateToProps)(CourseCategory);

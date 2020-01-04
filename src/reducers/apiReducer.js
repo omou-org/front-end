@@ -8,7 +8,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
         ({status} = payload.response);
     } else {
         // general server error
-        status = 600;
+        status = api.MISC_FAIL;
     }
     switch (type) {
         case actions.LOGIN_STARTED:
@@ -71,19 +71,19 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
         case actions.PATCH_INSTRUCTOR_FAILED:
             return updateInstructorPatch(state, payload.id, status);
 
-        case actions.FETCH_NOTE_STARTED:
-            return updateNoteFetch(state, payload.userID, api.REQUEST_STARTED);
-        case actions.FETCH_NOTE_SUCCESSFUL:
-            return updateNoteFetch(state, payload.userID, status);
-        case actions.FETCH_NOTE_FAILED:
-            return updateNoteFetch(state, payload.userID, status);
+        case actions.FETCH_ACCOUNT_NOTE_STARTED:
+            return updateAccountNoteFetch(state, payload.ownerID, api.REQUEST_STARTED);
+        case actions.FETCH_ACCOUNT_NOTE_SUCCESSFUL:
+            return updateAccountNoteFetch(state, payload.ownerID, status);
+        case actions.FETCH_ACCOUNT_NOTE_FAILED:
+            return updateAccountNoteFetch(state, payload.ownerID, status);
 
         case actions.FETCH_COURSE_NOTE_STARTED:
-            return updateCourseNoteFetch(state, payload.courseID, api.REQUEST_STARTED);
+            return updateCourseNoteFetch(state, payload.ownerID, api.REQUEST_STARTED);
         case actions.FETCH_COURSE_NOTE_SUCCESSFUL:
-            return updateCourseNoteFetch(state, payload.courseID, status);
+            return updateCourseNoteFetch(state, payload.ownerID, status);
         case actions.FETCH_COURSE_NOTE_FAILED:
-            return updateCourseNoteFetch(state, payload.courseID, status);
+            return updateCourseNoteFetch(state, payload.ownerID, status);
 
         case actions.POST_COURSE_NOTE_STARTED:
             return updateCourseNotePost(state, api.REQUEST_STARTED);
@@ -93,25 +93,46 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             return updateCourseNotePost(state, status);
 
         case actions.PATCH_COURSE_NOTE_STARTED:
-            return updateCourseNotePatch(state, payload.courseID, api.REQUEST_STARTED);
+            return updateCourseNotePatch(state, payload.ownerID, api.REQUEST_STARTED);
         case actions.PATCH_COURSE_NOTE_SUCCESSFUL:
-            return updateCourseNotePatch(state, payload.courseID, status);
+            return updateCourseNotePatch(state, payload.ownerID, status);
         case actions.PATCH_COURSE_NOTE_FAILED:
-            return updateCourseNotePatch(state, payload.courseID, status);
+            return updateCourseNotePatch(state, payload.ownerID, status);
 
-        case actions.POST_NOTE_STARTED:
-            return updateNotePost(state, api.REQUEST_STARTED);
-        case actions.POST_NOTE_SUCCESSFUL:
-            return updateNotePost(state, status);
-        case actions.POST_NOTE_FAILED:
-            return updateNotePost(state, status);
+        case actions.FETCH_ENROLLMENT_NOTE_STARTED:
+            return updateEnrollmentNoteFetch(state, payload.ownerID, api.REQUEST_STARTED);
+        case actions.FETCH_ENROLLMENT_NOTE_SUCCESSFUL:
+            return updateEnrollmentNoteFetch(state, payload.ownerID, status);
+        case actions.FETCH_ENROLLMENT_NOTE_FAILED:
+            return updateEnrollmentNoteFetch(state, payload.ownerID, status);
 
-        case actions.PATCH_NOTE_STARTED:
-            return updateNotePatch(state, payload.userID, api.REQUEST_STARTED);
-        case actions.PATCH_NOTE_SUCCESSFUL:
-            return updateNotePatch(state, payload.userID, status);
-        case actions.PATCH_NOTE_FAILED:
-            return updateNotePatch(state, payload.userID, status);
+        case actions.POST_ENROLLMENT_NOTE_STARTED:
+            return updateEnrollmentNotePost(state, api.REQUEST_STARTED);
+        case actions.POST_ENROLLMENT_NOTE_SUCCESSFUL:
+            return updateEnrollmentNotePost(state, status);
+        case actions.POST_ENROLLMENT_NOTE_FAILED:
+            return updateEnrollmentNotePost(state, status);
+
+        case actions.PATCH_ENROLLMENT_NOTE_STARTED:
+            return updateEnrollmentNotePatch(state, payload.ownerID, api.REQUEST_STARTED);
+        case actions.PATCH_ENROLLMENT_NOTE_SUCCESSFUL:
+            return updateEnrollmentNotePatch(state, payload.ownerID, status);
+        case actions.PATCH_ENROLLMENT_NOTE_FAILED:
+            return updateEnrollmentNotePatch(state, payload.ownerID, status);
+
+        case actions.POST_ACCOUNT_NOTE_STARTED:
+            return updateAccountNotePost(state, api.REQUEST_STARTED);
+        case actions.POST_ACCOUNT_NOTE_SUCCESSFUL:
+            return updateAccountNotePost(state, status);
+        case actions.POST_ACCOUNT_NOTE_FAILED:
+            return updateAccountNotePost(state, status);
+
+        case actions.PATCH_ACCOUNT_NOTE_STARTED:
+            return updateAccountNotePatch(state, payload.ownerID, api.REQUEST_STARTED);
+        case actions.PATCH_ACCOUNT_NOTE_SUCCESSFUL:
+            return updateAccountNotePatch(state, payload.ownerID, status);
+        case actions.PATCH_ACCOUNT_NOTE_FAILED:
+            return updateAccountNotePatch(state, payload.ownerID, status);
 
         case actions.FETCH_USER_STARTED:
             return updateUserFetch(state, api.REQUEST_STARTED);
@@ -120,10 +141,73 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
         case actions.FETCH_USER_FAILED:
             return updateUserFetch(state, status);
 
+        case actions.GET_CATEGORY_STARTED:
+            return updateCategoryFetch(state, payload.id ,api.REQUEST_STARTED);
+        case actions.GET_CATEGORY_SUCCESS:
+            return updateCategoryFetch(state, payload.id ,status);
+        case actions.GET_CATEGORY_FAILED:
+            return updateCategoryFetch(state, payload.id ,status);
+
+        case actions.POST_CATEGORY_STARTED:
+            return updateCategoryPost(state, payload.id, api.REQUEST_STARTED);
+        case actions.POST_CATEGORY_SUCCESS:
+            return updateCategoryPost(state,payload.id, status);
+        case actions.POST_CATEGORY_FAILED:
+            return updateCategoryPost(state,payload.id, status);
+
+        case actions.GET_PRICE_RULE_STARTED:
+            return updatePriceRuleStatus(state, payload.id, api.REQUEST_STARTED, actions.GET);
+        case actions.GET_PRICE_RULE_SUCCESS:
+            return updatePriceRuleStatus(state, payload.id, status, actions.GET);
+        case actions.POST_PRICE_RULE_FAILED:
+            return updatePriceRuleStatus(state, payload.id, status, actions.POST);
+        case actions.POST_PRICE_RULE_SUCCESS:
+            return updatePriceRuleStatus(state, payload.id, status, actions.POST);
+
+        case actions.GET_DISCOUNT_DATE_RANGE_START:
+            return updateDiscountStatus(state, payload.id, api.REQUEST_STARTED, actions.GET, "dateRange");
+        case actions.GET_DISCOUNT_PAYMENT_METHOD_STARTED:
+            return updateDiscountStatus(state, payload.id, api.REQUEST_STARTED, actions.GET, "paymentMethod");
+        case actions.GET_DISCOUNT_MULTI_COURSE_STARTED:
+            return updateDiscountStatus(state, payload.id, api.REQUEST_STARTED, actions.GET, "multiCourse");
+
+        case actions.GET_DISCOUNT_DATE_RANGE_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.GET, "dateRange");
+        case actions.GET_DISCOUNT_MULTI_COURSE_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.GET, "multiCourse");
+        case actions.GET_DISCOUNT_PAYMENT_METHOD_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.GET, "paymentMethod");
+
+        case actions.DELETE_DISCOUNT_PAYMENT_METHOD_SUCCESS:
+            return updateDiscountStatus(state, payload.id, status, actions.DELETE, "paymentMethod");
+        case actions.DELETE_DISCOUNT_DATE_RANGE_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.DELETE, "dateRange");
+        case actions.DELETE_DISCOUNT_MULTI_COURSE_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.DELETE, "multiCourse");
+
+        case actions.PATCH_DISCOUNT_PAYMENT_METHOD_SUCCESS:
+            return updateDiscountStatus(state, payload.id, status, actions.PATCH, "paymentMethod");
+        case actions.PATCH_DISCOUNT_DATE_RANGE_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.PATCH, "dateRange");
+        case actions.PATCH_DISCOUNT_MULTI_COURSE_SUCCESS:
+            return updateDiscountStatus(state,payload.id, status, actions.PATCH, "multiCourse");
+
+        case actions.SET_PARENT:
+            return {
+                ...state,
+                "registeringParent": NEW_REGISTERING_PARENT,
+            };
+
+        case actions.GET_PAYMENT_SUCCESS:
+            return updatePaymentStatus(state, payload.id, status);
+        case actions.GET_PAYMENT_STARTED:
+            return updatePaymentStatus(state, payload.id, status);
         default:
             return state;
     }
 };
+
+export const NEW_REGISTERING_PARENT = 2;
 
 const clearLogin = (state) => ({
     ...state,
@@ -134,6 +218,18 @@ const updateLogin = (state, status) => ({
     ...state,
     "login": status,
 });
+
+const updateCategoryPost = (state, payload, status) =>{
+    let newState = {...state};
+    newState.category[actions.POST]= status;
+    return newState;
+}
+
+const updateCategoryFetch = (state, payload, status) =>{
+    let newState = {...state};
+    newState.category[actions.GET]= status;
+    return newState;
+}
 
 const updateCourseFetch = (state, id, status) => {
     let newState = JSON.parse(JSON.stringify(state));
@@ -177,21 +273,21 @@ const updateEnrollmentFetch = (state, id, status) => {
     return newState;
 };
 
-const updateNoteFetch = (state, userID, status) => {
+const updateAccountNoteFetch = (state, ownerID, status) => {
     let newState = JSON.parse(JSON.stringify(state));
-    newState.note[actions.GET][userID] = status;
+    newState.accountNote[actions.GET][ownerID] = status;
     return newState;
 };
 
-const updateNotePost = (state, status) => {
+const updateAccountNotePost = (state, status) => {
     let newState = JSON.parse(JSON.stringify(state));
-    newState.note[actions.POST] = status;
+    newState.accountNote[actions.POST] = status;
     return newState;
 };
 
-const updateNotePatch = (state, userID, status) => {
+const updateAccountNotePatch = (state, ownerID, status) => {
     let newState = JSON.parse(JSON.stringify(state));
-    newState.note[actions.PATCH][userID] = status;
+    newState.accountNote[actions.PATCH][ownerID] = status;
     return newState;
 };
 
@@ -200,9 +296,9 @@ const updateUserFetch = (state, status) => ({
     "userFetch": status,
 });
 
-const updateCourseNoteFetch = (state, userID, status) => {
+const updateCourseNoteFetch = (state, ownerID, status) => {
     let newState = JSON.parse(JSON.stringify(state));
-    newState.courseNote[actions.GET][userID] = status;
+    newState.courseNote[actions.GET][ownerID] = status;
     return newState;
 };
 
@@ -212,8 +308,49 @@ const updateCourseNotePost = (state, status) => {
     return newState;
 };
 
-const updateCourseNotePatch = (state, userID, status) => {
+const updateCourseNotePatch = (state, ownerID, status) => {
     let newState = JSON.parse(JSON.stringify(state));
-    newState.courseNote[actions.PATCH][userID] = status;
+    newState.courseNote[actions.PATCH][ownerID] = status;
+    return newState;
+};
+
+const updateEnrollmentNoteFetch = (state, ownerID, status) => {
+    let newState = JSON.parse(JSON.stringify(state));
+    newState.enrollmentNote[actions.GET][ownerID] = status;
+    return newState;
+};
+
+const updateEnrollmentNotePost = (state, status) => {
+    let newState = JSON.parse(JSON.stringify(state));
+    newState.enrollmentNote[actions.POST] = status;
+    return newState;
+};
+
+const updateEnrollmentNotePatch = (state, ownerID, status) => {
+    let newState = JSON.parse(JSON.stringify(state));
+    newState.enrollmentNote[actions.PATCH][ownerID] = status;
+    return newState;
+};
+
+const updatePriceRuleStatus = (state, id, status, requestType) => {
+    let newState = {...state};
+    newState.priceRule[requestType][id] = status;
+    return newState;
+};
+
+const updateDiscountStatus = (state, id, status, requestType, discountType) => {
+    let newState = {...state};
+    if(requestType !== actions.DELETE && requestType !== actions.PATCH){
+        newState.discount[discountType][requestType][id] = status;
+    } else {
+        newState.discount[requestType] = status;
+    }
+
+    return newState;
+};
+
+const updatePaymentStatus = (state, paymentID, status) => {
+    let newState = JSON.parse(JSON.stringify(state));
+    newState.payment[actions.GET][paymentID] = status;
     return newState;
 };

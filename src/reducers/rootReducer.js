@@ -4,10 +4,11 @@ import Registration from "./registrationReducer";
 import auth from "./authReducer";
 import Course from "./courseReducer";
 import Users from "./usersReducer";
-import Calendar from "./calenderReducer";
+import Calendar from "./calendarReducer";
 import Enrollments from "./enrollmentReducer";
 import Payments from "./paymentsReducer";
 import Search from "./searchResultsReducer";
+import Admin from "./adminReducer";
 
 const rootReducer = combineReducers({
     auth,
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
     Users,
     RequestStatus,
     Search,
+    Admin,
 });
 
 export default rootReducer;

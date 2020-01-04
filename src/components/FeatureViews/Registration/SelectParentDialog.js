@@ -14,47 +14,6 @@ import { connect } from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
 
-const parents = [
-    {
-        value: "Eileen Hong-123",
-        label: "Eileen Hong"
-    },
-    {
-        value: "Eileen Wang-125",
-        label: "Eileen Wang"
-    },
-    {
-        value: "Eileen Harrison-133",
-        label: "Eileen Harrison"
-    },
-    {
-        value: "Eileen Grant-123",
-        label: "Eileen Grant"
-    },
-];
-
-const testParent = {
-    user: {
-        id: 123,
-        email: "parent@school.com",
-        first_name: "Eileen",
-        last_name: "Hong",
-        name: "Eileen Hong",
-    },
-    user_uuid: 12,
-    gender: "F",
-    birth_date: "12/12/1963",
-    student_list: [1, 2],
-    account_type: "PARENT",
-};
-
-const styles = {
-    avatar: {
-        backgroundColor: blue[100],
-        color: blue[600],
-    },
-};
-
 class SelectParentDialog extends React.Component {
     constructor(props) {
         super(props);
@@ -66,7 +25,8 @@ class SelectParentDialog extends React.Component {
 
     componentDidMount(){
         let pastParent = sessionStorage.getItem("CurrentParent");
-        if (pastParent !== "none") {
+        let reduxPastParent = this.props.registration.CurrentParent;
+        if(pastParent !== "none" && !reduxPastParent){
             pastParent = JSON.parse(pastParent);
             this.props.registrationActions.setRegisteringParent(pastParent);
         }
@@ -78,28 +38,29 @@ class SelectParentDialog extends React.Component {
             let idStartIndex = this.state.inputParent.value.indexOf("-") + 1;
             let parentID = Number(this.state.inputParent.value.substring(idStartIndex));
             let selectedParent = this.props.search.accounts.find((account)=>{ return parentID === account.user.id});
-            console.log(selectedParent);
-            selectedParent = {
-                user: {
-                    id: selectedParent.user.id,
-                    email: selectedParent.user.email,
-                    first_name: selectedParent.user.first_name,
-                    last_name: selectedParent.user.last_name,
-                    name: selectedParent.user.first_name + " " + selectedParent.user.last_name,
-                },
-                user_uuid: selectedParent.user.id,
-                gender: selectedParent.gender,
-                birth_date: selectedParent.birth_day,
-                student_list: selectedParent.student_list,
-                account_type: "PARENT",
-            };
+            if(selectedParent){
+                selectedParent = {
+                    user: {
+                        id: selectedParent.user.id,
+                        email: selectedParent.user.email,
+                        first_name: selectedParent.user.first_name,
+                        last_name: selectedParent.user.last_name,
+                        name: selectedParent.user.first_name + " " + selectedParent.user.last_name,
+                    },
+                    user_uuid: selectedParent.user.id,
+                    gender: selectedParent.gender,
+                    birth_date: selectedParent.birth_day,
+                    student_list: selectedParent.student_list,
+                    account_type: "PARENT",
+                };
 
-            this.props.registrationActions.setRegisteringParent(selectedParent);
-            // Add students to redux once the registered parent has been set
-            selectedParent.student_list.forEach((studentID) => {
-                this.props.userActions.fetchStudents(studentID);
-            });
-            sessionStorage.setItem("CurrentParent", JSON.stringify(selectedParent));
+                this.props.registrationActions.setRegisteringParent(selectedParent);
+                // Add students to redux once the registered parent has been set
+                selectedParent.student_list.forEach((studentID)=>{
+                    this.props.userActions.fetchStudents(studentID);
+                });
+                sessionStorage.setItem("CurrentParent", JSON.stringify(selectedParent));
+            }
         }
         // close the dialogue
         this.props.onClose();
@@ -227,7 +188,8 @@ class SelectParentDialog extends React.Component {
                     Currently helping...
                 </DialogTitle>
                 {
-                    this.props.registration.CurrentParent ?
+                    this.props.registration.CurrentParent &&
+                    this.props.registration.CurrentParent !== "none" ?
                         this.ActiveParentDialog() :
                         this.SetParentDialog()
                 }

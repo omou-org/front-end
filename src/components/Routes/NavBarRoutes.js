@@ -1,26 +1,25 @@
 // React Imports
-import { Route, Switch, Redirect } from "react-router-dom";
+import {Route, Switch} from "react-router-dom";
+import PropTypes from "prop-types";
 import React from "react";
-import UnauthenticatedNav from "../Navigation/UnauthenticatedNav";
-import AuthenticatedNav from "../Navigation/AuthenticatedNav";
 
 // Local Component Imports
+import AuthenticatedNav from "../Navigation/AuthenticatedNav";
+import UnauthenticatedNav from "../Navigation/UnauthenticatedNav";
 
+const NavBarRoutes = ({toggleDrawer}) => (
+    <Switch>
+        <Route
+            path="/login"
+            render={() => <UnauthenticatedNav />} />
+        <Route
+            path="/"
+            render={() => <AuthenticatedNav toggleDrawer={toggleDrawer} />} />
+    </Switch>
+);
 
-
-function NavBarRoutes(props) {
-
-    return (
-        <Switch>
-            <Route
-                path="/login"
-                render={(passedProps) => <UnauthenticatedNav/> }/>
-            <Route
-                path="/"
-                render={(passedProps) => <AuthenticatedNav/> }/>
-
-        </Switch>
-    );
-}
+NavBarRoutes.propTypes = {
+    "toggleDrawer": PropTypes.func.isRequired,
+};
 
 export default NavBarRoutes;

@@ -67,8 +67,8 @@ function SetRegistrationActions(props) {
                 api.initializeRegistration();
             }
         }
-
     },[]);
+
     return (
         <Grid item xs={2}>
             {
