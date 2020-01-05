@@ -644,15 +644,19 @@ class Scheduler extends Component {
                                     </Grid>
                                 </div>
                             </Grid>
+                            <Grid item xs={1}/>
                             <Grid item xs={2}>
-                                <Grid container className="scheduler-header-last">
-                                    <Grid item xs={4}>
+                                <Grid container
+                                      direction={"row"}
+                                      justify={"flex-end"}
+                                      className="scheduler-header-last">
+                                    <Grid item xs={5}>
                                         <IconButton onClick={this.goToToday} className={"current-date-button"} aria-label='current-date-button'>
                                             <TodayIcon />
                                         </IconButton>
 
                                     </Grid>
-                                    <Grid item xs={8}>
+                                    <Grid item xs={7}>
                                         <FormControl className={"filter-select"} >
                                             <Select
                                                 input={
@@ -660,10 +664,8 @@ class Scheduler extends Component {
                                                 }
                                                 value={this.state.viewValue}
                                                 onChange={(event) =>
-                                                    // event.target.value === the values below
                                                     this.changeView(event.target.value)
                                                 }
-
                                             >
                                                 <MenuItem value={"timeGridDay"}>Day</MenuItem>
                                                 <MenuItem value={"timeGridWeek"}>Week</MenuItem>

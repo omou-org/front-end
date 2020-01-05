@@ -13,6 +13,7 @@ import * as userActions from "../../../actions/userActions";
 import {connect} from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
+import {DialogActions, DialogContent} from "@material-ui/core";
 
 class SelectParentDialog extends React.Component {
     constructor(props) {
@@ -20,6 +21,7 @@ class SelectParentDialog extends React.Component {
         this.state = {
             "inputParent": { value: "", label:""},
             "parentOptions": [],
+            "searchingParent": false,
         };
     }
 
@@ -70,6 +72,7 @@ class SelectParentDialog extends React.Component {
         this.setState((oldState)=>{
             // update field with what's being typed by the user
             oldState.inputParent = e;
+            oldState.searchingParent = true;
             return oldState;
         });
     }
@@ -89,12 +92,6 @@ class SelectParentDialog extends React.Component {
     }
 
     ActiveParentDialog = () =>{
-        let allCoursesPerStudent =  this.props.registration.registered_courses ? Object.values(this.props.registration.registered_courses):[];
-        let allCourses = 0;
-        allCoursesPerStudent.forEach((studentCourses) => {
-            allCourses += studentCourses.length;
-        });
-
         return (
             <div className={"active-parent-dialog-content"}>
                 <Grid container>
@@ -102,17 +99,6 @@ class SelectParentDialog extends React.Component {
                           sm={12}
                     >
                         <AccountsCards user={this.props.registration.CurrentParent}/>
-                    </Grid>
-                    {/*<h3>{this.props.registration.CurrentParent.user.name}</h3>*/}
-                    <Grid item xs={5}>
-                        <Button color={"primary"} className={"button"}
-                                onClick={this.handleExitParent()}>
-                            Exit Parent
-                        </Button>
-                    </Grid>
-                    <Grid item xs={7}>
-                        <Button component={NavLinkNoDup} to={"/registration/cart"}
-                                color={"primary"} className={"button"}>Checkout {allCourses} Courses</Button>
                     </Grid>
                 </Grid>
             </div>
@@ -145,14 +131,16 @@ class SelectParentDialog extends React.Component {
                 value: e,
                 label: e
             };
-            this.setState({inputParent: input},()=>{
+            this.setState({inputParent: input, searchingParent: true,},
+                ()=>{
                 if(e!==""){
                     const requestConfig = { params: { query: this.state.inputParent.label, page: 1, profile: "parent" },
                         headers: {"Authorization": `Token ${this.props.auth.token}`,} };
                     this.props.searchActions.fetchSearchAccountQuery(requestConfig);
                     this.setState({
+                        searchingParent: true,
                         parentOptions: this.renderParentSuggestionList()
-                    },)
+                    });
                 }
             });
         }
@@ -160,21 +148,27 @@ class SelectParentDialog extends React.Component {
 
     SetParentDialog = () =>{
         return (
-            <>
-                <ReactSelect classNamePrefix={"select-parent-search"}
-                             value = {this.state.inputParent}
-                             options = {this.state.parentOptions}
-                             onChange = {this.handleOnChange()}
-                             onInputChange = {this.handleOnInputChange()}
+            <div
+                className={`select-parent-search-wrapper ${this.state.searchingParent ? " active" : ""}`}>
+                <ReactSelect
+                    classNamePrefix={"select-parent-search"}
+                     value = {this.state.inputParent}
+                     options = {this.state.parentOptions}
+                     onChange = {this.handleOnChange()}
+                     onInputChange = {this.handleOnInputChange()}
                 />
-                <Button onClick={this.handleSetParentButton()}>Set Parent</Button>
-            </>
+            </div>
         )
     }
 
 
 
     render() {
+        let allCoursesPerStudent =  this.props.registration.registered_courses ? Object.values(this.props.registration.registered_courses):[];
+        let allCourses = 0;
+        allCoursesPerStudent.forEach((studentCourses) => {
+            allCourses += studentCourses.length;
+        });
         return (
             <Dialog className={"select-parent-dialog"}
                 onClose={this.handleClose}
@@ -182,12 +176,42 @@ class SelectParentDialog extends React.Component {
                 <DialogTitle id="simple-dialog-title">
                     <h3>Currently helping...</h3>
                 </DialogTitle>
-                {
-                    this.props.registration.CurrentParent &&
-                    this.props.registration.CurrentParent !== "none" ?
-                        this.ActiveParentDialog() :
-                        this.SetParentDialog()
-                }
+                <DialogContent>
+                    {
+                        this.props.registration.CurrentParent &&
+                        this.props.registration.CurrentParent !== "none" ?
+                            this.ActiveParentDialog() :
+                            this.SetParentDialog()
+                    }
+                </DialogContent>
+                <DialogActions>
+                    {
+                        this.props.registration.CurrentParent &&
+                        this.props.registration.CurrentParent !== "none" ?
+                            <>
+                                <Button
+                                    color={"primary"}
+                                    className={"button"}
+                                    onClick={this.handleExitParent()}
+                                >
+                                    Exit Parent
+                                </Button>
+                                <Button
+                                    component={NavLinkNoDup}
+                                    to={"/registration/cart"}
+                                    color={"primary"}
+                                    className={"button"}
+                                >
+                                    Checkout {allCourses} Courses
+                                </Button>
+                            </>  :
+                            <Button
+                                color={"primary"}
+                                onClick={this.handleSetParentButton()}>
+                                Set Parent
+                            </Button>
+                    }
+                </DialogActions>
             </Dialog>
         );
     }

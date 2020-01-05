@@ -10,6 +10,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
+import {Tooltip} from "@material-ui/core";
 
 const CourseList = (props) => {
     let filteredCourses = props.filteredCourses;
@@ -134,16 +135,25 @@ const CourseList = (props) => {
                             <Grid
                                 item
                                 xs={6}>
-                                {
-                                    (props.registration.CurrentParent !== "none" && props.registration.CurrentParent) &&
-                                    <Button
-                                        className="button primary"
-                                        component={Link}
-                                        disabled={course.capacity <= course.roster.length}
-                                        to={`/registration/form/course/${course.course_id}`}
-                                        variant="contained">+ REGISTER
-                                    </Button>
-                                }
+                                <Tooltip
+                                    title={"Course is full!"}
+                                    open={course.capacity <= course.roster.length}
+                                >
+                                    {
+                                        <span>
+                                            {
+                                                (props.registration.CurrentParent !== "none" && props.registration.CurrentParent) &&
+                                                <Button
+                                                    className="button primary"
+                                                    component={Link}
+                                                    disabled={course.capacity <= course.roster.length}
+                                                    to={`/registration/form/course/${course.course_id}`}
+                                                    variant="contained">+ REGISTER
+                                                </Button>
+                                            }
+                                        </span>
+                                    }
+                                </Tooltip>
                             </Grid>
                         </Grid>
                     </Grid>

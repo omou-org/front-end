@@ -7,7 +7,7 @@ import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import * as userActions from "../../../actions/userActions.js"
 import {connect, useDispatch, useSelector} from "react-redux";
-import {Typography} from "@material-ui/core";
+import {Tooltip, Typography} from "@material-ui/core";
 import {NavLink, withRouter} from "react-router-dom";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import * as apiActions from "../../../actions/apiActions";
@@ -153,14 +153,18 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
 
                 <Grid item xs={12}>
                     <Typography variant="h5"> Instructor </Typography>
-                    <NavLink to={`/accounts/instructor/${instructor.user_id}`}
-                    >
-                        <Typography variant="body1" color="primary">
-                            {
-                                course && instructor.name
-                            }
-                        </Typography>
-                    </NavLink>
+                        {
+                            course &&
+                            <NavLink to={`/accounts/instructor/${instructor.user_id}`}
+                            style={{ textDecoration: "none" }}>
+                                <Tooltip title={instructor.name} aria-label="Instructor Name">
+                                    <Avatar
+                                        style={styles(instructor.name)}>
+                                            {instructor.name.match(/\b(\w)/g).join("")}
+                                    </Avatar>
+                                </Tooltip>
+                            </NavLink>
+                        }
                 </Grid>
                 <Grid item xs={6}>
                     <Typography variant="h5"> Day(s)</Typography>
@@ -190,16 +194,18 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                     { studentKeys.map(key =>
                         <NavLink to={`/accounts/student/${enrolledStudents[key].user_id}/${course.course_id}`}
                                  style={{ textDecoration: "none" }}>
-                            <Avatar
-                                style={styles(enrolledStudents[key].name)}>
-                                {
-                                    enrolledStudents ?
-                                        enrolledStudents[key].name.match(/\b(\w)/g).join("")
-                                    : hooks.isFail(enrollmentStatus)
-                                    ? "Error!"
-                                    : "Loading..."
-                                }
-                            </Avatar>
+                            <Tooltip title={enrolledStudents[key].name}>
+                                <Avatar
+                                    style={styles(enrolledStudents[key].name)}>
+                                    {
+                                        enrolledStudents ?
+                                            enrolledStudents[key].name.match(/\b(\w)/g).join("")
+                                        : hooks.isFail(enrollmentStatus)
+                                        ? "Error!"
+                                        : "Loading..."
+                                    }
+                                </Avatar>
+                            </Tooltip>
                         </NavLink>)}
                 </Grid>
             </Grid>
