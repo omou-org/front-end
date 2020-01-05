@@ -293,7 +293,7 @@ function RegistrationReceipt(props) {
                           justify="center"
                           spacing={8}
                     >
-                        <Grid item xs={10}>
+                        <Grid item xs={12}>
                             {
                                 Object.entries(courseReceipt)
                                     .map(([studentID, enrolledCourses]) =>
@@ -302,7 +302,25 @@ function RegistrationReceipt(props) {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={10} className={"receipt-actions"}>
+                <Grid item xs={12} className={"receipt-details"}>
+                    <Grid
+                        container
+                        direction="row"
+                        justify="flex-end"
+                    >
+                        <Grid item xs={2}>
+                            <Typography variant="h6">
+                                Price Adjustment
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={1}>
+                            <Typography variant="subheading">
+                                {paymentReceipt.price_adjustment}
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item xs={12} className={"receipt-actions"}>
                     <Grid container
                           spacing={8}
                           direction="row"
