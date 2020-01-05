@@ -15,6 +15,10 @@ import * as userActions from "../../../actions/userActions";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Menu from "@material-ui/core/Menu";
+import NewInstructor from "@material-ui/icons/PersonAdd";
+import CourseIcon from "@material-ui/icons/Class";
+import TuitionIcon from "@material-ui/icons/AttachMoney";
+import DiscountIcon from "@material-ui/icons/LocalActivity";
 
 const StyledMenu = withStyles({
     paper: {
@@ -37,10 +41,19 @@ const StyledMenu = withStyles({
 ));
 
 function AdminActionCenter(props) {
+    let {location} = props;
+
     const [courseAnchor, setCourseAnchor] = useState(null);
     const [tuitionAnchor, setTuitionAnchor] = useState(null);
+    const [discountAnchor, setDiscountAnchor] = useState(null);
+    const tabState = {
+        1: location.pathname.includes("instructor"),
+        2: location.pathname.includes("course"),
+        3: location.pathname.includes("tuition") || location.pathname.includes("pricing"),
+        4: location.pathname.includes("discount"),
+    };
+
     const dispatch = useDispatch();
-    let {location} = props;
     const api = useMemo(
         () => ({
             ...bindActionCreators(apiActions, dispatch),
@@ -62,10 +75,15 @@ function AdminActionCenter(props) {
             }
             case "tuition":{
                 setTuitionAnchor(event.currentTarget);
+                break;
+            }
+            case "discount":{
+                setDiscountAnchor(event.currentTarget);
+                break;
             }
         }
 
-    }
+    };
 
     const handleClose = (menu) => () => {
         switch(menu){
@@ -75,9 +93,14 @@ function AdminActionCenter(props) {
             }
             case "tuition":{
                 setTuitionAnchor(null);
+                break;
+            }
+            case "discount":{
+                setDiscountAnchor(null);
+                break;
             }
         }
-    }
+    };
 
     useEffect(()=>{
         setCourseAnchor(null);
@@ -90,30 +113,43 @@ function AdminActionCenter(props) {
             container
             spacing={16}>
                 <Grid item>
-                    <Button component={NavLinkNoDup} to={"/registration/form/instructor"}
-                            color={"primary"}
-                            className={"button"}>Add Instructor</Button>
+                    <Button
+                        className={`button ${tabState[1] ? "active": ""}`}
+                        component={NavLinkNoDup}
+                        to={"/registration/form/instructor"}
+                    >
+                        <NewInstructor className="admin-action-icon"/>
+                        Add Instructor
+                    </Button>
                 </Grid>
                 <Grid item>
                     <Button
-                        variant="outlined"
-                        color="primary"
-                        className="button"
+                        className={`button ${tabState[2] ? "active": ""}`}
                         aria-controls="simple-menu"
                         aria-haspopup="true"
                         onClick={handleClick("course")}>
+                        <CourseIcon className="admin-action-icon"/>
                         Manage Course
                     </Button>
                 </Grid>
                 <Grid item>
                     <Button
-                        variant="outlined"
-                        color="primary"
-                        className="button"
+                        className={`button ${tabState[3] ? "active": ""}`}
                         aria-controls="simple-menu"
                         aria-haspopup="true"
                         onClick={handleClick("tuition")}>
+                        <TuitionIcon className="admin-action-icon"/>
                         Manage Tuition
+                    </Button>
+                </Grid>
+                <Grid item>
+                    <Button
+                        className={`button ${tabState[4] ? "active": ""}`}
+                        aria-controls="simple-menu"
+                        aria-haspopup="true"
+                        onClick={handleClick("discount")}>
+                        <DiscountIcon className="admin-action-icon"/>
+                        Manage Discounts
                     </Button>
                 </Grid>
                 <StyledMenu
@@ -148,17 +184,23 @@ function AdminActionCenter(props) {
                         to={`/adminportal/tuition-rules`}>
                         <ListItemText primary="TUITION RULES" />
                     </MenuItem>
-                    <MenuItem
-                        component={NavLink}
-                        to={`/adminportal/form/discount`}>
-                        <ListItemText primary="SET DISCOUNTS" />
-                    </MenuItem>
-                    <MenuItem
-                        component={NavLink}
-                        to={`/adminportal/manage-discounts`}>
-                        <ListItemText primary="DISCOUNTS" />
-                    </MenuItem>
                 </StyledMenu>
+            <StyledMenu
+                anchorEl={discountAnchor}
+                keepMounted
+                open={Boolean(discountAnchor)}
+                onClose={handleClose("discount")}>
+                <MenuItem
+                    component={NavLink}
+                    to={`/adminportal/form/discount`}>
+                    <ListItemText primary="SET DISCOUNTS" />
+                </MenuItem>
+                <MenuItem
+                    component={NavLink}
+                    to={`/adminportal/manage-discounts`}>
+                    <ListItemText primary="DISCOUNTS" />
+                </MenuItem>
+            </StyledMenu>
         </Grid>);
 }
 
