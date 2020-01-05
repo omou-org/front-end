@@ -34,7 +34,10 @@ function PaymentHistory({user_id})  {
         return payment;
     });
 
-    return ( payments && <PaymentTable paymentList={payments}/>)
+    return ( payments &&
+        <PaymentTable
+            type={"parent"}
+            paymentList={payments}/>)
 }
 
 PaymentHistory.propTypes = {};

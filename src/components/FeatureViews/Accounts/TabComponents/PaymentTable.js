@@ -12,7 +12,8 @@ import Loading from "../../../Loading";
 import NavLinkNoDup from "../../../Routes/NavLinkNoDup";
 import Typography from "@material-ui/core/Typography";
 
-function PaymentTable({paymentList})  {
+function PaymentTable({paymentList, type, enrollmentID})  {
+
     if(paymentList && paymentList.length < 1){
         return <Loading/>
     } else if(!paymentList) {
@@ -26,6 +27,20 @@ function PaymentTable({paymentList})  {
             </Paper>
         </Grid>
     }
+
+    let paidSessionsByPayment = () => {
+        let sessNumEnrollment = {};
+        if(type === "enrollment"){
+            paymentList.forEach(payment => {
+                payment.registrations.forEach(registration => {
+                    if(registration.enrollment === enrollmentID)
+                        sessNumEnrollment[payment.id] = registration.num_sessions;
+                });
+            });
+            return sessNumEnrollment;
+        }
+    };
+
     const numericDateString = (date) => {
         let DateObject = new Date(date),
             numericOptions = {year: "numeric", month: "numeric", day: "numeric"};
@@ -42,7 +57,7 @@ function PaymentTable({paymentList})  {
                 <TableHead>
                     <TableCell>ID</TableCell>
                     <TableCell>Transaction Date</TableCell>
-                    <TableCell>Course</TableCell>
+                    <TableCell>{ type === "enrollment"? "Paid Sessions" : "Course"}</TableCell>
                     <TableCell>Method</TableCell>
                 </TableHead>
                 <TableBody>
@@ -59,7 +74,11 @@ function PaymentTable({paymentList})  {
                                     {numericDateString(payment.created_at)}
                                 </TableCell>
                                 <TableCell>
-                                    {CourseLabel(payment.enrollments)}
+                                    {
+                                        type === "enrollment" ?
+                                            paidSessionsByPayment()[payment.id] :
+                                            CourseLabel(payment.enrollments)
+                                    }
                                 </TableCell>
                                 <TableCell>
                                     {payment.method.charAt(0).toUpperCase() + payment.method.slice(1)}
