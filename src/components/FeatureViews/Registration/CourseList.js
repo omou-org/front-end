@@ -67,7 +67,26 @@ const CourseList = (props) => {
                                 item
                                 md={8}
                                 xs={9}>
-                                {date} | {days} {time}
+                                {date}
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className="course-detail"
+                            container>
+                            <Grid
+                                align="left"
+                                className="heading-det"
+                                item
+                                md={4}
+                                xs={3}>
+                                Time
+                            </Grid>
+                            <Grid
+                                align="left"
+                                item
+                                md={8}
+                                xs={9}>
+                                {days} {time}
                             </Grid>
                         </Grid>
                         <Grid

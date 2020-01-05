@@ -1,12 +1,11 @@
-import {useSelector, useDispatch} from "react-redux";
-import React, {useCallback, useState, useMemo} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import BackButton from "../../BackButton.js";
 import RegistrationActions from "./RegistrationActions";
 import * as hooks from "actions/hooks";
 import * as userActions from "actions/userActions";
 import {bindActionCreators} from "redux";
 import "../../../theme/theme.scss";
-
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -28,7 +27,6 @@ import "./registration.scss";
 import {Link, Redirect, useRouteMatch} from "react-router-dom";
 import {stringToColor} from "components/FeatureViews/Accounts/accountUtils";
 import Loading from "../../Loading";
-import {useEffect} from "react";
 
 const formatDate = (date) => {
     if (!date) {
@@ -101,10 +99,13 @@ const RegistrationCourse = () => {
 
     const instructor = instructors[course && course.instructor_id];
 
-    const endDay = formatDate(course.schedule.end_date),
-        endTime = formatTime(course.schedule.end_time),
-        startDay = formatDate(course.schedule.start_date),
-        startTime = formatTime(course.schedule.start_time);
+    const timeConfig = {timeStyle:"short"};
+    const endDay = new Date(course.schedule.end_date).toLocaleDateString(),
+        endTime = new Date("01/01/2020 " +course.schedule.end_time.replace("T",""))
+            .toLocaleTimeString("eng-us",timeConfig),
+        startDay = new Date(course.schedule.start_date).toLocaleDateString(),
+        startTime = new Date("01/01/2020 " +course.schedule.start_time.replace("T",""))
+            .toLocaleTimeString("eng-us",timeConfig);
 
     return (
         <Grid
