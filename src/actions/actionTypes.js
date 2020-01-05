@@ -19,6 +19,9 @@ export const PATCH = "patch";
 export const DELETE = "delete";
 export const IS_SEARCHING = true;
 export const NOT_SEARCHING = false;
+export const SEARCH_ALL = "all";
+export const SEARCH_ACCOUNTS = "account";
+export const SEARCH_COURSES = "course";
 
 export const LOGIN_STARTED = "LOGIN_STARTED";
 export const LOGIN_SUCCESSFUL = "LOGIN_SUCCESSFUL";
@@ -227,3 +230,4 @@ export const GET_PAYMENT_FAILED ="GET_PAYMENT_FAILED";
 export const GET_PAYMENT_ENROLLMENT_SUCCESS = "GET_PAYMENT_ENROLLMENT_SUCCESS";
 
 export const UPDATE_SEARCH_STATUS = "UPDATE_SEARCH_STATUS";
+export const UPDATE_PRIMARY_SEARCH_FILTER = "UPDATE_PRIMARY_SEARCH_FILTER";

@@ -1,4 +1,4 @@
-import {DELETE, GET, NOT_SEARCHING, PATCH, POST} from "../actions/actionTypes";
+import {DELETE, GET, NOT_SEARCHING, PATCH, POST, SEARCH_ALL} from "../actions/actionTypes";
 
 export default {
     "Authentication": initAuth(),
@@ -74,7 +74,8 @@ export default {
                 sortCourse:"",
                 coursePage: 1,
             }
-        }
+        },
+        primaryFilter: SEARCH_ALL,
     },
     "Admin":{
         PriceRules: [],

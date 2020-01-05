@@ -35,3 +35,6 @@ export const updateSearchParam = (searchType,filter, value) => {
 
 export const updateSearchStatus = (searchState) =>
     ({type: types.UPDATE_SEARCH_STATUS, payload: searchState});
+
+export const updatePrimarySearchFilter = (searchFilter) =>
+    ({type: types.UPDATE_PRIMARY_SEARCH_FILTER, payload: searchFilter});

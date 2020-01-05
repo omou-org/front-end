@@ -14,11 +14,11 @@ import {useHistory, useLocation, withRouter} from 'react-router-dom';
 import * as apiActions from "../../../actions/apiActions";
 import * as registrationActions from "../../../actions/registrationActions";
 import windowSize from 'react-window-size';
-import {IS_SEARCHING, NOT_SEARCHING} from "../../../actions/actionTypes";
+import {IS_SEARCHING, NOT_SEARCHING, SEARCH_ACCOUNTS, SEARCH_ALL, SEARCH_COURSES} from "../../../actions/actionTypes";
 
 const Search = (props) => {
     const [query, setQuery] = useState("");
-    const [primaryFilter, setPrimaryFilter] = useState("All");
+    const [primaryFilter, setPrimaryFilter] = useState(SEARCH_ALL);
     const [searchSuggestions, setSearchSuggestions] = useState([]);
 
     const [accountRequestConfig, setAccountRequestConfig] = useState({
@@ -108,10 +108,10 @@ const Search = (props) => {
             if(courseType){
                 baseConfig.params["course"] = courseType;
             }
-            if(availability){
+            if(availability && availability !== "both"){
                 baseConfig.params["availability"] = availability;
             }
-            if(sortCourse){
+            if(sortCourse && sortCourse !== "relevance"){
                 baseConfig.params["sort"] = sortCourse;
             }
             setCourseRequestConfig(baseConfig);
@@ -123,15 +123,15 @@ const Search = (props) => {
     const searchList = (newItem) => {
         let suggestions;
         switch(primaryFilter){
-            case "All":{
+            case SEARCH_ALL:{
                 suggestions = props.search.accounts.concat(props.search.courses);
                 break;
             }
-            case "Account":{
+            case SEARCH_ACCOUNTS:{
                 suggestions = props.search.accounts;
                 break;
             }
-            case "Course":{
+            case SEARCH_COURSES:{
                 suggestions =props.search.courses;
             }
         }
@@ -174,6 +174,7 @@ const Search = (props) => {
 
     const handleFilterChange = (filter) => (e) => {
         setPrimaryFilter(e.target.value);
+        api.updatePrimarySearchFilter(e.target.value);
     };
 
     const handleSearchChange = () => (e) => {
@@ -188,17 +189,18 @@ const Search = (props) => {
     const filterSuggestions = ()=> (e)=>{
         // e.preventDefault();
         switch(primaryFilter){
-            case "All":{
+            case SEARCH_ALL:{
                 api.fetchSearchAccountQuery(accountRequestConfig);
                 api.fetchSearchCourseQuery(courseRequestConfig);
                 api.fetchInstructors();
                 break;
             }
-            case "Accounts":{
+            case SEARCH_ACCOUNTS:{
                 api.fetchSearchAccountQuery(accountRequestConfig);
                 break;
             }
-            case "Courses":{
+            case SEARCH_COURSES:{
+                console.log(courseRequestConfig);
                 api.fetchSearchCourseQuery(courseRequestConfig);
                 api.fetchInstructors();
                 break;
@@ -269,13 +271,13 @@ const Search = (props) => {
                                         id: 'primary-filter',
                                     }}
                                 >
-                                    <MenuItem value={"All"} key={"All"} >
+                                    <MenuItem value={SEARCH_ALL} key={"All"} >
                                         All
                                     </MenuItem>
-                                    <MenuItem value={"Account"} key={"Accounts"}>
+                                    <MenuItem value={SEARCH_ACCOUNTS} key={"Accounts"}>
                                         Account
                                     </MenuItem>
-                                    <MenuItem value={"Course"} key={"Courses"}>
+                                    <MenuItem value={SEARCH_COURSES} key={"Courses"}>
                                         Course
                                     </MenuItem>
                                 </Select>

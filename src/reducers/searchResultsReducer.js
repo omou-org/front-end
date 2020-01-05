@@ -38,6 +38,11 @@ export default function course(state = initialState.SearchResults, {payload, typ
                     status: payload,
                 }
             };
+        case actions.UPDATE_PRIMARY_SEARCH_FILTER:
+            return {
+                ...state,
+                primaryFilter: payload,
+            };
         default:
             return state;
     }

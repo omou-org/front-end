@@ -240,9 +240,10 @@ class Accounts extends Component {
         );
         this.resize();
 
-        if(this.props.requestStatus.instructor[GET][REQUEST_ALL] !== 200 ||
+        if((this.props.requestStatus.instructor[GET][REQUEST_ALL] !== 200 ||
             this.props.requestStatus.student[GET][REQUEST_ALL] !== 200 ||
-            this.props.requestStatus.parent[GET][REQUEST_ALL] !== 200
+            this.props.requestStatus.parent[GET][REQUEST_ALL] !== 200) &&
+            this.props.searchStatus
         ){
             return (<Loading/>)
         }
@@ -347,6 +348,7 @@ const mapStateToProps = (state) => ({
     "students": state.Users.StudentList,
     "isAdmin": state.auth.isAdmin,
     "requestStatus": state.RequestStatus,
+    "searchStatus": state.Search.searchQueryStatus.searching,
 });
 
 const mapDispatchToProps = (dispatch) => ({

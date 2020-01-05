@@ -1,12 +1,10 @@
-import React, { useState, useMemo } from 'react';
-import { Grid, Select} from "@material-ui/core";
-import { bindActionCreators } from "redux";
+import React, {useMemo, useState} from 'react';
+import {Grid, Select} from "@material-ui/core";
+import {bindActionCreators} from "redux";
 import * as searchActions from "../../../actions/searchActions";
-import { useDispatch } from "react-redux";
+import {useDispatch} from "react-redux";
 
 import Typography from "@material-ui/core/Typography"
-import { ReactComponent as FilterIcon } from "./filter.svg";
-
 //Material-ui Select
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -51,9 +49,6 @@ const SearchResultFilter = () => {
                       spacing={16}
                       direction="row"
                       alignItems="center">
-                    <Grid item>
-                        <FilterIcon />
-                    </Grid>
                     <Grid item>
                         <Typography variant={"subtitle1"} align="left"> Filter | </Typography>
                     </Grid>

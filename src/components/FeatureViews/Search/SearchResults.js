@@ -17,6 +17,8 @@ import NoResultsPage from './NoResults/NoResultsPage';
 import MoreResultsIcon from "@material-ui/icons/KeyboardArrowRight";
 import CourseFilters from "./CourseFilters";
 import Loading from "../../Loading";
+import {SEARCH_ACCOUNTS, SEARCH_ALL, SEARCH_COURSES} from "../../../actions/actionTypes";
+import Chip from "@material-ui/core/Chip";
 
 const SearchResults = (props) => {
     const dispatch = useDispatch();
@@ -39,14 +41,14 @@ const SearchResults = (props) => {
     const { accounts, courses, SearchQuery } = searchState;
 
     const numberOfResults = () => {
-        switch (params.type) {
-            case "all": {
+        switch (searchState.primaryFilter) {
+            case SEARCH_ALL: {
                 return accounts.length + courses.length;
             }
-            case "account": {
+            case SEARCH_ACCOUNTS: {
                 return accounts.length;
             }
-            case "course": {
+            case SEARCH_COURSES: {
                 return courses.length
             }
         }
@@ -63,6 +65,11 @@ const SearchResults = (props) => {
             setStart(0);
             setEnd(4);
         }
+    };
+
+    const displayAll = (type) => event => {
+        event.preventDefault();
+        api.updatePrimarySearchFilter(type);
     };
 
     if((searchState.searchQueryStatus.account !== 200 ||
@@ -84,14 +91,17 @@ const SearchResults = (props) => {
                         </Typography>
                     </Grid>
                     <>
-                    {params.type === "account" ?
+                    {searchState.primaryFilter === SEARCH_ACCOUNTS ?
                         <Grid item xs={12}>
                             <Grid container>
                                 <AccountFilters />
                             </Grid>
                         </Grid>
                         : ""}
-                    <hr />
+                        {
+                            courses.length && searchState.primaryFilter !== SEARCH_COURSES ? <hr /> :""
+                        }
+
                     <Grid item xs={12} style={{ "position": "relative" }}>
                         <Grid container
                             justify={"space-between"}
@@ -99,17 +109,21 @@ const SearchResults = (props) => {
                             alignItems="center">
                             <Grid item className="searchResults">
                                 <Typography className={"resultsColor"} align={'left'} gutterBottom>
-                                    {accounts.length > 0 ? "Accounts" : ""}
+                                    {accounts.length > 0 && searchState.primaryFilter !== SEARCH_COURSES ? "Accounts" : ""}
                                 </Typography>
                             </Grid>
-                            {/*<Grid item >*/}
-                            {/*    <Chip label="See All Accounts"*/}
-                            {/*        className="searchChip"*/}
-                            {/*    />*/}
-                            {/*</Grid>*/}
+                            {
+                                (courses.length > 0 && searchState.primaryFilter === SEARCH_ALL) &&
+                                <Grid item >
+                                    <Chip label="See All Accounts"
+                                          className="searchChip"
+                                          onClick={displayAll(SEARCH_ACCOUNTS)}
+                                    />
+                                </Grid>
+                            }
                         </Grid>
                         <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} spacing={16} direction={"row"}>
-                            {params.type === "account" ?
+                            {searchState.primaryFilter === SEARCH_ACCOUNTS ?
                                 accounts.map((account) => (
                                     <Grid item
                                           key={account.user_id}
@@ -118,7 +132,7 @@ const SearchResults = (props) => {
                                     </Grid>
                                 ))
                                 :
-                                accounts.length > 0 ?
+                                accounts.length > 0 && searchState.primaryFilter !== SEARCH_COURSES?
                                     accounts.slice(start, end).map((account) => (
                                         <Grid item
                                               key={account.user_id}
@@ -141,9 +155,17 @@ const SearchResults = (props) => {
 
 
                     </Grid>
-                    {accounts.length && params.type !== "account"? <hr /> : ""}
                     {
-                        params.type !== "account" ? <Grid item xs={12}>
+                        searchState.primaryFilter === SEARCH_COURSES?
+                            <Grid item xs={12}>
+                                <Grid container>
+                                    <CourseFilters />
+                                </Grid>
+                            </Grid> : ""
+                    }
+                    {accounts.length && searchState.primaryFilter !== SEARCH_ACCOUNTS? <hr /> : ""}
+                    {
+                        searchState.primaryFilter !== SEARCH_ACCOUNTS ? <Grid item xs={12}>
                             <Grid container
                                 justify={"space-between"}
                                 direction={"row"}
@@ -152,20 +174,16 @@ const SearchResults = (props) => {
                                     <Typography className={"resultsColor"} align={'left'} >
                                         {courses.length > 0 && params.type !== "course" ? "Courses" : "" }
                                     </Typography>
-                                    {
-                                        params.type === "course" ?
-                                            <Grid item xs={12}>
-                                                <Grid container>
-                                                    <CourseFilters />
-                                                </Grid>
-                                            </Grid> : ""
-                                    }
                                 </Grid>
-                                {/*<Grid item style={{ "paddingRight": "1vh" }}>*/}
-                                {/*    <Chip label="See All Courses"*/}
-                                {/*        className="searchChip"*/}
-                                {/*    />*/}
-                                {/*</Grid>*/}
+                                {
+                                    (courses.length > 0 && searchState.primaryFilter === SEARCH_ALL) &&
+                                    <Grid item style={{ "paddingRight": "1vh" }}>
+                                        <Chip label="See All Courses"
+                                              className="searchChip"
+                                              onClick={displayAll(SEARCH_COURSES)}
+                                        />
+                                    </Grid>
+                                }
                             </Grid>
                             <Grid container direction={"row"} style={{ paddingLeft: 20, paddingRight: 20 }}>
                                 {courses.slice(0, 4).map((course) => (
