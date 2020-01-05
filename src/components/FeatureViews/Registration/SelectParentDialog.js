@@ -72,7 +72,7 @@ class SelectParentDialog extends React.Component {
         this.setState((oldState)=>{
             // update field with what's being typed by the user
             oldState.inputParent = e;
-            oldState.searchingParent = true;
+            oldState.searchingParent = false;
             return oldState;
         });
     }
