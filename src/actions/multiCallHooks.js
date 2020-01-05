@@ -57,7 +57,6 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         .filter( classReg => !classReg.enrollment)
                         .map( classReg => ({student: classReg.student, course: classReg.course}))
                             .concat(tutoringEnrollments);
-                    console.log(courseEnrollments);
 
                     const Enrollments = await Promise.all(courseEnrollments.map(enrollment =>
                         instance.request(
@@ -242,7 +241,6 @@ export const useCourseSearch = (query) => {
                         ...requestSettings,
                         'method':'get'
                     });
-                    console.log(courseSearchResults);
                     dispatch({
                         type:types.GET_COURSE_SEARCH_QUERY_SUCCESS,
                         payload:courseSearchResults,

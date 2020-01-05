@@ -9,9 +9,8 @@ import React, {Component} from "react";
 import {Prompt} from "react-router";
 import {NavLink, withRouter} from "react-router-dom";
 import CreatableSelect from 'react-select/creatable';
-import {updateStudent, updateParent} from "reducers/usersReducer";
+import {updateParent, updateStudent} from "reducers/usersReducer";
 import {updateCourse} from "reducers/courseReducer";
-
 // Material UI Imports
 import Loading from "components/Loading";
 import Grid from "@material-ui/core/Grid";
@@ -31,29 +30,19 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Clear";
-
 // Outside React Component
 import SearchSelect from "react-select";
 import BackButton from "../BackButton.js";
 import Modal from "@material-ui/core/Modal";
-import CompleteCourseRegistration from"./CompleteCourseRegistration";
+import CompleteCourseRegistration from "./CompleteCourseRegistration";
 
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import {DatePicker, TimePicker, MuiPickersUtilsProvider,} from "material-ui-pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import {
-    categorySelectObject,
-    convertTimeStrToDate,
-    createDiscountPayload,
-    durationParser, gradeConverter, loadEditCourseState,
-    numSessionsParser,
-    timeParser,
-    weeklySessionsParser
-} from "./FormUtils";
+import {DatePicker, TimePicker,} from "material-ui-pickers";
+import {createDiscountPayload, durationParser, loadEditCourseState, numSessionsParser, timeParser} from "./FormUtils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
 
 const parseGender = {
@@ -1320,48 +1309,17 @@ class Form extends Component {
     }
 
     renderCourseRegistrationSubmission(){
-        console.log(this.state)
         if(this.props.registeredCourses){
-
             let currentStudentID = this.state.Student.Student.value;
             let registeredCourseForm = this.props.registeredCourses[currentStudentID];
             registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
-            let currentStudentName = registeredCourseForm.display.student_name;
-            let currentCourseTitle = registeredCourseForm.display.course_name;
-            let student=currentStudentName.slice(0,currentStudentName.indexOf(" -"));
-            let email=currentStudentName.slice(currentStudentName.indexOf("- "), currentStudentName.length);
-            let instructorName=this.props.instructors[registeredCourseForm.new_course.instructor].name;
-            let studentID=registeredCourseForm.student_id;
-            let courseName=currentCourseTitle.slice(currentCourseTitle.indexOf("- "), currentCourseTitle.length);
-            let startDate=registeredCourseForm.new_course.schedule.start_date;
-            console.log(instructorName);
-
-            console.log(registeredCourseForm);
-            return <div>
-                <CompleteCourseRegistration startDate={startDate} student={student} studentID={studentID} courseName={courseName} email={email} instructorName={instructorName} courseName={courseName} currentStudentName={currentStudentName} currentCourseTitle={currentCourseTitle}/>
-            </div>
-        } else {
-            // this.props.registrationActions.initializeRegistration();
-            return () => {
-                let currentStudentID = this.state.Student.Student.value;
-                let registeredCourseForm = this.props.registeredCourses[currentStudentID];
-                registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
-
-                let currentStudentName = registeredCourseForm.display.student_name;
-                let currentCourseTitle = registeredCourseForm.display.course_name;
-
-
-                return <div>
-                    <h3>{currentStudentName}</h3>
-                    <h3>{currentCourseTitle}</h3>
-                    <Button component={NavLink} to={"/registration"}
-                            className={"button"}>Register More</Button>
-                    <Button component={NavLink} to={"/registration/cart"}
-                            className={"button"}>Checkout</Button>
-                </div>
-            }
+            return <>
+                <CompleteCourseRegistration
+                    courseType={this.state.form}
+                    registeredCourseForm={registeredCourseForm}
+                />
+            </>
         }
-
     }
 
     renderTitle(id, type) {
@@ -1424,7 +1382,7 @@ class Form extends Component {
                             />
                         }
                         <Typography className="heading" align="left">
-                            Class Registration Confirmation
+                            Course Registration Confirmation
                         </Typography>
                         {
                             this.props.submitStatus !== "success" ?

@@ -1,5 +1,4 @@
-import React, {useState, useEffect, useMemo} from "react";
-
+import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import BackArrow from "@material-ui/icons/ArrowBack";
@@ -9,17 +8,17 @@ import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import * as userActions from "../../../actions/userActions.js"
 import {connect, useDispatch} from "react-redux";
-import { Typography} from "@material-ui/core";
+import {Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import {withRouter} from "react-router-dom";
 import Checkbox from "@material-ui/core/Checkbox";
 import * as apiActions from "../../../actions/apiActions";
+import {durationParser} from "../../../actions/apiActions";
 import Button from "@material-ui/core/Button";
 import Loading from "../../Loading";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
 import TextField from "@material-ui/core/TextField";
 import PriceQuoteForm from "../../Form/PriceQuoteForm";
-import {durationParser} from "../../../actions/apiActions";
 
 function RegistrationCart(props) {
     const dispatch = useDispatch();
@@ -295,7 +294,7 @@ function RegistrationCart(props) {
                                 course_id: courseID,
                                 sessions: courseVal.sessions,
                                 student_id: studentID,
-                                enrollment: course.form.Enrollment,
+                                enrollment: course && course.form.Enrollment,
                             });
                         }
                     }
