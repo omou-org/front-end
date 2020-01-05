@@ -47,7 +47,9 @@ const dateOptions = {
     "day": "numeric",
 };
 
-const courseDataParser = ({schedule, status, tuition}) => {
+const courseDataParser = ( course) => {
+    console.log(course);
+    let {schedule, status, tuition} = course;
     const DaysString = schedule.days;
 
     const endDate = new Date(schedule.end_date + schedule.end_time),
@@ -115,7 +117,7 @@ const CourseSessionStatus = (props) => {
                     params: {
                         time_frame: "month",
                         view_option: courseTypeParse[course.type],
-                        time_shift: 1,
+                        time_shift: 0,
                     }
                 }
             });
@@ -155,20 +157,14 @@ const CourseSessionStatus = (props) => {
             .filter(session => session.course === Number(courseID)) : [],
         paymentSessionStatus = enrollment.session_payment_status,
         statusKey = (status) => {
-            if (status === 1) {
-                return "Paid";
-            } else if (status === 0) {
-                return "Unpaid";
-            }
-            return "Waived";
-
+            return "Paid";
         };
 
     const handleTabChange = (_, newTab) => {
         setActiveTab(newTab);
     };
     // console.log(course, calendarSessions)
-    const sessions = course.type === "T" && courseSessions
+    const sessions = course.course_type === "tutoring" && courseSessions
         ? calendarSessions.map((session) => ({
             ...session,
             "status": statusKey(paymentSessionStatus[session.session_id]),
@@ -185,8 +181,6 @@ const CourseSessionStatus = (props) => {
         ];
 
     let parentOfCurrentStudent = usersList.StudentList[studentID].parent_id;
-
-    console.log(enrollment);
 
     const courseToRegister = {
         "Enrollment": enrollment.enrollment_id,
@@ -291,7 +285,7 @@ const CourseSessionStatus = (props) => {
                             {sessions.length !== 0
                                 ? sessions.map((session, i) => {
                                     const {day, date, startTime, endTime, status, tuition} =
-                                        course.type === "T"
+                                        course.course_type === "tutoring"
                                             ? sessionDataParse(session) : courseDataParser(session);
                                     return (
                                         <Grid
