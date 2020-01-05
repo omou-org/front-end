@@ -64,6 +64,7 @@ function PaymentTable({paymentList, type, enrollmentID})  {
                     {
                         paymentList.map((payment) => {
                             return <TableRow
+                                hover
                                 component={NavLinkNoDup}
                                 to={`/accounts/parent/payment/${payment.parent}/${payment.id}`}
                                 key={payment.id}>
