@@ -17,6 +17,8 @@ export const GET = "get";
 export const POST = "post";
 export const PATCH = "patch";
 export const DELETE = "delete";
+export const IS_SEARCHING = true;
+export const NOT_SEARCHING = false;
 
 export const LOGIN_STARTED = "LOGIN_STARTED";
 export const LOGIN_SUCCESSFUL = "LOGIN_SUCCESSFUL";
@@ -223,3 +225,5 @@ export const GET_PAYMENT_SUCCESS = "GET_PAYMENT_SUCCESS";
 export const GET_PAYMENT_FAILED ="GET_PAYMENT_FAILED";
 
 export const GET_PAYMENT_ENROLLMENT_SUCCESS = "GET_PAYMENT_ENROLLMENT_SUCCESS";
+
+export const UPDATE_SEARCH_STATUS = "UPDATE_SEARCH_STATUS";

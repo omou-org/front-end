@@ -32,6 +32,7 @@ export const logout = () => ({"type": types.LOGOUT});
 
 export const fetchUserStatus = (token) => async (dispatch) => {
     // creates a new action based on the response given
+    console.log(token)
     const newAction = (type, response) => {
         dispatch({
             type,

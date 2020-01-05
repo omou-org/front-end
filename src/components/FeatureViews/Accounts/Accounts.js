@@ -26,6 +26,9 @@ import "./Accounts.scss";
 import Avatar from "@material-ui/core/Avatar";
 import ProfileCard from "./ProfileCard";
 import Grow from "@material-ui/core/Grow";
+import {GET} from "../../../actions/actionTypes";
+import {REQUEST_ALL} from "../../../actions/apiActions";
+import Loading from "../../Loading";
 
 class Accounts extends Component {
     constructor(props) {
@@ -111,7 +114,7 @@ class Accounts extends Component {
             return (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0;
         });
         return newUsersList;
-    }
+    };
 
     handleChange = (event, tabIndex) => {
         event.preventDefault();
@@ -120,7 +123,7 @@ class Accounts extends Component {
         }, () => {
             sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
         });
-    }
+    };
 
     render() {
         const userList = this.getUsers();
@@ -236,6 +239,14 @@ class Accounts extends Component {
             </Grow>
         );
         this.resize();
+
+        if(this.props.requestStatus.instructor[GET][REQUEST_ALL] !== 200 ||
+            this.props.requestStatus.student[GET][REQUEST_ALL] !== 200 ||
+            this.props.requestStatus.parent[GET][REQUEST_ALL] !== 200
+        ){
+            return (<Loading/>)
+        }
+
         return (
             <Grid
                 className="Accounts"
@@ -335,6 +346,7 @@ const mapStateToProps = (state) => ({
     "receptionist": state.Users.ReceptionistList,
     "students": state.Users.StudentList,
     "isAdmin": state.auth.isAdmin,
+    "requestStatus": state.RequestStatus,
 });
 
 const mapDispatchToProps = (dispatch) => ({

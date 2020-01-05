@@ -1,8 +1,8 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import ReactSelect from 'react-select/creatable';
 import {components} from 'react-select';
-import {  Grid, Select } from "@material-ui/core";
-import { bindActionCreators } from "redux";
+import {Grid, Select} from "@material-ui/core";
+import {bindActionCreators} from "redux";
 import * as searchActions from "../../../actions/searchActions";
 import * as userActions from "../../../actions/userActions";
 import {connect, useDispatch, useSelector} from "react-redux";
@@ -10,10 +10,11 @@ import MenuItem from "@material-ui/core/MenuItem";
 import "./Search.scss";
 import FormControl from "@material-ui/core/FormControl";
 import SearchIcon from "@material-ui/icons/Search";
-import { withRouter, useHistory, } from 'react-router-dom';
+import {useHistory, useLocation, withRouter} from 'react-router-dom';
 import * as apiActions from "../../../actions/apiActions";
 import * as registrationActions from "../../../actions/registrationActions";
 import windowSize from 'react-window-size';
+import {IS_SEARCHING, NOT_SEARCHING} from "../../../actions/actionTypes";
 
 const Search = (props) => {
     const [query, setQuery] = useState("");
@@ -29,7 +30,9 @@ const Search = (props) => {
         headers: {"Authorization": `Token ${props.auth.token}`,}
     });
     const searchState = useSelector(({Search}) => Search);
+
     const history = useHistory();
+    const location = useLocation();
 
     const [isMobileSearching, setMobileSearching] = useState(false);
 
@@ -47,9 +50,17 @@ const Search = (props) => {
     const {profile, gradeFilter, sortAccount, accountPage} = account;
     const {courseType, availability, sortCourse, coursePage} = course;
 
+    useEffect(()=>{
+        let prevSearchQuery = sessionStorage.getItem("SearchQuery");
+        prevSearchQuery = prevSearchQuery && prevSearchQuery.substr(1, prevSearchQuery.length-2);
+        if(SearchQuery !== prevSearchQuery){
+            api.setSearchQuery(prevSearchQuery);
+        }
+    },[]);
+
     // Fetching account results
     useEffect(()=>{
-        if(searchState.SearchQuery){
+        if(searchState.SearchQuery && searchState.SearchQuery !== ""){
             let quickQuery = {
                 value: searchState.SearchQuery,
                 label: searchState.SearchQuery,
@@ -74,6 +85,7 @@ const Search = (props) => {
                 baseConfig.params["sort"] = sortAccount;
             }
             setAccountRequestConfig(baseConfig);
+            api.updateSearchStatus(NOT_SEARCHING);
             filterSuggestions();
         }
     },[SearchQuery, profile, gradeFilter, sortAccount, accountPage]);
@@ -103,6 +115,7 @@ const Search = (props) => {
                 baseConfig.params["sort"] = sortCourse;
             }
             setCourseRequestConfig(baseConfig);
+            api.updateSearchStatus(NOT_SEARCHING);
             filterSuggestions();
         }
     },[SearchQuery, courseType, availability, sortCourse, coursePage]);
@@ -196,7 +209,10 @@ const Search = (props) => {
     const handleQuery = e => {
         if(query.label){
             api.setSearchQuery(query.label);
-            history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
+            api.updateSearchStatus(IS_SEARCHING);
+            if(!location.pathname.includes("search")){
+                history.push(`/search/`);
+            }
         }
     };
 
@@ -225,9 +241,13 @@ const Search = (props) => {
                 </components.DropdownIndicator>
             )
         );
-    }
+    };
 
-    // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
+    useEffect(()=>{
+        sessionStorage.setItem("SearchQuery", JSON.stringify(SearchQuery));
+    },[SearchQuery]);
+
+
     return (
         <Grid container
             className={'search'}

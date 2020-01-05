@@ -1,6 +1,5 @@
 import * as types from './actionTypes';
-import axios from "axios";
-import {instance, wrapGet, wrapPatch} from "./apiActions";
+import {wrapGet} from "./apiActions";
 
 const accountSearchURL = `/search/account/`;
 const courseSearchURL = `/search/course/`;
@@ -32,4 +31,7 @@ export function setSearchQuery(event) {
 
 export const updateSearchParam = (searchType,filter, value) => {
     return {type: types.UPDATE_SEARCH_FILTER, payload: { searchType: searchType, filter: filter, value: value}};
-}
+};
+
+export const updateSearchStatus = (searchState) =>
+    ({type: types.UPDATE_SEARCH_STATUS, payload: searchState});

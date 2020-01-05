@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Grid } from "@material-ui/core";
-import { bindActionCreators } from "redux";
+import React, {useMemo, useState} from 'react';
+import {Grid} from "@material-ui/core";
+import {bindActionCreators} from "redux";
 import * as searchActions from "../../../actions/searchActions";
-import { connect, useDispatch, useSelector } from "react-redux";
+import {connect, useDispatch, useSelector} from "react-redux";
 import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
 import AccountsCards from "./cards/AccountsCards"
 import CoursesCards from "./cards/CoursesCards"
 import "./Search.scss";
-import { useParams} from "react-router-dom"
+import {useParams} from "react-router-dom"
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 import * as registrationActions from "../../../actions/registrationActions";
@@ -16,6 +16,7 @@ import AccountFilters from "../../FeatureViews/Search/AccountFilters"
 import NoResultsPage from './NoResults/NoResultsPage';
 import MoreResultsIcon from "@material-ui/icons/KeyboardArrowRight";
 import CourseFilters from "./CourseFilters";
+import Loading from "../../Loading";
 
 const SearchResults = (props) => {
     const dispatch = useDispatch();
@@ -34,15 +35,8 @@ const SearchResults = (props) => {
     const [end, setEnd] = useState(4);
     const [currentPage, setCurrentPage] = useState(1);
     const params = useParams();
-    const {query} = params;
 
-    const { accounts, courses } = searchState;
-
-    useEffect(()=>{
-        if(params.query){
-            api.setSearchQuery(params.query);
-        }
-    },[params.query]);
+    const { accounts, courses, SearchQuery } = searchState;
 
     const numberOfResults = () => {
         switch (params.type) {
@@ -65,12 +59,16 @@ const SearchResults = (props) => {
         setEnd(8);
         if (end === 8) {
             setCurrentPage(currentPage + 1);
-            // TODO: change this to updating page in redux
             // api.fetchSearchAccountQuery(searchConfig);
             setStart(0);
             setEnd(4);
         }
     };
+
+    if((searchState.searchQueryStatus.account !== 200 ||
+        searchState.searchQueryStatus.course !== 200) && searchState.searchQueryStatus.status){
+        return <Loading/>
+    }
 
     return (
         <Grid container className={'search-results'} >
@@ -82,7 +80,7 @@ const SearchResults = (props) => {
                             className={"search-title"}
                             variant={"h3"}
                             align={"left"}>
-                            {numberOfResults()} Search Results for "{query}"
+                            {numberOfResults()} Search Results for "{SearchQuery}"
                         </Typography>
                     </Grid>
                     <>
@@ -114,6 +112,7 @@ const SearchResults = (props) => {
                             {params.type === "account" ?
                                 accounts.map((account) => (
                                     <Grid item
+                                          key={account.user_id}
                                         sm={3}>
                                         <AccountsCards user={account} key={account.user_id} />
                                     </Grid>
@@ -122,6 +121,7 @@ const SearchResults = (props) => {
                                 accounts.length > 0 ?
                                     accounts.slice(start, end).map((account) => (
                                         <Grid item
+                                              key={account.user_id}
                                             sm={3}>
                                             <AccountsCards user={account} key={account.user_id} />
                                         </Grid>

@@ -1,4 +1,4 @@
-import {DELETE, GET, PATCH, POST} from "../actions/actionTypes";
+import {DELETE, GET, NOT_SEARCHING, PATCH, POST} from "../actions/actionTypes";
 
 export default {
     "Authentication": initAuth(),
@@ -10,8 +10,7 @@ export default {
         "CourseSessions": {},
     },
     "Enrollments": {},
-    "Payments": {
-    },
+    "Payments": {},
     "Users": {
         "StudentList": {},
         "ParentList": {},
@@ -55,7 +54,11 @@ export default {
     "RequestStatus": initRequests(),
     "SearchResults": {
         SearchQuery:"",
-        searchQueryStatus: "",
+        searchQueryStatus: {
+            account: "",
+            course: "",
+            searching: NOT_SEARCHING,
+        },
         accounts: [],
         courses: [],
         params: {
