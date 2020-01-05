@@ -376,6 +376,8 @@ const CourseSessionStatus = () => {
             case 2:
                 return (
                     <PaymentTable
+                        type={"enrollment"}
+                        enrollmentID = {enrollment.enrollment_id}
                         paymentList={enrollment.payment_list}/>
                 );
             // no default

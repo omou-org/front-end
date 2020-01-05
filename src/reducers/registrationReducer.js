@@ -222,6 +222,7 @@ const addClassRegistration = (prevState, form) => {
         display:{
             student_name: studentName,
             course_name: courseName,
+            course_id: Number(courseID)
         },
         form:{
             ...form,
@@ -352,7 +353,7 @@ const addSmallGroupRegistration = (prevState, {formMain, new_course}) => {
     let {Student, Student_validated, existingUser, hasLoaded, nextSection, preLoaded, submitPending} = formMain;
 
     let enrollmentObject = {
-        type: "class",
+        type: "small_group",
         student_id: studentID,
         course_id: new_course.id,
         enrollment_note: "",
@@ -365,7 +366,7 @@ const addSmallGroupRegistration = (prevState, {formMain, new_course}) => {
             Student: Student,
             Student_validated: Student_validated,
             existingUser: existingUser,
-            form: "class",
+            form: "small_group",
             hasLoaded: hasLoaded,
             nextSection: nextSection,
             preLoaded: preLoaded,

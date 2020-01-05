@@ -36,3 +36,25 @@
     width:80%;
   }
 }
+
+.course-receipt{
+  &.paper{
+    padding: $paperPadding;
+    background-color:white !important;
+    margin-top:15px;
+  }
+
+  .course-info{
+    border-right: 1px solid gray(0) !important;
+  }
+
+  .course-receipt-label{
+    font-weight:500;
+    color:gray(130);
+    margin-top: 10px;
+  }
+
+  .button{
+    margin-left: 5px;
+  }
+}
