@@ -7,12 +7,12 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/styles";
 import "./AdminPortal.scss";
 
-import {bindActionCreators} from "redux";
+import { bindActionCreators } from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
-import {connect} from "react-redux";
-import {Button, Typography} from "@material-ui/core";
+import { connect } from "react-redux";
+import { Button, Typography } from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
-import {withRouter} from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import Checkbox from "@material-ui/core/Checkbox";
 import BackButton from "../../BackButton";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
@@ -21,7 +21,7 @@ import AdminViewsRoutes from "../../Routes/AdminViewsRoutes";
 
 const useStyles = makeStyles({
     setParent: {
-        backgroundColor:"#39A1C2",
+        backgroundColor: "#39A1C2",
         color: "white",
         // padding: "",
     }
@@ -35,17 +35,17 @@ function AdminPortal(props) {
             <Paper className={"registration-cart paper"}>
                 <Grid container layout={"row"}>
                     <Grid item xs={12}>
-                        <BackButton/>
-                        <hr/>
+                        <BackButton />
+                        <hr />
                     </Grid>
                     <Grid item xs={12}>
-                        <Typography variant={"h3"} align={"left"}>Admin Portal</Typography>
+                        <Typography variant={"h3"} align={"left"} style={{ paddingBottom: "20px" }}>Admin Portal</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                        <AdminActionCenter/>
+                        <AdminActionCenter />
                     </Grid>
                     <Grid item xs={12}>
-                        <AdminViewsRoutes/>
+                        <AdminViewsRoutes />
                     </Grid>
                 </Grid>
             </Paper>
