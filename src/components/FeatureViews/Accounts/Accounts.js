@@ -134,7 +134,18 @@ class Accounts extends Component {
             "width": 38,
             "height": 38,
             "fontSize": 14,
+            first_tab:{
+                borderRadius:"10px 0 0 10px !important",
+            },
+            last_tab:{
+                borderRadius:"10px 0 0 10px",
+            },
         });
+
+        styles.tab = [];
+        styles.tab[0] = styles.first_tab;
+        styles.tab[1] = styles.last_tab;
+
         const tableView = () => (
             <Table className="AccountsTable">
                 <TableHead>

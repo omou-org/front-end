@@ -1,5 +1,4 @@
-import React, {useState, useEffect, useMemo} from "react";
-
+import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
@@ -85,7 +84,11 @@ function AdminActionCenter(props) {
         setTuitionAnchor(null);
     },[location]);
 
-    return (<Grid container spacing={16}>
+    return (
+        <Grid
+            className="admin-actions-wrapper"
+            container
+            spacing={16}>
                 <Grid item>
                     <Button component={NavLinkNoDup} to={"/registration/form/instructor"}
                             color={"primary"}
