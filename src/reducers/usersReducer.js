@@ -94,7 +94,15 @@ const handleAccountNotesFetch = (state, {ownerID, ownerType, response}) => {
     return newState;
 };
 
-export const handleParentsFetch = (state, {id, response}) => {
+export const handleParentsFetch = (state, payload) => {
+    let response, id;
+    if(payload.id){
+        id = payload.id;
+        response = payload.response;
+    } else {
+        id = payload.data.user.id;
+        response = payload;
+    }
     let {ParentList} = state;
     if (id === REQUEST_ALL) {
         response.data.forEach((parent) => {
@@ -214,7 +222,6 @@ export const updateStudent = (students, id, student) => ({
 
 export const handleInstructorsFetch = (state, {id, response}) => {
     const {data} = response;
-    console.log(data);
     let {InstructorList} = state;
     if (id !== REQUEST_ALL) {
         InstructorList = updateInstructor(InstructorList, id, data);

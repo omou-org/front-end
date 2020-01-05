@@ -1,33 +1,21 @@
-import PropTypes from "prop-types";
-import React, {useState, useEffect, useMemo} from "react";
-
+import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
-
-import { makeStyles } from "@material-ui/styles";
 
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import {Button, Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
-import {withRouter, useParams} from "react-router-dom";
+import {useParams, withRouter} from "react-router-dom";
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
-import {usePayment, useSubmitRegistration} from "../../../actions/registrationHook";
+import {usePayment, useSubmitRegistration} from "../../../actions/multiCallHooks";
 import Loading from "../../Loading";
-import {isFail, isLoading, isSuccessful, useParent, usePrevious} from "../../../actions/hooks";
+import {isFail, isLoading, isSuccessful, usePrevious} from "../../../actions/hooks";
 import {weeklySessionsParser} from "../../Form/FormUtils";
 import {GET} from "../../../actions/actionTypes";
 import BackButton from "../../BackButton";
-
-const useStyles = makeStyles({
-    setParent: {
-        backgroundColor:"#39A1C2",
-        color: "white",
-        // padding: "",
-    }
-});
 
 function RegistrationReceipt(props) {
     const currentPayingParent = useSelector((({Registration}) => Registration.CurrentParent));
@@ -54,8 +42,6 @@ function RegistrationReceipt(props) {
     const registrationStatus = useSubmitRegistration(Registration.registration);
 
     const parent = parents[params.parentID];
-    const parentStatus = useParent(params.parentID && params.parentID);
-
     const paymentStatus = usePayment(params.paymentID && params.paymentID);
 
     useEffect(()=>{
@@ -65,7 +51,7 @@ function RegistrationReceipt(props) {
             )
         ){
             let payment = Payments[params.parentID][params.paymentID];
-            let {enrollments} = payment;
+            let enrollments = payment.registrations.map(registration => registration.enrollment_details);
             setPaymentReceipt(payment);
             setCourseReceipt(courseReceiptInitializer(enrollments));
         }
@@ -102,7 +88,7 @@ function RegistrationReceipt(props) {
         Object.keys(paymentReceipt).length < 1){
         let payment = Payments[currentPayingParent.user.id][registrationStatus.paymentID];
         setPaymentReceipt(payment);
-        let {enrollments} = payment;
+        let enrollments = payment.registrations.map(registration => registration.enrollment_details);
         setCourseReceipt(courseReceiptInitializer(enrollments));
     }
 
@@ -111,11 +97,9 @@ function RegistrationReceipt(props) {
         api.closeRegistration("");
         props.history.push("/registration");
     };
-
     if(Object.keys(paymentReceipt).length < 1 || isLoading(paymentStatus)){
         return <Loading/>;
     }
-
     const renderCourse = (enrolledCourse) => (<Grid item key={enrolledCourse.id}>
         <Grid
             className={"enrolled-course"}
@@ -209,7 +193,7 @@ function RegistrationReceipt(props) {
     }
 
     const renderParent = () => {
-        if(currentPayingParent.user){
+        if(currentPayingParent){
             return currentPayingParent.user
         } else {
             return parent;

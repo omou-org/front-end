@@ -1,5 +1,5 @@
 // React Imports
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Switch } from "react-router-dom";
 import React from "react";
 import TuitionRules from "../FeatureViews/AdminPortal/TuitionRules";
 import AdminRoute from "./AdminRoute";
@@ -9,7 +9,7 @@ import ManageDiscounts from "../FeatureViews/AdminPortal/ManageDiscounts";
 
 // Local Component Imports
 
-function AdminViewsRoutes(props) {
+function AdminViewsRoutes() {
 
     return (
         <Switch>

@@ -125,12 +125,12 @@
     .rowPadding {
       padding: 3%;
       margin-top: -5%;
-      display: relative;
-      align-content: left;
+      position: relative;
+      align-content: flex-start;
 
       .bioDescription {
         font-weight: 500;
-        font-size: 16;
+        font-size: 16px;
         padding-top: 4%;
         padding-bottom: -5%;
         padding-right: 5%;
@@ -246,6 +246,14 @@
 
 .course-session-status {
   padding: 3%;
+  .course-session-title{
+    margin-top:10px;
+    margin-bottom:20px;
+  }
+
+  .participants{
+    margin-bottom:30px;
+  }
 
   .table-text {
     color: white;
@@ -267,6 +275,9 @@
 
 .payments-history {
   padding: 15px;
+  a{
+    text-decoration:none;
+  }
 }
 
 .session-actions{

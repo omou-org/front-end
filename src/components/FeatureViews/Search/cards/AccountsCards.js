@@ -1,15 +1,13 @@
 import { connect } from "react-redux";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Grid from "@material-ui/core/Grid";
-import { Card, Paper, Typography } from "@material-ui/core";
+import { Card,  Typography } from "@material-ui/core";
 import CardContent from "@material-ui/core/CardContent";
 import Chip from "@material-ui/core/Chip";
 import { withRouter } from "react-router-dom";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import {truncateStrings} from "../../../truncateStrings"
-
-import { makeStyles } from '@material-ui/styles';
 
 import { ReactComponent as IDIcon } from "../../../identifier.svg";
 

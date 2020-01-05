@@ -7,25 +7,29 @@
 @import '../../../theme/sizes';
 
 // Session view
-.session-button{
-   .button {
-     left: 30px;
-     top: 15px;
-   }
+.scheduler {
+  .scheduler-title {
+    margin-bottom: 15px;
+  }
+
+  .session-button {
+    .button {
+      left: 30px;
+      top: 15px;
+    }
+  }
 }
+
+.paper.session { padding: $paperPadding }
 
 .main-session-view{
   margin-top: 2em;
 }
 
 .session-footer-buttons{
-    display: flex;
-    width: 50%;
+  display: flex;
+  width: 50%;
 
-}
-.session-view{
-  padding-left:
-  2%
 }
 
 .session-view-details{
@@ -67,13 +71,6 @@
 
 }
 
-.scheduler-header-last{
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-
 .fc-now-indicator{
   border : 0 solid #43B5D9;
 }
@@ -88,48 +85,48 @@
   .container{
     line-height: 2rem;
 
-  .clock_icon{
-  background-image: url('./icons/icons8-clock-64.png');
-  margin: 0;
-	padding-left: 25px ;
-	list-style: none;
-	background-repeat: no-repeat;
-	background-position: left center;
-  background-size: 20px;
+    .clock_icon{
+      background-image: url('./icons/icons8-clock-64.png');
+      margin: 0;
+      padding-left: 25px ;
+      list-style: none;
+      background-repeat: no-repeat;
+      background-position: left center;
+      background-size: 20px;
 
 
-}
+    }
 
-.pin_icon{
-    background-image: url('./icons/icons8-place-marker-50.png');
-    margin: 0;
-    padding-left: 25px ;
-    list-style: none;
-    background-repeat: no-repeat;
-    background-position: left center;
-    background-size: 20px;
-}
+    .pin_icon{
+      background-image: url('./icons/icons8-place-marker-50.png');
+      margin: 0;
+      padding-left: 25px ;
+      list-style: none;
+      background-repeat: no-repeat;
+      background-position: left center;
+      background-size: 20px;
+    }
 
-.teacher_icon{
-  background-image: url('./icons/icons8-teacher-24.png');
-  margin: 0;
-  padding-left: 25px ;
-  list-style: none;
-  background-repeat: no-repeat;
-  background-position: left center;
-  background-size: 20px;
-}
-.discription_icon{
-  background-image: url('./icons/icons8-topic-32.png');
-  margin: 0;
-  padding-left: 25px ;
-  list-style: none;
-  background-repeat: no-repeat;
-  background-position: left center;
-  background-size: 20px;
-  line-height: 1.2rem;
+    .teacher_icon{
+      background-image: url('./icons/icons8-teacher-24.png');
+      margin: 0;
+      padding-left: 25px ;
+      list-style: none;
+      background-repeat: no-repeat;
+      background-position: left center;
+      background-size: 20px;
+    }
+    .discription_icon{
+      background-image: url('./icons/icons8-topic-32.png');
+      margin: 0;
+      padding-left: 25px ;
+      list-style: none;
+      background-repeat: no-repeat;
+      background-position: left center;
+      background-size: 20px;
+      line-height: 1.2rem;
 
- }
+    }
 
 
   }
@@ -248,10 +245,14 @@ body .fc {
 }
 
 .filter-select{
-  width:60%;
+  width:85%;
   display: flex;
 }
 
 .scheduler.paper{
   padding:$paperPadding;
+}
+
+.search-options{
+  width:80%;
 }

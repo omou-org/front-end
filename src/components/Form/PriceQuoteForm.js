@@ -1,9 +1,7 @@
 // React Imports
-import React, {useCallback, useState, useEffect, useMemo, useRef} from "react";
-import {Redirect, useHistory} from "react-router-dom";
+import React, {useState, useEffect, useMemo} from "react";
+import {useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {logout} from "../../actions/authActions";
-import NavLinkNoDup from "../Routes/NavLinkNoDup";
 import PropTypes from "prop-types";
 
 // Material UI Imports
@@ -65,7 +63,6 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
     };
     const {cash, creditCard, check, internationalCreditCard} = paymentMethod;
     const cleanTutoring = JSON.parse(JSON.stringify(tutoring));
-    console.log(cleanTutoring);
 
     const stateUpdated = (currentState, prevState) => {
         const initialValues = ["{}","[]"];
@@ -138,6 +135,7 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
         e.preventDefault();
         let courseRegistrations = [];
         let tutoringRegistrations = [];
+
         // create course enrollments
         courses.forEach(course => {
             courseRegistrations.push(
@@ -145,6 +143,7 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
                     student: course.student_id,
                     course: course.course_id,
                     sessions: course.sessions,
+                    enrollment: course.enrollment,
                 });
         });
         tutoring.forEach(tutoring => {

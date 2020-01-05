@@ -7,7 +7,6 @@ import Truncate from 'react-truncate';
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import { Card } from "@material-ui/core";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import ListView from "@material-ui/icons/ViewList";
@@ -21,13 +20,15 @@ import Button from "@material-ui/core/Button";
 import {NavLink, withRouter} from "react-router-dom";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import {addDashes, stringToColor} from "./accountUtils";
-import CardActions from "@material-ui/core/CardActions";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 
 import "./Accounts.scss";
 import Avatar from "@material-ui/core/Avatar";
 import ProfileCard from "./ProfileCard";
 import Grow from "@material-ui/core/Grow";
+import {GET} from "../../../actions/actionTypes";
+import {REQUEST_ALL} from "../../../actions/apiActions";
+import Loading from "../../Loading";
 
 class Accounts extends Component {
     constructor(props) {
@@ -113,7 +114,7 @@ class Accounts extends Component {
             return (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0;
         });
         return newUsersList;
-    }
+    };
 
     handleChange = (event, tabIndex) => {
         event.preventDefault();
@@ -122,7 +123,7 @@ class Accounts extends Component {
         }, () => {
             sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
         });
-    }
+    };
 
     render() {
         const userList = this.getUsers();
@@ -187,7 +188,6 @@ class Accounts extends Component {
                                     event.stopPropagation();
                                 }}>
                                 <Grid
-                                    align="right"
                                     component={Hidden}
                                     mdDown>
                                     {
@@ -202,7 +202,6 @@ class Accounts extends Component {
                                     }
                                 </Grid>
                                 <Grid
-                                    align="right"
                                     component={Hidden}
                                     lgUp>
                                     <Button
@@ -240,6 +239,15 @@ class Accounts extends Component {
             </Grow>
         );
         this.resize();
+
+        if((this.props.requestStatus.instructor[GET][REQUEST_ALL] !== 200 ||
+            this.props.requestStatus.student[GET][REQUEST_ALL] !== 200 ||
+            this.props.requestStatus.parent[GET][REQUEST_ALL] !== 200) &&
+            this.props.searchStatus
+        ){
+            return (<Loading/>)
+        }
+
         return (
             <Grid
                 className="Accounts"
@@ -339,6 +347,8 @@ const mapStateToProps = (state) => ({
     "receptionist": state.Users.ReceptionistList,
     "students": state.Users.StudentList,
     "isAdmin": state.auth.isAdmin,
+    "requestStatus": state.RequestStatus,
+    "searchStatus": state.Search.searchQueryStatus.searching,
 });
 
 const mapDispatchToProps = (dispatch) => ({

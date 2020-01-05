@@ -1,31 +1,20 @@
-import PropTypes from "prop-types";
 import React, {useState, useEffect, useMemo} from "react";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
-
-import { makeStyles } from "@material-ui/styles";
 import "./AdminPortal.scss";
 
 import {bindActionCreators} from "redux";
 import * as adminActions from "../../../actions/adminActions";
 import {connect, useDispatch, useSelector} from "react-redux";
-import {Button, Typography} from "@material-ui/core";
+import {Typography} from "@material-ui/core";
 import {withRouter} from "react-router-dom";
-import {DELETE, GET, PATCH, POST} from "../../../actions/actionTypes";
+import {DELETE, GET, PATCH} from "../../../actions/actionTypes";
 import Loading from "../../Loading";
 import {REQUEST_ALL} from "../../../actions/apiActions";
 import DiscountRow from "./DiscountRow";
 
-const useStyles = makeStyles({
-    setParent: {
-        backgroundColor:"#39A1C2",
-        color: "white",
-        // padding: "",
-    }
-});
-
-function ManageDiscounts(props) {
+function ManageDiscounts() {
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -48,9 +37,9 @@ function ManageDiscounts(props) {
         const reduxDiscounts = JSON.stringify(discountList);
         const stateDiscounts = JSON.stringify(stateDiscountList);
         if(reduxDiscounts !== stateDiscounts &&
-            (requestStatus.discount["dateRange"][GET][REQUEST_ALL]  == 200 ||
-            requestStatus.discount[PATCH]  == 200 ||
-            requestStatus.discount[DELETE] == 200)
+            (requestStatus.discount["dateRange"][GET][REQUEST_ALL]  === 200 ||
+            requestStatus.discount[PATCH]  === 200 ||
+            requestStatus.discount[DELETE] === 200)
         ){
             setStateDiscountList(discountList);
         }

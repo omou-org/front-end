@@ -1,32 +1,40 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import ReactSelect from 'react-select/creatable';
 import {components} from 'react-select';
-import { Button, Grid, Select } from "@material-ui/core";
-import { bindActionCreators } from "redux";
+import {Grid, Select} from "@material-ui/core";
+import {bindActionCreators} from "redux";
 import * as searchActions from "../../../actions/searchActions";
 import * as userActions from "../../../actions/userActions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import MenuItem from "@material-ui/core/MenuItem";
 import "./Search.scss";
 import FormControl from "@material-ui/core/FormControl";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
-import { withRouter, Link } from 'react-router-dom';
-import axios from "axios";
+import {useHistory, useLocation, withRouter} from 'react-router-dom';
 import * as apiActions from "../../../actions/apiActions";
 import * as registrationActions from "../../../actions/registrationActions";
 import windowSize from 'react-window-size';
+import {IS_SEARCHING, NOT_SEARCHING, SEARCH_ACCOUNTS, SEARCH_ALL, SEARCH_COURSES} from "../../../actions/actionTypes";
 
 const Search = (props) => {
     const [query, setQuery] = useState("");
-    const [primaryFilter, setPrimaryFilter] = useState("All");
+    const [primaryFilter, setPrimaryFilter] = useState(SEARCH_ALL);
     const [searchSuggestions, setSearchSuggestions] = useState([]);
-    const requestConfig = { params: { query: query.label, page: 1,  },
-        headers: {"Authorization": `Token ${props.auth.token}`,} };
+
+    const [accountRequestConfig, setAccountRequestConfig] = useState({
+        params: { query: query.label, page: 1, },
+        headers: {"Authorization": `Token ${props.auth.token}`,}
+    });
+    const [courseRequestConfig, setCourseRequestConfig] = useState({
+        params: { query: query.label, page: 1,  },
+        headers: {"Authorization": `Token ${props.auth.token}`,}
+    });
     const searchState = useSelector(({Search}) => Search);
+
+    const history = useHistory();
+    const location = useLocation();
+
     const [isMobileSearching, setMobileSearching] = useState(false);
-    const [searchStatus, setSearchStatus] = useState(false);
 
     const dispatch = useDispatch();
     const api = useMemo(
@@ -38,19 +46,92 @@ const Search = (props) => {
         }),
         [dispatch]
     );
+    const {SearchQuery, "params":{account, course}} = searchState;
+    const {profile, gradeFilter, sortAccount, accountPage} = account;
+    const {courseType, availability, sortCourse, coursePage} = course;
+
+    useEffect(()=>{
+        let prevSearchQuery = sessionStorage.getItem("SearchQuery");
+        prevSearchQuery = prevSearchQuery && prevSearchQuery.substr(1, prevSearchQuery.length-2);
+        if(SearchQuery !== prevSearchQuery){
+            api.setSearchQuery(prevSearchQuery);
+        }
+    },[]);
+
+    // Fetching account results
+    useEffect(()=>{
+        if(searchState.SearchQuery && searchState.SearchQuery !== ""){
+            let quickQuery = {
+                value: searchState.SearchQuery,
+                label: searchState.SearchQuery,
+            };
+            setQuery(quickQuery);
+            let baseConfig = {
+                ...accountRequestConfig,
+                params: {
+                    query:SearchQuery,
+                    page: accountPage,
+                }
+            };
+            if(profile){
+                baseConfig.params["profile"] = profile;
+            }
+            if(gradeFilter){
+                baseConfig.params["grade"] = Number(gradeFilter);
+                baseConfig.params["profile"] = "student";
+                api.updateSearchParam("account", "profile", "student");
+            }
+            if(sortAccount){
+                baseConfig.params["sort"] = sortAccount;
+            }
+            setAccountRequestConfig(baseConfig);
+            api.updateSearchStatus(NOT_SEARCHING);
+            filterSuggestions();
+        }
+    },[SearchQuery, profile, gradeFilter, sortAccount, accountPage]);
+
+    //Fetch Course results
+    useEffect(()=>{
+        if(SearchQuery){
+            let quickQuery = {
+                value: SearchQuery,
+                label: SearchQuery,
+            };
+            setQuery(quickQuery);
+            let baseConfig = {
+                ...courseRequestConfig,
+                params: {
+                    query: SearchQuery,
+                    page: coursePage,
+                }
+            };
+            if(courseType){
+                baseConfig.params["course"] = courseType;
+            }
+            if(availability && availability !== "both"){
+                baseConfig.params["availability"] = availability;
+            }
+            if(sortCourse && sortCourse !== "relevance"){
+                baseConfig.params["sort"] = sortCourse;
+            }
+            setCourseRequestConfig(baseConfig);
+            api.updateSearchStatus(NOT_SEARCHING);
+            filterSuggestions();
+        }
+    },[SearchQuery, courseType, availability, sortCourse, coursePage]);
 
     const searchList = (newItem) => {
         let suggestions;
         switch(primaryFilter){
-            case "All":{
+            case SEARCH_ALL:{
                 suggestions = props.search.accounts.concat(props.search.courses);
                 break;
             }
-            case "Account":{
+            case SEARCH_ACCOUNTS:{
                 suggestions = props.search.accounts;
                 break;
             }
-            case "Course":{
+            case SEARCH_COURSES:{
                 suggestions =props.search.courses;
             }
         }
@@ -79,21 +160,8 @@ const Search = (props) => {
         }
         setSearchSuggestions(suggestions);
     };
-    
-    const customStyles = {
-        control: (base, state) => ({
-            ...base,
-            border: '0 !important',
-            // This line disable the blue border
-            boxShadow: '0 !important',
-            '&:hover': {
-                border: '0 !important'
-            }
-        })
-    };
 
     useEffect(()=>{
-        setSearchStatus(false);
         if(query.label!==""){
             filterSuggestions()();
         }
@@ -106,37 +174,48 @@ const Search = (props) => {
 
     const handleFilterChange = (filter) => (e) => {
         setPrimaryFilter(e.target.value);
+        api.updatePrimarySearchFilter(e.target.value);
     };
 
     const handleSearchChange = () => (e) => {
         if(e){
             setQuery(e);
-            handleQuery()();
+            if(e.value){
+                handleQuery();
+            }
         }
     };
 
     const filterSuggestions = ()=> (e)=>{
         // e.preventDefault();
         switch(primaryFilter){
-            case "All":{
-                api.fetchSearchAccountQuery(requestConfig);
-                api.fetchSearchCourseQuery(requestConfig);
+            case SEARCH_ALL:{
+                api.fetchSearchAccountQuery(accountRequestConfig);
+                api.fetchSearchCourseQuery(courseRequestConfig);
+                api.fetchInstructors();
                 break;
             }
-            case "Accounts":{
-                api.fetchSearchAccountQuery(requestConfig);
+            case SEARCH_ACCOUNTS:{
+                api.fetchSearchAccountQuery(accountRequestConfig);
                 break;
             }
-            case "Courses":{
-                api.fetchSearchCourseQuery(requestConfig);
+            case SEARCH_COURSES:{
+                console.log(courseRequestConfig);
+                api.fetchSearchCourseQuery(courseRequestConfig);
+                api.fetchInstructors();
                 break;
             }
         }
     }
 
-    const handleQuery = () => (e) => {
-        api.setSearchQuery(query.label);
-        props.history.push(`/search/${primaryFilter.toLowerCase()}/${query.label}`);
+    const handleQuery = e => {
+        if(query.label){
+            api.setSearchQuery(query.label);
+            api.updateSearchStatus(IS_SEARCHING);
+            if(!location.pathname.includes("search")){
+                history.push(`/search/`);
+            }
+        }
     };
 
     const handleInputChange = () => (e)=>{
@@ -164,16 +243,20 @@ const Search = (props) => {
                 </components.DropdownIndicator>
             )
         );
-    }
+    };
 
-    // TODO: how to (lazy?) load suggestions for search? Make an initial API call on component mounting for a list of suggestions?
+    useEffect(()=>{
+        sessionStorage.setItem("SearchQuery", JSON.stringify(SearchQuery));
+    },[SearchQuery]);
+
+
     return (
         <Grid container
             className={'search'}
         >
             { !isMobileSearching && <Grid item xs={2} />}
             <Grid item xs={isMobileSearching ? 12 : 10} >
-                <form onSubmit={handleQuery()}>
+                <form onSubmit={handleQuery}>
                     <Grid container >
                         <Grid item >
                             <FormControl required variant="outlined" className={"search-selector"}>
@@ -188,13 +271,13 @@ const Search = (props) => {
                                         id: 'primary-filter',
                                     }}
                                 >
-                                    <MenuItem value={"All"} key={"All"} >
+                                    <MenuItem value={SEARCH_ALL} key={"All"} >
                                         All
                                     </MenuItem>
-                                    <MenuItem value={"Account"} key={"Accounts"}>
+                                    <MenuItem value={SEARCH_ACCOUNTS} key={"Accounts"}>
                                         Account
                                     </MenuItem>
-                                    <MenuItem value={"Course"} key={"Courses"}>
+                                    <MenuItem value={SEARCH_COURSES} key={"Courses"}>
                                         Course
                                     </MenuItem>
                                 </Select>
@@ -238,8 +321,8 @@ const mapDispatchToProps = (dispatch) => ({
     "userActions": bindActionCreators(userActions, dispatch)
 });
 
-export default windowSize(
+export default
     withRouter(
     connect(mapStateToProps,
         mapDispatchToProps)
-        (Search)));
+        (windowSize(Search)));

@@ -1,7 +1,14 @@
 import initialState from './initialState';
 import * as actions from "./../actions/actionTypes";
+import {SEARCH_ALL} from "../actions/actionTypes";
 
 export default function course(state = initialState.SearchResults, {payload, type}) {
+    let status = 1;
+    if(payload){
+        if(payload.response){
+            status = payload.response.status;
+        }
+    }
     switch (type) {
         case actions.GET_SEARCH_QUERY_SUCCESSFUL:
             return state;
@@ -11,51 +18,77 @@ export default function course(state = initialState.SearchResults, {payload, typ
             state["SearchQuery"] = payload;
             return state;
         case actions.GET_ACCOUNT_SEARCH_QUERY_STARTED:
-            return {
-                ...state,
-                "searchQueryStatus":"loading",
-            };
+            return handleSearchStatus(state, "account", status);
         case actions.GET_COURSE_SEARCH_QUERY_STARTED:
-            return {
-                ...state,
-                "searchQueryStatus":"loading",
-            }
+            return handleSearchStatus(state, "course", status);
         case actions.GET_ACCOUNT_SEARCH_QUERY_SUCCESS:
-            return handleAccountSearchResults(state, payload);
+            return handleAccountSearchResults(state, payload, status);
         case actions.GET_ACCOUNT_SEARCH_QUERY_FAILED:
-            return {
-                ...state,
-                "searchQueryStatus":"failed",
-            };
+            return handleSearchStatus(state, "account", status);
         case actions.GET_COURSE_SEARCH_QUERY_SUCCESS:
-            return handleCourseSearchResults(state,payload);
+            return handleCourseSearchResults(state,payload, status);
         case actions.GET_COURSE_SEARCH_QUERY_FAILED:
-            return {
-                ...state,
-                "searchQueryStatus":"failed",
-            };
+            return handleSearchStatus(state, "course", status);
         case actions.UPDATE_SEARCH_FILTER:
             return handleSearchFilterChange(state, payload);
+        case actions.UPDATE_SEARCH_STATUS:
+            return {
+                ...state,
+                searchQueryStatus: {
+                    ...state.searchQueryStatus,
+                    status: payload,
+                }
+            };
+        case actions.UPDATE_PRIMARY_SEARCH_FILTER:
+            return {
+                ...state,
+                primaryFilter: payload,
+            };
+        case actions.RESET_SEARCH_PARAMS:
+            return{
+                ...state,
+                params: {
+                    account:{
+                        profile:"",
+                        gradeFilter:"",
+                        sortAccount:"",
+                        accountPage: 1,
+                    },
+                    course:{
+                        courseType:"",
+                        availability:"",
+                        sortCourse:"",
+                        coursePage: 1,
+                    }
+                },
+                primaryFilter: SEARCH_ALL,
+            }
         default:
             return state;
     }
 }
 
-const handleAccountSearchResults = (state, {id, response}) =>{
-    let {data} = response;
+const handleAccountSearchResults = (state, {response, id}, status) =>{
+    let {data}= response;
     return {
         ...state,
         accounts:data,
-        searchQueryStatus: "success"
+        searchQueryStatus: {
+            ...state.searchQueryStatus,
+            account: status,
+        }
     }
 };
 
-const handleCourseSearchResults = (state, {id, response}) =>{
+const handleCourseSearchResults = (state, {id, response}, status) =>{
     let {data} = response;
     return {
         ...state,
         courses:data,
-        searchQueryStatus: "success"
+        searchQueryStatus: {
+            ...state.searchQueryStatus,
+            course: status,
+        }
     }
 };
 
@@ -63,8 +96,18 @@ const handleSearchFilterChange = (state, {searchType, filter, value}) =>{
     let newState = {...state};
     newState.params[searchType][filter] = value;
     if(filter==="grade"){
-        newState.filter[searchType].profile = "student";
+        newState.params[searchType].profile = "student";
     }
     newState.searchQueryStatus = "";
     return newState
+};
+
+const handleSearchStatus = (state, searchType, status) => {
+    return {
+        ...state,
+        searchQueryStatus: {
+            ...state.searchQueryStatus,
+            [searchType]: status,
+        }
+    }
 }

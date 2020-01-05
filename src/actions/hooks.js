@@ -1,6 +1,6 @@
 import * as types from "./actionTypes";
 import {instance, MISC_FAIL, REQUEST_ALL, REQUEST_STARTED} from "./apiActions";
-import {useCallback, useEffect, useMemo, useState, useRef} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
 export const isFail = (...statuses) =>
@@ -199,6 +199,16 @@ export const usePaymentByParent = (parentID) => wrapUseEndpoint(
         }
     }
 )(null);
+
+export const usePaymentByEnrollment = (enrollmentID) => wrapUseEndpoint(
+    "/payment/payment/",
+    types.GET_PAYMENT_ENROLLMENT_SUCCESS,
+    {
+        "params":{
+            "enrollment": enrollmentID,
+        }
+    }
+);
 
 // Hook
 export function usePrevious(value) {

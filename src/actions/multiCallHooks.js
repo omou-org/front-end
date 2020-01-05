@@ -1,6 +1,6 @@
 import * as types from "./actionTypes";
-import {default as apiActions, instance, MISC_FAIL, REQUEST_ALL, REQUEST_STARTED} from "./apiActions";
-import {useCallback, useEffect, useMemo, useState, useRef} from "react";
+import {instance, MISC_FAIL, REQUEST_STARTED} from "./apiActions";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
 
@@ -52,8 +52,12 @@ export const useSubmitRegistration = (registrationDependencies) => {
                     });
                     const tutoringEnrollments = tutoringRegistrations.map((tutoringReg,i) =>
                         ({student: tutoringReg.student, course: TutoringCourses[i].data.id}));
-                    const courseEnrollments = classRegistrations.map( classReg =>
-                        ({student: classReg.student, course: classReg.course})).concat(tutoringEnrollments);
+                    // filter out classes were we're adding additional enrollments (there should be a valid enrollment id)
+                    const courseEnrollments = classRegistrations
+                        .filter( classReg => !classReg.enrollment)
+                        .map( classReg => ({student: classReg.student, course: classReg.course}))
+                            .concat(tutoringEnrollments);
+                    console.log(courseEnrollments);
 
                     const Enrollments = await Promise.all(courseEnrollments.map(enrollment =>
                         instance.request(
@@ -69,6 +73,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         type: types.POST_ENROLLMENT_SUCCESS,
                         payload: Enrollments,
                     });
+
                     const enrollmentSessions = (index) => {
                         if(index < classRegistrations.length){
                             return classRegistrations[index].sessions;
@@ -76,9 +81,19 @@ export const useSubmitRegistration = (registrationDependencies) => {
                             return tutoringRegistrations[index-(classRegistrations.length)].sessions;
                         }
                     };
-                    const registrations = Enrollments.map((enrollment, i) =>
+
+                    // Add back in filtered out existing enrollments
+                    const previouslyEnrolledCourses = classRegistrations
+                        .filter( classReg => classReg.enrollment);
+
+                    let registrations = Enrollments.map((enrollment, i) =>
                         ({ enrollment:enrollment.data.id, num_sessions: enrollmentSessions(i)})
                     );
+
+                    previouslyEnrolledCourses.forEach(({enrollment, sessions}) => {
+                       registrations.push({enrollment: enrollment, num_sessions: sessions});
+                    });
+
                     const finalPayment = await instance.request({
                         'url': paymentEndpoint,
                         ...requestSettings,
@@ -93,7 +108,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         type: types.POST_PAYMENT_SUCCESS,
                         payload: finalPayment,
                     });
-                    console.log(finalPayment);
+
                     setStatus({status:finalPayment.status, paymentID:finalPayment.data.id});
                 } catch (error){
                     if(!aborted){
@@ -134,21 +149,31 @@ export const usePayment = (id) => {
            try {
 
                 setStatus(REQUEST_STARTED);
-
                const Payment = await instance.request({
                    'url': `${paymentEndpoint}${id}/`,
                    ...requestSettings,
                    'method':'get',
                });
+               Payment.type = "parent";
 
                dispatch({
                    type: types.GET_PAYMENT_SUCCESS,
                    payload: Payment,
                });
+               const ParentResponse = await instance.request({
+                   "url":`/account/parent/${Payment.data.parent}/`,
+                   ...requestSettings,
+                   "method":"get",
+               });
+               dispatch({
+                   type: types.FETCH_PARENT_SUCCESSFUL,
+                   payload: ParentResponse,
+               });
 
-               const enrollments = Payment.data.enrollments;
+               const studentIDs = Payment.data.registrations.map(registration => registration.enrollment_details.student);
+
                // get students
-               const uniqueStudentIDs = [...new Set(enrollments.map(enrollment => enrollment.student))];
+               const uniqueStudentIDs = [...new Set(studentIDs)];
                const StudentResponses = await Promise.all(uniqueStudentIDs.map( studentID =>
                    instance.request({
                        'url':`/account/student/${studentID.toString()}/`,
@@ -159,9 +184,9 @@ export const usePayment = (id) => {
                StudentResponses.forEach(studentResponse => {
                        dispatch({type: types.FETCH_STUDENT_SUCCESSFUL, payload: studentResponse})
                });
-
                // get courses
-               const uniqueCourseIDs = [...new Set(enrollments.map(enrollment => enrollment.course))];
+               const courseIDs = Payment.data.registrations.map(registration => registration.enrollment_details.course);
+               const uniqueCourseIDs = [...new Set(courseIDs)];
                const CourseResponses = await Promise.all(uniqueCourseIDs.map( courseID =>
                     instance.request({
                         "url": `/course/catalog/${courseID}/`,
@@ -181,4 +206,71 @@ export const usePayment = (id) => {
         })();
     },[dispatch, requestSettings]);
     return status;
-}
+};
+
+export const useCourseSearch = (query) => {
+    const token = useSelector(({auth}) => auth.token);
+    const [status, setStatus] = useState(null);
+    const dispatch = useDispatch();
+
+    const handleError = useCallback((error) => {
+        if (error && error.response && error.response.status) {
+            setStatus(error.response.status);
+        } else {
+            setStatus(MISC_FAIL);
+            console.error(error);
+        }
+    }, []);
+
+    const requestSettings = useMemo(() => ({
+        "headers": {
+            "Authorization": `Token ${token}`,
+        },
+        "params":{
+            "query": query,
+        }
+    }), [token]);
+
+    useEffect(()=>{
+        if(typeof query !== "undefined"){
+            (async ()=>{
+                let aborted = false;
+                try {
+                    setStatus(REQUEST_STARTED);
+                    const courseSearchResults = await instance.request({
+                        'url':`/search/course/`,
+                        ...requestSettings,
+                        'method':'get'
+                    });
+                    console.log(courseSearchResults);
+                    dispatch({
+                        type:types.GET_COURSE_SEARCH_QUERY_SUCCESS,
+                        payload:courseSearchResults,
+                    });
+                    const instructors = courseSearchResults.map(({data}) => data.instructor);
+
+                    const instructorResults = await Promise.all(instructors.map(instructorID => {
+                        instance.request({
+                            'url':`/account/instructor/${instructorID}/`,
+                            "headers": {
+                                "Authorization": `Token ${token}`,
+                            },
+                            'method':'get',
+                        })
+                    }));
+                    dispatch({
+                        type: types.FETCH_INSTRUCTOR_SUCCESSFUL,
+                        payload: instructorResults,
+                    });
+                    setStatus(200);
+                } catch(error) {
+                    if(!aborted){
+                        handleError(error)
+                    }
+                }
+            })();
+        }
+    },[query, dispatch,requestSettings])
+
+    return status;
+};

@@ -4,17 +4,14 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../actions/registrationActions";
 import React from "react";
-
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
-import CourseCategory from "../FeatureViews/Registration/CourseCategory";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
-import Dashboard from "../FeatureViews/Dashboard/Dashboard";
+// import Dashboard from "../FeatureViews/Dashboard/Dashboard";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
 import LoginPage from "../Authentication/LoginPage.js";
 import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage";
-import ParentPayment from "../Form/ParentPayment";
 import ProtectedRoute from "./ProtectedRoute";
 import Registration from "../FeatureViews/Registration/Registration";
 import RegistrationForm from "../Form/Form";
@@ -55,7 +52,7 @@ function rootRoutes(props) {
                 render={(passedProps) => <SessionView {...passedProps} />} />
             <ProtectedRoute
                 exact
-                path="/search/:type/:query?"
+                path="/search/"
                 render={(passedProps) => <SearchResults {...passedProps} />} />
 
             {/*<ProtectedRoute*/}

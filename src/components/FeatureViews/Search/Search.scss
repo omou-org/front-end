@@ -106,15 +106,20 @@
 }
 
 .search-results {
+  padding: 15px;
   .searchChip {
     background: #ffffff;
     border: 1px solid #dadada;
     cursor: pointer;
   }
   .main-search-view {
+    padding: $paperPadding;
+    background-color: $bioBackgroundColor;
+
     .searchResults {
-      padding-left: 25px;
-      padding-top: 25px;
+      .search-title{
+        margin-bottom:10px;
+      }
       .resultsColor {
         color: #666666;
         font-size: 24px;
@@ -150,10 +155,24 @@
  
 }
 
-
 .search-filter-wrapper{
   width: 100%;
   .label{
     padding-left: 10px;
   }
+}
+
+.results-nav{
+  margin-top:15px;
+
+  .less, .more{
+    margin-top: -2px;
+    margin-right: 3px;
+    margin-left: 3px;
+  }
+}
+
+.account-results-wrapper, .course-results-wrapper {
+  padding-top:10px;
+  padding-bottom:8px;
 }
