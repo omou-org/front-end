@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
-import blue from '@material-ui/core/colors/blue';
 import ReactSelect from 'react-select';
 import AccountsCards from "../Search/cards/AccountsCards";
 import {bindActionCreators} from "redux";
@@ -83,7 +82,7 @@ class SelectParentDialog extends React.Component {
         this.setState((oldState)=>{
             oldState.inputParent = { value: "", label:""};
             this.props.registrationActions.setRegisteringParent("");
-            return oldState
+            return oldState;
         }, ()=>{
             this.props.registrationActions.closeRegistration("");
             this.handleClose();

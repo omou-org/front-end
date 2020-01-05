@@ -1,5 +1,4 @@
-
-import {Link, useParams, useHistory} from "react-router-dom";
+import {Link, useHistory, useParams} from "react-router-dom";
 import BackButton from "../../../BackButton";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
@@ -25,6 +24,8 @@ import DialogTitle from "@material-ui/core/es/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
 import DialogContentText from "@material-ui/core/es/DialogContentText/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
+import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
+import PaymentTable from "./PaymentTable";
 
 
 const DayConverter = {
@@ -48,7 +49,6 @@ const dateOptions = {
 };
 
 const courseDataParser = ( course) => {
-    console.log(course);
     let {schedule, status, tuition} = course;
     const DaysString = schedule.days;
 
@@ -65,7 +65,7 @@ const courseDataParser = ( course) => {
     };
 };
 
-const CourseSessionStatus = (props) => {
+const CourseSessionStatus = () => {
     const history = useHistory();
 
     const {"accountID": studentID, courseID} = useParams();
@@ -74,7 +74,6 @@ const CourseSessionStatus = (props) => {
     const usersList = useSelector(({Users}) => Users);
     const courses = useSelector(({Course}) => Course.NewCourseList);
     const enrollments = useSelector(({Enrollments}) => Enrollments);
-    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
     const course = courses[courseID];
 
     const dispatch = useDispatch();
@@ -91,6 +90,7 @@ const CourseSessionStatus = (props) => {
     const courseStatus = hooks.useCourse(courseID);
     const instructorStatus = hooks.useInstructor(course && course.instructor_id, true);
     const enrollmentStatus = hooks.useEnrollmentByCourse(courseID);
+
     const courseTypeParse = {
         "T":"tutoring",
         "C":"course",
@@ -163,7 +163,7 @@ const CourseSessionStatus = (props) => {
     const handleTabChange = (_, newTab) => {
         setActiveTab(newTab);
     };
-    // console.log(course, calendarSessions)
+
     const sessions = course.course_type === "tutoring" && courseSessions
         ? calendarSessions.map((session) => ({
             ...session,
@@ -373,6 +373,11 @@ const CourseSessionStatus = (props) => {
                         ownerID={noteInfo}
                         ownerType="enrollment" />
                 );
+            case 2:
+                return (
+                    <PaymentTable
+                        paymentList={enrollment.payment_list}/>
+                );
             // no default
         }
     };
@@ -389,21 +394,23 @@ const CourseSessionStatus = (props) => {
                     <hr />
                 </Grid>
                 <Grid
+                    className="participants"
                     item
                     xs={12}>
                     <Typography
+                        className="course-session-title"
                         align="left"
-                        variant="h4">
+                        variant="h3">
                         {course.title}
                     </Typography>
                     <Typography align="left">
-                        Student:
+                        Student: {" "}
                         <Link to={`/accounts/student/${studentID}`}>
-                            {usersList.StudentList[studentID].name}
+                              {usersList.StudentList[studentID].name}
                         </Link>
                     </Typography>
                     <Typography align="left">
-                        Instructor:
+                        Instructor: {" "}
                         <Link to={`/accounts/instructor/${course.instructor_id}`}>
                             {usersList.InstructorList[course.instructor_id].name}
                         </Link>
@@ -427,6 +434,8 @@ const CourseSessionStatus = (props) => {
                                         "height": 10}} /><NoteIcon className="TabIcon" />  Notes
                                 </>
                                 : <><NoteIcon className="NoteIcon" /> Notes</>} />
+                    <Tab
+                        label={<><PaymentIcon className="TabIcon" /> Payments</>}/>
                 </Tabs>
                 <br />
                 {renderMain()}

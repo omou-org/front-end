@@ -1,5 +1,4 @@
-import React, {useState, useEffect, useMemo} from "react";
-
+import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
@@ -8,7 +7,7 @@ import * as registrationActions from "../../../actions/registrationActions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import {Button, Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
-import {withRouter, useParams} from "react-router-dom";
+import {useParams, withRouter} from "react-router-dom";
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 import {usePayment, useSubmitRegistration} from "../../../actions/multiCallHooks";
@@ -52,7 +51,7 @@ function RegistrationReceipt(props) {
             )
         ){
             let payment = Payments[params.parentID][params.paymentID];
-            let {enrollments} = payment;
+            let enrollments = payment.registrations.map(registration => registration.enrollment_details);
             setPaymentReceipt(payment);
             setCourseReceipt(courseReceiptInitializer(enrollments));
         }
@@ -89,7 +88,7 @@ function RegistrationReceipt(props) {
         Object.keys(paymentReceipt).length < 1){
         let payment = Payments[currentPayingParent.user.id][registrationStatus.paymentID];
         setPaymentReceipt(payment);
-        let {enrollments} = payment;
+        let enrollments = payment.registrations.map(registration => registration.enrollment_details);
         setCourseReceipt(courseReceiptInitializer(enrollments));
     }
 
@@ -98,11 +97,9 @@ function RegistrationReceipt(props) {
         api.closeRegistration("");
         props.history.push("/registration");
     };
-
     if(Object.keys(paymentReceipt).length < 1 || isLoading(paymentStatus)){
         return <Loading/>;
     }
-
     const renderCourse = (enrolledCourse) => (<Grid item key={enrolledCourse.id}>
         <Grid
             className={"enrolled-course"}

@@ -10,7 +10,8 @@ export default {
         "CourseSessions": {},
     },
     "Enrollments": {},
-    "Payments": {},
+    "Payments": {
+    },
     "Users": {
         "StudentList": {},
         "ParentList": {},

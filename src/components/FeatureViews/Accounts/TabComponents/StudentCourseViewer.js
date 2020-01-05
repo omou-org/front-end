@@ -33,11 +33,25 @@ const StudentCourseViewer = ({studentID, current = true}) => {
     , [enrollments, studentID]);
     const courseStatus = hooks.useCourse(courseList);
 
+    const coursePaymentStatusList = useMemo( () =>
+        enrollments[studentID] ? Object.entries(enrollments[studentID])
+        .map(([courseID, enrollment]) => {
+            let sessionCount = 0;
+           enrollment.payment_list.forEach(payment => {
+               payment.registrations.forEach(registration => {
+                   sessionCount += registration.num_sessions;
+               });
+           });
+           return {course: courseID, sessions: sessionCount}
+        }) : [], [enrollments, studentID]);
+    let coursePaymentStatus = {};
+    coursePaymentStatusList.forEach(({course,sessions}) => coursePaymentStatus[course] = sessions);
+
     const numPaidCourses = useCallback((courseID) => {
         if (!enrollments[studentID][courseID]) {
             return 0;
         }
-        // console.log(enrollments[studentID][courseID].payment_list.map(payment=>payment));
+
         return Object.values(
             enrollments[studentID][courseID].session_payment_status
         ).reduce(
@@ -183,7 +197,7 @@ const StudentCourseViewer = ({studentID, current = true}) => {
                                                 item
                                                 xs={1}>
                                                 <div className={`sessions-left-chip ${paymentStatus(numPaidCourses(courseID))}`}>
-                                                    {numPaidCourses(courseID)}
+                                                    {coursePaymentStatus[courseID]}
                                                 </div>
                                             </Grid>
                                         </Grid>
