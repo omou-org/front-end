@@ -1,5 +1,6 @@
 import initialState from './initialState';
 import * as actions from "./../actions/actionTypes";
+import {SEARCH_ALL} from "../actions/actionTypes";
 
 export default function course(state = initialState.SearchResults, {payload, type}) {
     let status = 1;
@@ -43,6 +44,25 @@ export default function course(state = initialState.SearchResults, {payload, typ
                 ...state,
                 primaryFilter: payload,
             };
+        case actions.RESET_SEARCH_PARAMS:
+            return{
+                ...state,
+                params: {
+                    account:{
+                        profile:"",
+                        gradeFilter:"",
+                        sortAccount:"",
+                        accountPage: 1,
+                    },
+                    course:{
+                        courseType:"",
+                        availability:"",
+                        sortCourse:"",
+                        coursePage: 1,
+                    }
+                },
+                primaryFilter: SEARCH_ALL,
+            }
         default:
             return state;
     }

@@ -38,3 +38,6 @@ export const updateSearchStatus = (searchState) =>
 
 export const updatePrimarySearchFilter = (searchFilter) =>
     ({type: types.UPDATE_PRIMARY_SEARCH_FILTER, payload: searchFilter});
+
+export const resetSearchParams = ()=>
+    ({type: types.RESET_SEARCH_PARAMS, payload:""});

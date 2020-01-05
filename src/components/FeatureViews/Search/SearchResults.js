@@ -1,5 +1,5 @@
-import React, {useMemo, useState} from 'react';
-import {Grid} from "@material-ui/core";
+import React, {useEffect, useMemo, useState} from 'react';
+import {Grid, IconButton} from "@material-ui/core";
 import {bindActionCreators} from "redux";
 import * as searchActions from "../../../actions/searchActions";
 import {connect, useDispatch, useSelector} from "react-redux";
@@ -15,6 +15,7 @@ import * as registrationActions from "../../../actions/registrationActions";
 import AccountFilters from "../../FeatureViews/Search/AccountFilters"
 import NoResultsPage from './NoResults/NoResultsPage';
 import MoreResultsIcon from "@material-ui/icons/KeyboardArrowRight";
+import LessResultsIcon from "@material-ui/icons/KeyboardArrowLeft";
 import CourseFilters from "./CourseFilters";
 import Loading from "../../Loading";
 import {SEARCH_ACCOUNTS, SEARCH_ALL, SEARCH_COURSES} from "../../../actions/actionTypes";
@@ -33,12 +34,24 @@ const SearchResults = (props) => {
     );
     const searchState = useSelector(({Search}) => Search);
 
-    const [start, setStart] = useState(0);
-    const [end, setEnd] = useState(4);
+    const [start, setStart] = useState({
+        account: 0,
+        course: 0,
+    });
+    const [end, setEnd] = useState({
+        account: 4,
+        course: 4,
+    });
     const [currentPage, setCurrentPage] = useState(1);
     const params = useParams();
 
     const { accounts, courses, SearchQuery } = searchState;
+
+    useEffect(()=>{
+        return ()=>{
+            api.resetSearchParams();
+        }
+    },[]);
 
     const numberOfResults = () => {
         switch (searchState.primaryFilter) {
@@ -55,16 +68,32 @@ const SearchResults = (props) => {
     };
 
 
-    const displayMoreResults = () => (e) => {
+    const displayResults = (moreOrLess, searchType) => (e) => {
         e.preventDefault();
-        setStart(4);
-        setEnd(8);
-        if (end === 8) {
-            setCurrentPage(currentPage + 1);
-            // api.fetchSearchAccountQuery(searchConfig);
-            setStart(0);
-            setEnd(4);
+        switch(moreOrLess){
+            case "more":{
+                setStart(4);
+                setEnd(8);
+                if (end[searchType] === 8) {
+                    setCurrentPage(currentPage + 1);
+                    api.updateSearchParam(searchType,`${searchType}Page`,currentPage+1);
+                    setStart(0);
+                    setEnd(4);
+                }
+                break;
+            }
+            case "less":{
+                setStart(0);
+                setEnd(4);
+                if (start[searchType] === 0) {
+                    setCurrentPage(currentPage - 1);
+                    api.updateSearchParam(searchType,`${searchType}Page`,currentPage-1);
+                    setStart(0);
+                    setEnd(4);
+                }
+            }
         }
+
     };
 
     const displayAll = (type) => event => {
@@ -90,50 +119,41 @@ const SearchResults = (props) => {
                             {numberOfResults()} Search Results for "{SearchQuery}"
                         </Typography>
                     </Grid>
-                    <>
-                    {searchState.primaryFilter === SEARCH_ACCOUNTS ?
-                        <Grid item xs={12}>
-                            <Grid container>
-                                <AccountFilters />
-                            </Grid>
-                        </Grid>
-                        : ""}
-                        {
-                            courses.length && searchState.primaryFilter !== SEARCH_COURSES ? <hr /> :""
-                        }
-
-                    <Grid item xs={12} style={{ "position": "relative" }}>
-                        <Grid container
-                            justify={"space-between"}
-                            direction={"row"}
-                            alignItems="center">
-                            <Grid item className="searchResults">
-                                <Typography className={"resultsColor"} align={'left'} gutterBottom>
-                                    {accounts.length > 0 && searchState.primaryFilter !== SEARCH_COURSES ? "Accounts" : ""}
-                                </Typography>
-                            </Grid>
-                            {
-                                (courses.length > 0 && searchState.primaryFilter === SEARCH_ALL) &&
-                                <Grid item >
-                                    <Chip label="See All Accounts"
-                                          className="searchChip"
-                                          onClick={displayAll(SEARCH_ACCOUNTS)}
-                                    />
+                    <div className="account-results-wrapper">
+                        {searchState.primaryFilter === SEARCH_ACCOUNTS ?
+                            <Grid item xs={12}>
+                                <Grid container>
+                                    <AccountFilters />
                                 </Grid>
+                            </Grid>
+                            : ""}
+                            {
+                                courses.length && searchState.primaryFilter !== SEARCH_COURSES ? <hr /> :""
                             }
-                        </Grid>
-                        <Grid container style={{ paddingLeft: 20, paddingRight: 20 }} spacing={16} direction={"row"}>
-                            {searchState.primaryFilter === SEARCH_ACCOUNTS ?
-                                accounts.map((account) => (
-                                    <Grid item
-                                          key={account.user_id}
-                                        sm={3}>
-                                        <AccountsCards user={account} key={account.user_id} />
+
+                        <Grid item xs={12}>
+                            <Grid container
+                                justify={"space-between"}
+                                direction={"row"}
+                                alignItems="center">
+                                <Grid item className="searchResults">
+                                    <Typography className={"resultsColor"} align={'left'} gutterBottom>
+                                        {accounts.length > 0 && searchState.primaryFilter !== SEARCH_COURSES ? "Accounts" : ""}
+                                    </Typography>
+                                </Grid>
+                                {
+                                    (courses.length > 0 && searchState.primaryFilter === SEARCH_ALL) &&
+                                    <Grid item >
+                                        <Chip label="See All Accounts"
+                                              className="searchChip"
+                                              onClick={displayAll(SEARCH_ACCOUNTS)}
+                                        />
                                     </Grid>
-                                ))
-                                :
-                                accounts.length > 0 && searchState.primaryFilter !== SEARCH_COURSES?
-                                    accounts.slice(start, end).map((account) => (
+                                }
+                            </Grid>
+                            <Grid container spacing={16} direction={"row"}>
+                                {searchState.primaryFilter === SEARCH_ACCOUNTS ?
+                                    accounts.map((account) => (
                                         <Grid item
                                               key={account.user_id}
                                             sm={3}>
@@ -141,58 +161,100 @@ const SearchResults = (props) => {
                                         </Grid>
                                     ))
                                     :
-                                    ""}
-                            <Grid >
-                                {accounts.length > 6 ?
-                                    <div onClick={displayMoreResults()}>
-                                        <MoreResultsIcon />
-                                    </div>
-                                    : ""
-                                }
+                                    accounts.length > 0 && searchState.primaryFilter !== SEARCH_COURSES?
+                                        accounts.slice(start["account"], end["account"]).map((account) => (
+                                            <Grid item
+                                                  key={account.user_id}
+                                                sm={3}>
+                                                <AccountsCards user={account} key={account.user_id} />
+                                            </Grid>
+                                        ))
+                                        :
+                                        ""}
                             </Grid>
+                            {accounts.length > 4 ?
+                                <div className={"results-nav"}>
+                                    {
+                                        start["account"] > 3 && <IconButton
+                                            className={"less"}
+                                            onClick={displayResults("less", SEARCH_ACCOUNTS)}>
+                                            <LessResultsIcon/>
+                                        </IconButton>
+                                    }
+                                    {searchState.params.account.accountPage}
+                                    {
+                                        accounts.length > 7 && <IconButton
+                                            className={"more"}
+                                            onClick={displayResults("more", SEARCH_ACCOUNTS)}>
+                                            <MoreResultsIcon />
+                                        </IconButton>
+                                    }
 
+                                </div>
+                                : ""
+                            }
                         </Grid>
-
-
-                    </Grid>
-                    {
-                        searchState.primaryFilter === SEARCH_COURSES?
-                            <Grid item xs={12}>
-                                <Grid container>
-                                    <CourseFilters />
+                    </div>
+                    <div className={"course-results-wrapper"}>
+                        {
+                            searchState.primaryFilter === SEARCH_COURSES?
+                                <Grid item xs={12}>
+                                    <Grid container>
+                                        <CourseFilters />
+                                    </Grid>
+                                </Grid> : ""
+                        }
+                        {accounts.length && searchState.primaryFilter !== SEARCH_ACCOUNTS? <hr /> : ""}
+                        {
+                            searchState.primaryFilter !== SEARCH_ACCOUNTS ? <Grid item xs={12}>
+                                <Grid container
+                                    justify={"space-between"}
+                                    direction={"row"}
+                                    alignItems="center">
+                                    <Grid item className="searchResults">
+                                        <Typography className={"resultsColor"} align={'left'} >
+                                            {courses.length > 0 && params.type !== "course" ? "Courses" : "" }
+                                        </Typography>
+                                    </Grid>
+                                    {
+                                        (courses.length > 0 && searchState.primaryFilter === SEARCH_ALL) &&
+                                        <Grid item style={{ "paddingRight": "1vh" }}>
+                                            <Chip label="See All Courses"
+                                                  className="searchChip"
+                                                  onClick={displayAll(SEARCH_COURSES)}
+                                            />
+                                        </Grid>
+                                    }
+                                </Grid>
+                                <Grid container direction={"row"}>
+                                    {courses.slice(0, 4).map((course) => (
+                                        <CoursesCards course={course} key={course.course_id} />)
+                                    )}
                                 </Grid>
                             </Grid> : ""
-                    }
-                    {accounts.length && searchState.primaryFilter !== SEARCH_ACCOUNTS? <hr /> : ""}
-                    {
-                        searchState.primaryFilter !== SEARCH_ACCOUNTS ? <Grid item xs={12}>
-                            <Grid container
-                                justify={"space-between"}
-                                direction={"row"}
-                                alignItems="center">
-                                <Grid item className="searchResults">
-                                    <Typography className={"resultsColor"} align={'left'} >
-                                        {courses.length > 0 && params.type !== "course" ? "Courses" : "" }
-                                    </Typography>
-                                </Grid>
+                        }
+                        {courses.length > 4 ?
+                            <div className={"results-nav"}>
                                 {
-                                    (courses.length > 0 && searchState.primaryFilter === SEARCH_ALL) &&
-                                    <Grid item style={{ "paddingRight": "1vh" }}>
-                                        <Chip label="See All Courses"
-                                              className="searchChip"
-                                              onClick={displayAll(SEARCH_COURSES)}
-                                        />
-                                    </Grid>
+                                    start["course"] > 3 && <IconButton
+                                        className={"less"}
+                                        onClick={displayResults("less", SEARCH_COURSES)}>
+                                        <LessResultsIcon/>
+                                    </IconButton>
                                 }
-                            </Grid>
-                            <Grid container direction={"row"} style={{ paddingLeft: 20, paddingRight: 20 }}>
-                                {courses.slice(0, 4).map((course) => (
-                                    <CoursesCards course={course} key={course.course_id} />)
-                                )}
-                            </Grid>
-                        </Grid> : ""
-                    }
-                    </>
+                                {searchState.params.account.accountPage}
+                                {
+                                    courses.length > 7 && <IconButton
+                                        className={"more"}
+                                        onClick={displayResults("more", SEARCH_COURSES)}>
+                                        <MoreResultsIcon />
+                                    </IconButton>
+                                }
+
+                            </div>
+                            : ""
+                        }
+                    </div>
                 </Paper>:
                         <NoResultsPage /> }
             </Grid>
