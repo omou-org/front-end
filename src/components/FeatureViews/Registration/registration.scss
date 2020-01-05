@@ -621,6 +621,10 @@
 }
 
 // Registration Parent Styling
+.select-parent-search-wrapper.active{
+  height:150px;
+}
+
 .select-parent-dialog{
   overflow-y: visible;
   padding:10px;
@@ -660,6 +664,8 @@
   .course-receipt{
     padding: $paperPadding;
     background-color:white !important;
+    margin-top: 10px;
+    margin-bottom:10px;
   }
   .enrolled-course{
     .enrolled-course-title{
@@ -678,5 +684,8 @@
       color:$lightPrimaryFontColor;
     }
     margin-bottom:20px;
+  }
+  .receipt-actions{
+    margin-top:60px;
   }
 }

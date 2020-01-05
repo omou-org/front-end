@@ -68,7 +68,9 @@ function RegistrationActions(props) {
             </Grid>
             <Grid item md={8}>
                 {
-                    props.registration.CurrentParent && <ParentRegistrationActions/>
+                    (props.registration.CurrentParent &&
+                    props.registration.CurrentParent !== "none") &&
+                    <ParentRegistrationActions/>
                 }
             </Grid>
             <SetParent/>

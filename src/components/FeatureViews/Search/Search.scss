@@ -106,15 +106,20 @@
 }
 
 .search-results {
+  padding: 15px;
   .searchChip {
     background: #ffffff;
     border: 1px solid #dadada;
     cursor: pointer;
   }
   .main-search-view {
+    padding: $paperPadding;
+    background-color: $bioBackgroundColor;
+
     .searchResults {
-      padding-left: 25px;
-      padding-top: 25px;
+      .search-title{
+        margin-bottom:20px;
+      }
       .resultsColor {
         color: #666666;
         font-size: 24px;

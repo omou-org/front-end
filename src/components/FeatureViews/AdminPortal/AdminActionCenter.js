@@ -1,10 +1,11 @@
+
 import PropTypes from "prop-types";
 import React, { useState, useEffect, useMemo } from "react";
+
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
-import { makeStyles } from "@material-ui/styles";
 import "./AdminPortal.scss";
 
 import { bindActionCreators } from "redux";
@@ -20,14 +21,13 @@ import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 import * as searchActions from "../../../actions/searchActions";
 import AssignmentIcon from "@material-ui/core/SvgIcon/SvgIcon";
-
-//Material Ui icons 
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import PinDropIcon from '@material-ui/icons/PinDrop';
 import Menu from "@material-ui/core/Menu";
 import AddPerson from "@material-ui/icons/PersonAdd";
 import EventNoteIcon from '@material-ui/icons/EventNote';
+
 
 const useStyles = makeStyles(theme => ({
     setParent: {

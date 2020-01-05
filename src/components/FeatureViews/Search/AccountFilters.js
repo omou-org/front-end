@@ -1,44 +1,19 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import ReactSelect from 'react-select';
-import { Grid, Select, Button } from "@material-ui/core";
+import React, { useState, useMemo } from 'react';
+import { Grid, Select} from "@material-ui/core";
 import { bindActionCreators } from "redux";
 import * as searchActions from "../../../actions/searchActions";
-import { connect, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
-import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
-import AccountsCards from "./cards/AccountsCards"
-import BackButton from '../../BackButton';
 import { ReactComponent as FilterIcon } from "./filter.svg";
 
-//Material-ui Select 
-import InputLabel from '@material-ui/core/InputLabel';
+//Material-ui Select
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
-import InputBase from '@material-ui/core/InputBase';
-import { makeStyles, withStyles } from '@material-ui/styles';
 import "./Search.scss";
-import * as apiActions from "../../../actions/apiActions";
-import * as userActions from "../../../actions/userActions";
-import * as registrationActions from "../../../actions/registrationActions";
+import {BootstrapInput} from "../Scheduler/SchedulerUtils";
 
-
-
-const customSelect = makeStyles(theme => ({
-    outlined: {
-        border: '1px solid #ced4da',
-        marginTop: 0,
-        paddingLeft: "10px"
-    },
-    label: {
-
-    }
-}))
-
-
-
-const SearchResultFilter = (props) => {
+const SearchResultFilter = () => {
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -46,11 +21,9 @@ const SearchResultFilter = (props) => {
         }),
         [dispatch]
     );
-
-    const classes = customSelect();
-    const [profileTypeFilter, setProfileTypeFilter] = useState("");
-    const [gradeFilter, setGradeFilter] = useState("");
-    const [sortFilter, setSortFilter] = useState("");
+    const [profileTypeFilter, setProfileTypeFilter] = useState("User");
+    const [gradeFilter, setGradeFilter] = useState("Grade");
+    const [sortFilter, setSortFilter] = useState("Relevance");
 
     const handleFilterChange = () => (event) => {
         switch (event.target.name) {
@@ -59,11 +32,11 @@ const SearchResultFilter = (props) => {
                 setProfileTypeFilter(event.target.value);
                 break;
             case "gradeFilter":
-                api.updateSearchParam("account", "grade", event.target.value);
+                api.updateSearchParam("account", "gradeFilter", event.target.value);
                 setGradeFilter(event.target.value);
                 break;
             case "sortFilter":
-                api.updateSearchParam("account", "sort", event.target.value);
+                api.updateSearchParam("account", "sortAccount", event.target.value);
                 setSortFilter(event.target.value);
                 break;
             default:
@@ -73,97 +46,76 @@ const SearchResultFilter = (props) => {
 
     return (
         <>
-            <Grid item xs={12} md={6} >
-                <Grid container>
-                    <Grid item sm={1} style={{ marginTop: "1em" }}>
+            <Grid item  >
+                <Grid container
+                      spacing={16}
+                      direction="row"
+                      alignItems="center">
+                    <Grid item>
                         <FilterIcon />
                     </Grid>
-                    <Grid item sm={1} style={{ marginTop: "1em" }}>
+                    <Grid item>
                         <Typography variant={"subtitle1"} align="left"> Filter | </Typography>
                     </Grid>
-                    <Grid item sm={2} style={{ marginRight: "10px" }}>
+                    <Grid item>
                         <FormControl className="search-filter-wrapper" >
-                            <InputLabel >Profile Type</InputLabel>
                             <Select
                                 value={profileTypeFilter}
                                 onChange={handleFilterChange()}
-                                // input={<BootstrapInput />}
-                                className={classes.outlined}
-                                name={"profileType"}
-                                variant='outlined'
-                                MenuProps={{
-                                    getContentAnchorEl: null,
-                                    anchorOrigin: {
-                                        vertical: "bottom",
-                                        horizontal: "left",
-                                    }
-                                }}>
-                                <MenuItem value={"STUDENT"}>Student</MenuItem>
-                                <MenuItem value={"INSTRUCTOR"}>Instructor</MenuItem>
+                                input={
+                                    <BootstrapInput name={"profileType"} id={"filter-student"}/>
+                                }
+                            >
+                                <MenuItem value={"User"}>User</MenuItem>
+                                <MenuItem value={"student"}>Student</MenuItem>
+                                <MenuItem value={"instructor"}>Instructor</MenuItem>
                                 <MenuItem value={"receptionist"}>Receptionist</MenuItem>
                                 <MenuItem value={"administrator"}>Administrator</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item sm={2}>
+                    <Grid item>
                         <FormControl className="search-filter-wrapper">
-                            <InputLabel htmlFor="gradeFilter" className="input-title" > Grade </InputLabel>
                             <Select
                                 value={gradeFilter}
                                 onChange={handleFilterChange()}
-                                // input={<BootstrapInput />}
-                                className={classes.outlined}
-                                variant='outlined'
-                                name={"gradeFilter"}
-                                MenuProps={{
-                                    getContentAnchorEl: null,
-                                    anchorOrigin: {
-                                        vertical: "bottom",
-                                        horizontal: "left",
-                                    }
-                                }}
+                                input={
+                                    <BootstrapInput name={"gradeFilter"} id={"filter-grade"}/>
+                                }
                             >
-                                <MenuItem value={"1"}>1</MenuItem>
-                                <MenuItem value={"2"}>2</MenuItem>
-                                <MenuItem value={"3"}>3</MenuItem>
-                                <MenuItem value={"4"}>4</MenuItem>
-                                <MenuItem value={"5"}>5</MenuItem>
-                                <MenuItem value={"6"}>6</MenuItem>
-                                <MenuItem value={"7"}>7</MenuItem>
-                                <MenuItem value={"8"}>8</MenuItem>
-                                <MenuItem value={"9"}>9</MenuItem>
-                                <MenuItem value={"10"}>10</MenuItem>
-                                <MenuItem value={"11"}>11</MenuItem>
-                                <MenuItem value={"12"}>12+</MenuItem>
+                                <MenuItem value={"Grade"}>Grade</MenuItem>
+                                <MenuItem value={"1"}>1st Grade</MenuItem>
+                                <MenuItem value={"2"}>2nd Grade</MenuItem>
+                                <MenuItem value={"3"}>3rd Grade</MenuItem>
+                                <MenuItem value={"4"}>4th Grade</MenuItem>
+                                <MenuItem value={"5"}>5th Grade</MenuItem>
+                                <MenuItem value={"6"}>6th Grade</MenuItem>
+                                <MenuItem value={"7"}>7th Grade</MenuItem>
+                                <MenuItem value={"8"}>8th Grade</MenuItem>
+                                <MenuItem value={"9"}>9th Grade</MenuItem>
+                                <MenuItem value={"10"}>10th Grade</MenuItem>
+                                <MenuItem value={"11"}>11th Grade</MenuItem>
+                                <MenuItem value={"12"}>12+ Grades</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item style={{ margin: '1em 20px 0px 20px' }}>
+                    <Grid item>
                         <Typography variant={"subtitle1"}> Sort | </Typography>
                     </Grid>
-                    <Grid item sm={2}>
+                    <Grid item>
                         <FormControl className="search-filter-wrapper">
-                            <InputLabel htmlFor="sortFilter" className="input-title" >Relevance</InputLabel>
                             <Select
                                 value={sortFilter}
                                 onChange={handleFilterChange()}
-                                className={classes.outlined}
-                                variant='outlined'
-                                // input={<BootstrapInput />}
-                                name={"sortFilter"}
-                                MenuProps={{
-                                    getContentAnchorEl: null,
-                                    anchorOrigin: {
-                                        vertical: "bottom",
-                                        horizontal: "left",
-                                    }
-                                }}
+                                input={
+                                    <BootstrapInput name={"sortFilter"} id={"filter-sort"}/>
+                                }
                             >
-                                <MenuItem value={"relevance"}>Relevance</MenuItem>
-                                <MenuItem value={"a-z"}>Name: A - Z</MenuItem>
-                                <MenuItem value={"z-a"}>Name: Z - A</MenuItem>
-                                <MenuItem value={"desc"}>ID: Descending </MenuItem>
-                                <MenuItem value={"asce"}>ID: Ascending</MenuItem>
+                                <MenuItem value={"Relevance"}>Relevance</MenuItem>
+                                <MenuItem value={"alphaAsc"}>First Name: A - Z</MenuItem>
+                                <MenuItem value={"alphaDesc"}>First Name: Z - A</MenuItem>
+                                <MenuItem value={"updateDesc"}>Recently Updated</MenuItem>
+                                <MenuItem value={"updateAsc"}>Oldest Updated</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>
@@ -172,8 +124,5 @@ const SearchResultFilter = (props) => {
         </>
     )
 };
-
-
-
 
 export default SearchResultFilter;

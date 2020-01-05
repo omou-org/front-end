@@ -1,41 +1,26 @@
-import PropTypes from "prop-types";
-import React, {useState, useEffect, useMemo, useRef} from "react";
+import React, {useState, useEffect, useMemo} from "react";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
-import { makeStyles } from "@material-ui/styles";
 import "./AdminPortal.scss";
 
 import {bindActionCreators} from "redux";
-import * as registrationActions from "../../../actions/registrationActions";
 import {connect, useDispatch, useSelector} from "react-redux";
-import {Button, Typography} from "@material-ui/core";
+import {Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import {withRouter} from "react-router-dom";
-import Checkbox from "@material-ui/core/Checkbox";
-import BackButton from "../../BackButton";
-import NavLinkNoDup from "../../Routes/NavLinkNoDup";
 import * as adminActions from "../../../actions/adminActions";
 import {GET} from "../../../actions/actionTypes";
 import {REQUEST_ALL} from "../../../actions/apiActions";
 import {academicLevelParse, courseTypeParse} from "../../../reducers/registrationReducer";
-import {updatePriceRule} from "../../../actions/adminActions";
 import Edit from "@material-ui/icons/Edit";
 import TextField from "@material-ui/core/TextField";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import CheckCircle from "@material-ui/core/es/internal/svg-icons/CheckCircle";
 
-const useStyles = makeStyles({
-    setParent: {
-        backgroundColor:"#39A1C2",
-        color: "white",
-        // padding: "",
-    }
-})
-
-function TuitionRules(props) {
+function TuitionRules() {
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({

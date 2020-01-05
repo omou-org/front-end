@@ -17,7 +17,6 @@ export default (state = initialState.Course, {payload, type}) => {
         case actions.FETCH_COURSE_NOTE_SUCCESSFUL:
             return handleNotesFetch(state, payload);
         case actions.POST_COURSE_SUCCESSFUL:
-            console.log(payload);
             return handleCoursePost(state, payload);
         case actions.POST_COURSE_NOTE_SUCCESSFUL:
         case actions.PATCH_COURSE_NOTE_SUCCESSFUL:
@@ -74,7 +73,7 @@ const handleCoursePost = (state, response) => {
             NewCourseList = updateCourse(NewCourseList, data.id, data);
         });
     } else {
-        NewCourseList = updateCourse(NewCourseList, response.id, response.data);
+        NewCourseList = updateCourse(NewCourseList, response.id, response.data ? response.data : response);
     }
 
     return {
@@ -85,7 +84,14 @@ const handleCoursePost = (state, response) => {
 
 const handleCoursesFetch = (state, payload) => {
     let {NewCourseList} = state;
-    let {id, response} = payload;
+    let id, response;
+    if(payload.id){
+        id = payload.id;
+        response = payload.response;
+    } else {
+        id = payload.data.id;
+        response = payload;
+    }
     if (id === REQUEST_ALL) {
         response.data.forEach((course) => {
             NewCourseList = updateCourse(NewCourseList, course.id, course);
@@ -95,7 +101,7 @@ const handleCoursesFetch = (state, payload) => {
             NewCourseList = updateCourse(NewCourseList, data.id, data);
         });
     } else {
-        NewCourseList = updateCourse(NewCourseList, response.data.id, response.data);
+        NewCourseList = updateCourse(NewCourseList, id, response.data);
     }
     return {
         ...state,

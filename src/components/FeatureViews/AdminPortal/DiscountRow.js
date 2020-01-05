@@ -19,7 +19,7 @@ import {bindActionCreators} from "redux";
 import * as adminActions from "../../../actions/adminActions";
 import TextField from "@material-ui/core/TextField";
 import Done from "@material-ui/icons/Done";
-import {DatePicker, TimePicker, } from "material-ui-pickers";
+import {DatePicker } from "material-ui-pickers";
 import Select from "@material-ui/core/Select";
 import {dateParser} from "../../Form/FormUtils";
 import { withStyles } from '@material-ui/core/styles';

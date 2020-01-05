@@ -1,17 +1,13 @@
-import PropTypes from "prop-types";
 import React, {useState, useEffect, useMemo} from "react";
 
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
-import BackArrow from "@material-ui/icons/ArrowBack";
-import { makeStyles } from "@material-ui/styles";
-// import "./registration.scss";
 
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import * as userActions from "../../../actions/userActions.js"
 import {connect, useDispatch, useSelector} from "react-redux";
-import {FormControl, Typography} from "@material-ui/core";
+import {Tooltip, Typography} from "@material-ui/core";
 import {NavLink, withRouter} from "react-router-dom";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import * as apiActions from "../../../actions/apiActions";
@@ -29,14 +25,6 @@ import Dialog from "@material-ui/core/Dialog";
 import {dayOfWeek} from "../../Form/FormUtils";
 import * as hooks from "actions/hooks";
 
-const useStyles = makeStyles({
-    setParent: {
-        backgroundColor:"#39A1C2",
-        color: "white",
-        // padding: "",
-    }
-});
-
 function DisplaySessionView({course, session, handleToggleEditing}) {
     const dispatch = useDispatch();
     const api = useMemo(
@@ -53,7 +41,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
     const students = useSelector(({"Users": {StudentList}}) => StudentList);
 
     const [enrolledStudents, setEnrolledStudents] = useState(false);
-    const [editAll, setEditAll] = useState(false);
+    const [edit, setEdit] = useState(false);
     const [editSelection, setEditSelection] = useState('current');
 
     useEffect(()=>{
@@ -61,12 +49,6 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
         api.fetchCourses();
     },[api]);
 
-    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
-    const classes = useStyles();
-
-    const goToCourse = (courseID) => () => {
-        // props.history.push(`/registration/course/${courseID}`);
-    };
     const enrollmentStatus = hooks.useEnrollmentByCourse(course.course_id);
     const reduxCourse = courses[course.course_id];
     const studentStatus = reduxCourse.roster.length > 0 && hooks.useStudent(reduxCourse.roster);
@@ -112,13 +94,12 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
 
     const handleEditToggle = (cancel) => event =>{
         event.preventDefault();
-        if(cancel){
-            // if we're cancelling, then we apply edit to whatever it was before
-            setEditSelection(currentAllInverse[editSelection]);
-        }
-        setEditAll(!editAll);
-        if(editAll){
+        if(!cancel){
+            // if we're applying to edit session then toggle to edit view
             handleToggleEditing(editSelection);
+        } else {
+            setEdit(!edit);
+            setEditSelection(currentAllInverse[editSelection]);
         }
     };
 
@@ -172,14 +153,18 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
 
                 <Grid item xs={12}>
                     <Typography variant="h5"> Instructor </Typography>
-                    <NavLink to={`/accounts/instructor/${instructor.user_id}`}
-                    >
-                        <Typography variant="body1" color="primary">
-                            {
-                                course && instructor.name
-                            }
-                        </Typography>
-                    </NavLink>
+                        {
+                            course &&
+                            <NavLink to={`/accounts/instructor/${instructor.user_id}`}
+                            style={{ textDecoration: "none" }}>
+                                <Tooltip title={instructor.name} aria-label="Instructor Name">
+                                    <Avatar
+                                        style={styles(instructor.name)}>
+                                            {instructor.name.match(/\b(\w)/g).join("")}
+                                    </Avatar>
+                                </Tooltip>
+                            </NavLink>
+                        }
                 </Grid>
                 <Grid item xs={6}>
                     <Typography variant="h5"> Day(s)</Typography>
@@ -209,16 +194,18 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                     { studentKeys.map(key =>
                         <NavLink to={`/accounts/student/${enrolledStudents[key].user_id}/${course.course_id}`}
                                  style={{ textDecoration: "none" }}>
-                            <Avatar
-                                style={styles(enrolledStudents[key].name)}>
-                                {
-                                    enrolledStudents ?
-                                        enrolledStudents[key].name.match(/\b(\w)/g).join("")
-                                    : hooks.isFail(enrollmentStatus)
-                                    ? "Error!"
-                                    : "Loading..."
-                                }
-                            </Avatar>
+                            <Tooltip title={enrolledStudents[key].name}>
+                                <Avatar
+                                    style={styles(enrolledStudents[key].name)}>
+                                    {
+                                        enrolledStudents ?
+                                            enrolledStudents[key].name.match(/\b(\w)/g).join("")
+                                        : hooks.isFail(enrollmentStatus)
+                                        ? "Error!"
+                                        : "Loading..."
+                                    }
+                                </Avatar>
+                            </Tooltip>
                         </NavLink>)}
                 </Grid>
             </Grid>
@@ -232,7 +219,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                     className="button"
                     color="secondary"
                     to="/"
-                    onClick={handleEditToggle(false)}
+                    onClick={handleEditToggle(true)}
                     variant="outlined">
                     Edit Session
                 </Button>
@@ -263,9 +250,9 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
             className="session-view-modal"
             fullWidth
             maxWidth="xs"
-            onClose={handleEditToggle(false)}
-            open={editAll}>
-            <DialogTitle id="form-dialog-title">Delete</DialogTitle>
+            onClose={handleEditToggle(true)}
+            open={edit}>
+            <DialogTitle id="form-dialog-title">Edit Session</DialogTitle>
             <Divider />
             <DialogContent>
                 <RadioGroup
@@ -294,7 +281,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                 <Button
                     color="primary"
                     onClick={handleEditToggle(false)}>
-                    Apply
+                    Confirm to Edit
                 </Button>
             </DialogActions>
         </Dialog>

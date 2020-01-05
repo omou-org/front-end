@@ -1,5 +1,4 @@
-
-import {Link, useParams, useHistory} from "react-router-dom";
+import {Link, useHistory, useParams} from "react-router-dom";
 import BackButton from "../../../BackButton";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
@@ -20,13 +19,13 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Loading from "components/Loading";
 import Button from "@material-ui/core/Button";
-import {GET} from "../../../../actions/actionTypes";
-import {NEW_REGISTERING_PARENT} from "../../../../reducers/apiReducer";
 import Dialog from "@material-ui/core/es/Dialog/Dialog";
 import DialogTitle from "@material-ui/core/es/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
 import DialogContentText from "@material-ui/core/es/DialogContentText/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
+import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
+import PaymentTable from "./PaymentTable";
 
 
 const DayConverter = {
@@ -49,7 +48,8 @@ const dateOptions = {
     "day": "numeric",
 };
 
-const courseDataParser = ({schedule, status, tuition}) => {
+const courseDataParser = ( course) => {
+    let {schedule, status, tuition} = course;
     const DaysString = schedule.days;
 
     const endDate = new Date(schedule.end_date + schedule.end_time),
@@ -65,7 +65,7 @@ const courseDataParser = ({schedule, status, tuition}) => {
     };
 };
 
-const CourseSessionStatus = (props) => {
+const CourseSessionStatus = () => {
     const history = useHistory();
 
     const {"accountID": studentID, courseID} = useParams();
@@ -74,7 +74,6 @@ const CourseSessionStatus = (props) => {
     const usersList = useSelector(({Users}) => Users);
     const courses = useSelector(({Course}) => Course.NewCourseList);
     const enrollments = useSelector(({Enrollments}) => Enrollments);
-    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
     const course = courses[courseID];
 
     const dispatch = useDispatch();
@@ -91,6 +90,7 @@ const CourseSessionStatus = (props) => {
     const courseStatus = hooks.useCourse(courseID);
     const instructorStatus = hooks.useInstructor(course && course.instructor_id, true);
     const enrollmentStatus = hooks.useEnrollmentByCourse(courseID);
+
     const courseTypeParse = {
         "T":"tutoring",
         "C":"course",
@@ -117,7 +117,7 @@ const CourseSessionStatus = (props) => {
                     params: {
                         time_frame: "month",
                         view_option: courseTypeParse[course.type],
-                        time_shift: 1,
+                        time_shift: 0,
                     }
                 }
             });
@@ -157,20 +157,14 @@ const CourseSessionStatus = (props) => {
             .filter(session => session.course === Number(courseID)) : [],
         paymentSessionStatus = enrollment.session_payment_status,
         statusKey = (status) => {
-            if (status === 1) {
-                return "Paid";
-            } else if (status === 0) {
-                return "Unpaid";
-            }
-            return "Waived";
-
+            return "Paid";
         };
 
     const handleTabChange = (_, newTab) => {
         setActiveTab(newTab);
     };
-    // console.log(course, calendarSessions)
-    const sessions = course.type === "T" && courseSessions
+
+    const sessions = course.course_type === "tutoring" && courseSessions
         ? calendarSessions.map((session) => ({
             ...session,
             "status": statusKey(paymentSessionStatus[session.session_id]),
@@ -189,10 +183,11 @@ const CourseSessionStatus = (props) => {
     let parentOfCurrentStudent = usersList.StudentList[studentID].parent_id;
 
     const courseToRegister = {
+        "Enrollment": enrollment.enrollment_id,
         "Course Selection":{
             "Course":{
                 label: course.title,
-                value: course.course_id,
+                value: Number(course.course_id),
             },
         },
         "Course Selection_validated":{
@@ -212,7 +207,7 @@ const CourseSessionStatus = (props) => {
         "activeStep":0,
         "conditional": "",
         "existingUser": false,
-        "form": "course",
+        "form": "class",
         "hasLoaded":true,
         "preLoaded":false,
         "submitPending":false,
@@ -290,7 +285,7 @@ const CourseSessionStatus = (props) => {
                             {sessions.length !== 0
                                 ? sessions.map((session, i) => {
                                     const {day, date, startTime, endTime, status, tuition} =
-                                        course.type === "T"
+                                        course.course_type === "tutoring"
                                             ? sessionDataParse(session) : courseDataParser(session);
                                     return (
                                         <Grid
@@ -378,6 +373,11 @@ const CourseSessionStatus = (props) => {
                         ownerID={noteInfo}
                         ownerType="enrollment" />
                 );
+            case 2:
+                return (
+                    <PaymentTable
+                        paymentList={enrollment.payment_list}/>
+                );
             // no default
         }
     };
@@ -394,21 +394,23 @@ const CourseSessionStatus = (props) => {
                     <hr />
                 </Grid>
                 <Grid
+                    className="participants"
                     item
                     xs={12}>
                     <Typography
+                        className="course-session-title"
                         align="left"
-                        variant="h4">
+                        variant="h3">
                         {course.title}
                     </Typography>
                     <Typography align="left">
-                        Student:
+                        Student: {" "}
                         <Link to={`/accounts/student/${studentID}`}>
-                            {usersList.StudentList[studentID].name}
+                              {usersList.StudentList[studentID].name}
                         </Link>
                     </Typography>
                     <Typography align="left">
-                        Instructor:
+                        Instructor: {" "}
                         <Link to={`/accounts/instructor/${course.instructor_id}`}>
                             {usersList.InstructorList[course.instructor_id].name}
                         </Link>
@@ -432,6 +434,8 @@ const CourseSessionStatus = (props) => {
                                         "height": 10}} /><NoteIcon className="TabIcon" />  Notes
                                 </>
                                 : <><NoteIcon className="NoteIcon" /> Notes</>} />
+                    <Tab
+                        label={<><PaymentIcon className="TabIcon" /> Payments</>}/>
                 </Tabs>
                 <br />
                 {renderMain()}

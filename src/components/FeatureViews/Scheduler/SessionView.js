@@ -89,7 +89,7 @@ class SessionView extends Component {
         return (
             <Grid className="main-session-view" container>
                 <Paper
-                    className="paper"
+                    className="paper session"
                     mt="2em" style={{ width: "100%" }}>
                     <Grid className="session-button" item>
                         <BackButton />

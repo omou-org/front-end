@@ -41,8 +41,8 @@ export default function course(state = initialState.SearchResults, {payload, typ
     }
 }
 
-const handleAccountSearchResults = (state, {id, response}) =>{
-    let {data} = response;
+const handleAccountSearchResults = (state, {response, id}) =>{
+    let {data}= response;
     return {
         ...state,
         accounts:data,
@@ -63,7 +63,7 @@ const handleSearchFilterChange = (state, {searchType, filter, value}) =>{
     let newState = {...state};
     newState.params[searchType][filter] = value;
     if(filter==="grade"){
-        newState.filter[searchType].profile = "student";
+        newState.params[searchType].profile = "student";
     }
     newState.searchQueryStatus = "";
     return newState

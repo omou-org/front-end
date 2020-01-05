@@ -197,6 +197,11 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
                 ...state,
                 "registeringParent": NEW_REGISTERING_PARENT,
             };
+
+        case actions.GET_PAYMENT_SUCCESS:
+            return updatePaymentStatus(state, payload.id, status);
+        case actions.GET_PAYMENT_STARTED:
+            return updatePaymentStatus(state, payload.id, status);
         default:
             return state;
     }
@@ -341,5 +346,11 @@ const updateDiscountStatus = (state, id, status, requestType, discountType) => {
         newState.discount[requestType] = status;
     }
 
+    return newState;
+};
+
+const updatePaymentStatus = (state, paymentID, status) => {
+    let newState = JSON.parse(JSON.stringify(state));
+    newState.payment[actions.GET][paymentID] = status;
     return newState;
 };

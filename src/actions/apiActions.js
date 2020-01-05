@@ -7,7 +7,7 @@ import {fetchCategories} from "./adminActions";
 import {academicLevelParse} from "../reducers/registrationReducer";
 
 export const instance = axios.create({
-    "baseURL": "http://localhost:8000/" //process.env.REACT_APP_DOMAIN,
+    "baseURL": process.env.REACT_APP_DOMAIN,
 });
 
 export const MISC_FAIL = 600;
@@ -57,7 +57,7 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
                 },
             });
         };
-
+        console.log("posting course")
         // request starting
         newAction(startType, {});
 
@@ -67,7 +67,8 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
                     "Authorization": `Token ${getState().auth.token}`,
                 },
             });
-            // succesful request
+            console.log(response);
+            // successful request
             newAction(successType, response);
         } catch ({response}) {
             // failed request

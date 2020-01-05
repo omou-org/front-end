@@ -154,6 +154,10 @@ export const submitForm = (state, id) => {
                 "zipcode": state["Basic Information"]["Zip Code"],
                 "age": 21,
                 "birth_date": parseDate(state["Basic Information"]["Date of Birth"]),
+                "subjects": state["Experience"]["Subject(s) Tutor Can Teach"],
+                "biography": state["Experience"]["Background"],
+                "experience": state["Experience"]["Teaching Experience (Years)"],
+                "language": state["Experience"]["Languages"],
             };
             if (id) {
                 return patchData("instructor", instructor, id);
@@ -206,6 +210,18 @@ export const patchCourse = (id,data) => wrapPatch(
         data:data,
     }
 );
+
+export const fetchPayments = (id) => wrapGet(
+    '/payment/payment/',
+    [
+        types.GET_PAYMENT_STARTED,
+        types.GET_PAYMENT_SUCCESS,
+        types.GET_PAYMENT_FAILED,
+    ],
+    {
+        id:id,
+    }
+)
 
 export const resetSubmitStatus = () =>
     ({type: types.RESET_SUBMIT_STATUS, payload: null});
@@ -296,49 +312,3 @@ export const addCourse = (course) => wrapPost(
     ],
     course,
 );
-
-export const submitTutoringRegistration = (newTutoringCourse, studentID) => {
-    return (dispatch, getState) => new Promise((resolve) => {
-        dispatch({
-            type: types.POST_TUTORING_ENROLLMENT_STARTED,
-            payload: null,
-        });
-        resolve();
-    }).then(() => {
-        instance.request({
-            "data": {...newTutoringCourse},
-            "headers": {
-                "Authorization": `Token ${getState().auth.token}`,
-            },
-            "method": "post",
-            "url": courseEndpoint,
-        })
-            .then((tutoringCourseResponse) => {
-                dispatch({
-                    type: types.POST_COURSE_SUCCESSFUL,
-                    payload: tutoringCourseResponse.data,
-                });
-                instance.request({
-                    "data": {
-                        "student": studentID,
-                        "course": tutoringCourseResponse.data.id
-                    },
-                    "headers": {
-                        "Authorization": `Token ${getState().auth.token}`,
-                    },
-                    "method": "post",
-                    "url": enrollmentEndpoint,
-                })
-                    .then((enrollmentResponse) => {
-                        dispatch({
-                            type: types.POST_ENROLLMENT_SUCCESS,
-                            payload: enrollmentResponse,
-                        });
-                    }, (error) => {
-                        dispatch({type: types.POST_ENROLLMENT_FAILED, payload: error});
-                    });
-            }, (error) => {
-                dispatch({type: types.POST_COURSE_FAILED, payload: error});
-            });
-    });
-};

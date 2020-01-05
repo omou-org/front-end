@@ -17,7 +17,7 @@ const Bio = (props) => (
                 xs={12}>
                 <div className="Bio1">
                     <Typography className="bioHeader">
-                        Bio
+                        Biography
                     </Typography>
                     <Typography className="bioBody">
                         {props.background.bio}
@@ -38,7 +38,7 @@ const Bio = (props) => (
                         <Grid className="chipPadding">
                             <Chip
                                 className="bioChip"
-                                label={`${props.background.experience} years at Summit`}
+                                label={`${props.background.experience}`}
                                 variant="outlined" />
                         </Grid>
                     </Grid>
@@ -48,7 +48,7 @@ const Bio = (props) => (
                         <Grid className="bioDescription">
                             Subjects offered:
                         </Grid>
-                        {props.background.subjects.map((subject) => (
+                        {props.background.subjects.split(",").map((subject) => (
                             <Grid
                                 className="chipPadding"
                                 key={subject}>
@@ -65,16 +65,14 @@ const Bio = (props) => (
                         <Grid className="bioDescription">
                             Language:
                         </Grid>
-                        {props.background.languages.map((language) => (
-                            <Grid
-                                className="chipPadding"
-                                key={language}>
-                                <Chip
-                                    className="bioChip"
-                                    label={language}
-                                    variant="outlined" />
-                            </Grid>
-                        ))}
+                        <Grid
+                            className="chipPadding"
+                            key={props.background.languages}>
+                            <Chip
+                                className="bioChip"
+                                label={props.background.languages}
+                                variant="outlined" />
+                        </Grid>
                     </Grid>
                 </div>
             </Grid>

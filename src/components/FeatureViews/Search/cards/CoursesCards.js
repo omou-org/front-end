@@ -1,11 +1,9 @@
 import { connect } from "react-redux";
-import React, { useState } from "react";
-import BackButton from "../../../BackButton";
+import React from "react";
 import Grid from "@material-ui/core/Grid";
-import { Card, Paper, Typography, Grow } from "@material-ui/core";
+import { Card, Typography} from "@material-ui/core";
 
 import Chip from "@material-ui/core/Chip";
-import CardActions from "@material-ui/core/CardActions";
 import { withRouter } from "react-router-dom";
 import "../Search.scss";
 
@@ -14,15 +12,18 @@ function CourseCards(props) {
 
     const handleLocaleDateString = (start, end) => {
         if(start && end){
-            let s1 = new Date(start.replace(/-/g, '\/'))
-            let s2 = new Date(end.replace(/-/g, '\/'))
+            let s1 = new Date(start.replace(/-/g, '/'));
+            let s2 = new Date(end.replace(/-/g, '/'));
             return `${s1.toLocaleDateString()} - ${s2.toLocaleDateString()}`
         }
     }
 
     const goToCoursePage = ()=> (e)=>{
         e.preventDefault();
-        props.history.push(`/registration/course/${props.course.course_id}/${props.course.subject}`)
+        console.log(props.course);
+        let courseID = props.course.course_id ? props.course.course.id : props.course.id;
+        console.log(`/registration/course/${courseID}/${props.course.subject}`);
+        props.history.push(`/registration/course/${courseID}/${props.course.subject}`)
     }
 
     return (

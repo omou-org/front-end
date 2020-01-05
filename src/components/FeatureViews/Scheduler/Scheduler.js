@@ -63,7 +63,7 @@ class Scheduler extends Component {
             "viewValue": "timeGridDay",
             "filterValue": "class",
             "resourceFilterValue": "R",
-            "calendarFilterValue": "T",
+            "calendarFilterValue": "tutoring",
             "calendarIcon": true,
             "resourceIcon": false,
             "filterTypeCalendar": "",
@@ -77,10 +77,6 @@ class Scheduler extends Component {
             "timeGridDay": "day",
             "timeGridWeek": "week",
             "dayGridMonth": "month",
-        };
-        this.viewOptions = {
-            "T": "tutoring",
-            "C": "class",
         };
     }
 
@@ -134,7 +130,7 @@ class Scheduler extends Component {
 
     formatSessions = (sessions, timeShift) => {
         return sessions.map((session) => {
-            let instructorName = this.props.courses && this.props.instructors[this.props.courses[session.course].instructor_id].name;
+            let instructorName = this.props.courses[session.course] && this.props.instructors[this.props.courses[session.course].instructor_id].name;
             return {
                 id: session.id,
                 courseID: session.course,
@@ -278,7 +274,7 @@ class Scheduler extends Component {
                 config: {
                     params: {
                         time_frame: filter,
-                        view_option: this.viewOptions[this.state.calendarFilterValue],
+                        view_option: this.state.calendarFilterValue,
                         time_shift: 0,
                     }
                 }
@@ -299,7 +295,7 @@ class Scheduler extends Component {
             config: {
                 params: {
                     time_frame: this.calendarViewToFilterVal[this.state.viewValue],
-                    view_option: this.viewOptions[this.state.calendarFilterValue],
+                    view_option: this.state.calendarFilterValue,
                     time_shift: this.state.timeShift + 1,
                 }
             }
@@ -320,7 +316,7 @@ class Scheduler extends Component {
             config: {
                 params: {
                     time_frame: this.calendarViewToFilterVal[this.state.viewValue],
-                    view_option: this.viewOptions[this.state.calendarFilterValue],
+                    view_option: this.state.calendarFilterValue,
                     time_shift: this.state.timeShift - 1,
                 }
             }
@@ -341,7 +337,7 @@ class Scheduler extends Component {
             config: {
                 params: {
                     time_frame: this.calendarViewToFilterVal[this.state.viewValue],
-                    view_option: this.viewOptions[this.state.calendarFilterValue],
+                    view_option: this.state.calendarFilterValue,
                     time_shift: 0,
                 }
             }
@@ -440,7 +436,7 @@ class Scheduler extends Component {
                     config: {
                         params: {
                             time_frame: this.calendarViewToFilterVal[this.state.viewValue],
-                            view_option: this.viewOptions[event.target.value],
+                            view_option: event.target.value,
                             time_shift: this.state.timeShift,
                         }
                     }
@@ -479,8 +475,7 @@ class Scheduler extends Component {
                 "calendarEvents": instructorsSchedule,
             });
         }
-    }
-
+    };
 
     // gets the values of course object
     getRoomResources = () =>
@@ -523,7 +518,12 @@ class Scheduler extends Component {
     render() {
         return (
             <Paper className="paper scheduler">
-                <Typography variant="h3" align="left">Scheduler</Typography>
+                <Typography
+                    className="scheduler-title"
+                    variant="h3"
+                    align="left">
+                    Scheduler
+                </Typography>
                 <br />
                 <Grid container
                       className="scheduler-wrapper"
@@ -570,8 +570,8 @@ class Scheduler extends Component {
                                                         <BootstrapInput name={"courseFilter"} id={"filter-calendar-type"}/>
                                                     }
                                                 >
-                                                    <MenuItem value={"C"}>Class</MenuItem>
-                                                    <MenuItem value={"T"}>Tutor</MenuItem>
+                                                    <MenuItem value={"class"}>Class</MenuItem>
+                                                    <MenuItem value={"tutoring"}>Tutoring</MenuItem>
                                                 </Select>
                                             </FormControl>
                                             :
@@ -644,26 +644,28 @@ class Scheduler extends Component {
                                     </Grid>
                                 </div>
                             </Grid>
+                            <Grid item xs={1}/>
                             <Grid item xs={2}>
-                                <div className="scheduler-header-last">
-                                    <Grid item>
+                                <Grid container
+                                      direction={"row"}
+                                      justify={"flex-end"}
+                                      className="scheduler-header-last">
+                                    <Grid item xs={5}>
                                         <IconButton onClick={this.goToToday} className={"current-date-button"} aria-label='current-date-button'>
                                             <TodayIcon />
                                         </IconButton>
 
                                     </Grid>
-                                    <Grid item  >
-                                        <FormControl className={"change-view"} >
+                                    <Grid item xs={7}>
+                                        <FormControl className={"filter-select"} >
                                             <Select
                                                 input={
                                                     <BootstrapInput name={"courseFilter"} id={"filter-calendar-type"}/>
                                                 }
                                                 value={this.state.viewValue}
                                                 onChange={(event) =>
-                                                    // event.target.value === the values below
                                                     this.changeView(event.target.value)
                                                 }
-
                                             >
                                                 <MenuItem value={"timeGridDay"}>Day</MenuItem>
                                                 <MenuItem value={"timeGridWeek"}>Week</MenuItem>
@@ -681,7 +683,7 @@ class Scheduler extends Component {
                                     {/*        onClick={this.changeViewToResource}*/}
                                     {/*    >Resource</Button>*/}
                                     {/*</Grid>*/}
-                                </div>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -730,7 +732,6 @@ function mapStateToProps(state) {
         "courses": state.Course.NewCourseList,
         "sessions": state.Calendar.CourseSessions,
         "instructors": state.Users.InstructorList,
-
     };
 }
 
