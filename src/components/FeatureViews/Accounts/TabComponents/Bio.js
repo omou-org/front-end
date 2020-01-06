@@ -48,7 +48,7 @@ const Bio = (props) => (
                         <Grid className="bioDescription">
                             Subjects offered:
                         </Grid>
-                        {props.background.subjects.split(",").map((subject) => (
+                        {props.background.subjects && props.background.subjects.split(",").map((subject) => (
                             <Grid
                                 className="chipPadding"
                                 key={subject}>

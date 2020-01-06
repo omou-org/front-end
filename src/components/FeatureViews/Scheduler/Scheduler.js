@@ -648,14 +648,14 @@ class Scheduler extends Component {
                                       direction={"row"}
                                       justify={"flex-end"}
                                       className="scheduler-header-last">
-                                    <Grid item xs={5}>
+                                    <Grid item xs={3}>
                                         <Tooltip title={"Go to Today"}>
                                             <IconButton onClick={this.goToToday} className={"current-date-button"} aria-label='current-date-button'>
                                                 <TodayIcon />
                                             </IconButton>
                                         </Tooltip>
                                     </Grid>
-                                    <Grid item xs={7}>
+                                    <Grid item xs={9}>
                                         <FormControl className={"filter-select"} >
                                             <Select
                                                 input={

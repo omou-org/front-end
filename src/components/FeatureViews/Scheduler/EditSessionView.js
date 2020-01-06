@@ -118,7 +118,7 @@ function EditSessionView({course, session, editSelection}) {
                 is_confirmed: is_confirmed,
                 instructor: instructor.value,
             };
-            // api.patchSession(session.id, patchedSession);
+            api.patchSession(session.id, patchedSession);
         }
 
         let patchedCourse = {
@@ -138,9 +138,9 @@ function EditSessionView({course, session, editSelection}) {
                 end_date: end_time.toISOString().substr(0, 10),
             }
         }
-        console.log(patchedCourse)
+        console.log(patchedCourse);
         // api.patchCourse(course.course_id, patchedCourse);
-        // history.push("/scheduler/")
+        history.push("/scheduler/")
     };
 
     const onConfirmationChange = event => {
