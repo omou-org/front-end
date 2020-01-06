@@ -229,13 +229,13 @@ const updateLogin = (state, status) => ({
 
 const updateCategoryPost = (state, payload, status) =>{
     let newState = {...state};
-    newState.category[actions.POST]= status;
+    newState.category[actions.POST] = status;
     return newState;
-}
+};
 
 const updateCategoryFetch = (state, payload, status) =>{
     let newState = {...state};
-    newState.category[actions.GET]= status;
+    newState.category[actions.GET] = status;
     return newState;
 }
 

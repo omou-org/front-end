@@ -19,6 +19,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import CheckCircle from "@material-ui/core/es/internal/svg-icons/CheckCircle";
 import IconButton from "@material-ui/core/IconButton";
+import {NoListAlert} from "../../NoListAlert";
 
 function TuitionRules() {
     const dispatch = useDispatch();
@@ -92,14 +93,14 @@ function TuitionRules() {
             <Grid item xs={12}>
                 <Grid container spacing={8} alignItems={"center"}>
                     {
-                        tuitionRules.map((tuition)=> {
+                        tuitionRules.length > 0 ? tuitionRules.map((tuition)=> {
                             return (tuition && <Grid item xs={12} md={12} key={tuition.id}>
                                 {   tuition.editing ?
                                     editTuitionRow(tuition) :
                                     viewTuitionRow(tuition)
                                 }
                             </Grid>)
-                        })
+                        }) : <NoListAlert list={"Tuition Rules"}/>
                     }
                 </Grid>
             </Grid>

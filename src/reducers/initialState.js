@@ -49,7 +49,7 @@ export default {
         "InstructorList": {},
     },
     "CalendarData": {
-        "CourseSessions": "",
+        "CourseSessions": {},
     },
     "RequestStatus": initRequests(),
     "SearchResults": {
@@ -98,8 +98,9 @@ function initRequests() {
             [PATCH]: {},
         },
         "category": {
-            [GET]: {},
+            [GET]: "",
             [PATCH]: {},
+            [POST]: "",
         },
         "instructor": {
             [GET]: {},
@@ -376,6 +377,16 @@ function initRegistrationForm() {
             conditional: false,
             required: false,
             full: true,
+            field_limit: 1,
+        },
+        {
+            field: "Did instructor confirm?",
+            name: "Did instructor confirm?",
+            type: "select",
+            options: ["Yes, Instructor Confirm", "No, Instructor Didn't"],
+            conditional: false,
+            required: true,
+            full: false,
             field_limit: 1,
         },
         {
@@ -669,6 +680,16 @@ function initRegistrationForm() {
                         name: "Category",
                         type: "category",
                         options: [],
+                        conditional: false,
+                        required: true,
+                        full: false,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Did instructor confirm?",
+                        name: "Did instructor confirm?",
+                        type: "select",
+                        options: ["Yes, Instructor Confirm", "No, Instructor Didn't"],
                         conditional: false,
                         required: true,
                         full: false,

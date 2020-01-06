@@ -39,6 +39,11 @@ export default function Calendar(state = initialState.CalendarData, { payload, t
 
 
             return newState;
+        case actions.GET_SESSIONS_STARTED:
+            return {
+                ...state,
+                CourseSessions: {},
+            };
         case actions.GET_SESSIONS_SUCCESS:
             // console.log("Succeeded", payload)
             return getSessions(state, payload);
@@ -52,18 +57,29 @@ export default function Calendar(state = initialState.CalendarData, { payload, t
 
 const getSessions = (state,{id,response}) => {
     const {data} = response;
-    if(id !== REQUEST_ALL){
-        let updatedState = {...state};
-        if(updatedState["CourseSessions"]){
-            updatedState["CourseSessions"].push(data);
-        } else {
-            updatedState["CourseSessions"] = [data];
-        }
-        return updatedState;
+    let {CourseSessions} = state;
+    if(id === REQUEST_ALL){
+        data.forEach((session) => {
+            CourseSessions = updateSessions(CourseSessions, session.instructor, session)
+        });
+    } else if (Array.isArray(id)){
+        response.forEach(({data}) => {
+           CourseSessions = updateSessions(CourseSessions, data.instructor, data)
+        });
     } else {
-        return {
-            ...state,
-            CourseSessions: data,
-        }
+        CourseSessions = updateSessions(CourseSessions, id, response.data)
     }
-}
+
+    return {
+        ...state,
+        CourseSessions,
+    }
+};
+
+const updateSessions = (sessions, instructorID, session) => ({
+    ...sessions,
+    [instructorID]:{
+        ...sessions[instructorID],
+        [session.id]: session,
+    }
+});

@@ -1,28 +1,23 @@
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import * as calenderActions from "../../../actions/calendarActions";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import * as calendarActions from "../../../actions/calendarActions";
 import PropTypes from "prop-types";
-import React, { Component } from "react";
+import React, {Component} from "react";
 import BackButton from "../../BackButton.js";
-import SessionActions from "./SessionActions";
 import "../../../theme/theme.scss";
 import "./scheduler.scss";
-import { NavLink } from "react-router-dom";
-// import TimeSelector from "../../Form/TimeSelector";
-
-import * as calendarActions from "../../../actions/calendarActions";
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 import * as adminActions from "../../../actions/adminActions";
-
 // Material UI Imports
 import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import { parseTime } from "../../../actions/apiActions";
-import { GET } from "../../../actions/actionTypes";
+import {GET} from "../../../actions/actionTypes";
 import DisplaySessionView from "./DisplaySessionView";
 import EditSessionView from "./EditSessionView";
+
+// import TimeSelector from "../../Form/TimeSelector";
 
 class SessionView extends Component {
     constructor(props) {
@@ -34,17 +29,17 @@ class SessionView extends Component {
     }
 
     componentDidMount() {
-        this.props.calendarActions.fetchSessions({ id: this.props.match.params.session_id });
+        this.props.calendarActions.fetchSession({ id: this.props.match.params.session_id });
         this.props.apiActions.fetchCourses(this.props.match.params.course_id);
         this.props.adminActions.fetchCategories();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props !== prevProps &&
-            this.props.courseSessions.length !== 0 &&
+            Object.keys(this.props.courseSessions).length !== 0 &&
             Object.entries(this.props.courses).length !== 0) {
             this.setState(() => {
-                const sessionData = this.props.courseSessions.find((session) => {
+                const sessionData = Object.values(this.props.courseSessions).find((session) => {
                     return Number(session.course) === Number(this.props.match.params.course_id) &&
                         Number(session.id) === Number(this.props.match.params.session_id);
                 });

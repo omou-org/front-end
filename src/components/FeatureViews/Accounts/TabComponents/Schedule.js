@@ -1,5 +1,4 @@
-import React, {useMemo, useEffect} from "react";
-import PropTypes from "prop-types"
+import React, {useEffect, useMemo} from "react";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import {useDispatch} from "react-redux";
@@ -20,7 +19,7 @@ function Schedule(){
     );
 
     useEffect(()=>{
-        calendarActions.fetchSessions({
+        calendarActions.fetchSession({
             config: {
                 params: {
                     time_frame: "week",

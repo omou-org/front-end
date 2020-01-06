@@ -23,6 +23,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 import {dayOfWeek} from "../../Form/FormUtils";
 import * as hooks from "actions/hooks";
+import ConfirmIcon from "@material-ui/icons/CheckCircle";
 
 function DisplaySessionView({course, session, handleToggleEditing}) {
     const dispatch = useDispatch();
@@ -151,7 +152,12 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <Typography variant="h5"> Instructor </Typography>
+                    <Typography variant="h5">
+                        Instructor
+                        {
+                            session.is_confirmed && <ConfirmIcon/>
+                        }
+                    </Typography>
                         {
                             course &&
                             <NavLink to={`/accounts/instructor/${instructor.user_id}`}

@@ -1,9 +1,7 @@
 import * as types from "./actionTypes";
 
 import axios from "axios";
-import {POST_COURSE_SUCCESSFUL} from "./actionTypes";
 import {typeToPostActions} from "./rootActions";
-import {fetchCategories} from "./adminActions";
 import {academicLevelParse} from "../reducers/registrationReducer";
 
 export const instance = axios.create({
@@ -187,7 +185,7 @@ export const durationParser = {
 };
 
 export const formatCourse = (formCourse, type) =>{
-    console.log(formCourse)
+    console.log(formCourse);
     let dayOfWeek = ()=>{
         switch(startDate.getDay()){
             case 0:
@@ -249,6 +247,7 @@ export const formatCourse = (formCourse, type) =>{
         "max_capacity": formCourse["Capacity"],
         "course_category": formCourse["Category"].value,
         "academic_level": academicLevelParse[formCourse["Grade Level"]],
+        "is_confirmed": formCourse["Did instructor confirm?"] === "Yes, Instructor Confirm",
     };
 };
 
@@ -256,7 +255,7 @@ const courseName = (form, type) => {
     if(type === "T"){
         return "1:1 " + form["Instructor"].value + form[""]
     }
-}
+};
 
 export const parseTime = (time) =>{
     let formattedTime;
@@ -269,4 +268,4 @@ export const parseTime = (time) =>{
         formattedTime = time;
     }
     return formattedTime;
-}
+};

@@ -57,6 +57,7 @@ function RegistrationReceipt(props) {
         }
     },[paymentStatus, paymentReceipt]);
 
+    console.log(registrationStatus)
     if((!registrationStatus || isFail(registrationStatus)) && !params.paymentID){
         return <Loading/>
     }
@@ -97,7 +98,7 @@ function RegistrationReceipt(props) {
         api.closeRegistration("");
         props.history.push("/registration");
     };
-    if(Object.keys(paymentReceipt).length < 1 || isLoading(paymentStatus)){
+    if(Object.keys(paymentReceipt).length < 1 || (isLoading(paymentStatus) && !registrationStatus)){
         return <Loading/>;
     }
     const renderCourse = (enrolledCourse) => (<Grid item key={enrolledCourse.id}>
