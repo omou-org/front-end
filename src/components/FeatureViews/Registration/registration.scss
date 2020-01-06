@@ -621,9 +621,12 @@
 }
 
 // Registration Parent Styling
+.select-parent-search-wrapper.active{
+  height:150px;
+}
+
 .select-parent-dialog{
   overflow-y: visible;
-  padding:10px;
 }
 .select-parent-search__menu{
   position:relative;
@@ -636,7 +639,6 @@
   @include respond-to(handhelds){
     width:auto;
   }
-  padding: 0 10% 10% 10%;
 }
 
 // Registration Cart Styling
@@ -681,7 +683,10 @@
     }
     margin-bottom:20px;
   }
+  .receipt-details{
+    margin-top: 120px;
+  }
   .receipt-actions{
-    margin-top:60px;
+    margin-top:10px;
   }
 }

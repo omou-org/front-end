@@ -1,9 +1,7 @@
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import PropTypes, { bool } from "prop-types";
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import ReactDOM from "react-dom";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import React, {Component} from "react";
+import {withRouter} from "react-router-dom";
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -14,8 +12,8 @@ import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 
 import * as calendarActions from "../../../actions/calendarActions";
 import * as courseActions from "../../../actions/apiActions";
+import {REQUEST_ALL} from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
-
 // Material-Ui dependencies
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
@@ -28,15 +26,16 @@ import ChevronRightOutlinedIcon from "@material-ui/icons/ChevronRightOutlined";
 import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
 import TodayIcon from "@material-ui/icons/Today";
-import { stringToColor } from "../Accounts/accountUtils";
-import { withStyles } from '@material-ui/core/styles';
-
+import {stringToColor} from "../Accounts/accountUtils";
+import {withStyles} from '@material-ui/core/styles';
 // Tool tip dependencies
 import tippy from "tippy.js";
 import "tippy.js/themes/google.css";
 import "./scheduler.scss";
 import SessionFilters from "./SessionFilters";
 import {BootstrapInput} from "./SchedulerUtils";
+import {Tooltip} from "@material-ui/core";
+import {GET} from "../../../actions/actionTypes";
 
 const styles = theme => ({
     root: {
@@ -90,31 +89,28 @@ class Scheduler extends Component {
         this.setState({
             "currentDate": this.currentDate(),
         });
-        this.props.calendarActions.fetchSessions({
-            config: {
-                params: {
-                    time_frame: "day",
-                    view_option: "tutoring",
-                    time_shift: this.state.timeShift,
-                }
-            }
-        });
-        let prevState = JSON.parse(sessionStorage.getItem("schedulerState"));
-        this.setState({
-            "currentDate": this.currentDate(),
-        });
+        // let prevState = JSON.parse(sessionStorage.getItem("schedulerState"));
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props !== prevProps && this.props.sessions !== "" &&
-            !(Object.entries(this.props.courses).length === 0 &&
-                this.props.courses.constructor === Object) &&
-            !(Object.entries(this.props.instructors).length === 0 &&
-                this.props.instructors === Object) &&
-            Object.entries(this.props.instructors).length !== 0
+        if(this.props.requestStatus.course[GET][REQUEST_ALL] === 200 &&
+            !this.props.requestStatus.schedule[GET][REQUEST_ALL]
+        ){
+            this.props.calendarActions.fetchSessions({
+                config: {
+                    params: {
+                        time_frame: "day",
+                        view_option: "tutoring",
+                        time_shift: this.state.timeShift,
+                    }
+                }
+            });
+        }
+
+        if (Object.entries(this.props.instructors).length !== 0 &&
+            JSON.stringify(prevProps.sessions) !== JSON.stringify(this.props.sessions)
         ) {
             const initialSessions = this.formatSessions(this.props.sessions, prevState);
-
             this.setState({
                 calendarEvents: initialSessions,
                 instructorOptions: Object.entries(this.props.instructors).map(
@@ -306,7 +302,7 @@ class Scheduler extends Component {
                 "timeShift": state.timeShift + 1,
             }
         });
-    }
+    };
 
     goToPrev = () => {
         let calendarApi = this.calendarComponentRef.current.getApi();
@@ -327,7 +323,7 @@ class Scheduler extends Component {
                 "timeShift": state.timeShift - 1,
             }
         });
-    }
+    };
 
     goToToday = () => {
         let calendarApi = this.calendarComponentRef.current.getApi();
@@ -570,6 +566,7 @@ class Scheduler extends Component {
                                                         <BootstrapInput name={"courseFilter"} id={"filter-calendar-type"}/>
                                                     }
                                                 >
+                                                    <MenuItem value={"all"}>All</MenuItem>
                                                     <MenuItem value={"class"}>Class</MenuItem>
                                                     <MenuItem value={"tutoring"}>Tutoring</MenuItem>
                                                 </Select>
@@ -644,15 +641,20 @@ class Scheduler extends Component {
                                     </Grid>
                                 </div>
                             </Grid>
+                            <Grid item xs={1}/>
                             <Grid item xs={2}>
-                                <Grid container className="scheduler-header-last">
-                                    <Grid item xs={4}>
-                                        <IconButton onClick={this.goToToday} className={"current-date-button"} aria-label='current-date-button'>
-                                            <TodayIcon />
-                                        </IconButton>
-
+                                <Grid container
+                                      direction={"row"}
+                                      justify={"flex-end"}
+                                      className="scheduler-header-last">
+                                    <Grid item xs={5}>
+                                        <Tooltip title={"Go to Today"}>
+                                            <IconButton onClick={this.goToToday} className={"current-date-button"} aria-label='current-date-button'>
+                                                <TodayIcon />
+                                            </IconButton>
+                                        </Tooltip>
                                     </Grid>
-                                    <Grid item xs={8}>
+                                    <Grid item xs={7}>
                                         <FormControl className={"filter-select"} >
                                             <Select
                                                 input={
@@ -660,10 +662,8 @@ class Scheduler extends Component {
                                                 }
                                                 value={this.state.viewValue}
                                                 onChange={(event) =>
-                                                    // event.target.value === the values below
                                                     this.changeView(event.target.value)
                                                 }
-
                                             >
                                                 <MenuItem value={"timeGridDay"}>Day</MenuItem>
                                                 <MenuItem value={"timeGridWeek"}>Week</MenuItem>
@@ -730,6 +730,7 @@ function mapStateToProps(state) {
         "courses": state.Course.NewCourseList,
         "sessions": state.Calendar.CourseSessions,
         "instructors": state.Users.InstructorList,
+        "requestStatus": state.RequestStatus,
     };
 }
 

@@ -244,6 +244,14 @@
 
 .course-session-status {
   padding: 3%;
+  .course-session-title{
+    margin-top:10px;
+    margin-bottom:20px;
+  }
+
+  .participants{
+    margin-bottom:30px;
+  }
 
   .table-text {
     color: white;
@@ -265,6 +273,9 @@
 
 .payments-history {
   padding: 15px;
+  a{
+    text-decoration:none;
+  }
 }
 
 .session-actions{

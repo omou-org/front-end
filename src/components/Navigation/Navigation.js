@@ -1,10 +1,8 @@
 // React Imports
-import {connect, useDispatch, useSelector} from "react-redux";
-import {logout} from "../../actions/authActions";
+import {connect, useSelector} from "react-redux";
 import {useLocation, withRouter} from "react-router-dom";
-import React, {useCallback, useState, useEffect} from "react";
+import React, {useCallback, useState} from "react";
 import NavLinkNoDup from "../Routes/NavLinkNoDup";
-
 // Material UI Imports
 import AccountsIcon from "@material-ui/icons/Contacts";
 import AssignmentIcon from "@material-ui/icons/Assignment";
@@ -16,9 +14,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import AdminIcon from "@material-ui/icons/Face"
 import ListItemText from "@material-ui/core/ListItemText";
 import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
-import DashboardIcon from "@material-ui/icons/Dashboard";
 import EventIcon from "@material-ui/icons/Event";
-
 // Local Component Imports
 import "./Navigation.scss";
 import CustomTheme from "../../theme/muiTheme";
@@ -32,9 +28,8 @@ import NavBarRoutes from "../Routes/NavBarRoutes";
 
 const Navigation = (props) => {
     const {pathname} = useLocation();
-    const dispatch = useDispatch();
     const {token, isAdmin} = useSelector(({auth}) => auth);
-    // const isAdmin = useSelector(({auth}) => auth).isAdmin;
+
     const NavList = isAdmin ? [
             // {
             //     "name": "Dashboard",

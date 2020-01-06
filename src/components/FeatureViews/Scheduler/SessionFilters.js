@@ -2,9 +2,10 @@ import React, {useState} from "react";
 import IconButton from "@material-ui/core/es/IconButton";
 import FilterIcon from "@material-ui/icons/FilterList";
 import Menu from "@material-ui/core/es/Menu";
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 import blue from "@material-ui/core/es/colors/blue";
 import ReactSelect from "react-select";
+import {Tooltip} from "@material-ui/core";
 
 const styles = theme => ({
     colorSwitchBase: {
@@ -30,14 +31,16 @@ function SessionFilters({onInstructorSelect, InstructorValue, InstructorOptions 
     };
     
     return (<>
-        <IconButton
-            aria-label={"more"}
-            aria-controls={"long-menu"}
-            aria-haspopup="true"
-            onClick={handleClick}
-        >
-            <FilterIcon/>
-        </IconButton>
+        <Tooltip title={"Session Filters"}>
+            <IconButton
+                aria-label={"more"}
+                aria-controls={"long-menu"}
+                aria-haspopup="true"
+                onClick={handleClick}
+            >
+                <FilterIcon/>
+            </IconButton>
+        </Tooltip>
         <Menu
             id={"long-menu"}
             anchorEl={anchorEl}

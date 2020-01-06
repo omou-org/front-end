@@ -1,5 +1,5 @@
 import * as types from "./actionTypes";
-import { instance, MISC_FAIL, REQUEST_STARTED} from "./apiActions";
+import {instance, MISC_FAIL, REQUEST_STARTED} from "./apiActions";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
@@ -57,7 +57,6 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         .filter( classReg => !classReg.enrollment)
                         .map( classReg => ({student: classReg.student, course: classReg.course}))
                             .concat(tutoringEnrollments);
-                    console.log(courseEnrollments);
 
                     const Enrollments = await Promise.all(courseEnrollments.map(enrollment =>
                         instance.request(
@@ -154,6 +153,7 @@ export const usePayment = (id) => {
                    ...requestSettings,
                    'method':'get',
                });
+               Payment.type = "parent";
 
                dispatch({
                    type: types.GET_PAYMENT_SUCCESS,
@@ -164,15 +164,15 @@ export const usePayment = (id) => {
                    ...requestSettings,
                    "method":"get",
                });
-               console.log(ParentResponse);
                dispatch({
                    type: types.FETCH_PARENT_SUCCESSFUL,
                    payload: ParentResponse,
                });
 
-               const enrollments = Payment.data.enrollments;
+               const studentIDs = Payment.data.registrations.map(registration => registration.enrollment_details.student);
+
                // get students
-               const uniqueStudentIDs = [...new Set(enrollments.map(enrollment => enrollment.student))];
+               const uniqueStudentIDs = [...new Set(studentIDs)];
                const StudentResponses = await Promise.all(uniqueStudentIDs.map( studentID =>
                    instance.request({
                        'url':`/account/student/${studentID.toString()}/`,
@@ -183,9 +183,9 @@ export const usePayment = (id) => {
                StudentResponses.forEach(studentResponse => {
                        dispatch({type: types.FETCH_STUDENT_SUCCESSFUL, payload: studentResponse})
                });
-
                // get courses
-               const uniqueCourseIDs = [...new Set(enrollments.map(enrollment => enrollment.course))];
+               const courseIDs = Payment.data.registrations.map(registration => registration.enrollment_details.course);
+               const uniqueCourseIDs = [...new Set(courseIDs)];
                const CourseResponses = await Promise.all(uniqueCourseIDs.map( courseID =>
                     instance.request({
                         "url": `/course/catalog/${courseID}/`,
@@ -241,12 +241,10 @@ export const useCourseSearch = (query) => {
                         ...requestSettings,
                         'method':'get'
                     });
-                    console.log(courseSearchResults);
                     dispatch({
                         type:types.GET_COURSE_SEARCH_QUERY_SUCCESS,
                         payload:courseSearchResults,
                     });
-                    console.log("dispatched results");
                     const instructors = courseSearchResults.map(({data}) => data.instructor);
 
                     const instructorResults = await Promise.all(instructors.map(instructorID => {
@@ -258,7 +256,6 @@ export const useCourseSearch = (query) => {
                             'method':'get',
                         })
                     }));
-                    console.log(instructorResults);
                     dispatch({
                         type: types.FETCH_INSTRUCTOR_SUCCESSFUL,
                         payload: instructorResults,

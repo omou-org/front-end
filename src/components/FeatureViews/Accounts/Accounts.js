@@ -21,11 +21,22 @@ import {NavLink, withRouter} from "react-router-dom";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import {addDashes, stringToColor} from "./accountUtils";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
+import {withStyles} from '@material-ui/core/styles';
 
 import "./Accounts.scss";
 import Avatar from "@material-ui/core/Avatar";
 import ProfileCard from "./ProfileCard";
 import Grow from "@material-ui/core/Grow";
+import {GET} from "../../../actions/actionTypes";
+import {REQUEST_ALL} from "../../../actions/apiActions";
+import Loading from "../../Loading";
+
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+        backgroundColor: theme.palette.background.paper,
+    },
+});
 
 class Accounts extends Component {
     constructor(props) {
@@ -111,7 +122,7 @@ class Accounts extends Component {
             return (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0;
         });
         return newUsersList;
-    }
+    };
 
     handleChange = (event, tabIndex) => {
         event.preventDefault();
@@ -120,18 +131,28 @@ class Accounts extends Component {
         }, () => {
             sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
         });
-    }
+    };
 
     render() {
         const userList = this.getUsers();
         const styles = (username) => ({
-            "backgroundColor": stringToColor(username),
-            "color": "white",
-            "margin": 9,
-            "width": 38,
-            "height": 38,
-            "fontSize": 14,
+            avatar:{
+                "backgroundColor": stringToColor(username),
+                "color": "white",
+                "margin": 9,
+                "width": 38,
+                "height": 38,
+                "fontSize": 14,
+            },
+            first_tab:{
+                borderRadius:"10px 0 0 10px !important",
+                color: "black"
+            },
+            last_tab:{
+                borderRadius:"10px 0 0 10px",
+            },
         });
+
         const tableView = () => (
             <Table className="AccountsTable">
                 <TableHead>
@@ -163,7 +184,7 @@ class Accounts extends Component {
                                     container
                                     layout="row">
                                     <Avatar
-                                        style={styles(row.name)}>{row.name.toUpperCase().match(/\b(\w)/g).join("")}
+                                        style={styles(row.name).avatar}>{row.name.toUpperCase().match(/\b(\w)/g).join("")}
                                     </Avatar>
                                     <Truncate lines={1} ellipsis={<span>...</span>}>
                                         {row.name}
@@ -236,6 +257,14 @@ class Accounts extends Component {
             </Grow>
         );
         this.resize();
+
+        if((this.props.requestStatus.instructor[GET][REQUEST_ALL] !== 200 ||
+            this.props.requestStatus.student[GET][REQUEST_ALL] !== 200 ||
+            this.props.requestStatus.parent[GET][REQUEST_ALL] !== 200)
+        ){
+            return (<Loading/>)
+        }
+
         return (
             <Grid
                 className="Accounts"
@@ -266,7 +295,7 @@ class Accounts extends Component {
                                 textColor="primary"
                                 value={this.state.tabIndex}
                                 variant="scrollable">
-                                <Tab label="ALL" />
+                                <Tab label="ALL" classes={styles("").first_tab}/>
                                 <Tab label="INSTRUCTORS" />
                                 <Tab label="STUDENTS" />
                                 <Tab label="RECEPTIONIST" />
@@ -335,6 +364,8 @@ const mapStateToProps = (state) => ({
     "receptionist": state.Users.ReceptionistList,
     "students": state.Users.StudentList,
     "isAdmin": state.auth.isAdmin,
+    "requestStatus": state.RequestStatus,
+    "searchStatus": state.Search.searchQueryStatus.searching,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -344,4 +375,4 @@ const mapDispatchToProps = (dispatch) => ({
 export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(Accounts));
+)(withStyles(styles)(Accounts)));

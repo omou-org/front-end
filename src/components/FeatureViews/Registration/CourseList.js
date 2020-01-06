@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
 import {connect, useSelector} from "react-redux";
-
 // Material UI Imports
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -10,6 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
+import {DayConverter} from "../Accounts/TabComponents/CourseSessionStatus";
 
 const CourseList = (props) => {
     let filteredCourses = props.filteredCourses;
@@ -19,7 +19,7 @@ const CourseList = (props) => {
             end_date = new Date(course.schedule.end_date),
             start_time = course.schedule.start_time && course.schedule.start_time.substr(1),
             end_time = course.schedule.end_time && course.schedule.end_time.substr(1),
-            days = course.schedule.days;
+            days = DayConverter[new Date(course.schedule.start_date).getDay()];
         start_date = start_date && start_date.toDateString().substr(3);
         end_date = end_date && end_date.toDateString().substr(3);
         const date = `${start_date} - ${end_date}`,
@@ -68,7 +68,26 @@ const CourseList = (props) => {
                                 item
                                 md={8}
                                 xs={9}>
-                                {date} | {days} {time}
+                                {date}
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            className="course-detail"
+                            container>
+                            <Grid
+                                align="left"
+                                className="heading-det"
+                                item
+                                md={4}
+                                xs={3}>
+                                Time
+                            </Grid>
+                            <Grid
+                                align="left"
+                                item
+                                md={8}
+                                xs={9}>
+                                {days} {time}
                             </Grid>
                         </Grid>
                         <Grid
@@ -134,16 +153,16 @@ const CourseList = (props) => {
                             <Grid
                                 item
                                 xs={6}>
-                                {
-                                    (props.registration.CurrentParent !== "none" && props.registration.CurrentParent) &&
-                                    <Button
-                                        className="button primary"
-                                        component={Link}
-                                        disabled={course.capacity <= course.roster.length}
-                                        to={`/registration/form/course/${course.course_id}`}
-                                        variant="contained">+ REGISTER
-                                    </Button>
-                                }
+                                    {
+                                        (props.registration.CurrentParent !== "none" && props.registration.CurrentParent) &&
+                                        <Button
+                                            className="button primary"
+                                            component={Link}
+                                            disabled={course.capacity <= course.roster.length}
+                                            to={`/registration/form/course/${course.course_id}`}
+                                            variant="contained">+ REGISTER
+                                        </Button>
+                                    }
                             </Grid>
                         </Grid>
                     </Grid>

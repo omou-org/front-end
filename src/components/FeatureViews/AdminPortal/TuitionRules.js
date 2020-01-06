@@ -1,5 +1,4 @@
-import React, {useState, useEffect, useMemo} from "react";
-
+import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
@@ -19,6 +18,7 @@ import TextField from "@material-ui/core/TextField";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import CheckCircle from "@material-ui/core/es/internal/svg-icons/CheckCircle";
+import IconButton from "@material-ui/core/IconButton";
 
 function TuitionRules() {
     const dispatch = useDispatch();
@@ -156,7 +156,9 @@ function TuitionRules() {
                     </Typography>
                 </Grid>
                 <Grid item xs={1} md={1}>
-                    <Edit onClick={editTuition(id)}/>
+                    <IconButton onClick={editTuition(id)}>
+                        <Edit/>
+                    </IconButton>
                 </Grid>
             </Grid>
         </Paper>)
@@ -234,15 +236,23 @@ function TuitionRules() {
                     />
                 </Grid>
                 <Grid item xs={1} md={1}>
-                    <CheckCircle onClick={editTuition(id)}/>
+                    <IconButton onClick={editTuition(id)}>
+                        <CheckCircle/>
+                    </IconButton>
                 </Grid>
             </Grid>
         </Paper>
     };
 
     return (
-        <div>
-            <h1>Manage Tuition</h1>
+        <div className="manage-tutition-wrapper">
+            <Typography
+                align="left"
+                variant="h5"
+                gutterBottom={true}
+            >
+                Manage Tuition
+            </Typography>
             {
                 displayTuitionRules()
             }

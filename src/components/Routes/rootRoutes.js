@@ -4,7 +4,6 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../actions/registrationActions";
 import React from "react";
-
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
@@ -53,7 +52,7 @@ function rootRoutes(props) {
                 render={(passedProps) => <SessionView {...passedProps} />} />
             <ProtectedRoute
                 exact
-                path="/search/:type/:query?"
+                path="/search/"
                 render={(passedProps) => <SearchResults {...passedProps} />} />
 
             {/*<ProtectedRoute*/}

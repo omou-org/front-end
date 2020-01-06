@@ -1,9 +1,8 @@
 // React Imports
-import React, {useState, useEffect, useMemo} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import PropTypes from "prop-types";
-
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import {FormControl} from "@material-ui/core";
@@ -15,16 +14,15 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/es/Typography/Typography";
 import Remove from "@material-ui/icons/Cancel"
 import Add from "@material-ui/icons/CheckCircle";
-
 // Local Component Imports
 import "./Form.scss"
 import TextField from "@material-ui/core/es/TextField/TextField";
 import {bindActionCreators} from "redux";
 import * as apiActions from "../../actions/apiActions";
+import {instance} from "../../actions/apiActions";
 import * as userActions from "../../actions/userActions";
 import * as registrationActions from "../../actions/registrationActions";
 import {dayOfWeek, weeklySessionsParser} from "./FormUtils";
-import {instance} from "../../actions/apiActions";
 import {usePrevious} from "../../actions/hooks";
 
 const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
@@ -249,20 +247,21 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
                                     return <Grid item key={i}>
                                         <Grid container direction={"row"} justify={"flex-end"}>
                                             <Grid item xs={1}>
-                                                {
-                                                    discount.enable ?
-                                                    <Remove
-                                                        onClick={toggleDiscount(discount.id)}
-                                                        className={"remove icon"}/> :
-                                                    <Add
-                                                        onClick={toggleDiscount(discount.id)}
-                                                        className={"add icon"}/>
-                                                }
+
                                             </Grid>
                                             <Grid item xs={3}>
                                                 <Typography align={"right"}
                                                             className={`price-label 
                                                             ${ discount.enable && "discount"}`}>
+                                                    {
+                                                        discount.enable ?
+                                                            <Remove
+                                                                onClick={toggleDiscount(discount.id)}
+                                                                className={"remove icon"}/> :
+                                                            <Add
+                                                                onClick={toggleDiscount(discount.id)}
+                                                                className={"add icon"}/>
+                                                    }
                                                     {discount.name} Discount
                                                 </Typography>
                                             </Grid>
@@ -281,7 +280,11 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
                                 {/*Manual Price Adjustment for Admins*/}
                                 {
                                     isAdmin &&
-                                    <Grid container direction={"row"} justify={"flex-end"}>
+                                    <Grid container
+                                          direction={"row"}
+                                          justify={"flex-end"}
+                                          className={"price-adjustment-wrapper"}
+                                    >
                                         <Grid item xs={2}>
                                             <Typography align={"right"} className={"price-label"}>
                                                 Price Adjustment
@@ -290,6 +293,7 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
                                         <Grid item xs={2}>
                                             <Typography align={"right"}>
                                                 <TextField
+                                                    variant="outlined"
                                                     value = {priceAdjustment}
                                                     onChange={ handlePriceAdjustment() }
                                                     type={"number"}
@@ -306,8 +310,10 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={2}>
-                                        <Typography align={"right"}>
-                                            {priceQuote.total}
+                                        <Typography
+                                            className={"total-price"}
+                                            align={"right"}>
+                                            ${priceQuote.total}
                                         </Typography>
                                     </Grid>
                                 </Grid>

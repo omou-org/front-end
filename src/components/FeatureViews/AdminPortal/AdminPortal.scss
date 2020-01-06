@@ -25,3 +25,31 @@
     text-align: left;
   }
 }
+
+.admin-actions-wrapper{
+  margin-top:25px !important;
+  margin-bottom: 30px !important;
+
+  .button{
+    color: #575757;
+    &.active{
+      background-color:$primaryDarkColor;
+      color:white;
+      border: $primaryDarkColor 1px solid !important;
+    }
+
+    .admin-action-icon{
+      margin-right:10px;
+
+      &.active{
+        color:white;
+      }
+    }
+  }
+}
+
+/*Discounts*/
+.discount-type-wrapper{
+  margin-top:20px;
+  margin-bottom:15px;
+}

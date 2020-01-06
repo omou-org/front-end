@@ -55,10 +55,10 @@ hr{
 }
 
 .info{
-  border: solid 2px #f39c12;
-  background-color: #f3d20c !important;
+  border: solid 2px #b6b6b6;
+  background-color: #d1d1d1 !important;
   > * {
-    color:$secondaryLightFontColor !important;
+    color:$primaryFontColor !important;
   }
   padding:2%;
 }
