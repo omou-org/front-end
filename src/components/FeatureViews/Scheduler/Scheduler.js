@@ -758,6 +758,7 @@ class Scheduler extends Component {
                                     },
                                 },
                             }}
+                            minTime={"07:00:00"}
                             timeZone={"local"}
                             eventMouseEnter={!this.state.resourceIcon && this.handleToolTip}
                             eventClick={this.goToSessionView}
