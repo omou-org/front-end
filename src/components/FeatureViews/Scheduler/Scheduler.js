@@ -54,7 +54,6 @@ const styles = theme => ({
  * @returns {unknown[]}
  */
 const sessionArray = (sessions) => {
-    console.log(sessions);
     return sessions.length > 0 && Object.values(sessions)
         .map(instructorSessions => Object.values(instructorSessions))
         .reduce((allSessions, instructorSessions) => {
@@ -245,10 +244,28 @@ class Scheduler extends Component {
                 <div class="toolTip">
                     <div class='title'><h3> ${info.event.title} </h3></div>
                     <div class="container">
-                        <div class='clock'><span class='clock_icon'>  ${formatDate(info.event.start, info.event.end)}</span></div>
-                        <div class='pin_icon'><span class=''>Room # ${info.el.fcSeg.room_id}</span></div>
-                        <div class='teacher_icon'><span class=''>${info.event.extendedProps.instructor ? info.event.extendedProps.instructor : "No teacher Yet"}</span></div>
-                        <div class='discription_icon'><span class='description-text'>${info.el.fcSeg.description && truncate(info.el.fcSeg.description)}</span></div>
+                        <div class='clock'>
+                            <span class='clock_icon'>  
+                                ${formatDate(info.event.start, info.event.end)}
+                            </span>
+                        </div>
+                        <div class='pin_icon'>
+                            <span class=''>
+                                Session is ${info.event.extendedProps.is_confirmed? "NOT" : "IS"} confirmed
+                            </span>
+                        </div>
+                        <div class='teacher_icon'>
+                            <span class=''>
+                                    ${info.event.extendedProps.instructor ? 
+                                        info.event.extendedProps.instructor : "No teacher Yet"}
+                            </span>
+                        </div>
+                        <div class='discription_icon'>
+                            <span class='description-text'>
+                                ${info.el.fcSeg.description ? 
+                                        truncate(info.el.fcSeg.description) : "N/A"}
+                            </span>
+                        </div>
                     </div>
                 </div>
             `
