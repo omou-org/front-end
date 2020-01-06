@@ -23,5 +23,6 @@ export const courseDataParser = (course) => {
         "endTime": endDate.toLocaleTimeString("en-US", timeOptions),
         "startDate": startDate.toLocaleDateString("en-US", dateOptions),
         "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
+        "is_confirmed": course.is_confirmed,
     };
 };

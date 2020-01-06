@@ -212,7 +212,7 @@ function RegistrationReceipt(props) {
                 </>
             }
             <Prompt
-                when={currentPayingParent !== "none"}
+                when={currentPayingParent !== "none" && location.pathname.includes("receipt")}
                 message={"Remember to please close out the parent first!"}
             />
             <Grid container

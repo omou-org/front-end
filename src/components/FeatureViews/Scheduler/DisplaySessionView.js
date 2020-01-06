@@ -24,7 +24,7 @@ import Dialog from "@material-ui/core/Dialog";
 import {dayOfWeek} from "../../Form/FormUtils";
 import * as hooks from "actions/hooks";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
-import UnconfirmIcon from "@material-ui/icons/Cancel"
+import UnconfirmIcon from "@material-ui/icons/Cancel";
 import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 
 function DisplaySessionView({course, session, handleToggleEditing}) {
