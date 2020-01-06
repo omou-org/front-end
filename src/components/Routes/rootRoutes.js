@@ -37,7 +37,7 @@ function rootRoutes(props) {
             <ProtectedRoute
                 exact
                 path="/"
-                render={(passedProps) => <Accounts {...passedProps} />} />
+                render={(passedProps) => <Scheduler {...passedProps} />} />
 
             <ProtectedRoute
                 exact

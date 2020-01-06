@@ -86,7 +86,7 @@ const Navigation = (props) => {
                         className="listItem"
                         component={NavLinkNoDup}
                         isActive={(match, location) => match
-                            // || (NavItem.name === "Accounts" && location.pathname === "/")
+                            || (NavItem.name === "Scheduler" && location.pathname === "/")
                         }
                         key={NavItem.name}
                         to={NavItem.link}>
