@@ -42,7 +42,10 @@ const SearchResults = (props) => {
         account: 4,
         course: 4,
     });
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState({
+        account: 1,
+        course: 1,
+    });
     const params = useParams();
 
     const { accounts, courses, SearchQuery } = searchState;
@@ -72,22 +75,58 @@ const SearchResults = (props) => {
         e.preventDefault();
         switch(moreOrLess){
             case "more":{
-                setStart(4);
-                setEnd(8);
+                setStart({
+                    ...start,
+                    [searchType]: 4,
+                });
+                setEnd({
+                    ...end,
+                    [searchType]: 8,
+                });
+
+                setCurrentPage({
+                    ...currentPage,
+                    [searchType]: currentPage[searchType] + 1
+                });
+
                 if (end[searchType] === 8) {
-                    setCurrentPage(currentPage + 1);
-                    api.updateSearchParam(searchType,`${searchType}Page`,currentPage+1);
-                    setStart(0);
-                    setEnd(4);
+                    setCurrentPage({
+                        ...currentPage,
+                        [searchType]: currentPage[searchType] + 1
+                    });
+                    api.updateSearchParam(searchType,`${searchType}Page`,currentPage[searchType]+1);
+                    setStart({
+                        ...start,
+                        [searchType]: 0,
+                    });
+                    setEnd({
+                        ...end,
+                        [searchType]: 4,
+                    });
                 }
                 break;
             }
             case "less":{
-                setStart(0);
-                setEnd(4);
+                setStart({
+                    ...start,
+                    [searchType]: 0,
+                });
+                setEnd({
+                    ...end,
+                    [searchType]: 4,
+                });
+
+                setCurrentPage({
+                    ...currentPage,
+                    [searchType]: currentPage[searchType] - 1
+                });
+
                 if (start[searchType] === 0) {
-                    setCurrentPage(currentPage - 1);
-                    api.updateSearchParam(searchType,`${searchType}Page`,currentPage-1);
+                    setCurrentPage({
+                        ...currentPage,
+                        [searchType]: currentPage[searchType] - 1
+                    });
+                    api.updateSearchParam(searchType,`${searchType}Page`,currentPage[searchType]-1);
                     setStart(0);
                     setEnd(4);
                 }
@@ -175,7 +214,7 @@ const SearchResults = (props) => {
                             {accounts.length > 4 ?
                                 <div className={"results-nav"}>
                                     {
-                                        start["account"] > 3 && <IconButton
+                                         <IconButton disabled={currentPage.account === 1}
                                             className={"less"}
                                             onClick={displayResults("less", SEARCH_ACCOUNTS)}>
                                             <LessResultsIcon/>
@@ -227,8 +266,9 @@ const SearchResults = (props) => {
                                     }
                                 </Grid>
                                 <Grid container direction={"row"}>
-                                    {courses.slice(0, 4).map((course) => (
-                                        <CoursesCards course={course} key={course.course_id} />)
+                                    {courses.slice(start.course, end.course).map((course) => (
+                                            <CoursesCards course={course} key={course.course_id} />
+                                        )
                                     )}
                                 </Grid>
                             </Grid> : ""
@@ -236,13 +276,13 @@ const SearchResults = (props) => {
                         {courses.length > 4 ?
                             <div className={"results-nav"}>
                                 {
-                                    start["course"] > 3 && <IconButton
+                                     <IconButton disabled={currentPage.course === 1}
                                         className={"less"}
                                         onClick={displayResults("less", SEARCH_COURSES)}>
                                         <LessResultsIcon/>
                                     </IconButton>
                                 }
-                                {searchState.params.account.accountPage}
+                                {currentPage.course}
                                 {
                                     courses.length > 7 && <IconButton
                                         className={"more"}
