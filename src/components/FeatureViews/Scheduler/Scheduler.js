@@ -49,6 +49,19 @@ const styles = theme => ({
     },
 });
 
+/*** @description: This is for transforming instructor organized redux to an array of sessions
+ * @param sessions
+ * @returns {unknown[]}
+ */
+const sessionArray = (sessions) => {
+    console.log(sessions);
+    return sessions.length > 0 && Object.values(sessions)
+        .map(instructorSessions => Object.values(instructorSessions))
+        .reduce((allSessions, instructorSessions) => {
+            return allSessions.concat(instructorSessions);
+        });
+}
+
 class Scheduler extends Component {
     constructor(props) {
         super(props);
@@ -68,6 +81,8 @@ class Scheduler extends Component {
             "timeShift": 0,
             "instructorFilter": "",
             "instructorOptions": [],
+            "courseFilter": "",
+            "courseOptions": [],
             "sessionFilter": false,
             "sessionFilterAnchor": null,
         };
@@ -102,14 +117,18 @@ class Scheduler extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (JSON.stringify(prevProps.sessions) !== JSON.stringify(this.props.sessions)) {
+        if (JSON.stringify(prevProps.sessions) !== JSON.stringify(this.props.sessions) ) {
             const initialSessions = this.formatSessions(this.props.sessions);
-
+            const courseSessionsArray =  sessionArray(this.props.sessions);
             this.setState({
                 calendarEvents: initialSessions,
                 instructorOptions: Object.entries(this.props.instructors).map(
                     ([instructorID, instructor])=>
-                        ({ value:Number(instructorID), label: instructor.name }))
+                        ({ value:Number(instructorID), label: instructor.name })),
+                courseOptions: courseSessionsArray && [...new Set(courseSessionsArray.map(session => session.course))].map(
+                    (courseID) =>
+                        ({value: Number(courseID), label: this.props.courses[Number(courseID)].title})
+                )
             });
         }
     }
@@ -512,6 +531,35 @@ class Scheduler extends Component {
         });
     };
 
+    onCourseSelect = event => {
+        console.log(event, "selected course")
+        this.setState(()=>{
+            const courseSessionsArray = sessionArray(this.props.sessions);
+           const selectedCourseIDs = event && event.map(course => course.value);
+           const calendarCourseIDs = [...new Set(courseSessionsArray.map(session => session.course))];
+           const nonSelectedCourseIDs = event ? arr_diff(selectedCourseIDs, calendarCourseIDs): [];
+
+           let filteredEvents = JSON.parse(JSON.stringify(this.props.sessions));
+           if(event && event.length > 0 && nonSelectedCourseIDs.length > 0){
+               nonSelectedCourseIDs
+                   .forEach((courseID) => {
+                      courseSessionsArray.forEach(session => {
+                          if(session.course === courseID){
+                              delete filteredEvents[session.instructor][session.id]
+                          }
+                      });
+                   });
+           } else {
+               filteredEvents = this.props.sessions;
+           }
+           console.log(filteredEvents);
+            return {
+               "courseFilter": event,
+                "calendarEvents": this.formatSessions(filteredEvents),
+            }
+        });
+    };
+
     render() {
         return (
             <Paper className="paper scheduler">
@@ -621,6 +669,9 @@ class Scheduler extends Component {
                                             InstructorValue = { this.state.instructorFilter }
                                             InstructorOptions={ this.state.instructorOptions }
                                             onInstructorSelect = {this.onInstructorSelect }
+                                            CourseValue = {this.state.courseFilter}
+                                            CourseOptions = {this.state.courseOptions}
+                                            onCourseSelect = {this.onCourseSelect}
                                         />
                                     </Grid>
                                 </Grid>
