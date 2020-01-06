@@ -17,8 +17,9 @@ import SearchSelect from "react-select";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 
-function EditSessionView({course, session}) {
+function EditSessionView({course, session, editSelection}) {
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -110,21 +111,36 @@ function EditSessionView({course, session}) {
     const updateSession = event => {
         event.preventDefault();
         let {start_time, end_time, is_confirmed, instructor} = sessionFields;
-        let patchedSession = {
-            start_datetime: start_time.toISOString(),
-            end_datetime: end_time.toISOString(),
-            is_confirmed: is_confirmed,
-            instructor: instructor.value,
-        };
-
-        api.patchSession(session.id, patchedSession);
+        if(editSelection === EDIT_CURRENT_SESSION){
+            let patchedSession = {
+                start_datetime: start_time.toISOString(),
+                end_datetime: end_time.toISOString(),
+                is_confirmed: is_confirmed,
+                instructor: instructor.value,
+            };
+            // api.patchSession(session.id, patchedSession);
+        }
 
         let patchedCourse = {
             course_category: sessionFields.category.value,
             subject: sessionFields.title,
+            start_time: start_time.toISOString(),
+                // .substr(start_time.toISOString().indexOf("T")+1,5),
+            end_time: end_time.toISOString(),
+                // .substr(end_time.toISOString().indexOf("T")+1,5)
         };
-        api.patchCourse(course.course_id, patchedCourse);
-        history.push("/scheduler/")
+        if(editSelection === EDIT_ALL_SESSIONS){
+            patchedCourse = {
+                ...patchedCourse,
+                instructor: instructor.value,
+                is_confirmed: is_confirmed,
+                start_date: start_time.toISOString().substr(0,10),
+                end_date: end_time.toISOString().substr(0, 10),
+            }
+        }
+        console.log(patchedCourse)
+        // api.patchCourse(course.course_id, patchedCourse);
+        // history.push("/scheduler/")
     };
 
     const onConfirmationChange = event => {

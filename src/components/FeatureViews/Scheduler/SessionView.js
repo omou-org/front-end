@@ -17,7 +17,8 @@ import {GET} from "../../../actions/actionTypes";
 import DisplaySessionView from "./DisplaySessionView";
 import EditSessionView from "./EditSessionView";
 
-// import TimeSelector from "../../Form/TimeSelector";
+export const EDIT_ALL_SESSIONS = "all";
+export const EDIT_CURRENT_SESSION = "current";
 
 class SessionView extends Component {
     constructor(props) {

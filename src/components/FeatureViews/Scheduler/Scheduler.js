@@ -104,9 +104,7 @@ class Scheduler extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (JSON.stringify(prevProps.sessions) !== JSON.stringify(this.props.sessions)) {
             const initialSessions = this.formatSessions(this.props.sessions);
-            console.log(Object.entries(this.props.instructors).map(
-                ([instructorID, instructor])=>
-                    ({ value:instructorID, label: instructor.name })))
+
             this.setState({
                 calendarEvents: initialSessions,
                 instructorOptions: Object.entries(this.props.instructors).map(

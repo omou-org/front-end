@@ -27,8 +27,8 @@ const StudentInfo = ({user}) => {
             alignItems="center"
             container
             direction="row"
-            item
             spacing={40}
+            md={12}
             xs={10}>
             {
                 loadedStudentIDs.map((studentID) => (

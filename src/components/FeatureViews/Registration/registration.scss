@@ -455,7 +455,11 @@
     }
 
     .second-line {
-      margin-left: 2%;
+      .course-icon{
+        margin-left:0;
+        margin-bottom:-6px;
+      }
+
       text-align: left;
 
       .text, .chip {

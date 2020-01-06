@@ -154,20 +154,6 @@
   padding: 1%;
 }
 
-.session-view{
-  .icon{
-    margin-bottom:-5px;
-    margin-left:5px;
-    &.confirmed{
-      color:green;
-    }
-    &.unconfirmed{
-      color:gray;
-    }
-  }
-
-}
-
 .main-calendar-div{
   padding: 1%;
   @include respond-to(handhelds){

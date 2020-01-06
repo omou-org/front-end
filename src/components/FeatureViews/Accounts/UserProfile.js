@@ -63,11 +63,6 @@ const userTabs = {
             "tab_id": 8,
         },
         {
-            "icon": <CurrentSessionsIcon className="TabIcon" />,
-            "tab_heading": "Pay Courses",
-            "tab_id": 9,
-        },
-        {
             "icon": <PaymentIcon className="TabIcon" />,
             "tab_heading": "Payment History",
             "tab_id": 5,

@@ -7,7 +7,7 @@ import * as registrationActions from "../../../actions/registrationActions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import {Button, Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
-import {useParams, withRouter} from "react-router-dom";
+import {useLocation, useParams, withRouter} from "react-router-dom";
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 import {usePayment, useSubmitRegistration} from "../../../actions/multiCallHooks";
@@ -25,6 +25,8 @@ function RegistrationReceipt(props) {
     const Payments = useSelector(({Payments})=> Payments);
     const students = useSelector(({Users})=>Users.StudentList);
     const RequestStatus = useSelector(({RequestStatus}) => RequestStatus);
+
+    const location = useLocation();
     const params = useParams();
     const dispatch = useDispatch();
     const api = useMemo(
@@ -35,6 +37,7 @@ function RegistrationReceipt(props) {
         }),
         [dispatch]
     );
+
     const [paymentReceipt, setPaymentReceipt] = useState({});
     const prevPaymentReceipt = usePrevious(paymentReceipt);
     const [courseReceipt, setCourseReceipt] = useState({});
@@ -57,7 +60,6 @@ function RegistrationReceipt(props) {
         }
     },[paymentStatus, paymentReceipt]);
 
-    console.log(registrationStatus)
     if((!registrationStatus || isFail(registrationStatus)) && !params.paymentID){
         return <Loading/>
     }
@@ -331,11 +333,15 @@ function RegistrationReceipt(props) {
                                 Print
                             </Button>
                         </Grid>
-                        <Grid item>
-                            <Button onClick={handleCloseReceipt()} className={"button"}>
-                                End Registration
-                            </Button>
-                        </Grid>
+                        {
+                            !location.pathname.includes("parent") &&
+                            <Grid item>
+                                <Button onClick={handleCloseReceipt()} className={"button"}>
+                                    End Registration
+                                </Button>
+                            </Grid>
+                        }
+
                     </Grid>
                 </Grid>
             </Grid>

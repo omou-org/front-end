@@ -25,6 +25,7 @@ import {dayOfWeek} from "../../Form/FormUtils";
 import * as hooks from "actions/hooks";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel"
+import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 
 function DisplaySessionView({course, session, handleToggleEditing}) {
     const dispatch = useDispatch();
@@ -46,7 +47,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
 
     const [enrolledStudents, setEnrolledStudents] = useState(false);
     const [edit, setEdit] = useState(false);
-    const [editSelection, setEditSelection] = useState('current');
+    const [editSelection, setEditSelection] = useState(EDIT_CURRENT_SESSION);
 
     useEffect(()=>{
         api.initializeRegistration();
@@ -91,19 +92,13 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
 
     const studentKeys = Object.keys(enrolledStudents);
 
-    const currentAllInverse = {
-        "current": "all",
-        "all":"current",
-    };
-
     const handleEditToggle = (cancel) => event =>{
         event.preventDefault();
-        if(!cancel){
+        if(!cancel && edit){
             // if we're applying to edit session then toggle to edit view
             handleToggleEditing(editSelection);
         } else {
             setEdit(!edit);
-            setEditSelection(currentAllInverse[editSelection]);
         }
     };
 
@@ -160,8 +155,8 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                         Instructor
                         {
                             session.is_confirmed ?
-                                <ConfirmIcon className="confirmed icon"/> :
-                                <UnconfirmIcon className="unconfirmed icon"/>
+                                <ConfirmIcon className="confirmed course-icon"/> :
+                                <UnconfirmIcon className="unconfirmed course-icon"/>
                         }
                     </Typography>
                         {
@@ -280,12 +275,12 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                         control={<Radio color="primary" />}
                         label="This Session"
                         labelPlacement="end"
-                        value="current" />
+                        value={EDIT_CURRENT_SESSION} />
                     <FormControlLabel
                         control={<Radio color="primary" />}
                         label="All Sessions"
                         labelPlacement="end"
-                        value="all" />
+                        value={EDIT_ALL_SESSIONS} />
                 </RadioGroup>
             </DialogContent>
             <DialogActions>

@@ -62,3 +62,14 @@ hr{
   }
   padding:2%;
 }
+
+.course-icon{
+  margin-bottom:-5px;
+  margin-left:5px;
+  &.confirmed{
+    color:green;
+  }
+  &.unconfirmed{
+    color:gray;
+  }
+}
