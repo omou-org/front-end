@@ -35,12 +35,20 @@ const Bio = (props) => (
                         <Grid className="bioDescription">
                             Experience:
                         </Grid>
-                        <Grid className="chipPadding">
-                            <Chip
-                                className="bioChip"
-                                label={`${props.background.experience}`}
-                                variant="outlined" />
-                        </Grid>
+                        {
+                            props.background.experience &&
+                            props.background.experience.split(",").map(experience => (
+                                <Grid
+                                    key={experience}
+                                    className="chipPadding">
+                                    <Chip
+                                        className="bioChip"
+                                        label={experience}
+                                        variant="outlined" />
+                                </Grid>
+                            ))
+                        }
+
                     </Grid>
                     <Grid
                         className="rowPadding"
@@ -65,14 +73,20 @@ const Bio = (props) => (
                         <Grid className="bioDescription">
                             Language:
                         </Grid>
-                        <Grid
-                            className="chipPadding"
-                            key={props.background.languages}>
-                            <Chip
-                                className="bioChip"
-                                label={props.background.languages}
-                                variant="outlined" />
-                        </Grid>
+                        {
+                            props.background.languages &&
+                            props.background.languages.split(",").map((language) => (
+                                <Grid
+                                    className="chipPadding"
+                                    key={language}>
+                                    <Chip
+                                        className="bioChip"
+                                        label={language}
+                                        variant="outlined" />
+                                </Grid>
+                            ))
+                        }
+
                     </Grid>
                 </div>
             </Grid>
