@@ -627,7 +627,6 @@
 
 .select-parent-dialog{
   overflow-y: visible;
-  padding:10px;
 }
 .select-parent-search__menu{
   position:relative;
@@ -640,7 +639,6 @@
   @include respond-to(handhelds){
     width:auto;
   }
-  padding: 0 10% 10% 10%;
 }
 
 // Registration Cart Styling

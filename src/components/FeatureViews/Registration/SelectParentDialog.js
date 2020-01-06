@@ -93,10 +93,12 @@ class SelectParentDialog extends React.Component {
     ActiveParentDialog = () =>{
         return (
             <div className={"active-parent-dialog-content"}>
-                <Grid container>
-                    <Grid item xs={10}
-                          sm={12}
-                    >
+                <Grid
+                    container
+                    direction="row"
+                    justify="center"
+                >
+                    <Grid item>
                         <AccountsCards user={this.props.registration.CurrentParent}/>
                     </Grid>
                 </Grid>
@@ -188,24 +190,20 @@ class SelectParentDialog extends React.Component {
                         this.props.registration.CurrentParent &&
                         this.props.registration.CurrentParent !== "none" ?
                             <>
-                                <Button
-                                    color={"primary"}
-                                    className={"button"}
-                                    onClick={this.handleExitParent()}
-                                >
+                                <Button onClick={this.handleExitParent()}>
                                     Exit Parent
                                 </Button>
-                                <Button
-                                    component={NavLinkNoDup}
-                                    to={"/registration/cart"}
-                                    color={"primary"}
-                                    className={"button"}
-                                >
-                                    Checkout {allCourses} Courses
-                                </Button>
+                                <span>
+                                    <Button
+                                        component={NavLinkNoDup}
+                                        to={"/registration/cart"}
+                                        disabled={allCourses === 0}
+                                    >
+                                        Checkout {allCourses} Courses
+                                    </Button>
+                                </span>
                             </>  :
                             <Button
-                                color={"primary"}
                                 onClick={this.handleSetParentButton()}>
                                 Set Parent
                             </Button>
