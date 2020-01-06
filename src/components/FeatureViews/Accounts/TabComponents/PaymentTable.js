@@ -10,22 +10,14 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Loading from "../../../Loading";
 import NavLinkNoDup from "../../../Routes/NavLinkNoDup";
-import Typography from "@material-ui/core/Typography";
+import {NoListAlert} from "../../../NoListAlert";
 
 function PaymentTable({paymentList, type, enrollmentID})  {
 
     if(paymentList && paymentList.length < 1){
         return <Loading/>
     } else if(!paymentList) {
-        return <Grid
-            item
-            xs={12}>
-            <Paper className="info">
-                <Typography style={{"fontWeight": 700}}>
-                    No Payments Yet!
-                </Typography>
-            </Paper>
-        </Grid>
+        return <NoListAlert list={"Payments"}/>
     }
 
     let paidSessionsByPayment = () => {

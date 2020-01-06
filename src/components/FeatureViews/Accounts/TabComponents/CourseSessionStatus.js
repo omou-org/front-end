@@ -26,6 +26,7 @@ import DialogContentText from "@material-ui/core/es/DialogContentText/DialogCont
 import DialogActions from "@material-ui/core/DialogActions";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import PaymentTable from "./PaymentTable";
+import {NoListAlert} from "../../../NoListAlert";
 
 
 const DayConverter = {
@@ -338,15 +339,7 @@ const CourseSessionStatus = () => {
                                         </Grid>
                                     );
                                 })
-                                : <Grid
-                                    item
-                                    xs={12}>
-                                    <Paper className="info">
-                                        <Typography style={{"fontWeight": 700}}>
-                                        No Courses Yet!
-                                        </Typography>
-                                    </Paper>
-                                </Grid>
+                                : <NoListAlert list={"Course"}/>
                             }
                         </Grid>
                         <Grid item md={12} >

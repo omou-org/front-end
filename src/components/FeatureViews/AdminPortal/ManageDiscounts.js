@@ -1,5 +1,4 @@
-import React, {useState, useEffect, useMemo} from "react";
-
+import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import "./AdminPortal.scss";
@@ -13,6 +12,7 @@ import {DELETE, GET, PATCH} from "../../../actions/actionTypes";
 import Loading from "../../Loading";
 import {REQUEST_ALL} from "../../../actions/apiActions";
 import DiscountRow from "./DiscountRow";
+import {NoListAlert} from "../../NoListAlert";
 
 function ManageDiscounts() {
     const dispatch = useDispatch();
@@ -63,40 +63,49 @@ function ManageDiscounts() {
     };
 
     const displayDiscountType = (discountType, discountList) => {
-        return <Grid container>
-            <Grid item xs={12}>
-                <Typography variant={"h6"} align={"left"}>
-                    {discountTypeParser[discountType]}
-                </Typography>
-                <Grid container className={'accounts-table-heading'}>
-                    <Grid item xs={3} md={3}>
-                        <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
-                            Discount Name
-                        </Typography>
+        return <div className="discount-type-wrapper">
+            <Grid
+                container
+                key={discountType}>
+                <Grid item xs={12}>
+                    <Typography
+                        gutterBottom
+                        variant={"h6"}
+                        align={"left"}>
+                        {discountTypeParser[discountType]}
+                    </Typography>
+                    <Grid container className={'accounts-table-heading'}>
+                        <Grid item xs={3} md={3}>
+                            <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                                Discount Name
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={5} md={5}>
+                            <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                                Description
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={2} md={2}>
+                            <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
+                                Active
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={2} md={2}/>
                     </Grid>
-                    <Grid item xs={5} md={5}>
-                        <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
-                            Description
-                        </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container spacing={8} alignItems={"center"}>
+                        {
+                            // display discounts with name + description
+                            discountList.length > 0 ?
+                                discountList.map(discount =>
+                                    <DiscountRow discount={discount} type={discountType}/>) :
+                                <NoListAlert list={"Discounts"}/>
+                        }
                     </Grid>
-                    <Grid item xs={2} md={2}>
-                        <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
-                            Active
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={2} md={2}/>
                 </Grid>
             </Grid>
-            <Grid item xs={12}>
-                <Grid container spacing={8} alignItems={"center"}>
-                    {
-                        // display discounts with name + description
-                        discountList.map(discount =>
-                            <DiscountRow discount={discount} type={discountType}/>)
-                    }
-                </Grid>
-            </Grid>
-        </Grid>
+        </div>
     };
 
     return (

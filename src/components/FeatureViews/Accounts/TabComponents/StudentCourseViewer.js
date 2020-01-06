@@ -9,6 +9,7 @@ import Grid from "@material-ui/core/Grid";
 import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import {NoListAlert} from "../../../NoListAlert";
 
 const today = new Date();
 
@@ -205,15 +206,7 @@ const StudentCourseViewer = ({studentID, current = true}) => {
                                 </Grid>
                             );
                         })
-                        : <Grid
-                            item
-                            xs={12}>
-                            <Paper className="info">
-                                <Typography style={{"fontWeight": 700}}>
-                                    No Courses Yet!
-                                </Typography>
-                            </Paper>
-                          </Grid>
+                        : <NoListAlert list={"Course"}/>
                     }
                 </Grid>
             </Grid>
