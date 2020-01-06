@@ -7,7 +7,7 @@ import * as registrationActions from "../../../actions/registrationActions";
 import * as userActions from "../../../actions/userActions.js"
 import {connect, useDispatch, useSelector} from "react-redux";
 import {Tooltip, Typography} from "@material-ui/core";
-import {NavLink, withRouter} from "react-router-dom";
+import {NavLink, useParams, withRouter} from "react-router-dom";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import * as apiActions from "../../../actions/apiActions";
 import Button from "@material-ui/core/Button";
@@ -24,6 +24,7 @@ import Dialog from "@material-ui/core/Dialog";
 import {dayOfWeek} from "../../Form/FormUtils";
 import * as hooks from "actions/hooks";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
+import UnconfirmIcon from "@material-ui/icons/Cancel"
 
 function DisplaySessionView({course, session, handleToggleEditing}) {
     const dispatch = useDispatch();
@@ -35,6 +36,9 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
         }),
         [dispatch]
     );
+
+    const {instructor_id} = useParams();
+
     const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
     const categories = useSelector(({"Course": {CourseCategories}}) => CourseCategories);
     const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
@@ -74,7 +78,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
         }
     }
 
-    let instructor = course && instructors[course.instructor_id] ? instructors[course.instructor_id] : { name: "N/A" };
+    let instructor = course && instructors[instructor_id] ? instructors[instructor_id] : { name: "N/A" };
 
     const styles = (username) => ({
         "backgroundColor": stringToColor(username),
@@ -155,7 +159,9 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                     <Typography variant="h5">
                         Instructor
                         {
-                            session.is_confirmed && <ConfirmIcon/>
+                            session.is_confirmed ?
+                                <ConfirmIcon className="confirmed icon"/> :
+                                <UnconfirmIcon className="unconfirmed icon"/>
                         }
                     </Typography>
                         {
@@ -175,7 +181,12 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                     <Typography variant="h5"> Day(s)</Typography>
                     <Typography variant="body1">
                         {
-                            course && dayOfWeek[day]
+                            course && (dayOfWeek[day])
+                        }
+                    </Typography>
+                    <Typography>
+                        {
+                            new Date(session.start_datetime).toLocaleDateString()
                         }
                     </Typography>
                 </Grid>

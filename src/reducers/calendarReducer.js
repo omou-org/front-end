@@ -67,7 +67,7 @@ const getSessions = (state,{id,response}) => {
            CourseSessions = updateSessions(CourseSessions, data.instructor, data)
         });
     } else {
-        CourseSessions = updateSessions(CourseSessions, id, response.data)
+        CourseSessions = updateSessions(CourseSessions, response.data.instructor, response.data)
     }
 
     return {

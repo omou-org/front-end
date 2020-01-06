@@ -31,6 +31,7 @@ class SessionView extends Component {
     componentDidMount() {
         this.props.calendarActions.fetchSession({ id: this.props.match.params.session_id });
         this.props.apiActions.fetchCourses(this.props.match.params.course_id);
+        this.props.userActions.fetchInstructors();
         this.props.adminActions.fetchCategories();
     }
 
@@ -39,10 +40,8 @@ class SessionView extends Component {
             Object.keys(this.props.courseSessions).length !== 0 &&
             Object.entries(this.props.courses).length !== 0) {
             this.setState(() => {
-                const sessionData = Object.values(this.props.courseSessions).find((session) => {
-                    return Number(session.course) === Number(this.props.match.params.course_id) &&
-                        Number(session.id) === Number(this.props.match.params.session_id);
-                });
+                const {session_id, course_id, instructor_id} = this.props.match.params;
+                const sessionData = this.props.courseSessions[instructor_id][session_id];
                 sessionData["start"] = new Date(sessionData.start_datetime).getDay();
 
                 sessionData["startTime"] = new Date(sessionData.start_datetime)

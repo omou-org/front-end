@@ -125,7 +125,7 @@ class Scheduler extends Component {
         let allSessions = [];
         Object.values(sessionState).forEach((sessions) => {
             allSessions = allSessions.concat(Object.values(sessions).map(session =>{
-                let instructorName = this.props.courses[session.course] && this.props.instructors[this.props.courses[session.course].instructor_id].name;
+                let instructorName = this.props.courses[session.course] && this.props.instructors[session.instructor].name;
                 return {
                     id: session.id,
                     courseID: session.course,
@@ -136,7 +136,7 @@ class Scheduler extends Component {
                     start: new Date(session.start_datetime),
                     end: new Date(session.end_datetime),
                     instructor: instructorName,
-                    instructor_id: this.props.courses[session.course].instructor_id,
+                    instructor_id: session.instructor,
                     isConfirmed: session.is_confirmed,
                     color: stringToColor(instructorName),
                 };
@@ -490,7 +490,8 @@ class Scheduler extends Component {
     goToSessionView = (e) => {
         const sessionID = e.event.id;
         const courseID = e.event.extendedProps.courseID;
-        this.props.history.push(`/scheduler/view-session/${courseID}/${sessionID}`);
+        const instructorID = e.event.extendedProps.instructor_id;
+        this.props.history.push(`/scheduler/view-session/${courseID}/${sessionID}/${instructorID}`);
     };
 
     onInstructorSelect = event => {
