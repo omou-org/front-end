@@ -108,8 +108,10 @@ class Scheduler extends Component {
         }
 
         if (Object.entries(this.props.instructors).length !== 0 &&
-            JSON.stringify(prevProps.sessions) !== JSON.stringify(this.props.sessions)
+            (JSON.stringify(prevState.calendarEvents) !== JSON.stringify(this.state.calendarEvents) ||
+                JSON.stringify(prevState.calendarEvents) === "[]") && this.props.sessions
         ) {
+            console.log("setting sessions", console.log(this.props.sessions))
             const initialSessions = this.formatSessions(this.props.sessions, prevState);
             this.setState({
                 calendarEvents: initialSessions,
@@ -122,6 +124,7 @@ class Scheduler extends Component {
 
     componentWillUnmount() {
         // sessionStorage.setItem("schedulerState", JSON.stringify(this.state));
+        this.props.calendarActions.resetSchedulerStatus();
     }
 
     formatSessions = (sessions, timeShift) => {

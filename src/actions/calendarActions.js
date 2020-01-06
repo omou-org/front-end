@@ -42,3 +42,8 @@ export const patchSession = (id, data) => wrapPatch(
         data:data,
     }
 );
+
+export const resetSchedulerStatus = () => ({
+    type: types.RESET_SCHEDULER_STATUS,
+    payload: "",
+});

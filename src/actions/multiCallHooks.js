@@ -143,66 +143,67 @@ export const usePayment = (id) => {
 
     useEffect(()=>{
         let aborted = false;
+        if(id){
+            (async ()=>{
+                try {
 
-        (async ()=>{
-           try {
-
-                setStatus(REQUEST_STARTED);
-               const Payment = await instance.request({
-                   'url': `${paymentEndpoint}${id}/`,
-                   ...requestSettings,
-                   'method':'get',
-               });
-               Payment.type = "parent";
-
-               dispatch({
-                   type: types.GET_PAYMENT_SUCCESS,
-                   payload: Payment,
-               });
-               const ParentResponse = await instance.request({
-                   "url":`/account/parent/${Payment.data.parent}/`,
-                   ...requestSettings,
-                   "method":"get",
-               });
-               dispatch({
-                   type: types.FETCH_PARENT_SUCCESSFUL,
-                   payload: ParentResponse,
-               });
-
-               const studentIDs = Payment.data.registrations.map(registration => registration.enrollment_details.student);
-
-               // get students
-               const uniqueStudentIDs = [...new Set(studentIDs)];
-               const StudentResponses = await Promise.all(uniqueStudentIDs.map( studentID =>
-                   instance.request({
-                       'url':`/account/student/${studentID.toString()}/`,
-                       ...requestSettings,
-                       'method':'get',
-                   })
-               ));
-               StudentResponses.forEach(studentResponse => {
-                       dispatch({type: types.FETCH_STUDENT_SUCCESSFUL, payload: studentResponse})
-               });
-               // get courses
-               const courseIDs = Payment.data.registrations.map(registration => registration.enrollment_details.course);
-               const uniqueCourseIDs = [...new Set(courseIDs)];
-               const CourseResponses = await Promise.all(uniqueCourseIDs.map( courseID =>
-                    instance.request({
-                        "url": `/course/catalog/${courseID}/`,
+                    setStatus(REQUEST_STARTED);
+                    const Payment = await instance.request({
+                        'url': `${paymentEndpoint}${id}/`,
                         ...requestSettings,
                         'method':'get',
-                    })
-               ));
-               CourseResponses.forEach(courseResponse=> {
-                       dispatch({type:types.FETCH_COURSE_SUCCESSFUL, payload: courseResponse})
-               });
-               setStatus(200);
-           } catch (error){
-               if(!aborted){
-                   handleError(error)
-               }
-           }
-        })();
+                    });
+                    Payment.type = "parent";
+
+                    dispatch({
+                        type: types.GET_PAYMENT_SUCCESS,
+                        payload: Payment,
+                    });
+                    const ParentResponse = await instance.request({
+                        "url":`/account/parent/${Payment.data.parent}/`,
+                        ...requestSettings,
+                        "method":"get",
+                    });
+                    dispatch({
+                        type: types.FETCH_PARENT_SUCCESSFUL,
+                        payload: ParentResponse,
+                    });
+
+                    const studentIDs = Payment.data.registrations.map(registration => registration.enrollment_details.student);
+
+                    // get students
+                    const uniqueStudentIDs = [...new Set(studentIDs)];
+                    const StudentResponses = await Promise.all(uniqueStudentIDs.map( studentID =>
+                        instance.request({
+                            'url':`/account/student/${studentID.toString()}/`,
+                            ...requestSettings,
+                            'method':'get',
+                        })
+                    ));
+                    StudentResponses.forEach(studentResponse => {
+                        dispatch({type: types.FETCH_STUDENT_SUCCESSFUL, payload: studentResponse})
+                    });
+                    // get courses
+                    const courseIDs = Payment.data.registrations.map(registration => registration.enrollment_details.course);
+                    const uniqueCourseIDs = [...new Set(courseIDs)];
+                    const CourseResponses = await Promise.all(uniqueCourseIDs.map( courseID =>
+                        instance.request({
+                            "url": `/course/catalog/${courseID}/`,
+                            ...requestSettings,
+                            'method':'get',
+                        })
+                    ));
+                    CourseResponses.forEach(courseResponse=> {
+                        dispatch({type:types.FETCH_COURSE_SUCCESSFUL, payload: courseResponse})
+                    });
+                    setStatus(200);
+                } catch (error){
+                    if(!aborted){
+                        handleError(error)
+                    }
+                }
+            })();
+        }
     },[dispatch, requestSettings]);
     return status;
 };
