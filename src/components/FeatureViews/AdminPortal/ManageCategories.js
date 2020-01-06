@@ -12,7 +12,7 @@ import Paper from "@material-ui/core/Paper";
 import {withRouter} from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import {NoListAlert} from "../../NoListAlert";
-import {GET, POST} from "../../../actions/actionTypes";
+import {GET} from "../../../actions/actionTypes";
 import Loading from "../../Loading";
 
 function ManageCategories() {
@@ -33,18 +33,16 @@ function ManageCategories() {
     useEffect(()=>{
         api.fetchCategories();
     },[api]);
-
+    //, categoryStatus[GET], categoryStatus[POST]]
     useEffect(()=>{
-        if(categoryStatus[POST] === 201 ||
-            categoryStatus[GET] === 200 ||
-            categories.length > categoryList.length){
+        if(categories.length !== categoryList.length){
             let parsedCategoryList = categories.map((category)=>({
                             ...category,
                             editing: false,
                         }));
             setCategoryList(parsedCategoryList);
         }
-    }, [categories, categoryStatus[GET], categoryStatus[POST]]);
+    }, [categories]);
 
     const handleChange = (field) => (e) =>{
         switch(field){
