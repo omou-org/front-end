@@ -30,8 +30,8 @@ const ParentContact = ({parent_id}) => {
                 spacing={16}>
                 <Grid
                     item
-                    md={10}
-                    xs={12}>
+                    md={12}
+                    xs={10}>
                     <ProfileCard
                         route={`/accounts/parent/${parent_id}`}
                         user={parent} />

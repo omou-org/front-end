@@ -7,7 +7,7 @@ import * as registrationActions from "../../../actions/registrationActions";
 import {connect, useDispatch, useSelector} from "react-redux";
 import {Button, Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
-import {useLocation, useParams, withRouter} from "react-router-dom";
+import {Prompt, useLocation, useParams, withRouter} from "react-router-dom";
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 import {usePayment, useSubmitRegistration} from "../../../actions/multiCallHooks";
@@ -211,6 +211,10 @@ function RegistrationReceipt(props) {
                     <hr/>
                 </>
             }
+            <Prompt
+                when={currentPayingParent !== "none"}
+                message={"Remember to please close out the parent first!"}
+            />
             <Grid container
                   direction={"row"}
                   spacing={16}
@@ -336,7 +340,9 @@ function RegistrationReceipt(props) {
                         {
                             !location.pathname.includes("parent") &&
                             <Grid item>
-                                <Button onClick={handleCloseReceipt()} className={"button"}>
+                                <Button
+                                    onClick={handleCloseReceipt()}
+                                    className={"button primary"}>
                                     End Registration
                                 </Button>
                             </Grid>

@@ -55,7 +55,6 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
                 },
             });
         };
-        console.log("posting course")
         // request starting
         newAction(startType, {});
 
@@ -65,7 +64,6 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
                     "Authorization": `Token ${getState().auth.token}`,
                 },
             });
-            console.log(response);
             // successful request
             newAction(successType, response);
         } catch ({response}) {
@@ -207,7 +205,8 @@ export const formatCourse = (formCourse, type) =>{
     let startDate = new Date(formCourse["Start Date"]);
     let day = dayOfWeek();
     let endDate = new Date(startDate);
-    endDate = new Date(endDate.setDate(startDate.getDate() + 7*formCourse["Number of Weekly Sessions"]));
+    // 7 days * (number of sessions - 1) = because you can't count the first one
+    endDate = new Date(endDate.setDate(startDate.getDate() + 7*(formCourse["Number of Weekly Sessions"])-1));
     let dateFormat = {
         year:"numeric",
         month:"2-digit",
