@@ -12,6 +12,7 @@ import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 
 import * as calendarActions from "../../../actions/calendarActions";
 import * as courseActions from "../../../actions/apiActions";
+import {REQUEST_ALL} from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 // Material-Ui dependencies
 import Typography from "@material-ui/core/Typography";
@@ -34,6 +35,7 @@ import "./scheduler.scss";
 import SessionFilters from "./SessionFilters";
 import {BootstrapInput} from "./SchedulerUtils";
 import {Tooltip} from "@material-ui/core";
+import {GET} from "../../../actions/actionTypes";
 
 const styles = theme => ({
     root: {
@@ -91,7 +93,9 @@ class Scheduler extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(Object.keys(this.props.courses).length > 1 && this.props.sessions.length === 0){
+        if(this.props.requestStatus.course[GET][REQUEST_ALL] === 200 &&
+            !this.props.requestStatus.schedule[GET][REQUEST_ALL]
+        ){
             this.props.calendarActions.fetchSessions({
                 config: {
                     params: {
@@ -103,8 +107,7 @@ class Scheduler extends Component {
             });
         }
 
-        if (Object.keys(this.props.sessions).length !== 0 &&
-            Object.entries(this.props.instructors).length !== 0 &&
+        if (Object.entries(this.props.instructors).length !== 0 &&
             JSON.stringify(prevProps.sessions) !== JSON.stringify(this.props.sessions)
         ) {
             const initialSessions = this.formatSessions(this.props.sessions, prevState);

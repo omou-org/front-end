@@ -202,6 +202,11 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             return updatePaymentStatus(state, payload.id, status);
         case actions.GET_PAYMENT_STARTED:
             return updatePaymentStatus(state, payload.id, status);
+
+        case actions.GET_SESSIONS_SUCCESS:
+            return updateSessionStatus(state, payload.id, status);
+        case actions.GET_SESSIONS_STARTED:
+            return updateSessionStatus(state, payload.id, status);
         default:
             return state;
     }
@@ -354,3 +359,9 @@ const updatePaymentStatus = (state, paymentID, status) => {
     newState.payment[actions.GET][paymentID] = status;
     return newState;
 };
+
+const updateSessionStatus = (state, id, status) => {
+    let newState = JSON.parse(JSON.stringify(state));
+    newState.schedule[actions.GET][id] = status;
+    return newState;
+}
