@@ -260,8 +260,7 @@ class Accounts extends Component {
 
         if((this.props.requestStatus.instructor[GET][REQUEST_ALL] !== 200 ||
             this.props.requestStatus.student[GET][REQUEST_ALL] !== 200 ||
-            this.props.requestStatus.parent[GET][REQUEST_ALL] !== 200) &&
-            this.props.searchStatus
+            this.props.requestStatus.parent[GET][REQUEST_ALL] !== 200)
         ){
             return (<Loading/>)
         }

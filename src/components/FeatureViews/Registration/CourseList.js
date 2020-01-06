@@ -9,6 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
+import {DayConverter} from "../Accounts/TabComponents/CourseSessionStatus";
 
 const CourseList = (props) => {
     let filteredCourses = props.filteredCourses;
@@ -18,7 +19,7 @@ const CourseList = (props) => {
             end_date = new Date(course.schedule.end_date),
             start_time = course.schedule.start_time && course.schedule.start_time.substr(1),
             end_time = course.schedule.end_time && course.schedule.end_time.substr(1),
-            days = course.schedule.days;
+            days = DayConverter[new Date(course.schedule.start_date).getDay()];
         start_date = start_date && start_date.toDateString().substr(3);
         end_date = end_date && end_date.toDateString().substr(3);
         const date = `${start_date} - ${end_date}`,

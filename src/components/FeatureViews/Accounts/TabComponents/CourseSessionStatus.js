@@ -29,7 +29,7 @@ import PaymentTable from "./PaymentTable";
 import {NoListAlert} from "../../../NoListAlert";
 
 
-const DayConverter = {
+export const DayConverter = {
     "0": "Sunday",
     "1": "Monday",
     "2": "Tuesday",

@@ -27,6 +27,7 @@ import "./registration.scss";
 import {Link, Redirect, useRouteMatch} from "react-router-dom";
 import {stringToColor} from "components/FeatureViews/Accounts/accountUtils";
 import Loading from "../../Loading";
+import {DayConverter} from "../Accounts/TabComponents/CourseSessionStatus";
 
 const formatDate = (date) => {
     if (!date) {
@@ -197,7 +198,7 @@ const RegistrationCourse = () => {
                             <Typography
                                 align="left"
                                 className="text">
-                                {course.schedule.days}
+                                {DayConverter[new Date(startDay).getDay()]}
                             </Typography>
                             <Typography
                                 align="left"
