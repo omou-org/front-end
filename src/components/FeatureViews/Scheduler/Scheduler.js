@@ -245,22 +245,22 @@ class Scheduler extends Component {
                     <div class='title'><h3> ${info.event.title} </h3></div>
                     <div class="container">
                         <div class='clock'>
-                            <span class='clock_icon'>  
+                            <span class='clock_icon icn'>  
                                 ${formatDate(info.event.start, info.event.end)}
                             </span>
                         </div>
-                        <div class='pin_icon'>
+                        <div class='pin_icon icn'>
                             <span class=''>
                                 Session is ${info.event.extendedProps.is_confirmed? "NOT" : "IS"} confirmed
                             </span>
                         </div>
-                        <div class='teacher_icon'>
+                        <div class='teacher_icon icn'>
                             <span class=''>
                                     ${info.event.extendedProps.instructor ? 
                                         info.event.extendedProps.instructor : "No teacher Yet"}
                             </span>
                         </div>
-                        <div class='discription_icon'>
+                        <div class='discription_icon icn'>
                             <span class='description-text'>
                                 ${info.el.fcSeg.description ? 
                                         truncate(info.el.fcSeg.description) : "N/A"}

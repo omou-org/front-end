@@ -135,16 +135,18 @@ const Search = (props) => {
                 suggestions =props.search.courses;
             }
         }
+
         suggestions = suggestions.map(
             (data) => {
+                console.log(data);
                 if (data.user) {
                     return {
                         value: "account_" + data.account_type.toLowerCase() + "+" + data.user.first_name+" "+data.user.last_name + "-" + data.user.id,
                         label: data.user.first_name + " " + data.user.last_name,
                     }
-                } else if (data.course_id) {
+                } else if (data.course_type) {
                     return {
-                        value: "course_" + data.course_id + "-" + data.title,
+                        value: "course_" + data.id + "-" + data.subject,
                         label: data.subject,
                     }
                 } else {
@@ -155,9 +157,10 @@ const Search = (props) => {
                 }
             }
         );
-        if(newItem){
-            suggestions.push(newItem);
-        }
+        console.log(suggestions);
+        // if(newItem){
+        //     suggestions.push(newItem);
+        // }
         setSearchSuggestions(suggestions);
     };
 
@@ -200,7 +203,6 @@ const Search = (props) => {
                 break;
             }
             case SEARCH_COURSES:{
-                console.log(courseRequestConfig);
                 api.fetchSearchCourseQuery(courseRequestConfig);
                 api.fetchInstructors();
                 break;
@@ -291,7 +293,6 @@ const Search = (props) => {
                                 value={query}
                                 onChange={handleSearchChange()}
                                 onInputChange={handleInputChange()}
-                                // onCreateOption={handleInputChange()}
                                 components={{DropdownIndicator: renderSearchIcon}}
                             />
                         </Grid>

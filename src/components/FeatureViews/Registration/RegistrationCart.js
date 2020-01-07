@@ -101,77 +101,81 @@ function RegistrationCart(props) {
     const renderStudentRegistrations = () => {
         return Object.keys(props.registration.registered_courses).map((student_id) =>{
             let registrations = props.registration.registered_courses[student_id];
-            return props.studentAccounts[student_id] && <Grid container>
-                <Grid item xs={12}>
-                    <Typography variant={"h5"} align={"left"}>
-                        {props.studentAccounts[student_id].name}
-                    </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                    <Grid container className={'accounts-table-heading'}>
-                        <Grid item xs={1} md={1}> </Grid>
-                        <Grid item xs={3} md={3}>
-                            <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
-                                Course
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={3} md={3}>
-                            <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
-                                Dates
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={1} md={1}>
-                            <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
-                                Sessions
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={2} md={2}>
-                            <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
-                                Tuition
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={2} md={2}>
-                            <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
-                                Material Fee
-                            </Typography>
+            return props.studentAccounts[student_id] && <div className="student-cart-wrapper">
+                <Grid container>
+                    <Grid item xs={12}>
+                        <Typography
+                            gutterBottom
+                            variant={"h5"}
+                            align={"left"}>
+                            {props.studentAccounts[student_id].name}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Grid container className={'accounts-table-heading'}>
+                            <Grid item xs={1} md={1}> </Grid>
+                            <Grid item xs={3} md={3}>
+                                <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                                    Course
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={3} md={3}>
+                                <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                                    Dates
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={1} md={1}>
+                                <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
+                                    Sessions
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={2} md={2}>
+                                <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
+                                    Tuition
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={2} md={2}>
+                                <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
+                                    Material Fee
+                                </Typography>
+                            </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                    <Grid container >
-                        {
-                            registrations.map((registration) => {
-                                let course;
-                                if (registration.new_course){ //if tutoring
-                                    course = registration.new_course;
-                                } else {
-                                    course = props.courseList[registration.course_id];
-                                }
-                                if(course){
-                                    let dateOptions = {year: "numeric", month: "short", day: "numeric"};
-                                    let startDate = new Date(course.schedule.start_date),
-                                        endDate = new Date(course.schedule.end_date);
-                                    startDate = startDate.toLocaleDateString("en-US", dateOptions);
-                                    endDate = endDate.toLocaleDateString("en-US", dateOptions);
+                    <Grid item xs={12}>
+                        <Grid container>
+                            {
+                                registrations.map((registration) => {
+                                    let course;
+                                    if (registration.new_course){ //if tutoring
+                                        course = registration.new_course;
+                                    } else {
+                                        course = props.courseList[registration.course_id];
+                                    }
+                                    if(course){
+                                        let dateOptions = {year: "numeric", month: "short", day: "numeric"};
+                                        let startDate = new Date(course.schedule.start_date),
+                                            endDate = new Date(course.schedule.end_date);
+                                        startDate = startDate.toLocaleDateString("en-US", dateOptions);
+                                        endDate = endDate.toLocaleDateString("en-US", dateOptions);
 
-                                    return (<Grid item xs={12} md={12}>
-                                        <Paper square={true} >
-                                            <Grid container alignItems="center">
-                                                <Grid item xs={1} md={1}>
-                                                    <Checkbox checked={selectedCourses[student_id][registration.course_id].checked}
-                                                              onChange={handleCourseSelect(student_id, registration.course_id)}  />
-                                                </Grid>
-                                                <Grid item xs={3} md={3} >
-                                                    <Typography align={'left'}>
-                                                        {course.title}
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item xs={3} md={3}>
-                                                    <Typography align={'left'}>
-                                                        {startDate} - {endDate}
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item xs={1} md={1}>
+                                        return (<Grid item xs={12} md={12}>
+                                            <Paper square={true} >
+                                                <Grid container alignItems="center">
+                                                    <Grid item xs={1} md={1}>
+                                                        <Checkbox checked={selectedCourses[student_id][registration.course_id].checked}
+                                                                  onChange={handleCourseSelect(student_id, registration.course_id)}  />
+                                                    </Grid>
+                                                    <Grid item xs={3} md={3} >
+                                                        <Typography align={'left'}>
+                                                            {course.title}
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid item xs={3} md={3}>
+                                                        <Typography align={'left'}>
+                                                            {startDate} - {endDate}
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid item xs={1} md={1}>
                                                         {
                                                             !selectedCourses[student_id][registration.course_id].checked ?
                                                                 <Typography align={'center'}>
@@ -189,27 +193,28 @@ function RegistrationCart(props) {
                                                                     type="number"
                                                                     // className={classes.textField}
                                                                     InputLabelProps={{
-                                                                    shrink: true,
+                                                                        shrink: true,
                                                                     }}
                                                                     margin="normal"
                                                                     variant="outlined"
-                                                            />
+                                                                />
                                                         }
+                                                    </Grid>
+                                                    <Grid item xs={2} md={2}>
+                                                        <Typography align={'center'}>
+                                                            {course.tuition}
+                                                        </Typography>
+                                                    </Grid>
                                                 </Grid>
-                                                <Grid item xs={2} md={2}>
-                                                    <Typography align={'center'}>
-                                                        {course.tuition}
-                                                    </Typography>
-                                                </Grid>
-                                            </Grid>
-                                        </Paper>
-                                    </Grid>);
-                                }
-                            })
-                        }
+                                            </Paper>
+                                        </Grid>);
+                                    }
+                                })
+                            }
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
+            </div>
         });
     };
 

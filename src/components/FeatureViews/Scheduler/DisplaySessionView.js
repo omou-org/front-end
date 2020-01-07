@@ -114,7 +114,6 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
     let day = sessionStart.getDate() !== new Date().getDate() ?
         (session.start-1 >= 0 ? session.start-1 : 6) :
         session.start;
-
     return (<>
         <Grid className="session-view"
             container spacing={2} direction={"row"}>
@@ -235,15 +234,16 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                     Edit Session
                 </Button>
             </Grid>
-            {/*<Grid item>*/}
-            {/*    <Button*/}
-            {/*        className="button"*/}
-            {/*        color="secondary"*/}
-            {/*        onClick={handleEditToggle}*/}
-            {/*        variant="outlined">*/}
-            {/*        Delete*/}
-            {/*    </Button>*/}
-            {/*</Grid>*/}
+            <Grid item>
+                <Button
+                    className="button"
+                    color="secondary"
+                    component={NavLink}
+                    to={`/registration/course/${course.course_id}`}
+                    variant="outlined">
+                    Course Page
+                </Button>
+            </Grid>
             <Grid item>
                 <Button
                     className="button"

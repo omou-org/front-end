@@ -222,7 +222,7 @@ const SearchResults = (props) => {
                                     }
                                     {searchState.params.account.accountPage}
                                     {
-                                        accounts.length > 7 && <IconButton
+                                         <IconButton disabled={accounts.length > 7}
                                             className={"more"}
                                             onClick={displayResults("more", SEARCH_ACCOUNTS)}>
                                             <MoreResultsIcon />
@@ -243,7 +243,7 @@ const SearchResults = (props) => {
                                     </Grid>
                                 </Grid> : ""
                         }
-                        {accounts.length && searchState.primaryFilter !== SEARCH_ACCOUNTS? <hr /> : ""}
+                        {accounts.length && courses.length !== 0&&searchState.primaryFilter !== SEARCH_ACCOUNTS? <hr /> : ""}
                         {
                             searchState.primaryFilter !== SEARCH_ACCOUNTS ? <Grid item xs={12}>
                                 <Grid container
@@ -284,7 +284,7 @@ const SearchResults = (props) => {
                                 }
                                 {currentPage.course}
                                 {
-                                    courses.length > 7 && <IconButton
+                                     <IconButton disabled={courses.length > 7}
                                         className={"more"}
                                         onClick={displayResults("more", SEARCH_COURSES)}>
                                         <MoreResultsIcon />
