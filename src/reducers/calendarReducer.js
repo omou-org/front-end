@@ -1,6 +1,7 @@
 import initialState from './initialState';
 import * as actions from "../actions/actionTypes"
 import {REQUEST_ALL} from "../actions/apiActions";
+import {setHours} from 'date-fns';
 
 export default function Calendar(state = initialState.CalendarData, { payload, type, }) {
     let newState = state;
@@ -50,20 +51,18 @@ export default function Calendar(state = initialState.CalendarData, { payload, t
     }
 }
 
-const getSessions = (state,{id,response}) => {
-    const {data} = response;
-    if(id !== REQUEST_ALL){
-        let updatedState = {...state};
-        if(updatedState["CourseSessions"]){
-            updatedState["CourseSessions"].push(data);
-        } else {
-            updatedState["CourseSessions"] = [data];
-        }
-        return updatedState;
-    } else {
-        return {
-            ...state,
-            CourseSessions: data,
-        }
+const getSessions = (state, {response}) => {
+    let {data} = response;
+    if (!Array.isArray(data)) {
+        data = [data];
     }
-}
+    const notUpdated = state.CourseSessions.filter((session) =>
+        !data.find((sesh) => session.id === sesh.id));
+    return {
+        ...state,
+        "CourseSessions": [
+            ...notUpdated,
+            ...data,
+        ],
+    };
+};

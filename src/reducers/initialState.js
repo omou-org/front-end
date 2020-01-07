@@ -49,7 +49,7 @@ export default {
         "InstructorList": {},
     },
     "CalendarData": {
-        "CourseSessions": "",
+        "CourseSessions": [],
     },
     "RequestStatus": initRequests(),
     "SearchResults": {

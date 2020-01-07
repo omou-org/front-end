@@ -210,6 +210,18 @@ export const usePaymentByEnrollment = (enrollmentID) => wrapUseEndpoint(
     }
 );
 
+export const useSessionsToday = () => wrapUseEndpoint(
+    "/scheduler/session/",
+    types.GET_SESSIONS_SUCCESS,
+    {
+        "params": {
+            "time_frame": "day",
+            "view_option": "class",
+            "time_shift": 0,
+        },
+    }
+)();
+
 // Hook
 export function usePrevious(value) {
     // The ref object is a generic container whose current property is mutable ...
