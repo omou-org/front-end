@@ -24,6 +24,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import {MuiPickersUtilsProvider} from "material-ui-pickers";
 import Routes from "../Routes/rootRoutes";
 import NavBarRoutes from "../Routes/NavBarRoutes";
+import LoginPage from "../Authentication/LoginPage";
 
 const Navigation = (props) => {
     const {pathname} = useLocation();
@@ -138,12 +139,12 @@ const Navigation = (props) => {
 
                 }
                 {
-                    token && <main className="OmouMain">
+                    token ? <main className="OmouMain">
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <Routes />
                         </MuiPickersUtilsProvider>
                     </main>
-                        // : <LoginPage/>
+                        : <LoginPage/>
                 }
 
             </div>
