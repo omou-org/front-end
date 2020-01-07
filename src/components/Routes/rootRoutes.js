@@ -37,7 +37,7 @@ function rootRoutes(props) {
             <ProtectedRoute
                 exact
                 path="/"
-                render={(passedProps) => <Accounts {...passedProps} />} />
+                render={(passedProps) => <Scheduler {...passedProps} />} />
 
             <ProtectedRoute
                 exact
@@ -48,7 +48,7 @@ function rootRoutes(props) {
                 exact path="/scheduler"
                 render={(passedProps) => <Scheduler {...passedProps} />} />
             <Route
-                path="/scheduler/view-session/:course_id/:session_id"
+                path="/scheduler/view-session/:course_id/:session_id/:instructor_id"
                 render={(passedProps) => <SessionView {...passedProps} />} />
             <ProtectedRoute
                 exact

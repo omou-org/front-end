@@ -4,8 +4,6 @@ import {addDashes} from "components/FeatureViews/Accounts/accountUtils";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 import {useSelector} from "react-redux";
-
-import DownArrow from "@material-ui/icons/KeyboardArrowDown";
 import EditIcon from "@material-ui/icons/Edit";
 import EmailIcon from "@material-ui/icons/Email";
 import LinearProgress from "@material-ui/core/LinearProgress";
@@ -17,10 +15,10 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
-import UpArrow from "@material-ui/icons/KeyboardArrowUp";
 
 import "theme/theme.scss";
 import "./registration.scss";
+import {IconButton} from "@material-ui/core";
 
 
 const TableToolbar = (
@@ -175,13 +173,17 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                                                             <EmailIcon />
                                                         </a>
                                                 }
-                                                <span><EditIcon /></span>
                                                 <span>
-                                                    {expanded[studentID]
-                                                        ? <UpArrow onClick={toggleExpanded(studentID)} />
-                                                        : <DownArrow onClick={toggleExpanded(studentID)} />
-                                                    }
+                                                    <IconButton>
+                                                        <EditIcon />
+                                                    </IconButton>
                                                 </span>
+                                                {/*<span>*/}
+                                                {/*    {expanded[studentID]*/}
+                                                {/*        ? <UpArrow onClick={toggleExpanded(studentID)} />*/}
+                                                {/*        : <DownArrow onClick={toggleExpanded(studentID)} />*/}
+                                                {/*    }*/}
+                                                {/*</span>*/}
                                             </div>
                                         </TableCell>
                                     </TableRow>

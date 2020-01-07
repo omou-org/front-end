@@ -1,14 +1,11 @@
 // React Imports
-import React, {useState, useEffect, useMemo} from "react";
-import {useHistory} from "react-router-dom";
+import React, {useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import PropTypes from "prop-types";
-
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/es/Typography/Typography";
-
 // Local Component Imports
 import "./Form.scss"
 import TextField from "@material-ui/core/es/TextField/TextField";
@@ -341,7 +338,7 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
                                     disabled={!validFields}
                                     onClick={onUpdateFields}
                                 >
-                                    Update Fields
+                                    Finalize Course Settings
                                 </Button>
                             </Grid>
                         </Grid>

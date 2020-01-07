@@ -1,5 +1,4 @@
-import React, {useState, useEffect, useMemo} from "react";
-
+import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
@@ -8,7 +7,7 @@ import * as registrationActions from "../../../actions/registrationActions";
 import * as userActions from "../../../actions/userActions.js"
 import {connect, useDispatch, useSelector} from "react-redux";
 import {Tooltip, Typography} from "@material-ui/core";
-import {NavLink, withRouter} from "react-router-dom";
+import {NavLink, useParams, withRouter} from "react-router-dom";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import * as apiActions from "../../../actions/apiActions";
 import Button from "@material-ui/core/Button";
@@ -24,6 +23,9 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 import {dayOfWeek} from "../../Form/FormUtils";
 import * as hooks from "actions/hooks";
+import ConfirmIcon from "@material-ui/icons/CheckCircle";
+import UnconfirmIcon from "@material-ui/icons/Cancel";
+import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 
 function DisplaySessionView({course, session, handleToggleEditing}) {
     const dispatch = useDispatch();
@@ -35,6 +37,9 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
         }),
         [dispatch]
     );
+
+    const {instructor_id} = useParams();
+
     const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
     const categories = useSelector(({"Course": {CourseCategories}}) => CourseCategories);
     const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
@@ -42,7 +47,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
 
     const [enrolledStudents, setEnrolledStudents] = useState(false);
     const [edit, setEdit] = useState(false);
-    const [editSelection, setEditSelection] = useState('current');
+    const [editSelection, setEditSelection] = useState(EDIT_CURRENT_SESSION);
 
     useEffect(()=>{
         api.initializeRegistration();
@@ -74,7 +79,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
         }
     }
 
-    let instructor = course && instructors[course.instructor_id] ? instructors[course.instructor_id] : { name: "N/A" };
+    let instructor = course && instructors[instructor_id] ? instructors[instructor_id] : { name: "N/A" };
 
     const styles = (username) => ({
         "backgroundColor": stringToColor(username),
@@ -87,19 +92,13 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
 
     const studentKeys = Object.keys(enrolledStudents);
 
-    const currentAllInverse = {
-        "current": "all",
-        "all":"current",
-    };
-
     const handleEditToggle = (cancel) => event =>{
         event.preventDefault();
-        if(!cancel){
+        if(!cancel && edit){
             // if we're applying to edit session then toggle to edit view
             handleToggleEditing(editSelection);
         } else {
             setEdit(!edit);
-            setEditSelection(currentAllInverse[editSelection]);
         }
     };
 
@@ -152,7 +151,14 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <Typography variant="h5"> Instructor </Typography>
+                    <Typography variant="h5">
+                        Instructor
+                        {
+                            session.is_confirmed ?
+                                <ConfirmIcon className="confirmed course-icon"/> :
+                                <UnconfirmIcon className="unconfirmed course-icon"/>
+                        }
+                    </Typography>
                         {
                             course &&
                             <NavLink to={`/accounts/instructor/${instructor.user_id}`}
@@ -170,7 +176,12 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                     <Typography variant="h5"> Day(s)</Typography>
                     <Typography variant="body1">
                         {
-                            course && dayOfWeek[day]
+                            course && (dayOfWeek[day])
+                        }
+                    </Typography>
+                    <Typography>
+                        {
+                            new Date(session.start_datetime).toLocaleDateString()
                         }
                     </Typography>
                 </Grid>
@@ -264,12 +275,12 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                         control={<Radio color="primary" />}
                         label="This Session"
                         labelPlacement="end"
-                        value="current" />
+                        value={EDIT_CURRENT_SESSION} />
                     <FormControlLabel
                         control={<Radio color="primary" />}
                         label="All Sessions"
                         labelPlacement="end"
-                        value="all" />
+                        value={EDIT_ALL_SESSIONS} />
                 </RadioGroup>
             </DialogContent>
             <DialogActions>

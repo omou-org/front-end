@@ -455,7 +455,11 @@
     }
 
     .second-line {
-      margin-left: 2%;
+      .course-icon{
+        margin-left:0;
+        margin-bottom:-6px;
+      }
+
       text-align: left;
 
       .text, .chip {
@@ -621,8 +625,24 @@
 }
 
 // Registration Parent Styling
-.select-parent-search-wrapper.active{
-  height:150px;
+.select-parent-search-wrapper {
+  &.active {
+    animation-name: expandHeight;
+    animation-duration: 1s;
+    height: 150px;
+  }
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes expandHeight {
+  from {height: 0;}
+  to {height: 150px;}
+}
+
+/* Standard syntax */
+@keyframes expandHeight {
+  from {height: 0;}
+  to {height: 150px;}
 }
 
 .select-parent-dialog{

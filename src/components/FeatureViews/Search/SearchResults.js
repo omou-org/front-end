@@ -181,7 +181,7 @@ const SearchResults = (props) => {
                                     </Typography>
                                 </Grid>
                                 {
-                                    (courses.length > 0 && searchState.primaryFilter === SEARCH_ALL) &&
+                                    (accounts.length > 0 && searchState.primaryFilter === SEARCH_ALL) &&
                                     <Grid item >
                                         <Chip label="See All Accounts"
                                               className="searchChip"

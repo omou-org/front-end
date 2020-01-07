@@ -1,5 +1,5 @@
 import * as types from './actionTypes';
-import {wrapGet, wrapPatch} from "./apiActions";
+import {instance, REQUEST_ALL, wrapGet, wrapPatch} from "./apiActions";
 
 export function fetchTeacherAvailabilities(event){
 
@@ -17,7 +17,7 @@ export function filterEvent(event) {
     return { type: types.FILTER_EVENT, payload: event }
 }
 
-export const fetchSessions = ({config, id}) => wrapGet(
+export const fetchSession = ({config, id}) => wrapGet(
     "/scheduler/session/",
     [
         types.GET_SESSIONS_STARTED,
@@ -42,3 +42,65 @@ export const patchSession = (id, data) => wrapPatch(
         data:data,
     }
 );
+
+export const resetSchedulerStatus = () => ({
+    type: types.RESET_SCHEDULER_STATUS,
+    payload: "",
+});
+
+export const fetchAllSessions = ({config, id}) => {
+    return (dispatch, getState) => new Promise((resolve) =>{
+        dispatch({
+            type:types.GET_SESSIONS_STARTED,
+            payload:1,
+        });
+        resolve();
+    }).then(()=>{
+        // fetch courses
+        instance.request({
+            "headers":{
+                "Authorization": `Token ${getState().auth.token}`,
+            },
+            "method":"get",
+            "url":"/course/catalog/"
+        }).then((courseResponse)=>{
+            dispatch({
+                type: types.FETCH_COURSE_SUCCESSFUL,
+                payload:{id:REQUEST_ALL, response: courseResponse}
+            });
+
+            instance.request({
+                "headers":{
+                    "Authorization": `Token ${getState().auth.token}`,
+                },
+                "method":"get",
+                "url":"/account/instructor/"
+            }).then((instructorResponse) =>{
+                dispatch({
+                    type: types.FETCH_INSTRUCTOR_SUCCESSFUL,
+                    payload:{id:REQUEST_ALL, response: instructorResponse}
+                });
+                instance.request({
+                    "headers":{
+                        "Authorization": `Token ${getState().auth.token}`,
+                    },
+                    "method":"get",
+                    "url":`/scheduler/session/`,
+                    ...config,
+                }).then((sessionResponse)=>{
+                    dispatch({
+                        type: types.GET_SESSIONS_SUCCESS,
+                        payload:{id: REQUEST_ALL, response: sessionResponse}
+                    }, (error)=>{
+                        dispatch({type: types.GET_SESSIONS_FAILED, payload: error })
+                    })
+                })
+            },(error)=>{
+                dispatch({type: types.FETCH_INSTRUCTOR_FAILED, payload: error})
+            })
+        },(error)=>{
+            dispatch({type: types.FETCH_COURSE_FAILED, payload: error})
+        })
+    })
+    
+}

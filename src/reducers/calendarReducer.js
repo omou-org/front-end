@@ -40,6 +40,11 @@ export default function Calendar(state = initialState.CalendarData, { payload, t
 
 
             return newState;
+        case actions.GET_SESSIONS_STARTED:
+            return {
+                ...state,
+                CourseSessions: {},
+            };
         case actions.GET_SESSIONS_SUCCESS:
             // console.log("Succeeded", payload)
             return getSessions(state, payload);
@@ -51,18 +56,31 @@ export default function Calendar(state = initialState.CalendarData, { payload, t
     }
 }
 
-const getSessions = (state, {response}) => {
-    let {data} = response;
-    if (!Array.isArray(data)) {
-        data = [data];
+const getSessions = (state,{id,response}) => {
+    const {data} = response;
+    let {CourseSessions} = state;
+    if(id === REQUEST_ALL){
+        data.forEach((session) => {
+            CourseSessions = updateSessions(CourseSessions, session.instructor, session)
+        });
+    } else if (Array.isArray(id)){
+        response.forEach(({data}) => {
+           CourseSessions = updateSessions(CourseSessions, data.instructor, data)
+        });
+    } else {
+        CourseSessions = updateSessions(CourseSessions, response.data.instructor, response.data)
     }
-    const notUpdated = state.CourseSessions.filter((session) =>
-        !data.find((sesh) => session.id === sesh.id));
+
     return {
         ...state,
-        "CourseSessions": [
-            ...notUpdated,
-            ...data,
-        ],
-    };
+        CourseSessions,
+    }
 };
+
+const updateSessions = (sessions, instructorID, session) => ({
+    ...sessions,
+    [instructorID]:{
+        ...sessions[instructorID],
+        [session.id]: session,
+    }
+});

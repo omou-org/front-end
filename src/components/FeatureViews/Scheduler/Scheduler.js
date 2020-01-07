@@ -12,7 +12,6 @@ import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 
 import * as calendarActions from "../../../actions/calendarActions";
 import * as courseActions from "../../../actions/apiActions";
-import {REQUEST_ALL} from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 // Material-Ui dependencies
 import Typography from "@material-ui/core/Typography";
@@ -35,7 +34,7 @@ import "./scheduler.scss";
 import SessionFilters from "./SessionFilters";
 import {BootstrapInput} from "./SchedulerUtils";
 import {Tooltip} from "@material-ui/core";
-import {GET} from "../../../actions/actionTypes";
+import {arr_diff} from "../../Form/FormUtils";
 
 const styles = theme => ({
     root: {
@@ -49,6 +48,18 @@ const styles = theme => ({
         fontSize: 18,
     },
 });
+
+/*** @description: This is for transforming instructor organized redux to an array of sessions
+ * @param sessions
+ * @returns {unknown[]}
+ */
+const sessionArray = (sessions) => {
+    return sessions.length > 0 && Object.values(sessions)
+        .map(instructorSessions => Object.values(instructorSessions))
+        .reduce((allSessions, instructorSessions) => {
+            return allSessions.concat(instructorSessions);
+        });
+}
 
 class Scheduler extends Component {
     constructor(props) {
@@ -69,6 +80,8 @@ class Scheduler extends Component {
             "timeShift": 0,
             "instructorFilter": "",
             "instructorOptions": [],
+            "courseFilter": "",
+            "courseOptions": [],
             "sessionFilter": false,
             "sessionFilterAnchor": null,
         };
@@ -84,8 +97,18 @@ class Scheduler extends Component {
 
 
     componentDidMount() {
-        this.props.courseActions.fetchCourses();
-        this.props.userActions.fetchInstructors();
+        // this.props.courseActions.fetchCourses();
+        // this.props.userActions.fetchInstructors();
+        this.props.calendarActions.fetchAllSessions({
+            config: {
+                params: {
+                    time_frame: "day",
+                    view_option: "tutoring",
+                    time_shift: 0,
+                }
+            },
+            id: ""
+        });
         this.setState({
             "currentDate": this.currentDate(),
         });
@@ -93,57 +116,49 @@ class Scheduler extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(this.props.requestStatus.course[GET][REQUEST_ALL] === 200 &&
-            !this.props.requestStatus.schedule[GET][REQUEST_ALL]
-        ){
-            this.props.calendarActions.fetchSessions({
-                config: {
-                    params: {
-                        time_frame: "day",
-                        view_option: "tutoring",
-                        time_shift: this.state.timeShift,
-                    }
-                }
-            });
-        }
-
-        if (Object.entries(this.props.instructors).length !== 0 &&
-            JSON.stringify(prevProps.sessions) !== JSON.stringify(this.props.sessions)
-        ) {
-            const initialSessions = this.formatSessions(this.props.sessions, prevState);
+        if (JSON.stringify(prevProps.sessions) !== JSON.stringify(this.props.sessions) ) {
+            const initialSessions = this.formatSessions(this.props.sessions);
+            const courseSessionsArray =  sessionArray(this.props.sessions);
             this.setState({
                 calendarEvents: initialSessions,
                 instructorOptions: Object.entries(this.props.instructors).map(
                     ([instructorID, instructor])=>
-                        ({ value:instructorID, label: instructor.name }))
+                        ({ value:Number(instructorID), label: instructor.name })),
+                courseOptions: courseSessionsArray && [...new Set(courseSessionsArray.map(session => session.course))].map(
+                    (courseID) =>
+                        ({value: Number(courseID), label: this.props.courses[Number(courseID)].title})
+                )
             });
         }
     }
 
     componentWillUnmount() {
         // sessionStorage.setItem("schedulerState", JSON.stringify(this.state));
+        this.props.calendarActions.resetSchedulerStatus();
     }
 
-    formatSessions = (sessions, timeShift) => {
-        return sessions.map((session) => {
-            let instructorName = this.props.courses[session.course] && this.props.instructors[this.props.courses[session.course].instructor_id].name;
-            return {
-                id: session.id,
-                courseID: session.course,
-                title: this.props.courses[session.course].title,
-                description: session.description ? session.description : "",
-                type: this.props.courses[session.course].type,
-                resourceId: this.props.courses[session.course_id] ? this.props.courses[session.course_id].room_id : 1,
-                // start: startTime,
-                // end: endTime,
-                start: new Date(session.start_datetime),
-                end: new Date(session.end_datetime),
-                instructor: instructorName,
-                instructor_id: this.props.courses[session.course].instructor_id,
-                isConfirmed: session.is_confirmed,
-                color: stringToColor(instructorName),
-            };
+    formatSessions = (sessionState) => {
+        let allSessions = [];
+        Object.values(sessionState).forEach((sessions) => {
+            allSessions = allSessions.concat(Object.values(sessions).map(session =>{
+                let instructorName = this.props.courses[session.course] && this.props.instructors[session.instructor].name;
+                return {
+                    id: session.id,
+                    courseID: session.course,
+                    title: this.props.courses[session.course].title,
+                    description: session.description ? session.description : "",
+                    type: this.props.courses[session.course].type,
+                    resourceId: this.props.courses[session.course_id] ? this.props.courses[session.course_id].room_id : 1,
+                    start: new Date(session.start_datetime),
+                    end: new Date(session.end_datetime),
+                    instructor: instructorName,
+                    instructor_id: session.instructor,
+                    isConfirmed: session.is_confirmed,
+                    color: stringToColor(instructorName),
+                };
+            }));
         });
+        return allSessions;
     };
 
     getInstructorSchedule = () => {
@@ -229,10 +244,28 @@ class Scheduler extends Component {
                 <div class="toolTip">
                     <div class='title'><h3> ${info.event.title} </h3></div>
                     <div class="container">
-                        <div class='clock'><span class='clock_icon'>  ${formatDate(info.event.start, info.event.end)}</span></div>
-                        <div class='pin_icon'><span class=''>Room # ${info.el.fcSeg.room_id}</span></div>
-                        <div class='teacher_icon'><span class=''>${info.event.extendedProps.instructor ? info.event.extendedProps.instructor : "No teacher Yet"}</span></div>
-                        <div class='discription_icon'><span class='description-text'>${info.el.fcSeg.description && truncate(info.el.fcSeg.description)}</span></div>
+                        <div class='clock'>
+                            <span class='clock_icon'>  
+                                ${formatDate(info.event.start, info.event.end)}
+                            </span>
+                        </div>
+                        <div class='pin_icon'>
+                            <span class=''>
+                                Session is ${info.event.extendedProps.is_confirmed? "NOT" : "IS"} confirmed
+                            </span>
+                        </div>
+                        <div class='teacher_icon'>
+                            <span class=''>
+                                    ${info.event.extendedProps.instructor ? 
+                                        info.event.extendedProps.instructor : "No teacher Yet"}
+                            </span>
+                        </div>
+                        <div class='discription_icon'>
+                            <span class='description-text'>
+                                ${info.el.fcSeg.description ? 
+                                        truncate(info.el.fcSeg.description) : "N/A"}
+                            </span>
+                        </div>
                     </div>
                 </div>
             `
@@ -266,7 +299,7 @@ class Scheduler extends Component {
         let date = this.currentDate();
         calendarApi.today();
         this.setState(() => {
-            this.props.calendarActions.fetchSessions({
+            this.props.calendarActions.fetchSession({
                 config: {
                     params: {
                         time_frame: filter,
@@ -287,7 +320,7 @@ class Scheduler extends Component {
         let calendarApi = this.calendarComponentRef.current.getApi();
         calendarApi.next();
         let date = this.currentDate();
-        this.props.calendarActions.fetchSessions({
+        this.props.calendarActions.fetchSession({
             config: {
                 params: {
                     time_frame: this.calendarViewToFilterVal[this.state.viewValue],
@@ -308,7 +341,7 @@ class Scheduler extends Component {
         let calendarApi = this.calendarComponentRef.current.getApi();
         calendarApi.prev();
         let date = this.currentDate();
-        this.props.calendarActions.fetchSessions({
+        this.props.calendarActions.fetchSession({
             config: {
                 params: {
                     time_frame: this.calendarViewToFilterVal[this.state.viewValue],
@@ -329,7 +362,7 @@ class Scheduler extends Component {
         let calendarApi = this.calendarComponentRef.current.getApi();
         calendarApi.today();
         const date = this.currentDate();
-        this.props.calendarActions.fetchSessions({
+        this.props.calendarActions.fetchSession({
             config: {
                 params: {
                     time_frame: this.calendarViewToFilterVal[this.state.viewValue],
@@ -428,7 +461,7 @@ class Scheduler extends Component {
         if (event.target.value) {
             this.setState(()=>{
                 // console.log(this.calendarViewToFilterVal[this.state.viewValue], this.viewOptions[event.target.value], this.state.timeShift);
-                this.props.calendarActions.fetchSessions({
+                this.props.calendarActions.fetchSession({
                     config: {
                         params: {
                             time_frame: this.calendarViewToFilterVal[this.state.viewValue],
@@ -491,22 +524,55 @@ class Scheduler extends Component {
     goToSessionView = (e) => {
         const sessionID = e.event.id;
         const courseID = e.event.extendedProps.courseID;
-        this.props.history.push(`/scheduler/view-session/${courseID}/${sessionID}`);
+        const instructorID = e.event.extendedProps.instructor_id;
+        this.props.history.push(`/scheduler/view-session/${courseID}/${sessionID}/${instructorID}`);
     };
 
     onInstructorSelect = event => {
         this.setState(()=>{
-            let filteredEvents = event && event.length > 0 ? this.props.sessions.filter(
-                session => {
-                    let instructor = this.props.courses[session.course].instructor_id;
-                    return event.map(event => Number(event.value))
-                        .includes(instructor);
-                }
-            ) : this.props.sessions;
+            const selectedInstructorIDs = event && event.map(instructor => instructor.value);
+            const calendarInstructorIDs = Object.keys(this.props.sessions);
+            const nonSelectedInstructors = event ? arr_diff(selectedInstructorIDs,calendarInstructorIDs) : []
 
+            let filteredEvents = JSON.parse(JSON.stringify(this.props.sessions));
+            if(event && event.length > 0 && nonSelectedInstructors.length > 0){
+                nonSelectedInstructors
+                    .forEach( (instructorID) => delete filteredEvents[Number(instructorID)])
+            } else {
+                filteredEvents = this.props.sessions;
+            }
             return {
                 "instructorFilter": event,
                 "calendarEvents": this.formatSessions(filteredEvents, this.state.timeShift),
+            }
+        });
+    };
+
+    onCourseSelect = event => {
+        console.log(event, "selected course")
+        this.setState(()=>{
+            const courseSessionsArray = sessionArray(this.props.sessions);
+           const selectedCourseIDs = event && event.map(course => course.value);
+           const calendarCourseIDs = [...new Set(courseSessionsArray.map(session => session.course))];
+           const nonSelectedCourseIDs = event ? arr_diff(selectedCourseIDs, calendarCourseIDs): [];
+
+           let filteredEvents = JSON.parse(JSON.stringify(this.props.sessions));
+           if(event && event.length > 0 && nonSelectedCourseIDs.length > 0){
+               nonSelectedCourseIDs
+                   .forEach((courseID) => {
+                      courseSessionsArray.forEach(session => {
+                          if(session.course === courseID){
+                              delete filteredEvents[session.instructor][session.id]
+                          }
+                      });
+                   });
+           } else {
+               filteredEvents = this.props.sessions;
+           }
+           console.log(filteredEvents);
+            return {
+               "courseFilter": event,
+                "calendarEvents": this.formatSessions(filteredEvents),
             }
         });
     };
@@ -620,6 +686,9 @@ class Scheduler extends Component {
                                             InstructorValue = { this.state.instructorFilter }
                                             InstructorOptions={ this.state.instructorOptions }
                                             onInstructorSelect = {this.onInstructorSelect }
+                                            CourseValue = {this.state.courseFilter}
+                                            CourseOptions = {this.state.courseOptions}
+                                            onCourseSelect = {this.onCourseSelect}
                                         />
                                     </Grid>
                                 </Grid>
@@ -647,14 +716,14 @@ class Scheduler extends Component {
                                       direction={"row"}
                                       justify={"flex-end"}
                                       className="scheduler-header-last">
-                                    <Grid item xs={5}>
+                                    <Grid item xs={3}>
                                         <Tooltip title={"Go to Today"}>
                                             <IconButton onClick={this.goToToday} className={"current-date-button"} aria-label='current-date-button'>
                                                 <TodayIcon />
                                             </IconButton>
                                         </Tooltip>
                                     </Grid>
-                                    <Grid item xs={7}>
+                                    <Grid item xs={9}>
                                         <FormControl className={"filter-select"} >
                                             <Select
                                                 input={
@@ -706,6 +775,7 @@ class Scheduler extends Component {
                                     },
                                 },
                             }}
+                            minTime={"07:00:00"}
                             timeZone={"local"}
                             eventMouseEnter={!this.state.resourceIcon && this.handleToolTip}
                             eventClick={this.goToSessionView}

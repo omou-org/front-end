@@ -1,9 +1,7 @@
 import * as types from "./actionTypes";
 
 import axios from "axios";
-import {POST_COURSE_SUCCESSFUL} from "./actionTypes";
 import {typeToPostActions} from "./rootActions";
-import {fetchCategories} from "./adminActions";
 import {academicLevelParse} from "../reducers/registrationReducer";
 
 export const instance = axios.create({
@@ -57,7 +55,6 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
                 },
             });
         };
-        console.log("posting course")
         // request starting
         newAction(startType, {});
 
@@ -67,7 +64,6 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
                     "Authorization": `Token ${getState().auth.token}`,
                 },
             });
-            console.log(response);
             // successful request
             newAction(successType, response);
         } catch ({response}) {
@@ -187,7 +183,7 @@ export const durationParser = {
 };
 
 export const formatCourse = (formCourse, type) =>{
-    console.log(formCourse)
+    console.log(formCourse);
     let dayOfWeek = ()=>{
         switch(startDate.getDay()){
             case 0:
@@ -209,7 +205,8 @@ export const formatCourse = (formCourse, type) =>{
     let startDate = new Date(formCourse["Start Date"]);
     let day = dayOfWeek();
     let endDate = new Date(startDate);
-    endDate = new Date(endDate.setDate(startDate.getDate() + 7*formCourse["Number of Weekly Sessions"]));
+    // 7 days * (number of sessions - 1) = because you can't count the first one
+    endDate = new Date(endDate.setDate(startDate.getDate() + 7*(formCourse["Number of Weekly Sessions"])-1));
     let dateFormat = {
         year:"numeric",
         month:"2-digit",
@@ -249,6 +246,7 @@ export const formatCourse = (formCourse, type) =>{
         "max_capacity": formCourse["Capacity"],
         "course_category": formCourse["Category"].value,
         "academic_level": academicLevelParse[formCourse["Grade Level"]],
+        "is_confirmed": formCourse["Did instructor confirm?"] === "Yes, Instructor Confirm",
     };
 };
 
@@ -256,7 +254,7 @@ const courseName = (form, type) => {
     if(type === "T"){
         return "1:1 " + form["Instructor"].value + form[""]
     }
-}
+};
 
 export const parseTime = (time) =>{
     let formattedTime;
@@ -269,4 +267,4 @@ export const parseTime = (time) =>{
         formattedTime = time;
     }
     return formattedTime;
-}
+};

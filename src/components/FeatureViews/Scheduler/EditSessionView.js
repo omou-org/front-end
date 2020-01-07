@@ -1,5 +1,4 @@
-import React, {useState, useEffect, useMemo} from "react";
-
+import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
@@ -7,17 +6,20 @@ import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import * as calendarActions from "../../../actions/calendarActions";
 import * as userActions from "../../../actions/userActions.js"
-import { useDispatch, useSelector} from "react-redux";
-import {Typography} from "@material-ui/core";
-import {withRouter} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {FormControl, Typography} from "@material-ui/core";
+import {useHistory, withRouter} from "react-router-dom";
 import * as apiActions from "../../../actions/apiActions";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import {DatePicker, TimePicker} from "material-ui-pickers";
 import SearchSelect from "react-select";
-import {useHistory} from "react-router-dom"
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 
-function EditSessionView({course, session}) {
+function EditSessionView({course, session, editSelection}) {
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -32,9 +34,11 @@ function EditSessionView({course, session}) {
 
     const [sessionFields, setSessionFields] = useState({
         start_time:"",
+        instructor:"",
         end_time:"",
         title:"",
         category:"",
+        is_confirmed:"",
     });
 
     useEffect(()=>{
@@ -54,11 +58,13 @@ function EditSessionView({course, session}) {
             let category = categories.find(category => category.id === course.category);
 
             setSessionFields({
-                category: {value: category.id, label: category.name} ,
+                category: {value: category.id, label: category.name},
+                instructor: {value: session.instructor, label: instructors[session.instructor].name},
                 start_time: session.start_datetime,
                 end_time: session.end_datetime,
                 duration: durationHours,
                 title: course.title,
+                is_confirmed: session.is_confirmed,
             });
         }
     }, [course,session]);
@@ -88,6 +94,13 @@ function EditSessionView({course, session}) {
         });
     };
 
+    const handleInstructorChange = event => {
+        setSessionFields({
+            ...sessionFields,
+            instructor: event,
+        });
+    };
+
     const handleTextChange = (field) => event => {
         setSessionFields({
             ...sessionFields,
@@ -97,20 +110,50 @@ function EditSessionView({course, session}) {
 
     const updateSession = event => {
         event.preventDefault();
-        let {start_time, end_time} = sessionFields;
-        let patchedSession = {
-            start_datetime: start_time.toISOString(),
-            end_datetime: end_time.toISOString(),
-        };
-        api.patchSession(session.id, patchedSession);
+        let {start_time, end_time, is_confirmed, instructor} = sessionFields;
+        if(editSelection === EDIT_CURRENT_SESSION){
+            let patchedSession = {
+                start_datetime: start_time.toISOString(),
+                end_datetime: end_time.toISOString(),
+                is_confirmed: is_confirmed,
+                instructor: instructor.value,
+            };
+            api.patchSession(session.id, patchedSession);
+        }
 
         let patchedCourse = {
             course_category: sessionFields.category.value,
             subject: sessionFields.title,
+            start_time: start_time.toISOString(),
+                // .substr(start_time.toISOString().indexOf("T")+1,5),
+            end_time: end_time.toISOString(),
+                // .substr(end_time.toISOString().indexOf("T")+1,5)
         };
-        api.patchCourse(course.course_id, patchedCourse);
+        if(editSelection === EDIT_ALL_SESSIONS){
+            patchedCourse = {
+                ...patchedCourse,
+                instructor: instructor.value,
+                is_confirmed: is_confirmed,
+                start_date: start_time.toISOString().substr(0,10),
+                end_date: end_time.toISOString().substr(0, 10),
+            }
+        }
+        console.log(patchedCourse);
+        // api.patchCourse(course.course_id, patchedCourse);
         history.push("/scheduler/")
     };
+
+    const onConfirmationChange = event => {
+        setSessionFields({
+            ...sessionFields,
+            is_confirmed: event.target.value,
+        });
+    };
+
+    const instructorList = Object.values(instructors).map(({user_id, name, email}) => ({
+        value: user_id,
+        label: `${name} - ${email}`,
+    }));
 
     return (
         <>
@@ -148,9 +191,28 @@ function EditSessionView({course, session}) {
 
                     <Grid item xs={12}>
                         <Typography variant="h5"> Instructor </Typography>
-                        <TextField
-                            value={instructor.name}
+                        <SearchSelect
+                            value={sessionFields.instructor}
+                            onChange={handleInstructorChange}
+                            placeholder={"Choose an Instructor"}
+                            options={instructorList}
                         />
+                        <FormControl>
+                            <InputLabel>
+                                Is instructor confirmed?
+                            </InputLabel>
+                            <Select
+                                onChange={onConfirmationChange}
+                                value={sessionFields.is_confirmed}
+                            >
+                                <MenuItem value={true}>
+                                    Yes, Instructor Confirmed.
+                                </MenuItem>
+                                <MenuItem value={false}>
+                                    No, Instructor is NOT Confirmed.
+                                </MenuItem>
+                            </Select>
+                        </FormControl>
                     </Grid>
                     <Grid item xs={6}>
                         <Typography variant="h5"> Date</Typography>

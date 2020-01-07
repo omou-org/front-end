@@ -1,5 +1,4 @@
-import React, {useState, useEffect, useMemo} from "react";
-
+import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
@@ -12,6 +11,9 @@ import {Button, Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import {withRouter} from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
+import {NoListAlert} from "../../NoListAlert";
+import {GET} from "../../../actions/actionTypes";
+import Loading from "../../Loading";
 
 function ManageCategories() {
     const dispatch = useDispatch();
@@ -26,22 +28,21 @@ function ManageCategories() {
     const [categoryDescription, setCategoryDescription] = useState("");
     const [categoryList, setCategoryList] = useState([]);
 
-    const categories = useSelector(({"Course": {CourseCategories}}) => CourseCategories);
+    const categories = useSelector(({Course}) => Course.CourseCategories);
+    const categoryStatus = useSelector(({RequestStatus})=> RequestStatus.category);
     useEffect(()=>{
         api.fetchCategories();
     },[api]);
-
-
-
+    //, categoryStatus[GET], categoryStatus[POST]]
     useEffect(()=>{
-        if(categories.length > categoryList.length){
+        if(categories.length !== categoryList.length){
             let parsedCategoryList = categories.map((category)=>({
-                ...category,
-                editing: false,
-            }));
+                            ...category,
+                            editing: false,
+                        }));
             setCategoryList(parsedCategoryList);
         }
-    }, [categories, categoryList.length]);
+    }, [categories]);
 
     const handleChange = (field) => (e) =>{
         switch(field){
@@ -63,7 +64,7 @@ function ManageCategories() {
             setCategoryName("");
             setCategoryDescription("");
         }
-    }
+    };
 
     const categoryForm = () => {
         return (
@@ -122,13 +123,13 @@ function ManageCategories() {
             <Grid item xs={12}>
                 <Grid container spacing={8} alignItems={"center"}>
                     {
-                        categoryList.map((category) => {
+                        categoryList.length > 0 ?categoryList.map((category) => {
                                 return (<Grid item xs={12} md={12} key={category.id}>
                                     {
                                         category.editing ? editCategoryRow(category) : viewCategoryRow(category)
                                     }
                                 </Grid>);
-                        })
+                        }) : <NoListAlert list={"Course Categories"}/>
                     }
                 </Grid>
             </Grid>
@@ -230,6 +231,10 @@ function ManageCategories() {
                 </Grid>
             </Grid>
         </Paper>)
+    };
+
+    if(categoryStatus[GET] !== 200){
+        return <Loading/>
     }
 
     return (

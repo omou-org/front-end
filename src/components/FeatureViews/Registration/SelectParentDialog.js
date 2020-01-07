@@ -150,8 +150,9 @@ class SelectParentDialog extends React.Component {
     SetParentDialog = () =>{
         return (
             <div
-                className={`select-parent-search-wrapper ${this.state.searchingParent ? " active" : ""}`}>
+                className={`select-parent-search-wrapper ${this.state.searchingParent ? "active" : ""}`}>
                 <ReactSelect
+                    noOptionsMessage={()=>"Keep searching for a parent!"}
                     classNamePrefix={"select-parent-search"}
                      value = {this.state.inputParent}
                      options = {this.state.parentOptions}

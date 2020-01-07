@@ -1,10 +1,10 @@
-import { connect } from "react-redux";
+import {connect} from "react-redux";
 import React from "react";
 import Grid from "@material-ui/core/Grid";
-import { Card, Typography} from "@material-ui/core";
+import {Card, Tooltip, Typography} from "@material-ui/core";
 
 import Chip from "@material-ui/core/Chip";
-import { withRouter } from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import "../Search.scss";
 
 
@@ -20,11 +20,11 @@ function CourseCards(props) {
 
     const goToCoursePage = ()=> (e)=>{
         e.preventDefault();
-        console.log(props.course);
+
         let courseID = props.course.course_id ? props.course.course.id : props.course.id;
-        console.log(`/registration/course/${courseID}/${props.course.subject}`);
+
         props.history.push(`/registration/course/${courseID}/${props.course.subject}`)
-    }
+    };
 
     return (
         <Grid item xs={12} sm={3} style={{ "padding": "10px" }}
@@ -70,7 +70,9 @@ function CourseCards(props) {
                             direction={"row"}
                             alignItems={'center'}>
                             <Grid item align="left">
-                                <Typography className="courseText">Session Dates: {handleLocaleDateString(props.course.start_date, props.course.end_date)} </Typography>
+                                <Typography className="courseText">
+                                   Dates: {handleLocaleDateString(props.course.start_date, props.course.end_date)}
+                                </Typography>
                             </Grid>
                         </Grid>
                         <Grid container
@@ -78,7 +80,12 @@ function CourseCards(props) {
                             direction={"row"}
                             alignItems={'center'}>
                             <Grid item>
-                                <Typography className="courseText"> Subject: {props.course.subject} </Typography>
+                                <Tooltip title={props.course.subject}>
+                                    <Typography className="courseText">
+                                        Name: {props.course.subject.substr(0,20)}
+                                        {props.course.subject.length > 20 ? "..." : ""}
+                                    </Typography>
+                                </Tooltip>
                             </Grid>
 
                         </Grid>
@@ -87,7 +94,9 @@ function CourseCards(props) {
                             direction={"row"}
                             alignItems={'center'}>
                             <Grid item>
-                                <Typography className="courseText"> Teacher: {props.instructors[props.course.instructor].name} </Typography>
+                                <Typography className="courseText">
+                                    Teacher: {props.instructors[props.course.instructor].name}
+                                </Typography>
                             </Grid>
                         </Grid>
                     </Grid>

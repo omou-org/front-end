@@ -21,7 +21,7 @@ const styles = theme => ({
     colorChecked: {},
 });
 
-function SessionFilters({onInstructorSelect, InstructorValue, InstructorOptions }){
+function SessionFilters({onInstructorSelect, InstructorValue, InstructorOptions, CourseValue, onCourseSelect, CourseOptions }){
     let [anchorEl, setAnchorEl ] = useState(null);
     let [open, setOpen] = useState(false);
 
@@ -58,6 +58,15 @@ function SessionFilters({onInstructorSelect, InstructorValue, InstructorOptions 
                 clearable
                 isMulti
             />
+            {/*<ReactSelect*/}
+            {/*    className={"instructor-session-filter"}*/}
+            {/*    placeholder={"Filter Course..."}*/}
+            {/*    value={CourseValue}*/}
+            {/*    options={CourseOptions}*/}
+            {/*    onChange={ onCourseSelect }*/}
+            {/*    clearable*/}
+            {/*    isMulti*/}
+            {/*/>*/}
         </Menu>
     </>)
 }

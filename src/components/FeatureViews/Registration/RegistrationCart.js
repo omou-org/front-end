@@ -301,12 +301,14 @@ function RegistrationCart(props) {
                 });
             });
             return courses;
-        }
+        };
 
         return <Grid container spacing={8}>
             {
                 <Grid item xs={12}>
-                    <Grid container justify={"flex-end"}>
+                    <Grid container
+                          spacing={16}
+                          justify={"flex-end"}>
                         <Grid item xs={6}/>
                         {
                             isOneCourse &&

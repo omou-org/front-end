@@ -295,14 +295,14 @@ const addTutoringRegistration = (prevState, form) => {
             }
         }
     };
-
+    let instructorConfirmation = form["Tutor Selection"]["Did instructor confirm?"] === "Yes, Instructor Confirm";
     let numSessions = form["Schedule"]["Number of Sessions"];
     let academicLevel = academicLevelParse[form["Student"]["Grade Level"]];
     let category = form["Tutor Selection"]["Category"].value;
     let endTime = new Date(startTime);
     endTime.setHours(endTime.getHours()+duration());
     let endDate = new Date(startDate);
-    endDate.setDate(endDate.getDate()+(7*numSessions));
+    endDate.setDate(endDate.getDate()+(7*(numSessions - 1)));
     let isStudentCurrentlyRegistered = prevState.registered_courses ? Object.keys(prevState.registered_courses).includes(studentID.toString()):false;
     let enrollmentObject = {
         course_type: "tutoring",
@@ -323,6 +323,7 @@ const addTutoringRegistration = (prevState, form) => {
             description: studentInfoNote,
             academic_level: academicLevel,
             course_category: category,
+            is_confirmed: instructorConfirmation,
         },
         student_id: studentID,
         course_id: "T" + (isStudentCurrentlyRegistered ? (prevState.registered_courses[studentID].length + 1).toString() : "0"),

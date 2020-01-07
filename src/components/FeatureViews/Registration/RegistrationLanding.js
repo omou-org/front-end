@@ -1,12 +1,7 @@
 import * as hooks from "actions/hooks";
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 // react/redux imports
-import * as apiActions from "../../../actions/apiActions";
-import * as userActions from "../../../actions/userActions";
-import * as registrationActions from "../../../actions/registrationActions";
-import {GET} from "../../../actions/actionTypes";
-import {bindActionCreators} from "redux";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 
 import BackButton from "components/BackButton";
 import Grid from "@material-ui/core/Grid";

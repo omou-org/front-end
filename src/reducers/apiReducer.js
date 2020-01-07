@@ -1,6 +1,7 @@
 import * as actions from "../actions/actionTypes";
 import initialState from "./initialState";
 import * as api from "../actions/apiActions";
+import {REQUEST_ALL} from "../actions/apiActions";
 
 export default (state = initialState.RequestStatus, {payload, type}) => {
     let status;
@@ -207,6 +208,8 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             return updateSessionStatus(state, payload.id, status);
         case actions.GET_SESSIONS_STARTED:
             return updateSessionStatus(state, payload.id, status);
+        case actions.RESET_SCHEDULER_STATUS:
+            return updateSessionStatus(state, REQUEST_ALL, null);
         default:
             return state;
     }
@@ -226,13 +229,13 @@ const updateLogin = (state, status) => ({
 
 const updateCategoryPost = (state, payload, status) =>{
     let newState = {...state};
-    newState.category[actions.POST]= status;
+    newState.category[actions.POST] = status;
     return newState;
-}
+};
 
 const updateCategoryFetch = (state, payload, status) =>{
     let newState = {...state};
-    newState.category[actions.GET]= status;
+    newState.category[actions.GET] = status;
     return newState;
 }
 

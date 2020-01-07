@@ -260,7 +260,6 @@ export const updateInstructor = (instructors, id, instructor) => {
             "name": `${user.first_name} ${user.last_name}`,
             "email": user.email,
             "updated_at": instructor.updated_at,
-            // below is not from database
             "role": "instructor",
             "background": {
                 "bio": biography,
@@ -268,6 +267,7 @@ export const updateInstructor = (instructors, id, instructor) => {
                 "subjects": subjects,
                 "languages": language,
             },
+            // below is not from database
             "schedule": {
                 "work_hours": {
                     "1": {

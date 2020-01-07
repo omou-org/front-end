@@ -160,7 +160,7 @@ const PriceQuoteForm = ({courses, tutoring, disablePay}) => {
                 instructor: tutoring.new_course.instructor,
                 course_type:"tutoring",
                 description: tutoring.new_course.description,
-                // need to add academic level
+                is_confirmed: tutoring.new_course.is_confirmed,
             };
             tutoringRegistrations.push({
                 newTutoringCourse: tutoringCourse,

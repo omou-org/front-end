@@ -27,6 +27,8 @@ import DialogActions from "@material-ui/core/DialogActions";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import PaymentTable from "./PaymentTable";
 import {NoListAlert} from "../../../NoListAlert";
+import {GET} from "../../../../actions/actionTypes";
+import {REQUEST_ALL} from "../../../../actions/apiActions";
 
 
 export const DayConverter = {
@@ -75,6 +77,7 @@ const CourseSessionStatus = () => {
     const usersList = useSelector(({Users}) => Users);
     const courses = useSelector(({Course}) => Course.NewCourseList);
     const enrollments = useSelector(({Enrollments}) => Enrollments);
+    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
     const course = courses[courseID];
 
     const dispatch = useDispatch();
@@ -113,10 +116,10 @@ const CourseSessionStatus = () => {
     }), [courseID, enrollment.enrollment_id, studentID]);
     useEffect(()=>{
         if(course){
-            api.fetchSessions({
+            api.fetchSession({
                 config: {
                     params: {
-                        time_frame: "month",
+                        // time_frame: "month",
                         view_option: courseTypeParse[course.type],
                         time_shift: 0,
                     }
@@ -124,6 +127,12 @@ const CourseSessionStatus = () => {
             });
         }
     },[course, api]);
+
+    useEffect(()=>{
+        return ()=>{
+            api.resetSchedulerStatus();
+        }
+    },[])
 
     const sessionDataParse = useCallback(({start_datetime, end_datetime, course, status}) => {
         // let {start, end, course, status} = paramCourse
@@ -147,14 +156,22 @@ const CourseSessionStatus = () => {
     if (!enrollment || Object.keys(enrollment).length <= 1) {
         return <Loading />;
     }
-    if (hooks.isLoading(courseStatus, enrollmentStatus, studentStatus, instructorStatus)) {
+    if (hooks.isLoading(courseStatus, enrollmentStatus, studentStatus, instructorStatus) ||
+        requestStatus.schedule[GET][REQUEST_ALL] !== 200
+    ) {
         return <Loading />;
     }
     if (hooks.isFail(courseStatus, enrollmentStatus, studentStatus)) {
         return "Error loading data";
     }
 
-    const calendarSessions = courseSessions ? courseSessions
+    const courseSessionsArray = courseSessions && Object.values(courseSessions)
+        .map(instructorSessions => Object.values(instructorSessions))
+        .reduce((allSessions, instructorSessions) => {
+            return allSessions.concat(instructorSessions);
+        });
+
+    const calendarSessions = courseSessions ? courseSessionsArray
             .filter(session => session.course === Number(courseID)) : [],
         paymentSessionStatus = enrollment.session_payment_status,
         statusKey = (status) => {

@@ -28,6 +28,8 @@ import {Link, Redirect, useRouteMatch} from "react-router-dom";
 import {stringToColor} from "components/FeatureViews/Accounts/accountUtils";
 import Loading from "../../Loading";
 import {DayConverter} from "../Accounts/TabComponents/CourseSessionStatus";
+import ConfirmIcon from "@material-ui/icons/CheckCircle";
+import UnconfirmIcon from "@material-ui/icons/Cancel"
 
 const formatDate = (date) => {
     if (!date) {
@@ -179,16 +181,21 @@ const RegistrationCourse = () => {
                         <div className="second-line">
                             {
                                 instructor &&
-                                <Chip
-                                    avatar={
-                                        <Avatar style={styles(instructor.name)}>
-                                            {instructor.name.match(/\b(\w)/g).join("")}
-                                        </Avatar>
-                                    }
-                                    className="chip"
-                                    component={Link}
-                                    label={instructor.name}
-                                    to={`/accounts/instructor/${instructor.user_id}`} />
+                                <>
+                                    {course.is_confirmed ?
+                                        <ConfirmIcon className="confirmed course-icon"/> :
+                                        <UnconfirmIcon className="unconfirmed course-icon"/>}
+                                    <Chip
+                                        avatar={
+                                            <Avatar style={styles(instructor.name)}>
+                                                {instructor.name.match(/\b(\w)/g).join("")}
+                                            </Avatar>
+                                        }
+                                        className="chip"
+                                        component={Link}
+                                        label={instructor.name}
+                                        to={`/accounts/instructor/${instructor.user_id}`} />
+                                </>
                             }
                             <Typography
                                 align="left"

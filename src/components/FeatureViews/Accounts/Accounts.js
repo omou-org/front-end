@@ -278,10 +278,10 @@ class Accounts extends Component {
                     <Typography
                         align="left"
                         className="heading"
-                        variant="h2">Accounts
+                        variant="h3">Accounts
                     </Typography>
                     <Grid
-                        alignItems="center"
+                        // alignItems="center"
                         container
                         direction="row">
                         <Grid

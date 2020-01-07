@@ -1,6 +1,6 @@
 import * as types from "./actionTypes";
-import {submitParentAndStudent, postData, patchData, typeToPostActions} from "./rootActions";
-import {wrapGet, postCourse, formatCourse, wrapPost, instance, wrapPatch} from "./apiActions";
+import {patchData, postData, submitParentAndStudent} from "./rootActions";
+import {formatCourse, instance, wrapGet, wrapPatch, wrapPost} from "./apiActions";
 
 const parseGender = {
     "Male": "male",
@@ -176,7 +176,7 @@ export const submitForm = (state, id) => {
             const updatedCourse = {
                 ...course,
                 hourly_tuition: state["Tuition"]["Hourly Tuition"],
-                total_tuition: state["Tuition"]["Total Tuition"]
+                total_tuition: state["Tuition"]["Total Tuition"],
             };
             if (id) {
                 return patchData("course", updatedCourse, id);

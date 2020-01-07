@@ -136,6 +136,7 @@ export const updateCourse = (courses, id, course) => ({
         "tags": [],
         "roster": course.enrollment_list,
         "academic_level": course.academic_level,
+        "is_confirmed": course.is_confirmed,
     },
 });
 

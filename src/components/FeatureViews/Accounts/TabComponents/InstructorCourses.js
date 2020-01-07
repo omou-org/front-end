@@ -9,6 +9,8 @@ import Grid from "@material-ui/core/Grid";
 import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import ConfirmIcon from "@material-ui/icons/CheckCircle";
+import UnconfirmIcon from "@material-ui/icons/Cancel"
 
 const InstructorCourses = ({instructorID}) => {
     const courses = useSelector(({Course}) => Course.NewCourseList);
@@ -56,12 +58,12 @@ const InstructorCourses = ({instructorID}) => {
                     </Grid>
                     <Grid
                         item
-                        md={2}
-                        xs={3}>
+                        md={1}
+                        xs={2}>
                         <Typography
                             align="left"
                             className="table-header">
-                            Class Day(s)
+                            Day
                         </Typography>
                     </Grid>
                     <Grid
@@ -73,6 +75,15 @@ const InstructorCourses = ({instructorID}) => {
                             Time
                         </Typography>
                     </Grid>
+                    <Grid
+                        item
+                        xs={1}>
+                        <Typography
+                            align="left"
+                            className="table-header">
+                            Confirmed
+                        </Typography>
+                    </Grid>
                 </Grid>
             </Grid>
             <Grid
@@ -81,7 +92,7 @@ const InstructorCourses = ({instructorID}) => {
                 {
                     courseIDs.map((courseID) => {
                         const course = courses[courseID];
-                        const {days, startDate, endDate, startTime, endTime} = courseDataParser(course);
+                        const {days, startDate, endDate, startTime, endTime, is_confirmed} = courseDataParser(course);
                         return (
                             <Grid
                                 className="accounts-table-row"
@@ -108,8 +119,8 @@ const InstructorCourses = ({instructorID}) => {
                                         </Grid>
                                         <Grid
                                             item
-                                            md={2}
-                                            xs={3}>
+                                            md={1}
+                                            xs={2}>
                                             <Typography align="left">
                                                 {days}
                                             </Typography>
@@ -120,6 +131,14 @@ const InstructorCourses = ({instructorID}) => {
                                             <Typography align="left">
                                                 {startTime} - {endTime}
                                             </Typography>
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            xs={1}
+                                        >
+                                            {is_confirmed ?
+                                            <ConfirmIcon className="confirmed course-icon"/> :
+                                            <UnconfirmIcon className="unconfirmed course-icon"/>}
                                         </Grid>
                                     </Grid>
                                 </Paper>
