@@ -1,11 +1,9 @@
 import * as authActions from "../../actions/authActions.js";
 import {REQUEST_STARTED} from "../../actions/apiActions";
 import {bindActionCreators} from "redux";
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {Redirect, useHistory} from "react-router-dom";
-import React, {useMemo, useState, useCallback} from "react";
-
-
+import React, {useCallback, useMemo, useState} from "react";
 // material UI Imports
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -55,7 +53,6 @@ const LoginPage = () => {
     if (!requestStatus.login && (!fetchUserStatus || fetchUserStatus === REQUEST_STARTED)) {
         return <Loading />;
     }
-
     if (fetchUserStatus >= 200 && fetchUserStatus < 300) {
         if (!hasGoneBack) {
             if (history.length > 2) {
@@ -67,13 +64,13 @@ const LoginPage = () => {
         }
     } else if (requestStatus.login >= 200 && requestStatus.login < 300) {
         if (!fetchUserStatus || fetchUserStatus !== REQUEST_STARTED) {
-            actions.fetchUserStatus();
+            // actions.fetchUserStatus();
         }
         if (!hasGoneBack) {
             if (history.length > 2) {
                 history.goBack();
             } else {
-                return <Redirect to="/" />;
+                 return <Redirect to="/" />;
             }
             setHasGoneBack(true);
         }

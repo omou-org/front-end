@@ -33,7 +33,6 @@ export const wrapGet = (endpoint, [startType, successType, failType], {id, confi
             const response = await instance.get(requestURL, {
                 "headers": {
                     "Authorization": `Token ${getState().auth.token}`,
-                    'Content-Length':0,
                     'Content-Type': 'text/plain',
                 },
                 ...(config || {}),

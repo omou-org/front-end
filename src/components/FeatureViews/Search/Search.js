@@ -163,8 +163,10 @@ const Search = (props) => {
     };
 
     useEffect(()=>{
-        if(query.label!==""){
-            filterSuggestions()();
+        if(query.label && query.label !== ""){
+            if((query.label.length === 1 || query.label.length >= 4)){
+                filterSuggestions()();
+            }
         }
     },[query]);
     useEffect(()=>{
@@ -212,8 +214,13 @@ const Search = (props) => {
         if(query.label){
             api.setSearchQuery(query.label);
             api.updateSearchStatus(IS_SEARCHING);
+
             if(!location.pathname.includes("search")){
                 history.push(`/search/`);
+                // return <Redirect
+                //     push
+                //     to={"/search/"}
+                // />
             }
         }
     };
