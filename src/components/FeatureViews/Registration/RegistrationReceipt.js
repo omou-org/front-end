@@ -168,7 +168,7 @@ function RegistrationReceipt(props) {
                 </Grid>
             </Grid>
         </Grid>
-    </Grid>)
+    </Grid>);
 
     const renderStudentReceipt = (studentID, enrolledCourses) => {
         let student = students[studentID];
@@ -193,7 +193,7 @@ function RegistrationReceipt(props) {
     const handlePrint = event =>{
         event.preventDefault();
         window.print();
-    }
+    };
 
     const renderParent = () => {
         if(currentPayingParent){

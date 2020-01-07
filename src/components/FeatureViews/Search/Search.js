@@ -138,7 +138,6 @@ const Search = (props) => {
 
         suggestions = suggestions.map(
             (data) => {
-                console.log(data);
                 if (data.user) {
                     return {
                         value: "account_" + data.account_type.toLowerCase() + "+" + data.user.first_name+" "+data.user.last_name + "-" + data.user.id,
@@ -157,7 +156,6 @@ const Search = (props) => {
                 }
             }
         );
-        console.log(suggestions);
         // if(newItem){
         //     suggestions.push(newItem);
         // }
