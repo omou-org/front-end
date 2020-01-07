@@ -854,7 +854,6 @@ class Form extends Component {
                     this.props.parents[this.props.currentParent.user.id].student_ids.forEach((studentID) => {
                         if(this.props.students[studentID]){
                             let {user_id, name, email} = this.props.students[studentID];
-                            console.log(this.props.students, studentID,  this.props.students[studentID])
                             studentList.push({
                                 value: user_id,
                                 label: `${name} - ${email}`,
