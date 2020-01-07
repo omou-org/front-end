@@ -17,7 +17,7 @@ import {Tooltip} from "@material-ui/core";
 
 const useStyles = makeStyles({
     setParent: {
-        backgroundColor:"#39A1C2",
+        // backgroundColor:"#39A1C2",
         color: "white",
         // padding: "",
     }
