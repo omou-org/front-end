@@ -2,7 +2,7 @@ import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 import {applyMiddleware, createStore} from "redux";
 import App from "./App";
-import {HashRouter} from "react-router-dom";
+import {BrowserRouter} from "react-router-dom";
 import {composeWithDevTools} from "redux-devtools-extension";
 import Provider from "react-redux/es/components/Provider";
 import React from "react";
@@ -17,9 +17,9 @@ const store = createStore(
 
 ReactDOM.render(
     <Provider store={store}>
-        <HashRouter basename={'/summit/'}>
+        <BrowserRouter basename={'/summit/'}>
             <App />
-        </HashRouter>
+        </BrowserRouter>
     </Provider>,
     document.getElementById("root")
 );

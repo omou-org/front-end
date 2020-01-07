@@ -225,6 +225,7 @@ const Search = (props) => {
         };
         searchList(input);
         setQuery(input);
+        api.setSearchQuery(e);
         if(props.windowWidth < 800 && e !== ""){
             setMobileSearching(true);
             props.onMobile(true);
