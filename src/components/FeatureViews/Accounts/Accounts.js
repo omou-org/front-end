@@ -30,6 +30,7 @@ import Grow from "@material-ui/core/Grow";
 import {GET} from "../../../actions/actionTypes";
 import {REQUEST_ALL} from "../../../actions/apiActions";
 import Loading from "../../Loading";
+import {Tooltip} from "@material-ui/core";
 
 const styles = theme => ({
     root: {
@@ -192,13 +193,19 @@ class Accounts extends Component {
                                 </Grid>
                             </TableCell>
                             <TableCell
-                                className="accountsCell">{row.email}
+                                className="accountsCell">
+                                <Tooltip title={row.email}>
+                                    <span>
+                                        {row.email.substr(0,20)}
+                                    </span>
+                                </Tooltip>
                             </TableCell>
                             <TableCell
                                 className="accountsCell">{addDashes(row.phone_number)}
                             </TableCell>
                             <TableCell
-                                className="accountsCell">{row.role.charAt(0).toUpperCase() + row.role.slice(1)}
+                                className="accountsCell">
+                                {row.role.charAt(0).toUpperCase() + row.role.slice(1)}
                             </TableCell>
                             <TableCell
                                 className="accountsCell"
