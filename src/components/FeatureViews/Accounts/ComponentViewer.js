@@ -19,7 +19,7 @@ const ComponentViewer = (props) => {
         case 0:
             component = (
                 <Schedule
-                    user_id={props.user.user_id}
+                    instructorID={props.user.user_id}
                     work_hours={props.user.schedule.work_hours} />
             );
             break;

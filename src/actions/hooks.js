@@ -210,14 +210,14 @@ export const usePaymentByEnrollment = (enrollmentID) => wrapUseEndpoint(
     }
 );
 
-export const useSessionsToday = () => wrapUseEndpoint(
+export const useClassSessionsInPeriod = (time_frame, time_shift) => wrapUseEndpoint(
     "/scheduler/session/",
     types.GET_SESSIONS_SUCCESS,
     {
         "params": {
-            "time_frame": "day",
+            time_frame,
+            time_shift,
             "view_option": "class",
-            "time_shift": 0,
         },
     }
 )();

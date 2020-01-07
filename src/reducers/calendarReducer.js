@@ -59,6 +59,7 @@ export default function Calendar(state = initialState.CalendarData, { payload, t
 const getSessions = (state,{id,response}) => {
     const {data} = response;
     let {CourseSessions} = state;
+    console.log(data)
     if(id === REQUEST_ALL){
         data.forEach((session) => {
             CourseSessions = updateSessions(CourseSessions, session.instructor, session)
