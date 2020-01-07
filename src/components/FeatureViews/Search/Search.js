@@ -216,11 +216,10 @@ const Search = (props) => {
             api.updateSearchStatus(IS_SEARCHING);
 
             if(!location.pathname.includes("search")){
-                history.push(`/search/`);
-                // return <Redirect
-                //     push
-                //     to={"/search/"}
-                // />
+                history.push({
+                    pathname:'/search',
+                    search: `?query=${SearchQuery}`
+                });
             }
         }
     };

@@ -52,7 +52,7 @@ function rootRoutes(props) {
                 render={(passedProps) => <SessionView {...passedProps} />} />
             <ProtectedRoute
                 exact
-                path="/search/"
+                path="/search"
                 render={(passedProps) => <SearchResults {...passedProps} />} />
 
             {/*<ProtectedRoute*/}
