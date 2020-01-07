@@ -54,7 +54,7 @@ function PaymentTable({paymentList, type, enrollmentID})  {
                 </TableHead>
                 <TableBody>
                     {
-                        paymentList.map((payment) => {
+                        paymentList.length > 0 ? paymentList.map((payment) => {
                             return <TableRow
                                 hover
                                 component={NavLinkNoDup}
@@ -77,7 +77,7 @@ function PaymentTable({paymentList, type, enrollmentID})  {
                                     {payment.method.charAt(0).toUpperCase() + payment.method.slice(1)}
                                 </TableCell>
                             </TableRow>
-                        })
+                        }) : <NoListAlert/>
                     }
                 </TableBody>
             </Table>
