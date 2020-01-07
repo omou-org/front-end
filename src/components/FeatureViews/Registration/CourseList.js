@@ -12,7 +12,7 @@ import * as registrationActions from "../../../actions/registrationActions";
 import {DayConverter} from "../Accounts/TabComponents/CourseSessionStatus";
 
 const CourseList = (props) => {
-    let filteredCourses = props.filteredCourses;
+    let filteredCourses = props.filteredCourses.filter(course => course.capacity > 1 );
     const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
     return filteredCourses.map((course) => {
         let start_date = new Date(course.schedule.start_date),

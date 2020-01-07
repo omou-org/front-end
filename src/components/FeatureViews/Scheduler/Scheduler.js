@@ -251,7 +251,7 @@ class Scheduler extends Component {
                         </div>
                         <div class='pin_icon icn'>
                             <span class=''>
-                                Session is ${info.event.extendedProps.is_confirmed? "NOT" : "IS"} confirmed
+                                Session ${info.event.extendedProps.is_confirmed? "IS NOT" : "IS"} confirmed
                             </span>
                         </div>
                         <div class='teacher_icon icn'>
@@ -549,7 +549,6 @@ class Scheduler extends Component {
     };
 
     onCourseSelect = event => {
-        console.log(event, "selected course")
         this.setState(()=>{
             const courseSessionsArray = sessionArray(this.props.sessions);
            const selectedCourseIDs = event && event.map(course => course.value);
