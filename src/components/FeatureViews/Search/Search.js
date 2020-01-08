@@ -210,14 +210,19 @@ const Search = (props) => {
         }
     }
 
-    const handleQuery = e => {
+    const handleSubmit = e => {
+        e.preventDefault();
+        handleQuery();
+    };
+
+    const handleQuery = () => {
         if(query.label){
             api.setSearchQuery(query.label);
             api.updateSearchStatus(IS_SEARCHING);
 
             if(!location.pathname.includes("search")){
                 history.push({
-                    pathname:'/search',
+                    pathname:'/search/',
                     search: `?query=${SearchQuery}`
                 });
             }
@@ -263,7 +268,7 @@ const Search = (props) => {
         >
             { !isMobileSearching && <Grid item xs={2} />}
             <Grid item xs={isMobileSearching ? 12 : 10} >
-                <form onSubmit={handleQuery}>
+                <form onSubmit={handleSubmit}>
                     <Grid container >
                         <Grid item >
                             <FormControl required variant="outlined" className={"search-selector"}>

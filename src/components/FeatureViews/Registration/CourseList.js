@@ -147,7 +147,7 @@ const CourseList = (props) => {
                                     {course.roster.length} / {course.capacity}
                                 {/*</span>*/}
                                 <span className="label">
-                                    Status
+                                    Enrolled
                                 </span>
                             </Grid>
                             <Grid
