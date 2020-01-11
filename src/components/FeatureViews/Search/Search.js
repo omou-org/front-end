@@ -135,6 +135,7 @@ const Search = (props) => {
                 suggestions =props.search.courses;
             }
         }
+
         suggestions = suggestions.map(
             (data) => {
                 if (data.user) {
@@ -142,9 +143,9 @@ const Search = (props) => {
                         value: "account_" + data.account_type.toLowerCase() + "+" + data.user.first_name+" "+data.user.last_name + "-" + data.user.id,
                         label: data.user.first_name + " " + data.user.last_name,
                     }
-                } else if (data.course_id) {
+                } else if (data.course_type) {
                     return {
-                        value: "course_" + data.course_id + "-" + data.title,
+                        value: "course_" + data.id + "-" + data.subject,
                         label: data.subject,
                     }
                 } else {
@@ -155,15 +156,17 @@ const Search = (props) => {
                 }
             }
         );
-        if(newItem){
-            suggestions.push(newItem);
-        }
+        // if(newItem){
+        //     suggestions.push(newItem);
+        // }
         setSearchSuggestions(suggestions);
     };
 
     useEffect(()=>{
-        if(query.label!==""){
-            filterSuggestions()();
+        if(query.label && query.label !== ""){
+            if((query.label.length === 1 || query.label.length >= 4)){
+                filterSuggestions()();
+            }
         }
     },[query]);
     useEffect(()=>{
@@ -200,7 +203,6 @@ const Search = (props) => {
                 break;
             }
             case SEARCH_COURSES:{
-                console.log(courseRequestConfig);
                 api.fetchSearchCourseQuery(courseRequestConfig);
                 api.fetchInstructors();
                 break;
@@ -208,12 +210,21 @@ const Search = (props) => {
         }
     }
 
-    const handleQuery = e => {
+    const handleSubmit = e => {
+        e.preventDefault();
+        handleQuery();
+    };
+
+    const handleQuery = () => {
         if(query.label){
             api.setSearchQuery(query.label);
             api.updateSearchStatus(IS_SEARCHING);
+
             if(!location.pathname.includes("search")){
-                history.push(`/search/`);
+                history.push({
+                    pathname:'/search/',
+                    search: `?query=${SearchQuery}`
+                });
             }
         }
     };
@@ -225,6 +236,7 @@ const Search = (props) => {
         };
         searchList(input);
         setQuery(input);
+        api.setSearchQuery(e);
         if(props.windowWidth < 800 && e !== ""){
             setMobileSearching(true);
             props.onMobile(true);
@@ -256,7 +268,7 @@ const Search = (props) => {
         >
             { !isMobileSearching && <Grid item xs={2} />}
             <Grid item xs={isMobileSearching ? 12 : 10} >
-                <form onSubmit={handleQuery}>
+                <form onSubmit={handleSubmit}>
                     <Grid container >
                         <Grid item >
                             <FormControl required variant="outlined" className={"search-selector"}>
@@ -291,7 +303,6 @@ const Search = (props) => {
                                 value={query}
                                 onChange={handleSearchChange()}
                                 onInputChange={handleInputChange()}
-                                // onCreateOption={handleInputChange()}
                                 components={{DropdownIndicator: renderSearchIcon}}
                             />
                         </Grid>

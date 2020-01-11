@@ -114,7 +114,6 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
     let day = sessionStart.getDate() !== new Date().getDate() ?
         (session.start-1 >= 0 ? session.start-1 : 6) :
         session.start;
-
     return (<>
         <Grid className="session-view"
             container spacing={2} direction={"row"}>
@@ -132,7 +131,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
             >
                 <Grid item xs={6}>
                     <Typography variant="h5"> Subject </Typography>
-                    <Typography varient="body1">
+                    <Typography >
                         {
                             categories.length !== 0 &&
                             categories
@@ -143,7 +142,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                 </Grid>
                 <Grid item xs={6}>
                     <Typography variant="h5"> Room</Typography>
-                    <Typography variant="body1">
+                    <Typography >
                         {
                             course && (course.room_id || "TBA")
                         }
@@ -174,7 +173,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                 </Grid>
                 <Grid item xs={6}>
                     <Typography variant="h5"> Day(s)</Typography>
-                    <Typography variant="body1">
+                    <Typography >
                         {
                             course && (dayOfWeek[day])
                         }
@@ -189,7 +188,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                     item
                     xs={6}>
                     <Typography variant="h5"> Time </Typography>
-                    <Typography variant="body1">
+                    <Typography>
                         {
                             course &&
                             `${session.startTime} - ${session.endTime}`
@@ -235,15 +234,16 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                     Edit Session
                 </Button>
             </Grid>
-            {/*<Grid item>*/}
-            {/*    <Button*/}
-            {/*        className="button"*/}
-            {/*        color="secondary"*/}
-            {/*        onClick={handleEditToggle}*/}
-            {/*        variant="outlined">*/}
-            {/*        Delete*/}
-            {/*    </Button>*/}
-            {/*</Grid>*/}
+            <Grid item>
+                <Button
+                    className="button"
+                    color="secondary"
+                    component={NavLink}
+                    to={`/registration/course/${course.course_id}`}
+                    variant="outlined">
+                    Course Page
+                </Button>
+            </Grid>
             <Grid item>
                 <Button
                     className="button"

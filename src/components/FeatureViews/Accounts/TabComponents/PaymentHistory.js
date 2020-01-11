@@ -34,8 +34,7 @@ function PaymentHistory({user_id})  {
         return payment;
     });
 
-    return ( payments &&
-        <PaymentTable
+    return (<PaymentTable
             type={"parent"}
             paymentList={payments}/>)
 }

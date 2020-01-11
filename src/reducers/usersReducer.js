@@ -18,6 +18,7 @@ export default function users(state = initialState.Users, {payload, type}) {
         case actions.POST_STUDENT_SUCCESSFUL:
             return handleStudentPost(state,payload);
         case actions.GET_ACCOUNT_SEARCH_QUERY_SUCCESS:
+            console.log("account search setting redux")
             return handleAccountSearchResults(state,payload);
         default:
             return state;
@@ -329,7 +330,7 @@ const handleAccountSearchResults = (state, {response}) => {
                 StudentList = updateStudent(StudentList, account.user.id, account);
                 break;
             }
-            case "PARENT":{
+            case "parent":{
                 ParentList = updateParent(ParentList, account.user.id, account);
                 break;
             }

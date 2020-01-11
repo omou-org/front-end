@@ -18,13 +18,13 @@ import EventIcon from "@material-ui/icons/Event";
 // Local Component Imports
 import "./Navigation.scss";
 import CustomTheme from "../../theme/muiTheme";
-import LoginPage from "../Authentication/LoginPage";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../actions/registrationActions";
 import DateFnsUtils from "@date-io/date-fns";
 import {MuiPickersUtilsProvider} from "material-ui-pickers";
 import Routes from "../Routes/rootRoutes";
 import NavBarRoutes from "../Routes/NavBarRoutes";
+import LoginPage from "../Authentication/LoginPage";
 
 const Navigation = (props) => {
     const {pathname} = useLocation();
@@ -110,7 +110,7 @@ const Navigation = (props) => {
             <div className="Navigation">
                 <NavBarRoutes toggleDrawer={handleDrawerToggle} />
                 {
-                    pathname !== "/login" && (
+
                         <nav className="OmouDrawer">
                             {
                                 token ? <>
@@ -136,15 +136,15 @@ const Navigation = (props) => {
                                 </> : ""
                             }
                         </nav>
-                    )
+
                 }
                 {
                     token ? <main className="OmouMain">
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <Routes />
                         </MuiPickersUtilsProvider>
-                    </main> : <LoginPage/>
-
+                    </main>
+                        : <LoginPage/>
                 }
 
             </div>
