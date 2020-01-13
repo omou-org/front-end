@@ -27,6 +27,8 @@ import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
 import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 
+import InstructorSchedule from "../Accounts/TabComponents/Schedule";
+
 function DisplaySessionView({course, session, handleToggleEditing}) {
     const dispatch = useDispatch();
     const api = useMemo(
@@ -130,7 +132,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                 container spacing={16} xs={6}
             >
                 <Grid item xs={6}>
-                    <Typography variant="h5"> Subject </Typography>
+                    <Typography variant="h5">Subject</Typography>
                     <Typography >
                         {
                             categories.length !== 0 &&
@@ -141,7 +143,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                     </Typography>
                 </Grid>
                 <Grid item xs={6}>
-                    <Typography variant="h5"> Room</Typography>
+                    <Typography variant="h5">Room</Typography>
                     <Typography >
                         {
                             course && (course.room_id || "TBA")
@@ -195,9 +197,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                         }
                     </Typography>
                 </Grid>
-
             </Grid>
-
             <Grid item xs={6}>
                 <Typography variant="h5" align="left"> Students Enrolled  </Typography>
                 <Grid container direction='row'>
@@ -219,9 +219,8 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                         </NavLink>)}
                 </Grid>
             </Grid>
-
+            <InstructorSchedule instructorID={instructor_id} />
         </Grid>
-
         <Grid className="session-detail-action-control"
               container direction="row" justify="flex-end">
             <Grid item>
@@ -299,10 +298,6 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
     </>);
 }
 
-DisplaySessionView.propTypes = {
-    // courseTitle: PropTypes.string,
-    // admin: PropTypes.bool,
-};
 const mapStateToProps = (state) => ({
     "registration": state.Registration,
     "studentAccounts": state.Users.StudentList,
