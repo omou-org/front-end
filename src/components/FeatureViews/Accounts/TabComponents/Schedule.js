@@ -5,11 +5,13 @@ import PropTypes from "prop-types";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import {useSelector} from "react-redux";
 
+const toHours = (ms) => ms / 1000 / 60 / 60;
+
 const Schedule = ({instructorID}) => {
     const sessions = useSelector(({Calendar}) => Calendar.CourseSessions);
     const courses = useSelector(({Course}) => Course.NewCourseList);
     const courseStatus = hooks.useCourse();
-    const status = hooks.useClassSessionsInPeriod("week");
+    const status = hooks.useClassSessionsInPeriod("month");
 
     const fullCalendarSessions = useMemo(() =>
         Object.values(sessions[instructorID] || [])
@@ -21,19 +23,36 @@ const Schedule = ({instructorID}) => {
                     : "Loading...",
             })), [courses, sessions, instructorID]);
 
+    const hoursWorked = useMemo(() =>
+        Object.values(sessions[instructorID] || [])
+            .reduce((hours, session) => {
+                const start = new Date(session.start_datetime);
+                const end = new Date(session.end_datetime);
+                if (start > Date.now()) {
+                    return hours;
+                } else if (end < Date.now()) {
+                    return hours + toHours(end - start);
+                }
+                return hours + toHours(end - Date.now());
+            }, 0),
+    [sessions, instructorID]);
+
     if (hooks.isFail(status)) {
         return "ERR";
     }
 
     return (
-        <FullCalendar
-            allDaySlot={false}
-            columnHeaderFormat={{"weekday": "short"}}
-            defaultView="timeGridWeek"
-            events={fullCalendarSessions}
-            header={false}
-            height={337}
-            plugins={[timeGridPlugin]} />
+        <>
+            <h1>{hoursWorked} hour(s) worked this month</h1>
+            <FullCalendar
+                allDaySlot={false}
+                columnHeaderFormat={{"weekday": "short"}}
+                defaultView="timeGridWeek"
+                events={fullCalendarSessions}
+                header={false}
+                height={337}
+                plugins={[timeGridPlugin]} />
+        </>
     );
 };
 
