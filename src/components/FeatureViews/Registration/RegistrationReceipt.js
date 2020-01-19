@@ -97,8 +97,8 @@ function RegistrationReceipt(props) {
 
     const handleCloseReceipt = ()=> (e)=> {
         e.preventDefault();
-        api.closeRegistration("");
         props.history.push("/registration");
+        api.closeRegistration("");
     };
     if(Object.keys(paymentReceipt).length < 1 || (isLoading(paymentStatus) && !registrationStatus)){
         return <Loading/>;
@@ -347,7 +347,6 @@ function RegistrationReceipt(props) {
                                 </Button>
                             </Grid>
                         }
-
                     </Grid>
                 </Grid>
             </Grid>
@@ -355,13 +354,6 @@ function RegistrationReceipt(props) {
     );
 }
 
-RegistrationReceipt.propTypes = {
-    // parent: PropTypes.shape({
-    //     user_id: PropTypes.string,
-    //     name: PropTypes.string
-    // }),
-    // admin: PropTypes.bool,
-};
 const mapStateToProps = (state) => ({
     "registration": state.Registration,
     "studentAccounts": state.Users.StudentList,
