@@ -154,6 +154,13 @@ export function CompleteCourseRegistration ({registeredCourseForm, courseType}){
                             justify={"flex-end"}
                         >
                             <Grid item>
+                                    <Button
+                                        className={"button"}
+                                    >
+                                        Add Sessions
+                                    </Button>
+                                </Grid>
+                            <Grid item>
                                 <Button component={NavLink}
                                         to={"/registration"}
                                         className={"button"}>
