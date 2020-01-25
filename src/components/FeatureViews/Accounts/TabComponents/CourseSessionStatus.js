@@ -169,7 +169,7 @@ const CourseSessionStatus = () => {
         .map(instructorSessions => Object.values(instructorSessions))
         .reduce((allSessions, instructorSessions) => {
             return allSessions.concat(instructorSessions);
-        });
+        }, []);
 
     const calendarSessions = courseSessions ? courseSessionsArray
             .filter(session => session.course === Number(courseID)) : [],
