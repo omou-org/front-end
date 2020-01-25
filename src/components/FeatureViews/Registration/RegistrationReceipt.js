@@ -1,6 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable no-undef */
+
 import React, { useEffect, useMemo, useState } from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -128,9 +126,8 @@ function RegistrationReceipt(props) {
                             </Grid>
                             <Grid item xs={4}>
                                 <Typography align="left">
-                                    {console.log(enrolledCourse.schedule.start_date)}
-                                    {new Date(enrolledCourse.schedule.start_date.replace(/-/g, '\/').replace(/T.+/, '')).toLocaleDateString()} -
-                                    {new Date(enrolledCourse.schedule.end_date.replace(/-/g, '\/').replace(/T.+/, '')).toLocaleDateString()}
+                                    {new Date(enrolledCourse.schedule.start_date.replace(/-/g, '\/')).toLocaleDateString()} -
+                                    {new Date(enrolledCourse.schedule.end_date.replace(/-/g, '\/')).toLocaleDateString()}
                                 </Typography>
                             </Grid>
                             <Grid item xs={2} className={"course-label"}>
