@@ -23,19 +23,19 @@ class ProfileHeading extends Component {
             <Grid item xs={12}>
                 <Grid container>
                     <Grid item xs={1} md={1} className="rowPadding">
-                        <BirthdayIcon className="iconScaling" />
-                    </Grid>
-                    <Grid item xs={5} md={5} className="rowPadding">
-                        <Typography className="rowText">
-                            {this.props.user.birthday}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={1} md={1} className="rowPadding">
                         <IDIcon className="iconScaling" />
                     </Grid>
                     <Grid item xs={5} md={5} className="rowPadding">
                         <Typography className="rowText">
                             #{this.props.user.summit_id ? this.props.user.summit_id : this.props.user.user_id}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={1} md={1} className="rowPadding">
+                        <BirthdayIcon className="iconScaling" />
+                    </Grid>
+                    <Grid item xs={5} md={5} className="rowPadding">
+                        <Typography className="rowText">
+                            {this.props.user.birthday}
                         </Typography>
                     </Grid>
                     <Grid item xs={1} md={1} className="rowPadding">
