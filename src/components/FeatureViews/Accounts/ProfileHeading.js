@@ -14,10 +14,23 @@ import Chip from "@material-ui/core/Chip";
 import Button from "@material-ui/core/Button";
 import { NavLink } from "react-router-dom";
 import { addDashes } from "./accountUtils";
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import {DialogActions, DialogContent} from "@material-ui/core";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
+import OutOfOffice from "./outOfOffice";
 import './Accounts.scss';
 
 class ProfileHeading extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+           open:false,
+        };
+    }
+
+
+
     renderStudentProfile() {
         return (
             <Grid item xs={12}>
@@ -190,9 +203,16 @@ class ProfileHeading extends Component {
                 </>
             );
         }
+
     }
 
+handleClick(){
+    this.setState({open:true,})
+}
+
+
     render() {
+        console.log(this.state.open);
         let profileDetails;
         switch (this.props.user.role) {
             case "student":
@@ -210,10 +230,12 @@ class ProfileHeading extends Component {
             default:
         }
         return (
+            
             <div>
                 <Grid container item xs={12} alignItems="center">
                     <Grid item xs={9} align="left">
                         <Grid container alignItems="center">
+                        
                             <h1 className="ProfileName">
                                 {this.props.user.name}
                             </h1>
@@ -231,6 +253,13 @@ class ProfileHeading extends Component {
                         {this.props.isAdmin && this.renderEditButton()}
                     </Grid>
                 </Grid>
+                <Grid>
+                    <Button onClick={this.handleClick()}>
+                    asd
+                    <OutOfOffice open={this.state.open}/>
+                    </Button>
+                </Grid>
+
                 {profileDetails}
             </div>
         );
