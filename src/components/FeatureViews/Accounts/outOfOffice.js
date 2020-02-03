@@ -1,35 +1,115 @@
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import { DialogActions, DialogContent } from "@material-ui/core";
-import React from 'react';
+import React, { useEffect, useMemo, useState } from "react";
+import Button from "@material-ui/core/Button";
 import { connect } from "react-redux";
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import Grid from "@material-ui/core/Grid";
 
 
-class outOfOffice extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        };
-    }
+function OutOfOffice(props) {
+    console.log(props);
+    const setDialog = useState(props.open);
+    const setDate = useState(null);
+    const closeDialog = () => {
+        setDialog(false);
+    };
+    const handleChange = event => {
+        setDate(event.target.value);
+    };
 
-render(){
-    console.log(this.props.open);
     return (
-        <Dialog className={"select-parent-dialog"}
-            onClose={this.handleClose}
-            aria-labelledby="simple-dialog-title" open={this.props.open}>
-            <DialogTitle id="simple-dialog-title">
-                <h3>Currently helping...</h3>
-            </DialogTitle>
+        <Dialog className={"dialog"}
+            aria-labelledby="simple-dialog-title" open={props.open}
+            fullWidth={true}
+            onClose={closeDialog}>
             <DialogContent>
+                <div>
+                    Schedule OOO
+                </div>
+                <div>
+                    Instructor:
+                </div>
+                <Grid container item md={12}>
+                    <Grid item md={3}>
+                        <div>
+                            Select OOO Start Date
+                        </div>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            label="Date"
+                            onChange={handleChange}
+                        >
+                            <MenuItem value={10}>Ten</MenuItem>
+                            <MenuItem value={20}>Twenty</MenuItem>
+                            <MenuItem value={30}>Thirty</MenuItem>
+                        </Select>
+                    </Grid>
+                    <Grid item md={3}>
+                        <div>
+                            Select OOO End Date
+                            </div>
+                            <Select
+                            labelId="demo-simple-select-label"
+                            label="Date"
+                            onChange={handleChange}
+                        >
+                            <MenuItem value={10}>Ten</MenuItem>
+                            <MenuItem value={20}>Twenty</MenuItem>
+                            <MenuItem value={30}>Thirty</MenuItem>
+                        </Select>
+                    </Grid>
+                    <Grid item md={6}></Grid>
+                    <Grid item md={3}>
+                        <div>
+                            Select OOO Start Date
+                        </div>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            label="Date"
+                            onChange={handleChange}
+                        >
+                            <MenuItem value={10}>Ten</MenuItem>
+                            <MenuItem value={20}>Twenty</MenuItem>
+                            <MenuItem value={30}>Thirty</MenuItem>
+                        </Select>
+                    </Grid>
+                    <Grid item md={3}>
+                        <div>
+                            Select OOO End Date
+                            </div>
+                            <Select
+                            labelId="demo-simple-select-label"
+                            label="Date"
+                            onChange={handleChange}
+                        >
+                            <MenuItem value={10}>Ten</MenuItem>
+                            <MenuItem value={20}>Twenty</MenuItem>
+                            <MenuItem value={30}>Thirty</MenuItem>
+                        </Select>
+                    </Grid>
+                    <Grid item md={6}></Grid>
+                </Grid>
+                <Grid container >
+                    <Grid align="right">
+                        <Button onClick={closeDialog}>
+                            Cancel
+                        </Button>
+                    </Grid>
+                    <Grid align="right">
+                        <Button onClick={closeDialog}>
+                            Save OOO
+                        </Button>
+                    </Grid>
+                </Grid>
             </DialogContent>
-            <DialogActions>
-            </DialogActions>
         </Dialog>
     );
-}
-}
 
+
+}
 const mapStateToProps = (state) => ({
 });
 
@@ -39,4 +119,4 @@ const mapDispatchToProps = (dispatch) => ({
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(outOfOffice);
+)(OutOfOffice);

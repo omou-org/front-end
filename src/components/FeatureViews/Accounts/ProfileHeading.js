@@ -18,7 +18,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import {DialogActions, DialogContent} from "@material-ui/core";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
-import OutOfOffice from "./outOfOffice";
+import OutOfOffice from "./OutOfOffice";
 import './Accounts.scss';
 
 class ProfileHeading extends Component {
@@ -206,7 +206,8 @@ class ProfileHeading extends Component {
 
     }
 
-handleClick(){
+handleOpen(event){
+    event.preventDefault();
     this.setState({open:true,})
 }
 
@@ -254,7 +255,10 @@ handleClick(){
                     </Grid>
                 </Grid>
                 <Grid>
-                    <Button onClick={this.handleClick()}>
+                    <Button onClick={(e) => {
+                                e.preventDefault();
+                                this.handleOpen(e);
+                            }}>
                     asd
                     <OutOfOffice open={this.state.open}/>
                     </Button>
