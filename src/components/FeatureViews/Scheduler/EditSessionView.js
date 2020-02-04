@@ -110,13 +110,40 @@ function EditSessionView({ course, session, editSelection }) {
     };
 
     const handleDurationSelect = event => {
+        // starttime +
+        let { start_time, end_time } = sessionFields
+        let newEndTime
+        switch (event.target.value) {
+            case 1:
+                newEndTime = new Date(start_time.setHours(start_time.getHours() + 1))
+                console.log(newEndTime)
+                break;
+            case 1.5:
+                let addHour = start_time.setHours(start_time.getHours() + 1)
+                let newDate = new Date(addHour)
+                newEndTime = new Date(newDate.setMinutes(newDate.getMinutes() + 30))
+                console.log(newEndTime)
+                break;
+            case 2:
+                newEndTime = new Date(start_time.setHours(start_time.getHours() + 2))
+                console.log(newEndTime)
+                break;
+            case 0.5:
+                newEndTime = new Date(start_time.setMinutes(start_time.getMinutes() + 30))
+                console.log(newEndTime)
+                break;
+            default:
+                return;
+
+        }
         setSessionFields({
             ...sessionFields,
             duration: event.target.value,
+
         })
     }
 
-    let courseDurationOptions = [1, 1.5, 2.0, 0.5];
+    let courseDurationOptions = [1, 1.5, 2, 0.5];
 
     const updateSession = event => {
         event.preventDefault();
