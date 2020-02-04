@@ -40,6 +40,7 @@ function EditSessionView({ course, session, editSelection }) {
         category: "",
         is_confirmed: "",
         duration: "",
+        tempDuration: ""
     });
 
     useEffect(() => {
@@ -112,25 +113,21 @@ function EditSessionView({ course, session, editSelection }) {
     const handleDurationSelect = event => {
         // starttime +
         let { start_time, end_time } = sessionFields
-        let newEndTime
+        let newEndTime = new Date(start_time)
+
         switch (event.target.value) {
             case 1:
-                newEndTime = new Date(start_time.setHours(start_time.getHours() + 1))
-                console.log(newEndTime)
+                newEndTime.setHours(start_time.getHours() + 1)
                 break;
             case 1.5:
-                let addHour = start_time.setHours(start_time.getHours() + 1)
-                let newDate = new Date(addHour)
-                newEndTime = new Date(newDate.setMinutes(newDate.getMinutes() + 30))
-                console.log(newEndTime)
+                newEndTime.setHours(start_time.getHours() + 1)
+                newEndTime.setMinutes(newEndTime.getMinutes() + 30)
                 break;
             case 2:
-                newEndTime = new Date(start_time.setHours(start_time.getHours() + 2))
-                console.log(newEndTime)
+                newEndTime.setHours(start_time.getHours() + 2)
                 break;
             case 0.5:
-                newEndTime = new Date(start_time.setMinutes(start_time.getMinutes() + 30))
-                console.log(newEndTime)
+                newEndTime.setMinutes(start_time.getMinutes() + 30)
                 break;
             default:
                 return;
@@ -139,7 +136,7 @@ function EditSessionView({ course, session, editSelection }) {
         setSessionFields({
             ...sessionFields,
             duration: event.target.value,
-
+            tempDuration: newEndTime
         })
     }
 
@@ -147,11 +144,11 @@ function EditSessionView({ course, session, editSelection }) {
 
     const updateSession = event => {
         event.preventDefault();
-        let { start_time, end_time, is_confirmed, instructor, duration } = sessionFields;
+        let { start_time, end_time, is_confirmed, instructor, duration, tempDuration } = sessionFields;
         if (editSelection === EDIT_CURRENT_SESSION) {
             let patchedSession = {
                 start_datetime: start_time.toISOString(),
-                end_datetime: end_time.toISOString(),
+                end_datetime: tempDuration.toISOString(),
                 is_confirmed: is_confirmed,
                 instructor: instructor.value,
                 duration: duration
