@@ -52,7 +52,7 @@ const dateOptions = {
 };
 
 const courseDataParser = (course) => {
-    let { schedule, status, tuition } = course;
+    let { schedule, status, tuition, course_id } = course;
     const DaysString = schedule.days;
 
     const endDate = new Date(schedule.end_date + schedule.end_time),
@@ -65,6 +65,7 @@ const courseDataParser = (course) => {
         "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
         status,
         tuition,
+        "course_id": course_id
     };
 };
 
@@ -325,7 +326,7 @@ const CourseSessionStatus = () => {
                                             item
                                             key={i}
                                             xs={12}
-                                            to={course.course_type === "tutoring" ? `/scheduler/view-session/${course_id}/${id}/${instructor}` : "/"}
+                                            to={course.course_type === "tutoring" ? `/scheduler/view-session/${course_id}/${id}/${instructor}` : `/registration/course/${course_id}`}
                                             component={Link}
                                         >
                                             <Paper square>
