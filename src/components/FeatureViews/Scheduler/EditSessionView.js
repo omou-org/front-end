@@ -40,7 +40,7 @@ function EditSessionView({ course, session, editSelection }) {
         category: "",
         is_confirmed: "",
         duration: "",
-        tempDuration: ""
+        updatedDuration: ""
     });
 
     useEffect(() => {
@@ -111,7 +111,6 @@ function EditSessionView({ course, session, editSelection }) {
     };
 
     const handleDurationSelect = event => {
-        // starttime +
         let { start_time, end_time } = sessionFields
         let newEndTime = new Date(start_time)
 
@@ -136,7 +135,7 @@ function EditSessionView({ course, session, editSelection }) {
         setSessionFields({
             ...sessionFields,
             duration: event.target.value,
-            tempDuration: newEndTime
+            updatedDuration: newEndTime
         })
     }
 
@@ -144,11 +143,11 @@ function EditSessionView({ course, session, editSelection }) {
 
     const updateSession = event => {
         event.preventDefault();
-        let { start_time, end_time, is_confirmed, instructor, duration, tempDuration } = sessionFields;
+        let { start_time, end_time, is_confirmed, instructor, duration, updatedDuration } = sessionFields;
         if (editSelection === EDIT_CURRENT_SESSION) {
             let patchedSession = {
                 start_datetime: start_time.toISOString(),
-                end_datetime: tempDuration.toISOString(),
+                end_datetime: updatedDuration.toISOString(),
                 is_confirmed: is_confirmed,
                 instructor: instructor.value,
                 duration: duration
@@ -170,7 +169,7 @@ function EditSessionView({ course, session, editSelection }) {
                 instructor: instructor.value,
                 is_confirmed: is_confirmed,
                 start_date: start_time.toISOString().substr(0, 10),
-                end_date: end_time.toISOString().substr(0, 10),
+                end_date: updatedDuration.toISOString().substr(0, 10),
             }
         }
 
@@ -277,21 +276,15 @@ function EditSessionView({ course, session, editSelection }) {
                             onChange={handleDurationSelect}
                             value={sessionFields.duration}
                         >
-                            {courseDurationOptions.map((duration) => {
+                            {courseDurationOptions.map((duration, index) => {
                                 return <MenuItem
                                     value={duration}
-                                >{duration + " hour(s)"}
+                                    key={index}
+                                >
+                                    {duration + " hour(s)"}
                                 </MenuItem>
                             })}
                         </Select>
-                        {/* <SearchSelect
-                            className="search-options"
-                            isClearable
-                            onChange={handleDurationSelect}
-                            placeholder={"Choose a Duration"}
-                            value={sessionFields.duration}
-                            options={courseDurationOptions}
-                        /> */}
                     </Grid>
 
                 </Grid>
