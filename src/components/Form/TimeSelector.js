@@ -227,8 +227,8 @@ class TimeSelector extends Component {
             <div>
                 <InputLabel htmlFor="session-duration">Session Duration</InputLabel>
                 <Select>
-                    {courseDurationOptions.map((duration) => {
-                        return <MenuItem value={duration}>{duration + " hour(s)"}</MenuItem>
+                    {courseDurationOptions.map((duration, key) => {
+                        return <MenuItem key={key} value={duration}>{duration + " hour(s)"}</MenuItem>
                     })}
                 </Select>
             </div>
