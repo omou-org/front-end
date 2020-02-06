@@ -1,10 +1,10 @@
-import {Link, useHistory, useParams} from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import BackButton from "../../../BackButton";
-import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import * as userActions from "actions/userActions";
 import * as calendarActions from "../../../../actions/calendarActions"
-import {bindActionCreators} from "redux";
+import { bindActionCreators } from "redux";
 import * as hooks from "actions/hooks";
 import * as registrationActions from "../../../../actions/registrationActions";
 
@@ -26,9 +26,9 @@ import DialogContentText from "@material-ui/core/es/DialogContentText/DialogCont
 import DialogActions from "@material-ui/core/DialogActions";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import PaymentTable from "./PaymentTable";
-import {NoListAlert} from "../../../NoListAlert";
-import {GET} from "../../../../actions/actionTypes";
-import {REQUEST_ALL} from "../../../../actions/apiActions";
+import { NoListAlert } from "../../../NoListAlert";
+import { GET } from "../../../../actions/actionTypes";
+import { REQUEST_ALL } from "../../../../actions/apiActions";
 
 
 export const DayConverter = {
@@ -51,8 +51,8 @@ const dateOptions = {
     "day": "numeric",
 };
 
-const courseDataParser = ( course) => {
-    let {schedule, status, tuition} = course;
+const courseDataParser = (course) => {
+    let { schedule, status, tuition, course_id } = course;
     const DaysString = schedule.days;
 
     const endDate = new Date(schedule.end_date + schedule.end_time),
@@ -65,20 +65,24 @@ const courseDataParser = ( course) => {
         "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
         status,
         tuition,
+        "course_id": course_id
     };
 };
 
 const CourseSessionStatus = () => {
     const history = useHistory();
 
-    const {"accountID": studentID, courseID} = useParams();
+    const { "accountID": studentID, courseID } = useParams();
     const [activeTab, setActiveTab] = useState(0);
-    const courseSessions = useSelector(({Calendar}) => Calendar.CourseSessions);
-    const usersList = useSelector(({Users}) => Users);
-    const courses = useSelector(({Course}) => Course.NewCourseList);
-    const enrollments = useSelector(({Enrollments}) => Enrollments);
-    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
+    const courseSessions = useSelector(({ Calendar }) => Calendar.CourseSessions);
+    const usersList = useSelector(({ Users }) => Users);
+    const courses = useSelector(({ Course }) => Course.NewCourseList);
+    const enrollments = useSelector(({ Enrollments }) => Enrollments);
+    const requestStatus = useSelector(({ RequestStatus }) => RequestStatus);
     const course = courses[courseID];
+
+
+
 
     const dispatch = useDispatch();
     const api = useMemo(
@@ -94,10 +98,9 @@ const CourseSessionStatus = () => {
     const courseStatus = hooks.useCourse(courseID);
     const instructorStatus = hooks.useInstructor(course && course.instructor_id, true);
     const enrollmentStatus = hooks.useEnrollmentByCourse(courseID);
-
     const courseTypeParse = {
-        "T":"tutoring",
-        "C":"course",
+        "T": "tutoring",
+        "C": "course",
     };
 
     const enrollment = (enrollments[studentID] && enrollments[studentID][courseID]) || {};
@@ -106,7 +109,7 @@ const CourseSessionStatus = () => {
         api.fetchEnrollmentNotes(enrollment.enrollment_id, studentID, courseID);
     }, [api, enrollment.enrollment_id, studentID, courseID]);
 
-    const registeringParent = useSelector(({Registration}) => Registration.CurrentParent);
+    const registeringParent = useSelector(({ Registration }) => Registration.CurrentParent);
     const [discardParentWarning, setDiscardParentWarning] = useState(false);
 
     const noteInfo = useMemo(() => ({
@@ -114,8 +117,8 @@ const CourseSessionStatus = () => {
         "enrollmentID": enrollment.enrollment_id,
         studentID,
     }), [courseID, enrollment.enrollment_id, studentID]);
-    useEffect(()=>{
-        if(course){
+    useEffect(() => {
+        if (course) {
             api.fetchSession({
                 config: {
                     params: {
@@ -126,20 +129,19 @@ const CourseSessionStatus = () => {
                 }
             });
         }
-    },[course, api]);
+    }, [course, api]);
 
-    useEffect(()=>{
-        return ()=>{
+    useEffect(() => {
+        return () => {
             api.resetSchedulerStatus();
         }
-    },[])
+    }, [])
 
-    const sessionDataParse = useCallback(({start_datetime, end_datetime, course, status}) => {
-        // let {start, end, course, status} = paramCourse
+    const sessionDataParse = useCallback(({ start_datetime, end_datetime, course, status, id, instructor }) => {
         const startDate = start_datetime && new Date(start_datetime);
         const endDate = end_datetime && new Date(end_datetime);
 
-        if(start_datetime && end_datetime && course){
+        if (start_datetime && end_datetime && course) {
             return {
                 "date": startDate.toLocaleDateString("en-US", dateOptions),
                 "day": DayConverter[startDate.getDay()],
@@ -147,6 +149,9 @@ const CourseSessionStatus = () => {
                 "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
                 status,
                 "tuition": course && courses[course].tuition,
+                "id": id,
+                "instructor": instructor,
+                "course_id": course
             };
         }
         return {};
@@ -172,7 +177,7 @@ const CourseSessionStatus = () => {
         }, []);
 
     const calendarSessions = courseSessions ? courseSessionsArray
-            .filter(session => session.course === Number(courseID)) : [],
+        .filter(session => session.course === Number(courseID)) : [],
         paymentSessionStatus = enrollment.session_payment_status,
         statusKey = (status) => {
             return "Paid";
@@ -202,55 +207,55 @@ const CourseSessionStatus = () => {
 
     const courseToRegister = {
         "Enrollment": enrollment.enrollment_id,
-        "Course Selection":{
-            "Course":{
+        "Course Selection": {
+            "Course": {
                 label: course.title,
                 value: Number(course.course_id),
             },
         },
-        "Course Selection_validated":{
+        "Course Selection_validated": {
             "Course": true,
         },
-        "Student":{
-            "Student":{
+        "Student": {
+            "Student": {
                 label: usersList.StudentList[studentID].name,
                 value: studentID,
             }
         },
-        "Student_validated":{
+        "Student_validated": {
             "Student": true,
         },
-        "Student Information":{},
-        "activeSection":"Student",
-        "activeStep":0,
+        "Student Information": {},
+        "activeSection": "Student",
+        "activeStep": 0,
         "conditional": "",
         "existingUser": false,
         "form": "class",
-        "hasLoaded":true,
-        "preLoaded":false,
-        "submitPending":false,
+        "hasLoaded": true,
+        "preLoaded": false,
+        "submitPending": false,
     };
 
     const initRegisterMoreSessions = event => {
         event.preventDefault();
         // check if registering parent is the current student's parent
-        if(registeringParent && registeringParent.user.id !== parentOfCurrentStudent){
+        if (registeringParent && registeringParent.user.id !== parentOfCurrentStudent) {
             // if not, warn user they're about to discard everything with the current registering parent
             setDiscardParentWarning(true);
-        } else if(registeringParent && registeringParent.user.id === parentOfCurrentStudent){
+        } else if (registeringParent && registeringParent.user.id === parentOfCurrentStudent) {
             //registering parent is the same as the current student's parent
             api.addCourseRegistration(courseToRegister);
             history.push("/registration/cart/");
-        } else if(!registeringParent) {
+        } else if (!registeringParent) {
             api.setParentAddCourseRegistration(parentOfCurrentStudent, courseToRegister);
             history.push("/registration/cart/");
         }
     };
 
-    const closeDiscardParentWarning = (toContinue) => event =>{
+    const closeDiscardParentWarning = (toContinue) => event => {
         event.preventDefault();
         setDiscardParentWarning(false);
-        if(toContinue){
+        if (toContinue) {
             api.setParentAddCourseRegistration(parentOfCurrentStudent, courseToRegister);
             history.push("/registration/cart/");
         }
@@ -302,15 +307,20 @@ const CourseSessionStatus = () => {
                             spacing={8}>
                             {sessions.length !== 0
                                 ? sessions.map((session, i) => {
-                                    const {day, date, startTime, endTime, status, tuition} =
+                                    const { day, date, startTime, endTime, status, tuition, id, course_id, instructor } =
                                         course.course_type === "tutoring"
                                             ? sessionDataParse(session) : courseDataParser(session);
+
+
                                     return (
                                         <Grid
                                             className="accounts-table-row"
                                             item
                                             key={i}
-                                            xs={12}>
+                                            xs={12}
+                                            to={course.course_type === "tutoring" ? `/scheduler/view-session/${course_id}/${id}/${instructor}` : `/registration/course/${course_id}`}
+                                            component={Link}
+                                        >
                                             <Paper square>
                                                 <Grid container>
                                                     <Grid
@@ -321,6 +331,7 @@ const CourseSessionStatus = () => {
                                                         xs={3}>
                                                         <Typography align="left">
                                                             {date}
+
                                                         </Typography>
                                                     </Grid>
                                                     <Grid
@@ -341,7 +352,7 @@ const CourseSessionStatus = () => {
                                                         item
                                                         xs={2}>
                                                         <Typography align="left">
-                                                    ${tuition}
+                                                            ${tuition}
                                                         </Typography>
                                                     </Grid>
                                                     <Grid
@@ -356,15 +367,15 @@ const CourseSessionStatus = () => {
                                         </Grid>
                                     );
                                 })
-                                : <NoListAlert list={"Course"}/>
+                                : <NoListAlert list={"Course"} />
                             }
                         </Grid>
                         <Grid item md={12} >
                             <Grid container
-                                  className={"session-actions"}
-                                  direction={"row"}
-                                  alignItems={"center"}
-                                  justify={"flex-end"}>
+                                className={"session-actions"}
+                                direction={"row"}
+                                alignItems={"center"}
+                                justify={"flex-end"}>
                                 <Grid item>
                                     <Button
                                         onClick={initRegisterMoreSessions}
@@ -387,8 +398,8 @@ const CourseSessionStatus = () => {
                 return (
                     <PaymentTable
                         type={"enrollment"}
-                        enrollmentID = {enrollment.enrollment_id}
-                        paymentList={enrollment.payment_list}/>
+                        enrollmentID={enrollment.enrollment_id}
+                        paymentList={enrollment.payment_list} />
                 );
             // no default
         }
@@ -418,7 +429,7 @@ const CourseSessionStatus = () => {
                     <Typography align="left">
                         Student: {" "}
                         <Link to={`/accounts/student/${studentID}`}>
-                              {usersList.StudentList[studentID].name}
+                            {usersList.StudentList[studentID].name}
                         </Link>
                     </Typography>
                     <Typography align="left">
@@ -439,15 +450,17 @@ const CourseSessionStatus = () => {
                         label={<><RegistrationIcon className="NoteIcon" /> Registration</>} />
                     <Tab
                         label={
-                            Object.values(enrollment.notes).some(({important}) => important)
+                            Object.values(enrollment.notes).some(({ important }) => important)
                                 ? <><Avatar
                                     className="notificationCourse"
-                                    style={{"width": 10,
-                                        "height": 10}} /><NoteIcon className="TabIcon" />  Notes
+                                    style={{
+                                        "width": 10,
+                                        "height": 10
+                                    }} /><NoteIcon className="TabIcon" />  Notes
                                 </>
                                 : <><NoteIcon className="NoteIcon" /> Notes</>} />
                     <Tab
-                        label={<><PaymentIcon className="TabIcon" /> Payments</>}/>
+                        label={<><PaymentIcon className="TabIcon" /> Payments</>} />
                 </Tabs>
                 <br />
                 {renderMain()}
