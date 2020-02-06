@@ -98,9 +98,6 @@ const CourseSessionStatus = () => {
     const courseStatus = hooks.useCourse(courseID);
     const instructorStatus = hooks.useInstructor(course && course.instructor_id, true);
     const enrollmentStatus = hooks.useEnrollmentByCourse(courseID);
-
-
-
     const courseTypeParse = {
         "T": "tutoring",
         "C": "course",
@@ -141,7 +138,6 @@ const CourseSessionStatus = () => {
     }, [])
 
     const sessionDataParse = useCallback(({ start_datetime, end_datetime, course, status, id, instructor }) => {
-        // let {start, end, course, status} = paramCourse
         const startDate = start_datetime && new Date(start_datetime);
         const endDate = end_datetime && new Date(end_datetime);
 
@@ -207,8 +203,6 @@ const CourseSessionStatus = () => {
             },
         ];
 
-
-
     let parentOfCurrentStudent = usersList.StudentList[studentID].parent_id;
 
     const courseToRegister = {
@@ -267,8 +261,6 @@ const CourseSessionStatus = () => {
         }
 
     };
-
-
 
     const renderMain = () => {
         switch (activeTab) {
