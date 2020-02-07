@@ -1,9 +1,9 @@
 import * as hooks from "actions/hooks";
-import React, {useMemo} from "react";
-import {courseDataParser} from "utils";
-import {Link} from "react-router-dom";
+import React, { useMemo } from "react";
+import { courseDataParser } from "utils";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
 import Grid from "@material-ui/core/Grid";
 import Loading from "components/Loading";
@@ -12,14 +12,14 @@ import Typography from "@material-ui/core/Typography";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel"
 
-const InstructorCourses = ({instructorID}) => {
-    const courses = useSelector(({Course}) => Course.NewCourseList);
+const InstructorCourses = ({ instructorID }) => {
+    const courses = useSelector(({ Course }) => Course.NewCourseList);
     const courseStatus = hooks.useCourse();
 
     const courseIDs = useMemo(() =>
         Object.keys(courses).filter((courseID) =>
             instructorID === courses[courseID].instructor_id)
-    , [courses, instructorID]);
+        , [courses, instructorID]);
 
     if (Object.keys(courses).length === 0) {
         if (hooks.isLoading(courseStatus)) {
@@ -40,7 +40,7 @@ const InstructorCourses = ({instructorID}) => {
                     container>
                     <Grid
                         item
-                        xs={3}>
+                        xs={4}>
                         <Typography
                             align="left"
                             className="table-header">
@@ -58,7 +58,7 @@ const InstructorCourses = ({instructorID}) => {
                     </Grid>
                     <Grid
                         item
-                        md={1}
+                        md={2}
                         xs={2}>
                         <Typography
                             align="left"
@@ -68,7 +68,7 @@ const InstructorCourses = ({instructorID}) => {
                     </Grid>
                     <Grid
                         item
-                        xs={3}>
+                        xs={2}>
                         <Typography
                             align="left"
                             className="table-header">
@@ -92,7 +92,7 @@ const InstructorCourses = ({instructorID}) => {
                 {
                     courseIDs.map((courseID) => {
                         const course = courses[courseID];
-                        const {days, startDate, endDate, startTime, endTime, is_confirmed} = courseDataParser(course);
+                        const { days, startDate, endDate, startTime, endTime, is_confirmed } = courseDataParser(course);
                         return (
                             <Grid
                                 className="accounts-table-row"
@@ -105,7 +105,7 @@ const InstructorCourses = ({instructorID}) => {
                                     <Grid container>
                                         <Grid
                                             item
-                                            xs={3}>
+                                            xs={4}>
                                             <Typography align="left">
                                                 {course.title}
                                             </Typography>
@@ -119,7 +119,7 @@ const InstructorCourses = ({instructorID}) => {
                                         </Grid>
                                         <Grid
                                             item
-                                            md={1}
+                                            md={2}
                                             xs={2}>
                                             <Typography align="left">
                                                 {days}
@@ -127,18 +127,18 @@ const InstructorCourses = ({instructorID}) => {
                                         </Grid>
                                         <Grid
                                             item
-                                            xs={3}>
+                                            xs={2}>
                                             <Typography align="left">
                                                 {startTime} - {endTime}
                                             </Typography>
                                         </Grid>
                                         <Grid
                                             item
-                                            xs={1}
+                                            md={1}
                                         >
                                             {is_confirmed ?
-                                            <ConfirmIcon className="confirmed course-icon"/> :
-                                            <UnconfirmIcon className="unconfirmed course-icon"/>}
+                                                <ConfirmIcon className="confirmed course-icon" /> :
+                                                <UnconfirmIcon className="unconfirmed course-icon" />}
                                         </Grid>
                                     </Grid>
                                 </Paper>
