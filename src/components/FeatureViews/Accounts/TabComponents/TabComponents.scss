@@ -187,13 +187,16 @@
 .accounts-table-heading,
 .accounts-table-row>* {
   padding: 15px;
-  cursor: pointer;
+  
 
   .table-header {
     color: white;
     font-weight: 500;
+    
   }
 }
+
+
 
 .accounts-table-heading,
 .payment-table-heading {
@@ -205,13 +208,16 @@
 
 .accounts-table-row {
   position: relative;
-
+  text-decoration: none !important; 
   &:hover {
     border-left: solid 5px $primaryColor;
+    cursor: pointer;
+    
   }
 
   .accounts-table-text {
     font-size: 12px;
+    
   }
 }
 
@@ -243,6 +249,7 @@
 
 .course-session-status {
   padding: 3%;
+  cursor: default !important;
   .course-session-title{
     margin-top:10px;
     margin-bottom:20px;
@@ -265,11 +272,13 @@
     
   }
 
+
   .accounts-table-heading,
   .accounts-table-row>* {
     cursor: default;
     
   }
+
 }
 
 .payments-history {
