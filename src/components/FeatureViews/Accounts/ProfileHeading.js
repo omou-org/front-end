@@ -213,7 +213,6 @@ handleOpen(event){
 
 
     render() {
-        console.log(this.state.open);
         let profileDetails;
         switch (this.props.user.role) {
             case "student":
@@ -260,7 +259,7 @@ handleOpen(event){
                                 this.handleOpen(e);
                             }}>
                     asd
-                    <OutOfOffice open={this.state.open}/>
+                    <OutOfOffice/>
                     </Button>
                 </Grid>
 

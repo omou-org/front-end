@@ -7,12 +7,13 @@ import { connect } from "react-redux";
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Grid from "@material-ui/core/Grid";
+import './Accounts.scss';
 
 
 function OutOfOffice(props) {
     console.log(props);
-    const setDialog = useState(props.open);
-    const setDate = useState(null);
+    const [Dialog, setDialog] = useState(props.open);
+    const [Date, setDate] = useState(null);
     const closeDialog = () => {
         setDialog(false);
     };
@@ -21,10 +22,12 @@ function OutOfOffice(props) {
     };
 
     return (
-        <Dialog className={"dialog"}
+        <Dialog className={"oooDialog"}
             aria-labelledby="simple-dialog-title" open={props.open}
             fullWidth={true}
-            onClose={closeDialog}>
+            onClose={closeDialog}
+            contentStyle={{width: "100%", maxWidth: "none"}}
+            >
             <DialogContent>
                 <div>
                     Schedule OOO
@@ -116,7 +119,4 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(OutOfOffice);
+export default OutOfOffice;
