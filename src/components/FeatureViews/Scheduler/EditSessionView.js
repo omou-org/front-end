@@ -111,6 +111,7 @@ function EditSessionView({ course, session, editSelection }) {
     };
 
     const handleDurationSelect = event => {
+
         let { start_time, end_time } = sessionFields
         let newEndTime = new Date(start_time)
 
