@@ -225,6 +225,14 @@ function DisplaySessionView({ course, session, handleToggleEditing }) {
 
         <Grid className="session-detail-action-control"
             container direction="row" justify="flex-end">
+                <Grid item>
+                    <Button
+                        className={"button"}
+                        color="secondary"
+                        variant="outlined">
+                        Add Sessions
+                                    </Button>
+                </Grid>
             <Grid item>
                 <Button
                     className="button"
@@ -255,6 +263,7 @@ function DisplaySessionView({ course, session, handleToggleEditing }) {
                     Return to scheduling
                 </Button>
             </Grid>
+
         </Grid>
         <Dialog
             aria-describedby="alert-dialog-description"

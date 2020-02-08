@@ -36,64 +36,71 @@ import Loading from "../../Loading";
 const userTabs = {
     "instructor": [
         {
-            "icon": <ScheduleIcon className="TabIcon" />,
             "tab_heading": "Schedule",
             "tab_id": 0,
+            "icon": <ScheduleIcon className="TabIcon" />,
         },
         {
-            "icon": <CoursesIcon className="TabIcon" />,
             "tab_heading": "Courses",
             "tab_id": 1,
+            "icon": <CoursesIcon className="TabIcon" />,
         },
         {
-            "icon": <BioIcon className="TabIcon" />,
             "tab_heading": "Bio",
             "tab_id": 2,
+            "icon": <BioIcon className="TabIcon" />,
         },
         {
+            "tab_heading": "Notes",
+            "tab_id": 7,
             "icon": <notificationIcon className="TabIcon" />,
-            "tab_heading": "Notes",
-            "tab_id": 7,
-        },
-    ],
-    "parent": [
-        {
-            "icon": <CurrentSessionsIcon className="TabIcon" />,
-            "tab_heading": "Student Info",
-            "tab_id": 8,
-        },
-        {
-            "icon": <PaymentIcon className="TabIcon" />,
-            "tab_heading": "Payment History",
-            "tab_id": 5,
-        },
-        {
-            "icon": <NoteIcon className="TabIcon" />,
-            "tab_heading": "Notes",
-            "tab_id": 7,
         },
     ],
     "student": [
         {
-            "icon": <CurrentSessionsIcon className="TabIcon" />,
             "tab_heading": "Current Sessions",
             "tab_id": 3,
+            "icon": <CurrentSessionsIcon className="TabIcon" />,
         },
         {
-            "icon": <PastSessionsIcon className="TabIcon" />,
             "tab_heading": "Past Sessions",
             "tab_id": 4,
+            "icon": <PastSessionsIcon className="TabIcon" />,
         },
         {
-            "icon": <ContactIcon className="TabIcon" />,
             "tab_heading": "Parent Contact",
             "tab_id": 6,
+            "icon": <ContactIcon className="TabIcon" />,
         },
         {
-            "icon": <NoteIcon className="TabIcon" />,
             "tab_heading": "Notes",
             "tab_id": 7,
+            "icon": <NoteIcon className="TabIcon" />,
         },
+    ],
+
+    "parent": [
+        {
+            "tab_heading": "Student Info",
+            "tab_id": 8,
+            "icon": <CurrentSessionsIcon className="TabIcon" />,
+        },
+        {
+            "tab_heading": "Pay Courses",
+            "tab_id": 9,
+            "icon": <CurrentSessionsIcon className="TabIcon" />,
+        },
+        {
+            "tab_heading": "Payment History",
+            "tab_id": 5,
+            "icon": <PaymentIcon className="TabIcon" />,
+        },
+        {
+            "tab_heading": "Notes",
+            "tab_id": 7,
+            "icon": <NoteIcon className="TabIcon" />,
+        },
+
     ],
 };
 
@@ -101,8 +108,12 @@ class UserProfile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            "activeTab": 0,
+            "user": {},
+            "value": 0,
+            "alert": false,
         };
+        this.currID = props.computedMatch.params.accountID;
+        this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount() {
@@ -137,20 +148,64 @@ class UserProfile extends Component {
         }
     }
 
+    componentDidUpdate(prevProps) {
+        const {
+            "accountType": currAccType,
+            "accountID": currAccID
+        } = this.props.computedMatch.params;
+
+        const {
+            "accountType": prevAccType,
+            "accountID": prevAccID
+        } = prevProps.computedMatch.params;
+
+        // if looking at new profile, reset tab to the first one
+        if (currAccType !== prevAccType || currAccID !== prevAccID) {
+            const {accountType, accountID} = this.props.computedMatch.params;
+            this.props.userActions.fetchAccountNotes(accountID, accountType);
+            let user;
+            switch (accountType) {
+                case "student":
+                    this.props.userActions.fetchStudents(accountID);
+                    break;
+                case "parent":
+                    this.props.userActions.fetchParents(accountID);
+                    break;
+                case "instructor":
+                    this.props.userActions.fetchInstructors(accountID);
+                    break;
+                case "receptionist":
+                    // future request for receptionists
+                    break;
+                // no default
+            }
+            return user;
+            this.setState({
+                "value": 0,
+            });
+        }
+    }
+
     getUser = () => {
+        let user;
         const { accountType, accountID } = this.props.computedMatch.params;
         switch (accountType) {
             case "student":
-                return this.props.students[accountID];
+                user = this.props.students[accountID];
+                break;
             case "parent":
-                return this.props.parents[accountID];
+                user = this.props.parents[accountID];
+                break;
             case "instructor":
-                return this.props.instructors[accountID];
+                user = this.props.instructors[accountID];
+                break;
             case "receptionist":
-                return this.props.receptionist[accountID];
+                user = this.props.receptionist[accountID];
+                break;
             default:
-                return null;
+                user = null;
         }
+        return user;
     }
 
     getRequestStatus = () => {
@@ -160,11 +215,9 @@ class UserProfile extends Component {
             : this.props.requestStatus[accountType][GET][accountID];
     }
 
-    handleChange = (event, activeTab) => {
-        event.preventDefault();
-        this.setState({
-            activeTab,
-        });
+    handleChange(e, newTabIndex) {
+        e.preventDefault();
+        this.setState({ "value": newTabIndex });
     }
 
     hasImportantNotes() {
@@ -174,38 +227,29 @@ class UserProfile extends Component {
     }
 
     renderNoteIcon() {
-        if (this.getUser() && this.getUser().role !== "receptionist") {
+        if (this.getUser() && this.getUser().role != "receptionist") {
             if (this.hasImportantNotes()) {
-                userTabs[this.getUser().role].find((tab) => tab.tab_id === 7).icon =
-                    (
-                        <>
-                            <Avatar
-                                className="notification"
-                                style={{
-                                    "height": 10,
-                                    "width": 10,
-                                }} />
-                            <NoteIcon className="TabIcon" />
-                        </>
-                    );
-            } else {
-                userTabs[this.getUser().role].find((tab) => tab.tab_id === 7).icon =
-                    <NoteIcon className="TabIcon" />;
+                userTabs[this.getUser().role].find(tab => tab.tab_id === 7).icon =
+                    <><Avatar style={{ width: 10, height: 10 }} className="notification" /><NoteIcon className="TabIcon" /></>
+            }
+            else {
+                userTabs[this.getUser().role].filter(tab => tab.tab_id === 7)[0].icon =
+                    <NoteIcon className="TabIcon" />
             }
         }
     }
 
     render() {
+        this.renderNoteIcon();
         const status = this.getRequestStatus();
-        const user = this.getUser();
-        if (!user || Object.keys(user).length <= 1) {
-            if (!status || status === apiActions.REQUEST_STARTED) {
-                return <Loading />;
-            }
+        if (!status || status === apiActions.REQUEST_STARTED) {
+            return <Loading/>
+        }
 
-            if (status < 200 || status >= 300) {
-                return <Redirect to="/PageNotFound" />;
-            }
+        const user = this.getUser();
+
+        if ((!user || user === -1) && (status < 200 || status >= 300)) {
+            return <Redirect to="/PageNotFound" />;
         }
 
         this.renderNoteIcon();
@@ -214,37 +258,40 @@ class UserProfile extends Component {
         const styles = {
             "backgroundColor": stringToColor(user.name),
             "color": "white",
-            "fontSize": "3.5vw",
-            "height": "9vw",
-            "margin": 20,
             "width": "9vw",
+            "height": "9vw",
+            "fontSize": "3.5vw",
+            "margin": 20,
         };
         let tabs;
         if (user.role !== "receptionist") {
-            tabs = (
-                <div>
-                    <Tabs
-                        indicatorColor="primary"
-                        onChange={this.handleChange}
-                        textColor="primary"
-                        value={activeTab}>
-                        {userTabs[accountType].map((tab) => (
-                            <Tab
-                                key={tab.tab_id}
-                                label={<>{tab.icon} {tab.tab_heading}</>} />
-                        ))}
-                    </Tabs>
-                    <ComponentViewer
-                        inView={userTabs[accountType][activeTab].tab_id}
-                        user={user} />
-                </div>
-            );
+            tabs =
+                (
+                    <div>
+                        <Tabs
+                            indicatorColor="primary"
+                            key={this.props.inView}
+                            onChange={this.handleChange}
+                            textColor="primary"
+                            value={this.state.value}>
+                            {userTabs[accountType].map((tab) => (
+                                <Tab
+                                    key={tab.tab_id}
+                                    label={<>{tab.icon} {tab.tab_heading}</>} />
+                            ))}
+                        </Tabs>
+                        <ComponentViewer
+                            inView={userTabs[accountType][this.state.value].tab_id}
+                            user={user} />
+                    </div>
+                );
         } else {
             tabs = (
                 <div>
                     <Grid align="left">
                         Action Log
                     </Grid>
+
                     <Paper className="paper">
                         <Table className="ActionTable">
                             <TableHead>
@@ -255,33 +302,36 @@ class UserProfile extends Component {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {Object.values(user.action_log).map((row) => (
-                                    <TableRow
-                                        className="row"
-                                        key={row.date}>
-                                        <TableCell
-                                            component="th"
-                                            scope="row">
-                                            <Grid
-                                                alignItems="center"
-                                                container
-                                                layout="row">
+                                {Object.keys(user.action_log).map((rowID) => {
+                                    const row = user.action_log[rowID];
+                                    return (
+                                        <TableRow
+                                            className="row"
+                                            key={row.date}>
+                                            <TableCell
+                                                component="th"
+                                                scope="row">
                                                 <Grid
-                                                    item
-                                                    md={3} />
-                                                <Grid
-                                                    item
-                                                    md={9}>
-                                                    <Typography>
-                                                        {row.date}
-                                                    </Typography>
+                                                    alignItems="center"
+                                                    container
+                                                    layout="row">
+                                                    <Grid
+                                                        item
+                                                        md={3} />
+                                                    <Grid
+                                                        item
+                                                        md={9}>
+                                                        <Typography>
+                                                            {row.date}
+                                                        </Typography>
+                                                    </Grid>
                                                 </Grid>
-                                            </Grid>
-                                        </TableCell>
-                                        <TableCell>{row.time}</TableCell>
-                                        <TableCell>{row.description}</TableCell>
-                                    </TableRow>
-                                ))}
+                                            </TableCell>
+                                            <TableCell>{row.time}</TableCell>
+                                            <TableCell>{row.description}</TableCell>
+                                        </TableRow>
+                                    );
+                                })}
                             </TableBody>
                         </Table>
                     </Paper>
@@ -294,25 +344,15 @@ class UserProfile extends Component {
                     <BackButton
                         warn={false} />
                     <hr />
-                    <Grid
-                        className="padding"
-                        container
-                        layout="row" >
-                        <Grid
-                            item
-                            md={2}>
+                    <Grid className="padding" container layout="row" >
+                        <Grid item md={2}>
                             <Hidden smDown>
                                 <Avatar style={styles}>
-                                    {user.name.toUpperCase().match(/\b(\w)/g)
-                                        .join("")}
+                                    {user.name.toUpperCase().match(/\b(\w)/g).join("")}
                                 </Avatar>
                             </Hidden>
                         </Grid>
-                        <Grid
-                            className="headingPadding"
-                            item
-                            md={10}
-                            xs={12} >
+                        <Grid item md={10} xs={12} className="headingPadding" >
                             <ProfileHeading user={user} />
                         </Grid>
                     </Grid>
@@ -321,6 +361,7 @@ class UserProfile extends Component {
             </div>
         );
     }
+
 }
 
 UserProfile.propTypes = {};
