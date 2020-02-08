@@ -87,7 +87,7 @@ function DisplaySessionView({ course, session, handleToggleEditing }) {
         "width": "3vw",
         "height": "3vw",
         "fontSize": 15,
-        "margin-right": 10,
+        "marginRight": 10,
     });
 
     const studentKeys = Object.keys(enrolledStudents);
@@ -116,7 +116,7 @@ function DisplaySessionView({ course, session, handleToggleEditing }) {
         session.start;
     return (<>
         <Grid className="session-view"
-            container spacing={2} direction={"row"}>
+            container spacing={8} direction={"row"}>
             <Grid item sm={12}>
                 <Typography align="left" variant="h3"
                     className="session-view-title"
@@ -125,6 +125,7 @@ function DisplaySessionView({ course, session, handleToggleEditing }) {
                 </Typography>
             </Grid>
             <Grid
+                item
                 align="left"
                 className="session-view-details"
                 container spacing={16} xs={6}
@@ -202,7 +203,7 @@ function DisplaySessionView({ course, session, handleToggleEditing }) {
                 <Typography variant="h5" align="left"> Students Enrolled  </Typography>
                 <Grid container direction='row'>
                     {studentKeys.map(key =>
-                        <NavLink to={`/accounts/student/${enrolledStudents[key].user_id}/${course.course_id}`}
+                        <NavLink key={key} to={`/accounts/student/${enrolledStudents[key].user_id}/${course.course_id}`}
                             style={{ textDecoration: "none" }}>
                             <Tooltip title={enrolledStudents[key].name}>
                                 <Avatar
@@ -262,7 +263,7 @@ function DisplaySessionView({ course, session, handleToggleEditing }) {
                     Return to scheduling
                 </Button>
             </Grid>
-            
+
         </Grid>
         <Dialog
             aria-describedby="alert-dialog-description"

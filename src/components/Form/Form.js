@@ -1372,7 +1372,7 @@ class Form extends Component {
                             />
                         }
                         <Typography className="heading" align="left">
-                            Course Registration Confirmation
+                            {this.renderTitle(this.props.match.params.id, this.props.match.params.type)}
                         </Typography>
                         {
                             this.props.submitStatus !== "success" ?

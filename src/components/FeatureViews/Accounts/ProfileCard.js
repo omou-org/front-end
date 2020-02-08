@@ -20,10 +20,9 @@ import {withRouter} from "react-router-dom";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
-import { stringToColor } from "./accountUtils";
-import { addDashes } from "./accountUtils";
+import { addDashes, stringToColor } from "./accountUtils";
 
-import {ReactComponent as IDIcon} from "../../identifier.svg";
+import { ReactComponent as IDIcon } from "../../identifier.svg";
 import './Accounts.scss';
 
 import Avatar from "@material-ui/core/Avatar";
@@ -54,12 +53,12 @@ class ProfileCard extends Component {
 
         return (
             <Grid item xs={12} sm={6} className="ProfileCard">
-                {this.props.user  && <Card key={this.props.user.user_id}
-                                           style={{cursor: "pointer"}}
-                                           onClick={(event) => {
-                                               event.preventDefault();
-                                               this.goToRoute(this.props.route);
-                                           }}>
+                {this.props.user && <Card key={this.props.user.user_id}
+                    style={{ cursor: "pointer" }}
+                    onClick={(event) => {
+                        event.preventDefault();
+                        this.goToRoute(this.props.route);
+                    }}>
                     <Grid container>
                         <Grid component={Hidden} xsDown item md={4}>
                             <Avatar
@@ -73,7 +72,7 @@ class ProfileCard extends Component {
                                 </Typography>
                                 <Typography component="p" align={'left'}>
                                     <Chip
-                                        style={{cursor: "pointer"}}
+                                        style={{ cursor: "pointer" }}
                                         className={`userLabel ${this.props.user.role}`}
                                         label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
                                     />

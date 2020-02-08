@@ -117,8 +117,20 @@ class UserProfile extends Component {
     }
 
     componentDidMount() {
-        let user;
+        this.fetchUserData();
+    }
+
+    componentDidUpdate(prevProps) {
         const { accountType, accountID } = this.props.computedMatch.params;
+        if (prevProps.computedMatch.params.accountType !== accountType ||
+            prevProps.computedMatch.params.accountID !== accountID) {
+            this.fetchUserData();
+        }
+    }
+
+    fetchUserData() {
+        const { accountType, accountID } = this.props.computedMatch.params;
+        this.props.userActions.fetchAccountNotes(accountID, accountType);
         switch (accountType) {
             case "student":
                 this.props.userActions.fetchStudents(accountID);
@@ -134,7 +146,6 @@ class UserProfile extends Component {
                 break;
             // no default
         }
-        return user;
     }
 
     componentDidUpdate(prevProps) {
@@ -209,26 +220,16 @@ class UserProfile extends Component {
         this.setState({ "value": newTabIndex });
     }
 
-    filter() {
-        const filterHelper = (obj, predicate) =>
-            Object.keys(obj)
-                .filter(key => predicate(obj[key]))
-                .reduce((res, key) => (res[key] = obj[key], res), {});
-
-        // Example use:
-        let filtered = filterHelper(this.getUser().notes, note => note.important === true)
-        if (Object.keys(filtered).length != 0) {
-            return true;
-        }
-        else {
-            return false;
-        }
-
+    hasImportantNotes() {
+        return this.getUser() && this.getUser().notes &&
+            Object.values(this.getUser().notes)
+                .some(({ important }) => important);
     }
+
     renderNoteIcon() {
         if (this.getUser() && this.getUser().role != "receptionist") {
-            if (this.filter()) {
-                userTabs[this.getUser().role].filter(tab => tab.tab_id === 7)[0].icon =
+            if (this.hasImportantNotes()) {
+                userTabs[this.getUser().role].find(tab => tab.tab_id === 7).icon =
                     <><Avatar style={{ width: 10, height: 10 }} className="notification" /><NoteIcon className="TabIcon" /></>
             }
             else {
@@ -250,7 +251,10 @@ class UserProfile extends Component {
         if ((!user || user === -1) && (status < 200 || status >= 300)) {
             return <Redirect to="/PageNotFound" />;
         }
-        const { accountType, accountID } = this.props.computedMatch.params;
+
+        this.renderNoteIcon();
+        const { accountType } = this.props.computedMatch.params;
+        const { activeTab } = this.state;
         const styles = {
             "backgroundColor": stringToColor(user.name),
             "color": "white",

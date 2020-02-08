@@ -1,8 +1,8 @@
 /* eslint-disable max-lines-per-function */
 // React Imports
-import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {useHistory} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -18,20 +18,20 @@ import Add from "@material-ui/icons/CheckCircle";
 // Local Component Imports
 import "./Form.scss";
 import TextField from "@material-ui/core/es/TextField/TextField";
-import {bindActionCreators} from "redux";
+import { bindActionCreators } from "redux";
 import * as apiActions from "../../actions/apiActions";
-import {instance} from "../../actions/apiActions";
+import { instance } from "../../actions/apiActions";
 import * as userActions from "../../actions/userActions";
 import * as registrationActions from "../../actions/registrationActions";
-import {dayOfWeek, weeklySessionsParser} from "./FormUtils";
-import {usePrevious} from "../../actions/hooks";
+import { dayOfWeek, weeklySessionsParser } from "./FormUtils";
+import { usePrevious } from "../../actions/hooks";
 
-const CASH = "CASH",
-    CHECK = "CHECK",
-    CREDIT_CARD = "CREDIT_CARD",
-    INTERNATIONAL_CREDIT_CARD = "INTERNATIONAL_CREDIT_CARD";
+const CASH = "cash",
+    CHECK = "check",
+    CREDIT_CARD = "credit_card",
+    INTERNATIONAL_CREDIT_CARD = "intl_credit_card";
 
-const PriceQuoteForm = ({courses, tutoring}) => {
+const PriceQuoteForm = ({ courses, tutoring }) => {
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -42,8 +42,8 @@ const PriceQuoteForm = ({courses, tutoring}) => {
         [dispatch]
     );
     const history = useHistory();
-    const token = useSelector(({auth}) => auth.token);
-    const isAdmin = useSelector(({auth}) => auth.isAdmin);
+    const token = useSelector(({ auth }) => auth.token);
+    const isAdmin = useSelector(({ auth }) => auth.isAdmin);
     const [priceQuote, setPriceQuote] = useState({});
     const prevPriceQuote = usePrevious(priceQuote);
     const [discounts, setDiscounts] = useState([]);
@@ -76,7 +76,7 @@ const PriceQuoteForm = ({courses, tutoring}) => {
                     delete tutoring.new_course;
                     return tutoring;
                 }),
-                "disabled_discounts": discounts.filter((discount) => !discount.enable).map(({id}) => id),
+                "disabled_discounts": discounts.filter((discount) => !discount.enable).map(({ id }) => id),
                 "price_adjustment": Number(priceAdjustment),
             };
             // make price quote request
@@ -170,7 +170,7 @@ const PriceQuoteForm = ({courses, tutoring}) => {
         })));
     }, []);
 
-    const handlePriceAdjustment = useCallback(({target}) => {
+    const handlePriceAdjustment = useCallback(({ target }) => {
         setPriceAdjustment(target.value);
     }, []);
 
@@ -284,7 +284,7 @@ const PriceQuoteForm = ({courses, tutoring}) => {
                                                 align="right"
                                                 className={`discount-amount
                                                             ${discount.enable && "enable"}`}>
-                                                    - {discount.amount}
+                                                - {discount.amount}
                                             </Typography>
                                         </Grid>
                                     </Grid>
