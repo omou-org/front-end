@@ -29,7 +29,7 @@ import { usePrevious } from "../../actions/hooks";
 const CASH = "cash",
     CHECK = "check",
     CREDIT_CARD = "credit_card",
-    INTERNATIONAL_CREDIT_CARD = "international_credit_card";
+    INTERNATIONAL_CREDIT_CARD = "intl_credit_card";
 
 const PriceQuoteForm = ({ courses, tutoring }) => {
     const dispatch = useDispatch();
