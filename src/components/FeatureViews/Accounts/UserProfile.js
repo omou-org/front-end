@@ -1,14 +1,14 @@
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import * as userActions from "../../../actions/userActions";
 import * as apiActions from "../../../actions/apiActions";
-import {GET} from "../../../actions/actionTypes";
-import React, {Component} from "react";
-import {Redirect} from "react-router-dom";
+import { GET } from "../../../actions/actionTypes";
+import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 
-import {stringToColor} from "./accountUtils";
+import { stringToColor } from "./accountUtils";
 import Grid from "@material-ui/core/Grid";
-import {Paper, Typography} from "@material-ui/core";
+import { Paper, Typography } from "@material-ui/core";
 import "./Accounts.scss";
 
 import BackButton from "../../BackButton";
@@ -110,7 +110,7 @@ class UserProfile extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const {accountType, accountID} = this.props.computedMatch.params;
+        const { accountType, accountID } = this.props.computedMatch.params;
         if (prevProps.computedMatch.params.accountType !== accountType ||
             prevProps.computedMatch.params.accountID !== accountID) {
             this.fetchUserData();
@@ -118,7 +118,7 @@ class UserProfile extends Component {
     }
 
     fetchUserData() {
-        const {accountType, accountID} = this.props.computedMatch.params;
+        const { accountType, accountID } = this.props.computedMatch.params;
         this.props.userActions.fetchAccountNotes(accountID, accountType);
         switch (accountType) {
             case "student":
@@ -138,7 +138,7 @@ class UserProfile extends Component {
     }
 
     getUser = () => {
-        const {accountType, accountID} = this.props.computedMatch.params;
+        const { accountType, accountID } = this.props.computedMatch.params;
         switch (accountType) {
             case "student":
                 return this.props.students[accountID];
@@ -154,7 +154,7 @@ class UserProfile extends Component {
     }
 
     getRequestStatus = () => {
-        const {accountType, accountID} = this.props.computedMatch.params;
+        const { accountType, accountID } = this.props.computedMatch.params;
         return accountType === "receptionist"
             ? 200
             : this.props.requestStatus[accountType][GET][accountID];
@@ -170,7 +170,7 @@ class UserProfile extends Component {
     hasImportantNotes() {
         return this.getUser() && this.getUser().notes &&
             Object.values(this.getUser().notes)
-                .some(({important}) => important);
+                .some(({ important }) => important);
     }
 
     renderNoteIcon() {
@@ -209,8 +209,8 @@ class UserProfile extends Component {
         }
 
         this.renderNoteIcon();
-        const {accountType} = this.props.computedMatch.params;
-        const {activeTab} = this.state;
+        const { accountType } = this.props.computedMatch.params;
+        const { activeTab } = this.state;
         const styles = {
             "backgroundColor": stringToColor(user.name),
             "color": "white",

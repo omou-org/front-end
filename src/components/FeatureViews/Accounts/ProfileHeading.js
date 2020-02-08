@@ -36,6 +36,15 @@ class ProfileHeading extends Component {
             <Grid item xs={12}>
                 <Grid container>
                     <Grid item xs={1} md={1} className="rowPadding">
+                        <IDIcon className="iconScaling" />
+                    </Grid>
+
+                    <Grid item xs={5} md={5} className="rowPadding">
+                        <Typography className="rowText">
+                            #{this.props.user.summit_id ? this.props.user.summit_id : this.props.user.user_id}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={1} md={1} className="rowPadding">
                         <BirthdayIcon className="iconScaling" />
                     </Grid>
                     <Grid item xs={5} md={5} className="rowPadding">
@@ -43,14 +52,7 @@ class ProfileHeading extends Component {
                             {this.props.user.birthday}
                         </Typography>
                     </Grid>
-                    <Grid item xs={1} md={1} className="rowPadding">
-                        <IDIcon className="iconScaling" />
-                    </Grid>
-                    <Grid item xs={5} md={5} className="rowPadding">
-                        <Typography className="rowText">
-                            #{this.props.user.summit_id ? this.props.user.summit_id : this.props.user.user_id}
-                        </Typography>
-                    </Grid>
+
                     <Grid item xs={1} md={1} className="rowPadding">
                         <GradeIcon className="iconScaling" />
                     </Grid>
@@ -244,7 +246,7 @@ handleOpen(event){
                             <h1 className="ProfileName">
                                 {this.props.user.name}
                             </h1>
-                            <div style={{paddingLeft: 30}}>
+                            <div style={{ paddingLeft: 30 }}>
                                 <Hidden smDown>
                                     <Chip
                                         className={`userLabel ${this.props.user.role}`}
