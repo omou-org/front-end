@@ -179,6 +179,11 @@ class ProfileHeading extends Component {
             </Grid>);
     }
 
+    handleClose=()=>{
+        this.setState({open:false});
+        console.log("asd");
+    }
+
     renderEditButton() {
         if (this.props.user.role != "receptionist") {
             return (
@@ -259,8 +264,9 @@ handleOpen(event){
                                 this.handleOpen(e);
                             }}>
                     asd
-                    <OutOfOffice/>
                     </Button>
+                    <OutOfOffice handleclose={this.handleClose} open={this.state.open}/>
+
                 </Grid>
 
                 {profileDetails}

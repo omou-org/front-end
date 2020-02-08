@@ -12,20 +12,16 @@ import './Accounts.scss';
 
 function OutOfOffice(props) {
     console.log(props);
-    const [Dialog, setDialog] = useState(props.open);
-    const [Date, setDate] = useState(null);
-    const closeDialog = () => {
-        setDialog(false);
-    };
+    const [dialog, setdialog] = useState(props.open);
+    const [date, setdate] = useState(null);
     const handleChange = event => {
-        setDate(event.target.value);
+        setdate(event.target.value);
     };
 
     return (
         <Dialog className={"oooDialog"}
             aria-labelledby="simple-dialog-title" open={props.open}
-            fullWidth={true}
-            onClose={closeDialog}
+            fullWidth={true} 
             contentStyle={{width: "100%", maxWidth: "none"}}
             >
             <DialogContent>
@@ -97,12 +93,12 @@ function OutOfOffice(props) {
                 </Grid>
                 <Grid container >
                     <Grid align="right">
-                        <Button onClick={closeDialog}>
+                        <Button onClick={props.handleclose}>
                             Cancel
                         </Button>
                     </Grid>
                     <Grid align="right">
-                        <Button onClick={closeDialog}>
+                        <Button onClick={props.handleclose}>
                             Save OOO
                         </Button>
                     </Grid>
