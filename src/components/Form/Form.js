@@ -9,6 +9,8 @@ import React, {Component} from "react";
 import {Prompt} from "react-router";
 import {NavLink, withRouter} from "react-router-dom";
 import CreatableSelect from 'react-select/creatable';
+import * as searchActions from "actions/searchActions";
+import AsyncSelect from "react-select/async";
 import {updateParent, updateStudent} from "reducers/usersReducer";
 import {updateCourse} from "reducers/courseReducer";
 // Material UI Imports
@@ -44,6 +46,8 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import {DatePicker, TimePicker,} from "material-ui-pickers";
 import {createDiscountPayload, durationParser, loadEditCourseState, numSessionsParser, timeParser} from "./FormUtils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
+import {instance} from "actions/apiActions";
+import {isFail} from "actions/hooks";
 
 const parseGender = {
     "M": "Male",
@@ -906,24 +910,48 @@ class Form extends Component {
             case "instructor": {
                 let instructorList = this.props.instructors;
 
-                instructorList = Object.values(instructorList).map(({user_id, name, email}) => ({
-                    value: user_id,
-                    label: `${name} - ${email}`,
-                }));
-                instructorList = this.removeDuplicates(Object.values(this.state[label]), instructorList);
-                return (<div style={{width: "inherit"}}>
-                    <Grid container className="student-align">
-                        <SearchSelect
-                            disabled={disabled}
-                            value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
-                            onChange={(value) => {
-                                this.onSelectChange(value, label, field);
-                            }}
-                            placeholder={"Choose an Instructor"}
-                            options={instructorList}
-                            className="search-options" />
-                    </Grid>
-                </div>);
+                const mapInstructor = (id, name, email) => ({
+                    "value": id,
+                    "label": `${name} - ${email}`,
+                })
+
+                instructorList = Object.values(instructorList)
+                    .map(({user_id, name, email}) => mapInstructor(user_id, name, email));
+
+                const loadInstructors = async (inputValue) => {
+                    const response = await instance.get("/search/account/", {
+                        "headers": {
+                            "Authorization": `Token ${this.props.token}`,
+                        },
+                        "params": {
+                            page: 1,
+                            profile: "instructor",
+                            query: inputValue,
+                        },
+                    });
+                    if (isFail(response.status)) {
+                        return [];
+                    }
+                    return response.data
+                        .map(({"user": {user_id, first_name, last_name, email}}) =>
+                            mapInstructor(user_id, `${first_name} ${last_name}`, email));
+                };
+
+                return (
+                    <div style={{width: "inherit"}}>
+                        <Grid container className="student-align">
+                            <AsyncSelect
+                                cacheOptions
+                                className="search-options"
+                                defaultOptions={instructorList}
+                                loadOptions={loadInstructors}
+                                onChange={(value) => {
+                                    this.onSelectChange(value, label, field);
+                                }}
+                            />
+                        </Grid>
+                    </div>
+                );
             }
             case "category" : {
                 const categoriesList = this.props.courseCategories
