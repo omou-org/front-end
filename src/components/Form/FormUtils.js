@@ -1,3 +1,6 @@
+import {instance} from "actions/apiActions";
+import {isFail} from "actions/hooks";
+
 /**
  * @description: parses a form to convert start and end time from a form to a duration
  * */
@@ -208,3 +211,30 @@ export function arr_diff (a1, a2) {
 
     return diff;
 }
+
+/**
+ * @description Searches for matching instructors
+ * @param {String} input search input
+ * @param {String} token Authorization Token for request
+ * @returns {Promise} Resolves to the list of matching instructors
+ */
+export const loadInstructors = async (input, token) => {
+    const response = await instance.get("/search/account/", {
+        "headers": {
+            "Authorization": `Token ${token}`,
+        },
+        "params": {
+            "page": 1,
+            "profile": "instructor",
+            "query": input,
+        },
+    });
+    if (isFail(response.status)) {
+        return [];
+    }
+    return response.data
+        .map(({"user": {user_id, first_name, last_name, email}}) => ({
+            "label": `${first_name} ${last_name} - ${email}`,
+            "value": user_id,
+        }));
+};
