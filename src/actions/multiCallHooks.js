@@ -62,14 +62,17 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         .map((data) => data[0]);
 
                     // set enrollment attribute appropriately
-                    classRegistrations = classRegistrations.map((reg) => ({
-                        ...reg,
-                        // true if matching enrollment
-                        "enrollment": currEnrollments
-                            .some(({student, course}) =>
+                    classRegistrations = classRegistrations.map((reg) => {
+                        const matchingEnrollment = currEnrollments
+                            .find(({student, course}) =>
                                 `${student}` === `${reg.student}` &&
-                                `${course}` === `${reg.course}`),
-                    }));
+                                `${course}` === `${reg.course}`);
+                        return {
+                            ...reg,
+                            // true if matching enrollment
+                            "enrollment": matchingEnrollment ? matchingEnrollment.id : null,
+                        };
+                    });
 
                     // remove existing enrollments
                     const courseEnrollments = classRegistrations
@@ -112,7 +115,6 @@ export const useSubmitRegistration = (registrationDependencies) => {
                             }))
                         );
 
-
                     const finalPayment = await instance.post(paymentEndpoint,
                         {
                             ...payment,
@@ -135,7 +137,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
             }
         })();
 
-    }, [dispatch, requestSettings, registrationDependencies, currentPayingParent.user.id, handleError]);
+    }, []);
     return status;
 };
 

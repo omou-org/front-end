@@ -70,7 +70,7 @@ function PaymentTable({paymentList, type, enrollmentID})  {
                                     {
                                         type === "enrollment" ?
                                             paidSessionsByPayment()[payment.id] :
-                                            CourseLabel(payment.enrollments)
+                                            CourseLabel(payment.registrations)
                                     }
                                 </TableCell>
                                 <TableCell>
