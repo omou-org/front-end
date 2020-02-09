@@ -1,19 +1,19 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
-import {bindActionCreators} from "redux";
+import { bindActionCreators } from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import * as userActions from "../../../actions/userActions.js"
-import {connect, useDispatch, useSelector} from "react-redux";
-import {Tooltip, Typography} from "@material-ui/core";
-import {NavLink, useParams, withRouter} from "react-router-dom";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { Tooltip, Typography } from "@material-ui/core";
+import { NavLink, useParams, withRouter } from "react-router-dom";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import * as apiActions from "../../../actions/apiActions";
 import Button from "@material-ui/core/Button";
 import Loading from "../../Loading";
 import Avatar from "@material-ui/core/Avatar";
-import {stringToColor} from "../Accounts/accountUtils";
+import { stringToColor } from "../Accounts/accountUtils";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Divider from "@material-ui/core/Divider";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -21,13 +21,13 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import Radio from "@material-ui/core/Radio";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
-import {dayOfWeek} from "../../Form/FormUtils";
+import { dayOfWeek } from "../../Form/FormUtils";
 import * as hooks from "actions/hooks";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
-import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
+import { EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION } from "./SessionView";
 
-function DisplaySessionView({course, session, handleToggleEditing}) {
+function DisplaySessionView({ course, session, handleToggleEditing }) {
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -38,32 +38,32 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
         [dispatch]
     );
 
-    const {instructor_id} = useParams();
+    const { instructor_id } = useParams();
 
-    const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
-    const categories = useSelector(({"Course": {CourseCategories}}) => CourseCategories);
-    const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
-    const students = useSelector(({"Users": {StudentList}}) => StudentList);
+    const instructors = useSelector(({ "Users": { InstructorList } }) => InstructorList);
+    const categories = useSelector(({ "Course": { CourseCategories } }) => CourseCategories);
+    const courses = useSelector(({ "Course": { NewCourseList } }) => NewCourseList);
+    const students = useSelector(({ "Users": { StudentList } }) => StudentList);
 
     const [enrolledStudents, setEnrolledStudents] = useState(false);
     const [edit, setEdit] = useState(false);
     const [editSelection, setEditSelection] = useState(EDIT_CURRENT_SESSION);
 
-    useEffect(()=>{
+    useEffect(() => {
         api.initializeRegistration();
         api.fetchCourses();
-    },[api]);
+    }, [api]);
 
     const enrollmentStatus = hooks.useEnrollmentByCourse(course.course_id);
     const reduxCourse = courses[course.course_id];
     const studentStatus = reduxCourse.roster.length > 0 && hooks.useStudent(reduxCourse.roster);
 
     const loadedStudents = useMemo(() =>
-            reduxCourse.roster.filter((studentID) => students[studentID])
+        reduxCourse.roster.filter((studentID) => students[studentID])
         , [reduxCourse.roster, students]);
 
-    useEffect(()=>{
-        if(studentStatus === 200){
+    useEffect(() => {
+        if (studentStatus === 200) {
             setEnrolledStudents(loadedStudents.map(studentID => ({
                 ...students[studentID]
             })))
@@ -87,14 +87,14 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
         "width": "3vw",
         "height": "3vw",
         "fontSize": 15,
-        "margin-right": 10,
+        "marginRight": 10,
     });
 
     const studentKeys = Object.keys(enrolledStudents);
 
-    const handleEditToggle = (cancel) => event =>{
+    const handleEditToggle = (cancel) => event => {
         event.preventDefault();
-        if(!cancel && edit){
+        if (!cancel && edit) {
             // if we're applying to edit session then toggle to edit view
             handleToggleEditing(editSelection);
         } else {
@@ -106,25 +106,26 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
         setEditSelection(event.target.value);
     };
 
-    if(!course || !categories){
-        return <Loading/>
+    if (!course || !categories) {
+        return <Loading />
     }
 
     let sessionStart = new Date(session.start_datetime);
     let day = sessionStart.getDate() !== new Date().getDate() ?
-        (session.start-1 >= 0 ? session.start-1 : 6) :
+        (session.start - 1 >= 0 ? session.start - 1 : 6) :
         session.start;
     return (<>
         <Grid className="session-view"
-            container spacing={2} direction={"row"}>
+            container spacing={8} direction={"row"}>
             <Grid item sm={12}>
                 <Typography align="left" variant="h3"
-                            className="session-view-title"
+                    className="session-view-title"
                 >
                     {course && course.title}
                 </Typography>
             </Grid>
             <Grid
+                item
                 align="left"
                 className="session-view-details"
                 container spacing={16} xs={6}
@@ -154,22 +155,22 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                         Instructor
                         {
                             session.is_confirmed ?
-                                <ConfirmIcon className="confirmed course-icon"/> :
-                                <UnconfirmIcon className="unconfirmed course-icon"/>
+                                <ConfirmIcon className="confirmed course-icon" /> :
+                                <UnconfirmIcon className="unconfirmed course-icon" />
                         }
                     </Typography>
-                        {
-                            course &&
-                            <NavLink to={`/accounts/instructor/${instructor.user_id}`}
+                    {
+                        course &&
+                        <NavLink to={`/accounts/instructor/${instructor.user_id}`}
                             style={{ textDecoration: "none" }}>
-                                <Tooltip title={instructor.name} aria-label="Instructor Name">
-                                    <Avatar
-                                        style={styles(instructor.name)}>
-                                            {instructor.name.match(/\b(\w)/g).join("")}
-                                    </Avatar>
-                                </Tooltip>
-                            </NavLink>
-                        }
+                            <Tooltip title={instructor.name} aria-label="Instructor Name">
+                                <Avatar
+                                    style={styles(instructor.name)}>
+                                    {instructor.name.match(/\b(\w)/g).join("")}
+                                </Avatar>
+                            </Tooltip>
+                        </NavLink>
+                    }
                 </Grid>
                 <Grid item xs={6}>
                     <Typography variant="h5"> Day(s)</Typography>
@@ -201,18 +202,18 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
             <Grid item xs={6}>
                 <Typography variant="h5" align="left"> Students Enrolled  </Typography>
                 <Grid container direction='row'>
-                    { studentKeys.map(key =>
-                        <NavLink to={`/accounts/student/${enrolledStudents[key].user_id}/${course.course_id}`}
-                                 style={{ textDecoration: "none" }}>
+                    {studentKeys.map(key =>
+                        <NavLink key={key} to={`/accounts/student/${enrolledStudents[key].user_id}/${course.course_id}`}
+                            style={{ textDecoration: "none" }}>
                             <Tooltip title={enrolledStudents[key].name}>
                                 <Avatar
                                     style={styles(enrolledStudents[key].name)}>
                                     {
                                         enrolledStudents ?
                                             enrolledStudents[key].name.match(/\b(\w)/g).join("")
-                                        : hooks.isFail(enrollmentStatus)
-                                        ? "Error!"
-                                        : "Loading..."
+                                            : hooks.isFail(enrollmentStatus)
+                                                ? "Error!"
+                                                : "Loading..."
                                     }
                                 </Avatar>
                             </Tooltip>
@@ -223,7 +224,15 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
         </Grid>
 
         <Grid className="session-detail-action-control"
-              container direction="row" justify="flex-end">
+            container direction="row" justify="flex-end">
+                <Grid item>
+                    <Button
+                        className={"button"}
+                        color="secondary"
+                        variant="outlined">
+                        Add Sessions
+                                    </Button>
+                </Grid>
             <Grid item>
                 <Button
                     className="button"
@@ -254,6 +263,7 @@ function DisplaySessionView({course, session, handleToggleEditing}) {
                     Return to scheduling
                 </Button>
             </Grid>
+
         </Grid>
         <Dialog
             aria-describedby="alert-dialog-description"

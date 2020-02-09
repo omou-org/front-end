@@ -74,7 +74,7 @@
 
 //Full Registration styles
 .paper {
-  margin: 1% 0 2% 0;
+  margin: 2% 0 2% 0;
 }
 
 .paper.content {
@@ -309,9 +309,9 @@
 
 .registration-form {
   position: relative;
-  border-radius: 32px !important;
+  border-radius: 5px !important;
   padding: 2%;
-  margin-top: 4%;
+  margin-top: 2%;
 
   .heading {
     margin-top: 50px;
@@ -602,10 +602,9 @@
 }
 
 .tutoring-card {
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
   cursor: pointer;
   color: #828282;
-  border: 1px solid #43B5D9;
-  border-left-width: 5px;
   font-family: Roboto;
   font-style: normal;
   font-weight: 500;
@@ -614,6 +613,11 @@
   display: flex;
   align-items: center;
   text-decoration: none;
+}
+
+.tutoring-card:hover {
+  border: 0px solid #43B5D9;
+  border-left-width: 5px;
 }
 
 // Registration Course Styling

@@ -1,13 +1,15 @@
 import { connect } from "react-redux";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Grid from "@material-ui/core/Grid";
-import { Card,  Typography } from "@material-ui/core";
+import { Card, Paper, Typography } from "@material-ui/core";
 import CardContent from "@material-ui/core/CardContent";
 import Chip from "@material-ui/core/Chip";
 import { withRouter } from "react-router-dom";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import {truncateStrings} from "../../../truncateStrings"
+
+import { makeStyles } from '@material-ui/styles';
 
 import { ReactComponent as IDIcon } from "../../../identifier.svg";
 
@@ -53,16 +55,20 @@ function AccountsCards(props) {
 
     });
 
-    const fullName = props.user.user ? `${props.user.user.first_name} ${props.user.user.last_name}`: "a";
+    // console.log(props.user);
 
-    return (<>{
-        props.user.user && <Card key={props.user.id}
-                  style={{ cursor: "pointer", padding: "10px" }}
+    const fullName = `${props.user.user.first_name} ${props.user.user.last_name}`;
+
+
+    return (
+            <Card key={props.user.id}
+                style={{ cursor: "pointer" }}
                   className={"AccountsCards"}
-                  onClick={(event) => {
-                      event.preventDefault();
-                      goToRoute(`/accounts/${props.user.account_type.toLowerCase()}/${props.user.user.id}`);
-                  }}>
+                  style={{ padding: "10px" }}
+                onClick={(event) => {
+                    event.preventDefault();
+                     goToRoute(`/accounts/${props.user.account_type.toLowerCase()}/${props.user.user.id}`);
+                }}>
                 <Grid container>
                     <Hidden mdDown>
                         <Grid item xs={4} md={3}>
@@ -90,7 +96,7 @@ function AccountsCards(props) {
 
                             <Grid item xs={12} style={{ marginTop: 10 }}>
                                 <Grid container
-                                      justify={'flex-start'}
+                                    justify={'flex-start'}
                                 >
                                     <Grid item xs={2}>
                                         <IDIcon
@@ -101,8 +107,8 @@ function AccountsCards(props) {
                                         # {props.user.user.id}
                                     </Grid>
                                 </Grid>
-                                {props.user.account_type!=="STUDENT"&&  <Grid container
-                                                                              justify={'flex-start'}
+                              {props.user.account_type!=="STUDENT"&&  <Grid container
+                                    justify={'flex-start'}
                                 >
                                     <Grid item xs={2}>
                                         <EmailIcon style={{ fontSize: 14 }} />
@@ -118,9 +124,6 @@ function AccountsCards(props) {
                     </Grid>
                 </Grid>
             </Card>
-        }
-
-        </>
     )
 }
 
