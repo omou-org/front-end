@@ -9,7 +9,6 @@ import React, {Component} from "react";
 import {Prompt} from "react-router";
 import {NavLink, withRouter} from "react-router-dom";
 import CreatableSelect from 'react-select/creatable';
-import * as searchActions from "actions/searchActions";
 import AsyncSelect from "react-select/async";
 import {updateParent, updateStudent} from "reducers/usersReducer";
 import {updateCourse} from "reducers/courseReducer";
@@ -44,10 +43,8 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import {DatePicker, TimePicker,} from "material-ui-pickers";
-import {createDiscountPayload, durationParser, loadEditCourseState, numSessionsParser, timeParser} from "./FormUtils";
+import * as utils from "./FormUtils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
-import {instance} from "actions/apiActions";
-import {isFail} from "actions/hooks";
 
 const parseGender = {
     "M": "Male",
@@ -382,7 +379,7 @@ class Form extends Component {
                         } finally {
                             if (course) {
                                 const inst = this.props.instructors[course.instructor_id];
-                                this.setState(loadEditCourseState(course,inst));
+                                this.setState(utils.loadEditCourseState(course,inst));
                             }
                         }
                     })();
@@ -534,7 +531,7 @@ class Form extends Component {
                                 this.props.adminActions.setPrice(this.state);
                             } else if( this.state.form === "discount"){
                                 let discountType = this.state["Discount Description"]["Discount Type"];
-                                let discountPayload = createDiscountPayload(this.state, discountType);
+                                let discountPayload = utils.createDiscountPayload(this.state, discountType);
                                 this.props.adminActions.setDiscount(discountType, discountPayload);
                             } else {
                                 this.props.registrationActions.submitForm(this.state);
@@ -744,6 +741,10 @@ class Form extends Component {
         })
     }
 
+    searchInstructors = async (input) => {
+        return await utils.loadInstructors(input, this.props.token)
+    }
+
     renderField(field, label, fieldIndex) {
         const fieldTitle = field.name;
         let disabled = this.state["Parent Information"] &&
@@ -758,7 +759,7 @@ class Form extends Component {
             case "select":
                 let startTime = this.state[label]["Start Time"];
                 let endTime = this.state[label]["End Time"];
-                let parsedDuration = durationParser({start: startTime, end: endTime},fieldTitle, true);
+                let parsedDuration = utils.durationParser({start: startTime, end: endTime},fieldTitle, true);
                 let value, options;
                 if (parsedDuration && this.state[label][fieldTitle]){
                     if(parsedDuration.duration){
@@ -910,32 +911,11 @@ class Form extends Component {
             case "instructor": {
                 let instructorList = this.props.instructors;
 
-                const mapInstructor = (id, name, email) => ({
-                    "value": id,
-                    "label": `${name} - ${email}`,
-                })
-
                 instructorList = Object.values(instructorList)
-                    .map(({user_id, name, email}) => mapInstructor(user_id, name, email));
-
-                const loadInstructors = async (inputValue) => {
-                    const response = await instance.get("/search/account/", {
-                        "headers": {
-                            "Authorization": `Token ${this.props.token}`,
-                        },
-                        "params": {
-                            page: 1,
-                            profile: "instructor",
-                            query: inputValue,
-                        },
-                    });
-                    if (isFail(response.status)) {
-                        return [];
-                    }
-                    return response.data
-                        .map(({"user": {user_id, first_name, last_name, email}}) =>
-                            mapInstructor(user_id, `${first_name} ${last_name}`, email));
-                };
+                    .map(({user_id, name, email}) => ({
+                        "value": user_id,
+                        "label": `${name} - ${email}`,
+                    }));
 
                 return (
                     <div style={{width: "inherit"}}>
@@ -944,7 +924,7 @@ class Form extends Component {
                                 cacheOptions
                                 className="search-options"
                                 defaultOptions={instructorList}
-                                loadOptions={loadInstructors}
+                                loadOptions={this.searchInstructors}
                                 onChange={(value) => {
                                     this.onSelectChange(value, label, field);
                                 }}
@@ -1013,7 +993,7 @@ class Form extends Component {
                 if(this.state[label][fieldTitle] && typeof this.state[label][fieldTitle] !== "string"){
                     time = this.state[label][fieldTitle];
                 } else if(typeof this.state[label][fieldTitle] === "string"){
-                    time = timeParser(this.state[label][fieldTitle]);
+                    time = utils.timeParser(this.state[label][fieldTitle]);
                 }
                 return <Grid container>
                     <TimePicker autoOk
@@ -1026,7 +1006,7 @@ class Form extends Component {
                                 }) } }/>
                 </Grid>;
             default:
-                let textValue = numSessionsParser(this.state[label],field.name) || this.state[label][field.name];
+                let textValue = utils.numSessionsParser(this.state[label],field.name) || this.state[label][field.name];
                 return <TextField
                     label={field.name}
                     multiline={field.multiline}
