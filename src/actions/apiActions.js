@@ -16,7 +16,6 @@ export const wrapGet = (endpoint, [startType, successType, failType], {id, confi
     async (dispatch, getState) => {
         // creates a new action based on the response given
         const newAction = (type, response) => {
-            // console.log(response)
             dispatch({
                 type,
                 "payload": {
@@ -38,7 +37,6 @@ export const wrapGet = (endpoint, [startType, successType, failType], {id, confi
                 },
                 ...(config || {}),
             });
-            // console.log(response)
             // successful request
             newAction(successType, response);
         } catch ({response}) {
