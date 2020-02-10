@@ -1,18 +1,18 @@
 import PropTypes from "prop-types";
 import React from "react";
-import { connect, useSelector } from "react-redux";
+import {connect, useSelector} from "react-redux";
 // Material UI Imports
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import { bindActionCreators } from "redux";
+import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
-import { DayConverter } from "../Accounts/TabComponents/CourseSessionStatus";
+import {DayConverter} from "../Accounts/TabComponents/CourseSessionStatus";
 
 const CourseList = (props) => {
-    let filteredCourses = props.filteredCourses.filter(course => course.capacity > 1);
+    let filteredCourses = props.filteredCourses.filter(course => course.capacity >= 1);
     const instructors = useSelector(({ "Users": { InstructorList } }) => InstructorList);
     return filteredCourses.map((course) => {
         let start_date = new Date(course.schedule.start_date.replace(/-/g, '\/')),

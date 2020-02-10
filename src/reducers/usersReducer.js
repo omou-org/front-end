@@ -324,7 +324,7 @@ export const updateInstructor = (instructors, id, instructor) => {
 const handleAccountSearchResults = (state, {response}) => {
     let {StudentList, ParentList, InstructorList} = state;
     let {data} = response;
-    data.forEach((account)=>{
+    data.results.forEach((account)=>{
         switch(account.account_type){
             case "STUDENT":{
                 StudentList = updateStudent(StudentList, account.user.id, account);

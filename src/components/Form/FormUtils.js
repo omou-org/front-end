@@ -41,20 +41,6 @@ export const timeParser = (timeString) => {
 };
 
 /**
- * @description: parses start and end dates from a form to determine the number of sessions. Does not account for holidays/closed office dates
- * */
-export const numSessionsParser = (form, fieldTitle) => {
-    if(fieldTitle === "Number of Weekly Sessions" && !form["Number of Weekly Sessions"] && form["Number of Weekly Sessions"] !== ""){
-        let startDate = new Date(form["Start Date"]);
-        let endDate = new Date(form["End Date"]);
-        let dateDifference = Math.abs(startDate - endDate) / (1000*60*60*24);
-        return dateDifference / 7;
-    } else {
-        return form[fieldTitle];
-    }
-}
-
-/**
  * @description: parses form to create discount payload
  * */
 export const createDiscountPayload = (form) => {
@@ -114,7 +100,7 @@ export const dayOfWeek = {
 export const weeklySessionsParser = (startDate, endDate) =>{
     let start = new Date(startDate);
     let end = new Date(endDate);
-    return Math.floor((end.getTime() - start.getTime()) / (1000 * 3600 * 24 * 7));
+    return Math.floor((end.getTime() - start.getTime()) / (1000 * 3600 * 24 * 7)) + 1;
 };
 
 export const convertTimeStrToDate = (time) => {
@@ -232,7 +218,7 @@ export const loadInstructors = async (input, token) => {
     if (isFail(response.status)) {
         return [];
     }
-    return response.data
+    return response.data.results
         .map(({"user": {user_id, first_name, last_name, email}}) => ({
             "label": `${first_name} ${last_name} - ${email}`,
             "value": user_id,

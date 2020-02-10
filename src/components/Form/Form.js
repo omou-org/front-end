@@ -1006,7 +1006,7 @@ class Form extends Component {
                                 }) } }/>
                 </Grid>;
             default:
-                let textValue = utils.numSessionsParser(this.state[label],field.name) || this.state[label][field.name];
+                let textValue = utils.weeklySessionsParser(this.state[label],field.name) || this.state[label][field.name];
                 return <TextField
                     label={field.name}
                     multiline={field.multiline}
