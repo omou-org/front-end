@@ -5,10 +5,11 @@ import {SEARCH_ALL} from "../actions/actionTypes";
 export default function course(state = initialState.SearchResults, {payload, type}) {
     let status = 1;
     if(payload){
-        if(payload.response){
+        if( payload.response && Object.keys(payload.response).length > 0){
             status = payload.response.status;
         }
     }
+
     switch (type) {
         case actions.GET_SEARCH_QUERY_SUCCESSFUL:
             return state;
@@ -68,11 +69,13 @@ export default function course(state = initialState.SearchResults, {payload, typ
     }
 }
 
-const handleAccountSearchResults = (state, {response, id}, status) =>{
-    let {data}= response;
+const handleAccountSearchResults = (state, payload, status) =>{
+    let {response}= payload;
+    let {data} = response;
+
     return {
         ...state,
-        accounts:data,
+        accounts:data.results,
         searchQueryStatus: {
             ...state.searchQueryStatus,
             account: status,
