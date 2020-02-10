@@ -57,6 +57,11 @@
 }
 
 .oooDialog{
+  min-width: 80vh;
+  min-height:80vh;
+  .buttonsContainer{
+    text-align: right;
+  }
 }
 
 /*Profile Heading Styles*/

@@ -4,6 +4,7 @@ import { DialogActions, DialogContent } from "@material-ui/core";
 import React, { useEffect, useMemo, useState } from "react";
 import Button from "@material-ui/core/Button";
 import { connect } from "react-redux";
+import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Grid from "@material-ui/core/Grid";
@@ -17,13 +18,20 @@ function OutOfOffice(props) {
     const handleChange = event => {
         setdate(event.target.value);
     };
-
+    const useStyles = makeStyles({
+        styles: {
+            minHeight: '80vh',
+            maxHeight: '80vh',
+        }
+    });
+    const classes=useStyles();
     return (
-        <Dialog className={"oooDialog"}
+        <Dialog className={"oooDialog"}     
+            classes={{paper:classes.styles}}
             aria-labelledby="simple-dialog-title" open={props.open}
-            fullWidth={true} 
-            contentStyle={{width: "100%", maxWidth: "none"}}
-            >
+            fullWidth={true}
+            contentStyle={{ width: "100%", maxWidth: "none" }}
+        >
             <DialogContent>
                 <div>
                     Schedule OOO
@@ -50,7 +58,7 @@ function OutOfOffice(props) {
                         <div>
                             Select OOO End Date
                             </div>
-                            <Select
+                        <Select
                             labelId="demo-simple-select-label"
                             label="Date"
                             onChange={handleChange}
@@ -79,7 +87,7 @@ function OutOfOffice(props) {
                         <div>
                             Select OOO End Date
                             </div>
-                            <Select
+                        <Select
                             labelId="demo-simple-select-label"
                             label="Date"
                             onChange={handleChange}
@@ -91,13 +99,16 @@ function OutOfOffice(props) {
                     </Grid>
                     <Grid item md={6}></Grid>
                 </Grid>
-                <Grid container >
-                    <Grid align="right">
+                <Grid container md={12}>
+                    <Grid item md={8}>
+
+                    </Grid>
+                    <Grid item md={2}>
                         <Button onClick={props.handleclose}>
                             Cancel
                         </Button>
                     </Grid>
-                    <Grid align="right">
+                    <Grid item md={2}>
                         <Button onClick={props.handleclose}>
                             Save OOO
                         </Button>
