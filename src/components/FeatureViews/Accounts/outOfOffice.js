@@ -44,7 +44,7 @@ function OutOfOffice(props) {
                     Instructor:
                 </div>
                 <Grid container item md={12}>
-                    <Grid item md={4}>
+                    <Grid item md={3}>
                         <div className="select">
                             * Select OOO Start Date
                         </div>
@@ -58,7 +58,7 @@ function OutOfOffice(props) {
                             <MenuItem value={30}>Thirty</MenuItem>
                         </Select>
                     </Grid>
-                    <Grid item md={4}>
+                    <Grid item md={3}>
                         <div className="select">
                             * Select OOO End Date
                             </div>
@@ -72,8 +72,8 @@ function OutOfOffice(props) {
                             <MenuItem value={30}>Thirty</MenuItem>
                         </Select>
                     </Grid>
-                    <Grid item md={4}></Grid>
-                    <Grid item md={4}>
+                    <Grid item md={6}></Grid>
+                    <Grid item md={3}>
                         <div className="select">
                             * Select OOO Start Date
                         </div>
@@ -120,7 +120,7 @@ function OutOfOffice(props) {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item md={4}>
+                    <Grid item md={5}>
 
                     </Grid>
                 </Grid>
