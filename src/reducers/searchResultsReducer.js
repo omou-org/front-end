@@ -1,11 +1,11 @@
 import initialState from './initialState';
 import * as actions from "./../actions/actionTypes";
-import {SEARCH_ALL} from "../actions/actionTypes";
+import { SEARCH_ALL } from "../actions/actionTypes";
 
-export default function course(state = initialState.SearchResults, {payload, type}) {
+export default function course(state = initialState.SearchResults, { payload, type }) {
     let status = 1;
-    if(payload){
-        if( payload.response && Object.keys(payload.response).length > 0){
+    if (payload) {
+        if (payload.response && Object.keys(payload.response).length > 0) {
             status = payload.response.status;
         }
     }
@@ -27,7 +27,7 @@ export default function course(state = initialState.SearchResults, {payload, typ
         case actions.GET_ACCOUNT_SEARCH_QUERY_FAILED:
             return handleSearchStatus(state, "account", status);
         case actions.GET_COURSE_SEARCH_QUERY_SUCCESS:
-            return handleCourseSearchResults(state,payload, status);
+            return handleCourseSearchResults(state, payload, status);
         case actions.GET_COURSE_SEARCH_QUERY_FAILED:
             return handleSearchStatus(state, "course", status);
         case actions.UPDATE_SEARCH_FILTER:
@@ -46,19 +46,19 @@ export default function course(state = initialState.SearchResults, {payload, typ
                 primaryFilter: payload,
             };
         case actions.RESET_SEARCH_PARAMS:
-            return{
+            return {
                 ...state,
                 params: {
-                    account:{
-                        profile:"",
-                        gradeFilter:"",
-                        sortAccount:"",
+                    account: {
+                        profile: "",
+                        gradeFilter: "",
+                        sortAccount: "",
                         accountPage: 1,
                     },
-                    course:{
-                        courseType:"",
-                        availability:"",
-                        sortCourse:"",
+                    course: {
+                        courseType: "",
+                        availability: "",
+                        sortCourse: "",
                         coursePage: 1,
                     }
                 },
@@ -69,13 +69,16 @@ export default function course(state = initialState.SearchResults, {payload, typ
     }
 }
 
-const handleAccountSearchResults = (state, payload, status) =>{
-    let {response}= payload;
-    let {data} = response;
-
+const handleAccountSearchResults = (state, payload, status) => {
+    let { response } = payload;
+    let { data } = response;
+    console.log(data)
+    // you can get page and count
     return {
         ...state,
-        accounts:data.results,
+        count: data.count,
+        page: parseInt(data.page),
+        accounts: data.results,
         searchQueryStatus: {
             ...state.searchQueryStatus,
             account: status,
@@ -83,11 +86,11 @@ const handleAccountSearchResults = (state, payload, status) =>{
     }
 };
 
-const handleCourseSearchResults = (state, {id, response}, status) =>{
-    let {data} = response;
+const handleCourseSearchResults = (state, { id, response }, status) => {
+    let { data } = response;
     return {
         ...state,
-        courses:data,
+        courses: data.results,
         searchQueryStatus: {
             ...state.searchQueryStatus,
             course: status,
@@ -95,10 +98,10 @@ const handleCourseSearchResults = (state, {id, response}, status) =>{
     }
 };
 
-const handleSearchFilterChange = (state, {searchType, filter, value}) =>{
-    let newState = {...state};
+const handleSearchFilterChange = (state, { searchType, filter, value }) => {
+    let newState = { ...state };
     newState.params[searchType][filter] = value;
-    if(filter==="grade"){
+    if (filter === "grade") {
         newState.params[searchType].profile = "student";
     }
     newState.searchQueryStatus = "";
