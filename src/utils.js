@@ -1,4 +1,4 @@
-import {DayConverter} from "./components/FeatureViews/Accounts/TabComponents/CourseSessionStatus";
+import { DayConverter } from "./components/FeatureViews/Accounts/TabComponents/CourseSessionStatus";
 
 const timeOptions = {
     "hour": "2-digit",
@@ -12,14 +12,17 @@ const dateOptions = {
     "year": "numeric",
 };
 
+export const dateFormatter = (date) => {
+    return new Date(date.replace(/-/g, '\/'))
+        .toDateString().substr(3);
+}
+
 export const courseDateFormat = (course) => {
-    let start_date = new Date(course.schedule.start_date.replace(/-/g, '\/'))
-            .toDateString().substr(3),
-        end_date = new Date(course.schedule.end_date.replace(/-/g, '\/'))
-            .toDateString().substr(3),
-        start_time = new Date("2020-01-01"+course.schedule.start_time)
+    let start_date = dateFormatter(course.schedule.start_date),
+        end_date = dateFormatter(course.schedule.end_date),
+        start_time = new Date("2020-01-01" + course.schedule.start_time)
             .toLocaleTimeString('eng-US', timeOptions),
-        end_time = new Date("2020-01-01"+course.schedule.end_time)
+        end_time = new Date("2020-01-01" + course.schedule.end_time)
             .toLocaleTimeString('eng-US', timeOptions),
         days = DayConverter[new Date(course.schedule.start_date).getDay()];
 
