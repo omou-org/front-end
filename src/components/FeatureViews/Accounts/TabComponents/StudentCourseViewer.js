@@ -1,15 +1,15 @@
 import * as hooks from "actions/hooks";
-import { Link, useLocation } from "react-router-dom";
-import React, { useCallback, useMemo } from "react";
-import { courseDataParser } from "utils";
+import {Link, useLocation} from "react-router-dom";
+import React, {useCallback, useMemo} from "react";
 import PropTypes from "prop-types";
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 
 import Grid from "@material-ui/core/Grid";
 import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import { NoListAlert } from "../../../NoListAlert";
+import {NoListAlert} from "../../../NoListAlert";
+import {courseDateFormat} from "../../../../utils";
 
 const today = new Date();
 
@@ -146,7 +146,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
                             if (!course) {
                                 return "Loading...";
                             }
-                            const { days, startDate, endDate, startTime, endTime } = courseDataParser(course);
+                            const { days, start_date, end_date, start_time, end_time} = courseDateFormat(course);
                             return (
                                 <Grid
                                     className="accounts-table-row"
@@ -173,7 +173,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
                                                 <Typography
                                                     align="left"
                                                     className="accounts-table-text">
-                                                    {startDate} - {endDate}
+                                                    {start_date} - {end_date}
                                                 </Typography>
                                             </Grid>
                                             <Grid
@@ -191,7 +191,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
                                                 <Typography
                                                     align="left"
                                                     className="accounts-table-text">
-                                                    {startTime} - {endTime}
+                                                    {start_time} - {end_time}
                                                 </Typography>
                                             </Grid>
                                             <Grid
