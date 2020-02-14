@@ -30,6 +30,7 @@ import Loading from "../../Loading";
 import {DayConverter} from "../Accounts/TabComponents/CourseSessionStatus";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel"
+import {courseDateFormat} from "../../../utils";
 
 const formatDate = (date) => {
     if (!date) {
@@ -102,14 +103,8 @@ const RegistrationCourse = () => {
 
     const instructor = instructors[course && course.instructor_id];
 
-    const timeConfig = {timeStyle:"short"};
-    const endDay = new Date(course.schedule.end_date).toLocaleDateString(),
-        endTime = new Date("01/01/2020 " +course.schedule.end_time.replace("T",""))
-            .toLocaleTimeString("eng-us",timeConfig),
-        startDay = new Date(course.schedule.start_date).toLocaleDateString(),
-        startTime = new Date("01/01/2020 " +course.schedule.start_time.replace("T",""))
-            .toLocaleTimeString("eng-us",timeConfig);
-
+    const {start_date, end_date, start_time, end_time, days} = courseDateFormat(course);
+    console.log(end_date, course.schedule.end_date)
     return (
         <Grid
             className="registrationCourse"
@@ -164,7 +159,7 @@ const RegistrationCourse = () => {
                                 "marginLeft": "5px",
                                 "marginTop": "10px",
                             }}>
-                            {startDay} - {endDay}
+                            {start_date} - {end_date}
                         </Typography>
                     </div>
                     <div className="info-section">
@@ -200,12 +195,12 @@ const RegistrationCourse = () => {
                             <Typography
                                 align="left"
                                 className="text">
-                                {startTime} - {endTime}
+                                {start_time} - {end_time}
                             </Typography>
                             <Typography
                                 align="left"
                                 className="text">
-                                {DayConverter[new Date(startDay).getDay()]}
+                                {DayConverter[new Date(start_date).getDay()]}
                             </Typography>
                             <Typography
                                 align="left"
