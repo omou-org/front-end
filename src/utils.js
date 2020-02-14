@@ -19,7 +19,7 @@ export const courseDateFormat = (course) => {
             .toDateString().substr(3),
         start_time = new Date("2020-01-01"+course.schedule.start_time)
             .toLocaleTimeString('eng-US', timeOptions),
-        end_time = new Date(course.schedule.end_time)
+        end_time = new Date("2020-01-01"+course.schedule.end_time)
             .toLocaleTimeString('eng-US', timeOptions),
         days = DayConverter[new Date(course.schedule.start_date).getDay()];
 
