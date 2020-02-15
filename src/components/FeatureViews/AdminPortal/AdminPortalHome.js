@@ -14,11 +14,12 @@ import TextField from "@material-ui/core/TextField";
 import {NoListAlert} from "../../NoListAlert";
 import {GET} from "../../../actions/actionTypes";
 import Loading from "../../Loading";
+import UnpaidSessions from "./UnpaidSessions";
 
 function AdminPortalHome() {
 return (
     <div>
-        Admin portal home!
+        <UnpaidSessions></UnpaidSessions>
     </div>
 )
 }
