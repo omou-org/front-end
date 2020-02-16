@@ -2,6 +2,8 @@ import { connect } from 'react-redux';
 import React, { Component, useMemo } from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
+import * as hooks from "actions/hooks";
+import Loading from "components/Loading";
 
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -31,8 +33,8 @@ const UnpaidSessions = () => {
         }),
         [dispatch]
     );
-    const unpaid= useSelector(({"Admin":{Unpaid}}) => 
-        Unpaid.students);
+    const Unpaid = useSelector(({"Admin":{Unpaid}}) => 
+        Unpaid);
 
     useEffect(()=>{
         api.fetchUnpaid();
@@ -68,6 +70,11 @@ const UnpaidSessions = () => {
         "margin": '10px'
     })
 
+
+
+    if (hooks.isLoading(Unpaid)) {
+        return <Loading/>
+    }
 
         return (<div className="`DashboardOP`">
                 <Card style = {cardStyle()}> 

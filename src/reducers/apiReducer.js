@@ -378,8 +378,8 @@ const updateSessionStatus = (state, id, status) => {
     return newState;
 }
 
-const updateUnpaidStatus = (state, status) => {
+const updateUnpaidStatus = (state, id, status) => {
     let newState = JSON.parse(JSON.stringify(state));
-    newState.Admin.Unpaid.student = status;
+    newState.admin[actions.GET][id] = status;
     return newState;
 }
