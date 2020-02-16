@@ -21,15 +21,6 @@ import UnpaidSessions from "./UnpaidSessions";
 
 function AdminPortalHome() {
 
-let state = {
-    sample: {
-    fName: "Selina",
-    lName: "Che",
-    role: "student",
-    course: "AP Calculus",
-    sessionsLeft: 3
-    }
-}
 
 const style ={
     card:{
@@ -43,11 +34,12 @@ return (
     <div>
         <Card style={style.card}>
             <h1>Outstanding Payments</h1>
-        {this.state.sample.map(us=>(
+            <UnpaidSessions></UnpaidSessions>
+        {/* {this.state.sample.map(us=>(
             <UnpaidSessions
                 fName={us.fName}
             ></UnpaidSessions>
-        ))}
+        ))} */}
         </Card>
     </div>
 )

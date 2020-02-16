@@ -86,7 +86,15 @@ export default {
         },
         Unpaid: {
             
-        }
+              students:{
+                    student_id: 1,
+                    fName: "Greg",
+                    lName: "Glinoga",
+                    status: "Student",
+                    amt: 50.00,
+                    course: "AP Calculus",
+                }  
+                }
     }
 };
 

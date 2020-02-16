@@ -210,6 +210,15 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             return updateSessionStatus(state, payload.id, status);
         case actions.RESET_SCHEDULER_STATUS:
             return updateSessionStatus(state, REQUEST_ALL, null);
+
+        case actions.GET_UNPAID_SUCCESS:
+            return updateUnpaidStatus(state, payload.id, status);
+        case actions.GET_UNPAID_STARTED:
+            return updateUnpaidStatus(state, payload.id, api.REQUEST_STARTED);
+        case actions.GET_UNPAID_FAILED:
+            return updateUnpaidStatus(state, payload.id, status);
+        
+
         default:
             return state;
     }
@@ -366,5 +375,11 @@ const updatePaymentStatus = (state, paymentID, status) => {
 const updateSessionStatus = (state, id, status) => {
     let newState = JSON.parse(JSON.stringify(state));
     newState.schedule[actions.GET][id] = status;
+    return newState;
+}
+
+const updateUnpaidStatus = (state, status) => {
+    let newState = JSON.parse(JSON.stringify(state));
+    newState.Admin.Unpaid.student = status;
     return newState;
 }

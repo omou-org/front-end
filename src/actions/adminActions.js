@@ -28,6 +28,15 @@ export const fetchCategories = (id) => wrapGet(
     }
 );
 
+export const fetchUnpaid = () => wrapGet(
+    '/payment/payment/',
+    [
+        types.GET_UNPAID_STARTED,
+        types.GET_UNPAID_SUCCESS,
+        types.GET_UNPAID_FAILED
+    ]
+);
+
 export const updateCategory = (id, updatedCategory) => wrapPatch(
     '/course/categories/',
     [
