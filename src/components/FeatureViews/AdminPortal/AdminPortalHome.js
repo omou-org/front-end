@@ -43,9 +43,11 @@ return (
     <div>
         <Card style={style.card}>
             <h1>Outstanding Payments</h1>
-        <UnpaidSessions
-        fName={state.sample.fName} 
-        ></UnpaidSessions>
+        {this.state.sample.map(us=>(
+            <UnpaidSessions
+                fName={us.fName}
+            ></UnpaidSessions>
+        ))}
         </Card>
     </div>
 )
