@@ -59,7 +59,7 @@ class UnpaidSessions extends Component {
                             </Grid>
                         </CardMedia>
                         <CardContent>
-                        <Typography gutterBottom style ={{fontSize: "16px", fontWeight: 500, lineHeight: "24px"}}>
+                        <Typography style ={{fontSize: "16px", fontWeight: 500, lineHeight: "24px"}}>
                             {this.props.fName + " " + this.props.lName}
                         </Typography>
                         <Typography style={roleStyle(this.props.role)} >
