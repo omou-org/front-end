@@ -35,9 +35,9 @@ return (
         <Card style={style.card}>
             <h1>Outstanding Payments</h1>
             <UnpaidSessions></UnpaidSessions>
-        {/* {this.state.sample.map(us=>(
+        {/* {this.props.Unpaid.map(unpaid=>(
             <UnpaidSessions
-                fName={us.fName}
+                fName={unpaid.fName}
             ></UnpaidSessions>
         ))} */}
         </Card>
@@ -50,7 +50,7 @@ AdminPortalHome.propTypes = {
     // admin: PropTypes.bool,
 };
 const mapStateToProps = (state) => ({
-    "sessions": state.sessions,
+    "Unpaid": state.Admin.Unpaid.students,
 });
 
 export default withRouter(connect(
