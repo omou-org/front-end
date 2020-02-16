@@ -84,6 +84,9 @@ export default {
             DateRange: [],
             PaymentMethod: [],
         },
+        Unpaid: {
+            
+        }
     }
 };
 
