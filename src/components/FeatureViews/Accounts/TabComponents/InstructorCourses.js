@@ -1,9 +1,8 @@
 import * as hooks from "actions/hooks";
-import React, { useMemo } from "react";
-import { courseDataParser } from "utils";
-import { Link } from "react-router-dom";
+import React, {useMemo} from "react";
+import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 
 import Grid from "@material-ui/core/Grid";
 import Loading from "components/Loading";
@@ -11,6 +10,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel"
+import {courseDateFormat} from "../../../../utils";
 
 const InstructorCourses = ({ instructorID }) => {
     const courses = useSelector(({ Course }) => Course.NewCourseList);
@@ -92,7 +92,7 @@ const InstructorCourses = ({ instructorID }) => {
                 {
                     courseIDs.map((courseID) => {
                         const course = courses[courseID];
-                        const { days, startDate, endDate, startTime, endTime, is_confirmed } = courseDataParser(course);
+                        const { days, start_date, end_date, start_time, end_time, is_confirmed } = courseDateFormat(course);
                         return (
                             <Grid
                                 className="accounts-table-row"
@@ -114,7 +114,7 @@ const InstructorCourses = ({ instructorID }) => {
                                             item
                                             xs={3}>
                                             <Typography align="left">
-                                                {startDate} - {endDate}
+                                                {start_date} - {end_date}
                                             </Typography>
                                         </Grid>
                                         <Grid
@@ -129,7 +129,7 @@ const InstructorCourses = ({ instructorID }) => {
                                             item
                                             xs={2}>
                                             <Typography align="left">
-                                                {startTime} - {endTime}
+                                                {start_time} - {end_time}
                                             </Typography>
                                         </Grid>
                                         <Grid

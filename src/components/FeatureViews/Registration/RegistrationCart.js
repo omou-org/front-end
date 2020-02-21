@@ -1,19 +1,19 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import BackArrow from "@material-ui/icons/ArrowBack";
 import "./registration.scss";
 
-import {bindActionCreators} from "redux";
+import { bindActionCreators } from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import * as userActions from "../../../actions/userActions.js"
-import {connect, useDispatch} from "react-redux";
-import {Typography} from "@material-ui/core";
+import { connect, useDispatch } from "react-redux";
+import { Typography } from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
-import {withRouter} from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import Checkbox from "@material-ui/core/Checkbox";
 import * as apiActions from "../../../actions/apiActions";
-import {durationParser} from "../../../actions/apiActions";
+import { durationParser } from "../../../actions/apiActions";
 import Button from "@material-ui/core/Button";
 import Loading from "../../Loading";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
@@ -35,39 +35,39 @@ function RegistrationCart(props) {
     const [usersLoaded, setLoadingUsers] = useState(false);
     const [updatedCourses, addUpdatedCourse] = useState([]);
 
-    useEffect(()=>{
+    useEffect(() => {
         api.initializeRegistration();
         api.fetchCourses();
-    },[api]);
+    }, [api]);
 
-    useEffect(()=>{
-        if(props.registration.registered_courses){
+    useEffect(() => {
+        if (props.registration.registered_courses) {
             // Get student id's
             let studentIDs = Object.keys(props.registration.registered_courses);
             let checkedCourses = {};
-            studentIDs.forEach((studentID)=>{
+            studentIDs.forEach((studentID) => {
                 checkedCourses[studentID] = {};
                 props.registration.registered_courses[studentID].forEach((registrationForm) => {
-                    if(registrationForm.course_id){
-                        checkedCourses[studentID][registrationForm.course_id] = {checked:false,sessions:registrationForm.sessions};
+                    if (registrationForm.course_id) {
+                        checkedCourses[studentID][registrationForm.course_id] = { checked: false, sessions: registrationForm.sessions };
                     }
                 });
             });
             // Set-up checkboxes
             selectCourse(checkedCourses);
 
-            studentIDs.forEach((studentID)=>{
+            studentIDs.forEach((studentID) => {
                 api.fetchStudents(studentID);
             });
 
             setLoadingUsers(true);
         }
 
-    },[props.registration.registered_courses, api]);
+    }, [props.registration.registered_courses, api]);
 
     const handleCourseSelect = (studentID, courseID) => (e) => {
         // e.preventDefault();
-        let currentlySelectedCourses = {...selectedCourses};
+        let currentlySelectedCourses = { ...selectedCourses };
         currentlySelectedCourses[studentID][courseID] = {
             sessions: currentlySelectedCourses[studentID][courseID].sessions,
             checked: !currentlySelectedCourses[studentID][courseID].checked
@@ -75,23 +75,23 @@ function RegistrationCart(props) {
         selectCourse(currentlySelectedCourses);
     };
 
-    const handleCourseSessionsChange = (selectedCourse, studentID, courseID) => (e) =>{
+    const handleCourseSessionsChange = (selectedCourse, studentID, courseID) => (e) => {
         // registration.sessions = e.target.value;
-        let {value} = e.target;
+        let { value } = e.target;
         selectCourse({
             ...selectedCourses,
-            [studentID]:{
+            [studentID]: {
                 ...selectedCourses[studentID],
-                [courseID]:{
+                [courseID]: {
                     ...selectedCourse,
-                    sessions:value,
+                    sessions: value,
                 }
             }
         });
         //update registration in redux
         let updatedRegisteredCourse = {
-            ...props.registration.registered_courses[studentID].find((course)=>{return courseID === course.course_id}),
-            sessions:Number(value),
+            ...props.registration.registered_courses[studentID].find((course) => { return courseID === course.course_id }),
+            sessions: Number(value),
         };
         let courses = updatedCourses;
         courses.push(updatedRegisteredCourse);
@@ -99,7 +99,7 @@ function RegistrationCart(props) {
     };
 
     const renderStudentRegistrations = () => {
-        return Object.keys(props.registration.registered_courses).map((student_id) =>{
+        return Object.keys(props.registration.registered_courses).map((student_id) => {
             let registrations = props.registration.registered_courses[student_id];
             return props.studentAccounts[student_id] && <div className="student-cart-wrapper">
                 <Grid container>
@@ -115,27 +115,27 @@ function RegistrationCart(props) {
                         <Grid container className={'accounts-table-heading'}>
                             <Grid item xs={1} md={1}> </Grid>
                             <Grid item xs={3} md={3}>
-                                <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                                <Typography align={'left'} style={{ color: 'white', fontWeight: '500' }}>
                                     Course
                                 </Typography>
                             </Grid>
                             <Grid item xs={3} md={3}>
-                                <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
+                                <Typography align={'left'} style={{ color: 'white', fontWeight: '500' }}>
                                     Dates
                                 </Typography>
                             </Grid>
                             <Grid item xs={1} md={1}>
-                                <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
+                                <Typography align={'center'} style={{ color: 'white', fontWeight: '500' }}>
                                     Sessions
                                 </Typography>
                             </Grid>
                             <Grid item xs={2} md={2}>
-                                <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
+                                <Typography align={'center'} style={{ color: 'white', fontWeight: '500' }}>
                                     Tuition
                                 </Typography>
                             </Grid>
                             <Grid item xs={2} md={2}>
-                                <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
+                                <Typography align={'center'} style={{ color: 'white', fontWeight: '500' }}>
                                     Material Fee
                                 </Typography>
                             </Grid>
@@ -146,15 +146,15 @@ function RegistrationCart(props) {
                             {
                                 registrations.map((registration) => {
                                     let course;
-                                    if (registration.new_course){ //if tutoring
+                                    if (registration.new_course) { //if tutoring
                                         course = registration.new_course;
                                     } else {
                                         course = props.courseList[registration.course_id];
                                     }
-                                    if(course){
-                                        let dateOptions = {year: "numeric", month: "short", day: "numeric"};
+                                    if (course) {
+                                        let dateOptions = { year: "numeric", month: "short", day: "numeric" };
                                         let startDate = new Date(course.schedule.start_date),
-                                            endDate = new Date(course.schedule.end_date);
+                                            endDate = new Date(course.schedule.end_date.replace(/-/g, '/'));
                                         startDate = startDate.toLocaleDateString("en-US", dateOptions);
                                         endDate = endDate.toLocaleDateString("en-US", dateOptions);
 
@@ -163,7 +163,7 @@ function RegistrationCart(props) {
                                                 <Grid container alignItems="center">
                                                     <Grid item xs={1} md={1}>
                                                         <Checkbox checked={selectedCourses[student_id][registration.course_id].checked}
-                                                                  onChange={handleCourseSelect(student_id, registration.course_id)}  />
+                                                            onChange={handleCourseSelect(student_id, registration.course_id)} />
                                                     </Grid>
                                                     <Grid item xs={3} md={3} >
                                                         <Typography align={'left'}>
@@ -220,23 +220,23 @@ function RegistrationCart(props) {
 
 
 
-    const renderPayment = (isOneCourse, selectedStudentID, selectedCourseID) =>{
-        let selectedRegistration = props.registration.registered_courses[selectedStudentID].find(({course_id})=>{
-            if(selectedCourseID.indexOf("T") > -1){
+    const renderPayment = (isOneCourse, selectedStudentID, selectedCourseID) => {
+        let selectedRegistration = props.registration.registered_courses[selectedStudentID].find(({ course_id }) => {
+            if (selectedCourseID.indexOf("T") > -1) {
                 return course_id === selectedCourseID;
             } else {
                 return course_id === Number(selectedCourseID)
             }
         });
-        let isSmallGroup = selectedCourseID.indexOf("T") === -1 ? props.courseList[selectedCourseID].capacity < 5: false;
-        let {form, course_id} = selectedRegistration;
+        let isSmallGroup = selectedCourseID.indexOf("T") === -1 ? props.courseList[selectedCourseID].capacity < 5 : false;
+        let { form, course_id } = selectedRegistration;
         let formType = form ? form.form : "class";
 
-        let selectedCoursesHaveSession = () =>{
+        let selectedCoursesHaveSession = () => {
             let haveSession = true;
             Object.values(selectedCourses).forEach((student) => {
-                Object.values(student).forEach((course)=>{
-                    if(course.checked && course.sessions < 1 ){
+                Object.values(student).forEach((course) => {
+                    if (course.checked && course.sessions < 1) {
                         haveSession = false;
                     }
                 })
@@ -245,21 +245,21 @@ function RegistrationCart(props) {
         };
 
         // This determines if there's been an update to the number of sessions to checkout for any course
-        let selectedCourseSameAsRedux = () =>{
+        let selectedCourseSameAsRedux = () => {
             // go to each selectedCourses
             // get selectedCourse from registered_courses
             // compare if both sessions are equal
             let sameSessions = true;
-            Object.entries(selectedCourses).forEach(([studentID, studentVal])=>{
-                Object.entries(studentVal).forEach(([courseID, courseVal])=>{
-                    let reduxCourse = props.registration.registered_courses[studentID].find(({course_id})=>{
-                        if(courseID.indexOf("T") > -1) {
+            Object.entries(selectedCourses).forEach(([studentID, studentVal]) => {
+                Object.entries(studentVal).forEach(([courseID, courseVal]) => {
+                    let reduxCourse = props.registration.registered_courses[studentID].find(({ course_id }) => {
+                        if (courseID.indexOf("T") > -1) {
                             return course_id === courseID;
                         } else {
                             return course_id === Number(courseID);
                         }
                     });
-                    if(reduxCourse.sessions !== courseVal.sessions){
+                    if (reduxCourse.sessions !== courseVal.sessions) {
                         sameSessions = false;
                     }
                 });
@@ -273,19 +273,19 @@ function RegistrationCart(props) {
                 courses: [],
                 tutoring: [],
             };
-            Object.entries(selectedCourses).forEach(([studentID, studentVal])=>{
-                Object.entries(studentVal).forEach(([courseID, courseVal])=>{
-                    if(courseVal.checked){
-                        let course = props.registration.registered_courses[studentID].find((course)=>{
-                            if(course.type === "class" || course.type === "course") {
+            Object.entries(selectedCourses).forEach(([studentID, studentVal]) => {
+                Object.entries(studentVal).forEach(([courseID, courseVal]) => {
+                    if (courseVal.checked) {
+                        let course = props.registration.registered_courses[studentID].find((course) => {
+                            if (course.type === "class" || course.type === "course") {
                                 return course.course_id === Number(courseID)
                             } else {
                                 return course.course_id === courseID
                             }
                         });
-                        if(courseID.indexOf("T") > -1){
+                        if (courseID.indexOf("T") > -1) {
                             //{category, academic_level, sessions, form}
-                            let {category, academic_level, form} = course;
+                            let { category, academic_level, form } = course;
                             courses["tutoring"].push({
                                 category_id: category,
                                 academic_level: academic_level,
@@ -312,9 +312,9 @@ function RegistrationCart(props) {
             {
                 <Grid item xs={12}>
                     <Grid container
-                          spacing={16}
-                          justify={"flex-end"}>
-                        <Grid item xs={6}/>
+                        spacing={16}
+                        justify={"flex-end"}>
+                        <Grid item xs={6} />
                         {
                             isOneCourse &&
                             <>
@@ -330,8 +330,8 @@ function RegistrationCart(props) {
                                 </Grid>
                                 <Grid item>
                                     <Button className={"button"}
-                                            component={NavLinkNoDup}
-                                            to={`/registration/form/${formType}/${selectedStudentID}+${course_id}/edit`}
+                                        component={NavLinkNoDup}
+                                        to={`/registration/form/${formType}/${selectedStudentID}+${course_id}/edit`}
                                     >
                                         Edit Registration
                                     </Button>
@@ -363,38 +363,39 @@ function RegistrationCart(props) {
 
     const updateQuantity = () => (e) => {
         e.preventDefault();
-        updatedCourses.forEach((updatedCourse)=>{
+        updatedCourses.forEach((updatedCourse) => {
             api.editRegistration(updatedCourse);
         });
-    ;}
+        ;
+    }
 
     const selectedCourseOptions = () => {
         let displaySelectionOptions = 0;
-        let selectedCourseID=-1, selectedStudentID = -1;
-        Object.keys(selectedCourses).forEach((studentID)=>{
-            for (let [courseID, checkbox] of Object.entries(selectedCourses[studentID])){
-                if(checkbox.checked){
+        let selectedCourseID = -1, selectedStudentID = -1;
+        Object.keys(selectedCourses).forEach((studentID) => {
+            for (let [courseID, checkbox] of Object.entries(selectedCourses[studentID])) {
+                if (checkbox.checked) {
                     displaySelectionOptions++;
                     selectedCourseID = courseID;
                     selectedStudentID = studentID;
                 }
             }
         });
-        if(selectedCourseID !== -1) {
+        if (selectedCourseID !== -1) {
             return renderPayment(displaySelectionOptions === 1, selectedStudentID, selectedCourseID);
         }
         return "";
     };
 
-    useEffect(()=>{
-       return ()=>{
-           if(props.registration.registered_courses &&
-           props.registration.CurrentParent){
-               sessionStorage.setItem("registered_courses", JSON.stringify(props.registration.registered_courses));
-               sessionStorage.setItem("CurrentParent", JSON.stringify(props.registration.CurrentParent));
-           }
-       }
-    },[])
+    useEffect(() => {
+        return () => {
+            if (props.registration.registered_courses &&
+                props.registration.CurrentParent) {
+                sessionStorage.setItem("registered_courses", JSON.stringify(props.registration.registered_courses));
+                sessionStorage.setItem("CurrentParent", JSON.stringify(props.registration.CurrentParent));
+            }
+        }
+    }, [])
 
     return (
         <form>
@@ -406,18 +407,18 @@ function RegistrationCart(props) {
                                 <Button
                                     className={"button"}
                                     component={NavLinkNoDup} to={"/registration"}>
-                                    <BackArrow/>
+                                    <BackArrow />
                                     Register
                                 </Button>
                             </Grid>
                         </Grid>
-                        <hr/>
+                        <hr />
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant={"h3"} align={"left"}>Select Course(s)</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                        {usersLoaded ? renderStudentRegistrations() : <Loading/>}
+                        {usersLoaded ? renderStudentRegistrations() : <Loading />}
                     </Grid>
                     <Grid item xs={12}>
                         {selectedCourseOptions()}

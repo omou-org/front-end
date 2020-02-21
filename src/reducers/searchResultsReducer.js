@@ -4,8 +4,8 @@ import { SEARCH_ALL } from "../actions/actionTypes";
 
 export default function course(state = initialState.SearchResults, { payload, type }) {
     let status = 1;
-    if (payload) {
-        if (payload.response && Object.keys(payload.response).length > 0) {
+    if(payload){
+        if( payload.response && Object.keys(payload.response).length > 0){
             status = payload.response.status;
         }
     }
@@ -69,15 +69,15 @@ export default function course(state = initialState.SearchResults, { payload, ty
     }
 }
 
+
 const handleAccountSearchResults = (state, payload, status) => {
     let { response } = payload;
     let { data } = response;
-    console.log(data)
+
     // you can get page and count
     return {
         ...state,
         count: data.count,
-        page: parseInt(data.page),
         accounts: data.results,
         searchQueryStatus: {
             ...state.searchQueryStatus,
