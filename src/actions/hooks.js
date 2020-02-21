@@ -41,12 +41,22 @@ export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOn
         }
     }, []);
 
-    const requestSettings = useMemo(() => ({
-        "headers": {
+    // function use untested!!!
+    const requestSettings = useCallback((individual) => {
+        const headers = {
             "Authorization": `Token ${token}`,
-        },
-        ...config,
-    }), [token]);
+        };
+        if (typeof config === "function") {
+            return {
+                ...headers,
+                ...config(individual),
+            };
+        }
+        return {
+            ...headers,
+            ...config,
+        };
+    }, [token]);
 
     useEffect(() => {
         let aborted = false;
@@ -59,7 +69,7 @@ export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOn
                         setStatus(REQUEST_STARTED);
                         const response = await instance.get(
                             endpoint,
-                            requestSettings
+                            requestSettings(REQUEST_ALL)
                         );
                         if (!aborted) {
                             dispatch({
@@ -85,7 +95,7 @@ export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOn
                     setStatus(REQUEST_STARTED);
                     const response = await instance.get(
                         `${endpoint}${id}/`,
-                        requestSettings
+                        requestSettings(id)
                     );
                     if (!aborted) {
                         dispatch({
@@ -111,7 +121,7 @@ export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOn
                     const response = await Promise.all(id.map(
                         (individual) => instance.get(
                             `${endpoint}${individual}/`,
-                            requestSettings
+                            requestSettings(individual)
                         )
                     ));
                     if (!aborted) {
@@ -123,10 +133,10 @@ export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOn
                             "type": successType,
                         });
                         setStatus(response.reduce((finalStatus, {status}) =>
-                            isFail(status) ? status :
-                            isFail(finalStatus) ? finalStatus :
-                            isLoading(status) ? status :
-                            finalStatus, 200));
+                            isFail(status) ? status
+                                : isFail(finalStatus) ? finalStatus
+                                    : isLoading(status) ? status
+                                        : finalStatus, 200));
                     }
                 } catch (error) {
                     if (!aborted) {
@@ -194,9 +204,9 @@ export const usePaymentByParent = (parentID) => wrapUseEndpoint(
     "/payment/payment/",
     types.GET_PAYMENT_PARENT_SUCCESS,
     {
-        "params":{
+        "params": {
             "parent": parentID,
-        }
+        },
     }
 )(null);
 
@@ -204,23 +214,22 @@ export const usePaymentByEnrollment = (enrollmentID) => wrapUseEndpoint(
     "/payment/payment/",
     types.GET_PAYMENT_ENROLLMENT_SUCCESS,
     {
-        "params":{
+        "params": {
             "enrollment": enrollmentID,
-        }
+        },
     }
 );
 
-// Hook
-export function usePrevious(value) {
-    // The ref object is a generic container whose current property is mutable ...
-    // ... and can hold any value, similar to an instance property on a class
+export const usePrevious = (value) => {
+    // The ref object is a generic container whose current property is mutable
+    // and can hold any value, similar to an instance property on a class
     const ref = useRef();
 
     // Store current value in ref
     useEffect(() => {
         ref.current = value;
-    }, [value]); // Only re-run if value changes
+    }, [value]);
 
     // Return previous value (happens before update in useEffect above)
     return ref.current;
-}
+};
