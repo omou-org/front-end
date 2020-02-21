@@ -184,7 +184,7 @@ export const durationParser = {
 };
 
 export const formatCourse = (formCourse, type) => {
-    console.log(formCourse);
+
     let dayOfWeek = () => {
         switch (startDate.getDay()) {
             case 0:
@@ -210,7 +210,7 @@ export const formatCourse = (formCourse, type) => {
     let numberOfSessions = (formCourse["Number of Weekly Sessions"] - 1)
 
     endDate = new Date(endDate.setDate(startDate.getDate() + 7 * numberOfSessions));
-    console.log(endDate)
+
     let dateFormat = {
         year: "numeric",
         month: "2-digit",
@@ -218,7 +218,7 @@ export const formatCourse = (formCourse, type) => {
     };
     startDate = startDate.toLocaleString("sv-SE", dateFormat);
     endDate = endDate.toLocaleString("sv-SE", dateFormat);
-    console.log(endDate)
+
     let startString = formCourse["Start Time"];
     let startTime = new Date(startString);
     let endTime = new Date(startString);
