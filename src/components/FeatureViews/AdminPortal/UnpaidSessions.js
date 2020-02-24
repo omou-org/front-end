@@ -16,30 +16,27 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Avatar from '@material-ui/core/Avatar';
 import {stringToColor} from "../Accounts/accountUtils";
-import {roleColor, initials, parseDate, parseRole} from "./AdminUtils";
+import {roleColor, initials, parseDate, parseRole, statusColor} from "./AdminUtils";
 import {GET} from "../../../actions/actionTypes";
 import {REQUEST_STARTED} from "../../../actions/apiActions";
 import * as adminActions from "../../../actions/adminActions";
 import initialState from '../../../reducers/initialState';
 import { useEffect } from 'react';
 
-
-
-const UnpaidSessions = () => {
+function UnpaidSessions () {
     const dispatch = useDispatch();
-    const api = useMemo (
+    const api = useMemo(
         () => ({
             ...bindActionCreators(adminActions, dispatch),
         }),
         [dispatch]
     );
-    const Unpaid = useSelector(({"Admin":{Unpaid}}) => 
-        Unpaid);
+
+    const UnpaidList = useSelector(state => state.Admin.students);
 
     useEffect(()=>{
         api.fetchUnpaid();
-    },[api]);
-
+    },[]);
 
     const styles = (username) => ({
         "backgroundColor": stringToColor(username),
@@ -70,50 +67,94 @@ const UnpaidSessions = () => {
         "margin": '10px'
     })
 
+    const statusStyle = (status) => ({
+        "backgroundColor": statusColor(status),
+        "color": "black",
+        "height": 10,
+        "width": 10,
+        "line-height": 1,
+        // "lineHeight": "auto", 
+        "margin": "auto",
+        "padding": 10,
+        "borderRadius": "50%",
+        // "alignContent": "center"
 
+    })
 
-    if (hooks.isLoading(Unpaid)) {
+    // if (hooks.isLoading(UnpaidList)) {
+    //     return <Loading/>
+    // }
+
+const checkUnpaid = (x) => {
+    if (!x){
         return <Loading/>
     }
 
-        return (<div className="`DashboardOP`">
-                <Card style = {cardStyle()}> 
-                    <CardActionArea>
-                        <CardMedia>
-                            <Grid container style={{justifyContent:"center"}}>
-                            <Avatar alignItems="center"  
-                                    style = {styles("G G")}                      
-                                    // style={styles(this.props.fName + " " + this.props.lName)}
-                                    >
-                                        {initials("G", "G")}
-                                        {/* {initials(this.props.fName, this.props.lName)} */}
-                                </Avatar>
-                            </Grid>
-                        </CardMedia>
-                        <CardContent>
-                        <Typography style ={{fontSize: "16px", fontWeight: 500, lineHeight: "24px", textAlign: "center"}}>
-                            Greg Glinoga
-                            {/* {this.props.fName + " " + this.props.lName} */}
-                        </Typography>
-                        <Typography style={roleStyle("student")} >
-                            {parseRole("student")}
-                        </Typography>
-                        <Typography style={{textAlign: "center"}}>
-                            {/* {this.props.status} */}
-                            <br></br>
-                            $50
-                            {/* {this.props.amt} */}
-                            <br></br>
-                            AP Calculus
-                            {/* {this.props.course} */}
-                        </Typography>
-                        </CardContent>
-                    </CardActionArea>
-                    <CardActions>
-                    </CardActions>
-                </Card>
-        </div>)
+    else {
+        console.log("success")
+        x.forEach(unpaid=>(
+            displayUnpaid(unpaid)
+            ))
+        // displayUnpaid(x);
+    }
+}
+
+const displayUnpaid = (unpaid) => {
+    // console.log(unpaid)
+    console.log(unpaid.fName + " " + unpaid.lName)
+    return  ( 
+    <div>
+    <Card style = {cardStyle()}> 
+                <CardActionArea>
+                    <CardMedia>
+                        <Grid container style={{justifyContent:"center"}}>
+                        <Avatar alignItems="center"  
+                                style = {styles("G G")}                      
+                                // style={styles(this.props.fName + " " + this.props.lName)}
+                                >
+                                    {initials("G", "G")}
+                                    {/* {initials(this.props.fName, this.props.lName)} */}
+                            </Avatar>
+                        </Grid>
+                    </CardMedia>
+                    <CardContent>
+                    <Typography style ={{fontSize: "16px", fontWeight: 500, lineHeight: "24px", textAlign: "center"}}>
+                        test
+                        {/* {unpaid.fName + " " + unpaid.lName} */}
+                        {/* {this.props.fName + " " + this.props.lName} */}
+                    </Typography>
+                    <Typography style={roleStyle("student")} >
+                        {parseRole("student")}
+                    </Typography>
+                    <Typography style={{textAlign: "center"}}>
+                        {/* {this.props.status} */}
+                        Payment Status: <span style={statusStyle("1")}>1</span>
+                        <br></br>
+                        Amount Due: $50
+                        {/* {this.props.amt} */}
+                        <br></br>
+                        AP Calculus
+                        {/* {this.props.course} */}
+                    </Typography>
+                    </CardContent>
+                </CardActionArea>
+                <CardActions>
+                </CardActions>
+            </Card>
+</div>
+    )
+}
+
+
+// if (categoryStatus[GET] !==200)
+return (
+    <div>
+    {checkUnpaid(UnpaidList)}  
+    </div>
+)
     
 }
+
+
 
 export default UnpaidSessions;

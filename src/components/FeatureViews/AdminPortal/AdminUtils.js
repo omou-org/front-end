@@ -17,6 +17,19 @@ export const roleColor = (string)=>{
     }
 }
 
+export const statusColor = (x)=> {
+    switch(x){
+        case "0":
+            return "red";
+        case "1":
+            return "red";
+        case "2":
+            return "yellow";
+        case "3":
+            return "yellow";
+    }
+}
+
 export const initials = (first, last) => {
     if (first) {
         let x = 0;

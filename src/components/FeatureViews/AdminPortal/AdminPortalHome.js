@@ -32,15 +32,7 @@ const style ={
 
 return (
     <div>
-        <Card style={style.card}>
-            <h1>Outstanding Payments</h1>
             <UnpaidSessions></UnpaidSessions>
-        {/* {this.props.Unpaid.map(unpaid=>(
-            <UnpaidSessions
-                fName={unpaid.fName}
-            ></UnpaidSessions>
-        ))} */}
-        </Card>
     </div>
 )
 }
@@ -50,7 +42,7 @@ AdminPortalHome.propTypes = {
     // admin: PropTypes.bool,
 };
 const mapStateToProps = (state) => ({
-    "Unpaid": state.Admin.Unpaid.students,
+    "Unpaid": state.Admin.Unpaid,
 });
 
 export default withRouter(connect(
