@@ -72,7 +72,7 @@ function UnpaidSessions () {
         "color": "black",
         "height": 10,
         "width": 10,
-        "line-height": 1,
+        "lineHeight": 1,
         // "lineHeight": "auto", 
         "margin": "auto",
         "padding": 10,
@@ -81,80 +81,61 @@ function UnpaidSessions () {
 
     })
 
-    // if (hooks.isLoading(UnpaidList)) {
-    //     return <Loading/>
-    // }
-
 const checkUnpaid = (x) => {
     if (!x){
         return <Loading/>
     }
 
     else {
-        console.log("success")
-        x.forEach(unpaid=>(
-            displayUnpaid(unpaid)
-            ))
-        // displayUnpaid(x);
+        console.log('x exists')
+
+        return x.map(up=>(
+            displayUnpaid(up)
+        ))
+        
     }
 }
 
 const displayUnpaid = (unpaid) => {
-    // console.log(unpaid)
-    console.log(unpaid.fName + " " + unpaid.lName)
-    return  ( 
-    <div>
+    console.log(unpaid)
+    return(
     <Card style = {cardStyle()}> 
                 <CardActionArea>
                     <CardMedia>
                         <Grid container style={{justifyContent:"center"}}>
-                        <Avatar alignItems="center"  
-                                style = {styles("G G")}                      
-                                // style={styles(this.props.fName + " " + this.props.lName)}
-                                >
-                                    {initials("G", "G")}
-                                    {/* {initials(this.props.fName, this.props.lName)} */}
+                            <Avatar   
+                                    style={styles(unpaid.fName + " " + unpaid.lName)}
+                                    >
+                                        {initials(unpaid.fName, unpaid.lName)}
                             </Avatar>
                         </Grid>
                     </CardMedia>
                     <CardContent>
                     <Typography style ={{fontSize: "16px", fontWeight: 500, lineHeight: "24px", textAlign: "center"}}>
-                        test
-                        {/* {unpaid.fName + " " + unpaid.lName} */}
-                        {/* {this.props.fName + " " + this.props.lName} */}
+                        {unpaid.fName + " " + unpaid.lName}
                     </Typography>
-                    <Typography style={roleStyle("student")} >
-                        {parseRole("student")}
+                    <Typography style={roleStyle(unpaid.status)} >
+                        {parseRole(unpaid.status)}
                     </Typography>
                     <Typography style={{textAlign: "center"}}>
-                        {/* {this.props.status} */}
-                        Payment Status: <span style={statusStyle("1")}>1</span>
+                        Payment Status: <span style={statusStyle(unpaid.paymentStatus)}>{unpaid.paymentStatus}</span>
                         <br></br>
-                        Amount Due: $50
-                        {/* {this.props.amt} */}
+                        {unpaid.amt}
                         <br></br>
-                        AP Calculus
-                        {/* {this.props.course} */}
+                        {unpaid.course}
                     </Typography>
                     </CardContent>
                 </CardActionArea>
-                <CardActions>
-                </CardActions>
             </Card>
-</div>
     )
 }
 
-
-// if (categoryStatus[GET] !==200)
 return (
     <div>
-    {checkUnpaid(UnpaidList)}  
+        {checkUnpaid(UnpaidList)}
     </div>
 )
     
 }
-
-
 
 export default UnpaidSessions;
