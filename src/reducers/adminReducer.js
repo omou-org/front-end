@@ -85,11 +85,14 @@ const updateUnpaid = (state, payload, action) => {
     let {response} = payload
     let {data} = response;
     let {Unpaid} = state;
-    Unpaid = data;
-    return {
-        ...state,
-        Unpaid,
+    switch(action) {
+        case "GET":{
+            
+            // Unpaid = data;
+            console.log(Unpaid)
+            return Unpaid;
     }
+}
 }
 
 const updateDiscount = (state, payload, action, discountType) => {

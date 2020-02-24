@@ -86,14 +86,23 @@ export default {
         },
         Unpaid: {
             
-              students:{
+              students:[{
                     student_id: 1,
                     fName: "Greg",
                     lName: "Glinoga",
                     status: "Student",
                     amt: 50.00,
                     course: "AP Calculus",
-                }  
+                },
+                {
+                    student_id: 2,
+                    fName: "Wilson",
+                    lName: "Lam",
+                    status: "Student",
+                    amt: 40.00,
+                    course: "AP Calculus",
+                }
+                ]
                 }
     }
 };
