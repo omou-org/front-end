@@ -5,8 +5,10 @@ import { SEARCH_ALL } from "../actions/actionTypes";
 export default function course(state = initialState.SearchResults, { payload, type }) {
     let status = 1;
     if(payload){
-        if( payload.response && Object.keys(payload.response).length > 0){
+        if( payload.response && Object.keys(payload.response).length > 0 && payload.response.status){
             status = payload.response.status;
+        } else if(payload.status){
+            status = payload.status;
         }
     }
 
@@ -69,7 +71,6 @@ export default function course(state = initialState.SearchResults, { payload, ty
     }
 }
 
-
 const handleAccountSearchResults = (state, payload, status) => {
     let { response } = payload;
     let { data } = response;
@@ -77,8 +78,8 @@ const handleAccountSearchResults = (state, payload, status) => {
     // you can get page and count
     return {
         ...state,
-        count: data.count,
-        accounts: data.results,
+        accounts:data.results,
+        account_num_results:data.count,
         searchQueryStatus: {
             ...state.searchQueryStatus,
             account: status,
@@ -91,6 +92,7 @@ const handleCourseSearchResults = (state, { id, response }, status) => {
     return {
         ...state,
         courses: data.results,
+        course_num_results: data.count,
         searchQueryStatus: {
             ...state.searchQueryStatus,
             course: status,

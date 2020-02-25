@@ -164,11 +164,11 @@ const handleNotesFetch = (state, {ownerID, response}) => {
     return newState;
 };
 
-const handleCourseSearchResults = (state, {response}) => {
+const handleCourseSearchResults = (state, payload) => {
+    const {response} = payload;
     const {data} = response;
     let {NewCourseList} = state;
-
-    data.forEach((course) => {
+    data.results.forEach((course) => {
         NewCourseList = updateCourse(NewCourseList, course.id, course);
     });
 
