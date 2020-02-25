@@ -1,14 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Grid, IconButton } from "@material-ui/core";
-import { bindActionCreators } from "redux";
+import React, {useEffect, useMemo, useState} from 'react';
+import {Grid, IconButton} from "@material-ui/core";
+import {bindActionCreators} from "redux";
 import * as searchActions from "../../../actions/searchActions";
-import { connect, useDispatch, useSelector } from "react-redux";
+import {connect, useDispatch, useSelector} from "react-redux";
 import Paper from "@material-ui/core/Paper"
 import Typography from "@material-ui/core/Typography"
 import AccountsCards from "./cards/AccountsCards"
 import CoursesCards from "./cards/CoursesCards"
 import "./Search.scss";
-import { useParams } from "react-router-dom"
+import {useParams} from "react-router-dom"
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
 import * as registrationActions from "../../../actions/registrationActions";
@@ -18,7 +18,7 @@ import MoreResultsIcon from "@material-ui/icons/KeyboardArrowRight";
 import LessResultsIcon from "@material-ui/icons/KeyboardArrowLeft";
 import CourseFilters from "./CourseFilters";
 import Loading from "../../Loading";
-import { SEARCH_ACCOUNTS, SEARCH_ALL, SEARCH_COURSES } from "../../../actions/actionTypes";
+import {SEARCH_ACCOUNTS, SEARCH_ALL, SEARCH_COURSES} from "../../../actions/actionTypes";
 import Chip from "@material-ui/core/Chip";
 
 const SearchResults = (props) => {
@@ -159,6 +159,8 @@ const SearchResults = (props) => {
         return <Loading />
     }
 
+    const MAX_PAGE = Math.ceil(count / 8);
+
     return (
         <Grid container className={'search-results'} >
             <Grid item xs={12}>
@@ -228,7 +230,7 @@ const SearchResults = (props) => {
                             {account_num_results > 4 ?
                                 <div className={"results-nav"}>
                                     {
-                                         <IconButton disabled={lessResults !== 1}
+                                         <IconButton disabled={currentPage !== 1}
                                             className={"less"}
                                             onClick={displayResults("less", SEARCH_ACCOUNTS)}>
                                             <LessResultsIcon />
@@ -236,7 +238,7 @@ const SearchResults = (props) => {
                                     }
                                     {searchState.params.account.accountPage}
                                     {
-                                         <IconButton disabled={moreResults}
+                                         <IconButton disabled={MAX_PAGE <= currentPage}
                                             className={"more"}
                                             onClick={displayResults("more", SEARCH_ACCOUNTS)}>
                                             <MoreResultsIcon />
@@ -296,7 +298,7 @@ const SearchResults = (props) => {
                                         <LessResultsIcon/>
                                     </IconButton>
                                 }
-                                {currentPage.course}
+                                {searchState.params.course.coursePage}
                                 {
                                      <IconButton disabled={course_num_results > 7}
                                         className={"more"}

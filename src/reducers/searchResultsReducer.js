@@ -1,6 +1,6 @@
 import initialState from './initialState';
 import * as actions from "./../actions/actionTypes";
-import { SEARCH_ALL } from "../actions/actionTypes";
+import {SEARCH_ALL} from "../actions/actionTypes";
 
 export default function course(state = initialState.SearchResults, { payload, type }) {
     let status = 1;
@@ -83,7 +83,16 @@ const handleAccountSearchResults = (state, payload, status) => {
         searchQueryStatus: {
             ...state.searchQueryStatus,
             account: status,
-        }
+        },
+        params: {
+            account: {
+                ...state.params.account,
+                accountPage: data.page,
+            },
+            course: {
+                ...state.params.course,
+            }
+        },
     }
 };
 
@@ -96,7 +105,16 @@ const handleCourseSearchResults = (state, { id, response }, status) => {
         searchQueryStatus: {
             ...state.searchQueryStatus,
             course: status,
-        }
+        },
+        params: {
+            account: {
+                ...state.params.account,
+            },
+            course: {
+                ...state.params.course,
+                coursePage: data.page,
+            }
+        },
     }
 };
 
