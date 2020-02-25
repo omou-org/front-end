@@ -159,8 +159,24 @@ const SearchResults = (props) => {
         return <Loading />
     }
 
-    const MAX_PAGE = Math.ceil(count / 8);
+    const MAX_PAGE = Math.ceil(numberOfResults() / 8);
+    const pageNumber = (apiPage, startPage) => {
+        const firstResultsPage = startPage === 0 && apiPage == 1;
+        const secondResultsPage = startPage !== 0 && apiPage == 1;
+        if (firstResultsPage) {
+            return 1;
+        } else if(secondResultsPage){
+            return 2;
+        } else if (startPage === 0){
+            return Number(apiPage)*2;
+        } else {
+            return Number(apiPage)*2+1;
+        }
+    };
 
+    const setPageLimit = (resultsPageNumber) => {
+        return resultsPageNumber >= MAX_PAGE;
+    };
     return (
         <Grid container className={'search-results'} >
             <Grid item xs={12}>
@@ -230,15 +246,15 @@ const SearchResults = (props) => {
                             {account_num_results > 4 ?
                                 <div className={"results-nav"}>
                                     {
-                                         <IconButton disabled={currentPage !== 1}
+                                         <IconButton disabled={pageNumber(searchState.params.account.accountPage, start.account) != 1}
                                             className={"less"}
                                             onClick={displayResults("less", SEARCH_ACCOUNTS)}>
                                             <LessResultsIcon />
                                         </IconButton>
                                     }
-                                    {searchState.params.account.accountPage}
+                                    {pageNumber(searchState.params.account.accountPage, start.account)}
                                     {
-                                         <IconButton disabled={MAX_PAGE <= currentPage}
+                                         <IconButton disabled={setPageLimit(pageNumber(searchState.params.account.accountPage, start.account))}
                                             className={"more"}
                                             onClick={displayResults("more", SEARCH_ACCOUNTS)}>
                                             <MoreResultsIcon />
@@ -292,15 +308,15 @@ const SearchResults = (props) => {
                         {course_num_results > 4 ?
                             <div className={"results-nav"}>
                                 {
-                                     <IconButton disabled={currentPage.course === 1}
+                                     <IconButton disabled={pageNumber(searchState.params.course.coursePage, start.course) == 1}
                                         className={"less"}
                                         onClick={displayResults("less", SEARCH_COURSES)}>
                                         <LessResultsIcon/>
                                     </IconButton>
                                 }
-                                {searchState.params.course.coursePage}
+                                { pageNumber(searchState.params.course.coursePage, start.course)}
                                 {
-                                     <IconButton disabled={course_num_results > 7}
+                                     <IconButton disabled={setPageLimit(pageNumber(searchState.params.course.coursePage, start.course))}
                                         className={"more"}
                                         onClick={displayResults("more", SEARCH_COURSES)}>
                                         <MoreResultsIcon />
