@@ -147,7 +147,7 @@ class Accounts extends Component {
             },
             first_tab:{
                 borderRadius:"10px 0 0 10px !important",
-                color: "black"
+                color: "black",
             },
             last_tab:{
                 borderRadius:"10px 0 0 10px",
@@ -155,13 +155,14 @@ class Accounts extends Component {
         });
 
         const tableView = () => (
-            <Table className="AccountsTable">
+            <Table resizable={false} className="AccountsTable">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Email</TableCell>
-                        <TableCell>Phone</TableCell>
-                        <TableCell>Role</TableCell>
+                        <TableCell >Name</TableCell>
+                        <TableCell >ID</TableCell>
+                        <TableCell >Email</TableCell>
+                        <TableCell >Phone</TableCell>
+                        <TableCell >Role</TableCell>
                         <TableCell />
                     </TableRow>
                 </TableHead>
@@ -175,11 +176,7 @@ class Accounts extends Component {
                                 this.goToRoute(`/accounts/${row.role}/${row.user_id}`);
                             }}>
                             <TableCell
-                                className="accountsCell"
-                                style={{
-                                    "marginLeft": "0px",
-                                    "paddingLeft": "0px",
-                                }}>
+                                style={{ width: 200 }}>
                                 <Grid
                                     alignItems="center"
                                     container
@@ -187,13 +184,15 @@ class Accounts extends Component {
                                     <Avatar
                                         style={styles(row.name).avatar}>{row.name.toUpperCase().match(/\b(\w)/g).join("")}
                                     </Avatar>
-                                    <Truncate lines={1} ellipsis={<span>...</span>}>
                                         {row.name}
-                                    </Truncate>
+                                    
                                 </Grid>
                             </TableCell>
+                            <TableCell style={{ width: 100 }}>
+                                {row.user_id}
+                            </TableCell>
                             <TableCell
-                                className="accountsCell">
+                                style={{ width: 200 }}>
                                 <Tooltip title={row.email}>
                                     <span>
                                         {row.email.substr(0,20)}
@@ -201,14 +200,14 @@ class Accounts extends Component {
                                 </Tooltip>
                             </TableCell>
                             <TableCell
-                                className="accountsCell">{addDashes(row.phone_number)}
+                                style={{ width: 100 }}>{addDashes(row.phone_number)}
                             </TableCell>
                             <TableCell
-                                className="accountsCell">
+                                style={{ width: 150 }}>
                                 {row.role.charAt(0).toUpperCase() + row.role.slice(1)}
                             </TableCell>
                             <TableCell
-                                className="accountsCell"
+                               style={{ width: 100 }}
                                 onClick={(event) => {
                                     event.stopPropagation();
                                 }}>
@@ -300,13 +299,14 @@ class Accounts extends Component {
                                 indicatorColor="primary"
                                 onChange={this.handleChange}
                                 textColor="primary"
+                                scrollButtons="off"
                                 value={this.state.tabIndex}
                                 variant="scrollable">
-                                <Tab label="ALL" classes={styles("").first_tab}/>
-                                <Tab label="INSTRUCTORS" />
-                                <Tab label="STUDENTS" />
-                                <Tab label="RECEPTIONIST" />
-                                <Tab label="PARENTS" />
+                                <Tab style={{minWidth:130}} label="ALL" classes={styles("").first_tab}/>
+                                <Tab style={{minWidth:130}} label="INSTRUCTORS" />
+                                <Tab style={{minWidth:130}} label="STUDENTS" />
+                                <Tab style={{minWidth:130}} label="RECEPTIONIST" />
+                                <Tab style={{minWidth:130}} label="PARENTS" />
                             </Tabs>
                         </Grid>
                         {

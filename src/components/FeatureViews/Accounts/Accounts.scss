@@ -53,6 +53,15 @@
       white-space: nowrap;
       right: 10%;
     }
+
+    .accountsCell{
+      width:220px;
+      overflow-wrap: break-word;
+    }
+    .accountsCellID{
+      width:100px;
+      overflow-wrap: break-word;
+    }
   }
 }
 
