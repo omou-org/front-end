@@ -5,6 +5,7 @@ import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
+import AwayIcon from "@material-ui/icons/EventBusy";
 import { ReactComponent as IDIcon } from "../../identifier.svg";
 import { ReactComponent as BirthdayIcon } from "../../birthday.svg";
 import { ReactComponent as GradeIcon } from "../../grade.svg";
@@ -186,11 +187,26 @@ class ProfileHeading extends Component {
         console.log("asd");
     }
 
-    renderEditButton() {
+    renderEditandAwayButton() {
         if (this.props.user.role != "receptionist") {
             return (
                 <>
-                    <Grid component={Hidden} mdDown align="right" className="editPadding">
+                <OutOfOffice handleclose={this.handleClose} open={this.state.open}/>
+                <Grid container align="right" item md={9}>
+                    <Grid item md={4} align= "right" className="editPadding">
+                    <Button onClick={(e) => {
+                                e.preventDefault();
+                                this.handleOpen(e);
+                            }}
+                            className="editButton"
+                            >
+                                <AwayIcon/>
+                    Add OOO
+                    </Button>
+                    </Grid>
+                    <Grid item md={1}>
+                    </Grid>
+                    <Grid item md={4} align="right" component={Hidden} mdDown className="editPadding">
                         <Button
                             className="editButton"
                             component={NavLink}
@@ -199,13 +215,15 @@ class ProfileHeading extends Component {
                             Edit Profile
                         </Button>
                     </Grid>
-                    <Grid component={Hidden} lgUp align="right" className="editPadding">
+                    <Grid item md={4} align="right" component={Hidden} lgUp className="editPadding">
                         <Button
                             className="editButton"
                             component={NavLink}
                             to={`/registration/form/${this.props.user.role}/${this.props.user.user_id}/edit`}>
                             <EditIcon />
                         </Button>
+                    </Grid>
+                    
                     </Grid>
                 </>
             );
@@ -240,7 +258,7 @@ handleOpen(event){
             
             <div>
                 <Grid container item xs={12} alignItems="center">
-                    <Grid item xs={9} align="left">
+                    <Grid item xs={6} align="left">
                         <Grid container alignItems="center">
                         
                             <h1 className="ProfileName">
@@ -256,19 +274,9 @@ handleOpen(event){
                             </div>
                         </Grid>
                     </Grid>
-                    <Grid item xs={3} align="right">
-                        {this.props.isAdmin && this.renderEditButton()}
+                    <Grid item xs={6} align="right">
+                        {this.props.isAdmin && this.renderEditandAwayButton()}
                     </Grid>
-                </Grid>
-                <Grid>
-                    <Button onClick={(e) => {
-                                e.preventDefault();
-                                this.handleOpen(e);
-                            }}>
-                    asd
-                    </Button>
-                    <OutOfOffice handleclose={this.handleClose} open={this.state.open}/>
-
                 </Grid>
 
                 {profileDetails}

@@ -44,16 +44,17 @@
     .row {
       cursor: pointer;
     }
-
+    .editPadding{
+      margin-right:0%;
     .editButton {
       color: $lightPrimaryFontColor;
       border-radius: 5px;
       box-sizing: border-box;
       border: solid 2px $secondaryColor !important;
       white-space: nowrap;
-      right: 10%;
     }
   }
+}
 }
 
 .oooDialog {
