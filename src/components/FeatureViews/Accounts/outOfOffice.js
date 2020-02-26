@@ -52,6 +52,7 @@ function OutOfOffice(props) {
                             labelId="demo-simple-select-label"
                             label="Date"
                             onChange={handleChange}
+                            required={true}
                         >
                             <MenuItem value={10}>Ten</MenuItem>
                             <MenuItem value={20}>Twenty</MenuItem>
@@ -66,6 +67,7 @@ function OutOfOffice(props) {
                             labelId="demo-simple-select-label"
                             label="Date"
                             onChange={handleChange}
+                            required={true}
                         >
                             <MenuItem value={10}>Ten</MenuItem>
                             <MenuItem value={20}>Twenty</MenuItem>
@@ -81,6 +83,7 @@ function OutOfOffice(props) {
                             labelId="demo-simple-select-label"
                             label="Date"
                             onChange={handleChange}
+                            required={true}
                         >
                             <MenuItem value={10}>Ten</MenuItem>
                             <MenuItem value={20}>Twenty</MenuItem>
@@ -95,6 +98,7 @@ function OutOfOffice(props) {
                             labelId="demo-simple-select-label"
                             label="Date"
                             onChange={handleChange}
+                            required={true}
                         >
                             <MenuItem value={10}>Ten</MenuItem>
                             <MenuItem value={20}>Twenty</MenuItem>

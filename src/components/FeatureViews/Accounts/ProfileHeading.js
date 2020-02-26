@@ -29,8 +29,6 @@ class ProfileHeading extends Component {
         };
     }
 
-
-
     renderStudentProfile() {
         return (
             <Grid item xs={12}>
@@ -183,7 +181,6 @@ class ProfileHeading extends Component {
 
     handleClose=()=>{
         this.setState({open:false});
-        console.log("asd");
     }
 
     renderEditButton() {
@@ -265,7 +262,7 @@ handleOpen(event){
                                 e.preventDefault();
                                 this.handleOpen(e);
                             }}>
-                    asd
+                    Set OOO
                     </Button>
                     <OutOfOffice handleclose={this.handleClose} open={this.state.open}/>
 
