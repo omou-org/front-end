@@ -1,7 +1,6 @@
 import * as hooks from "actions/hooks";
 import {Link, useLocation} from "react-router-dom";
 import React, {useCallback, useMemo} from "react";
-import {courseDataParser} from "utils";
 import PropTypes from "prop-types";
 import {useSelector} from "react-redux";
 
@@ -10,6 +9,7 @@ import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import {NoListAlert} from "../../../NoListAlert";
+import {courseDateFormat} from "../../../../utils";
 
 const today = new Date();
 
@@ -23,30 +23,30 @@ const paymentStatus = (numPaidCourses) => {
     }
 };
 
-const StudentCourseViewer = ({studentID, current = true}) => {
-    const courses = useSelector(({Course}) => Course.NewCourseList);
-    const enrollments = useSelector(({Enrollments}) => Enrollments);
-    const {pathname} = useLocation();
+const StudentCourseViewer = ({ studentID, current = true }) => {
+    const courses = useSelector(({ Course }) => Course.NewCourseList);
+    const enrollments = useSelector(({ Enrollments }) => Enrollments);
+    const { pathname } = useLocation();
 
     const enrollmentStatus = hooks.useEnrollmentByStudent(studentID);
     const courseList = useMemo(() =>
         enrollments[studentID] ? Object.keys(enrollments[studentID]) : []
-    , [enrollments, studentID]);
+        , [enrollments, studentID]);
     const courseStatus = hooks.useCourse(courseList);
 
-    const coursePaymentStatusList = useMemo( () =>
+    const coursePaymentStatusList = useMemo(() =>
         enrollments[studentID] ? Object.entries(enrollments[studentID])
-        .map(([courseID, enrollment]) => {
-            let sessionCount = 0;
-           enrollment.payment_list.forEach(payment => {
-               payment.registrations.forEach(registration => {
-                   sessionCount += registration.num_sessions;
-               });
-           });
-           return {course: courseID, sessions: sessionCount}
-        }) : [], [enrollments, studentID]);
+            .map(([courseID, enrollment]) => {
+                let sessionCount = 0;
+                enrollment.payment_list.forEach(payment => {
+                    payment.registrations.forEach(registration => {
+                        sessionCount += registration.num_sessions;
+                    });
+                });
+                return { course: courseID, sessions: sessionCount }
+            }) : [], [enrollments, studentID]);
     let coursePaymentStatus = {};
-    coursePaymentStatusList.forEach(({course,sessions}) => coursePaymentStatus[course] = sessions);
+    coursePaymentStatusList.forEach(({ course, sessions }) => coursePaymentStatus[course] = sessions);
 
     const numPaidCourses = useCallback((courseID) => {
         if (!enrollments[studentID][courseID]) {
@@ -71,7 +71,7 @@ const StudentCourseViewer = ({studentID, current = true}) => {
     const displayedCourses = useMemo(() =>
         courseList.filter((courseID) => courses[courseID] &&
             filterCourseByDate(courses[courseID].schedule.end_date)),
-    [courseList, courses, filterCourseByDate]);
+        [courseList, courses, filterCourseByDate]);
 
     if (!enrollments[studentID] && !hooks.isSuccessful(enrollmentStatus)) {
         if (hooks.isLoading(enrollmentStatus, courseStatus)) {
@@ -93,7 +93,7 @@ const StudentCourseViewer = ({studentID, current = true}) => {
                     container>
                     <Grid
                         item
-                        xs={3}>
+                        xs={4}>
                         <Typography
                             align="left"
                             className="table-header">
@@ -120,7 +120,7 @@ const StudentCourseViewer = ({studentID, current = true}) => {
                     </Grid>
                     <Grid
                         item
-                        xs={3}>
+                        xs={2}>
                         <Typography
                             align="left"
                             className="table-header">
@@ -146,7 +146,7 @@ const StudentCourseViewer = ({studentID, current = true}) => {
                             if (!course) {
                                 return "Loading...";
                             }
-                            const {days, startDate, endDate, startTime, endTime} = courseDataParser(course);
+                            const { days, start_date, end_date, start_time, end_time} = courseDateFormat(course);
                             return (
                                 <Grid
                                     className="accounts-table-row"
@@ -160,7 +160,7 @@ const StudentCourseViewer = ({studentID, current = true}) => {
                                         <Grid container>
                                             <Grid
                                                 item
-                                                xs={3}>
+                                                xs={4}>
                                                 <Typography
                                                     align="left"
                                                     className="accounts-table-text">
@@ -173,7 +173,7 @@ const StudentCourseViewer = ({studentID, current = true}) => {
                                                 <Typography
                                                     align="left"
                                                     className="accounts-table-text">
-                                                    {startDate} - {endDate}
+                                                    {start_date} - {end_date}
                                                 </Typography>
                                             </Grid>
                                             <Grid
@@ -187,16 +187,17 @@ const StudentCourseViewer = ({studentID, current = true}) => {
                                             </Grid>
                                             <Grid
                                                 item
-                                                xs={3}>
+                                                xs={2}>
                                                 <Typography
                                                     align="left"
                                                     className="accounts-table-text">
-                                                    {startTime} - {endTime}
+                                                    {start_time} - {end_time}
                                                 </Typography>
                                             </Grid>
                                             <Grid
                                                 item
-                                                xs={1}>
+                                                xs={1}
+                                            >
                                                 <div className={`sessions-left-chip ${paymentStatus(numPaidCourses(courseID))}`}>
                                                     {coursePaymentStatus[courseID]}
                                                 </div>
@@ -206,7 +207,7 @@ const StudentCourseViewer = ({studentID, current = true}) => {
                                 </Grid>
                             );
                         })
-                        : <NoListAlert list={"Course"}/>
+                        : <NoListAlert list={"Course"} />
                     }
                 </Grid>
             </Grid>

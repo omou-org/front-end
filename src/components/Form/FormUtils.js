@@ -1,3 +1,6 @@
+import {instance} from "actions/apiActions";
+import {isFail} from "actions/hooks";
+
 /**
  * @description: parses a form to convert start and end time from a form to a duration
  * */
@@ -36,20 +39,6 @@ export const timeParser = (timeString) => {
     }
     return timeString;
 };
-
-/**
- * @description: parses start and end dates from a form to determine the number of sessions. Does not account for holidays/closed office dates
- * */
-export const numSessionsParser = (form, fieldTitle) => {
-    if(fieldTitle === "Number of Weekly Sessions" && !form["Number of Weekly Sessions"] && form["Number of Weekly Sessions"] !== ""){
-        let startDate = new Date(form["Start Date"]);
-        let endDate = new Date(form["End Date"]);
-        let dateDifference = Math.abs(startDate - endDate) / (1000*60*60*24);
-        return dateDifference / 7;
-    } else {
-        return form[fieldTitle];
-    }
-}
 
 /**
  * @description: parses form to create discount payload
@@ -111,7 +100,7 @@ export const dayOfWeek = {
 export const weeklySessionsParser = (startDate, endDate) =>{
     let start = new Date(startDate);
     let end = new Date(endDate);
-    return Math.floor((end.getTime() - start.getTime()) / (1000 * 3600 * 24 * 7));
+    return Math.floor((end.getTime() - start.getTime()) / (1000 * 3600 * 24 * 7)) + 1;
 };
 
 export const convertTimeStrToDate = (time) => {
@@ -208,3 +197,26 @@ export function arr_diff (a1, a2) {
 
     return diff;
 }
+
+/**
+ * @description Searches for matching instructors
+ * @param {String} input search input
+ * @returns {Promise} Resolves to the list of matching instructors
+ */
+export const loadInstructors = async (input) => {
+    const response = await instance.get("/search/account/", {
+        "params": {
+            "page": 1,
+            "profile": "instructor",
+            "query": input,
+        },
+    });
+    if (isFail(response.status)) {
+        return [];
+    }
+    return response.data.results
+        .map(({"user": {user_id, first_name, last_name, email}}) => ({
+            "label": `${first_name} ${last_name} - ${email}`,
+            "value": user_id,
+        }));
+};
