@@ -47,8 +47,11 @@
     .row {
       cursor: pointer;
     }
+
     .editPadding{
       margin-right:0%;
+    }
+
     .editButton {
       color: $lightPrimaryFontColor;
       border-radius: 5px;
@@ -57,7 +60,6 @@
       white-space: nowrap;
     }
   }
-}
 }
 
 .oooDialog {
