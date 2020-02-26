@@ -182,16 +182,20 @@ class ProfileHeading extends Component {
             </Grid>);
     }
 
-    handleClose=()=>{
-        this.setState({open:false});
-        console.log("asd");
+    handleClose = () => {
+        this.setState({
+            "open": false
+        });
     }
 
     renderEditandAwayButton() {
         if (this.props.user.role != "receptionist") {
             return (
                 <>
-                <OutOfOffice handleclose={this.handleClose} open={this.state.open}/>
+                    <OutOfOffice
+                        instructorID={this.props.user.role}
+                        onClose={this.handleClose}
+                        open={this.state.open} />
                 <Grid container align="right" item md={9}>
                     <Grid item md={4} align= "right" className="editPadding">
                     <Button onClick={(e) => {
@@ -223,7 +227,7 @@ class ProfileHeading extends Component {
                             <EditIcon />
                         </Button>
                     </Grid>
-                    
+
                     </Grid>
                 </>
             );
@@ -255,12 +259,12 @@ handleOpen(event){
             default:
         }
         return (
-            
+
             <div>
                 <Grid container item xs={12} alignItems="center">
                     <Grid item xs={6} align="left">
                         <Grid container alignItems="center">
-                        
+
                             <h1 className="ProfileName">
                                 {this.props.user.name}
                             </h1>
@@ -278,7 +282,6 @@ handleOpen(event){
                         {this.props.isAdmin && this.renderEditandAwayButton()}
                     </Grid>
                 </Grid>
-
                 {profileDetails}
             </div>
         );
