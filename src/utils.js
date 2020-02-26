@@ -1,6 +1,9 @@
+import { DayConverter } from "./components/FeatureViews/Accounts/TabComponents/CourseSessionStatus";
+
 const timeOptions = {
     "hour": "2-digit",
     "minute": "2-digit",
+    "hour12": true,
 };
 
 const dateOptions = {
@@ -9,20 +12,27 @@ const dateOptions = {
     "year": "numeric",
 };
 
-export const courseDataParser = (course) => {
-    const startDate = new Date(
-        course.schedule.start_date + course.schedule.start_time
-    );
-    const endDate = new Date(
-        course.schedule.end_date + course.schedule.end_time
-    );
+export const dateFormatter = (date) => {
+    return new Date(date.replace(/-/g, '\/'))
+        .toDateString().substr(3);
+}
+
+export const courseDateFormat = (course) => {
+    let start_date = dateFormatter(course.schedule.start_date),
+        end_date = dateFormatter(course.schedule.end_date),
+        start_time = new Date("2020-01-01" + course.schedule.start_time)
+            .toLocaleTimeString('eng-US', timeOptions),
+        end_time = new Date("2020-01-01" + course.schedule.end_time)
+            .toLocaleTimeString('eng-US', timeOptions),
+        days = DayConverter[new Date(course.schedule.start_date).getDay()];
 
     return {
-        "days": course.schedule.days,
-        "endDate": endDate.toLocaleDateString("en-US", dateOptions),
-        "endTime": endDate.toLocaleTimeString("en-US", timeOptions),
-        "startDate": startDate.toLocaleDateString("en-US", dateOptions),
-        "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
+        "end_date": end_date,
+        "end_time": end_time,
+        "start_date": start_date,
+        "start_time": start_time,
+        "days": days,
         "is_confirmed": course.is_confirmed,
     };
 };
+

@@ -2,13 +2,16 @@ import initialState from './initialState';
 import * as actions from "./../actions/actionTypes";
 import {SEARCH_ALL} from "../actions/actionTypes";
 
-export default function course(state = initialState.SearchResults, {payload, type}) {
+export default function course(state = initialState.SearchResults, { payload, type }) {
     let status = 1;
     if(payload){
-        if(payload.response){
+        if( payload.response && Object.keys(payload.response).length > 0 && payload.response.status){
             status = payload.response.status;
+        } else if(payload.status){
+            status = payload.status;
         }
     }
+
     switch (type) {
         case actions.GET_SEARCH_QUERY_SUCCESSFUL:
             return state;
@@ -26,7 +29,7 @@ export default function course(state = initialState.SearchResults, {payload, typ
         case actions.GET_ACCOUNT_SEARCH_QUERY_FAILED:
             return handleSearchStatus(state, "account", status);
         case actions.GET_COURSE_SEARCH_QUERY_SUCCESS:
-            return handleCourseSearchResults(state,payload, status);
+            return handleCourseSearchResults(state, payload, status);
         case actions.GET_COURSE_SEARCH_QUERY_FAILED:
             return handleSearchStatus(state, "course", status);
         case actions.UPDATE_SEARCH_FILTER:
@@ -45,19 +48,19 @@ export default function course(state = initialState.SearchResults, {payload, typ
                 primaryFilter: payload,
             };
         case actions.RESET_SEARCH_PARAMS:
-            return{
+            return {
                 ...state,
                 params: {
-                    account:{
-                        profile:"",
-                        gradeFilter:"",
-                        sortAccount:"",
+                    account: {
+                        profile: "",
+                        gradeFilter: "",
+                        sortAccount: "",
                         accountPage: 1,
                     },
-                    course:{
-                        courseType:"",
-                        availability:"",
-                        sortCourse:"",
+                    course: {
+                        courseType: "",
+                        availability: "",
+                        sortCourse: "",
                         coursePage: 1,
                     }
                 },
@@ -68,34 +71,57 @@ export default function course(state = initialState.SearchResults, {payload, typ
     }
 }
 
-const handleAccountSearchResults = (state, {response, id}, status) =>{
-    let {data}= response;
+const handleAccountSearchResults = (state, payload, status) => {
+    let { response } = payload;
+    let { data } = response;
+
+    // you can get page and count
     return {
         ...state,
-        accounts:data,
+        accounts:data.results,
+        account_num_results:data.count,
         searchQueryStatus: {
             ...state.searchQueryStatus,
             account: status,
-        }
+        },
+        params: {
+            account: {
+                ...state.params.account,
+                accountPage: data.page,
+            },
+            course: {
+                ...state.params.course,
+            }
+        },
     }
 };
 
-const handleCourseSearchResults = (state, {id, response}, status) =>{
-    let {data} = response;
+const handleCourseSearchResults = (state, { id, response }, status) => {
+    let { data } = response;
     return {
         ...state,
-        courses:data,
+        courses: data.results,
+        course_num_results: data.count,
         searchQueryStatus: {
             ...state.searchQueryStatus,
             course: status,
-        }
+        },
+        params: {
+            account: {
+                ...state.params.account,
+            },
+            course: {
+                ...state.params.course,
+                coursePage: data.page,
+            }
+        },
     }
 };
 
-const handleSearchFilterChange = (state, {searchType, filter, value}) =>{
-    let newState = {...state};
+const handleSearchFilterChange = (state, { searchType, filter, value }) => {
+    let newState = { ...state };
     newState.params[searchType][filter] = value;
-    if(filter==="grade"){
+    if (filter === "grade") {
         newState.params[searchType].profile = "student";
     }
     newState.searchQueryStatus = "";

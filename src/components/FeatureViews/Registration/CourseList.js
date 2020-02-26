@@ -1,27 +1,21 @@
 import PropTypes from "prop-types";
 import React from "react";
-import { connect, useSelector } from "react-redux";
+import {connect, useSelector} from "react-redux";
 // Material UI Imports
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import { bindActionCreators } from "redux";
+import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
-import { DayConverter } from "../Accounts/TabComponents/CourseSessionStatus";
+import {courseDateFormat} from "../../../utils";
 
 const CourseList = (props) => {
-    let filteredCourses = props.filteredCourses.filter(course => course.capacity > 1);
+    let filteredCourses = props.filteredCourses.filter(course => course.capacity >= 1);
     const instructors = useSelector(({ "Users": { InstructorList } }) => InstructorList);
     return filteredCourses.map((course) => {
-        let start_date = new Date(course.schedule.start_date.replace(/-/g, '\/')),
-            end_date = new Date(course.schedule.end_date.replace(/-/g, '\/')),
-            start_time = course.schedule.start_time && course.schedule.start_time.substr(1),
-            end_time = course.schedule.end_time && course.schedule.end_time.substr(1),
-            days = DayConverter[new Date(course.schedule.start_date).getDay()];
-        start_date = start_date && start_date.toDateString().substr(3);
-        end_date = end_date && end_date.toDateString().substr(3);
+        const {start_date, end_date, start_time, end_time, days} = courseDateFormat(course);
         const date = `${start_date} - ${end_date}`,
             time = `${start_time} - ${end_time}`;
         return (

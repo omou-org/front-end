@@ -147,7 +147,7 @@ class Accounts extends Component {
             },
             first_tab:{
                 borderRadius:"10px 0 0 10px !important",
-                color: "black"
+                color: "black",
             },
             last_tab:{
                 borderRadius:"10px 0 0 10px",
@@ -300,13 +300,14 @@ class Accounts extends Component {
                                 indicatorColor="primary"
                                 onChange={this.handleChange}
                                 textColor="primary"
+                                scrollButtons="off"
                                 value={this.state.tabIndex}
                                 variant="scrollable">
-                                <Tab label="ALL" classes={styles("").first_tab}/>
-                                <Tab label="INSTRUCTORS" />
-                                <Tab label="STUDENTS" />
-                                <Tab label="RECEPTIONIST" />
-                                <Tab label="PARENTS" />
+                                <Tab style={{minWidth:130}} label="ALL" classes={styles("").first_tab}/>
+                                <Tab style={{minWidth:130}} label="INSTRUCTORS" />
+                                <Tab style={{minWidth:130}} label="STUDENTS" />
+                                <Tab style={{minWidth:130}} label="RECEPTIONIST" />
+                                <Tab style={{minWidth:130}} label="PARENTS" />
                             </Tabs>
                         </Grid>
                         {

@@ -3,6 +3,7 @@ import React, {useEffect, useMemo} from "react";
 import * as authActions from "actions/authActions";
 import {useDispatch, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
+import {instance} from "actions/apiActions";
 
 // Material UI
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -18,6 +19,7 @@ const App = () => {
     const bound = useMemo(() => bindActionCreators(authActions, dispatch), [dispatch]);
     useEffect(() => {
         bound.fetchUserStatus(token);
+        instance.defaults.headers.common.Authorization = `Token ${token}`;
     }, [bound, token]);
     return (
         <div className="App">

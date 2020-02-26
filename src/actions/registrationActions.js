@@ -250,7 +250,7 @@ export const addCourseRegistration = (form) =>
 
 export const setParentAddCourseRegistration = (parentID, form) => {
     const parentEndpoint = `/account/parent/${parentID}/`;
-    return (dispatch, getState) => new Promise((resolve) =>{
+    return (dispatch) => new Promise((resolve) =>{
         dispatch({
             type:types.FETCH_PARENT_STARTED,
             payload:parentID,
@@ -258,9 +258,6 @@ export const setParentAddCourseRegistration = (parentID, form) => {
         resolve();
     }).then(()=>{
         instance.request({
-            "headers":{
-                "Authorization": `Token ${getState().auth.token}`,
-            },
             "method":"get",
             "url":parentEndpoint,
         })

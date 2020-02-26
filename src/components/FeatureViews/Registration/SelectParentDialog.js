@@ -136,8 +136,7 @@ class SelectParentDialog extends React.Component {
             this.setState({inputParent: input, searchingParent: true,},
                 ()=>{
                 if(e!==""){
-                    const requestConfig = { params: { query: this.state.inputParent.label, page: 1, profile: "parent" },
-                        headers: {"Authorization": `Token ${this.props.auth.token}`,} };
+                    const requestConfig = { params: { query: this.state.inputParent.label, page: 1, profile: "parent" },};
                     this.props.searchActions.fetchSearchAccountQuery(requestConfig);
                     this.setState({
                         searchingParent: true,
@@ -223,7 +222,6 @@ SelectParentDialog.propTypes = {
 const mapStateToProps = (state) => ({
     "registration": state.Registration,
     "users": state.Users,
-    "auth": state.auth,
     "search": state.Search,
 });
 
