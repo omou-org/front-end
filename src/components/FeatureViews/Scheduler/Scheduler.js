@@ -42,7 +42,7 @@ const styles = theme => ({
         flexWrap: 'wrap',
     },
     margin: {
-        margin: theme.spacing.unit,
+        margin: theme.spacing(16),
     },
     bootstrapFormLabel: {
         fontSize: 18,
@@ -588,7 +588,7 @@ class Scheduler extends Component {
                 <br />
                 <Grid container
                       className="scheduler-wrapper"
-                      spacing={16}>
+                      >
                     <Grid item xs={12} className="scheduler-header">
                         <Grid container>
                             <Grid item xs={3}>

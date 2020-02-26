@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 export const BootstrapInput = withStyles(theme => ({
     root: {
         'label + &': {
-            marginTop: theme.spacing.unit * 3,
+            marginTop: theme.spacing(3),
         },
     },
     input: {
