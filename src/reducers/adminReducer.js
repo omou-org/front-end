@@ -88,9 +88,10 @@ const updateUnpaid = (state, payload, action) => {
     switch(action) {
         case "GET":{
             
-            // Unpaid = data;
-            console.log(Unpaid)
-            return Unpaid;
+            return {
+                ...state,
+                Unpaid,
+            };
     }
 }
 }

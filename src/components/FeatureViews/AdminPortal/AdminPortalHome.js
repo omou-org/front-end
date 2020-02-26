@@ -22,19 +22,19 @@ import UnpaidSessions from "./UnpaidSessions";
 function AdminPortalHome() {
 
 
-const style ={
-    card:{
-        width:"auto",
-        textAlign:"left",
-        padding: "50px"
-    }
-}    
+    const style ={
+        card:{
+            width:"auto",
+            textAlign:"left",
+            padding: "50px"
+        }
+    }    
 
-return (
-    <div>
-            <UnpaidSessions></UnpaidSessions>
-    </div>
-)
+    return (
+        <div>
+                <UnpaidSessions></UnpaidSessions>
+        </div>
+    )
 }
 
 AdminPortalHome.propTypes = {
