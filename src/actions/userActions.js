@@ -42,7 +42,7 @@ export const fetchInstructors = (id) => wrapGet(
 );
 
 const wrapNoteGet = (endpoint, paramName, [startType, successType, failType], payloadInfo) =>
-    (ownerID, ownerType) => async (dispatch, getState) => {
+    (ownerID, ownerType) => async (dispatch) => {
         const newAction = (type, response) => {
             dispatch({
                 type,
@@ -60,9 +60,6 @@ const wrapNoteGet = (endpoint, paramName, [startType, successType, failType], pa
 
         try {
             const response = await instance.get(endpoint, {
-                "headers": {
-                    "Authorization": `Token ${getState().auth.token}`,
-                },
                 "params": {
                     [paramName]: ownerID,
                 },
@@ -76,7 +73,7 @@ const wrapNoteGet = (endpoint, paramName, [startType, successType, failType], pa
     };
 
 const wrapNotePost = (endpoint, [startType, successType, failType], payloadInfo) =>
-    (data, ownerType) => async (dispatch, getState) => {
+    (data, ownerType) => async (dispatch) => {
         // creates a new action based on the response given
         const newAction = (type, response) => {
             dispatch({
@@ -93,11 +90,7 @@ const wrapNotePost = (endpoint, [startType, successType, failType], payloadInfo)
         newAction(startType, {});
 
         try {
-            const response = await instance.post(endpoint, data, {
-                "headers": {
-                    "Authorization": `Token ${getState().auth.token}`,
-                },
-            });
+            const response = await instance.post(endpoint, data);
             // succesful request
             newAction(successType, response);
         } catch ({response}) {
@@ -108,7 +101,7 @@ const wrapNotePost = (endpoint, [startType, successType, failType], payloadInfo)
 
 
 export const wrapNotePatch = (endpoint, [startType, successType, failType], payloadInfo) =>
-    (id, data, ownerType, ownerID) => async (dispatch, getState) => {
+    (id, data, ownerType, ownerID) => async (dispatch) => {
         // creates a new action based on the response given
         const newAction = (type, response) => {
             dispatch({
@@ -125,11 +118,7 @@ export const wrapNotePatch = (endpoint, [startType, successType, failType], payl
         newAction(startType, {});
 
         try {
-            const response = await instance.patch(`${endpoint}${id}/`, data, {
-                "headers": {
-                    "Authorization": `Token ${getState().auth.token}`,
-                },
-            });
+            const response = await instance.patch(`${endpoint}${id}/`, data);
             // succesful request
             newAction(successType, response);
         } catch (error) {

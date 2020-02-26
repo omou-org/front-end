@@ -49,7 +49,7 @@ export const resetSchedulerStatus = () => ({
 });
 
 export const fetchAllSessions = ({config, id}) => {
-    return (dispatch, getState) => new Promise((resolve) =>{
+    return (dispatch) => new Promise((resolve) =>{
         dispatch({
             type:types.GET_SESSIONS_STARTED,
             payload:1,
@@ -58,9 +58,6 @@ export const fetchAllSessions = ({config, id}) => {
     }).then(()=>{
         // fetch courses
         instance.request({
-            "headers":{
-                "Authorization": `Token ${getState().auth.token}`,
-            },
             "method":"get",
             "url":"/course/catalog/"
         }).then((courseResponse)=>{
@@ -70,9 +67,6 @@ export const fetchAllSessions = ({config, id}) => {
             });
 
             instance.request({
-                "headers":{
-                    "Authorization": `Token ${getState().auth.token}`,
-                },
                 "method":"get",
                 "url":"/account/instructor/"
             }).then((instructorResponse) =>{
@@ -81,9 +75,6 @@ export const fetchAllSessions = ({config, id}) => {
                     payload:{id:REQUEST_ALL, response: instructorResponse}
                 });
                 instance.request({
-                    "headers":{
-                        "Authorization": `Token ${getState().auth.token}`,
-                    },
                     "method":"get",
                     "url":`/scheduler/session/`,
                     ...config,
@@ -102,5 +93,5 @@ export const fetchAllSessions = ({config, id}) => {
             dispatch({type: types.FETCH_COURSE_FAILED, payload: error})
         })
     })
-    
+
 }

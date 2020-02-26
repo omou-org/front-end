@@ -8,7 +8,6 @@ const courseEndpoint = "/course/catalog/";
 const paymentEndpoint = "/payment/payment/";
 
 export const useSubmitRegistration = (registrationDependencies) => {
-    const token = useSelector(({auth}) => auth.token);
     const currentPayingParent = useSelector(({Registration}) => Registration.CurrentParent);
     const [status, setStatus] = useState(null);
     const dispatch = useDispatch();
@@ -22,12 +21,6 @@ export const useSubmitRegistration = (registrationDependencies) => {
         }
     }, []);
 
-    const requestSettings = useMemo(() => ({
-        "headers": {
-            "Authorization": `Token ${token}`,
-        },
-    }), [token]);
-
     useEffect(() => {
         const aborted = false;
         (async () => {
@@ -36,7 +29,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                 try {
                     const TutoringCourses = await Promise.all(
                         tutoringRegistrations.map(({newTutoringCourse}) =>
-                            instance.post(courseEndpoint, newTutoringCourse, requestSettings))
+                            instance.post(courseEndpoint, newTutoringCourse))
                     );
                     dispatch({
                         "payload": TutoringCourses,
@@ -50,8 +43,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                     // get existing enrollments involving the given student-course pairs
                     let currEnrollments = await Promise.all(
                         classRegistrations.map(({student, course}) => instance.get(
-                            `/course/enrollment/?student=${student}&course_id=${course}`,
-                            requestSettings
+                            `/course/enrollment/?student=${student}&course_id=${course}`
                         ))
                     );
 
@@ -85,7 +77,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
 
                     const Enrollments = await Promise.all(
                         courseEnrollments.map((enrollment) =>
-                            instance.post(enrollmentEndpoint, enrollment, requestSettings))
+                            instance.post(enrollmentEndpoint, enrollment))
                     );
                     dispatch({
                         "type": types.POST_ENROLLMENT_SUCCESS,
@@ -120,7 +112,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                             ...payment,
                             registrations,
                             "parent": currentPayingParent.user.id,
-                        }, requestSettings);
+                        });
                     dispatch({
                         "payload": finalPayment,
                         "type": types.POST_PAYMENT_SUCCESS,
@@ -142,7 +134,6 @@ export const useSubmitRegistration = (registrationDependencies) => {
 };
 
 export const usePayment = (id) => {
-    const token = useSelector(({auth}) => auth.token);
     const [status, setStatus] = useState(null);
     const dispatch = useDispatch();
 
@@ -155,12 +146,6 @@ export const usePayment = (id) => {
         }
     }, []);
 
-    const requestSettings = useMemo(() => ({
-        "headers": {
-            "Authorization": `Token ${token}`,
-        },
-    }), [token]);
-
     useEffect(() => {
         const aborted = false;
         if (id) {
@@ -169,7 +154,6 @@ export const usePayment = (id) => {
                     setStatus(REQUEST_STARTED);
                     const Payment = await instance.request({
                         "url": `${paymentEndpoint}${id}/`,
-                        ...requestSettings,
                         "method": "get",
                     });
                     Payment.type = "parent";
@@ -180,7 +164,6 @@ export const usePayment = (id) => {
                     });
                     const ParentResponse = await instance.request({
                         "url": `/account/parent/${Payment.data.parent}/`,
-                        ...requestSettings,
                         "method": "get",
                     });
                     dispatch({
@@ -195,7 +178,6 @@ export const usePayment = (id) => {
                     const StudentResponses = await Promise.all(uniqueStudentIDs.map((studentID) =>
                         instance.request({
                             "url": `/account/student/${studentID.toString()}/`,
-                            ...requestSettings,
                             "method": "get",
                         })));
                     StudentResponses.forEach((studentResponse) => {
@@ -208,7 +190,6 @@ export const usePayment = (id) => {
                     const CourseResponses = await Promise.all(uniqueCourseIDs.map((courseID) =>
                         instance.request({
                             "url": `/course/catalog/${courseID}/`,
-                            ...requestSettings,
                             "method": "get",
                         })));
                     CourseResponses.forEach((courseResponse) => {
@@ -223,12 +204,11 @@ export const usePayment = (id) => {
                 }
             })();
         }
-    }, [dispatch, handleError, id, requestSettings]);
+    }, [dispatch, handleError, id]);
     return status;
 };
 
 export const useCourseSearch = (query) => {
-    const token = useSelector(({auth}) => auth.token);
     const [status, setStatus] = useState(null);
     const dispatch = useDispatch();
 
@@ -242,13 +222,10 @@ export const useCourseSearch = (query) => {
     }, []);
 
     const requestSettings = useMemo(() => ({
-        "headers": {
-            "Authorization": `Token ${token}`,
-        },
         "params": {
             query,
         },
-    }), [query, token]);
+    }), [query]);
 
     useEffect(() => {
         if (typeof query !== "undefined") {
@@ -270,9 +247,6 @@ export const useCourseSearch = (query) => {
                     const instructorResults = await Promise.all(instructors.map((instructorID) => {
                         instance.request({
                             "url": `/account/instructor/${instructorID}/`,
-                            "headers": {
-                                "Authorization": `Token ${token}`,
-                            },
                             "method": "get",
                         });
                     }));
@@ -288,7 +262,7 @@ export const useCourseSearch = (query) => {
                 }
             })();
         }
-    }, [query, dispatch, requestSettings, token, handleError]);
+    }, [query, dispatch, requestSettings, handleError]);
 
     return status;
 };
