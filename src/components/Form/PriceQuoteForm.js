@@ -74,7 +74,10 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                 "classes": courses,
                 "tutoring": cleanTutoring.map((tutoring) => {
                     delete tutoring.new_course;
-                    return tutoring;
+                    return {
+                        ...tutoring,
+                        "duration": 1
+                    };
                 }),
                 "disabled_discounts": discounts.filter((discount) => !discount.enable).map(({ id }) => id),
                 "price_adjustment": Number(priceAdjustment),
@@ -129,19 +132,20 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
             );
         });
         tutoring.forEach((tutoring) => {
+            console.log(tutoring);
             const startDate = tutoring.new_course.schedule.start_date.substring(0, 10);
             const endDate = tutoring.new_course.schedule.end_date.substring(0, 10);
             const tutoringCourse = {
                 "subject": tutoring.new_course.title,
-                "day_of_week": dayOfWeek[tutoring.new_course.day_of_week],
+                "day_of_week": dayOfWeek[tutoring.new_course.day_of_week] || tutoring.new_course.schedule.days,
                 "start_time": tutoring.new_course.schedule.start_time,
                 "end_time": tutoring.new_course.schedule.end_time,
                 "start_date": startDate,
                 "end_date": endDate,
                 "max_capacity": 1,
-                "course_category": tutoring.category_id,
-                "academic_level": tutoring.academic_level,
-                "instructor": tutoring.new_course.instructor,
+                "course_category": tutoring.category_id || tutoring.new_course.category,
+                "academic_level": tutoring.academic_level || tutoring.new_course.academic_level,
+                "instructor": tutoring.new_course.instructor || tutoring.new_course.instructor_id,
                 "course_type": "tutoring",
                 "description": tutoring.new_course.description,
                 "is_confirmed": tutoring.new_course.is_confirmed,
@@ -150,6 +154,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                 "newTutoringCourse": tutoringCourse,
                 "sessions": weeklySessionsParser(startDate, endDate),
                 "student": tutoring.student_id,
+                "courseID": tutoring.courseID,
             });
         });
 

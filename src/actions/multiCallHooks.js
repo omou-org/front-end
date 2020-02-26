@@ -32,21 +32,40 @@ export const useSubmitRegistration = (registrationDependencies) => {
         const aborted = false;
         (async () => {
             if (registrationDependencies) {
+                console.log(registrationDependencies)
                 let {tutoringRegistrations, classRegistrations, payment} = registrationDependencies;
-                try {
-                    const TutoringCourses = await Promise.all(
-                        tutoringRegistrations.map(({newTutoringCourse}) =>
-                            instance.post(courseEndpoint, newTutoringCourse, requestSettings))
-                    );
+                console.log(tutoringRegistrations)
+                const newTutorings = tutoringRegistrations.filter(({courseID}) => String(courseID).indexOf("T") > -1);
+                const existingTutorings = tutoringRegistrations.filter(({courseID}) => String(courseID).indexOf("T") === "-1");
+                tutoringRegistrations = [...newTutorings, ...existingTutorings];
+                console.log({tutoringRegistrations, existingTutorings, newTutorings});
+                // try {
+                    // const newTutorings = tutoringRegistrations.filter(({courseID}) => StrigngcourseID.indexOf("T") > -1);
+                    // const existingTutorings = tutoringRegistrations.filter(({courseID}) => courseID.indexOf("T") === "-1");
+                    console.log({tutoringRegistrations, existingTutorings, newTutorings});
+                    // throw "up";
+                    const TutoringCourses = [
+                        ...(await Promise.all(
+                            newTutorings.map(({newTutoringCourse}) =>
+                                instance.post(courseEndpoint, newTutoringCourse, requestSettings))
+                        )),
+                        ...(await Promise.all(
+                            existingTutorings.map(({newTutoringCourse, courseID}) =>
+                                instance.patch(`${courseEndpoint}${courseID}`, newTutoringCourse, requestSettings))
+                        )),
+                    ];
+                console.log(tutoringRegistrations)
                     dispatch({
                         "payload": TutoringCourses,
                         "type": types.POST_COURSE_SUCCESSFUL,
                     });
-                    const tutoringEnrollments = tutoringRegistrations.map((tutoringReg, i) =>
-                        ({
-                            "course": TutoringCourses[i].data.id,
-                            "student": tutoringReg.student,
-                        }));
+                const tutoringEnrollments = tutoringRegistrations.map((tutoringReg, i) => {
+                    console.log(tutoringReg, i);
+                    return ({
+                        "course": TutoringCourses[i].data.id,
+                        "student": tutoringReg.student,
+                    })
+                });
                     // get existing enrollments involving the given student-course pairs
                     let currEnrollments = await Promise.all(
                         classRegistrations.map(({student, course}) => instance.get(
@@ -54,7 +73,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                             requestSettings
                         ))
                     );
-
+                            console.log('midway')
                     // filter for the ones that found matches
                     currEnrollments = currEnrollments
                         .map((elem) => elem.data)
@@ -129,6 +148,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         "paymentID": finalPayment.data.id,
                         "status": finalPayment.status,
                     });
+                try{
                 } catch (error) {
                     if (!aborted) {
                         handleError(error);

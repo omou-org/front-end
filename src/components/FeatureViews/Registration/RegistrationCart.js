@@ -1,3 +1,6 @@
+/* eslint-disable react/no-multi-comp */
+/* eslint-disable react/jsx-max-depth */
+/* eslint-disable max-lines-per-function */
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
@@ -17,7 +20,7 @@ import PriceQuoteForm from "components/Form/PriceQuoteForm";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 
-import {weeklySessionsParser} from "components/Form/FormUtils";
+import {dateParser, formatDate, weeklySessionsParser} from "components/Form/FormUtils";
 
 import "./registration.scss";
 
@@ -43,7 +46,9 @@ const RegistrationCart = () => {
     [registered_courses]);
     const studentIDs = useMemo(() =>
         Object.keys(registered_courses),
-    [registered_courses]);
+        [registered_courses]);
+
+    console.log(courseIDs);
 
     const allValid = useMemo(() =>
         Object.values(selectedCourses)
@@ -86,6 +91,7 @@ const RegistrationCart = () => {
     }, [registered_courses, studentIDs]);
 
     useEffect(() => {
+        console.log(registered_courses);
         if (registered_courses && CurrentParent) {
             sessionStorage.setItem("registered_courses", JSON.stringify(registered_courses));
             sessionStorage.setItem("CurrentParent", JSON.stringify(CurrentParent));
@@ -114,29 +120,64 @@ const RegistrationCart = () => {
         if (value && !isNaN(value)) {
             value = Number(value);
         }
-        let enrollment = enrollments[studentID] && enrollments[studentID][courseID];
+        const enrollment = enrollments[studentID] && enrollments[studentID][courseID];
         let paidSessions = Infinity;
         if (enrollment) {
             paidSessions = enrollment.sessions_left;
         }
 
-        setUpdatedCourse((prevCourses) => [
-            ...prevCourses,
-            {
-                ...registered_courses[studentID].find(({course_id}) => courseID == course_id),
+        setUpdatedCourse((prevCourses) => {
+            const courseIndex = registered_courses[studentID]
+                .findIndex(({course_id}) => courseID == course_id);
+            const course = courseList[courseID];
+            const newOne = {
+                ...registered_courses[studentID][courseIndex],
                 "sessions": value,
-            },
-        ]);
+                "isNew": !course,
+            };
+            if (!(course && course.course_type === "class")) {
+                console.log(registered_courses)
+                const it = registered_courses[studentID][courseIndex];//.new_course.schedule;
+                if (!it.new_course) {
+                    it.new_course = JSON.parse(JSON.stringify(course));
+                }
+                console.log(it, course);
+                let finalVal = value;
+                if (course) {
+                    finalVal += weeklySessionsParser(course.schedule.start_date, course.schedule.end_date);
+                }
+                newOne.new_course = {
+                    ...it.new_course,
+                    "schedule": {
+                        ...it.new_course.schedule,
+                        // calculates appropriate date and formats it
+                        "end_date": dateParser(new Date(it.new_course.schedule.start_date).getTime() + 7 * 24 * 60 * 60 * 1000 * finalVal + 24 * 60 * 60 * 1000).slice(0, 10),
+                    },
+                };
+                console.log(newOne);
+            }
+            return [
+                ...prevCourses,
+                newOne,
+            ];
+        });
 
         setSelectedCourses((prevCourses) => {
-            const {start_date, end_date} = courseList[courseID].schedule;
-            const numSessions = weeklySessionsParser(start_date, end_date);
             const updated = JSON.parse(JSON.stringify(prevCourses));
+            const course = courseList[courseID];
             updated[studentID][courseID] = {
                 ...updated[studentID][courseID],
                 "sessions": value,
-                "validated": Number.isInteger(value) && (0 <= value && value <= (numSessions - paidSessions)),
             };
+            if (course && course.course_type === "class") {
+                const {start_date, end_date} = course.schedule;
+                const numSessions = weeklySessionsParser(start_date, end_date);
+                updated[studentID][courseID] = {
+                    ...updated[studentID][courseID],
+                    "validated": Number.isInteger(value) &&
+                        (0 <= value && value <= (numSessions - paidSessions)),
+                };
+            }
             return updated;
         });
     }, [registered_courses, enrollments, courseList]);
@@ -310,6 +351,7 @@ const RegistrationCart = () => {
     const renderPayment = (isOneCourse, selectedStudentID, selectedCourseID) => {
         const selectedRegistration = registered_courses[selectedStudentID]
             .find(({course_id}) => course_id == selectedCourseID);
+        console.log(courseList, selectedCourseID)
         const isSmallGroup = selectedCourseID.indexOf("T") === -1 && courseList[selectedCourseID].capacity < 5;
         const {form, course_id} = selectedRegistration;
         const formType = form ? form.form : "class";
@@ -355,16 +397,21 @@ const RegistrationCart = () => {
                     if (courseVal.checked) {
                         const course = registered_courses[studentID]
                             .find(({course_id}) => course_id == courseID);
-                        if (courseID.indexOf("T") > -1) {
+                        console.log(registered_courses)
+                        if (courseID.indexOf("T") > -1 || true)  {
                             // {category, academic_level, sessions, form}
-                            const {category, academic_level, form, new_course} = course;
+                            let {category, academic_level, form, new_course} = course;
+                            new_course = new_course || {}
+                            console.log(course);
+                            console.log(course)
                             courses.tutoring.push({
-                                "category_id": category,
-                                academic_level,
+                                "category_id": category || new_course.category,
+                                "academic_level": academic_level || new_course.academic_level,
                                 "sessions": courseVal.sessions,
-                                "duration": apiActions.durationParser[form.Schedule.Duration],
+                                "duration": apiActions.durationParser[form.Schedule && form.Schedule.Duration],
                                 "student_id": studentID,
                                 new_course,
+                                "courseID": course.courseID,
                             });
                         } else {
                             courses.courses.push({

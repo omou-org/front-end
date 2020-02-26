@@ -42,7 +42,8 @@ function RegistrationReceipt(props) {
     const [paymentReceipt, setPaymentReceipt] = useState({});
     const prevPaymentReceipt = usePrevious(paymentReceipt);
     const [courseReceipt, setCourseReceipt] = useState({});
-    const Registration = useSelector(({ Registration }) => Registration);
+    const Registration = useSelector(({Registration}) => Registration);
+    console.log(Registration.registration)
     const registrationStatus = useSubmitRegistration(Registration.registration);
 
     const parent = parents[params.parentID];
