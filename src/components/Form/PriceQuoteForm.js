@@ -1,8 +1,8 @@
 /* eslint-disable max-lines-per-function */
 // React Imports
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {useHistory} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
 import PropTypes from "prop-types";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -18,13 +18,14 @@ import Add from "@material-ui/icons/CheckCircle";
 // Local Component Imports
 import "./Form.scss";
 import TextField from "@material-ui/core/es/TextField/TextField";
-import { bindActionCreators } from "redux";
+import {bindActionCreators} from "redux";
 import * as apiActions from "../../actions/apiActions";
-import { instance } from "../../actions/apiActions";
+import {instance} from "../../actions/apiActions";
 import * as userActions from "../../actions/userActions";
 import * as registrationActions from "../../actions/registrationActions";
-import { dayOfWeek, weeklySessionsParser } from "./FormUtils";
-import { usePrevious } from "../../actions/hooks";
+import {dayOfWeek, weeklySessionsParser} from "./FormUtils";
+import {usePrevious} from "../../actions/hooks";
+import {isExistingTutoring} from "../../utils";
 
 const CASH = "cash",
     CHECK = "check",
@@ -132,7 +133,6 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
             );
         });
         tutoring.forEach((tutoring) => {
-            console.log(tutoring);
             const startDate = tutoring.new_course.schedule.start_date.substring(0, 10);
             const endDate = tutoring.new_course.schedule.end_date.substring(0, 10);
             const tutoringCourse = {
@@ -152,7 +152,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
             };
             tutoringRegistrations.push({
                 "newTutoringCourse": tutoringCourse,
-                "sessions": weeklySessionsParser(startDate, endDate),
+                "sessions": isExistingTutoring(tutoring.courseID) ? tutoring.sessions: weeklySessionsParser(startDate, endDate),
                 "student": tutoring.student_id,
                 "courseID": tutoring.courseID,
             });

@@ -2,6 +2,7 @@ import * as types from "./actionTypes";
 import {instance, MISC_FAIL, REQUEST_STARTED} from "./apiActions";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import {isExistingTutoring} from "../utils";
 
 const enrollmentEndpoint = "/course/enrollment/";
 const courseEndpoint = "/course/catalog/";
@@ -12,6 +13,8 @@ export const useSubmitRegistration = (registrationDependencies) => {
     const currentPayingParent = useSelector(({Registration}) => Registration.CurrentParent);
     const [status, setStatus] = useState(null);
     const dispatch = useDispatch();
+
+    console.log("hi submitting registration");
 
     const handleError = useCallback((error) => {
         if (error && error.response && error.response.status) {
@@ -36,22 +39,23 @@ export const useSubmitRegistration = (registrationDependencies) => {
                 let {tutoringRegistrations, classRegistrations, payment} = registrationDependencies;
                 console.log(tutoringRegistrations)
                 const newTutorings = tutoringRegistrations.filter(({courseID}) => String(courseID).indexOf("T") > -1);
-                const existingTutorings = tutoringRegistrations.filter(({courseID}) => String(courseID).indexOf("T") === "-1");
+                const existingTutorings = tutoringRegistrations.filter(({courseID}) => isExistingTutoring(courseID));
                 tutoringRegistrations = [...newTutorings, ...existingTutorings];
                 console.log({tutoringRegistrations, existingTutorings, newTutorings});
                 // try {
                     // const newTutorings = tutoringRegistrations.filter(({courseID}) => StrigngcourseID.indexOf("T") > -1);
                     // const existingTutorings = tutoringRegistrations.filter(({courseID}) => courseID.indexOf("T") === "-1");
-                    console.log({tutoringRegistrations, existingTutorings, newTutorings});
+                    console.log(courseEndpoint, newTutorings, requestSettings);
                     // throw "up";
                     const TutoringCourses = [
                         ...(await Promise.all(
-                            newTutorings.map(({newTutoringCourse}) =>
-                                instance.post(courseEndpoint, newTutoringCourse, requestSettings))
+                            newTutorings.map(({newTutoringCourse}) => instance.post(courseEndpoint, newTutoringCourse, requestSettings))
                         )),
                         ...(await Promise.all(
-                            existingTutorings.map(({newTutoringCourse, courseID}) =>
-                                instance.patch(`${courseEndpoint}${courseID}`, newTutoringCourse, requestSettings))
+                            existingTutorings.map(({newTutoringCourse, courseID}) => {
+                                console.log("patching tutoring course end date")
+                             return instance.patch(`${courseEndpoint}${courseID}`, newTutoringCourse, requestSettings);
+                            })
                         )),
                     ];
                 console.log(tutoringRegistrations)

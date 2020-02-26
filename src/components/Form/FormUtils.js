@@ -90,13 +90,13 @@ export const dateParser = (date) => {
 };
 
 export const dayOfWeek = {
-    "0": "Sun",
-    "1": "Mon",
-    "2": "Tue",
-    "3": "Wed",
-    "4": "Thu",
-    "5": "Fri",
-    "6": "Sat",
+    "0": "sunday",
+    "1": "monday",
+    "2": "tuesday",
+    "3": "wednesday",
+    "4": "thursday",
+    "5": "friday",
+    "6": "saturday",
 };
 
 export const weeklySessionsParser = (startDate, endDate) => {

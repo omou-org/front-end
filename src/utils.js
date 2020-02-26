@@ -1,4 +1,4 @@
-import { DayConverter } from "./components/FeatureViews/Accounts/TabComponents/CourseSessionStatus";
+import {DayConverter} from "./components/FeatureViews/Accounts/TabComponents/CourseSessionStatus";
 
 const timeOptions = {
     "hour": "2-digit",
@@ -11,6 +11,8 @@ const dateOptions = {
     "month": "short",
     "year": "numeric",
 };
+
+export const isExistingTutoring = (tutoringCourseID) => String(tutoringCourseID).indexOf("T") === -1;
 
 export const dateFormatter = (date) => {
     return new Date(date.replace(/-/g, '\/'))

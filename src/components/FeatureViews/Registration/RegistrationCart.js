@@ -20,7 +20,7 @@ import PriceQuoteForm from "components/Form/PriceQuoteForm";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 
-import {dateParser, formatDate, weeklySessionsParser} from "components/Form/FormUtils";
+import {dateParser, weeklySessionsParser} from "components/Form/FormUtils";
 
 import "./registration.scss";
 
@@ -47,8 +47,6 @@ const RegistrationCart = () => {
     const studentIDs = useMemo(() =>
         Object.keys(registered_courses),
         [registered_courses]);
-
-    console.log(courseIDs);
 
     const allValid = useMemo(() =>
         Object.values(selectedCourses)
@@ -91,7 +89,6 @@ const RegistrationCart = () => {
     }, [registered_courses, studentIDs]);
 
     useEffect(() => {
-        console.log(registered_courses);
         if (registered_courses && CurrentParent) {
             sessionStorage.setItem("registered_courses", JSON.stringify(registered_courses));
             sessionStorage.setItem("CurrentParent", JSON.stringify(CurrentParent));
@@ -136,12 +133,11 @@ const RegistrationCart = () => {
                 "isNew": !course,
             };
             if (!(course && course.course_type === "class")) {
-                console.log(registered_courses)
                 const it = registered_courses[studentID][courseIndex];//.new_course.schedule;
                 if (!it.new_course) {
                     it.new_course = JSON.parse(JSON.stringify(course));
                 }
-                console.log(it, course);
+
                 let finalVal = value;
                 if (course) {
                     finalVal += weeklySessionsParser(course.schedule.start_date, course.schedule.end_date);
@@ -154,7 +150,6 @@ const RegistrationCart = () => {
                         "end_date": dateParser(new Date(it.new_course.schedule.start_date).getTime() + 7 * 24 * 60 * 60 * 1000 * finalVal + 24 * 60 * 60 * 1000).slice(0, 10),
                     },
                 };
-                console.log(newOne);
             }
             return [
                 ...prevCourses,
@@ -351,7 +346,6 @@ const RegistrationCart = () => {
     const renderPayment = (isOneCourse, selectedStudentID, selectedCourseID) => {
         const selectedRegistration = registered_courses[selectedStudentID]
             .find(({course_id}) => course_id == selectedCourseID);
-        console.log(courseList, selectedCourseID)
         const isSmallGroup = selectedCourseID.indexOf("T") === -1 && courseList[selectedCourseID].capacity < 5;
         const {form, course_id} = selectedRegistration;
         const formType = form ? form.form : "class";
@@ -397,13 +391,10 @@ const RegistrationCart = () => {
                     if (courseVal.checked) {
                         const course = registered_courses[studentID]
                             .find(({course_id}) => course_id == courseID);
-                        console.log(registered_courses)
                         if (courseID.indexOf("T") > -1 || true)  {
                             // {category, academic_level, sessions, form}
                             let {category, academic_level, form, new_course} = course;
                             new_course = new_course || {}
-                            console.log(course);
-                            console.log(course)
                             courses.tutoring.push({
                                 "category_id": category || new_course.category,
                                 "academic_level": academic_level || new_course.academic_level,
@@ -411,7 +402,7 @@ const RegistrationCart = () => {
                                 "duration": apiActions.durationParser[form.Schedule && form.Schedule.Duration],
                                 "student_id": studentID,
                                 new_course,
-                                "courseID": course.courseID,
+                                "courseID": course.course_id,
                             });
                         } else {
                             courses.courses.push({
