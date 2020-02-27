@@ -309,3 +309,28 @@ export const addCourse = (course) => wrapPost(
     ],
     course,
 );
+
+export const deleteEnrollment = (courseID, studentID, enrollmentID) => async (dispatch) => {
+    dispatch({
+        type: types.DELETE_ENROLLMENT_STARTED,
+        payload:{},
+    });
+    try {
+        const unenrollResponse = await instance.delete(
+            `/course/enrollment/${enrollmentID}/`,
+        );
+        dispatch({
+            type: types.DELETE_ENROLLMENT_SUCCESS,
+            payload:{
+                courseID: courseID,
+                studentID: studentID,
+            },
+        });
+    } catch (error) {
+        console.error(error);
+        dispatch({
+            type: types.DELETE_ENROLLMENT_FAILED,
+            payload: error,
+        });
+    }
+};

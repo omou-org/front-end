@@ -7,6 +7,8 @@ import * as calendarActions from "../../../../actions/calendarActions"
 import {bindActionCreators} from "redux";
 import * as hooks from "actions/hooks";
 import * as registrationActions from "../../../../actions/registrationActions";
+import * as apiActions from "../../../../actions/apiActions";
+import {REQUEST_ALL} from "../../../../actions/apiActions";
 
 import Grid from "@material-ui/core/Grid";
 import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
@@ -27,9 +29,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import PaymentTable from "./PaymentTable";
 import {NoListAlert} from "../../../NoListAlert";
-import * as types from "../../../../actions/actionTypes";
 import {GET} from "../../../../actions/actionTypes";
-import {instance, REQUEST_ALL} from "../../../../actions/apiActions";
 
 export const DayConverter = {
     "0": "Sunday",
@@ -87,6 +87,7 @@ const CourseSessionStatus = () => {
             ...bindActionCreators(userActions, dispatch),
             ...bindActionCreators(calendarActions, dispatch),
             ...bindActionCreators(registrationActions, dispatch),
+            ...bindActionCreators(apiActions, dispatch),
         }),
         [dispatch]
     );
@@ -269,30 +270,7 @@ const CourseSessionStatus = () => {
         event.preventDefault();
         setUnenrollWarningOpen(false);
         if(toUnenroll){
-            dispatch({
-               type: types.DELETE_ENROLLMENT_STARTED,
-                payload:{},
-            });
-            (async () => {
-                try {
-                    const unenrollResponse = await instance.delete(
-                      `/course/enrollment/${enrollment.enrollment_id}/`,
-                    );
-                    dispatch({
-                        type: types.DELETE_ENROLLMENT_SUCCESS,
-                        payload:{
-                            courseID: courseID,
-                            studentID: studentID,
-                        },
-                    });
-                } catch (error) {
-                    console.error(error);
-                    dispatch({
-                        type: types.DELETE_ENROLLMENT_FAILED,
-                        payload: error,
-                    });
-                }
-            })();
+            api.deleteEnrollment(courseID, studentID, enrollment.enrollment_id);
             history.push(`/accounts/student/${studentID}`);
         }
     };
