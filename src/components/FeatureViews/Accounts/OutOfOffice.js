@@ -1,10 +1,11 @@
+/* eslint-disable react/no-multi-comp */
 import {instance} from "actions/apiActions";
-import React, {useCallback, useState, useMemo} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 import PropTypes from "prop-types";
 import {withStyles} from "@material-ui/core/styles";
 
 
-import {DatePicker, TimePicker} from "material-ui-pickers";
+import {DatePicker, DateTimePicker, TimePicker} from "material-ui-pickers";
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
 import Dialog from "@material-ui/core/Dialog";
@@ -18,33 +19,55 @@ const styles = {
     "minHeight": "80vh",
 };
 
+const DateChooser = ({allDay, label, value, onChange}) =>
+    allDay
+        ? <DatePicker
+            animateYearScrolling
+            format="MM/dd/yyyy"
+            label={label}
+            margin="normal"
+            onChange={onChange}
+            openTo="day"
+            value={value}
+            views={["year", "month", "date"]} />
+        : <DateTimePicker
+            format="MM/dd/yyyy hh:mm a"
+            label={label}
+            margin="normal"
+            onChange={onChange}
+            value={value} />;
+
+const formatDate = (date, allDay) => {
+    const datePart = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    const timePart = `${date.getHours()}:${date.getMinutes()}`;
+    return allDay ? `${datePart} 00:00` : `${datePart} ${timePart}`;
+};
+
 const OutOfOffice = ({onClose, instructorID, open}) => {
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
-    const [startTime, setStartTime] = useState(null);
-    const [endTime, setEndTime] = useState(null);
-    const [checked, setChecked] = useState(false);
+    const [start, setStart] = useState(null);
+    const [end, setEnd] = useState(null);
+    const [allDay, setAllDay] = useState(false);
+    // for future error message
+    const [error, setError] = useState(false);
 
-    const handlecheckChange = useCallback((event) => {
-        setChecked(event.target.checked);
+    const toggleAllDay = useCallback((event) => {
+        setAllDay(event.target.checked);
     }, []);
 
-    const handleInputChange = useCallback((setter) => (date) => {
-        setter(date);
-    }, []);
+    const handleSave = useCallback(async () => {
+        try {
+            await instance.post("/account/instructor-out-of-office/", {
+                "end_datetime": formatDate(end, allDay),
+                "instructor": instructorID,
+                "start_datetime": formatDate(start, allDay),
+            });
+            onClose();
+        } catch {
+            setError(true);
+        }
+    }, [instructorID, onClose, allDay, end, start]);
 
-    const handleSave = useCallback(() => {
-        instance.post("/account/", {
-            "instructor": instructorID,
-        });
-        onClose();
-    }, [onClose, instructorID, endDate, endTime, startDate, startTime]);
-
-    const canSubmit = useMemo(() =>
-        [startDate, endDate, startTime, endTime]
-            .every((input) => input !== null),
-        [startDate, endDate, startTime, endTime]);
-
+    const canSubmit = useMemo(() => start && end && end > start, [start, end]);
     return (
         <Dialog
             aria-labelledby="simple-dialog-title"
@@ -55,7 +78,7 @@ const OutOfOffice = ({onClose, instructorID, open}) => {
             open={open}>
             <DialogContent>
                 <div className="title">
-                    Schedule OOO
+                    Schedule Out of Office
                 </div>
                 <div className="instructor">
                     Instructor:
@@ -67,63 +90,20 @@ const OutOfOffice = ({onClose, instructorID, open}) => {
                     <Grid
                         item
                         md={3}>
-                        <div className="select">
-                            * Select OOO Start Date
-                        </div>
-                        <DatePicker
-                            animateYearScrolling
-                            format="MM/dd/yyyy"
+                        <DateChooser
+                            allDay={allDay}
                             label="Start Date"
-                            margin="normal"
-                            onChange={handleInputChange(setStartDate)}
-                            openTo="day"
-                            value={startDate}
-                            views={["year", "month", "date"]} />
+                            value={start}
+                            onChange={setStart} />
                     </Grid>
                     <Grid
                         item
                         md={3}>
-                        <div className="select">
-                            * Select OOO End Date
-                        </div>
-                        <DatePicker
-                            animateYearScrolling
-                            format="MM/dd/yyyy"
+                        <DateChooser
+                            allDay={allDay}
                             label="End Date"
-                            margin="normal"
-                            onChange={handleInputChange(setEndDate)}
-                            openTo="day"
-                            value={endDate}
-                            views={["year", "month", "date"]} />
-                    </Grid>
-                    <Grid
-                        item
-                        md={6} />
-                    <Grid
-                        item
-                        md={3}>
-                        <div className="select">
-                            * Select OOO Start Time
-                        </div>
-                        <TimePicker
-                            autoOk
-                            disabled={checked}
-                            label="Start Time"
-                            value={startTime}
-                            onChange={handleInputChange(setStartTime)} />
-                    </Grid>
-                    <Grid
-                        item
-                        md={3}>
-                        <div className="select">
-                            * Select OOO End Time
-                        </div>
-                        <TimePicker
-                            autoOk
-                            disabled={checked}
-                            label="End Time"
-                            value={endTime}
-                            onChange={handleInputChange(setEndTime)} />
+                            value={end}
+                            onChange={setEnd} />
                     </Grid>
                     <Grid
                         item
@@ -131,17 +111,16 @@ const OutOfOffice = ({onClose, instructorID, open}) => {
                         <Grid container>
                             <Grid>
                                 <Checkbox
-                                    checked={checked}
+                                    checked={allDay}
                                     className="checkbox"
                                     inputProps={{
                                         "aria-label": "primary checkbox",
                                     }}
-                                    onChange={handlecheckChange}
+                                    onChange={toggleAllDay}
                                     value="primary" />
                             </Grid>
                             <Grid>
-                                <div
-                                    className="checkboxText">
+                                <div className="checkboxText">
                                     All Day
                                 </div>
                             </Grid>
@@ -170,8 +149,8 @@ const OutOfOffice = ({onClose, instructorID, open}) => {
                         item
                         md={2}>
                         <Button
-                            disabled={!canSubmit}
                             className="button"
+                            disabled={!canSubmit}
                             onClick={handleSave}>
                             Save OOO
                         </Button>
@@ -180,6 +159,13 @@ const OutOfOffice = ({onClose, instructorID, open}) => {
             </DialogContent>
         </Dialog>
     );
+};
+
+DateChooser.propTypes = {
+    "allDay": PropTypes.bool.isRequired,
+    "label": PropTypes.string,
+    "onChange": PropTypes.func.isRequired,
+    "value": PropTypes.object.isRequired,
 };
 
 OutOfOffice.propTypes = {

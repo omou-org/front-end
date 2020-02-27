@@ -193,7 +193,7 @@ class ProfileHeading extends Component {
             return (
                 <>
                     <OutOfOffice
-                        instructorID={this.props.user.role}
+                        instructorID={this.props.user.user_id}
                         onClose={this.handleClose}
                         open={this.state.open} />
                 <Grid container align="right" item md={9}>
