@@ -321,7 +321,7 @@ const CourseSessionStatus = () => {
                                             to={course.course_type === "tutoring" ? `/scheduler/view-session/${course_id}/${id}/${instructor}` : `/registration/course/${course_id}`}
                                             component={Link}
                                         >
-                                            <Paper square>
+                                            <Paper elevation={2} square>
                                                 <Grid container>
                                                     <Grid
                                                         item
@@ -406,7 +406,7 @@ const CourseSessionStatus = () => {
     };
 
     return (
-        <Paper className="paper">
+        <Paper elevation={2} className="paper">
             <Grid
                 className="course-session-status"
                 container>

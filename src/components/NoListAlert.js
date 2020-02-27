@@ -6,7 +6,7 @@ import React from "react";
 export const NoListAlert = ({list}) => (<Grid
     item
     xs={12}>
-    <Paper className="info">
+    <Paper elevation={2} className="info">
         <Typography style={{"fontWeight": 700}}>
             No {list} Yet!
         </Typography>

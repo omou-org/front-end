@@ -365,7 +365,7 @@ function DiscountRow({discount, type, classes}){
     };
 
     return (<Grid item xs={12} md={12} key={discount.id}>
-        <Paper square={true} className={"category-row"} >
+        <Paper elevation={2} square={true} className={"category-row"} >
             {
                 editing ? editDiscount() : viewDiscount()
             }

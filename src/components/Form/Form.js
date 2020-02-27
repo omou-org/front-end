@@ -1351,7 +1351,7 @@ class Form extends Component {
                 {/* Determine if finished component is displayed. If not, then don't prompt */}
                 {this.state.submitPending ? "" : <Prompt message="Are you sure you want to leave?" />}
                 <Grid item xs={12}>
-                    <Paper className={"registration-form paper"}>
+                    <Paper elevation={2} className={"registration-form paper"}>
                         {
                             !this.props.location.pathname.includes("adminportal") &&
                             <BackButton

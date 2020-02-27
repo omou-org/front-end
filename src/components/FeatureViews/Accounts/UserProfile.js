@@ -292,7 +292,7 @@ class UserProfile extends Component {
                         Action Log
                     </Grid>
 
-                    <Paper className="paper">
+                    <Paper elevation={2} className="paper">
                         <Table className="ActionTable">
                             <TableHead>
                                 <TableRow>
@@ -340,7 +340,7 @@ class UserProfile extends Component {
         }
         return (
             <div className="UserProfile">
-                <Paper className="paper">
+                <Paper elevation={2} className="paper">
                     <BackButton
                         warn={false} />
                     <hr />

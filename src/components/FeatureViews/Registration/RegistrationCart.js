@@ -159,7 +159,7 @@ function RegistrationCart(props) {
                                         endDate = endDate.toLocaleDateString("en-US", dateOptions);
 
                                         return (<Grid item xs={12} md={12}>
-                                            <Paper square={true} >
+                                            <Paper elevation={2} square={true} >
                                                 <Grid container alignItems="center">
                                                     <Grid item xs={1} md={1}>
                                                         <Checkbox checked={selectedCourses[student_id][registration.course_id].checked}
@@ -399,7 +399,7 @@ function RegistrationCart(props) {
 
     return (
         <form>
-            <Paper className={"registration-cart paper"}>
+            <Paper elevation={2} className={"registration-cart paper"}>
                 <Grid container layout={"row"} spacing={8}>
                     <Grid item xs={12}>
                         <Grid container>

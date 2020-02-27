@@ -134,7 +134,7 @@ function TuitionRules() {
     };
 
     const viewTuitionRow = ({id ,category, hourly_tuition, academic_level, course_type}) => {
-        return (<Paper square={true} className={"category-row"} >
+        return (<Paper elevation={2} square={true} className={"category-row"} >
             <Grid container alignItems={"center"}>
                 <Grid item xs={3} md={3}>
                     <Typography align={'left'} >
@@ -182,7 +182,7 @@ function TuitionRules() {
     const editTuitionRow = ({id ,category, hourly_tuition, academic_level, course_type}) => {
         let academicLevelList = ["College", "Middle School", "Elementary School", "High School"];
         let classSize = ["Tutoring", "Small Group"];
-        return <Paper square={true} className={"category-row"} >
+        return <Paper elevation={2} square={true} className={"category-row"} >
             <Grid container alignItems={"center"}>
                 <Grid item xs={3} md={3} >
                     <Select

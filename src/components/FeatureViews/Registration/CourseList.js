@@ -19,7 +19,7 @@ const CourseList = (props) => {
         const date = `${start_date} - ${end_date}`,
             time = `${start_time} - ${end_time}`;
         return (
-            <Paper
+            <Paper elevation={2}
                 className="row"
                 key={course.course_id}>
                 <Grid

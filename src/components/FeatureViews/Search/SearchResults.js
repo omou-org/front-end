@@ -181,7 +181,7 @@ const SearchResults = (props) => {
         <Grid container className={'search-results'} >
             <Grid item xs={12}>
                 {(numberOfResults() !== 0) ?
-                    <Paper className={'main-search-view'} >
+                    <Paper elevation={2} className={'main-search-view'} >
                         <Grid item xs={12} className="searchResults">
                             <Typography
                                 className={"search-title"}

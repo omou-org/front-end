@@ -191,7 +191,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                                         expanded[studentID] &&
                                             <TableRow align="left">
                                                 <TableCell colSpan={5}>
-                                                    <Paper
+                                                    <Paper elevation={2}
                                                         elevation={0}
                                                         square>
                                                         <Typography

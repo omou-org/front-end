@@ -4,7 +4,7 @@ import RegistrationLanding from "./RegistrationLanding";
 
 const Registration = () => (
     <>
-        {/*<Paper className="paper">*/}
+        {/*<Paper elevation={2} className="paper">*/}
         {/*    <RegistrationUserActions />*/}
         {/*</Paper>*/}
         <RegistrationLanding />

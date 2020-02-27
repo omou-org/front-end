@@ -68,7 +68,7 @@ function ManageCategories() {
 
     const categoryForm = () => {
         return (
-                <Paper className={"category-row new-category"}>
+                <Paper elevation={2} className={"category-row new-category"}>
                     <Grid container alignItems={"center"}>
                         <Grid item xs={3}>
                             <TextField
@@ -160,7 +160,7 @@ function ManageCategories() {
     };
 
     const viewCategoryRow = (category) => {
-        return (<Paper square={true} className={"category-row"} >
+        return (<Paper elevation={2} square={true} className={"category-row"} >
             <Grid container alignItems={"center"}>
                 <Grid item xs={3} md={3} >
                     <Typography align={'left'}>
@@ -204,7 +204,7 @@ function ManageCategories() {
     };
 
     const editCategoryRow = (category) => {
-        return(<Paper square={true} className={"category-row"} >
+        return(<Paper elevation={2} square={true} className={"category-row"} >
             <Grid container alignItems={"center"}>
                 <Grid item xs={3} md={3} >
                     <TextField
