@@ -1,10 +1,9 @@
 import * as hooks from "actions/hooks";
 import React, {Fragment, useCallback, useEffect, useMemo, useState} from "react";
 import {addDashes} from "components/FeatureViews/Accounts/accountUtils";
-import {Link} from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 import PropTypes from "prop-types";
-import {useSelector} from "react-redux";
-import EditIcon from "@material-ui/icons/Edit";
+import {useDispatch, useSelector} from "react-redux";
 import EmailIcon from "@material-ui/icons/Email";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Loading from "components/Loading";
@@ -18,8 +17,19 @@ import Typography from "@material-ui/core/Typography";
 
 import "theme/theme.scss";
 import "./registration.scss";
-import {IconButton} from "@material-ui/core";
-
+import MobileMenu from "@material-ui/icons/MoreVert";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import IconButton from "@material-ui/core/IconButton";
+import {bindActionCreators} from "redux";
+import * as registrationActions from "../../../actions/registrationActions";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Divider from "@material-ui/core/Divider";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/es/DialogContentText";
+import DialogActions from "@material-ui/core/DialogActions";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
 
 const TableToolbar = (
     <TableHead>
@@ -37,11 +47,27 @@ const TableToolbar = (
 );
 
 const RegistrationCourseEnrollments = ({courseID}) => {
+    const dispatch = useDispatch();
+    const api = useMemo(
+        () => ({
+            ...bindActionCreators(registrationActions, dispatch),
+        }),
+        [dispatch]
+    );
+
     const [expanded, setExpanded] = useState({});
     const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
     const parents = useSelector(({"Users": {ParentList}}) => ParentList);
     const students = useSelector(({"Users": {StudentList}}) => StudentList);
     const enrollments = useSelector(({Enrollments}) => Enrollments);
+
+    const [studentMenuAnchorEl, setStudentMenuAnchorEl] = useState(null);
+    const [unenroll, setUnenroll] = useState({
+        open: false,
+        student: null,
+        course: null,
+        enrollment: null,
+    });
 
     const toggleExpanded = useCallback((studentID) => () => {
         setExpanded((prevExpanded) => ({
@@ -85,6 +111,31 @@ const RegistrationCourseEnrollments = ({courseID}) => {
             return "Error loading enrollment details!";
         }
     }
+
+    const handleClick = event => {
+        setStudentMenuAnchorEl(event.currentTarget);
+    };
+    const handleClose = event => {
+        setStudentMenuAnchorEl(null);
+    };
+
+    const handleUnenroll = (studentID, courseID, enrollment) => event => {
+        event.preventDefault();
+        setUnenroll({
+            open: true,
+            student: studentID,
+            course: courseID,
+            enrollment: enrollment.enrollment_id,
+        });
+        console.log(studentID, courseID, enrollment.enrollment_id);
+    };
+    const closeUnenrollDialog = (toUnenroll) => event => {
+        event.preventDefault();
+        if(toUnenroll){
+            api.deleteEnrollment(courseID, unenroll.student, unenroll.course);
+        }
+        setUnenroll(false);
+    };
 
     return (
         <div>
@@ -169,16 +220,28 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                                                 key={studentID}>
                                                 {
                                                     parent &&
-                                                        <a href={`mailto:${parent.email}`}>
+                                                        <IconButton
+                                                            component={NavLink}
+                                                            to={`mailto:${parent.email}`}>
                                                             <EmailIcon />
-                                                        </a>
+                                                        </IconButton>
                                                 }
-                                                <span>
-                                                    <IconButton>
-                                                        <EditIcon />
-                                                    </IconButton>
-                                                </span>
-                                                {/*  TODO: add delete enrollment functionality!*/}
+                                                <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+                                                    <MobileMenu/>
+                                                </IconButton>
+                                                <Menu
+                                                    id="simple-menu"
+                                                    anchorEl={studentMenuAnchorEl}
+                                                    keepMounted
+                                                    open={Boolean(studentMenuAnchorEl)}
+                                                    onClose={handleClose}
+                                                >
+                                                    <MenuItem
+                                                        component={NavLink}
+                                                        to={`/accounts/student/${studentID}/${courseID}`}
+                                                        onClick={handleClose}>View Enrollment</MenuItem>
+                                                    <MenuItem onClick={handleUnenroll(studentID, courseID, enrollment)}>Unenroll</MenuItem>
+                                                </Menu>
                                                 {/*<span>*/}
                                                 {/*    {expanded[studentID]*/}
                                                 {/*        ? <UpArrow onClick={toggleExpanded(studentID)} />*/}
@@ -228,6 +291,36 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                     }
                 </TableBody>
             </Table>
+            <Dialog
+                aria-describedby="unenroll-dialog-description"
+                aria-labelledby="unenroll-dialog-title"
+                className="session-view-modal"
+                fullWidth
+                maxWidth="xs"
+                onClose={closeUnenrollDialog(false)}
+                open={unenroll.open}>
+                <DialogTitle id="unenroll-dialog-title">Unenroll in {course.title}</DialogTitle>
+                <Divider />
+                <DialogContent>
+                    <DialogContentText>
+                        You are about to unenroll in <b>{course.title}</b> for <b>{ unenroll.student && students[unenroll.student].name}</b>.
+                        Performing this action will credit the remaining enrollment balance back to the parent's account balance.
+                        Are you sure you want to unenroll?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        color="secondary"
+                        onClick={closeUnenrollDialog(true)}>
+                        Yes, unenroll
+                    </Button>
+                    <Button
+                        color="primary"
+                        onClick={closeUnenrollDialog(false)}>
+                        Cancel
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 };
