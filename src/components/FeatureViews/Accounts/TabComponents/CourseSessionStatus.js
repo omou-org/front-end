@@ -1,10 +1,10 @@
-import { Link, useHistory, useParams } from "react-router-dom";
+import {Link, useHistory, useParams} from "react-router-dom";
 import BackButton from "../../../BackButton";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import * as userActions from "actions/userActions";
 import * as calendarActions from "../../../../actions/calendarActions"
-import { bindActionCreators } from "redux";
+import {bindActionCreators} from "redux";
 import * as hooks from "actions/hooks";
 import * as registrationActions from "../../../../actions/registrationActions";
 
@@ -26,10 +26,10 @@ import DialogContentText from "@material-ui/core/es/DialogContentText/DialogCont
 import DialogActions from "@material-ui/core/DialogActions";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import PaymentTable from "./PaymentTable";
-import { NoListAlert } from "../../../NoListAlert";
-import { GET } from "../../../../actions/actionTypes";
-import { REQUEST_ALL } from "../../../../actions/apiActions";
-
+import {NoListAlert} from "../../../NoListAlert";
+import * as types from "../../../../actions/actionTypes";
+import {GET} from "../../../../actions/actionTypes";
+import {instance, REQUEST_ALL} from "../../../../actions/apiActions";
 
 export const DayConverter = {
     "0": "Sunday",
@@ -81,9 +81,6 @@ const CourseSessionStatus = () => {
     const requestStatus = useSelector(({ RequestStatus }) => RequestStatus);
     const course = courses[courseID];
 
-
-
-
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -111,6 +108,7 @@ const CourseSessionStatus = () => {
 
     const registeringParent = useSelector(({ Registration }) => Registration.CurrentParent);
     const [discardParentWarning, setDiscardParentWarning] = useState(false);
+    const [unenrollWarningOpen, setUnenrollWarningOpen] = useState(false);
 
     const noteInfo = useMemo(() => ({
         courseID,
@@ -252,6 +250,11 @@ const CourseSessionStatus = () => {
         }
     };
 
+    const handleUnenroll = event => {
+        event.preventDefault();
+        setUnenrollWarningOpen(true);
+    };
+
     const closeDiscardParentWarning = (toContinue) => event => {
         event.preventDefault();
         setDiscardParentWarning(false);
@@ -260,6 +263,38 @@ const CourseSessionStatus = () => {
             history.push("/registration/cart/");
         }
 
+    };
+
+    const closeUnenrollDialog = (toUnenroll) => event => {
+        event.preventDefault();
+        setUnenrollWarningOpen(false);
+        if(toUnenroll){
+            dispatch({
+               type: types.DELETE_ENROLLMENT_STARTED,
+                payload:{},
+            });
+            (async () => {
+                try {
+                    const unenrollResponse = await instance.delete(
+                      `/course/enrollment/${enrollment.enrollment_id}/`,
+                    );
+                    dispatch({
+                        type: types.DELETE_ENROLLMENT_SUCCESS,
+                        payload:{
+                            courseID: courseID,
+                            studentID: studentID,
+                        },
+                    });
+                } catch (error) {
+                    console.error(error);
+                    dispatch({
+                        type: types.DELETE_ENROLLMENT_FAILED,
+                        payload: error,
+                    });
+                }
+            })();
+            history.push(`/accounts/student/${studentID}`);
+        }
     };
 
     const renderMain = () => {
@@ -370,22 +405,6 @@ const CourseSessionStatus = () => {
                                 : <NoListAlert list={"Course"} />
                             }
                         </Grid>
-                        <Grid item md={12} >
-                            <Grid container
-                                className={"session-actions"}
-                                direction={"row"}
-                                alignItems={"center"}
-                                justify={"flex-end"}>
-                                <Grid item>
-                                    <Button
-                                        onClick={initRegisterMoreSessions}
-                                        className={"button add-sessions"}
-                                    >
-                                        Add Sessions
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                        </Grid>
                     </>
                 );
             case 1:
@@ -439,6 +458,28 @@ const CourseSessionStatus = () => {
                         </Link>
                     </Typography>
                 </Grid>
+                <Grid item md={12} >
+                    <Grid container
+                          className={"session-actions"}
+                          direction={"row"}
+                          alignItems={"top"}
+                          justify={"flex-start"}>
+                        <Grid item>
+                            <Button
+                                onClick={initRegisterMoreSessions}
+                                className={"button add-sessions"}
+                            >
+                                Add Sessions
+                            </Button>
+                            <Button
+                                onClick={handleUnenroll}
+                                className={"button"}
+                            >
+                                Unenroll Course
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
                 <Tabs
                     indicatorColor="primary"
                     onChange={handleTabChange}
@@ -490,6 +531,34 @@ const CourseSessionStatus = () => {
                     <Button
                         color={"primary"}
                         onClick={closeDiscardParentWarning(false)}>
+                        Cancel
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={unenrollWarningOpen}
+                onClose={closeUnenrollDialog(false)}
+                aria-labelledby="warn-unenroll"
+            >
+                <DialogTitle id="warn-unenroll">
+                    Unenroll in {course.title}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        You are about to unenroll in <b>{course.title}</b> for <b>{usersList.StudentList[studentID].name}</b>.
+                        Performing this action will credit <b>${enrollment.balance}</b> back to the parent's account balance.
+                        Are you sure you want to unenroll?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        color={"secondary"}
+                        onClick={closeUnenrollDialog(true)}>
+                        Yes, unenroll
+                    </Button>
+                    <Button
+                        color={"primary"}
+                        onClick={closeUnenrollDialog(false)}>
                         Cancel
                     </Button>
                 </DialogActions>
