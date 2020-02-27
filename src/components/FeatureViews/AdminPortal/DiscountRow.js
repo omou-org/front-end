@@ -178,7 +178,7 @@ function DiscountRow({discount, type, classes}){
                     classes={{
                         switchBase: classes.colorSwitchBase,
                         checked: classes.colorChecked,
-                        bar: classes.colorBar,
+                        track: classes.colorBar,
                     }}
                 />
             </Grid>
