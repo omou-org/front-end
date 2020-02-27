@@ -64,7 +64,7 @@ function ScheduleForm() {
 
     return (
         <div>
-            <Typography variant="subtitle1"> {selectedValue}</Typography>
+            <Typography variant="body1"> {selectedValue}</Typography>
             <br />
             <Button variant="outlined" color="primary" onClick={handleClickOpen}>
                 + Add more times

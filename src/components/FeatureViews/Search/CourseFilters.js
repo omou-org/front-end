@@ -50,7 +50,7 @@ const CourseFilters = (props) => {
     return (
         <div className="courseFilters">
             <Grid item style={{ paddingTop: '5px', marginRight: '10px' }}>
-                <Typography variant={"subtitle1"}> Filter | </Typography>
+                <Typography variant={"body1"}> Filter | </Typography>
             </Grid>
             <Grid item className="spacing">
                 <FormControl>
@@ -80,7 +80,7 @@ const CourseFilters = (props) => {
                 </FormControl>
             </Grid>
             <Grid item style={{ paddingTop: '5px', margin: '0px 20px 0px 20px' }}>
-                <Typography variant={"subtitle1"}> Sort | </Typography>
+                <Typography variant={"body1"}> Sort | </Typography>
             </Grid>
             <Grid item>
                 <FormControl className={""}>

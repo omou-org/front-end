@@ -167,18 +167,18 @@
   }
 }
 
-.actions {
+.spacing {
   cursor: pointer;
   color: $lightPrimaryFontColor;
 }
 
-.actions > * {
+.spacing > * {
   margin: 5px;
   color: $lightPrimaryFontColor;
   text-decoration: none;
 }
 
-.actions > * :hover {
+.spacing > * :hover {
   color: $darkenPrimaryFontColor;
   text-decoration: none;
 }
