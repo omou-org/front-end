@@ -178,6 +178,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                                                         <EditIcon />
                                                     </IconButton>
                                                 </span>
+                                                {/* TODO: add delete enrollment functionality!*/}
                                                 {/*<span>*/}
                                                 {/*    {expanded[studentID]*/}
                                                 {/*        ? <UpArrow onClick={toggleExpanded(studentID)} />*/}

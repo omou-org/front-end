@@ -1,19 +1,19 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
-import { bindActionCreators } from "redux";
+import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import * as userActions from "../../../actions/userActions.js"
-import { connect, useDispatch, useSelector } from "react-redux";
-import { Tooltip, Typography } from "@material-ui/core";
-import { NavLink, useParams, withRouter } from "react-router-dom";
+import {connect, useDispatch, useSelector} from "react-redux";
+import {Tooltip, Typography} from "@material-ui/core";
+import {NavLink, useParams, withRouter} from "react-router-dom";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import * as apiActions from "../../../actions/apiActions";
 import Button from "@material-ui/core/Button";
 import Loading from "../../Loading";
 import Avatar from "@material-ui/core/Avatar";
-import { stringToColor } from "../Accounts/accountUtils";
+import {stringToColor} from "../Accounts/accountUtils";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Divider from "@material-ui/core/Divider";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -21,11 +21,11 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import Radio from "@material-ui/core/Radio";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
-import { dayOfWeek } from "../../Form/FormUtils";
+import {dayOfWeek} from "../../Form/FormUtils";
 import * as hooks from "actions/hooks";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
-import { EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION } from "./SessionView";
+import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 
 function DisplaySessionView({ course, session, handleToggleEditing }) {
     const dispatch = useDispatch();
@@ -55,6 +55,7 @@ function DisplaySessionView({ course, session, handleToggleEditing }) {
     }, [api]);
 
     const enrollmentStatus = hooks.useEnrollmentByCourse(course.course_id);
+    const enrollments = useSelector(({ Enrollments }) => Enrollments);
     const reduxCourse = courses[course.course_id];
     const studentStatus = reduxCourse.roster.length > 0 && hooks.useStudent(reduxCourse.roster);
 
@@ -104,6 +105,15 @@ function DisplaySessionView({ course, session, handleToggleEditing }) {
 
     const handleEditSelection = event => {
         setEditSelection(event.target.value);
+    };
+
+    const handleUnenroll = event => {
+        event.preventDefault();
+        const courseID = course.course_id,
+            studentID = course.roster[0],
+            enrollmentID = enrollments[course.roster[0]][course.course_id].enrollment_id;
+        api.deleteEnrollment(courseID, studentID, enrollmentID);
+        // TODO: add dialog to confirm if user wants to delete course enrollment!
     };
 
     if (!course || !categories) {
@@ -231,7 +241,16 @@ function DisplaySessionView({ course, session, handleToggleEditing }) {
                         color="secondary"
                         variant="outlined">
                         Add Sessions
-                                    </Button>
+                    </Button>
+                    {
+                        studentKeys.length == 1 && <Button
+                            onClick={handleUnenroll}
+                            className={"button"}
+                            color="secondary"
+                            variant="outlined">
+                            Unenroll Course
+                        </Button>
+                    }
                 </Grid>
             <Grid item>
                 <Button
@@ -263,7 +282,6 @@ function DisplaySessionView({ course, session, handleToggleEditing }) {
                     Return to scheduling
                 </Button>
             </Grid>
-
         </Grid>
         <Dialog
             aria-describedby="alert-dialog-description"
