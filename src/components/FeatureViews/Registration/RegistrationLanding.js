@@ -221,7 +221,7 @@ const RegistrationLanding = () => {
                 }
                 {
                     view === 1 &&
-                        <TutoringList filteredCourses={filteredCourses} />
+                        <TutoringList />
                 }
             </div>
         </Paper>

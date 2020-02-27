@@ -115,10 +115,10 @@ export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOn
                             "type": successType,
                         });
                         setStatus(response.reduce((finalStatus, {status}) =>
-                            isFail(status) ? status :
-                            isFail(finalStatus) ? finalStatus :
-                            isLoading(status) ? status :
-                            finalStatus, 200));
+                            isFail(status) ? status
+                                : isFail(finalStatus) ? finalStatus
+                                    : isLoading(status) ? status
+                                        : finalStatus, 200));
                     }
                 } catch (error) {
                     if (!aborted) {
@@ -162,6 +162,11 @@ export const useEnrollment = wrapUseEndpoint(
     types.FETCH_ENROLLMENT_SUCCESSFUL,
 );
 
+export const useCategory = wrapUseEndpoint(
+    "/course/categories/",
+    types.GET_CATEGORY_SUCCESS,
+);
+
 export const useEnrollmentByCourse = (courseID) => wrapUseEndpoint(
     "/course/enrollment/",
     types.FETCH_ENROLLMENT_SUCCESSFUL,
@@ -186,9 +191,9 @@ export const usePaymentByParent = (parentID) => wrapUseEndpoint(
     "/payment/payment/",
     types.GET_PAYMENT_PARENT_SUCCESS,
     {
-        "params":{
+        "params": {
             "parent": parentID,
-        }
+        },
     }
 )(null);
 
@@ -196,9 +201,9 @@ export const usePaymentByEnrollment = (enrollmentID) => wrapUseEndpoint(
     "/payment/payment/",
     types.GET_PAYMENT_ENROLLMENT_SUCCESS,
     {
-        "params":{
+        "params": {
             "enrollment": enrollmentID,
-        }
+        },
     }
 );
 
