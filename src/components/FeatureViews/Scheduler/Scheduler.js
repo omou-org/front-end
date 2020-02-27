@@ -588,13 +588,8 @@ class Scheduler extends Component {
                 </Typography>
                 <br />
                 <Grid container
-<<<<<<< HEAD
                       className="scheduler-wrapper"
                       >
-=======
-                    className="scheduler-wrapper"
-                    spacing={16}>
->>>>>>> 9460508d57a25f62d5e3ddae6f2bc553552238ed
                     <Grid item xs={12} className="scheduler-header">
                         <Grid container>
                             <Grid item xs={3}>
