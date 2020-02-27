@@ -26,6 +26,7 @@ import * as hooks from "actions/hooks";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
 import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
+import DialogContentText from "@material-ui/core/es/DialogContentText";
 
 function DisplaySessionView({ course, session, handleToggleEditing }) {
     const dispatch = useDispatch();
@@ -47,6 +48,7 @@ function DisplaySessionView({ course, session, handleToggleEditing }) {
 
     const [enrolledStudents, setEnrolledStudents] = useState(false);
     const [edit, setEdit] = useState(false);
+    const [unenroll, setUnenroll] = useState(false);
     const [editSelection, setEditSelection] = useState(EDIT_CURRENT_SESSION);
 
     useEffect(() => {
@@ -109,11 +111,18 @@ function DisplaySessionView({ course, session, handleToggleEditing }) {
 
     const handleUnenroll = event => {
         event.preventDefault();
-        const courseID = course.course_id,
-            studentID = course.roster[0],
-            enrollmentID = enrollments[course.roster[0]][course.course_id].enrollment_id;
-        api.deleteEnrollment(courseID, studentID, enrollmentID);
-        // TODO: add dialog to confirm if user wants to delete course enrollment!
+       setUnenroll(true);
+    };
+
+    const closeUnenrollDialog = (toUnenroll) => event => {
+        event.preventDefault();
+        setUnenroll(false);
+        if(toUnenroll){
+            const courseID = course.course_id,
+                studentID = course.roster[0],
+                enrollmentID = enrollments[course.roster[0]][course.course_id].enrollment_id;
+            api.deleteEnrollment(courseID, studentID, enrollmentID);
+        }
     };
 
     if (!course || !categories) {
@@ -124,6 +133,7 @@ function DisplaySessionView({ course, session, handleToggleEditing }) {
     let day = sessionStart.getDate() !== new Date().getDate() ?
         (session.start - 1 >= 0 ? session.start - 1 : 6) :
         session.start;
+
     return (<>
         <Grid className="session-view"
             container spacing={8} direction={"row"}>
@@ -284,8 +294,8 @@ function DisplaySessionView({ course, session, handleToggleEditing }) {
             </Grid>
         </Grid>
         <Dialog
-            aria-describedby="alert-dialog-description"
-            aria-labelledby="alert-dialog-title"
+            aria-describedby="form-dialog-description"
+            aria-labelledby="form-dialog-title"
             className="session-view-modal"
             fullWidth
             maxWidth="xs"
@@ -321,6 +331,37 @@ function DisplaySessionView({ course, session, handleToggleEditing }) {
                     color="primary"
                     onClick={handleEditToggle(false)}>
                     Confirm to Edit
+                </Button>
+            </DialogActions>
+        </Dialog>
+
+        <Dialog
+            aria-describedby="unenroll-dialog-description"
+            aria-labelledby="unenroll-dialog-title"
+            className="session-view-modal"
+            fullWidth
+            maxWidth="xs"
+            onClose={closeUnenrollDialog(false)}
+            open={unenroll}>
+            <DialogTitle id="unenroll-dialog-title">Unenroll in {course.title}</DialogTitle>
+            <Divider />
+            <DialogContent>
+                <DialogContentText>
+                    You are about to unenroll in <b>{course.title}</b> for <b>{ enrolledStudents && enrolledStudents[studentKeys[0]].name}</b>.
+                    Performing this action will credit the remaining enrollment balance back to the parent's account balance.
+                    Are you sure you want to unenroll?
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button
+                    color="secondary"
+                    onClick={closeUnenrollDialog(true)}>
+                    Yes, unenroll
+                </Button>
+                <Button
+                    color="primary"
+                    onClick={closeUnenrollDialog(false)}>
+                    Cancel
                 </Button>
             </DialogActions>
         </Dialog>
