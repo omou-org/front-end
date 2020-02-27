@@ -1,7 +1,7 @@
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import React, {Component} from "react";
-import {withRouter} from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -25,16 +25,16 @@ import ChevronRightOutlinedIcon from "@material-ui/icons/ChevronRightOutlined";
 import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
 import TodayIcon from "@material-ui/icons/Today";
-import {stringToColor} from "../Accounts/accountUtils";
-import {withStyles} from '@material-ui/core/styles';
+import { stringToColor } from "../Accounts/accountUtils";
+import { withStyles } from '@material-ui/core/styles';
 // Tool tip dependencies
 import tippy from "tippy.js";
 import "tippy.js/themes/google.css";
 import "./scheduler.scss";
 import SessionFilters from "./SessionFilters";
-import {BootstrapInput} from "./SchedulerUtils";
-import {Tooltip} from "@material-ui/core";
-import {arr_diff} from "../../Form/FormUtils";
+import { BootstrapInput } from "./SchedulerUtils";
+import { Tooltip } from "@material-ui/core";
+import { arr_diff } from "../../Form/FormUtils";
 
 const styles = theme => ({
     root: {
@@ -54,7 +54,7 @@ const styles = theme => ({
  * @returns {unknown[]}
  */
 const sessionArray = (sessions) => {
-    return sessions.length > 0 && Object.values(sessions)
+    return Object.keys(sessions).length > 0 && Object.values(sessions)
         .map(instructorSessions => Object.values(instructorSessions))
         .reduce((allSessions, instructorSessions) => {
             return allSessions.concat(instructorSessions);
@@ -115,18 +115,19 @@ class Scheduler extends Component {
         // let prevState = JSON.parse(sessionStorage.getItem("schedulerState"));
     }
 
+
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (JSON.stringify(prevProps.sessions) !== JSON.stringify(this.props.sessions) ) {
+        if (JSON.stringify(prevProps.sessions) !== JSON.stringify(this.props.sessions)) {
             const initialSessions = this.formatSessions(this.props.sessions);
-            const courseSessionsArray =  sessionArray(this.props.sessions);
+            const courseSessionsArray = sessionArray(this.props.sessions);
             this.setState({
                 calendarEvents: initialSessions,
                 instructorOptions: Object.entries(this.props.instructors).map(
-                    ([instructorID, instructor])=>
-                        ({ value:Number(instructorID), label: instructor.name })),
+                    ([instructorID, instructor]) =>
+                        ({ value: Number(instructorID), label: instructor.name })),
                 courseOptions: courseSessionsArray && [...new Set(courseSessionsArray.map(session => session.course))].map(
                     (courseID) =>
-                        ({value: Number(courseID), label: this.props.courses[Number(courseID)].title})
+                        ({ value: Number(courseID), label: this.props.courses[Number(courseID)].title })
                 )
             });
         }
@@ -139,8 +140,9 @@ class Scheduler extends Component {
 
     formatSessions = (sessionState) => {
         let allSessions = [];
+
         Object.values(sessionState).forEach((sessions) => {
-            allSessions = allSessions.concat(Object.values(sessions).map(session =>{
+            allSessions = allSessions.concat(Object.values(sessions).map(session => {
                 let instructorName = this.props.courses[session.course] && this.props.instructors[session.instructor].name;
                 return {
                     id: session.id,
@@ -251,19 +253,19 @@ class Scheduler extends Component {
                         </div>
                         <div class='pin_icon icn'>
                             <span class=''>
-                                Session ${info.event.extendedProps.is_confirmed? "IS NOT" : "IS"} confirmed
+                                Session ${info.event.extendedProps.is_confirmed ? "IS NOT" : "IS"} confirmed
                             </span>
                         </div>
                         <div class='teacher_icon icn'>
                             <span class=''>
-                                    ${info.event.extendedProps.instructor ? 
-                                        info.event.extendedProps.instructor : "No teacher Yet"}
+                                    ${info.event.extendedProps.instructor ?
+                    info.event.extendedProps.instructor : "No teacher Yet"}
                             </span>
                         </div>
                         <div class='discription_icon icn'>
                             <span class='description-text'>
-                                ${info.el.fcSeg.description ? 
-                                        truncate(info.el.fcSeg.description) : "N/A"}
+                                ${info.el.fcSeg.description ?
+                    truncate(info.el.fcSeg.description) : "N/A"}
                             </span>
                         </div>
                     </div>
@@ -311,7 +313,7 @@ class Scheduler extends Component {
             return {
                 "viewValue": value,
                 "currentDate": date,
-                "timeShift":0
+                "timeShift": 0
             }
         });
     }
@@ -459,7 +461,7 @@ class Scheduler extends Component {
     handleFilterChange = (name) => (event) => {
         const date = this.currentDate();
         if (event.target.value) {
-            this.setState(()=>{
+            this.setState(() => {
                 // console.log(this.calendarViewToFilterVal[this.state.viewValue], this.viewOptions[event.target.value], this.state.timeShift);
                 this.props.calendarActions.fetchSession({
                     config: {
@@ -529,15 +531,15 @@ class Scheduler extends Component {
     };
 
     onInstructorSelect = event => {
-        this.setState(()=>{
+        this.setState(() => {
             const selectedInstructorIDs = event && event.map(instructor => instructor.value);
             const calendarInstructorIDs = Object.keys(this.props.sessions);
-            const nonSelectedInstructors = event ? arr_diff(selectedInstructorIDs,calendarInstructorIDs) : []
+            const nonSelectedInstructors = event ? arr_diff(selectedInstructorIDs, calendarInstructorIDs) : []
 
             let filteredEvents = JSON.parse(JSON.stringify(this.props.sessions));
-            if(event && event.length > 0 && nonSelectedInstructors.length > 0){
+            if (event && event.length > 0 && nonSelectedInstructors.length > 0) {
                 nonSelectedInstructors
-                    .forEach( (instructorID) => delete filteredEvents[Number(instructorID)])
+                    .forEach((instructorID) => delete filteredEvents[Number(instructorID)])
             } else {
                 filteredEvents = this.props.sessions;
             }
@@ -549,31 +551,30 @@ class Scheduler extends Component {
     };
 
     onCourseSelect = event => {
-        this.setState(()=>{
+        this.setState(() => {
             const courseSessionsArray = sessionArray(this.props.sessions);
-           const selectedCourseIDs = event && event.map(course => course.value);
-           const calendarCourseIDs = [...new Set(courseSessionsArray.map(session => session.course))];
-           const nonSelectedCourseIDs = event ? arr_diff(selectedCourseIDs, calendarCourseIDs): [];
+            const selectedCourseIDs = event && event.map(course => course.value);
+            const calendarCourseIDs = [...new Set(courseSessionsArray.map(session => session.course))];
+            const nonSelectedCourseIDs = event ? arr_diff(selectedCourseIDs, calendarCourseIDs) : [];
 
-           let filteredEvents = JSON.parse(JSON.stringify(this.props.sessions));
-           if(event && event.length > 0 && nonSelectedCourseIDs.length > 0){
-               nonSelectedCourseIDs
-                   .forEach((courseID) => {
-                      courseSessionsArray.forEach(session => {
-                          if(session.course === courseID){
-                              delete filteredEvents[session.instructor][session.id]
-                          }
-                      });
-                   });
-           } else {
-               filteredEvents = this.props.sessions;
-           }
-           console.log(filteredEvents);
+            let filteredEvents = JSON.parse(JSON.stringify(this.props.sessions));
+            if (event && event.length > 0 && nonSelectedCourseIDs.length > 0) {
+                nonSelectedCourseIDs
+                    .forEach((courseID) => {
+                        courseSessionsArray.forEach(session => {
+                            if (session.course === Number(courseID)) {
+                                delete filteredEvents[session.instructor][session.id]
+                            }
+                        });
+                    });
+            } else {
+                filteredEvents = this.props.sessions;
+            }
             return {
-               "courseFilter": event,
+                "courseFilter": event,
                 "calendarEvents": this.formatSessions(filteredEvents),
             }
-        });
+        })
     };
 
     render() {
@@ -587,8 +588,13 @@ class Scheduler extends Component {
                 </Typography>
                 <br />
                 <Grid container
+<<<<<<< HEAD
                       className="scheduler-wrapper"
                       >
+=======
+                    className="scheduler-wrapper"
+                    spacing={16}>
+>>>>>>> 9460508d57a25f62d5e3ddae6f2bc553552238ed
                     <Grid item xs={12} className="scheduler-header">
                         <Grid container>
                             <Grid item xs={3}>
@@ -628,7 +634,7 @@ class Scheduler extends Component {
                                                     value={this.state.calendarFilterValue}
                                                     onChange={this.handleFilterChange("calendarFilterValue")}
                                                     input={
-                                                        <BootstrapInput name={"courseFilter"} id={"filter-calendar-type"}/>
+                                                        <BootstrapInput name={"courseFilter"} id={"filter-calendar-type"} />
                                                     }
                                                 >
                                                     <MenuItem value={"all"}>All</MenuItem>
@@ -642,7 +648,7 @@ class Scheduler extends Component {
 
                                                 <Select
                                                     input={
-                                                        <BootstrapInput name={"courseFilter"} id={"filter-calendar-type"}/>
+                                                        <BootstrapInput name={"courseFilter"} id={"filter-calendar-type"} />
                                                     }
                                                     value={this.state.resourceFilterValue}
                                                     onChange={this.handleResourceFilterChange("resourceFilterValue")}
@@ -682,13 +688,14 @@ class Scheduler extends Component {
                                         {/*    />*/}
                                         {/*</Menu>*/}
                                         <SessionFilters
-                                            InstructorValue = { this.state.instructorFilter }
-                                            InstructorOptions={ this.state.instructorOptions }
-                                            onInstructorSelect = {this.onInstructorSelect }
-                                            CourseValue = {this.state.courseFilter}
-                                            CourseOptions = {this.state.courseOptions}
-                                            onCourseSelect = {this.onCourseSelect}
+                                            InstructorValue={this.state.instructorFilter}
+                                            InstructorOptions={this.state.instructorOptions}
+                                            onInstructorSelect={this.onInstructorSelect}
+                                            CourseValue={this.state.courseFilter}
+                                            CourseOptions={this.state.courseOptions}
+                                            onCourseSelect={this.onCourseSelect}
                                         />
+
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -709,12 +716,12 @@ class Scheduler extends Component {
                                     </Grid>
                                 </div>
                             </Grid>
-                            <Grid item xs={1}/>
+                            <Grid item xs={1} />
                             <Grid item xs={2}>
                                 <Grid container
-                                      direction={"row"}
-                                      justify={"flex-end"}
-                                      className="scheduler-header-last">
+                                    direction={"row"}
+                                    justify={"flex-end"}
+                                    className="scheduler-header-last">
                                     <Grid item xs={3}>
                                         <Tooltip title={"Go to Today"}>
                                             <IconButton onClick={this.goToToday} className={"current-date-button"} aria-label='current-date-button'>
@@ -726,7 +733,7 @@ class Scheduler extends Component {
                                         <FormControl className={"filter-select"} >
                                             <Select
                                                 input={
-                                                    <BootstrapInput name={"courseFilter"} id={"filter-calendar-type"}/>
+                                                    <BootstrapInput name={"courseFilter"} id={"filter-calendar-type"} />
                                                 }
                                                 value={this.state.viewValue}
                                                 onChange={(event) =>
