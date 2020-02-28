@@ -40,7 +40,7 @@ const Schedule = ({instructorID}) => {
             }, 0),
     [sessions, instructorID]);
 
-    const businessHours = useMemo(() =>
+    const instructorBusinessHours = useMemo(() =>
         instructor
             ? Object.values(instructor.schedule.work_hours)
                 .map(({day, start, end}) => ({
@@ -66,7 +66,7 @@ const Schedule = ({instructorID}) => {
             <h1>{hoursWorked} hour(s) worked this month</h1>
             <FullCalendar
                 allDaySlot={false}
-                businessHours={businessHours}
+                businessHours={instructorBusinessHours}
                 columnHeaderFormat={{"weekday": "short"}}
                 defaultView="timeGridWeek"
                 events={fullCalendarSessions}

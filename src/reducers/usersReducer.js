@@ -150,7 +150,6 @@ export const updateParent = (parents, id, parent) => ({
         "email": parent.user.email,
         "student_ids": parent.student_list,
         "updated_at": parent.updated_at,
-        // below is not from database
         "role": "parent",
         "notes": (parents[id] && parents[id].notes) || {},
     },
@@ -314,7 +313,6 @@ export const updateInstructor = (instructors, id, instructor) => {
             subjects,
             "languages": language,
         },
-        // below is not from database
         "schedule": {
             "work_hours": schedule.work_hours || {},
             "time_off": schedule.time_off || {},
