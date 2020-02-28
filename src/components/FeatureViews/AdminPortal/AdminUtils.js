@@ -61,7 +61,7 @@ export const parseDate = (date) => {
     }
 }
 
-export const parseRole = (role) => {
+export const capitalizeRoleName = (role) => {
     if (role) {
         return role.replace(/^\w/, c => c.toUpperCase());
     }

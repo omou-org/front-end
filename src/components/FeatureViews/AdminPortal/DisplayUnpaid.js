@@ -7,7 +7,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import {stringToColor} from "../Accounts/accountUtils";
-import {roleColor, initials, parseDate, parseRole, statusColor} from "./AdminUtils";
+import {roleColor, initials, parseDate, capitalizeRoleName, statusColor} from "./AdminUtils";
 
     const styles = (username) => ({
         "backgroundColor": stringToColor(username),
@@ -70,7 +70,7 @@ import {roleColor, initials, parseDate, parseRole, statusColor} from "./AdminUti
                             {unpaid.fName + " " + unpaid.lName}
                         </Typography>
                         <Typography style={roleStyle(unpaid.status)} >
-                            {parseRole(unpaid.status)}
+                            {capitalizeRoleName(unpaid.status)}
                         </Typography>
                         <Typography style={{textAlign: "center"}}>
                             Payment Status: <span style={statusStyle(unpaid.paymentStatus)}>{unpaid.paymentStatus}</span>
