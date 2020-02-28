@@ -178,29 +178,28 @@ const CourseSessionStatus = () => {
     const calendarSessions = courseSessions ? courseSessionsArray
         .filter(session => session.course === Number(courseID)) : [],
         paymentSessionStatus = enrollment.session_payment_status,
-        statusKey = (status) => {
-            return "Paid";
+        statusKey = (session) => {
+            const session_date = new Date(session.start_datetime),
+                last_session = new Date(enrollment.last_paid_session_datetime);
+            if(session_date <= last_session && Number.isInteger(enrollment.sessions_left)){
+                return "Paid";
+            } else if (session_date == last_session && !Number.isInteger(enrollment.sessions_left)){
+                return "Partial";
+            } else {
+                return "Unpaid";
+            }
+
         };
 
     const handleTabChange = (_, newTab) => {
         setActiveTab(newTab);
     };
 
-    const sessions = course.course_type === "tutoring" && courseSessions
-        ? calendarSessions.map((session) => ({
+    const sessions = courseSessions
+        && calendarSessions.map((session) => ({
             ...session,
-            "status": statusKey(paymentSessionStatus[session.session_id]),
-        }))
-        : [
-            {
-                ...course,
-                "status": Object.values(paymentSessionStatus)
-                    .some((session) => session === 0)
-                    ? "Unpaid"
-                    : "Paid",
-                "type": "C",
-            },
-        ];
+            "status": statusKey(session),
+        }));
 
     let parentOfCurrentStudent = usersList.StudentList[studentID].parent_id;
 
@@ -229,7 +228,7 @@ const CourseSessionStatus = () => {
         "activeStep": 0,
         "conditional": "",
         "existingUser": false,
-        "form": "class",
+        "form": course.course_type,
         "hasLoaded": true,
         "preLoaded": false,
         "submitPending": false,
@@ -321,8 +320,7 @@ const CourseSessionStatus = () => {
                             {sessions.length !== 0
                                 ? sessions.map((session, i) => {
                                     const { day, date, startTime, endTime, status, tuition, id, course_id, instructor } =
-                                        course.course_type === "tutoring"
-                                            ? sessionDataParse(session) : courseDataParser(session);
+                                        sessionDataParse(session);
 
 
                                     return (
