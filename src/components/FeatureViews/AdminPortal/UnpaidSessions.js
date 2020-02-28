@@ -1,11 +1,8 @@
-import { connect } from 'react-redux';
-import React, { Component, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
-import * as hooks from "actions/hooks";
 import Loading from "components/Loading";
 import * as adminActions from "../../../actions/adminActions";
-import initialState from '../../../reducers/initialState';
 import { useEffect } from 'react';
 import UnpaidSessionCard from './UnpaidSessionCard';
 
@@ -25,14 +22,13 @@ function UnpaidSessions () {
         api.fetchUnpaid();
     },[]);
 
-const checkUnpaid = (x) => {
-    if (!x){
+const checkUnpaid = (UnpaidList) => {
+    if (!UnpaidList){
         return <Loading/>
     }
 
     else {
-        console.log('x exists')
-        return x.map(up=>(
+        return UnpaidList.map(up=>(
             UnpaidSessionCard(up)
         ))
         
@@ -40,9 +36,9 @@ const checkUnpaid = (x) => {
 }
 
 return (
-    <div>
+    <>
         {checkUnpaid(UnpaidList)}
-    </div>
+    </>
 )
     
 }
