@@ -30,23 +30,23 @@ export const emailCheck = (email) => email || "Email n/a"
 
 
 //phone number formatting
-export const phoneCheck = (y) => {
-    switch (y) {
+export const phoneCheck = (textInput) => {
+    switch (textInput) {
         case "nan":
         case null:
             return "Phone n/a"
         default:
-            y = y.replace(/\D/g, '');
-            y = y.replace(/(\d{3})(\d{3})(\d{4})/, "($1)-$2-$3")
-            return y;
+            textInput = textInput.replace(/\D/g, '');
+            textInput = textInput.replace(/(\d{3})(\d{3})(\d{4})/, "($1)-$2-$3")
+            return textInput;
     }
 }
 
 export const parseDate = (date) => {
-    const x = Date.parse(date)
+    const recordDate = Date.parse(date)
     const today = new Date();
-    const ago = (today - x) / 1000;
-    if (isNaN(x)) {
+    const ago = (today - recordDate) / 1000;
+    if (isNaN(recordDate)) {
         return "n/a"
     } else if (ago<60){
         return `Updated ${Math.round(ago)} seconds ago`;
@@ -63,8 +63,7 @@ export const parseDate = (date) => {
 
 export const parseRole = (role) => {
     if (role) {
-        const upper = role.replace(/^\w/, c => c.toUpperCase());
-        return upper;
+        return role.replace(/^\w/, c => c.toUpperCase());
     }
 }
 
