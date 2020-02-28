@@ -1,6 +1,7 @@
 import initialState from './initialState';
 import * as actions from "../actions/actionTypes"
 import {REQUEST_ALL} from "../actions/apiActions";
+import {setHours} from 'date-fns';
 
 export default function Calendar(state = initialState.CalendarData, { payload, type, }) {
     let newState = state;
@@ -58,6 +59,7 @@ export default function Calendar(state = initialState.CalendarData, { payload, t
 const getSessions = (state,{id,response}) => {
     const {data} = response;
     let {CourseSessions} = state;
+    console.log(data)
     if(id === REQUEST_ALL){
         data.forEach((session) => {
             CourseSessions = updateSessions(CourseSessions, session.instructor, session)

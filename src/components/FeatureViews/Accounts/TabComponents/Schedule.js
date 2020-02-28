@@ -1,47 +1,87 @@
-import React, {useEffect, useMemo} from "react";
+import * as hooks from "actions/hooks";
+import React, {useMemo} from "react";
 import FullCalendar from "@fullcalendar/react";
+import Loading from "components/Loading";
+import PropTypes from "prop-types";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import {useDispatch} from "react-redux";
-import {bindActionCreators} from "redux";
-import * as apiActions from "../../../../actions/apiActions";
-import * as userActions from "../../../../actions/userActions";
-import * as calendarActions from "../../../../actions/calendarActions";
+import {useSelector} from "react-redux";
 
-function Schedule(){
-    const dispatch = useDispatch();
-    const api = useMemo(
-        () => ({
-            ...bindActionCreators(apiActions, dispatch),
-            ...bindActionCreators(userActions, dispatch),
-            ...bindActionCreators(calendarActions, dispatch)
-        }),
-        [dispatch]
-    );
+const toHours = (ms) => ms / 1000 / 60 / 60;
 
-    useEffect(()=>{
-        calendarActions.fetchSession({
-            config: {
-                params: {
-                    time_frame: "week",
-                    view_option: "tutoring",
-                    time_shift: 0,
+const Schedule = ({instructorID}) => {
+    const sessions = useSelector(({Calendar}) => Calendar.CourseSessions);
+    const courses = useSelector(({Course}) => Course.NewCourseList);
+    const instructor = useSelector(({Users}) => Users.InstructorList[instructorID]);
+    const courseStatus = hooks.useCourse();
+    const availabilityStatus = hooks.useInstructorAvailability(instructorID);
+    const enrollmentStatus = hooks.useClassSessionsInPeriod("month");
+
+    const fullCalendarSessions = useMemo(() =>
+        Object.values(sessions[instructorID] || {})
+            .map((session) => ({
+                "end": new Date(session.end_datetime),
+                "start": new Date(session.start_datetime),
+                "title": courses[session.course]
+                    ? courses[session.course].title
+                    : "Loading...",
+            })), [courses, sessions, instructorID]);
+
+    const hoursWorked = useMemo(() =>
+        Object.values(sessions[instructorID] || [])
+            .reduce((hours, session) => {
+                const start = new Date(session.start_datetime);
+                const end = new Date(session.end_datetime);
+                if (start > Date.now()) {
+                    return hours;
+                } else if (end < Date.now()) {
+                    return hours + toHours(end - start);
                 }
-            }
-        });
-    },[api, calendarActions]);
+                return hours + toHours(end - Date.now());
+            }, 0),
+    [sessions, instructorID]);
 
-    return (<FullCalendar
-        allDaySlot={false}
-        columnHeaderFormat={{"weekday": "short"}}
-        defaultView="timeGridWeek"
-        // events={Object.values(work_hours)}
-        header={false}
-        height={337}
-        plugins={[timeGridPlugin]} />)
-}
+    const instructorBusinessHours = useMemo(() =>
+        instructor
+            ? Object.values(instructor.schedule.work_hours)
+                .map(({day, start, end}) => ({
+                    "daysOfWeek": [day],
+                    "endTime": end,
+                    "startTime": start,
+                }))
+            : [],
+    [instructor]);
 
-// Schedule.propTypes = {
-//     "work_hours": PropTypes.object.isRequired,
-// };
+    if (fullCalendarSessions.length === 0) {
+        if (hooks.isLoading(enrollmentStatus)) {
+            return <Loading />;
+        }
+
+        if (hooks.isFail(enrollmentStatus)) {
+            return "Unable to load schedule!";
+        }
+    }
+
+    return (
+        <>
+            <h1>{hoursWorked} hour(s) worked this month</h1>
+            <FullCalendar
+                allDaySlot={false}
+                businessHours={instructorBusinessHours}
+                columnHeaderFormat={{"weekday": "short"}}
+                defaultView="timeGridWeek"
+                events={fullCalendarSessions}
+                header={false}
+                height={337}
+                plugins={[timeGridPlugin]} />
+        </>
+    );
+};
+
+Schedule.propTypes = {
+    "instructorID": PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]).isRequired,
+};
 
 export default Schedule;
