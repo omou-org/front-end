@@ -1,6 +1,7 @@
 import * as hooks from "actions/hooks";
 import React, {useMemo} from "react";
 import FullCalendar from "@fullcalendar/react";
+import Loading from "components/Loading";
 import PropTypes from "prop-types";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import {useSelector} from "react-redux";
@@ -10,8 +11,10 @@ const toHours = (ms) => ms / 1000 / 60 / 60;
 const Schedule = ({instructorID}) => {
     const sessions = useSelector(({Calendar}) => Calendar.CourseSessions);
     const courses = useSelector(({Course}) => Course.NewCourseList);
+    const instructor = useSelector(({Users}) => Users.InstructorList[instructorID]);
     const courseStatus = hooks.useCourse();
-    const status = hooks.useClassSessionsInPeriod("month");
+    const availabilityStatus = hooks.useInstructorAvailability(instructorID);
+    const enrollmentStatus = hooks.useClassSessionsInPeriod("month");
 
     const fullCalendarSessions = useMemo(() =>
         Object.values(sessions[instructorID] || [])
@@ -37,8 +40,21 @@ const Schedule = ({instructorID}) => {
             }, 0),
     [sessions, instructorID]);
 
-    if (hooks.isFail(status)) {
-        return "ERR";
+    const businessHours = useMemo(() =>
+        Object.values(instructor.schedule.work_hours)
+            .map(({day, start, end}) => ({
+                "daysOfWeek": [day],
+                "endTime": end,
+                "startTime": start,
+            })),
+    [instructor.schedule.work_hours]);
+
+    if (hooks.isLoading(enrollmentStatus, courseStatus, availabilityStatus)) {
+        return <Loading />;
+    }
+
+    if (hooks.isFail(enrollmentStatus, courseStatus, availabilityStatus)) {
+        return "Unable to load schedule!";
     }
 
     return (
@@ -46,6 +62,7 @@ const Schedule = ({instructorID}) => {
             <h1>{hoursWorked} hour(s) worked this month</h1>
             <FullCalendar
                 allDaySlot={false}
+                businessHours={businessHours}
                 columnHeaderFormat={{"weekday": "short"}}
                 defaultView="timeGridWeek"
                 events={fullCalendarSessions}

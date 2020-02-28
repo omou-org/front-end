@@ -115,10 +115,10 @@ export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOn
                             "type": successType,
                         });
                         setStatus(response.reduce((finalStatus, {status}) =>
-                            isFail(status) ? status :
-                            isFail(finalStatus) ? finalStatus :
-                            isLoading(status) ? status :
-                            finalStatus, 200));
+                            isFail(status) ? status
+                                : isFail(finalStatus) ? finalStatus
+                                    : isLoading(status) ? status
+                                        : finalStatus, 200));
                     }
                 } catch (error) {
                     if (!aborted) {
@@ -186,9 +186,9 @@ export const usePaymentByParent = (parentID) => wrapUseEndpoint(
     "/payment/payment/",
     types.GET_PAYMENT_PARENT_SUCCESS,
     {
-        "params":{
+        "params": {
             "parent": parentID,
-        }
+        },
     }
 )(null);
 
@@ -196,9 +196,9 @@ export const usePaymentByEnrollment = (enrollmentID) => wrapUseEndpoint(
     "/payment/payment/",
     types.GET_PAYMENT_ENROLLMENT_SUCCESS,
     {
-        "params":{
+        "params": {
             "enrollment": enrollmentID,
-        }
+        },
     }
 );
 
@@ -210,6 +210,16 @@ export const useClassSessionsInPeriod = (time_frame, time_shift) => wrapUseEndpo
             time_frame,
             time_shift,
             "view_option": "class",
+        },
+    }
+)();
+
+export const useInstructorAvailability = (instructorID) => wrapUseEndpoint(
+    "/account/instructor-availability/",
+    types.FETCH_INSTRUCTOR_AVAILABILITY_SUCCESS,
+    {
+        "params": {
+            "instructor_id": instructorID,
         },
     }
 )();

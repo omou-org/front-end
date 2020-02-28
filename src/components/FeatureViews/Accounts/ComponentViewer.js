@@ -14,24 +14,15 @@ import StudentInfo from "./TabComponents/StudentInfo";
 
 const ComponentViewer = (props) => {
     let component;
-
     switch (props.inView) {
         case 0:
-            component = (
-                <Schedule
-                    instructorID={props.user.user_id}
-                    work_hours={props.user.schedule.work_hours} />
-            );
+            component = <Schedule instructorID={props.user.user_id} />;
             break;
         case 1:
-            component = (
-                <InstructorCourses instructorID={props.user.user_id} />
-            );
+            component = <InstructorCourses instructorID={props.user.user_id} />;
             break;
         case 2:
-            component = (
-                <Bio background={props.user.background} />
-            );
+            component = <Bio background={props.user.background} />;
             break;
         case 3:
             component = (
@@ -48,16 +39,10 @@ const ComponentViewer = (props) => {
             );
             break;
         case 5:
-            component = (
-                <PaymentHistory
-                    user_id={props.user.user_id} />
-            );
+            component = <PaymentHistory user_id={props.user.user_id} />;
             break;
         case 6:
-            component = (
-                <ParentContact
-                    parent_id={props.user.parent_id} />
-            );
+            component = <ParentContact parent_id={props.user.parent_id} />;
             break;
         case 7:
             component = (
@@ -67,14 +52,10 @@ const ComponentViewer = (props) => {
             );
             break;
         case 8:
-            component = (
-                <StudentInfo user={props.user} />
-            );
+            component = <StudentInfo user={props.user} />;
             break;
         case 9:
-            component = (
-                <PayCourses user={props.user} />
-            );
+            component = <PayCourses user={props.user} />;
             break;
         default:
             component = <Schedule />;
