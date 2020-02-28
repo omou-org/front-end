@@ -134,7 +134,7 @@ const CourseSessionStatus = () => {
         return () => {
             api.resetSchedulerStatus();
         }
-    }, [])
+    }, []);
 
     const sessionDataParse = useCallback(({ start_datetime, end_datetime, course, status, id, instructor }) => {
         const startDate = start_datetime && new Date(start_datetime);
@@ -495,7 +495,7 @@ const CourseSessionStatus = () => {
                 <DialogContent>
                     <DialogContentText>
                         {`
-                        You are currently registering ${registeringParent.user && registeringParent.user.name}. If you wish to continue to add sessions, you will
+                        You are currently registering ${(registeringParent && registeringParent !== "none") && registeringParent.user.name}. If you wish to continue to add sessions, you will
                         discard all of the currently registered courses with this parent.
                         `}
                     </DialogContentText>
