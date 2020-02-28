@@ -477,7 +477,6 @@ class Scheduler extends Component {
         const date = this.currentDate();
         if (event.target.value) {
             this.setState(() => {
-                // console.log(this.calendarViewToFilterVal[this.state.viewValue], this.viewOptions[event.target.value], this.state.timeShift);
                 this.props.calendarActions.fetchSession({
                     "config": {
                         "params": {

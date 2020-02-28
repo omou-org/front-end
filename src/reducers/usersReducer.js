@@ -21,6 +21,8 @@ export default function users(state = initialState.Users, {payload, type}) {
             return handleAccountSearchResults(state, payload);
         case actions.FETCH_OOO_SUCCESS:
             return handleOOOFetch(state, payload);
+        case actions.FETCH_INSTRUCTOR_AVAILABILITY_SUCCESS:
+            return handleAvailabilityFetch(state, payload);
         default:
             return state;
     }
@@ -33,13 +35,22 @@ const parseRelationship = {
     "OTHER": "Other",
 };
 
+const dayToNum = {
+    "sunday": 0,
+    "monday": 1,
+    "tuesday": 2,
+    "wednesday": 3,
+    "thursday": 4,
+    "friday": 5,
+    "saturday": 6,
+};
+
 const parseBirthday = (date) => {
     if (date !== null) {
         const [year, month, day] = date.split("-");
         return `${month}/${day}/${year}`;
-    } else {
-        return "01/01/2000";
     }
+    return "01/01/2000";
 };
 
 const handleAccountNotesPost = (state, {response, ...rest}) =>
@@ -97,8 +108,8 @@ const handleAccountNotesFetch = (state, {ownerID, ownerType, response}) => {
 };
 
 export const handleParentsFetch = (state, payload) => {
-    let response, id;
-    if(payload.id){
+    let id, response;
+    if (payload.id) {
         id = payload.id;
         response = payload.response;
     } else {
@@ -141,7 +152,6 @@ export const updateParent = (parents, id, parent) => ({
         "email": parent.user.email,
         "student_ids": parent.student_list,
         "updated_at": parent.updated_at,
-        // below is not from database
         "role": "parent",
         "notes": (parents[id] && parents[id].notes) || {},
     },
@@ -151,7 +161,7 @@ export const handleStudentsFetch = (state, payload) => {
     let data;
     let id;
     let response;
-    if(payload.id) {
+    if (payload.id) {
         id = payload.id;
         data = payload.response.data;
         response = payload.response;
@@ -182,8 +192,8 @@ export const handleStudentPost = (state, data) => {
     let {StudentList, ParentList} = state;
     StudentList = updateStudent(StudentList, data.user.id, data);
     // Add student to parent in state
-    if(ParentList[data.user.id]){
-        let currentStudent = StudentList[data.user.id];
+    if (ParentList[data.user.id]) {
+        const currentStudent = StudentList[data.user.id];
         ParentList[currentStudent.parent_id].student_ids.push(data.user.id);
     }
 
@@ -192,7 +202,7 @@ export const handleStudentPost = (state, data) => {
         StudentList,
         ParentList,
     };
-}
+};
 
 export const updateStudent = (students, id, student) => ({
     ...students,
@@ -245,6 +255,27 @@ const updateOOO = (instructors, {id, instructor, start_datetime, description, en
     return newInstructors;
 };
 
+const updateAvailability = (instructors, availability) => {
+    const newInstructors = JSON.parse(JSON.stringify(instructors));
+    const instructorID = availability.instructor;
+    if (!newInstructors[instructorID]) {
+        newInstructors[instructorID] = {
+            "schedule": {
+                "work_hours": {},
+            },
+        };
+    }
+    newInstructors[instructorID].schedule.work_hours = {
+        ...instructors[instructorID].schedule.work_hours,
+        [availability.id]: {
+            "day": dayToNum[availability.day_of_week],
+            "end": availability.end_time,
+            "start": availability.start_time,
+        },
+    };
+    return newInstructors;
+};
+
 
 export const handleOOOFetch = (state, {response}) => {
     const {data} = response;
@@ -254,7 +285,24 @@ export const handleOOOFetch = (state, {response}) => {
             InstructorList = updateOOO(InstructorList, OOO);
         });
     } else {
+
         InstructorList = updateOOO(InstructorList, data);
+    }
+    return {
+        ...state,
+        InstructorList,
+    };
+};
+
+export const handleAvailabilityFetch = (state, {response}) => {
+    const {data} = response;
+    let {InstructorList} = state;
+    if (Array.isArray(data)) {
+        data.forEach((availability) => {
+            InstructorList = updateAvailability(InstructorList, availability);
+        });
+    } else {
+        InstructorList = updateAvailability(InstructorList, data);
     }
     return {
         ...state,
@@ -281,63 +329,69 @@ export const handleInstructorsFetch = (state, {id, response}) => {
 
 
 export const updateInstructor = (instructors, id, instructor) => {
-    let {address, birth_date, city, gender, phone_number,
+    const {address, birth_date, city, gender, phone_number,
         state, user, user_uuid, zipcode,
-        biography, experience, subjects, language
-    } = instructor;
+        biography, experience, subjects, language} = instructor;
+    let newInstructor = instructors[id] || {};
+    const schedule = newInstructor.schedule || {};
+    newInstructor = {
+        "user_id": user.id,
+        "summit_id": user_uuid,
+        gender,
+        "birth_date": parseBirthday(birth_date),
+        address,
+        city,
+        phone_number,
+        state,
+        zipcode,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "name": `${user.first_name} ${user.last_name}`,
+        "email": user.email,
+        "updated_at": instructor.updated_at,
+        "role": "instructor",
+        "background": {
+            "bio": biography,
+            experience,
+            subjects,
+            "languages": language,
+        },
+        "schedule": {
+            "work_hours": schedule.work_hours || {},
+            "time_off": schedule.time_off || {},
+        },
+        "notes": newInstructor.notes || {},
+    };
     return {
         ...instructors,
-        [id]: {
-            ...instructors[id],
-            "user_id": user.id,
-            "summit_id": user_uuid,
-            "gender": gender,
-            "birth_date": parseBirthday(birth_date),
-            "address": address,
-            "city": city,
-            "phone_number": phone_number,
-            "state": state,
-            "zipcode": zipcode,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "name": `${user.first_name} ${user.last_name}`,
-            "email": user.email,
-            "updated_at": instructor.updated_at,
-            "role": "instructor",
-            "background": {
-                "bio": biography,
-                "experience": experience,
-                "subjects": subjects,
-                "languages": language,
-            },
-            "notes": (instructors[id] && instructors[id].notes) || {},
-        },
+        [id]: newInstructor,
     };
 };
 
 
 const handleAccountSearchResults = (state, {response}) => {
     let {StudentList, ParentList, InstructorList} = state;
-    let {data} = response;
-    data.results.forEach((account)=>{
-        switch(account.account_type){
-            case "STUDENT":{
+    const {data} = response;
+    data.results.forEach((account) => {
+        switch (account.account_type) {
+            case "STUDENT": {
                 StudentList = updateStudent(StudentList, account.user.id, account);
                 break;
             }
-            case "parent":{
+            case "parent": {
                 ParentList = updateParent(ParentList, account.user.id, account);
                 break;
             }
-            case "INSTRUCTOR":{
+            case "INSTRUCTOR": {
                 InstructorList = updateInstructor(InstructorList, account.user.id, account);
             }
+            // no default
         }
     });
     return {
         ...state,
-        StudentList,
-        ParentList,
         InstructorList,
+        ParentList,
+        StudentList,
     };
-}
+};

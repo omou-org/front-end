@@ -11,7 +11,6 @@ export default function admin(state = initialState.Admin, { payload, type, }) {
         case actions.PATCH_PRICE_RULE_SUCCESS:
             return updatePriceRule(newState, payload, "POST");
         case actions.POST_PRICE_RULE_FAILED:
-            console.log("Failed posting price rule");
             return {...newState};
         case actions.POST_DISCOUNT_PAYMENT_METHOD_SUCCESS:
             return updateDiscount(newState, payload, "POST", "PaymentMethod");

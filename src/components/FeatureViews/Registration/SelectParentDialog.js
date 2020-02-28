@@ -34,7 +34,6 @@ class SelectParentDialog extends React.Component {
     }
 
     handleClose = () => {
-        console.log(this.props)
         // if there's something in the input
         if(this.state.inputParent.value !== ""){
             let idStartIndex = this.state.inputParent.value.indexOf("-")+1;
