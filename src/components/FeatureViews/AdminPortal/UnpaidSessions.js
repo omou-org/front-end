@@ -7,7 +7,7 @@ import Loading from "components/Loading";
 import * as adminActions from "../../../actions/adminActions";
 import initialState from '../../../reducers/initialState';
 import { useEffect } from 'react';
-import DisplayUnpaid from './DisplayUnpaid';
+import UnpaidSessionCard from './UnpaidSessionCard';
 
 function UnpaidSessions () {
     const dispatch = useDispatch();
@@ -33,12 +33,11 @@ const checkUnpaid = (x) => {
     else {
         console.log('x exists')
         return x.map(up=>(
-            DisplayUnpaid(up)
+            UnpaidSessionCard(up)
         ))
         
     }
 }
-
 
 return (
     <div>

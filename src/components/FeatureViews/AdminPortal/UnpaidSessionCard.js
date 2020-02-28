@@ -49,7 +49,7 @@ import {roleColor, initials, parseDate, capitalizeRoleName, statusColor} from ".
         "borderRadius": "50%",
     })
 
-    const displayUnpaid = (unpaid) => {
+    const UnpaidSessionCard = (unpaid) => {
         return(
         <Card style = {cardStyle}> 
                     <CardActionArea>
@@ -82,4 +82,4 @@ import {roleColor, initials, parseDate, capitalizeRoleName, statusColor} from ".
         )
     }
 
-export default displayUnpaid;
+export default UnpaidSessionCard;
