@@ -17,7 +17,7 @@ const Schedule = ({instructorID}) => {
     const enrollmentStatus = hooks.useClassSessionsInPeriod("month");
 
     const fullCalendarSessions = useMemo(() =>
-        Object.values(sessions[instructorID] || [])
+        Object.values(sessions[instructorID] || {})
             .map((session) => ({
                 "end": new Date(session.end_datetime),
                 "start": new Date(session.start_datetime),
@@ -41,20 +41,24 @@ const Schedule = ({instructorID}) => {
     [sessions, instructorID]);
 
     const businessHours = useMemo(() =>
-        Object.values(instructor.schedule.work_hours)
-            .map(({day, start, end}) => ({
-                "daysOfWeek": [day],
-                "endTime": end,
-                "startTime": start,
-            })),
-    [instructor.schedule.work_hours]);
+        instructor
+            ? Object.values(instructor.schedule.work_hours)
+                .map(({day, start, end}) => ({
+                    "daysOfWeek": [day],
+                    "endTime": end,
+                    "startTime": start,
+                }))
+            : [],
+    [instructor]);
 
-    if (hooks.isLoading(enrollmentStatus, courseStatus, availabilityStatus)) {
-        return <Loading />;
-    }
+    if (fullCalendarSessions.length === 0) {
+        if (hooks.isLoading(enrollmentStatus)) {
+            return <Loading />;
+        }
 
-    if (hooks.isFail(enrollmentStatus, courseStatus, availabilityStatus)) {
-        return "Unable to load schedule!";
+        if (hooks.isFail(enrollmentStatus)) {
+            return "Unable to load schedule!";
+        }
     }
 
     return (
