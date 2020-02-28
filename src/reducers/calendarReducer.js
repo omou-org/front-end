@@ -46,10 +46,8 @@ export default function Calendar(state = initialState.CalendarData, { payload, t
                 CourseSessions: {},
             };
         case actions.GET_SESSIONS_SUCCESS:
-            // console.log("Succeeded", payload)
             return getSessions(state, payload);
         case actions.GET_SESSIONS_FAILED:
-            // console.log("failed to get sessions", payload);
             return newState;
         default:
             return newState;
@@ -59,7 +57,6 @@ export default function Calendar(state = initialState.CalendarData, { payload, t
 const getSessions = (state,{id,response}) => {
     const {data} = response;
     let {CourseSessions} = state;
-    console.log(data)
     if(id === REQUEST_ALL){
         data.forEach((session) => {
             CourseSessions = updateSessions(CourseSessions, session.instructor, session)

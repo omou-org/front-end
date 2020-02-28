@@ -12,8 +12,8 @@ const Schedule = ({instructorID}) => {
     const sessions = useSelector(({Calendar}) => Calendar.CourseSessions);
     const courses = useSelector(({Course}) => Course.NewCourseList);
     const instructor = useSelector(({Users}) => Users.InstructorList[instructorID]);
-    const courseStatus = hooks.useCourse();
-    const availabilityStatus = hooks.useInstructorAvailability(instructorID);
+    hooks.useCourse();
+    hooks.useInstructorAvailability(instructorID);
     const enrollmentStatus = hooks.useClassSessionsInPeriod("month");
 
     const fullCalendarSessions = useMemo(() =>
@@ -63,7 +63,9 @@ const Schedule = ({instructorID}) => {
 
     return (
         <>
-            <h1>{hoursWorked} hour(s) worked this month</h1>
+            <h3 style={{"float": "left"}}>
+                {hoursWorked} hour(s) worked this month
+            </h3>
             <FullCalendar
                 allDaySlot={false}
                 businessHours={instructorBusinessHours}
