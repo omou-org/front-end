@@ -310,20 +310,20 @@ export const addCourse = (course) => wrapPost(
     course,
 );
 
-export const deleteEnrollment = (courseID, studentID, enrollmentID) => async (dispatch) => {
+export const deleteEnrollment = ({enrollment_id, course_id, student_id}) => async (dispatch) => {
     dispatch({
         type: types.DELETE_ENROLLMENT_STARTED,
         payload:{},
     });
     try {
         const unenrollResponse = await instance.delete(
-            `/course/enrollment/${enrollmentID}/`,
+            `/course/enrollment/${enrollment_id}/`,
         );
         dispatch({
             type: types.DELETE_ENROLLMENT_SUCCESS,
             payload:{
-                courseID: courseID,
-                studentID: studentID,
+                courseID: course_id,
+                studentID: student_id,
                 response:unenrollResponse,
             },
         });

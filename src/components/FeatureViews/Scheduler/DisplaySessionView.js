@@ -114,14 +114,14 @@ function DisplaySessionView({ course, session, handleToggleEditing }) {
        setUnenroll(true);
     };
 
+    // We only support unenrollment from session view for tutoring courses
     const closeUnenrollDialog = (toUnenroll) => event => {
         event.preventDefault();
         setUnenroll(false);
         if(toUnenroll){
-            const courseID = course.course_id,
-                studentID = course.roster[0],
-                enrollmentID = enrollments[course.roster[0]][course.course_id].enrollment_id;
-            api.deleteEnrollment(courseID, studentID, enrollmentID);
+            // We assume course is tutoring course thus we're getting the first studentID
+            const enrollment = enrollments[course.roster[0]][course.course_id];
+            api.deleteEnrollment(enrollment);
         }
     };
 

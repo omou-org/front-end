@@ -270,7 +270,7 @@ const CourseSessionStatus = () => {
         event.preventDefault();
         setUnenrollWarningOpen(false);
         if(toUnenroll){
-            api.deleteEnrollment(courseID, studentID, enrollment.enrollment_id);
+            api.deleteEnrollment(enrollment);
             history.push(`/accounts/student/${studentID}`);
         }
     };
@@ -495,7 +495,7 @@ const CourseSessionStatus = () => {
                 <DialogContent>
                     <DialogContentText>
                         {`
-                        You are currently registering ${registeringParent && registeringParent.user.name}. If you wish to continue to add sessions, you will
+                        You are currently registering ${registeringParent.user && registeringParent.user.name}. If you wish to continue to add sessions, you will
                         discard all of the currently registered courses with this parent.
                         `}
                     </DialogContentText>

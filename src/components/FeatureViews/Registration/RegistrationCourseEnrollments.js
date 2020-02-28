@@ -50,9 +50,7 @@ const TableToolbar = (
 const RegistrationCourseEnrollments = ({courseID}) => {
     const dispatch = useDispatch();
     const api = useMemo(
-        () => ({
-            ...bindActionCreators(registrationActions, dispatch),
-        }),
+        () => bindActionCreators(registrationActions, dispatch),
         [dispatch]
     );
 
@@ -65,8 +63,6 @@ const RegistrationCourseEnrollments = ({courseID}) => {
     const [studentMenuAnchorEl, setStudentMenuAnchorEl] = useState(null);
     const [unenroll, setUnenroll] = useState({
         open: false,
-        student: null,
-        course: null,
         enrollment: null,
     });
 
@@ -120,24 +116,20 @@ const RegistrationCourseEnrollments = ({courseID}) => {
         setStudentMenuAnchorEl(null);
     };
 
-    const handleUnenroll = (studentID, courseID, enrollment) => event => {
+    const handleUnenroll = (enrollment) => event => {
         event.preventDefault();
         setUnenroll({
             open: true,
-            student: studentID,
-            course: courseID,
-            enrollment: enrollment.enrollment_id,
+            enrollment: enrollment,
         });
     };
     const closeUnenrollDialog = (toUnenroll) => event => {
         event.preventDefault();
         if(toUnenroll){
-            api.deleteEnrollment(Number(courseID), unenroll.student, unenroll.enrollment);
+            api.deleteEnrollment(unenroll.enrollment);
         }
         setUnenroll({
             open: false,
-            student: null,
-            course: null,
             enrollment: null,
         });
         setStudentMenuAnchorEl(null);
