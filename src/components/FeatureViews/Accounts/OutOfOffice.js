@@ -90,18 +90,61 @@ const OutOfOffice = ({onClose, instructorID, open}) => {
                     <Grid
                         item
                         md={3}>
-                        <DateChooser
-                            allDay={allDay}
+                        <div className="select">
+                            * Select OOO Start Date
+                        </div>
+                        <DatePicker
+                            animateYearScrolling
+                            format="MM/dd/yyyy"
                             label="Start Date"
+                            margin="normal"
+                            onChange={setStart}
+                            openTo="day"
+                            value={start}
+                            views={["year", "month", "date"]} />
+                    </Grid>
+                    <Grid
+                        item
+                        md={3}>
+                        <div className="select">
+                            * Select OOO End Date
+                        </div>
+                        <DatePicker
+                            animateYearScrolling
+                            format="MM/dd/yyyy"
+                            label="End Date"
+                            margin="normal"
+                            onChange={setEnd}
+                            openTo="day"
+                            value={end}
+                            views={["year", "month", "date"]} />
+                    </Grid>
+                    <Grid
+                        item
+                        md={6} />
+                    <Grid
+                        item
+                        md={3}>
+                        <div className="select">
+                            * Select OOO Start Time
+                        </div>
+                        <TimePicker
+                            autoOk
+                            disabled={allDay}
+                            label="Start Time"
                             value={start}
                             onChange={setStart} />
                     </Grid>
                     <Grid
                         item
                         md={3}>
-                        <DateChooser
-                            allDay={allDay}
-                            label="End Date"
+                        <div className="select">
+                            * Select OOO End Time
+                        </div>
+                        <TimePicker
+                            autoOk
+                            disabled={allDay}
+                            label="End Time"
                             value={end}
                             onChange={setEnd} />
                     </Grid>

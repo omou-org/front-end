@@ -16,9 +16,11 @@ export default function users(state = initialState.Users, {payload, type}) {
         case actions.PATCH_ACCOUNT_NOTE_SUCCESSFUL:
             return handleAccountNotesPost(state, payload);
         case actions.POST_STUDENT_SUCCESSFUL:
-            return handleStudentPost(state,payload);
+            return handleStudentPost(state, payload);
         case actions.GET_ACCOUNT_SEARCH_QUERY_SUCCESS:
-            return handleAccountSearchResults(state,payload);
+            return handleAccountSearchResults(state, payload);
+        case actions.FETCH_OOO_SUCCESS:
+            return handleOOOFetch(state, payload);
         default:
             return state;
     }
@@ -220,6 +222,46 @@ export const updateStudent = (students, id, student) => ({
     },
 });
 
+const updateOOO = (instructors, {id, instructor, start_datetime, description, end_datetime}) => {
+    const newInstructors = JSON.parse(JSON.stringify(instructors));
+    if (!newInstructors[instructor]) {
+        newInstructors[instructor] = {
+            "schedule": {
+                "time_off": {},
+                "work_hours": {},
+            },
+        };
+    }
+    newInstructors[instructor].schedule.time_off = {
+        ...newInstructors[instructor].schedule.time_off,
+        [id]: {
+            description,
+            "end": end_datetime,
+            "instructor_id": instructor,
+            "ooo_id": id,
+            "start": start_datetime,
+        },
+    };
+    return newInstructors;
+};
+
+
+export const handleOOOFetch = (state, {response}) => {
+    const {data} = response;
+    let {InstructorList} = state;
+    if (Array.isArray(data)) {
+        data.forEach((OOO) => {
+            InstructorList = updateOOO(InstructorList, OOO);
+        });
+    } else {
+        InstructorList = updateOOO(InstructorList, data);
+    }
+    return {
+        ...state,
+        InstructorList,
+    };
+};
+
 export const handleInstructorsFetch = (state, {id, response}) => {
     const {data} = response;
     let {InstructorList} = state;
@@ -246,6 +288,7 @@ export const updateInstructor = (instructors, id, instructor) => {
     return {
         ...instructors,
         [id]: {
+            ...instructors[id],
             "user_id": user.id,
             "summit_id": user_uuid,
             "gender": gender,
@@ -266,53 +309,6 @@ export const updateInstructor = (instructors, id, instructor) => {
                 "experience": experience,
                 "subjects": subjects,
                 "languages": language,
-            },
-            // below is not from database
-            "schedule": {
-                "work_hours": {
-                    "1": {
-                        "start": "T17:00",
-                        "end": "T20:00",
-                        "title": "",
-                    },
-                    "2": {
-                        "start": "T17:00",
-                        "end": "T20:00",
-                        "title": "",
-                    },
-                    "3": {
-                        "start": "T18:00",
-                        "end": "T20:00",
-                        "title": "",
-                    },
-                    "4": {
-                        "start": "T00:00",
-                        "end": "T00:00",
-                        "title": "",
-                    },
-                    "5": {
-                        "start": "T16:00",
-                        "end": "T21:00",
-                        "title": "",
-                    },
-                    "6": {
-                        "start": "T09:00",
-                        "end": "T12:00",
-                        "title": "",
-                    },
-                },
-                "time_off": {
-                    "1": {
-                        "start": "2020-01-14T00:00",
-                        "end": "2020-01-21T00:00",
-                        "title": "Daniel Time Off",
-                    },
-                    "2": {
-                        "start": "2020-03-22T00:00",
-                        "end": "2020-03-22T00:00",
-                        "title": "Daniel Time Off",
-                    },
-                },
             },
             "notes": (instructors[id] && instructors[id].notes) || {},
         },

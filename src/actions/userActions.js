@@ -231,3 +231,14 @@ export const patchEnrollmentNote = (id, data, enrollmentID, studentID, courseID)
         }
     )(id, data, "enrollment", enrollmentID);
 };
+
+export const fetchOutOfOffice = () =>
+    wrapGet(
+        "/account/instructor-out-of-office/",
+        [
+            types.FETCH_OOO_STARTED,
+            types.FETCH_OOO_SUCCESS,
+            types.FETCH_OOO_FAILED,
+        ],
+        {}
+    );
