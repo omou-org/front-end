@@ -70,10 +70,11 @@ import {roleColor, initials, parseDate, capitalizeRoleName, statusColor} from ".
                             {capitalizeRoleName(unpaid.status)}
                         </Typography>
                         <Typography style={{textAlign: "center"}}>
-                            Payment Status: <span style={statusStyle(unpaid.paymentStatus)}>{unpaid.paymentStatus}</span>
-                            <br></br>
+                            Payment Status: 
+                            <span style={statusStyle(unpaid.paymentStatus)}>{unpaid.paymentStatus}</span>
+                            <br/>
                             {unpaid.amt}
-                            <br></br>
+                            <br/>
                             {unpaid.course}
                         </Typography>
                         </CardContent>
