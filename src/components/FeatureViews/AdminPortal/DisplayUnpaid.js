@@ -44,15 +44,12 @@ import {roleColor, initials, parseDate, capitalizeRoleName, statusColor} from ".
         "height": 10,
         "width": 10,
         "lineHeight": 1,
-        // "lineHeight": "auto", 
         "margin": "auto",
         "padding": 10,
         "borderRadius": "50%",
-        // "alignContent": "center"
     })
 
     const displayUnpaid = (unpaid) => {
-        console.log(unpaid)
         return(
         <Card style = {cardStyle}> 
                     <CardActionArea>
