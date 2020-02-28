@@ -25,7 +25,7 @@ export default function enrollment(state = initialState.Enrollments, {payload, t
 
 const handleEnrollment = (state, payload, requestType) => {
     let data;
-    if(payload.response){
+    if(payload.response && !payload.courseID){
         data = payload.response.data
     } else {
         data = payload;

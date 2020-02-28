@@ -324,6 +324,7 @@ export const deleteEnrollment = (courseID, studentID, enrollmentID) => async (di
             payload:{
                 courseID: courseID,
                 studentID: studentID,
+                response:unenrollResponse,
             },
         });
     } catch (error) {

@@ -30,6 +30,7 @@ import DialogContentText from "@material-ui/core/es/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
+import {NoListAlert} from "../../NoListAlert";
 
 const TableToolbar = (
     <TableHead>
@@ -100,7 +101,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
 
     // no students enrolled
     if (course.roster.length === 0) {
-        return "No students enrolled";
+        return <NoListAlert list={"Enrolled Students"}/>;
     }
 
     if (loadedStudents.length === 0) {
@@ -127,18 +128,23 @@ const RegistrationCourseEnrollments = ({courseID}) => {
             course: courseID,
             enrollment: enrollment.enrollment_id,
         });
-        console.log(studentID, courseID, enrollment.enrollment_id);
     };
     const closeUnenrollDialog = (toUnenroll) => event => {
         event.preventDefault();
         if(toUnenroll){
-            api.deleteEnrollment(courseID, unenroll.student, unenroll.course);
+            api.deleteEnrollment(Number(courseID), unenroll.student, unenroll.enrollment);
         }
-        setUnenroll(false);
+        setUnenroll({
+            open: false,
+            student: null,
+            course: null,
+            enrollment: null,
+        });
+        setStudentMenuAnchorEl(null);
     };
 
     return (
-        <div>
+        <>
             <div className="course-status">
                 <div className="status">
                     <div className="text">
@@ -321,7 +327,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </div>
+        </>
     );
 };
 
