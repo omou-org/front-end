@@ -245,6 +245,11 @@
   &.Unpaid {
     background-color: $badStatusColor;
   }
+
+  &.NA {
+    background-color: $neutralStatusColor;
+  }
+
 }
 
 .course-session-status {

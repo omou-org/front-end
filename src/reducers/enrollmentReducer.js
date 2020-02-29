@@ -35,7 +35,7 @@ const handleEnrollment = (state, payload, requestType) => {
         case "GET":{
             data.forEach(({student, course, id, payment_list, enrollment_balance, sessions_left, last_paid_session_datetime }) => {
                 let newStudentData = newState[student] || {};
-                let newCourseData = newStudentData[course] || {
+                let newCourseData = {
                     "enrollment_id": id,
                     "course_id": course,
                     "student_id": student,

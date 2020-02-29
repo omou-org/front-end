@@ -181,10 +181,18 @@ const CourseSessionStatus = () => {
         statusKey = (session) => {
             const session_date = new Date(session.start_datetime),
                 last_session = new Date(enrollment.last_paid_session_datetime);
-            if(session_date <= last_session && Number.isInteger(enrollment.sessions_left)){
+
+            const sessionIsBeforeLastPaidSession = session_date <= last_session;
+            const sessionIsLastPaidSession = session_date == last_session;
+            const thereIsPartiallyPaidSession = !Number.isInteger(enrollment.sessions_left);
+            const classSessionNotBeforeFirstPayment = course.course_type == "class" && session_date >= new Date(enrollment.payment_list[0].created_at);
+
+            if( sessionIsBeforeLastPaidSession && !thereIsPartiallyPaidSession && classSessionNotBeforeFirstPayment){
                 return "Paid";
-            } else if (session_date == last_session && !Number.isInteger(enrollment.sessions_left)){
+            } else if ( sessionIsLastPaidSession && thereIsPartiallyPaidSession && thereIsPartiallyPaidSession){
                 return "Partial";
+            } else if (!classSessionNotBeforeFirstPayment) {
+                return "NA"
             } else {
                 return "Unpaid";
             }
@@ -237,14 +245,14 @@ const CourseSessionStatus = () => {
     const initRegisterMoreSessions = event => {
         event.preventDefault();
         // check if registering parent is the current student's parent
-        if (registeringParent && registeringParent.user.id !== parentOfCurrentStudent) {
+        if ((registeringParent && registeringParent !== "none") && registeringParent.user.id !== parentOfCurrentStudent) {
             // if not, warn user they're about to discard everything with the current registering parent
             setDiscardParentWarning(true);
-        } else if (registeringParent && registeringParent.user.id === parentOfCurrentStudent) {
+        } else if ((registeringParent && registeringParent !== "none") && registeringParent.user.id === parentOfCurrentStudent) {
             //registering parent is the same as the current student's parent
             api.addCourseRegistration(courseToRegister);
             history.push("/registration/cart/");
-        } else if (!registeringParent) {
+        } else if (!registeringParent || registeringParent === "none") {
             api.setParentAddCourseRegistration(parentOfCurrentStudent, courseToRegister);
             history.push("/registration/cart/");
         }
