@@ -31,6 +31,7 @@ import PaymentTable from "./PaymentTable";
 import {NoListAlert} from "../../../NoListAlert";
 import {GET} from "../../../../actions/actionTypes";
 import {SessionPaymentStatusChip} from "../../../SessionPaymentStatusChip";
+import {AddSessions} from "../../../../utils";
 
 export const DayConverter = {
     "0": "Sunday",
@@ -108,8 +109,6 @@ const CourseSessionStatus = () => {
         api.fetchEnrollmentNotes(enrollment.enrollment_id, studentID, courseID);
     }, [api, enrollment.enrollment_id, studentID, courseID]);
 
-    const registeringParent = useSelector(({ Registration }) => Registration.CurrentParent);
-    const [discardParentWarning, setDiscardParentWarning] = useState(false);
     const [unenrollWarningOpen, setUnenrollWarningOpen] = useState(false);
 
     const noteInfo = useMemo(() => ({
@@ -188,66 +187,9 @@ const CourseSessionStatus = () => {
 
     let parentOfCurrentStudent = usersList.StudentList[studentID].parent_id;
 
-    const courseToRegister = {
-        "Enrollment": enrollment.enrollment_id,
-        "Course Selection": {
-            "Course": {
-                label: course.title,
-                value: Number(course.course_id),
-            },
-        },
-        "Course Selection_validated": {
-            "Course": true,
-        },
-        "Student": {
-            "Student": {
-                label: usersList.StudentList[studentID].name,
-                value: studentID,
-            }
-        },
-        "Student_validated": {
-            "Student": true,
-        },
-        "Student Information": {},
-        "activeSection": "Student",
-        "activeStep": 0,
-        "conditional": "",
-        "existingUser": false,
-        "form": course.course_type,
-        "hasLoaded": true,
-        "preLoaded": false,
-        "submitPending": false,
-    };
-
-    const initRegisterMoreSessions = event => {
-        event.preventDefault();
-        // check if registering parent is the current student's parent
-        if ((registeringParent && registeringParent !== "none") && registeringParent.user.id !== parentOfCurrentStudent) {
-            // if not, warn user they're about to discard everything with the current registering parent
-            setDiscardParentWarning(true);
-        } else if ((registeringParent && registeringParent !== "none") && registeringParent.user.id === parentOfCurrentStudent) {
-            //registering parent is the same as the current student's parent
-            api.addCourseRegistration(courseToRegister);
-            history.push("/registration/cart/");
-        } else if (!registeringParent || registeringParent === "none") {
-            api.setParentAddCourseRegistration(parentOfCurrentStudent, courseToRegister);
-            history.push("/registration/cart/");
-        }
-    };
-
     const handleUnenroll = event => {
         event.preventDefault();
         setUnenrollWarningOpen(true);
-    };
-
-    const closeDiscardParentWarning = (toContinue) => event => {
-        event.preventDefault();
-        setDiscardParentWarning(false);
-        if (toContinue) {
-            api.setParentAddCourseRegistration(parentOfCurrentStudent, courseToRegister);
-            history.push("/registration/cart/");
-        }
-
     };
 
     const closeUnenrollDialog = (toUnenroll) => event => {
@@ -426,12 +368,11 @@ const CourseSessionStatus = () => {
                           alignItems={"top"}
                           justify={"flex-start"}>
                         <Grid item>
-                            <Button
-                                onClick={initRegisterMoreSessions}
-                                className={"button add-sessions"}
-                            >
-                                Add Sessions
-                            </Button>
+                            <AddSessions
+                                componentOption="button"
+                                parentOfCurrentStudent={parentOfCurrentStudent}
+                                enrollment={enrollment}
+                            />
                             <Button
                                 onClick={handleUnenroll}
                                 className={"button"}
@@ -467,35 +408,6 @@ const CourseSessionStatus = () => {
                 <br />
                 {renderMain()}
             </Grid>
-            <Dialog
-                open={discardParentWarning}
-                onClose={closeDiscardParentWarning(false)}
-                aria-labelledby="warn-discard-parent"
-            >
-                <DialogTitle id="warn-discard-parent">
-                    {"Finished registering parent?"}
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        {`
-                        You are currently registering ${(registeringParent && registeringParent !== "none") && registeringParent.user.name}. If you wish to continue to add sessions, you will
-                        discard all of the currently registered courses with this parent.
-                        `}
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        color={"secondary"}
-                        onClick={closeDiscardParentWarning(true)}>
-                        Continue & Add Session
-                    </Button>
-                    <Button
-                        color={"primary"}
-                        onClick={closeDiscardParentWarning(false)}>
-                        Cancel
-                    </Button>
-                </DialogActions>
-            </Dialog>
             <Dialog
                 open={unenrollWarningOpen}
                 onClose={closeUnenrollDialog(false)}

@@ -6,7 +6,7 @@ import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import * as userActions from "../../../actions/userActions.js"
 import {useDispatch, useSelector} from "react-redux";
-import {Tooltip, Typography} from "@material-ui/core";
+import {Tooltip, Typography, withStyles} from "@material-ui/core";
 import {NavLink, useParams} from "react-router-dom";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import * as apiActions from "../../../actions/apiActions";
@@ -30,6 +30,29 @@ import DialogContentText from "@material-ui/core/es/DialogContentText";
 
 import InstructorSchedule from "../Accounts/TabComponents/Schedule";
 import {SessionPaymentStatusChip} from "../../SessionPaymentStatusChip";
+import {AddSessions} from "../../../utils";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+
+const StyledMenu = withStyles({
+    paper: {
+        border: "1px solid #d3d4d5",
+    },
+})((props) => (
+    <Menu
+        elevation={0}
+        getContentAnchorEl={null}
+        anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center",
+        }}
+        transformOrigin={{
+            vertical: "top",
+            horizontal: "center",
+        }}
+        {...props}
+    />
+));
 
 const styles = (username) => ({
     "backgroundColor": stringToColor(username),
@@ -62,6 +85,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
     const [edit, setEdit] = useState(false);
     const [unenroll, setUnenroll] = useState(false);
     const [editSelection, setEditSelection] = useState(EDIT_CURRENT_SESSION);
+    const [tutoringActionsAnchor, setTutoringActionsAnchor] = useState(null);
 
     useEffect(() => {
         api.initializeRegistration();
@@ -96,6 +120,13 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
     const instructor = instructors[instructor_id] || {"name": "N/A"};
     const studentKeys = Object.keys(enrolledStudents);
 
+    const handleTutoringMenuClick = (event) => {
+        setTutoringActionsAnchor(event.currentTarget);
+    };
+    const closeTutoringMenu = () => {
+        setTutoringActionsAnchor(null);
+    };
+
     const handleEditToggle = (cancel) => (event) => {
         event.preventDefault();
         if (!cancel && edit) {
@@ -112,7 +143,8 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
 
     const handleUnenroll = event => {
         event.preventDefault();
-       setUnenroll(true);
+        setTutoringActionsAnchor(null);
+        setUnenroll(true);
     };
 
     // We only support unenrollment from session view for tutoring courses
@@ -126,7 +158,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
         }
     };
 
-    if (!course || !categories || Object.entries(enrollments).length === 0 && enrollments.constructor === Object) {
+    if (!course || !categories || (Object.entries(enrollments).length === 0 && enrollments.constructor === Object)) {
         return <Loading />;
     }
 
@@ -284,20 +316,33 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                 direction="row"
                 justify="flex-end">
                 <Grid item>
-                    <Button
-                        className="button"
-                        color="secondary"
-                        variant="outlined">
-                        Add Sessions
-                    </Button>
                     {
-                        studentKeys.length == 1 && <Button
-                            onClick={handleUnenroll}
-                            className={"button"}
-                            color="secondary"
-                            variant="outlined">
-                            Unenroll Course
-                        </Button>
+                        studentKeys.length == 1 && <>
+                            <Button
+                                className="button"
+                                onClick={handleTutoringMenuClick}
+                            >
+                                Tutoring Options
+                            </Button>
+                            <StyledMenu
+                                anchorEl={tutoringActionsAnchor}
+                                keepMounted
+                                open={Boolean(tutoringActionsAnchor)}
+                                onClose={closeTutoringMenu}
+                            >
+                                <AddSessions
+                                    componentOption="menuItem"
+                                    parentOfCurrentStudent={students[course.roster[0]].parent_id}
+                                    enrollment={enrollments[course.roster[0]][course.course_id]}
+                                />
+                                <MenuItem
+                                    onClick={handleUnenroll}
+                                    color="secondary"
+                                    variant="outlined">
+                                    Unenroll Course
+                                </MenuItem>
+                            </StyledMenu>
+                        </>
                     }
                 </Grid>
             <Grid item>
@@ -406,8 +451,4 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
     </>);
 };
 
-DisplaySessionView.propTypes = {
-    // courseTitle: PropTypes.string,
-    // admin: PropTypes.bool,
-};
 export default DisplaySessionView;
