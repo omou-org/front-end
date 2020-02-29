@@ -1,4 +1,4 @@
-import { DayConverter } from "./components/FeatureViews/Accounts/TabComponents/CourseSessionStatus";
+import {DayConverter} from "./components/FeatureViews/Accounts/TabComponents/CourseSessionStatus";
 
 const timeOptions = {
     "hour": "2-digit",
@@ -15,7 +15,7 @@ const dateOptions = {
 export const dateFormatter = (date) => {
     return new Date(date.replace(/-/g, '\/'))
         .toDateString().substr(3);
-}
+};
 
 export const courseDateFormat = (course) => {
     let start_date = dateFormatter(course.schedule.start_date),
@@ -34,5 +34,25 @@ export const courseDateFormat = (course) => {
         "days": days,
         "is_confirmed": course.is_confirmed,
     };
+};
+
+export const sessionPaymentStatus = (session, enrollment) => {
+    const session_date = new Date(session.start_datetime),
+        last_session = new Date(enrollment.last_paid_session_datetime);
+
+    const sessionIsBeforeLastPaidSession = session_date <= last_session;
+    const sessionIsLastPaidSession = session_date == last_session;
+    const thereIsPartiallyPaidSession = !Number.isInteger(enrollment.sessions_left);
+    const classSessionNotBeforeFirstPayment = session_date >= new Date(enrollment.payment_list[0].created_at);
+
+    if( sessionIsBeforeLastPaidSession && !thereIsPartiallyPaidSession && classSessionNotBeforeFirstPayment){
+        return "Paid";
+    } else if ( sessionIsLastPaidSession && thereIsPartiallyPaidSession && thereIsPartiallyPaidSession){
+        return "Partial";
+    } else if (!classSessionNotBeforeFirstPayment ) {
+        return "NA"
+    } else {
+        return "Unpaid";
+    }
 };
 

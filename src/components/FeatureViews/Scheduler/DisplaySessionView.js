@@ -29,6 +29,7 @@ import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 import DialogContentText from "@material-ui/core/es/DialogContentText";
 
 import InstructorSchedule from "../Accounts/TabComponents/Schedule";
+import {SessionPaymentStatusChip} from "../../SessionPaymentStatusChip";
 
 const styles = (username) => ({
     "backgroundColor": stringToColor(username),
@@ -125,7 +126,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
         }
     };
 
-    if (!course || !categories) {
+    if (!course || !categories || Object.entries(enrollments).length === 0 && enrollments.constructor === Object) {
         return <Loading />;
     }
 
@@ -133,6 +134,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
     const day = sessionStart.getDate() !== new Date().getDate()
         ? session.start - 1 >= 0 ? session.start - 1 : 6
         : session.start;
+
     return (
         <>
             <Grid
@@ -149,6 +151,19 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                         variant="h3">
                         {course && course.title}
                     </Typography>
+                </Grid>
+                <Grid item sm={12}>
+                    <Grid container>
+                        <Grid item xs={2} className="course-session-status">
+                            {
+                                course.course_type == "tutoring"  &&
+                                    <SessionPaymentStatusChip
+                                        enrollment={enrollments[Object.keys(enrollments)[0]][course.course_id]}
+                                        session={session}
+                                    />
+                            }
+                        </Grid>
+                    </Grid>
                 </Grid>
                 <Grid
                     align="left"

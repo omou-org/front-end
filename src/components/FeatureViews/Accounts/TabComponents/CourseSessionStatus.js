@@ -30,6 +30,7 @@ import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import PaymentTable from "./PaymentTable";
 import {NoListAlert} from "../../../NoListAlert";
 import {GET} from "../../../../actions/actionTypes";
+import {SessionPaymentStatusChip} from "../../../SessionPaymentStatusChip";
 
 export const DayConverter = {
     "0": "Sunday",
@@ -176,38 +177,14 @@ const CourseSessionStatus = () => {
         }, []);
 
     const calendarSessions = courseSessions ? courseSessionsArray
-        .filter(session => session.course === Number(courseID)) : [],
-        paymentSessionStatus = enrollment.session_payment_status,
-        statusKey = (session) => {
-            const session_date = new Date(session.start_datetime),
-                last_session = new Date(enrollment.last_paid_session_datetime);
-
-            const sessionIsBeforeLastPaidSession = session_date <= last_session;
-            const sessionIsLastPaidSession = session_date == last_session;
-            const thereIsPartiallyPaidSession = !Number.isInteger(enrollment.sessions_left);
-            const classSessionNotBeforeFirstPayment = course.course_type == "class" && session_date >= new Date(enrollment.payment_list[0].created_at);
-
-            if( sessionIsBeforeLastPaidSession && !thereIsPartiallyPaidSession && classSessionNotBeforeFirstPayment){
-                return "Paid";
-            } else if ( sessionIsLastPaidSession && thereIsPartiallyPaidSession && thereIsPartiallyPaidSession){
-                return "Partial";
-            } else if (!classSessionNotBeforeFirstPayment) {
-                return "NA"
-            } else {
-                return "Unpaid";
-            }
-
-        };
+        .filter(session => session.course === Number(courseID)) : [];
 
     const handleTabChange = (_, newTab) => {
         setActiveTab(newTab);
     };
 
     const sessions = courseSessions
-        && calendarSessions.map((session) => ({
-            ...session,
-            "status": statusKey(session),
-        }));
+        && calendarSessions.map((session) => session);
 
     let parentOfCurrentStudent = usersList.StudentList[studentID].parent_id;
 
@@ -330,7 +307,6 @@ const CourseSessionStatus = () => {
                                     const { day, date, startTime, endTime, status, tuition, id, course_id, instructor } =
                                         sessionDataParse(session);
 
-
                                     return (
                                         <Grid
                                             className="accounts-table-row"
@@ -340,7 +316,7 @@ const CourseSessionStatus = () => {
                                             to={course.course_type === "tutoring" ? `/scheduler/view-session/${course_id}/${id}/${instructor}` : `/registration/course/${course_id}`}
                                             component={Link}
                                         >
-                                            <Paper square>
+                                            <Paper square className="session-info">
                                                 <Grid container>
                                                     <Grid
                                                         item
@@ -377,9 +353,10 @@ const CourseSessionStatus = () => {
                                                     <Grid
                                                         item
                                                         xs={2}>
-                                                        <div className={`sessions-left-chip ${status}`}>
-                                                            {status}
-                                                        </div>
+                                                        <SessionPaymentStatusChip
+                                                            enrollment={enrollment}
+                                                            session={session}
+                                                            />
                                                     </Grid>
                                                 </Grid>
                                             </Paper>
