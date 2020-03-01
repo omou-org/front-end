@@ -13,10 +13,25 @@ import Dialog from "@material-ui/core/es/Dialog";
 import MenuItem from "@material-ui/core/MenuItem";
 import PropTypes from 'prop-types';
 
-const timeOptions = {
+export const timeFormat = {
+    "hour12": false,
     "hour": "2-digit",
     "minute": "2-digit",
-    "hour12": true,
+};
+
+export const dateFormat = {
+    "year": "numeric",
+    "month": "2-digit",
+    "day": "2-digit",
+};
+
+export const dateTimeFormat = {
+    "year": "numeric",
+    "month": "2-digit",
+    "day": "2-digit",
+    "hour12": false,
+    "hour": "2-digit",
+    "minute": "2-digit",
 };
 
 const dateOptions = {
@@ -34,9 +49,9 @@ export const courseDateFormat = (course) => {
     let start_date = dateFormatter(course.schedule.start_date),
         end_date = dateFormatter(course.schedule.end_date),
         start_time = new Date("2020-01-01" + course.schedule.start_time)
-            .toLocaleTimeString('eng-US', timeOptions),
+            .toLocaleTimeString('eng-US', timeFormat),
         end_time = new Date("2020-01-01" + course.schedule.end_time)
-            .toLocaleTimeString('eng-US', timeOptions),
+            .toLocaleTimeString('eng-US', timeFormat),
         days = DayConverter[new Date(course.schedule.start_date).getDay()];
 
     return {
