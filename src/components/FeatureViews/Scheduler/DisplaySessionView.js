@@ -2,12 +2,14 @@ import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
+import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
+import * as userActions from "../../../actions/userActions.js"
 import {useDispatch, useSelector} from "react-redux";
-import Typography from "@material-ui/core/Typography";
-import Tooltip from "@material-ui/core/Tooltip";
+import {Tooltip, Typography} from "@material-ui/core";
 import {NavLink, useParams} from "react-router-dom";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import * as apiActions from "../../../actions/apiActions";
 import Button from "@material-ui/core/Button";
 import Loading from "../../Loading";
 import Avatar from "@material-ui/core/Avatar";
@@ -24,6 +26,7 @@ import * as hooks from "actions/hooks";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
 import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
+import DialogContentText from "@material-ui/core/es/DialogContentText";
 
 import InstructorSchedule from "../Accounts/TabComponents/Schedule";
 
@@ -38,7 +41,16 @@ const styles = (username) => ({
 
 const DisplaySessionView = ({course, session, handleToggleEditing}) => {
     const dispatch = useDispatch();
-    const {instructor_id} = useParams();
+    const api = useMemo(
+        () => ({
+            ...bindActionCreators(apiActions, dispatch),
+            ...bindActionCreators(userActions, dispatch),
+            ...bindActionCreators(registrationActions, dispatch),
+        }),
+        [dispatch]
+    );
+
+    const { instructor_id } = useParams();
 
     const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
     const categories = useSelector(({"Course": {CourseCategories}}) => CourseCategories);
@@ -47,13 +59,15 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
 
     const [enrolledStudents, setEnrolledStudents] = useState(false);
     const [edit, setEdit] = useState(false);
+    const [unenroll, setUnenroll] = useState(false);
     const [editSelection, setEditSelection] = useState(EDIT_CURRENT_SESSION);
 
     useEffect(() => {
-        dispatch(registrationActions.initializeRegistration());
-    }, [dispatch]);
+        api.initializeRegistration();
+    }, [api]);
 
     const enrollmentStatus = hooks.useEnrollmentByCourse(course.course_id);
+    const enrollments = useSelector(({ Enrollments }) => Enrollments);
     const reduxCourse = courses[course.course_id];
     const studentStatus = reduxCourse.roster.length > 0 && hooks.useStudent(reduxCourse.roster);
 
@@ -93,6 +107,22 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
 
     const handleEditSelection = (event) => {
         setEditSelection(event.target.value);
+    };
+
+    const handleUnenroll = event => {
+        event.preventDefault();
+       setUnenroll(true);
+    };
+
+    // We only support unenrollment from session view for tutoring courses
+    const closeUnenrollDialog = (toUnenroll) => event => {
+        event.preventDefault();
+        setUnenroll(false);
+        if(toUnenroll){
+            // We assume course is tutoring course thus we're getting the first studentID
+            const enrollment = enrollments[course.roster[0]][course.course_id];
+            api.deleteEnrollment(enrollment);
+        }
     };
 
     if (!course || !categories) {
@@ -245,81 +275,124 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                         variant="outlined">
                         Add Sessions
                     </Button>
+                    {
+                        studentKeys.length == 1 && <Button
+                            onClick={handleUnenroll}
+                            className={"button"}
+                            color="secondary"
+                            variant="outlined">
+                            Unenroll Course
+                        </Button>
+                    }
                 </Grid>
-                <Grid item>
-                    <Button
-                        className="button"
-                        color="secondary"
-                        onClick={handleEditToggle(true)}
-                        to="/"
-                        variant="outlined">
-                        Edit Session
-                    </Button>
-                </Grid>
-                <Grid item>
-                    <Button
-                        className="button"
-                        color="secondary"
-                        component={NavLink}
-                        to={`/registration/course/${course.course_id}`}
-                        variant="outlined">
-                        Course Page
-                    </Button>
-                </Grid>
-                <Grid item>
-                    <Button
-                        className="button"
-                        color="secondary"
-                        component={NavLink}
-                        to="/scheduler"
-                        variant="outlined">
-                        Return to scheduling
-                    </Button>
-                </Grid>
-
+            <Grid item>
+                <Button
+                    className="button"
+                    color="secondary"
+                    to="/"
+                    onClick={handleEditToggle(true)}
+                    variant="outlined">
+                    Edit Session
+                </Button>
             </Grid>
-            <Dialog
-                aria-describedby="alert-dialog-description"
-                aria-labelledby="alert-dialog-title"
-                className="session-view-modal"
-                fullWidth
-                maxWidth="xs"
-                onClose={handleEditToggle(true)}
-                open={edit}>
-                <DialogTitle id="form-dialog-title">Edit Session</DialogTitle>
-                <Divider />
-                <DialogContent>
-                    <RadioGroup
-                        aria-label="delete"
-                        name="delete"
-                        onChange={handleEditSelection}
-                        value={editSelection}>
-                        <FormControlLabel
-                            control={<Radio color="primary" />}
-                            label="This Session"
-                            labelPlacement="end"
-                            value={EDIT_CURRENT_SESSION} />
-                        <FormControlLabel
-                            control={<Radio color="primary" />}
-                            label="All Sessions"
-                            labelPlacement="end"
-                            value={EDIT_ALL_SESSIONS} />
-                    </RadioGroup>
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        color="primary"
-                        onClick={handleEditToggle(true)}>
-                        Cancel
-                    </Button>
-                    <Button
-                        color="primary"
-                        onClick={handleEditToggle(false)}>
-                        Confirm to Edit
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </>
-    );
+            <Grid item>
+                <Button
+                    className="button"
+                    color="secondary"
+                    component={NavLink}
+                    to={`/registration/course/${course.course_id}`}
+                    variant="outlined">
+                    Course Page
+                </Button>
+            </Grid>
+            <Grid item>
+                <Button
+                    className="button"
+                    color="secondary"
+                    component={NavLink}
+                    to="/scheduler"
+                    variant="outlined">
+                    Return to scheduling
+                </Button>
+            </Grid>
+        </Grid>
+        <Dialog
+            aria-describedby="form-dialog-description"
+            aria-labelledby="form-dialog-title"
+            className="session-view-modal"
+            fullWidth
+            maxWidth="xs"
+            onClose={handleEditToggle(true)}
+            open={edit}>
+            <DialogTitle id="form-dialog-title">Edit Session</DialogTitle>
+            <Divider />
+            <DialogContent>
+                <RadioGroup
+                    aria-label="delete"
+                    name="delete"
+                    value={editSelection}
+                    onChange={handleEditSelection}>
+                    <FormControlLabel
+                        control={<Radio color="primary" />}
+                        label="This Session"
+                        labelPlacement="end"
+                        value={EDIT_CURRENT_SESSION} />
+                    <FormControlLabel
+                        control={<Radio color="primary" />}
+                        label="All Sessions"
+                        labelPlacement="end"
+                        value={EDIT_ALL_SESSIONS} />
+                </RadioGroup>
+            </DialogContent>
+            <DialogActions>
+                <Button
+                    color="primary"
+                    onClick={handleEditToggle(true)}>
+                    Cancel
+                </Button>
+                <Button
+                    color="primary"
+                    onClick={handleEditToggle(false)}>
+                    Confirm to Edit
+                </Button>
+            </DialogActions>
+        </Dialog>
+
+        <Dialog
+            aria-describedby="unenroll-dialog-description"
+            aria-labelledby="unenroll-dialog-title"
+            className="session-view-modal"
+            fullWidth
+            maxWidth="xs"
+            onClose={closeUnenrollDialog(false)}
+            open={unenroll}>
+            <DialogTitle id="unenroll-dialog-title">Unenroll in {course.title}</DialogTitle>
+            <Divider />
+            <DialogContent>
+                <DialogContentText>
+                    You are about to unenroll in <b>{course.title}</b> for <b>{ enrolledStudents && enrolledStudents[studentKeys[0]].name}</b>.
+                    Performing this action will credit the remaining enrollment balance back to the parent's account balance.
+                    Are you sure you want to unenroll?
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button
+                    color="secondary"
+                    onClick={closeUnenrollDialog(true)}>
+                    Yes, unenroll
+                </Button>
+                <Button
+                    color="primary"
+                    onClick={closeUnenrollDialog(false)}>
+                    Cancel
+                </Button>
+            </DialogActions>
+        </Dialog>
+    </>);
+};
+
+DisplaySessionView.propTypes = {
+    // courseTitle: PropTypes.string,
+    // admin: PropTypes.bool,
 };
 export default DisplaySessionView;
