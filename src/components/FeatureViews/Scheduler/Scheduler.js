@@ -191,13 +191,20 @@ class Scheduler extends Component {
             OOOlist = OOOlist.map(({schedule}) => schedule.time_off);
             OOOlist.forEach((iList) => {
                 allInstructorSchedules = allInstructorSchedules.concat(
-                    Object.values(iList).map(({start, end, description, instructor_id}) => {
+                    Object.values(iList).map(({start, end, description, instructor_id, all_day}) => {
                         const instructor = instructors[instructor_id];
                         const title = description || (instructor
                             ? `${instructor.name} Out of Office`
                             : "Out of Office");
+                        const endDate = new Date(end);
+                        // since the end date for allDay events is EXCLUSIVE
+                        // must add one day to include the end specified by user
+                        if (all_day) {
+                            endDate.setDate(endDate.getDate() + 1);
+                        }
                         return {
-                            end,
+                            "allDay": all_day,
+                            "end": endDate,
                             start,
                             title,
                         };
@@ -537,11 +544,13 @@ class Scheduler extends Component {
         }));
 
     // go to session view
-    goToSessionView = (e) => {
-        const sessionID = e.event.id;
-        const {courseID} = e.event.extendedProps;
-        const instructorID = e.event.extendedProps.instructor_id;
-        this.props.history.push(`/scheduler/view-session/${courseID}/${sessionID}/${instructorID}`);
+    goToSessionView = ({event}) => {
+        const sessionID = event.id;
+        const {courseID, instructor_id} = event.extendedProps;
+        // dont redirect for OOO clicks
+        if (sessionID && courseID && instructor_id) {
+            this.props.history.push(`/scheduler/view-session/${courseID}/${sessionID}/${instructor_id}`);
+        }
     };
 
     onInstructorSelect = (event) => {

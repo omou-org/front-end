@@ -31,15 +31,15 @@ const InstructorSchedule = ({instructorID}) => {
     const OOO = useMemo(() => instructor
         ? Object.values(instructor.schedule.time_off)
             .map(({all_day, description, start, end}) => {
-                const dayAfterEnd = new Date(end);
+                const endDate = new Date(end);
                 // since the end date for allDay events is EXCLUSIVE
                 // must add one day to include the end specified by user
                 if (all_day) {
-                    dayAfterEnd.setDate(dayAfterEnd.getDate() + 1);
+                    endDate.setDate(endDate.getDate() + 1);
                 }
                 return {
                     "allDay": all_day,
-                    "end": dayAfterEnd,
+                    "end": endDate,
                     start,
                     "title": description || "Out of Office",
                 };
