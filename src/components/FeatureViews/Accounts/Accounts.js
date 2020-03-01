@@ -138,6 +138,15 @@ class Accounts extends Component {
         });
     };
 
+    handleCardClick = (event) => {
+        this.setState(
+            { "viewToggle": false },
+            () => {
+                sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
+            }
+        );
+    }
+
     render() {
         const userList = this.getUsers();
         const styles = (username) => ({
@@ -355,14 +364,7 @@ class Accounts extends Component {
                                         List View
                                     </Button>
                                     <Button className={`btn card ${this.state.viewToggle ? "" : "active"}`}
-                                        onClick={(event) => {
-                                            this.setState(
-                                                { "viewToggle": false },
-                                                () => {
-                                                    sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
-                                                }
-                                            );
-                                        }} >
+                                        onClick={this.handleCardClick} >
                                         <CardView className={`icon ${this.state.viewToggle ? "" : "active"}`} />
                                         Card View
                                     </Button>

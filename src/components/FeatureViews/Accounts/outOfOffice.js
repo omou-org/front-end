@@ -60,8 +60,10 @@ function OutOfOffice(props) {
                         </Select>
                     </Grid>
                     <Grid item md={3}>
-                        <div className="select">
-                            * Select OOO End Date
+                        <div 
+                        required={true}
+                        className="select">
+                             Select OOO End Date
                             </div>
                         <Select
                             labelId="demo-simple-select-label"
