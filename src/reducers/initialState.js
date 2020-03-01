@@ -783,7 +783,7 @@ function initRegistrationForm() {
                     {
                         field: "Email",
                         name: "Email",
-                        type: "short text",
+                        type: "email",
                         conditional: false,
                         required: true,
                         full: true,
@@ -792,7 +792,7 @@ function initRegistrationForm() {
                     {
                         field: "Password",
                         name: "Password",
-                        type: "short text",
+                        type: "password",
                         conditional: false,
                         required: true,
                         full: true,
@@ -819,19 +819,10 @@ function initRegistrationForm() {
                 ],
                 "User Information": [
                     {
-                        field: "UUID",
-                        name: "UUID",
-                        type: "short text",
-                        conditional: false,
-                        required: true,
-                        full: true,
-                        field_limit: 1,
-                    },
-                    {
                         field: "Admin Type",
                         name: "Admin Type",
                         type: "select",
-                        options: ["owner, receptionist, assistant"],
+                        options: ["Owner", "Receptionist", "Assistant"],
                         required: true,
                         full: true,
                         field_limit: 1,
