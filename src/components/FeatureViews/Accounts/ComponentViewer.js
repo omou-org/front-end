@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React from "react";
+import React, {useEffect, useState} from "react";
 
 import Bio from "./TabComponents/Bio";
 import Grid from "@material-ui/core/Grid";
@@ -13,7 +13,14 @@ import StudentCourseViewer from "./TabComponents/StudentCourseViewer";
 import StudentInfo from "./TabComponents/StudentInfo";
 
 const ComponentViewer = (props) => {
+    const [onTransition, setOnTransition] = useState(false);
+
+    useEffect(()=>{
+        setOnTransition(true);
+
+    },[props]);
     let component;
+
     switch (props.inView) {
         case 0:
             component = <Schedule instructorID={props.user.user_id} />;
@@ -67,7 +74,7 @@ const ComponentViewer = (props) => {
                 item
                 style={{"paddingTop": "15px"}}
                 xs={12}>
-                {component}
+                    {component}
             </Grid>
         </Grid>
     );
