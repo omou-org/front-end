@@ -242,14 +242,19 @@ const updateOOO = (instructors, {id, instructor, start_datetime, description, en
             },
         };
     }
+
+    const end = new Date(end_datetime),
+        start = new Date(start_datetime);
     newInstructors[instructor].schedule.time_off = {
         ...newInstructors[instructor].schedule.time_off,
         [id]: {
+            "all_day": start.getHours() === end.getHours() &&
+                start.getMinutes() === end.getMinutes(),
             description,
-            "end": end_datetime,
+            end,
             "instructor_id": instructor,
             "ooo_id": id,
-            "start": start_datetime,
+            start,
         },
     };
     return newInstructors;
