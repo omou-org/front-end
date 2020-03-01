@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, {useEffect, useState} from "react";
+import React from "react";
 
 import Bio from "./TabComponents/Bio";
 import Grid from "@material-ui/core/Grid";
@@ -13,12 +13,6 @@ import StudentCourseViewer from "./TabComponents/StudentCourseViewer";
 import StudentInfo from "./TabComponents/StudentInfo";
 
 const ComponentViewer = (props) => {
-    const [onTransition, setOnTransition] = useState(false);
-
-    useEffect(()=>{
-        setOnTransition(true);
-
-    },[props]);
     let component;
 
     switch (props.inView) {
