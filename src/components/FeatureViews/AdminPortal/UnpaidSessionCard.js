@@ -49,33 +49,33 @@ import {roleColor, initials, parseDate, capitalizeRoleName, statusColor} from ".
         "borderRadius": "50%",
     })
 
-    const UnpaidSessionCard = (unpaid) => {
+    const UnpaidSessionCard = ({unpaidStudent}) => {
         return(
         <Card style = {cardStyle}> 
                     <CardActionArea>
                         <CardMedia>
                             <Grid container style={{justifyContent:"center"}}>
                                 <Avatar   
-                                        style={styles(unpaid.fName + " " + unpaid.lName)}
+                                        style={styles(unpaidStudent.fName + " " + unpaidStudent.lName)}
                                         >
-                                            {initials(unpaid.fName, unpaid.lName)}
+                                            {initials(unpaidStudent.fName, unpaidStudent.lName)}
                                 </Avatar>
                             </Grid>
                         </CardMedia>
                         <CardContent>
                         <Typography style ={{fontSize: "16px", fontWeight: 500, lineHeight: "24px", textAlign: "center"}}>
-                            {unpaid.fName + " " + unpaid.lName}
+                            {unpaidStudent.fName + " " + unpaidStudent.lName}
                         </Typography>
-                        <Typography style={roleStyle(unpaid.status)} >
-                            {capitalizeRoleName(unpaid.status)}
+                        <Typography style={roleStyle(unpaidStudent.status)} >
+                            {capitalizeRoleName(unpaidStudent.status)}
                         </Typography>
                         <Typography style={{textAlign: "center"}}>
                             Payment Status: 
-                            <span style={statusStyle(unpaid.paymentStatus)}>{unpaid.paymentStatus}</span>
+                            <span style={statusStyle(unpaidStudent.paymentStatus)}>{unpaidStudent.paymentStatus}</span>
                             <br/>
-                            {unpaid.amt}
+                            {unpaidStudent.amt}
                             <br/>
-                            {unpaid.course}
+                            {unpaidStudent.course}
                         </Typography>
                         </CardContent>
                     </CardActionArea>

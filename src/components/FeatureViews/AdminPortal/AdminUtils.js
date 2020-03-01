@@ -67,11 +67,11 @@ export const capitalizeRoleName = (role) => {
     }
 }
 
-export const parseStudent = (count) => {
-    if (count === 1) {
-        return `${count} student`;
+export const parseStudent = (numStudents) => {
+    if (numStudents === 1) {
+        return `${numStudents} student`;
     } else {
-        return `${count} students`;
+        return `${numStudents} students`;
     }
 }
 

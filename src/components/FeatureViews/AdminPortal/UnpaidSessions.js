@@ -9,12 +9,9 @@ import UnpaidSessionCard from './UnpaidSessionCard';
 function UnpaidSessions () {
     const dispatch = useDispatch();
     const api = useMemo(
-        () => ({
-            ...bindActionCreators(adminActions, dispatch),
-        }),
+        () => bindActionCreators(adminActions, dispatch),
         [dispatch]
     );
-
 
     const UnpaidList = useSelector(({Admin}) => Admin.Unpaid.students);
 
@@ -22,25 +19,13 @@ function UnpaidSessions () {
         api.fetchUnpaid();
     },[]);
 
-const checkUnpaid = (UnpaidList) => {
     if (!UnpaidList){
         return <Loading/>
     }
 
-    else {
-        return UnpaidList.map(up=>(
-            UnpaidSessionCard(up)
+    return UnpaidList.map(unpaidStudent=>(
+            <UnpaidSessionCard unpaidStudent={unpaidStudent}/>
         ))
-        
-    }
-}
-
-return (
-    <>
-        {checkUnpaid(UnpaidList)}
-    </>
-)
-    
 }
 
 export default UnpaidSessions;
