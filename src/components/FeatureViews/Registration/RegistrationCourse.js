@@ -104,7 +104,7 @@ const RegistrationCourse = () => {
     const instructor = instructors[course && course.instructor_id];
 
     const {start_date, end_date, start_time, end_time, days} = courseDateFormat(course);
-    console.log(end_date, course.schedule.end_date)
+
     return (
         <Grid
             className="registrationCourse"
