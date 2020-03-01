@@ -1,4 +1,4 @@
-import {DayConverter} from "./components/FeatureViews/Accounts/TabComponents/CourseSessionStatus";
+import {DayConverter} from "./components/FeatureViews/Accounts/TabComponents/EnrollmentView";
 import {useDispatch, useSelector} from "react-redux";
 import React, {useMemo, useState} from "react";
 import {useHistory} from "react-router-dom";

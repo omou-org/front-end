@@ -261,6 +261,7 @@
   }
 
   .participants{
+    margin-top: 10px;
     margin-bottom:30px;
   }
 
@@ -308,7 +309,7 @@
 }
 
 .session-actions{
-  height:100px;
+  height:80px;
   .button {
     &.add-sessions{
       background-color: $primaryColor;
@@ -318,6 +319,11 @@
       padding-right: 2.3em !important;
       font-weight:600;
       margin-right:0;
+    }
+    &.unenroll{
+      background-color: $badActionColor;
+      color:white;
+      border: none !important;
     }
   }
 }

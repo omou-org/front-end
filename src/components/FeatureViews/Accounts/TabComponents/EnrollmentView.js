@@ -339,7 +339,6 @@ const CourseSessionStatus = () => {
                     <hr />
                 </Grid>
                 <Grid
-                    className="participants"
                     item
                     xs={12}>
                     <Typography
@@ -348,38 +347,49 @@ const CourseSessionStatus = () => {
                         variant="h3">
                         {course.title}
                     </Typography>
-                    <Typography align="left">
-                        Student: {" "}
-                        <Link to={`/accounts/student/${studentID}`}>
-                            {usersList.StudentList[studentID].name}
-                        </Link>
-                    </Typography>
-                    <Typography align="left">
-                        Instructor: {" "}
-                        <Link to={`/accounts/instructor/${course.instructor_id}`}>
-                            {usersList.InstructorList[course.instructor_id].name}
-                        </Link>
-                    </Typography>
                 </Grid>
                 <Grid item md={12} >
                     <Grid container
                           className={"session-actions"}
                           direction={"row"}
-                          alignItems={"top"}
-                          justify={"flex-start"}>
+                          alignItems={"center"}
+                          justify={"flex-start"}
+                          spacing={16}
+                    >
                         <Grid item>
                             <AddSessions
                                 componentOption="button"
                                 parentOfCurrentStudent={parentOfCurrentStudent}
                                 enrollment={enrollment}
                             />
+                        </Grid>
+                        <Grid item>
                             <Button
                                 onClick={handleUnenroll}
-                                className={"button"}
+                                className={"button unenroll"}
                             >
                                 Unenroll Course
                             </Button>
                         </Grid>
+                    </Grid>
+                    <Grid item xs={12}
+                          className="participants"
+                    >
+                        <Typography align="left">
+                            Student: {" "}
+                            <Link to={`/accounts/student/${studentID}`}>
+                                {usersList.StudentList[studentID].name}
+                            </Link>
+                        </Typography>
+                        <Typography align="left">
+                            Instructor: {" "}
+                            <Link to={`/accounts/instructor/${course.instructor_id}`}>
+                                {usersList.InstructorList[course.instructor_id].name}
+                            </Link>
+                        </Typography>
+                        <Typography align="left">
+                            Enrollment Balance Left: ${enrollment.balance}
+                        </Typography>
                     </Grid>
                 </Grid>
                 <Tabs

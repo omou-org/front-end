@@ -7,7 +7,7 @@ import * as registrationActions from "../../actions/registrationActions";
 import React, {useMemo} from "react";
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
-import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
+import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/EnrollmentView";
 // import Dashboard from "../FeatureViews/Dashboard/Dashboard";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
