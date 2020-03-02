@@ -162,6 +162,11 @@ export const useEnrollment = wrapUseEndpoint(
     types.FETCH_ENROLLMENT_SUCCESSFUL,
 );
 
+export const useOutOfOffice = wrapUseEndpoint(
+    "/account/instructor-out-of-office/",
+    types.FETCH_OOO_SUCCESS,
+);
+
 export const useEnrollmentByCourse = (courseID) => wrapUseEndpoint(
     "/course/enrollment/",
     types.FETCH_ENROLLMENT_SUCCESSFUL,
@@ -210,6 +215,18 @@ export const useClassSessionsInPeriod = (time_frame, time_shift) => wrapUseEndpo
             time_frame,
             time_shift,
             "view_option": "class",
+        },
+    }
+)();
+
+export const useTutoringSessionsInPeriod = (time_frame, time_shift) => wrapUseEndpoint(
+    "/scheduler/session/",
+    types.GET_SESSIONS_SUCCESS,
+    {
+        "params": {
+            time_frame,
+            time_shift,
+            "view_option": "tutoring",
         },
     }
 )();

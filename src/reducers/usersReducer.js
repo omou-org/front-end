@@ -19,6 +19,9 @@ export default function users(state = initialState.Users, {payload, type}) {
             return handleStudentPost(state, payload);
         case actions.GET_ACCOUNT_SEARCH_QUERY_SUCCESS:
             return handleAccountSearchResults(state, payload);
+        case actions.POST_OOO_SUCCESS:
+        case actions.FETCH_OOO_SUCCESS:
+            return handleOOOFetch(state, payload);
         case actions.FETCH_INSTRUCTOR_AVAILABILITY_SUCCESS:
             return handleAvailabilityFetch(state, payload);
         default:
@@ -230,6 +233,34 @@ export const updateStudent = (students, id, student) => ({
     },
 });
 
+const updateOOO = (instructors, {id, instructor, start_datetime, description, end_datetime}) => {
+    const newInstructors = JSON.parse(JSON.stringify(instructors));
+    if (!newInstructors[instructor]) {
+        newInstructors[instructor] = {
+            "schedule": {
+                "time_off": {},
+                "work_hours": {},
+            },
+        };
+    }
+
+    const end = new Date(end_datetime),
+        start = new Date(start_datetime);
+    newInstructors[instructor].schedule.time_off = {
+        ...newInstructors[instructor].schedule.time_off,
+        [id]: {
+            "all_day": start.getHours() === end.getHours() &&
+                start.getMinutes() === end.getMinutes(),
+            description,
+            end,
+            "instructor_id": instructor,
+            "ooo_id": id,
+            start,
+        },
+    };
+    return newInstructors;
+};
+
 const updateAvailability = (instructors, availability) => {
     const newInstructors = JSON.parse(JSON.stringify(instructors));
     const instructorID = availability.instructor;
@@ -249,6 +280,24 @@ const updateAvailability = (instructors, availability) => {
         },
     };
     return newInstructors;
+};
+
+
+export const handleOOOFetch = (state, {response}) => {
+    const {data} = response;
+    let {InstructorList} = state;
+    if (Array.isArray(data)) {
+        data.forEach((OOO) => {
+            InstructorList = updateOOO(InstructorList, OOO);
+        });
+    } else {
+
+        InstructorList = updateOOO(InstructorList, data);
+    }
+    return {
+        ...state,
+        InstructorList,
+    };
 };
 
 export const handleAvailabilityFetch = (state, {response}) => {
