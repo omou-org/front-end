@@ -8,7 +8,7 @@ import Notes from "../Notes/Notes";
 import ParentContact from "./TabComponents/ParentContact";
 import PayCourses from "./TabComponents/PayCourses";
 import PaymentHistory from "./TabComponents/PaymentHistory";
-import Schedule from "./TabComponents/Schedule.js";
+import InstructorSchedule from "./TabComponents/InstructorSchedule";
 import StudentCourseViewer from "./TabComponents/StudentCourseViewer";
 import StudentInfo from "./TabComponents/StudentInfo";
 
@@ -16,7 +16,7 @@ const ComponentViewer = (props) => {
     let component;
     switch (props.inView) {
         case 0:
-            component = <Schedule instructorID={props.user.user_id} />;
+            component = <InstructorSchedule instructorID={props.user.user_id} />;
             break;
         case 1:
             component = <InstructorCourses instructorID={props.user.user_id} />;
@@ -58,7 +58,7 @@ const ComponentViewer = (props) => {
             component = <PayCourses user={props.user} />;
             break;
         default:
-            component = <Schedule />;
+            component = <InstructorSchedule />;
     }
 
     return (
@@ -87,9 +87,6 @@ ComponentViewer.propTypes = {
             "receptionist",
             "student",
         ]).isRequired,
-        "schedule": PropTypes.shape({
-            "work_hours": PropTypes.object,
-        }),
         "user_id": PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.number,

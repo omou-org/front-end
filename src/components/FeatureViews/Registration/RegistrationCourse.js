@@ -27,10 +27,9 @@ import "./registration.scss";
 import {Link, Redirect, useRouteMatch} from "react-router-dom";
 import {stringToColor} from "components/FeatureViews/Accounts/accountUtils";
 import Loading from "../../Loading";
-import {DayConverter} from "../Accounts/TabComponents/CourseSessionStatus";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel"
-import {courseDateFormat} from "../../../utils";
+import {courseDateFormat, DayConverter} from "../../../utils";
 
 const formatDate = (date) => {
     if (!date) {
