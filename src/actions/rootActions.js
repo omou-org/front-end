@@ -6,7 +6,7 @@ const typeToEndpoint = {
     "parent": "/account/parent/",
     "instructor": "/account/instructor/",
     "course": "/course/catalog/",
-    "admin": "/account/admin",
+    "admin": "/account/admin/",
 };
 
 const typeToFetchActions = {

@@ -512,22 +512,26 @@ class Form extends Component {
                     if (!oldState.submitPending) {
                         if (this.props.match.params.edit === "edit") {
                             this.props.registrationActions.submitForm(this.state, this.props.match.params.id);
-                        } else if (this.state.form === "small_group") {
-                            if (this.state["Group Type"]["Select Group Type"] === "New Small Group") {
-                                this.props.apiActions.submitNewSmallGroup(this.state);
-                            } else {
-                                this.props.registrationActions.submitForm(this.state);
-                            }
                         } else {
-                            if (this.state.form === "pricing") {
-                                this.props.adminActions.setPrice(this.state);
-                            } else if (this.state.form === "discount") {
-                                let discountType = this.state["Discount Description"]["Discount Type"];
-                                let discountPayload = utils.createDiscountPayload(this.state, discountType);
-                                this.props.adminActions.setDiscount(discountType, discountPayload);
-                            } else {
-                                console.log(this.state)
-                                this.props.registrationActions.submitForm(this.state);
+                            switch (this.state.form) {
+                                case "small_group":
+                                    if (this.state["Group Type"]["Select Group Type"] === "New Small Group") {
+                                        this.props.apiActions.submitNewSmallGroup(this.state);
+                                    } else {
+                                        this.props.registrationActions.submitForm(this.state);
+                                    }
+                                    break;
+                                case "pricing":
+                                    this.props.adminActions.setPrice(this.state);
+                                    break;
+                                case "discount":
+                                    let discountType = this.state["Discount Description"]["Discount Type"];
+                                    let discountPayload = utils.createDiscountPayload(this.state, discountType);
+                                    this.props.adminActions.setDiscount(discountType, discountPayload);
+                                    break;
+                                default:
+                                    console.log(this.state)
+                                    this.props.registrationActions.submitForm(this.state);
                             }
                         }
                     }
