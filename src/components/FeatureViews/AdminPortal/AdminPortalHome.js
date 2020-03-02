@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState, Container} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
@@ -17,10 +17,7 @@ import {GET} from "../../../actions/actionTypes";
 import Loading from "../../Loading";
 import UnpaidSessions from "./UnpaidSessions";
 
-
-
 function AdminPortalHome() {
-
 
     const style ={
         card:{
@@ -31,9 +28,11 @@ function AdminPortalHome() {
     }    
 
     return (
-        <div>
+        <>
+            <Grid container>
                 <UnpaidSessions></UnpaidSessions>
-        </div>
+            </Grid>
+        </>
     )
 }
 
@@ -41,6 +40,7 @@ AdminPortalHome.propTypes = {
     // courseTitle: PropTypes.string,
     // admin: PropTypes.bool,
 };
+
 const mapStateToProps = (state) => ({
     "Unpaid": state.Admin.Unpaid,
 });

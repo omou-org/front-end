@@ -1,4 +1,4 @@
-import React, { Component, useMemo } from 'react';
+import React, { Container, Component, useMemo } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -41,12 +41,13 @@ import {roleColor, initials, parseDate, capitalizeRoleName, statusColor} from ".
     const statusStyle = (status) => ({
         "backgroundColor": statusColor[status],
         "color": "black",
-        "height": 10,
-        "width": 10,
+        "height": "30px",
+        "width": "30px",
         "lineHeight": 1,
         "margin": "auto",
         "padding": 10,
         "borderRadius": "50%",
+        "display": "inline-block"
     })
 
     const UnpaidSessionCard = ({unpaidStudent}) => {
@@ -56,27 +57,27 @@ import {roleColor, initials, parseDate, capitalizeRoleName, statusColor} from ".
                         <CardMedia>
                             <Grid container style={{justifyContent:"center"}}>
                                 <Avatar   
-                                        style={styles(unpaidStudent.fName + " " + unpaidStudent.lName)}
-                                        >
-                                            {initials(unpaidStudent.fName, unpaidStudent.lName)}
+                                    style={styles(unpaidStudent.fName + " " + unpaidStudent.lName)}
+                                >
+                                    {initials(unpaidStudent.fName, unpaidStudent.lName)}
                                 </Avatar>
                             </Grid>
                         </CardMedia>
                         <CardContent>
-                        <Typography style ={{fontSize: "16px", fontWeight: 500, lineHeight: "24px", textAlign: "center"}}>
-                            {unpaidStudent.fName + " " + unpaidStudent.lName}
-                        </Typography>
-                        <Typography style={roleStyle(unpaidStudent.status)} >
-                            {capitalizeRoleName(unpaidStudent.status)}
-                        </Typography>
-                        <Typography style={{textAlign: "center"}}>
-                            Payment Status: 
-                            <span style={statusStyle(unpaidStudent.paymentStatus)}>{unpaidStudent.paymentStatus}</span>
-                            <br/>
-                            {unpaidStudent.amt}
-                            <br/>
-                            {unpaidStudent.course}
-                        </Typography>
+                            <Typography style ={{fontSize: "16px", fontWeight: 500, lineHeight: "24px", textAlign: "center"}}>
+                                {unpaidStudent.fName + " " + unpaidStudent.lName}
+                            </Typography>
+                            <Typography style={roleStyle(unpaidStudent.status)} >
+                                {capitalizeRoleName(unpaidStudent.status)}
+                            </Typography>
+                            <Typography style={{textAlign: "center"}}>
+                                Payment Status: 
+                                <span style={statusStyle(unpaidStudent.paymentStatus)}>{unpaidStudent.paymentStatus}</span>
+                                <br/>
+                                {unpaidStudent.amt}
+                                <br/>
+                                {unpaidStudent.course}
+                            </Typography>
                         </CardContent>
                     </CardActionArea>
                 </Card>
