@@ -26,7 +26,6 @@ import {withStyles} from '@material-ui/core/styles';
 import "./Accounts.scss";
 import Avatar from "@material-ui/core/Avatar";
 import ProfileCard from "./ProfileCard";
-import Grow from "@material-ui/core/Grow";
 import {GET} from "../../../actions/actionTypes";
 import {REQUEST_ALL} from "../../../actions/apiActions";
 import Loading from "../../Loading";
@@ -66,7 +65,7 @@ class Accounts extends Component {
                 Object.assign(usersList, this.props.receptionist);
                 usersList=Object.values(usersList).sort(function(a, b) {
                     return (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0;
-                })
+                });
                 return { usersList: usersList, }
             });
         }
@@ -247,7 +246,6 @@ class Accounts extends Component {
         );
 
         const cardView = () => (
-            <Grow in>
                 <Grid
                     alignItems="center"
                     container
@@ -261,7 +259,6 @@ class Accounts extends Component {
                             route={`/accounts/${user.role}/${user.user_id}`}
                             user={user} />))}
                 </Grid>
-            </Grow>
         );
         this.resize();
 
@@ -273,6 +270,7 @@ class Accounts extends Component {
         }
 
         return (
+
             <Grid
                 className="Accounts"
                 item

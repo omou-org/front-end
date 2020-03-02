@@ -3,6 +3,7 @@ import * as types from "./actionTypes";
 import axios from "axios";
 import {typeToPostActions} from "./rootActions";
 import {academicLevelParse} from "../reducers/registrationReducer";
+import {dateFormat, timeFormat} from "../utils";
 
 export const instance = axios.create({
     "baseURL": process.env.REACT_APP_DOMAIN,
@@ -179,19 +180,19 @@ export const formatCourse = (formCourse, type) => {
     const dayOfWeek = () => {
         switch (startDate.getDay()) {
             case 0:
-                return "Sun";
+                return "sunday";
             case 1:
-                return "Mon";
+                return "monday";
             case 2:
-                return "Tue";
+                return "tuesday";
             case 3:
-                return "Wed";
+                return "wednesday";
             case 4:
-                return "Thu";
+                return "thursday";
             case 5:
-                return "Fri";
+                return "friday";
             case 6:
-                return "Sat";
+                return "saturday";
         }
     };
     let startDate = new Date(formCourse["Start Date"]);
@@ -202,11 +203,7 @@ export const formatCourse = (formCourse, type) => {
 
     endDate = new Date(endDate.setDate(startDate.getDate() + 7 * numberOfSessions));
 
-    const dateFormat = {
-        "year": "numeric",
-        "month": "2-digit",
-        "day": "2-digit",
-    };
+
     startDate = startDate.toLocaleString("sv-SE", dateFormat);
     endDate = endDate.toLocaleString("sv-SE", dateFormat);
 
@@ -221,11 +218,7 @@ export const formatCourse = (formCourse, type) => {
     };
 
     endTime = new Date(endTime.setTime(endTime.getTime() + duration[formCourse.Duration] * 60 * 60 * 1000));
-    const timeFormat = {
-        "hour12": false,
-        "hour": "2-digit",
-        "minute": "2-digit",
-    };
+
     endTime = endTime.toLocaleString("eng-US", timeFormat);
     startTime = startTime.toLocaleString("eng-US", timeFormat);
 

@@ -245,6 +245,11 @@
   &.Unpaid {
     background-color: $badStatusColor;
   }
+
+  &.NA {
+    background-color: $neutralStatusColor;
+  }
+
 }
 
 .course-session-status {
@@ -256,6 +261,7 @@
   }
 
   .participants{
+    margin-top: 10px;
     margin-bottom:30px;
   }
 
@@ -272,13 +278,27 @@
     
   }
 
-
   .accounts-table-heading,
   .accounts-table-row>* {
     cursor: default;
-    
   }
 
+}
+
+.session-view .course-session-status{
+  padding: 1% 0 4% 0;
+
+  .sessions-left-chip {
+    width: 150px;
+    border-radius: 150px;
+    position:relative;
+    top: 0;
+    right: 0;
+  }
+}
+
+.session-info{
+  cursor:pointer !important;
 }
 
 .payments-history {
@@ -289,7 +309,7 @@
 }
 
 .session-actions{
-  height:100px;
+  height:80px;
   .button {
     &.add-sessions{
       background-color: $primaryColor;
@@ -299,6 +319,11 @@
       padding-right: 2.3em !important;
       font-weight:600;
       margin-right:0;
+    }
+    &.unenroll{
+      background-color: $badActionColor;
+      color:white;
+      border: none !important;
     }
   }
 }
