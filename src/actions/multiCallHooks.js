@@ -2,6 +2,7 @@ import * as types from "./actionTypes";
 import {instance, MISC_FAIL, REQUEST_STARTED} from "./apiActions";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import {isExistingTutoring} from "../utils";
 
 const enrollmentEndpoint = "/course/enrollment/";
 const courseEndpoint = "/course/catalog/";
@@ -11,7 +12,6 @@ export const useSubmitRegistration = (registrationDependencies) => {
     const currentPayingParent = useSelector(({Registration}) => Registration.CurrentParent);
     const [status, setStatus] = useState(null);
     const dispatch = useDispatch();
-
     const handleError = useCallback((error) => {
         if (error && error.response && error.response.status) {
             setStatus(error.response.status);
@@ -26,17 +26,37 @@ export const useSubmitRegistration = (registrationDependencies) => {
         (async () => {
             if (registrationDependencies) {
                 let {tutoringRegistrations, classRegistrations, payment} = registrationDependencies;
+                tutoringRegistrations = tutoringRegistrations.map(({newTutoringCourse, ...rest}) => ({
+                    ...rest,
+                    "newTutoringCourse": {
+                        ...newTutoringCourse,
+                        "end_time": newTutoringCourse.end_time.indexOf("T") > -1
+                            ? newTutoringCourse.end_time.slice(1)
+                            : newTutoringCourse.end_time,
+                        "start_time": newTutoringCourse.start_time.indexOf("T") > -1
+                            ? newTutoringCourse.start_time.slice(1)
+                            : newTutoringCourse.start_time,
+                    },
+                }));
+                const newTutorings = tutoringRegistrations.filter(({courseID}) => String(courseID).indexOf("T") > -1);
+                const existingTutorings = tutoringRegistrations.filter(({courseID}) => isExistingTutoring(courseID));
+                tutoringRegistrations = [...newTutorings, ...existingTutorings];
                 try {
-                    const TutoringCourses = await Promise.all(
-                        tutoringRegistrations.map(({newTutoringCourse}) =>
-                            instance.post(courseEndpoint, newTutoringCourse))
-                    );
+                    const TutoringCourses = [
+                        ...await Promise.all(
+                            newTutorings.map(({newTutoringCourse}) => instance.post(courseEndpoint, newTutoringCourse))
+                        ),
+                        ...await Promise.all(
+                            existingTutorings.map(({newTutoringCourse, courseID}) => instance.patch(`${courseEndpoint}${courseID}/`, newTutoringCourse))
+                        ),
+                    ];
                     dispatch({
                         "payload": TutoringCourses,
                         "type": types.POST_COURSE_SUCCESSFUL,
                     });
-                    const tutoringEnrollments = tutoringRegistrations.map((tutoringReg, i) =>
-                        ({
+                    const tutoringEnrollments = tutoringRegistrations
+                        .filter(({courseID}) => String(courseID).indexOf("T") !== -1)
+                        .map((tutoringReg, i) => ({
                             "course": TutoringCourses[i].data.id,
                             "student": tutoringReg.student,
                         }));
@@ -46,7 +66,6 @@ export const useSubmitRegistration = (registrationDependencies) => {
                             `/course/enrollment/?student=${student}&course_id=${course}`
                         ))
                     );
-
                     // filter for the ones that found matches
                     currEnrollments = currEnrollments
                         .map((elem) => elem.data)
@@ -129,7 +148,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
             }
         })();
 
-    }, []);
+    }, [currentPayingParent, dispatch, handleError, registrationDependencies]);
     return status;
 };
 

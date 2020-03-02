@@ -1,21 +1,20 @@
-
-import React, { useEffect, useMemo, useState } from "react";
+import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
-import { bindActionCreators } from "redux";
+import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
-import { connect, useDispatch, useSelector } from "react-redux";
-import { Button, Typography } from "@material-ui/core";
+import {connect, useDispatch, useSelector} from "react-redux";
+import {Button, Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
-import { Prompt, useLocation, useParams, withRouter } from "react-router-dom";
+import {Prompt, useLocation, useParams, withRouter} from "react-router-dom";
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
-import { usePayment, useSubmitRegistration } from "../../../actions/multiCallHooks";
+import {usePayment, useSubmitRegistration} from "../../../actions/multiCallHooks";
 import Loading from "../../Loading";
-import { isFail, isLoading, isSuccessful, usePrevious } from "../../../actions/hooks";
-import { weeklySessionsParser } from "../../Form/FormUtils";
-import { GET } from "../../../actions/actionTypes";
+import {isFail, isLoading, isSuccessful, usePrevious} from "../../../actions/hooks";
+import {weeklySessionsParser} from "../../Form/FormUtils";
+import {GET} from "../../../actions/actionTypes";
 import BackButton from "../../BackButton";
 
 function RegistrationReceipt(props) {
@@ -42,7 +41,7 @@ function RegistrationReceipt(props) {
     const [paymentReceipt, setPaymentReceipt] = useState({});
     const prevPaymentReceipt = usePrevious(paymentReceipt);
     const [courseReceipt, setCourseReceipt] = useState({});
-    const Registration = useSelector(({ Registration }) => Registration);
+    const Registration = useSelector(({Registration}) => Registration);
     const registrationStatus = useSubmitRegistration(Registration.registration);
 
     const parent = parents[params.parentID];
@@ -85,7 +84,7 @@ function RegistrationReceipt(props) {
             });
         });
         return receipt;
-    }
+    };
 
     // If we're coming from the registration cart, set-up state variables after we've completed registration requests
     if (registrationStatus && registrationStatus.status >= 200 &&
@@ -101,10 +100,19 @@ function RegistrationReceipt(props) {
         props.history.push("/registration");
         api.closeRegistration("");
     };
-    if (Object.keys(paymentReceipt).length < 1 || (isLoading(paymentStatus) && !registrationStatus)) {
+
+    const renderParent = () => {
+        if (currentPayingParent) {
+            return currentPayingParent.user
+        } else {
+            return parent;
+        }
+    };
+
+    if (Object.keys(paymentReceipt).length < 1 || (isLoading(paymentStatus) && !registrationStatus) || !renderParent()) {
         return <Loading />;
     }
-    const renderCourse = (enrolledCourse) => (<Grid item key={enrolledCourse.id}>
+    const renderCourse = (enrolledCourse) => (<Grid item key={enrolledCourse.course_id}>
         <Grid
             className={"enrolled-course"}
             container
@@ -196,13 +204,7 @@ function RegistrationReceipt(props) {
         window.print();
     };
 
-    const renderParent = () => {
-        if (currentPayingParent) {
-            return currentPayingParent.user
-        } else {
-            return parent;
-        }
-    };
+
 
     return (
         <Paper className={"paper registration-receipt"}>

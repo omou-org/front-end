@@ -1,5 +1,5 @@
-import initialState from './initialState';
-import * as actions from "./../actions/actionTypes"
+import * as actions from "./../actions/actionTypes";
+import initialState from "./initialState";
 
 export default function enrollment(state = initialState.Enrollments, {payload, type}) {
     switch (type) {
@@ -25,8 +25,8 @@ export default function enrollment(state = initialState.Enrollments, {payload, t
 
 const handleEnrollment = (state, payload, requestType) => {
     let data;
-    if(payload.response && !payload.courseID){
-        data = payload.response.data
+    if (payload.response && !payload.courseID) {
+        data = payload.response.data;
     } else {
         data = payload;
     }
@@ -39,11 +39,12 @@ const handleEnrollment = (state, payload, requestType) => {
                     "enrollment_id": id,
                     "course_id": course,
                     "student_id": student,
+                    enrollment_balance,
+                    last_paid_session_datetime,
+                    sessions_left,
                     "notes": {},
                     "payment_list": payment_list,
                     "balance": enrollment_balance,
-                    "sessions_left": sessions_left,
-                    "last_paid_session_datetime": last_paid_session_datetime,
                     "session_payment_status": {
                         1: 1,
                         2: 1,
@@ -68,31 +69,15 @@ const handleEnrollment = (state, payload, requestType) => {
             });
             break;
         }
-        case "POST":{
-            let {student, course, id} = data;
-            let newStudentData = newState[student] || {};
-            let newCourseData = newStudentData[course] || {
+        case "POST": {
+            const {student, course, id} = data;
+            const newStudentData = newState[student] || {};
+            const newCourseData = newStudentData[course] || {
                 "enrollment_id": id,
                 "course_id": course,
                 "student_id": student,
                 "notes": {},
-                "session_payment_status": {
-                    1: 1,
-                    2: 1,
-                    3: 1,
-                    4: 1,
-                    5: 1,
-                    6: 1,
-                    7: 1,
-                    8: 1,
-                    9: 1,
-                    10: 1,
-                    11: 1,
-                    12: 1,
-                    13: 1,
-                    14: 1,
-                    15: 1,
-                },
+                "session_payment_status": {},
             };
             newStudentData[course] = newCourseData;
             newState[student] = newStudentData;
@@ -102,6 +87,7 @@ const handleEnrollment = (state, payload, requestType) => {
             delete newState[data.studentID][data.courseID];
             break;
         }
+        // no default
     }
     return newState;
 };
