@@ -1,6 +1,6 @@
 import initialState from './initialState';
 import * as actions from "./../actions/actionTypes"
-import { dateParser } from "../components/Form/FormUtils";
+import {dateParser} from "../components/Form/FormUtils";
 
 export default function registration(state = initialState.RegistrationForms, { payload, type }) {
     let newState = JSON.parse(JSON.stringify(state));
@@ -80,6 +80,13 @@ export default function registration(state = initialState.RegistrationForms, { p
         case actions.SET_REGISTRATION:
             newState.registration = payload;
             return { ...newState };
+        case actions.COMPLETE_REGISTRATION:
+            console.log("completed registration");
+            newState.registration = {
+                ...newState.registration,
+                complete:true,
+            };
+            return {...newState};
         default:
             return state;
     }

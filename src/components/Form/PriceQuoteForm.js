@@ -70,7 +70,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
             stateUpdated(priceAdjustment, prevPriceAdjustment)
         ) && priceAdjustment !== "") {
             const requestedQuote = {
-                "payment_method": paymentMethod,
+                "method": paymentMethod,
                 "classes": courses,
                 "tutoring": cleanTutoring.map((tutoring) => {
                     delete tutoring.new_course;
@@ -81,6 +81,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                 }),
                 "disabled_discounts": discounts.filter((discount) => !discount.enable).map(({ id }) => id),
                 "price_adjustment": Number(priceAdjustment),
+                // "parent_id":
             };
             // make price quote request
             instance.post("/pricing/quote/", requestedQuote).then((quoteResponse) => {

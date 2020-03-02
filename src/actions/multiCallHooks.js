@@ -12,6 +12,8 @@ export const useSubmitRegistration = (registrationDependencies) => {
     const currentPayingParent = useSelector(({Registration}) => Registration.CurrentParent);
     const [status, setStatus] = useState(null);
     const dispatch = useDispatch();
+    const Registration = useSelector(({Registration}) => Registration);
+    // console.log(Registration.registration, registrationDependencies);
     const handleError = useCallback((error) => {
         if (error && error.response && error.response.status) {
             setStatus(error.response.status);
@@ -20,11 +22,11 @@ export const useSubmitRegistration = (registrationDependencies) => {
             console.error(error);
         }
     }, []);
-
     useEffect(() => {
         const aborted = false;
         (async () => {
-            if (registrationDependencies) {
+            console.log(registrationDependencies.complete !== true, registrationDependencies.complete);
+            if (registrationDependencies && registrationDependencies.complete !== true) {
                 let {tutoringRegistrations, classRegistrations, payment} = registrationDependencies;
                 tutoringRegistrations = tutoringRegistrations.map(({newTutoringCourse, ...rest}) => ({
                     ...rest,
@@ -38,10 +40,11 @@ export const useSubmitRegistration = (registrationDependencies) => {
                             : newTutoringCourse.start_time,
                     },
                 }));
-                const newTutorings = tutoringRegistrations.filter(({courseID}) => String(courseID).indexOf("T") > -1);
+                const newTutorings = tutoringRegistrations.filter(({courseID}) => !isExistingTutoring(courseID));
                 const existingTutorings = tutoringRegistrations.filter(({courseID}) => isExistingTutoring(courseID));
                 tutoringRegistrations = [...newTutorings, ...existingTutorings];
                 try {
+                    console.log("posting new tutoring courses");
                     const TutoringCourses = [
                         ...await Promise.all(
                             newTutorings.map(({newTutoringCourse}) => instance.post(courseEndpoint, newTutoringCourse))
@@ -54,6 +57,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         "payload": TutoringCourses,
                         "type": types.POST_COURSE_SUCCESSFUL,
                     });
+                    console.log("posting new enrollments");
                     const tutoringEnrollments = tutoringRegistrations
                         .filter(({courseID}) => String(courseID).indexOf("T") !== -1)
                         .map((tutoringReg, i) => ({
@@ -61,6 +65,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                             "student": tutoringReg.student,
                         }));
                     // get existing enrollments involving the given student-course pairs
+                    console.log("getting existing enrollments");
                     let currEnrollments = await Promise.all(
                         classRegistrations.map(({student, course}) => instance.get(
                             `/course/enrollment/?student=${student}&course_id=${course}`
@@ -135,6 +140,10 @@ export const useSubmitRegistration = (registrationDependencies) => {
                     dispatch({
                         "payload": finalPayment,
                         "type": types.POST_PAYMENT_SUCCESS,
+                    });
+                    dispatch({
+                        "payload": {},
+                        "type": types.COMPLETE_REGISTRATION,
                     });
                     setStatus({
                         "paymentID": finalPayment.data.id,
