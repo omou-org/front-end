@@ -5,6 +5,7 @@ import Loading from "components/Loading";
 import PropTypes from "prop-types";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import {useSelector} from "react-redux";
+import {stringToColor} from "../accountUtils";
 
 const toHours = (ms) => ms / 1000 / 60 / 60;
 
@@ -94,9 +95,11 @@ const InstructorSchedule = ({instructorID}) => {
                 businessHours={instructorBusinessHours}
                 columnHeaderFormat={{"weekday": "short"}}
                 defaultView="timeGridWeek"
+                eventColor={stringToColor(instructor.name || "")}
                 events={[...teachingSessions, ...OOO]}
                 header={false}
                 height={337}
+                minTime="07:00:00"
                 plugins={[timeGridPlugin]} />
         </>
     );

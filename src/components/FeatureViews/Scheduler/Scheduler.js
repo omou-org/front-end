@@ -204,6 +204,7 @@ class Scheduler extends Component {
                         }
                         return {
                             "allDay": all_day,
+                            "color": stringToColor(instructor.name || ""),
                             "end": endDate,
                             start,
                             title,

@@ -19,6 +19,7 @@ export default function users(state = initialState.Users, {payload, type}) {
             return handleStudentPost(state, payload);
         case actions.GET_ACCOUNT_SEARCH_QUERY_SUCCESS:
             return handleAccountSearchResults(state, payload);
+        case actions.POST_OOO_SUCCESS:
         case actions.FETCH_OOO_SUCCESS:
             return handleOOOFetch(state, payload);
         case actions.FETCH_INSTRUCTOR_AVAILABILITY_SUCCESS:
