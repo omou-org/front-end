@@ -118,10 +118,7 @@ const RegistrationCart = () => {
             value = Number(value);
         }
         const enrollment = enrollments[studentID] && enrollments[studentID][courseID];
-        let paidSessions = Infinity;
-        if (enrollment) {
-            paidSessions = enrollment.sessions_left;
-        }
+        const paidSessions = enrollment ? enrollment.sessions_left : 0;
 
         setUpdatedCourse((prevCourses) => {
             const courseIndex = registered_courses[studentID]
