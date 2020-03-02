@@ -15,6 +15,7 @@ import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 
 import "./Accounts.scss";
+import AwayIcon from "@material-ui/icons/EventBusy";
 
 const styles = {
     "maxHeight": "80vh",
@@ -27,7 +28,7 @@ const formatDate = (date, allDay) => {
     return allDay ? `${datePart} 00:00` : `${datePart} ${timePart}`;
 };
 
-const OutOfOffice = ({onClose, instructorID, open}) => {
+const OutOfOffice = ({instructorID}) => {
     const dispatch = useDispatch();
     const [description, setDescription] = useState("");
     const [start, setStart] = useState(null);
@@ -35,6 +36,8 @@ const OutOfOffice = ({onClose, instructorID, open}) => {
     const [allDay, setAllDay] = useState(false);
     // for future error message
     const [error, setError] = useState(false);
+
+    const [openOOODialog, setOpenOOODialog] = useState(false);
     const {name} = useSelector(({Users}) => Users.InstructorList[instructorID]);
 
     const toggleAllDay = useCallback(({target}) => {
@@ -62,22 +65,35 @@ const OutOfOffice = ({onClose, instructorID, open}) => {
                 },
                 "type": POST_OOO_SUCCESS,
             });
-            onClose();
+            setOpenOOODialog(false);
         } catch {
             setError(true);
         }
-    }, [description, dispatch, instructorID, onClose, allDay, end, start]);
+    }, [description, dispatch, instructorID, allDay, end, start]);
 
     const canSubmit = useMemo(() => start && end && end > start, [start, end]);
 
-    return (
+    const handleOpenOOODialog = (event) => {
+        event.preventDefault();
+        setOpenOOODialog(!openOOODialog);
+    };
+
+    return (<>
+        <Button
+            onClick={handleOpenOOODialog}
+            className="editButton"
+        >
+            <AwayIcon/>
+            Add OOO
+        </Button>
         <Dialog
             aria-labelledby="simple-dialog-title"
             classes={{"paper": styles}}
             className="oooDialog"
             fullWidth
             maxWidth="md"
-            open={open}>
+            onClose={handleOpenOOODialog}
+            open={openOOODialog}>
             <DialogContent>
                 <div className="title">
                     Schedule Out of Office
@@ -190,7 +206,7 @@ const OutOfOffice = ({onClose, instructorID, open}) => {
                         md={2}>
                         <Button
                             className="button"
-                            onClick={onClose}>
+                            onClick={handleOpenOOODialog}>
                             Cancel
                         </Button>
                     </Grid>
@@ -207,7 +223,7 @@ const OutOfOffice = ({onClose, instructorID, open}) => {
                 </Grid>
             </DialogContent>
         </Dialog>
-    );
+    </>);
 };
 
 OutOfOffice.propTypes = {
@@ -215,8 +231,6 @@ OutOfOffice.propTypes = {
         PropTypes.string,
         PropTypes.number,
     ]).isRequired,
-    "onClose": PropTypes.func.isRequired,
-    "open": PropTypes.bool.isRequired,
 };
 
 export default withStyles(styles)(OutOfOffice);

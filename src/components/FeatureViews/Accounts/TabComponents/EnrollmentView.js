@@ -30,16 +30,9 @@ import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import PaymentTable from "./PaymentTable";
 import {NoListAlert} from "../../../NoListAlert";
 import {GET} from "../../../../actions/actionTypes";
-
-export const DayConverter = {
-    "0": "Sunday",
-    "1": "Monday",
-    "2": "Tuesday",
-    "3": "Wednesday",
-    "4": "Thursday",
-    "5": "Friday",
-    "6": "Saturday",
-};
+import {SessionPaymentStatusChip} from "../../../SessionPaymentStatusChip";
+import AddSessions from "AddSessions";
+import {DayConverter} from "../../../../utils";
 
 const timeOptions = {
     "hour": "2-digit",
@@ -107,8 +100,6 @@ const CourseSessionStatus = () => {
         api.fetchEnrollmentNotes(enrollment.enrollment_id, studentID, courseID);
     }, [api, enrollment.enrollment_id, studentID, courseID]);
 
-    const registeringParent = useSelector(({ Registration }) => Registration.CurrentParent);
-    const [discardParentWarning, setDiscardParentWarning] = useState(false);
     const [unenrollWarningOpen, setUnenrollWarningOpen] = useState(false);
 
     const noteInfo = useMemo(() => ({
@@ -176,94 +167,20 @@ const CourseSessionStatus = () => {
         }, []);
 
     const calendarSessions = courseSessions ? courseSessionsArray
-        .filter(session => session.course === Number(courseID)) : [],
-        paymentSessionStatus = enrollment.session_payment_status,
-        statusKey = (status) => {
-            return "Paid";
-        };
+        .filter(session => session.course === Number(courseID)) : [];
 
     const handleTabChange = (_, newTab) => {
         setActiveTab(newTab);
     };
 
-    const sessions = course.course_type === "tutoring" && courseSessions
-        ? calendarSessions.map((session) => ({
-            ...session,
-            "status": statusKey(paymentSessionStatus[session.session_id]),
-        }))
-        : [
-            {
-                ...course,
-                "status": Object.values(paymentSessionStatus)
-                    .some((session) => session === 0)
-                    ? "Unpaid"
-                    : "Paid",
-                "type": "C",
-            },
-        ];
+    const sessions = courseSessions
+        && calendarSessions.map((session) => session);
 
     let parentOfCurrentStudent = usersList.StudentList[studentID].parent_id;
-
-    const courseToRegister = {
-        "Enrollment": enrollment.enrollment_id,
-        "Course Selection": {
-            "Course": {
-                label: course.title,
-                value: Number(course.course_id),
-            },
-        },
-        "Course Selection_validated": {
-            "Course": true,
-        },
-        "Student": {
-            "Student": {
-                label: usersList.StudentList[studentID].name,
-                value: studentID,
-            }
-        },
-        "Student_validated": {
-            "Student": true,
-        },
-        "Student Information": {},
-        "activeSection": "Student",
-        "activeStep": 0,
-        "conditional": "",
-        "existingUser": false,
-        "form": "class",
-        "hasLoaded": true,
-        "preLoaded": false,
-        "submitPending": false,
-    };
-
-    const initRegisterMoreSessions = event => {
-        event.preventDefault();
-        // check if registering parent is the current student's parent
-        if (registeringParent && registeringParent.user.id !== parentOfCurrentStudent) {
-            // if not, warn user they're about to discard everything with the current registering parent
-            setDiscardParentWarning(true);
-        } else if (registeringParent && registeringParent.user.id === parentOfCurrentStudent) {
-            //registering parent is the same as the current student's parent
-            api.addCourseRegistration(courseToRegister);
-            history.push("/registration/cart/");
-        } else if (!registeringParent) {
-            api.setParentAddCourseRegistration(parentOfCurrentStudent, courseToRegister);
-            history.push("/registration/cart/");
-        }
-    };
 
     const handleUnenroll = event => {
         event.preventDefault();
         setUnenrollWarningOpen(true);
-    };
-
-    const closeDiscardParentWarning = (toContinue) => event => {
-        event.preventDefault();
-        setDiscardParentWarning(false);
-        if (toContinue) {
-            api.setParentAddCourseRegistration(parentOfCurrentStudent, courseToRegister);
-            history.push("/registration/cart/");
-        }
-
     };
 
     const closeUnenrollDialog = (toUnenroll) => event => {
@@ -321,9 +238,7 @@ const CourseSessionStatus = () => {
                             {sessions.length !== 0
                                 ? sessions.map((session, i) => {
                                     const { day, date, startTime, endTime, status, tuition, id, course_id, instructor } =
-                                        course.course_type === "tutoring"
-                                            ? sessionDataParse(session) : courseDataParser(session);
-
+                                        sessionDataParse(session);
 
                                     return (
                                         <Grid
@@ -334,7 +249,7 @@ const CourseSessionStatus = () => {
                                             to={course.course_type === "tutoring" ? `/scheduler/view-session/${course_id}/${id}/${instructor}` : `/registration/course/${course_id}`}
                                             component={Link}
                                         >
-                                            <Paper square>
+                                            <Paper square className="session-info">
                                                 <Grid container>
                                                     <Grid
                                                         item
@@ -371,9 +286,10 @@ const CourseSessionStatus = () => {
                                                     <Grid
                                                         item
                                                         xs={2}>
-                                                        <div className={`sessions-left-chip ${status}`}>
-                                                            {status}
-                                                        </div>
+                                                        <SessionPaymentStatusChip
+                                                            enrollment={enrollment}
+                                                            session={session}
+                                                            />
                                                     </Grid>
                                                 </Grid>
                                             </Paper>
@@ -414,7 +330,6 @@ const CourseSessionStatus = () => {
                     <hr />
                 </Grid>
                 <Grid
-                    className="participants"
                     item
                     xs={12}>
                     <Typography
@@ -423,39 +338,49 @@ const CourseSessionStatus = () => {
                         variant="h3">
                         {course.title}
                     </Typography>
-                    <Typography align="left">
-                        Student: {" "}
-                        <Link to={`/accounts/student/${studentID}`}>
-                            {usersList.StudentList[studentID].name}
-                        </Link>
-                    </Typography>
-                    <Typography align="left">
-                        Instructor: {" "}
-                        <Link to={`/accounts/instructor/${course.instructor_id}`}>
-                            {usersList.InstructorList[course.instructor_id].name}
-                        </Link>
-                    </Typography>
                 </Grid>
                 <Grid item md={12} >
                     <Grid container
                           className={"session-actions"}
                           direction={"row"}
-                          alignItems={"top"}
-                          justify={"flex-start"}>
+                          alignItems={"center"}
+                          justify={"flex-start"}
+                          spacing={16}
+                    >
+                        <Grid item>
+                            <AddSessions
+                                componentOption="button"
+                                parentOfCurrentStudent={parentOfCurrentStudent}
+                                enrollment={enrollment}
+                            />
+                        </Grid>
                         <Grid item>
                             <Button
-                                onClick={initRegisterMoreSessions}
-                                className={"button add-sessions"}
-                            >
-                                Add Sessions
-                            </Button>
-                            <Button
                                 onClick={handleUnenroll}
-                                className={"button"}
+                                className={"button unenroll"}
                             >
                                 Unenroll Course
                             </Button>
                         </Grid>
+                    </Grid>
+                    <Grid item xs={12}
+                          className="participants"
+                    >
+                        <Typography align="left">
+                            Student: {" "}
+                            <Link to={`/accounts/student/${studentID}`}>
+                                {usersList.StudentList[studentID].name}
+                            </Link>
+                        </Typography>
+                        <Typography align="left">
+                            Instructor: {" "}
+                            <Link to={`/accounts/instructor/${course.instructor_id}`}>
+                                {usersList.InstructorList[course.instructor_id].name}
+                            </Link>
+                        </Typography>
+                        <Typography align="left">
+                            Enrollment Balance Left: ${enrollment.balance}
+                        </Typography>
                     </Grid>
                 </Grid>
                 <Tabs
@@ -484,35 +409,6 @@ const CourseSessionStatus = () => {
                 <br />
                 {renderMain()}
             </Grid>
-            <Dialog
-                open={discardParentWarning}
-                onClose={closeDiscardParentWarning(false)}
-                aria-labelledby="warn-discard-parent"
-            >
-                <DialogTitle id="warn-discard-parent">
-                    {"Finished registering parent?"}
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        {`
-                        You are currently registering ${(registeringParent && registeringParent !== "none") && registeringParent.user.name}. If you wish to continue to add sessions, you will
-                        discard all of the currently registered courses with this parent.
-                        `}
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        color={"secondary"}
-                        onClick={closeDiscardParentWarning(true)}>
-                        Continue & Add Session
-                    </Button>
-                    <Button
-                        color={"primary"}
-                        onClick={closeDiscardParentWarning(false)}>
-                        Cancel
-                    </Button>
-                </DialogActions>
-            </Dialog>
             <Dialog
                 open={unenrollWarningOpen}
                 onClose={closeUnenrollDialog(false)}

@@ -14,6 +14,7 @@ import StudentInfo from "./TabComponents/StudentInfo";
 
 const ComponentViewer = (props) => {
     let component;
+
     switch (props.inView) {
         case 0:
             component = <InstructorSchedule instructorID={props.user.user_id} />;
@@ -67,7 +68,7 @@ const ComponentViewer = (props) => {
                 item
                 style={{"paddingTop": "15px"}}
                 xs={12}>
-                {component}
+                    {component}
             </Grid>
         </Grid>
     );
