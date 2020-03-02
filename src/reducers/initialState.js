@@ -1,4 +1,4 @@
-import {DELETE, GET, NOT_SEARCHING, PATCH, POST, SEARCH_ALL} from "../actions/actionTypes";
+import { DELETE, GET, NOT_SEARCHING, PATCH, POST, SEARCH_ALL } from "../actions/actionTypes";
 
 export default {
     "Authentication": initAuth(),
@@ -53,7 +53,7 @@ export default {
     },
     "RequestStatus": initRequests(),
     "SearchResults": {
-        SearchQuery:"",
+        SearchQuery: "",
         searchQueryStatus: {
             account: "",
             course: "",
@@ -62,29 +62,30 @@ export default {
         accounts: [],
         courses: [],
         params: {
-            account:{
-                profile:"",
-                gradeFilter:"",
-                sortAccount:"",
+            account: {
+                profile: "",
+                gradeFilter: "",
+                sortAccount: "",
                 accountPage: 1,
             },
-            course:{
-                courseType:"",
-                availability:"",
-                sortCourse:"",
+            course: {
+                courseType: "",
+                availability: "",
+                sortCourse: "",
                 coursePage: 1,
             }
         },
         primaryFilter: SEARCH_ALL,
     },
-    "Admin":{
+    "Admin": {
         PriceRules: [],
         Discounts: {
             MultiCourse: [],
             DateRange: [],
             PaymentMethod: [],
         },
-    }
+    },
+
 };
 
 function initRequests() {
@@ -134,36 +135,36 @@ function initRequests() {
             [GET]: {},
             [PATCH]: {},
         },
-        "priceRule":{
+        "priceRule": {
             [GET]: {},
             [PATCH]: {},
             [POST]: {},
         },
-        "discount":{
-            "dateRange":{
+        "discount": {
+            "dateRange": {
                 [GET]: {},
                 [POST]: {},
             },
-            "multiCourse":{
+            "multiCourse": {
                 [GET]: {},
                 [PATCH]: {},
                 [POST]: {},
             },
-            "paymentMethod":{
+            "paymentMethod": {
                 [GET]: {},
                 [POST]: {},
 
             },
-            [DELETE]:"",
+            [DELETE]: "",
             [PATCH]: "",
         },
-        "registration":{
-            "enrollment":{
-                [POST]:{},
+        "registration": {
+            "enrollment": {
+                [POST]: {},
             }
         },
-        "registeringParent":"",
-        "payment":{
+        "registeringParent": "",
+        "payment": {
             [GET]: {},
         }
     };
@@ -323,15 +324,15 @@ function initRegistrationForm() {
                 name: "State",
                 type: "short text",
                 suggestions: [
-                    {label: "AL"}, {label: "AK"}, {label: "AZ"}, {label: "AR"}, {label: "CA"}, {label: "CO"},
-                    {label: "CT"}, {label: "DE"}, {label: "FL"}, {label: "GA"}, {label: "HI"}, {label: "ID"},
-                    {label: "IL"}, {label: "IN"}, {label: "IA"}, {label: "KS"},
-                    {label: "KY"}, {label: "KY"}, {label: "LA"}, {label: "ME"}, {label: "MD"}, {label: "MA"}, {label: "MI"},
-                    {label: "MS"}, {label: "MO"}, {label: "MT"}, {label: "NE"}, {label: "NV"}, {label: "NH"}, {label: "NJ"},
-                    {label: "NM"}, {label: "NY"}, {label: "NC"}, {label: "ND"},
-                    {label: "OH"}, {label: "OK"}, {label: "OR"}, {label: "PA"}, {label: "RI"}, {label: "SC"}, {label: "SD"},
-                    {label: "TN"}, {label: "TX"}, {label: "UT"}, {label: "VT"}, {label: "VA"}, {label: "WA"}, {label: "WV"}, {label: "WI"},
-                    {label: "WY"},
+                    { label: "AL" }, { label: "AK" }, { label: "AZ" }, { label: "AR" }, { label: "CA" }, { label: "CO" },
+                    { label: "CT" }, { label: "DE" }, { label: "FL" }, { label: "GA" }, { label: "HI" }, { label: "ID" },
+                    { label: "IL" }, { label: "IN" }, { label: "IA" }, { label: "KS" },
+                    { label: "KY" }, { label: "KY" }, { label: "LA" }, { label: "ME" }, { label: "MD" }, { label: "MA" }, { label: "MI" },
+                    { label: "MS" }, { label: "MO" }, { label: "MT" }, { label: "NE" }, { label: "NV" }, { label: "NH" }, { label: "NJ" },
+                    { label: "NM" }, { label: "NY" }, { label: "NC" }, { label: "ND" },
+                    { label: "OH" }, { label: "OK" }, { label: "OR" }, { label: "PA" }, { label: "RI" }, { label: "SC" }, { label: "SD" },
+                    { label: "TN" }, { label: "TX" }, { label: "UT" }, { label: "VT" }, { label: "VA" }, { label: "WA" }, { label: "WV" }, { label: "WI" },
+                    { label: "WY" },
                 ].map((suggestion) => ({
                     value: suggestion.label,
                     label: suggestion.label,
@@ -403,7 +404,7 @@ function initRegistrationForm() {
             field: "Grade Level",
             name: "Grade Level",
             type: "select",
-            options: ["Elementary School", "Middle School","High School", "College"],
+            options: ["Elementary School", "Middle School", "High School", "College"],
             conditional: false,
             required: true,
             full: false,
@@ -632,7 +633,7 @@ function initRegistrationForm() {
             },
             tutoring: {
                 form_type: "tutoring",
-                section_titles: [ "Student", "Student Information", "Tutor Selection", "Schedule", "Tuition Quote Tool"],
+                section_titles: ["Student", "Student Information", "Tutor Selection", "Schedule", "Tuition Quote Tool"],
                 "Student": [
                     {
                         field: "Student",
@@ -775,9 +776,139 @@ function initRegistrationForm() {
                     },
                 ],
             },
+            admin: {
+                form_type: "admin",
+                section_titles: ["Login Details", "User Information"],
+                "Login Details": [
+                    {
+                        field: "Email",
+                        name: "Email",
+                        type: "email",
+                        conditional: false,
+                        required: true,
+                        full: true,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Password",
+                        name: "Password",
+                        type: "password",
+                        conditional: false,
+                        required: true,
+                        full: true,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "First Name",
+                        name: "First Name",
+                        type: "short text",
+                        conditional: false,
+                        required: true,
+                        full: true,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Last Name",
+                        name: "Last Name",
+                        type: "short text",
+                        conditional: false,
+                        required: true,
+                        full: true,
+                        field_limit: 1,
+                    },
+                ],
+                "User Information": [
+                    {
+                        field: "Admin Type",
+                        name: "Admin Type",
+                        type: "select",
+                        options: ["Owner", "Receptionist", "Assistant"],
+                        required: true,
+                        full: true,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Gender",
+                        name: "Gender",
+                        type: "select",
+                        options:
+                            ["Do not disclose", "Male", "Female"],
+                        conditional: false,
+                        required: false,
+                        full: true,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Date of Birth (MM/DD/YYYY)",
+                        name: "Date of Birth",
+                        type: "date",
+                        conditional: false,
+                        required: false,
+                        full: true,
+                        field_limit: 1,
+                    }, {
+                        field: "Address",
+                        name: "Address",
+                        type: "address",
+                        conditional: false,
+                        required: false,
+                        full: true,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "City",
+                        name: "City",
+                        type: "short text",
+                        conditional: false,
+                        required: false,
+                        full: true,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Phone Number",
+                        name: "Phone Number",
+                        type: "phone number",
+                        conditional: false,
+                        required: false,
+                        full: true,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "State",
+                        name: "State",
+                        type: "select",
+                        options: [
+                            "Please select a State", "AL", "AK", "AZ", "AR", "CA", "CO",
+                            "CT", "DE", "FL", "GA", "HI", "ID",
+                            "IL", "IN", "IA", "KS",
+                            "KY", "KY", "LA", "ME", "MD", "MA", "MI",
+                            "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+                            "NM", "NY", "NC", "ND",
+                            "OH", "OK", "OR", "PA", "RI", "SC", "SD",
+                            "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI",
+                            "WY",
+                        ],
+                        conditional: false,
+                        required: false,
+                        full: true,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Zip Code",
+                        name: "Zip Code",
+                        type: "zipcode",
+                        conditional: false,
+                        required: false,
+                        full: true,
+                        field_limit: 1,
+                    },
+
+
+                ]
+            },
             instructor: {
                 form_type: "instructor",
-                section_titles: ["Basic Information",  "Experience"],
+                section_titles: ["Basic Information", "Experience"],
                 "Basic Information": [
                     {
                         field: "First Name",
@@ -972,9 +1103,9 @@ function initRegistrationForm() {
                 ]
             },
             small_group: {
-                form_type:"small_group",
-                section_titles: [ "Student", "Group Type", "Group Details", "Tuition Quote Tool"],
-                "Student":[
+                form_type: "small_group",
+                section_titles: ["Student", "Group Type", "Group Details", "Tuition Quote Tool"],
+                "Student": [
                     {
                         field: "Student",
                         name: "Student",
@@ -985,7 +1116,7 @@ function initRegistrationForm() {
                         field_limit: 1,
                     },
                 ],
-                "Group Type":[
+                "Group Type": [
                     {
                         field: "Group Type",
                         name: "Select Group Type",
@@ -998,8 +1129,8 @@ function initRegistrationForm() {
                         field_limit: 1,
                     },
                 ],
-                "Group Details":{
-                    "Existing Small Group":[
+                "Group Details": {
+                    "Existing Small Group": [
                         {
                             field: "Select Group",
                             name: "Select Group",
@@ -1026,8 +1157,8 @@ function initRegistrationForm() {
             },
             pricing: {
                 form_type: "pricing",
-                section_titles: [ "Pricing" ],
-                "Pricing":[
+                section_titles: ["Pricing"],
+                "Pricing": [
                     {
                         field: "Price Rule Name",
                         name: "Price Rule Name",
@@ -1051,7 +1182,7 @@ function initRegistrationForm() {
                         field: "Select Grade",
                         name: "Select Grade",
                         type: "select",
-                        options: ["Elementary School", "Middle School","High School", "College"],
+                        options: ["Elementary School", "Middle School", "High School", "College"],
                         conditional: false,
                         required: true,
                         full: false,
@@ -1081,7 +1212,7 @@ function initRegistrationForm() {
             discount: {
                 form_type: "discount",
                 section_titles: ["Discount Description", "Discount Rules", "Discount Amount"],
-                "Discount Description":[
+                "Discount Description": [
                     {
                         field: "Discount Name",
                         name: "Discount Name",
@@ -1104,7 +1235,7 @@ function initRegistrationForm() {
                         field: "Discount Type",
                         name: "Discount Type",
                         type: "select",
-                        options:[
+                        options: [
                             "Bulk Order Discount",
                             "Date Range Discount",
                             "Payment Method Discount",
@@ -1116,61 +1247,61 @@ function initRegistrationForm() {
                     },
                 ],
                 "Discount Rules": {
-                        "Bulk Order Discount":[
-                            {
-                                field: "Minimum number of sessions",
-                                name: "Minimum number of sessions",
-                                type: "number",
-                                conditional: false,
-                                required: true,
-                                full: false,
-                                field_limit: 1,
-                            },
-                        ],
-                        "Date Range Discount":[
-                            {
-                                field: "Discount Start Date",
-                                name: "Discount Start Date",
-                                type: "date",
-                                conditional: false,
-                                required: true,
-                                full: false,
-                                field_limit: 1,
-                            },
-                            {
-                                field: "Discount End Date",
-                                name: "Discount End Date",
-                                type: "date",
-                                conditional: false,
-                                required: true,
-                                full: false,
-                                field_limit: 1,
-                            },
-                        ],
-                        "Payment Method Discount":[
-                            {
-                                field: "Payment Method",
-                                name: "Payment Method",
-                                type: "select",
-                                options:[
-                                    "Cash",
-                                    "Check",
-                                    "Credit Card",
-                                    "International Credit Card",
-                                ],
-                                conditional: false,
-                                required: true,
-                                full: false,
-                                field_limit: 1,
-                            },
-                        ],
-                    },
+                    "Bulk Order Discount": [
+                        {
+                            field: "Minimum number of sessions",
+                            name: "Minimum number of sessions",
+                            type: "number",
+                            conditional: false,
+                            required: true,
+                            full: false,
+                            field_limit: 1,
+                        },
+                    ],
+                    "Date Range Discount": [
+                        {
+                            field: "Discount Start Date",
+                            name: "Discount Start Date",
+                            type: "date",
+                            conditional: false,
+                            required: true,
+                            full: false,
+                            field_limit: 1,
+                        },
+                        {
+                            field: "Discount End Date",
+                            name: "Discount End Date",
+                            type: "date",
+                            conditional: false,
+                            required: true,
+                            full: false,
+                            field_limit: 1,
+                        },
+                    ],
+                    "Payment Method Discount": [
+                        {
+                            field: "Payment Method",
+                            name: "Payment Method",
+                            type: "select",
+                            options: [
+                                "Cash",
+                                "Check",
+                                "Credit Card",
+                                "International Credit Card",
+                            ],
+                            conditional: false,
+                            required: true,
+                            full: false,
+                            field_limit: 1,
+                        },
+                    ],
+                },
                 "Discount Amount": [
                     {
                         field: "Discount Type",
                         name: "Discount Type",
                         type: "select",
-                        options:["Percent", "Fixed"],
+                        options: ["Percent", "Fixed"],
                         conditional: false,
                         required: true,
                         full: false,
@@ -1189,8 +1320,8 @@ function initRegistrationForm() {
             },
             course_category: {
                 form_type: "course_category",
-                section_titles: [ "Category Details" ],
-                "Category Details":[
+                section_titles: ["Category Details"],
+                "Category Details": [
                     {
                         field: "Category Name",
                         name: "Category Name",

@@ -27,29 +27,23 @@ export const DayConverter = {
     "6": "saturday",
 };
 
-export const dateFormatter = (date) => {
-    return new Date(date.replace(/-/g, '\/'))
-        .toDateString().substr(3);
-};
+export const isExistingTutoring = (tutoringCourseID) => String(tutoringCourseID).indexOf("T") === -1;
 
-export const courseDateFormat = (course) => {
-    let start_date = dateFormatter(course.schedule.start_date),
-        end_date = dateFormatter(course.schedule.end_date),
-        start_time = new Date("2020-01-01" + course.schedule.start_time)
-            .toLocaleTimeString('eng-US', timeFormat),
-        end_time = new Date("2020-01-01" + course.schedule.end_time)
-            .toLocaleTimeString('eng-US', timeFormat),
-        days = DayConverter[new Date(course.schedule.start_date).getDay()];
+export const dateFormatter = (date) =>
+    new Date(date.replace(/-/ug, "/"))
+        .toDateString()
+        .substr(3);
 
-    return {
-        "end_date": end_date,
-        "end_time": end_time,
-        "start_date": start_date,
-        "start_time": start_time,
-        "days": days,
-        "is_confirmed": course.is_confirmed,
-    };
-};
+export const courseDateFormat = ({schedule, is_confirmed}) => ({
+    "days": DayConverter[new Date(schedule.start_date).getDay()],
+    "end_date": dateFormatter(schedule.end_date),
+    "end_time": new Date(`2020-01-01${schedule.end_time}`)
+        .toLocaleTimeString("eng-US", timeFormat),
+    is_confirmed,
+    "start_date": dateFormatter(schedule.start_date),
+    "start_time": new Date(`2020-01-01${schedule.start_time}`)
+        .toLocaleTimeString("eng-US", timeFormat),
+});
 
 export const sessionPaymentStatus = (session, enrollment) => {
     const session_date = new Date(session.start_datetime),
