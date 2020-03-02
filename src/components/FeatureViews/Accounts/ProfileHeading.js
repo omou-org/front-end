@@ -5,7 +5,6 @@ import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
-import AwayIcon from "@material-ui/icons/EventBusy";
 import {ReactComponent as IDIcon} from "../../identifier.svg";
 import {ReactComponent as BirthdayIcon} from "../../birthday.svg";
 import {ReactComponent as GradeIcon} from "../../grade.svg";
@@ -189,27 +188,26 @@ class ProfileHeading extends Component {
         if (this.props.user.role != "receptionist") {
             return (
                 <>
-                    {
-                        this.props.user.role === "instructor" && <OutOfOffice
-                            instructorID={this.props.user.user_id}
-                            onClose={this.handleClose}
-                            open={this.state.open} />
-                    }
-                <Grid container align="right" item md={9}>
+                    <Grid container align="right" item md={9}>
                     <Grid item md={4} align= "right" className="editPadding">
+                        {/*{*/}
+                        {/*    this.props.user.role === "instructor" &&*/}
+                        {/*    <Button onClick={(e) => {*/}
+                        {/*            e.preventDefault();*/}
+                        {/*            this.handleOpen(e);*/}
+                        {/*        }}*/}
+                        {/*        className="editButton"*/}
+                        {/*    >*/}
+                        {/*        <AwayIcon/>*/}
+                        {/*        Add OOO*/}
+                        {/*    </Button>*/}
+                        {/*}*/}
                         {
-                            this.props.user.role === "instructor" &&
-                            <Button onClick={(e) => {
-                                    e.preventDefault();
-                                    this.handleOpen(e);
-                                }}
-                                className="editButton"
-                            >
-                                <AwayIcon/>
-                                Add OOO
-                            </Button>
+                            this.props.user.role === "instructor" && <OutOfOffice
+                                instructorID={this.props.user.user_id}
+                                onClose={this.handleClose}
+                                open={this.state.open} />
                         }
-
                     </Grid>
                     <Grid item md={1}>
                     </Grid>

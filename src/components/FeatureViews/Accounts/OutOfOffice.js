@@ -15,6 +15,7 @@ import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 
 import "./Accounts.scss";
+import AwayIcon from "@material-ui/core/SvgIcon/SvgIcon";
 
 const styles = {
     "maxHeight": "80vh",
@@ -35,6 +36,8 @@ const OutOfOffice = ({onClose, instructorID, open}) => {
     const [allDay, setAllDay] = useState(false);
     // for future error message
     const [error, setError] = useState(false);
+
+    const [openOOODialog, setOpenOOODialog] = useState(false);
     const {name} = useSelector(({Users}) => Users.InstructorList[instructorID]);
 
     const toggleAllDay = useCallback(({target}) => {
@@ -70,14 +73,27 @@ const OutOfOffice = ({onClose, instructorID, open}) => {
 
     const canSubmit = useMemo(() => start && end && end > start, [start, end]);
 
-    return (
+    const handleOpenOOODialog = (event) => {
+        event.preventDefault();
+        setOpenOOODialog(!openOOODialog);
+    };
+
+    return (<>
+        <Button
+            onClick={handleOpenOOODialog}
+            className="editButton"
+        >
+            <AwayIcon/>
+            Add OOO
+        </Button>
         <Dialog
             aria-labelledby="simple-dialog-title"
             classes={{"paper": styles}}
             className="oooDialog"
             fullWidth
             maxWidth="md"
-            open={open}>
+            onClose={handleOpenOOODialog}
+            open={openOOODialog}>
             <DialogContent>
                 <div className="title">
                     Schedule Out of Office
@@ -190,7 +206,7 @@ const OutOfOffice = ({onClose, instructorID, open}) => {
                         md={2}>
                         <Button
                             className="button"
-                            onClick={onClose}>
+                            onClick={handleOpenOOODialog}>
                             Cancel
                         </Button>
                     </Grid>
@@ -207,7 +223,7 @@ const OutOfOffice = ({onClose, instructorID, open}) => {
                 </Grid>
             </DialogContent>
         </Dialog>
-    );
+    </>);
 };
 
 OutOfOffice.propTypes = {
