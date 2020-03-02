@@ -60,10 +60,10 @@ function OutOfOffice(props) {
                         </Select>
                     </Grid>
                     <Grid item md={3}>
-                        <div 
-                        required={true}
-                        className="select">
-                             Select OOO End Date
+                        <div
+                            required={true}
+                            className="select">
+                            Select OOO End Date
                             </div>
                         <Select
                             labelId="demo-simple-select-label"
@@ -138,7 +138,7 @@ function OutOfOffice(props) {
                         <Button className="button" onClick={props.handleclose}>
                             Cancel
                         </Button>
-                        </Grid>
+                    </Grid>
                     <Grid item md={2}>
                         <Button className="button" onClick={props.handleclose}>
                             Save OOO
