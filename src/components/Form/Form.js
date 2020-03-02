@@ -179,7 +179,7 @@ class Form extends Component {
         }
 
         if (!prevState ||
-            formType === prevState.form ||
+            formType !== prevState.form ||
             prevState["submitPending"] ||
             (id && this.props.match.params.edit !== "edit")) {
             if (this.props.registrationForm[formType]) {
@@ -238,6 +238,9 @@ class Form extends Component {
                     });
                 });
             }
+        }
+        if(prevState){
+            this.setState(prevState);
         }
     }
 
