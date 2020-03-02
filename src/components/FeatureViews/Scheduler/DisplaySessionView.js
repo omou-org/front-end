@@ -28,7 +28,7 @@ import UnconfirmIcon from "@material-ui/icons/Cancel";
 import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 import DialogContentText from "@material-ui/core/es/DialogContentText";
 
-import InstructorSchedule from "../Accounts/TabComponents/Schedule";
+import InstructorSchedule from "../Accounts/TabComponents/InstructorSchedule";
 import {SessionPaymentStatusChip} from "../../SessionPaymentStatusChip";
 import AddSessions from "AddSessions";
 import Menu from "@material-ui/core/Menu";

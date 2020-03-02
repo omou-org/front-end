@@ -189,21 +189,27 @@ class ProfileHeading extends Component {
         if (this.props.user.role != "receptionist") {
             return (
                 <>
-                    <OutOfOffice
-                        instructorID={this.props.user.user_id}
-                        onClose={this.handleClose}
-                        open={this.state.open} />
+                    {
+                        this.props.user.role === "instructor" && <OutOfOffice
+                            instructorID={this.props.user.user_id}
+                            onClose={this.handleClose}
+                            open={this.state.open} />
+                    }
                 <Grid container align="right" item md={9}>
                     <Grid item md={4} align= "right" className="editPadding">
-                    <Button onClick={(e) => {
-                                e.preventDefault();
-                                this.handleOpen(e);
-                            }}
-                            className="editButton"
+                        {
+                            this.props.user.role === "instructor" &&
+                            <Button onClick={(e) => {
+                                    e.preventDefault();
+                                    this.handleOpen(e);
+                                }}
+                                className="editButton"
                             >
                                 <AwayIcon/>
-                    Add OOO
-                    </Button>
+                                Add OOO
+                            </Button>
+                        }
+
                     </Grid>
                     <Grid item md={1}>
                     </Grid>

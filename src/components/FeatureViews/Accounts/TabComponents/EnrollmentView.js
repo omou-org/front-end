@@ -32,16 +32,7 @@ import {NoListAlert} from "../../../NoListAlert";
 import {GET} from "../../../../actions/actionTypes";
 import {SessionPaymentStatusChip} from "../../../SessionPaymentStatusChip";
 import AddSessions from "AddSessions";
-
-export const DayConverter = {
-    "0": "Sunday",
-    "1": "Monday",
-    "2": "Tuesday",
-    "3": "Wednesday",
-    "4": "Thursday",
-    "5": "Friday",
-    "6": "Saturday",
-};
+import {DayConverter} from "../../../../utils";
 
 const timeOptions = {
     "hour": "2-digit",
