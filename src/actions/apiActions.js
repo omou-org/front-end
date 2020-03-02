@@ -33,9 +33,14 @@ export const wrapGet = (endpoint, [startType, successType, failType], {id, confi
             const response = await instance.get(requestURL, config || {});
             // successful request
             newAction(successType, response);
-        } catch ({response}) {
-            // failed request
-            newAction(failType, response);
+        } catch (error) {
+            if (error.response) {
+                // failed request
+                newAction(failType, error.response);
+            } else {
+                // coding error
+                console.error(error);
+            }
         }
     };
 
@@ -57,14 +62,19 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
             const response = await instance.post(endpoint, data);
             // successful request
             newAction(successType, response);
-        } catch ({response}) {
-            // failed request
-            newAction(failType, response);
+        } catch (error) {
+            if (error.response) {
+                // failed request
+                newAction(failType, error.response);
+            } else {
+                // coding error
+                console.error(error);
+            }
         }
     };
 
 export const wrapPatch = (endpoint, [startType, successType, failType], {id, data, config}) =>
-    async (dispatch, getState) => {
+    async (dispatch) => {
         // creates a new action based on the response given
         const newAction = (type, response) => {
             dispatch({

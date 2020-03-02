@@ -14,6 +14,8 @@ export default function enrollment(state = initialState.Enrollments, {payload, t
             return state;
         case actions.POST_ENROLLMENT_SUCCESS:
             return handleEnrollment(state, payload, "POST");
+        case actions.DELETE_ENROLLMENT_SUCCESS:
+            return handleEnrollment(state, payload, "DELETE");
         case actions.POST_ENROLLMENT_FAILED:
             return state;
         default:
@@ -23,7 +25,7 @@ export default function enrollment(state = initialState.Enrollments, {payload, t
 
 const handleEnrollment = (state, payload, requestType) => {
     let data;
-    if(payload.response){
+    if(payload.response && !payload.courseID){
         data = payload.response.data
     } else {
         data = payload;
@@ -31,7 +33,7 @@ const handleEnrollment = (state, payload, requestType) => {
     const newState = JSON.parse(JSON.stringify(state));
     switch(requestType) {
         case "GET":{
-            data.forEach(({student, course, id, payment_list}) => {
+            data.forEach(({student, course, id, payment_list, enrollment_balance}) => {
                 let newStudentData = newState[student] || {};
                 let newCourseData = newStudentData[course] || {
                     "enrollment_id": id,
@@ -39,6 +41,7 @@ const handleEnrollment = (state, payload, requestType) => {
                     "student_id": student,
                     "notes": {},
                     "payment_list": payment_list,
+                    "balance": enrollment_balance,
                     "session_payment_status": {
                         1: 1,
                         2: 1,
@@ -91,6 +94,11 @@ const handleEnrollment = (state, payload, requestType) => {
             };
             newStudentData[course] = newCourseData;
             newState[student] = newStudentData;
+            break;
+        }
+        case "DELETE":{
+            delete newState[data.studentID][data.courseID];
+            break;
         }
     }
     return newState;

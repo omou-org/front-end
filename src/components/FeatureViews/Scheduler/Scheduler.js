@@ -247,7 +247,7 @@ class Scheduler extends Component {
                     <div class='title'><h3> ${info.event.title} </h3></div>
                     <div class="container">
                         <div class='clock'>
-                            <span class='clock_icon icn'>  
+                            <span class='clock_icon icn'>
                                 ${formatDate(info.event.start, info.event.end)}
                             </span>
                         </div>
@@ -462,7 +462,6 @@ class Scheduler extends Component {
         const date = this.currentDate();
         if (event.target.value) {
             this.setState(() => {
-                // console.log(this.calendarViewToFilterVal[this.state.viewValue], this.viewOptions[event.target.value], this.state.timeShift);
                 this.props.calendarActions.fetchSession({
                     config: {
                         params: {

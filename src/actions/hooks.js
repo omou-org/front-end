@@ -207,6 +207,28 @@ export const usePaymentByEnrollment = (enrollmentID) => wrapUseEndpoint(
     }
 );
 
+export const useClassSessionsInPeriod = (time_frame, time_shift) => wrapUseEndpoint(
+    "/scheduler/session/",
+    types.GET_SESSIONS_SUCCESS,
+    {
+        "params": {
+            time_frame,
+            time_shift,
+            "view_option": "class",
+        },
+    }
+)();
+
+export const useInstructorAvailability = (instructorID) => wrapUseEndpoint(
+    "/account/instructor-availability/",
+    types.FETCH_INSTRUCTOR_AVAILABILITY_SUCCESS,
+    {
+        "params": {
+            "instructor_id": instructorID,
+        },
+    }
+)();
+
 // Hook
 export const usePrevious = (value) => {
     // The ref object is a generic container whose current property is mutable ...
