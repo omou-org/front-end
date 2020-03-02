@@ -266,7 +266,7 @@ const CourseSessionStatus = () => {
                                                         item
                                                         xs={2}>
                                                         <Typography align="left">
-                                                            {day}
+                                                            {day.toUpperCase() + day.slice(1)}
                                                         </Typography>
                                                     </Grid>
                                                     <Grid
