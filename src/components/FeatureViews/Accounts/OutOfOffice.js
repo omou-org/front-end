@@ -15,7 +15,7 @@ import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 
 import "./Accounts.scss";
-import AwayIcon from "@material-ui/core/SvgIcon/SvgIcon";
+import AwayIcon from "@material-ui/icons/EventBusy";
 
 const styles = {
     "maxHeight": "80vh",
@@ -28,7 +28,7 @@ const formatDate = (date, allDay) => {
     return allDay ? `${datePart} 00:00` : `${datePart} ${timePart}`;
 };
 
-const OutOfOffice = ({onClose, instructorID, open}) => {
+const OutOfOffice = ({instructorID}) => {
     const dispatch = useDispatch();
     const [description, setDescription] = useState("");
     const [start, setStart] = useState(null);
@@ -65,11 +65,11 @@ const OutOfOffice = ({onClose, instructorID, open}) => {
                 },
                 "type": POST_OOO_SUCCESS,
             });
-            onClose();
+            setOpenOOODialog(false);
         } catch {
             setError(true);
         }
-    }, [description, dispatch, instructorID, onClose, allDay, end, start]);
+    }, [description, dispatch, instructorID, allDay, end, start]);
 
     const canSubmit = useMemo(() => start && end && end > start, [start, end]);
 
@@ -231,8 +231,6 @@ OutOfOffice.propTypes = {
         PropTypes.string,
         PropTypes.number,
     ]).isRequired,
-    "onClose": PropTypes.func.isRequired,
-    "open": PropTypes.bool.isRequired,
 };
 
 export default withStyles(styles)(OutOfOffice);

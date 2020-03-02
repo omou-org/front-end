@@ -190,23 +190,10 @@ class ProfileHeading extends Component {
                 <>
                     <Grid container align="right" item md={9}>
                     <Grid item md={4} align= "right" className="editPadding">
-                        {/*{*/}
-                        {/*    this.props.user.role === "instructor" &&*/}
-                        {/*    <Button onClick={(e) => {*/}
-                        {/*            e.preventDefault();*/}
-                        {/*            this.handleOpen(e);*/}
-                        {/*        }}*/}
-                        {/*        className="editButton"*/}
-                        {/*    >*/}
-                        {/*        <AwayIcon/>*/}
-                        {/*        Add OOO*/}
-                        {/*    </Button>*/}
-                        {/*}*/}
                         {
                             this.props.user.role === "instructor" && <OutOfOffice
                                 instructorID={this.props.user.user_id}
-                                onClose={this.handleClose}
-                                open={this.state.open} />
+                            />
                         }
                     </Grid>
                     <Grid item md={1}>
@@ -235,12 +222,6 @@ class ProfileHeading extends Component {
         }
 
     }
-
-handleOpen(event){
-    event.preventDefault();
-    this.setState({open:true,})
-}
-
 
     render() {
         let profileDetails;
