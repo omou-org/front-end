@@ -43,7 +43,6 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
         [dispatch]
     );
     const history = useHistory();
-    const token = useSelector(({ auth }) => auth.token);
     const isAdmin = useSelector(({ auth }) => auth.isAdmin);
     const [priceQuote, setPriceQuote] = useState({});
     const prevPriceQuote = usePrevious(priceQuote);
@@ -84,11 +83,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                 "price_adjustment": Number(priceAdjustment),
             };
             // make price quote request
-            instance.post("/pricing/quote/", requestedQuote, {
-                "headers": {
-                    "Authorization": `Token ${token}`,
-                },
-            }).then((quoteResponse) => {
+            instance.post("/pricing/quote/", requestedQuote).then((quoteResponse) => {
                 const responseDiscounts = JSON.stringify(quoteResponse.data.discounts);
                 const stateDiscounts = JSON.stringify(discounts);
                 if (responseDiscounts !== stateDiscounts) {
@@ -114,7 +109,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                 }
             });
         }
-    }, [paymentMethod, courses, tutoring, discounts, priceAdjustment, priceQuote, prevPriceQuote, prevDiscounts, prevPriceAdjustment, cleanTutoring, token]);
+    }, [paymentMethod, courses, tutoring, discounts, priceAdjustment, priceQuote, prevPriceQuote, prevDiscounts, prevPriceAdjustment, cleanTutoring]);
 
     const handlePay = () => (e) => {
         e.preventDefault();
