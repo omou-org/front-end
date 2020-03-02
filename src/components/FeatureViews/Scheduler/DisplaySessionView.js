@@ -30,7 +30,7 @@ import DialogContentText from "@material-ui/core/es/DialogContentText";
 
 import InstructorSchedule from "../Accounts/TabComponents/Schedule";
 import {SessionPaymentStatusChip} from "../../SessionPaymentStatusChip";
-import {AddSessions} from "../../../utils";
+import AddSessions from "AddSessions";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 

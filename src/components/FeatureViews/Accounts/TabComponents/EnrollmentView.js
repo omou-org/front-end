@@ -31,7 +31,7 @@ import PaymentTable from "./PaymentTable";
 import {NoListAlert} from "../../../NoListAlert";
 import {GET} from "../../../../actions/actionTypes";
 import {SessionPaymentStatusChip} from "../../../SessionPaymentStatusChip";
-import {AddSessions} from "../../../../utils";
+import AddSessions from "AddSessions";
 
 export const DayConverter = {
     "0": "Sunday",

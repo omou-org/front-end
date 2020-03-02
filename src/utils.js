@@ -68,7 +68,7 @@ export const sessionPaymentStatus = (session, enrollment) => {
     }
 };
 
-const courseToRegister = (enrollment, course, student) => ({
+export const courseToRegister = (enrollment, course, student) => ({
     "Enrollment": enrollment.enrollment_id,
     "Course Selection": {
         "Course": {

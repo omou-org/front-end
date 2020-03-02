@@ -11,6 +11,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/es/Dialog";
 import MenuItem from "@material-ui/core/MenuItem";
 import PropTypes from 'prop-types';
+import {courseToRegister} from "utils";
 
 /**
  * @description button/menu item to start registering for more sessions for a course.
@@ -21,7 +22,7 @@ import PropTypes from 'prop-types';
  * @param {Object} enrollment this is the enrollment we'll be updating
  */
 
-export const AddSessions = ({componentOption, parentOfCurrentStudent, enrollment}) => {
+const AddSessions = ({componentOption, parentOfCurrentStudent, enrollment}) => {
     const history = useHistory();
     const dispatch = useDispatch();
     const api = useMemo(
@@ -121,3 +122,5 @@ AddSessions.propTypes = {
     parentOfCurrentStudent: PropTypes.string.isRequired,
     enrollment: PropTypes.object.isRequired,
 };
+
+export default AddSessions;
