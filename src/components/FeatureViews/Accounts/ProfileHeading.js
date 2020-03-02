@@ -1,23 +1,19 @@
-import { connect } from "react-redux";
-import React, { Component } from "react";
-import { Card, Paper, Typography } from "@material-ui/core";
+import {connect} from "react-redux";
+import React, {Component} from "react";
+import {Typography} from "@material-ui/core";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
-import AwayIcon from "@material-ui/icons/EventBusy";
-import { ReactComponent as IDIcon } from "../../identifier.svg";
-import { ReactComponent as BirthdayIcon } from "../../birthday.svg";
-import { ReactComponent as GradeIcon } from "../../grade.svg";
-import { ReactComponent as SchoolIcon } from "../../school.svg";
+import {ReactComponent as IDIcon} from "../../identifier.svg";
+import {ReactComponent as BirthdayIcon} from "../../birthday.svg";
+import {ReactComponent as GradeIcon} from "../../grade.svg";
+import {ReactComponent as SchoolIcon} from "../../school.svg";
 import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
 import Button from "@material-ui/core/Button";
-import { NavLink } from "react-router-dom";
-import { addDashes } from "./accountUtils";
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import {DialogActions, DialogContent} from "@material-ui/core";
+import {NavLink} from "react-router-dom";
+import {addDashes} from "./accountUtils";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import OutOfOffice from "./OutOfOffice";
 import './Accounts.scss';
@@ -186,27 +182,19 @@ class ProfileHeading extends Component {
         this.setState({
             "open": false
         });
-    }
+    };
 
     renderEditandAwayButton() {
         if (this.props.user.role != "receptionist") {
             return (
                 <>
-                    <OutOfOffice
-                        instructorID={this.props.user.user_id}
-                        onClose={this.handleClose}
-                        open={this.state.open} />
-                <Grid container align="right" item md={9}>
+                    <Grid container align="right" item md={9}>
                     <Grid item md={4} align= "right" className="editPadding">
-                    <Button onClick={(e) => {
-                                e.preventDefault();
-                                this.handleOpen(e);
-                            }}
-                            className="editButton"
-                            >
-                                <AwayIcon/>
-                    Add OOO
-                    </Button>
+                        {
+                            this.props.user.role === "instructor" && <OutOfOffice
+                                instructorID={this.props.user.user_id}
+                            />
+                        }
                     </Grid>
                     <Grid item md={1}>
                     </Grid>
@@ -234,12 +222,6 @@ class ProfileHeading extends Component {
         }
 
     }
-
-handleOpen(event){
-    event.preventDefault();
-    this.setState({open:true,})
-}
-
 
     render() {
         let profileDetails;

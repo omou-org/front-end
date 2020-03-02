@@ -10,6 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import {courseDateFormat} from "../../../utils";
+import Grow from "@material-ui/core/Grow";
 
 const CourseList = (props) => {
     let filteredCourses = props.filteredCourses.filter(course => course.capacity >= 1);
@@ -19,153 +20,154 @@ const CourseList = (props) => {
         const date = `${start_date} - ${end_date}`,
             time = `${start_time} - ${end_time}`;
         return (
-            <Paper
-                className="row"
-                key={course.course_id}>
-                <Grid
-                    alignItems="center"
-                    container
-                    layout="row">
+            <Grow in key={course.course_id}>
+                <Paper className="row">
                     <Grid
-                        component={Link}
-                        item
-                        md={3}
-                        style={{
-                            "textDecoration": "none",
-                            "cursor": "pointer"
-                        }}
-                        to={`/registration/course/${course.course_id}`}
-                        xs={12}>
-                        <Typography
-                            align="left"
-                            className="course-heading">
-                            {course.title}
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        item
-                        md={5}
-                        style={{
-                            "textDecoration": "none",
-                            "cursor": "pointer"
-                        }}
-                        xs={12}>
+                        alignItems="center"
+                        container
+                        layout="row">
                         <Grid
-                            className="course-detail"
-                            container>
-                            <Grid
+                            component={Link}
+                            item
+                            md={3}
+                            style={{
+                                "textDecoration": "none",
+                                "cursor": "pointer"
+                            }}
+                            to={`/registration/course/${course.course_id}`}
+                            xs={12}>
+                            <Typography
                                 align="left"
-                                className="heading-det"
-                                item
-                                md={4}
-                                xs={3}>
-                                Date
+                                className="course-heading">
+                                {course.title}
+                            </Typography>
+                        </Grid>
+                        <Grid
+                            item
+                            md={5}
+                            style={{
+                                "textDecoration": "none",
+                                "cursor": "pointer"
+                            }}
+                            xs={12}>
+                            <Grid
+                                className="course-detail"
+                                container>
+                                <Grid
+                                    align="left"
+                                    className="heading-det"
+                                    item
+                                    md={4}
+                                    xs={3}>
+                                    Date
+                                </Grid>
+                                <Grid
+                                    align="left"
+                                    item
+                                    md={8}
+                                    xs={9}>
+                                    {date}
+                                </Grid>
                             </Grid>
                             <Grid
-                                align="left"
-                                item
-                                md={8}
-                                xs={9}>
-                                {date}
+                                className="course-detail"
+                                container>
+                                <Grid
+                                    align="left"
+                                    className="heading-det"
+                                    item
+                                    md={4}
+                                    xs={3}>
+                                    Time
+                                </Grid>
+                                <Grid
+                                    align="left"
+                                    item
+                                    md={8}
+                                    xs={9}>
+                                    {days} {time}
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className="course-detail"
+                                container>
+                                <Grid
+                                    align="left"
+                                    className="heading-det"
+                                    item
+                                    md={4}
+                                    xs={3}>
+                                    Instructor
+                                </Grid>
+                                <Grid
+                                    align="left"
+                                    item
+                                    md={8}
+                                    xs={9}>
+                                    {course.instructor_id && (instructors[course.instructor_id] && instructors[course.instructor_id].name)}
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                className="course-detail"
+                                container>
+                                <Grid
+                                    align="left"
+                                    className="heading-det"
+                                    item
+                                    md={4}
+                                    xs={3}>
+                                    Tuition
+                                </Grid>
+                                <Grid
+                                    align="left"
+                                    item
+                                    md={8}
+                                    xs={9}>
+                                    {course.total_tuition && `$${course.total_tuition}`}
+                                </Grid>
                             </Grid>
                         </Grid>
                         <Grid
-                            className="course-detail"
-                            container>
+                            className="course-action"
+                            item
+                            md={4}
+                            xs={12}>
                             <Grid
-                                align="left"
-                                className="heading-det"
-                                item
-                                md={4}
-                                xs={3}>
-                                Time
-                            </Grid>
-                            <Grid
-                                align="left"
-                                item
-                                md={8}
-                                xs={9}>
-                                {days} {time}
-                            </Grid>
-                        </Grid>
-                        <Grid
-                            className="course-detail"
-                            container>
-                            <Grid
-                                align="left"
-                                className="heading-det"
-                                item
-                                md={4}
-                                xs={3}>
-                                Instructor
-                            </Grid>
-                            <Grid
-                                align="left"
-                                item
-                                md={8}
-                                xs={9}>
-                                {course.instructor_id && (instructors[course.instructor_id] && instructors[course.instructor_id].name)}
-                            </Grid>
-                        </Grid>
-                        <Grid
-                            className="course-detail"
-                            container>
-                            <Grid
-                                align="left"
-                                className="heading-det"
-                                item
-                                md={4}
-                                xs={3}>
-                                Tuition
-                            </Grid>
-                            <Grid
-                                align="left"
-                                item
-                                md={8}
-                                xs={9}>
-                                {course.total_tuition && `$${course.total_tuition}`}
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid
-                        className="course-action"
-                        item
-                        md={4}
-                        xs={12}>
-                        <Grid
-                            alignItems="center"
-                            container
-                            layout="row"
-                            style={{ "height": "100%" }}>
-                            <Grid
-                                className="course-status"
-                                item
-                                xs={6}>
-                                {/*<span className="stats">*/}
-                                {course.roster.length} / {course.capacity}
-                                {/*</span>*/}
-                                <span className="label">
+                                alignItems="center"
+                                container
+                                layout="row"
+                                style={{ "height": "100%" }}>
+                                <Grid
+                                    className="course-status"
+                                    item
+                                    xs={6}>
+                                    {/*<span className="stats">*/}
+                                    {course.roster.length} / {course.capacity}
+                                    {/*</span>*/}
+                                    <span className="label">
                                     Enrolled
                                 </span>
-                            </Grid>
-                            <Grid
-                                item
-                                xs={6}>
-                                {
-                                    (props.registration.CurrentParent !== "none" && props.registration.CurrentParent) &&
-                                    <Button
-                                        className="button primary"
-                                        component={Link}
-                                        disabled={course.capacity <= course.roster.length}
-                                        to={`/registration/form/course/${course.course_id}`}
-                                        variant="contained">+ REGISTER
+                                </Grid>
+                                <Grid
+                                    item
+                                    xs={6}>
+                                    {
+                                        (props.registration.CurrentParent !== "none" && props.registration.CurrentParent) &&
+                                        <Button
+                                            className="button primary"
+                                            component={Link}
+                                            disabled={course.capacity <= course.roster.length}
+                                            to={`/registration/form/course/${course.course_id}`}
+                                            variant="contained">+ REGISTER
                                         </Button>
-                                }
+                                    }
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
-            </Paper>
+                </Paper>
+            </Grow>
+
         );
     });
 };
