@@ -30,7 +30,7 @@ import Loading from "../../Loading";
 import {DayConverter} from "../Accounts/TabComponents/EnrollmentView";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel"
-import {courseDateFormat} from "../../../utils";
+import {courseDateFormat, DayConverter} from "../../../utils";
 
 const formatDate = (date) => {
     if (!date) {

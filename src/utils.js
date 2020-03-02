@@ -18,10 +18,14 @@ export const dateTimeFormat = {
     ...dateFormat,
 };
 
-const dateOptions = {
-    "day": "numeric",
-    "month": "short",
-    "year": "numeric",
+export const DayConverter = {
+    "0": "sunday",
+    "1": "monday",
+    "2": "tuesday",
+    "3": "wednesday",
+    "4": "thursday",
+    "5": "friday",
+    "6": "saturday",
 };
 
 export const dateFormatter = (date) => {
@@ -98,3 +102,6 @@ export const courseToRegister = (enrollment, course, student) => ({
     "preLoaded": false,
     "submitPending": false,
 });
+export const truncateStrings = (string, length) => string.length > length
+    ? `${string.slice(0, length - 3).trim()}...`
+    : string;
