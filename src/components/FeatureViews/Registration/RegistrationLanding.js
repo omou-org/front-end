@@ -162,7 +162,7 @@ const RegistrationLanding = () => {
                 layout="row">
                 <Grid
                     item
-                    md={7}
+                    md={8}
                     xs={12}>
                     <Typography
                         align="left"
@@ -174,8 +174,9 @@ const RegistrationLanding = () => {
                 <Grid
                     className="catalog-setting-wrapper"
                     item
-                    md={5}
-                    xs={12}>
+                    md={4}
+                    xs={12}
+                    >
                     <Tabs
                         className="catalog-setting"
                         value={view}>

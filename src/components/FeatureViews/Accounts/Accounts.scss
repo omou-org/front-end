@@ -16,7 +16,10 @@
     text-align: left;
     font-size: 60px;
   }
-
+  .tabs{
+    text-align:left;
+    left:0;
+  }
   .heading {
     margin: 25px 0;
   }
@@ -45,13 +48,16 @@
       cursor: pointer;
     }
 
+    .editPadding{
+      margin-right:0%;
+    }
+
     .editButton {
       color: $lightPrimaryFontColor;
       border-radius: 5px;
       box-sizing: border-box;
       border: solid 2px $secondaryColor !important;
       white-space: nowrap;
-      right: 10%;
     }
 
     .accountsCell{

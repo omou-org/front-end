@@ -26,6 +26,11 @@ export default (state = initialState.Course, {payload, type}) => {
             return handleCoursePost(state, new_course);
         case actions.GET_COURSE_SEARCH_QUERY_SUCCESS:
             return handleCourseSearchResults(state, payload);
+        case actions.DELETE_ENROLLMENT_SUCCESS:
+            const newState = {...state};
+            const courseRoster = newState.NewCourseList[payload.courseID].roster;
+            newState.NewCourseList[payload.courseID].roster.splice(courseRoster.indexOf(payload.studentID),1);
+            return newState;
         default:
             return state;
     }
@@ -164,11 +169,11 @@ const handleNotesFetch = (state, {ownerID, response}) => {
     return newState;
 };
 
-const handleCourseSearchResults = (state, {response}) => {
+const handleCourseSearchResults = (state, payload) => {
+    const {response} = payload;
     const {data} = response;
     let {NewCourseList} = state;
-
-    data.forEach((course) => {
+    data.results.forEach((course) => {
         NewCourseList = updateCourse(NewCourseList, course.id, course);
     });
 

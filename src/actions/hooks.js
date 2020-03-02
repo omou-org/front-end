@@ -1,6 +1,6 @@
 import * as types from "./actionTypes";
 import {instance, MISC_FAIL, REQUEST_ALL, REQUEST_STARTED} from "./apiActions";
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
 export const isFail = (...statuses) =>
@@ -28,7 +28,6 @@ export const isSuccessful = (...statuses) =>
  * @returns {Number} status of the request (null if not started/canceled)
  */
 export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOnUndef) => {
-    const token = useSelector(({auth}) => auth.token);
     const [status, setStatus] = useState(null);
     const dispatch = useDispatch();
 
@@ -41,13 +40,6 @@ export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOn
         }
     }, []);
 
-    const requestSettings = useMemo(() => ({
-        "headers": {
-            "Authorization": `Token ${token}`,
-        },
-        ...config,
-    }), [token]);
-
     useEffect(() => {
         let aborted = false;
         // no id passed
@@ -59,7 +51,7 @@ export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOn
                         setStatus(REQUEST_STARTED);
                         const response = await instance.get(
                             endpoint,
-                            requestSettings
+                            config
                         );
                         if (!aborted) {
                             dispatch({
@@ -85,7 +77,7 @@ export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOn
                     setStatus(REQUEST_STARTED);
                     const response = await instance.get(
                         `${endpoint}${id}/`,
-                        requestSettings
+                        config
                     );
                     if (!aborted) {
                         dispatch({
@@ -111,7 +103,7 @@ export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOn
                     const response = await Promise.all(id.map(
                         (individual) => instance.get(
                             `${endpoint}${individual}/`,
-                            requestSettings
+                            config
                         )
                     ));
                     if (!aborted) {
@@ -123,10 +115,10 @@ export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOn
                             "type": successType,
                         });
                         setStatus(response.reduce((finalStatus, {status}) =>
-                            isFail(status) ? status :
-                            isFail(finalStatus) ? finalStatus :
-                            isLoading(status) ? status :
-                            finalStatus, 200));
+                            isFail(status) ? status
+                                : isFail(finalStatus) ? finalStatus
+                                    : isLoading(status) ? status
+                                        : finalStatus, 200));
                     }
                 } catch (error) {
                     if (!aborted) {
@@ -141,7 +133,7 @@ export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOn
             setStatus(null);
             aborted = true;
         };
-    }, [dispatch, id, token, noFetchOnUndef, requestSettings, handleError]);
+    }, [dispatch, id, noFetchOnUndef, handleError]);
     return status;
 };
 
@@ -170,6 +162,11 @@ export const useEnrollment = wrapUseEndpoint(
     types.FETCH_ENROLLMENT_SUCCESSFUL,
 );
 
+export const useOutOfOffice = wrapUseEndpoint(
+    "/account/instructor-out-of-office/",
+    types.FETCH_OOO_SUCCESS,
+);
+
 export const useEnrollmentByCourse = (courseID) => wrapUseEndpoint(
     "/course/enrollment/",
     types.FETCH_ENROLLMENT_SUCCESSFUL,
@@ -194,9 +191,9 @@ export const usePaymentByParent = (parentID) => wrapUseEndpoint(
     "/payment/payment/",
     types.GET_PAYMENT_PARENT_SUCCESS,
     {
-        "params":{
+        "params": {
             "parent": parentID,
-        }
+        },
     }
 )(null);
 
@@ -204,14 +201,48 @@ export const usePaymentByEnrollment = (enrollmentID) => wrapUseEndpoint(
     "/payment/payment/",
     types.GET_PAYMENT_ENROLLMENT_SUCCESS,
     {
-        "params":{
+        "params": {
             "enrollment": enrollmentID,
-        }
+        },
     }
 );
 
+export const useClassSessionsInPeriod = (time_frame, time_shift) => wrapUseEndpoint(
+    "/scheduler/session/",
+    types.GET_SESSIONS_SUCCESS,
+    {
+        "params": {
+            time_frame,
+            time_shift,
+            "view_option": "class",
+        },
+    }
+)();
+
+export const useTutoringSessionsInPeriod = (time_frame, time_shift) => wrapUseEndpoint(
+    "/scheduler/session/",
+    types.GET_SESSIONS_SUCCESS,
+    {
+        "params": {
+            time_frame,
+            time_shift,
+            "view_option": "tutoring",
+        },
+    }
+)();
+
+export const useInstructorAvailability = (instructorID) => wrapUseEndpoint(
+    "/account/instructor-availability/",
+    types.FETCH_INSTRUCTOR_AVAILABILITY_SUCCESS,
+    {
+        "params": {
+            "instructor_id": instructorID,
+        },
+    }
+)();
+
 // Hook
-export function usePrevious(value) {
+export const usePrevious = (value) => {
     // The ref object is a generic container whose current property is mutable ...
     // ... and can hold any value, similar to an instance property on a class
     const ref = useRef();
@@ -219,8 +250,8 @@ export function usePrevious(value) {
     // Store current value in ref
     useEffect(() => {
         ref.current = value;
-    }, [value]); // Only re-run if value changes
+    }, [value]);
 
     // Return previous value (happens before update in useEffect above)
     return ref.current;
-}
+};

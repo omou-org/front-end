@@ -1,16 +1,16 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import IconButton from "@material-ui/core/es/IconButton";
 import FilterIcon from "@material-ui/icons/FilterList";
 import Menu from "@material-ui/core/es/Menu";
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import blue from "@material-ui/core/es/colors/blue";
 import ReactSelect from "react-select";
-import {Tooltip} from "@material-ui/core";
+import { Tooltip, Typography, MenuItem } from "@material-ui/core";
 
 const styles = theme => ({
     colorSwitchBase: {
         color: blue[300],
-        '&$colorChecked':{
+        '&$colorChecked': {
             color: blue[500],
             '& + $colorBar': {
                 backgroundColor: blue[500],
@@ -21,15 +21,16 @@ const styles = theme => ({
     colorChecked: {},
 });
 
-function SessionFilters({onInstructorSelect, InstructorValue, InstructorOptions, CourseValue, onCourseSelect, CourseOptions }){
-    let [anchorEl, setAnchorEl ] = useState(null);
+function SessionFilters({ onInstructorSelect, InstructorValue, InstructorOptions, CourseValue, onCourseSelect, CourseOptions }) {
+    let [anchorEl, setAnchorEl] = useState(null);
     let [open, setOpen] = useState(false);
+
 
     const handleClick = event => {
         setAnchorEl(event.currentTarget);
         setOpen(!open);
     };
-    
+
     return (<>
         <Tooltip title={"Session Filters"}>
             <IconButton
@@ -38,9 +39,10 @@ function SessionFilters({onInstructorSelect, InstructorValue, InstructorOptions,
                 aria-haspopup="true"
                 onClick={handleClick}
             >
-                <FilterIcon/>
+                <FilterIcon />
             </IconButton>
         </Tooltip>
+
         <Menu
             id={"long-menu"}
             anchorEl={anchorEl}
@@ -49,24 +51,27 @@ function SessionFilters({onInstructorSelect, InstructorValue, InstructorOptions,
             className={"session-filter"}
             onClose={handleClick}
         >
+            <MenuItem
+                disabled={true}
+            > Select Filter</MenuItem>
             <ReactSelect
                 className={"instructor-session-filter"}
                 placeholder={"Filter Instructor..."}
                 value={InstructorValue}
                 options={InstructorOptions}
-                onChange={ onInstructorSelect }
+                onChange={onInstructorSelect}
                 clearable
                 isMulti
             />
-            {/*<ReactSelect*/}
-            {/*    className={"instructor-session-filter"}*/}
-            {/*    placeholder={"Filter Course..."}*/}
-            {/*    value={CourseValue}*/}
-            {/*    options={CourseOptions}*/}
-            {/*    onChange={ onCourseSelect }*/}
-            {/*    clearable*/}
-            {/*    isMulti*/}
-            {/*/>*/}
+            <ReactSelect
+                className={"instructor-session-filter"}
+                placeholder={"Filter Course..."}
+                value={CourseValue}
+                options={CourseOptions}
+                onChange={onCourseSelect}
+                clearable
+                isMulti
+            />
         </Menu>
     </>)
 }

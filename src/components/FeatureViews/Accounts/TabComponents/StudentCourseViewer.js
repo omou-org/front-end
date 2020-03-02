@@ -1,15 +1,15 @@
 import * as hooks from "actions/hooks";
-import { Link, useLocation } from "react-router-dom";
-import React, { useCallback, useMemo } from "react";
-import { courseDataParser } from "utils";
+import {Link, useLocation} from "react-router-dom";
+import React, {useCallback, useMemo} from "react";
 import PropTypes from "prop-types";
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 
 import Grid from "@material-ui/core/Grid";
 import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import { NoListAlert } from "../../../NoListAlert";
+import {NoListAlert} from "../../../NoListAlert";
+import {courseDateFormat} from "../../../../utils";
 
 const today = new Date();
 
@@ -37,13 +37,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
     const coursePaymentStatusList = useMemo(() =>
         enrollments[studentID] ? Object.entries(enrollments[studentID])
             .map(([courseID, enrollment]) => {
-                let sessionCount = 0;
-                enrollment.payment_list.forEach(payment => {
-                    payment.registrations.forEach(registration => {
-                        sessionCount += registration.num_sessions;
-                    });
-                });
-                return { course: courseID, sessions: sessionCount }
+                return { course: courseID, sessions: enrollment.sessions_left }
             }) : [], [enrollments, studentID]);
     let coursePaymentStatus = {};
     coursePaymentStatusList.forEach(({ course, sessions }) => coursePaymentStatus[course] = sessions);
@@ -53,12 +47,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
             return 0;
         }
 
-        return Object.values(
-            enrollments[studentID][courseID].session_payment_status
-        ).reduce(
-            (numPaid, status) =>
-                status === 1 ? numPaid + 1 : numPaid, 0
-        );
+        return enrollments[studentID][courseID].sessions_left || 0;
     }, [enrollments, studentID]);
 
     const filterCourseByDate = useCallback((endDate) => {
@@ -146,7 +135,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
                             if (!course) {
                                 return "Loading...";
                             }
-                            const { days, startDate, endDate, startTime, endTime } = courseDataParser(course);
+                            const { days, start_date, end_date, start_time, end_time} = courseDateFormat(course);
                             return (
                                 <Grid
                                     className="accounts-table-row"
@@ -173,7 +162,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
                                                 <Typography
                                                     align="left"
                                                     className="accounts-table-text">
-                                                    {startDate} - {endDate}
+                                                    {start_date} - {end_date}
                                                 </Typography>
                                             </Grid>
                                             <Grid
@@ -182,7 +171,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
                                                 <Typography
                                                     align="left"
                                                     className="accounts-table-text">
-                                                    {days}
+                                                    {days.charAt(0).toUpperCase() + days.slice(1)}
                                                 </Typography>
                                             </Grid>
                                             <Grid
@@ -191,7 +180,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
                                                 <Typography
                                                     align="left"
                                                     className="accounts-table-text">
-                                                    {startTime} - {endTime}
+                                                    {start_time} - {end_time}
                                                 </Typography>
                                             </Grid>
                                             <Grid

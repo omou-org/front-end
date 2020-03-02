@@ -1,8 +1,8 @@
 /* eslint-disable max-lines-per-function */
 // React Imports
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {useHistory} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
 import PropTypes from "prop-types";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -18,18 +18,19 @@ import Add from "@material-ui/icons/CheckCircle";
 // Local Component Imports
 import "./Form.scss";
 import TextField from "@material-ui/core/es/TextField/TextField";
-import { bindActionCreators } from "redux";
+import {bindActionCreators} from "redux";
 import * as apiActions from "../../actions/apiActions";
-import { instance } from "../../actions/apiActions";
+import {instance} from "../../actions/apiActions";
 import * as userActions from "../../actions/userActions";
 import * as registrationActions from "../../actions/registrationActions";
-import { dayOfWeek, weeklySessionsParser } from "./FormUtils";
-import { usePrevious } from "../../actions/hooks";
+import {dayOfWeek, weeklySessionsParser} from "./FormUtils";
+import {usePrevious} from "../../actions/hooks";
+import {isExistingTutoring} from "../../utils";
 
 const CASH = "cash",
     CHECK = "check",
     CREDIT_CARD = "credit_card",
-    INTERNATIONAL_CREDIT_CARD = "international_credit_card";
+    INTERNATIONAL_CREDIT_CARD = "intl_credit_card";
 
 const PriceQuoteForm = ({ courses, tutoring }) => {
     const dispatch = useDispatch();
@@ -42,7 +43,6 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
         [dispatch]
     );
     const history = useHistory();
-    const token = useSelector(({ auth }) => auth.token);
     const isAdmin = useSelector(({ auth }) => auth.isAdmin);
     const [priceQuote, setPriceQuote] = useState({});
     const prevPriceQuote = usePrevious(priceQuote);
@@ -74,17 +74,16 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                 "classes": courses,
                 "tutoring": cleanTutoring.map((tutoring) => {
                     delete tutoring.new_course;
-                    return tutoring;
+                    return {
+                        ...tutoring,
+                        "duration": 1
+                    };
                 }),
                 "disabled_discounts": discounts.filter((discount) => !discount.enable).map(({ id }) => id),
                 "price_adjustment": Number(priceAdjustment),
             };
             // make price quote request
-            instance.post("/pricing/quote/", requestedQuote, {
-                "headers": {
-                    "Authorization": `Token ${token}`,
-                },
-            }).then((quoteResponse) => {
+            instance.post("/pricing/quote/", requestedQuote).then((quoteResponse) => {
                 const responseDiscounts = JSON.stringify(quoteResponse.data.discounts);
                 const stateDiscounts = JSON.stringify(discounts);
                 if (responseDiscounts !== stateDiscounts) {
@@ -110,7 +109,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                 }
             });
         }
-    }, [paymentMethod, courses, tutoring, discounts, priceAdjustment, priceQuote, prevPriceQuote, prevDiscounts, prevPriceAdjustment, cleanTutoring, token]);
+    }, [paymentMethod, courses, tutoring, discounts, priceAdjustment, priceQuote, prevPriceQuote, prevDiscounts, prevPriceAdjustment, cleanTutoring]);
 
     const handlePay = () => (e) => {
         e.preventDefault();
@@ -133,23 +132,24 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
             const endDate = tutoring.new_course.schedule.end_date.substring(0, 10);
             const tutoringCourse = {
                 "subject": tutoring.new_course.title,
-                "day_of_week": dayOfWeek[tutoring.new_course.day_of_week],
+                "day_of_week": dayOfWeek[tutoring.new_course.day_of_week] || tutoring.new_course.schedule.days,
                 "start_time": tutoring.new_course.schedule.start_time,
                 "end_time": tutoring.new_course.schedule.end_time,
                 "start_date": startDate,
                 "end_date": endDate,
                 "max_capacity": 1,
-                "course_category": tutoring.category_id,
-                "academic_level": tutoring.academic_level,
-                "instructor": tutoring.new_course.instructor,
+                "course_category": tutoring.category_id || tutoring.new_course.category,
+                "academic_level": tutoring.academic_level || tutoring.new_course.academic_level,
+                "instructor": tutoring.new_course.instructor || tutoring.new_course.instructor_id,
                 "course_type": "tutoring",
                 "description": tutoring.new_course.description,
                 "is_confirmed": tutoring.new_course.is_confirmed,
             };
             tutoringRegistrations.push({
                 "newTutoringCourse": tutoringCourse,
-                "sessions": weeklySessionsParser(startDate, endDate),
+                "sessions": isExistingTutoring(tutoring.courseID) ? tutoring.sessions: weeklySessionsParser(startDate, endDate),
                 "student": tutoring.student_id,
+                "courseID": tutoring.courseID,
             });
         });
 

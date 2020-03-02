@@ -9,6 +9,7 @@ import React, {Component} from "react";
 import {Prompt} from "react-router";
 import {NavLink, withRouter} from "react-router-dom";
 import CreatableSelect from 'react-select/creatable';
+import AsyncSelect from "react-select/async";
 import {updateParent, updateStudent} from "reducers/usersReducer";
 import {updateCourse} from "reducers/courseReducer";
 // Material UI Imports
@@ -42,7 +43,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import {DatePicker, TimePicker,} from "material-ui-pickers";
-import {createDiscountPayload, durationParser, loadEditCourseState, numSessionsParser, timeParser} from "./FormUtils";
+import * as utils from "./FormUtils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
 
 const parseGender = {
@@ -266,20 +267,14 @@ class Form extends Component {
                         let student;
                         try {
                             const response = await apiActions.instance.get(
-                                `/account/student/${id}/`, {
-                                "headers": {
-                                    "Authorization": `Token ${this.props.token}`,
-                                },
-                            });
+                                `/account/student/${id}/`
+                            );
                             // succesful request
                             newAction(types.FETCH_STUDENT_SUCCESSFUL, response);
                             student = updateStudent({}, id, response.data)[id];
                             const parents = await apiActions.instance.get(
-                                `/account/parent/`, {
-                                "headers": {
-                                    "Authorization": `Token ${this.props.token}`,
-                                },
-                            });
+                                `/account/parent/`
+                            );
                             this.props.dispatch({
                                 "type": types.FETCH_PARENT_SUCCESSFUL,
                                 "payload": {
@@ -348,20 +343,14 @@ class Form extends Component {
                         let course;
                         try {
                             const response = await apiActions.instance.get(
-                                `/course/catalog/${id}/`, {
-                                    "headers": {
-                                        "Authorization": `Token ${this.props.token}`,
-                                    },
-                                });
+                                `/course/catalog/${id}/`
+                            );
                             // succesful request
                             newAction(types.FETCH_COURSE_SUCCESSFUL, response);
                             course = updateCourse({}, id, response.data)[id];
                             const instructors = await apiActions.instance.get(
-                                `/account/parent/`, {
-                                "headers": {
-                                    "Authorization": `Token ${this.props.token}`,
-                                },
-                            });
+                                `/account/parent/`
+                            );
                             this.props.dispatch({
                                 "type": types.FETCH_INSTRUCTOR_SUCCESSFUL,
                                 "payload": {
@@ -378,7 +367,7 @@ class Form extends Component {
                         } finally {
                             if (course) {
                                 const inst = this.props.instructors[course.instructor_id];
-                                this.setState(loadEditCourseState(course,inst));
+                                this.setState(utils.loadEditCourseState(course,inst));
                             }
                         }
                     })();
@@ -399,11 +388,8 @@ class Form extends Component {
                         let parent;
                         try {
                             const response = await apiActions.instance.get(
-                                `/account/parent/${id}/`, {
-                                    "headers": {
-                                        "Authorization": `Token ${this.props.token}`,
-                                    },
-                                });
+                                `/account/parent/${id}/`
+                            );
                             // succesful request
                             newAction(types.FETCH_PARENT_SUCCESSFUL, response);
                             parent = updateParent({}, id, response.data)[id];
@@ -530,7 +516,7 @@ class Form extends Component {
                                 this.props.adminActions.setPrice(this.state);
                             } else if( this.state.form === "discount"){
                                 let discountType = this.state["Discount Description"]["Discount Type"];
-                                let discountPayload = createDiscountPayload(this.state, discountType);
+                                let discountPayload = utils.createDiscountPayload(this.state, discountType);
                                 this.props.adminActions.setDiscount(discountType, discountPayload);
                             } else {
                                 this.props.registrationActions.submitForm(this.state);
@@ -740,6 +726,10 @@ class Form extends Component {
         })
     }
 
+    searchInstructors = async (input) => {
+        return await utils.loadInstructors(input)
+    }
+
     renderField(field, label, fieldIndex) {
         const fieldTitle = field.name;
         let disabled = this.state["Parent Information"] &&
@@ -754,7 +744,7 @@ class Form extends Component {
             case "select":
                 let startTime = this.state[label]["Start Time"];
                 let endTime = this.state[label]["End Time"];
-                let parsedDuration = durationParser({start: startTime, end: endTime},fieldTitle, true);
+                let parsedDuration = utils.durationParser({start: startTime, end: endTime},fieldTitle, true);
                 let value, options;
                 if (parsedDuration && this.state[label][fieldTitle]){
                     if(parsedDuration.duration){
@@ -906,24 +896,27 @@ class Form extends Component {
             case "instructor": {
                 let instructorList = this.props.instructors;
 
-                instructorList = Object.values(instructorList).map(({user_id, name, email}) => ({
-                    value: user_id,
-                    label: `${name} - ${email}`,
-                }));
-                instructorList = this.removeDuplicates(Object.values(this.state[label]), instructorList);
-                return (<div style={{width: "inherit"}}>
-                    <Grid container className="student-align">
-                        <SearchSelect
-                            disabled={disabled}
-                            value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
-                            onChange={(value) => {
-                                this.onSelectChange(value, label, field);
-                            }}
-                            placeholder={"Choose an Instructor"}
-                            options={instructorList}
-                            className="search-options" />
-                    </Grid>
-                </div>);
+                instructorList = Object.values(instructorList)
+                    .map(({user_id, name, email}) => ({
+                        "value": user_id,
+                        "label": `${name} - ${email}`,
+                    }));
+
+                return (
+                    <div style={{width: "inherit"}}>
+                        <Grid container className="student-align">
+                            <AsyncSelect
+                                cacheOptions
+                                className="search-options"
+                                defaultOptions={instructorList}
+                                loadOptions={this.searchInstructors}
+                                onChange={(value) => {
+                                    this.onSelectChange(value, label, field);
+                                }}
+                            />
+                        </Grid>
+                    </div>
+                );
             }
             case "category" : {
                 const categoriesList = this.props.courseCategories
@@ -985,7 +978,7 @@ class Form extends Component {
                 if(this.state[label][fieldTitle] && typeof this.state[label][fieldTitle] !== "string"){
                     time = this.state[label][fieldTitle];
                 } else if(typeof this.state[label][fieldTitle] === "string"){
-                    time = timeParser(this.state[label][fieldTitle]);
+                    time = utils.timeParser(this.state[label][fieldTitle]);
                 }
                 return <Grid container>
                     <TimePicker autoOk
@@ -998,7 +991,7 @@ class Form extends Component {
                                 }) } }/>
                 </Grid>;
             default:
-                let textValue = numSessionsParser(this.state[label],field.name) || this.state[label][field.name];
+                let textValue = utils.weeklySessionsParser(this.state[label],field.name) || this.state[label][field.name];
                 return <TextField
                     label={field.name}
                     multiline={field.multiline}
@@ -1372,7 +1365,7 @@ class Form extends Component {
                             />
                         }
                         <Typography className="heading" align="left">
-                            Course Registration Confirmation
+                            {this.renderTitle(this.props.match.params.id, this.props.match.params.type)}
                         </Typography>
                         {
                             this.props.submitStatus !== "success" ?
@@ -1459,7 +1452,6 @@ const mapStateToProps = (state) => ({
     "students": state.Users["StudentList"],
     "instructors": state.Users["InstructorList"],
     "requestStatus": state.RequestStatus,
-    "token": state.auth.token,
     "isAdmin": state.auth.isAdmin,
 });
 
