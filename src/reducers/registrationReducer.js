@@ -1,8 +1,8 @@
-import initialState from "./initialState";
-import * as actions from "./../actions/actionTypes";
-import {dateParser} from "../components/Form/FormUtils";
+import initialState from './initialState';
+import * as actions from "./../actions/actionTypes"
+import { dateParser } from "../components/Form/FormUtils";
 
-export default function registration(state = initialState.RegistrationForms, {payload, type}) {
+export default function registration(state = initialState.RegistrationForms, { payload, type }) {
     let newState = JSON.parse(JSON.stringify(state));
     switch (type) {
         case actions.ADD_STUDENT_FIELD:
@@ -24,6 +24,10 @@ export default function registration(state = initialState.RegistrationForms, {pa
             newState = removeField(state, path, removeFieldIndex, conditional);
             return newState;
         case actions.POST_STUDENT_SUCCESSFUL:
+            return successSubmit(state);
+        case actions.POST_STUDENT_FAILED:
+            return failedSubmit(state);
+        case actions.POST_ADMIN_SUCCESSFUL:
             return successSubmit(state);
         case actions.POST_STUDENT_FAILED:
             return failedSubmit(state);
@@ -75,7 +79,7 @@ export default function registration(state = initialState.RegistrationForms, {pa
             return editCourseRegistration(newState, payload);
         case actions.SET_REGISTRATION:
             newState.registration = payload;
-            return {...newState};
+            return { ...newState };
         default:
             return state;
     }
@@ -114,8 +118,8 @@ const addField = (prevState, path) => {
     const numFieldType = SectionFieldList.reduce((total, {field}) => total + (field === fieldName), 1);
     const NewField = {
         ...SectionFieldList[fieldIndex],
-        "name": `${fieldName} ${numFieldType}`,
-        "required": false,
+        name: `${fieldName} ${numFieldType}`,
+        required: false,
     };
     SectionFieldList.push(NewField);
     setSectionFieldList(path, SectionFieldList, prevState.registration_form);
@@ -213,21 +217,21 @@ const addClassRegistration = (prevState, form) => {
         courseName = form["Group Details"]["Select Group"].label;
     }
 
-    const enrollmentObject = {
-        "type": "class",
-        "student_id": studentID,
-        "course_id": Number(courseID),
-        "enrollment_note": studentInfoNote,
-        "sessions": 0,
-        "display": {
-            "student_name": studentName,
-            "course_name": courseName,
-            "course_id": Number(courseID),
+    let enrollmentObject = {
+        type: "class",
+        student_id: studentID,
+        course_id: Number(courseID),
+        enrollment_note: studentInfoNote,
+        sessions: 0,
+        display: {
+            student_name: studentName,
+            course_name: courseName,
+            course_id: Number(courseID)
         },
-        "form": {
+        form: {
             ...form,
-            "activeStep": 0,
-            "activeSection": "Student",
+            activeStep: 0,
+            activeSection: "Student"
         },
     };
 
@@ -247,7 +251,7 @@ const addClassRegistration = (prevState, form) => {
     prevState.registered_courses = addStudentRegistration(studentID, prevState.registered_courses, "class", enrollmentObject);
     prevState.submitStatus = "success";
 
-    return {...prevState};
+    return { ...prevState };
 };
 
 export const academicLevelParse = {
@@ -326,26 +330,26 @@ const addTutoringRegistration = (prevState, form) => {
             "course_category": category,
             "is_confirmed": instructorConfirmation,
         },
-        "student_id": studentID,
-        "course_id": `T${isStudentCurrentlyRegistered ? (prevState.registered_courses[studentID].length + 1).toString() : "0"}`,
-        "sessions": numSessions,
-        "academic_level": academicLevel,
-        category,
-        "display": {
-            "student_name": studentName,
-            "course_name": courseName,
+        student_id: studentID,
+        course_id: "T" + (isStudentCurrentlyRegistered ? (prevState.registered_courses[studentID].length + 1).toString() : "0"),
+        sessions: numSessions,
+        academic_level: academicLevel,
+        category: category,
+        display: {
+            student_name: studentName,
+            course_name: courseName,
         },
-        "form": {
+        form: {
             ...form,
-            "activeStep": 0,
-            "activeSection": "Student",
+            activeStep: 0,
+            activeSection: "Student"
         },
     };
 
     prevState.registered_courses = addStudentRegistration(studentID, prevState.registered_courses, "tutoring", enrollmentObject);
     prevState.submitStatus = "success";
 
-    return {...prevState};
+    return { ...prevState };
 };
 
 const addSmallGroupRegistration = (prevState, {formMain, new_course}) => {
@@ -355,33 +359,33 @@ const addSmallGroupRegistration = (prevState, {formMain, new_course}) => {
     const {Student, Student_validated, existingUser, hasLoaded, nextSection, preLoaded, submitPending} = formMain;
 
     const enrollmentObject = {
-        "type": "small_group",
-        "student_id": studentID,
-        "course_id": new_course.id,
-        "enrollment_note": "",
-        "sessions": new_course.max_capacity,
-        "display": {
-            "student_name": studentName,
-            "course_name": new_course.subject,
+        type: "small_group",
+        student_id: studentID,
+        course_id: new_course.id,
+        enrollment_note: "",
+        sessions: new_course.max_capacity,
+        display: {
+            student_name: studentName,
+            course_name: new_course.subject,
         },
-        "form": {
-            Student,
-            Student_validated,
-            existingUser,
-            "form": "small_group",
-            hasLoaded,
-            nextSection,
-            preLoaded,
-            submitPending,
-            "activeStep": 0,
-            "activeSection": "Student",
-            "isSmallGroup": true,
+        form: {
+            Student: Student,
+            Student_validated: Student_validated,
+            existingUser: existingUser,
+            form: "small_group",
+            hasLoaded: hasLoaded,
+            nextSection: nextSection,
+            preLoaded: preLoaded,
+            submitPending: submitPending,
+            activeStep: 0,
+            activeSection: "Student",
+            isSmallGroup: true,
         },
     };
 
     prevState.registered_courses = addStudentRegistration(studentID, prevState.registered_courses, "small group", enrollmentObject);
     prevState.submitStatus = "success";
-    return {...prevState};
+    return { ...prevState };
 };
 
 const addStudentRegistration = (studentID, registeredCourses, courseType, enrollmentObject) => {
@@ -417,7 +421,7 @@ const addStudentRegistration = (studentID, registeredCourses, courseType, enroll
 };
 
 const stringifyStudentInformation = (form) => {
-    const studentInfoList = Object.entries(form["Student Information"]);
+    let studentInfoList = Object.entries(form["Student Information"]);
     let studentInfoNote = "";
     studentInfoList.forEach((infoPair) => {
         studentInfoNote += `${infoPair[0]}: ${infoPair[1]}\n`;
@@ -456,8 +460,8 @@ const editCourseRegistration = (prevState, course) => {
                 if (value !== student_id) {
                     editedRegistration = {
                         ...editedRegistration,
-                        student_id,
-                        "display": {
+                        student_id: student_id,
+                        display: {
                             ...editedRegistration.display,
                             "student_name": studentName || "Invalid Student",
                         },
@@ -468,8 +472,8 @@ const editCourseRegistration = (prevState, course) => {
                 if (value !== course_id) {
                     editedRegistration = {
                         ...editedRegistration,
-                        course_id,
-                        "display": {
+                        course_id: course_id,
+                        display: {
                             ...editedRegistration.display,
                             "course_name": renderCourseName(editedRegistration.type, form, new_course),
                         },
@@ -514,14 +518,14 @@ const editCourseRegistration = (prevState, course) => {
 
     const updatedRegistration = {
         ...prevState,
-        "registered_courses": {
+        registered_courses: {
             ...prevState.registered_courses,
             [student_id]: updated_registered_courses,
         },
     };
     sessionStorage.setItem("registered_courses", JSON.stringify(updatedRegistration.registered_courses));
 
-    return {...updatedRegistration};
+    return { ...updatedRegistration };
 };
 
 const closeRegistration = (state) => {
@@ -529,7 +533,7 @@ const closeRegistration = (state) => {
     sessionStorage.removeItem("CurrentParent");
     return {
         ...state,
-        "CurrentParent": "none",
-        "registered_courses": null,
+        CurrentParent: "none",
+        registered_courses: null,
     };
 };

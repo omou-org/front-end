@@ -19,6 +19,8 @@ export let InputValidation = (input, type) => {
             return DateValidation(input);
         case "time":
             return timeValidation(input);
+        case "password":
+            return passwordValidation(input)
         default:
             return Boolean(input);
     }
@@ -45,7 +47,7 @@ let ShortTextValidation = (input) => {
 // Address
 let AddressValidation = (input) => {
     // Old regex /\d{1,5}\s\w\s(\b\w*\b\s){1,2}?.\w*/
-    return !!input.match(/^[a-zA-Z0-9\s,.'-]{3,}$/ );
+    return !!input.match(/^[a-zA-Z0-9\s,.'-]{3,}$/);
 
 };
 
@@ -65,4 +67,9 @@ let DateValidation = (input) => {
 const timeValidation = (input) => {
     // (/^(1[0-2]|0?[1-9]):[0-5][0-9] (a|A|p|P)(m|M)$/u).test(input);
     return true;
+}
+
+// Password validation 
+const passwordValidation = (input) => {
+    return true
 }

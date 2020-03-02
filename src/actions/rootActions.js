@@ -1,11 +1,12 @@
 import * as types from "./actionTypes";
-import {instance} from "./apiActions";
+import { instance } from "./apiActions";
 
 const typeToEndpoint = {
     "student": "/account/student/",
     "parent": "/account/parent/",
     "instructor": "/account/instructor/",
     "course": "/course/catalog/",
+    "admin": "/account/admin/",
 };
 
 const typeToFetchActions = {
@@ -48,6 +49,10 @@ export const typeToPostActions = {
         types.POST_CATEGORY_SUCCESS,
         types.POST_CATEGORY_FAILED,
     ],
+    "admin": [
+        types.POST_ADMIN_SUCCESSFUL,
+        types.POST_ADMIN_FAILED
+    ]
 };
 
 export const fetchData = (type) => {
@@ -62,7 +67,7 @@ export const fetchData = (type) => {
                 });
             })
             .catch((error) => {
-                dispatch({type: failAction, payload: error});
+                dispatch({ type: failAction, payload: error });
             });
     } else {
         console.error(`Invalid data type ${type}, must be one of ${Object.keys(typeToEndpoint)}`);
@@ -82,14 +87,14 @@ export const postData = (type, body) => {
         }).then(() => {
             instance.post(endpoint, body)
                 .then((response) => {
-                    let {data} = response;
+                    let { data } = response;
                     dispatch({
                         type: successAction,
                         payload: data,
                     });
                 })
                 .catch((error) => {
-                    dispatch({type: failAction, payload: error});
+                    dispatch({ type: failAction, payload: error });
                 });
         });
     } else {
@@ -116,7 +121,7 @@ export const patchData = (type, body, id) => {
                     });
                 })
                 .catch((error) => {
-                    dispatch({type: failAction, payload: error});
+                    dispatch({ type: failAction, payload: error });
                 });
         });
     } else {
@@ -136,7 +141,7 @@ export const submitParentAndStudent = (parent, student, parentID, studentID) => 
         });
         resolve();
     }).then(() => {
-        let formatDate = new Date(parent.birth_date).toISOString().substring(0,10);
+        let formatDate = new Date(parent.birth_date).toISOString().substring(0, 10);
         instance.request({
             "data": {...parent, birth_date: formatDate},
             "method": parentID ? "patch" : "post",
@@ -161,10 +166,10 @@ export const submitParentAndStudent = (parent, student, parentID, studentID) => 
                             payload: studentResponse.data,
                         });
                     }, (error) => {
-                        dispatch({type: studentFailAction, payload: error});
+                        dispatch({ type: studentFailAction, payload: error });
                     });
             }, (error) => {
-                dispatch({type: parentFailAction, payload: error});
+                dispatch({ type: parentFailAction, payload: error });
             });
     });
 };
