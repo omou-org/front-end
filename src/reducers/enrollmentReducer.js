@@ -31,9 +31,9 @@ const handleEnrollment = (state, payload, requestType) => {
         data = payload;
     }
     const newState = JSON.parse(JSON.stringify(state));
-    switch (requestType) {
-        case "GET": {
-            data.forEach(({student, course, id, payment_list, enrollment_balance, last_paid_session_datetime, sessions_left}) => {
+    switch(requestType) {
+        case "GET":{
+            data.forEach(({student, course, id, payment_list, enrollment_balance, sessions_left, last_paid_session_datetime }) => {
                 let newStudentData = newState[student] || {};
                 let newCourseData = {
                     "enrollment_id": id,
