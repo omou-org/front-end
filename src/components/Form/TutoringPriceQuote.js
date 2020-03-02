@@ -18,7 +18,6 @@ import {durationParser, REQUEST_ALL} from "../../actions/apiActions";
 import {academicLevelParse} from "../../reducers/registrationReducer";
 import InputLabel from "@material-ui/core/InputLabel";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
-import UnconfirmIcon from "@material-ui/icons/Cancel";
 
 
 const TutoringPriceQuote = ({courseType, handleUpdatePriceFields, tuitionConfirmed}) => {
@@ -336,11 +335,7 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields, tuitionConfirm
                               direction={"row"}
                               justify={"flex-end"}>
                             <Grid item xs={3}>
-                                {
-                                    tuitionConfirmed ?
-                                        <ConfirmIcon className="confirmed course-icon" /> :
-                                        <UnconfirmIcon className="unconfirmed course-icon" />
-                                }
+                                 <ConfirmIcon className={`${tuitionConfirmed && "confirmed"} course-icon`} />
                                 <Button
                                     disabled={!validFields}
                                     onClick={onUpdateFields}
