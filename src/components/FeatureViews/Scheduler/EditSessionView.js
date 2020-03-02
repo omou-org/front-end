@@ -1,23 +1,24 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
-import { bindActionCreators } from "redux";
+import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import * as calendarActions from "../../../actions/calendarActions";
 import * as userActions from "../../../actions/userActions.js"
-import { useDispatch, useSelector } from "react-redux";
-import { FormControl, Typography } from "@material-ui/core";
-import { useHistory, withRouter } from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {FormControl, Typography} from "@material-ui/core";
+import {useHistory, withRouter} from "react-router-dom";
 import * as apiActions from "../../../actions/apiActions";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import { DatePicker, TimePicker } from "material-ui-pickers";
+import {DatePicker, TimePicker} from "material-ui-pickers";
 import SearchSelect from "react-select";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import { EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION } from "./SessionView";
+import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
+import {dateFormat, timeFormat} from "../../../utils";
 
 function EditSessionView({ course, session, editSelection }) {
     const dispatch = useDispatch();
@@ -73,6 +74,7 @@ function EditSessionView({ course, session, editSelection }) {
 
     const handleDateTimeChange = date => {
         let { end_time, duration } = sessionFields;
+        end_time.setDate(date.getDate());
         end_time.setHours(date.getHours() + duration);
         end_time.setMinutes(date.getMinutes());
 
@@ -112,43 +114,44 @@ function EditSessionView({ course, session, editSelection }) {
 
     const handleDurationSelect = event => {
 
-        let { start_time, end_time } = sessionFields
-        let newEndTime = new Date(start_time)
+        let { start_time, end_time } = sessionFields;
+        let newEndTime = new Date(start_time);
 
         switch (event.target.value) {
             case 1:
-                newEndTime.setHours(start_time.getHours() + 1)
+                newEndTime.setHours(start_time.getHours() + 1);
                 break;
             case 1.5:
-                newEndTime.setHours(start_time.getHours() + 1)
-                newEndTime.setMinutes(newEndTime.getMinutes() + 30)
+                newEndTime.setHours(start_time.getHours() + 1);
+                newEndTime.setMinutes(start_time.getMinutes() + 30);
                 break;
             case 2:
-                newEndTime.setHours(start_time.getHours() + 2)
+                newEndTime.setHours(start_time.getHours() + 2);
                 break;
             case 0.5:
-                newEndTime.setMinutes(start_time.getMinutes() + 30)
+                newEndTime.setMinutes(start_time.getMinutes() + 30);
                 break;
             default:
                 return;
 
         }
+        console.log(newEndTime);
         setSessionFields({
             ...sessionFields,
             duration: event.target.value,
-            updatedDuration: newEndTime
+            end_time: newEndTime
         })
-    }
+    };
 
     let courseDurationOptions = [1, 1.5, 2, 0.5];
 
     const updateSession = event => {
         event.preventDefault();
-        let { start_time, end_time, is_confirmed, instructor, duration, updatedDuration } = sessionFields;
+        let { start_time, end_time, is_confirmed, instructor, duration } = sessionFields;
         if (editSelection === EDIT_CURRENT_SESSION) {
             let patchedSession = {
                 start_datetime: start_time.toISOString(),
-                end_datetime: updatedDuration.toISOString(),
+                end_datetime: end_time.toISOString(),
                 is_confirmed: is_confirmed,
                 instructor: instructor.value,
                 duration: duration
@@ -159,19 +162,18 @@ function EditSessionView({ course, session, editSelection }) {
         let patchedCourse = {
             course_category: sessionFields.category.value,
             subject: sessionFields.title,
-            start_time: start_time.toISOString(),
-            // .substr(start_time.toISOString().indexOf("T")+1,5),
-            end_time: end_time.toISOString(),
-            // .substr(end_time.toISOString().indexOf("T")+1,5)
+            start_time: start_time.toLocaleString("eng-US", timeFormat),
+            end_time: end_time.toLocaleString("eng-US", timeFormat),
         };
         if (editSelection === EDIT_ALL_SESSIONS) {
             patchedCourse = {
                 ...patchedCourse,
                 instructor: instructor.value,
                 is_confirmed: is_confirmed,
-                start_date: start_time.toISOString().substr(0, 10),
-                end_date: updatedDuration.toISOString().substr(0, 10),
-            }
+                start_date: start_time.toLocaleString("sv-SE", dateFormat),
+                end_date: course.schedule.end_date.toLocaleString("sv-SE", dateFormat),
+            };
+            api.patchCourse(course.course_id, patchedCourse);
         }
 
         // api.patchCourse(course.course_id, patchedCourse);

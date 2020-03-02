@@ -274,20 +274,14 @@ class Form extends Component {
                         let student;
                         try {
                             const response = await apiActions.instance.get(
-                                `/account/student/${id}/`, {
-                                "headers": {
-                                    "Authorization": `Token ${this.props.token}`,
-                                },
-                            });
+                                `/account/student/${id}/`
+                            );
                             // succesful request
                             newAction(types.FETCH_STUDENT_SUCCESSFUL, response);
                             student = updateStudent({}, id, response.data)[id];
                             const parents = await apiActions.instance.get(
-                                `/account/parent/`, {
-                                "headers": {
-                                    "Authorization": `Token ${this.props.token}`,
-                                },
-                            });
+                                `/account/parent/`
+                            );
                             this.props.dispatch({
                                 "type": types.FETCH_PARENT_SUCCESSFUL,
                                 "payload": {
@@ -356,20 +350,14 @@ class Form extends Component {
                         let course;
                         try {
                             const response = await apiActions.instance.get(
-                                `/course/catalog/${id}/`, {
-                                "headers": {
-                                    "Authorization": `Token ${this.props.token}`,
-                                },
-                            });
+                                `/course/catalog/${id}/`
+                            );
                             // succesful request
                             newAction(types.FETCH_COURSE_SUCCESSFUL, response);
                             course = updateCourse({}, id, response.data)[id];
                             const instructors = await apiActions.instance.get(
-                                `/account/parent/`, {
-                                "headers": {
-                                    "Authorization": `Token ${this.props.token}`,
-                                },
-                            });
+                                `/account/parent/`
+                            );
                             this.props.dispatch({
                                 "type": types.FETCH_INSTRUCTOR_SUCCESSFUL,
                                 "payload": {
@@ -407,11 +395,8 @@ class Form extends Component {
                         let parent;
                         try {
                             const response = await apiActions.instance.get(
-                                `/account/parent/${id}/`, {
-                                "headers": {
-                                    "Authorization": `Token ${this.props.token}`,
-                                },
-                            });
+                                `/account/parent/${id}/`
+                            );
                             // succesful request
                             newAction(types.FETCH_PARENT_SUCCESSFUL, response);
                             parent = updateParent({}, id, response.data)[id];
@@ -750,7 +735,7 @@ class Form extends Component {
     }
 
     searchInstructors = async (input) => {
-        return await utils.loadInstructors(input, this.props.token)
+        return await utils.loadInstructors(input)
     }
 
     handleClickShowPassword = () => {
@@ -1515,7 +1500,6 @@ const mapStateToProps = (state) => ({
     "students": state.Users["StudentList"],
     "instructors": state.Users["InstructorList"],
     "requestStatus": state.RequestStatus,
-    "token": state.auth.token,
     "isAdmin": state.auth.isAdmin,
 });
 

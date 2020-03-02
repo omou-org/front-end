@@ -1,23 +1,33 @@
-import { connect } from "react-redux";
-import React, { Component } from "react";
-import { Card, Paper, Typography } from "@material-ui/core";
+import {connect} from "react-redux";
+import React, {Component} from "react";
+import {Typography} from "@material-ui/core";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
-import { ReactComponent as IDIcon } from "../../identifier.svg";
-import { ReactComponent as BirthdayIcon } from "../../birthday.svg";
-import { ReactComponent as GradeIcon } from "../../grade.svg";
-import { ReactComponent as SchoolIcon } from "../../school.svg";
+import {ReactComponent as IDIcon} from "../../identifier.svg";
+import {ReactComponent as BirthdayIcon} from "../../birthday.svg";
+import {ReactComponent as GradeIcon} from "../../grade.svg";
+import {ReactComponent as SchoolIcon} from "../../school.svg";
 import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
 import Button from "@material-ui/core/Button";
-import { NavLink } from "react-router-dom";
-import { addDashes } from "./accountUtils";
+import {NavLink} from "react-router-dom";
+import {addDashes} from "./accountUtils";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
+import OutOfOffice from "./OutOfOffice";
 import './Accounts.scss';
 
 class ProfileHeading extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+           open:false,
+        };
+    }
+
+
+
     renderStudentProfile() {
         return (
             <Grid item xs={12}>
@@ -168,11 +178,27 @@ class ProfileHeading extends Component {
             </Grid>);
     }
 
-    renderEditButton() {
+    handleClose = () => {
+        this.setState({
+            "open": false
+        });
+    };
+
+    renderEditandAwayButton() {
         if (this.props.user.role != "receptionist") {
             return (
                 <>
-                    <Grid component={Hidden} mdDown align="right" className="editPadding">
+                    <Grid container align="right" item md={9}>
+                    <Grid item md={4} align= "right" className="editPadding">
+                        {
+                            this.props.user.role === "instructor" && <OutOfOffice
+                                instructorID={this.props.user.user_id}
+                            />
+                        }
+                    </Grid>
+                    <Grid item md={1}>
+                    </Grid>
+                    <Grid item md={4} align="right" component={Hidden} mdDown className="editPadding">
                         <Button
                             className="editButton"
                             component={NavLink}
@@ -181,7 +207,7 @@ class ProfileHeading extends Component {
                             Edit Profile
                         </Button>
                     </Grid>
-                    <Grid component={Hidden} lgUp align="right" className="editPadding">
+                    <Grid item md={4} align="right" component={Hidden} lgUp className="editPadding">
                         <Button
                             className="editButton"
                             component={NavLink}
@@ -189,9 +215,12 @@ class ProfileHeading extends Component {
                             <EditIcon />
                         </Button>
                     </Grid>
+
+                    </Grid>
                 </>
             );
         }
+
     }
 
     render() {
@@ -212,10 +241,12 @@ class ProfileHeading extends Component {
             default:
         }
         return (
+
             <div>
                 <Grid container item xs={12} alignItems="center">
-                    <Grid item xs={9} align="left">
+                    <Grid item xs={6} align="left">
                         <Grid container alignItems="center">
+
                             <h1 className="ProfileName">
                                 {this.props.user.name}
                             </h1>
@@ -229,8 +260,8 @@ class ProfileHeading extends Component {
                             </div>
                         </Grid>
                     </Grid>
-                    <Grid item xs={3} align="right">
-                        {this.props.isAdmin && this.renderEditButton()}
+                    <Grid item xs={6} align="right">
+                        {this.props.isAdmin && this.renderEditandAwayButton()}
                     </Grid>
                 </Grid>
                 {profileDetails}

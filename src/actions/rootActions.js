@@ -59,12 +59,8 @@ export const fetchData = (type) => {
     if (typeToEndpoint.hasOwnProperty(type)) {
         const endpoint = typeToEndpoint[type];
         const [successAction, failAction] = typeToFetchActions[type];
-        return (dispatch, getState) => instance.get(endpoint, {
-            "headers": {
-                "Authorization": `Token ${getState().auth.token}`,
-            },
-        })
-            .then(({ data }) => {
+        return (dispatch) => instance.get(endpoint)
+            .then(({data}) => {
                 dispatch({
                     type: successAction,
                     payload: data,
@@ -82,18 +78,14 @@ export const postData = (type, body) => {
     if (typeToEndpoint.hasOwnProperty(type)) {
         const endpoint = typeToEndpoint[type];
         const [successAction, failAction] = typeToPostActions[type];
-        return (dispatch, getState) => new Promise((resolve) => {
+        return (dispatch) => new Promise((resolve) => {
             dispatch({
                 type: types.SUBMIT_INITIATED,
                 payload: null,
             });
             resolve();
         }).then(() => {
-            instance.post(endpoint, body, {
-                "headers": {
-                    "Authorization": `Token ${getState().auth.token}`,
-                },
-            })
+            instance.post(endpoint, body)
                 .then((response) => {
                     let { data } = response;
                     dispatch({
@@ -114,19 +106,15 @@ export const patchData = (type, body, id) => {
     if (typeToEndpoint.hasOwnProperty(type)) {
         const endpoint = typeToEndpoint[type];
         const [successAction, failAction] = typeToPostActions[type];
-        return (dispatch, getState) => new Promise((resolve) => {
+        return (dispatch) => new Promise((resolve) => {
             dispatch({
                 type: types.SUBMIT_INITIATED,
                 payload: null,
             });
             resolve();
         }).then(() => {
-            instance.patch(`${endpoint}${id}/`, body, {
-                "headers": {
-                    "Authorization": `Token ${getState().auth.token}`,
-                },
-            })
-                .then(({ data }) => {
+            instance.patch(`${endpoint}${id}/`, body)
+                .then(({data}) => {
                     dispatch({
                         type: successAction,
                         payload: data,
@@ -146,7 +134,7 @@ export const submitParentAndStudent = (parent, student, parentID, studentID) => 
     const parentEndpoint = typeToEndpoint["parent"];
     const [studentSuccessAction, studentFailAction] = typeToPostActions["student"];
     const [parentSuccessAction, parentFailAction] = typeToPostActions["parent"];
-    return (dispatch, getState) => new Promise((resolve) => {
+    return (dispatch) => new Promise((resolve) => {
         dispatch({
             type: types.SUBMIT_INITIATED,
             payload: null,
@@ -155,10 +143,7 @@ export const submitParentAndStudent = (parent, student, parentID, studentID) => 
     }).then(() => {
         let formatDate = new Date(parent.birth_date).toISOString().substring(0, 10);
         instance.request({
-            "data": { ...parent, birth_date: formatDate },
-            "headers": {
-                "Authorization": `Token ${getState().auth.token}`,
-            },
+            "data": {...parent, birth_date: formatDate},
             "method": parentID ? "patch" : "post",
             "url": parentID ? `${parentEndpoint}${parentID}/` : parentEndpoint,
         })
@@ -171,9 +156,6 @@ export const submitParentAndStudent = (parent, student, parentID, studentID) => 
                     "data": {
                         ...student,
                         "primary_parent": parentResponse.data.user.id,
-                    },
-                    "headers": {
-                        "Authorization": `Token ${getState().auth.token}`,
                     },
                     "method": studentID ? "patch" : "post",
                     "url": studentID ? `${studentEndpoint}${studentID}/` : studentEndpoint,
@@ -191,5 +173,3 @@ export const submitParentAndStudent = (parent, student, parentID, studentID) => 
             });
     });
 };
-
-

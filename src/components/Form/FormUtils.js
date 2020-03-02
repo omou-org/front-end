@@ -201,14 +201,10 @@ export function arr_diff (a1, a2) {
 /**
  * @description Searches for matching instructors
  * @param {String} input search input
- * @param {String} token Authorization Token for request
  * @returns {Promise} Resolves to the list of matching instructors
  */
-export const loadInstructors = async (input, token) => {
+export const loadInstructors = async (input) => {
     const response = await instance.get("/search/account/", {
-        "headers": {
-            "Authorization": `Token ${token}`,
-        },
         "params": {
             "page": 1,
             "profile": "instructor",

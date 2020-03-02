@@ -7,7 +7,7 @@ import Chip from "@material-ui/core/Chip";
 import { withRouter } from "react-router-dom";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
-import {truncateStrings} from "../../../truncateStrings"
+import {truncateStrings} from "utils";
 
 import { makeStyles } from '@material-ui/styles';
 
@@ -54,8 +54,6 @@ function AccountsCards(props) {
         "marginLeft": 17
 
     });
-
-    // console.log(props.user);
 
     const fullName = `${props.user.user.first_name} ${props.user.user.last_name}`;
 

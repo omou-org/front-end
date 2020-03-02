@@ -632,7 +632,7 @@
 .select-parent-search-wrapper {
   &.active {
     animation-name: expandHeight;
-    animation-duration: 1s;
+    animation-duration: 0.2s;
     height: 150px;
   }
 }
