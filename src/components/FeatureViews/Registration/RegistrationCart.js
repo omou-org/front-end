@@ -1,264 +1,374 @@
-import React, { useEffect, useMemo, useState } from "react";
-// Material UI Imports
-import Grid from "@material-ui/core/Grid";
+/* eslint-disable react/no-multi-comp */
+/* eslint-disable react/jsx-max-depth */
+/* eslint-disable max-lines-per-function */
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {bindActionCreators} from "redux";
+
+import * as apiActions from "actions/apiActions";
+import * as hooks from "actions/hooks";
+import * as registrationActions from "actions/registrationActions";
+
 import BackArrow from "@material-ui/icons/ArrowBack";
+import Button from "@material-ui/core/Button";
+import Checkbox from "@material-ui/core/Checkbox";
+import Grid from "@material-ui/core/Grid";
+import Loading from "components/Loading";
+import NavLinkNoDup from "components/Routes/NavLinkNoDup";
+import Paper from "@material-ui/core/Paper";
+import PriceQuoteForm from "components/Form/PriceQuoteForm";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+
+import {dateParser, weeklySessionsParser} from "components/Form/FormUtils";
+
 import "./registration.scss";
 
-import { bindActionCreators } from "redux";
-import * as registrationActions from "../../../actions/registrationActions";
-import * as userActions from "../../../actions/userActions.js"
-import { connect, useDispatch } from "react-redux";
-import { Typography } from "@material-ui/core";
-import Paper from "@material-ui/core/Paper";
-import { withRouter } from "react-router-dom";
-import Checkbox from "@material-ui/core/Checkbox";
-import * as apiActions from "../../../actions/apiActions";
-import { durationParser } from "../../../actions/apiActions";
-import Button from "@material-ui/core/Button";
-import Loading from "../../Loading";
-import NavLinkNoDup from "../../Routes/NavLinkNoDup";
-import TextField from "@material-ui/core/TextField";
-import PriceQuoteForm from "../../Form/PriceQuoteForm";
-
-function RegistrationCart(props) {
+const RegistrationCart = () => {
     const dispatch = useDispatch();
-    const api = useMemo(
-        () => ({
-            ...bindActionCreators(apiActions, dispatch),
-            ...bindActionCreators(userActions, dispatch),
-            ...bindActionCreators(registrationActions, dispatch),
-        }),
-        [dispatch]
-    );
+    const api = useMemo(() => bindActionCreators(registrationActions, dispatch),
+        [dispatch]);
 
-    const [selectedCourses, selectCourse] = useState({});
-    const [usersLoaded, setLoadingUsers] = useState(false);
-    const [updatedCourses, addUpdatedCourse] = useState([]);
+    const registration = useSelector(({Registration}) => Registration);
+    const {CurrentParent} = registration;
+    const registered_courses = registration.registered_courses || {};
+    const studentAccounts = useSelector(({Users}) => Users.StudentList);
+    const courseList = useSelector(({Course}) => Course.NewCourseList);
+    const enrollments = useSelector(({Enrollments}) => Enrollments);
+
+    const [selectedCourses, setSelectedCourses] = useState({});
+    const [updatedCourses, setUpdatedCourse] = useState([]);
+
+    const courseIDs = useMemo(() =>
+        Object.values(registered_courses)
+            .reduce((list, array) => [...list, ...array], [])
+            .map(({course_id}) => course_id),
+    [registered_courses]);
+    const studentIDs = useMemo(() =>
+        Object.keys(registered_courses),
+        [registered_courses]);
+
+    const allValid = useMemo(() =>
+        Object.values(selectedCourses)
+            .reduce((list, vals) => [...list, ...Object.values(vals)], [])
+            .every(({validated}) => validated),
+    [selectedCourses]);
+
+    const coursesStatus = hooks.useCourse(courseIDs);
+    const studentsStatus = hooks.useStudent(studentIDs);
 
     useEffect(() => {
-        api.initializeRegistration();
-        api.fetchCourses();
-    }, [api]);
-
-    useEffect(() => {
-        if (props.registration.registered_courses) {
-            // Get student id's
-            let studentIDs = Object.keys(props.registration.registered_courses);
-            let checkedCourses = {};
-            studentIDs.forEach((studentID) => {
-                checkedCourses[studentID] = {};
-                props.registration.registered_courses[studentID].forEach((registrationForm) => {
-                    if (registrationForm.course_id) {
-                        checkedCourses[studentID][registrationForm.course_id] = { checked: false, sessions: registrationForm.sessions };
-                    }
-                });
-            });
-            // Set-up checkboxes
-            selectCourse(checkedCourses);
-
-            studentIDs.forEach((studentID) => {
-                api.fetchStudents(studentID);
-            });
-
-            setLoadingUsers(true);
-        }
-
-    }, [props.registration.registered_courses, api]);
-
-    const handleCourseSelect = (studentID, courseID) => (e) => {
-        // e.preventDefault();
-        let currentlySelectedCourses = { ...selectedCourses };
-        currentlySelectedCourses[studentID][courseID] = {
-            sessions: currentlySelectedCourses[studentID][courseID].sessions,
-            checked: !currentlySelectedCourses[studentID][courseID].checked
-        };
-        selectCourse(currentlySelectedCourses);
-    };
-
-    const handleCourseSessionsChange = (selectedCourse, studentID, courseID) => (e) => {
-        // registration.sessions = e.target.value;
-        let { value } = e.target;
-        selectCourse({
-            ...selectedCourses,
-            [studentID]: {
-                ...selectedCourses[studentID],
-                [courseID]: {
-                    ...selectedCourse,
-                    sessions: value,
-                }
-            }
+        studentIDs.forEach((id) => {
+            api.fetchEnrollmentsByStudent(id);
         });
-        //update registration in redux
-        let updatedRegisteredCourse = {
-            ...props.registration.registered_courses[studentID].find((course) => { return courseID === course.course_id }),
-            sessions: Number(value),
-        };
-        let courses = updatedCourses;
-        courses.push(updatedRegisteredCourse);
-        addUpdatedCourse(courses);
-    };
+    }, [api, studentIDs]);
 
-    const renderStudentRegistrations = () => {
-        return Object.keys(props.registration.registered_courses).map((student_id) => {
-            let registrations = props.registration.registered_courses[student_id];
-            return props.studentAccounts[student_id] && <div className="student-cart-wrapper">
-                <Grid container>
-                    <Grid item xs={12}>
-                        <Typography
-                            gutterBottom
-                            variant={"h5"}
-                            align={"left"}>
-                            {props.studentAccounts[student_id].name}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Grid container className={'accounts-table-heading'}>
-                            <Grid item xs={1} md={1}> </Grid>
-                            <Grid item xs={3} md={3}>
-                                <Typography align={'left'} style={{ color: 'white', fontWeight: '500' }}>
-                                    Course
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={3} md={3}>
-                                <Typography align={'left'} style={{ color: 'white', fontWeight: '500' }}>
-                                    Dates
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={1} md={1}>
-                                <Typography align={'center'} style={{ color: 'white', fontWeight: '500' }}>
-                                    Sessions
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={2} md={2}>
-                                <Typography align={'center'} style={{ color: 'white', fontWeight: '500' }}>
-                                    Tuition
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={2} md={2}>
-                                <Typography align={'center'} style={{ color: 'white', fontWeight: '500' }}>
-                                    Material Fee
-                                </Typography>
-                            </Grid>
+    useEffect(() => {
+        dispatch(registrationActions.initializeRegistration());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (registered_courses) {
+            setSelectedCourses(studentIDs.reduce((studentsList, studentID) => ({
+                ...studentsList,
+                // for each student
+                [studentID]: registered_courses[studentID]
+                    // find courses that have ids
+                    .filter(({course_id}) => course_id)
+                    // make them unchecked, validated, and set the number of sessions
+                    .reduce((studentCourses, {course_id, sessions}) => ({
+                        ...studentCourses,
+                        [course_id]: {
+                            "checked": false,
+                            sessions,
+                            "validated": true,
+                        },
+                    }), {}),
+            }), {}));
+        }
+    }, [registered_courses, studentIDs]);
+
+    useEffect(() => {
+        if (registered_courses && CurrentParent) {
+            sessionStorage.setItem("registered_courses", JSON.stringify(registered_courses));
+            sessionStorage.setItem("CurrentParent", JSON.stringify(CurrentParent));
+        }
+    }, [CurrentParent, registered_courses]);
+
+    const updateQuantity = useCallback(() => {
+        updatedCourses.forEach((updatedCourse) => {
+            dispatch(registrationActions.editRegistration(updatedCourse));
+        });
+    }, [dispatch, updatedCourses]);
+
+    const handleCourseSelect = useCallback((studentID, courseID) => () => {
+        setSelectedCourses((prevCourses) => {
+            const newCourses = JSON.parse(JSON.stringify(prevCourses));
+            newCourses[studentID][courseID] = {
+                ...newCourses[studentID][courseID],
+                "checked": !newCourses[studentID][courseID].checked,
+            };
+            return newCourses;
+        });
+    }, []);
+
+    const handleCourseSessionsChange = useCallback((studentID, courseID) => ({target}) => {
+        let {value} = target;
+        if (value && !isNaN(value)) {
+            value = Number(value);
+        }
+        const enrollment = enrollments[studentID] && enrollments[studentID][courseID];
+        const paidSessions = enrollment ? enrollment.sessions_left : 0;
+
+        setUpdatedCourse((prevCourses) => {
+            const courseIndex = registered_courses[studentID]
+                .findIndex(({course_id}) => courseID == course_id);
+            const course = courseList[courseID];
+            const newOne = {
+                ...registered_courses[studentID][courseIndex],
+                "sessions": value,
+                "isNew": !course,
+            };
+            if (!(course && course.course_type === "class")) {
+                const it = registered_courses[studentID][courseIndex];//.new_course.schedule;
+                if (!it.new_course) {
+                    it.new_course = JSON.parse(JSON.stringify(course));
+                }
+
+                let finalVal = value;
+                if (course) {
+                    finalVal += weeklySessionsParser(course.schedule.start_date, course.schedule.end_date);
+                }
+                newOne.new_course = {
+                    ...it.new_course,
+                    "schedule": {
+                        ...it.new_course.schedule,
+                        // calculates appropriate date and formats it
+                        "end_date": dateParser(new Date(it.new_course.schedule.start_date).getTime() + 7 * 24 * 60 * 60 * 1000 * finalVal + 24 * 60 * 60 * 1000).slice(0, 10),
+                    },
+                };
+            }
+            return [
+                ...prevCourses,
+                newOne,
+            ];
+        });
+
+        setSelectedCourses((prevCourses) => {
+            const updated = JSON.parse(JSON.stringify(prevCourses));
+            const course = courseList[courseID];
+            updated[studentID][courseID] = {
+                ...updated[studentID][courseID],
+                "sessions": value,
+            };
+            if (course && course.course_type === "class") {
+                const {start_date, end_date} = course.schedule;
+                const numSessions = weeklySessionsParser(start_date, end_date);
+                updated[studentID][courseID] = {
+                    ...updated[studentID][courseID],
+                    "validated": Number.isInteger(value) &&
+                        (0 <= value && value <= (numSessions - paidSessions)),
+                };
+            }
+            return updated;
+        });
+    }, [registered_courses, enrollments, courseList]);
+
+    if (hooks.isLoading(coursesStatus) || hooks.isLoading(studentsStatus)) {
+        return <Loading />;
+    }
+
+    const studentRegistrations = Object.keys(registered_courses).map((student_id) => studentAccounts[student_id] &&
+        <div className="student-cart-wrapper">
+            <Grid container>
+                <Grid
+                    item
+                    xs={12}>
+                    <Typography
+                        align="left"
+                        gutterBottom
+                        variant="h5">
+                        {studentAccounts[student_id].name}
+                    </Typography>
+                </Grid>
+                <Grid
+                    item
+                    xs={12}>
+                    <Grid
+                        className="accounts-table-heading"
+                        container>
+                        <Grid
+                            item
+                            xs={1} />
+                        <Grid
+                            item
+                            xs={3}>
+                            <Typography
+                                align="left"
+                                className="cart-header">
+                                Course
+                            </Typography>
+                        </Grid>
+                        <Grid
+                            item
+                            xs={3}>
+                            <Typography
+                                align="left"
+                                className="cart-header">
+                                Dates
+                            </Typography>
+                        </Grid>
+                        <Grid
+                            item
+                            xs={1}>
+                            <Typography
+                                align="center"
+                                className="cart-header">
+                                Sessions
+                            </Typography>
+                        </Grid>
+                        <Grid
+                            item
+                            xs={2}>
+                            <Typography
+                                align="center"
+                                className="cart-header">
+                                Tuition
+                            </Typography>
+                        </Grid>
+                        <Grid
+                            item
+                            xs={2}>
+                            <Typography
+                                align="center"
+                                className="cart-header">
+                                Material Fee
+                            </Typography>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12}>
-                        <Grid container>
-                            {
-                                registrations.map((registration) => {
-                                    let course;
-                                    if (registration.new_course) { //if tutoring
-                                        course = registration.new_course;
-                                    } else {
-                                        course = props.courseList[registration.course_id];
-                                    }
-                                    if (course) {
-                                        let dateOptions = { year: "numeric", month: "short", day: "numeric" };
-                                        let startDate = new Date(course.schedule.start_date),
-                                            endDate = new Date(course.schedule.end_date.replace(/-/g, '/'));
-                                        startDate = startDate.toLocaleDateString("en-US", dateOptions);
-                                        endDate = endDate.toLocaleDateString("en-US", dateOptions);
+                </Grid>
+                <Grid
+                    item
+                    xs={12}>
+                    <Grid container>
+                        {
+                            registered_courses[student_id].map(({new_course, course_id}) => {
+                                const course = new_course || courseList[course_id];
+                                if (course) {
+                                    const dateOptions = {
+                                        "day": "numeric",
+                                        "month": "short",
+                                        "year": "numeric",
+                                    };
+                                    const {checked, sessions, validated} = selectedCourses[student_id][course_id];
+                                    let endDate = new Date(course.schedule.end_date),
+                                        startDate = new Date(course.schedule.start_date);
+                                    startDate = startDate.toLocaleDateString("en-US", dateOptions);
+                                    endDate = endDate.toLocaleDateString("en-US", dateOptions);
 
-                                        return (<Grid item xs={12} md={12}>
-                                            <Paper square={true} >
-                                                <Grid container alignItems="center">
-                                                    <Grid item xs={1} md={1}>
-                                                        <Checkbox checked={selectedCourses[student_id][registration.course_id].checked}
-                                                            onChange={handleCourseSelect(student_id, registration.course_id)} />
+                                    return (
+                                        <Grid
+                                            item
+                                            xs={12}>
+                                            <Paper square>
+                                                <Grid
+                                                    alignItems="center"
+                                                    container>
+                                                    <Grid
+                                                        item
+                                                        xs={1}>
+                                                        <Checkbox
+                                                            checked={checked}
+                                                            onChange={handleCourseSelect(student_id, course_id)} />
                                                     </Grid>
-                                                    <Grid item xs={3} md={3} >
-                                                        <Typography align={'left'}>
+                                                    <Grid
+                                                        item
+                                                        xs={3}>
+                                                        <Typography align="left">
                                                             {course.title}
                                                         </Typography>
                                                     </Grid>
-                                                    <Grid item xs={3} md={3}>
-                                                        <Typography align={'left'}>
+                                                    <Grid
+                                                        item
+                                                        xs={3}>
+                                                        <Typography align="left">
                                                             {startDate} - {endDate}
                                                         </Typography>
                                                     </Grid>
-                                                    <Grid item xs={1} md={1}>
+                                                    <Grid
+                                                        item
+                                                        xs={1}>
                                                         {
-                                                            !selectedCourses[student_id][registration.course_id].checked ?
-                                                                <Typography align={'center'}>
-                                                                    {selectedCourses[student_id][registration.course_id].sessions}
-                                                                </Typography>
-                                                                :
-                                                                <TextField
+                                                            !checked
+                                                                ? <Typography align="center">
+                                                                    {sessions}
+                                                                  </Typography>
+                                                                : <TextField
+                                                                    InputLabelProps={{
+                                                                        "shrink": true,
+                                                                    }}
+                                                                    error={!validated}
                                                                     id="outlined-number"
                                                                     label="Quantity"
-                                                                    value={selectedCourses[student_id][registration.course_id].sessions}
-                                                                    onChange={handleCourseSessionsChange(
-                                                                        selectedCourses[student_id][registration.course_id],
-                                                                        student_id,
-                                                                        registration.course_id)}
-                                                                    type="number"
-                                                                    // className={classes.textField}
-                                                                    InputLabelProps={{
-                                                                        shrink: true,
-                                                                    }}
                                                                     margin="normal"
-                                                                    variant="outlined"
-                                                                />
+                                                                    onChange={handleCourseSessionsChange(
+                                                                        student_id,
+                                                                        course_id
+                                                                    )}
+                                                                    type="number"
+                                                                    value={sessions}
+                                                                    variant="outlined" />
                                                         }
                                                     </Grid>
-                                                    <Grid item xs={2} md={2}>
-                                                        <Typography align={'center'}>
+                                                    <Grid
+                                                        item
+                                                        xs={2}>
+                                                        <Typography align="center">
                                                             {course.tuition}
                                                         </Typography>
                                                     </Grid>
                                                 </Grid>
                                             </Paper>
-                                        </Grid>);
-                                    }
-                                })
-                            }
-                        </Grid>
+                                        </Grid>
+                                    );
+                                }
+                            })
+                        }
                     </Grid>
                 </Grid>
-            </div>
-        });
-    };
-
+            </Grid>
+        </div>);
 
 
     const renderPayment = (isOneCourse, selectedStudentID, selectedCourseID) => {
-        let selectedRegistration = props.registration.registered_courses[selectedStudentID].find(({ course_id }) => {
-            if (selectedCourseID.indexOf("T") > -1) {
-                return course_id === selectedCourseID;
-            } else {
-                return course_id === Number(selectedCourseID)
-            }
-        });
-        let isSmallGroup = selectedCourseID.indexOf("T") === -1 ? props.courseList[selectedCourseID].capacity < 5 : false;
-        let { form, course_id } = selectedRegistration;
-        let formType = form ? form.form : "class";
+        const selectedRegistration = registered_courses[selectedStudentID]
+            .find(({course_id}) => course_id == selectedCourseID);
+        const isSmallGroup = selectedCourseID.indexOf("T") === -1 && courseList[selectedCourseID].capacity < 5;
+        const {form, course_id} = selectedRegistration;
+        const formType = form ? form.form : "class";
 
-        let selectedCoursesHaveSession = () => {
+        const selectedCoursesHaveSession = () => {
             let haveSession = true;
             Object.values(selectedCourses).forEach((student) => {
                 Object.values(student).forEach((course) => {
                     if (course.checked && course.sessions < 1) {
                         haveSession = false;
                     }
-                })
+                });
             });
             return haveSession;
         };
 
         // This determines if there's been an update to the number of sessions to checkout for any course
-        let selectedCourseSameAsRedux = () => {
+        const selectedCourseSameAsRedux = () => {
             // go to each selectedCourses
             // get selectedCourse from registered_courses
             // compare if both sessions are equal
             let sameSessions = true;
             Object.entries(selectedCourses).forEach(([studentID, studentVal]) => {
                 Object.entries(studentVal).forEach(([courseID, courseVal]) => {
-                    let reduxCourse = props.registration.registered_courses[studentID].find(({ course_id }) => {
-                        if (courseID.indexOf("T") > -1) {
-                            return course_id === courseID;
-                        } else {
-                            return course_id === Number(courseID);
-                        }
-                    });
+                    const reduxCourse = registered_courses[studentID]
+                        .find(({course_id}) => course_id == courseID);
                     if (reduxCourse.sessions !== courseVal.sessions) {
                         sameSessions = false;
                     }
@@ -268,38 +378,35 @@ function RegistrationCart(props) {
         };
 
         // generate registered course object split by class and tutoring
-        let registeredCourses = () => {
-            let courses = {
-                courses: [],
-                tutoring: [],
+        const registeredCourses = () => {
+            const courses = {
+                "courses": [],
+                "tutoring": [],
             };
             Object.entries(selectedCourses).forEach(([studentID, studentVal]) => {
                 Object.entries(studentVal).forEach(([courseID, courseVal]) => {
                     if (courseVal.checked) {
-                        let course = props.registration.registered_courses[studentID].find((course) => {
-                            if (course.type === "class" || course.type === "course") {
-                                return course.course_id === Number(courseID)
-                            } else {
-                                return course.course_id === courseID
-                            }
-                        });
-                        if (courseID.indexOf("T") > -1) {
-                            //{category, academic_level, sessions, form}
-                            let { category, academic_level, form } = course;
-                            courses["tutoring"].push({
-                                category_id: category,
-                                academic_level: academic_level,
-                                sessions: courseVal.sessions,
-                                duration: durationParser[form["Schedule"]["Duration"]],
-                                student_id: studentID,
-                                new_course: course.new_course,
+                        const course = registered_courses[studentID]
+                            .find(({course_id}) => course_id == courseID);
+                        if (courseID.indexOf("T") > -1 || true)  {
+                            // {category, academic_level, sessions, form}
+                            let {category, academic_level, form, new_course} = course;
+                            new_course = new_course || {};
+                            courses.tutoring.push({
+                                "category_id": category || new_course.category,
+                                "academic_level": academic_level || new_course.academic_level,
+                                "sessions": courseVal.sessions,
+                                "duration": apiActions.durationParser[form.Schedule && form.Schedule.Duration],
+                                "student_id": studentID,
+                                new_course,
+                                "courseID": course.course_id,
                             });
                         } else {
-                            courses["courses"].push({
-                                course_id: courseID,
-                                sessions: courseVal.sessions,
-                                student_id: studentID,
-                                enrollment: course && course.form.Enrollment,
+                            courses.courses.push({
+                                "course_id": courseID,
+                                "sessions": courseVal.sessions,
+                                "student_id": studentID,
+                                "enrollment": course && course.form.Enrollment,
                             });
                         }
                     }
@@ -308,72 +415,80 @@ function RegistrationCart(props) {
             return courses;
         };
 
-        return <Grid container spacing={8}>
-            {
-                <Grid item xs={12}>
-                    <Grid container
-                        spacing={16}
-                        justify={"flex-end"}>
-                        <Grid item xs={6} />
-                        {
-                            isOneCourse &&
-                            <>
-                                <Grid item>
-                                    {
-                                        isSmallGroup ?
-                                            <Button
-                                                className={"button"}
+        return (
+            <Grid
+                container
+                spacing={8}>
+                {
+                    <Grid
+                        item
+                        xs={12}>
+                        <Grid
+                            container
+                            justify="flex-end"
+                            spacing={16}>
+                            <Grid
+                                item
+                                xs={6} />
+                            {
+                                isOneCourse &&
+                                <>
+                                    <Grid item>
+                                        {
+                                            isSmallGroup && <Button
+                                                className="button"
                                                 component={NavLinkNoDup}
-                                                to={`/registration/form/course_details/${selectedCourseID}/edit`}
-                                            >Edit Group Course</Button> : ""
+                                                to={`/registration/form/course_details/${selectedCourseID}/edit`}>
+                                                    Edit Group Course
+                                            </Button>
+                                        }
+                                    </Grid>
+                                    <Grid item>
+                                        <Button
+                                            className="button"
+                                            component={NavLinkNoDup}
+                                            to={`/registration/form/${formType}/${selectedStudentID}+${course_id}/edit`}>
+                                            Edit Registration
+                                        </Button>
+                                    </Grid>
+                                </>
+                            }
+                            <Grid item >
+                                <Grid
+                                    container
+                                    justify="flex-end">
+                                    {
+                                        !selectedCourseSameAsRedux() &&
+                                        <Button
+                                            className="button"
+                                            disabled={!allValid}
+                                            onClick={updateQuantity}>
+                                            UPDATE SESSIONS
+                                        </Button>
                                     }
                                 </Grid>
-                                <Grid item>
-                                    <Button className={"button"}
-                                        component={NavLinkNoDup}
-                                        to={`/registration/form/${formType}/${selectedStudentID}+${course_id}/edit`}
-                                    >
-                                        Edit Registration
-                                    </Button>
-                                </Grid>
-                            </>
-                        }
-                        <Grid item >
-                            <Grid container justify={"flex-end"}>
-                                {
-                                    !selectedCourseSameAsRedux() &&
-                                    <Button className={"button"} onClick={updateQuantity()}>
-                                        UPDATE SESSIONS
-                                    </Button>
-                                }
                             </Grid>
                         </Grid>
                     </Grid>
+                }
+                <Grid
+                    item
+                    xs={12}>
+                    <PriceQuoteForm
+                        courses={registeredCourses().courses}
+                        disablePay={!(selectedCoursesHaveSession() && selectedCourseSameAsRedux())}
+                        tutoring={registeredCourses().tutoring} />
                 </Grid>
-            }
-            <Grid item xs={12}>
-                <PriceQuoteForm
-                    courses={registeredCourses()["courses"]}
-                    tutoring={registeredCourses()["tutoring"]}
-                    disablePay={!(selectedCoursesHaveSession() && selectedCourseSameAsRedux())}
-                />
             </Grid>
-        </Grid>
-    }
-
-    const updateQuantity = () => (e) => {
-        e.preventDefault();
-        updatedCourses.forEach((updatedCourse) => {
-            api.editRegistration(updatedCourse);
-        });
-        ;
-    }
+        );
+    };
 
     const selectedCourseOptions = () => {
         let displaySelectionOptions = 0;
-        let selectedCourseID = -1, selectedStudentID = -1;
+        let selectedCourseID = -1,
+            selectedStudentID = -1;
         Object.keys(selectedCourses).forEach((studentID) => {
-            for (let [courseID, checkbox] of Object.entries(selectedCourses[studentID])) {
+            for (const [courseID, checkbox] of Object.entries(selectedCourses[studentID])) {
                 if (checkbox.checked) {
                     displaySelectionOptions++;
                     selectedCourseID = courseID;
@@ -387,26 +502,22 @@ function RegistrationCart(props) {
         return "";
     };
 
-    useEffect(() => {
-        return () => {
-            if (props.registration.registered_courses &&
-                props.registration.CurrentParent) {
-                sessionStorage.setItem("registered_courses", JSON.stringify(props.registration.registered_courses));
-                sessionStorage.setItem("CurrentParent", JSON.stringify(props.registration.CurrentParent));
-            }
-        }
-    }, [])
-
     return (
         <form>
-            <Paper className={"registration-cart paper"}>
-                <Grid container layout={"row"} spacing={8}>
-                    <Grid item xs={12}>
+            <Paper className="registration-cart paper">
+                <Grid
+                    container
+                    layout="row"
+                    spacing={8}>
+                    <Grid
+                        item
+                        xs={12}>
                         <Grid container>
                             <Grid item={3}>
                                 <Button
-                                    className={"button"}
-                                    component={NavLinkNoDup} to={"/registration"}>
+                                    className="button"
+                                    component={NavLinkNoDup}
+                                    to="/registration">
                                     <BackArrow />
                                     Register
                                 </Button>
@@ -414,39 +525,29 @@ function RegistrationCart(props) {
                         </Grid>
                         <hr />
                     </Grid>
-                    <Grid item xs={12}>
-                        <Typography variant={"h3"} align={"left"}>Select Course(s)</Typography>
+                    <Grid
+                        item
+                        xs={12}>
+                        <Typography
+                            align="left"
+                            variant="h3">
+                            Select Course(s)
+                        </Typography>
                     </Grid>
-                    <Grid item xs={12}>
-                        {usersLoaded ? renderStudentRegistrations() : <Loading />}
+                    <Grid
+                        item
+                        xs={12}>
+                        {studentRegistrations}
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid
+                        item
+                        xs={12}>
                         {selectedCourseOptions()}
                     </Grid>
                 </Grid>
             </Paper>
         </form>
-
     );
-}
-
-RegistrationCart.propTypes = {
-    // courseTitle: PropTypes.string,
-    // admin: PropTypes.bool,
 };
-const mapStateToProps = (state) => ({
-    "registration": state.Registration,
-    "studentAccounts": state.Users.StudentList,
-    "instructorAccounts": state.Users.InstructorList,
-    "courseList": state.Course.NewCourseList,
-});
 
-const mapDispatchToProps = (dispatch) => ({
-    "registrationActions": bindActionCreators(registrationActions, dispatch),
-    "userActions": bindActionCreators(userActions, dispatch),
-});
-
-export default withRouter(connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(RegistrationCart));
+export default RegistrationCart;

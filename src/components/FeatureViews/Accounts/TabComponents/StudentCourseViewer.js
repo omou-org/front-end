@@ -171,7 +171,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
                                                 <Typography
                                                     align="left"
                                                     className="accounts-table-text">
-                                                    {days}
+                                                    {days.charAt(0).toUpperCase() + days.slice(1)}
                                                 </Typography>
                                             </Grid>
                                             <Grid

@@ -338,6 +338,32 @@ export const initRegistration = (tutoringRegistrations, classRegistrations, paym
 const enrollmentEndpoint = "/course/enrollment/";
 const courseEndpoint = "/course/catalog/";
 
+export const fetchEnrollments = () => wrapGet(
+    enrollmentEndpoint,
+    [
+        types.FETCH_ENROLLMENT_STARTED,
+        types.FETCH_ENROLLMENT_SUCCESSFUL,
+        types.FETCH_ENROLLMENT_FAILED,
+    ],
+    {}
+);
+
+export const fetchEnrollmentsByStudent = (user_id) => wrapGet(
+    enrollmentEndpoint,
+    [
+        types.FETCH_ENROLLMENT_STARTED,
+        types.FETCH_ENROLLMENT_SUCCESSFUL,
+        types.FETCH_ENROLLMENT_FAILED,
+    ],
+    {
+        "config": {
+            "params": {
+                user_id,
+            },
+        },
+    }
+);
+
 export const addCourse = (course) => wrapPost(
     courseEndpoint,
     [
