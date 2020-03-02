@@ -17,6 +17,7 @@ export default (state = initialState.Course, {payload, type}) => {
         case actions.FETCH_COURSE_NOTE_SUCCESSFUL:
             return handleNotesFetch(state, payload);
         case actions.POST_COURSE_SUCCESSFUL:
+            console.log("post/patched course");
             return handleCoursePost(state, payload);
         case actions.POST_COURSE_NOTE_SUCCESSFUL:
         case actions.PATCH_COURSE_NOTE_SUCCESSFUL:

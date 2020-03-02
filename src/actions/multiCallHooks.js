@@ -22,7 +22,9 @@ export const useSubmitRegistration = (registrationDependencies) => {
             console.error(error);
         }
     }, []);
+    // console.log("use submit called")
     useEffect(() => {
+        console.log("use effect called");
         const aborted = false;
         (async () => {
             console.log(registrationDependencies.complete !== true, registrationDependencies.complete);
@@ -141,10 +143,10 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         "payload": finalPayment,
                         "type": types.POST_PAYMENT_SUCCESS,
                     });
-                    dispatch({
-                        "payload": {},
-                        "type": types.COMPLETE_REGISTRATION,
-                    });
+                    // dispatch({
+                    //     "payload": {},
+                    //     "type": types.COMPLETE_REGISTRATION,
+                    // });
                     setStatus({
                         "paymentID": finalPayment.data.id,
                         "status": finalPayment.status,
@@ -157,7 +159,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
             }
         })();
 
-    }, [currentPayingParent, dispatch, handleError, registrationDependencies]);
+    }, []);
     return status;
 };
 
