@@ -37,13 +37,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
     const coursePaymentStatusList = useMemo(() =>
         enrollments[studentID] ? Object.entries(enrollments[studentID])
             .map(([courseID, enrollment]) => {
-                let sessionCount = 0;
-                enrollment.payment_list.forEach(payment => {
-                    payment.registrations.forEach(registration => {
-                        sessionCount += registration.num_sessions;
-                    });
-                });
-                return { course: courseID, sessions: sessionCount }
+                return { course: courseID, sessions: enrollment.sessions_left }
             }) : [], [enrollments, studentID]);
     let coursePaymentStatus = {};
     coursePaymentStatusList.forEach(({ course, sessions }) => coursePaymentStatus[course] = sessions);
@@ -53,12 +47,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
             return 0;
         }
 
-        return Object.values(
-            enrollments[studentID][courseID].session_payment_status
-        ).reduce(
-            (numPaid, status) =>
-                status === 1 ? numPaid + 1 : numPaid, 0
-        );
+        return enrollments[studentID][courseID].sessions_left || 0;
     }, [enrollments, studentID]);
 
     const filterCourseByDate = useCallback((endDate) => {

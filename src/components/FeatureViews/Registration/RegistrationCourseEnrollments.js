@@ -238,7 +238,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                                                         component={NavLink}
                                                         to={`/accounts/student/${studentID}/${courseID}`}
                                                         onClick={handleClose}>View Enrollment</MenuItem>
-                                                    <MenuItem onClick={handleUnenroll(studentID, courseID, enrollment)}>Unenroll</MenuItem>
+                                                    <MenuItem onClick={handleUnenroll(enrollment)}>Unenroll</MenuItem>
                                                 </Menu>
                                                 {/*<span>*/}
                                                 {/*    {expanded[studentID]*/}

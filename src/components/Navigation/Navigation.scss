@@ -2,9 +2,21 @@
 @import '../../theme/sizes';
 @import url('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700');
 
+body{
+  overflow-y: hidden;
+}
+
+.fade-enter {
+  opacity: 0;
+  z-index: 1;
+}
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transition: opacity 200ms ease-in;
+}
+
 /*Navigation Styling*/
 .Navigation {
-
   /*App Bar Styling*/
   .OmouBar {
     z-index: 10000 !important;
@@ -48,7 +60,9 @@
     }
 
     padding: 0 3%;
+    height: 92vh;
     overflow-x: hidden;
+    overflow-y: scroll;
   }
 
   .DrawerList {

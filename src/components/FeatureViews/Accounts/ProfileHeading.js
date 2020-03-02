@@ -1,11 +1,10 @@
 import {connect} from "react-redux";
 import React, {Component} from "react";
-import {Card, Paper, Typography} from "@material-ui/core";
+import {Typography} from "@material-ui/core";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
-import AwayIcon from "@material-ui/icons/EventBusy";
 import {ReactComponent as IDIcon} from "../../identifier.svg";
 import {ReactComponent as BirthdayIcon} from "../../birthday.svg";
 import {ReactComponent as GradeIcon} from "../../grade.svg";
@@ -15,9 +14,6 @@ import Chip from "@material-ui/core/Chip";
 import Button from "@material-ui/core/Button";
 import {NavLink} from "react-router-dom";
 import {addDashes} from "./accountUtils";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Dialog from "@material-ui/core/Dialog";
-import {DialogActions, DialogContent} from "@material-ui/core";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import OutOfOffice from "./OutOfOffice";
 import "./Accounts.scss";
@@ -285,71 +281,39 @@ class ProfileHeading extends Component {
         this.setState({
             "open": false,
         });
-    }
+    };
 
     renderEditandAwayButton() {
         if (this.props.user.role != "receptionist") {
             return (
                 <>
-                    {
-                        this.props.role === "instructor" &&
-                            <OutOfOffice
+                    <Grid container align="right" item md={9}>
+                    <Grid item md={4} align= "right" className="editPadding">
+                        {
+                            this.props.user.role === "instructor" && <OutOfOffice
                                 instructorID={this.props.user.user_id}
-                                onClose={this.handleClose}
-                                open={this.state.open} />
-                    }
-                    <Grid
-                        align="right"
-                        container
-                        item
-                        md={9}>
-                        <Grid
-                            align="right"
-                            className="editPadding"
-                            item
-                            md={4}>
-                            {
-                                this.props.role === "instructor" &&
-                                <Button
-                                    className="editButton"
-                                    onClick={this.handleOpen}>
-                                    <AwayIcon />
-                                    Add OOO
-                                </Button>
-                            }
-                        </Grid>
-                        <Grid
-                            item
-                            md={1} />
-                        <Grid
-                            align="right"
-                            className="editPadding"
-                            component={Hidden}
-                            item
-                            md={4}
-                            mdDown>
-                            <Button
-                                className="editButton"
-                                component={NavLink}
-                                to={`/registration/form/${this.props.user.role}/${this.props.user.user_id}/edit`}>
-                                <EditIcon />
-                                Edit Profile
-                            </Button>
-                        </Grid>
-                        <Grid
-                            align="right"
-                            className="editPadding"
-                            component={Hidden}
-                            item
-                            lgUp
-                            md={4}>
-                            <Button
-                                className="editButton"
-                                component={NavLink}
-                                to={`/registration/form/${this.props.user.role}/${this.props.user.user_id}/edit`}>
-                                <EditIcon />
-                            </Button>
-                        </Grid>
+                            />
+                        }
+                    </Grid>
+                    <Grid item md={1}>
+                    </Grid>
+                    <Grid item md={4} align="right" component={Hidden} mdDown className="editPadding">
+                        <Button
+                            className="editButton"
+                            component={NavLink}
+                            to={`/registration/form/${this.props.user.role}/${this.props.user.user_id}/edit`}>
+                            <EditIcon />
+                            Edit Profile
+                        </Button>
+                    </Grid>
+                    <Grid item md={4} align="right" component={Hidden} lgUp className="editPadding">
+                        <Button
+                            className="editButton"
+                            component={NavLink}
+                            to={`/registration/form/${this.props.user.role}/${this.props.user.user_id}/edit`}>
+                            <EditIcon />
+                        </Button>
+                    </Grid>
 
                     </Grid>
                 </>
@@ -357,11 +321,6 @@ class ProfileHeading extends Component {
         }
 
     }
-
-    handleOpen = () => {
-        this.setState({"open": true});
-    }
-
 
     render() {
         let profileDetails;
