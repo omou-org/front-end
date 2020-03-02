@@ -1,21 +1,20 @@
-
-import React, { useEffect, useMemo, useState } from "react";
+import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
-import { bindActionCreators } from "redux";
+import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
-import { connect, useDispatch, useSelector } from "react-redux";
-import { Button, Typography } from "@material-ui/core";
+import {connect, useDispatch, useSelector} from "react-redux";
+import {Button, Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
-import { Prompt, useLocation, useParams, withRouter } from "react-router-dom";
+import {Prompt, useLocation, useParams, withRouter} from "react-router-dom";
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
-import { usePayment, useSubmitRegistration } from "../../../actions/multiCallHooks";
+import {usePayment, useSubmitRegistration} from "../../../actions/multiCallHooks";
 import Loading from "../../Loading";
-import { isFail, isLoading, isSuccessful, usePrevious } from "../../../actions/hooks";
-import { weeklySessionsParser } from "../../Form/FormUtils";
-import { GET } from "../../../actions/actionTypes";
+import {isFail, isLoading, isSuccessful, usePrevious} from "../../../actions/hooks";
+import {weeklySessionsParser} from "../../Form/FormUtils";
+import {GET} from "../../../actions/actionTypes";
 import BackButton from "../../BackButton";
 
 function RegistrationReceipt(props) {
@@ -85,7 +84,7 @@ function RegistrationReceipt(props) {
             });
         });
         return receipt;
-    }
+    };
 
     // If we're coming from the registration cart, set-up state variables after we've completed registration requests
     if (registrationStatus && registrationStatus.status >= 200 &&
@@ -137,7 +136,8 @@ function RegistrationReceipt(props) {
                             </Grid>
                             <Grid item xs={4}>
                                 <Typography align="left">
-                                    ${enrolledCourse.total_tuition}
+                                    ${Math.round(enrolledCourse.hourly_tuition *
+                                weeklySessionsParser(enrolledCourse.schedule.start_date, enrolledCourse.schedule.end_date)*100)/100}
                                 </Typography>
                             </Grid>
                         </Grid>

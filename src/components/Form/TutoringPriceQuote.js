@@ -17,9 +17,11 @@ import {GET} from "../../actions/actionTypes";
 import {durationParser, REQUEST_ALL} from "../../actions/apiActions";
 import {academicLevelParse} from "../../reducers/registrationReducer";
 import InputLabel from "@material-ui/core/InputLabel";
+import ConfirmIcon from "@material-ui/icons/CheckCircle";
+import UnconfirmIcon from "@material-ui/icons/Cancel";
 
 
-const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
+const TutoringPriceQuote = ({courseType, handleUpdatePriceFields, tuitionConfirmed}) => {
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -80,7 +82,7 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
     useEffect(()=>{
         if(priceRules && priceRules.length > 0){
             setCategoryList(uniqueCategories(priceRules));
-        };
+        }
     },[priceRules]);
 
     useEffect(()=>{
@@ -200,7 +202,7 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
             <Grid item xs={12}>
                 <Typography>
                     Use the Tuition Quote Tool to give the customer an estimate of how much the total tuition
-                    will be. This tool DOES NOT set the final price of the course.
+                    will be. This tool will set the final tuition of the course.
                 </Typography>
                 <Grid container
                       className={"tutoring-price-quote"}
@@ -333,12 +335,17 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
                         <Grid container
                               direction={"row"}
                               justify={"flex-end"}>
-                            <Grid item xs={2}>
+                            <Grid item xs={3}>
+                                {
+                                    tuitionConfirmed ?
+                                        <ConfirmIcon className="confirmed course-icon" /> :
+                                        <UnconfirmIcon className="unconfirmed course-icon" />
+                                }
                                 <Button
                                     disabled={!validFields}
                                     onClick={onUpdateFields}
                                 >
-                                    Finalize Course Settings
+                                    Finalize Course Tuition
                                 </Button>
                             </Grid>
                         </Grid>

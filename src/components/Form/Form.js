@@ -65,6 +65,7 @@ class Form extends Component {
             preLoaded: false,
             existingUser: false,
             "hasLoaded": false,
+            confirmTuition: false,
         };
     }
 
@@ -429,7 +430,7 @@ class Form extends Component {
 
     componentWillUnmount = () => {
         this.props.registrationActions.resetSubmitStatus();
-    }
+    };
 
     getFormObject() {
         return this.props.registrationForm[this.state.form];
@@ -448,7 +449,7 @@ class Form extends Component {
         // clear session storage
         sessionStorage.removeItem("form");
         this.props.registrationActions.resetSubmitStatus();
-    }
+    };
 
     validateSection() {
         let currSectionTitle;
@@ -457,6 +458,13 @@ class Form extends Component {
         } else {
             currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
         }
+        console.log(this.getActiveSection()
+            .filter(({required}) => required)
+            .every(({name}) => {
+                console.log(this.state[currSectionTitle][name], name);
+                return this.state[currSectionTitle][name]
+            })
+            );
         return (
             this.getActiveSection()
                 .filter(({required}) => required)
@@ -696,10 +704,13 @@ class Form extends Component {
     onDateChange(date, label, fieldTitle) {
         this.setState((prevState)=>{
             prevState[label][fieldTitle] = date;
+            // this.validateField(this.state.activeSection, fieldTitle, date);
+            console.log(this.validateSection());
             return {
                 ...prevState,
-                nextSection: this.validateSection(),
             };
+        }, ()=>{
+            this.setState({nextSection: this.validateSection()})
         })
     }
 
@@ -720,13 +731,16 @@ class Form extends Component {
                     prevState["Group Details"]["Number of Weekly Sessions"] = numSessions;
                 }
             }
-            return {...prevState};
+            return {
+                ...prevState,
+                confirmTuition: true,
+            };
         })
     }
 
     searchInstructors = async (input) => {
         return await utils.loadInstructors(input)
-    }
+    };
 
     renderField(field, label, fieldIndex) {
         const fieldTitle = field.name;
@@ -736,6 +750,7 @@ class Form extends Component {
         switch (field.type) {
             case "price quote":
                 return <TutoringPriceQuote
+                    tuitionConfirmed={this.state.confirmTuition}
                     handleUpdatePriceFields={this.updatePriceFields.bind(this)}
                     courseType={this.state.form}
                 />;
@@ -925,7 +940,7 @@ class Form extends Component {
                 // setting the category name if it was given an id in URL
                 const currVal = this.state[label][fieldTitle];
                 if (currVal && typeof currVal !== "object") {
-                    const category = this.props.courseCategories.find(({id}) => id == currVal)
+                    const category = this.props.courseCategories.find(({id}) => id == currVal);
                     if (category) {
                         this.state[label][fieldTitle] = {
                             "value": currVal,
