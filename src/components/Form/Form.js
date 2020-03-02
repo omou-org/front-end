@@ -177,8 +177,9 @@ class Form extends Component {
                 // no default
             }
         }
+
         if (!prevState ||
-            formType !== prevState.form ||
+            formType === prevState.form ||
             prevState["submitPending"] ||
             (id && this.props.match.params.edit !== "edit")) {
             if (this.props.registrationForm[formType]) {
@@ -191,6 +192,7 @@ class Form extends Component {
                         "activeSection": formContents.section_titles[0],
                         "form": formType,
                     };
+
                     let course = null;
                     if (this.props.courses.hasOwnProperty(id)) {
                         const {course_id, title} =
@@ -458,13 +460,6 @@ class Form extends Component {
         } else {
             currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
         }
-        console.log(this.getActiveSection()
-            .filter(({required}) => required)
-            .every(({name}) => {
-                console.log(this.state[currSectionTitle][name], name);
-                return this.state[currSectionTitle][name]
-            })
-            );
         return (
             this.getActiveSection()
                 .filter(({required}) => required)
@@ -704,8 +699,6 @@ class Form extends Component {
     onDateChange(date, label, fieldTitle) {
         this.setState((prevState)=>{
             prevState[label][fieldTitle] = date;
-            // this.validateField(this.state.activeSection, fieldTitle, date);
-            console.log(this.validateSection());
             return {
                 ...prevState,
             };
@@ -1011,7 +1004,10 @@ class Form extends Component {
                                 value={time}
                                 onChange={(date) =>{ this.setState((prevState)=>{
                                     prevState[label][fieldTitle] = date;
-                                    return prevState;
+                                    return {
+                                        ...prevState,
+                                        nextSection: this.validateSection()
+                                    };
                                 }) } }/>
                 </Grid>;
             default:
