@@ -48,12 +48,12 @@ export const useSubmitRegistration = (registrationDependencies) => {
                 try {
                     console.log("posting new tutoring courses");
                     const TutoringCourses = [
-                        ...await Promise.all(
-                            newTutorings.map(({newTutoringCourse}) => instance.post(courseEndpoint, newTutoringCourse))
-                        ),
-                        ...await Promise.all(
-                            existingTutorings.map(({newTutoringCourse, courseID}) => instance.patch(`${courseEndpoint}${courseID}/`, newTutoringCourse))
-                        ),
+                        // ...await Promise.all(
+                        //     newTutorings.map(({newTutoringCourse}) => instance.post(courseEndpoint, newTutoringCourse))
+                        // ),
+                        // ...await Promise.all(
+                        //     existingTutorings.map(({newTutoringCourse, courseID}) => instance.patch(`${courseEndpoint}${courseID}/`, newTutoringCourse))
+                        // ),
                     ];
                     dispatch({
                         "payload": TutoringCourses,
@@ -61,7 +61,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                     });
                     console.log("posting new enrollments");
                     const tutoringEnrollments = tutoringRegistrations
-                        .filter(({courseID}) => String(courseID).indexOf("T") !== -1)
+                        .filter(({courseID}) => isExistingTutoring(courseID))
                         .map((tutoringReg, i) => ({
                             "course": TutoringCourses[i].data.id,
                             "student": tutoringReg.student,
