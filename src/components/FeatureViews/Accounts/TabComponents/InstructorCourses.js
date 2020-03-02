@@ -122,7 +122,7 @@ const InstructorCourses = ({ instructorID }) => {
                                             md={2}
                                             xs={2}>
                                             <Typography align="left">
-                                                {days}
+                                                {days.charAt(0).toUpperCase() + days.slice(1)}
                                             </Typography>
                                         </Grid>
                                         <Grid
