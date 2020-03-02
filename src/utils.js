@@ -38,11 +38,11 @@ export const courseDateFormat = ({schedule, is_confirmed}) => ({
     "days": DayConverter[new Date(schedule.start_date).getDay()],
     "end_date": dateFormatter(schedule.end_date),
     "end_time": new Date(`2020-01-01${schedule.end_time}`)
-        .toLocaleTimeString("eng-US", timeOptions),
+        .toLocaleTimeString("eng-US", timeFormat),
     is_confirmed,
     "start_date": dateFormatter(schedule.start_date),
     "start_time": new Date(`2020-01-01${schedule.start_time}`)
-        .toLocaleTimeString("eng-US", timeOptions),
+        .toLocaleTimeString("eng-US", timeFormat),
 });
 
 export const sessionPaymentStatus = (session, enrollment) => {
