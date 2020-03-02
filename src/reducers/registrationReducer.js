@@ -518,7 +518,6 @@ const editCourseRegistration = (prevState, course) => {
             [student_id]: updated_registered_courses,
         },
     };
-    console.log(updatedRegistration, course)
     sessionStorage.setItem("registered_courses", JSON.stringify(updatedRegistration.registered_courses));
 
     return {...updatedRegistration};

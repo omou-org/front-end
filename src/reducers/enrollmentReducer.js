@@ -25,15 +25,15 @@ export default function enrollment(state = initialState.Enrollments, {payload, t
 
 const handleEnrollment = (state, payload, requestType) => {
     let data;
-    if(payload.response && !payload.courseID){
-        data = payload.response.data
+    if (payload.response && !payload.courseID) {
+        data = payload.response.data;
     } else {
         data = payload;
     }
     const newState = JSON.parse(JSON.stringify(state));
-    switch(requestType) {
-        case "GET":{
-            data.forEach(({student, course, id, payment_list, enrollment_balance}) => {
+    switch (requestType) {
+        case "GET": {
+            data.forEach(({student, course, id, payment_list, enrollment_balance, last_paid_session_datetime}) => {
                 let newStudentData = newState[student] || {};
                 let newCourseData = newStudentData[course] || {
                     "enrollment_id": id,

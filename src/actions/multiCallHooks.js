@@ -12,9 +12,6 @@ export const useSubmitRegistration = (registrationDependencies) => {
     const currentPayingParent = useSelector(({Registration}) => Registration.CurrentParent);
     const [status, setStatus] = useState(null);
     const dispatch = useDispatch();
-
-    console.log("hi submitting registration");
-
     const handleError = useCallback((error) => {
         if (error && error.response && error.response.status) {
             setStatus(error.response.status);
@@ -28,48 +25,47 @@ export const useSubmitRegistration = (registrationDependencies) => {
         const aborted = false;
         (async () => {
             if (registrationDependencies) {
-                console.log(registrationDependencies)
                 let {tutoringRegistrations, classRegistrations, payment} = registrationDependencies;
-                console.log(tutoringRegistrations)
+                tutoringRegistrations = tutoringRegistrations.map(({newTutoringCourse, ...rest}) => ({
+                    ...rest,
+                    "newTutoringCourse": {
+                        ...newTutoringCourse,
+                        "end_time": newTutoringCourse.end_time.indexOf("T") > -1
+                            ? newTutoringCourse.end_time.slice(1)
+                            : newTutoringCourse.end_time,
+                        "start_time": newTutoringCourse.start_time.indexOf("T") > -1
+                            ? newTutoringCourse.start_time.slice(1)
+                            : newTutoringCourse.start_time,
+                    },
+                }));
                 const newTutorings = tutoringRegistrations.filter(({courseID}) => String(courseID).indexOf("T") > -1);
                 const existingTutorings = tutoringRegistrations.filter(({courseID}) => isExistingTutoring(courseID));
                 tutoringRegistrations = [...newTutorings, ...existingTutorings];
-                console.log({tutoringRegistrations, existingTutorings, newTutorings});
-                // try {
-                    // const newTutorings = tutoringRegistrations.filter(({courseID}) => StrigngcourseID.indexOf("T") > -1);
-                    // const existingTutorings = tutoringRegistrations.filter(({courseID}) => courseID.indexOf("T") === "-1");
-                    console.log(courseEndpoint, newTutorings, requestSettings);
-                    // throw "up";
+                try {
                     const TutoringCourses = [
-                        ...(await Promise.all(
-                            newTutorings.map(({newTutoringCourse}) => instance.post(courseEndpoint, newTutoringCourse, requestSettings))
-                        )),
-                        ...(await Promise.all(
-                            existingTutorings.map(({newTutoringCourse, courseID}) => {
-                                console.log("patching tutoring course end date")
-                             return instance.patch(`${courseEndpoint}${courseID}`, newTutoringCourse, requestSettings);
-                            })
-                        )),
+                        ...await Promise.all(
+                            newTutorings.map(({newTutoringCourse}) => instance.post(courseEndpoint, newTutoringCourse))
+                        ),
+                        ...await Promise.all(
+                            existingTutorings.map(({newTutoringCourse, courseID}) => instance.patch(`${courseEndpoint}${courseID}/`, newTutoringCourse))
+                        ),
                     ];
-                console.log(tutoringRegistrations)
                     dispatch({
                         "payload": TutoringCourses,
                         "type": types.POST_COURSE_SUCCESSFUL,
                     });
-                const tutoringEnrollments = tutoringRegistrations.map((tutoringReg, i) => {
-                    console.log(tutoringReg, i);
-                    return ({
-                        "course": TutoringCourses[i].data.id,
-                        "student": tutoringReg.student,
-                    })
-                });
+                    const tutoringEnrollments = tutoringRegistrations
+                        .filter(({courseID}) => String(courseID).indexOf("T") !== -1)
+                        .map((tutoringReg, i) => ({
+                            "course": TutoringCourses[i].data.id,
+                            "student": tutoringReg.student,
+                        }));
                     // get existing enrollments involving the given student-course pairs
                     let currEnrollments = await Promise.all(
                         classRegistrations.map(({student, course}) => instance.get(
                             `/course/enrollment/?student=${student}&course_id=${course}`
                         ))
                     );
-                            console.log('midway')
                     // filter for the ones that found matches
                     currEnrollments = currEnrollments
                         .map((elem) => elem.data)
@@ -144,7 +140,6 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         "paymentID": finalPayment.data.id,
                         "status": finalPayment.status,
                     });
-                try{
                 } catch (error) {
                     if (!aborted) {
                         handleError(error);
@@ -153,7 +148,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
             }
         })();
 
-    }, []);
+    }, [currentPayingParent.user, dispatch, handleError, registrationDependencies]);
     return status;
 };
 

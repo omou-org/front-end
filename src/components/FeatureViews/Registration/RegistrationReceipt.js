@@ -18,7 +18,6 @@ import {GET} from "../../../actions/actionTypes";
 import BackButton from "../../BackButton";
 
 function RegistrationReceipt(props) {
-    console.log("registration receipt!")
     const currentPayingParent = useSelector((({ Registration }) => Registration.CurrentParent));
     const parents = useSelector(({ Users }) => Users.ParentList);
 
