@@ -84,7 +84,7 @@ function RegistrationReceipt(props) {
             });
         });
         return receipt;
-    }
+    };
 
     // If we're coming from the registration cart, set-up state variables after we've completed registration requests
     if (registrationStatus && registrationStatus.status >= 200 &&
@@ -100,10 +100,19 @@ function RegistrationReceipt(props) {
         props.history.push("/registration");
         api.closeRegistration("");
     };
-    if (Object.keys(paymentReceipt).length < 1 || (isLoading(paymentStatus) && !registrationStatus)) {
+
+    const renderParent = () => {
+        if (currentPayingParent) {
+            return currentPayingParent.user
+        } else {
+            return parent;
+        }
+    };
+
+    if (Object.keys(paymentReceipt).length < 1 || (isLoading(paymentStatus) && !registrationStatus) || !renderParent()) {
         return <Loading />;
     }
-    const renderCourse = (enrolledCourse) => (<Grid item key={enrolledCourse.id}>
+    const renderCourse = (enrolledCourse) => (<Grid item key={enrolledCourse.course_id}>
         <Grid
             className={"enrolled-course"}
             container
@@ -195,13 +204,7 @@ function RegistrationReceipt(props) {
         window.print();
     };
 
-    const renderParent = () => {
-        if (currentPayingParent) {
-            return currentPayingParent.user
-        } else {
-            return parent;
-        }
-    };
+
 
     return (
         <Paper className={"paper registration-receipt"}>

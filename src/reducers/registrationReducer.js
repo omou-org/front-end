@@ -304,6 +304,7 @@ const addTutoringRegistration = (prevState, form) => {
     const endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + (7 * (numSessions - 1)));
     const isStudentCurrentlyRegistered = prevState.registered_courses ? Object.keys(prevState.registered_courses).includes(studentID.toString()) : false;
+
     const enrollmentObject = {
         "course_type": "tutoring",
         "new_course": {

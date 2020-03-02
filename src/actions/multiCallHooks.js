@@ -148,7 +148,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
             }
         })();
 
-    }, [currentPayingParent.user, dispatch, handleError, registrationDependencies]);
+    }, [currentPayingParent, dispatch, handleError, registrationDependencies]);
     return status;
 };
 

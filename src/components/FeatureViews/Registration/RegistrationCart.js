@@ -394,7 +394,7 @@ const RegistrationCart = () => {
                         if (courseID.indexOf("T") > -1 || true)  {
                             // {category, academic_level, sessions, form}
                             let {category, academic_level, form, new_course} = course;
-                            new_course = new_course || {}
+                            new_course = new_course || {};
                             courses.tutoring.push({
                                 "category_id": category || new_course.category,
                                 "academic_level": academic_level || new_course.academic_level,
