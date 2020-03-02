@@ -12,8 +12,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
     const currentPayingParent = useSelector(({Registration}) => Registration.CurrentParent);
     const [status, setStatus] = useState(null);
     const dispatch = useDispatch();
-    const Registration = useSelector(({Registration}) => Registration);
-    // console.log(Registration.registration, registrationDependencies);
+
     const handleError = useCallback((error) => {
         if (error && error.response && error.response.status) {
             setStatus(error.response.status);
@@ -22,12 +21,10 @@ export const useSubmitRegistration = (registrationDependencies) => {
             console.error(error);
         }
     }, []);
-    // console.log("use submit called")
+
     useEffect(() => {
-        console.log("use effect called");
         const aborted = false;
         (async () => {
-            console.log(registrationDependencies.complete !== true, registrationDependencies.complete);
             if (registrationDependencies && registrationDependencies.complete !== true) {
                 let {tutoringRegistrations, classRegistrations, payment} = registrationDependencies;
                 tutoringRegistrations = tutoringRegistrations.map(({newTutoringCourse, ...rest}) => ({
@@ -46,28 +43,25 @@ export const useSubmitRegistration = (registrationDependencies) => {
                 const existingTutorings = tutoringRegistrations.filter(({courseID}) => isExistingTutoring(courseID));
                 tutoringRegistrations = [...newTutorings, ...existingTutorings];
                 try {
-                    console.log("posting new tutoring courses");
                     const TutoringCourses = [
-                        // ...await Promise.all(
-                        //     newTutorings.map(({newTutoringCourse}) => instance.post(courseEndpoint, newTutoringCourse))
-                        // ),
-                        // ...await Promise.all(
-                        //     existingTutorings.map(({newTutoringCourse, courseID}) => instance.patch(`${courseEndpoint}${courseID}/`, newTutoringCourse))
-                        // ),
+                        ...await Promise.all(
+                            newTutorings.map(({newTutoringCourse}) => instance.post(courseEndpoint, newTutoringCourse))
+                        ),
+                        ...await Promise.all(
+                            existingTutorings.map(({newTutoringCourse, courseID}) => instance.patch(`${courseEndpoint}${courseID}/`, newTutoringCourse))
+                        ),
                     ];
                     dispatch({
                         "payload": TutoringCourses,
                         "type": types.POST_COURSE_SUCCESSFUL,
                     });
-                    console.log("posting new enrollments");
                     const tutoringEnrollments = tutoringRegistrations
-                        .filter(({courseID}) => isExistingTutoring(courseID))
+                        .filter(({courseID}) => !isExistingTutoring(courseID))
                         .map((tutoringReg, i) => ({
                             "course": TutoringCourses[i].data.id,
                             "student": tutoringReg.student,
                         }));
                     // get existing enrollments involving the given student-course pairs
-                    console.log("getting existing enrollments");
                     let currEnrollments = await Promise.all(
                         classRegistrations.map(({student, course}) => instance.get(
                             `/course/enrollment/?student=${student}&course_id=${course}`
@@ -143,10 +137,10 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         "payload": finalPayment,
                         "type": types.POST_PAYMENT_SUCCESS,
                     });
-                    // dispatch({
-                    //     "payload": {},
-                    //     "type": types.COMPLETE_REGISTRATION,
-                    // });
+                    dispatch({
+                        "payload": {},
+                        "type": types.COMPLETE_REGISTRATION,
+                    });
                     setStatus({
                         "paymentID": finalPayment.data.id,
                         "status": finalPayment.status,

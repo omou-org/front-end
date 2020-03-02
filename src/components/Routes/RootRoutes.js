@@ -1,6 +1,5 @@
 // React Imports
 import {Redirect, Route, Switch, useLocation} from "react-router-dom";
-import {CSSTransition, TransitionGroup} from "react-transition-group";
 import {useDispatch} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../actions/registrationActions";
@@ -37,11 +36,7 @@ export const RootRoutes = (props) =>  {
     );
 
     api.resetSubmitStatus();
-    return (<TransitionGroup>
-            <CSSTransition
-                key={location.key}
-                classNames="fade"
-                timeout={100}>
+    return (
                 <Switch>
                 <Route
                     path="/login"
@@ -121,7 +116,6 @@ export const RootRoutes = (props) =>  {
                 <Route path="/PageNotFound" component={ErrorNotFoundPage}/>
                 <Redirect to="/PageNotFound"/>
             </Switch>
-            </CSSTransition>
-        </TransitionGroup>);
+);
 };
 
