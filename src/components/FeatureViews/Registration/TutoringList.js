@@ -1,7 +1,6 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import * as hooks from "actions/hooks.js";
-
 // Material UI Imports
 import {Link} from "react-router-dom";
 import Card from "@material-ui/core/Card";
@@ -9,6 +8,9 @@ import CardContent from "@material-ui/core/CardContent";
 import ForwardArrow from "@material-ui/icons/ArrowForward";
 import Grid from "@material-ui/core/Grid";
 import Loading from "components/Loading";
+import Grow from "@material-ui/core/Grow";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
 
 const trimString = (string, maxLen) =>
     string.length > maxLen
@@ -19,6 +21,7 @@ const trimString = (string, maxLen) =>
 const TutoringList = () => {
     const categories = useSelector(({Course}) => Course.CourseCategories);
     const categoryStatus = hooks.useCategory();
+    const registeringParent = useSelector(({ Registration }) => Registration.CurrentParent);
 
     if (hooks.isLoading(categoryStatus)) {
         return <Loading />;
@@ -26,6 +29,20 @@ const TutoringList = () => {
 
     if (hooks.isFail(categoryStatus)) {
         return "Error loading subjects!";
+    }
+
+    if(!registeringParent || registeringParent === "none"){
+        return <Grid
+            item
+            xs={12}>
+            <Grow in>
+                <Paper className="info">
+                    <Typography style={{"fontWeight": 700}}>
+                        Please set the parent who's registering!
+                    </Typography>
+                </Paper>
+            </Grow>
+        </Grid>
     }
 
     return (
