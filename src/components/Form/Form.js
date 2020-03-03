@@ -764,7 +764,6 @@ class Form extends Component {
             this.state.activeSection === "Parent Information";
         switch (field.type) {
             case "price quote":
-                console.log(this.props.match.params.id);
                 return <TutoringPriceQuote
                     tutoringCategory={this.props.match.params.id}
                     tuitionConfirmed={this.state.confirmTuition}
