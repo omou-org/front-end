@@ -44,6 +44,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
     );
     const history = useHistory();
     const isAdmin = useSelector(({ auth }) => auth.isAdmin);
+    const currentPayingParent = useSelector((({ Registration }) => Registration.CurrentParent));
     const [priceQuote, setPriceQuote] = useState({});
     const prevPriceQuote = usePrevious(priceQuote);
     const [discounts, setDiscounts] = useState([]);
@@ -81,7 +82,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                 }),
                 "disabled_discounts": discounts.filter((discount) => !discount.enable).map(({ id }) => id),
                 "price_adjustment": Number(priceAdjustment),
-                // "parent_id":
+                "parent": currentPayingParent.user.id,
             };
             // make price quote request
             instance.post("/pricing/quote/", requestedQuote).then((quoteResponse) => {
@@ -182,7 +183,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
             <Grid
                 item
                 xs={3}>
-                <FormControl>
+                <FormControl required>
                     <FormLabel>Select Payment Method</FormLabel>
                     <RadioGroup>
                         <FormControlLabel
@@ -291,6 +292,27 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                                     </Grid>
                                 </Grid>))
                             }
+                            <Grid
+                                container
+                                direction="row"
+                                justify="flex-end">
+                                <Grid
+                                    item
+                                    xs={4}>
+                                    <Typography
+                                        align="right"
+                                        className="price-label">
+                                        Applied Parent Account Balance
+                                    </Typography>
+                                </Grid>
+                                <Grid
+                                    item
+                                    xs={2}>
+                                    <Typography align="right">
+                                        {priceQuote.account_balance > 0 && "-"} ${priceQuote.account_balance}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
                             <Grid item>
                                 {/* Manual Price Adjustment for Admins */}
                                 {
