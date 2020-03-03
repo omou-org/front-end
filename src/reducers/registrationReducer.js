@@ -81,7 +81,6 @@ export default function registration(state = initialState.RegistrationForms, { p
             newState.registration = payload;
             return { ...newState };
         case actions.COMPLETE_REGISTRATION:
-            console.log("completed registration");
             newState.registration = {
                 ...newState.registration,
                 complete:true,

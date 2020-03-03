@@ -309,7 +309,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                                     item
                                     xs={2}>
                                     <Typography align="right">
-                                        {priceQuote.account_balance > 0 && "-"} ${priceQuote.account_balance}
+                                        {priceQuote.account_balance > 0 && "- $"} {priceQuote.account_balance}
                                     </Typography>
                                 </Grid>
                             </Grid>

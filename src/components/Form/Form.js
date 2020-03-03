@@ -17,7 +17,7 @@ import Loading from "components/Loading";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import {Typography} from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
@@ -47,7 +47,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import {DatePicker, TimePicker,} from "material-ui-pickers";
+import {DatePicker, TimePicker} from "material-ui-pickers";
 import * as utils from "./FormUtils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
 
@@ -537,7 +537,6 @@ class Form extends Component {
                                     this.props.adminActions.setDiscount(discountType, discountPayload);
                                     break;
                                 default:
-                                    console.log(this.state);
                                     this.props.registrationActions.submitForm(this.state);
                             }
                         }
