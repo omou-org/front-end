@@ -2,6 +2,8 @@ import * as types from "./actionTypes";
 import {instance} from "./apiActions";
 
 export const login = (email, password, savePassword) => async (dispatch) => {
+    delete instance.defaults.headers.common.Authorization;
+
     // request starting
     dispatch({"type": types.LOGIN_STARTED});
 
