@@ -68,7 +68,7 @@ const updateCourseCategories = (state, payload, action) => {
             });
         }
     }
-    return {...state};
+    return JSON.parse(JSON.stringify(state));
 };
 
 const handleCoursePost = (state, response) => {

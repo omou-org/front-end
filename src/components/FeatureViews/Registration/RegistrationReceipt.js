@@ -145,7 +145,8 @@ function RegistrationReceipt(props) {
                             </Grid>
                             <Grid item xs={4}>
                                 <Typography align="left">
-                                    ${enrolledCourse.total_tuition}
+                                    ${Math.round(enrolledCourse.hourly_tuition *
+                                weeklySessionsParser(enrolledCourse.schedule.start_date, enrolledCourse.schedule.end_date)*100)/100}
                                 </Typography>
                             </Grid>
                         </Grid>

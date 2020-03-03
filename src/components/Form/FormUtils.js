@@ -102,7 +102,7 @@ export const dayOfWeek = {
 export const weeklySessionsParser = (startDate, endDate) => {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    return Math.floor((end.getTime() - start.getTime()) / (1000 * 3600 * 24 * 7)) + 1;
+    return Math.floor((end.getTime() - start.getTime()) / (1000 * 3600 * 24 * 7));
 };
 
 export const convertTimeStrToDate = (time) => new Date(`01/01/2020 ${time.substr(1, 5)}`);

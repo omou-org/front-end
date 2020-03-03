@@ -135,7 +135,6 @@ function EditSessionView({ course, session, editSelection }) {
                 return;
 
         }
-        console.log(newEndTime);
         setSessionFields({
             ...sessionFields,
             duration: event.target.value,
@@ -148,35 +147,33 @@ function EditSessionView({ course, session, editSelection }) {
     const updateSession = event => {
         event.preventDefault();
         let { start_time, end_time, is_confirmed, instructor, duration } = sessionFields;
-        if (editSelection === EDIT_CURRENT_SESSION) {
-            let patchedSession = {
-                start_datetime: start_time.toISOString(),
-                end_datetime: end_time.toISOString(),
-                is_confirmed: is_confirmed,
-                instructor: instructor.value,
-                duration: duration
-            };
-            api.patchSession(session.id, patchedSession);
+        switch(editSelection){
+            case EDIT_CURRENT_SESSION:{
+                const patchedSession = {
+                    start_datetime: start_time.toISOString(),
+                    end_datetime: end_time.toISOString(),
+                    is_confirmed: is_confirmed,
+                    instructor: instructor.value,
+                    duration: duration,
+                };
+                api.patchSession(session.id, patchedSession);
+                break;
+            }
+            case EDIT_ALL_SESSIONS:{
+                const patchedCourse = {
+                    course_category: sessionFields.category.value,
+                    subject: sessionFields.title,
+                    start_time: start_time.toLocaleString("eng-US", timeFormat),
+                    end_time: end_time.toLocaleString("eng-US", timeFormat),
+                    instructor: instructor.value,
+                    is_confirmed: is_confirmed,
+                    start_date: start_time.toLocaleString("sv-SE", dateFormat),
+                    end_date: course.schedule.end_date.toLocaleString("sv-SE", dateFormat),
+                };
+                api.patchCourse(course.course_id, patchedCourse);
+            }
+            //no default case
         }
-
-        let patchedCourse = {
-            course_category: sessionFields.category.value,
-            subject: sessionFields.title,
-            start_time: start_time.toLocaleString("eng-US", timeFormat),
-            end_time: end_time.toLocaleString("eng-US", timeFormat),
-        };
-        if (editSelection === EDIT_ALL_SESSIONS) {
-            patchedCourse = {
-                ...patchedCourse,
-                instructor: instructor.value,
-                is_confirmed: is_confirmed,
-                start_date: start_time.toLocaleString("sv-SE", dateFormat),
-                end_date: course.schedule.end_date.toLocaleString("sv-SE", dateFormat),
-            };
-            api.patchCourse(course.course_id, patchedCourse);
-        }
-
-        // api.patchCourse(course.course_id, patchedCourse);
         history.push("/scheduler/")
     };
 
