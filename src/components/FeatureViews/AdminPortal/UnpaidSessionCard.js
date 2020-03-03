@@ -1,4 +1,4 @@
-import React, { Container, Component, useMemo } from 'react';
+import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -7,7 +7,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import {stringToColor} from "../Accounts/accountUtils";
-import {roleColor, initials, parseDate, capitalizeRoleName, statusColor} from "./AdminUtils";
+import {roleColor, initials, capitalizeRoleName, statusColor} from "./AdminUtils";
 
     const styles = (username) => ({
         "backgroundColor": stringToColor(username),
@@ -52,35 +52,33 @@ import {roleColor, initials, parseDate, capitalizeRoleName, statusColor} from ".
 
     const UnpaidSessionCard = ({unpaidStudent}) => {
         return(
-        <Card style = {cardStyle}> 
-                    <CardActionArea>
-                        <CardMedia>
-                            <Grid container style={{justifyContent:"center"}}>
-                                <Avatar   
-                                    style={styles(unpaidStudent.fName + " " + unpaidStudent.lName)}
-                                >
-                                    {initials(unpaidStudent.fName, unpaidStudent.lName)}
-                                </Avatar>
-                            </Grid>
-                        </CardMedia>
-                        <CardContent>
-                            <Typography style ={{fontSize: "16px", fontWeight: 500, lineHeight: "24px", textAlign: "center"}}>
-                                {unpaidStudent.fName + " " + unpaidStudent.lName}
-                            </Typography>
-                            <Typography style={roleStyle(unpaidStudent.status)} >
-                                {capitalizeRoleName(unpaidStudent.status)}
-                            </Typography>
-                            <Typography style={{textAlign: "center"}}>
-                                Payment Status: 
-                                <span style={statusStyle(unpaidStudent.paymentStatus)}>{unpaidStudent.paymentStatus}</span>
-                                <br/>
-                                {unpaidStudent.amt}
-                                <br/>
-                                {unpaidStudent.course}
-                            </Typography>
-                        </CardContent>
-                    </CardActionArea>
-                </Card>
+            <Card style = {cardStyle}> 
+                <CardActionArea>
+                    <CardMedia>
+                        <Grid container style={{justifyContent:"center"}}>
+                            <Avatar style={styles(unpaidStudent.fName + " " + unpaidStudent.lName)}>
+                                {initials(unpaidStudent.fName, unpaidStudent.lName)}
+                            </Avatar>
+                        </Grid>
+                    </CardMedia>
+                    <CardContent>
+                        <Typography style ={{fontSize: "16px", fontWeight: 500, lineHeight: "24px", textAlign: "center"}}>
+                            {unpaidStudent.fName + " " + unpaidStudent.lName}
+                        </Typography>
+                        <Typography style={roleStyle(unpaidStudent.status)} >
+                            {capitalizeRoleName(unpaidStudent.status)}
+                        </Typography>
+                        <Typography style={{textAlign: "center"}}>
+                            Payment Status: 
+                            <span style={statusStyle(unpaidStudent.paymentStatus)}>{unpaidStudent.paymentStatus}</span>
+                            <br/>
+                            {unpaidStudent.amt}
+                            <br/>
+                            {unpaidStudent.course}
+                        </Typography>
+                    </CardContent>
+                </CardActionArea>
+            </Card>
         )
     }
 
