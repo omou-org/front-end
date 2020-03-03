@@ -20,7 +20,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 
 
-const TutoringPriceQuote = ({courseType, handleUpdatePriceFields, tuitionConfirmed}) => {
+const TutoringPriceQuote = ({courseType, handleUpdatePriceFields, tuitionConfirmed, tutoringCategory}) => {
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -87,7 +87,11 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields, tuitionConfirm
     useEffect(()=>{
         if(category === null && academic_level === null &&
             categoryList.length > 0){
-            setCategory(categoryList[0]);
+            if(tutoringCategory){
+                setCategory(categoryList.find(category => category.id == tutoringCategory));
+            } else {
+                setCategory(categoryList[0]);
+            }
             // set tuition
             setHourlyTuition(()=>{
                 let matchingPriceRule = priceRules.find(rule => rule.category.id === categoryList[0].id);

@@ -1,29 +1,29 @@
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
 import * as registrationActions from "../../actions/registrationActions";
 import * as userActions from "../../actions/userActions";
 import * as apiActions from "../../actions/apiActions";
 import * as adminActions from "../../actions/adminActions";
 import * as types from "actions/actionTypes";
-import React, { Component } from "react";
-import { Prompt } from "react-router";
-import { NavLink, withRouter } from "react-router-dom";
+import React, {Component} from "react";
+import {Prompt} from "react-router";
+import {NavLink, withRouter} from "react-router-dom";
 import CreatableSelect from 'react-select/creatable';
 import AsyncSelect from "react-select/async";
-import { updateParent, updateStudent } from "reducers/usersReducer";
-import { updateCourse } from "reducers/courseReducer";
+import {updateParent, updateStudent} from "reducers/usersReducer";
+import {updateCourse} from "reducers/courseReducer";
 // Material UI Imports
 import Loading from "components/Loading";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import { Typography } from "@material-ui/core";
+import {Typography} from "@material-ui/core";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
 import TextField from "@material-ui/core/TextField";
-import { InputValidation } from "../FeatureViews/Registration/Validations";
+import {InputValidation} from "../FeatureViews/Registration/Validations";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
@@ -36,7 +36,6 @@ import Input from '@material-ui/core/Input';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import InputAdornment from '@material-ui/core/InputAdornment';
-
 // Outside React Component
 import SearchSelect from "react-select";
 import BackButton from "../BackButton.js";
@@ -48,7 +47,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { DatePicker, TimePicker, } from "material-ui-pickers";
+import {DatePicker, TimePicker,} from "material-ui-pickers";
 import * as utils from "./FormUtils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
 
@@ -538,7 +537,7 @@ class Form extends Component {
                                     this.props.adminActions.setDiscount(discountType, discountPayload);
                                     break;
                                 default:
-                                    console.log(this.state)
+                                    console.log(this.state);
                                     this.props.registrationActions.submitForm(this.state);
                             }
                         }
@@ -756,7 +755,7 @@ class Form extends Component {
 
     handleClickShowPassword = () => {
         this.setState(state => ({ showPassword: !state.showPassword }))
-    }
+    };
 
     renderField(field, label, fieldIndex) {
         const fieldTitle = field.name;
@@ -765,7 +764,9 @@ class Form extends Component {
             this.state.activeSection === "Parent Information";
         switch (field.type) {
             case "price quote":
+                console.log(this.props.match.params.id);
                 return <TutoringPriceQuote
+                    tutoringCategory={this.props.match.params.id}
                     tuitionConfirmed={this.state.confirmTuition}
                     handleUpdatePriceFields={this.updatePriceFields.bind(this)}
                     courseType={this.state.form}
