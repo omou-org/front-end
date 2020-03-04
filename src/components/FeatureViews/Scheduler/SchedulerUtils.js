@@ -39,6 +39,18 @@ export const BootstrapInput = withStyles(theme => ({
 }))(InputBase);
 
 export const handleToolTip = (info) => {
+
+    function startAndEndDate(start, end) {
+
+        let startDate = start.toString().substr(3, 13)
+        let getEndDate = end.getDate()
+        let setDate = end.setDate(getEndDate - 1)
+        let endDate = new Date(setDate).toString().substr(3, 13)
+
+        return `${startDate} - ${endDate}`
+    }
+
+
     function formatDate(start, end) {
         const MonthConverter = {
             "0": "January",
@@ -61,7 +73,6 @@ export const handleToolTip = (info) => {
         const startMonth = date.getMonth();
         // Gets days
         const Days = DayConverter[dayOfWeek];
-
         // Gets months
         const Month = MonthConverter[startMonth];
 
@@ -69,6 +80,9 @@ export const handleToolTip = (info) => {
         const startTime = new Date(start).toTimeString();
         const endTime = new Date(end).toTimeString();
         // Converts 24hr to 12 hr time
+
+
+
         function timeConverter(time) {
             const Hour = time.substr(0, 2);
             const to12HourTime = (Hour % 12) || 12;
@@ -84,6 +98,7 @@ export const handleToolTip = (info) => {
 
     }
 
+
     new tippy(info.el, {
         "content":
             `
@@ -92,7 +107,8 @@ export const handleToolTip = (info) => {
                 <div class="container">
                     <div class='clock'>
                         <span class='clock_icon icn'>
-                            ${formatDate(info.event.start, info.event.end)}
+                        
+                        ${info.event.allDay ? startAndEndDate(info.event.start, info.event.end) : formatDate(info.event.start, info.event.end)}
                         </span>
                     </div>
                     <div class='pin_icon icn'>
