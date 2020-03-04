@@ -66,7 +66,7 @@ function EditSessionView({ course, session, editSelection }) {
                 start_time: session.start_datetime,
                 end_time: session.end_datetime,
                 duration: durationHours,
-                title: course.title,
+                title: session.title,
                 is_confirmed: session.is_confirmed,
             });
         }
@@ -146,7 +146,8 @@ function EditSessionView({ course, session, editSelection }) {
 
     const updateSession = event => {
         event.preventDefault();
-        let { start_time, end_time, is_confirmed, instructor, duration } = sessionFields;
+        let { start_time, end_time, is_confirmed, instructor, duration, title } = sessionFields;
+
         switch(editSelection){
             case EDIT_CURRENT_SESSION:{
                 const patchedSession = {
@@ -155,6 +156,7 @@ function EditSessionView({ course, session, editSelection }) {
                     is_confirmed: is_confirmed,
                     instructor: instructor.value,
                     duration: duration,
+                    title: title,
                 };
                 api.patchSession(session.id, patchedSession);
                 break;

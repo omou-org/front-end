@@ -150,7 +150,7 @@ class Scheduler extends Component {
                 return {
                     "id": session.id,
                     "courseID": session.course,
-                    "title": this.props.courses[session.course].title,
+                    "title": session.title,
                     "description": session.description ? session.description : "",
                     "type": this.props.courses[session.course].type,
                     "resourceId": this.props.courses[session.course_id] ? this.props.courses[session.course_id].room_id : 1,
@@ -176,7 +176,7 @@ class Scheduler extends Component {
             allInstructorSchedules = allInstructorSchedules.concat(Object.values(iList));
         });
         return allInstructorSchedules;
-    }
+    };
 
     setOOOEvents = () => {
         let allInstructorSchedules = [];
@@ -216,14 +216,11 @@ class Scheduler extends Component {
         this.setState({
             "oooEvents": allInstructorSchedules,
         });
-    }
+    };
 
     // The eventRender function handles the tooltip
     handleToolTip(info) {
-        // Out of Office event, tooltip not implemented yet
-        if (info.event.extendedProps) {
-            return;
-        }
+        // TODO: Out of Office event, tooltip not implemented yet
 
         function formatDate(start, end) {
             const MonthConverter = {
@@ -312,7 +309,7 @@ class Scheduler extends Component {
         const calendarApi = this.calendarComponentRef.current.getApi();
         const date = calendarApi.view.title;
         return date;
-    }
+    };
 
     toggleWeekends = () => {
         this.setState({ // update a property
@@ -343,7 +340,7 @@ class Scheduler extends Component {
             "currentDate": date,
             "timeShift": 0,
         }));
-    }
+    };
 
     goToNext = () => {
         const calendarApi = this.calendarComponentRef.current.getApi();
@@ -400,19 +397,19 @@ class Scheduler extends Component {
             "currentDate": date,
             "timeShift": 0,
         });
-    }
+    };
 
     today = () => {
         const calendarApi = this.calendarComponentRef.current.getApi();
         calendarApi.today();
         this.currentDate();
-    }
+    };
 
     currentDate = () => {
         const calendarApi = this.calendarComponentRef.current.getApi();
         const date = calendarApi.view.title;
         return date;
-    }
+    };
 
     // This function changes the resouce view when click as well as change the color of the icon
     changeViewToResource = () => {
@@ -427,7 +424,7 @@ class Scheduler extends Component {
             "calendarResources": this.getRoomResources(),
         });
 
-    }
+    };
 
     changeViewToCalendar = () => {
         const calendarApi = this.calendarComponentRef.current.getApi();
@@ -438,7 +435,7 @@ class Scheduler extends Component {
             "resourceIcon": false,
             "calendarEvents": JSON.parse(sessionStorage.getItem("calendarEvent")),
         });
-    }
+    };
 
     // Function to parse the inital state into data that full calendar could
     getEvents = () => {
@@ -478,7 +475,7 @@ class Scheduler extends Component {
             ...el,
             "url": `/scheduler/view-session/${el.course_id}/${el.session_id}`,
         }));
-    }
+    };
 
     // This function is used in material-ui for the eventhandler
     handleFilterChange = (name) => (event) => {
@@ -503,7 +500,7 @@ class Scheduler extends Component {
             // sessionStorage.setItem("calendarEvent", JSON.stringify(newEvents));
         }
 
-    }
+    };
 
     handleResourceFilterChange = (name) => (event) => {
         this.setState({

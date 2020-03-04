@@ -181,7 +181,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                         align="left"
                         className="session-view-title"
                         variant="h3">
-                        {course && course.title}
+                        {session && session.title}
                     </Typography>
                 </Grid>
                 <Grid item sm={12}>
