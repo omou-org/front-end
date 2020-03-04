@@ -283,7 +283,7 @@ const InstructorAvailability = ({ instructorID }) => {
                         md={2}>
                         <Button
                             className="button">
-                            Save OOO
+                            Save Form
                         </Button>
                     </Grid>
                 </Grid>
