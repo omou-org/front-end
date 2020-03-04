@@ -95,6 +95,11 @@ export const courseToRegister = (enrollment, course, student) => ({
     "preLoaded": false,
     "submitPending": false,
 });
+
 export const truncateStrings = (string, length) => string.length > length
     ? `${string.slice(0, length - 3).trim()}...`
     : string;
+
+export const capitalizeString = (string) => {
+    return string.replace(/^\w/, lowerCaseString => lowerCaseString.toUpperCase())
+}
