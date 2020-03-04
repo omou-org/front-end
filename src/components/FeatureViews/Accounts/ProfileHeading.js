@@ -16,6 +16,7 @@ import {NavLink} from "react-router-dom";
 import {addDashes} from "./accountUtils";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import OutOfOffice from "./OutOfOffice";
+import InstructorAvailability from "./InstructorAvailability";
 import "./Accounts.scss";
 
 class ProfileHeading extends Component {
@@ -286,8 +287,17 @@ class ProfileHeading extends Component {
         if (this.props.user.role != "receptionist") {
             return (
                 <>
-                    <Grid container align="right" item md={9}>
-                    <Grid item md={4} align= "right" className="editPadding">
+                    <Grid container align="right" item md={12}>
+                    <Grid item md={3} align= "right" className="editPadding">
+                        {
+                            this.props.user.role === "instructor" && <InstructorAvailability
+                            instructorID={this.props.user.user_id}
+                        />
+                        }
+                    </Grid>
+                    <Grid item md={1}>
+                    </Grid>
+                    <Grid item md={3} align= "right" className="editPadding">
                         {
                             this.props.user.role === "instructor" && <OutOfOffice
                                 instructorID={this.props.user.user_id}
@@ -296,7 +306,7 @@ class ProfileHeading extends Component {
                     </Grid>
                     <Grid item md={1}>
                     </Grid>
-                    <Grid item md={4} align="right" component={Hidden} mdDown className="editPadding">
+                    <Grid item md={3} align="right" component={Hidden} mdDown className="editPadding">
                         <Button
                             className="editButton"
                             component={NavLink}
@@ -305,7 +315,7 @@ class ProfileHeading extends Component {
                             Edit Profile
                         </Button>
                     </Grid>
-                    <Grid item md={4} align="right" component={Hidden} lgUp className="editPadding">
+                    <Grid item md={3} align="right" component={Hidden} lgUp className="editPadding">
                         <Button
                             className="editButton"
                             component={NavLink}
