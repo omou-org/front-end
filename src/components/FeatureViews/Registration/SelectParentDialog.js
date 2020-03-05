@@ -53,6 +53,7 @@ class SelectParentDialog extends React.Component {
                     birth_date: selectedParent.birth_day,
                     student_list: selectedParent.student_list,
                     account_type: "PARENT",
+                    balance: selectedParent.balance,
                 };
 
                 this.props.registrationActions.setRegisteringParent(selectedParent);
@@ -74,7 +75,7 @@ class SelectParentDialog extends React.Component {
             oldState.searchingParent = false;
             return oldState;
         });
-    }
+    };
 
     handleExitParent = () => (e) =>{
         e.preventDefault();
@@ -88,7 +89,7 @@ class SelectParentDialog extends React.Component {
             this.handleClose();
         });
 
-    }
+    };
 
     ActiveParentDialog = () =>{
         return (
@@ -104,12 +105,12 @@ class SelectParentDialog extends React.Component {
                 </Grid>
             </div>
         )
-    }
+    };
 
     handleSetParentButton = () => (e)=>{
         e.preventDefault();
         this.handleClose();
-    }
+    };
 
     renderParentSuggestionList = ()=>{
         if(this.props.search){
@@ -144,7 +145,7 @@ class SelectParentDialog extends React.Component {
                 }
             });
         }
-    }
+    };
 
     SetParentDialog = () =>{
         return (
@@ -160,7 +161,7 @@ class SelectParentDialog extends React.Component {
                 />
             </div>
         )
-    }
+    };
 
 
 

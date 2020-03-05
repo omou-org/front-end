@@ -82,8 +82,11 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                 }),
                 "disabled_discounts": discounts.filter((discount) => !discount.enable).map(({ id }) => id),
                 "price_adjustment": Number(priceAdjustment),
-                "parent": currentPayingParent.user.id,
             };
+
+            if(currentPayingParent.balance > 0){
+                requestedQuote["parent"] = currentPayingParent.user.id;
+            }
             // make price quote request
             instance.post("/pricing/quote/", requestedQuote).then((quoteResponse) => {
                 const responseDiscounts = JSON.stringify(quoteResponse.data.discounts);
