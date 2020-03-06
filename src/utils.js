@@ -1,5 +1,3 @@
-import React from "react";
-
 export const timeFormat = {
     "hour12": false,
     "hour": "2-digit",

@@ -1,295 +1,236 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { instance } from "actions/apiActions";
-import { POST_INSTRUCTORAVAILABILITY_SUCCESS } from "actions/actionTypes";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {instance} from "actions/apiActions";
+import {POST_INSTRUCTORAVAILABILITY_SUCCESS} from "actions/actionTypes";
 import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
 
-
-import { DatePicker, TimePicker } from "material-ui-pickers";
+import AwayIcon from "@material-ui/icons/EventBusy";
 import Button from "@material-ui/core/Button";
-import Checkbox from "@material-ui/core/Checkbox";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
+import {TimePicker} from "material-ui-pickers";
 
 import "./Accounts.scss";
-import AwayIcon from "@material-ui/icons/EventBusy";
+
+import {DayConverter} from "utils";
+import {timeParser} from "components/Form/FormUtils";
 
 const styles = {
     "maxHeight": "80vh",
     "minHeight": "80vh",
 };
 
-const formatDate = (date) => {
-    const timePart = `${date.getHours()}:${date.getMinutes()}`;
-    return `${timePart}`;
-};
+const formatTime = (time) => time && `${time.getHours()}:${time.getMinutes()}`;
 
-const InstructorAvailability = ({ instructorID }) => {
+// fills out all 7 days, even if some dont exist
+// { sunday: {start, end}, monday: {start, end}, ...etc}
+const fillWorkHours = (workHours) => Object.keys(DayConverter).reduce(
+    (hours, dayNum) => {
+        const availObj = Object.values(workHours).find(({day}) => dayNum == day);
+        return {
+            ...hours,
+            [dayNum]: availObj
+                ? {
+                    "day": dayNum,
+                    "end": timeParser(availObj.end),
+                    "id": availObj.availability_id,
+                    "start": timeParser(availObj.start),
+                }
+                : {
+                    "day": dayNum,
+                    "end": null,
+                    "start": null,
+                },
+        };
+    }, {}
+);
+
+// format for API request
+const convertAvailObj = ({day, end, start}, instructor) => ({
+    "day_of_week": DayConverter[day],
+    "end_time": formatTime(end),
+    instructor,
+    "start_time": formatTime(start),
+});
+
+const endpoint = "/account/instructor-availability/";
+
+const InstructorAvailability = ({instructorID}) => {
     const dispatch = useDispatch();
-    const [description, setDescription] = useState("");
-    const [start, setStart] = useState(null);
-    const [mondayTime, setMondayTime] = useState(null);
-    const [tuesdayTime, setTuesdayTime] = useState(null);
-    const [wednesdayTime, setWednesdayTime] = useState(null);
-    const [thursdayTime, setThursdayTime] = useState(null);
-    const [fridayTime, setFridayTime] = useState(null);
-    const [saturdayTime, setSaturdayTime] = useState(null);
-    const [sundayTime, setSundayTime] = useState(null);
-    const [mondayEndTime, setMondayEndTime] = useState(null);
-    const [tuesdayEndTime, setTuesdayEndTime] = useState(null);
-    const [wednesdayEndTime, setWednesdayEndTime] = useState(null);
-    const [thursdayEndTime, setThursdayEndTime] = useState(null);
-    const [fridayEndTime, setFridayEndTime] = useState(null);
-    const [saturdayEndTime, setSaturdayEndTime] = useState(null);
-    const [sundayEndTime, setSundayEndTime] = useState(null);
-
-    const [end, setEnd] = useState(null);
+    const instructor = useSelector(({Users}) => Users.InstructorList[instructorID]);
+    const [availability, setAvailability] = useState(() => fillWorkHours({}));
+    const [openDialog, setOpenDialog] = useState(true);
     // for future error message
     const [error, setError] = useState(false);
 
-    const [openDialog, setOpenDialog] = useState(false);
-    const { name } = useSelector(({ Users }) => Users.InstructorList[instructorID]);
+    // set availability intial value based on stored hours
+    useEffect(() => {
+        if (instructor.schedule.work_hours) {
+            setAvailability(fillWorkHours(instructor.schedule.work_hours));
+        }
+    }, [instructor]);
 
-    const updateDescription = useCallback(({ target }) => {
-        setDescription(target.value);
+    const updateTime = useCallback((day, type) => (time) => {
+        setAvailability((prevAvail) => ({
+            ...prevAvail,
+            [day]: {
+                ...prevAvail[day],
+                [type]: time,
+                "updated": true,
+            },
+        }));
     }, []);
 
+    const toggleDialog = useCallback(() => {
+        setOpenDialog((isOpen) => !isOpen);
+    }, []);
 
-    const handleOpenDialog = (event) => {
-        event.preventDefault();
-        setOpenDialog(!openDialog);
-    };
+    const handleSave = useCallback(async () => {
+        try {
+            const edited = Object.values(availability)
+                .filter(({updated}) => updated);
 
-    return (<>
-        <Button
-            onClick={handleOpenDialog}
-            className="editButton"
-        >
-            <AwayIcon />
-            Instructor Availability
-        </Button>
-        <Dialog
-            aria-labelledby="simple-dialog-title"
-            classes={{ "paper": styles }}
-            className="oooDialog"
-            fullWidth
-            maxWidth="md"
-            onClose={handleOpenDialog}
-            open={openDialog}>
-            <DialogContent>
-                <div className="title">
-                    Schedule Insutructor Availability
-                </div>
-                <div className="instructor">
-                    Instructor: {name}
-                </div>
-                <Grid
-                    container
-                    spacing={3}
-                    direction="row"
-                    alignItems="center"
-                    md={12}>
+            // patch for days that already exist in DB
+            const patchResponses = await Promise.all(
+                edited.filter(({id}) => id).map((avail) => instance.patch(
+                    `${endpoint}${avail.id}/`,
+                    convertAvailObj(avail, instructorID)
+                ))
+            );
+
+            // post for days not yet in DB
+            const postResponses = await Promise.all(
+                edited.filter(({id}) => !id).map((avail) => instance.post(
+                    endpoint,
+                    convertAvailObj(avail, instructorID)
+                ))
+            );
+
+            dispatch({
+                "payload": {
+                    "response": {
+                        "data": patchResponses.concat(postResponses)
+                            .map(({data}) => data),
+                    },
+                },
+                "type": POST_INSTRUCTORAVAILABILITY_SUCCESS,
+            });
+            toggleDialog();
+        } catch (err) {
+            setError(err);
+        }
+    }, [availability, dispatch, instructorID, toggleDialog]);
+
+    const allValid = useMemo(() => Object.values(availability)
+        .every(({start, end}) => start < end),
+    [availability]);
+
+    return (
+        <>
+            <Button
+                className="editButton"
+                onClick={toggleDialog}
+                variant="outlined">
+                <AwayIcon />
+                Instructor Availability
+            </Button>
+            <Dialog
+                aria-labelledby="simple-dialog-title"
+                classes={{"paper": styles}}
+                className="oooDialog"
+                fullWidth
+                maxWidth="md"
+                onClose={toggleDialog}
+                open={openDialog}>
+                <DialogContent>
+                    <div className="title">
+                        Schedule Insutructor Availability
+                    </div>
+                    <div className="instructor">
+                        Instructor: {instructor.name}
+                    </div>
                     <Grid
-                        item
-                        md={1}>
-                        <div className="select">
-                            Start Time
-                        </div>
-                        <TimePicker
-                            autoOk
-                            label="Monday"
-                            value={mondayTime}
-                            onChange={setMondayTime} />
+                        alignItems="center"
+                        container
+                        direction="row"
+                        md={12}
+                        spacing={3}>
+                        {
+                            Object.values(availability).map(({start, end, day}) => (
+                                <Grid
+                                    item
+                                    key={day}
+                                    md={1}>
+                                    <div className="select">
+                                        Start Time
+                                    </div>
+                                    <TimePicker
+                                        autoOk
+                                        error={start > end}
+                                        label={DayConverter[day]}
+                                        onChange={updateTime(day, "start")}
+                                        value={start} />
+                                </Grid>
+
+                            ))
+                        }
+                        <Grid
+                            item
+                            md={5} />
+                        {
+                            Object.values(availability).map(({start, end, day}) => (
+                                <Grid
+                                    item
+                                    key={day}
+                                    md={1}>
+                                    <div className="select">
+                                        End Time
+                                    </div>
+                                    <TimePicker
+                                        autoOk
+                                        error={start > end}
+                                        label={DayConverter[day]}
+                                        onChange={updateTime(day, "end")}
+                                        value={end} />
+                                </Grid>
+
+                            ))
+                        }
+                        <Grid
+                            item
+                            md={5} />
                     </Grid>
                     <Grid
-                        item
-                        md={1}>
-                        <div className="select">
-                            Start Time
-                        </div>
-                        <TimePicker
-                            autoOk
-                            label="Tuesday"
-                            value={tuesdayTime}
-                            onChange={setTuesdayTime} />
+                        container
+                        md={12}>
+                        <Grid
+                            item
+                            md={8} />
+                        <Grid
+                            item
+                            md={2}>
+                            <Button
+                                className="button"
+                                onClick={toggleDialog}>
+                                Cancel
+                            </Button>
+                        </Grid>
+                        <Grid
+                            item
+                            md={2}>
+                            <Button
+                                className="button"
+                                disabled={!allValid}
+                                onClick={handleSave}>
+                                Save Form
+                            </Button>
+                        </Grid>
                     </Grid>
-                    <Grid
-                        item
-                        md={1}>
-                        <div className="select">
-                            Start Time
-                        </div>
-                        <TimePicker
-                            autoOk
-                            label="Wednesday"
-                            value={wednesdayTime}
-                            onChange={setWednesdayTime} />
-                    </Grid>
-                    <Grid
-                        item
-                        md={1}>
-                        <div className="select">
-                            Start Time
-                        </div>
-                        <TimePicker
-                            autoOk
-                            label="Thursday"
-                            value={thursdayTime}
-                            onChange={setThursdayTime} />
-                    </Grid>
-                    <Grid
-                        item
-                        md={1}>
-                        <div className="select">
-                            Start Time
-                        </div>
-                        <TimePicker
-                            autoOk
-                            label="Friday"
-                            value={fridayTime}
-                            onChange={setFridayTime} />
-                    </Grid>
-                    <Grid
-                        item
-                        md={1}>
-                        <div className="select">
-                            Start Time
-                        </div>
-                        <TimePicker
-                            autoOk
-                            label="Saturday"
-                            value={saturdayTime}
-                            onChange={setSaturdayTime} />
-                    </Grid>
-                    <Grid
-                        item
-                        md={1}>
-                        <div className="select">
-                            Start Time
-                        </div>
-                        <TimePicker
-                            autoOk
-                            label="Sunday"
-                            value={sundayTime}
-                            onChange={setSundayTime} />
-                    </Grid>
-                    <Grid item md={5} />
-                    <Grid
-                        item
-                        md={1}>
-                        <div className="select">
-                            End Time
-                        </div>
-                        <TimePicker
-                            autoOk
-                            label="Monday"
-                            value={mondayEndTime}
-                            onChange={setMondayEndTime} />
-                    </Grid>
-                    <Grid
-                        item
-                        md={1}>
-                        <div className="select">
-                            End Time
-                        </div>
-                        <TimePicker
-                            autoOk
-                            label="Tuesday"
-                            value={tuesdayTime}
-                            onChange={setTuesdayTime} />
-                    </Grid>
-                    <Grid
-                        item
-                        md={1}>
-                        <div className="select">
-                            End Time
-                        </div>
-                        <TimePicker
-                            autoOk
-                            label="Wednesday"
-                            value={wednesdayEndTime}
-                            onChange={setWednesdayEndTime} />
-                    </Grid>
-                    <Grid
-                        item
-                        md={1}>
-                        <div className="select">
-                            End Time
-                        </div>
-                        <TimePicker
-                            autoOk
-                            label="Thursday"
-                            value={thursdayEndTime}
-                            onChange={setThursdayEndTime} />
-                    </Grid>
-                    <Grid
-                        item
-                        md={1}>
-                        <div className="select">
-                            End Time
-                        </div>
-                        <TimePicker
-                            autoOk
-                            label="Friday"
-                            value={fridayEndTime}
-                            onChange={setFridayEndTime} />
-                    </Grid>
-                    <Grid
-                        item
-                        md={1}>
-                        <div className="select">
-                            End Time
-                        </div>
-                        <TimePicker
-                            autoOk
-                            label="Saturday"
-                            value={saturdayEndTime}
-                            onChange={setSaturdayEndTime} />
-                    </Grid>
-                    <Grid
-                        item
-                        md={1}>
-                        <div className="select">
-                            End Time
-                        </div>
-                        <TimePicker
-                            autoOk
-                            label="Sunday"
-                            value={sundayEndTime}
-                            onChange={setSundayEndTime} />
-                    </Grid>
-                    <Grid item md={5} />
-                </Grid>
-                <Grid
-                    container
-                    md={12}>
-                    <Grid
-                        item
-                        md={8} />
-                    <Grid
-                        item
-                        md={2}>
-                        <Button
-                            className="button"
-                            onClick={handleOpenDialog}>
-                            Cancel
-                        </Button>
-                    </Grid>
-                    <Grid
-                        item
-                        md={2}>
-                        <Button
-                            className="button">
-                            Save Form
-                        </Button>
-                    </Grid>
-                </Grid>
-            </DialogContent>
-        </Dialog>
-    </>);
+                </DialogContent>
+            </Dialog>
+        </>
+    );
 };
 
 InstructorAvailability.propTypes = {
@@ -299,4 +240,4 @@ InstructorAvailability.propTypes = {
     ]).isRequired,
 };
 
-export default withStyles(styles)(InstructorAvailability);
+export default InstructorAvailability;
