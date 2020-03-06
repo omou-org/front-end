@@ -82,10 +82,19 @@ const SearchResults = (props) => {
 
     const isOdd = (number) => number % 2 !== 0;
     const startPage = (page) => {
-        return isOdd(page) ? 0 : 4;
+        if(searchState.primaryFilter === SEARCH_ALL){
+            return isOdd(page) ? 0 : 4;
+        } else {
+            return 0;
+        }
+
     };
     const endPage = (page) => {
-        return isOdd(page) ? 4 : 8;
+        if(searchState.primaryFilter === SEARCH_ALL){
+            return isOdd(page) ? 4 : 8;
+        } else {
+            return 8;
+        }
     };
 
     const handleMoreResults = (page, resultType) => (e) => {
@@ -95,7 +104,7 @@ const SearchResults = (props) => {
             [resultType] : currentPage[resultType] + 1,
         });
 
-        if(isOdd(page+1)){
+        if(isOdd(page+1) || searchState.primaryFilter !== SEARCH_ALL){
             const page = `${resultType}Page`;
             api.updateSearchParam(resultType, page, Number(searchState.params[resultType][page]) + 1);
         }
@@ -108,7 +117,7 @@ const SearchResults = (props) => {
             [resultType] : currentPage[resultType] - 1,
         });
 
-        if(!isOdd(page-1)){
+        if(!isOdd(page-1) || searchState.primaryFilter !== SEARCH_ALL){
             const page = `${resultType}Page`;
             const newPage = Number(searchState.params[resultType][page]) !== 1 ?
                 Number(searchState.params[resultType][page]) - 1 : 1;
@@ -183,8 +192,7 @@ const SearchResults = (props) => {
                                                )
                                             }
                                             )
-                                        :
-                                        console.log(accountResultsNum, searchState.primaryFilter)
+                                        : ""
                                 }
                             </Grid>
                             {accountResultsNum > 4 && searchState.primaryFilter !== SEARCH_COURSES?
@@ -254,7 +262,7 @@ const SearchResults = (props) => {
                                 </Grid>
                             </Grid> : ""
                         }
-                        {courseResultsNum > 4 ?
+                        {courseResultsNum > 4 && searchState.primaryFilter !== SEARCH_ACCOUNTS ?
                             <div className={"results-nav"}>
                                 {
                                      <IconButton disabled={currentPage.course == 1}
