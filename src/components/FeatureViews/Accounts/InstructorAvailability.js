@@ -60,7 +60,7 @@ const InstructorAvailability = ({instructorID}) => {
     const dispatch = useDispatch();
     const instructor = useSelector(({Users}) => Users.InstructorList[instructorID]);
     const [availability, setAvailability] = useState(() => fillWorkHours({}));
-    const [openDialog, setOpenDialog] = useState(true);
+    const [openDialog, setOpenDialog] = useState(false);
     // for future error message
     const [error, setError] = useState(false);
 
