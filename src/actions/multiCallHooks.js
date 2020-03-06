@@ -12,6 +12,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
     const currentPayingParent = useSelector(({Registration}) => Registration.CurrentParent);
     const [status, setStatus] = useState(null);
     const dispatch = useDispatch();
+
     const handleError = useCallback((error) => {
         if (error && error.response && error.response.status) {
             setStatus(error.response.status);
@@ -24,7 +25,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
     useEffect(() => {
         const aborted = false;
         (async () => {
-            if (registrationDependencies) {
+            if (registrationDependencies && registrationDependencies.complete !== true) {
                 let {tutoringRegistrations, classRegistrations, payment} = registrationDependencies;
                 tutoringRegistrations = tutoringRegistrations.map(({newTutoringCourse, ...rest}) => ({
                     ...rest,
@@ -38,7 +39,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                             : newTutoringCourse.start_time,
                     },
                 }));
-                const newTutorings = tutoringRegistrations.filter(({courseID}) => String(courseID).indexOf("T") > -1);
+                const newTutorings = tutoringRegistrations.filter(({courseID}) => !isExistingTutoring(courseID));
                 const existingTutorings = tutoringRegistrations.filter(({courseID}) => isExistingTutoring(courseID));
                 tutoringRegistrations = [...newTutorings, ...existingTutorings];
                 try {
@@ -55,7 +56,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         "type": types.POST_COURSE_SUCCESSFUL,
                     });
                     const tutoringEnrollments = tutoringRegistrations
-                        .filter(({courseID}) => String(courseID).indexOf("T") !== -1)
+                        .filter(({courseID}) => !isExistingTutoring(courseID))
                         .map((tutoringReg, i) => ({
                             "course": TutoringCourses[i].data.id,
                             "student": tutoringReg.student,
@@ -136,6 +137,10 @@ export const useSubmitRegistration = (registrationDependencies) => {
                         "payload": finalPayment,
                         "type": types.POST_PAYMENT_SUCCESS,
                     });
+                    dispatch({
+                        "payload": {},
+                        "type": types.COMPLETE_REGISTRATION,
+                    });
                     setStatus({
                         "paymentID": finalPayment.data.id,
                         "status": finalPayment.status,
@@ -148,7 +153,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
             }
         })();
 
-    }, [currentPayingParent, dispatch, handleError, registrationDependencies]);
+    }, []);
     return status;
 };
 

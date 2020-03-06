@@ -17,7 +17,7 @@ import Loading from "components/Loading";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import {Typography} from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
@@ -31,6 +31,11 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Clear";
+import IconButton from '@material-ui/core/IconButton';
+import Input from '@material-ui/core/Input';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import InputAdornment from '@material-ui/core/InputAdornment';
 // Outside React Component
 import SearchSelect from "react-select";
 import BackButton from "../BackButton.js";
@@ -42,7 +47,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import {DatePicker, TimePicker,} from "material-ui-pickers";
+import {DatePicker, TimePicker} from "material-ui-pickers";
 import * as utils from "./FormUtils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
 
@@ -65,13 +70,15 @@ class Form extends Component {
             preLoaded: false,
             existingUser: false,
             "hasLoaded": false,
+            confirmTuition: false,
+            showPassword: false,
         };
     }
 
     componentWillMount() {
         let prevState = JSON.parse(sessionStorage.getItem("form") || null);
         const formType = this.props.match.params.type;
-        const {id} = this.props.match.params;
+        const { id } = this.props.match.params;
         this.props.userActions.fetchStudents();
         this.props.userActions.fetchParents();
         this.props.userActions.fetchInstructors();
@@ -128,12 +135,12 @@ class Form extends Component {
                     }
                     break;
                 }
-                case "course":{
-                    if(id && this.props.registeredCourses){
-                        if(id.indexOf("+")>=0){
-                            let studentID = id.substring(0,id.indexOf("+"));
-                            let courseID = id.substring(id.indexOf("+")+1);
-                            let {form} = this.props.registeredCourses[studentID].find(({course_id}) => {
+                case "course": {
+                    if (id && this.props.registeredCourses) {
+                        if (id.indexOf("+") >= 0) {
+                            let studentID = id.substring(0, id.indexOf("+"));
+                            let courseID = id.substring(id.indexOf("+") + 1);
+                            let { form } = this.props.registeredCourses[studentID].find(({ course_id }) => {
                                 return course_id === courseID;
                             });
                             prevState = {
@@ -143,12 +150,12 @@ class Form extends Component {
                     }
                     break;
                 }
-                case "tutoring":{
-                    if(id && this.props.registeredCourses){
-                        if(id.indexOf("+")>=0){
-                            let studentID = id.substring(0,id.indexOf("+"));
-                            let courseID = id.substring(id.indexOf("+")+1);
-                            let {form} = this.props.registeredCourses[studentID].find(({course_id}) => {
+                case "tutoring": {
+                    if (id && this.props.registeredCourses) {
+                        if (id.indexOf("+") >= 0) {
+                            let studentID = id.substring(0, id.indexOf("+"));
+                            let courseID = id.substring(id.indexOf("+") + 1);
+                            let { form } = this.props.registeredCourses[studentID].find(({ course_id }) => {
                                 return course_id === courseID;
                             });
                             prevState = {
@@ -158,12 +165,12 @@ class Form extends Component {
                     }
                     break;
                 }
-                case "small_group":{
-                    if(id && this.props.registeredCourses){
-                        if(id.indexOf("+")>=0){
-                            let studentID = id.substring(0,id.indexOf("+"));
-                            let courseID = id.substring(id.indexOf("+")+1);
-                            let {form} = this.props.registeredCourses[studentID].find(({course_id}) => {
+                case "small_group": {
+                    if (id && this.props.registeredCourses) {
+                        if (id.indexOf("+") >= 0) {
+                            let studentID = id.substring(0, id.indexOf("+"));
+                            let courseID = id.substring(id.indexOf("+") + 1);
+                            let { form } = this.props.registeredCourses[studentID].find(({ course_id }) => {
                                 return course_id === courseID;
                             });
                             prevState = {
@@ -176,6 +183,7 @@ class Form extends Component {
                 default: console.warn("Invalid form type!");
             }
         }
+
         if (!prevState ||
             formType !== prevState.form ||
             prevState["submitPending"] ||
@@ -190,9 +198,10 @@ class Form extends Component {
                         "activeSection": formContents.section_titles[0],
                         "form": formType,
                     };
+
                     let course = null;
                     if (this.props.courses.hasOwnProperty(id)) {
-                        const {course_id, title} =
+                        const { course_id, title } =
                             this.props.courses[this.props.match.params.id];
                         // convert it to a format that onselectChange can use
                         course = {
@@ -206,12 +215,17 @@ class Form extends Component {
                         NewState[`${title}_validated`] = {};
                         // set a value for every non-conditional field (object)
                         if (Array.isArray(formContents[title])) {
-                            formContents[title].forEach(({name, type}) => {
+                            formContents[title].forEach(({ name, type }) => {
                                 NewState[`${title}_validated`][name] = true;
                                 switch (type) {
                                     case "course":
                                         NewState[title][name] = course;
                                         break;
+                                    case "category":
+                                        if (formType === "tutoring") {
+                                            NewState[title][name] = id;
+                                            break;
+                                        }
                                     default:
                                         NewState[title][name] = null;
                                 }
@@ -242,7 +256,7 @@ class Form extends Component {
 
     componentDidMount() {
         this.props.adminActions.fetchCategories();
-        const {id, edit, "type": formType} = this.props.match.params;
+        const { id, edit, "type": formType } = this.props.match.params;
         if (!this.props.isAdmin && (formType === "instructor" || formType === "course_details")) {
             this.props.history.replace("/PageNotFound");
         }
@@ -282,7 +296,7 @@ class Form extends Component {
                                     "response": parents,
                                 },
                             });
-                        } catch ({response}) {
+                        } catch ({ response }) {
                             if (this.props.students[id]) {
                                 student = this.props.courses[id];
                             } else {
@@ -304,22 +318,22 @@ class Form extends Component {
                                     },
                                     "Parent Information":
                                         parent ? {
-                                        "Select Parent":{
-                                            "value": parent.user_id,
-                                            "label": `${parent.user_id}: ${parent.name} - ${parent.email}`,
-                                        },
-                                        "Parent First Name": parent.first_name,
-                                        "Parent Last Name": parent.last_name,
-                                        "Parent Birthday": parent.birthday,
-                                        "Gender": parseGender[parent.gender],
-                                        "Parent Email": parent.email,
-                                        "Address": parent.address,
-                                        "City": parent.city,
-                                        "State": parent.state,
-                                        "Zip Code": parent.zipcode,
-                                        "Relationship to Student": parent.relationship,
-                                         "Phone Number": parent.phone_number,
-                                        }: prevState["Parent Information"],
+                                            "Select Parent": {
+                                                "value": parent.user_id,
+                                                "label": `${parent.user_id}: ${parent.name} - ${parent.email}`,
+                                            },
+                                            "Parent First Name": parent.first_name,
+                                            "Parent Last Name": parent.last_name,
+                                            "Parent Birthday": parent.birthday,
+                                            "Gender": parseGender[parent.gender],
+                                            "Parent Email": parent.email,
+                                            "Address": parent.address,
+                                            "City": parent.city,
+                                            "State": parent.state,
+                                            "Zip Code": parent.zipcode,
+                                            "Relationship to Student": parent.relationship,
+                                            "Phone Number": parent.phone_number,
+                                        } : prevState["Parent Information"],
                                     "preLoaded": true,
                                 }));
                             }
@@ -358,7 +372,7 @@ class Form extends Component {
                                     "response": instructors,
                                 },
                             });
-                        } catch ({response}) {
+                        } catch ({ response }) {
                             if (this.props.courses[id]) {
                                 course = this.props.courses[id];
                             } else {
@@ -367,7 +381,7 @@ class Form extends Component {
                         } finally {
                             if (course) {
                                 const inst = this.props.instructors[course.instructor_id];
-                                this.setState(utils.loadEditCourseState(course,inst));
+                                this.setState(utils.loadEditCourseState(course, inst));
                             }
                         }
                     })();
@@ -431,7 +445,7 @@ class Form extends Component {
 
     componentWillUnmount = () => {
         this.props.registrationActions.resetSubmitStatus();
-    }
+    };
 
     getFormObject() {
         return this.props.registrationForm[this.state.form];
@@ -450,19 +464,19 @@ class Form extends Component {
         // clear session storage
         sessionStorage.removeItem("form");
         this.props.registrationActions.resetSubmitStatus();
-    }
+    };
 
     validateSection() {
         let currSectionTitle;
-        if(this.state.isSmallGroup){
+        if (this.state.isSmallGroup) {
             currSectionTitle = "Student";
         } else {
             currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
         }
         return (
             this.getActiveSection()
-                .filter(({required}) => required)
-                .every(({name}) => this.state[currSectionTitle][name]) &&
+                .filter(({ required }) => required)
+                .every(({ name }) => this.state[currSectionTitle][name]) &&
             Object.values(this.state[`${currSectionTitle}_validated`])
                 .every((valid) => valid)
         );
@@ -489,7 +503,7 @@ class Form extends Component {
     handleNext() {
         let currSectionTitle = this.getFormObject().section_titles[this.state.activeStep];
         let section = this.props.registrationForm[this.state.form][this.state.activeSection];
-        if(this.state.isSmallGroup){
+        if (this.state.isSmallGroup) {
             currSectionTitle = "Student";
             section = this.props.registrationForm[this.state.form]["Student"];
         }
@@ -505,21 +519,25 @@ class Form extends Component {
                     if (!oldState.submitPending) {
                         if (this.props.match.params.edit === "edit") {
                             this.props.registrationActions.submitForm(this.state, this.props.match.params.id);
-                        } else if(this.state.form === "small_group") {
-                            if(this.state["Group Type"]["Select Group Type"] === "New Small Group"){
-                                this.props.apiActions.submitNewSmallGroup(this.state);
-                            } else {
-                                this.props.registrationActions.submitForm(this.state);
-                            }
                         } else {
-                            if(this.state.form === "pricing"){
-                                this.props.adminActions.setPrice(this.state);
-                            } else if( this.state.form === "discount"){
-                                let discountType = this.state["Discount Description"]["Discount Type"];
-                                let discountPayload = utils.createDiscountPayload(this.state, discountType);
-                                this.props.adminActions.setDiscount(discountType, discountPayload);
-                            } else {
-                                this.props.registrationActions.submitForm(this.state);
+                            switch (this.state.form) {
+                                case "small_group":
+                                    if (this.state["Group Type"]["Select Group Type"] === "New Small Group") {
+                                        this.props.apiActions.submitNewSmallGroup(this.state);
+                                    } else {
+                                        this.props.registrationActions.submitForm(this.state);
+                                    }
+                                    break;
+                                case "pricing":
+                                    this.props.adminActions.setPrice(this.state);
+                                    break;
+                                case "discount":
+                                    let discountType = this.state["Discount Description"]["Discount Type"];
+                                    let discountPayload = utils.createDiscountPayload(this.state, discountType);
+                                    this.props.adminActions.setDiscount(discountType, discountPayload);
+                                    break;
+                                default:
+                                    this.props.registrationActions.submitForm(this.state);
                             }
                         }
                     }
@@ -581,7 +599,7 @@ class Form extends Component {
     }
 
     handleReset() {
-        this.setState({activeStep: 0});
+        this.setState({ activeStep: 0 });
     }
 
     handleFieldUpdate(sectionTitle, field, fieldValue) {
@@ -603,7 +621,7 @@ class Form extends Component {
                 } else if (field.type === "email") {
                     let emails = [];
                     if (field.field === "Student Email") {
-                        emails = Object.values(this.props.students).map(({email}) => email);
+                        emails = Object.values(this.props.students).map(({ email }) => email);
                     }
                     // validate that email doesn't exist in database already
                     isValid = !emails.includes(fieldValue) || oldState.preLoaded;
@@ -657,7 +675,7 @@ class Form extends Component {
                     return NewState;
                 }, () => {
                     this.validateSection();
-                    this.setState({nextSection: true});
+                    this.setState({ nextSection: true });
                 });
             } else {
                 this.setState((OldState) => {
@@ -696,39 +714,47 @@ class Form extends Component {
     }
 
     onDateChange(date, label, fieldTitle) {
-        this.setState((prevState)=>{
+        this.setState((prevState) => {
             prevState[label][fieldTitle] = date;
             return {
                 ...prevState,
-                nextSection: this.validateSection(),
             };
+        }, ()=>{
+            this.setState({nextSection: this.validateSection()})
         })
     }
 
-    updatePriceFields(category, academicLevel, sessionDuration, numSessions){
-        this.setState((prevState)=>{
-            switch(prevState.form){
-                case "tutoring":{
+    updatePriceFields(category, academicLevel, sessionDuration, numSessions) {
+        this.setState((prevState) => {
+            switch (prevState.form) {
+                case "tutoring": {
                     prevState["Student"]["Grade Level"] = academicLevel;
                     prevState["Tutor Selection"]["Category"] = category;
                     prevState["Schedule"]["Duration"] = sessionDuration;
                     prevState["Schedule"]["Number of Sessions"] = numSessions;
                     break;
                 }
-                case "small_group":{
+                case "small_group": {
                     prevState["Group Details"]["Category"] = category;
                     prevState["Group Details"]["Grade Level"] = academicLevel;
                     prevState["Group Details"]["Duration"] = sessionDuration;
                     prevState["Group Details"]["Number of Weekly Sessions"] = numSessions;
                 }
             }
-            return {...prevState};
+            return {
+                ...prevState,
+                confirmTuition: true,
+            };
         })
     }
 
     searchInstructors = async (input) => {
         return await utils.loadInstructors(input)
-    }
+    };
+
+    handleClickShowPassword = () => {
+        this.setState(state => ({ showPassword: !state.showPassword }))
+    };
 
     renderField(field, label, fieldIndex) {
         const fieldTitle = field.name;
@@ -738,16 +764,18 @@ class Form extends Component {
         switch (field.type) {
             case "price quote":
                 return <TutoringPriceQuote
+                    tutoringCategory={this.props.match.params.id}
+                    tuitionConfirmed={this.state.confirmTuition}
                     handleUpdatePriceFields={this.updatePriceFields.bind(this)}
                     courseType={this.state.form}
                 />;
             case "select":
                 let startTime = this.state[label]["Start Time"];
                 let endTime = this.state[label]["End Time"];
-                let parsedDuration = utils.durationParser({start: startTime, end: endTime},fieldTitle, true);
+                let parsedDuration = utils.durationParser({ start: startTime, end: endTime }, fieldTitle, true);
                 let value, options;
-                if (parsedDuration && this.state[label][fieldTitle]){
-                    if(parsedDuration.duration){
+                if (parsedDuration && this.state[label][fieldTitle]) {
+                    if (parsedDuration.duration) {
                         value = parsedDuration.duration;
                         options = parsedDuration.options;
                     }
@@ -755,7 +783,7 @@ class Form extends Component {
                     value = this.state[label][fieldTitle];
                     options = field.options;
                 }
-                disabled = disabled && fieldTitle!== "Relationship to Student" && fieldTitle !=="Gender";
+                disabled = disabled && fieldTitle !== "Relationship to Student" && fieldTitle !== "Gender";
                 return (
                     <FormControl className="form-control">
                         <InputLabel shrink={Boolean(value)}>
@@ -763,7 +791,7 @@ class Form extends Component {
                         </InputLabel>
                         <Select
                             disabled={disabled}
-                            onChange={({"target": {value}}) => {
+                            onChange={({ "target": { value } }) => {
                                 this.onSelectChange(value, label, field);
                             }}
                             value={value}>
@@ -779,9 +807,41 @@ class Form extends Component {
                         </Select>
                     </FormControl>
                 );
+
+            case "password": {
+                return (
+                    <FormControl className="form-control">
+                        <InputLabel htmlFor="adornment-password">Password *</InputLabel>
+                        <Input
+                            id="adornment-password"
+                            type={this.state.showPassword ? 'text' : 'password'}
+                            label={field.name}
+
+                            onChange={(e) => {
+                                e.preventDefault();
+                                this.handleFieldUpdate.bind(this)(label, field, e.target.value);
+                            }}
+                            onBlur={(e) => {
+                                e.preventDefault();
+                                this.validateField.bind(this)(label, field, e.target.value);
+                            }}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="Toggle password visibility"
+                                        onClick={this.handleClickShowPassword}
+                                    >
+                                        {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                    </FormControl>
+                )
+            }
             case "course": {
                 let courseList;
-                if(fieldTitle === "Select Group"){
+                if (fieldTitle === "Select Group") {
                     // filter for all of the groups
                     courseList = Object.keys(this.props.courses)
                         .filter((courseID) =>
@@ -808,9 +868,9 @@ class Form extends Component {
                 courseList = this.removeDuplicates(Object.values(this.state[label]), courseList);
                 // count # of course fields in current section
                 const fieldCount = this.getActiveSection()
-                    .reduce((total, {type}) => total + (type === "course"), 0);
+                    .reduce((total, { type }) => total + (type === "course"), 0);
                 return (
-                    <div style={{width: "inherit"}}>
+                    <div style={{ width: "inherit" }}>
                         <Grid container className={"student-align"} spacing={2000}>
                             <SearchSelect
                                 disabled={disabled}
@@ -823,13 +883,13 @@ class Form extends Component {
                             {
                                 (fieldCount > 1) && !disabled &&
                                 <RemoveIcon color="primary" aria-label="Add" variant="extended"
-                                            className="button-remove-student"
-                                            onClick={(event) => {
-                                                event.preventDefault();
-                                                // deletes answer field from state
-                                                this.removeField(fieldIndex);
-                                                this.forceUpdate();
-                                            }}>
+                                    className="button-remove-student"
+                                    onClick={(event) => {
+                                        event.preventDefault();
+                                        // deletes answer field from state
+                                        this.removeField(fieldIndex);
+                                        this.forceUpdate();
+                                    }}>
                                 </RemoveIcon>
                             }
                         </Grid>
@@ -839,20 +899,20 @@ class Form extends Component {
             case "student": {
                 let studentList = [];
 
-                if(this.props.currentParent){
+                if (this.props.currentParent) {
                     this.props.parents[this.props.currentParent.user.id] &&
-                    this.props.parents[this.props.currentParent.user.id].student_ids.forEach((studentID) => {
-                        if(this.props.students[studentID]){
-                            let {user_id, name, email} = this.props.students[studentID];
-                            studentList.push({
-                                value: user_id,
-                                label: `${name} - ${email}`,
-                            });
-                        }
-                    });
+                        this.props.parents[this.props.currentParent.user.id].student_ids.forEach((studentID) => {
+                            if (this.props.students[studentID]) {
+                                let { user_id, name, email } = this.props.students[studentID];
+                                studentList.push({
+                                    value: user_id,
+                                    label: `${name} - ${email}`,
+                                });
+                            }
+                        });
                 } else {
                     studentList = Object.values(this.props.students)
-                        .map(({user_id, name, email}) => ({
+                        .map(({ user_id, name, email }) => ({
                             value: user_id,
                             label: `${name} - ${email}`,
                         }));
@@ -863,10 +923,10 @@ class Form extends Component {
 
                 // count # of course fields in current section
                 const studentCount = this.getActiveSection()
-                    .reduce((total, {type}) => total + (type === "student"), 0);
+                    .reduce((total, { type }) => total + (type === "student"), 0);
 
                 return (
-                    <div style={{width: "inherit"}}>
+                    <div style={{ width: "inherit" }}>
                         <Grid container className={"student-align"} spacing={2000}>
                             <SearchSelect
                                 disabled={disabled}
@@ -880,13 +940,13 @@ class Form extends Component {
                             {
                                 studentCount > 1 && !disabled &&
                                 <RemoveIcon color="primary" aria-label="Add" variant="extended"
-                                            className="button-remove-student"
-                                            onClick={(event) => {
-                                                event.preventDefault();
-                                                // deletes answer field
-                                                this.removeField(fieldIndex);
-                                                this.forceUpdate();
-                                            }}>
+                                    className="button-remove-student"
+                                    onClick={(event) => {
+                                        event.preventDefault();
+                                        // deletes answer field
+                                        this.removeField(fieldIndex);
+                                        this.forceUpdate();
+                                    }}>
                                 </RemoveIcon>
                             }
                         </Grid>
@@ -897,13 +957,13 @@ class Form extends Component {
                 let instructorList = this.props.instructors;
 
                 instructorList = Object.values(instructorList)
-                    .map(({user_id, name, email}) => ({
+                    .map(({ user_id, name, email }) => ({
                         "value": user_id,
                         "label": `${name} - ${email}`,
                     }));
 
                 return (
-                    <div style={{width: "inherit"}}>
+                    <div style={{ width: "inherit" }}>
                         <Grid container className="student-align">
                             <AsyncSelect
                                 cacheOptions
@@ -918,12 +978,23 @@ class Form extends Component {
                     </div>
                 );
             }
-            case "category" : {
+            case "category": {
                 const categoriesList = this.props.courseCategories
-                    .map(({id,name})=> ({
+                    .map(({ id, name }) => ({
                         value: id,
                         label: name,
                     }));
+                // setting the category name if it was given an id in URL
+                const currVal = this.state[label][fieldTitle];
+                if (currVal && typeof currVal !== "object") {
+                    const category = this.props.courseCategories.find(({id}) => id == currVal);
+                    if (category) {
+                        this.state[label][fieldTitle] = {
+                            "value": currVal,
+                            "label": category.name,
+                        };
+                    }
+                }
                 return (
                     <SearchSelect
                         className="search-options"
@@ -939,7 +1010,7 @@ class Form extends Component {
             }
             case "select parent": {
                 const currParentList = Object.values(this.props.parents)
-                    .map(({user_id, name, email}) => ({
+                    .map(({ user_id, name, email }) => ({
                         value: user_id,
                         label: `${name} - ${email}`,
                     }));
@@ -961,23 +1032,23 @@ class Form extends Component {
             }
             case "date":
                 return <Grid container>
-                        <DatePicker
-                            animateYearScrolling
-                            margin="normal"
-                            label={fieldTitle}
-                            value={this.state[label][fieldTitle]}
-                            onChange={(date) =>{ this.onDateChange(date, label, fieldTitle) }}
-                            openTo={fieldTitle==="Birthday" ? "year" :"day"}
-                            error={!this.state[label + "_validated"][field.name]}
-                            format="MM/dd/yyyy"
-                            views={["year", "month", "date"]}
-                        />
-                    </Grid>;
+                    <DatePicker
+                        animateYearScrolling
+                        margin="normal"
+                        label={fieldTitle}
+                        value={this.state[label][fieldTitle]}
+                        onChange={(date) => { this.onDateChange(date, label, fieldTitle) }}
+                        openTo={fieldTitle === "Birthday" ? "year" : "day"}
+                        error={!this.state[label + "_validated"][field.name]}
+                        format="MM/dd/yyyy"
+                        views={["year", "month", "date"]}
+                    />
+                </Grid>;
             case "time":
                 let time;
-                if(this.state[label][fieldTitle] && typeof this.state[label][fieldTitle] !== "string"){
+                if (this.state[label][fieldTitle] && typeof this.state[label][fieldTitle] !== "string") {
                     time = this.state[label][fieldTitle];
-                } else if(typeof this.state[label][fieldTitle] === "string"){
+                } else if (typeof this.state[label][fieldTitle] === "string") {
                     time = utils.timeParser(this.state[label][fieldTitle]);
                 }
                 return <Grid container>
@@ -985,13 +1056,17 @@ class Form extends Component {
                                 error={!this.state[label + "_validated"][field.name]}
                                 label={fieldTitle}
                                 value={time}
-                                onChange={(date) =>{ this.setState((prevState)=>{
+                                onChange={(date) =>{
+                                    this.setState((prevState) => {
                                     prevState[label][fieldTitle] = date;
-                                    return prevState;
+                                    return {
+                                        ...prevState,
+                                        nextSection: this.validateSection()
+                                    };
                                 }) } }/>
                 </Grid>;
             default:
-                let textValue = utils.weeklySessionsParser(this.state[label],field.name) || this.state[label][field.name];
+                let textValue = utils.weeklySessionsParser(this.state[label], field.name) || this.state[label][field.name];
                 return <TextField
                     label={field.name}
                     multiline={field.multiline}
@@ -1059,7 +1134,7 @@ class Form extends Component {
         this.props.registrationActions.addField(param);
         this.setState((prevState) => {
             // number of fields of the same type as the current field
-            const {form, activeSection, conditional} = prevState;
+            const { form, activeSection, conditional } = prevState;
             let section = this.props.registrationForm[form][activeSection];
             if (!Array.isArray(section)) {
                 section = section[conditional];
@@ -1118,11 +1193,11 @@ class Form extends Component {
     }
 
     renderForm() {
-        let {activeStep, nextSection} = this.state;
+        let { activeStep, nextSection } = this.state;
         let currentForm,
             steps;
-        if(this.state.isSmallGroup){
-            let {form_type, Student} = this.props.registrationForm[this.state.form];
+        if (this.state.isSmallGroup) {
+            let { form_type, Student } = this.props.registrationForm[this.state.form];
             currentForm = {
                 form_type: form_type,
                 Student: Student,
@@ -1216,10 +1291,10 @@ class Form extends Component {
             }}>
                 {
                     this.state.form !== "pricing" && <>
-                        <Typography align="left" style={{fontSize: "24px"}}>
+                        <Typography align="left" style={{ fontSize: "24px" }}>
                             You have successfully registered!
                         </Typography>
-                        <Typography align="left" style={{fontSize: "14px"}}>
+                        <Typography align="left" style={{ fontSize: "14px" }}>
                             An email will be sent to you to confirm your registration
                         </Typography>
                         <Button
@@ -1229,7 +1304,7 @@ class Form extends Component {
                             onClick={() => {
                                 this.props.registrationActions.resetSubmitStatus();
                             }}
-                            style={{margin: "20px"}}
+                            style={{ margin: "20px" }}
                             className="button">REGISTER MORE</Button>
                     </>
                 }
@@ -1242,7 +1317,7 @@ class Form extends Component {
                         onClick={() => {
                             this.props.registrationActions.resetSubmitStatus();
                         }}
-                        style={{margin: "20px"}}
+                        style={{ margin: "20px" }}
                         className="button">VIEW PRICE RULES</Button>
                 }
                 <div className="confirmation-copy">
@@ -1251,48 +1326,48 @@ class Form extends Component {
                         steps.map((sectionTitle) => {
                             let sectionFields = this.state.conditional &&
                                 !Array.isArray(this.getFormObject()[sectionTitle])
-                                ? this.getFormObject()[sectionTitle][this.state.conditional]:
+                                ? this.getFormObject()[sectionTitle][this.state.conditional] :
                                 this.getFormObject()[sectionTitle];
-                            return(
-                            <div key={sectionTitle}>
-                                <Typography
-                                    className="section-title"
-                                    align="left">
-                                    {sectionTitle}
-                                </Typography>
-                                {
-                                    sectionFields.map(({field, type}) => {
-                                        let fieldVal = this.state[sectionTitle][field];
-                                        if (fieldVal && fieldVal.hasOwnProperty("value")) {
-                                            fieldVal = fieldVal.value;
-                                            if (type === "select parent" && typeof fieldVal === "number") {
-                                                fieldVal = this.props.parents[fieldVal].first_name;
+                            return (
+                                <div key={sectionTitle}>
+                                    <Typography
+                                        className="section-title"
+                                        align="left">
+                                        {sectionTitle}
+                                    </Typography>
+                                    {
+                                        sectionFields.map(({ field, type }) => {
+                                            let fieldVal = this.state[sectionTitle][field];
+                                            if (fieldVal && fieldVal.hasOwnProperty("value")) {
+                                                fieldVal = fieldVal.value;
+                                                if (type === "select parent" && typeof fieldVal === "number") {
+                                                    fieldVal = this.props.parents[fieldVal].first_name;
+                                                }
                                             }
-                                        }
 
-                                        return (
-                                            <div key={field}>
-                                                <Typography className="field-title" align="left">
-                                                    {field || ""}
-                                                </Typography>
-                                                <Typography className="field-value" align="left">
-                                                    { typeof fieldVal === "object" ? new Date(fieldVal).toLocaleString("eng-US") :  fieldVal || "N/A"}
-                                                </Typography>
-                                            </div>
-                                        );
-                                    })
-                                }
-                            </div>
-                        )
-                    })
+                                            return (
+                                                <div key={field}>
+                                                    <Typography className="field-title" align="left">
+                                                        {field || ""}
+                                                    </Typography>
+                                                    <Typography className="field-value" align="left">
+                                                        {typeof fieldVal === "object" ? new Date(fieldVal).toLocaleString("eng-US") : fieldVal || "N/A"}
+                                                    </Typography>
+                                                </div>
+                                            );
+                                        })
+                                    }
+                                </div>
+                            )
+                        })
                     }
                 </div>
             </div>
         );
     }
 
-    renderCourseRegistrationSubmission(){
-        if(this.props.registeredCourses){
+    renderCourseRegistrationSubmission() {
+        if (this.props.registeredCourses) {
             let currentStudentID = this.state.Student.Student.value;
             let registeredCourseForm = this.props.registeredCourses[currentStudentID];
             registeredCourseForm = registeredCourseForm[registeredCourseForm.length - 1];
@@ -1306,14 +1381,14 @@ class Form extends Component {
     }
 
     renderTitle(id, type) {
-        if(this.props.title){
+        if (this.props.title) {
             return this.props.title;
         }
         let title = "";
         switch (type) {
             case "course": {
                 const course = this.props.courses[id];
-                title = course ? course.title + " ": "";
+                title = course ? course.title + " " : "";
                 break;
             }
             case "student": {
@@ -1323,7 +1398,7 @@ class Form extends Component {
             }
             case "parent": {
                 const parent = this.props.parents[id];
-                title = parent ? parent.name + " ": "";
+                title = parent ? parent.name + " " : "";
                 break;
             }
             case "course_details": {
@@ -1331,7 +1406,7 @@ class Form extends Component {
                 title = course ? course.title + " " : "";
                 break;
             }
-            case "tutoring":{
+            case "tutoring": {
                 title = "New ";
                 break;
             }
@@ -1374,7 +1449,7 @@ class Form extends Component {
                                     <Typography>
                                         Sorry! The form is unavailable.
                                     </Typography>
-                                : this.state.form !== "course"  && this.state.form !== "tutoring"
+                                : this.state.form !== "course" && this.state.form !== "tutoring"
                                     && this.state.form !== "small_group" ?
                                     this.renderSubmitted() :
                                     this.renderCourseRegistrationSubmission()
@@ -1385,7 +1460,7 @@ class Form extends Component {
                             open={this.state.existingUser}
                             onClick={(e) => {
                                 e.preventDefault();
-                                this.setState({existingUser: false})
+                                this.setState({ existingUser: false })
                             }}>
                             <div className="existing-user-popup">
                                 <Typography variant="h6" id="modal-title">
@@ -1394,7 +1469,7 @@ class Form extends Component {
                                 <Button
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        this.setState({existingUser: false})
+                                        this.setState({ existingUser: false })
                                     }}
                                     color="primary"
                                     className="button primary">

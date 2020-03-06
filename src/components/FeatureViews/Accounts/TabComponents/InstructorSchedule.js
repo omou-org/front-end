@@ -51,17 +51,19 @@ const InstructorSchedule = ({instructorID}) => {
     const allDayOOO = useMemo(() => OOO.some(({allDay}) => allDay), [OOO]);
 
     const hoursWorked = useMemo(() =>
-        Object.values(sessions[instructorID] || [])
-            .reduce((hours, session) => {
-                const start = new Date(session.start_datetime);
-                const end = new Date(session.end_datetime);
-                if (start > Date.now()) {
-                    return hours;
-                } else if (end < Date.now()) {
-                    return hours + toHours(end - start);
-                }
-                return hours + toHours(end - Date.now());
-            }, 0),
+        Math.round(
+            Object.values(sessions[instructorID] || [])
+                .reduce((hours, session) => {
+                    const start = new Date(session.start_datetime);
+                    const end = new Date(session.end_datetime);
+                    if (start > Date.now()) {
+                        return hours;
+                    } else if (end < Date.now()) {
+                        return hours + toHours(end - start);
+                    }
+                    return hours + toHours(end - Date.now());
+                }, 0) * 100
+        ) / 100,
     [sessions, instructorID]);
 
     const instructorBusinessHours = useMemo(() =>

@@ -230,7 +230,7 @@ class ProfileHeading extends Component {
                         item
                         xs={5}>
                         <Typography className="rowText">
-                            0
+                            ${this.props.user.balance}
                         </Typography>
                     </Grid>
                     <Grid
