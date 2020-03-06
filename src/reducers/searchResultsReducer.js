@@ -76,9 +76,8 @@ export default function course(state = initialState.SearchResults, { payload, ty
 const handleAccountSearchResults = (state, payload, status) => {
     let { response } = payload;
     let { data } = response;
-
     // you can get page and count
-    return {
+    return JSON.parse(JSON.stringify({
         ...state,
         accounts:data.results,
         account_num_results:data.count,
@@ -95,7 +94,7 @@ const handleAccountSearchResults = (state, payload, status) => {
                 ...state.params.course,
             }
         },
-    }
+    }));
 };
 
 const handleCourseSearchResults = (state, { id, response }, status) => {
@@ -126,7 +125,7 @@ const handleSearchFilterChange = (state, { searchType, filter, value }) => {
     if (filter === "grade") {
         newState.params[searchType].profile = "student";
     }
-    newState.searchQueryStatus = "";
+    // newState.searchQueryStatus = "";
     return newState
 };
 
