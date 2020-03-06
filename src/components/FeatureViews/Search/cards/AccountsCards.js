@@ -51,8 +51,6 @@ function AccountsCards({user, isLoading}) {
 
     });
 
-    const fullName = `${user.user.first_name} ${user.user.last_name}`;
-
     if(isLoading){
         return <Grid item>
             <Card style={{ height: "130px" }}>
@@ -64,6 +62,8 @@ function AccountsCards({user, isLoading}) {
             </Card>
         </Grid>
     }
+
+    const fullName = `${user.user.first_name} ${user.user.last_name}`;
 
     return (
         <Grid item>

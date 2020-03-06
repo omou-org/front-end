@@ -17,9 +17,9 @@ import NoResultsPage from './NoResults/NoResultsPage';
 import MoreResultsIcon from "@material-ui/icons/KeyboardArrowRight";
 import LessResultsIcon from "@material-ui/icons/KeyboardArrowLeft";
 import CourseFilters from "./CourseFilters";
-import Loading from "../../Loading";
 import {SEARCH_ACCOUNTS, SEARCH_ALL, SEARCH_COURSES} from "../../../actions/actionTypes";
 import Chip from "@material-ui/core/Chip";
+import SearchResultsLoader from "./SearchResultsLoader";
 
 const SearchResults = (props) => {
     const dispatch = useDispatch();
@@ -71,7 +71,7 @@ const SearchResults = (props) => {
 
     if ((searchState.searchQueryStatus.account !== 200 &&
         searchState.searchQueryStatus.course !== 200) && searchState.searchQueryStatus.status) {
-        return <Loading />
+        return <SearchResultsLoader SearchQuery={SearchQuery}/>
     }
 
     const MAX_PAGE = Math.ceil(numberOfResults() / 8);
