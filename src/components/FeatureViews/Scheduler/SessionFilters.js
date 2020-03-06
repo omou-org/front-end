@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import IconButton from "@material-ui/core/es/IconButton";
 import FilterIcon from "@material-ui/icons/FilterList";
 import Menu from "@material-ui/core/es/Menu";
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 import blue from "@material-ui/core/es/colors/blue";
 import ReactSelect from "react-select";
-import { Tooltip, Typography, MenuItem } from "@material-ui/core";
+import {MenuItem, Tooltip} from "@material-ui/core";
 
 const styles = theme => ({
     colorSwitchBase: {
@@ -51,9 +51,7 @@ function SessionFilters({ onInstructorSelect, InstructorValue, InstructorOptions
             className={"session-filter"}
             onClose={handleClick}
         >
-            <MenuItem
-                disabled={true}
-            > Select Filter</MenuItem>
+            <MenuItem selected={true}> Select Filter</MenuItem>
             <ReactSelect
                 className={"instructor-session-filter"}
                 placeholder={"Filter Instructor..."}
