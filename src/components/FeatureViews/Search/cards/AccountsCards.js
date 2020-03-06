@@ -1,27 +1,23 @@
-import { connect } from "react-redux";
-import React, { useState, useEffect } from "react";
+import {connect} from "react-redux";
+import React from "react";
 import Grid from "@material-ui/core/Grid";
-import { Card, Paper, Typography } from "@material-ui/core";
+import {Card, Typography} from "@material-ui/core";
 import CardContent from "@material-ui/core/CardContent";
 import Chip from "@material-ui/core/Chip";
-import { withRouter } from "react-router-dom";
+import {useHistory, withRouter} from "react-router-dom";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import {truncateStrings} from "utils";
+import PropTypes from "prop-types";
 
-import { makeStyles } from '@material-ui/styles';
-
-import { ReactComponent as IDIcon } from "../../../identifier.svg";
-
-
+import {ReactComponent as IDIcon} from "../../../identifier.svg";
 import Avatar from "@material-ui/core/Avatar";
 
-function AccountsCards(props) {
-
-
+function AccountsCards({user, isLoading}) {
+    const history = useHistory();
     const goToRoute = (route) => {
-        props.history.push(route);
-    }
+        history.push(route);
+    };
     const stringToColor = (string) => {
         let hash = 0;
         let i;
@@ -40,7 +36,7 @@ function AccountsCards(props) {
         /* eslint-enable no-bitwise */
 
         return colour;
-    }
+    };
 
     const AvatarStyles = (username) => ({
         "backgroundColor": stringToColor(username),
@@ -55,18 +51,29 @@ function AccountsCards(props) {
 
     });
 
-    const fullName = `${props.user.user.first_name} ${props.user.user.last_name}`;
+    const fullName = `${user.user.first_name} ${user.user.last_name}`;
 
+    if(isLoading){
+        return <Grid item>
+            <Card style={{ height: "130px" }}>
+                <CardContent>
+                    <Typography variant="h4" color="textSecondary" gutterBottom>
+                        Loading...
+                    </Typography>
+                </CardContent>
+            </Card>
+        </Grid>
+    }
 
     return (
-            <Card key={props.user.id}
-                style={{ cursor: "pointer" }}
+        <Grid item>
+            <Card key={user.id}
+                  style={{ cursor: "pointer", padding: "10px" }}
                   className={"AccountsCards"}
-                  style={{ padding: "10px" }}
-                onClick={(event) => {
-                    event.preventDefault();
-                     goToRoute(`/accounts/${props.user.account_type.toLowerCase()}/${props.user.user.id}`);
-                }}>
+                  onClick={(event) => {
+                      event.preventDefault();
+                      goToRoute(`/accounts/${user.account_type.toLowerCase()}/${user.user.id}`);
+                  }}>
                 <Grid container>
                     <Hidden mdDown>
                         <Grid item xs={4} md={3}>
@@ -79,7 +86,7 @@ function AccountsCards(props) {
 
                         <CardContent className={"cardText"}>
                             <Typography align={'left'} style={{ fontWeight: "500" }}>
-                                {truncateStrings(`${props.user.user.first_name} ${props.user.user.last_name}`, 20)}
+                                {truncateStrings(`${user.user.first_name} ${user.user.last_name}`, 20)}
                             </Typography>
 
                             <Grid align={'left'}>
@@ -87,14 +94,14 @@ function AccountsCards(props) {
                                     style={{
                                         cursor: "pointer"
                                     }}
-                                    className={`userLabel ${(props.user.account_type).toLowerCase()}`}
-                                    label={props.user.account_type.charAt(0).toUpperCase() + (props.user.account_type).toLowerCase().slice(1)}
+                                    className={`userLabel ${(user.account_type).toLowerCase()}`}
+                                    label={user.account_type.charAt(0).toUpperCase() + (user.account_type).toLowerCase().slice(1)}
                                 />
                             </Grid>
 
                             <Grid item xs={12} style={{ marginTop: 10 }}>
                                 <Grid container
-                                    justify={'flex-start'}
+                                      justify={'flex-start'}
                                 >
                                     <Grid item xs={2}>
                                         <IDIcon
@@ -102,17 +109,17 @@ function AccountsCards(props) {
                                             height={14} />
                                     </Grid>
                                     <Grid item xs={10}>
-                                        # {props.user.user.id}
+                                        # {user.user.id}
                                     </Grid>
                                 </Grid>
-                              {props.user.account_type!=="STUDENT"&&  <Grid container
-                                    justify={'flex-start'}
+                                {user.account_type!=="STUDENT"&&  <Grid container
+                                                                        justify={'flex-start'}
                                 >
                                     <Grid item xs={2}>
                                         <EmailIcon style={{ fontSize: 14 }} />
                                     </Grid>
                                     <Grid item xs={10}>
-                                        {props.user.user.email}
+                                        {user.user.email}
                                     </Grid>
                                 </Grid>}
                             </Grid>
@@ -122,11 +129,15 @@ function AccountsCards(props) {
                     </Grid>
                 </Grid>
             </Card>
+        </Grid>
+
     )
 }
 
 
-AccountsCards.propTypes = {};
+AccountsCards.propTypes = {
+    isLoading: PropTypes.bool,
+};
 
 function mapStateToProps(state) {
     return {

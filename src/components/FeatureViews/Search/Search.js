@@ -14,7 +14,7 @@ import {useHistory, useLocation, withRouter} from 'react-router-dom';
 import * as apiActions from "../../../actions/apiActions";
 import * as registrationActions from "../../../actions/registrationActions";
 import windowSize from 'react-window-size';
-import {IS_SEARCHING, NOT_SEARCHING, SEARCH_ACCOUNTS, SEARCH_ALL, SEARCH_COURSES} from "../../../actions/actionTypes";
+import {IS_SEARCHING, SEARCH_ACCOUNTS, SEARCH_ALL, SEARCH_COURSES} from "../../../actions/actionTypes";
 
 const Search = (props) => {
     const [query, setQuery] = useState("");
@@ -68,7 +68,7 @@ const Search = (props) => {
                 ...accountRequestConfig,
                 params: {
                     query:SearchQuery,
-                    page: accountPage,
+                    page: accountPage
                 }
             };
             if(profile){
@@ -82,9 +82,21 @@ const Search = (props) => {
             if(sortAccount){
                 baseConfig.params["sort"] = sortAccount;
             }
-            setAccountRequestConfig(baseConfig);
-            api.updateSearchStatus(NOT_SEARCHING);
-            filterSuggestions();
+
+            let toUpdate = false;
+            setAccountRequestConfig(() => {
+                if(JSON.stringify(accountRequestConfig) !== JSON.stringify(baseConfig)){
+                    toUpdate = true;
+                    return baseConfig
+                }
+            });
+            // api.updateSearchStatus(NOT_SEARCHING);
+            return () => {
+                if(toUpdate){
+                    filterSuggestions();
+                    searchList();
+                }
+            }
         }
     },[SearchQuery, profile, gradeFilter, sortAccount, accountPage]);
 
@@ -112,9 +124,20 @@ const Search = (props) => {
             if(sortCourse && sortCourse !== "relevance"){
                 baseConfig.params["sort"] = sortCourse;
             }
-            setCourseRequestConfig(baseConfig);
-            api.updateSearchStatus(NOT_SEARCHING);
-            filterSuggestions();
+            let toUpdate = false;
+            setCourseRequestConfig(()=>{
+                if(JSON.stringify(courseRequestConfig) !== JSON.stringify(baseConfig)){
+                    toUpdate = true;
+                    return baseConfig
+                }
+            });
+            return () => {
+                if(toUpdate){
+                    filterSuggestions();
+                    searchList();
+                }
+            }
+
         }
     },[SearchQuery, courseType, availability, sortCourse, coursePage]);
 
@@ -134,7 +157,7 @@ const Search = (props) => {
             }
         }
 
-        suggestions = suggestions.map(
+        setSearchSuggestions(suggestions.map(
             (data) => {
                 if (data.user) {
                     return {
@@ -153,25 +176,17 @@ const Search = (props) => {
                     }
                 }
             }
-        );
-        // if(newItem){
-        //     suggestions.push(newItem);
-        // }
-        setSearchSuggestions(suggestions);
+        ));
     };
 
     useEffect(()=>{
         if(query.label && query.label !== ""){
             if((query.label.length === 1 || query.label.length >= 4)){
-                filterSuggestions()();
+                filterSuggestions();
+                searchList();
             }
         }
     },[query]);
-    useEffect(()=>{
-        if(searchState.searchQueryStatus === "success"){
-            searchList();
-        }
-    },[props.search.searchQueryStatus]);
 
     const handleFilterChange = (filter) => (e) => {
         setPrimaryFilter(e.target.value);
@@ -182,12 +197,12 @@ const Search = (props) => {
         if(e){
             setQuery(e);
             if(e.value){
-                handleQuery();
+                return handleQuery(e);
             }
         }
     };
 
-    const filterSuggestions = ()=> (e)=>{
+    const filterSuggestions = ()=> {
         // e.preventDefault();
         switch(primaryFilter){
             case SEARCH_ALL:{
@@ -206,25 +221,30 @@ const Search = (props) => {
                 break;
             }
         }
-    }
+    };
 
     const handleSubmit = e => {
         e.preventDefault();
         handleQuery();
     };
 
-    const handleQuery = () => {
-        if(query.label){
+    const handleQuery = (e) => {
+        if(e){
+            api.setSearchQuery(e.label);
+            setQuery(e)
+        } else if(query.label){
             api.setSearchQuery(query.label);
-            api.updateSearchStatus(IS_SEARCHING);
-
-            if(!location.pathname.includes("search")){
-                history.push({
-                    pathname:'/search/',
-                    search: `?query=${SearchQuery}`
-                });
-            }
         }
+        api.updateSearchStatus(IS_SEARCHING);
+        // api.updateSearchParam("account", "accountPage", 1);
+        // api.updateSearchParam("course", "coursePage", 1);
+        if(!location.pathname.includes("search")){
+            history.push({
+                pathname:'/search/',
+                search: `?query=${SearchQuery}`
+            });
+        }
+
     };
 
     const handleInputChange = () => (e)=>{
