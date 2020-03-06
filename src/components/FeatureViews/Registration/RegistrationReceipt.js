@@ -59,7 +59,7 @@ function RegistrationReceipt(props) {
             setCourseReceipt(courseReceiptInitializer(enrollments));
         }
     }, [paymentStatus, paymentReceipt]);
-
+    
     if ((!registrationStatus || isFail(registrationStatus)) && !params.paymentID) {
         return <Loading />
     }

@@ -1,4 +1,4 @@
-import {connect} from "react-redux";
+import {connect, useSelector} from "react-redux";
 import React from "react";
 import Grid from "@material-ui/core/Grid";
 import {Card, Tooltip, Typography} from "@material-ui/core";
@@ -6,9 +6,11 @@ import {Card, Tooltip, Typography} from "@material-ui/core";
 import Chip from "@material-ui/core/Chip";
 import {withRouter} from "react-router-dom";
 import "../Search.scss";
+import CardContent from "@material-ui/core/CardContent";
 
 
 function CourseCards(props) {
+    const instructors = useSelector(({ "Users": { InstructorList } }) => InstructorList);
 
     const handleLocaleDateString = (start, end) => {
         if(start && end){
@@ -16,7 +18,7 @@ function CourseCards(props) {
             let s2 = new Date(end.replace(/-/g, '/'));
             return `${s1.toLocaleDateString()} - ${s2.toLocaleDateString()}`
         }
-    }
+    };
 
     const goToCoursePage = ()=> (e)=>{
         e.preventDefault();
@@ -25,6 +27,16 @@ function CourseCards(props) {
 
         props.history.push(`/registration/course/${courseID}/${props.course.subject}`)
     };
+
+    if(Object.keys(instructors).length === 0){
+        return <Card>
+            <CardContent>
+                <Typography variant="h4" color="textSecondary" gutterBottom>
+                    Loading...
+                </Typography>
+            </CardContent>
+        </Card>
+    }
 
     return (
         <Grid item xs={12} sm={3} style={{ "padding": "10px" }}
@@ -95,7 +107,7 @@ function CourseCards(props) {
                             alignItems={'center'}>
                             <Grid item>
                                 <Typography className="courseText">
-                                    Teacher: {props.instructors[props.course.instructor].name}
+                                    Teacher: {instructors[props.course.instructor].name}
                                 </Typography>
                             </Grid>
                         </Grid>

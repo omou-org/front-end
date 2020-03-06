@@ -177,6 +177,9 @@ const SearchResults = (props) => {
     const setPageLimit = (resultsPageNumber) => {
         return resultsPageNumber >= MAX_PAGE;
     };
+
+
+
     return (
         <Grid container className={'search-results'} >
             <Grid item xs={12}>
@@ -243,7 +246,7 @@ const SearchResults = (props) => {
                                         :
                                         ""}
                             </Grid>
-                            {account_num_results > 4 ?
+                            {account_num_results > 4 && searchState.primaryFilter !== SEARCH_COURSES?
                                 <div className={"results-nav"}>
                                     {
                                          <IconButton disabled={pageNumber(searchState.params.account.accountPage, start.account) != 1}
@@ -298,9 +301,10 @@ const SearchResults = (props) => {
                                     }
                                 </Grid>
                                 <Grid container direction={"row"}>
-                                    {courses.slice(start.course, end.course).map((course) => (
+                                    {courses.slice(start.course, end.course).map((course) => {
+                                        return (
                                             <CoursesCards course={course} key={course.course_id} />
-                                        )
+                                        )}
                                     )}
                                 </Grid>
                             </Grid> : ""

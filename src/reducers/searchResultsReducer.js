@@ -18,8 +18,10 @@ export default function course(state = initialState.SearchResults, { payload, ty
         case actions.GET_SEARCH_QUERY_FAILED:
             return state;
         case actions.SET_SEARCH_QUERY:
-            state["SearchQuery"] = payload;
-            return state;
+            if(payload !== ""){
+                state["SearchQuery"] = payload;
+            }
+            return {...state};
         case actions.GET_ACCOUNT_SEARCH_QUERY_STARTED:
             return handleSearchStatus(state, "account", status);
         case actions.GET_COURSE_SEARCH_QUERY_STARTED:
@@ -65,7 +67,7 @@ export default function course(state = initialState.SearchResults, { payload, ty
                     }
                 },
                 primaryFilter: SEARCH_ALL,
-            }
+            };
         default:
             return state;
     }
@@ -136,4 +138,4 @@ const handleSearchStatus = (state, searchType, status) => {
             [searchType]: status,
         }
     }
-}
+};
