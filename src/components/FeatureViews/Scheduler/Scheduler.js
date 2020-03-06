@@ -93,7 +93,6 @@ class Scheduler extends Component {
     componentDidMount() {
         // this.props.courseActions.fetchCourses();
         // this.props.userActions.fetchInstructors();
-
         this.props.userActions.fetchOutOfOffice();
         this.props.calendarActions.fetchAllSessions({
             "config": {
@@ -110,7 +109,6 @@ class Scheduler extends Component {
         });
         this.setOOOEvents();
     }
-
 
     componentDidUpdate(prevProps) {
         // this is why we need useEffect lol
@@ -141,7 +139,6 @@ class Scheduler extends Component {
     }
 
     componentWillUnmount() {
-
         this.props.calendarActions.resetSchedulerStatus();
     }
 
@@ -195,7 +192,7 @@ class Scheduler extends Component {
             OOOlist = OOOlist.map(({ schedule }) => schedule.time_off);
             OOOlist.forEach((iList) => {
                 allInstructorSchedules = allInstructorSchedules.concat(
-                    Object.values(iList).map(({ start, end, description, instructor_id, all_day, ooo_id }) => {
+                    Object.values(iList).map(({ start, end, description, instructor_id, all_day }) => {
                         const instructor = instructors[instructor_id];
                         const title = description || (instructor
                             ? `${instructor.name} Out of Office`
@@ -212,7 +209,6 @@ class Scheduler extends Component {
                             "end": endDate,
                             start,
                             title,
-                            ooo_id,
                         };
                     })
                 );
