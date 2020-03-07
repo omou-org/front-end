@@ -1,4 +1,4 @@
-import { DELETE, GET, NOT_SEARCHING, PATCH, POST, SEARCH_ALL } from "../actions/actionTypes";
+import {DELETE, GET, NOT_SEARCHING, PATCH, POST, SEARCH_ALL} from "../actions/actionTypes";
 
 export default {
     "Authentication": initAuth(),
@@ -468,7 +468,7 @@ function initRegistrationForm() {
                         field: "Student First Name",
                         name: "Student First Name",
                         type: "short text",
-                        required: false,
+                        required: true,
                         full: true,
                         field_limit: 1,
                     },
@@ -476,7 +476,7 @@ function initRegistrationForm() {
                         field: "Student Last Name",
                         name: "Student Last Name",
                         type: "short text",
-                        required: false,
+                        required: true,
                         full: true,
                         field_limit: 1,
                     },
@@ -492,7 +492,7 @@ function initRegistrationForm() {
                         field: "Grade",
                         name: "Grade",
                         type: "number",
-                        required: false,
+                        required: true,
                         full: false,
                         field_limit: 1,
                     },
@@ -508,7 +508,7 @@ function initRegistrationForm() {
                         field: "School",
                         name: "School",
                         type: "short text",
-                        required: false,
+                        required: true,
                         full: true,
                         field_limit: 1,
                     },
