@@ -1,5 +1,4 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import ReactSelect from 'react-select/creatable';
 import {components} from 'react-select';
 import {Grid, Select} from "@material-ui/core";
 import {bindActionCreators} from "redux";
@@ -15,6 +14,7 @@ import * as apiActions from "../../../actions/apiActions";
 import * as registrationActions from "../../../actions/registrationActions";
 import windowSize from 'react-window-size';
 import {IS_SEARCHING, SEARCH_ACCOUNTS, SEARCH_ALL, SEARCH_COURSES} from "../../../actions/actionTypes";
+import Creatable from "react-select/creatable/dist/react-select.browser.esm";
 
 const Search = (props) => {
     const [query, setQuery] = useState("");
@@ -257,7 +257,7 @@ const Search = (props) => {
         };
         searchList(input);
         setQuery(input);
-        api.setSearchQuery(e);
+
         if(props.windowWidth < 800 && e !== ""){
             setMobileSearching(true);
             props.onMobile(true);
@@ -265,7 +265,6 @@ const Search = (props) => {
             setMobileSearching(false);
             props.onMobile(false);
         }
-
     };
 
     const renderSearchIcon = props =>{
@@ -282,6 +281,7 @@ const Search = (props) => {
         sessionStorage.setItem("SearchQuery", JSON.stringify(SearchQuery));
     },[SearchQuery]);
 
+    const formatCreateLabel = (inputValue) => <div>{`Search for "${inputValue}"`}</div>;
 
     return (
         <Grid container
@@ -317,7 +317,10 @@ const Search = (props) => {
                             </FormControl>
                         </Grid>
                         <Grid item md={10} xs={isMobileSearching ? 10 : 7}>
-                            <ReactSelect
+                            <Creatable
+                                allowCreateWhileLoading
+                                placeholder="Search for a course or account"
+                                formatCreateLabel={formatCreateLabel}
                                 className={"search-input"}
                                 classNamePrefix="main-search"
                                 options={searchSuggestions}
