@@ -190,6 +190,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                             {
                                 course.course_type == "tutoring"  &&
                                     <SessionPaymentStatusChip
+                                        setPos
                                         enrollment={enrollments[Object.keys(enrollments)[0]][course.course_id]}
                                         session={session}
                                     />

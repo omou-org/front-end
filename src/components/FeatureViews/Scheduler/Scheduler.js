@@ -1,8 +1,8 @@
 /* eslint-disable func-style */
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import React, {Component} from "react";
+import {withRouter} from "react-router-dom";
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -26,13 +26,13 @@ import ChevronRightOutlinedIcon from "@material-ui/icons/ChevronRightOutlined";
 import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
 import TodayIcon from "@material-ui/icons/Today";
-import { stringToColor } from "../Accounts/accountUtils";
-import { withStyles } from "@material-ui/core/styles";
+import {stringToColor} from "../Accounts/accountUtils";
+import {withStyles} from "@material-ui/core/styles";
 import "./scheduler.scss";
 import SessionFilters from "./SessionFilters";
-import { BootstrapInput, handleToolTip } from "./SchedulerUtils";
-import { Tooltip } from "@material-ui/core";
-import { arr_diff } from "../../Form/FormUtils";
+import {BootstrapInput, handleToolTip, sessionArray} from "./SchedulerUtils";
+import {Tooltip} from "@material-ui/core";
+import {arr_diff} from "../../Form/FormUtils";
 
 
 const styles = (theme) => ({
@@ -48,13 +48,6 @@ const styles = (theme) => ({
     },
 });
 
-/** * @description: This is for transforming instructor organized redux to an array of sessions
- * @param sessions
- * @returns {unknown[]}
- */
-const sessionArray = (sessions) => Object.keys(sessions).length > 0 && Object.values(sessions)
-    .map((instructorSessions) => Object.values(instructorSessions))
-    .reduce((allSessions, instructorSessions) => allSessions.concat(instructorSessions));
 
 class Scheduler extends Component {
     constructor(props) {

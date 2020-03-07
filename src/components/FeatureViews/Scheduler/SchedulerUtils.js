@@ -1,8 +1,9 @@
 import InputBase from '@material-ui/core/InputBase';
-import { withStyles } from '@material-ui/core/styles';
-import { startAndEndDate, truncateStrings } from "utils";
-import { formatDate } from '../../Form/FormUtils'
+import {withStyles} from '@material-ui/core/styles';
+import {startAndEndDate, truncateStrings} from "utils";
+import {formatDate} from '../../Form/FormUtils'
 import tippy from "tippy.js";
+
 export const BootstrapInput = withStyles(theme => ({
     root: {
         'label + &': {
@@ -102,4 +103,13 @@ export const handleToolTip = (info) => {
             "interactive": true,
         });
     }
-}
+};
+
+/** * @description: This is for transforming instructor organized redux to an array of sessions
+ * @param sessions
+ * @returns {unknown[]}
+ */
+export const sessionArray = (sessions) => Object.keys(sessions).length > 0 && Object.values(sessions)
+    .map((instructorSessions) => Object.values(instructorSessions))
+    .reduce((allSessions, instructorSessions) => allSessions.concat(instructorSessions));
+

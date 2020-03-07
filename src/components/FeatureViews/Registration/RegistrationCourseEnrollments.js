@@ -23,6 +23,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import IconButton from "@material-ui/core/IconButton";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
+import * as calendarActions from "../../../actions/calendarActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Divider from "@material-ui/core/Divider";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -31,11 +32,13 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import {NoListAlert} from "../../NoListAlert";
+import {sessionArray} from "../Scheduler/SchedulerUtils";
+import {SessionPaymentStatusChip} from "../../SessionPaymentStatusChip";
 
 const TableToolbar = (
     <TableHead>
         <TableRow>
-            {["Student", "Parent", "Phone", "Status", ""].map((heading) => (
+            {["Student", "Parent", "Phone", "Upcoming Status", ""].map((heading) => (
                 <TableCell
                     align="left"
                     key={heading}
@@ -50,7 +53,10 @@ const TableToolbar = (
 const RegistrationCourseEnrollments = ({courseID}) => {
     const dispatch = useDispatch();
     const api = useMemo(
-        () => bindActionCreators(registrationActions, dispatch),
+        () => ({
+            ...bindActionCreators(registrationActions, dispatch),
+            ...bindActionCreators(calendarActions, dispatch),
+        }),
         [dispatch]
     );
 
@@ -59,6 +65,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
     const parents = useSelector(({"Users": {ParentList}}) => ParentList);
     const students = useSelector(({"Users": {StudentList}}) => StudentList);
     const enrollments = useSelector(({Enrollments}) => Enrollments);
+    const sessions = useSelector(({Calendar}) => Calendar.CourseSessions);
 
     const [studentMenuAnchorEl, setStudentMenuAnchorEl] = useState(null);
     const [unenroll, setUnenroll] = useState({
@@ -91,23 +98,47 @@ const RegistrationCourseEnrollments = ({courseID}) => {
             }), {}));
     }, [course.roster]);
 
+    useEffect(()=>{
+        api.fetchAllSessions({
+            "config": {
+                "params": {
+                    "time_frame": "month",
+                    "time_shift": 0,
+                },
+            },
+            "id": "",
+        });
+    },[api]);
+
     const loadedStudents = useMemo(() =>
         course.roster.filter((studentID) => students[studentID])
     , [course.roster, students]);
+
+    const currentMonthSessions = sessionArray(sessions);
 
     // no students enrolled
     if (course.roster.length === 0) {
         return <NoListAlert list={"Enrolled Students"}/>;
     }
 
-    if (loadedStudents.length === 0) {
-        if (hooks.isLoading(studentStatus)) {
+    if (loadedStudents.length === 0 || !currentMonthSessions) {
+        if (hooks.isLoading(studentStatus) || !currentMonthSessions) {
             return <Loading small />;
         }
         if (hooks.isFail(studentStatus)) {
             return "Error loading enrollment details!";
         }
     }
+
+    const today = new Date();
+    const upcomingSession = currentMonthSessions
+        .filter((session) => ((Number(session.course) === Number(courseID)) &&
+            new Date(session.start_datetime) >= today))
+        .sort((sessionA, sessionB) => {
+            const distanceA = Math.abs(today - sessionA);
+            const distanceB = Math.abs(today - sessionB);
+            return distanceA - distanceB;
+        })[0];
 
     const handleClick = event => {
         setStudentMenuAnchorEl(event.currentTarget);
@@ -158,7 +189,6 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                             const parent = parents[student.parent_id];
                             const enrollment =
                                 enrollments[studentID] && enrollments[studentID][courseID];
-                            const paymentStatus = true;
                             const notes = (enrollment && enrollment.notes) || {};
                             return (
                                 <Fragment key={studentID}>
@@ -195,15 +225,15 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                                                 enrollment
                                                     ? <div
                                                         key={studentID}
-                                                        style={{
-                                                            "padding": "5px 0",
-                                                            "borderRadius": "10px",
-                                                            "backgroundColor": paymentStatus ? "#28D52A" : "#E9515B",
-                                                            "textAlign": "center",
-                                                            "width": "7vw",
-                                                            "color": "white",
-                                                        }}>
-                                                        {paymentStatus ? "Paid" : "Unpaid"}
+                                                        style={{"width": "40px",}}>
+                                                        <SessionPaymentStatusChip
+                                                            style={{
+                                                                "width": "45px",
+                                                                "padding": "7px 0 0 10px",
+                                                                "borderRadius": "8px"
+                                                            }}
+                                                            session={upcomingSession}
+                                                            enrollment={enrollment} />
                                                       </div>
                                                     : hooks.isFail(enrollmentStatus)
                                                         ? "Error!"

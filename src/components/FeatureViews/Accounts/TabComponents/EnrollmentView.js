@@ -287,6 +287,7 @@ const CourseSessionStatus = () => {
                                                         item
                                                         xs={2}>
                                                         <SessionPaymentStatusChip
+                                                            setPos
                                                             enrollment={enrollment}
                                                             session={session}
                                                             />
