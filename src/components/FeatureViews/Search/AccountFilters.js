@@ -50,7 +50,7 @@ const SearchResultFilter = () => {
                       direction="row"
                       alignItems="center">
                     <Grid item>
-                        <Typography variant={"subtitle1"} align="left"> Filter | </Typography>
+                        <Typography variant={"body1"} align="left"> Filter | </Typography>
                     </Grid>
                     <Grid item>
                         <FormControl className="search-filter-wrapper" >
@@ -95,7 +95,7 @@ const SearchResultFilter = () => {
                         </FormControl>
                     </Grid>
                     <Grid item>
-                        <Typography variant={"subtitle1"}> Sort | </Typography>
+                        <Typography variant={"body1"}> Sort | </Typography>
                     </Grid>
                     <Grid item>
                         <FormControl className="search-filter-wrapper">

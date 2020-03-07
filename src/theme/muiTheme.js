@@ -12,7 +12,7 @@ const theme = createMuiTheme({
         },
     },
     typography: {
-        useNextVariants: true
+
     },
     overrides: {
         MuiCssBaseline:{
