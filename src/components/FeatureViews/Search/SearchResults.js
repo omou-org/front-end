@@ -69,9 +69,13 @@ const SearchResults = (props) => {
         api.updatePrimarySearchFilter(type);
     };
 
-    if ((searchState.searchQueryStatus.account !== 200 &&
+    if ((searchState.searchQueryStatus.account !== 200 ||
         searchState.searchQueryStatus.course !== 200) && searchState.searchQueryStatus.status) {
-        return <SearchResultsLoader SearchQuery={SearchQuery}/>
+        return <SearchResultsLoader
+            SearchResults={numberOfResults()}
+            accountPage={currentPage.account}
+            coursePage={currentPage.course}
+            SearchQuery={SearchQuery}/>
     }
 
     const MAX_PAGE = Math.ceil(numberOfResults() / 8);
@@ -125,7 +129,7 @@ const SearchResults = (props) => {
         }
     };
 
-    if(numberOfResults() === 0){
+    if(numberOfResults() === 0 || !numberOfResults()){
         return <NoResultsPage/>
     }
 

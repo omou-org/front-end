@@ -5,41 +5,33 @@ import Typography from "@material-ui/core/Typography"
 import AccountsCards from "./cards/AccountsCards"
 import CoursesCards from "./cards/CoursesCards"
 import "./Search.scss";
-import AccountFilters from "../../FeatureViews/Search/AccountFilters"
 import MoreResultsIcon from "@material-ui/icons/KeyboardArrowRight";
 import LessResultsIcon from "@material-ui/icons/KeyboardArrowLeft";
-import CourseFilters from "./CourseFilters";
 import Chip from "@material-ui/core/Chip";
 
-const SearchResultsLoader = ({SearchQuery}) => {
+const SearchResultsLoader = ({SearchResults,SearchQuery, accountPage, coursePage}) => {
     return (
         <Grid container className={'search-results'} >
             <Grid item xs={12}>
-
                     <Paper className={'main-search-view'} >
                         <Grid item xs={12} className="searchResults">
                             <Typography
                                 className={"search-title"}
                                 variant={"h3"}
                                 align={"left"}>
-                                Search Results for "{SearchQuery}"
+                                {SearchResults } Search Results for "{SearchQuery}"
                         </Typography>
                         </Grid>
                         <div className="account-results-wrapper">
-                            <Grid item xs={12}>
-                                <Grid container>
-                                    <AccountFilters />
-                                </Grid>
-                                <hr/>
-                            </Grid>
                         <Grid item xs={12}>
+                            <hr/>
                             <Grid container
                                 justify={"space-between"}
                                 direction={"row"}
                                 alignItems="center">
                                 <Grid item className="searchResults">
                                     <Typography className={"resultsColor"} align={'left'} gutterBottom>
-                                        "Accounts"
+                                        Accounts
                                     </Typography>
                                 </Grid>
                                 <Grid item >
@@ -70,7 +62,7 @@ const SearchResultsLoader = ({SearchQuery}) => {
                                         <LessResultsIcon />
                                     </IconButton>
                                 }
-                                {1}
+                                {accountPage}
                                 {
                                     <IconButton disabled className={"more"}>
                                         <MoreResultsIcon />
@@ -81,11 +73,6 @@ const SearchResultsLoader = ({SearchQuery}) => {
                         </Grid>
                     </div>
                     <div className={"course-results-wrapper"}>
-                        <Grid item xs={12}>
-                            <Grid container>
-                                <CourseFilters />
-                            </Grid>
-                        </Grid>
                         <hr/>
                         <Grid item xs={12}>
                             <Grid container
@@ -117,7 +104,7 @@ const SearchResultsLoader = ({SearchQuery}) => {
                             <IconButton disabled className={"less"}>
                                 <LessResultsIcon/>
                             </IconButton>
-                            { 1}
+                            {coursePage}
                             <IconButton disabled className={"more"}>
                                 <MoreResultsIcon />
                             </IconButton>

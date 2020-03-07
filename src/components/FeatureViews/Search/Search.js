@@ -54,6 +54,9 @@ const Search = (props) => {
         if(SearchQuery !== prevSearchQuery){
             api.setSearchQuery(prevSearchQuery);
         }
+        return () =>{
+            sessionStorage.setItem("SearchQuery",SearchQuery);
+        }
     },[]);
 
     // Fetching account results
