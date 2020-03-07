@@ -6,7 +6,7 @@ import {Typography} from "@material-ui/core";
 const Loading = ({paper, small, loadingText}) => {
     if(paper){
         return <Paper
-            style={{height:"70vh"}}
+            style={{height:"100vh"}}
             className="paper"
         >
             <Typography variant="h3">

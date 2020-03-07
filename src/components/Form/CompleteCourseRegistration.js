@@ -1,12 +1,12 @@
 import React from "react";
-import { NavLink, withRouter } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { Paper, Tooltip, Typography } from "@material-ui/core";
+import {NavLink, withRouter} from "react-router-dom";
+import {useSelector} from "react-redux";
+import {Paper, Tooltip, Typography} from "@material-ui/core";
 import AccountsCards from "../FeatureViews/Search/cards/AccountsCards";
 import Grid from "@material-ui/core/Grid";
 import * as hooks from "../../actions/hooks";
 import Loading from "../Loading";
-import { stringToColor } from "../FeatureViews/Accounts/accountUtils";
+import {stringToColor} from "../FeatureViews/Accounts/accountUtils";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 
@@ -169,8 +169,9 @@ export function CompleteCourseRegistration({ registeredCourseForm, courseType })
                             <Grid item>
                                 <Button component={NavLink}
                                     to={"/registration/cart"}
-                                    className={"button"}
-                                    style={{ backgroundColor: "#43B5D9", color: "white" }}
+                                        variant="contained"
+                                        color="primary"
+                                    style={{ color: "white" }}
                                 >
                                     Checkout
                                 </Button>

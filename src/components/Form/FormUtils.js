@@ -1,6 +1,6 @@
-import { instance } from "actions/apiActions";
-import { isFail } from "actions/hooks";
-import { DayConverter } from "utils";
+import {instance} from "actions/apiActions";
+import {isFail} from "actions/hooks";
+import {DayConverter} from "utils";
 
 /**
  * @description: parses a form to convert start and end time from a form to a duration
@@ -105,7 +105,7 @@ export const dayOfWeek = {
 export const weeklySessionsParser = (startDate, endDate) => {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    return Math.floor((end.getTime() - start.getTime()) / (1000 * 3600 * 24 * 7));
+    return Math.floor((end - start) / (7 * 24 * 60 * 60 * 1000))+1;
 };
 
 export const convertTimeStrToDate = (time) => new Date(`01/01/2020 ${time.substr(1, 5)}`);
@@ -177,7 +177,7 @@ export const formatDate = (start, end) => {
 
     return finalTime;
 
-}
+};
 
 const formatTime = (time) => {
     if (!time) {

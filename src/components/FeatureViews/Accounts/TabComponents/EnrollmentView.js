@@ -149,12 +149,12 @@ const CourseSessionStatus = () => {
 
     // either doesn't exist or only has notes defined
     if (!enrollment || Object.keys(enrollment).length <= 1) {
-        return <Loading />;
+        return <Loading paper/>;
     }
     if (hooks.isLoading(courseStatus, enrollmentStatus, studentStatus, instructorStatus) ||
         requestStatus.schedule[GET][REQUEST_ALL] !== 200
     ) {
-        return <Loading />;
+        return <Loading paper/>;
     }
     if (hooks.isFail(courseStatus, enrollmentStatus, studentStatus)) {
         return "Error loading data";
