@@ -11,7 +11,7 @@ const ErrorNotFoundPage = () => {
     const {goBack} = useHistory();
     return (
         <div className="error-page">
-            <Paper className="paper">
+            <Paper elevation={2} className="paper">
                 <Typography className="center">
                     404.
                     <br />

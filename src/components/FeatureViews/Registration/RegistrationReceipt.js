@@ -184,7 +184,7 @@ function RegistrationReceipt(props) {
         let student = students[studentID];
         return (
             <Grid container direction="column" key={studentID}>
-                <Paper className={"course-receipt"}>
+                <Paper elevation={2} className={"course-receipt"}>
                     <Grid item>
                         <Typography
                             className={"student-name"}
@@ -208,7 +208,7 @@ function RegistrationReceipt(props) {
 
 
     return (
-        <Paper className={"paper registration-receipt"}>
+        <Paper elevation={2} className={"paper registration-receipt"}>
             {
                 params.paymentID && <>
                     <BackButton />

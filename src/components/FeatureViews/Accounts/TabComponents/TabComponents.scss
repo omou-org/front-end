@@ -15,7 +15,7 @@
     cursor: pointer;
   }
 
-  .actions {
+  .spacing {
     text-align: right;
     bottom: 5%;
     width: 85%;
@@ -23,7 +23,7 @@
   }
 
   &:hover {
-    .actions {
+    .spacing {
       opacity: 1;
     }
   }
@@ -166,7 +166,7 @@
     }
   }
 
-  .actions {
+  .spacing {
     text-align: right;
     opacity: 0;
     margin-top: 40px;

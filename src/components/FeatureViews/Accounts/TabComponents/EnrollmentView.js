@@ -319,7 +319,7 @@ const CourseSessionStatus = () => {
     };
 
     return (
-        <Paper className="paper">
+        <Paper elevation={2} className="paper">
             <Grid
                 className="course-session-status"
                 container>

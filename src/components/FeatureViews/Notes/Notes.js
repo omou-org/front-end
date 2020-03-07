@@ -304,7 +304,7 @@ const Notes = ({ownerType, ownerID}) => {
                     item
                     key={note.id || note.body}
                     xs={3}>
-                    <Paper className="note">
+                    <Paper elevation={2} className="note">
                         <Typography
                             align="left"
                             className="noteHeader">

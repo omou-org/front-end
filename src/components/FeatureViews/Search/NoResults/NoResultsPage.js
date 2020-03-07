@@ -12,7 +12,7 @@ const NoResultsPage = () => {
     return (
         <Grid container className={'no-results'}>
             <Grid item xs={12}>
-                <Paper className={'paper'}>
+                <Paper elevation={2} className={'paper'}>
                     <BackButton />
                     <hr />
                     <div className="center">

@@ -109,7 +109,7 @@ const RegistrationCourse = () => {
             className="registrationCourse"
             item
             xs={12}>
-            <Paper className="paper content">
+            <Paper elevation={2} className="paper content">
                 <Grid
                     container
                     justify="space-between">

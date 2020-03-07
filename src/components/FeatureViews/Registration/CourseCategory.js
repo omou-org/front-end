@@ -19,14 +19,14 @@ class CourseCategory extends Component {
             <Grid
                 item
                 xs={12}>
-                <Paper className="paper">
+                <Paper elevation={2} className="paper">
                     <Grid
                         item
                         lg={12}>
                         <RegistrationActions />
                     </Grid>
                 </Paper>
-                <Paper className="paper content">
+                <Paper elevation={2} className="paper content">
                     <BackButton />
                     <Typography
                         align="left"

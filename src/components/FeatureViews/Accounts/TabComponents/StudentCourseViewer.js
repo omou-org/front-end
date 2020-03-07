@@ -145,7 +145,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
                                     md={12}
                                     to={`${pathname}/${courseID}`}
                                     xs={12}>
-                                    <Paper square>
+                                    <Paper elevation={2} square>
                                         <Grid container>
                                             <Grid
                                                 item

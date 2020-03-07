@@ -287,7 +287,7 @@ class Accounts extends Component {
                 className="Accounts"
                 item
                 xs={12}>
-                <Paper className="paper">
+                <Paper elevation={2} className="paper">
                     <BackButton />
                     <Hidden xsDown>
                         <hr />

@@ -19,7 +19,7 @@ import AdminViewsRoutes from "../../Routes/AdminViewsRoutes";
 function AdminPortal() {
     return (
         <form>
-            <Paper className={"registration-cart paper"}>
+            <Paper elevation={2} className={"registration-cart paper"}>
                 <Grid container layout={"row"}>
                     <Grid item xs={12}>
                         <BackButton/>

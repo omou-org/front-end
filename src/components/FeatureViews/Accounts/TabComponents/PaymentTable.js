@@ -44,7 +44,7 @@ function PaymentTable({paymentList, type, enrollmentID})  {
     };
 
     return (<Grid item md={12}>
-        <Paper className={'payments-history'}>
+        <Paper elevation={2} className={'payments-history'}>
             <Table>
                 <TableHead>
                     <TableCell>ID</TableCell>

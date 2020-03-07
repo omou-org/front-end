@@ -603,7 +603,7 @@ class Scheduler extends Component {
 
     render() {
         return (
-            <Paper className="paper scheduler">
+            <Paper elevation={2} className="paper scheduler">
                 <Typography
                     align="left"
                     className="scheduler-title"

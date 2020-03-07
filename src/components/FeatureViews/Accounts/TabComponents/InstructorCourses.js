@@ -101,7 +101,7 @@ const InstructorCourses = ({ instructorID }) => {
                                 key={courseID}
                                 to={`/registration/course/${courseID}`}
                                 xs={12}>
-                                <Paper square >
+                                <Paper elevation={2} square >
                                     <Grid container>
                                         <Grid
                                             item

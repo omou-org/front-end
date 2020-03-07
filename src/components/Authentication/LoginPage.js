@@ -86,7 +86,7 @@ const LoginPage = () => {
             <Grid
                 item
                 xs={3}>
-                <Paper className="bg">
+                <Paper elevation={2} className="bg">
                     <Typography
                         align="center"
                         color="primary">
