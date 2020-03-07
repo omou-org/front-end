@@ -110,7 +110,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
 
     if (loadedStudents.length === 0 && reduxCourse.roster.length > 1) {
         if (hooks.isLoading(studentStatus)) {
-            return <Loading />;
+            return <Loading paper/>;
         }
         if (hooks.isFail(studentStatus)) {
             return "Error loading enrollment details!";
@@ -159,7 +159,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
     };
 
     if (!course || !categories || (Object.entries(enrollments).length === 0 && enrollments.constructor === Object)) {
-        return <Loading />;
+        return <Loading paper/>;
     }
 
     const sessionStart = new Date(session.start_datetime);

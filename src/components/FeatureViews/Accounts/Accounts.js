@@ -28,8 +28,8 @@ import Avatar from "@material-ui/core/Avatar";
 import ProfileCard from "./ProfileCard";
 import {GET} from "../../../actions/actionTypes";
 import {REQUEST_ALL} from "../../../actions/apiActions";
-import Loading from "../../Loading";
 import {Tooltip} from "@material-ui/core";
+import Loading from "../../Loading";
 
 const styles = theme => ({
     root: {
@@ -262,15 +262,11 @@ class Accounts extends Component {
         );
         this.resize();
 
-        if((this.props.requestStatus.instructor[GET][REQUEST_ALL] !== 200 ||
+        const isLoading = (this.props.requestStatus.instructor[GET][REQUEST_ALL] !== 200 ||
             this.props.requestStatus.student[GET][REQUEST_ALL] !== 200 ||
-            this.props.requestStatus.parent[GET][REQUEST_ALL] !== 200)
-        ){
-            return (<Loading/>)
-        }
+            this.props.requestStatus.parent[GET][REQUEST_ALL] !== 200);
 
         return (
-
             <Grid
                 className="Accounts"
                 item
@@ -346,11 +342,13 @@ class Accounts extends Component {
                     </Grid>
                     <Grid
                         alignItems="center"
+                        justify="center"
                         className="accounts-list-wrapper"
                         container
                         direction="row"
                         spacing={8}>
                         {
+                            isLoading ? <Loading/> :
                             this.state.mobileView
                                 ? cardView()
                                 : this.state.viewToggle

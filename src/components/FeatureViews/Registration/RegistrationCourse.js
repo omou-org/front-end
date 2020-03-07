@@ -88,7 +88,7 @@ const RegistrationCourse = () => {
     // either doesn't exist or only has notes defined
     if (!course || Object.keys(course).length <= 1) {
         if (hooks.isLoading(courseStatus)) {
-            return <Loading />;
+            return <Loading paper />;
         }
 
         if (hooks.isFail(courseStatus)) {

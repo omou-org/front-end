@@ -75,10 +75,7 @@ const RegistrationLanding = () => {
             [filterType]: filters || [],
         }));
     }, []);
-
-    if (hooks.isLoading(courseStatus) && Object.entries(courses).length === 0) {
-        return <Loading />;
-    }
+    const isLoading = hooks.isLoading(courseStatus) && Object.entries(courses).length === 0;
 
     if (hooks.isFail(courseStatus) && Object.entries(courses).length) {
         return "Unable to load courses!";
@@ -216,12 +213,11 @@ const RegistrationLanding = () => {
             </Grid>
             <div className="registration-table">
                 {
-                    view === 0 &&
-                        <CourseList filteredCourses={filteredCourses} />
-                }
-                {
-                    view === 1 &&
+                    isLoading ? <Loading/> :
+                        view === 0 ?
+                        <CourseList filteredCourses={filteredCourses} /> :
                         <TutoringList />
+
                 }
             </div>
         </Paper>

@@ -102,7 +102,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
 
     if (loadedStudents.length === 0) {
         if (hooks.isLoading(studentStatus)) {
-            return <Loading />;
+            return <Loading small />;
         }
         if (hooks.isFail(studentStatus)) {
             return "Error loading enrollment details!";
@@ -158,9 +158,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                             const parent = parents[student.parent_id];
                             const enrollment =
                                 enrollments[studentID] && enrollments[studentID][courseID];
-                            const paymentStatus = enrollment &&
-                                Object.values(enrollment.session_payment_status)
-                                    .every((status) => status !== 0);
+                            const paymentStatus = true;
                             const notes = (enrollment && enrollment.notes) || {};
                             return (
                                 <Fragment key={studentID}>

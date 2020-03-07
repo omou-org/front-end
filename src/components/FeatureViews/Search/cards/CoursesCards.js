@@ -29,7 +29,7 @@ function CourseCards({course, isLoading}) {
         history.push(`/registration/course/${courseID}/${course.subject}`)
     };
 
-    if(Object.keys(instructors).length === 0 || isLoading){
+    if(Object.keys(instructors).length === 0 || !instructors[course.instructor] || isLoading){
         return <Grid item xs={3}>
             <Card style={{ height: "148px" }}>
                 <CardContent>
