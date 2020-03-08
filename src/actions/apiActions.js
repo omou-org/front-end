@@ -195,13 +195,14 @@ export const formatCourse = (formCourse, type) => {
                 return "saturday";
         }
     };
+
     let startDate = new Date(formCourse["Start Date"]);
     const day = dayOfWeek();
     let endDate = new Date(startDate);
     // 7 days * (number of sessions - 1) = because you can't count the first one
-    const numberOfSessions = formCourse["Number of Weekly Sessions"] - 1;
+    const numberOfSessions = formCourse["# of Weekly Sessions"];
 
-    endDate = new Date(endDate.setDate(startDate.getDate() + 7 * numberOfSessions));
+    endDate = new Date(endDate.setDate(startDate.getDate() + 7 * (numberOfSessions - 1)));
 
 
     startDate = startDate.toLocaleString("sv-SE", dateFormat);
@@ -235,6 +236,7 @@ export const formatCourse = (formCourse, type) => {
         "max_capacity": formCourse.Capacity,
         "course_category": formCourse.Category.value,
         "academic_level": academicLevelParse[formCourse["Grade Level"]],
+        "sessions": numberOfSessions,
         "is_confirmed": formCourse["Did instructor confirm?"] === "Yes, Instructor Confirm",
     };
 };

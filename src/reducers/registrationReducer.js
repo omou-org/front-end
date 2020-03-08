@@ -1,6 +1,6 @@
 import initialState from './initialState';
 import * as actions from "./../actions/actionTypes"
-import {dateParser} from "../components/Form/FormUtils";
+import {dateParser, weeklySessionsParser} from "../components/Form/FormUtils";
 
 export default function registration(state = initialState.RegistrationForms, { payload, type }) {
     let newState = JSON.parse(JSON.stringify(state));
@@ -369,7 +369,7 @@ const addSmallGroupRegistration = (prevState, {formMain, new_course}) => {
         student_id: studentID,
         course_id: new_course.id,
         enrollment_note: "",
-        sessions: new_course.max_capacity,
+        sessions: weeklySessionsParser(new_course.start_date,new_course.end_date),
         display: {
             student_name: studentName,
             course_name: new_course.subject,

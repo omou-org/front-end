@@ -262,6 +262,7 @@ const RegistrationCart = () => {
                                     const {checked, sessions, validated} = selectedCourses[student_id][course_id];
                                     let endDate = new Date(course.schedule.end_date),
                                         startDate = new Date(course.schedule.start_date);
+
                                     startDate = startDate.toLocaleDateString("en-US", dateOptions);
                                     endDate = endDate.toLocaleDateString("en-US", dateOptions);
 

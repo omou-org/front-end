@@ -103,12 +103,30 @@ export const truncateStrings = (string, length) => string.length > length
     ? `${string.slice(0, length - 3).trim()}...`
     : string;
 
-export const startAndEndDate = (start, end) => {
+const isoStringToUTCDate = (dateString) => {
+    let newDate = new Date("2020-01-01");
+    console.log(Number(dateString.substring(5,7)));
+    newDate.setFullYear(Number(dateString.substring(0,4)));
+    newDate.setMonth(Number(dateString.substring(5,7)));
+    newDate.setDate(Number(dateString.substring(8,10)));
 
-    let startDate = start.toString().substr(3, 13);
-    let getEndDate = end.getDate();
-    let setDate = end.setDate(getEndDate - 1);
-    let endDate = new Date(setDate).toString().substr(3, 13);
+    let newDateObject = new Date(dateString);
+    return newDateObject;
+};
+
+export const startAndEndDate = (start, end, pacific) => {
+    let startDate, getEndDate, setDate, endDate;
+
+    if(!pacific){
+        startDate = start.toString().substr(3, 13);
+        getEndDate = end.getDate();
+        setDate = end.setDate(getEndDate - 1);
+        endDate = new Date(setDate).toString().substr(3, 13);
+    } else {
+        startDate = start.toISOString().substring(0,start.toISOString().indexOf("T"));
+        endDate = end.toISOString().substring(0,end.toISOString().indexOf("T"));
+        console.log(isoStringToUTCDate(startDate));
+    }
 
     return `${startDate} - ${endDate}`
 };
