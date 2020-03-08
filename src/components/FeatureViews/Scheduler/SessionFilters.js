@@ -5,7 +5,8 @@ import Menu from "@material-ui/core/es/Menu";
 import {withStyles} from '@material-ui/core/styles';
 import blue from "@material-ui/core/es/colors/blue";
 import ReactSelect from "react-select";
-import {MenuItem, Tooltip} from "@material-ui/core";
+import MenuItem from "@material-ui/core/es/MenuItem";
+import Tooltip from "@material-ui/core/es/Tooltip";
 
 const styles = theme => ({
     colorSwitchBase: {

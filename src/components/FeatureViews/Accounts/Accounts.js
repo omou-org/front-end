@@ -1,9 +1,8 @@
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
 import * as userActions from "../../../actions/userActions";
-import React, { Component } from "react";
+import React, {Component} from "react";
 import BackButton from "../../BackButton";
-import Truncate from 'react-truncate';
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
@@ -17,11 +16,11 @@ import TableCell from "@material-ui/core/TableCell";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import Button from "@material-ui/core/Button";
-import { NavLink, withRouter } from "react-router-dom";
+import {NavLink, withRouter} from "react-router-dom";
 import EditIcon from "@material-ui/icons/EditOutlined";
-import { addDashes, stringToColor } from "./accountUtils";
+import {addDashes, stringToColor} from "./accountUtils";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 
 import "./Accounts.scss";
 import Avatar from "@material-ui/core/Avatar";
@@ -29,7 +28,9 @@ import ProfileCard from "./ProfileCard";
 import {GET} from "../../../actions/actionTypes";
 import {REQUEST_ALL} from "../../../actions/apiActions";
 import Loading from "../../Loading";
-import { Tooltip } from "@material-ui/core";
+import {isLoading} from "../../../actions/hooks"
+import {Tooltip} from "@material-ui/core";
+import IconButton from "@material-ui/core/IconButton";
 
 const styles = theme => ({
     root: {
@@ -40,7 +41,7 @@ const styles = theme => ({
 
 const tabStyle = {
     minWidth: 130
-}
+};
 
 class Accounts extends Component {
     constructor(props) {
@@ -144,7 +145,7 @@ class Accounts extends Component {
                 sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
             }
         );
-    }
+    };
 
     render() {
         const userList = this.getUsers();
@@ -152,7 +153,7 @@ class Accounts extends Component {
             avatar: {
                 "backgroundColor": stringToColor(username),
                 "color": "white",
-                "margin": 9,
+                "marginRight": 9,
                 "width": 38,
                 "height": 38,
                 "fontSize": 14,
@@ -171,7 +172,6 @@ class Accounts extends Component {
                 <TableHead>
                     <TableRow>
                         <TableCell >Name</TableCell>
-                        <TableCell >ID</TableCell>
                         <TableCell >Email</TableCell>
                         <TableCell >Phone</TableCell>
                         <TableCell >Role</TableCell>
@@ -187,8 +187,7 @@ class Accounts extends Component {
                                 event.preventDefault();
                                 this.goToRoute(`/accounts/${row.role}/${row.user_id}`);
                             }}>
-                            <TableCell
-                                style={{ width: 200 }}>
+                            <TableCell>
                                 <Grid
                                     alignItems="center"
                                     container
@@ -200,26 +199,19 @@ class Accounts extends Component {
 
                                 </Grid>
                             </TableCell>
-                            <TableCell style={{ width: 100 }}>
-                                {row.user_id}
-                            </TableCell>
-                            <TableCell
-                                style={{ width: 200 }}>
+                            <TableCell>
                                 <Tooltip title={row.email}>
                                     <span>
                                         {row.email.substr(0, 20)}
                                     </span>
                                 </Tooltip>
                             </TableCell>
-                            <TableCell
-                                style={{ width: 100 }}>{addDashes(row.phone_number)}
+                            <TableCell>{addDashes(row.phone_number)}
                             </TableCell>
-                            <TableCell
-                                style={{ width: 150 }}>
+                            <TableCell>
                                 {row.role.charAt(0).toUpperCase() + row.role.slice(1)}
                             </TableCell>
                             <TableCell
-                                style={{ width: 100 }}
                                 onClick={(event) => {
                                     event.stopPropagation();
                                 }}>
@@ -228,13 +220,12 @@ class Accounts extends Component {
                                     mdDown>
                                     {
                                         (row.role === "student" || row.role === "parent" || this.props.isAdmin) &&
-                                        <Button
-                                            className="editButton"
+                                        <IconButton
+                                            // className="editButton"
                                             component={NavLink}
                                             to={`/registration/form/${row.role}/${row.user_id}/edit`}>
                                             <EditIcon />
-                                            Edit Profile
-                                        </Button>
+                                        </IconButton>
                                     }
                                 </Grid>
                                 <Grid
@@ -274,9 +265,9 @@ class Accounts extends Component {
         );
         this.resize();
 
-        const isLoading = (this.props.requestStatus.instructor[GET][REQUEST_ALL] !== 200 ||
-            this.props.requestStatus.student[GET][REQUEST_ALL] !== 200 ||
-            this.props.requestStatus.parent[GET][REQUEST_ALL] !== 200);
+        const loading = isLoading(this.props.requestStatus.instructor[GET][REQUEST_ALL],
+            this.props.requestStatus.student[GET][REQUEST_ALL],
+            this.props.requestStatus.parent[GET][REQUEST_ALL]);
 
         return (
             <Grid
@@ -375,7 +366,7 @@ class Accounts extends Component {
                         direction="row"
                         spacing={8}>
                         {
-                            isLoading ? <Loading/> :
+                            loading ? <Loading/> :
                             this.state.mobileView
                                 ? cardView()
                                 : this.state.viewToggle

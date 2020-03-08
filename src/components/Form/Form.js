@@ -1426,9 +1426,7 @@ class Form extends Component {
 
     render() {
         if(this.props.currentParent){
-            const studentsLoaded = this.props.currentParent.student_list.every((student)=>{
-                return this.props.requestStatus.student[GET][student] === 200;
-            });
+            const studentsLoaded = this.props.currentParent.student_list.every((student)=>(this.props.requestStatus.student[GET][student] === 200));
             if(!studentsLoaded){
                 return <Loading paper/>
             }

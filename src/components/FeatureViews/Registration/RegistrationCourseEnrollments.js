@@ -34,6 +34,7 @@ import Dialog from "@material-ui/core/Dialog";
 import {NoListAlert} from "../../NoListAlert";
 import {sessionArray} from "../Scheduler/SchedulerUtils";
 import {SessionPaymentStatusChip} from "../../SessionPaymentStatusChip";
+import {useSessionsInPeriod} from "../../../actions/hooks";
 
 const TableToolbar = (
     <TableHead>
@@ -98,17 +99,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
             }), {}));
     }, [course.roster]);
 
-    useEffect(()=>{
-        api.fetchAllSessions({
-            "config": {
-                "params": {
-                    "time_frame": "month",
-                    "time_shift": 0,
-                },
-            },
-            "id": "",
-        });
-    },[api]);
+    const sessionStatus = useSessionsInPeriod("month",0);
 
     const loadedStudents = useMemo(() =>
         course.roster.filter((studentID) => students[studentID])
@@ -121,7 +112,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
         return <NoListAlert list={"Enrolled Students"}/>;
     }
 
-    if (loadedStudents.length === 0 || !currentMonthSessions) {
+    if (loadedStudents.length === 0 || !currentMonthSessions || hooks.isLoading(sessionStatus)) {
         if (hooks.isLoading(studentStatus) || !currentMonthSessions) {
             return <Loading small />;
         }
@@ -132,7 +123,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
 
     const today = new Date();
     const upcomingSession = currentMonthSessions
-        .filter((session) => ((Number(session.course) == Number(courseID)) &&
+        .filter((session) => ((session.course == courseID) &&
             new Date(session.start_datetime) >= today))
         .sort((sessionA, sessionB) => (sessionA - sessionB))[0];
 

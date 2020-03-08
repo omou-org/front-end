@@ -47,7 +47,7 @@ const SearchResultsLoader = ({SearchResults,SearchQuery, accountPage, coursePage
                                                          key={account}
                                                          sm={3}>
                                                        <AccountsCards
-                                                           isLoading={true}
+                                                           isLoading
                                                            key={account} />
                                                    </Grid>
                                                ))
@@ -90,7 +90,7 @@ const SearchResultsLoader = ({SearchResults,SearchQuery, accountPage, coursePage
                             <Grid container spacing={8} direction={"row"}>
                                 {[1,2,3,4].map((course) => (
                                             <CoursesCards
-                                                isLoading={true}
+                                                isLoading
                                                 key={course} />)
                                     )}
                             </Grid>
