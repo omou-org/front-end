@@ -58,6 +58,15 @@
       border: solid 2px $secondaryColor !important;
       white-space: nowrap;
     }
+
+    .accountsCell{
+      width:220px;
+      overflow-wrap: break-word;
+    }
+    .accountsCellID{
+      width:100px;
+      overflow-wrap: break-word;
+    }
   }
 }
 
