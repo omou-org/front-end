@@ -1,7 +1,8 @@
 import * as hooks from "actions/hooks";
-import React, {useCallback, useMemo, useState} from "react";
+import { distinctObjectArray, gradeOptions } from "../../../utils";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 // react/redux imports
-import {useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import BackButton from "components/BackButton";
 import Grid from "@material-ui/core/Grid";
@@ -16,19 +17,31 @@ import Loading from "../../Loading";
 import CourseList from "./CourseList";
 import TutoringList from "./TutoringList";
 import RegistrationActions from "./RegistrationActions";
+import * as adminActions from "../../../actions/adminActions";
+import { bindActionCreators } from "redux";
+
 
 const NUM_GRADES = 13;
 
-const gradeOptions = Array(NUM_GRADES).map((_, gradeNum) => ({
-    "label": `${gradeNum + 1}`,
-    "value": gradeNum + 1,
-}));
-
 const RegistrationLanding = () => {
-    const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
-    const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
+    const courses = useSelector(({ "Course": { NewCourseList } }) => NewCourseList);
+    const instructors = useSelector(({ "Users": { InstructorList } }) => InstructorList);
+    const categories = useSelector(({ "Course": { CourseCategories } }) => CourseCategories)
+
     const courseStatus = hooks.useCourse();
-    hooks.useInstructor();
+    hooks.useInstructor()
+
+    const dispatch = useDispatch();
+    const api = useMemo(
+        () => ({
+            ...bindActionCreators(adminActions, dispatch),
+        }),
+        [dispatch]
+    );
+
+    useEffect(() => {
+        api.fetchCategories();
+    }, [api]);
 
     const [view, setView] = useState(0);
     const [courseFilters, setCourseFilters] = useState({
@@ -42,26 +55,32 @@ const RegistrationLanding = () => {
     }, []);
 
     const instructorOptions = useMemo(() => Object.values(instructors)
-        .map(({name, user_id}) => ({
+        .map(({ name, user_id }) => ({
             "label": name,
             "value": user_id,
         })), [instructors]);
+
+    const subjectOptions = useMemo(() => distinctObjectArray(Object.values(courses)
+        .map(({ course_id, category }) => ({
+            "label": categories.find(Category => Number(Category.id) === Number(category)).name,
+            "value": category,
+        }))), [courses])
 
     const filteredCourses = useMemo(
         () => Object.entries(courseFilters)
             .filter(([, filters]) => filters.length > 0)
             .reduce((courseList, [filterName, filters]) => {
-                const mappedValues = filters.map(({value}) => value);
+                const mappedValues = filters.map(({ value }) => value);
                 switch (filterName) {
                     case "instructor":
-                        return courseList.filter(({instructor_id}) =>
+                        return courseList.filter(({ instructor_id }) =>
                             mappedValues.includes(instructor_id));
                     case "subject":
-                        return courseList.filter(({subject}) =>
-                            mappedValues.includes(subject));
+                        return courseList.filter(({ category }) =>
+                            mappedValues.includes(category));
                     case "grade":
-                        return courseList.filter(({grade}) =>
-                            mappedValues.includes(grade));
+                        return courseList.filter(({ academic_level }) =>
+                            mappedValues.includes(academic_level));
                     default:
                         return courseList;
                 }
@@ -91,16 +110,7 @@ const RegistrationLanding = () => {
                 options = instructorOptions;
                 break;
             case "subject":
-                options = [
-                    {
-                        "label": "Math",
-                        "value": "Math",
-                    },
-                    {
-                        "label": "Science",
-                        "value": "Science",
-                    },
-                ];
+                options = subjectOptions;
                 break;
             case "grade":
                 options = gradeOptions;
@@ -113,14 +123,14 @@ const RegistrationLanding = () => {
             const {
                 children = <CustomClearText />,
                 getStyles,
-                "innerProps": {ref, ...restInnerProps},
+                "innerProps": { ref, ...restInnerProps },
             } = indicatorProps;
             return (
                 <div
                     {...restInnerProps}
                     ref={ref}
                     style={getStyles("clearIndicator", indicatorProps)}>
-                    <div style={{"padding": "0px 5px"}}>{children}</div>
+                    <div style={{ "padding": "0px 5px" }}>{children}</div>
                 </div>
             );
         };
@@ -142,7 +152,7 @@ const RegistrationLanding = () => {
             <SearchSelect
                 className="filter-options"
                 closeMenuOnSelect={false}
-                components={{ClearIndicator}}
+                components={{ ClearIndicator }}
                 isMulti
                 onChange={handleFilterChange(filterType)}
                 options={options}
@@ -156,7 +166,7 @@ const RegistrationLanding = () => {
         <Paper className="RegistrationLanding paper">
             <BackButton />
             <hr />
-            <RegistrationActions/>
+            <RegistrationActions />
             <Grid
                 container
                 layout="row">
@@ -176,7 +186,7 @@ const RegistrationLanding = () => {
                     item
                     md={4}
                     xs={12}
-                    >
+                >
                     <Tabs
                         className="catalog-setting"
                         value={view}>
@@ -217,11 +227,11 @@ const RegistrationLanding = () => {
             <div className="registration-table">
                 {
                     view === 0 &&
-                        <CourseList filteredCourses={filteredCourses} />
+                    <CourseList filteredCourses={filteredCourses} />
                 }
                 {
                     view === 1 &&
-                        <TutoringList />
+                    <TutoringList />
                 }
             </div>
         </Paper>
