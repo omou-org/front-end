@@ -1275,7 +1275,8 @@ class Form extends Component {
                                             this.handleNext();
                                         }}
                                         className="button primary">
-                                        {activeStep === steps.length - 1 ? this.props.submitPending ? "Submitting" : "Submit" : "Next"}
+                                        {activeStep === steps.length - 1 ? this.props.submitPending ? "Submitting" :
+                                            ["course","tutoring"].includes(this.state.form) ? "Add to Cart" : "Submit" : "Next"}
                                     </Button>
                                 </div>
                             </StepContent>

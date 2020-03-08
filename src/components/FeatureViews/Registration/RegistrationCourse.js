@@ -30,6 +30,7 @@ import Loading from "../../Loading";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel"
 import {courseDateFormat, DayConverter} from "../../../utils";
+import {weeklySessionsParser} from "../../Form/FormUtils";
 
 const formatDate = (date) => {
     if (!date) {
@@ -158,7 +159,7 @@ const RegistrationCourse = () => {
                                 "marginLeft": "5px",
                                 "marginTop": "10px",
                             }}>
-                            {start_date} - {end_date}
+                            {start_date} - {end_date} ({weeklySessionsParser(start_date, end_date)} sessions)
                         </Typography>
                     </div>
                     <div className="info-section">

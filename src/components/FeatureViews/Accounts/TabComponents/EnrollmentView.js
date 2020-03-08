@@ -138,7 +138,7 @@ const CourseSessionStatus = () => {
                 "endTime": endDate.toLocaleTimeString("en-US", timeOptions),
                 "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
                 status,
-                "tuition": course && courses[course].tuition,
+                "tuition": course && courses[course].hourly_tuition,
                 "id": id,
                 "instructor": instructor,
                 "course_id": course
@@ -204,12 +204,10 @@ const CourseSessionStatus = () => {
                             <Grid
                                 className="accounts-table-heading"
                                 container>
+                                <Grid item xs={1}/>
                                 <Grid
                                     item
-                                    xs={1} />
-                                <Grid
-                                    item
-                                    xs={3}>
+                                    xs={2}>
                                     <Typography
                                         align="left"
                                         className="table-text">
@@ -217,15 +215,20 @@ const CourseSessionStatus = () => {
                                     </Typography>
                                 </Grid>
                                 {
-                                    ["Day", "Time", "Tuition", "Status"].map((header) => (
+                                    [
+                                        {title:"Day", cols:2, align: "left"},
+                                        {title:"Time", cols:3, align:"left"},
+                                        {title:"Tuition",cols:1, align:"left"},
+                                        {title:"Status", cols:2, align:"center"}
+                                    ].map((header) => (
                                         <Grid
                                             item
-                                            key={header}
-                                            xs={2}>
+                                            key={header.title}
+                                            xs={header.cols}>
                                             <Typography
-                                                align="left"
+                                                align={header.align}
                                                 className="table-text">
-                                                {header}
+                                                {header.title}
                                             </Typography>
                                         </Grid>
                                     ))
@@ -251,12 +254,10 @@ const CourseSessionStatus = () => {
                                         >
                                             <Paper square className="session-info">
                                                 <Grid container>
+                                                    <Grid item xs={1}/>
                                                     <Grid
                                                         item
-                                                        xs={1} />
-                                                    <Grid
-                                                        item
-                                                        xs={3}>
+                                                        xs={2}>
                                                         <Typography align="left">
                                                             {date}
 
@@ -271,14 +272,14 @@ const CourseSessionStatus = () => {
                                                     </Grid>
                                                     <Grid
                                                         item
-                                                        xs={2}>
+                                                        xs={3}>
                                                         <Typography align="left">
                                                             {startTime} - {endTime}
                                                         </Typography>
                                                     </Grid>
                                                     <Grid
                                                         item
-                                                        xs={2}>
+                                                        xs={1}>
                                                         <Typography align="left">
                                                             ${tuition}
                                                         </Typography>
