@@ -5,14 +5,14 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import ReactSelect from 'react-select';
 import AccountsCards from "../Search/cards/AccountsCards";
-import { bindActionCreators } from "redux";
+import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import * as searchActions from "../../../actions/searchActions";
 import * as userActions from "../../../actions/userActions";
-import { connect } from "react-redux";
+import {connect} from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
-import { DialogActions, DialogContent } from "@material-ui/core";
+import {DialogActions, DialogContent} from "@material-ui/core";
 
 class SelectParentDialog extends React.Component {
     constructor(props) {
@@ -107,7 +107,7 @@ class SelectParentDialog extends React.Component {
         )
     };
 
-    handleSetParentButton = () => (e) => {
+    handleSetParentButton = (e) => {
         e.preventDefault();
         this.handleClose();
     };
@@ -205,7 +205,7 @@ class SelectParentDialog extends React.Component {
                                 </span>
                             </> :
                             <Button
-                                onClick={this.handleSetParentButton()}>
+                                onClick={this.handleSetParentButton}>
                                 Set Parent
                             </Button>
                     }
