@@ -166,7 +166,7 @@ const RegistrationCart = () => {
                 updated[studentID][courseID] = {
                     ...updated[studentID][courseID],
                     "validated": Number.isInteger(value) &&
-                        (0 <= value && value <= (numSessions - paidSessions)),
+                        (0 <= value && value <= (numSessions - paidSessions + 1)),
                 };
             }
             return updated;
