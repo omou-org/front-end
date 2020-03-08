@@ -880,6 +880,7 @@ class Form extends Component {
                     <div style={{ width: "inherit" }}>
                         <Grid container className={"student-align"} spacing={2000}>
                             <SearchSelect
+                                placeholder="Select existing group..."
                                 disabled={disabled}
                                 value={this.state[label][fieldTitle]}
                                 onChange={(value) => {
@@ -939,7 +940,7 @@ class Form extends Component {
                                 onChange={(value) => {
                                     this.onSelectChange(value, label, field);
                                 }}
-                                placeholder={"Choose a Student"}
+                                placeholder={"Select a Student..."}
                                 options={studentList}
                                 className="search-options" />
                             {
@@ -973,6 +974,7 @@ class Form extends Component {
                             <AsyncSelect
                                 cacheOptions
                                 className="search-options"
+                                placeholder={"Select an instructor..."}
                                 defaultOptions={instructorList}
                                 loadOptions={this.searchInstructors}
                                 onChange={(value) => {
@@ -1442,15 +1444,7 @@ class Form extends Component {
                     <Paper className={"registration-form paper"}>
                         {
                             !this.props.location.pathname.includes("adminportal") &&
-                            <BackButton
-                                warn={true}
-                                onBack={this.onBack}
-                                alertMessage={"Do you want to save your changes?"}
-                                alertConfirmText={"Yes, save changes"}
-                                confirmAction={"saveForm"}
-                                alertDenyText={"No, don't save changes"}
-                                denyAction={"default"}
-                            />
+                            <BackButton onBack={this.onBack}/>
                         }
                         <Typography className="heading" align="left">
                             {this.renderTitle(this.props.match.params.id, this.props.match.params.type)}
