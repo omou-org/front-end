@@ -153,10 +153,10 @@ function EditSessionView({ course, session, editSelection }) {
                 const patchedSession = {
                     start_datetime: start_time.toISOString(),
                     end_datetime: end_time.toISOString(),
-                    is_confirmed: is_confirmed,
+                    is_confirmed,
                     instructor: instructor.value,
-                    duration: duration,
-                    title: title,
+                    duration,
+                    title,
                 };
                 api.patchSession(session.id, patchedSession);
                 break;
@@ -168,7 +168,7 @@ function EditSessionView({ course, session, editSelection }) {
                     start_time: start_time.toLocaleString("eng-US", timeFormat),
                     end_time: end_time.toLocaleString("eng-US", timeFormat),
                     instructor: instructor.value,
-                    is_confirmed: is_confirmed,
+                    is_confirmed,
                     start_date: start_time.toLocaleString("sv-SE", dateFormat),
                     end_date: course.schedule.end_date.toLocaleString("sv-SE", dateFormat),
                 };

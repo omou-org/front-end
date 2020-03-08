@@ -8,8 +8,7 @@ export const SessionPaymentStatusChip = ({session, enrollment, setPos, style}) =
             className={`sessions-left-chip NA ${setPos && "set-pos"}`}>
             Loading...
         </div>
-    }
-    if(session && enrollment){
+    } else if(session && enrollment){
         const status = sessionPaymentStatus(session, enrollment);
 
         return <div

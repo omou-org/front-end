@@ -51,7 +51,7 @@ function SessionFilters({ onInstructorSelect, InstructorValue, InstructorOptions
             className={"session-filter"}
             onClose={handleClick}
         >
-            <MenuItem selected={true}> Select Filter</MenuItem>
+            <MenuItem selected> Select Filter</MenuItem>
             <ReactSelect
                 className={"instructor-session-filter"}
                 placeholder={"Filter Instructor..."}

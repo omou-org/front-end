@@ -42,9 +42,7 @@ const SearchResultsLoader = ({SearchResults,SearchQuery, accountPage, coursePage
                             </Grid>
                             <Grid container spacing={16} direction={"row"}>
                                 {
-                                    [1,2,3,4].map((account) => {
-                                                // console.log(account)
-                                               return (
+                                    [1,2,3,4].map((account) =>  (
                                                    <Grid item
                                                          key={account}
                                                          sm={3}>
@@ -52,8 +50,7 @@ const SearchResultsLoader = ({SearchResults,SearchQuery, accountPage, coursePage
                                                            isLoading={true}
                                                            key={account} />
                                                    </Grid>
-                                               )
-                                            })
+                                               ))
                                 }
                             </Grid>
                             <div className={"results-nav"}>
@@ -91,12 +88,10 @@ const SearchResultsLoader = ({SearchResults,SearchQuery, accountPage, coursePage
                                 </Grid>
                             </Grid>
                             <Grid container spacing={8} direction={"row"}>
-                                {[1,2,3,4].map((course) => {
-                                        return (
+                                {[1,2,3,4].map((course) => (
                                             <CoursesCards
                                                 isLoading={true}
-                                                key={course} />
-                                        )}
+                                                key={course} />)
                                     )}
                             </Grid>
                         </Grid>

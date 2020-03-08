@@ -933,7 +933,7 @@ class Form extends Component {
 
                 return (
                     <div style={{ width: "inherit" }}>
-                        <Grid container className={"student-align"} spacing={2000}>
+                        <Grid container className={"student-align"}>
                             <SearchSelect
                                 disabled={disabled}
                                 value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}

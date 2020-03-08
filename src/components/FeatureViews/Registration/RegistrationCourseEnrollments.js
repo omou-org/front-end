@@ -132,13 +132,9 @@ const RegistrationCourseEnrollments = ({courseID}) => {
 
     const today = new Date();
     const upcomingSession = currentMonthSessions
-        .filter((session) => ((Number(session.course) === Number(courseID)) &&
+        .filter((session) => ((Number(session.course) == Number(courseID)) &&
             new Date(session.start_datetime) >= today))
-        .sort((sessionA, sessionB) => {
-            const distanceA = Math.abs(today - sessionA);
-            const distanceB = Math.abs(today - sessionB);
-            return distanceA - distanceB;
-        })[0];
+        .sort((sessionA, sessionB) => (sessionA - sessionB))[0];
 
     const handleClick = event => {
         setStudentMenuAnchorEl(event.currentTarget);
