@@ -440,11 +440,10 @@ const dateToTimeString = (date) => `${date.getHours().toString()}:${date.getMinu
 const initializeRegistration = (prevState) => {
     const prevRegisteredCourses = JSON.parse(sessionStorage.getItem("registered_courses"));
     const prevParent = JSON.parse(sessionStorage.getItem("CurrentParent"));
-    if (prevRegisteredCourses && prevParent) {
-        prevState.registered_courses = prevRegisteredCourses;
-        prevState.CurrentParent = prevParent;
-    }
-    return {...prevState};
+    prevState.registered_courses = prevRegisteredCourses;
+    prevState.CurrentParent = prevParent;
+
+    return JSON.parse(JSON.stringify(prevState));
 };
 
 const editCourseRegistration = (prevState, course) => {

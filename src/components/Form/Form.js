@@ -50,6 +50,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import {DatePicker, TimePicker} from "material-ui-pickers";
 import * as utils from "./FormUtils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
+import {GET} from "../../actions/actionTypes";
 
 const parseGender = {
     "M": "Male",
@@ -188,6 +189,7 @@ class Form extends Component {
             formType !== prevState.form ||
             prevState["submitPending"] ||
             (id && this.props.match.params.edit !== "edit")) {
+
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
                     const formContents = JSON.parse(
@@ -260,9 +262,14 @@ class Form extends Component {
         if (!this.props.isAdmin && (formType === "instructor" || formType === "course_details")) {
             this.props.history.replace("/PageNotFound");
         }
-        // this.props.userActions.fetchParents();
-        // this.props.userActions.fetchStudents();
-        // this.props.userActions.fetchInstructors();
+
+        if(this.props.currentParent){
+            // load parent's students if parent selected
+            this.props.currentParent.student_list.forEach(student => {
+                this.props.userActions.fetchStudents(student);
+            });
+        }
+
         if (edit === "edit") {
             switch (formType) {
                 case "student": {
@@ -898,18 +905,16 @@ class Form extends Component {
             }
             case "student": {
                 let studentList = [];
-
                 if (this.props.currentParent) {
-                    this.props.parents[this.props.currentParent.user.id] &&
-                        this.props.parents[this.props.currentParent.user.id].student_ids.forEach((studentID) => {
-                            if (this.props.students[studentID]) {
-                                let { user_id, name, email } = this.props.students[studentID];
-                                studentList.push({
-                                    value: user_id,
-                                    label: `${name} - ${email}`,
-                                });
-                            }
-                        });
+                    this.props.currentParent.student_list.forEach((studentID) => {
+                        if (this.props.students[studentID]) {
+                            let { user_id, name, email } = this.props.students[studentID];
+                            studentList.push({
+                                value: user_id,
+                                label: `${name} - ${email}`,
+                            });
+                        }
+                    });
                 } else {
                     studentList = Object.values(this.props.students)
                         .map(({ user_id, name, email }) => ({
@@ -1418,8 +1423,16 @@ class Form extends Component {
     }
 
     render() {
-        if (!this.state.hasLoaded) {
-            return <Loading />;
+        if(this.props.currentParent){
+            const studentsLoaded = this.props.currentParent.student_list.every((student)=>{
+                return this.props.requestStatus.student[GET][student] === 200;
+            });
+            if(!studentsLoaded){
+                return <Loading paper/>
+            }
+        }
+        if (!this.state.hasLoaded || !this.props.students) {
+            return <Loading paper/>;
         }
         return (
             <Grid container className="">

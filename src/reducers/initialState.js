@@ -440,8 +440,8 @@ function initRegistrationForm() {
             field_limit: 1,
         },
         {
-            field: "Number of Weekly Sessions",
-            name: "Number of Weekly Sessions",
+            field: "# of Weekly Sessions",
+            name: "# of Weekly Sessions",
             type: "number",
             conditional: false,
             required: true,
