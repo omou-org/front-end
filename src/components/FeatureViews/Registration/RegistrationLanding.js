@@ -1,5 +1,5 @@
 import * as hooks from "actions/hooks";
-import { distinctObjectArray, gradeOptions } from "../../../utils";
+import { distinctObjectArray, gradeOptions } from "utils";
 import React, { useCallback, useMemo, useState, useEffect } from "react";
 // react/redux imports
 import { useDispatch, useSelector } from "react-redux";
@@ -30,18 +30,8 @@ const RegistrationLanding = () => {
 
     const courseStatus = hooks.useCourse();
     hooks.useInstructor()
+    hooks.useCategory();
 
-    const dispatch = useDispatch();
-    const api = useMemo(
-        () => ({
-            ...bindActionCreators(adminActions, dispatch),
-        }),
-        [dispatch]
-    );
-
-    useEffect(() => {
-        api.fetchCategories();
-    }, [api]);
 
     const [view, setView] = useState(0);
     const [courseFilters, setCourseFilters] = useState({
@@ -61,7 +51,7 @@ const RegistrationLanding = () => {
         })), [instructors]);
 
     const subjectOptions = useMemo(() => distinctObjectArray(Object.values(courses)
-        .map(({ course_id, category }) => ({
+        .map(({ category }) => ({
             "label": categories.find(Category => Number(Category.id) === Number(category)).name,
             "value": category,
         }))), [courses])
