@@ -143,7 +143,8 @@ const RegistrationCart = () => {
                     "schedule": {
                         ...it.new_course.schedule,
                         // calculates appropriate date and formats it
-                        "end_date": dateParser(new Date(it.new_course.schedule.start_date).getTime() + 7 * 24 * 60 * 60 * 1000 * finalVal + 24 * 60 * 60 * 1000).slice(0, 10),
+                        "end_date": dateParser(new Date(it.new_course.schedule.start_date)
+                            .getTime() + 7 * 24 * 60 * 60 * 1000 * finalVal + 24 * 60 * 60 * 1000).slice(0, 10),
                     },
                 };
             }

@@ -745,7 +745,7 @@ class Form extends Component {
                     prevState["Group Details"]["Category"] = category;
                     prevState["Group Details"]["Grade Level"] = academicLevel;
                     prevState["Group Details"]["Duration"] = sessionDuration;
-                    prevState["Group Details"]["Number of Weekly Sessions"] = numSessions;
+                    prevState["Group Details"]["# of Weekly Sessions"] = numSessions;
                 }
             }
             return {
@@ -778,18 +778,20 @@ class Form extends Component {
                 />;
             case "select":
                 let startTime = this.state[label]["Start Time"];
-                let endTime = this.state[label]["End Time"];
-                let parsedDuration = utils.durationParser({ start: startTime, end: endTime }, fieldTitle, true);
-                let value, options;
-                if (parsedDuration && this.state[label][fieldTitle]) {
-                    if (parsedDuration.duration) {
-                        value = parsedDuration.duration;
-                        options = parsedDuration.options;
-                    }
-                } else {
-                    value = this.state[label][fieldTitle];
-                    options = field.options;
-                }
+                // let endTime = this.state[label]["End Time"];
+                // let parsedDuration = utils.durationParser({ start: startTime, end: endTime }, fieldTitle, true);
+                // let value, options;
+                // if (parsedDuration && this.state[label][fieldTitle]) {
+                //     if (parsedDuration.duration) {
+                //         value = parsedDuration.duration;
+                //         options = parsedDuration.options;
+                //     }
+                // } else {
+                //     value = this.state[label][fieldTitle];
+                //     options = field.options;
+                // }
+                let value = this.state[label][fieldTitle];
+                let options = field.options;
                 disabled = disabled && fieldTitle !== "Relationship to Student" && fieldTitle !== "Gender";
                 return (
                     <FormControl className="form-control">
@@ -806,7 +808,10 @@ class Form extends Component {
                                 options.map((option) => (
                                     <MenuItem
                                         key={option}
-                                        value={option}>
+                                        value={option}
+                                        selected={option === "1 Hour" && fieldTitle === "Duration" ? true :
+                                            fieldTitle !== "Duration"}
+                                    >
                                         {option}
                                     </MenuItem>
                                 ))

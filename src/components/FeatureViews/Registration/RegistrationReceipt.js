@@ -225,7 +225,7 @@ function RegistrationReceipt(props) {
                 message={"Remember to please close out the parent first!"}
             />
             <Grid container
-                direction={"row"}
+                direction={"column"}
                 spacing={16}
             >
                 <Grid item>
@@ -321,18 +321,71 @@ function RegistrationReceipt(props) {
                 <Grid item xs={12} className={"receipt-details"}>
                     <Grid
                         container
-                        direction="row"
-                        justify="flex-end"
+                        direction="column"
+                        alignItems="flex-end"
                     >
-                        <Grid item xs={2}>
-                            <Typography variant="h6">
-                                Price Adjustment
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={1}>
-                            <Typography variant="subheading">
-                                {paymentReceipt.price_adjustment}
-                            </Typography>
+                        {
+                            paymentReceipt.discount_total >= 0 &&
+                            <Grid style={{width:"100%"}}
+                                item xs={3}>
+                                <Grid container direction="row">
+                                    <Grid item xs={7}>
+                                        <Typography
+                                            align="right"
+                                            variant="p">
+                                            Discount Amount
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={5}>
+                                        <Typography
+                                            align="right"
+                                            variant="subheading">
+                                             - ${paymentReceipt.discount_total}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        }
+                        {
+                            paymentReceipt.price_adjustment > 0 &&
+                            <Grid style={{width:"100%"}}
+                                item xs={3}>
+                                <Grid container direction="row">
+                                    <Grid item xs={7}>
+                                        <Typography
+                                            align="right"
+                                            variant="p">
+                                            Price Adjustment
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={5}>
+                                        <Typography
+                                            align="right"
+                                            variant="subheading">
+                                            {paymentReceipt.price_adjustment}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        }
+                        <Grid style={{width:"100%"}}
+                              item xs={3}>
+                            <Grid container direction="row">
+                                <Grid item xs={7}>
+                                    <Typography
+                                        align="right"
+                                        variant="h6">
+                                        Total
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={5}>
+                                    <Typography
+                                        align="right"
+                                        variant="h6">
+                                        ${paymentReceipt.total}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
