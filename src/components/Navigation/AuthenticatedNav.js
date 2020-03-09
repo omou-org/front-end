@@ -52,7 +52,7 @@ const AuthenticatedNav = ({toggleDrawer}) => {
     return (
         <AppBar
             className="OmouBar"
-            color="default"
+            color="initial"
             position="sticky">
             <Toolbar>
                 {
