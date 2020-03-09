@@ -33,6 +33,7 @@ import {SessionPaymentStatusChip} from "../../SessionPaymentStatusChip";
 import AddSessions from "AddSessions";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+import {capitalizeString} from "../../../utils";
 
 const StyledMenu = withStyles({
     paper: {
@@ -291,7 +292,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                         item
                         xs={6}>
                         <Typography variant="h5">Day(s)</Typography>
-                        <Typography>{dayOfWeek[day]}</Typography>
+                        <Typography>{capitalizeString(dayOfWeek[day])}</Typography>
                         <Typography>
                             {
                                 new Date(session.start_datetime).toLocaleDateString()

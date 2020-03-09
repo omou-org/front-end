@@ -32,7 +32,7 @@ import {NoListAlert} from "../../../NoListAlert";
 import {GET} from "../../../../actions/actionTypes";
 import {SessionPaymentStatusChip} from "../../../SessionPaymentStatusChip";
 import AddSessions from "AddSessions";
-import {DayConverter} from "../../../../utils";
+import {capitalizeString, DayConverter} from "../../../../utils";
 
 const timeOptions = {
     "hour": "2-digit",
@@ -267,7 +267,7 @@ const CourseSessionStatus = () => {
                                                         item
                                                         xs={2}>
                                                         <Typography align="left">
-                                                            {day[0].toUpperCase() + day.slice(1)}
+                                                            {capitalizeString(day)}
                                                         </Typography>
                                                     </Grid>
                                                     <Grid

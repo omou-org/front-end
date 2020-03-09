@@ -158,13 +158,6 @@ class Accounts extends Component {
                 "height": 38,
                 "fontSize": 14,
             },
-            first_tab: {
-                borderRadius: "10px 0 0 10px !important",
-                color: "black",
-            },
-            last_tab: {
-                borderRadius: "10px 0 0 10px",
-            },
         });
 
         const tableView = () => (

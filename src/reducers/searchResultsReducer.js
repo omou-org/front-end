@@ -76,7 +76,6 @@ export default function course(state = initialState.SearchResults, { payload, ty
 const handleAccountSearchResults = (state, payload, status) => {
     let { response } = payload;
     let { data } = response;
-    console.log("account search updating!", data);
     // you can get page and count
     return JSON.parse(JSON.stringify({
         ...state,

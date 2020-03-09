@@ -29,7 +29,7 @@ import {stringToColor} from "components/FeatureViews/Accounts/accountUtils";
 import Loading from "../../Loading";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel"
-import {courseDateFormat, DayConverter} from "../../../utils";
+import {capitalizeString, courseDateFormat, DayConverter} from "../../../utils";
 import {weeklySessionsParser} from "../../Form/FormUtils";
 
 const formatDate = (date) => {
@@ -200,7 +200,7 @@ const RegistrationCourse = () => {
                             <Typography
                                 align="left"
                                 className="text">
-                                {DayConverter[new Date(start_date).getDay()]}
+                                {capitalizeString(DayConverter[new Date(start_date).getDay()])}
                             </Typography>
                             <Typography
                                 align="left"

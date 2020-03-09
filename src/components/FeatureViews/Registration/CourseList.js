@@ -9,7 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
-import {courseDateFormat} from "../../../utils";
+import {capitalizeString, courseDateFormat} from "../../../utils";
 import Grow from "@material-ui/core/Grow";
 
 const CourseList = (props) => {
@@ -85,7 +85,7 @@ const CourseList = (props) => {
                                     item
                                     md={8}
                                     xs={9}>
-                                    {days} {time}
+                                    {capitalizeString(days)} {time}
                                 </Grid>
                             </Grid>
                             <Grid
