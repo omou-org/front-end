@@ -467,7 +467,7 @@ function initRegistrationForm() {
                     {
                         field: "Student First Name",
                         name: "Student First Name",
-                        type: "short text",
+                        type: "name",
                         required: false,
                         full: true,
                         field_limit: 1,
@@ -475,7 +475,7 @@ function initRegistrationForm() {
                     {
                         field: "Student Last Name",
                         name: "Student Last Name",
-                        type: "short text",
+                        type: "name",
                         required: false,
                         full: true,
                         field_limit: 1,
@@ -530,7 +530,7 @@ function initRegistrationForm() {
                     {
                         field: "First Name",
                         name: "First Name",
-                        type: "short text",
+                        type: "name",
                         field_limit: 1,
                         required: true,
                         full: true,
@@ -538,7 +538,7 @@ function initRegistrationForm() {
                     {
                         field: "Last Name",
                         name: "Last Name",
-                        type: "short text",
+                        type: "name",
                         field_limit: 1,
                         required: true,
                         full: true,
@@ -654,7 +654,7 @@ function initRegistrationForm() {
                     //     full: false,
                     //     field_limit: 1,
                     // },
-                    ]
+                ]
                 ,
                 ...studentInfoSection,
                 "Tutor Selection": [
@@ -801,7 +801,7 @@ function initRegistrationForm() {
                     {
                         field: "First Name",
                         name: "First Name",
-                        type: "short text",
+                        type: "name",
                         conditional: false,
                         required: true,
                         full: true,
@@ -810,7 +810,7 @@ function initRegistrationForm() {
                     {
                         field: "Last Name",
                         name: "Last Name",
-                        type: "short text",
+                        type: "name",
                         conditional: false,
                         required: true,
                         full: true,
@@ -1325,7 +1325,7 @@ function initRegistrationForm() {
                     {
                         field: "Category Name",
                         name: "Category Name",
-                        type: "text",
+                        type: "shor text",
                         conditional: false,
                         required: true,
                         full: true,
@@ -1334,7 +1334,7 @@ function initRegistrationForm() {
                     {
                         field: "Description",
                         name: "Description",
-                        type: "text",
+                        type: "shor text",
                         conditional: false,
                         required: false,
                         full: true,

@@ -1,7 +1,7 @@
 import * as hooks from "actions/hooks";
-import React, {useCallback, useMemo, useState} from "react";
+import React, { useCallback, useMemo, useState } from "react";
 // react/redux imports
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
 import BackButton from "components/BackButton";
 import Grid from "@material-ui/core/Grid";
@@ -25,8 +25,8 @@ const gradeOptions = Array(NUM_GRADES).map((_, gradeNum) => ({
 }));
 
 const RegistrationLanding = () => {
-    const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
-    const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
+    const courses = useSelector(({ "Course": { NewCourseList } }) => NewCourseList);
+    const instructors = useSelector(({ "Users": { InstructorList } }) => InstructorList);
     const courseStatus = hooks.useCourse();
     hooks.useInstructor();
 
@@ -42,7 +42,7 @@ const RegistrationLanding = () => {
     }, []);
 
     const instructorOptions = useMemo(() => Object.values(instructors)
-        .map(({name, user_id}) => ({
+        .map(({ name, user_id }) => ({
             "label": name,
             "value": user_id,
         })), [instructors]);
@@ -51,16 +51,16 @@ const RegistrationLanding = () => {
         () => Object.entries(courseFilters)
             .filter(([, filters]) => filters.length > 0)
             .reduce((courseList, [filterName, filters]) => {
-                const mappedValues = filters.map(({value}) => value);
+                const mappedValues = filters.map(({ value }) => value);
                 switch (filterName) {
                     case "instructor":
-                        return courseList.filter(({instructor_id}) =>
+                        return courseList.filter(({ instructor_id }) =>
                             mappedValues.includes(instructor_id));
                     case "subject":
-                        return courseList.filter(({subject}) =>
+                        return courseList.filter(({ subject }) =>
                             mappedValues.includes(subject));
                     case "grade":
-                        return courseList.filter(({grade}) =>
+                        return courseList.filter(({ grade }) =>
                             mappedValues.includes(grade));
                     default:
                         return courseList;
@@ -113,14 +113,14 @@ const RegistrationLanding = () => {
             const {
                 children = <CustomClearText />,
                 getStyles,
-                "innerProps": {ref, ...restInnerProps},
+                "innerProps": { ref, ...restInnerProps },
             } = indicatorProps;
             return (
                 <div
                     {...restInnerProps}
                     ref={ref}
                     style={getStyles("clearIndicator", indicatorProps)}>
-                    <div style={{"padding": "0px 5px"}}>{children}</div>
+                    <div style={{ "padding": "0px 5px" }}>{children}</div>
                 </div>
             );
         };
@@ -142,7 +142,7 @@ const RegistrationLanding = () => {
             <SearchSelect
                 className="filter-options"
                 closeMenuOnSelect={false}
-                components={{ClearIndicator}}
+                components={{ ClearIndicator }}
                 isMulti
                 onChange={handleFilterChange(filterType)}
                 options={options}
@@ -156,7 +156,7 @@ const RegistrationLanding = () => {
         <Paper className="RegistrationLanding paper">
             <BackButton />
             <hr />
-            <RegistrationActions/>
+            <RegistrationActions />
             <Grid
                 container
                 layout="row">
@@ -176,7 +176,7 @@ const RegistrationLanding = () => {
                     item
                     md={4}
                     xs={12}
-                    >
+                >
                     <Tabs
                         className="catalog-setting"
                         value={view}>
@@ -189,39 +189,41 @@ const RegistrationLanding = () => {
                     </Tabs>
                 </Grid>
             </Grid>
-            <Grid
-                container
-                layout="row"
-                spacing={8}>
+            {view === 1 ? "" :
                 <Grid
-                    item
-                    md={4}
-                    xs={12}>
-                    {renderFilter("instructor")}
+                    container
+                    layout="row"
+                    spacing={8}>
+                    <Grid
+                        item
+                        md={4}
+                        xs={12}>
+                        {renderFilter("instructor")}
+                    </Grid>
+                    <Hidden xsDown>
+                        <Grid
+                            item
+                            md={4}
+                            xs={12}>
+                            {renderFilter("subject")}
+                        </Grid>
+                        <Grid
+                            item
+                            md={4}
+                            xs={12}>
+                            {renderFilter("grade")}
+                        </Grid>
+                    </Hidden>
                 </Grid>
-                <Hidden xsDown>
-                    <Grid
-                        item
-                        md={4}
-                        xs={12}>
-                        {renderFilter("subject")}
-                    </Grid>
-                    <Grid
-                        item
-                        md={4}
-                        xs={12}>
-                        {renderFilter("grade")}
-                    </Grid>
-                </Hidden>
-            </Grid>
+            }
             <div className="registration-table">
                 {
                     view === 0 &&
-                        <CourseList filteredCourses={filteredCourses} />
+                    <CourseList filteredCourses={filteredCourses} />
                 }
                 {
                     view === 1 &&
-                        <TutoringList />
+                    <TutoringList />
                 }
             </div>
         </Paper>

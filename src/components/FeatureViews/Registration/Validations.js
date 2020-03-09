@@ -20,7 +20,9 @@ export let InputValidation = (input, type) => {
         case "time":
             return timeValidation(input);
         case "password":
-            return passwordValidation(input)
+            return passwordValidation(input);
+        case "name":
+            return nameValidation(input);
         default:
             return Boolean(input);
     }
@@ -41,7 +43,7 @@ let EmailValidation = (input) => {
 
 // Short input fields (i.e. name, school, city etc.)
 let ShortTextValidation = (input) => {
-    return !!input.match(/([A-Za-z ]+)(" ")?([A-Za-z ]+)?(" ")?([A-Za-z ]+)?$/);
+    return !!input.match(/[a-zA-Z][^#&<>\"~;$^%{}?]{1,500}$/);
 };
 
 // Address
@@ -72,4 +74,9 @@ const timeValidation = (input) => {
 // Password validation 
 const passwordValidation = (input) => {
     return true
+}
+
+// Name validation 
+let nameValidation = (input) => {
+    return !!input.match(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/)
 }

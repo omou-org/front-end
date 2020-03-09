@@ -58,12 +58,12 @@ const userTabs = {
     ],
     "student": [
         {
-            "tab_heading": "Current Sessions",
+            "tab_heading": "Current Course(s)",
             "tab_id": 3,
             "icon": <CurrentSessionsIcon className="TabIcon" />,
         },
         {
-            "tab_heading": "Past Sessions",
+            "tab_heading": "Past Course(s)",
             "tab_id": 4,
             "icon": <PastSessionsIcon className="TabIcon" />,
         },
@@ -161,7 +161,7 @@ class UserProfile extends Component {
 
         // if looking at new profile, reset tab to the first one
         if (currAccType !== prevAccType || currAccID !== prevAccID) {
-            const {accountType, accountID} = this.props.computedMatch.params;
+            const { accountType, accountID } = this.props.computedMatch.params;
             this.props.userActions.fetchAccountNotes(accountID, accountType);
             let user;
             switch (accountType) {
@@ -243,7 +243,7 @@ class UserProfile extends Component {
         this.renderNoteIcon();
         const status = this.getRequestStatus();
         if (!status || status === apiActions.REQUEST_STARTED) {
-            return <Loading/>
+            return <Loading />
         }
 
         const user = this.getUser();
