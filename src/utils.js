@@ -130,3 +130,6 @@ export const startAndEndDate = (start, end, pacific) => {
 
     return `${startDate} - ${endDate}`
 };
+export const capitalizeString = (string) => {
+    return string.replace(/^\w/, lowerCaseString => lowerCaseString.toUpperCase())
+}
