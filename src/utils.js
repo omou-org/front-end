@@ -34,7 +34,7 @@ export const dateFormatter = (date) =>
         .toDateString()
         .substr(3);
 
-export const courseDateFormat = ({schedule, is_confirmed}) => ({
+export const courseDateFormat = ({ schedule, is_confirmed }) => ({
     "days": DayConverter[new Date(schedule.start_date).getDay()],
     "end_date": dateFormatter(schedule.end_date),
     "end_time": new Date(`2020-01-01${schedule.end_time}`)
@@ -54,11 +54,11 @@ export const sessionPaymentStatus = (session, enrollment) => {
     const thereIsPartiallyPaidSession = !Number.isInteger(enrollment.sessions_left);
     const classSessionNotBeforeFirstPayment = session_date >= new Date(enrollment.payment_list[0].created_at);
 
-    if( sessionIsBeforeLastPaidSession && !thereIsPartiallyPaidSession && classSessionNotBeforeFirstPayment){
+    if (sessionIsBeforeLastPaidSession && !thereIsPartiallyPaidSession && classSessionNotBeforeFirstPayment) {
         return "Paid";
-    } else if ( sessionIsLastPaidSession && thereIsPartiallyPaidSession && thereIsPartiallyPaidSession){
+    } else if (sessionIsLastPaidSession && thereIsPartiallyPaidSession && thereIsPartiallyPaidSession) {
         return "Partial";
-    } else if (!classSessionNotBeforeFirstPayment ) {
+    } else if (!classSessionNotBeforeFirstPayment) {
         return "NA"
     } else {
         return "Unpaid";
@@ -102,4 +102,15 @@ export const truncateStrings = (string, length) => string.length > length
 
 export const capitalizeString = (string) => {
     return string.replace(/^\w/, lowerCaseString => lowerCaseString.toUpperCase())
+}
+
+export const paymentToString = (string) => {
+    switch (string) {
+        case "intl_credit_card":
+            return "International Credit Card";
+        case "credit_card":
+            return "Credit Card";
+        default:
+            return string.charAt(0).toUpperCase() + string.slice(1);
+    }
 }
