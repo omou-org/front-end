@@ -614,7 +614,9 @@ class Scheduler extends Component {
                 <Grid
                     className="scheduler-wrapper"
                     container
-                    spacing={16}>
+                    // Old spacing
+                    // spacing={16}>
+                    spacing={2}>
                     <Grid
                         className="scheduler-header"
                         item

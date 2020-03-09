@@ -13,7 +13,10 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import AdminIcon from "@material-ui/icons/Face"
 import ListItemText from "@material-ui/core/ListItemText";
-import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
+// Old import
+// import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
+// New Import
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import EventIcon from "@material-ui/icons/Event";
 // Local Component Imports
 import "./Navigation.scss";
@@ -82,7 +85,8 @@ const Navigation = (props) => {
             <List className="list">
                 {NavList.map((NavItem) => (
                     <ListItem
-                        button
+                    // button prop empty? What is that?
+                        // button
                         className="listItem"
                         component={NavLinkNoDup}
                         isActive={(match, location) => match

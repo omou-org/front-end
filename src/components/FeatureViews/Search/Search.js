@@ -272,7 +272,7 @@ const Search = (props) => {
                             <FormControl required variant="outlined" className={"search-selector"}>
                                 <Select className={'select-primary-filter'}
                                     // classNamePrefix={''}
-                                    disableUnderline
+                                    disableunderline="true"
                                     displayEmpty={false}
                                     value={primaryFilter}
                                     onChange={handleFilterChange(primaryFilter)}
