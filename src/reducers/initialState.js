@@ -134,7 +134,7 @@ export default {
                 {
                     student_id: 6,
                     fName: "Ryan",
-                    lName: "Gedwwill",
+                    lName: "Gedwill",
                     status: "student",
                     paymentStatus: "2",
                     amt: 40.00,

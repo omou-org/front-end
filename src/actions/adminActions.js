@@ -29,7 +29,7 @@ export const fetchCategories = (id) => wrapGet(
 );
 
 export const fetchUnpaid = (id) => wrapGet(
-    '/payment/payment/',
+    '/payment/unpaid-sessions/',
     [
         types.GET_UNPAID_STARTED,
         types.GET_UNPAID_SUCCESS,
