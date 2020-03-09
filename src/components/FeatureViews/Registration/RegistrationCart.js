@@ -53,7 +53,6 @@ const RegistrationCart = () => {
             .reduce((list, vals) => [...list, ...Object.values(vals)], [])
             .every(({validated}) => validated),
     [selectedCourses]);
-
     const coursesStatus = hooks.useCourse(courseIDs);
     const studentsStatus = hooks.useStudent(studentIDs);
 
@@ -388,7 +387,7 @@ const RegistrationCart = () => {
                     if (courseVal.checked) {
                         const course = registered_courses[studentID]
                             .find(({course_id}) => course_id == courseID);
-                        if (courseID.indexOf("T") > -1 || true)  {
+                        if (courseID.indexOf("T") > -1 )  {
                             // {category, academic_level, sessions, form}
                             let {category, academic_level, form, new_course} = course;
                             new_course = new_course || {};

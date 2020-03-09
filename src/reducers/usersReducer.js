@@ -155,6 +155,7 @@ export const updateParent = (parents, id, parent) => ({
         "updated_at": parent.updated_at,
         "role": "parent",
         "notes": (parents[id] && parents[id].notes) || {},
+        "balance": parent.balance,
     },
 });
 

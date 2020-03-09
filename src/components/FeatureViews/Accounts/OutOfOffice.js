@@ -83,7 +83,7 @@ const OutOfOffice = ({instructorID}) => {
             onClick={handleOpenOOODialog}
             className="editButton"
         >
-            <AwayIcon/>
+            <AwayIcon />
             Add OOO
         </Button>
         <Dialog

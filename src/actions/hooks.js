@@ -162,6 +162,11 @@ export const useEnrollment = wrapUseEndpoint(
     types.FETCH_ENROLLMENT_SUCCESSFUL,
 );
 
+export const useCategory = wrapUseEndpoint(
+    "/course/categories/",
+    types.GET_CATEGORY_SUCCESS,
+);
+
 export const useOutOfOffice = wrapUseEndpoint(
     "/account/instructor-out-of-office/",
     types.FETCH_OOO_SUCCESS,

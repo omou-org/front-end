@@ -18,7 +18,6 @@ export function CompleteCourseRegistration ({registeredCourseForm, courseType}){
     let studentID = registeredCourseForm.student_id;
     const course_id = registeredCourseForm.course_id;
     const courseStatus = hooks.useCourse( typeof course_id !== "string" && course_id);
-
     const instructorID = {
         "course": courses[course_id] && courses[course_id].instructor_id,
         "tutoring": registeredCourseForm.new_course && registeredCourseForm.new_course.instructor,

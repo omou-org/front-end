@@ -724,3 +724,16 @@
   margin-top: 20px;
   margin-bottom: 40px;
 }
+
+@keyframes confirmationAnimation {
+  from {color: $lightPrimaryFontColor}
+  to {color: $goodStatusColor;}
+}
+
+.course-icon{
+  color:$lightPrimaryFontColor;
+  &.confirmed{
+    animation-name:confirmationAnimation;
+    animation-duration: 0.25s;
+  }
+}

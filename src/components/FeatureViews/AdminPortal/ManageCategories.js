@@ -28,12 +28,12 @@ function ManageCategories() {
     const [categoryDescription, setCategoryDescription] = useState("");
     const [categoryList, setCategoryList] = useState([]);
 
-    const categories = useSelector(({Course}) => Course.CourseCategories);
+    const categories = useSelector(({Course: {CourseCategories}}) => CourseCategories);
     const categoryStatus = useSelector(({RequestStatus})=> RequestStatus.category);
     useEffect(()=>{
         api.fetchCategories();
     },[api]);
-    //, categoryStatus[GET], categoryStatus[POST]]
+
     useEffect(()=>{
         if(categories.length !== categoryList.length){
             let parsedCategoryList = categories.map((category)=>({
@@ -42,7 +42,7 @@ function ManageCategories() {
                         }));
             setCategoryList(parsedCategoryList);
         }
-    }, [categories]);
+    }, [categories, categoryList]);
 
     const handleChange = (field) => (e) =>{
         switch(field){
@@ -123,7 +123,7 @@ function ManageCategories() {
             <Grid item xs={12}>
                 <Grid container spacing={8} alignItems={"center"}>
                     {
-                        categoryList.length > 0 ?categoryList.map((category) => {
+                        categoryList.length > 0 ? categoryList.map((category) => {
                                 return (<Grid item xs={12} md={12} key={category.id}>
                                     {
                                         category.editing ? editCategoryRow(category) : viewCategoryRow(category)
@@ -145,7 +145,7 @@ function ManageCategories() {
                 id: editingCategory.id,
                 name: editingCategory.name,
                 description: editingCategory.description,
-            }
+            };
             api.updateCategory(id, categoryToUpload);
         }
         editingCategory.editing = !editingCategory.editing;

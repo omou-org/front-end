@@ -67,9 +67,9 @@ hr{
   margin-bottom:-5px;
   margin-left:5px;
   &.confirmed{
-    color:green;
+    color:$goodStatusColor;
   }
   &.unconfirmed{
-    color: #ff3440;
+    color: $badActionColor;
   }
 }
