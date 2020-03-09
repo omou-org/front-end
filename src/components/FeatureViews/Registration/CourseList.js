@@ -13,7 +13,7 @@ import {capitalizeString, courseDateFormat} from "../../../utils";
 import Grow from "@material-ui/core/Grow";
 
 const CourseList = (props) => {
-    let filteredCourses = props.filteredCourses.filter(course => course.capacity >= 1);
+    let filteredCourses = props.filteredCourses.filter(course => course.capacity > 1);
     const instructors = useSelector(({ "Users": { InstructorList } }) => InstructorList);
     return filteredCourses.map((course) => {
         const {start_date, end_date, start_time, end_time, days} = courseDateFormat(course);
