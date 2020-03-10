@@ -19,7 +19,7 @@ function PaymentHistory({user_id})  {
 
     if(!paymentStatus || paymentStatus===1){
         if(isLoading(paymentStatus)){
-            return <Loading/>;
+            return <Loading small loadingText="LOADING PAYMENTS"/>;
         }
 
         if(isFail(paymentStatus)){

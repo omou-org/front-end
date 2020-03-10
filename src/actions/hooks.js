@@ -1,7 +1,7 @@
 import * as types from "./actionTypes";
 import {instance, MISC_FAIL, REQUEST_ALL, REQUEST_STARTED} from "./apiActions";
 import {useCallback, useEffect, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 
 export const isFail = (...statuses) =>
     statuses.some((status) =>
@@ -232,6 +232,17 @@ export const useTutoringSessionsInPeriod = (time_frame, time_shift) => wrapUseEn
             time_frame,
             time_shift,
             "view_option": "tutoring",
+        },
+    }
+)();
+
+export const useSessionsInPeriod = (time_frame, time_shift) => wrapUseEndpoint(
+    "/scheduler/session/",
+    types.GET_SESSIONS_SUCCESS,
+    {
+        "params": {
+            time_frame,
+            time_shift,
         },
     }
 )();
