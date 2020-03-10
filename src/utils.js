@@ -170,3 +170,19 @@ export const instructorConflictCheck = async (instructorID, start, end) => {
 
 export const capitalizeString = (string) => string
     .replace(/^\w/, (lowerCaseString) => lowerCaseString.toUpperCase());
+
+export const startAndEndDate = (start, end, pacific) => {
+    let startDate, getEndDate, setDate, endDate;
+
+    if(!pacific){
+        startDate = start.toString().substr(3, 13);
+        getEndDate = end.getDate();
+        setDate = end.setDate(getEndDate - 1);
+        endDate = new Date(setDate).toString().substr(3, 13);
+    } else {
+        startDate = start.toISOString().substring(0,start.toISOString().indexOf("T"));
+        endDate = end.toISOString().substring(0,end.toISOString().indexOf("T"));
+    }
+
+    return `${startDate} - ${endDate}`
+};

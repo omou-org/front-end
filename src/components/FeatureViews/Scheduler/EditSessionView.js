@@ -146,7 +146,7 @@ const EditSessionView = ({course, session, editSelection}) => {
     const courseDurationOptions = [1, 1.5, 2, 0.5];
 
     const updateSession = () => {
-        const {start_time, end_time, is_confirmed, instructor, duration} = sessionFields;
+        const {start_time, end_time, is_confirmed, instructor, duration, title} = sessionFields;
         switch (editSelection) {
             case EDIT_CURRENT_SESSION: {
                 const patchedSession = {
@@ -321,6 +321,6 @@ const EditSessionView = ({course, session, editSelection}) => {
             </Grid>
         </>
     );
-}
+};
 
 export default withRouter(EditSessionView);
