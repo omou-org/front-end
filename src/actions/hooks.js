@@ -242,6 +242,17 @@ export const useTutoringSessionsInPeriod = (time_frame, time_shift) => wrapUseEn
     }
 )();
 
+export const useSessionsInPeriod = (time_frame, time_shift) => wrapUseEndpoint(
+    "/scheduler/session/",
+    types.GET_SESSIONS_SUCCESS,
+    {
+        "params": {
+            time_frame,
+            time_shift,
+        },
+    }
+)();
+
 export const useInstructorAvailability = (instructorID) => wrapUseEndpoint(
     "/account/instructor-availability/",
     types.FETCH_INSTRUCTOR_AVAILABILITY_SUCCESS,

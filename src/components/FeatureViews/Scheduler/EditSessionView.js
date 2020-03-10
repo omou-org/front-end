@@ -60,15 +60,13 @@ const EditSessionView = ({course, session, editSelection}) => {
             const category = categories.find((category) => category.id === course.category);
 
             setSessionFields({
-                "category": {"value": category.id,
-                    "label": category.name},
-                "instructor": {"value": session.instructor,
-                    "label": instructors[session.instructor].name},
-                "start_time": session.start_datetime,
-                "end_time": session.end_datetime,
-                "duration": durationHours,
-                "title": course.title,
-                "is_confirmed": session.is_confirmed,
+                category: { value: category.id, label: category.name },
+                instructor: { value: session.instructor, label: instructors[session.instructor].name },
+                start_time: session.start_datetime,
+                end_time: session.end_datetime,
+                duration: durationHours,
+                title: session.title,
+                is_confirmed: session.is_confirmed,
             });
         }
     }, [categories, course, instructors, session]);
@@ -152,11 +150,12 @@ const EditSessionView = ({course, session, editSelection}) => {
         switch (editSelection) {
             case EDIT_CURRENT_SESSION: {
                 const patchedSession = {
-                    "start_datetime": start_time.toISOString(),
-                    "end_datetime": end_time.toISOString(),
+                    start_datetime: start_time.toISOString(),
+                    end_datetime: end_time.toISOString(),
                     is_confirmed,
-                    "instructor": instructor.value,
+                    instructor: instructor.value,
                     duration,
+                    title,
                 };
                 api.patchSession(session.id, patchedSession);
                 break;

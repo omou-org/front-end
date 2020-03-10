@@ -42,7 +42,7 @@ export const dateFormatter = (date) =>
         .toDateString()
         .substr(3);
 
-export const courseDateFormat = ({schedule, is_confirmed}) => ({
+export const courseDateFormat = ({ schedule, is_confirmed }) => ({
     "days": DayConverter[new Date(schedule.start_date).getDay()],
     "end_date": dateFormatter(schedule.end_date),
     "end_time": new Date(`2020-01-01${schedule.end_time}`)
@@ -53,14 +53,17 @@ export const courseDateFormat = ({schedule, is_confirmed}) => ({
         .toLocaleTimeString("eng-US", timeFormat),
 });
 
+const dateTimeToDate = (date) => new Date(Date.UTC(date.getFullYear(),date.getMonth(), date.getDate()));
+
 export const sessionPaymentStatus = (session, enrollment) => {
-    const session_date = new Date(session.start_datetime),
-        last_session = new Date(enrollment.last_paid_session_datetime);
+    const session_date = dateTimeToDate(new Date(session.start_datetime)),
+        last_session = dateTimeToDate(new Date(enrollment.last_paid_session_datetime)),
+        first_payment = dateTimeToDate(new Date(enrollment.payment_list[0].created_at));
 
     const sessionIsBeforeLastPaidSession = session_date <= last_session;
     const sessionIsLastPaidSession = session_date == last_session;
     const thereIsPartiallyPaidSession = !Number.isInteger(enrollment.sessions_left);
-    const classSessionNotBeforeFirstPayment = session_date >= new Date(enrollment.payment_list[0].created_at);
+    const classSessionNotBeforeFirstPayment = session_date >= first_payment;
 
     if (sessionIsBeforeLastPaidSession && !thereIsPartiallyPaidSession && classSessionNotBeforeFirstPayment) {
         return "Paid";
@@ -68,9 +71,9 @@ export const sessionPaymentStatus = (session, enrollment) => {
         return "Partial";
     } else if (!classSessionNotBeforeFirstPayment) {
         return "NA";
+    } else {
+        return "Unpaid";
     }
-    return "Unpaid";
-
 };
 
 export const courseToRegister = (enrollment, course, student) => ({
