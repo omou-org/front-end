@@ -287,43 +287,43 @@ class ProfileHeading extends Component {
         if (this.props.user.role != "receptionist") {
             return (
                 <>
-                    <Grid container align="right" item md={12}>
-                    <Grid item md={3} align= "right" className="editPadding">
-                        {
-                            this.props.user.role === "instructor" && <InstructorAvailability
-                            instructorID={this.props.user.user_id}
-                        />
-                        }
-                    </Grid>
-                    <Grid item md={1}>
-                    </Grid>
-                    <Grid item md={3} align= "right" className="editPadding">
-                        {
-                            this.props.user.role === "instructor" && <OutOfOffice
+                    <Grid
+                        spacing={16}
+                        container
+                        align="right">
+                        <Grid item align= "right" className="editPadding">
+                            {
+                                this.props.user.role === "instructor" && <InstructorAvailability
                                 instructorID={this.props.user.user_id}
                             />
-                        }
-                    </Grid>
-                    <Grid item md={1}>
-                    </Grid>
-                    <Grid item md={3} align="right" component={Hidden} mdDown className="editPadding">
-                        <Button
-                            className="editButton"
-                            component={NavLink}
-                            to={`/registration/form/${this.props.user.role}/${this.props.user.user_id}/edit`}>
-                            <EditIcon />
-                            Edit Profile
-                        </Button>
-                    </Grid>
-                    <Grid item md={3} align="right" component={Hidden} lgUp className="editPadding">
-                        <Button
-                            className="editButton"
-                            component={NavLink}
-                            to={`/registration/form/${this.props.user.role}/${this.props.user.user_id}/edit`}>
-                            <EditIcon />
-                        </Button>
-                    </Grid>
-
+                            }
+                        </Grid>
+                        <Grid item align= "right" className="editPadding">
+                            {
+                                this.props.user.role === "instructor" && <OutOfOffice
+                                    instructorID={this.props.user.user_id}
+                                />
+                            }
+                        </Grid>
+                        <Grid item md={1}>
+                        </Grid>
+                        <Grid item md={3} align="right" component={Hidden} mdDown className="editPadding">
+                            <Button
+                                variant="outlined"
+                                component={NavLink}
+                                to={`/registration/form/${this.props.user.role}/${this.props.user.user_id}/edit`}>
+                                <EditIcon />
+                                Edit Profile
+                            </Button>
+                        </Grid>
+                        <Grid item md={3} align="right" component={Hidden} lgUp className="editPadding">
+                            <Button
+                                className="editButton"
+                                component={NavLink}
+                                to={`/registration/form/${this.props.user.role}/${this.props.user.user_id}/edit`}>
+                                <EditIcon />
+                            </Button>
+                        </Grid>
                     </Grid>
                 </>
             );

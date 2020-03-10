@@ -318,6 +318,7 @@ const Search = (props) => {
                         </Grid>
                         <Grid item md={10} xs={isMobileSearching ? 10 : 7}>
                             <Creatable
+                                noOptionsMessage={() => "Keep searching..."}
                                 allowCreateWhileLoading
                                 placeholder="Search for a course or account"
                                 formatCreateLabel={formatCreateLabel}

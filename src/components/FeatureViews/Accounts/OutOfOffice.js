@@ -81,10 +81,10 @@ const OutOfOffice = ({instructorID}) => {
     return (<>
         <Button
             onClick={handleOpenOOODialog}
-            className="editButton"
+            variant="outlined"
         >
             <AwayIcon />
-            Add OOO
+            SET OOO
         </Button>
         <Dialog
             aria-labelledby="simple-dialog-title"

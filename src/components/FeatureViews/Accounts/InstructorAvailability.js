@@ -1,18 +1,14 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { instance } from "actions/apiActions";
-import { POST_INSTRUCTORAVAILABILITY_SUCCESS } from "actions/actionTypes";
+import React, {useCallback, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
+import {withStyles} from "@material-ui/core/styles";
 
 
-import { DatePicker, TimePicker } from "material-ui-pickers";
+import {TimePicker} from "material-ui-pickers";
 import Button from "@material-ui/core/Button";
-import Checkbox from "@material-ui/core/Checkbox";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
 
 import "./Accounts.scss";
 import AwayIcon from "@material-ui/icons/EventBusy";
@@ -66,10 +62,10 @@ const InstructorAvailability = ({ instructorID }) => {
     return (<>
         <Button
             onClick={handleOpenDialog}
-            className="editButton"
+            variant="outlined"
         >
             <AwayIcon />
-            Instructor Availability
+           SET AVAILABILITY
         </Button>
         <Dialog
             aria-labelledby="simple-dialog-title"

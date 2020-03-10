@@ -1,12 +1,12 @@
 import * as hooks from "actions/hooks";
-import React, { useMemo } from "react";
+import React, {useMemo} from "react";
 import FullCalendar from "@fullcalendar/react";
 import Loading from "components/Loading";
 import PropTypes from "prop-types";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import { useSelector } from "react-redux";
-import { stringToColor } from "../accountUtils";
-import { handleToolTip } from "../../Scheduler/SchedulerUtils"
+import {useSelector} from "react-redux";
+import {stringToColor} from "../accountUtils";
+import {handleToolTip} from "../../Scheduler/SchedulerUtils"
 
 const toHours = (ms) => ms / 1000 / 60 / 60;
 
@@ -25,9 +25,7 @@ const InstructorSchedule = ({ instructorID }) => {
             .map((session) => ({
                 "end": new Date(session.end_datetime),
                 "start": new Date(session.start_datetime),
-                "title": courses[session.course]
-                    ? courses[session.course].title
-                    : "Loading...",
+                "title": session.title,
             })), [courses, sessions, instructorID]);
 
     const OOO = useMemo(() => instructor
@@ -78,7 +76,7 @@ const InstructorSchedule = ({ instructorID }) => {
             : [],
         [instructor]);
 
-    if (teachingSessions.length === 0 && OOO.length === 0) {
+    if (teachingSessions.length === 0 || OOO.length === 0) {
         if (hooks.isLoading(tutoringEnrollmentStatus, classEnrollmentStatus, OOO)) {
             return <Loading />;
         }
@@ -103,7 +101,8 @@ const InstructorSchedule = ({ instructorID }) => {
                 eventMouseEnter={handleToolTip}
                 header={false}
                 height={337}
-                minTime="07:00:00"
+                minTime="09:00:00"
+                slotDuration="01:00"
                 plugins={[timeGridPlugin]} />
         </>
     );
