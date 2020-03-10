@@ -3,12 +3,12 @@ import BackButton from "../../../BackButton";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import * as userActions from "actions/userActions";
-import * as calendarActions from "../../../../actions/calendarActions"
+import * as calendarActions from "actions/calendarActions"
 import {bindActionCreators} from "redux";
 import * as hooks from "actions/hooks";
-import * as registrationActions from "../../../../actions/registrationActions";
-import * as apiActions from "../../../../actions/apiActions";
-import {REQUEST_ALL} from "../../../../actions/apiActions";
+import * as registrationActions from "actions/registrationActions";
+import * as apiActions from "actions/apiActions";
+import {REQUEST_ALL} from "actions/apiActions";
 
 import Grid from "@material-ui/core/Grid";
 import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
@@ -32,7 +32,11 @@ import {NoListAlert} from "../../../NoListAlert";
 import {GET} from "../../../../actions/actionTypes";
 import {SessionPaymentStatusChip} from "../../../SessionPaymentStatusChip";
 import AddSessions from "AddSessions";
-import {capitalizeString, DayConverter} from "../../../../utils";
+import {capitalizeString, DayConverter, upcomingSession} from "../../../../utils";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Switch from "@material-ui/core/Switch";
+import FormControl from "@material-ui/core/FormControl";
 
 const timeOptions = {
     "hour": "2-digit",
@@ -42,24 +46,6 @@ const dateOptions = {
     "year": "numeric",
     "month": "numeric",
     "day": "numeric",
-};
-
-const courseDataParser = (course) => {
-    let { schedule, status, tuition, course_id } = course;
-    const DaysString = schedule.days;
-
-    const endDate = new Date(schedule.end_date + schedule.end_time),
-        startDate = new Date(schedule.start_date + schedule.start_time);
-
-    return {
-        "date": `${startDate.toLocaleDateString("en-US", dateOptions)} - ${endDate.toLocaleDateString("en-US", dateOptions)}`,
-        "day": DaysString,
-        "endTime": endDate.toLocaleTimeString("en-US", timeOptions),
-        "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
-        status,
-        tuition,
-        "course_id": course_id
-    };
 };
 
 const CourseSessionStatus = () => {
@@ -72,6 +58,7 @@ const CourseSessionStatus = () => {
     const courses = useSelector(({ Course }) => Course.NewCourseList);
     const enrollments = useSelector(({ Enrollments }) => Enrollments);
     const requestStatus = useSelector(({ RequestStatus }) => RequestStatus);
+    const [highlightSession, setHighlightSession] = useState(false);
     const course = courses[courseID];
 
     const dispatch = useDispatch();
@@ -173,6 +160,10 @@ const CourseSessionStatus = () => {
         setActiveTab(newTab);
     };
 
+    const handleHighlightSwitch = (e) => {
+        setHighlightSession(!highlightSession);
+    };
+
     const sessions = courseSessions
         && calendarSessions.map((session) => session);
 
@@ -191,6 +182,8 @@ const CourseSessionStatus = () => {
             history.push(`/accounts/student/${studentID}`);
         }
     };
+
+    const upcomingSess = upcomingSession(sessions, courseID);
 
     const renderMain = () => {
         switch (activeTab) {
@@ -252,7 +245,11 @@ const CourseSessionStatus = () => {
                                             to={course.course_type === "tutoring" ? `/scheduler/view-session/${course_id}/${id}/${instructor}` : `/registration/course/${course_id}`}
                                             component={Link}
                                         >
-                                            <Paper square className="session-info">
+                                            <Paper
+                                                square
+                                                className={`session-info 
+                                                ${highlightSession && " active"} 
+                                                ${upcomingSess.id == id && " upcoming-session"}`}>
                                                 <Grid container>
                                                     <Grid item xs={1}/>
                                                     <Grid
@@ -260,7 +257,6 @@ const CourseSessionStatus = () => {
                                                         xs={2}>
                                                         <Typography align="left">
                                                             {date}
-
                                                         </Typography>
                                                     </Grid>
                                                     <Grid
@@ -383,6 +379,23 @@ const CourseSessionStatus = () => {
                         <Typography align="left">
                             Enrollment Balance Left: ${enrollment.balance}
                         </Typography>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormControl component="fieldset">
+                            <FormGroup>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={highlightSession}
+                                            onChange={handleHighlightSwitch}
+                                            color="primary"
+                                            value="upcoming-session"
+                                        />
+                                    }
+                                    label="Highlight Upcoming Session"
+                                />
+                            </FormGroup>
+                        </FormControl>
                     </Grid>
                 </Grid>
                 <Tabs
