@@ -18,13 +18,10 @@ import CourseList from "./CourseList";
 import TutoringList from "./TutoringList";
 import RegistrationActions from "./RegistrationActions";
 
-
-const NUM_GRADES = 13;
-
 const RegistrationLanding = () => {
     const courses = useSelector(({ "Course": { NewCourseList } }) => NewCourseList);
-    const instructors = useSelector(({ "Users": { InstructorList } }) => InstructorList);
-    const categories = useSelector(({ "Course": { CourseCategories } }) => CourseCategories);
+    const instructors = useSelector(({ "Users": { InstructorList } }) => InstructorList) || [];
+    const categories = useSelector(({ "Course": { CourseCategories } }) => CourseCategories) || [];
 
     const courseStatus = hooks.useCourse();
     const instructorStatus = hooks.useInstructor();
@@ -50,7 +47,7 @@ const RegistrationLanding = () => {
 
     const subjectOptions = useMemo(() => distinctObjectArray(Object.values(courses)
         .map(({ category }) => ({
-            "label": categories.find(Category => Number(Category.id) === Number(category)).name,
+            "label": categories.length > 0 && categories.find(Category => Number(Category.id) === Number(category)).name,
             "value": category,
         }))), [categories]);
 
@@ -82,6 +79,7 @@ const RegistrationLanding = () => {
             [filterType]: filters || [],
         }));
     }, []);
+
     const isLoading = hooks.isLoading(courseStatus, categoryStatus, instructorStatus)
         && Object.entries(courses).length === 0;
 
@@ -91,7 +89,7 @@ const RegistrationLanding = () => {
 
     const renderFilter = (filterType) => {
         let options = [];
-        if(isLoading || !categories){
+        if(isLoading || categories.length == 0){
             return "";
         }
 
