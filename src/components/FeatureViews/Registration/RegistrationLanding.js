@@ -1,4 +1,5 @@
 import * as hooks from "actions/hooks";
+import {distinctObjectArray, gradeOptions} from "utils";
 import React, {useCallback, useMemo, useState} from "react";
 // react/redux imports
 import {useSelector} from "react-redux";
@@ -12,23 +13,20 @@ import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
 
-import Loading from "../../Loading";
 import CourseList from "./CourseList";
-import TutoringList from "./TutoringList";
+import Loading from "components/Loading";
 import RegistrationActions from "./RegistrationActions";
-
-const NUM_GRADES = 13;
-
-const gradeOptions = Array(NUM_GRADES).map((_, gradeNum) => ({
-    "label": `${gradeNum + 1}`,
-    "value": gradeNum + 1,
-}));
+import TutoringList from "./TutoringList";
 
 const RegistrationLanding = () => {
     const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
     const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
+    const categories = useSelector(({"Course": {CourseCategories}}) => CourseCategories);
+
     const courseStatus = hooks.useCourse();
-    hooks.useInstructor();
+    const instructorStatus = hooks.useInstructor();
+    const categoryStatus = hooks.useCategory();
+
 
     const [view, setView] = useState(0);
     const [courseFilters, setCourseFilters] = useState({
@@ -47,6 +45,16 @@ const RegistrationLanding = () => {
             "value": user_id,
         })), [instructors]);
 
+    const subjectOptions = useMemo(() => distinctObjectArray(
+        Object.values(courses)
+            // prevent a crash if some categories are not loaded yet
+            .filter(({category}) => categories.find(({id}) => category == id))
+            .map(({category}) => ({
+                "label": categories.find(({id}) => category == id).name,
+                "value": category,
+            }))
+    ), [categories, courses]);
+
     const filteredCourses = useMemo(
         () => Object.entries(courseFilters)
             .filter(([, filters]) => filters.length > 0)
@@ -57,11 +65,11 @@ const RegistrationLanding = () => {
                         return courseList.filter(({instructor_id}) =>
                             mappedValues.includes(instructor_id));
                     case "subject":
-                        return courseList.filter(({subject}) =>
-                            mappedValues.includes(subject));
+                        return courseList.filter(({category}) =>
+                            mappedValues.includes(category));
                     case "grade":
-                        return courseList.filter(({grade}) =>
-                            mappedValues.includes(grade));
+                        return courseList.filter(({academic_level}) =>
+                            mappedValues.includes(academic_level));
                     default:
                         return courseList;
                 }
@@ -76,9 +84,9 @@ const RegistrationLanding = () => {
         }));
     }, []);
 
-    if (hooks.isLoading(courseStatus) && Object.entries(courses).length === 0) {
-        return <Loading />;
-    }
+    const isLoading =
+        hooks.isLoading(courseStatus, categoryStatus, instructorStatus) &&
+        Object.entries(courses).length === 0;
 
     if (hooks.isFail(courseStatus) && Object.entries(courses).length) {
         return "Unable to load courses!";
@@ -91,16 +99,7 @@ const RegistrationLanding = () => {
                 options = instructorOptions;
                 break;
             case "subject":
-                options = [
-                    {
-                        "label": "Math",
-                        "value": "Math",
-                    },
-                    {
-                        "label": "Science",
-                        "value": "Science",
-                    },
-                ];
+                options = subjectOptions;
                 break;
             case "grade":
                 options = gradeOptions;
@@ -156,7 +155,7 @@ const RegistrationLanding = () => {
         <Paper className="RegistrationLanding paper">
             <BackButton />
             <hr />
-            <RegistrationActions/>
+            <RegistrationActions />
             <Grid
                 container
                 layout="row">
@@ -175,8 +174,7 @@ const RegistrationLanding = () => {
                     className="catalog-setting-wrapper"
                     item
                     md={4}
-                    xs={12}
-                    >
+                    xs={12}>
                     <Tabs
                         className="catalog-setting"
                         value={view}>
@@ -216,12 +214,11 @@ const RegistrationLanding = () => {
             </Grid>
             <div className="registration-table">
                 {
-                    view === 0 &&
-                        <CourseList filteredCourses={filteredCourses} />
-                }
-                {
-                    view === 1 &&
-                        <TutoringList />
+                    isLoading ? <Loading />
+                        : view === 0
+                            ? <CourseList filteredCourses={filteredCourses} />
+                            : <TutoringList />
+
                 }
             </div>
         </Paper>

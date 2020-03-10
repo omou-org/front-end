@@ -33,6 +33,7 @@ import {SessionPaymentStatusChip} from "../../SessionPaymentStatusChip";
 import AddSessions from "AddSessions";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+import {capitalizeString} from "../../../utils";
 
 const StyledMenu = withStyles({
     paper: {
@@ -181,7 +182,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                         align="left"
                         className="session-view-title"
                         variant="h3">
-                        {course && course.title}
+                        {session && session.title}
                     </Typography>
                 </Grid>
                 <Grid item sm={12}>
@@ -190,6 +191,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                             {
                                 course.course_type == "tutoring"  &&
                                     <SessionPaymentStatusChip
+                                        setPos
                                         enrollment={enrollments[Object.keys(enrollments)[0]][course.course_id]}
                                         session={session}
                                     />
@@ -290,7 +292,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                         item
                         xs={6}>
                         <Typography variant="h5">Day(s)</Typography>
-                        <Typography>{dayOfWeek[day]}</Typography>
+                        <Typography>{capitalizeString(dayOfWeek[day])}</Typography>
                         <Typography>
                             {
                                 new Date(session.start_datetime).toLocaleDateString()

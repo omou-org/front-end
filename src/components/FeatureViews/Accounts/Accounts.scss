@@ -8,7 +8,6 @@
     padding: 3%;
   }
   .toggleView {
-    position: absolute;
     right: 10%;
   }
 
@@ -161,7 +160,6 @@
 
     .editButton {
       color: $darkenPrimaryFontColor;
-      border-radius: 0px;
       box-sizing: border-box;
       border: solid 2px $secondaryColor !important;
       white-space: nowrap;
