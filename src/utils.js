@@ -53,6 +53,35 @@ export const courseDateFormat = ({ schedule, is_confirmed }) => ({
         .toLocaleTimeString("eng-US", timeFormat),
 });
 
+
+export const courseDataParser = (course) => {
+    const timeOptions = {
+        "hour": "2-digit",
+        "minute": "2-digit",
+    };
+    const dateOptions = {
+        "year": "numeric",
+        "month": "numeric",
+        "day": "numeric",
+    };
+
+    let { schedule, status, tuition, course_id } = course;
+    const DaysString = schedule.days;
+
+    const endDate = new Date(schedule.end_date + schedule.end_time),
+        startDate = new Date(schedule.start_date + schedule.start_time);
+
+    return {
+        "date": `${startDate.toLocaleDateString("en-US", dateOptions)} - ${endDate.toLocaleDateString("en-US", dateOptions)}`,
+        "day": DaysString,
+        "endTime": endDate.toLocaleTimeString("en-US", timeOptions),
+        "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
+        status,
+        tuition,
+        "course_id": course_id
+    };
+};
+
 const dateTimeToDate = (date) => new Date(Date.UTC(date.getFullYear(),date.getMonth(), date.getDate()));
 
 export const sessionPaymentStatus = (session, enrollment) => {
@@ -221,3 +250,13 @@ export const startAndEndDate = (start, end, pacific) => {
 
     return `${startDate} - ${endDate}`
 };
+
+/**
+ * @description returns the upcoming session from a list of sessions
+ * @param {Array} sessions - list of sessions to search through
+ * @param {Number} courseID - id of the course we want to look at
+ * @returns {Object} "session" that's upcoming relative to today's date
+ */
+export const upcomingSession = (sessions, courseID) => sessions.filter((session) => ((session.course == courseID) &&
+    dateTimeToDate(new Date(session.start_datetime)) >= dateTimeToDate(new Date())))
+    .sort((sessionA, sessionB) => (sessionA - sessionB))[0];
