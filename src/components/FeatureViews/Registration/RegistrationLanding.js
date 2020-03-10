@@ -94,6 +94,10 @@ const RegistrationLanding = () => {
 
     const renderFilter = (filterType) => {
         let options = [];
+        if(isLoading || !categories){
+            return "";
+        }
+
         switch (filterType) {
             case "instructor":
                 options = instructorOptions;
