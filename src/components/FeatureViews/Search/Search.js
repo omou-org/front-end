@@ -57,7 +57,7 @@ const Search = (props) => {
         return () =>{
             sessionStorage.setItem("SearchQuery",SearchQuery);
         }
-    },[]);
+    },[SearchQuery]);
 
     // Fetching account results
     useEffect(()=>{
@@ -93,7 +93,7 @@ const Search = (props) => {
                     return baseConfig
                 }
             });
-            // api.updateSearchStatus(NOT_SEARCHING);
+
             return () => {
                 if(toUpdate){
                     filterSuggestions();
@@ -239,8 +239,6 @@ const Search = (props) => {
             api.setSearchQuery(query.label);
         }
         api.updateSearchStatus(IS_SEARCHING);
-        // api.updateSearchParam("account", "accountPage", 1);
-        // api.updateSearchParam("course", "coursePage", 1);
         if(!location.pathname.includes("search")){
             history.push({
                 pathname:'/search/',

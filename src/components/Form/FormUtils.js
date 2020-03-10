@@ -1,7 +1,6 @@
 import {instance} from "actions/apiActions";
 import {isFail} from "actions/hooks";
-import {DayConverter} from "utils";
-import {capitalizeString} from "../../utils";
+import {capitalizeString, DayConverter} from "utils";
 
 /**
  * @description: parses a form to convert start and end time from a form to a duration

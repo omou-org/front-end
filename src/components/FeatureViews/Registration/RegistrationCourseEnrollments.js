@@ -1,4 +1,5 @@
 import * as hooks from "actions/hooks";
+import {useSessionsInPeriod} from "actions/hooks";
 import React, {Fragment, useCallback, useEffect, useMemo, useState} from "react";
 import {addDashes} from "components/FeatureViews/Accounts/accountUtils";
 import {Link, NavLink} from "react-router-dom";
@@ -34,7 +35,6 @@ import Dialog from "@material-ui/core/Dialog";
 import {NoListAlert} from "../../NoListAlert";
 import {sessionArray} from "../Scheduler/SchedulerUtils";
 import {SessionPaymentStatusChip} from "../../SessionPaymentStatusChip";
-import {useSessionsInPeriod} from "../../../actions/hooks";
 
 const TableToolbar = (
     <TableHead>

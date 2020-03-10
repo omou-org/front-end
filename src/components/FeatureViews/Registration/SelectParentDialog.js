@@ -38,7 +38,7 @@ class SelectParentDialog extends React.Component {
         if (this.state.inputParent.value !== "") {
             let idStartIndex = this.state.inputParent.value.indexOf("-") + 1;
             let parentID = Number(this.state.inputParent.value.substring(idStartIndex));
-            let selectedParent = this.state.parentList.find((account) => { return parentID == account.user.id });
+            let selectedParent = this.state.parentList.find((account) => parentID == account.user.id);
 
             if (selectedParent) {
                 selectedParent = {

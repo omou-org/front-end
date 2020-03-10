@@ -14,7 +14,7 @@ import TextField from "@material-ui/core/TextField";
 import {NoListAlert} from "../../NoListAlert";
 import {GET} from "../../../actions/actionTypes";
 import Loading from "../../Loading";
-import IconButton from "@material-ui/core/es/IconButton/IconButton";
+import IconButton from "@material-ui/core/IconButton/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import Button from "@material-ui/core/Button";
 

@@ -16,6 +16,7 @@ import TextField from "@material-ui/core/TextField";
 
 import "./Accounts.scss";
 import AwayIcon from "@material-ui/icons/EventBusy";
+import MenuItem from "@material-ui/core/MenuItem";
 
 const styles = {
     "maxHeight": "80vh",
@@ -28,7 +29,7 @@ const formatDate = (date, allDay) => {
     return allDay ? `${datePart} 00:00` : `${datePart} ${timePart}`;
 };
 
-const OutOfOffice = ({instructorID}) => {
+const OutOfOffice = ({instructorID, button}) => {
     const dispatch = useDispatch();
     const [description, setDescription] = useState("");
     const [start, setStart] = useState(null);
@@ -79,13 +80,20 @@ const OutOfOffice = ({instructorID}) => {
     };
 
     return (<>
-        <Button
-            onClick={handleOpenOOODialog}
-            variant="outlined"
-        >
-            <AwayIcon />
-            SET OOO
-        </Button>
+        {
+            button ? <Button
+                onClick={handleOpenOOODialog}
+                variant="outlined"
+            >
+                <AwayIcon /> SET OOO
+            </Button> :
+                <MenuItem
+                    onClick={handleOpenOOODialog}
+                >
+                    <AwayIcon /> SET OOO
+                </MenuItem>
+        }
+
         <Dialog
             aria-labelledby="simple-dialog-title"
             classes={{"paper": styles}}

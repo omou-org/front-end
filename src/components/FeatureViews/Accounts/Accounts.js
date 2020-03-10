@@ -28,9 +28,10 @@ import ProfileCard from "./ProfileCard";
 import {GET} from "../../../actions/actionTypes";
 import {REQUEST_ALL} from "../../../actions/apiActions";
 import Loading from "../../Loading";
-import {isLoading} from "../../../actions/hooks"
-import {Tooltip} from "@material-ui/core";
+import {isLoading} from "actions/hooks"
+import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
+import {capitalizeString} from "../../../utils";
 
 const styles = theme => ({
     root: {
@@ -202,7 +203,7 @@ class Accounts extends Component {
                             <TableCell>{addDashes(row.phone_number)}
                             </TableCell>
                             <TableCell>
-                                {row.role.charAt(0).toUpperCase() + row.role.slice(1)}
+                                {capitalizeString(row.role)}
                             </TableCell>
                             <TableCell
                                 onClick={(event) => {
@@ -214,7 +215,6 @@ class Accounts extends Component {
                                     {
                                         (row.role === "student" || row.role === "parent" || this.props.isAdmin) &&
                                         <IconButton
-                                            // className="editButton"
                                             component={NavLink}
                                             to={`/registration/form/${row.role}/${row.user_id}/edit`}>
                                             <EditIcon />
@@ -225,7 +225,7 @@ class Accounts extends Component {
                                     component={Hidden}
                                     lgUp>
                                     <Button
-                                        className="editButton"
+                                        variant="outlined"
                                         component={NavLink}
                                         to={`/registration/form/${row.role}/${row.user_id}/edit`}>
                                         <EditIcon />
