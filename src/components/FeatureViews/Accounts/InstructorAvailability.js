@@ -3,18 +3,22 @@ import {useDispatch, useSelector} from "react-redux";
 import {instance} from "actions/apiActions";
 import {POST_INSTRUCTORAVAILABILITY_SUCCESS} from "actions/actionTypes";
 import PropTypes from "prop-types";
+import {withStyles} from "@material-ui/core/styles";
 
-import AwayIcon from "@material-ui/icons/EventBusy";
+
+import {TimePicker} from "material-ui-pickers";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import Grid from "@material-ui/core/Grid";
-import {TimePicker} from "material-ui-pickers";
 
 import "./Accounts.scss";
 
 import {DayConverter} from "utils";
 import {timeParser} from "components/Form/FormUtils";
+import CalendarIcon from "@material-ui/icons/CalendarViewDay"
+import MenuItem from "@material-ui/core/MenuItem";
+import DialogActions from "@material-ui/core/DialogActions/DialogActions";
 
 const styles = {
     "maxHeight": "80vh",
@@ -56,7 +60,7 @@ const convertAvailObj = ({day, end, start}, instructor) => ({
 
 const endpoint = "/account/instructor-availability/";
 
-const InstructorAvailability = ({instructorID}) => {
+const InstructorAvailability = ({ instructorID, button }) => {
     const dispatch = useDispatch();
     const instructor = useSelector(({Users}) => Users.InstructorList[instructorID]);
     const [availability, setAvailability] = useState(() => fillWorkHours({}));
@@ -128,13 +132,18 @@ const InstructorAvailability = ({instructorID}) => {
 
     return (
         <>
-            <Button
-                className="editButton"
-                onClick={toggleDialog}
-                variant="outlined">
-                <AwayIcon />
-                Instructor Availability
-            </Button>
+            {
+                button ? <Button
+                        onClick={toggleDialog}
+                        variant="outlined"
+                    >
+                        <CalendarIcon />
+                        SET AVAILABILITY
+                    </Button> :
+                    <MenuItem selected onClick={toggleDialog}>
+                        <CalendarIcon /> SET AVAILABILITY
+                    </MenuItem>
+            }
             <Dialog
                 aria-labelledby="simple-dialog-title"
                 classes={{"paper": styles}}
@@ -201,36 +210,51 @@ const InstructorAvailability = ({instructorID}) => {
                             item
                             md={5} />
                     </Grid>
+                    <Grid item md={5} />
+                </Grid>
+                <Grid
+                    container
+                    md={12}>
                     <Grid
-                        container
-                        md={12}>
-                        <Grid
-                            item
-                            md={8} />
-                        <Grid
-                            item
-                            md={2}>
-                            <Button
-                                className="button"
-                                onClick={toggleDialog}>
-                                Cancel
-                            </Button>
-                        </Grid>
-                        <Grid
-                            item
-                            md={2}>
-                            <Button
-                                className="button"
-                                disabled={!allValid}
-                                onClick={handleSave}>
-                                Save Form
-                            </Button>
-                        </Grid>
+                        item
+                        md={8} />
+                    <Grid
+                        item
+                        md={2}>
+                        <Button
+                            className="button"
+                            onClick={handleOpenDialog}>
+                            Cancel
+                        </Button>
                     </Grid>
-                </DialogContent>
-            </Dialog>
-        </>
-    );
+                    <Grid
+                        item
+                        md={2}>
+                        <Button
+                            className="button">
+                            Save Form
+                        </Button>
+                    </Grid>
+                </Grid>
+            </DialogContent>
+            <DialogActions>
+                <Button
+                    variant="outlined"
+                    onClick={toggleDialog}>
+                    Cancel
+                </Button>
+                <Button
+                    style={{"color": "white"}}
+                    variant="contained"
+                    color="primary"
+                    disabled={!allValid}
+                    onClick={handleSave}
+                >
+                    Save Form
+                </Button>
+            </DialogActions>
+        </Dialog>
+    </>);
 };
 
 InstructorAvailability.propTypes = {

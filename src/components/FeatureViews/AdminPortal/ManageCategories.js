@@ -7,13 +7,17 @@ import "./AdminPortal.scss";
 import {bindActionCreators} from "redux";
 import * as adminActions from "../../../actions/adminActions";
 import {connect, useDispatch, useSelector} from "react-redux";
-import {Button, Typography} from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import {withRouter} from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import {NoListAlert} from "../../NoListAlert";
 import {GET} from "../../../actions/actionTypes";
 import Loading from "../../Loading";
+import IconButton from "@material-ui/core/IconButton/IconButton";
+import EditIcon from "@material-ui/icons/Edit";
+import Button from "@material-ui/core/Button";
+
 
 function ManageCategories() {
     const dispatch = useDispatch();
@@ -123,7 +127,9 @@ function ManageCategories() {
             <Grid item xs={12}>
                 <Grid container spacing={8} alignItems={"center"}>
                     {
-                        categoryList.length > 0 ? categoryList.map((category) => {
+                        categoryList.length > 0 ? categoryList
+                            .sort((categoryA, categoryB) => (categoryB.id - categoryA.id))
+                            .map((category) => {
                                 return (<Grid item xs={12} md={12} key={category.id}>
                                     {
                                         category.editing ? editCategoryRow(category) : viewCategoryRow(category)
@@ -173,11 +179,11 @@ function ManageCategories() {
                     </Typography>
                 </Grid>
                 <Grid item xs={2} md={2}>
-                    <Button
+                    <IconButton
                         onClick={editCategory(category.id)}
-                        className={"button"}>
-                        EDIT
-                    </Button>
+                        >
+                        <EditIcon/>
+                    </IconButton>
                 </Grid>
             </Grid>
         </Paper>)

@@ -32,7 +32,7 @@ export const dateFormatter = (date) =>
         .toDateString()
         .substr(3);
 
-export const courseDateFormat = ({schedule, is_confirmed}) => ({
+export const courseDateFormat = ({ schedule, is_confirmed }) => ({
     "days": DayConverter[new Date(schedule.start_date).getDay()],
     "end_date": dateFormatter(schedule.end_date),
     "end_time": new Date(`2020-01-01${schedule.end_time}`)
@@ -43,20 +43,23 @@ export const courseDateFormat = ({schedule, is_confirmed}) => ({
         .toLocaleTimeString("eng-US", timeFormat),
 });
 
+const dateTimeToDate = (date) => new Date(Date.UTC(date.getFullYear(),date.getMonth(), date.getDate()));
+
 export const sessionPaymentStatus = (session, enrollment) => {
-    const session_date = new Date(session.start_datetime),
-        last_session = new Date(enrollment.last_paid_session_datetime);
+    const session_date = dateTimeToDate(new Date(session.start_datetime)),
+        last_session = dateTimeToDate(new Date(enrollment.last_paid_session_datetime)),
+        first_payment = dateTimeToDate(new Date(enrollment.payment_list[0].created_at));
 
     const sessionIsBeforeLastPaidSession = session_date <= last_session;
     const sessionIsLastPaidSession = session_date == last_session;
     const thereIsPartiallyPaidSession = !Number.isInteger(enrollment.sessions_left);
-    const classSessionNotBeforeFirstPayment = session_date >= new Date(enrollment.payment_list[0].created_at);
+    const classSessionNotBeforeFirstPayment = session_date >= first_payment;
 
-    if( sessionIsBeforeLastPaidSession && !thereIsPartiallyPaidSession && classSessionNotBeforeFirstPayment){
+    if (sessionIsBeforeLastPaidSession && !thereIsPartiallyPaidSession && classSessionNotBeforeFirstPayment) {
         return "Paid";
-    } else if ( sessionIsLastPaidSession && thereIsPartiallyPaidSession && thereIsPartiallyPaidSession){
+    } else if (sessionIsLastPaidSession && thereIsPartiallyPaidSession && thereIsPartiallyPaidSession) {
         return "Partial";
-    } else if (!classSessionNotBeforeFirstPayment ) {
+    } else if (!classSessionNotBeforeFirstPayment) {
         return "NA"
     } else {
         return "Unpaid";
@@ -93,6 +96,38 @@ export const courseToRegister = (enrollment, course, student) => ({
     "preLoaded": false,
     "submitPending": false,
 });
+
 export const truncateStrings = (string, length) => string.length > length
     ? `${string.slice(0, length - 3).trim()}...`
     : string;
+
+const isoStringToUTCDate = (dateString) => {
+    let newDate = new Date("2020-01-01");
+    console.log(Number(dateString.substring(5,7)));
+    newDate.setFullYear(Number(dateString.substring(0,4)));
+    newDate.setMonth(Number(dateString.substring(5,7)));
+    newDate.setDate(Number(dateString.substring(8,10)));
+
+    let newDateObject = new Date(dateString);
+    return newDateObject;
+};
+
+export const startAndEndDate = (start, end, pacific) => {
+    let startDate, getEndDate, setDate, endDate;
+
+    if(!pacific){
+        startDate = start.toString().substr(3, 13);
+        getEndDate = end.getDate();
+        setDate = end.setDate(getEndDate - 1);
+        endDate = new Date(setDate).toString().substr(3, 13);
+    } else {
+        startDate = start.toISOString().substring(0,start.toISOString().indexOf("T"));
+        endDate = end.toISOString().substring(0,end.toISOString().indexOf("T"));
+        console.log(isoStringToUTCDate(startDate));
+    }
+
+    return `${startDate} - ${endDate}`
+};
+export const capitalizeString = (string) => {
+    return string.replace(/^\w/, lowerCaseString => lowerCaseString.toUpperCase())
+}

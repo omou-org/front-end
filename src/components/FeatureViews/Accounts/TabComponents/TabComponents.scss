@@ -222,7 +222,9 @@
 }
 
 .sessions-left-chip {
-  position: absolute;
+  &.set-pos{
+    position: absolute;
+  }
   border-radius: 100%;
   width: 30px;
   height: 30px;
@@ -292,8 +294,10 @@
     width: 150px;
     border-radius: 150px;
     position:relative;
-    top: 0;
-    right: 0;
+    &.set-pos{
+      top: 0;
+      right: 0;
+    }
   }
 }
 

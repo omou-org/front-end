@@ -173,22 +173,17 @@ export const submitForm = (state, id) => {
 
         }
         case "course_details": {
-            const course = formatCourse(state["Course Info"], "class");
+            const course = formatCourse(state, "class");
 
             for (const key in course) {
                 if (course.hasOwnProperty(key) && !course[key]) {
                     delete course[key];
                 }
             }
-            const updatedCourse = {
-                ...course,
-                "hourly_tuition": state.Tuition["Hourly Tuition"],
-                "total_tuition": state.Tuition["Total Tuition"],
-            };
             if (id) {
-                return patchData("course", updatedCourse, id);
+                return patchData("course", course, id);
             }
-            return postData("course", updatedCourse);
+            return postData("course", course);
 
         }
         case "tutoring": {
