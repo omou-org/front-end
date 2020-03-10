@@ -1,6 +1,7 @@
 import * as types from "./actionTypes";
 import {instance, MISC_FAIL, REQUEST_ALL, REQUEST_STARTED} from "./apiActions";
-import {useCallback, useEffect, useRef, useState} from "react";
+import {toApiDate, toApiTime} from "utils";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 
 export const isFail = (...statuses) =>
@@ -170,6 +171,11 @@ export const useCategory = wrapUseEndpoint(
 export const useOutOfOffice = wrapUseEndpoint(
     "/account/instructor-out-of-office/",
     types.FETCH_OOO_SUCCESS,
+);
+
+export const useSession = wrapUseEndpoint(
+    "/scheduler/session/",
+    types.GET_SESSIONS_SUCCESS,
 );
 
 export const useEnrollmentByCourse = (courseID) => wrapUseEndpoint(

@@ -1,3 +1,5 @@
+import {instance} from "actions/apiActions";
+
 export const timeFormat = {
     "hour12": false,
     "hour": "2-digit",
@@ -24,6 +26,14 @@ export const DayConverter = {
     "5": "friday",
     "6": "saturday",
 };
+
+/**
+ * Pads a number to the desired length, filling with leading zeros
+ * @param {Number} integer Number to pad
+ * @param {String} length Minimum number of digits
+ * @returns {String} Padded integer
+ */
+const padNum = (integer, length) => String(integer).padStart(length, "0");
 
 export const isExistingTutoring = (tutoringCourseID) => String(tutoringCourseID).indexOf("T") === -1;
 
@@ -60,7 +70,7 @@ export const sessionPaymentStatus = (session, enrollment) => {
     } else if (sessionIsLastPaidSession && thereIsPartiallyPaidSession && thereIsPartiallyPaidSession) {
         return "Partial";
     } else if (!classSessionNotBeforeFirstPayment) {
-        return "NA"
+        return "NA";
     } else {
         return "Unpaid";
     }
@@ -70,8 +80,8 @@ export const courseToRegister = (enrollment, course, student) => ({
     "Enrollment": enrollment.enrollment_id,
     "Course Selection": {
         "Course": {
-            label: course.title,
-            value: Number(course.course_id),
+            "label": course.title,
+            "value": Number(course.course_id),
         },
     },
     "Course Selection_validated": {
@@ -79,9 +89,9 @@ export const courseToRegister = (enrollment, course, student) => ({
     },
     "Student": {
         "Student": {
-            label: student.name,
-            value: student.user_id,
-        }
+            "label": student.name,
+            "value": student.user_id,
+        },
     },
     "Student_validated": {
         "Student": true,
@@ -101,16 +111,65 @@ export const truncateStrings = (string, length) => string.length > length
     ? `${string.slice(0, length - 3).trim()}...`
     : string;
 
-const isoStringToUTCDate = (dateString) => {
-    let newDate = new Date("2020-01-01");
-    console.log(Number(dateString.substring(5,7)));
-    newDate.setFullYear(Number(dateString.substring(0,4)));
-    newDate.setMonth(Number(dateString.substring(5,7)));
-    newDate.setDate(Number(dateString.substring(8,10)));
+/**
+ * Converts a time of day to a backend-friendly format
+ * @param {Date} time Time of day to convert
+ * @returns {String} Backend-friendly formatted time
+ */
+export const toApiTime = (time) =>
+    `${padNum(time.getHours(), 2)}:${padNum(time.getMinutes(), 2)}`;
 
-    let newDateObject = new Date(dateString);
-    return newDateObject;
+/**
+ * Converts a date to a backend-friendly format
+ * @param {Date} date Date to convert
+ * @returns {String} Backend-friendly formatted date
+ */
+export const toApiDate = (date) =>
+    `${date.getFullYear()}-${padNum(date.getMonth() + 1, 2)}-${padNum(date.getDate(), 2)}`;
+
+/**
+ * Checks if an instructor has conflicts with a certain time
+ * @param {Number} instructorID ID of instructor to check
+ * @param {Date} start Start date and time
+ * @param {Date} end End date and time
+ * @returns {Object} "course" and "session" responses of checks, or null if it failed
+ */
+export const instructorConflictCheck = async (instructorID, start, end) => {
+    const sessionParams = {
+        "date": toApiDate(start),
+        "end_time": toApiTime(end),
+        "start_time": toApiTime(start),
+    };
+
+    const courseParams = {
+        "end_date": toApiDate(end),
+        "end_time": toApiTime(end),
+        "start_date": toApiDate(start),
+        "start_time": toApiTime(start),
+    };
+
+    try {
+        const [sessionResponse, courseResponse] = await Promise.all([
+            instance.get(
+                `/scheduler/validate/session/${instructorID}`,
+                {"params": sessionParams},
+            ),
+            instance.get(
+                `/scheduler/validate/course/${instructorID}`,
+                {"params": courseParams},
+            ),
+        ]);
+        return {
+            "course": courseResponse,
+            "session": sessionResponse,
+        };
+    } catch (error) {
+        return null;
+    }
 };
+
+export const capitalizeString = (string) => string
+    .replace(/^\w/, (lowerCaseString) => lowerCaseString.toUpperCase());
 
 export const startAndEndDate = (start, end, pacific) => {
     let startDate, getEndDate, setDate, endDate;
@@ -123,11 +182,7 @@ export const startAndEndDate = (start, end, pacific) => {
     } else {
         startDate = start.toISOString().substring(0,start.toISOString().indexOf("T"));
         endDate = end.toISOString().substring(0,end.toISOString().indexOf("T"));
-        console.log(isoStringToUTCDate(startDate));
     }
 
     return `${startDate} - ${endDate}`
 };
-export const capitalizeString = (string) => {
-    return string.replace(/^\w/, lowerCaseString => lowerCaseString.toUpperCase())
-}
