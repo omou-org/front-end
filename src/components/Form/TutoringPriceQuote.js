@@ -16,7 +16,7 @@ import {GET} from "../../actions/actionTypes";
 import {durationParser, REQUEST_ALL} from "../../actions/apiActions";
 import {academicLevelParse} from "../../reducers/registrationReducer";
 import InputLabel from "@material-ui/core/InputLabel";
-
+import {OutlinedSelect} from "../FeatureViews/Scheduler/SchedulerUtils";
 
 const TutoringPriceQuote = ({courseType, handleUpdatePriceFields, tuitionConfirmed, tutoringCategory}) => {
     const dispatch = useDispatch();
@@ -242,6 +242,12 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields, tuitionConfirm
                                     inputProps={{
                                         id:"category"
                                     }}
+                                    input={
+                                        <OutlinedSelect
+                                            id="select-category"
+                                            name="category"
+                                        />
+                                    }
                                 >
                                     {
                                         categoryList.map((category) =>
@@ -263,6 +269,12 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields, tuitionConfirm
                                     inputProps={{
                                         id:"academic-level"
                                     }}
+                                    input={
+                                        <OutlinedSelect
+                                            id="select-academic"
+                                            name="academic"
+                                        />
+                                    }
                                 >
                                     {
                                         academicList.map((grade) =>
@@ -276,12 +288,16 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields, tuitionConfirm
                                 </Select>
                             </Grid>
                             <Grid item xs={3}>
-                                <TextField
-                                    label={"Hourly Tuition"}
-                                    value={hourlyTuition || ''}
-                                    InputProps={{readOnly:true}}
-                                    variant={"outlined"}
-                                />
+                                    <InputLabel htmlFor={"hourly-tuition"}>Hourly Tuition</InputLabel>
+                                <div
+                                    style={{
+                                        padding: '10px 26px 10px 12px',
+                                    }}
+                                >
+                                    <Typography variant="h6">
+                                        {hourlyTuition || ''}
+                                    </Typography>
+                                </div>
                             </Grid>
                         </Grid>
                     </Grid>
