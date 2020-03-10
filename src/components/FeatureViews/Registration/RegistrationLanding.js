@@ -1,8 +1,8 @@
 import * as hooks from "actions/hooks";
-import { distinctObjectArray, gradeOptions } from "utils";
-import React, { useCallback, useMemo, useState, useEffect } from "react";
+import {distinctObjectArray, gradeOptions} from "utils";
+import React, {useCallback, useMemo, useState} from "react";
 // react/redux imports
-import { useDispatch, useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 
 import BackButton from "components/BackButton";
 import Grid from "@material-ui/core/Grid";
@@ -17,8 +17,6 @@ import Loading from "../../Loading";
 import CourseList from "./CourseList";
 import TutoringList from "./TutoringList";
 import RegistrationActions from "./RegistrationActions";
-import * as adminActions from "../../../actions/adminActions";
-import { bindActionCreators } from "redux";
 
 
 const NUM_GRADES = 13;
@@ -26,11 +24,11 @@ const NUM_GRADES = 13;
 const RegistrationLanding = () => {
     const courses = useSelector(({ "Course": { NewCourseList } }) => NewCourseList);
     const instructors = useSelector(({ "Users": { InstructorList } }) => InstructorList);
-    const categories = useSelector(({ "Course": { CourseCategories } }) => CourseCategories)
+    const categories = useSelector(({ "Course": { CourseCategories } }) => CourseCategories);
 
     const courseStatus = hooks.useCourse();
-    hooks.useInstructor()
-    hooks.useCategory();
+    const instructorStatus = hooks.useInstructor();
+    const categoryStatus = hooks.useCategory();
 
 
     const [view, setView] = useState(0);
@@ -54,7 +52,7 @@ const RegistrationLanding = () => {
         .map(({ category }) => ({
             "label": categories.find(Category => Number(Category.id) === Number(category)).name,
             "value": category,
-        }))), [courses])
+        }))), [courses]);
 
     const filteredCourses = useMemo(
         () => Object.entries(courseFilters)
@@ -84,7 +82,8 @@ const RegistrationLanding = () => {
             [filterType]: filters || [],
         }));
     }, []);
-    const isLoading = hooks.isLoading(courseStatus) && Object.entries(courses).length === 0;
+    const isLoading = hooks.isLoading(courseStatus, categoryStatus, instructorStatus)
+        && Object.entries(courses).length === 0;
 
     if (hooks.isFail(courseStatus) && Object.entries(courses).length) {
         return "Unable to load courses!";
