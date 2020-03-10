@@ -1,4 +1,4 @@
-import React from "react";
+import {instance} from "actions/apiActions";
 
 export const timeFormat = {
     "hour12": false,
@@ -27,6 +27,14 @@ export const DayConverter = {
     "6": "saturday",
 };
 
+/**
+ * Pads a number to the desired length, filling with leading zeros
+ * @param {Number} integer Number to pad
+ * @param {String} length Minimum number of digits
+ * @returns {String} Padded integer
+ */
+const padNum = (integer, length) => String(integer).padStart(length, "0");
+
 export const isExistingTutoring = (tutoringCourseID) => String(tutoringCourseID).indexOf("T") === -1;
 
 export const dateFormatter = (date) =>
@@ -54,23 +62,23 @@ export const sessionPaymentStatus = (session, enrollment) => {
     const thereIsPartiallyPaidSession = !Number.isInteger(enrollment.sessions_left);
     const classSessionNotBeforeFirstPayment = session_date >= new Date(enrollment.payment_list[0].created_at);
 
-    if( sessionIsBeforeLastPaidSession && !thereIsPartiallyPaidSession && classSessionNotBeforeFirstPayment){
+    if (sessionIsBeforeLastPaidSession && !thereIsPartiallyPaidSession && classSessionNotBeforeFirstPayment) {
         return "Paid";
-    } else if ( sessionIsLastPaidSession && thereIsPartiallyPaidSession && thereIsPartiallyPaidSession){
+    } else if (sessionIsLastPaidSession && thereIsPartiallyPaidSession && thereIsPartiallyPaidSession) {
         return "Partial";
-    } else if (!classSessionNotBeforeFirstPayment ) {
-        return "NA"
-    } else {
-        return "Unpaid";
+    } else if (!classSessionNotBeforeFirstPayment) {
+        return "NA";
     }
+    return "Unpaid";
+
 };
 
 export const courseToRegister = (enrollment, course, student) => ({
     "Enrollment": enrollment.enrollment_id,
     "Course Selection": {
         "Course": {
-            label: course.title,
-            value: Number(course.course_id),
+            "label": course.title,
+            "value": Number(course.course_id),
         },
     },
     "Course Selection_validated": {
@@ -78,9 +86,9 @@ export const courseToRegister = (enrollment, course, student) => ({
     },
     "Student": {
         "Student": {
-            label: student.name,
-            value: student.user_id,
-        }
+            "label": student.name,
+            "value": student.user_id,
+        },
     },
     "Student_validated": {
         "Student": true,
@@ -95,6 +103,64 @@ export const courseToRegister = (enrollment, course, student) => ({
     "preLoaded": false,
     "submitPending": false,
 });
+
 export const truncateStrings = (string, length) => string.length > length
     ? `${string.slice(0, length - 3).trim()}...`
     : string;
+
+/**
+ * Converts a time of day to a backend-friendly format
+ * @param {Date} time Time of day to convert
+ * @returns {String} Backend-friendly formatted time
+ */
+export const toApiTime = (time) =>
+    `${padNum(time.getHours(), 2)}:${padNum(time.getMinutes(), 2)}`;
+
+/**
+ * Converts a date to a backend-friendly format
+ * @param {Date} date Date to convert
+ * @returns {String} Backend-friendly formatted date
+ */
+export const toApiDate = (date) =>
+    `${date.getFullYear()}-${padNum(date.getMonth() + 1, 2)}-${padNum(date.getDate(), 2)}`;
+
+/**
+ * Checks if an instructor has conflicts with a certain time
+ * @param {Number} instructorID ID of instructor to check
+ * @param {Date} start Start date and time
+ * @param {Date} end End date and time
+ * @returns {Object} "course" and "session" responses of checks, or null if it failed
+ */
+export const instructorConflictCheck = async (instructorID, start, end) => {
+    const sessionParams = {
+        "date": toApiDate(start),
+        "end_time": toApiTime(end),
+        "start_time": toApiTime(start),
+    };
+
+    const courseParams = {
+        "end_date": toApiDate(end),
+        "end_time": toApiTime(end),
+        "start_date": toApiDate(start),
+        "start_time": toApiTime(start),
+    };
+
+    try {
+        const [sessionResponse, courseResponse] = await Promise.all([
+            instance.get(
+                `/scheduler/validate/session/${instructorID}`,
+                {"params": sessionParams},
+            ),
+            instance.get(
+                `/scheduler/validate/course/${instructorID}`,
+                {"params": courseParams},
+            ),
+        ]);
+        return {
+            "course": courseResponse,
+            "session": sessionResponse,
+        };
+    } catch (error) {
+        return null;
+    }
+};
