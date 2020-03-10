@@ -52,7 +52,7 @@ const RegistrationLanding = () => {
         .map(({ category }) => ({
             "label": categories.find(Category => Number(Category.id) === Number(category)).name,
             "value": category,
-        }))), [courses]);
+        }))), [categories]);
 
     const filteredCourses = useMemo(
         () => Object.entries(courseFilters)
@@ -91,6 +91,10 @@ const RegistrationLanding = () => {
 
     const renderFilter = (filterType) => {
         let options = [];
+        if(isLoading || !categories){
+            return "";
+        }
+
         switch (filterType) {
             case "instructor":
                 options = instructorOptions;
