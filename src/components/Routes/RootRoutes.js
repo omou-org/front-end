@@ -1,10 +1,10 @@
 // React Imports
-import {Redirect, Route, Switch, useLocation} from "react-router-dom";
-import {CSSTransition, TransitionGroup} from "react-transition-group";
-import {useDispatch} from "react-redux";
-import {bindActionCreators} from "redux";
+import { Redirect, Route, Switch, useLocation } from "react-router-dom";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { useDispatch } from "react-redux";
+import { bindActionCreators } from "redux";
 import * as registrationActions from "../../actions/registrationActions";
-import React, {useMemo} from "react";
+import React, { useMemo } from "react";
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/EnrollmentView";
@@ -24,9 +24,9 @@ import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
 import AdminRoute from "./AdminRoute";
 import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
 import RegistrationReceipt from "../FeatureViews/Registration/RegistrationReceipt";
+import CatsPage from "../catsPage/CatsPage";
 
-
-export const RootRoutes = (props) =>  {
+export const RootRoutes = (props) => {
     let location = useLocation();
     const dispatch = useDispatch();
     const api = useMemo(
@@ -38,11 +38,11 @@ export const RootRoutes = (props) =>  {
 
     api.resetSubmitStatus();
     return (<TransitionGroup>
-            <CSSTransition
-                key={location.key}
-                classNames="fade"
-                timeout={100}>
-                <Switch>
+        <CSSTransition
+            key={location.key}
+            classNames="fade"
+            timeout={100}>
+            <Switch>
                 <Route
                     path="/login"
                     render={(passedProps) => <LoginPage {...passedProps} />} />
@@ -52,7 +52,11 @@ export const RootRoutes = (props) =>  {
                     exact
                     path="/"
                     render={(passedProps) => <Scheduler {...passedProps} />} />
-
+                <ProtectedRoute
+                    exact
+                    path="/cats"
+                    render={(passedProps) => <CatsPage {...passedProps} />}
+                />
                 <ProtectedRoute
                     exact
                     path="/registration"
@@ -86,7 +90,7 @@ export const RootRoutes = (props) =>  {
                 <ProtectedRoute
                     exact
                     path="/accounts/parent/payment/:parentID/:paymentID"
-                    render={(passedProps) => <RegistrationReceipt {...passedProps} />}/>
+                    render={(passedProps) => <RegistrationReceipt {...passedProps} />} />
                 <ProtectedRoute
                     exact
                     path="/accounts"
@@ -94,7 +98,7 @@ export const RootRoutes = (props) =>  {
                 <ProtectedRoute
                     exact
                     path="/accounts/:accountType/:accountID/:courseID"
-                    render={(passedProps) => <CourseSessionStatus {...passedProps} />}/>
+                    render={(passedProps) => <CourseSessionStatus {...passedProps} />} />
 
                 {/* Registration Routes */}
                 <ProtectedRoute
@@ -105,23 +109,24 @@ export const RootRoutes = (props) =>  {
                     render={(passedProps) => <RegistrationCourse {...passedProps} />} />
                 <ProtectedRoute
                     path="/registration/cart/"
-                    render={(passedProps) => <RegistrationCart {...passedProps}/>}
+                    render={(passedProps) => <RegistrationCart {...passedProps} />}
                 />
                 <ProtectedRoute
                     path="/registration/receipt/:paymentID?"
-                    render={(passedProps) => <RegistrationReceipt {...passedProps}/> }
+                    render={(passedProps) => <RegistrationReceipt {...passedProps} />}
                 />
 
                 {/* Admin Routes */}
                 <AdminRoute
                     exact
                     path="/adminportal/:view?/:type?/:id?/:edit?"
-                    render={(passedProps) => <AdminPortal/>}/>
+                    render={(passedProps) => <AdminPortal />} />
 
-                <Route path="/PageNotFound" component={ErrorNotFoundPage}/>
-                <Redirect to="/PageNotFound"/>
+
+                <Route path="/PageNotFound" component={ErrorNotFoundPage} />
+                <Redirect to="/PageNotFound" />
             </Switch>
-            </CSSTransition>
-        </TransitionGroup>);
+        </CSSTransition>
+    </TransitionGroup>);
 };
 
