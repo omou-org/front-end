@@ -164,3 +164,6 @@ export const instructorConflictCheck = async (instructorID, start, end) => {
         return null;
     }
 };
+
+export const capitalizeString = (string) => string
+    .replace(/^\w/, (lowerCaseString) => lowerCaseString.toUpperCase());
