@@ -19,14 +19,6 @@ import UnpaidSessions from "./UnpaidSessions";
 
 function AdminPortalHome() {
 
-    const style ={
-        card:{
-            width:"auto",
-            textAlign:"left",
-            padding: "50px"
-        }
-    }    
-
     return (
         <>
             <Grid container>
@@ -41,10 +33,4 @@ AdminPortalHome.propTypes = {
     // admin: PropTypes.bool,
 };
 
-const mapStateToProps = (state) => ({
-    "Unpaid": state.Admin.Unpaid,
-});
-
-export default withRouter(connect(
-    mapStateToProps
-)(AdminPortalHome));
+export default AdminPortalHome;

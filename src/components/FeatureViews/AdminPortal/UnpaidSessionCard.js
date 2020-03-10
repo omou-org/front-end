@@ -7,7 +7,8 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import {stringToColor} from "../Accounts/accountUtils";
-import {roleColor, initials, capitalizeRoleName, statusColor} from "./AdminUtils";
+import {roleColor, initials, calculateSessionLength, getTime, statusColor, amountDue} from "./AdminUtils";
+import {useSelector} from "react-redux";
 
     const styles = (username) => ({
         "backgroundColor": stringToColor(username),
@@ -35,7 +36,7 @@ import {roleColor, initials, capitalizeRoleName, statusColor} from "./AdminUtils
     const cardStyle = {
         "height": 250,  
         "width": 220,
-        "margin": '10px'
+        "margin": '10px',
     }
 
     const statusStyle = (status) => ({
@@ -51,30 +52,42 @@ import {roleColor, initials, capitalizeRoleName, statusColor} from "./AdminUtils
     })
 
     const UnpaidSessionCard = ({unpaidStudent}) => {
+
+        const students = useSelector(({Users}) => Users.StudentList);
+        const courses = useSelector(({Course}) => Course.NewCourseList);
+        const student = students[unpaidStudent.student];
+        const course = courses[unpaidStudent.course];
+        const startTime = getTime(course.schedule.start_time);
+        const endTime = getTime(course.schedule.end_time);
+        const amtDue = amountDue(course.hourly_tuition, unpaidStudent.sessions_left, calculateSessionLength(startTime, endTime))
+
         return(
             <Card style = {cardStyle}> 
                 <CardActionArea>
                     <CardMedia>
                         <Grid container style={{justifyContent:"center"}}>
-                            <Avatar style={styles(unpaidStudent.fName + " " + unpaidStudent.lName)}>
-                                {initials(unpaidStudent.fName, unpaidStudent.lName)}
+                            <Avatar 
+                            style={styles(student.first_name + " " + student.last_name)}
+                            >
+                                {initials(student.first_name, student.last_name)}
                             </Avatar>
                         </Grid>
                     </CardMedia>
                     <CardContent>
                         <Typography style ={{fontSize: "16px", fontWeight: 500, lineHeight: "24px", textAlign: "center"}}>
-                            {unpaidStudent.fName + " " + unpaidStudent.lName}
+                            {student.name}
                         </Typography>
-                        <Typography style={roleStyle(unpaidStudent.status)} >
-                            {capitalizeRoleName(unpaidStudent.status)}
+                        <Typography style={roleStyle("student")} >
+                            Student
                         </Typography>
                         <Typography style={{textAlign: "center"}}>
                             Payment Status: 
-                            <span style={statusStyle(unpaidStudent.paymentStatus)}>{unpaidStudent.paymentStatus}</span>
+                            <span style={statusStyle(unpaidStudent.sessions_left)}>{unpaidStudent.sessions_left}</span>
                             <br/>
-                            {unpaidStudent.amt}
+                            $
+                            {amtDue}
                             <br/>
-                            {unpaidStudent.course}
+                            {course.title}
                         </Typography>
                     </CardContent>
                 </CardActionArea>

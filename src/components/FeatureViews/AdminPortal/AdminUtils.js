@@ -7,10 +7,10 @@ export const roleColor = {
 }
 
 export const statusColor = {
-    "0": "red",
-    "1": "red",
-    "2": "yellow",
-    "3": "yellow"
+    "0": "yellow",
+    "-1": "yellow",
+    "-2": "red",
+    "-3": "red"
 }
 
 export const initials = (first, last) => {
@@ -21,8 +21,8 @@ export const initials = (first, last) => {
         } else {
             firstI = first.charAt(1)
         }
-            const lastI = last.charAt(0)
-            return firstI + lastI
+        const lastI = last.charAt(0)
+        return firstI + lastI
     }
 }
 
@@ -48,13 +48,13 @@ export const parseDate = (date) => {
     const ago = (today - recordDate) / 1000;
     if (isNaN(recordDate)) {
         return "n/a"
-    } else if (ago<60){
+    } else if (ago < 60) {
         return `Updated ${Math.round(ago)} seconds ago`;
-    } else if (ago<3600){
+    } else if (ago < 3600) {
         return `Updated ${Math.round(ago/60)} minutes ago`;
-    } else if (ago<86400){
+    } else if (ago < 86400) {
         return `Updated ${Math.round(ago/3600)} minutes ago`;
-    } else if (ago<172800){
+    } else if (ago < 172800) {
         return `Updated 1 day ago`;
     } else {
         return `Updated ${Math.round(ago/86400)} days ago`;
@@ -62,7 +62,7 @@ export const parseDate = (date) => {
 }
 
 export const capitalizeRoleName = (role) => {
-        return role.replace(/^\w/, c => c.toUpperCase());
+    return role.replace(/^\w/, c => c.toUpperCase());
 }
 
 export const parseStudent = (numStudents) => {
@@ -102,5 +102,16 @@ export const parseMonth = {
     10: "November",
     11: "December"
 }
+
+export const amountDue = (hourlyTuition, sessionLeft, sessionDuration) => hourlyTuition * sessionLeft * sessionDuration;
+
+export const getTime = (time) => {
+    time = String(time);
+    const minutes = parseInt(time.slice(-2))/60;
+    const hours = parseInt(time.substring(1));
+    return hours + minutes;
+}
+
+export const calculateSessionLength = (startTime, endTime) => getTime(endTime) - getTime(startTime);
 
 export const parseToday = (date) => date.getDate();

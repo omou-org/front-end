@@ -84,65 +84,9 @@ export default {
             DateRange: [],
             PaymentMethod: [],
         },
-        Unpaid: {
-            
-              students:[{
-                    student_id: 1,
-                    fName: "Greg",
-                    lName: "Glinoga",
-                    status: "student",
-                    paymentStatus: "1",
-                    amt: 50.00,
-                    course: "AP Calculus",
-                },
-                {
-                    student_id: 2,
-                    fName: "Wilson",
-                    lName: "Lam",
-                    status: "student",
-                    paymentStatus: "2",
-                    amt: 40.00,
-                    course: "AP Calculus",
-                },
-                {
-                    student_id: 3,
-                    fName: "Calvin",
-                    lName: "Fronda",
-                    status: "student",
-                    paymentStatus: "3",
-                    amt: 40.00,
-                    course: "AP Calculus",
-                },
-                {
-                    student_id: 4,
-                    fName: "Jeffrey",
-                    lName: "Su",
-                    status: "student",
-                    paymentStatus: "1",
-                    amt: 60.00,
-                    course: "AP Calculus",
-                },
-                {
-                    student_id: 5,
-                    fName: "Neil",
-                    lName: "Allavarpu",
-                    status: "student",
-                    paymentStatus: "3",
-                    amt: 80.00,
-                    course: "AP Calculus",
-                },
-                {
-                    student_id: 6,
-                    fName: "Ryan",
-                    lName: "Gedwill",
-                    status: "student",
-                    paymentStatus: "2",
-                    amt: 40.00,
-                    course: "AP Calculus",
-                },
-                ]
-                }
-    }
+        Unpaid:""
+    }  
+    
 };
 
 function initRequests() {

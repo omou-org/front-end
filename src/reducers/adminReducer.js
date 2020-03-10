@@ -83,13 +83,13 @@ const updatePriceRule = (state, payload, action) => {
 const updateUnpaid = (state, payload, action) => {
     let {response} = payload
     let {data} = response;
-    let {Unpaid} = state;
+
     switch(action) {
         case "GET":{
             
             return {
                 ...state,
-                Unpaid,
+                Unpaid:data,
             };
     }
 }

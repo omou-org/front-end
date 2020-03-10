@@ -5,21 +5,26 @@ import Loading from "components/Loading";
 import * as adminActions from "../../../actions/adminActions";
 import { useEffect } from 'react';
 import UnpaidSessionCard from './UnpaidSessionCard';
+import * as hooks from 'actions/hooks';
 
-function UnpaidSessions () {
+function UnpaidSessions() {
     const dispatch = useDispatch();
     const api = useMemo(
         () => bindActionCreators(adminActions, dispatch),
         [dispatch]
     );
+    const UnpaidList = useSelector(({Admin}) => Admin.Unpaid) || [];
+    const studentList = useMemo(()=>  UnpaidList.map(({student})=>student), [UnpaidList])
+    const courseList = useMemo(()=> UnpaidList.map(({course})=>course), [UnpaidList])
 
-    const UnpaidList = useSelector(({Admin}) => Admin.Unpaid.students);
+    const studentStatus = hooks.useStudent(studentList);
+    const courseStatus = hooks.useCourse(courseList);
 
     useEffect(()=>{
         api.fetchUnpaid();
     },[]);
 
-    if (!UnpaidList){
+    if (!UnpaidList || hooks.isLoading(studentStatus, courseStatus)){
         return <Loading/>
     }
 

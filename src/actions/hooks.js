@@ -246,6 +246,11 @@ export const useInstructorAvailability = (instructorID) => wrapUseEndpoint(
     }
 )();
 
+export const useUnpaidSessions = () => wrapUseEndpoint(
+    "/payment/unpaid-sessions/",
+    types.GET_UNPAID_SUCCESS
+)
+
 // Hook
 export const usePrevious = (value) => {
     // The ref object is a generic container whose current property is mutable ...
@@ -260,3 +265,4 @@ export const usePrevious = (value) => {
     // Return previous value (happens before update in useEffect above)
     return ref.current;
 };
+
