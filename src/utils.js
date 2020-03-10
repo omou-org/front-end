@@ -111,6 +111,41 @@ export const truncateStrings = (string, length) => string.length > length
     ? `${string.slice(0, length - 3).trim()}...`
     : string;
 
+
+export const distinctObjectArray = (array) => {
+    const result = [];
+    const map = new Map();
+
+    for (const item of array) {
+        if (!map.has(item.label)) {
+            map.set(item.label, true);    // set any value to Map
+            result.push({
+                label: item.label,
+                value: item.value
+            });
+        }
+    }
+    return result;
+}
+
+
+export const gradeOptions = [{
+    "label": "Elementary School",
+    "value": "elementary_lvl"
+},
+{
+    "label": "Middle School",
+    "value": "middle_lvl"
+},
+{
+    "label": "High School",
+    "value": "high_lvl"
+},
+{
+    "label": "College",
+    "value": "college_lvl"
+},
+]
 /**
  * Converts a time of day to a backend-friendly format
  * @param {Date} time Time of day to convert
