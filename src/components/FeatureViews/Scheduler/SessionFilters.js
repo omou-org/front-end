@@ -1,28 +1,41 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import IconButton from "@material-ui/core/es/IconButton";
 import FilterIcon from "@material-ui/icons/FilterList";
 import Menu from "@material-ui/core/es/Menu";
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import blue from "@material-ui/core/es/colors/blue";
 import ReactSelect from "react-select";
-import MenuItem from "@material-ui/core/MenuItem";
-import Tooltip from "@material-ui/core/Tooltip";
+import { Tooltip, Typography, MenuItem, Paper } from "@material-ui/core";
 
-const styles = theme => ({
-    colorSwitchBase: {
-        color: blue[300],
-        '&$colorChecked': {
-            color: blue[500],
-            '& + $colorBar': {
-                backgroundColor: blue[500],
-            }
-        }
+
+const styles = {
+    root: {
+        width: 230,
     },
-    colorBar: {},
-    colorChecked: {},
-});
+};
 
-function SessionFilters({ onInstructorSelect, InstructorValue, InstructorOptions, CourseValue, onCourseSelect, CourseOptions }) {
+const customStyles = {
+    menu: (provided, state) => ({
+        ...provided,
+        width: state.selectProps.width,
+        color: state.selectProps.menuColor,
+        padding: 20,
+    }),
+
+    control: (_, { selectProps: { width } }) => ({
+        width: width
+    }),
+
+    singleValue: (provided, state) => {
+        const opacity = state.isDisabled ? 0.5 : 1;
+        const transition = 'opacity 300ms';
+
+        return { ...provided, opacity, transition };
+    }
+}
+
+
+function SessionFilters({ onInstructorSelect, InstructorValue, InstructorOptions, CourseValue, onCourseSelect, CourseOptions, }) {
     let [anchorEl, setAnchorEl] = useState(null);
     let [open, setOpen] = useState(false);
 
@@ -43,7 +56,6 @@ function SessionFilters({ onInstructorSelect, InstructorValue, InstructorOptions
                 <FilterIcon />
             </IconButton>
         </Tooltip>
-
         <Menu
             id={"long-menu"}
             anchorEl={anchorEl}
@@ -52,9 +64,14 @@ function SessionFilters({ onInstructorSelect, InstructorValue, InstructorOptions
             className={"session-filter"}
             onClose={handleClick}
         >
-            <MenuItem selected> Select Filter</MenuItem>
+            <MenuItem
+                className={"select-filter-header"}
+                disabled={true}
+                style={{ "backgroundColor": "#FAFAFA" }}
+            > Select Filter</MenuItem>
             <ReactSelect
-                className={"instructor-session-filter"}
+                className={"session-filter-select"}
+                // styles={customStyles}
                 placeholder={"Filter Instructor..."}
                 value={InstructorValue}
                 options={InstructorOptions}
@@ -63,7 +80,8 @@ function SessionFilters({ onInstructorSelect, InstructorValue, InstructorOptions
                 isMulti
             />
             <ReactSelect
-                className={"instructor-session-filter"}
+                className={"session-filter-select"}
+                // styles={customStyles}
                 placeholder={"Filter Course..."}
                 value={CourseValue}
                 options={CourseOptions}
@@ -72,6 +90,7 @@ function SessionFilters({ onInstructorSelect, InstructorValue, InstructorOptions
                 isMulti
             />
         </Menu>
+
     </>)
 }
 

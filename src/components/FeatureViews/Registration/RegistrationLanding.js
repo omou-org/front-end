@@ -1,8 +1,8 @@
 import * as hooks from "actions/hooks";
-import {distinctObjectArray, gradeOptions} from "utils";
-import React, {useCallback, useMemo, useState} from "react";
+import { distinctObjectArray, gradeOptions } from "utils";
+import React, { useCallback, useMemo, useState } from "react";
 // react/redux imports
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
 import BackButton from "components/BackButton";
 import Grid from "@material-ui/core/Grid";
@@ -19,9 +19,9 @@ import RegistrationActions from "./RegistrationActions";
 import TutoringList from "./TutoringList";
 
 const RegistrationLanding = () => {
-    const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
-    const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
-    const categories = useSelector(({"Course": {CourseCategories}}) => CourseCategories);
+    const courses = useSelector(({ "Course": { NewCourseList } }) => NewCourseList);
+    const instructors = useSelector(({ "Users": { InstructorList } }) => InstructorList);
+    const categories = useSelector(({ "Course": { CourseCategories } }) => CourseCategories);
 
     const courseStatus = hooks.useCourse();
     const instructorStatus = hooks.useInstructor();
@@ -40,7 +40,7 @@ const RegistrationLanding = () => {
     }, []);
 
     const instructorOptions = useMemo(() => Object.values(instructors)
-        .map(({name, user_id}) => ({
+        .map(({ name, user_id }) => ({
             "label": name,
             "value": user_id,
         })), [instructors]);
@@ -48,9 +48,9 @@ const RegistrationLanding = () => {
     const subjectOptions = useMemo(() => distinctObjectArray(
         Object.values(courses)
             // prevent a crash if some categories are not loaded yet
-            .filter(({category}) => categories.find(({id}) => category == id))
-            .map(({category}) => ({
-                "label": categories.find(({id}) => category == id).name,
+            .filter(({ category }) => categories.find(({ id }) => category == id))
+            .map(({ category }) => ({
+                "label": categories.find(({ id }) => category == id).name,
                 "value": category,
             }))
     ), [categories, courses]);
@@ -59,16 +59,16 @@ const RegistrationLanding = () => {
         () => Object.entries(courseFilters)
             .filter(([, filters]) => filters.length > 0)
             .reduce((courseList, [filterName, filters]) => {
-                const mappedValues = filters.map(({value}) => value);
+                const mappedValues = filters.map(({ value }) => value);
                 switch (filterName) {
                     case "instructor":
-                        return courseList.filter(({instructor_id}) =>
+                        return courseList.filter(({ instructor_id }) =>
                             mappedValues.includes(instructor_id));
                     case "subject":
-                        return courseList.filter(({category}) =>
+                        return courseList.filter(({ category }) =>
                             mappedValues.includes(category));
                     case "grade":
-                        return courseList.filter(({academic_level}) =>
+                        return courseList.filter(({ academic_level }) =>
                             mappedValues.includes(academic_level));
                     default:
                         return courseList;
@@ -115,14 +115,14 @@ const RegistrationLanding = () => {
             const {
                 children = <CustomClearText />,
                 getStyles,
-                "innerProps": {ref, ...restInnerProps},
+                "innerProps": { ref, ...restInnerProps },
             } = indicatorProps;
             return (
                 <div
                     {...restInnerProps}
                     ref={ref}
                     style={getStyles("clearIndicator", indicatorProps)}>
-                    <div style={{"padding": "0px 5px"}}>{children}</div>
+                    <div style={{ "padding": "0px 5px" }}>{children}</div>
                 </div>
             );
         };
@@ -144,7 +144,7 @@ const RegistrationLanding = () => {
             <SearchSelect
                 className="filter-options"
                 closeMenuOnSelect={false}
-                components={{ClearIndicator}}
+                components={{ ClearIndicator }}
                 isMulti
                 onChange={handleFilterChange(filterType)}
                 options={options}
@@ -190,31 +190,33 @@ const RegistrationLanding = () => {
                     </Tabs>
                 </Grid>
             </Grid>
-            <Grid
-                container
-                layout="row"
-                spacing={8}>
+            {view !== 1 &&
                 <Grid
-                    item
-                    md={4}
-                    xs={12}>
-                    {renderFilter("instructor")}
+                    container
+                    layout="row"
+                    spacing={8}>
+                    <Grid
+                        item
+                        md={4}
+                        xs={12}>
+                        {renderFilter("instructor")}
+                    </Grid>
+                    <Hidden xsDown>
+                        <Grid
+                            item
+                            md={4}
+                            xs={12}>
+                            {renderFilter("subject")}
+                        </Grid>
+                        <Grid
+                            item
+                            md={4}
+                            xs={12}>
+                            {renderFilter("grade")}
+                        </Grid>
+                    </Hidden>
                 </Grid>
-                <Hidden xsDown>
-                    <Grid
-                        item
-                        md={4}
-                        xs={12}>
-                        {renderFilter("subject")}
-                    </Grid>
-                    <Grid
-                        item
-                        md={4}
-                        xs={12}>
-                        {renderFilter("grade")}
-                    </Grid>
-                </Hidden>
-            </Grid>
+            }
             <div className="registration-table">
                 {
                     isLoading ? <Loading />

@@ -1,8 +1,8 @@
 /* eslint-disable func-style */
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import React, {Component} from "react";
-import {withRouter} from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -26,13 +26,13 @@ import ChevronRightOutlinedIcon from "@material-ui/icons/ChevronRightOutlined";
 import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
 import TodayIcon from "@material-ui/icons/Today";
-import {stringToColor} from "../Accounts/accountUtils";
-import {withStyles} from "@material-ui/core/styles";
+import { stringToColor } from "../Accounts/accountUtils";
+import { withStyles } from "@material-ui/core/styles";
 import "./scheduler.scss";
 import SessionFilters from "./SessionFilters";
-import {BootstrapInput, handleToolTip, sessionArray} from "./SchedulerUtils";
-import {Tooltip} from "@material-ui/core";
-import {arr_diff} from "../../Form/FormUtils";
+import { BootstrapInput, handleToolTip, sessionArray } from "./SchedulerUtils";
+import { Tooltip } from "@material-ui/core";
+import { arr_diff } from "../../Form/FormUtils";
 
 
 const styles = (theme) => ({
@@ -47,6 +47,8 @@ const styles = (theme) => ({
         "fontSize": 18,
     },
 });
+
+
 
 
 class Scheduler extends Component {
@@ -110,6 +112,7 @@ class Scheduler extends Component {
         if (JSON.stringify(prevProps.sessions) !== JSON.stringify(this.props.sessions)) {
             const initialSessions = this.formatSessions(this.props.sessions);
             const courseSessionsArray = sessionArray(this.props.sessions);
+
             this.setState({
                 "calendarEvents": initialSessions,
                 "instructorOptions": Object.entries(this.props.instructors).map(
@@ -487,6 +490,7 @@ class Scheduler extends Component {
     onCourseSelect = (event) => {
         this.setState(() => {
             const courseSessionsArray = sessionArray(this.props.sessions);
+            const initialSessions = this.formatSessions(this.props.sessions);
             const selectedCourseIDs = event && event.map((course) => course.value);
             const calendarCourseIDs = [...new Set(courseSessionsArray.map((session) => session.course))];
             const nonSelectedCourseIDs = event ? arr_diff(selectedCourseIDs, calendarCourseIDs) : [];
@@ -633,7 +637,9 @@ class Scheduler extends Component {
                                             InstructorOptions={this.state.instructorOptions}
                                             InstructorValue={this.state.instructorFilter}
                                             onCourseSelect={this.onCourseSelect}
-                                            onInstructorSelect={this.onInstructorSelect} />
+                                            onInstructorSelect={this.onInstructorSelect}
+
+                                        />
 
                                     </Grid>
                                 </Grid>
