@@ -6,6 +6,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
+
 import {instructorConflictCheck} from "utils";
 
 const parseString = (string) => {
@@ -20,7 +21,7 @@ const parseString = (string) => {
 };
 
 const InstructorConflictCheck = ({
-    instructorID, start, end, type, eventID, onSubmit = () => {}, children,
+    active = true, instructorID, start, end, eventID, onSubmit = () => {}, children,
 }) => {
     const [open, setOpen] = useState(false);
     const [conflictText, setConflictText] = useState("");
@@ -42,28 +43,32 @@ const InstructorConflictCheck = ({
     [eventID]);
 
     const handleSubmit = useCallback(async () => {
-        const {session, course} = await instructorConflictCheck(
-            instructorID, start, end, type
-        );
+        if (active) {
+            const {session, course} = await instructorConflictCheck(
+                instructorID, start, end
+            );
 
-        const seshConf = conflictDetect(session);
-        const courseConf = conflictDetect(course);
+            const seshConf = conflictDetect(session);
+            const courseConf = conflictDetect(course);
 
-        if (courseConf && seshConf) {
-            openDialog(course.data.reason);
-        } else if (courseConf) {
-            // course conflict but the usual session is not there
-            openDialog(`${course.data.reason}
+            if (courseConf && seshConf) {
+                openDialog(course.data.reason);
+            } else if (courseConf) {
+                // course conflict but the usual session is not there
+                openDialog(`${course.data.reason}
                         but the session at this time is rescheduled.`);
-        } else if (seshConf) {
-            // session conflict but the usual course is not there
-            openDialog(`${session.data.reason}
+            } else if (seshConf) {
+                // session conflict but the usual course is not there
+                openDialog(`${session.data.reason}
                         but the course is not normally taught at this time.`);
+            } else {
+                // no conflict
+                onSubmit();
+            }
         } else {
-            // no conflict
             onSubmit();
         }
-    }, [conflictDetect, instructorID, start, end, type, onSubmit, openDialog]);
+    }, [active, conflictDetect, instructorID, start, end, onSubmit, openDialog]);
 
     return (
         <>
@@ -71,6 +76,7 @@ const InstructorConflictCheck = ({
                 {children}
             </div>
             {
+                active &&
                 <Dialog
                     onClose={closeDialog}
                     open={open}>
@@ -100,6 +106,7 @@ const InstructorConflictCheck = ({
 };
 
 InstructorConflictCheck.propTypes = {
+    "active": PropTypes.bool,
     "children": PropTypes.node.isRequired,
     "end": PropTypes.instanceOf(Date).isRequired,
     "eventID": PropTypes.oneOfType([
@@ -112,7 +119,6 @@ InstructorConflictCheck.propTypes = {
     ]).isRequired,
     "onSubmit": PropTypes.func,
     "start": PropTypes.instanceOf(Date).isRequired,
-    "type": PropTypes.oneOf(["course", "session"]),
 };
 
 export default InstructorConflictCheck;

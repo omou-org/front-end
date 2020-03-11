@@ -240,7 +240,9 @@ const EditSessionView = ({course, session, editSelection}) => {
                             options={instructorList}
                             placeholder="Choose an Instructor"
                             value={sessionFields.instructor} />
-                        <FormControl>
+                        <FormControl
+                            style={{marginTop:"20px", marginBottom: "10px"}}
+                        >
                             <InputLabel>
                                 Is instructor confirmed?
                             </InputLabel>
@@ -256,25 +258,24 @@ const EditSessionView = ({course, session, editSelection}) => {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid
-                        item
-                        xs={6}>
-                        <Typography variant="h5"> Date</Typography>
-                        <DatePicker
-                            inputVariant="outlined"
-                            label="Date"
-                            margin="normal"
-                            onChange={handleDateTimeChange}
-                            value={sessionFields.start_time} />
-                    </Grid>
+                    {
+                        editSelection == EDIT_CURRENT_SESSION &&
+                        <Grid
+                            item
+                            xs={6}>
+                            <Typography variant="h5"> Date</Typography>
+                            <DatePicker
+                                inputVariant="outlined"
+                                onChange={handleDateTimeChange}
+                                value={sessionFields.start_time} />
+                        </Grid>
+                    }
                     <Grid
                         item
                         xs={6}>
                         <Typography variant="h5"> Start Time</Typography>
                         <TimePicker
                             inputVariant="outlined"
-                            label="Start Time"
-                            margin="normal"
                             onChange={handleDateTimeChange}
                             value={sessionFields.start_time} />
                     </Grid>

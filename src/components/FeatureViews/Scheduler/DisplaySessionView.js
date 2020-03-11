@@ -332,6 +332,13 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                                 open={Boolean(tutoringActionsAnchor)}
                                 onClose={closeTutoringMenu}
                             >
+                                <MenuItem
+                                    component={NavLink}
+                                    to={`/accounts/student/${course.roster[0]}/${course.course_id}`}
+                                    color="secondary"
+                                    variant="outlined">
+                                    Enrollment View
+                                </MenuItem>
                                 <AddSessions
                                     componentOption="menuItem"
                                     parentOfCurrentStudent={students[course.roster[0]].parent_id}

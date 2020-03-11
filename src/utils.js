@@ -42,7 +42,7 @@ export const dateFormatter = (date) =>
         .toDateString()
         .substr(3);
 
-export const courseDateFormat = ({ schedule, is_confirmed }) => ({
+export const courseDateFormat = ({schedule, is_confirmed}) => ({
     "days": DayConverter[new Date(schedule.start_date).getDay()],
     "end_date": dateFormatter(schedule.end_date),
     "end_time": new Date(`2020-01-01${schedule.end_time}`)
@@ -55,12 +55,45 @@ export const courseDateFormat = ({ schedule, is_confirmed }) => ({
 
 const dateTimeToDate = (date) => new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
 
+export const courseDataParser = (course) => {
+    const timeOptions = {
+        "hour": "2-digit",
+        "minute": "2-digit",
+    };
+    const dateOptions = {
+        "year": "numeric",
+        "month": "numeric",
+        "day": "numeric",
+    };
+
+    let { schedule, status, tuition, course_id } = course;
+    const DaysString = schedule.days;
+
+    const endDate = new Date(schedule.end_date + schedule.end_time),
+        startDate = new Date(schedule.start_date + schedule.start_time);
+
+    return {
+        "date": `${startDate.toLocaleDateString("en-US", dateOptions)} - ${endDate.toLocaleDateString("en-US", dateOptions)}`,
+        "day": DaysString,
+        "endTime": endDate.toLocaleTimeString("en-US", timeOptions),
+        "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
+        status,
+        tuition,
+        "course_id": course_id
+    };
+};
+
+export const combineDateAndTime = (date, time) =>
+    new Date(date.getFullYear(), date.getMonth(), date.getDate(),
+        time.getHours(), time.getMinutes());
+
+
 export const sessionPaymentStatus = (session, enrollment) => {
     const session_date = dateTimeToDate(new Date(session.start_datetime)),
         last_session = dateTimeToDate(new Date(enrollment.last_paid_session_datetime)),
         first_payment = dateTimeToDate(new Date(enrollment.payment_list[0].created_at));
 
-    const sessionIsBeforeLastPaidSession = session_date <= last_session;
+    const sessionIsBeforeLastPaidSession = session_date < last_session;
     const sessionIsLastPaidSession = session_date == last_session;
     const thereIsPartiallyPaidSession = !Number.isInteger(enrollment.sessions_left);
     const classSessionNotBeforeFirstPayment = session_date >= first_payment;
@@ -71,9 +104,9 @@ export const sessionPaymentStatus = (session, enrollment) => {
         return "Partial";
     } else if (!classSessionNotBeforeFirstPayment) {
         return "NA";
-    } else {
-        return "Unpaid";
     }
+    return "Unpaid";
+
 };
 
 export const courseToRegister = (enrollment, course, student) => ({
@@ -118,14 +151,15 @@ export const distinctObjectArray = (array) => {
 
     for (const item of array) {
         if (!map.has(item.label)) {
-            map.set(item.label, true);    // set any value to Map
+            map.set(item.label, true); // set any value to Map
             result.push({
-                label: item.label,
-                value: item.value
+                "label": item.label,
+                "value": item.value,
             });
         }
     }
     return result;
+
 }
 
 export const paymentToString = (string) => {
@@ -156,6 +190,9 @@ export const gradeOptions = [{
     "value": "college_lvl"
 },
 ]
+};
+
+
 /**
  * Converts a time of day to a backend-friendly format
  * @param {Date} time Time of day to convert
@@ -217,17 +254,37 @@ export const capitalizeString = (string) => string
     .replace(/^\w/, (lowerCaseString) => lowerCaseString.toUpperCase());
 
 export const startAndEndDate = (start, end, pacific) => {
-    let startDate, getEndDate, setDate, endDate;
+    let endDate, getEndDate, setDate, startDate;
 
     if (!pacific) {
         startDate = start.toString().substr(3, 13);
         getEndDate = end.getDate();
         setDate = end.setDate(getEndDate - 1);
-        endDate = new Date(setDate).toString().substr(3, 13);
+        endDate = new Date(setDate).toString()
+            .substr(3, 13);
     } else {
         startDate = start.toISOString().substring(0, start.toISOString().indexOf("T"));
         endDate = end.toISOString().substring(0, end.toISOString().indexOf("T"));
     }
 
-    return `${startDate} - ${endDate}`
+    return `${startDate} - ${endDate}`;
 };
+
+
+
+export const durationStringToNum = {
+    "0.5 Hours": 0.5,
+    "1 Hour": 1,
+    "1.5 Hours": 1.5,
+    "2 Hours": 2,
+};
+
+/**
+ * @description returns the upcoming session from a list of sessions
+ * @param {Array} sessions - list of sessions to search through
+ * @param {Number} courseID - id of the course we want to look at
+ * @returns {Object} "session" that's upcoming relative to today's date
+ */
+export const upcomingSession = (sessions, courseID) => sessions.filter((session) => ((session.course == courseID) &&
+    dateTimeToDate(new Date(session.start_datetime)) >= dateTimeToDate(new Date())))
+    .sort((sessionA, sessionB) => (sessionA - sessionB))[0];

@@ -138,13 +138,14 @@ const RegistrationCart = () => {
                 if (course) {
                     finalVal += weeklySessionsParser(course.schedule.start_date, course.schedule.end_date);
                 }
+
                 newOne.new_course = {
                     ...it.new_course,
                     "schedule": {
                         ...it.new_course.schedule,
                         // calculates appropriate date and formats it
                         "end_date": dateParser(new Date(it.new_course.schedule.start_date)
-                            .getTime() + 7 * 24 * 60 * 60 * 1000 * finalVal + 24 * 60 * 60 * 1000).slice(0, 10),
+                            .getTime() + 7 * 24 * 60 * 60 * 1000 * (finalVal-1) + 24 * 60 * 60 * 1000),
                     },
                 };
             }

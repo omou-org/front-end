@@ -331,9 +331,7 @@ function RegistrationReceipt(props) {
                                 item xs={3}>
                                 <Grid container direction="row">
                                     <Grid item xs={7}>
-                                        <Typography
-                                            align="right"
-                                            variant="p">
+                                        <Typography align="right">
                                             Discount Amount
                                         </Typography>
                                     </Grid>

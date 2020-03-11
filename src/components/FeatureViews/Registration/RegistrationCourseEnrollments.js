@@ -35,6 +35,7 @@ import Dialog from "@material-ui/core/Dialog";
 import {NoListAlert} from "../../NoListAlert";
 import {sessionArray} from "../Scheduler/SchedulerUtils";
 import {SessionPaymentStatusChip} from "../../SessionPaymentStatusChip";
+import {upcomingSession} from "../../../utils";
 
 const TableToolbar = (
     <TableHead>
@@ -121,11 +122,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
         }
     }
 
-    const today = new Date();
-    const upcomingSession = currentMonthSessions
-        .filter((session) => ((session.course == courseID) &&
-            new Date(session.start_datetime) >= today))
-        .sort((sessionA, sessionB) => (sessionA - sessionB))[0];
+    const upcomingSess = upcomingSession(currentMonthSessions, courseID);
 
     const handleClick = event => {
         setStudentMenuAnchorEl(event.currentTarget);
@@ -219,7 +216,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                                                                 "padding": "7px 0 0 10px",
                                                                 "borderRadius": "8px"
                                                             }}
-                                                            session={upcomingSession}
+                                                            session={upcomingSess}
                                                             enrollment={enrollment} />
                                                       </div>
                                                     : hooks.isFail(enrollmentStatus)

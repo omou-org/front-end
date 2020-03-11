@@ -84,9 +84,8 @@ const RegistrationLanding = () => {
         }));
     }, []);
 
-    const isLoading =
-        hooks.isLoading(courseStatus, categoryStatus, instructorStatus) &&
-        Object.entries(courses).length === 0;
+    const isLoading = hooks.isLoading(courseStatus, categoryStatus, instructorStatus)
+        && Object.entries(courses).length === 0;
 
     if (hooks.isFail(courseStatus) && Object.entries(courses).length) {
         return "Unable to load courses!";
@@ -94,6 +93,10 @@ const RegistrationLanding = () => {
 
     const renderFilter = (filterType) => {
         let options = [];
+        if(isLoading || categories.length == 0){
+            return "";
+        }
+
         switch (filterType) {
             case "instructor":
                 options = instructorOptions;
