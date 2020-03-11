@@ -15,7 +15,7 @@ import Loading from "../../Loading";
 import { isFail, isLoading, isSuccessful, usePrevious } from "../../../actions/hooks";
 import { GET } from "../../../actions/actionTypes";
 import BackButton from "../../BackButton";
-import { paymentToString } from "../../../utils"
+import { paymentToString } from "utils"
 
 function RegistrationReceipt(props) {
     const currentPayingParent = useSelector((({ Registration }) => Registration.CurrentParent));

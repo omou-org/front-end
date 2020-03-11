@@ -11,7 +11,7 @@ import Paper from "@material-ui/core/Paper";
 import Loading from "../../../Loading";
 import NavLinkNoDup from "../../../Routes/NavLinkNoDup";
 import { NoListAlert } from "../../../NoListAlert";
-import { paymentToString } from "../../../../utils"
+import { paymentToString } from "utils"
 
 function PaymentTable({ paymentList, type, enrollmentID }) {
 
@@ -77,7 +77,7 @@ function PaymentTable({ paymentList, type, enrollmentID }) {
                                     }
                                 </TableCell>
                                 <TableCell>
-                                    {`$${payment.total}`}
+                                    ${payment.total}
                                 </TableCell>
                                 <TableCell>
                                     {paymentToString(payment.method)}

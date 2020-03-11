@@ -1316,7 +1316,7 @@ function initRegistrationForm() {
                     {
                         field: "Category Name",
                         name: "Category Name",
-                        type: "shor text",
+                        type: "short text",
                         conditional: false,
                         required: true,
                         full: true,
@@ -1325,7 +1325,7 @@ function initRegistrationForm() {
                     {
                         field: "Description",
                         name: "Description",
-                        type: "shor text",
+                        type: "short text",
                         conditional: false,
                         required: false,
                         full: true,
