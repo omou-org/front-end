@@ -98,3 +98,19 @@ export const courseToRegister = (enrollment, course, student) => ({
 export const truncateStrings = (string, length) => string.length > length
     ? `${string.slice(0, length - 3).trim()}...`
     : string;
+
+/**
+ * python-like zip function that takes in 2 arrays and combines them into 1
+ * @param {array} arrays => list of arrays to be zipped
+ * 
+ * example: 
+ * x = [1, 2, 3];
+ * y = ['a', 'b', 'c']
+ * zip([x, y])
+ * >> [[1, 'a'], [2, 'b'], [3, 'c']]
+ */
+export const zip = (arrays) => {
+    return arrays[0].map((_,i) => {
+        return arrays.map((array) => {return array[i]})
+    });
+}
