@@ -13,7 +13,6 @@ import * as userActions from "../../../actions/userActions";
 import { usePayment, useSubmitRegistration } from "../../../actions/multiCallHooks";
 import Loading from "../../Loading";
 import { isFail, isLoading, isSuccessful, usePrevious } from "../../../actions/hooks";
-import { weeklySessionsParser } from "../../Form/FormUtils";
 import { GET } from "../../../actions/actionTypes";
 import BackButton from "../../BackButton";
 import { paymentToString } from "../../../utils"
@@ -113,7 +112,13 @@ function RegistrationReceipt(props) {
     if (Object.keys(paymentReceipt).length < 1 || (isLoading(paymentStatus) && !registrationStatus) || !renderParent()) {
         return <Loading />;
     }
-    const renderCourse = (enrolledCourse) => (<Grid item key={enrolledCourse.course_id}>
+
+    const numSessions = (courseID, studentID) => paymentReceipt.registrations
+        .find((registration) => (
+            registration.enrollment_details.student == studentID &&
+            registration.enrollment_details.course == courseID)).num_sessions;
+
+    const renderCourse = (enrolledCourse, studentID) => (<Grid item key={enrolledCourse.course_id}>
         <Grid
             className={"enrolled-course"}
             container
@@ -147,7 +152,7 @@ function RegistrationReceipt(props) {
                             <Grid item xs={4}>
                                 <Typography align="left">
                                     ${Math.round(enrolledCourse.hourly_tuition *
-                                        weeklySessionsParser(enrolledCourse.schedule.start_date, enrolledCourse.schedule.end_date) * 100) / 100}
+                                        numSessions(enrolledCourse.course_id, studentID))}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -161,7 +166,7 @@ function RegistrationReceipt(props) {
                             </Grid>
                             <Grid item xs={4}>
                                 <Typography align="left">
-                                    {weeklySessionsParser(enrolledCourse.schedule.start_date, enrolledCourse.schedule.end_date)}
+                                    {numSessions(enrolledCourse.course_id, studentID)}
                                 </Typography>
                             </Grid>
                             <Grid item xs={2}>
@@ -195,7 +200,7 @@ function RegistrationReceipt(props) {
                         </Typography>
                     </Grid>
                     {
-                        enrolledCourses.map(enrolledCourse => renderCourse(enrolledCourse))
+                        enrolledCourses.map(enrolledCourse => renderCourse(enrolledCourse, studentID))
                     }
                 </Paper>
             </Grid>)
@@ -221,7 +226,7 @@ function RegistrationReceipt(props) {
                 message={"Remember to please close out the parent first!"}
             />
             <Grid container
-                direction={"row"}
+                direction={"column"}
                 spacing={16}
             >
                 <Grid item>
@@ -317,18 +322,71 @@ function RegistrationReceipt(props) {
                 <Grid item xs={12} className={"receipt-details"}>
                     <Grid
                         container
-                        direction="row"
-                        justify="flex-end"
+                        direction="column"
+                        alignItems="flex-end"
                     >
-                        <Grid item xs={2}>
-                            <Typography variant="h6">
-                                Price Adjustment
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={1}>
-                            <Typography variant="subheading">
-                                {paymentReceipt.price_adjustment}
-                            </Typography>
+                        {
+                            paymentReceipt.discount_total >= 0 &&
+                            <Grid style={{ width: "100%" }}
+                                item xs={3}>
+                                <Grid container direction="row">
+                                    <Grid item xs={7}>
+                                        <Typography
+                                            align="right"
+                                            variant="p">
+                                            Discount Amount
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={5}>
+                                        <Typography
+                                            align="right"
+                                            variant="subheading">
+                                            - ${paymentReceipt.discount_total}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        }
+                        {
+                            paymentReceipt.price_adjustment > 0 &&
+                            <Grid style={{ width: "100%" }}
+                                item xs={3}>
+                                <Grid container direction="row">
+                                    <Grid item xs={7}>
+                                        <Typography
+                                            align="right"
+                                            variant="p">
+                                            Price Adjustment
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={5}>
+                                        <Typography
+                                            align="right"
+                                            variant="subheading">
+                                            {paymentReceipt.price_adjustment}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        }
+                        <Grid style={{ width: "100%" }}
+                            item xs={3}>
+                            <Grid container direction="row">
+                                <Grid item xs={7}>
+                                    <Typography
+                                        align="right"
+                                        variant="h6">
+                                        Total
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={5}>
+                                    <Typography
+                                        align="right"
+                                        variant="h6">
+                                        ${paymentReceipt.total}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>

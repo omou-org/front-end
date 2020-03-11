@@ -1,14 +1,14 @@
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
 import * as userActions from "../../../actions/userActions";
 import * as apiActions from "../../../actions/apiActions";
-import { GET } from "../../../actions/actionTypes";
-import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
+import {GET} from "../../../actions/actionTypes";
+import React, {Component} from "react";
+import {Redirect} from "react-router-dom";
 
-import { stringToColor } from "./accountUtils";
+import {stringToColor} from "./accountUtils";
 import Grid from "@material-ui/core/Grid";
-import { Paper, Typography } from "@material-ui/core";
+import {Paper, Typography} from "@material-ui/core";
 import "./Accounts.scss";
 
 import BackButton from "../../BackButton";
@@ -206,14 +206,14 @@ class UserProfile extends Component {
                 user = null;
         }
         return user;
-    }
+    };
 
     getRequestStatus = () => {
         const { accountType, accountID } = this.props.computedMatch.params;
         return accountType === "receptionist"
             ? 200
             : this.props.requestStatus[accountType][GET][accountID];
-    }
+    };
 
     handleChange(e, newTabIndex) {
         e.preventDefault();
@@ -240,7 +240,7 @@ class UserProfile extends Component {
     }
 
     render() {
-        this.renderNoteIcon();
+        // this.renderNoteIcon();
         const status = this.getRequestStatus();
         if (!status || status === apiActions.REQUEST_STARTED) {
             return <Loading />

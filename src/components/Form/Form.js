@@ -50,6 +50,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import {DatePicker, TimePicker} from "material-ui-pickers";
 import * as utils from "./FormUtils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
+import {GET} from "../../actions/actionTypes";
 
 const parseGender = {
     "M": "Male",
@@ -188,6 +189,7 @@ class Form extends Component {
             formType !== prevState.form ||
             prevState["submitPending"] ||
             (id && this.props.match.params.edit !== "edit")) {
+
             if (this.props.registrationForm[formType]) {
                 this.setState((oldState) => {
                     const formContents = JSON.parse(
@@ -260,9 +262,14 @@ class Form extends Component {
         if (!this.props.isAdmin && (formType === "instructor" || formType === "course_details")) {
             this.props.history.replace("/PageNotFound");
         }
-        // this.props.userActions.fetchParents();
-        // this.props.userActions.fetchStudents();
-        // this.props.userActions.fetchInstructors();
+
+        if(this.props.currentParent){
+            // load parent's students if parent selected
+            this.props.currentParent.student_list.forEach(student => {
+                this.props.userActions.fetchStudents(student);
+            });
+        }
+
         if (edit === "edit") {
             switch (formType) {
                 case "student": {
@@ -738,7 +745,7 @@ class Form extends Component {
                     prevState["Group Details"]["Category"] = category;
                     prevState["Group Details"]["Grade Level"] = academicLevel;
                     prevState["Group Details"]["Duration"] = sessionDuration;
-                    prevState["Group Details"]["Number of Weekly Sessions"] = numSessions;
+                    prevState["Group Details"]["# of Weekly Sessions"] = numSessions;
                 }
             }
             return {
@@ -771,18 +778,20 @@ class Form extends Component {
                 />;
             case "select":
                 let startTime = this.state[label]["Start Time"];
-                let endTime = this.state[label]["End Time"];
-                let parsedDuration = utils.durationParser({ start: startTime, end: endTime }, fieldTitle, true);
-                let value, options;
-                if (parsedDuration && this.state[label][fieldTitle]) {
-                    if (parsedDuration.duration) {
-                        value = parsedDuration.duration;
-                        options = parsedDuration.options;
-                    }
-                } else {
-                    value = this.state[label][fieldTitle];
-                    options = field.options;
-                }
+                // let endTime = this.state[label]["End Time"];
+                // let parsedDuration = utils.durationParser({ start: startTime, end: endTime }, fieldTitle, true);
+                // let value, options;
+                // if (parsedDuration && this.state[label][fieldTitle]) {
+                //     if (parsedDuration.duration) {
+                //         value = parsedDuration.duration;
+                //         options = parsedDuration.options;
+                //     }
+                // } else {
+                //     value = this.state[label][fieldTitle];
+                //     options = field.options;
+                // }
+                let value = this.state[label][fieldTitle];
+                let options = field.options;
                 disabled = disabled && fieldTitle !== "Relationship to Student" && fieldTitle !== "Gender";
                 return (
                     <FormControl className="form-control">
@@ -799,7 +808,10 @@ class Form extends Component {
                                 options.map((option) => (
                                     <MenuItem
                                         key={option}
-                                        value={option}>
+                                        value={option}
+                                        selected={option === "1 Hour" && fieldTitle === "Duration" ? true :
+                                            fieldTitle !== "Duration"}
+                                    >
                                         {option}
                                     </MenuItem>
                                 ))
@@ -873,6 +885,7 @@ class Form extends Component {
                     <div style={{ width: "inherit" }}>
                         <Grid container className={"student-align"} spacing={2000}>
                             <SearchSelect
+                                placeholder="Select existing group..."
                                 disabled={disabled}
                                 value={this.state[label][fieldTitle]}
                                 onChange={(value) => {
@@ -898,18 +911,16 @@ class Form extends Component {
             }
             case "student": {
                 let studentList = [];
-
                 if (this.props.currentParent) {
-                    this.props.parents[this.props.currentParent.user.id] &&
-                        this.props.parents[this.props.currentParent.user.id].student_ids.forEach((studentID) => {
-                            if (this.props.students[studentID]) {
-                                let { user_id, name, email } = this.props.students[studentID];
-                                studentList.push({
-                                    value: user_id,
-                                    label: `${name} - ${email}`,
-                                });
-                            }
-                        });
+                    this.props.currentParent.student_list.forEach((studentID) => {
+                        if (this.props.students[studentID]) {
+                            let { user_id, name, email } = this.props.students[studentID];
+                            studentList.push({
+                                value: user_id,
+                                label: `${name} - ${email}`,
+                            });
+                        }
+                    });
                 } else {
                     studentList = Object.values(this.props.students)
                         .map(({ user_id, name, email }) => ({
@@ -927,14 +938,14 @@ class Form extends Component {
 
                 return (
                     <div style={{ width: "inherit" }}>
-                        <Grid container className={"student-align"} spacing={2000}>
+                        <Grid container className={"student-align"}>
                             <SearchSelect
                                 disabled={disabled}
                                 value={this.state[label][fieldTitle] ? this.state[label][fieldTitle] : ""}
                                 onChange={(value) => {
                                     this.onSelectChange(value, label, field);
                                 }}
-                                placeholder={"Choose a Student"}
+                                placeholder={"Select a Student..."}
                                 options={studentList}
                                 className="search-options" />
                             {
@@ -968,6 +979,7 @@ class Form extends Component {
                             <AsyncSelect
                                 cacheOptions
                                 className="search-options"
+                                placeholder={"Select an instructor..."}
                                 defaultOptions={instructorList}
                                 loadOptions={this.searchInstructors}
                                 onChange={(value) => {
@@ -1268,7 +1280,8 @@ class Form extends Component {
                                             this.handleNext();
                                         }}
                                         className="button primary">
-                                        {activeStep === steps.length - 1 ? this.props.submitPending ? "Submitting" : "Submit" : "Next"}
+                                        {activeStep === steps.length - 1 ? this.props.submitPending ? "Submitting" :
+                                            ["course","tutoring"].includes(this.state.form) ? "Add to Cart" : "Submit" : "Next"}
                                     </Button>
                                 </div>
                             </StepContent>
@@ -1418,8 +1431,14 @@ class Form extends Component {
     }
 
     render() {
-        if (!this.state.hasLoaded) {
-            return <Loading />;
+        if(this.props.currentParent){
+            const studentsLoaded = this.props.currentParent.student_list.every((student)=>(this.props.requestStatus.student[GET][student] === 200));
+            if(!studentsLoaded){
+                return <Loading paper/>
+            }
+        }
+        if (!this.state.hasLoaded || !this.props.students) {
+            return <Loading paper/>;
         }
         return (
             <Grid container className="">
@@ -1429,15 +1448,7 @@ class Form extends Component {
                     <Paper className={"registration-form paper"}>
                         {
                             !this.props.location.pathname.includes("adminportal") &&
-                            <BackButton
-                                warn={true}
-                                onBack={this.onBack}
-                                alertMessage={"Do you want to save your changes?"}
-                                alertConfirmText={"Yes, save changes"}
-                                confirmAction={"saveForm"}
-                                alertDenyText={"No, don't save changes"}
-                                denyAction={"default"}
-                            />
+                            <BackButton onBack={this.onBack}/>
                         }
                         <Typography className="heading" align="left">
                             {this.renderTitle(this.props.match.params.id, this.props.match.params.type)}
