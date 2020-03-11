@@ -189,8 +189,7 @@ export const gradeOptions = [{
     "label": "College",
     "value": "college_lvl"
 },
-]
-};
+];
 
 
 /**
