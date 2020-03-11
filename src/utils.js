@@ -92,7 +92,7 @@ export const sessionPaymentStatus = (session, enrollment) => {
         last_session = dateTimeToDate(new Date(enrollment.last_paid_session_datetime)),
         first_payment = dateTimeToDate(new Date(enrollment.payment_list[0].created_at));
 
-    const sessionIsBeforeLastPaidSession = session_date < last_session;
+    const sessionIsBeforeLastPaidSession = session_date <= last_session;
     const sessionIsLastPaidSession = session_date == last_session;
     const thereIsPartiallyPaidSession = !Number.isInteger(enrollment.sessions_left);
     const classSessionNotBeforeFirstPayment = session_date >= first_payment;

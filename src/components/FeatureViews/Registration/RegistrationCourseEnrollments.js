@@ -122,7 +122,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
         }
     }
 
-    const upcomingSession = upcomingSession(currentMonthSessions, courseID);
+    const upcomingSess = upcomingSession(currentMonthSessions, courseID);
 
     const handleClick = event => {
         setStudentMenuAnchorEl(event.currentTarget);
@@ -216,7 +216,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                                                                 "padding": "7px 0 0 10px",
                                                                 "borderRadius": "8px"
                                                             }}
-                                                            session={upcomingSession}
+                                                            session={upcomingSess}
                                                             enrollment={enrollment} />
                                                       </div>
                                                     : hooks.isFail(enrollmentStatus)
