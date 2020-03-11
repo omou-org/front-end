@@ -160,7 +160,7 @@ const CourseSessionStatus = () => {
         setActiveTab(newTab);
     };
 
-    const handleHighlightSwitch = (e) => {
+    const handleHighlightSwitch = () => {
         setHighlightSession(!highlightSession);
     };
 

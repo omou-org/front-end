@@ -295,7 +295,7 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields, tuitionConfirm
                                     }}
                                 >
                                     <Typography variant="h6">
-                                        {hourlyTuition || ''}
+                                        {hourlyTuition}
                                     </Typography>
                                 </div>
                             </Grid>
