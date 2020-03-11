@@ -9,6 +9,18 @@ import {Button, Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import { NoListAlert } from "components/NoListAlert";
 
+/* Python-type zip util function
+
+example:
+zip([1, 2, 3], ['a', 'b', 'c']);
+>> [[1, 'a'], [2, 'b'], [3, 'c']]
+
+*/
+const zip = (arrays) => {
+    return arrays[0].map((_,i) => {
+        return arrays.map((array) => {return array[i]})
+    });
+}
 
 function PanelManager(props) {
 /**
@@ -48,24 +60,31 @@ function PanelManager(props) {
     const fieldsWithDefaults = addDefaults(props.fields);
 
 
-
+    const zip = rows => rows[0].map((_, c) => rows.map(row=>row[c]));
     const viewRecordRow = (record) => {
-        // console.log(record.value);
-        console.log(record.value);
         const recordElements = [];
+        console.log("record.value");
+        console.log(record.value);
+        console.log("fieldsWithDefaults");
+        console.log(fieldsWithDefaults.entries());
 
-        for (const [index, value] of fieldsWithDefaults.entries()) {
-            console.log("fieldsWithDefaults");
-            console.log(fieldsWithDefaults[index]["name"]);
-            // console.log(record.value)
-            recordElements.push(
-            <Grid item xs={fieldsWithDefaults[index]["col-width"]} md={fieldsWithDefaults[index]["col-width"]} >
-                <typography align={fieldsWithDefaults[index]["align"]}>
-                    {record.value.description}
-                </typography>
-            </Grid>
-            )
-        };
+        // const recordWithFieldInfo = zip()
+
+
+
+        //! Improper JS - use map or forEach
+        // for (const [index, value] of fieldsWithDefaults.entries()) {
+        //     console.log("fieldsWithDefaults");
+        //     console.log(fieldsWithDefaults[index]["name"]);
+        //     // console.log(record.value)
+        //     recordElements.push(
+        //     <Grid item xs={fieldsWithDefaults[index]["col-width"]} md={fieldsWithDefaults[index]["col-width"]} >
+        //         <typography align={fieldsWithDefaults[index]["align"]}>
+        //             {record.value.description}
+        //         </typography>
+        //     </Grid>
+        //     )
+        // };
 
         return (
         <Paper square={true} className={"category-row"} >

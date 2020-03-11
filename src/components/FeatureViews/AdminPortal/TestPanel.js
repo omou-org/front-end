@@ -86,7 +86,7 @@ function TestPanel() {
                     <Grid item xs={3}>
                         <TextField
                             className={"field"}
-                            label="Category Name"
+                            label="name"
                             value={categoryName}
                             onChange={handleChange("name")}
                             required={true}
