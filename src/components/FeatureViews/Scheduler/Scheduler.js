@@ -1,8 +1,8 @@
 /* eslint-disable func-style */
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import React, {Component} from "react";
-import {withRouter} from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -26,17 +26,17 @@ import ChevronRightOutlinedIcon from "@material-ui/icons/ChevronRightOutlined";
 import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
 import TodayIcon from "@material-ui/icons/Today";
-import {stringToColor} from "../Accounts/accountUtils";
-import {withStyles} from "@material-ui/core/styles";
+import { stringToColor } from "../Accounts/accountUtils";
+import { withStyles } from "@material-ui/core/styles";
 // Tool tip dependencies
 import tippy from "tippy.js";
 import "tippy.js/themes/google.css";
 import "./scheduler.scss";
 import SessionFilters from "./SessionFilters";
-import {BootstrapInput} from "./SchedulerUtils";
-import {Tooltip} from "@material-ui/core";
-import {arr_diff} from "../../Form/FormUtils";
-import {DayConverter, truncateStrings} from "utils";
+import { BootstrapInput } from "./SchedulerUtils";
+import { Tooltip } from "@material-ui/core";
+import { arr_diff } from "../../Form/FormUtils";
+import { DayConverter, truncateStrings } from "utils";
 
 const styles = (theme) => ({
     "root": {
@@ -58,6 +58,8 @@ const styles = (theme) => ({
 const sessionArray = (sessions) => Object.keys(sessions).length > 0 && Object.values(sessions)
     .map((instructorSessions) => Object.values(instructorSessions))
     .reduce((allSessions, instructorSessions) => allSessions.concat(instructorSessions));
+
+
 
 class Scheduler extends Component {
     constructor(props) {
@@ -118,17 +120,22 @@ class Scheduler extends Component {
         if (JSON.stringify(prevProps.sessions) !== JSON.stringify(this.props.sessions)) {
             const initialSessions = this.formatSessions(this.props.sessions);
             const courseSessionsArray = sessionArray(this.props.sessions);
+
             this.setState({
                 "calendarEvents": initialSessions,
                 "instructorOptions": Object.entries(this.props.instructors).map(
                     ([instructorID, instructor]) =>
-                        ({"value": Number(instructorID),
-                            "label": instructor.name})
+                        ({
+                            "value": Number(instructorID),
+                            "label": instructor.name
+                        })
                 ),
                 "courseOptions": courseSessionsArray && [...new Set(courseSessionsArray.map((session) => session.course))].map(
                     (courseID) =>
-                        ({"value": Number(courseID),
-                            "label": this.props.courses[Number(courseID)].title})
+                        ({
+                            "value": Number(courseID),
+                            "label": this.props.courses[Number(courseID)].title
+                        })
                 ),
             });
         }
@@ -181,17 +188,17 @@ class Scheduler extends Component {
     setOOOEvents = () => {
         let allInstructorSchedules = [];
         if (!this.state.courseFilter) {
-            const {instructors} = this.props;
+            const { instructors } = this.props;
 
             let OOOlist = Object.values(instructors);
             if (this.state.instructorFilter) {
-                const IDList = this.state.instructorFilter.map(({value}) => value);
-                OOOlist = OOOlist.filter(({user_id}) => IDList.includes(user_id));
+                const IDList = this.state.instructorFilter.map(({ value }) => value);
+                OOOlist = OOOlist.filter(({ user_id }) => IDList.includes(user_id));
             }
-            OOOlist = OOOlist.map(({schedule}) => schedule.time_off);
+            OOOlist = OOOlist.map(({ schedule }) => schedule.time_off);
             OOOlist.forEach((iList) => {
                 allInstructorSchedules = allInstructorSchedules.concat(
-                    Object.values(iList).map(({start, end, description, instructor_id, all_day}) => {
+                    Object.values(iList).map(({ start, end, description, instructor_id, all_day }) => {
                         const instructor = instructors[instructor_id];
                         const title = description || (instructor
                             ? `${instructor.name} Out of Office`
@@ -289,13 +296,13 @@ class Scheduler extends Component {
                         <div class='teacher_icon icn'>
                             <span class=''>
                                     ${info.event.extendedProps.instructor
-        ? info.event.extendedProps.instructor : "No teacher Yet"}
+                    ? info.event.extendedProps.instructor : "No teacher Yet"}
                             </span>
                         </div>
                         <div class='discription_icon icn'>
                             <span class='description-text'>
                                 ${info.el.fcSeg.description
-        ? truncateStrings(info.el.fcSeg.description, 88) : "N/A"}
+                    ? truncateStrings(info.el.fcSeg.description, 88) : "N/A"}
                             </span>
                         </div>
                     </div>
@@ -532,7 +539,7 @@ class Scheduler extends Component {
 
     // gets the values of course object
     getRoomResources = () =>
-        Object.values(this.props.courses).map(({room_id}) => ({
+        Object.values(this.props.courses).map(({ room_id }) => ({
             "id": room_id,
             "title": `Room ${room_id}`,
         }));
@@ -545,9 +552,9 @@ class Scheduler extends Component {
         }));
 
     // go to session view
-    goToSessionView = ({event}) => {
+    goToSessionView = ({ event }) => {
         const sessionID = event.id;
-        const {courseID, instructor_id} = event.extendedProps;
+        const { courseID, instructor_id } = event.extendedProps;
         // dont redirect for OOO clicks
         if (sessionID && courseID && instructor_id) {
             this.props.history.push(`/scheduler/view-session/${courseID}/${sessionID}/${instructor_id}`);
@@ -577,6 +584,7 @@ class Scheduler extends Component {
     onCourseSelect = (event) => {
         this.setState(() => {
             const courseSessionsArray = sessionArray(this.props.sessions);
+            const initialSessions = this.formatSessions(this.props.sessions);
             const selectedCourseIDs = event && event.map((course) => course.value);
             const calendarCourseIDs = [...new Set(courseSessionsArray.map((session) => session.course))];
             const nonSelectedCourseIDs = event ? arr_diff(selectedCourseIDs, calendarCourseIDs) : [];
@@ -684,7 +692,7 @@ class Scheduler extends Component {
                                                     <MenuItem value="R">Room</MenuItem>
                                                     <MenuItem value="I">Instructors</MenuItem>
                                                 </Select>
-                                              </FormControl>
+                                            </FormControl>
                                         }
                                     </Grid>
                                     <Grid
@@ -723,7 +731,9 @@ class Scheduler extends Component {
                                             InstructorOptions={this.state.instructorOptions}
                                             InstructorValue={this.state.instructorFilter}
                                             onCourseSelect={this.onCourseSelect}
-                                            onInstructorSelect={this.onInstructorSelect} />
+                                            onInstructorSelect={this.onInstructorSelect}
+
+                                        />
 
                                     </Grid>
                                 </Grid>
