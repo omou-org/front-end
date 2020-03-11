@@ -130,7 +130,8 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
                     container
                     spacing={8}>
                     {displayedCourses.length !== 0
-                        ? displayedCourses.map((courseID) => {
+                        ? displayedCourses
+                            .map((courseID) => {
                             const course = courses[courseID];
                             if (!course) {
                                 return "Loading...";

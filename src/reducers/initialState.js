@@ -251,7 +251,7 @@ function initRegistrationForm() {
                 name: "Parent First Name",
                 type: "short text",
                 field_limit: 1,
-                required: false,
+                required: true,
                 full: true,
             },
             {
@@ -259,14 +259,14 @@ function initRegistrationForm() {
                 name: "Parent Last Name",
                 type: "short text",
                 field_limit: 1,
-                required: false,
+                required: true,
                 full: true,
             },
             {
                 field: "Relationship to Student",
                 name: "Relationship to Student",
                 type: "select",
-                required: false,
+                required: true,
                 field_limit: 1,
                 options: ["Mother", "Father", "Guardian", "Other"],
             },
@@ -283,7 +283,7 @@ function initRegistrationForm() {
                 name: "Parent Email",
                 type: "email",
                 field_limit: 1,
-                required: false,
+                required: true,
                 full: true,
             },
             {
@@ -291,7 +291,7 @@ function initRegistrationForm() {
                 name: "Phone Number",
                 type: "phone number",
                 field_limit: 1,
-                required: false,
+                required: true,
                 full: true,
             },
 
