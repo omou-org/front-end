@@ -6,15 +6,15 @@ import {bindActionCreators} from "redux";
 
 import Grid from "@material-ui/core/Grid";
 import {Button, Typography} from "@material-ui/core";
+import Paper from "@material-ui/core/Paper";
+import { NoListAlert } from "components/NoListAlert";
+
 
 function PanelManager(props) {
 /**
  * Fetches, configures, and displays a grid-structured panel for a given 
  * set in the store.
  * 
- * 
- * Example: 
- * { TODO}
  * 
  * @prop {array} operations List of operation types (i.e ["READ", "UPDATE" ) => options are: READ, UPDATE, DELETE 
  */
@@ -28,6 +28,11 @@ function PanelManager(props) {
 
     let [records, setRecords] = useState({});
 
+    const defaults = {
+        "editable": "false",
+        "align": "left"
+    };
+
     const addDefaults = (fields) => props.fields.map((field) => {
         //Add defaults field properties to the props.fields object
         Object.keys(defaults).forEach((key) => {
@@ -40,17 +45,45 @@ function PanelManager(props) {
         return field;
     });
 
-    const defaults = {
-        "editable": "false",
-        "align": "left"
-    };
+    const fieldsWithDefaults = addDefaults(props.fields);
 
 
+
+    const viewRecordRow = (record) => {
+        // console.log(record.value);
+        console.log(record.value);
+        const recordElements = [];
+
+        for (const [index, value] of fieldsWithDefaults.entries()) {
+            console.log("fieldsWithDefaults");
+            console.log(fieldsWithDefaults[index]["name"]);
+            // console.log(record.value)
+            recordElements.push(
+            <Grid item xs={fieldsWithDefaults[index]["col-width"]} md={fieldsWithDefaults[index]["col-width"]} >
+                <typography align={fieldsWithDefaults[index]["align"]}>
+                    {record.value.description}
+                </typography>
+            </Grid>
+            )
+        };
+
+        return (
+        <Paper square={true} className={"category-row"} >
+            <Grid container alignItems={"center"}>
+            
+                {recordElements}
+            
+            </Grid>
+
+        </Paper>
+        )
+
+};
     const generateGrid = () => {
         /**
          * Generates header with fields
          */
-        const fieldsWithDefaults = addDefaults(props.fields);
+        
         const headerElements = [];
         const records = [];
 
@@ -64,9 +97,9 @@ function PanelManager(props) {
                 </Grid>
             )
         }
-        for (const [index, value] of props.categories.entries()) {
+        for (const [index, value] of props.records.entries()) {
             records.push(
-                <li>{value["name"]}</li>
+                {value}
             )
         };
 
@@ -74,6 +107,7 @@ function PanelManager(props) {
             <Grid container>
                 {/* header */}
                 <Grid item xs={12}>
+                    
                     <Grid container className={'accounts-table-heading'}>
                     {headerElements}
                     </Grid>
@@ -81,19 +115,34 @@ function PanelManager(props) {
 
                 {/* Directory */}
                 <Grid>
-                    <ul>
-                    {records}
-                    </ul>
+                    <Grid item xs={12}>
+                        <Grid container spacing={8} alignItems={"center"}>
+                            {
+                                records.length > 0 ? records.map((record) => {
+                                    return (<Grid item xs={12} md={12} key={record.id}>
+                                        {
+                                            viewRecordRow(record)
+                                        }
+                                    </Grid>);
+                                }): <NoListAlert list={"Course Categories"} />
+                            }
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
         )
     };
 
+    const editRecord = (id) => (e) => {
+        e.preventDefault();
+        let editingRecord = props.records.find((record) => {return record.id === id});
+    }
+
 
     return (
-        <div>
+        <>
             {generateGrid()}
-        </div>
+        </>
     )
 }
 
