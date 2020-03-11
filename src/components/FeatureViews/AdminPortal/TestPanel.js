@@ -117,7 +117,7 @@ function TestPanel() {
         <br />
         <PanelManager
             fields={fields}
-            categories={categories}
+            records={categories}
         />
             </div>
     )
