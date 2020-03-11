@@ -20,10 +20,8 @@ function UnpaidSessions() {
     const studentStatus = hooks.useStudent(studentList);
     const courseStatus = hooks.useCourse(courseList);
 
-    useEffect(()=>{
-        api.fetchUnpaid();
-    },[]);
-
+    hooks.useUnpaidSessions();
+   
     if (!UnpaidList || hooks.isLoading(studentStatus, courseStatus)){
         return <Loading/>
     }
@@ -33,4 +31,4 @@ function UnpaidSessions() {
         ))
 }
 
-export default UnpaidSessions;
+export default UnpaidSessions

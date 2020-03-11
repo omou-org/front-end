@@ -263,7 +263,7 @@ export const useInstructorAvailability = (instructorID) => wrapUseEndpoint(
     }
 )();
 
-export const useUnpaidSessions = () => wrapUseEndpoint(
+export const useUnpaidSessions = wrapUseEndpoint(
     "/payment/unpaid-sessions/",
     types.GET_UNPAID_SUCCESS
 )
