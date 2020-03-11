@@ -1,15 +1,15 @@
 import * as hooks from "actions/hooks";
-import {Link, useLocation} from "react-router-dom";
-import React, {useCallback, useMemo} from "react";
+import { Link, useLocation } from "react-router-dom";
+import React, { useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
 import Grid from "@material-ui/core/Grid";
 import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import {NoListAlert} from "../../../NoListAlert";
-import {courseDateFormat} from "../../../../utils";
+import { NoListAlert } from "../../../NoListAlert";
+import { courseDateFormat } from "../../../../utils";
 
 const today = new Date();
 
@@ -86,7 +86,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
                         <Typography
                             align="left"
                             className="table-header">
-                            Session
+                            Course
                         </Typography>
                     </Grid>
                     <Grid
@@ -136,7 +136,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
                             if (!course) {
                                 return "Loading...";
                             }
-                            const { days, start_date, end_date, start_time, end_time} = courseDateFormat(course);
+                            const { days, start_date, end_date, start_time, end_time } = courseDateFormat(course);
                             return (
                                 <Grid
                                     className="accounts-table-row"

@@ -1,31 +1,32 @@
 import PropTypes from "prop-types";
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import React from 'react';
 
 import Grid from '@material-ui/core/Grid';
-import {TableBody, TableHead} from "@material-ui/core";
+import { TableBody, TableHead } from "@material-ui/core";
 import Table from "@material-ui/core/Table";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Loading from "../../../Loading";
 import NavLinkNoDup from "../../../Routes/NavLinkNoDup";
-import {NoListAlert} from "../../../NoListAlert";
+import { NoListAlert } from "../../../NoListAlert";
+import { paymentToString } from "utils"
 
-function PaymentTable({paymentList, type, enrollmentID})  {
+function PaymentTable({ paymentList, type, enrollmentID }) {
 
-    if(paymentList && paymentList.length < 1){
-        return <Loading/>
-    } else if(!paymentList) {
-        return <NoListAlert list={"Payments"}/>
+    if (paymentList && paymentList.length < 1) {
+        return <Loading />
+    } else if (!paymentList) {
+        return <NoListAlert list={"Payments"} />
     }
 
     let paidSessionsByPayment = () => {
         let sessNumEnrollment = {};
-        if(type === "enrollment"){
+        if (type === "enrollment") {
             paymentList.forEach(payment => {
                 payment.registrations.forEach(registration => {
-                    if(registration.enrollment === enrollmentID)
+                    if (registration.enrollment === enrollmentID)
                         sessNumEnrollment[payment.id] = registration.num_sessions;
                 });
             });
@@ -35,7 +36,7 @@ function PaymentTable({paymentList, type, enrollmentID})  {
 
     const numericDateString = (date) => {
         let DateObject = new Date(date),
-            numericOptions = {year: "numeric", month: "numeric", day: "numeric"};
+            numericOptions = { year: "numeric", month: "numeric", day: "numeric" };
         return DateObject.toLocaleDateString("en-US", numericOptions);
     };
 
@@ -49,10 +50,12 @@ function PaymentTable({paymentList, type, enrollmentID})  {
                 <TableHead>
                     <TableCell>ID</TableCell>
                     <TableCell>Transaction Date</TableCell>
-                    <TableCell>{ type === "enrollment"? "Paid Sessions" : "Course"}</TableCell>
+                    <TableCell>{type === "enrollment" ? "Paid Sessions" : "Course"}</TableCell>
+                    <TableCell>Amount Paid</TableCell>
                     <TableCell>Method</TableCell>
                 </TableHead>
                 <TableBody>
+
                     {
                         paymentList.length > 0 ? paymentList.map((payment) => {
                             return <TableRow
@@ -74,10 +77,13 @@ function PaymentTable({paymentList, type, enrollmentID})  {
                                     }
                                 </TableCell>
                                 <TableCell>
-                                    {payment.method.charAt(0).toUpperCase() + payment.method.slice(1)}
+                                    ${payment.total}
+                                </TableCell>
+                                <TableCell>
+                                    {paymentToString(payment.method)}
                                 </TableCell>
                             </TableRow>
-                        }) : <NoListAlert/>
+                        }) : <NoListAlert />
                     }
                 </TableBody>
             </Table>

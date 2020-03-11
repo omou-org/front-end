@@ -246,11 +246,20 @@ body .fc {
 .session-filter{
   ul {
     height:300px;
+    width:250px;
     padding:10px;
   }
-  .instructor-session-filter{
+  .session-filter-select{
     width:200px;
     margin:15px;
+  }
+  .select-filter-header{
+    font-size:20px;
+    padding-left: 3px;
+    border: 1px solid #ffffff;
+    box-sizing: border-box;
+    border-radius: 5px;
+    width: 200px;
   }
 }
 

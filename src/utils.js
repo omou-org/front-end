@@ -1,4 +1,4 @@
-import {instance} from "actions/apiActions";
+import { instance } from "actions/apiActions";
 
 export const timeFormat = {
     "hour12": false,
@@ -87,6 +87,7 @@ export const combineDateAndTime = (date, time) =>
     new Date(date.getFullYear(), date.getMonth(), date.getDate(),
         time.getHours(), time.getMinutes());
 
+
 export const sessionPaymentStatus = (session, enrollment) => {
     const session_date = dateTimeToDate(new Date(session.start_datetime)),
         last_session = dateTimeToDate(new Date(enrollment.last_paid_session_datetime)),
@@ -158,27 +159,39 @@ export const distinctObjectArray = (array) => {
         }
     }
     return result;
+
+}
+
+export const paymentToString = (string) => {
+    switch (string) {
+        case "intl_credit_card":
+            return "International Credit Card";
+        case "credit_card":
+            return "Credit Card";
+        default:
+            return capitalizeString(string)
+    }
+}
+
+export const gradeOptions = [{
+    "label": "Elementary School",
+    "value": "elementary_lvl"
+},
+{
+    "label": "Middle School",
+    "value": "middle_lvl"
+},
+{
+    "label": "High School",
+    "value": "high_lvl"
+},
+{
+    "label": "College",
+    "value": "college_lvl"
+},
+]
 };
 
-
-export const gradeOptions = [
-    {
-        "label": "Elementary School",
-        "value": "elementary_lvl",
-    },
-    {
-        "label": "Middle School",
-        "value": "middle_lvl",
-    },
-    {
-        "label": "High School",
-        "value": "high_lvl",
-    },
-    {
-        "label": "College",
-        "value": "college_lvl",
-    },
-];
 
 /**
  * Converts a time of day to a backend-friendly format
@@ -221,11 +234,11 @@ export const instructorConflictCheck = async (instructorID, start, end) => {
         const [sessionResponse, courseResponse] = await Promise.all([
             instance.get(
                 `/scheduler/validate/session/${instructorID}`,
-                {"params": sessionParams},
+                { "params": sessionParams },
             ),
             instance.get(
                 `/scheduler/validate/course/${instructorID}`,
-                {"params": courseParams},
+                { "params": courseParams },
             ),
         ]);
         return {
