@@ -187,7 +187,7 @@ const RegistrationLanding = () => {
                     </Tabs>
                 </Grid>
             </Grid>
-            {view !== 1 ?
+            {view !== 1 &&
                 <Grid
                     container
                     layout="row"
@@ -213,7 +213,7 @@ const RegistrationLanding = () => {
                         </Grid>
                     </Hidden>
                 </Grid>
-                : ""}
+            }
             <div className="registration-table">
                 {
                     isLoading ? <Loading />
