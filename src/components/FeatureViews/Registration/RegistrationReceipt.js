@@ -1,20 +1,21 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
-import {bindActionCreators} from "redux";
+import { bindActionCreators } from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
-import {connect, useDispatch, useSelector} from "react-redux";
-import {Button, Typography} from "@material-ui/core";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { Button, Typography } from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
-import {Prompt, useLocation, useParams, withRouter} from "react-router-dom";
+import { Prompt, useLocation, useParams, withRouter } from "react-router-dom";
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
-import {usePayment, useSubmitRegistration} from "../../../actions/multiCallHooks";
+import { usePayment, useSubmitRegistration } from "../../../actions/multiCallHooks";
 import Loading from "../../Loading";
-import {isFail, isLoading, isSuccessful, usePrevious} from "../../../actions/hooks";
-import {GET} from "../../../actions/actionTypes";
+import { isFail, isLoading, isSuccessful, usePrevious } from "../../../actions/hooks";
+import { GET } from "../../../actions/actionTypes";
 import BackButton from "../../BackButton";
+import { paymentToString } from "utils"
 
 function RegistrationReceipt(props) {
     const currentPayingParent = useSelector((({ Registration }) => Registration.CurrentParent));
@@ -40,7 +41,7 @@ function RegistrationReceipt(props) {
     const [paymentReceipt, setPaymentReceipt] = useState({});
     const prevPaymentReceipt = usePrevious(paymentReceipt);
     const [courseReceipt, setCourseReceipt] = useState({});
-    const Registration = useSelector(({Registration}) => Registration);
+    const Registration = useSelector(({ Registration }) => Registration);
     const registrationStatus = useSubmitRegistration(Registration.registration);
 
     const parent = parents[params.parentID];
@@ -58,7 +59,7 @@ function RegistrationReceipt(props) {
             setCourseReceipt(courseReceiptInitializer(enrollments));
         }
     }, [paymentStatus, paymentReceipt]);
-    
+
     if ((!registrationStatus || isFail(registrationStatus)) && !params.paymentID) {
         return <Loading />
     }
@@ -112,10 +113,10 @@ function RegistrationReceipt(props) {
         return <Loading />;
     }
 
-    const numSessions = (courseID, studentID) =>  paymentReceipt.registrations
-            .find((registration) => (
+    const numSessions = (courseID, studentID) => paymentReceipt.registrations
+        .find((registration) => (
             registration.enrollment_details.student == studentID &&
-                registration.enrollment_details.course == courseID)).num_sessions;
+            registration.enrollment_details.course == courseID)).num_sessions;
 
     const renderCourse = (enrolledCourse, studentID) => (<Grid item key={enrolledCourse.course_id}>
         <Grid
@@ -151,7 +152,7 @@ function RegistrationReceipt(props) {
                             <Grid item xs={4}>
                                 <Typography align="left">
                                     ${Math.round(enrolledCourse.hourly_tuition *
-                                    numSessions(enrolledCourse.course_id, studentID))}
+                                        numSessions(enrolledCourse.course_id, studentID))}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -296,7 +297,7 @@ function RegistrationReceipt(props) {
                                 </Grid>
                                 <Grid item xs={3}>
                                     <Typography align={"left"}>
-                                        {paymentReceipt.method}
+                                        {paymentToString(paymentReceipt.method)}
                                     </Typography>
                                 </Grid>
                             </Grid>
@@ -326,13 +327,11 @@ function RegistrationReceipt(props) {
                     >
                         {
                             paymentReceipt.discount_total >= 0 &&
-                            <Grid style={{width:"100%"}}
+                            <Grid style={{ width: "100%" }}
                                 item xs={3}>
                                 <Grid container direction="row">
                                     <Grid item xs={7}>
-                                        <Typography
-                                            align="right"
-                                            variant="p">
+                                        <Typography align="right">
                                             Discount Amount
                                         </Typography>
                                     </Grid>
@@ -340,7 +339,7 @@ function RegistrationReceipt(props) {
                                         <Typography
                                             align="right"
                                             variant="subheading">
-                                             - ${paymentReceipt.discount_total}
+                                            - ${paymentReceipt.discount_total}
                                         </Typography>
                                     </Grid>
                                 </Grid>
@@ -348,7 +347,7 @@ function RegistrationReceipt(props) {
                         }
                         {
                             paymentReceipt.price_adjustment > 0 &&
-                            <Grid style={{width:"100%"}}
+                            <Grid style={{ width: "100%" }}
                                 item xs={3}>
                                 <Grid container direction="row">
                                     <Grid item xs={7}>
@@ -368,8 +367,8 @@ function RegistrationReceipt(props) {
                                 </Grid>
                             </Grid>
                         }
-                        <Grid style={{width:"100%"}}
-                              item xs={3}>
+                        <Grid style={{ width: "100%" }}
+                            item xs={3}>
                             <Grid container direction="row">
                                 <Grid item xs={7}>
                                     <Typography
