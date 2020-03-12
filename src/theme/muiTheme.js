@@ -35,6 +35,7 @@ const theme = createMuiTheme({
 
           },
         },
+
         // New way of writing MuiTab 
         MuiTab: {
             "root": {
