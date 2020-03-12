@@ -21,7 +21,7 @@ const parseString = (string) => {
 };
 
 const InstructorConflictCheck = ({
-    active = true, instructorID, start, end, eventID, onSubmit = () => {}, children,
+    active = true, instructorID, start, end, ignoreAvailablity = false, eventID, onSubmit = () => {}, children,
 }) => {
     const [open, setOpen] = useState(false);
     const [conflictText, setConflictText] = useState("");
@@ -36,11 +36,17 @@ const InstructorConflictCheck = ({
     }, []);
 
     // detects if there's an actual conflict
-    const conflictDetect = useCallback(({data}) =>
-        data && data.status === false &&
-        (!(data.conflicting_course || data.conflicting_session) ||
-        (data.conflicting_course || data.conflicting_session) != eventID),
-    [eventID]);
+    const conflictDetect = useCallback(({data}) => {
+        if (!data || data.status === true) {
+            return false;
+        }
+        if (ignoreAvailablity &&
+            data.reason.includes("not marked for being available")) {
+            return false;
+        }
+        const conflictingID = data.conflicting_course || data.conflicting_session;
+        return !conflictingID || conflictingID != eventID;
+    }, [eventID, ignoreAvailablity]);
 
     const handleSubmit = useCallback(async () => {
         if (active) {
@@ -113,6 +119,7 @@ InstructorConflictCheck.propTypes = {
         PropTypes.number,
         PropTypes.string,
     ]),
+    "ignoreAvailablity": PropTypes.bool,
     "instructorID": PropTypes.oneOfType([
         PropTypes.number,
         PropTypes.string,
