@@ -42,7 +42,7 @@ export const dateFormatter = (date) =>
         .toDateString()
         .substr(3);
 
-export const courseDateFormat = ({schedule, is_confirmed}) => ({
+export const courseDateFormat = ({ schedule, is_confirmed }) => ({
     "days": DayConverter[new Date(schedule.start_date).getDay()],
     "end_date": dateFormatter(schedule.end_date),
     "end_time": new Date(`2020-01-01${schedule.end_time}`)
@@ -140,6 +140,7 @@ export const courseToRegister = (enrollment, course, student) => ({
     "submitPending": false,
 });
 
+
 export const truncateStrings = (string, length) => string.length > length
     ? `${string.slice(0, length - 3).trim()}...`
     : string;
@@ -161,7 +162,7 @@ export const distinctObjectArray = (array) => {
     return result;
 
 }
-
+// Changes incomming payment options to something prettier. 
 export const paymentToString = (string) => {
     switch (string) {
         case "intl_credit_card":
@@ -190,7 +191,6 @@ export const gradeOptions = [{
     "value": "college_lvl"
 },
 ]
-};
 
 
 /**
@@ -288,3 +288,25 @@ export const durationStringToNum = {
 export const upcomingSession = (sessions, courseID) => sessions.filter((session) => ((session.course == courseID) &&
     dateTimeToDate(new Date(session.start_datetime)) >= dateTimeToDate(new Date())))
     .sort((sessionA, sessionB) => (sessionA - sessionB))[0];
+
+
+/**
+ * @description calculate amount paid towards enrollment
+ * @param {Object}  courseObject- course object that has schedule 
+ * @param {Number} numSessions- Total number of session
+ * @returns "Amount paid per enrollment"
+ */
+
+export const tuitionAmount = (courseObject, numSessions) => {
+    let { schedule, hourly_tuition } = courseObject
+    let { end_time, start_date, start_time } = schedule
+    // Turns string object into Date string
+    let end = `${start_date}${end_time}:00Z`,
+        start = `${start_date}${start_time}:00Z`,
+        duration = Math.abs(new Date(end) - new Date(start)) / 36e5
+
+
+    return (hourly_tuition * duration * numSessions).toFixed(2)
+
+}
+

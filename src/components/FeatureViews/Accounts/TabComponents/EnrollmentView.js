@@ -1,14 +1,14 @@
-import {Link, useHistory, useParams} from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import BackButton from "../../../BackButton";
-import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import * as userActions from "actions/userActions";
 import * as calendarActions from "actions/calendarActions"
-import {bindActionCreators} from "redux";
+import { bindActionCreators } from "redux";
 import * as hooks from "actions/hooks";
 import * as registrationActions from "actions/registrationActions";
 import * as apiActions from "actions/apiActions";
-import {REQUEST_ALL} from "actions/apiActions";
+import { REQUEST_ALL } from "actions/apiActions";
 
 import Grid from "@material-ui/core/Grid";
 import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
@@ -28,15 +28,16 @@ import DialogContentText from "@material-ui/core/es/DialogContentText/DialogCont
 import DialogActions from "@material-ui/core/DialogActions";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import PaymentTable from "./PaymentTable";
-import {NoListAlert} from "../../../NoListAlert";
-import {GET} from "../../../../actions/actionTypes";
-import {SessionPaymentStatusChip} from "../../../SessionPaymentStatusChip";
+import { NoListAlert } from "../../../NoListAlert";
+import { GET } from "../../../../actions/actionTypes";
+import { SessionPaymentStatusChip } from "../../../SessionPaymentStatusChip";
 import AddSessions from "AddSessions";
-import {capitalizeString, DayConverter, upcomingSession} from "../../../../utils";
+import { capitalizeString, DayConverter, upcomingSession } from "../../../../utils";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import FormControl from "@material-ui/core/FormControl";
+import PaymentHistory from "./PaymentHistory";
 
 const timeOptions = {
     "hour": "2-digit",
@@ -136,12 +137,12 @@ const CourseSessionStatus = () => {
 
     // either doesn't exist or only has notes defined
     if (!enrollment || Object.keys(enrollment).length <= 1) {
-        return <Loading paper/>;
+        return <Loading paper />;
     }
     if (hooks.isLoading(courseStatus, enrollmentStatus, studentStatus, instructorStatus) ||
         requestStatus.schedule[GET][REQUEST_ALL] !== 200
     ) {
-        return <Loading paper/>;
+        return <Loading paper />;
     }
     if (hooks.isFail(courseStatus, enrollmentStatus, studentStatus)) {
         return "Error loading data";
@@ -177,7 +178,7 @@ const CourseSessionStatus = () => {
     const closeUnenrollDialog = (toUnenroll) => event => {
         event.preventDefault();
         setUnenrollWarningOpen(false);
-        if(toUnenroll){
+        if (toUnenroll) {
             api.deleteEnrollment(enrollment);
             history.push(`/accounts/student/${studentID}`);
         }
@@ -197,7 +198,7 @@ const CourseSessionStatus = () => {
                             <Grid
                                 className="accounts-table-heading"
                                 container>
-                                <Grid item xs={1}/>
+                                <Grid item xs={1} />
                                 <Grid
                                     item
                                     xs={2}>
@@ -209,10 +210,10 @@ const CourseSessionStatus = () => {
                                 </Grid>
                                 {
                                     [
-                                        {title:"Day", cols:2, align: "left"},
-                                        {title:"Time", cols:3, align:"left"},
-                                        {title:"Tuition",cols:1, align:"left"},
-                                        {title:"Status", cols:2, align:"center"}
+                                        { title: "Day", cols: 2, align: "left" },
+                                        { title: "Time", cols: 3, align: "left" },
+                                        { title: "Tuition", cols: 1, align: "left" },
+                                        { title: "Status", cols: 2, align: "center" }
                                     ].map((header) => (
                                         <Grid
                                             item
@@ -251,7 +252,7 @@ const CourseSessionStatus = () => {
                                                 ${highlightSession && " active"} 
                                                 ${upcomingSess.id == id && " upcoming-session"}`}>
                                                 <Grid container>
-                                                    <Grid item xs={1}/>
+                                                    <Grid item xs={1} />
                                                     <Grid
                                                         item
                                                         xs={2}>
@@ -287,7 +288,7 @@ const CourseSessionStatus = () => {
                                                             setPos
                                                             enrollment={enrollment}
                                                             session={session}
-                                                            />
+                                                        />
                                                     </Grid>
                                                 </Grid>
                                             </Paper>
@@ -309,6 +310,7 @@ const CourseSessionStatus = () => {
                 return (
                     <PaymentTable
                         type={"enrollment"}
+                        courseID={course.course_id}
                         enrollmentID={enrollment.enrollment_id}
                         paymentList={enrollment.payment_list} />
                 );
@@ -339,11 +341,11 @@ const CourseSessionStatus = () => {
                 </Grid>
                 <Grid item md={12} >
                     <Grid container
-                          className={"session-actions"}
-                          direction={"row"}
-                          alignItems={"center"}
-                          justify={"flex-start"}
-                          spacing={16}
+                        className={"session-actions"}
+                        direction={"row"}
+                        alignItems={"center"}
+                        justify={"flex-start"}
+                        spacing={16}
                     >
                         <Grid item>
                             <AddSessions
@@ -362,7 +364,7 @@ const CourseSessionStatus = () => {
                         </Grid>
                     </Grid>
                     <Grid item xs={12}
-                          className="participants"
+                        className="participants"
                     >
                         <Typography align="left">
                             Student: {" "}
@@ -436,7 +438,7 @@ const CourseSessionStatus = () => {
                     <DialogContentText>
                         You are about to unenroll in <b>{course.title}</b> for <b>{usersList.StudentList[studentID].name}</b>.
                         Performing this action will credit <b>${enrollment.balance}</b> back to the parent's account balance.
-                        Are you sure you want to unenroll?
+                    Are you sure you want to unenroll?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
