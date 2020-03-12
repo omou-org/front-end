@@ -8,15 +8,18 @@ import Grid from "@material-ui/core/Grid";
 import {Button, Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import { NoListAlert } from "components/NoListAlert";
+import { FETCH_CATEGORIES_FAILED } from "actions/actionTypes";
 
-/* Python-type zip util function
 
-example:
-zip([1, 2, 3], ['a', 'b', 'c']);
->> [[1, 'a'], [2, 'b'], [3, 'c']]
-
-*/
 const zip = (arrays) => {
+    /* Python-type zip util function
+
+    example:
+    zip([1, 2, 3], ['a', 'b', 'c']);
+    >> [[1, 'a'], [2, 'b'], [3, 'c']]
+
+    */
+
     return arrays[0].map((_,i) => {
         return arrays.map((array) => {return array[i]})
     });
@@ -30,6 +33,15 @@ function PanelManager(props) {
  * 
  * @prop {array} operations List of operation types (i.e ["READ", "UPDATE" ) => options are: READ, UPDATE, DELETE 
  */
+    const zip = rows => rows[0].map((_, c) => rows.map(row=>row[c]));
+
+    const [categoryName, setCategoryName] = useState('');
+    const [categoryDescription, setCategoryDescription] = useState('');
+    const [recordList, setRecordList] = useState([]);
+
+    const records = useSelector(({Course}) => Course.CourseCategories);
+    const categoryStatus = useSelector(({RequestStatus}) => RequestStatus.category)
+
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -37,8 +49,19 @@ function PanelManager(props) {
         }),
         [dispatch]
     );
-
-    let [records, setRecords] = useState({});
+    useEffect(() => {
+        props.propFunction();
+    }, [api]);
+    
+    useEffect(() => {
+        if(records.length !== recordList.length) {
+            let parsedRecordList = records.map((record) => ({
+                ...record,
+                editing: false,
+            }));
+            setRecordList(parsedRecordList);
+        }
+    }, [records]);
 
     const defaults = {
         "editable": "false",
@@ -60,18 +83,11 @@ function PanelManager(props) {
     const fieldsWithDefaults = addDefaults(props.fields);
 
 
-    const zip = rows => rows[0].map((_, c) => rows.map(row=>row[c]));
+
     const viewRecordRow = (record) => {
         const recordElements = [];
-        console.log("record.value");
-        console.log(record.value);
-        console.log("fieldsWithDefaults");
-        console.log(fieldsWithDefaults.entries());
-
-        // const recordWithFieldInfo = zip()
-
-
-
+        console.log(record);
+        
         //! Improper JS - use map or forEach
         // for (const [index, value] of fieldsWithDefaults.entries()) {
         //     console.log("fieldsWithDefaults");
@@ -87,14 +103,14 @@ function PanelManager(props) {
         // };
 
         return (
-        <Paper square={true} className={"category-row"} >
-            <Grid container alignItems={"center"}>
-            
-                {recordElements}
-            
-            </Grid>
+            <Paper square={true} className={"category-row"} >
+                <Grid container alignItems={"center"}>
+                
+                    {recordElements}
+                
+                </Grid>
 
-        </Paper>
+            </Paper>
         )
 
 };
@@ -104,8 +120,6 @@ function PanelManager(props) {
          */
         
         const headerElements = [];
-        const records = [];
-
         for (const [index, value] of fieldsWithDefaults.entries()) {
 
             headerElements.push(
@@ -116,11 +130,6 @@ function PanelManager(props) {
                 </Grid>
             )
         }
-        for (const [index, value] of props.records.entries()) {
-            records.push(
-                {value}
-            )
-        };
 
         return (
             <Grid container>
@@ -156,7 +165,6 @@ function PanelManager(props) {
         e.preventDefault();
         let editingRecord = props.records.find((record) => {return record.id === id});
     }
-
 
     return (
         <>
