@@ -5,18 +5,19 @@ import {POST_OOO_SUCCESS} from "actions/actionTypes";
 import PropTypes from "prop-types";
 import {withStyles} from "@material-ui/core/styles";
 
-
 import {DatePicker, TimePicker} from "material-ui-pickers";
+import AwayIcon from "@material-ui/icons/EventBusy";
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import Grid from "@material-ui/core/Grid";
+import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 
+import InstructorConflictCheck from "components/InstructorConflictCheck";
+
 import "./Accounts.scss";
-import AwayIcon from "@material-ui/icons/EventBusy";
-import MenuItem from "@material-ui/core/MenuItem";
 
 const styles = {
     "maxHeight": "80vh",
@@ -74,167 +75,172 @@ const OutOfOffice = ({instructorID, button}) => {
 
     const canSubmit = useMemo(() => start && end && end > start, [start, end]);
 
-    const handleOpenOOODialog = (event) => {
-        event.preventDefault();
-        setOpenOOODialog(!openOOODialog);
-    };
+    const handleOpenOOODialog = useCallback(() => {
+        setOpenOOODialog((prevOpen) => !prevOpen);
+    }, []);
 
-    return (<>
-        {
-            button ? <Button
-                onClick={handleOpenOOODialog}
-                variant="outlined"
-            >
-                <AwayIcon /> SET OOO
-            </Button> :
-                <MenuItem
+    return (
+        <>
+            {
+                button ? <Button
                     onClick={handleOpenOOODialog}
-                >
+                    variant="outlined">
                     <AwayIcon /> SET OOO
-                </MenuItem>
-        }
-
-        <Dialog
-            aria-labelledby="simple-dialog-title"
-            classes={{"paper": styles}}
-            className="oooDialog"
-            fullWidth
-            maxWidth="md"
-            onClose={handleOpenOOODialog}
-            open={openOOODialog}>
-            <DialogContent>
-                <div className="title">
+                </Button>
+                    : <MenuItem
+                        onClick={handleOpenOOODialog}>
+                        <AwayIcon /> SET OOO
+                    </MenuItem>
+            }
+            <Dialog
+                aria-labelledby="simple-dialog-title"
+                classes={{"paper": styles}}
+                className="oooDialog"
+                fullWidth
+                maxWidth="md"
+                onClose={handleOpenOOODialog}
+                open={openOOODialog}>
+                <DialogContent>
+                    <div className="title">
                     Schedule Out of Office
-                </div>
-                <div className="instructor">
+                    </div>
+                    <div className="instructor">
                     Instructor: {name}
-                </div>
-                <TextField
-                    label="Description"
-                    onChange={updateDescription}
-                    value={description} />
-                <Grid
-                    container
-                    item
-                    md={12}>
+                    </div>
+                    <TextField
+                        label="Description"
+                        onChange={updateDescription}
+                        value={description} />
                     <Grid
+                        container
                         item
-                        md={3}>
-                        <div className="select">
-                            * Select OOO Start Date
-                        </div>
-                        <DatePicker
-                            animateYearScrolling
-                            format="MM/dd/yyyy"
-                            label="Start Date"
-                            margin="normal"
-                            onChange={setStart}
-                            openTo="day"
-                            value={start}
-                            views={["year", "month", "date"]} />
-                    </Grid>
-                    <Grid
-                        item
-                        md={3}>
-                        <div className="select">
-                            * Select OOO End Date
-                        </div>
-                        <DatePicker
-                            animateYearScrolling
-                            format="MM/dd/yyyy"
-                            label="End Date"
-                            margin="normal"
-                            onChange={setEnd}
-                            openTo="day"
-                            value={end}
-                            views={["year", "month", "date"]} />
-                    </Grid>
-                    <Grid
-                        item
-                        md={6} />
-                    <Grid
-                        item
-                        md={3}>
-                        <div className="select">
-                            * Select OOO Start Time
-                        </div>
-                        <TimePicker
-                            autoOk
-                            disabled={allDay}
-                            label="Start Time"
-                            value={start}
-                            onChange={setStart} />
-                    </Grid>
-                    <Grid
-                        item
-                        md={3}>
-                        <div className="select">
-                            * Select OOO End Time
-                        </div>
-                        <TimePicker
-                            autoOk
-                            disabled={allDay}
-                            label="End Time"
-                            value={end}
-                            onChange={setEnd} />
-                    </Grid>
-                    <Grid
-                        item
-                        md={2}>
-                        <Grid container>
-                            <Grid>
-                                <Checkbox
-                                    checked={allDay}
-                                    className="checkbox"
-                                    inputProps={{
-                                        "aria-label": "primary checkbox",
-                                    }}
-                                    onChange={toggleAllDay}
-                                    value="primary" />
-                            </Grid>
-                            <Grid>
-                                <div className="checkboxText">
+                        md={12}>
+                        <Grid
+                            item
+                            md={3}>
+                            <div className="select">
+                                * Select OOO Start Date
+                            </div>
+                            <DatePicker
+                                animateYearScrolling
+                                format="MM/dd/yyyy"
+                                label="Start Date"
+                                margin="normal"
+                                onChange={setStart}
+                                openTo="day"
+                                value={start}
+                                views={["year", "month", "date"]} />
+                        </Grid>
+                        <Grid
+                            item
+                            md={3}>
+                            <div className="select">
+                                * Select OOO End Date
+                            </div>
+                            <DatePicker
+                                animateYearScrolling
+                                format="MM/dd/yyyy"
+                                label="End Date"
+                                margin="normal"
+                                onChange={setEnd}
+                                openTo="day"
+                                value={end}
+                                views={["year", "month", "date"]} />
+                        </Grid>
+                        <Grid
+                            item
+                            md={6} />
+                        <Grid
+                            item
+                            md={3}>
+                            <div className="select">
+                                * Select OOO Start Time
+                            </div>
+                            <TimePicker
+                                autoOk
+                                disabled={allDay}
+                                label="Start Time"
+                                onChange={setStart}
+                                value={start} />
+                        </Grid>
+                        <Grid
+                            item
+                            md={3}>
+                            <div className="select">
+                                * Select OOO End Time
+                            </div>
+                            <TimePicker
+                                autoOk
+                                disabled={allDay}
+                                label="End Time"
+                                onChange={setEnd}
+                                value={end} />
+                        </Grid>
+                        <Grid
+                            item
+                            md={2}>
+                            <Grid container>
+                                <Grid>
+                                    <Checkbox
+                                        checked={allDay}
+                                        className="checkbox"
+                                        inputProps={{
+                                            "aria-label": "primary checkbox",
+                                        }}
+                                        onChange={toggleAllDay}
+                                        value="primary" />
+                                </Grid>
+                                <Grid>
+                                    <div className="checkboxText">
                                     All Day
-                                </div>
+                                    </div>
+                                </Grid>
                             </Grid>
                         </Grid>
+                        <Grid
+                            item
+                            md={5} />
                     </Grid>
                     <Grid
-                        item
-                        md={5} />
-                </Grid>
-                <Grid
-                    container
-                    md={12}>
-                    <Grid
-                        item
-                        md={8} />
-                    <Grid
-                        item
-                        md={2}>
-                        <Button
-                            className="button"
-                            onClick={handleOpenOOODialog}>
-                            Cancel
-                        </Button>
+                        container
+                        md={12}>
+                        <Grid
+                            item
+                            md={8} />
+                        <Grid
+                            item
+                            md={2}>
+                            <Button
+                                className="button"
+                                onClick={handleOpenOOODialog}>
+                                Cancel
+                            </Button>
+                        </Grid>
+                        <Grid
+                            item
+                            md={2}>
+                            <InstructorConflictCheck
+                                ignoreAvailablity
+                                instructorID={instructorID}
+                                end={end}
+                                start={start}>
+                                <Button
+                                    className="button"
+                                    disabled={!canSubmit}>
+                                    // onClick={handleSave}>
+                                    Save OOO
+                                </Button>
+                            </InstructorConflictCheck>
+                        </Grid>
                     </Grid>
-                    <Grid
-                        item
-                        md={2}>
-                        <Button
-                            className="button"
-                            disabled={!canSubmit}
-                            onClick={handleSave}>
-                            Save OOO
-                        </Button>
-                    </Grid>
-                </Grid>
-            </DialogContent>
-        </Dialog>
-    </>);
+                </DialogContent>
+            </Dialog>
+        </>
+    );
 };
 
 OutOfOffice.propTypes = {
+    "button": PropTypes.bool,
     "instructorID": PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number,
