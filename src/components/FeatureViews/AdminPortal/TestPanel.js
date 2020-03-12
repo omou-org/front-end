@@ -49,6 +49,8 @@ function TestPanel() {
         api.fetchCategories();
     },[api]);
 
+    const fetchPropFunction = api.fetchCategories;
+
     useEffect(()=>{
         if(categories.length !== categoryList.length){
             let parsedCategoryList = categories.map((category)=>({
@@ -118,6 +120,7 @@ function TestPanel() {
         <PanelManager
             fields={fields}
             records={categories}
+            propFunction={fetchPropFunction}
         />
             </div>
     )
