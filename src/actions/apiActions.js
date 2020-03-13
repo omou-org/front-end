@@ -146,7 +146,7 @@ export const submitNewSmallGroup = (form) => {
         });
         resolve();
     }).then(() => {
-        const newCourse = formatCourse(form["Group Details"], "small_group");
+        const newCourse = formatCourse(form, "small_group");
         instance.request({
             "data": newCourse,
             "method": "post",
@@ -176,6 +176,8 @@ export const durationParser = {
 };
 
 export const formatCourse = (formCourse, type) => {
+    const courseInfo = formCourse["Course Info"] || formCourse["Group Details"];
+    const tuitionInfo = formCourse["Tuition"] || formCourse["Group Details"];
 
     const dayOfWeek = () => {
         switch (startDate.getDay()) {
@@ -195,19 +197,19 @@ export const formatCourse = (formCourse, type) => {
                 return "saturday";
         }
     };
-    let startDate = new Date(formCourse["Start Date"]);
+
+    let startDate = new Date(courseInfo["Start Date"]);
     const day = dayOfWeek();
     let endDate = new Date(startDate);
     // 7 days * (number of sessions - 1) = because you can't count the first one
-    const numberOfSessions = formCourse["Number of Weekly Sessions"] - 1;
+    const numberOfSessions = tuitionInfo["# of Weekly Sessions"];
 
-    endDate = new Date(endDate.setDate(startDate.getDate() + 7 * numberOfSessions));
-
+    endDate = new Date(endDate.setDate(startDate.getDate() + 7 * (numberOfSessions - 1)));
 
     startDate = startDate.toLocaleString("sv-SE", dateFormat);
     endDate = endDate.toLocaleString("sv-SE", dateFormat);
 
-    const startString = formCourse["Start Time"];
+    const startString = courseInfo["Start Time"];
     let startTime = new Date(startString);
     let endTime = new Date(startString);
     const duration = {
@@ -217,25 +219,28 @@ export const formatCourse = (formCourse, type) => {
         "2 Hours": 2,
     };
 
-    endTime = new Date(endTime.setTime(endTime.getTime() + duration[formCourse.Duration] * 60 * 60 * 1000));
+    endTime = new Date(endTime.setTime(endTime.getTime() + duration[tuitionInfo.Duration] * 60 * 60 * 1000));
 
     endTime = endTime.toLocaleString("eng-US", timeFormat);
     startTime = startTime.toLocaleString("eng-US", timeFormat);
 
     return {
-        "subject": formCourse["Course Name"],
+        "subject": courseInfo["Course Name"],
         "course_type": type.toLowerCase(),
-        "description": formCourse.Description,
-        "instructor": formCourse.Instructor.value,
+        "description": courseInfo.Description,
+        "instructor": courseInfo.Instructor.value,
         "day_of_week": day,
         "start_date": startDate,
         "end_date": endDate,
         "start_time": startTime,
         "end_time": endTime,
-        "max_capacity": formCourse.Capacity,
-        "course_category": formCourse.Category.value,
-        "academic_level": academicLevelParse[formCourse["Grade Level"]],
-        "is_confirmed": formCourse["Did instructor confirm?"] === "Yes, Instructor Confirm",
+        "max_capacity": courseInfo.Capacity,
+        "is_confirmed": courseInfo["Did instructor confirm?"] === "Yes, Instructor Confirm",
+        "sessions": numberOfSessions,
+        "course_category": tuitionInfo.Category.value,
+        "academic_level": academicLevelParse[tuitionInfo["Grade Level"]],
+        "hourly_tuition": tuitionInfo["Hourly Tuition"],
+        "total_tuition": tuitionInfo["Total Tuition"],
     };
 };
 

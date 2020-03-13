@@ -23,6 +23,7 @@ export default function users(state = initialState.Users, {payload, type}) {
         case actions.FETCH_OOO_SUCCESS:
             return handleOOOFetch(state, payload);
         case actions.FETCH_INSTRUCTOR_AVAILABILITY_SUCCESS:
+        case actions.POST_INSTRUCTORAVAILABILITY_SUCCESS:
             return handleAvailabilityFetch(state, payload);
         default:
             return state;
@@ -275,6 +276,7 @@ const updateAvailability = (instructors, availability) => {
     newInstructors[instructorID].schedule.work_hours = {
         ...instructors[instructorID].schedule.work_hours,
         [availability.id]: {
+            "availability_id": availability.id,
             "day": dayToNum[availability.day_of_week],
             "end": availability.end_time,
             "start": availability.start_time,
@@ -292,7 +294,6 @@ export const handleOOOFetch = (state, {response}) => {
             InstructorList = updateOOO(InstructorList, OOO);
         });
     } else {
-
         InstructorList = updateOOO(InstructorList, data);
     }
     return {

@@ -3,7 +3,6 @@ import {bindActionCreators} from "redux";
 import * as userActions from "../../../actions/userActions";
 import React, {Component} from "react";
 import BackButton from "../../BackButton";
-import Truncate from 'react-truncate';
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
@@ -29,7 +28,10 @@ import ProfileCard from "./ProfileCard";
 import {GET} from "../../../actions/actionTypes";
 import {REQUEST_ALL} from "../../../actions/apiActions";
 import Loading from "../../Loading";
-import {Tooltip} from "@material-ui/core";
+import {isLoading} from "actions/hooks"
+import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from "@material-ui/core/IconButton";
+import {capitalizeString} from "../../../utils";
 
 const styles = theme => ({
     root: {
@@ -37,6 +39,10 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.paper,
     },
 });
+
+const tabStyle = {
+    minWidth: 130
+};
 
 class Accounts extends Component {
     constructor(props) {
@@ -63,7 +69,7 @@ class Accounts extends Component {
                 Object.assign(usersList, this.props.students);
                 Object.assign(usersList, this.props.instructors);
                 Object.assign(usersList, this.props.receptionist);
-                usersList=Object.values(usersList).sort(function(a, b) {
+                usersList = Object.values(usersList).sort(function (a, b) {
                     return (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0;
                 });
                 return { usersList: usersList, }
@@ -72,7 +78,7 @@ class Accounts extends Component {
     }
 
     componentDidMount() {
-        if(Object.keys(this.state.usersList)[0] !== Object.keys(this.props.parents)[0]){
+        if (Object.keys(this.state.usersList)[0] !== Object.keys(this.props.parents)[0]) {
             this.props.userActions.fetchParents();
             this.props.userActions.fetchInstructors();
             this.props.userActions.fetchStudents();
@@ -82,7 +88,7 @@ class Accounts extends Component {
     resize() {
         const currentHideNav = window.innerWidth <= 760;
         if (currentHideNav !== this.state.mobileView) {
-            this.setState(({mobileView}) => ({
+            this.setState(({ mobileView }) => ({
                 "mobileView": !mobileView,
             }));
         }
@@ -133,34 +139,36 @@ class Accounts extends Component {
         });
     };
 
+    handleCardClick = (event) => {
+        this.setState(
+            { "viewToggle": false },
+            () => {
+                sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
+            }
+        );
+    };
+
     render() {
         const userList = this.getUsers();
         const styles = (username) => ({
-            avatar:{
+            avatar: {
                 "backgroundColor": stringToColor(username),
                 "color": "white",
-                "margin": 9,
+                "marginRight": 9,
                 "width": 38,
                 "height": 38,
                 "fontSize": 14,
             },
-            first_tab:{
-                borderRadius:"10px 0 0 10px !important",
-                color: "black",
-            },
-            last_tab:{
-                borderRadius:"10px 0 0 10px",
-            },
         });
 
         const tableView = () => (
-            <Table className="AccountsTable">
+            <Table resizable={false} className="AccountsTable">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Email</TableCell>
-                        <TableCell>Phone</TableCell>
-                        <TableCell>Role</TableCell>
+                        <TableCell >Name</TableCell>
+                        <TableCell >Email</TableCell>
+                        <TableCell >Phone</TableCell>
+                        <TableCell >Role</TableCell>
                         <TableCell />
                     </TableRow>
                 </TableHead>
@@ -173,12 +181,7 @@ class Accounts extends Component {
                                 event.preventDefault();
                                 this.goToRoute(`/accounts/${row.role}/${row.user_id}`);
                             }}>
-                            <TableCell
-                                className="accountsCell"
-                                style={{
-                                    "marginLeft": "0px",
-                                    "paddingLeft": "0px",
-                                }}>
+                            <TableCell>
                                 <Grid
                                     alignItems="center"
                                     container
@@ -186,28 +189,23 @@ class Accounts extends Component {
                                     <Avatar
                                         style={styles(row.name).avatar}>{row.name.toUpperCase().match(/\b(\w)/g).join("")}
                                     </Avatar>
-                                    <Truncate lines={1} ellipsis={<span>...</span>}>
-                                        {row.name}
-                                    </Truncate>
+                                    {row.name}
+
                                 </Grid>
                             </TableCell>
-                            <TableCell
-                                className="accountsCell">
+                            <TableCell>
                                 <Tooltip title={row.email}>
                                     <span>
-                                        {row.email.substr(0,20)}
+                                        {row.email.substr(0, 20)}
                                     </span>
                                 </Tooltip>
                             </TableCell>
-                            <TableCell
-                                className="accountsCell">{addDashes(row.phone_number)}
+                            <TableCell>{addDashes(row.phone_number)}
+                            </TableCell>
+                            <TableCell>
+                                {capitalizeString(row.role)}
                             </TableCell>
                             <TableCell
-                                className="accountsCell">
-                                {row.role.charAt(0).toUpperCase() + row.role.slice(1)}
-                            </TableCell>
-                            <TableCell
-                                className="accountsCell"
                                 onClick={(event) => {
                                     event.stopPropagation();
                                 }}>
@@ -216,20 +214,18 @@ class Accounts extends Component {
                                     mdDown>
                                     {
                                         (row.role === "student" || row.role === "parent" || this.props.isAdmin) &&
-                                        <Button
-                                            className="editButton"
+                                        <IconButton
                                             component={NavLink}
                                             to={`/registration/form/${row.role}/${row.user_id}/edit`}>
                                             <EditIcon />
-                                            Edit Profile
-                                        </Button>
+                                        </IconButton>
                                     }
                                 </Grid>
                                 <Grid
                                     component={Hidden}
                                     lgUp>
                                     <Button
-                                        className="editButton"
+                                        variant="outlined"
                                         component={NavLink}
                                         to={`/registration/form/${row.role}/${row.user_id}/edit`}>
                                         <EditIcon />
@@ -251,7 +247,7 @@ class Accounts extends Component {
                     container
                     direction="row"
                     spacing={16}
-                    style={{"marginTop": 20}}
+                    style={{ "marginTop": 20 }}
                     xs={12}>
                     {Object.values(userList).map((user) => (
                         <ProfileCard
@@ -262,15 +258,11 @@ class Accounts extends Component {
         );
         this.resize();
 
-        if((this.props.requestStatus.instructor[GET][REQUEST_ALL] !== 200 ||
-            this.props.requestStatus.student[GET][REQUEST_ALL] !== 200 ||
-            this.props.requestStatus.parent[GET][REQUEST_ALL] !== 200)
-        ){
-            return (<Loading/>)
-        }
+        const loading = isLoading(this.props.requestStatus.instructor[GET][REQUEST_ALL],
+            this.props.requestStatus.student[GET][REQUEST_ALL],
+            this.props.requestStatus.parent[GET][REQUEST_ALL]);
 
         return (
-
             <Grid
                 className="Accounts"
                 item
@@ -292,7 +284,29 @@ class Accounts extends Component {
                         <Grid
                             item
                             md={8}
-                            xs={10}>
+                            xs={10}
+                            component={Hidden} lgUp
+                        >
+                            <Tabs
+                                className="tabs"
+                                indicatorColor="primary"
+                                onChange={this.handleChange}
+                                textColor="primary"
+                                value={this.state.tabIndex}
+                                scrollButtons="on"
+                                variant="scrollable">
+                                <Tab style={tabStyle} label="ALL" classes={styles("").first_tab} />
+                                <Tab style={tabStyle} label="INSTRUCTORS" />
+                                <Tab style={tabStyle} label="STUDENTS" />
+                                <Tab style={tabStyle} label="RECEPTIONIST" />
+                                <Tab style={tabStyle} label="PARENTS" />
+                            </Tabs>
+
+                        </Grid>
+                        <Grid item md={8}
+                            xs={10}
+                            component={Hidden} mdDown
+                        >
                             <Tabs
                                 className="tabs"
                                 indicatorColor="primary"
@@ -301,11 +315,11 @@ class Accounts extends Component {
                                 scrollButtons="off"
                                 value={this.state.tabIndex}
                                 variant="scrollable">
-                                <Tab style={{minWidth:130}} label="ALL" classes={styles("").first_tab}/>
-                                <Tab style={{minWidth:130}} label="INSTRUCTORS" />
-                                <Tab style={{minWidth:130}} label="STUDENTS" />
-                                <Tab style={{minWidth:130}} label="RECEPTIONIST" />
-                                <Tab style={{minWidth:130}} label="PARENTS" />
+                                <Tab style={tabStyle} label="ALL" classes={styles("").first_tab} />
+                                <Tab style={tabStyle} label="INSTRUCTORS" />
+                                <Tab style={tabStyle} label="STUDENTS" />
+                                <Tab style={tabStyle} label="RECEPTIONIST" />
+                                <Tab style={tabStyle} label="PARENTS" />
                             </Tabs>
                         </Grid>
                         {
@@ -318,25 +332,18 @@ class Accounts extends Component {
                                     <Button className={`btn list ${this.state.viewToggle ? "active" : ""}`}
                                         onClick={(event) => {
                                             this.setState(
-                                                {"viewToggle": true},
+                                                { "viewToggle": true },
                                                 () => {
                                                     sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
                                                 }
                                             );
                                         }}>
-                                        <ListView className={`icon ${this.state.viewToggle ? "active" : ""}`}/>
-                                             List View
+                                        <ListView className={`icon ${this.state.viewToggle ? "active" : ""}`} />
+                                        List View
                                     </Button>
                                     <Button className={`btn card ${this.state.viewToggle ? "" : "active"}`}
-                                            onClick={(event) => {
-                                                this.setState(
-                                                    {"viewToggle": false},
-                                                    () => {
-                                                        sessionStorage.setItem("AccountsState", JSON.stringify(this.state));
-                                                    }
-                                                );
-                                            }} >
-                                        <CardView className={`icon ${this.state.viewToggle ? "" : "active"}`}/>
+                                        onClick={this.handleCardClick} >
+                                        <CardView className={`icon ${this.state.viewToggle ? "" : "active"}`} />
                                         Card View
                                     </Button>
 
@@ -346,11 +353,13 @@ class Accounts extends Component {
                     </Grid>
                     <Grid
                         alignItems="center"
+                        justify="center"
                         className="accounts-list-wrapper"
                         container
                         direction="row"
                         spacing={8}>
                         {
+                            loading ? <Loading/> :
                             this.state.mobileView
                                 ? cardView()
                                 : this.state.viewToggle

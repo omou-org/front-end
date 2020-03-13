@@ -8,7 +8,6 @@
     padding: 3%;
   }
   .toggleView {
-    position: absolute;
     right: 10%;
   }
 
@@ -58,6 +57,15 @@
       box-sizing: border-box;
       border: solid 2px $secondaryColor !important;
       white-space: nowrap;
+    }
+
+    .accountsCell{
+      width:220px;
+      overflow-wrap: break-word;
+    }
+    .accountsCellID{
+      width:100px;
+      overflow-wrap: break-word;
     }
   }
 }
@@ -152,7 +160,6 @@
 
     .editButton {
       color: $darkenPrimaryFontColor;
-      border-radius: 0px;
       box-sizing: border-box;
       border: solid 2px $secondaryColor !important;
       white-space: nowrap;
