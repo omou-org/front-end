@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import React from 'react';
 
 import Grid from '@material-ui/core/Grid';
@@ -11,9 +11,13 @@ import Paper from "@material-ui/core/Paper";
 import Loading from "../../../Loading";
 import NavLinkNoDup from "../../../Routes/NavLinkNoDup";
 import { NoListAlert } from "../../../NoListAlert";
-import { paymentToString } from "utils"
+import { paymentToString, tuitionAmount } from "utils"
+import PaymentHistory from "../TabComponents/PaymentHistory"
 
-function PaymentTable({ paymentList, type, enrollmentID }) {
+function PaymentTable({ paymentList, type, enrollmentID, courseID, }) {
+    const Payments = useSelector(({ Payments }) => Payments);
+    const courses = useSelector(({ Course }) => Course.NewCourseList);
+
 
     if (paymentList && paymentList.length < 1) {
         return <Loading />
@@ -42,6 +46,7 @@ function PaymentTable({ paymentList, type, enrollmentID }) {
 
     const CourseLabel = (enrollments) => {
         return enrollments && `${enrollments.length} Course${enrollments.length !== 1 ? "s" : ""}`
+
     };
 
     return (<Grid item md={12}>
@@ -77,9 +82,11 @@ function PaymentTable({ paymentList, type, enrollmentID }) {
                                     }
                                 </TableCell>
                                 <TableCell>
-                                    ${payment.total}
+                                    {type === "enrollment" ? tuitionAmount(courses[courseID], paidSessionsByPayment()[payment.id]) : payment.total}
+
                                 </TableCell>
                                 <TableCell>
+
                                     {paymentToString(payment.method)}
                                 </TableCell>
                             </TableRow>
@@ -93,20 +100,8 @@ function PaymentTable({ paymentList, type, enrollmentID }) {
 
 PaymentTable.propTypes = {
     paymentList: PropTypes.array.isRequired,
+    type: PropTypes.oneOf(["enrollment", "parent"]).isRequired
 };
 
-function mapStateToProps(state) {
-    return {
-        payments: state.Payments,
-        courses: state.Course.NewCourseList,
-    };
-}
 
-function mapDispatchToProps(dispatch) {
-    return {};
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(PaymentTable);
+export default PaymentTable;
