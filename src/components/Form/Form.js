@@ -583,7 +583,7 @@ class Form extends Component {
     };
 
     // Regresses to previous section in registration form
-    handleBack() {
+    handleBack = () => {
         this.setState((oldState) => {
             if (oldState.activeStep !== 0 && oldState.activeSection) {
                 return {
@@ -1273,25 +1273,6 @@ class Form extends Component {
                         end.setDate(end.getDate() + (numSesh - 1) * 7);
                 }
                 break;
-            /*"# of Weekly Sessions": "20"
-
-Capacity: 12
-
-Category: Object { value: 1, label: "Math" }
-
-"Course Name": "as"
-
-Description: "das"
-
-"Did instructor confirm?": "Yes, Instructor Confirm"
-
-Duration: "2 Hours"
-
-"Grade Level": "High School"
-
-Instructor: Object { value: 4, label: "impostor Huang - daniel@huang2.com" }
-
-"Start Date": Date Fri Mar 06 2020 21:11:00 GMT-0800 (Pacific Standard Time*/
             default:
                 checkForConflict = false;
         }
@@ -1344,34 +1325,44 @@ Instructor: Object { value: 4, label: "impostor Huang - daniel@huang2.com" }
                                         );
                                     })
                                 }
-                                <div className="controls">
-                                    <Button
-                                        className={`button ${activeStep === 0 ? "hide" : ""}`}
-                                        color="secondary"
-                                        disabled={activeStep === 0}
-                                        onClick={(event) => {
-                                            event.preventDefault();
-                                            this.handleBack();
+                                <Grid
+                                    container
+                                    direction="row-reverse"
+                                    justify="flex-start">
+                                    <Grid
+                                        item
+                                        style={{
+                                            "marginLeft": "2%",
                                         }}>
-                                        Back
-                                    </Button>
-                                    <InstructorConflictCheck
-                                        active={checkForConflict}
-                                        start={start}
-                                        instructorID={instructorID}
-                                        eventID={this.props.match.params.id}
-                                        end={end}
-                                        onSubmit={this.handleNext}>
-                                        <Button
-                                            className="button primary"
-                                            color="primary"
-                                            disabled={!nextSection}
-                                            variant="contained">
-                                            {activeStep === steps.length - 1 ? this.props.submitPending ? "Submitting"
-                                                : ["course", "tutoring"].includes(this.state.form) ? "Add to Cart" : "Submit" : "Next"}
-                                        </Button>
-                                    </InstructorConflictCheck>
-                                </div>
+                                        <InstructorConflictCheck
+                                            active={checkForConflict}
+                                            start={start}
+                                            instructorID={instructorID}
+                                            eventID={this.props.match.params.id}
+                                            end={end}
+                                            onSubmit={this.handleNext}>
+                                            <Button
+                                                className="button primary"
+                                                color="primary"
+                                                disabled={!nextSection}
+                                                variant="contained">
+                                                {activeStep === steps.length - 1 ? this.props.submitPending ? "Submitting"
+                                                    : ["course", "tutoring"].includes(this.state.form) ? "Add to Cart" : "Submit" : "Next"}
+                                            </Button>
+                                        </InstructorConflictCheck>
+                                    </Grid>
+                                    {
+                                        activeStep !== 0 &&
+                                        <Grid item>
+                                            <Button
+                                                className="button"
+                                                color="secondary"
+                                                onClick={this.handleBack}>
+                                                Back
+                                            </Button>
+                                        </Grid>
+                                    }
+                                </Grid>
                             </StepContent>
                         </Step>
                     ))
