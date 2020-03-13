@@ -183,7 +183,6 @@ const SearchResults = (props) => {
                                     accountResultsNum > 0 && searchState.primaryFilter !== SEARCH_COURSES ?
                                         accounts.slice(startPage(currentPage.account), endPage(currentPage.account))
                                             .map((account) => {
-                                                // console.log(account)
                                                return (
                                                    <Grid item
                                                          key={account.user_id}

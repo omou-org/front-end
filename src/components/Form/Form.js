@@ -1229,7 +1229,6 @@ class Form extends Component {
             case "course_details":
                 if (this.state.activeSection === "Tuition" &&
                     this.state.Tuition && this.state.Tuition.Duration) {
-                        console.log(this.state)
                         instructorID = this.state["Course Info"]["Instructor"].value;
                         start = combineDateAndTime(
                             new Date(this.state["Course Info"]["Start Date"]),
@@ -1265,7 +1264,6 @@ class Form extends Component {
                 if (this.state.activeSection === "Tuition Quote Tool" &&
                     this.state["Group Details"]["# of Weekly Sessions"] &&
                     this.state["Group Details"].Duration) {
-                    console.log(this.state)
                         instructorID = this.state["Group Details"]["Instructor"].value;
                         const numSesh = this.state["Group Details"]["# of Weekly Sessions"];
                         const {Duration} = this.state["Group Details"];
@@ -1283,7 +1281,6 @@ class Form extends Component {
                 checkForConflict = false;
         }
         checkForConflict = Boolean(instructorID && start && end);
-        console.log(checkForConflict, instructorID, start, end)
         return (
             <Stepper
                 activeStep={activeStep}
