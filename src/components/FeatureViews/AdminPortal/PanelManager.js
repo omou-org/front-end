@@ -3,6 +3,7 @@ import * as adminActions from "../../../actions/adminActions";
 import "./AdminPortal.scss";
 import {connect, useDispatch, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
+import {GET} from "../../../actions/actionTypes";
 
 import Grid from "@material-ui/core/Grid";
 import {Button, Typography} from "@material-ui/core";
@@ -10,6 +11,7 @@ import Paper from "@material-ui/core/Paper";
 import { NoListAlert } from "components/NoListAlert";
 import { FETCH_CATEGORIES_FAILED } from "actions/actionTypes";
 
+import Loading from "../../Loading";
 
 const zip = (arrays) => {
     /* Python-type zip util function
@@ -43,14 +45,16 @@ function PanelManager(props) {
     const categoryStatus = useSelector(({RequestStatus}) => RequestStatus.category)
 
     const dispatch = useDispatch();
+
     const api = useMemo(
         () => ({
             ...bindActionCreators(adminActions, dispatch),
         }),
         [dispatch]
     );
+    
     useEffect(() => {
-        props.propFunction();
+        props.fetchFunctions();
     }, [api]);
     
     useEffect(() => {
@@ -62,6 +66,10 @@ function PanelManager(props) {
             setRecordList(parsedRecordList);
         }
     }, [records]);
+
+    if(props.statusFunctions[GET] !== 200){
+        return <Loading />
+    }
 
     const defaults = {
         "editable": "false",
@@ -86,8 +94,26 @@ function PanelManager(props) {
 
     const viewRecordRow = (record) => {
         const recordElements = [];
-        console.log(record);
         
+        fieldsWithDefaults.forEach((field) => {
+            console.log("record");
+            recordElements.push(record.name);
+            for (const recordField in record) {
+                console.log(record[recordField]);
+                if (recordField !== "id") {
+                    recordElements.push(
+                        <Grid item xs={field["col-width"]} md={field["col-width"]} >
+                            <Typography align={field["align"]}>
+                                {record[recordField]}
+                            </Typography>
+                        </Grid>
+                    )
+
+                }
+
+            }
+        })
+
         //! Improper JS - use map or forEach
         // for (const [index, value] of fieldsWithDefaults.entries()) {
         //     console.log("fieldsWithDefaults");
@@ -101,13 +127,18 @@ function PanelManager(props) {
         //     </Grid>
         //     )
         // };
-
         return (
             <Paper square={true} className={"category-row"} >
                 <Grid container alignItems={"center"}>
                 
                     {recordElements}
-                
+                <Grid item xs={2} md={2}>
+                    <Button
+                        onClick={editCategory(category.id)}
+                        className={"button"}>
+                        EDIT
+                    </Button>
+                </Grid>
                 </Grid>
 
             </Paper>
@@ -161,10 +192,10 @@ function PanelManager(props) {
         )
     };
 
-    const editRecord = (id) => (e) => {
-        e.preventDefault();
-        let editingRecord = props.records.find((record) => {return record.id === id});
-    }
+    // const editRecord = (id) => (e) => {
+    //     e.preventDefault();
+    //     let editingRecord = records.find((record) => {return record.id === id});
+    // }
 
     return (
         <>
