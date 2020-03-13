@@ -48,7 +48,6 @@ function PaymentTable({ paymentList, type, enrollmentID, courseID, }) {
         return enrollments && `${enrollments.length} Course${enrollments.length !== 1 ? "s" : ""}`
 
     };
-    console.log(courses[courseID])
 
     return (<Grid item md={12}>
         <Paper className={'payments-history'}>
