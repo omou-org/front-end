@@ -30,11 +30,6 @@ function TestPanel() {
             "name": "Description",
             "col-width": 7,
             "editable": "true"
-        },
-        {
-            "name": "Edit",
-            "align": "center",
-            "col-width": 2
         }
     ];
 

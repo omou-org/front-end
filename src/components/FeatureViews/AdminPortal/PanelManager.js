@@ -13,6 +13,9 @@ import { FETCH_CATEGORIES_FAILED } from "actions/actionTypes";
 
 import Loading from "../../Loading";
 
+import IconButton from "@material-ui/core/IconButton/IconButton";
+import EditIcon from "@material-ui/icons/Edit";
+
 const zip = (arrays) => {
     /* Python-type zip util function
 
@@ -95,49 +98,29 @@ function PanelManager(props) {
     const viewRecordRow = (record) => {
         const recordElements = [];
         
-        fieldsWithDefaults.forEach((field) => {
-            console.log("record");
-            recordElements.push(record.name);
-            for (const recordField in record) {
-                console.log(record[recordField]);
-                if (recordField !== "id") {
-                    recordElements.push(
-                        <Grid item xs={field["col-width"]} md={field["col-width"]} >
-                            <Typography align={field["align"]}>
-                                {record[recordField]}
-                            </Typography>
-                        </Grid>
-                    )
+        fieldsWithDefaults.forEach((field, index) => {
+            recordElements.push(
 
-                }
+                    <Grid item xs={field["col-width"]} md={field["col-width"]}>
+                        <Typography align={field["align"]}>
+                            {Object.values(record)[index + 1]}
+                        </Typography>
+                    </Grid>
 
-            }
+            );
         })
 
-        //! Improper JS - use map or forEach
-        // for (const [index, value] of fieldsWithDefaults.entries()) {
-        //     console.log("fieldsWithDefaults");
-        //     console.log(fieldsWithDefaults[index]["name"]);
-        //     // console.log(record.value)
-        //     recordElements.push(
-        //     <Grid item xs={fieldsWithDefaults[index]["col-width"]} md={fieldsWithDefaults[index]["col-width"]} >
-        //         <typography align={fieldsWithDefaults[index]["align"]}>
-        //             {record.value.description}
-        //         </typography>
-        //     </Grid>
-        //     )
-        // };
         return (
             <Paper square={true} className={"category-row"} >
                 <Grid container alignItems={"center"}>
                 
                     {recordElements}
-                <Grid item xs={2} md={2}>
-                    <Button
-                        onClick={editCategory(category.id)}
-                        className={"button"}>
-                        EDIT
-                    </Button>
+                    <Grid item xs={2} md={2}>
+                    <IconButton
+                        onClick={() => {alert("hello world")}}
+                        >
+                        <EditIcon/>
+                    </IconButton>
                 </Grid>
                 </Grid>
 
@@ -169,6 +152,11 @@ function PanelManager(props) {
                     
                     <Grid container className={'accounts-table-heading'}>
                     {headerElements}
+                    <Grid item xs={2} md={2}>
+                        <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
+                            Edit
+                        </Typography>
+                    </Grid>
                     </Grid>
                 </Grid>
 
