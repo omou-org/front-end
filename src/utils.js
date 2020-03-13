@@ -1,4 +1,4 @@
-import { instance } from "actions/apiActions";
+import {instance} from "actions/apiActions";
 
 export const timeFormat = {
     "hour12": false,
@@ -162,7 +162,7 @@ export const distinctObjectArray = (array) => {
     return result;
 
 }
-// Changes incomming payment options to something prettier. 
+// Changes incomming payment options to something prettier.
 export const paymentToString = (string) => {
     switch (string) {
         case "intl_credit_card":
@@ -172,25 +172,25 @@ export const paymentToString = (string) => {
         default:
             return capitalizeString(string)
     }
-}
+};
 
-export const gradeOptions = [{
-    "label": "Elementary School",
-    "value": "elementary_lvl"
-},
-{
-    "label": "Middle School",
-    "value": "middle_lvl"
-},
-{
-    "label": "High School",
-    "value": "high_lvl"
-},
-{
-    "label": "College",
-    "value": "college_lvl"
-},
-
+export const gradeOptions = [
+    {
+        "label": "Elementary School",
+        "value": "elementary_lvl"
+    },
+    {
+        "label": "Middle School",
+        "value": "middle_lvl"
+    },
+    {
+        "label": "High School",
+        "value": "high_lvl"
+    },
+    {
+        "label": "College",
+        "value": "college_lvl"
+    },
 ];
 
 
@@ -293,7 +293,7 @@ export const upcomingSession = (sessions, courseID) => sessions.filter((session)
 
 /**
  * @description calculate amount paid towards enrollment
- * @param {Object}  courseObject- course object that has schedule 
+ * @param {Object}  courseObject- course object that has schedule
  * @param {Number} numSessions- Total number of session
  * @returns "Amount paid per enrollment"
  */

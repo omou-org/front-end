@@ -50,7 +50,6 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import {DatePicker, TimePicker} from "material-ui-pickers";
 import * as utils from "./FormUtils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
-import {GET} from "../../actions/actionTypes";
 import InstructorConflictCheck from "components/InstructorConflictCheck";
 import {combineDateAndTime, durationStringToNum} from "utils";
 
@@ -581,7 +580,7 @@ class Form extends Component {
                 "nextSection": this.validateSection(),
             });
         });
-    }
+    };
 
     // Regresses to previous section in registration form
     handleBack() {
@@ -1229,7 +1228,7 @@ class Form extends Component {
             case "course_details":
                 if (this.state.activeSection === "Tuition" &&
                     this.state.Tuition && this.state.Tuition.Duration) {
-                        console.log(this.state)
+                        console.log(this.state);
                         instructorID = this.state["Course Info"]["Instructor"].value;
                         start = combineDateAndTime(
                             new Date(this.state["Course Info"]["Start Date"]),
@@ -1265,7 +1264,7 @@ class Form extends Component {
                 if (this.state.activeSection === "Tuition Quote Tool" &&
                     this.state["Group Details"]["# of Weekly Sessions"] &&
                     this.state["Group Details"].Duration) {
-                    console.log(this.state)
+                    console.log(this.state);
                         instructorID = this.state["Group Details"]["Instructor"].value;
                         const numSesh = this.state["Group Details"]["# of Weekly Sessions"];
                         const {Duration} = this.state["Group Details"];
@@ -1302,7 +1301,6 @@ Instructor: Object { value: 4, label: "impostor Huang - daniel@huang2.com" }
                 checkForConflict = false;
         }
         checkForConflict = Boolean(instructorID && start && end);
-        console.log(checkForConflict, instructorID, start, end)
         return (
             <Stepper
                 activeStep={activeStep}
