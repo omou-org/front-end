@@ -82,7 +82,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                         "duration": 1
                     };
                 }),
-                "disabled_discounts": discounts.filter((discount) => !discount.enable).map(({ discount_id }) => discount_id),
+                "disabled_discounts": discounts.filter((discount) => !discount.enable).map(({ id }) => id),
                 "price_adjustment": Number(priceAdjustment),
             };
 
@@ -96,11 +96,11 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                 if (responseDiscounts !== stateDiscounts) {
                     let ResponseDiscounts = quoteResponse.data.discounts.map((discount) => ({
                         ...discount,
-                        "enable": discounts.find((sDiscount) => sDiscount.discount_id === discount.discount_id)
-                            ? discounts.find((sDiscount) => sDiscount.discount_id === discount.discount_id).enable : true,
+                        "enable": discounts.find((sDiscount) => sDiscount.id === discount.id)
+                            ? discounts.find((sDiscount) => sDiscount.id === discount.id).enable : true,
                     }));
-                    const ResponseDiscountIDs = ResponseDiscounts.map((discount) => discount.discount_id);
-                    const discountNotInResponseButInState = discounts.filter((discount) => !ResponseDiscountIDs.includes(discount.discount_id));
+                    const ResponseDiscountIDs = ResponseDiscounts.map((discount) => discount.id);
+                    const discountNotInResponseButInState = discounts.filter((discount) => !ResponseDiscountIDs.includes(discount.id));
                     ResponseDiscounts = ResponseDiscounts.concat(discountNotInResponseButInState);
 
                     setDiscounts(ResponseDiscounts);
@@ -170,7 +170,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
     const toggleDiscount = useCallback((id) => () => {
         setDiscounts((previousDiscounts) => previousDiscounts.map((discount) => ({
             ...discount,
-            "enable": discount.discount_id === id ? !discount.enable : discount.enable,
+            "enable": discount.id === id ? !discount.enable : discount.enable,
         })));
     }, []);
 
@@ -272,12 +272,12 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                                                     discount.enable
                                                         ? <Remove
                                                             className="remove icon"
-                                                            onClick={toggleDiscount(discount.discount_id)} />
+                                                            onClick={toggleDiscount(discount.id)} />
                                                         : <Add
                                                             className="add icon"
-                                                            onClick={toggleDiscount(discount.discount_id)} />
+                                                            onClick={toggleDiscount(discount.id)} />
                                                 }
-                                                {discount.name || discount.discount_title} Discount
+                                                {discount.name} Discount
                                             </Typography>
                                         </Grid>
                                         <Grid
