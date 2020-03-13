@@ -1,4 +1,4 @@
-import { instance } from "actions/apiActions";
+import {instance} from "actions/apiActions";
 
 export const timeFormat = {
     "hour12": false,
@@ -160,7 +160,7 @@ export const distinctObjectArray = (array) => {
     }
     return result;
 
-}
+};
 
 export const paymentToString = (string) => {
     switch (string) {
@@ -171,26 +171,26 @@ export const paymentToString = (string) => {
         default:
             return capitalizeString(string)
     }
-}
-
-export const gradeOptions = [{
-    "label": "Elementary School",
-    "value": "elementary_lvl"
-},
-{
-    "label": "Middle School",
-    "value": "middle_lvl"
-},
-{
-    "label": "High School",
-    "value": "high_lvl"
-},
-{
-    "label": "College",
-    "value": "college_lvl"
-},
-]
 };
+
+export const gradeOptions = [
+    {
+        "label": "Elementary School",
+        "value": "elementary_lvl"
+    },
+    {
+        "label": "Middle School",
+        "value": "middle_lvl"
+    },
+    {
+        "label": "High School",
+        "value": "high_lvl"
+    },
+    {
+        "label": "College",
+        "value": "college_lvl"
+    },
+];
 
 
 /**
