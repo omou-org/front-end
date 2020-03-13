@@ -119,8 +119,8 @@ function TestPanel() {
         <br />
         <PanelManager
             fields={fields}
-            records={categories}
-            propFunction={fetchPropFunction}
+            fetchFunctions={fetchPropFunction}
+            statusFunctions={categoryStatus}
         />
             </div>
     )
