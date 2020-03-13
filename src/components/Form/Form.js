@@ -1531,12 +1531,6 @@ Instructor: Object { value: 4, label: "impostor Huang - daniel@huang2.com" }
     }
 
     render() {
-        // if (this.props.currentParent) {
-        //     const studentsLoaded = this.props.currentParent.student_list.every((student) => this.props.requestStatus.student[GET][student] === 200);
-        //     if (!studentsLoaded) {
-        //         return <Loading paper />;
-        //     }
-        // }
         if (!this.state.hasLoaded || !this.props.students) {
             return <Loading paper />;
         }
