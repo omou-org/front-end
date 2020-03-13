@@ -198,7 +198,7 @@ const OutOfOffice = ({instructorID, button}) => {
                         end={end}
                         ignoreAvailablity
                         instructorID={instructorID}
-                        onClick={handleSave}
+                        onSubmit={handleSave}
                         start={start}>
                         <Button
                             className="button"
