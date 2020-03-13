@@ -263,7 +263,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                                         justify="flex-end">
                                         <Grid
                                             item
-                                            xs={3}>
+                                            xs={5}>
                                             <Typography
                                                 align="right"
                                                 className={`price-label

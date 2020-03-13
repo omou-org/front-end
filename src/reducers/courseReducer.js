@@ -30,7 +30,7 @@ export default (state = initialState.Course, {payload, type}) => {
             const newState = {...state};
             const courseRoster = newState.NewCourseList[payload.courseID].roster;
             newState.NewCourseList[payload.courseID].roster.splice(courseRoster.indexOf(payload.studentID),1);
-            return newState;
+            return JSON.parse(JSON.stringify(newState));
         default:
             return state;
     }
