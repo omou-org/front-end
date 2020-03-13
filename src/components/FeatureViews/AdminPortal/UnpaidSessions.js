@@ -15,7 +15,6 @@ function UnpaidSessions() {
 
     const studentStatus = hooks.useStudent(studentList);
     const courseStatus = hooks.useCourse(courseList);
-
     const useUnpaidSessionStatus = hooks.useUnpaidSessions();
 
     if (hooks.isLoading(studentStatus, courseStatus, useUnpaidSessionStatus)){
