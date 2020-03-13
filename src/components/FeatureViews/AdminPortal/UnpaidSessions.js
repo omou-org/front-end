@@ -16,15 +16,19 @@ function UnpaidSessions() {
     const studentStatus = hooks.useStudent(studentList);
     const courseStatus = hooks.useCourse(courseList);
 
-    hooks.useUnpaidSessions();
-   
-    if (!UnpaidList || hooks.isLoading(studentStatus, courseStatus)){
+    const useUnpaidSessionStatus = hooks.useUnpaidSessions();
+
+    if (hooks.isLoading(studentStatus, courseStatus, useUnpaidSessionStatus)){
         return <Loading/>
     }
 
+    if(UnpaidList.length === 0) {
+        return <>No unpaid sessions to display</>
+    } else {
+
     return UnpaidList.map(unpaidStudent=>(
             <UnpaidSessionCard unpaidStudent={unpaidStudent}/>
-        ))
+    ))}
 }
 
 export default UnpaidSessions

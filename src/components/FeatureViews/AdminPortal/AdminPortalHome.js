@@ -10,10 +10,10 @@ function AdminPortalHome() {
 
     return (
             <Grid container>
-                <UnpaidSessions></UnpaidSessions>
+                <UnpaidSessions/>
             </Grid>
     )
-}
+}   
 
 AdminPortalHome.propTypes = {
     // courseTitle: PropTypes.string,
