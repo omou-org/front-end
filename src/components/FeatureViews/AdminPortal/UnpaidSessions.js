@@ -8,14 +8,10 @@ import UnpaidSessionCard from './UnpaidSessionCard';
 import * as hooks from 'actions/hooks';
 
 function UnpaidSessions() {
-    const dispatch = useDispatch();
-    const api = useMemo(
-        () => bindActionCreators(adminActions, dispatch),
-        [dispatch]
-    );
+
     const UnpaidList = useSelector(({Admin}) => Admin.Unpaid) || [];
-    const studentList = useMemo(()=>  UnpaidList.map(({student})=>student), [UnpaidList])
-    const courseList = useMemo(()=> UnpaidList.map(({course})=>course), [UnpaidList])
+    const studentList = useMemo(()=>  UnpaidList.map(({student})=>student), [UnpaidList]);
+    const courseList = useMemo(()=> UnpaidList.map(({course})=>course), [UnpaidList]);
 
     const studentStatus = hooks.useStudent(studentList);
     const courseStatus = hooks.useCourse(courseList);
