@@ -763,25 +763,22 @@ class Form extends Component {
             this.state.activeSection === "Parent Information";
         switch (field.type) {
             case "price quote":
-                return (<TutoringPriceQuote
-                    courseType={this.state.form}
-                    handleUpdatePriceFields={this.updatePriceFields.bind(this)}
-                    tuitionConfirmed={this.state.confirmTuition}
-                    tutoringCategory={this.props.match.params.id} />);
+                if(this.state.conditional && this.state.conditional.toLowerCase().includes("existing")){
+                    const course = this.props.courses[this.state["Group Details"]["Select Group"].value];
+                    return <div>
+                        <Typography>
+                            <b>{course.title}'s</b> hourly rate is <b>${course.hourly_tuition}</b>. You will select the number of
+                            sessions you wish to register for at checkout.
+                        </Typography>
+                    </div>
+                } else {
+                    return (<TutoringPriceQuote
+                        courseType={this.state.form}
+                        handleUpdatePriceFields={this.updatePriceFields.bind(this)}
+                        tuitionConfirmed={this.state.confirmTuition}
+                        tutoringCategory={this.props.match.params.id} />);
+                }
             case "select":
-                const startTime = this.state[label]["Start Time"];
-                // let endTime = this.state[label]["End Time"];
-                // let parsedDuration = utils.durationParser({ start: startTime, end: endTime }, fieldTitle, true);
-                // let value, options;
-                // if (parsedDuration && this.state[label][fieldTitle]) {
-                //     if (parsedDuration.duration) {
-                //         value = parsedDuration.duration;
-                //         options = parsedDuration.options;
-                //     }
-                // } else {
-                //     value = this.state[label][fieldTitle];
-                //     options = field.options;
-                // }
                 const value = this.state[label][fieldTitle];
                 const {options} = field;
                 disabled = disabled && fieldTitle !== "Relationship to Student" && fieldTitle !== "Gender";
@@ -1228,7 +1225,6 @@ class Form extends Component {
             case "course_details":
                 if (this.state.activeSection === "Tuition" &&
                     this.state.Tuition && this.state.Tuition.Duration) {
-                        console.log(this.state);
                         instructorID = this.state["Course Info"]["Instructor"].value;
                         start = combineDateAndTime(
                             new Date(this.state["Course Info"]["Start Date"]),
@@ -1264,7 +1260,6 @@ class Form extends Component {
                 if (this.state.activeSection === "Tuition Quote Tool" &&
                     this.state["Group Details"]["# of Weekly Sessions"] &&
                     this.state["Group Details"].Duration) {
-                    console.log(this.state);
                         instructorID = this.state["Group Details"]["Instructor"].value;
                         const numSesh = this.state["Group Details"]["# of Weekly Sessions"];
                         const {Duration} = this.state["Group Details"];
