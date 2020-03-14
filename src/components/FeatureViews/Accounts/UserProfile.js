@@ -32,6 +32,7 @@ import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import ContactIcon from "@material-ui/icons/ContactPhoneOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import Loading from "../../Loading";
+import Badge from "@material-ui/core/Badge";
 
 const userTabs = {
     "instructor": [
@@ -229,8 +230,17 @@ class UserProfile extends Component {
     renderNoteIcon() {
         if (this.getUser() && this.getUser().role != "receptionist") {
             if (this.hasImportantNotes()) {
+                const numImportantNotes = Object.values(this.getUser().notes)
+                    .filter(({important}) => important).length;
+
                 userTabs[this.getUser().role].find(tab => tab.tab_id === 7).icon =
-                    <><Avatar style={{ width: 10, height: 10 }} className="notification" /><NoteIcon className="TabIcon" /></>
+                    <Badge
+                        color="primary"
+                        badgeContent={numImportantNotes}
+                    >
+                        <NoteIcon className="TabIcon" />
+                    </Badge>
+
             }
             else {
                 userTabs[this.getUser().role].filter(tab => tab.tab_id === 7)[0].icon =
