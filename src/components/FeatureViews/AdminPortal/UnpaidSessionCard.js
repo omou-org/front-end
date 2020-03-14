@@ -67,7 +67,7 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
                 <CardMedia>
                     <Grid container style={{justifyContent:"center"}}>
                         <Avatar 
-                        style={styles(student.first_name + " " + student.last_name)}
+                        style={styles(student.name)}
                         >
                             {initials(student.first_name, student.last_name)}
                         </Avatar>
@@ -84,8 +84,7 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
                         Payment Status: 
                         <span style={statusStyle(unpaidStudent.sessions_left)}>{unpaidStudent.sessions_left}</span>
                         <br/>
-                        $
-                        {amtDue}
+                        ${amtDue}
                         <br/>
                         {course.title}
                     </Typography>
