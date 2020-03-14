@@ -1,4 +1,4 @@
-import { instance } from "actions/apiActions";
+import {instance} from "actions/apiActions";
 
 export const timeFormat = {
     "hour12": false,
@@ -93,7 +93,7 @@ export const sessionPaymentStatus = (session, enrollment) => {
         last_session = dateTimeToDate(new Date(enrollment.last_paid_session_datetime)),
         first_payment = dateTimeToDate(new Date(enrollment.payment_list[0].created_at));
 
-    const sessionIsBeforeLastPaidSession = session_date < last_session;
+    const sessionIsBeforeLastPaidSession = session_date <= last_session;
     const sessionIsLastPaidSession = session_date == last_session;
     const thereIsPartiallyPaidSession = !Number.isInteger(enrollment.sessions_left);
     const classSessionNotBeforeFirstPayment = session_date >= first_payment;
@@ -161,8 +161,8 @@ export const distinctObjectArray = (array) => {
     }
     return result;
 
-}
-// Changes incomming payment options to something prettier. 
+};
+// Changes incoming payment options to something prettier.
 export const paymentToString = (string) => {
     switch (string) {
         case "intl_credit_card":
@@ -172,25 +172,25 @@ export const paymentToString = (string) => {
         default:
             return capitalizeString(string)
     }
-}
+};
 
-export const gradeOptions = [{
-    "label": "Elementary School",
-    "value": "elementary_lvl"
-},
-{
-    "label": "Middle School",
-    "value": "middle_lvl"
-},
-{
-    "label": "High School",
-    "value": "high_lvl"
-},
-{
-    "label": "College",
-    "value": "college_lvl"
-},
-
+export const gradeOptions = [
+    {
+        "label": "Elementary School",
+        "value": "elementary_lvl"
+    },
+    {
+        "label": "Middle School",
+        "value": "middle_lvl"
+    },
+    {
+        "label": "High School",
+        "value": "high_lvl"
+    },
+    {
+        "label": "College",
+        "value": "college_lvl"
+    },
 ];
 
 
@@ -293,21 +293,23 @@ export const upcomingSession = (sessions, courseID) => sessions.filter((session)
 
 /**
  * @description calculate amount paid towards enrollment
- * @param {Object}  courseObject- course object that has schedule 
+ * @param {Object}  courseObject- course object that has schedule
  * @param {Number} numSessions- Total number of session
  * @returns "Amount paid per enrollment"
  */
 
 export const tuitionAmount = (courseObject, numSessions) => {
-    let { schedule, hourly_tuition } = courseObject
-    let { end_time, start_date, start_time } = schedule
+    let { schedule, hourly_tuition } = courseObject;
+    let { end_time, start_date, start_time } = schedule;
+    const HOUR = 36e5;
+
     // Turns string object into Date string
     let end = `${start_date}${end_time}:00Z`,
         start = `${start_date}${start_time}:00Z`,
-        duration = Math.abs(new Date(end) - new Date(start)) / 36e5
+        duration = Math.abs(new Date(end) - new Date(start)) / HOUR;
 
 
     return (hourly_tuition * duration * numSessions).toFixed(2)
 
-}
+};
 

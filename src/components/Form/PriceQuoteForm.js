@@ -102,8 +102,10 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                     const ResponseDiscountIDs = ResponseDiscounts.map((discount) => discount.id);
                     const discountNotInResponseButInState = discounts.filter((discount) => !ResponseDiscountIDs.includes(discount.id));
                     ResponseDiscounts = ResponseDiscounts.concat(discountNotInResponseButInState);
+
                     setDiscounts(ResponseDiscounts);
                 }
+
                 delete quoteResponse.data.discounts;
                 if (quoteResponse.data.price_adjustment !== priceAdjustment) {
                     setPriceAdjustment(quoteResponse.data.price_adjustment);
@@ -261,7 +263,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                                         justify="flex-end">
                                         <Grid
                                             item
-                                            xs={3}>
+                                            xs={5}>
                                             <Typography
                                                 align="right"
                                                 className={`price-label
@@ -275,7 +277,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                                                             className="add icon"
                                                             onClick={toggleDiscount(discount.id)} />
                                                 }
-                                                {discount.name || discount.discount_title} Discount
+                                                {discount.name} Discount
                                             </Typography>
                                         </Grid>
                                         <Grid

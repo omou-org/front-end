@@ -45,23 +45,6 @@ const handleEnrollment = (state, payload, requestType) => {
                     "notes": {},
                     "payment_list": payment_list,
                     "balance": enrollment_balance,
-                    "session_payment_status": {
-                        1: 1,
-                        2: 1,
-                        3: 1,
-                        4: 1,
-                        5: 1,
-                        6: 1,
-                        7: 1,
-                        8: 1,
-                        9: 1,
-                        10: 1,
-                        11: 1,
-                        12: 1,
-                        13: 1,
-                        14: 1,
-                        15: 1,
-                    },
                 };
 
                 newStudentData[course] = newCourseData;
