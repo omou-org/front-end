@@ -18,7 +18,7 @@ import {academicLevelParse} from "../../reducers/registrationReducer";
 import InputLabel from "@material-ui/core/InputLabel";
 import {OutlinedSelect} from "../FeatureViews/Scheduler/SchedulerUtils";
 
-const TutoringPriceQuote = ({courseType, handleUpdatePriceFields, tuitionConfirmed, tutoringCategory, conditional, form}) => {
+const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCategory}) => {
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({

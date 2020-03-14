@@ -301,10 +301,12 @@ export const upcomingSession = (sessions, courseID) => sessions.filter((session)
 export const tuitionAmount = (courseObject, numSessions) => {
     let { schedule, hourly_tuition } = courseObject;
     let { end_time, start_date, start_time } = schedule;
+    const HOUR = 36e5;
+
     // Turns string object into Date string
     let end = `${start_date}${end_time}:00Z`,
         start = `${start_date}${start_time}:00Z`,
-        duration = Math.abs(new Date(end) - new Date(start)) / 36e5;
+        duration = Math.abs(new Date(end) - new Date(start)) / HOUR;
 
 
     return (hourly_tuition * duration * numSessions).toFixed(2)
