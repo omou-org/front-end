@@ -84,8 +84,9 @@ export default {
             DateRange: [],
             PaymentMethod: [],
         },
-    },
-
+        Unpaid:""
+    }  
+    
 };
 
 function initRequests() {

@@ -6,6 +6,7 @@ import AdminRoute from "./AdminRoute";
 import Form from "../Form/Form";
 import ManageCategories from "../FeatureViews/AdminPortal/ManageCategories";
 import ManageDiscounts from "../FeatureViews/AdminPortal/ManageDiscounts";
+import AdminPortalHome from "../FeatureViews/AdminPortal/AdminPortalHome";
 
 // Local Component Imports
 
@@ -30,7 +31,7 @@ function AdminViewsRoutes() {
                 render={(passedProps) => <Form title={"Set Price Rule"}/>}/>
             <AdminRoute
                 path="/adminportal/"
-                render={(passedProps) => <div/> }/>
+                render={(passedProps) => <AdminPortalHome {...passedProps}/> }/>
 
         </Switch>
     );

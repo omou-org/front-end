@@ -28,6 +28,18 @@ export const fetchCategories = (id) => wrapGet(
     }
 );
 
+export const fetchUnpaid = (id) => wrapGet(
+    '/payment/unpaid-sessions/',
+    [
+        types.GET_UNPAID_STARTED,
+        types.GET_UNPAID_SUCCESS,
+        types.GET_UNPAID_FAILED
+    ], 
+    {
+        id:id,
+    }
+);
+
 export const updateCategory = (id, updatedCategory) => wrapPatch(
     '/course/categories/',
     [
