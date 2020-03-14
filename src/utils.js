@@ -161,8 +161,8 @@ export const distinctObjectArray = (array) => {
     }
     return result;
 
-}
-// Changes incomming payment options to something prettier.
+};
+// Changes incoming payment options to something prettier.
 export const paymentToString = (string) => {
     switch (string) {
         case "intl_credit_card":
