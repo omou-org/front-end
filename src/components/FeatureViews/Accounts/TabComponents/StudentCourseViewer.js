@@ -1,15 +1,15 @@
 import * as hooks from "actions/hooks";
-import { Link, useLocation } from "react-router-dom";
-import React, { useCallback, useMemo } from "react";
+import {Link, useLocation} from "react-router-dom";
+import React, {useCallback, useMemo} from "react";
 import PropTypes from "prop-types";
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 
 import Grid from "@material-ui/core/Grid";
 import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import { NoListAlert } from "../../../NoListAlert";
-import { courseDateFormat } from "../../../../utils";
+import {NoListAlert} from "../../../NoListAlert";
+import {courseDateFormat} from "../../../../utils";
 
 const today = new Date();
 
@@ -64,7 +64,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
 
     if (!enrollments[studentID] && !hooks.isSuccessful(enrollmentStatus)) {
         if (hooks.isLoading(enrollmentStatus, courseStatus)) {
-            return <Loading />;
+            return <Loading small loadingText="LOADING COURSES"/>;
         }
 
         if (hooks.isFail(enrollmentStatus, courseStatus)) {

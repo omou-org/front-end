@@ -4,6 +4,9 @@ import Loading from "components/Loading";
 import UnpaidSessionCard from './UnpaidSessionCard';
 import * as hooks from 'actions/hooks';
 import Typography from "@material-ui/core/Typography";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import HappyIcon from "@material-ui/icons/SentimentVerySatisfied";
 
 function UnpaidSessions() {
 
@@ -16,13 +19,18 @@ function UnpaidSessions() {
     const unpaidSessionStatus = hooks.useUnpaidSessions();
 
     if(hooks.isSuccessful(unpaidSessionStatus) && UnpaidList.length === 0) {
-        return <Typography>
-            No unpaid sessions to display
-        </Typography>
+        return <Card>
+            <CardContent>
+                <Typography variant="h5">
+                    No unpaid sessions to display!
+                </Typography>
+                <HappyIcon fontSize="large"/>
+            </CardContent>
+        </Card>
     }
 
     if (hooks.isLoading(studentStatus, courseStatus, unpaidSessionStatus)){
-        return <Loading/>
+        return <Loading small loadingText="UNPAID SESSIONS LOADING"/>
     }
 
     return UnpaidList.map(unpaidStudent=>(
