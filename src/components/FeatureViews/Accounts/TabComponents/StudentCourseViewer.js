@@ -9,9 +9,9 @@ import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import {NoListAlert} from "../../../NoListAlert";
-import {courseDateFormat} from "../../../../utils";
+import {courseDateFormat, dateTimeToDate} from "utils";
 
-const today = new Date();
+const today = dateTimeToDate(new Date());
 
 const paymentStatus = (numPaidCourses) => {
     if (numPaidCourses > 3) {
@@ -51,7 +51,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
     }, [enrollments, studentID]);
 
     const filterCourseByDate = useCallback((endDate) => {
-        const inputEndDate = new Date(endDate);
+        const inputEndDate = dateTimeToDate(new Date(endDate));
         // see if course is current or not
         // and match it appropriately with the passed filter
         return current === (inputEndDate >= today);

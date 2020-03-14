@@ -231,7 +231,7 @@ class UserProfile extends Component {
         if (this.getUser() && this.getUser().role != "receptionist") {
             if (this.hasImportantNotes()) {
                 const numImportantNotes = Object.values(this.getUser().notes)
-                    .filter(({important}) => important).length;
+                    .reduce((total, {important}) => important ? total + 1: total);
 
                 userTabs[this.getUser().role].find(tab => tab.tab_id === 7).icon =
                     <Badge

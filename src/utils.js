@@ -53,7 +53,12 @@ export const courseDateFormat = ({ schedule, is_confirmed }) => ({
         .toLocaleTimeString("eng-US", timeFormat),
 });
 
-const dateTimeToDate = (date) => new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+/**
+ * Converts a datetime to a date - useful for date specific comparisons
+ * @param {Date} date Date to convert
+ * @returns {Date} date object without the time
+ */
+export const dateTimeToDate = (date) => new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
 
 export const courseDataParser = (course) => {
     const timeOptions = {

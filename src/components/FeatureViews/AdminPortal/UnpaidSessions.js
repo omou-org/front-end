@@ -34,7 +34,7 @@ function UnpaidSessions() {
     }
 
     return UnpaidList.map(unpaidStudent=>(
-            <UnpaidSessionCard unpaidStudent={unpaidStudent}/>
+            <UnpaidSessionCard key={unpaidStudent.student} unpaidStudent={unpaidStudent}/>
     ))
 }
 
