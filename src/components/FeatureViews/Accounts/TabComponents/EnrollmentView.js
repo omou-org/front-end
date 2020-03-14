@@ -382,22 +382,22 @@ const CourseSessionStatus = () => {
                         </Typography>
                     </Grid>
                     <Grid item xs={3} container alignItems="flex-start">
-                            <Grid item>
-                                <FormControl component="fieldset">
-                                    <FormGroup>
-                                        <FormControlLabel
-                                            control={
-                                                <Switch
-                                                    checked={highlightSession}
-                                                    onChange={handleHighlightSwitch}
-                                                    color="primary"
-                                                    value="upcoming-session"
-                                                />
-                                            }
-                                            label="Highlight Upcoming Session"
-                                        />
-                                    </FormGroup>
-                                </FormControl>
+                        <Grid item>
+                            <FormControl component="fieldset">
+                                <FormGroup>
+                                    <FormControlLabel
+                                        control={
+                                            <Switch
+                                                checked={highlightSession}
+                                                onChange={handleHighlightSwitch}
+                                                color="primary"
+                                                value="upcoming-session"
+                                            />
+                                        }
+                                        label="Highlight Upcoming Session"
+                                    />
+                                </FormGroup>
+                            </FormControl>
                         </Grid>
                     </Grid>
                 </Grid>
