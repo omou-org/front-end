@@ -381,8 +381,7 @@ const CourseSessionStatus = () => {
                             Enrollment Balance Left: ${enrollment.balance}
                         </Typography>
                     </Grid>
-                    <Grid item xs={3}>
-                        <Grid container alignItems="flex-start">
+                    <Grid item xs={3} container alignItems="flex-start">
                             <Grid item>
                                 <FormControl component="fieldset">
                                     <FormGroup>
@@ -399,7 +398,6 @@ const CourseSessionStatus = () => {
                                         />
                                     </FormGroup>
                                 </FormControl>
-                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>

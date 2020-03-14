@@ -54,7 +54,7 @@ const OutOfOffice = ({instructorID, button}) => {
             const response = await instance.post(
                 "/account/instructor-out-of-office/",
                 {
-                    description: name + " - " + description,
+                    description: `${name} - ${description}`,
                     "end_datetime": formatDate(end, allDay),
                     "instructor": instructorID,
                     "start_datetime": formatDate(start, allDay),
