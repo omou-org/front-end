@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-max-depth */
-/* eslint-disable max-lines-per-function */
 import React, {useEffect, useMemo, useState} from "react";
 import {useHistory} from "react-router-dom";
 import {useSelector} from "react-redux";
@@ -42,10 +40,8 @@ const changePage = (setter, delta) => () => {
 
 const SearchResults = () => {
     const history = useHistory();
-
-    const searchState = useSelector(({Search}) => Search);
-
-    const {accounts, accountResultsNum, courses, courseResultsNum} = searchState;
+    const {accounts, accountResultsNum, courses, courseResultsNum} =
+        useSelector(({Search}) => Search);
     const [accountsPage, setAccountsPage] = useState(1);
     const [coursePage, setCoursePage] = useState(1);
 

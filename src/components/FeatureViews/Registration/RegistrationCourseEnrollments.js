@@ -212,9 +212,9 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                                                         style={{"width": "40px",}}>
                                                         <SessionPaymentStatusChip
                                                             style={{
-                                                                "width": "45px",
+                                                                "width": "50px",
                                                                 "padding": "7px 0 0 10px",
-                                                                "borderRadius": "8px"
+                                                                "borderRadius": "15px"
                                                             }}
                                                             session={upcomingSess}
                                                             enrollment={enrollment} />
@@ -313,7 +313,8 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                 <Divider />
                 <DialogContent>
                     <DialogContentText>
-                        You are about to unenroll in <b>{course.title}</b> for <b>{ unenroll.student && students[unenroll.student].name}</b>.
+                        You are about to unenroll in <b>{course.title}</b> for
+                        <b>{ unenroll.enrollment && students[unenroll.enrollment.student_id].name}</b>.
                         Performing this action will credit the remaining enrollment balance back to the parent's account balance.
                         Are you sure you want to unenroll?
                     </DialogContentText>

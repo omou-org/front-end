@@ -65,7 +65,8 @@ export default {
             DateRange: [],
             PaymentMethod: [],
         },
-    },
+        Unpaid:""
+    }
 
 };
 
@@ -409,7 +410,7 @@ function initRegistrationForm() {
                         field: "Student First Name",
                         name: "Student First Name",
                         type: "name",
-                        required: false,
+                        required: true,
                         full: true,
                         field_limit: 1,
                     },
@@ -417,7 +418,7 @@ function initRegistrationForm() {
                         field: "Student Last Name",
                         name: "Student Last Name",
                         type: "name",
-                        required: false,
+                        required: true,
                         full: true,
                         field_limit: 1,
                     },

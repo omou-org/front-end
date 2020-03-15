@@ -13,7 +13,7 @@ const ParentContact = ({parent_id}) => {
 
     if (!parent) {
         if (hooks.isLoading(parentStatus)) {
-            return <Loading />;
+            return <Loading small loadingText="PARENT LOADING"/>;
         }
 
         if (hooks.isFail(parentStatus)) {

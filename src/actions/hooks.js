@@ -260,6 +260,12 @@ export const useInstructorAvailability = (instructorID) =>
         },
     }), [instructorID]));
 
+export const useUnpaidSessions = wrapUseEndpoint(
+    "/payment/unpaid-sessions/",
+    types.GET_UNPAID_SUCCESS
+);
+
+// Hook
 export const usePrevious = (value) => {
     // The ref object is a generic container whose current property is mutable
     // and can hold any value, similar to an instance property on a class

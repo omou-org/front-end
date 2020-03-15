@@ -1,14 +1,14 @@
-import { Link, useHistory, useParams } from "react-router-dom";
+import {Link, useHistory, useParams} from "react-router-dom";
 import BackButton from "../../../BackButton";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import * as userActions from "actions/userActions";
 import * as calendarActions from "actions/calendarActions"
-import { bindActionCreators } from "redux";
+import {bindActionCreators} from "redux";
 import * as hooks from "actions/hooks";
 import * as registrationActions from "actions/registrationActions";
 import * as apiActions from "actions/apiActions";
-import { REQUEST_ALL } from "actions/apiActions";
+import {REQUEST_ALL} from "actions/apiActions";
 
 import Grid from "@material-ui/core/Grid";
 import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
@@ -28,16 +28,15 @@ import DialogContentText from "@material-ui/core/es/DialogContentText/DialogCont
 import DialogActions from "@material-ui/core/DialogActions";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import PaymentTable from "./PaymentTable";
-import { NoListAlert } from "../../../NoListAlert";
-import { GET } from "../../../../actions/actionTypes";
-import { SessionPaymentStatusChip } from "../../../SessionPaymentStatusChip";
+import {NoListAlert} from "../../../NoListAlert";
+import {GET} from "../../../../actions/actionTypes";
+import {SessionPaymentStatusChip} from "../../../SessionPaymentStatusChip";
 import AddSessions from "AddSessions";
-import { capitalizeString, DayConverter, upcomingSession } from "../../../../utils";
+import {capitalizeString, DayConverter, upcomingSession} from "../../../../utils";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import FormControl from "@material-ui/core/FormControl";
-import PaymentHistory from "./PaymentHistory";
 
 const timeOptions = {
     "hour": "2-digit",
@@ -382,22 +381,24 @@ const CourseSessionStatus = () => {
                             Enrollment Balance Left: ${enrollment.balance}
                         </Typography>
                     </Grid>
-                    <Grid item xs={3}>
-                        <FormControl component="fieldset">
-                            <FormGroup>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={highlightSession}
-                                            onChange={handleHighlightSwitch}
-                                            color="primary"
-                                            value="upcoming-session"
-                                        />
-                                    }
-                                    label="Highlight Upcoming Session"
-                                />
-                            </FormGroup>
-                        </FormControl>
+                    <Grid item xs={3} container alignItems="flex-start">
+                        <Grid item>
+                            <FormControl component="fieldset">
+                                <FormGroup>
+                                    <FormControlLabel
+                                        control={
+                                            <Switch
+                                                checked={highlightSession}
+                                                onChange={handleHighlightSwitch}
+                                                color="primary"
+                                                value="upcoming-session"
+                                            />
+                                        }
+                                        label="Highlight Upcoming Session"
+                                    />
+                                </FormGroup>
+                            </FormControl>
+                        </Grid>
                     </Grid>
                 </Grid>
                 <Tabs

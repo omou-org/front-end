@@ -50,7 +50,6 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import {DatePicker, TimePicker} from "material-ui-pickers";
 import * as utils from "./FormUtils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
-import {GET} from "../../actions/actionTypes";
 import InstructorConflictCheck from "components/InstructorConflictCheck";
 import {combineDateAndTime, durationStringToNum} from "utils";
 
@@ -581,10 +580,10 @@ class Form extends Component {
                 "nextSection": this.validateSection(),
             });
         });
-    }
+    };
 
     // Regresses to previous section in registration form
-    handleBack() {
+    handleBack = () => {
         this.setState((oldState) => {
             if (oldState.activeStep !== 0 && oldState.activeSection) {
                 return {
@@ -764,25 +763,22 @@ class Form extends Component {
             this.state.activeSection === "Parent Information";
         switch (field.type) {
             case "price quote":
-                return (<TutoringPriceQuote
-                    courseType={this.state.form}
-                    handleUpdatePriceFields={this.updatePriceFields.bind(this)}
-                    tuitionConfirmed={this.state.confirmTuition}
-                    tutoringCategory={this.props.match.params.id} />);
+                if(this.state.conditional && this.state.conditional.toLowerCase().includes("existing")){
+                    const course = this.props.courses[this.state["Group Details"]["Select Group"].value];
+                    return <div>
+                        <Typography>
+                            <b>{course.title}'s</b> hourly rate is <b>${course.hourly_tuition}</b>. You will select the number of
+                            sessions you wish to register for at checkout.
+                        </Typography>
+                    </div>
+                } else {
+                    return (<TutoringPriceQuote
+                        courseType={this.state.form}
+                        handleUpdatePriceFields={this.updatePriceFields.bind(this)}
+                        tuitionConfirmed={this.state.confirmTuition}
+                        tutoringCategory={this.props.match.params.id} />);
+                }
             case "select":
-                const startTime = this.state[label]["Start Time"];
-                // let endTime = this.state[label]["End Time"];
-                // let parsedDuration = utils.durationParser({ start: startTime, end: endTime }, fieldTitle, true);
-                // let value, options;
-                // if (parsedDuration && this.state[label][fieldTitle]) {
-                //     if (parsedDuration.duration) {
-                //         value = parsedDuration.duration;
-                //         options = parsedDuration.options;
-                //     }
-                // } else {
-                //     value = this.state[label][fieldTitle];
-                //     options = field.options;
-                // }
                 const value = this.state[label][fieldTitle];
                 const {options} = field;
                 disabled = disabled && fieldTitle !== "Relationship to Student" && fieldTitle !== "Gender";
@@ -1229,7 +1225,6 @@ class Form extends Component {
             case "course_details":
                 if (this.state.activeSection === "Tuition" &&
                     this.state.Tuition && this.state.Tuition.Duration) {
-                        console.log(this.state)
                         instructorID = this.state["Course Info"]["Instructor"].value;
                         start = combineDateAndTime(
                             new Date(this.state["Course Info"]["Start Date"]),
@@ -1265,7 +1260,6 @@ class Form extends Component {
                 if (this.state.activeSection === "Tuition Quote Tool" &&
                     this.state["Group Details"]["# of Weekly Sessions"] &&
                     this.state["Group Details"].Duration) {
-                    console.log(this.state)
                         instructorID = this.state["Group Details"]["Instructor"].value;
                         const numSesh = this.state["Group Details"]["# of Weekly Sessions"];
                         const {Duration} = this.state["Group Details"];
@@ -1279,30 +1273,10 @@ class Form extends Component {
                         end.setDate(end.getDate() + (numSesh - 1) * 7);
                 }
                 break;
-            /*"# of Weekly Sessions": "20"
-
-Capacity: 12
-
-Category: Object { value: 1, label: "Math" }
-
-"Course Name": "as"
-
-Description: "das"
-
-"Did instructor confirm?": "Yes, Instructor Confirm"
-
-Duration: "2 Hours"
-
-"Grade Level": "High School"
-
-Instructor: Object { value: 4, label: "impostor Huang - daniel@huang2.com" }
-
-"Start Date": Date Fri Mar 06 2020 21:11:00 GMT-0800 (Pacific Standard Time*/
             default:
                 checkForConflict = false;
         }
         checkForConflict = Boolean(instructorID && start && end);
-        console.log(checkForConflict, instructorID, start, end)
         return (
             <Stepper
                 activeStep={activeStep}
@@ -1351,34 +1325,44 @@ Instructor: Object { value: 4, label: "impostor Huang - daniel@huang2.com" }
                                         );
                                     })
                                 }
-                                <div className="controls">
-                                    <Button
-                                        className={`button ${activeStep === 0 ? "hide" : ""}`}
-                                        color="secondary"
-                                        disabled={activeStep === 0}
-                                        onClick={(event) => {
-                                            event.preventDefault();
-                                            this.handleBack();
+                                <Grid
+                                    container
+                                    direction="row-reverse"
+                                    justify="flex-start">
+                                    <Grid
+                                        item
+                                        style={{
+                                            "marginLeft": "2%",
                                         }}>
-                                        Back
-                                    </Button>
-                                    <InstructorConflictCheck
-                                        active={checkForConflict}
-                                        start={start}
-                                        instructorID={instructorID}
-                                        eventID={this.props.match.params.id}
-                                        end={end}
-                                        onSubmit={this.handleNext}>
-                                        <Button
-                                            className="button primary"
-                                            color="primary"
-                                            disabled={!nextSection}
-                                            variant="contained">
-                                            {activeStep === steps.length - 1 ? this.props.submitPending ? "Submitting"
-                                                : ["course", "tutoring"].includes(this.state.form) ? "Add to Cart" : "Submit" : "Next"}
-                                        </Button>
-                                    </InstructorConflictCheck>
-                                </div>
+                                        <InstructorConflictCheck
+                                            active={checkForConflict}
+                                            start={start}
+                                            instructorID={instructorID}
+                                            eventID={this.props.match.params.id}
+                                            end={end}
+                                            onSubmit={this.handleNext}>
+                                            <Button
+                                                className="button primary"
+                                                color="primary"
+                                                disabled={!nextSection}
+                                                variant="contained">
+                                                {activeStep === steps.length - 1 ? this.props.submitPending ? "Submitting"
+                                                    : ["course", "tutoring"].includes(this.state.form) ? "Add to Cart" : "Submit" : "Next"}
+                                            </Button>
+                                        </InstructorConflictCheck>
+                                    </Grid>
+                                    {
+                                        activeStep !== 0 &&
+                                        <Grid item>
+                                            <Button
+                                                className="button"
+                                                color="secondary"
+                                                onClick={this.handleBack}>
+                                                Back
+                                            </Button>
+                                        </Grid>
+                                    }
+                                </Grid>
                             </StepContent>
                         </Step>
                     ))
@@ -1538,12 +1522,6 @@ Instructor: Object { value: 4, label: "impostor Huang - daniel@huang2.com" }
     }
 
     render() {
-        // if (this.props.currentParent) {
-        //     const studentsLoaded = this.props.currentParent.student_list.every((student) => this.props.requestStatus.student[GET][student] === 200);
-        //     if (!studentsLoaded) {
-        //         return <Loading paper />;
-        //     }
-        // }
         if (!this.state.hasLoaded || !this.props.students) {
             return <Loading paper />;
         }
