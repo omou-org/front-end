@@ -12,8 +12,8 @@ import {connect, useDispatch} from "react-redux";
 import {stringToColor} from "../Accounts/accountUtils";
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
-import * as searchActions from "../../../actions/searchActions";
 import {Tooltip} from "@material-ui/core";
+import AsyncSelect from "react-select/async";
 
 const useStyles = makeStyles({
     setParent: {
@@ -30,7 +30,6 @@ function SetRegistrationActions(props) {
             ...bindActionCreators(apiActions, dispatch),
             ...bindActionCreators(userActions, dispatch),
             ...bindActionCreators(registrationActions, dispatch),
-            ...bindActionCreators(searchActions, dispatch),
         }),
         [dispatch]
     );
