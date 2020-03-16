@@ -17,9 +17,9 @@ import NoResultsPage from './NoResults/NoResultsPage';
 import MoreResultsIcon from "@material-ui/icons/KeyboardArrowRight";
 import LessResultsIcon from "@material-ui/icons/KeyboardArrowLeft";
 import CourseFilters from "./CourseFilters";
-import Loading from "../../Loading";
 import {SEARCH_ACCOUNTS, SEARCH_ALL, SEARCH_COURSES} from "../../../actions/actionTypes";
 import Chip from "@material-ui/core/Chip";
+import SearchResultsLoader from "./SearchResultsLoader";
 
 const SearchResults = (props) => {
     const dispatch = useDispatch();
@@ -33,120 +33,35 @@ const SearchResults = (props) => {
         [dispatch]
     );
     const searchState = useSelector(({ Search }) => Search);
-    const { accounts, courses, SearchQuery, course_num_results, account_num_results, page, count } = searchState;
+    const accountResultsNum = useSelector(({ Search }) => Search.account_num_results);
+    const courseResultsNum = useSelector(({ Search }) => Search.course_num_results);
+    const { accounts, courses, SearchQuery} = searchState;
 
-    const [start, setStart] = useState({
-        account: 0,
-        course: 0,
-    });
-    const [end, setEnd] = useState({
-        account: 4,
-        course: 4,
-    });
     const [currentPage, setCurrentPage] = useState({
-        account: page,
-        course: page,
+        account: 1,
+        course: 1,
     });
-
-    const [moreResults, setMoreResults] = useState("");
-    const [lessResults, setLessResults] = useState("");
 
     const params = useParams();
 
-
-
     useEffect(() => {
         return () => {
-            api.resetSearchParams();
+            // api.resetSearchParams();
         }
     }, []);
 
     const numberOfResults = () => {
         switch (searchState.primaryFilter) {
             case SEARCH_ALL: {
-                return course_num_results + account_num_results;
+                return courseResultsNum + accountResultsNum;
             }
             case SEARCH_ACCOUNTS: {
-                return account_num_results;
+                return accountResultsNum;
             }
             case SEARCH_COURSES: {
-                return course_num_results;
+                return courseResultsNum;
             }
         }
-    };
-
-
-    const displayResults = (moreOrLess, searchType) => (e) => {
-        e.preventDefault();
-        let maxPage = Math.ceil(count / 8);
-        if (maxPage > currentPage) {
-            setMoreResults(true);
-        }
-
-        if (maxPage >= currentPage && currentPage !== 1) {
-            setLessResults(true)
-        }
-        switch (moreOrLess) {
-            case "more": {
-
-                setStart({
-                    ...start,
-                    [searchType]: 4,
-                });
-                setEnd({
-                    ...end,
-                    [searchType]: 8,
-                });
-
-                setCurrentPage({
-                    ...currentPage,
-                    [searchType]: currentPage[searchType] + 1
-                });
-
-                if (end[searchType] === 8) {
-                    setCurrentPage({
-                        ...currentPage,
-                        [searchType]: currentPage[searchType] + 1
-                    });
-                    api.updateSearchParam(searchType, `${searchType}Page`, currentPage[searchType] + 1);
-                    setStart({
-                        ...start,
-                        [searchType]: 0,
-                    });
-                    setEnd({
-                        ...end,
-                        [searchType]: 4,
-                    });
-                }
-                break;
-            }
-            case "less": {
-                setStart({
-                    ...start,
-                    [searchType]: 0,
-                });
-                setEnd({
-                    ...end,
-                    [searchType]: 4,
-                });
-
-                setCurrentPage({
-                    ...currentPage,
-                    [searchType]: currentPage[searchType] - 1
-                });
-
-                if (start[searchType] === 0) {
-                    setCurrentPage({
-                        ...currentPage,
-                        [searchType]: currentPage[searchType] - 1
-                    });
-                    api.updateSearchParam(searchType, `${searchType}Page`, currentPage[searchType] - 1);
-                    setStart(0);
-                    setEnd(4);
-                }
-            }
-        }
-
     };
 
     const displayAll = (type) => event => {
@@ -156,31 +71,71 @@ const SearchResults = (props) => {
 
     if ((searchState.searchQueryStatus.account !== 200 ||
         searchState.searchQueryStatus.course !== 200) && searchState.searchQueryStatus.status) {
-        return <Loading />
+        return <SearchResultsLoader
+            SearchResults={numberOfResults()}
+            accountPage={currentPage.account}
+            coursePage={currentPage.course}
+            SearchQuery={SearchQuery}/>
     }
 
     const MAX_PAGE = Math.ceil(numberOfResults() / 8);
-    const pageNumber = (apiPage, startPage) => {
-        const firstResultsPage = startPage === 0 && apiPage == 1;
-        const secondResultsPage = startPage !== 0 && apiPage == 1;
-        if (firstResultsPage) {
-            return 1;
-        } else if(secondResultsPage){
-            return 2;
-        } else if (startPage === 0){
-            return Number(apiPage)*2;
-        } else {
-            return Number(apiPage)*2+1;
-        }
-    };
 
     const setPageLimit = (resultsPageNumber) => {
         return resultsPageNumber >= MAX_PAGE;
     };
+
+    const isOdd = (number) => number % 2 !== 0;
+    const startPage = (page) => {
+        if(searchState.primaryFilter === SEARCH_ALL){
+            return isOdd(page) ? 0 : 4;
+        } else {
+            return 0;
+        }
+
+    };
+    const endPage = (page) => {
+        if(searchState.primaryFilter === SEARCH_ALL){
+            return isOdd(page) ? 4 : 8;
+        } else {
+            return 8;
+        }
+    };
+
+    const handleMoreResults = (page, resultType) => (e) => {
+        e.preventDefault();
+        setCurrentPage({
+            ...currentPage,
+            [resultType] : currentPage[resultType] + 1,
+        });
+
+        if(isOdd(page+1) || searchState.primaryFilter !== SEARCH_ALL){
+            const page = `${resultType}Page`;
+            api.updateSearchParam(resultType, page, Number(searchState.params[resultType][page]) + 1);
+        }
+    };
+
+    const handleLessResults = (page, resultType) => (e) => {
+        e.preventDefault();
+        setCurrentPage({
+            ...currentPage,
+            [resultType] : currentPage[resultType] - 1,
+        });
+
+        if(!isOdd(page-1) || searchState.primaryFilter !== SEARCH_ALL){
+            const page = `${resultType}Page`;
+            const newPage = Number(searchState.params[resultType][page]) !== 1 ?
+                Number(searchState.params[resultType][page]) - 1 : 1;
+            api.updateSearchParam(resultType, page, newPage);
+        }
+    };
+
+    if(numberOfResults() === 0 || !numberOfResults()){
+        return <NoResultsPage/>
+    }
+
     return (
         <Grid container className={'search-results'} >
             <Grid item xs={12}>
-                {(numberOfResults() !== 0) ?
                     <Paper elevation={2} className={'main-search-view'} >
                         <Grid item xs={12} className="searchResults">
                             <Typography
@@ -199,7 +154,7 @@ const SearchResults = (props) => {
                                 </Grid>
                                 : ""}
                             {
-                                course_num_results && searchState.primaryFilter !== SEARCH_COURSES ? <hr /> :""
+                                courseResultsNum && searchState.primaryFilter !== SEARCH_COURSES ? <hr /> :""
                             }
 
                         <Grid item xs={12}>
@@ -209,11 +164,11 @@ const SearchResults = (props) => {
                                 alignItems="center">
                                 <Grid item className="searchResults">
                                     <Typography className={"resultsColor"} align={'left'} gutterBottom>
-                                        {account_num_results > 0 && searchState.primaryFilter !== SEARCH_COURSES ? "Accounts" : ""}
+                                        {accountResultsNum > 0 && searchState.primaryFilter !== SEARCH_COURSES ? "Accounts" : ""}
                                     </Typography>
                                 </Grid>
                                 {
-                                    (account_num_results > 0 && searchState.primaryFilter === SEARCH_ALL) &&
+                                    (accountResultsNum > 0 && searchState.primaryFilter === SEARCH_ALL) &&
                                     <Grid item >
                                         <Chip label="See All Accounts"
                                               className="searchChip"
@@ -223,40 +178,39 @@ const SearchResults = (props) => {
                                 }
                             </Grid>
                             <Grid container spacing={16} direction={"row"}>
-                                {searchState.primaryFilter === SEARCH_ACCOUNTS ?
-                                    accounts.map((account) => (
-                                        <Grid item
-                                              key={account.user_id}
-                                            sm={3}>
-                                            <AccountsCards user={account} key={account.user_id} />
-                                        </Grid>
-                                    ))
-                                    :
-                                    account_num_results > 0 && searchState.primaryFilter !== SEARCH_COURSES?
-                                        accounts.slice(start["account"], end["account"]).map((account) => (
-                                            <Grid item
-                                                  key={account.user_id}
-                                                sm={3}>
-                                                <AccountsCards user={account} key={account.user_id} />
-                                            </Grid>
-                                        ))
-                                        :
-                                        ""}
+                                {
+                                    accountResultsNum > 0 && searchState.primaryFilter !== SEARCH_COURSES ?
+                                        accounts.slice(startPage(currentPage.account), endPage(currentPage.account))
+                                            .map((account) => {
+                                               return (
+                                                   <Grid item
+                                                         key={account.user_id}
+                                                         sm={3}>
+                                                       <AccountsCards
+                                                           isLoading={searchState.searchQueryStatus.account !== 200}
+                                                           user={account}
+                                                           key={account.user_id} />
+                                                   </Grid>
+                                               )
+                                            }
+                                            )
+                                        : ""
+                                }
                             </Grid>
-                            {account_num_results > 4 ?
+                            {accountResultsNum > 4 && searchState.primaryFilter !== SEARCH_COURSES?
                                 <div className={"results-nav"}>
                                     {
-                                         <IconButton disabled={pageNumber(searchState.params.account.accountPage, start.account) != 1}
+                                         <IconButton disabled={currentPage.account === 1}
                                             className={"less"}
-                                            onClick={displayResults("less", SEARCH_ACCOUNTS)}>
+                                            onClick={handleLessResults(currentPage.account, "account")}>
                                             <LessResultsIcon />
                                         </IconButton>
                                     }
-                                    {pageNumber(searchState.params.account.accountPage, start.account)}
+                                    {currentPage.account}
                                     {
-                                         <IconButton disabled={setPageLimit(pageNumber(searchState.params.account.accountPage, start.account))}
+                                         <IconButton disabled={setPageLimit(currentPage.account)}
                                             className={"more"}
-                                            onClick={displayResults("more", SEARCH_ACCOUNTS)}>
+                                            onClick={handleMoreResults(currentPage.account, "account")}>
                                             <MoreResultsIcon />
                                         </IconButton>
                                     }
@@ -275,7 +229,7 @@ const SearchResults = (props) => {
                                     </Grid>
                                 </Grid> : ""
                         }
-                        {account_num_results && course_num_results !== 0&&searchState.primaryFilter !== SEARCH_ACCOUNTS? <hr /> : ""}
+                        {accountResultsNum && courseResultsNum !== 0&&searchState.primaryFilter !== SEARCH_ACCOUNTS? <hr /> : ""}
                         {
                             searchState.primaryFilter !== SEARCH_ACCOUNTS ? <Grid item xs={12}>
                                 <Grid container
@@ -284,11 +238,11 @@ const SearchResults = (props) => {
                                     alignItems="center">
                                     <Grid item className="searchResults">
                                         <Typography className={"resultsColor"} align={'left'} >
-                                            {course_num_results > 0 && params.type !== "course" ? "Courses" : "" }
+                                            {courseResultsNum > 0 && params.type !== "course" ? "Courses" : "" }
                                         </Typography>
                                     </Grid>
                                     {
-                                        (course_num_results > 0 && searchState.primaryFilter === SEARCH_ALL) &&
+                                        (courseResultsNum > 0 && searchState.primaryFilter === SEARCH_ALL) &&
                                         <Grid item style={{ "paddingRight": "1vh" }}>
                                             <Chip label="See All Courses"
                                                   className="searchChip"
@@ -297,28 +251,33 @@ const SearchResults = (props) => {
                                         </Grid>
                                     }
                                 </Grid>
-                                <Grid container direction={"row"}>
-                                    {courses.slice(start.course, end.course).map((course) => (
-                                            <CoursesCards course={course} key={course.course_id} />
-                                        )
+                                <Grid container spacing={8} direction={"row"}>
+                                    {courses.slice(startPage(currentPage.course), endPage(currentPage.course))
+                                        .map((course) => {
+                                        return (
+                                            <CoursesCards
+                                                isLoading={searchState.searchQueryStatus.course !== 200}
+                                                course={course}
+                                                key={course.course_id} />
+                                        )}
                                     )}
                                 </Grid>
                             </Grid> : ""
                         }
-                        {course_num_results > 4 ?
+                        {courseResultsNum > 4 && searchState.primaryFilter !== SEARCH_ACCOUNTS ?
                             <div className={"results-nav"}>
                                 {
-                                     <IconButton disabled={pageNumber(searchState.params.course.coursePage, start.course) == 1}
+                                     <IconButton disabled={currentPage.course == 1}
                                         className={"less"}
-                                        onClick={displayResults("less", SEARCH_COURSES)}>
+                                        onClick={handleLessResults(currentPage.course, "course")}>
                                         <LessResultsIcon/>
                                     </IconButton>
                                 }
-                                { pageNumber(searchState.params.course.coursePage, start.course)}
+                                { currentPage.course}
                                 {
-                                     <IconButton disabled={setPageLimit(pageNumber(searchState.params.course.coursePage, start.course))}
+                                     <IconButton disabled={setPageLimit(currentPage.course)}
                                         className={"more"}
-                                        onClick={displayResults("more", SEARCH_COURSES)}>
+                                        onClick={handleMoreResults(currentPage.course, "course")}>
                                         <MoreResultsIcon />
                                     </IconButton>
                                 }
@@ -327,8 +286,7 @@ const SearchResults = (props) => {
                                 : ""
                             }
                         </div>
-                    </Paper> :
-                    <NoResultsPage />}
+                    </Paper>
             </Grid>
         </Grid>
     )

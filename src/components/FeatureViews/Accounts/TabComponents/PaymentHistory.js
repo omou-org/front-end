@@ -9,17 +9,10 @@ function PaymentHistory({user_id})  {
     const Payments = useSelector(({Payments})=>Payments);
     const parentPayment = Payments[user_id];
     const paymentStatus = usePaymentByParent(user_id);
-    // let uniqueEnrolledCourses = parentPayment && [...new Set(Object.values(parentPayment).reduce((allEnrollments, payment)=> {
-    //     if(Array.isArray(allEnrollments)){
-    //         return allEnrollments.concat(payment.enrollments)
-    //     } else {
-    //         return payment.enrollments;
-    //     }
-    // }).map(enrollment=>enrollment.course))];
 
     if(!paymentStatus || paymentStatus===1){
         if(isLoading(paymentStatus)){
-            return <Loading/>;
+            return <Loading small loadingText="LOADING PAYMENTS"/>;
         }
 
         if(isFail(paymentStatus)){

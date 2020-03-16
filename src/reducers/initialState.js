@@ -1,4 +1,4 @@
-import { DELETE, GET, NOT_SEARCHING, PATCH, POST, SEARCH_ALL } from "../actions/actionTypes";
+import {DELETE, GET, NOT_SEARCHING, PATCH, POST, SEARCH_ALL} from "../actions/actionTypes";
 
 export default {
     "Authentication": initAuth(),
@@ -84,8 +84,9 @@ export default {
             DateRange: [],
             PaymentMethod: [],
         },
-    },
-
+        Unpaid:""
+    }  
+    
 };
 
 function initRequests() {
@@ -251,7 +252,7 @@ function initRegistrationForm() {
                 name: "Parent First Name",
                 type: "short text",
                 field_limit: 1,
-                required: false,
+                required: true,
                 full: true,
             },
             {
@@ -259,14 +260,14 @@ function initRegistrationForm() {
                 name: "Parent Last Name",
                 type: "short text",
                 field_limit: 1,
-                required: false,
+                required: true,
                 full: true,
             },
             {
                 field: "Relationship to Student",
                 name: "Relationship to Student",
                 type: "select",
-                required: false,
+                required: true,
                 field_limit: 1,
                 options: ["Mother", "Father", "Guardian", "Other"],
             },
@@ -283,7 +284,7 @@ function initRegistrationForm() {
                 name: "Parent Email",
                 type: "email",
                 field_limit: 1,
-                required: false,
+                required: true,
                 full: true,
             },
             {
@@ -291,7 +292,7 @@ function initRegistrationForm() {
                 name: "Phone Number",
                 type: "phone number",
                 field_limit: 1,
-                required: false,
+                required: true,
                 full: true,
             },
 
@@ -391,26 +392,6 @@ function initRegistrationForm() {
             field_limit: 1,
         },
         {
-            field: "Category",
-            name: "Category",
-            type: "category",
-            options: [],
-            conditional: false,
-            required: true,
-            full: false,
-            field_limit: 1,
-        },
-        {
-            field: "Grade Level",
-            name: "Grade Level",
-            type: "select",
-            options: ["Elementary School", "Middle School", "High School", "College"],
-            conditional: false,
-            required: true,
-            full: false,
-            field_limit: 1,
-        },
-        {
             field: "Start Date",
             name: "Start Date",
             type: "date",
@@ -423,26 +404,6 @@ function initRegistrationForm() {
             field: "Start Time",
             name: "Start Time",
             type: "time",
-            conditional: false,
-            required: true,
-            full: false,
-            field_limit: 1,
-        },
-        {
-            field: "Duration",
-            name: "Duration",
-            type: "select",
-            options:
-                ["1 Hour", "1.5 Hours", "0.5 Hours", "2 Hours"],
-            conditional: false,
-            required: true,
-            full: false,
-            field_limit: 1,
-        },
-        {
-            field: "Number of Weekly Sessions",
-            name: "Number of Weekly Sessions",
-            type: "number",
             conditional: false,
             required: true,
             full: false,
@@ -467,16 +428,16 @@ function initRegistrationForm() {
                     {
                         field: "Student First Name",
                         name: "Student First Name",
-                        type: "short text",
-                        required: false,
+                        type: "name",
+                        required: true,
                         full: true,
                         field_limit: 1,
                     },
                     {
                         field: "Student Last Name",
                         name: "Student Last Name",
-                        type: "short text",
-                        required: false,
+                        type: "name",
+                        required: true,
                         full: true,
                         field_limit: 1,
                     },
@@ -492,7 +453,7 @@ function initRegistrationForm() {
                         field: "Grade",
                         name: "Grade",
                         type: "number",
-                        required: false,
+                        required: true,
                         full: false,
                         field_limit: 1,
                     },
@@ -508,7 +469,7 @@ function initRegistrationForm() {
                         field: "School",
                         name: "School",
                         type: "short text",
-                        required: false,
+                        required: true,
                         full: true,
                         field_limit: 1,
                     },
@@ -530,7 +491,7 @@ function initRegistrationForm() {
                     {
                         field: "First Name",
                         name: "First Name",
-                        type: "short text",
+                        type: "name",
                         field_limit: 1,
                         required: true,
                         full: true,
@@ -538,7 +499,7 @@ function initRegistrationForm() {
                     {
                         field: "Last Name",
                         name: "Last Name",
-                        type: "short text",
+                        type: "name",
                         field_limit: 1,
                         required: true,
                         full: true,
@@ -654,7 +615,7 @@ function initRegistrationForm() {
                     //     full: false,
                     //     field_limit: 1,
                     // },
-                    ]
+                ]
                 ,
                 ...studentInfoSection,
                 "Tutor Selection": [
@@ -760,7 +721,7 @@ function initRegistrationForm() {
                         conditional: false,
                         required: false,
                         full: false,
-                        field_limit: 5,
+                        field_limit: 1,
                     },
                 ],
                 ...studentInfoSection,
@@ -772,7 +733,7 @@ function initRegistrationForm() {
                         conditional: false,
                         required: false,
                         full: true,
-                        field_limit: 5,
+                        field_limit: 1,
                     },
                 ],
             },
@@ -801,7 +762,7 @@ function initRegistrationForm() {
                     {
                         field: "First Name",
                         name: "First Name",
-                        type: "short text",
+                        type: "name",
                         conditional: false,
                         required: true,
                         full: true,
@@ -810,7 +771,7 @@ function initRegistrationForm() {
                     {
                         field: "Last Name",
                         name: "Last Name",
-                        type: "short text",
+                        type: "name",
                         conditional: false,
                         required: true,
                         full: true,
@@ -1083,8 +1044,48 @@ function initRegistrationForm() {
                 "Course Info": courseInfoQuestions,
                 "Tuition": [
                     {
+                        field: "Category",
+                        name: "Category",
+                        type: "category",
+                        options: [],
+                        conditional: false,
+                        required: true,
+                        full: false,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Grade Level",
+                        name: "Grade Level",
+                        type: "select",
+                        options: ["Elementary School", "Middle School", "High School", "College"],
+                        conditional: false,
+                        required: true,
+                        full: false,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "Duration",
+                        name: "Duration",
+                        type: "select",
+                        options:
+                            ["0.5 Hours", "1 Hour", "1.5 Hours", "2 Hours"],
+                        conditional: false,
+                        required: true,
+                        full: false,
+                        field_limit: 1,
+                    },
+                    {
                         field: "Hourly Tuition",
                         name: "Hourly Tuition",
+                        type: "number",
+                        conditional: false,
+                        required: true,
+                        full: false,
+                        field_limit: 1,
+                    },
+                    {
+                        field: "# of Weekly Sessions",
+                        name: "# of Weekly Sessions",
                         type: "number",
                         conditional: false,
                         required: true,
@@ -1159,15 +1160,6 @@ function initRegistrationForm() {
                 form_type: "pricing",
                 section_titles: ["Pricing"],
                 "Pricing": [
-                    {
-                        field: "Price Rule Name",
-                        name: "Price Rule Name",
-                        type: "short text",
-                        conditional: false,
-                        required: false,
-                        full: true,
-                        field_limit: 1,
-                    },
                     {
                         field: "Category",
                         name: "Category",
@@ -1325,7 +1317,7 @@ function initRegistrationForm() {
                     {
                         field: "Category Name",
                         name: "Category Name",
-                        type: "text",
+                        type: "short text",
                         conditional: false,
                         required: true,
                         full: true,
@@ -1334,7 +1326,7 @@ function initRegistrationForm() {
                     {
                         field: "Description",
                         name: "Description",
-                        type: "text",
+                        type: "short text",
                         conditional: false,
                         required: false,
                         full: true,

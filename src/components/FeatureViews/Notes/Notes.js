@@ -200,7 +200,7 @@ const Notes = ({ownerType, ownerID}) => {
     }, [api, noteBody, notification, noteTitle, ownerID, ownerType, editID]);
 
     if (hooks.isLoading(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {
-        return <Loading />;
+        return <Loading small loadingText="NOTES LOADING" />;
     }
 
     if (hooks.isFail(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {

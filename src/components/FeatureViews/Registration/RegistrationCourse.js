@@ -29,7 +29,8 @@ import {stringToColor} from "components/FeatureViews/Accounts/accountUtils";
 import Loading from "../../Loading";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel"
-import {courseDateFormat, DayConverter} from "../../../utils";
+import {capitalizeString, courseDateFormat, DayConverter} from "../../../utils";
+import {weeklySessionsParser} from "../../Form/FormUtils";
 
 const formatDate = (date) => {
     if (!date) {
@@ -88,7 +89,7 @@ const RegistrationCourse = () => {
     // either doesn't exist or only has notes defined
     if (!course || Object.keys(course).length <= 1) {
         if (hooks.isLoading(courseStatus)) {
-            return <Loading />;
+            return <Loading paper />;
         }
 
         if (hooks.isFail(courseStatus)) {
@@ -158,7 +159,7 @@ const RegistrationCourse = () => {
                                 "marginLeft": "5px",
                                 "marginTop": "10px",
                             }}>
-                            {start_date} - {end_date}
+                            {start_date} - {end_date} ({weeklySessionsParser(start_date, end_date)} sessions)
                         </Typography>
                     </div>
                     <div className="info-section">
@@ -199,7 +200,7 @@ const RegistrationCourse = () => {
                             <Typography
                                 align="left"
                                 className="text">
-                                {DayConverter[new Date(start_date).getDay()]}
+                                {capitalizeString(DayConverter[new Date(start_date).getDay()])}
                             </Typography>
                             <Typography
                                 align="left"

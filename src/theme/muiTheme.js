@@ -27,6 +27,13 @@ const theme = createMuiTheme({
                 color: 'black;', // Some CSS
             },
         },
+        MuiBadge: {
+          colorPrimary:{
+              color: 'white',
+              marginRight: '6px',
+              marginTop: '4px'
+          }
+        },
         paper:{
             background:'#FAFAFA'
         },

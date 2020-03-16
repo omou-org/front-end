@@ -28,15 +28,12 @@ import MenuItem from "@material-ui/core/MenuItem";
 import TodayIcon from "@material-ui/icons/Today";
 import {stringToColor} from "../Accounts/accountUtils";
 import {withStyles} from "@material-ui/core/styles";
-// Tool tip dependencies
-import tippy from "tippy.js";
-import "tippy.js/themes/google.css";
 import "./scheduler.scss";
 import SessionFilters from "./SessionFilters";
-import {BootstrapInput} from "./SchedulerUtils";
+import {BootstrapInput, handleToolTip, sessionArray} from "./SchedulerUtils";
 import {Tooltip} from "@material-ui/core";
 import {arr_diff} from "../../Form/FormUtils";
-import {DayConverter, truncateStrings} from "utils";
+
 
 const styles = (theme) => ({
     "root": {
@@ -51,13 +48,8 @@ const styles = (theme) => ({
     },
 });
 
-/** * @description: This is for transforming instructor organized redux to an array of sessions
- * @param sessions
- * @returns {unknown[]}
- */
-const sessionArray = (sessions) => Object.keys(sessions).length > 0 && Object.values(sessions)
-    .map((instructorSessions) => Object.values(instructorSessions))
-    .reduce((allSessions, instructorSessions) => allSessions.concat(instructorSessions));
+
+
 
 class Scheduler extends Component {
     constructor(props) {
@@ -96,6 +88,7 @@ class Scheduler extends Component {
     componentDidMount() {
         // this.props.courseActions.fetchCourses();
         // this.props.userActions.fetchInstructors();
+
         this.props.userActions.fetchOutOfOffice();
         this.props.calendarActions.fetchAllSessions({
             "config": {
@@ -113,22 +106,28 @@ class Scheduler extends Component {
         this.setOOOEvents();
     }
 
+
     componentDidUpdate(prevProps) {
         // this is why we need useEffect lol
         if (JSON.stringify(prevProps.sessions) !== JSON.stringify(this.props.sessions)) {
             const initialSessions = this.formatSessions(this.props.sessions);
             const courseSessionsArray = sessionArray(this.props.sessions);
+
             this.setState({
                 "calendarEvents": initialSessions,
                 "instructorOptions": Object.entries(this.props.instructors).map(
                     ([instructorID, instructor]) =>
-                        ({"value": Number(instructorID),
-                            "label": instructor.name})
+                        ({
+                            "value": Number(instructorID),
+                            "label": instructor.name
+                        })
                 ),
                 "courseOptions": courseSessionsArray && [...new Set(courseSessionsArray.map((session) => session.course))].map(
                     (courseID) =>
-                        ({"value": Number(courseID),
-                            "label": this.props.courses[Number(courseID)].title})
+                        ({
+                            "value": Number(courseID),
+                            "label": this.props.courses[Number(courseID)].title
+                        })
                 ),
             });
         }
@@ -138,6 +137,7 @@ class Scheduler extends Component {
     }
 
     componentWillUnmount() {
+
         this.props.calendarActions.resetSchedulerStatus();
     }
 
@@ -150,7 +150,7 @@ class Scheduler extends Component {
                 return {
                     "id": session.id,
                     "courseID": session.course,
-                    "title": this.props.courses[session.course].title,
+                    "title": session.title,
                     "description": session.description ? session.description : "",
                     "type": this.props.courses[session.course].type,
                     "resourceId": this.props.courses[session.course_id] ? this.props.courses[session.course_id].room_id : 1,
@@ -176,22 +176,22 @@ class Scheduler extends Component {
             allInstructorSchedules = allInstructorSchedules.concat(Object.values(iList));
         });
         return allInstructorSchedules;
-    }
+    };
 
     setOOOEvents = () => {
         let allInstructorSchedules = [];
         if (!this.state.courseFilter) {
-            const {instructors} = this.props;
+            const { instructors } = this.props;
 
             let OOOlist = Object.values(instructors);
             if (this.state.instructorFilter) {
-                const IDList = this.state.instructorFilter.map(({value}) => value);
-                OOOlist = OOOlist.filter(({user_id}) => IDList.includes(user_id));
+                const IDList = this.state.instructorFilter.map(({ value }) => value);
+                OOOlist = OOOlist.filter(({ user_id }) => IDList.includes(user_id));
             }
-            OOOlist = OOOlist.map(({schedule}) => schedule.time_off);
+            OOOlist = OOOlist.map(({ schedule }) => schedule.time_off);
             OOOlist.forEach((iList) => {
                 allInstructorSchedules = allInstructorSchedules.concat(
-                    Object.values(iList).map(({start, end, description, instructor_id, all_day}) => {
+                    Object.values(iList).map(({ start, end, description, instructor_id, all_day, ooo_id }) => {
                         const instructor = instructors[instructor_id];
                         const title = description || (instructor
                             ? `${instructor.name} Out of Office`
@@ -208,6 +208,7 @@ class Scheduler extends Component {
                             "end": endDate,
                             start,
                             title,
+                            ooo_id,
                         };
                     })
                 );
@@ -216,103 +217,15 @@ class Scheduler extends Component {
         this.setState({
             "oooEvents": allInstructorSchedules,
         });
-    }
+    };
 
-    // The eventRender function handles the tooltip
-    handleToolTip(info) {
-        // Out of Office event, tooltip not implemented yet
-        if (info.event.extendedProps) {
-            return;
-        }
-
-        function formatDate(start, end) {
-            const MonthConverter = {
-                "0": "January",
-                "1": "February",
-                "2": "March",
-                "3": "April",
-                "4": "May",
-                "5": "June",
-                "6": "July",
-                "7": "August",
-                "8": "September",
-                "9": "October",
-                "10": "November",
-                "11": "December",
-            };
-
-            const date = new Date(start);
-            const dateNumber = date.getDate();
-            const dayOfWeek = date.getDay();
-            const startMonth = date.getMonth();
-            // Gets days
-            const Days = DayConverter[dayOfWeek];
-
-            // Gets months
-            const Month = MonthConverter[startMonth];
-
-            // Start times and end times variable
-            const startTime = new Date(start).toTimeString();
-            const endTime = new Date(end).toTimeString();
-            // Converts 24hr to 12 hr time
-            function timeConverter(time) {
-                const Hour = time.substr(0, 2);
-                const to12HourTime = (Hour % 12) || 12;
-                const ampm = Hour < 12 ? " am" : " pm";
-                time = to12HourTime + time.substr(2, 3) + ampm;
-                return time;
-
-            }
-
-            const finalTime = `${Days}, ${Month} ${dateNumber} <br> ${timeConverter(startTime)} - ${timeConverter(endTime)}`;
-
-            return finalTime;
-
-        }
-
-        new tippy(info.el, {
-            "content":
-                `
-                <div class="toolTip">
-                    <div class='title'><h3> ${info.event.title} </h3></div>
-                    <div class="container">
-                        <div class='clock'>
-                            <span class='clock_icon icn'>
-                                ${formatDate(info.event.start, info.event.end)}
-                            </span>
-                        </div>
-                        <div class='pin_icon icn'>
-                            <span class=''>
-                                Session ${info.event.extendedProps.is_confirmed ? "IS NOT" : "IS"} confirmed
-                            </span>
-                        </div>
-                        <div class='teacher_icon icn'>
-                            <span class=''>
-                                    ${info.event.extendedProps.instructor
-        ? info.event.extendedProps.instructor : "No teacher Yet"}
-                            </span>
-                        </div>
-                        <div class='discription_icon icn'>
-                            <span class='description-text'>
-                                ${info.el.fcSeg.description
-        ? truncateStrings(info.el.fcSeg.description, 88) : "N/A"}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            `,
-            "theme": "light",
-            "placement": "right",
-            "interactive": true,
-        });
-    }
 
     // Full Calendar API used to change calendar views
     currentDate = () => {
         const calendarApi = this.calendarComponentRef.current.getApi();
         const date = calendarApi.view.title;
         return date;
-    }
+    };
 
     toggleWeekends = () => {
         this.setState({ // update a property
@@ -343,7 +256,7 @@ class Scheduler extends Component {
             "currentDate": date,
             "timeShift": 0,
         }));
-    }
+    };
 
     goToNext = () => {
         const calendarApi = this.calendarComponentRef.current.getApi();
@@ -400,19 +313,19 @@ class Scheduler extends Component {
             "currentDate": date,
             "timeShift": 0,
         });
-    }
+    };
 
     today = () => {
         const calendarApi = this.calendarComponentRef.current.getApi();
         calendarApi.today();
         this.currentDate();
-    }
+    };
 
     currentDate = () => {
         const calendarApi = this.calendarComponentRef.current.getApi();
         const date = calendarApi.view.title;
         return date;
-    }
+    };
 
     // This function changes the resouce view when click as well as change the color of the icon
     changeViewToResource = () => {
@@ -427,7 +340,7 @@ class Scheduler extends Component {
             "calendarResources": this.getRoomResources(),
         });
 
-    }
+    };
 
     changeViewToCalendar = () => {
         const calendarApi = this.calendarComponentRef.current.getApi();
@@ -438,7 +351,7 @@ class Scheduler extends Component {
             "resourceIcon": false,
             "calendarEvents": JSON.parse(sessionStorage.getItem("calendarEvent")),
         });
-    }
+    };
 
     // Function to parse the inital state into data that full calendar could
     getEvents = () => {
@@ -478,7 +391,7 @@ class Scheduler extends Component {
             ...el,
             "url": `/scheduler/view-session/${el.course_id}/${el.session_id}`,
         }));
-    }
+    };
 
     // This function is used in material-ui for the eventhandler
     handleFilterChange = (name) => (event) => {
@@ -503,7 +416,7 @@ class Scheduler extends Component {
             // sessionStorage.setItem("calendarEvent", JSON.stringify(newEvents));
         }
 
-    }
+    };
 
     handleResourceFilterChange = (name) => (event) => {
         this.setState({
@@ -532,7 +445,7 @@ class Scheduler extends Component {
 
     // gets the values of course object
     getRoomResources = () =>
-        Object.values(this.props.courses).map(({room_id}) => ({
+        Object.values(this.props.courses).map(({ room_id }) => ({
             "id": room_id,
             "title": `Room ${room_id}`,
         }));
@@ -545,9 +458,9 @@ class Scheduler extends Component {
         }));
 
     // go to session view
-    goToSessionView = ({event}) => {
+    goToSessionView = ({ event }) => {
         const sessionID = event.id;
-        const {courseID, instructor_id} = event.extendedProps;
+        const { courseID, instructor_id } = event.extendedProps;
         // dont redirect for OOO clicks
         if (sessionID && courseID && instructor_id) {
             this.props.history.push(`/scheduler/view-session/${courseID}/${sessionID}/${instructor_id}`);
@@ -577,6 +490,7 @@ class Scheduler extends Component {
     onCourseSelect = (event) => {
         this.setState(() => {
             const courseSessionsArray = sessionArray(this.props.sessions);
+            const initialSessions = this.formatSessions(this.props.sessions);
             const selectedCourseIDs = event && event.map((course) => course.value);
             const calendarCourseIDs = [...new Set(courseSessionsArray.map((session) => session.course))];
             const nonSelectedCourseIDs = event ? arr_diff(selectedCourseIDs, calendarCourseIDs) : [];
@@ -686,7 +600,7 @@ class Scheduler extends Component {
                                                     <MenuItem value="R">Room</MenuItem>
                                                     <MenuItem value="I">Instructors</MenuItem>
                                                 </Select>
-                                              </FormControl>
+                                            </FormControl>
                                         }
                                     </Grid>
                                     <Grid
@@ -725,7 +639,9 @@ class Scheduler extends Component {
                                             InstructorOptions={this.state.instructorOptions}
                                             InstructorValue={this.state.instructorFilter}
                                             onCourseSelect={this.onCourseSelect}
-                                            onInstructorSelect={this.onInstructorSelect} />
+                                            onInstructorSelect={this.onInstructorSelect}
+
+                                        />
 
                                     </Grid>
                                 </Grid>
@@ -823,7 +739,7 @@ class Scheduler extends Component {
                             eventClick={this.goToSessionView}
                             eventColor="none"
                             eventLimit={4}
-                            eventMouseEnter={!this.state.resourceIcon && this.handleToolTip}
+                            eventMouseEnter={!this.state.resourceIcon && handleToolTip}
                             events={[...this.state.calendarEvents, ...this.state.oooEvents]}
                             header={false}
                             minTime="07:00:00"

@@ -187,12 +187,10 @@
 .accounts-table-heading,
 .accounts-table-row>* {
   padding: 15px;
-  
 
   .table-header {
     color: white;
     font-weight: 500;
-    
   }
 }
 
@@ -208,12 +206,7 @@
 
 .accounts-table-row {
   position: relative;
-  text-decoration: none !important; 
-  &:hover {
-    border-left: solid 5px $primaryColor;
-    cursor: pointer;
-    
-  }
+  text-decoration: none !important;
 
   .accounts-table-text {
     font-size: 12px;
@@ -222,7 +215,9 @@
 }
 
 .sessions-left-chip {
-  position: absolute;
+  &.set-pos{
+    position: absolute;
+  }
   border-radius: 100%;
   width: 30px;
   height: 30px;
@@ -292,14 +287,38 @@
     width: 150px;
     border-radius: 150px;
     position:relative;
-    top: 0;
-    right: 0;
+    &.set-pos{
+      top: 0;
+      right: 0;
+    }
   }
 }
 
 .session-info{
   cursor:pointer !important;
+
+  &.active{
+    background-color:#ecf0f1 !important;
+    animation-name: fade-out;
+    animation-duration:0.5s;
+
+    &.upcoming-session{
+      background-color: white !important;
+    }
+  }
+
+  &:hover {
+    border-left: solid 5px $primaryColor;
+    cursor: pointer;
+
+  }
 }
+
+@keyframes fade-out {
+  from {background-color: white;}
+  to {background-color: #ecf0f1 !important;}
+}
+
 
 .payments-history {
   padding: 15px;

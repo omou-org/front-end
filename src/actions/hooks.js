@@ -1,7 +1,7 @@
 import * as types from "./actionTypes";
 import {instance, MISC_FAIL, REQUEST_ALL, REQUEST_STARTED} from "./apiActions";
 import {useCallback, useEffect, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 
 export const isFail = (...statuses) =>
     statuses.some((status) =>
@@ -172,6 +172,11 @@ export const useOutOfOffice = wrapUseEndpoint(
     types.FETCH_OOO_SUCCESS,
 );
 
+export const useSession = wrapUseEndpoint(
+    "/scheduler/session/",
+    types.GET_SESSIONS_SUCCESS,
+);
+
 export const useEnrollmentByCourse = (courseID) => wrapUseEndpoint(
     "/course/enrollment/",
     types.FETCH_ENROLLMENT_SUCCESSFUL,
@@ -236,6 +241,17 @@ export const useTutoringSessionsInPeriod = (time_frame, time_shift) => wrapUseEn
     }
 )();
 
+export const useSessionsInPeriod = (time_frame, time_shift) => wrapUseEndpoint(
+    "/scheduler/session/",
+    types.GET_SESSIONS_SUCCESS,
+    {
+        "params": {
+            time_frame,
+            time_shift,
+        },
+    }
+)();
+
 export const useInstructorAvailability = (instructorID) => wrapUseEndpoint(
     "/account/instructor-availability/",
     types.FETCH_INSTRUCTOR_AVAILABILITY_SUCCESS,
@@ -245,6 +261,11 @@ export const useInstructorAvailability = (instructorID) => wrapUseEndpoint(
         },
     }
 )();
+
+export const useUnpaidSessions = wrapUseEndpoint(
+    "/payment/unpaid-sessions/",
+    types.GET_UNPAID_SUCCESS
+);
 
 // Hook
 export const usePrevious = (value) => {
@@ -260,3 +281,4 @@ export const usePrevious = (value) => {
     // Return previous value (happens before update in useEffect above)
     return ref.current;
 };
+

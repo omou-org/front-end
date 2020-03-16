@@ -1,6 +1,5 @@
 import * as types from "./actionTypes";
-import {submitParentAndStudent, postData, patchData, typeToPostActions} from "./rootActions";
-import {wrapGet, postCourse, formatCourse, wrapPost, instance, wrapPatch, wrapDelete} from "./apiActions";
+import {wrapDelete, wrapGet, wrapPatch, wrapPost} from "./apiActions";
 import {academicLevelParse, courseTypeParse} from "../reducers/registrationReducer";
 
 export const addCategory = (categoryName, categoryDescription) => wrapPost(
@@ -23,6 +22,18 @@ export const fetchCategories = (id) => wrapGet(
         types.GET_CATEGORY_SUCCESS,
         types.GET_CATEGORY_FAILED,
     ],
+    {
+        id:id,
+    }
+);
+
+export const fetchUnpaid = (id) => wrapGet(
+    '/payment/unpaid-sessions/',
+    [
+        types.GET_UNPAID_STARTED,
+        types.GET_UNPAID_SUCCESS,
+        types.GET_UNPAID_FAILED
+    ], 
     {
         id:id,
     }
