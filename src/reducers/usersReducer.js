@@ -386,7 +386,7 @@ const handleAccountSearchResults = (state, {response}) => {
                 StudentList = updateStudent(StudentList, account.user.id, account);
                 break;
             }
-            case "parent": {
+            case "PARENT": {
                 ParentList = updateParent(ParentList, account.user.id, account);
                 break;
             }

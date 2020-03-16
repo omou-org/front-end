@@ -1,4 +1,4 @@
-import {DELETE, GET, NOT_SEARCHING, PATCH, POST, SEARCH_ALL} from "../actions/actionTypes";
+import {DELETE, GET, PATCH, POST} from "actions/actionTypes";
 
 export default {
     "Authentication": initAuth(),
@@ -53,29 +53,10 @@ export default {
     },
     "RequestStatus": initRequests(),
     "SearchResults": {
-        SearchQuery: "",
-        searchQueryStatus: {
-            account: "",
-            course: "",
-            searching: NOT_SEARCHING,
-        },
-        accounts: [],
-        courses: [],
-        params: {
-            account: {
-                profile: "",
-                gradeFilter: "",
-                sortAccount: "",
-                accountPage: 1,
-            },
-            course: {
-                courseType: "",
-                availability: "",
-                sortCourse: "",
-                coursePage: 1,
-            }
-        },
-        primaryFilter: SEARCH_ALL,
+        "accountResultsNum": 0,
+        "accounts": {},
+        "courseResultsNum": 0,
+        "courses": {},
     },
     "Admin": {
         PriceRules: [],
@@ -85,8 +66,8 @@ export default {
             PaymentMethod: [],
         },
         Unpaid:""
-    }  
-    
+    }
+
 };
 
 function initRequests() {

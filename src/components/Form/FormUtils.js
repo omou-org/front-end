@@ -258,8 +258,8 @@ export const loadInstructors = async (input) => {
         return [];
     }
     return response.data.results
-        .map(({ "user": { user_id, first_name, last_name, email } }) => ({
+        .map(({ "user": { id, first_name, last_name, email } }) => ({
             "label": `${first_name} ${last_name} - ${email}`,
-            "value": user_id,
+            "value": id,
         }));
 };
