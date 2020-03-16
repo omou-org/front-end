@@ -3,10 +3,12 @@ import PropTypes from "prop-types";
 import {useDispatch} from "react-redux";
 import {useHistory} from "react-router-dom";
 
-import AsyncSelect from "react-select/async";
+import AsyncCreatableSelect from "react-select/async-creatable";
+import {components} from "react-select";
 import FormControl from "@material-ui/core/FormControl";
 import Grid from "@material-ui/core/Grid";
 import MenuItem from "@material-ui/core/MenuItem";
+import SearchIcon from "@material-ui/icons/Search";
 import Select from "@material-ui/core/Select";
 
 import "./Search.scss";
@@ -20,6 +22,30 @@ import {instance} from "actions/apiActions";
 const getPlaceholder = () => window.innerWidth < 800
     ? "Search"
     : "Search for a course or account";
+
+const noOptionsMessage = () => "Keep searching...";
+
+const {DropdownIndicator} = components;
+
+const searchIcon = (props) => (
+    <DropdownIndicator {...props}>
+        <SearchIcon className="search-icon-main" />
+    </DropdownIndicator>
+);
+
+const formatCreateLabel = (inputValue) => `Search for "${inputValue}"`;
+
+const styles = {
+    "control": (base) => ({
+        ...base,
+        "border": 0,
+        "boxShadow": "none",
+    }),
+    "option": (provided, {isFocused}) => ({
+        ...provided,
+        "backgroundColor": isFocused ? "#43B5D9" : provided.backgroundColor,
+    }),
+};
 
 const Search = ({onMobileType = () => {}}) => {
     const dispatch = useDispatch();
@@ -201,12 +227,20 @@ const Search = ({onMobileType = () => {}}) => {
                             item
                             md={10}
                             xs={mobileSearching ? 9 : 7}>
-                            <AsyncSelect
+                            <AsyncCreatableSelect
+                                allowCreateWhileLoading
+                                cacheOptions
                                 className="search-input"
+                                classNamePrefix="main-search"
+                                components={{"DropdownIndicator": searchIcon}}
+                                createOptionPosition="first"
+                                formatCreateLabel={formatCreateLabel}
                                 loadOptions={loadOptions}
+                                noOptionsMessage={noOptionsMessage}
                                 onChange={handleItemSelect}
                                 onInputChange={handleChange}
                                 placeholder={placeholder}
+                                styles={styles}
                                 value={query} />
                         </Grid>
                     </Grid>
