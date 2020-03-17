@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from "react";
-import * as userActions from "../../../actions/userActions";
+import * as userActions from "actions/userActions";
 import * as hooks from "actions/hooks";
 import {useDispatch, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
@@ -7,12 +7,15 @@ import PropTypes from "prop-types";
 
 import AddIcon from "@material-ui/icons/AddOutlined";
 import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import DoneIcon from "@material-ui/icons/CheckCircleOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import Grid from "@material-ui/core/Grid";
 import InputBase from "@material-ui/core/InputBase";
 import Loading from "components/Loading";
-import Modal from "@material-ui/core/Modal";
 import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
@@ -136,10 +139,10 @@ const Notes = ({ownerType, ownerID}) => {
         setAlert(false);
     }, []);
 
-    const notificationColor = {
+    const notificationColor = useMemo(() => ({
         "color": notification ? "red" : "grey",
         "cursor": "pointer",
-    };
+    }), [notification]);
 
     const saveNote = useCallback(() => {
         switch (ownerType) {
@@ -199,26 +202,48 @@ const Notes = ({ownerType, ownerID}) => {
         }
     }, [api, noteBody, notification, noteTitle, ownerID, ownerType, editID]);
 
-    if (hooks.isLoading(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {
-        return <Loading small loadingText="NOTES LOADING" />;
+    const toggleNoteField = (noteID, field) => () => {
+        const note = {
+            [field]: !notes[noteID][field],
+        };
+        switch (ownerType) {
+            case "enrollment":
+                api.patchEnrollmentNote(noteID, note, ownerID.enrollmentID,
+                    ownerID.studentID, ownerID.courseID);
+                break;
+            case "course":
+                api.patchCourseNote(noteID, note, ownerType, ownerID);
+                break;
+            default:
+                api.patchAccountNote(noteID, note, ownerType, ownerID);
+        }
+    };
+
+    if (hooks.isLoading(getRequestStatus) &&
+        (!notes || Object.entries(notes).length === 0)) {
+        return (
+            <Loading
+                loadingText="NOTES LOADING"
+                small />
+        );
     }
 
-    if (hooks.isFail(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {
+    if (hooks.isFail(getRequestStatus) &&
+        (!notes || Object.entries(notes).length === 0)) {
         return "Error loading notes!";
     }
 
     if (submitting && alert) {
         if (isPost && postRequestStatus && postRequestStatus !== REQUEST_STARTED) {
             setSubmitting(false);
-            if (postRequestStatus < 200 || postRequestStatus >= 300) {
+            if (hooks.isFail(postRequestStatus)) {
                 setError(true);
             } else {
                 setAlert(false);
             }
-        }
-        if (!isPost && patchRequestStatus && patchRequestStatus !== REQUEST_STARTED) {
+        } else if (!isPost && patchRequestStatus && patchRequestStatus !== REQUEST_STARTED) {
             setSubmitting(false);
-            if (patchRequestStatus < 200 || patchRequestStatus >= 300) {
+            if (hooks.isFail(patchRequestStatus)) {
                 setError(true);
             } else {
                 setAlert(false);
@@ -232,70 +257,61 @@ const Notes = ({ownerType, ownerID}) => {
             item
             md={12}
             spacing={16}>
-            <Modal
+            <Dialog
                 aria-describedby="simple-modal-description"
                 aria-labelledby="simple-modal-title"
                 className="popup"
+                fullWidth
+                maxWidth="xs"
                 open={alert}>
-                <div className="exit-popup">
-                    <Grid>
-                        <TextField
-                            className="textfield"
-                            id="standard-name"
-                            label="Subject"
-                            onChange={handleTitleUpdate}
-                            value={noteTitle} />
-                        <NotificationIcon
-                            className="notification"
-                            onClick={toggleNotification}
-                            style={notificationColor} />
-                    </Grid>
-                    <Grid>
-                        <InputBase
-                            className="note-body"
-                            inputProps={{"aria-label": "naked"}}
-                            margin="normal"
-                            multiline
-                            onChange={handleBodyUpdate}
-                            placeholder="Body (required)"
-                            required
-                            rows={15}
-                            value={noteBody}
-                            variant="filled" />
-                    </Grid>
-                    <Grid className="popUpActions">
-                        <Button onClick={hideWarning}>
-                            Cancel
-                        </Button>
-                        <Button
-                            disabled={!noteBody}
-                            onClick={saveNote}>
-                            {
-                                submitting
-                                    ? "Saving..."
-                                    : "Save"
-                            }
-                        </Button>
-                        {!submitting && error &&
-                            <span style={{"float": "right"}}>
-                                Error while saving!
-                            </span>}
-                    </Grid>
-                </div>
-            </Modal>
+                <DialogTitle>
+                    <TextField
+                        className="textfield"
+                        id="standard-name"
+                        label="Subject"
+                        onChange={handleTitleUpdate}
+                        value={noteTitle} />
+                    <NotificationIcon
+                        className="notification"
+                        onClick={toggleNotification}
+                        style={notificationColor} />
+                </DialogTitle>
+                <DialogContent>
+                    <InputBase
+                        className="note-body"
+                        inputProps={{"aria-label": "naked"}}
+                        multiline
+                        onChange={handleBodyUpdate}
+                        placeholder="Body (required)"
+                        required
+                        rows={15}
+                        value={noteBody}
+                        variant="filled" />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={hideWarning}>
+                        Cancel
+                    </Button>
+                    <Button
+                        disabled={!noteBody}
+                        onClick={saveNote}>
+                        {submitting ? "Saving..." : "Save"}
+                    </Button>
+                    {!submitting && error &&
+                    <span style={{"float": "right"}}>
+                        Error while saving!
+                    </span>}
+                </DialogActions>
+            </Dialog>
             <Grid
                 item
                 md={3}>
                 <div
                     className="addNote"
                     onClick={openNewNote}
-                    style={{
-                        "cursor": "pointer",
-                    }}>
+                    style={{"cursor": "pointer"}}>
                     <Typography className="center">
-                        <AddIcon />
-                        <br />
-                        Add Note
+                        <AddIcon /><br />Add Note
                     </Typography>
                 </div>
             </Grid>
@@ -309,8 +325,10 @@ const Notes = ({ownerType, ownerID}) => {
                             align="left"
                             className="noteHeader">
                             {note.title}
-                            {note.important &&
-                                <NotificationIcon className="noteNotification" />}
+                            <NotificationIcon
+                                className="noteNotification"
+                                onClick={toggleNoteField(note.id, "important")}
+                                style={note.important ? {"color": "red"} : {}} />
                         </Typography>
                         <Typography
                             align="left"
@@ -326,7 +344,10 @@ const Notes = ({ownerType, ownerID}) => {
                             <EditIcon
                                 className="icon"
                                 onClick={openExistingNote(note)} />
-                            <DoneIcon className="icon" />
+                            <DoneIcon
+                                className="icon"
+                                onClick={toggleNoteField(note.id, "complete")}
+                                style={note.complete ? {"color": "#43B5D9"} : {}} />
                         </div>
                     </Paper>
                 </Grid>
