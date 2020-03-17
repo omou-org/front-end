@@ -16,9 +16,13 @@ const styles = (username) => ({
     "margin": 9,
     "width": 47,
     "height": 47,
-    "fontSize": 20,
+    "fontSize": 45,
     "alignSelf": "center",
-    "fontFamily": "Roboto"
+    "fontFamily": "Roboto",
+    "position": "absolute",
+    "top": "-60px",
+    "right": "22%",
+    "padding": "50px"
 });
 
 const roleStyle = (role) => ({
@@ -28,7 +32,7 @@ const roleStyle = (role) => ({
     "height": 30,
     "margin": 10,
     "padding": 5,   
-    "fontSize": 14,
+    "fontSize": 12,
     "alignSelf": "center",
     "textAlign": "center"
 })
@@ -36,7 +40,7 @@ const roleStyle = (role) => ({
 const cardStyle = {
     "height": 250,  
     "width": 220,
-    "margin": '10px',
+    "padding": "10px"
 }
 
 const statusStyle = (status) => ({
@@ -62,8 +66,8 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
     const amtDue = amountDue(course.hourly_tuition, unpaidStudent.sessions_left, calculateSessionLength(startTime, endTime))
 
     return(
-        <Card style = {cardStyle}> 
-            <CardActionArea>
+        <Card style= {{overflow: "visible"}}> 
+            <CardActionArea style = {cardStyle}>
                 <CardMedia>
                     <Grid container style={{justifyContent:"center"}}>
                         <Avatar 
@@ -73,20 +77,20 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
                         </Avatar>
                     </Grid>
                 </CardMedia>
-                <CardContent>
+                <CardContent style ={{padding: "10px"}}>
                     <Typography style ={{fontSize: "16px", fontWeight: 500, lineHeight: "24px", textAlign: "center"}}>
                         {student.name}
                     </Typography>
                     <Typography style={roleStyle("student")} >
                         Student
                     </Typography>
-                    <Typography style={{textAlign: "center"}}>
+                    <Typography style={{fontFamily: "Roboto", textAlign: "left", fontSize: "11px", lineHeight: "24px"}}>
                         Payment Status: 
                         <span style={statusStyle(unpaidStudent.sessions_left)}>{unpaidStudent.sessions_left}</span>
                         <br/>
-                        ${amtDue}
+                        Amount Due: ${amtDue}
                         <br/>
-                        {course.title}
+                        Course: {course.title}
                     </Typography>
                 </CardContent>
             </CardActionArea>

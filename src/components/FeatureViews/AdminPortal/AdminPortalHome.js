@@ -9,7 +9,7 @@ import UnpaidSessions from "./UnpaidSessions";
 function AdminPortalHome() {
 
     return (
-            <Grid container>
+            <Grid container style={{padding: "20px"}} >
                 <UnpaidSessions/>
             </Grid>
     )
