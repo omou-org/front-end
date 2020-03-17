@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 
 import AddIcon from "@material-ui/icons/AddOutlined";
 import Button from "@material-ui/core/Button";
+import Delete from "@material-ui/icons/Delete";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -22,8 +23,15 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 
 import "../Accounts/TabComponents/TabComponents.scss";
-import {GET, PATCH, POST} from "../../../actions/actionTypes";
-import {REQUEST_STARTED} from "../../../actions/apiActions";
+import {
+    DELETE_ACCOUNT_NOTE_SUCCESSFUL,
+    DELETE_COURSE_NOTE_SUCCESSFUL,
+    DELETE_ENROLLMENT_NOTE_SUCCESSFUL,
+    GET,
+    PATCH,
+    POST,
+} from "actions/actionTypes";
+import {instance, REQUEST_STARTED} from "actions/apiActions";
 
 const numericDateString = (date) =>
     (new Date(date)).toLocaleTimeString("en-US", {
@@ -219,6 +227,39 @@ const Notes = ({ownerType, ownerID}) => {
         }
     };
 
+    const deleteNote = (noteID) => async () => {
+        let URL = "",
+            type = "";
+        switch (ownerType) {
+            case "course":
+                URL = "/course/catalog_note/";
+                type = DELETE_COURSE_NOTE_SUCCESSFUL;
+                break;
+            case "enrollment":
+                URL = "/course/enrollment_note/";
+                type = DELETE_ENROLLMENT_NOTE_SUCCESSFUL;
+                break;
+            default:
+                URL = "/account/note/";
+                type = DELETE_ACCOUNT_NOTE_SUCCESSFUL;
+                break;
+        }
+
+        try {
+            await instance.delete(`${URL}${noteID}/`);
+            dispatch({
+                "payload": {
+                    noteID,
+                    ownerID,
+                    ownerType,
+                },
+                type,
+            });
+        } catch (err) {
+            // if note not actually deleted
+        }
+    };
+
     if (hooks.isLoading(getRequestStatus) &&
         (!notes || Object.entries(notes).length === 0)) {
         return (
@@ -341,6 +382,9 @@ const Notes = ({ownerType, ownerID}) => {
                             {numericDateString(note.timestamp)}
                         </Typography>
                         <div className="actions">
+                            <Delete
+                                className="icon"
+                                onClick={deleteNote(note.id)} />
                             <EditIcon
                                 className="icon"
                                 onClick={openExistingNote(note)} />
