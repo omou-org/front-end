@@ -10,6 +10,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import {NoListAlert} from "../../../NoListAlert";
 import {courseDateFormat, dateTimeToDate} from "utils";
+import loadingCoursesError from "./loadingCoursesError.png";
 
 const today = dateTimeToDate(new Date());
 
@@ -68,7 +69,10 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
         }
 
         if (hooks.isFail(enrollmentStatus, courseStatus)) {
-            return "Error loading courses!";
+            return <div>
+                <img style={{width:"10%"}} src={loadingCoursesError}/>
+                <h2>There was an error loading your courses.</h2>
+            </div>;
         }
     }
 

@@ -11,6 +11,7 @@ import Typography from "@material-ui/core/Typography";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel"
 import {courseDateFormat} from "../../../../utils";
+import loadingCoursesError from "./loadingCoursesError.png"
 
 const InstructorCourses = ({ instructorID }) => {
     const courses = useSelector(({ Course }) => Course.NewCourseList);
@@ -26,7 +27,10 @@ const InstructorCourses = ({ instructorID }) => {
             return <Loading />;
         }
         if (hooks.isFail(courseStatus)) {
-            return "Error loading courses!";
+            return <div>
+            <img style={{width:"10%"}} src={loadingCoursesError}/>
+            <h2>There was an error loading your courses.</h2>
+        </div>;
         }
     }
 
