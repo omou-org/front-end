@@ -77,7 +77,7 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
                         </Avatar>
                     </Grid>
                 </CardMedia>
-                <CardContent style ={{padding: "10px"}}>
+                <CardContent style ={{padding: "40px 20px 20px 20px"}}>
                     <Typography style ={{fontSize: "16px", fontWeight: 500, lineHeight: "24px", textAlign: "center"}}>
                         {student.name}
                     </Typography>
