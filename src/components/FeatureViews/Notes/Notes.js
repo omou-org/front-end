@@ -1,6 +1,4 @@
 import React, {useCallback, useEffect, useMemo, useState} from "react";
-import * as userActions from "actions/userActions";
-import * as hooks from "actions/hooks";
 import {useDispatch, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
 import PropTypes from "prop-types";
@@ -23,6 +21,8 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 
 import "../Accounts/TabComponents/TabComponents.scss";
+import * as hooks from "actions/hooks";
+import * as userActions from "actions/userActions";
 import {
     DELETE_ACCOUNT_NOTE_SUCCESSFUL,
     DELETE_COURSE_NOTE_SUCCESSFUL,
@@ -104,6 +104,8 @@ const Notes = ({ownerType, ownerID}) => {
     const [submitting, setSubmitting] = useState(false);
     const [isPost, setIsPost] = useState(false);
     const [error, setError] = useState(false);
+    const [deleteID, setDeleteID] = useState(false);
+    const [deleteError, setDeleteError] = useState(false);
 
     useEffect(() => {
         if (ownerType === "course") {
@@ -145,6 +147,9 @@ const Notes = ({ownerType, ownerID}) => {
 
     const hideWarning = useCallback(() => {
         setAlert(false);
+        setDeleteID(null);
+        setError(false);
+        setDeleteError(false);
     }, []);
 
     const notificationColor = useMemo(() => ({
@@ -158,9 +163,9 @@ const Notes = ({ownerType, ownerID}) => {
                 const note = {
                     "body": noteBody,
                     "complete": false,
+                    "enrollment": ownerID.enrollmentID,
                     "important": notification,
                     "title": noteTitle,
-                    "enrollment": ownerID.enrollmentID,
                 };
                 if (editID) {
                     api.patchEnrollmentNote(editID, note, ownerID.enrollmentID, ownerID.studentID, ownerID.courseID);
@@ -176,9 +181,9 @@ const Notes = ({ownerType, ownerID}) => {
                 const note = {
                     "body": noteBody,
                     "complete": false,
+                    "course": ownerID,
                     "important": notification,
                     "title": noteTitle,
-                    "course": ownerID,
                 };
                 if (editID) {
                     api.patchCourseNote(editID, note, ownerType, ownerID);
@@ -210,7 +215,11 @@ const Notes = ({ownerType, ownerID}) => {
         }
     }, [api, noteBody, notification, noteTitle, ownerID, ownerType, editID]);
 
-    const toggleNoteField = (noteID, field) => () => {
+    const openDelete = (noteID) => () => {
+        setDeleteID(noteID);
+    };
+
+    const toggleNoteField = useCallback((noteID, field) => () => {
         const note = {
             [field]: !notes[noteID][field],
         };
@@ -225,9 +234,10 @@ const Notes = ({ownerType, ownerID}) => {
             default:
                 api.patchAccountNote(noteID, note, ownerType, ownerID);
         }
-    };
+    }, [api, notes, ownerType, ownerID]);
 
-    const deleteNote = (noteID) => async () => {
+
+    const handleDelete = useCallback(async () => {
         let URL = "",
             type = "";
         switch (ownerType) {
@@ -244,21 +254,22 @@ const Notes = ({ownerType, ownerID}) => {
                 type = DELETE_ACCOUNT_NOTE_SUCCESSFUL;
                 break;
         }
-
         try {
-            await instance.delete(`${URL}${noteID}/`);
+            await instance.delete(`${URL}${deleteID}/`);
             dispatch({
                 "payload": {
-                    noteID,
+                    "noteID": deleteID,
                     ownerID,
                     ownerType,
                 },
                 type,
             });
+            hideWarning();
         } catch (err) {
             // if note not actually deleted
+            setDeleteError(true);
         }
-    };
+    }, [deleteID, dispatch, hideWarning, ownerID, ownerType]);
 
     if (hooks.isLoading(getRequestStatus) &&
         (!notes || Object.entries(notes).length === 0)) {
@@ -304,6 +315,7 @@ const Notes = ({ownerType, ownerID}) => {
                 className="popup"
                 fullWidth
                 maxWidth="xs"
+                onClose={hideWarning}
                 open={alert}>
                 <DialogTitle>
                     <TextField
@@ -330,18 +342,61 @@ const Notes = ({ownerType, ownerID}) => {
                         variant="filled" />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={hideWarning}>
+                    <Button
+                        onClick={hideWarning}
+                        variant="outlined">
                         Cancel
                     </Button>
                     <Button
+                        color="primary"
                         disabled={!noteBody}
-                        onClick={saveNote}>
+                        onClick={saveNote}
+                        variant="outlined">
                         {submitting ? "Saving..." : "Save"}
                     </Button>
-                    {!submitting && error &&
-                    <span style={{"float": "right"}}>
-                        Error while saving!
-                    </span>}
+                    {
+                        !submitting && error &&
+                        <span style={{"float": "right"}}>
+                                Error while saving!
+                        </span>
+                    }
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                aria-describedby="simple-modal-description"
+                aria-labelledby="simple-modal-title"
+                className="popup"
+                fullWidth
+                maxWidth="xs"
+                onClose={hideWarning}
+                open={deleteID !== null}>
+                <DialogTitle>
+                    Confirm Delete
+                </DialogTitle>
+                <DialogContent>
+                    Are you sure you want to delete {
+                        notes[deleteID] && notes[deleteID].title
+                            ? `"${notes[deleteID].title}"`
+                            : "this note"
+                    }?
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={hideWarning}
+                        variant="outlined">
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={handleDelete}
+                        variant="outlined">
+                        Delete
+                    </Button>
+                    {
+                        deleteError &&
+                        <span style={{"float": "right"}}>
+                            Error while deleting!
+                        </span>
+                    }
                 </DialogActions>
             </Dialog>
             <Grid
@@ -384,7 +439,7 @@ const Notes = ({ownerType, ownerID}) => {
                         <div className="actions">
                             <Delete
                                 className="icon"
-                                onClick={deleteNote(note.id)} />
+                                onClick={openDelete(note.id)} />
                             <EditIcon
                                 className="icon"
                                 onClick={openExistingNote(note)} />
