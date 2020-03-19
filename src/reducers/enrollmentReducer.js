@@ -10,6 +10,8 @@ export default function enrollment(state = initialState.Enrollments, {payload, t
         case actions.POST_ENROLLMENT_NOTE_SUCCESSFUL:
         case actions.PATCH_ENROLLMENT_NOTE_SUCCESSFUL:
             return handleEnrollmentNotesPost(state, payload);
+        case actions.DELETE_ENROLLMENT_NOTE_SUCCESSFUL:
+            return handleNoteDelete(state, payload);
         case actions.POST_ENROLLMENT_STARTED:
             return state;
         case actions.POST_ENROLLMENT_SUCCESS:
@@ -89,5 +91,11 @@ const handleEnrollmentNoteFetch = (state, {courseID, studentID, response}) => {
     data.forEach((note) => {
         newState[studentID][courseID].notes[note.id] = note;
     });
+    return newState;
+};
+
+const handleNoteDelete = (state, {"ownerID": {courseID, studentID}, noteID}) => {
+    const newState = JSON.parse(JSON.stringify(state));
+    delete newState[studentID][courseID].notes[noteID];
     return newState;
 };

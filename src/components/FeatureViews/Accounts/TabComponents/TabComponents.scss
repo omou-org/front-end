@@ -11,7 +11,6 @@
 
   .noteNotification {
     float: right;
-    color: red;
     cursor: pointer;
   }
 
@@ -64,36 +63,23 @@
 }
 
 .popup {
-  .popUpActions {
-    position: absolute;
-    bottom: 5%;
+  min-height: 381px;
+  max-height: 450px;
+  margin: auto;
+
+  .textfield {
+    width: 80%;
+    text-align: left;
   }
 
-  .exit-popup {
-    padding-top: 0%;
-    min-height: 381px;
-    min-width: 381px;
+  .note-body {
+    width: 100%;
+  }
 
-    .textfield {
-      width: 80%;
-      text-align: left;
-    }
-
-    .note-body {
-      width: 100%;
-    }
-
-    .notification {
-      margin-top: 7%;
-      right: 10%;
-      font-size: 40px;
-      position: absolute;
-    }
-
-    .bodyfield {
-      width: 100%;
-      text-align: left;
-    }
+  .notification {
+    right: 10%;
+    font-size: 40px;
+    position: absolute;
   }
 }
 
@@ -210,7 +196,6 @@
 
   .accounts-table-text {
     font-size: 12px;
-    
   }
 }
 
@@ -270,7 +255,6 @@
     width: 150px;
     top: 23%;
     right: 8%;
-    
   }
 
   .accounts-table-heading,
