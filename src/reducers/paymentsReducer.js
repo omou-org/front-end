@@ -3,7 +3,7 @@ import * as actions from "./../actions/actionTypes"
 import {REQUEST_ALL} from "../actions/apiActions";
 
 export default function course(state = initialState.Payments, {payload, type}) {
-    let newState;
+
     switch (type) {
         case actions.POST_PAYMENT_SUCCESS:
             return handlePayments(state, payload);

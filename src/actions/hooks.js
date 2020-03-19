@@ -169,6 +169,11 @@ export const useCategory = wrapUseEndpoint(
     types.GET_CATEGORY_SUCCESS,
 );
 
+export const usePriceRules = wrapUseEndpoint(
+    "/pricing/rule/",
+    types.GET_PRICE_RULE_SUCCESS,
+);
+
 export const useOutOfOffice = wrapUseEndpoint(
     "/account/instructor-out-of-office/",
     types.FETCH_OOO_SUCCESS,

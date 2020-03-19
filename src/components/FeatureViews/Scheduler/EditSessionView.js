@@ -56,7 +56,9 @@ const EditSessionView = ({course, session, editSelection}) => {
     useEffect(() => {
         if (course && session) {
             let durationHours = Math.abs(session.end_datetime - session.start_datetime) / 36e5;
-            durationHours === 0 ? durationHours = 1 : durationHours = durationHours;
+            if (durationHours === 0) {
+                durationHours = 1
+            }
             const category = categories.find((category) => category.id === course.category);
 
             setSessionFields({
@@ -259,7 +261,7 @@ const EditSessionView = ({course, session, editSelection}) => {
                         </FormControl>
                     </Grid>
                     {
-                        editSelection == EDIT_CURRENT_SESSION &&
+                        editSelection === EDIT_CURRENT_SESSION &&
                         <Grid
                             item
                             xs={6}>

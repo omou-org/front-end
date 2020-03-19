@@ -41,7 +41,7 @@ class SessionView extends Component {
             Object.keys(this.props.courseSessions).length !== 0 &&
             Object.entries(this.props.courses).length !== 0) {
             this.setState(() => {
-                const {session_id, course_id, instructor_id} = this.props.match.params;
+                const {session_id, instructor_id} = this.props.match.params;
                 const sessionData = this.props.courseSessions[instructor_id][session_id];
                 sessionData["start"] = new Date(sessionData.start_datetime).getDay();
 
@@ -78,7 +78,7 @@ class SessionView extends Component {
                 editSelection: editSelection,
             }
         }))
-    }
+    };
 
     render() {
         return (
