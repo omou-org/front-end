@@ -1,9 +1,8 @@
 // React Imports
 import {Redirect, Route, Switch} from "react-router-dom";
 import {useDispatch} from "react-redux";
-import {bindActionCreators} from "redux";
 import {resetSubmitStatus} from "../../actions/registrationActions";
-import React, {useMemo} from "react";
+import React from "react";
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/EnrollmentView";
@@ -25,7 +24,7 @@ import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
 import RegistrationReceipt from "../FeatureViews/Registration/RegistrationReceipt";
 
 
-export const RootRoutes = (props) => {
+export const RootRoutes = () => {
     const dispatch = useDispatch();
     dispatch(resetSubmitStatus());
 
