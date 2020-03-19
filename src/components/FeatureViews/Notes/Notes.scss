@@ -1,0 +1,15 @@
+@import "../../../theme/colors";
+
+.delete-popup {
+    .delete-actions {
+        .delete-button {
+            background-color: $badActionColor !important;
+            color: white !important;
+        }
+
+        .cancel-button {
+            background-color: $primaryColor !important;
+            color: white !important;
+        }
+    }
+}

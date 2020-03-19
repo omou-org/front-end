@@ -20,6 +20,7 @@ import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 
+import "./Notes.scss";
 import "../Accounts/TabComponents/TabComponents.scss";
 import * as hooks from "actions/hooks";
 import * as userActions from "actions/userActions";
@@ -305,6 +306,7 @@ const Notes = ({ownerType, ownerID}) => {
 
     return (
         <Grid
+            className="notes-container"
             container
             item
             md={12}
@@ -365,7 +367,7 @@ const Notes = ({ownerType, ownerID}) => {
             <Dialog
                 aria-describedby="simple-modal-description"
                 aria-labelledby="simple-modal-title"
-                className="popup"
+                className="delete-popup"
                 fullWidth
                 maxWidth="xs"
                 onClose={hideWarning}
@@ -380,15 +382,17 @@ const Notes = ({ownerType, ownerID}) => {
                             : "this note"
                     }?
                 </DialogContent>
-                <DialogActions>
+                <DialogActions className="delete-actions">
                     <Button
+                        className="cancel-button"
                         onClick={hideWarning}
-                        variant="outlined">
+                        variant="contained">
                         Cancel
                     </Button>
                     <Button
+                        className="delete-button"
                         onClick={handleDelete}
-                        variant="outlined">
+                        variant="contained">
                         Delete
                     </Button>
                     {
