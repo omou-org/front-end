@@ -1,8 +1,8 @@
 /* eslint-disable func-style */
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import React, {Component} from "react";
+import {withRouter} from "react-router-dom";
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -26,13 +26,13 @@ import ChevronRightOutlinedIcon from "@material-ui/icons/ChevronRightOutlined";
 import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
 import TodayIcon from "@material-ui/icons/Today";
-import { stringToColor } from "../Accounts/accountUtils";
-import { withStyles } from "@material-ui/core/styles";
+import {stringToColor} from "../Accounts/accountUtils";
+import {withStyles} from "@material-ui/core/styles";
 import "./scheduler.scss";
 import SessionFilters from "./SessionFilters";
-import { BootstrapInput, handleToolTip, sessionArray } from "./SchedulerUtils";
-import { Tooltip } from "@material-ui/core";
-import { arr_diff } from "../../Form/FormUtils";
+import {BootstrapInput, handleToolTip, sessionArray} from "./SchedulerUtils";
+import {Tooltip} from "@material-ui/core";
+import {arr_diff} from "../../Form/FormUtils";
 
 
 const styles = (theme) => ({
@@ -370,7 +370,6 @@ class Scheduler extends Component {
                 // sessionKey is the variable named inside the map, this is mapping over each coursekey
                 // session is the matched pairs of course and session objects
                 const session = this.props.sessions[courseKey][sessionKey];
-                session.title = session.title;
                 session.description = session.description ? session.description : "";
                 session.type = this.props.courses[session.course_id].type;
                 session.resourceId = this.props.courses[session.course_id].room_id ? this.props.courses[session.course_id].room_id : 1;
@@ -490,7 +489,6 @@ class Scheduler extends Component {
     onCourseSelect = (event) => {
         this.setState(() => {
             const courseSessionsArray = sessionArray(this.props.sessions);
-            const initialSessions = this.formatSessions(this.props.sessions);
             const selectedCourseIDs = event && event.map((course) => course.value);
             const calendarCourseIDs = [...new Set(courseSessionsArray.map((session) => session.course))];
             const nonSelectedCourseIDs = event ? arr_diff(selectedCourseIDs, calendarCourseIDs) : [];
