@@ -15,6 +15,8 @@ export default function users(state = initialState.Users, {payload, type}) {
         case actions.POST_ACCOUNT_NOTE_SUCCESSFUL:
         case actions.PATCH_ACCOUNT_NOTE_SUCCESSFUL:
             return handleAccountNotesPost(state, payload);
+        case actions.DELETE_ACCOUNT_NOTE_SUCCESSFUL:
+            return handleNoteDelete(state, payload);
         case actions.POST_STUDENT_SUCCESSFUL:
             return handleStudentPost(state, payload);
         case actions.GET_ACCOUNT_SEARCH_QUERY_SUCCESS:
@@ -108,6 +110,48 @@ const handleAccountNotesFetch = (state, {ownerID, ownerType, response}) => {
     });
     return newState;
 };
+
+const handleNoteDelete = (state, {ownerID, ownerType, noteID}) => {
+    const newState = JSON.parse(JSON.stringify(state));
+    switch (ownerType) {
+        case "student":
+            if (!newState.StudentList[ownerID]) {
+                newState.StudentList[ownerID] = {
+                    "notes": {},
+                };
+            }
+            delete newState.StudentList[ownerID].notes[noteID];
+            break;
+        case "parent":
+            if (!newState.ParentList[ownerID]) {
+                newState.ParentList[ownerID] = {
+                    "notes": {},
+                };
+            }
+            delete newState.ParentList[ownerID].notes[noteID];
+            break;
+        case "instructor":
+            if (!newState.InstructorList[ownerID]) {
+                newState.InstructorList[ownerID] = {
+                    "notes": {},
+                };
+            }
+            delete newState.InstructorList[ownerID].notes[noteID];
+            break;
+        case "receptionist":
+            if (!newState.ReceptionistList[ownerID]) {
+                newState.ReceptionistList[ownerID] = {
+                    "notes": {},
+                };
+            }
+            delete newState.ReceptionistList[ownerID].notes[noteID];
+            break;
+        default:
+            console.error("Bad user type", ownerType);
+    }
+    return newState;
+};
+
 
 export const handleParentsFetch = (state, payload) => {
     let id, response;
@@ -386,7 +430,7 @@ const handleAccountSearchResults = (state, {response}) => {
                 StudentList = updateStudent(StudentList, account.user.id, account);
                 break;
             }
-            case "parent": {
+            case "PARENT": {
                 ParentList = updateParent(ParentList, account.user.id, account);
                 break;
             }

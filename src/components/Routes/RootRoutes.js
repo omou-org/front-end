@@ -2,7 +2,7 @@
 import {Redirect, Route, Switch} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {bindActionCreators} from "redux";
-import * as registrationActions from "../../actions/registrationActions";
+import {resetSubmitStatus} from "../../actions/registrationActions";
 import React, {useMemo} from "react";
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
@@ -25,16 +25,10 @@ import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
 import RegistrationReceipt from "../FeatureViews/Registration/RegistrationReceipt";
 
 
-export const RootRoutes = (props) =>  {
+export const RootRoutes = (props) => {
     const dispatch = useDispatch();
-    const api = useMemo(
-        () => ({
-            ...bindActionCreators(registrationActions, dispatch),
-        }),
-        [dispatch]
-    );
+    dispatch(resetSubmitStatus());
 
-    api.resetSubmitStatus();
     return (
         <Switch>
             <Route
@@ -53,7 +47,8 @@ export const RootRoutes = (props) =>  {
                 render={(passedProps) => <Registration {...passedProps} />} />
             {/* Scheduler Routes */}
             <ProtectedRoute
-                exact path="/scheduler"
+                exact
+                path="/scheduler"
                 render={(passedProps) => <Scheduler {...passedProps} />} />
             <Route
                 path="/scheduler/view-session/:course_id/:session_id/:instructor_id"
@@ -63,13 +58,13 @@ export const RootRoutes = (props) =>  {
                 path="/search"
                 render={(passedProps) => <SearchResults {...passedProps} />} />
 
-            {/*<ProtectedRoute*/}
+            {/* <ProtectedRoute*/}
             {/*    path='/scheduler/resource'*/}
             {/*    render={(passedProps) => <ResourceView {...passedProps} />} /> */}
 
             <ProtectedRoute
                 exact
-                path='/noresults'
+                path="/noresults"
                 render={(passedProps) => <NoResultsPage {...passedProps} />} />
 
             {/* Accounts */}
@@ -80,7 +75,7 @@ export const RootRoutes = (props) =>  {
             <ProtectedRoute
                 exact
                 path="/accounts/parent/payment/:parentID/:paymentID"
-                render={(passedProps) => <RegistrationReceipt {...passedProps} />}/>
+                render={(passedProps) => <RegistrationReceipt {...passedProps} />} />
             <ProtectedRoute
                 exact
                 path="/accounts"
@@ -88,7 +83,7 @@ export const RootRoutes = (props) =>  {
             <ProtectedRoute
                 exact
                 path="/accounts/:accountType/:accountID/:courseID"
-                render={(passedProps) => <CourseSessionStatus {...passedProps} />}/>
+                render={(passedProps) => <CourseSessionStatus {...passedProps} />} />
 
             {/* Registration Routes */}
             <ProtectedRoute
@@ -99,22 +94,21 @@ export const RootRoutes = (props) =>  {
                 render={(passedProps) => <RegistrationCourse {...passedProps} />} />
             <ProtectedRoute
                 path="/registration/cart/"
-                render={(passedProps) => <RegistrationCart {...passedProps}/>}
-            />
+                render={(passedProps) => <RegistrationCart {...passedProps} />} />
             <ProtectedRoute
                 path="/registration/receipt/:paymentID?"
-                render={(passedProps) => <RegistrationReceipt {...passedProps}/> }
-            />
+                render={(passedProps) => <RegistrationReceipt {...passedProps} />} />
 
             {/* Admin Routes */}
             <AdminRoute
                 exact
                 path="/adminportal/:view?/:type?/:id?/:edit?"
-                render={(passedProps) => <AdminPortal/>}/>
+                render={(passedProps) => <AdminPortal {...passedProps} />} />
 
-            <Route path="/PageNotFound" component={ErrorNotFoundPage}/>
-            <Redirect to="/PageNotFound"/>
+            <Route
+                component={ErrorNotFoundPage}
+                path="/PageNotFound" />
+            <Redirect to="/PageNotFound" />
         </Switch>
-);
+    );
 };
-
