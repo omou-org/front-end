@@ -86,7 +86,6 @@ export default {
         },
     },
     "Cats": {
-        firstCat: "",
         secondCat: "",
     }
 };
