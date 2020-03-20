@@ -5,7 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import ReactDOM from "react-dom";
 import { bindActionCreators } from "redux";
 import "./catsPage.scss"
+import *  as hooks from "actions/hooks"
 import cat1 from "./cat1.gif"
+import Loading from "components/Loading";
 
 function CatsPage() {
     const [imageWidth, setImageWidth] = useState(0);
@@ -76,18 +78,21 @@ function CatsPage() {
             () => {
                 const animate = () => {
                     setPosition(p => {
-                        const isCrashingLeft = p.x <= 0 && p.xm < 0;
+                        const isCrashingLeft = p.x <= 223 && p.xm < 0;
                         const isCrashingRight = p.x + width >= vw && p.xm > 0;
-                        const isCrashingTop = p.y <= 0 && p.ym < 0;
+                        const isCrashingTop = p.y <= 64 && p.ym < 0;
                         const isCrashingBottom = p.y + height >= vh && p.ym > 0;
                         const np = { ...p };
                         if (isCrashingLeft || isCrashingRight) {
                             np.xm *= -1;
                             nextColor();
+                            api.fetchCats("cats")
+
                         }
                         if (isCrashingTop || isCrashingBottom) {
                             np.ym *= -1;
                             nextColor();
+                            api.fetchCats("cats")
                         }
                         np.x = Math.min(Math.max(p.x + np.xm, 0), vw - width);
                         np.y = Math.min(Math.max(p.y + np.ym, 0), vh - height);
@@ -105,20 +110,24 @@ function CatsPage() {
     if(auth.first_name!=="Nelson"&&auth.last_name!=="Ng"){
         return(<h1>Only Nelson is permitted to view this sanctuary</h1>);
     }
+    if (!apiImage.width || !apiImage.height) {
+
+        return <Loading />
+    }
     return (<div className="screensaver">
         <section
             ref={ref}
             className="screensaver__bouncer"
             style={{
-                width:`${list.width}px`,
-                height:`${list.height}px`,
+                width: `${apiImage.width}px`,
+                height: `${apiImage.height}px`,
                 backgroundColor: color,
                 transform: `translate(${x}px, ${y}px)`
             }}
         >
             <img
-                src={apiImage}
-                >
+                src={apiImage.url}
+            >
 
             </img>
         </section></div>);

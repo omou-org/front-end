@@ -6,9 +6,8 @@ export default function catReducer(state = initalState.Cats, { type, payload }) 
     switch (type) {
         case GET_GIF_SUCCESS:
             console.log(payload);
-            newState["width"] = payload.response.data.data.fixed_height_downsampled_width;
-            newState["height"] = payload.response.data.data.fixed_height_downsampled_height;
-            newState["secondCat"] = payload.response.data.data.images.fixed_height.url;
+
+            newState["secondCat"] = payload.response.data.data.images.fixed_height;
             return newState;
         case GET_GIF_FAIL:
             console.log(payload);
