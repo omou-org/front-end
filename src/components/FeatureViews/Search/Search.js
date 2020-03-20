@@ -22,10 +22,12 @@ const Search = (props) => {
     const [searchSuggestions, setSearchSuggestions] = useState([]);
 
     const [accountRequestConfig, setAccountRequestConfig] = useState({
-        params: { query: query.label, page: 1, }
+        params: { query: query.label, page: 1, },
+        headers: {"Authorization": `Token ${props.auth.token}`,}
     });
     const [courseRequestConfig, setCourseRequestConfig] = useState({
-        params: { query: query.label, page: 1,  }
+        params: { query: query.label, page: 1,  },
+        headers: {"Authorization": `Token ${props.auth.token}`,}
     });
     const searchState = useSelector(({Search}) => Search);
 
@@ -322,6 +324,7 @@ const mapStateToProps = (state) => ({
     "courseRoster": state.Course["CourseRoster"],
     "enrollments": state.Enrollments,
     "search": state.Search,
+    "auth": state.auth,
 });
 
 const mapDispatchToProps = (dispatch) => ({
