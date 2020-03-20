@@ -83,6 +83,8 @@ class Scheduler extends Component {
         };
     }
 
+
+
     calendarComponentRef = React.createRef();
 
     componentDidMount() {
@@ -137,9 +139,10 @@ class Scheduler extends Component {
     }
 
     componentWillUnmount() {
-
+        console.log("test")
         this.props.calendarActions.resetSchedulerStatus();
     }
+
 
     formatSessions = (sessionState) => {
         let allSessions = [];
