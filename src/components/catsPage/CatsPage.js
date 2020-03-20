@@ -13,8 +13,8 @@ function CatsPage() {
     const [imageWidth, setImageWidth] = useState(0);
     const [imageHeight, setImageHeight] = useState(0);
     const dispatch = useDispatch();
-    const auth= useSelector((store)=>store.auth)
-    
+    const auth = useSelector((store) => store.auth)
+
     const api = useMemo(() => bindActionCreators(catActions, dispatch), [dispatch])
     const list = useSelector((store) => store.Cat)
     useEffect(() => {
@@ -23,7 +23,7 @@ function CatsPage() {
     const apiImage = list.secondCat;
     const imgElement = React.useRef(null);
     const targetRef = useRef();
-    
+
 
     const COLORS = ["red", "green", "blue", "indigo", "violet"];
 
@@ -107,8 +107,8 @@ function CatsPage() {
         return [ref, x, y, color];
     };
     const [ref, x, y, color] = useColoredBouncer("red");
-    if(auth.first_name!=="Nelson"&&auth.last_name!=="Ng"){
-        return(<h1>Only Nelson is permitted to view this sanctuary</h1>);
+    if (auth.first_name !== "Nelson" && auth.last_name !== "Ng") {
+        return (<h1>Only Nelson is permitted to view this sanctuary</h1>);
     }
     if (!apiImage.width || !apiImage.height) {
 
