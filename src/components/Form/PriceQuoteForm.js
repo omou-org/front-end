@@ -44,6 +44,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
     );
     const history = useHistory();
     const isAdmin = useSelector(({ auth }) => auth.isAdmin);
+    const currentPayingParent = useSelector((({ Registration }) => Registration.CurrentParent));
     const [priceQuote, setPriceQuote] = useState({});
     const prevPriceQuote = usePrevious(priceQuote);
     const [discounts, setDiscounts] = useState([]);
@@ -51,6 +52,8 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
     const [priceAdjustment, setPriceAdjustment] = useState(0);
     const prevPriceAdjustment = usePrevious(priceAdjustment);
     const [paymentMethod, setPaymentMethod] = useState(null);
+    const [tuitionQuote, setTuitionQuote] = useState(null);
+
     const handlePayMethodChange = useCallback((method) => () => {
         setPaymentMethod(method);
     }, []);
@@ -70,7 +73,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
             stateUpdated(priceAdjustment, prevPriceAdjustment)
         ) && priceAdjustment !== "") {
             const requestedQuote = {
-                "payment_method": paymentMethod,
+                "method": paymentMethod,
                 "classes": courses,
                 "tutoring": cleanTutoring.map((tutoring) => {
                     delete tutoring.new_course;
@@ -82,6 +85,10 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                 "disabled_discounts": discounts.filter((discount) => !discount.enable).map(({ id }) => id),
                 "price_adjustment": Number(priceAdjustment),
             };
+
+            if(currentPayingParent.balance > 0){
+                requestedQuote["parent"] = currentPayingParent.user.id;
+            }
             // make price quote request
             instance.post("/pricing/quote/", requestedQuote).then((quoteResponse) => {
                 const responseDiscounts = JSON.stringify(quoteResponse.data.discounts);
@@ -95,8 +102,10 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                     const ResponseDiscountIDs = ResponseDiscounts.map((discount) => discount.id);
                     const discountNotInResponseButInState = discounts.filter((discount) => !ResponseDiscountIDs.includes(discount.id));
                     ResponseDiscounts = ResponseDiscounts.concat(discountNotInResponseButInState);
+
                     setDiscounts(ResponseDiscounts);
                 }
+
                 delete quoteResponse.data.discounts;
                 if (quoteResponse.data.price_adjustment !== priceAdjustment) {
                     setPriceAdjustment(quoteResponse.data.price_adjustment);
@@ -106,6 +115,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                 const stateQuote = JSON.stringify(priceQuote);
                 if (responseQuote !== stateQuote) {
                     setPriceQuote(quoteResponse.data);
+                    setTuitionQuote(requestedQuote);
                 }
             });
         }
@@ -153,13 +163,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
             });
         });
 
-        const paymentInfo = {
-            "base_amount": priceQuote.total,
-            "price_adjustment": priceAdjustment,
-            "method": paymentMethod,
-            "disabled_discounts": discounts.filter((discount) => !discount.enable),
-        };
-        api.initRegistration(tutoringRegistrations, courseRegistrations, paymentInfo);
+        api.initRegistration(tutoringRegistrations, courseRegistrations, tuitionQuote);
         history.push("/registration/receipt/");
     };
 
@@ -181,7 +185,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
             <Grid
                 item
                 xs={3}>
-                <FormControl>
+                <FormControl required>
                     <FormLabel>Select Payment Method</FormLabel>
                     <RadioGroup>
                         <FormControlLabel
@@ -248,23 +252,22 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                                 </Grid>
                             </Grid>
                             {
-                                discounts.map((discount, i) => (<Grid
+                                discounts
+                                    .map((discount, i) => (<Grid
                                     item
                                     key={i}>
                                     <Grid
                                         container
+                                        style={{height:"30px"}}
                                         direction="row"
                                         justify="flex-end">
                                         <Grid
                                             item
-                                            xs={1} />
-                                        <Grid
-                                            item
-                                            xs={3}>
+                                            xs={5}>
                                             <Typography
                                                 align="right"
                                                 className={`price-label
-                                                            ${discount.enable && "discount"}`}>
+                                                            ${discount.enable && " discount"}`}>
                                                 {
                                                     discount.enable
                                                         ? <Remove
@@ -284,12 +287,33 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                                                 align="right"
                                                 className={`discount-amount
                                                             ${discount.enable && "enable"}`}>
-                                                - {discount.amount}
+                                                - ${discount.amount}
                                             </Typography>
                                         </Grid>
                                     </Grid>
                                 </Grid>))
                             }
+                            <Grid
+                                container
+                                direction="row"
+                                justify="flex-end">
+                                <Grid
+                                    item
+                                    xs={4}>
+                                    <Typography
+                                        align="right"
+                                        className="price-label">
+                                        Applied Parent Account Balance
+                                    </Typography>
+                                </Grid>
+                                <Grid
+                                    item
+                                    xs={2}>
+                                    <Typography align="right">
+                                        {priceQuote.account_balance > 0 && "- $"} {priceQuote.account_balance}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
                             <Grid item>
                                 {/* Manual Price Adjustment for Admins */}
                                 {

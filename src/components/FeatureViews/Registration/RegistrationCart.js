@@ -53,7 +53,6 @@ const RegistrationCart = () => {
             .reduce((list, vals) => [...list, ...Object.values(vals)], [])
             .every(({validated}) => validated),
     [selectedCourses]);
-
     const coursesStatus = hooks.useCourse(courseIDs);
     const studentsStatus = hooks.useStudent(studentIDs);
 
@@ -139,12 +138,14 @@ const RegistrationCart = () => {
                 if (course) {
                     finalVal += weeklySessionsParser(course.schedule.start_date, course.schedule.end_date);
                 }
+
                 newOne.new_course = {
                     ...it.new_course,
                     "schedule": {
                         ...it.new_course.schedule,
                         // calculates appropriate date and formats it
-                        "end_date": dateParser(new Date(it.new_course.schedule.start_date).getTime() + 7 * 24 * 60 * 60 * 1000 * finalVal + 24 * 60 * 60 * 1000).slice(0, 10),
+                        "end_date": dateParser(new Date(it.new_course.schedule.start_date)
+                            .getTime() + 7 * 24 * 60 * 60 * 1000 * (finalVal-1) + 24 * 60 * 60 * 1000),
                     },
                 };
             }
@@ -167,7 +168,7 @@ const RegistrationCart = () => {
                 updated[studentID][courseID] = {
                     ...updated[studentID][courseID],
                     "validated": Number.isInteger(value) &&
-                        (0 <= value && value <= (numSessions - paidSessions)),
+                        (0 <= value && value <= (numSessions - paidSessions + 1)),
                 };
             }
             return updated;
@@ -263,6 +264,7 @@ const RegistrationCart = () => {
                                     const {checked, sessions, validated} = selectedCourses[student_id][course_id];
                                     let endDate = new Date(course.schedule.end_date),
                                         startDate = new Date(course.schedule.start_date);
+
                                     startDate = startDate.toLocaleDateString("en-US", dateOptions);
                                     endDate = endDate.toLocaleDateString("en-US", dateOptions);
 
@@ -388,7 +390,7 @@ const RegistrationCart = () => {
                     if (courseVal.checked) {
                         const course = registered_courses[studentID]
                             .find(({course_id}) => course_id == courseID);
-                        if (courseID.indexOf("T") > -1 || true)  {
+                        if (courseID.indexOf("T") > -1 )  {
                             // {category, academic_level, sessions, form}
                             let {category, academic_level, form, new_course} = course;
                             new_course = new_course || {};

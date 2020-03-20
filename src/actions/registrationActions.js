@@ -173,22 +173,17 @@ export const submitForm = (state, id) => {
 
         }
         case "course_details": {
-            const course = formatCourse(state["Course Info"], "class");
+            const course = formatCourse(state, "class");
 
             for (const key in course) {
                 if (course.hasOwnProperty(key) && !course[key]) {
                     delete course[key];
                 }
             }
-            const updatedCourse = {
-                ...course,
-                "hourly_tuition": state.Tuition["Hourly Tuition"],
-                "total_tuition": state.Tuition["Total Tuition"],
-            };
             if (id) {
-                return patchData("course", updatedCourse, id);
+                return patchData("course", course, id);
             }
-            return postData("course", updatedCourse);
+            return postData("course", course);
 
         }
         case "tutoring": {
@@ -203,6 +198,28 @@ export const submitForm = (state, id) => {
         case "small_group": {
             return {"type": types.ADD_CLASS_REGISTRATION,
                 "payload": {...state}};
+        }
+        case "admin": {
+            const admin = {
+                "address": state["User Information"].Address,
+                "admin_type": state["User Information"]["Admin Type"].toLowerCase(),
+                "birth_date": parseDate(state["User Information"]["Date of Birth"]),
+                "city": state["User Information"].City,
+                "phone_number": state["User Information"]["Phone Number"],
+                "gender": parseGender[state["User Information"].Gender],
+                "state": state["User Information"].State,
+                "user": {
+                    "email": state["Login Details"].Email,
+                    "first_name": state["Login Details"]["First Name"],
+                    "last_name": state["Login Details"]["Last Name"],
+                    "password": state["Login Details"].Password,
+                },
+                "zipcode": state["User Information"]["Zip Code"],
+            };
+            if (id) {
+                return patchData("admin", admin, id);
+            }
+            return postData("admin", admin);
         }
         default:
             console.error(`Invalid form type ${state.form}`);
@@ -238,6 +255,16 @@ export const resetSubmitStatus = () =>
     ({"type": types.RESET_SUBMIT_STATUS,
         "payload": null});
 
+export const fetchEnrollments = () => wrapGet(
+    "/course/enrollment/",
+    [
+        types.FETCH_ENROLLMENT_STARTED,
+        types.FETCH_ENROLLMENT_SUCCESSFUL,
+        types.FETCH_ENROLLMENT_FAILED,
+    ],
+    {}
+);
+
 export const initializeRegistration = () =>
     ({"type": types.INIT_COURSE_REGISTRATION,
         "payload": ""});
@@ -255,7 +282,7 @@ export const addCourseRegistration = (form) =>
 
 export const setParentAddCourseRegistration = (parentID, form) => {
     const parentEndpoint = `/account/parent/${parentID}/`;
-    return (dispatch) => new Promise((resolve) =>{
+    return (dispatch) => new Promise((resolve) => {
         dispatch({
             "type": types.FETCH_PARENT_STARTED,
             "payload": parentID,
@@ -306,16 +333,6 @@ export const initRegistration = (tutoringRegistrations, classRegistrations, paym
 const enrollmentEndpoint = "/course/enrollment/";
 const courseEndpoint = "/course/catalog/";
 
-export const fetchEnrollments = () => wrapGet(
-    enrollmentEndpoint,
-    [
-        types.FETCH_ENROLLMENT_STARTED,
-        types.FETCH_ENROLLMENT_SUCCESSFUL,
-        types.FETCH_ENROLLMENT_FAILED,
-    ],
-    {}
-);
-
 export const fetchEnrollmentsByStudent = (user_id) => wrapGet(
     enrollmentEndpoint,
     [
@@ -333,7 +350,7 @@ export const fetchEnrollmentsByStudent = (user_id) => wrapGet(
 );
 
 export const addCourse = (course) => wrapPost(
-    "/course/catalog/",
+    courseEndpoint,
     [
         types.POST_COURSE_STARTED,
         types.POST_COURSE_SUCCESSFUL,
@@ -344,26 +361,26 @@ export const addCourse = (course) => wrapPost(
 
 export const deleteEnrollment = ({enrollment_id, course_id, student_id}) => async (dispatch) => {
     dispatch({
-        type: types.DELETE_ENROLLMENT_STARTED,
-        payload:{},
+        "type": types.DELETE_ENROLLMENT_STARTED,
+        "payload": {},
     });
     try {
         const unenrollResponse = await instance.delete(
-            `/course/enrollment/${enrollment_id}/`,
+            `${enrollmentEndpoint}${enrollment_id}/`,
         );
         dispatch({
-            type: types.DELETE_ENROLLMENT_SUCCESS,
-            payload:{
-                courseID: course_id,
-                studentID: student_id,
-                response:unenrollResponse,
+            "type": types.DELETE_ENROLLMENT_SUCCESS,
+            "payload": {
+                "courseID": course_id,
+                "studentID": student_id,
+                "response": unenrollResponse,
             },
         });
     } catch (error) {
         console.error(error);
         dispatch({
-            type: types.DELETE_ENROLLMENT_FAILED,
-            payload: error,
+            "type": types.DELETE_ENROLLMENT_FAILED,
+            "payload": error,
         });
     }
 };

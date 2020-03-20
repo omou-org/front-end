@@ -5,6 +5,7 @@ import EmailIcon from "@material-ui/icons/EmailOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
+import CalendarIcon from "@material-ui/icons/CalendarToday";
 import {ReactComponent as IDIcon} from "../../identifier.svg";
 import {ReactComponent as BirthdayIcon} from "../../birthday.svg";
 import {ReactComponent as GradeIcon} from "../../grade.svg";
@@ -18,12 +19,14 @@ import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import OutOfOffice from "./OutOfOffice";
 import InstructorAvailability from "./InstructorAvailability";
 import "./Accounts.scss";
+import Menu from "@material-ui/core/Menu";
 
 class ProfileHeading extends Component {
     constructor(props) {
         super(props);
         this.state = {
             "open": false,
+            "anchorEl": null,
         };
     }
 
@@ -230,7 +233,7 @@ class ProfileHeading extends Component {
                         item
                         xs={5}>
                         <Typography className="rowText">
-                            0
+                            ${this.props.user.balance}
                         </Typography>
                     </Grid>
                     <Grid
@@ -277,9 +280,18 @@ class ProfileHeading extends Component {
             </Grid>);
     }
 
-    handleClose = () => {
+    handleOpen = (e) => {
         this.setState({
-            "open": false,
+            open: true,
+            anchorEl: e.currentTarget,
+        });
+    };
+
+    handleClose = (e) => {
+        e.preventDefault();
+        this.setState({
+            open: false,
+            anchorEl: null,
         });
     };
 
@@ -287,43 +299,58 @@ class ProfileHeading extends Component {
         if (this.props.user.role != "receptionist") {
             return (
                 <>
-                    <Grid container align="right" item md={12}>
-                    <Grid item md={3} align= "right" className="editPadding">
-                        {
-                            this.props.user.role === "instructor" && <InstructorAvailability
-                            instructorID={this.props.user.user_id}
-                        />
-                        }
-                    </Grid>
-                    <Grid item md={1}>
-                    </Grid>
-                    <Grid item md={3} align= "right" className="editPadding">
-                        {
-                            this.props.user.role === "instructor" && <OutOfOffice
-                                instructorID={this.props.user.user_id}
-                            />
-                        }
-                    </Grid>
-                    <Grid item md={1}>
-                    </Grid>
-                    <Grid item md={3} align="right" component={Hidden} mdDown className="editPadding">
-                        <Button
-                            className="editButton"
-                            component={NavLink}
-                            to={`/registration/form/${this.props.user.role}/${this.props.user.user_id}/edit`}>
-                            <EditIcon />
-                            Edit Profile
-                        </Button>
-                    </Grid>
-                    <Grid item md={3} align="right" component={Hidden} lgUp className="editPadding">
-                        <Button
-                            className="editButton"
-                            component={NavLink}
-                            to={`/registration/form/${this.props.user.role}/${this.props.user.user_id}/edit`}>
-                            <EditIcon />
-                        </Button>
-                    </Grid>
+                    <Grid
+                        spacing={16}
+                        container
+                        align="right">
 
+                        <Grid item align= "right" className="editPadding">
+                            {
+                                this.props.user.role === "instructor" && <><Button
+                                    aria-controls="simple-menu"
+                                    aria-haspopup="true"
+                                    variant="outlined"
+                                    onClick={this.handleOpen}
+                                >
+                                    <CalendarIcon/>   Schedule Options
+                                </Button>
+                                <Menu
+                                    anchorEl={this.state.anchorEl}
+                                    keepMounted
+                                    open={this.state.open}
+                                    onClose={this.handleClose}
+                                >
+                                    <InstructorAvailability
+                                        button={false}
+                                        instructorID={this.props.user.user_id}
+                                    />
+                                    <OutOfOffice
+                                        button={false}
+                                        instructorID={this.props.user.user_id}
+                                    />
+                                </Menu>
+                                </>
+                            }
+                        </Grid>
+                        <Grid item md={1}>
+                        </Grid>
+                        <Grid item md={3} align="right" component={Hidden} mdDown className="editPadding">
+                            <Button
+                                variant="outlined"
+                                component={NavLink}
+                                to={`/registration/form/${this.props.user.role}/${this.props.user.user_id}/edit`}>
+                                <EditIcon />
+                                Edit Profile
+                            </Button>
+                        </Grid>
+                        <Grid item md={3} align="right" component={Hidden} lgUp className="editPadding">
+                            <Button
+                                variant="outlined"
+                                component={NavLink}
+                                to={`/registration/form/${this.props.user.role}/${this.props.user.user_id}/edit`}>
+                                <EditIcon />
+                            </Button>
+                        </Grid>
                     </Grid>
                 </>
             );

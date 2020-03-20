@@ -1,127 +1,147 @@
-import {connect} from "react-redux";
-import React from "react";
-import Grid from "@material-ui/core/Grid";
-import {Card, Tooltip, Typography} from "@material-ui/core";
+import React, {useCallback} from "react";
+import PropTypes from "prop-types";
+import {useHistory} from "react-router-dom";
+import {useSelector} from "react-redux";
 
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
 import Chip from "@material-ui/core/Chip";
-import {withRouter} from "react-router-dom";
+import Grid from "@material-ui/core/Grid";
+import Tooltip from "@material-ui/core/Tooltip";
+import Typography from "@material-ui/core/Typography";
+
 import "../Search.scss";
+import * as hooks from "actions/hooks";
+import {truncateStrings} from "utils";
 
+const handleLocaleDateString = (start, end) => {
+    if (start && end) {
+        const s1 = new Date(start.replace(/-/ug, "/"));
+        const s2 = new Date(end.replace(/-/ug, "/"));
+        return `${s1.toLocaleDateString()} - ${s2.toLocaleDateString()}`;
+    }
+};
 
-function CourseCards(props) {
+const CourseCards = ({course, isLoading = false}) => {
+    const history = useHistory();
+    const instructors = useSelector(({Users}) => Users.InstructorList);
+    hooks.useInstructor(course && course.instructor);
 
-    const handleLocaleDateString = (start, end) => {
-        if(start && end){
-            let s1 = new Date(start.replace(/-/g, '/'));
-            let s2 = new Date(end.replace(/-/g, '/'));
-            return `${s1.toLocaleDateString()} - ${s2.toLocaleDateString()}`
-        }
+    const goToCoursePage = useCallback((event) => {
+        event.preventDefault();
+        const courseID = course.course_id || course.id;
+        history.push(`/registration/course/${courseID}/${course.subject}`);
+    }, [course, history]);
+
+    if (!course || isLoading) {
+        return (
+            <Grid
+                item
+                xs={3}>
+                <Card style={{"height": "148px"}}>
+                    <CardContent>
+                        <Typography
+                            color="textSecondary"
+                            gutterBottom
+                            variant="h4">
+                            Loading...
+                        </Typography>
+                    </CardContent>
+                </Card>
+            </Grid>
+        );
     }
 
-    const goToCoursePage = ()=> (e)=>{
-        e.preventDefault();
-
-        let courseID = props.course.course_id ? props.course.course.id : props.course.id;
-
-        props.history.push(`/registration/course/${courseID}/${props.course.subject}`)
-    };
-
     return (
-        <Grid item xs={12} sm={3} style={{ "padding": "10px" }}
-            onClick={goToCoursePage()}>
-            <Card key={props.course.course_id}
-                className={"CourseCards"}
-                style={{ cursor: "pointer", height: "148px" }}>
+        <Grid
+            item
+            onClick={goToCoursePage}
+            sm={3}
+            style={{"padding": "10px"}}
+            xs={12}>
+            <Card
+                className="CourseCards"
+                style={{
+                    "cursor": "pointer",
+                    "height": "148px",
+                }}>
                 <Grid container>
-                    <Grid item sm={12}>
-                        <Typography align={"left"} variant={"subtitle2"}> {props.course.subject} </Typography>
+                    <Grid
+                        item
+                        sm={12}>
+                        <Typography
+                            align="left"
+                            variant="subtitle2">
+                            {course.subject}
+                        </Typography>
                     </Grid>
-                    <Grid item sm={"auto"}>
+                    <Grid
+                        item
+                        sm="auto">
                         {
-                            props.course.max_capacity - props.course.enrollment_list.length > 0 ?
-                                <Chip
+                            course.max_capacity > course.enrollment_list.length
+                                ? <Chip
+                                    color="primary"
+                                    label="Open"
                                     style={{
-                                        cursor: "pointer",
-                                        width: '9rem',
-                                        height: '15px',
-                                        color: "white",
-                                    }}
-                                    label={"Open"}
-                                    color='primary'
-                                />
-                                :
-                                <Chip
+                                        "color": "white",
+                                        "cursor": "pointer",
+                                        "height": "15px",
+                                        "width": "9rem",
+                                    }} />
+                                : <Chip
+                                    color="secondary"
+                                    label="Full"
                                     style={{
-                                        cursor: "pointer",
-                                        width: '9rem',
-                                        height: '15px',
-                                        color: "white",
-                                    }}
-                                    label={"Full"}
-                                    color='secondary'
-                                />
+                                        "color": "white",
+                                        "cursor": "pointer",
+                                        "height": "15px",
+                                        "width": "9rem",
+                                    }} />
                         }
-
                     </Grid>
-
-                    <Grid item container>
-                        <Grid container
-                            className="courseRow"
-                            direction={"row"}
-                            alignItems={'center'}>
-                            <Grid item align="left">
-                                <Typography className="courseText">
-                                   Dates: {handleLocaleDateString(props.course.start_date, props.course.end_date)}
-                                </Typography>
-                            </Grid>
+                    <Grid
+                        container
+                        item>
+                        <Grid
+                            className="courseRow">
+                            <Typography className="courseText">
+                                Dates: {
+                                    handleLocaleDateString(
+                                        course.start_date,
+                                        course.end_date
+                                    )
+                                }
+                            </Typography>
                         </Grid>
-                        <Grid container
-                            className="courseRow"
-                            direction={"row"}
-                            alignItems={'center'}>
-                            <Grid item>
-                                <Tooltip title={props.course.subject}>
-                                    <Typography className="courseText">
-                                        Name: {props.course.subject.substr(0,20)}
-                                        {props.course.subject.length > 20 ? "..." : ""}
-                                    </Typography>
-                                </Tooltip>
-                            </Grid>
-
-                        </Grid>
-                        <Grid container
-                            className="courseRow"
-                            direction={"row"}
-                            alignItems={'center'}>
-                            <Grid item>
+                        <Grid
+                            className="courseRow">
+                            <Tooltip title={course.subject}>
                                 <Typography className="courseText">
-                                    Teacher: {props.instructors[props.course.instructor].name}
+                                    Name: {truncateStrings(course.subject, 20)}
                                 </Typography>
-                            </Grid>
+                            </Tooltip>
+                        </Grid>
+                        <Grid
+                            className="courseRow">
+                            <Typography className="courseText">
+                                    Teacher: {
+                                    instructors[course.instructor]
+                                        ? instructors[course.instructor].name
+                                        : "Loading..."
+                                }
+                            </Typography>
                         </Grid>
                     </Grid>
                 </Grid>
             </Card>
         </Grid>
-    )
-}
+    );
+};
 
-CourseCards.propTypes = {};
+CourseCards.propTypes = {
+    "course": PropTypes.object.isRequired,
+    "isLoading": PropTypes.bool,
+};
 
-function mapStateToProps(state) {
-    return {
-        instructors: state.Users.InstructorList,
-        parents: state.Users.ParentList,
-        students: state.Users.StudentList,
-        courses: state.Search.courses
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {};
-}
-
-export default withRouter(connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(CourseCards));
+export default CourseCards;

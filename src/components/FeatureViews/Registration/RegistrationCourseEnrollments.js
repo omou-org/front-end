@@ -1,4 +1,5 @@
 import * as hooks from "actions/hooks";
+import {useSessionsInPeriod} from "actions/hooks";
 import React, {Fragment, useCallback, useEffect, useMemo, useState} from "react";
 import {addDashes} from "components/FeatureViews/Accounts/accountUtils";
 import {Link, NavLink} from "react-router-dom";
@@ -23,6 +24,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import IconButton from "@material-ui/core/IconButton";
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
+import * as calendarActions from "../../../actions/calendarActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Divider from "@material-ui/core/Divider";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -31,11 +33,14 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import {NoListAlert} from "../../NoListAlert";
+import {sessionArray} from "../Scheduler/SchedulerUtils";
+import {SessionPaymentStatusChip} from "../../SessionPaymentStatusChip";
+import {upcomingSession} from "../../../utils";
 
 const TableToolbar = (
     <TableHead>
         <TableRow>
-            {["Student", "Parent", "Phone", "Status", ""].map((heading) => (
+            {["Student", "Parent", "Phone", "Upcoming Status", ""].map((heading) => (
                 <TableCell
                     align="left"
                     key={heading}
@@ -50,7 +55,10 @@ const TableToolbar = (
 const RegistrationCourseEnrollments = ({courseID}) => {
     const dispatch = useDispatch();
     const api = useMemo(
-        () => bindActionCreators(registrationActions, dispatch),
+        () => ({
+            ...bindActionCreators(registrationActions, dispatch),
+            ...bindActionCreators(calendarActions, dispatch),
+        }),
         [dispatch]
     );
 
@@ -59,6 +67,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
     const parents = useSelector(({"Users": {ParentList}}) => ParentList);
     const students = useSelector(({"Users": {StudentList}}) => StudentList);
     const enrollments = useSelector(({Enrollments}) => Enrollments);
+    const sessions = useSelector(({Calendar}) => Calendar.CourseSessions);
 
     const [studentMenuAnchorEl, setStudentMenuAnchorEl] = useState(null);
     const [unenroll, setUnenroll] = useState({
@@ -91,23 +100,29 @@ const RegistrationCourseEnrollments = ({courseID}) => {
             }), {}));
     }, [course.roster]);
 
+    const sessionStatus = useSessionsInPeriod("month",0);
+
     const loadedStudents = useMemo(() =>
         course.roster.filter((studentID) => students[studentID])
     , [course.roster, students]);
+
+    const currentMonthSessions = sessionArray(sessions);
 
     // no students enrolled
     if (course.roster.length === 0) {
         return <NoListAlert list={"Enrolled Students"}/>;
     }
 
-    if (loadedStudents.length === 0) {
-        if (hooks.isLoading(studentStatus)) {
-            return <Loading />;
+    if (loadedStudents.length === 0 || !currentMonthSessions || hooks.isLoading(sessionStatus)) {
+        if (hooks.isLoading(studentStatus) || !currentMonthSessions) {
+            return <Loading small />;
         }
         if (hooks.isFail(studentStatus)) {
             return "Error loading enrollment details!";
         }
     }
+
+    const upcomingSess = upcomingSession(currentMonthSessions, courseID);
 
     const handleClick = event => {
         setStudentMenuAnchorEl(event.currentTarget);
@@ -158,9 +173,6 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                             const parent = parents[student.parent_id];
                             const enrollment =
                                 enrollments[studentID] && enrollments[studentID][courseID];
-                            const paymentStatus = enrollment &&
-                                Object.values(enrollment.session_payment_status)
-                                    .every((status) => status !== 0);
                             const notes = (enrollment && enrollment.notes) || {};
                             return (
                                 <Fragment key={studentID}>
@@ -197,15 +209,15 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                                                 enrollment
                                                     ? <div
                                                         key={studentID}
-                                                        style={{
-                                                            "padding": "5px 0",
-                                                            "borderRadius": "10px",
-                                                            "backgroundColor": paymentStatus ? "#28D52A" : "#E9515B",
-                                                            "textAlign": "center",
-                                                            "width": "7vw",
-                                                            "color": "white",
-                                                        }}>
-                                                        {paymentStatus ? "Paid" : "Unpaid"}
+                                                        style={{"width": "40px",}}>
+                                                        <SessionPaymentStatusChip
+                                                            style={{
+                                                                "width": "50px",
+                                                                "padding": "7px 0 0 10px",
+                                                                "borderRadius": "15px"
+                                                            }}
+                                                            session={upcomingSess}
+                                                            enrollment={enrollment} />
                                                       </div>
                                                     : hooks.isFail(enrollmentStatus)
                                                         ? "Error!"
@@ -301,7 +313,8 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                 <Divider />
                 <DialogContent>
                     <DialogContentText>
-                        You are about to unenroll in <b>{course.title}</b> for <b>{ unenroll.student && students[unenroll.student].name}</b>.
+                        You are about to unenroll in <b>{course.title}</b> for
+                        <b>{ unenroll.enrollment && students[unenroll.enrollment.student_id].name}</b>.
                         Performing this action will credit the remaining enrollment balance back to the parent's account balance.
                         Are you sure you want to unenroll?
                     </DialogContentText>
