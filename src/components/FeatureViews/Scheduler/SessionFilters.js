@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import IconButton from "@material-ui/core/es/IconButton";
 import FilterIcon from "@material-ui/icons/FilterList";
 import Menu from "@material-ui/core/es/Menu";
-import { withStyles } from '@material-ui/core/styles';
-import blue from "@material-ui/core/es/colors/blue";
+import {withStyles} from '@material-ui/core/styles';
 import ReactSelect from "react-select";
-import { Tooltip, Typography, MenuItem, Paper } from "@material-ui/core";
+import {MenuItem, Tooltip} from "@material-ui/core";
 
 
 const styles = {
@@ -13,26 +12,6 @@ const styles = {
         width: 230,
     },
 };
-
-const customStyles = {
-    menu: (provided, state) => ({
-        ...provided,
-        width: state.selectProps.width,
-        color: state.selectProps.menuColor,
-        padding: 20,
-    }),
-
-    control: (_, { selectProps: { width } }) => ({
-        width: width
-    }),
-
-    singleValue: (provided, state) => {
-        const opacity = state.isDisabled ? 0.5 : 1;
-        const transition = 'opacity 300ms';
-
-        return { ...provided, opacity, transition };
-    }
-}
 
 
 function SessionFilters({ onInstructorSelect, InstructorValue, InstructorOptions, CourseValue, onCourseSelect, CourseOptions, }) {
