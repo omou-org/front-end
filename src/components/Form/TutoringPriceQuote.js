@@ -46,11 +46,8 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCateg
 
     // get list of unique category objects from price rules
     const uniqueCategories = (rules) => Array.from(new Set(rules.map(rule => rule.category.id)))
-        .map(id => {
-            return {
-                ...priceRules.find(rule => rule.category.id === id).category
-            }
-        });
+        .map(id => priceRules.find(rule => rule.category.id === id).category);
+
     // get list of unique academic grades from price rules
     const uniqueAcademicGrades = (rules, categoryID) => {
         let filteredCategoryRules = rules.filter( rule => rule.category.id === categoryID);
