@@ -1,9 +1,9 @@
 import * as authActions from "../../actions/authActions.js";
-import {REQUEST_STARTED} from "../../actions/apiActions";
-import {bindActionCreators} from "redux";
-import {useDispatch, useSelector} from "react-redux";
-import {Redirect, useHistory} from "react-router-dom";
-import React, {useCallback, useMemo, useState} from "react";
+import { REQUEST_STARTED } from "../../actions/apiActions";
+import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Redirect, useHistory } from "react-router-dom";
+import React, { useCallback, useMemo, useState } from "react";
 // material UI Imports
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -16,7 +16,7 @@ import Typography from "@material-ui/core/Typography";
 import "./LoginPage.scss";
 
 const LoginPage = () => {
-    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
+    const requestStatus = useSelector(({ RequestStatus }) => RequestStatus);
     const dispatch = useDispatch();
 
     const actions = useMemo(() => bindActionCreators(authActions, dispatch), [dispatch]);
@@ -29,7 +29,7 @@ const LoginPage = () => {
     const [hasGoneBack, setHasGoneBack] = useState(false);
     const history = useHistory();
 
-    const handleTextInput = useCallback((setter, validator) => ({target}) => {
+    const handleTextInput = useCallback((setter, validator) => ({ target }) => {
         setter(target.value);
         actions.resetAttemptStatus();
         validator(!target.value);
@@ -70,7 +70,7 @@ const LoginPage = () => {
             if (history.length > 2) {
                 history.goBack();
             } else {
-                 return <Redirect to="/" />;
+                return <Redirect to="/" />;
             }
             setHasGoneBack(true);
         }

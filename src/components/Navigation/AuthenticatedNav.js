@@ -30,15 +30,15 @@ const AuthenticatedNav = ({toggleDrawer}) => {
         toggleDrawer(!mobileOpen);
         setMobileOpen((open) => !open);
 
-    }, []);
+    }, [mobileOpen, toggleDrawer]);
 
     const handleLogout = useCallback(() => {
         dispatch(logout());
         history.push("/login");
     }, [dispatch, history]);
 
-    const handleSearch = (searchState) => {
-        setMobileSearching(searchState);
+    const handleMobileSearch = (searchQuery) => {
+        setMobileSearching(searchQuery);
     };
 
     if (!authToken) {
@@ -52,7 +52,7 @@ const AuthenticatedNav = ({toggleDrawer}) => {
     return (
         <AppBar
             className="OmouBar"
-            color="default"
+            // color="initial"
             position="sticky">
             <Toolbar>
                 {
@@ -77,7 +77,7 @@ const AuthenticatedNav = ({toggleDrawer}) => {
                         }} />
                     </>
                 }
-                <Search onMobile={handleSearch} />
+                <Search onMobileType={handleMobileSearch} />
                 {
                     !isMobileSearching && <LogoutIcon
                         className="logout-icon"

@@ -8,7 +8,6 @@
     padding: 3%;
   }
   .toggleView {
-    position: absolute;
     right: 10%;
   }
 
@@ -25,16 +24,16 @@
   }
 
   .toggleView {
-    .btn{
+    .btn {
       color: $lightPrimaryFontColor;
       border-radius: 5px;
       box-sizing: border-box;
       border: solid 2px $secondaryColor !important;
       white-space: nowrap;
-      right:-20%;
-      margin-left:5px;
+      right: -20%;
+      margin-left: 5px;
 
-      &.active{
+      &.active {
         border: solid 2px $primaryColor !important;
         color: $primaryColor;
       }
@@ -48,14 +47,60 @@
       cursor: pointer;
     }
 
+    .editPadding{
+      margin-right:0%;
+    }
+
     .editButton {
       color: $lightPrimaryFontColor;
       border-radius: 5px;
       box-sizing: border-box;
       border: solid 2px $secondaryColor !important;
       white-space: nowrap;
-      right: 10%;
     }
+
+    .accountsCell{
+      width:220px;
+      overflow-wrap: break-word;
+    }
+    .accountsCellID{
+      width:100px;
+      overflow-wrap: break-word;
+    }
+  }
+}
+
+.oooDialog {
+  font-family: Roboto Slab;
+  .title {
+    font-weight: bold;
+    font-size: 36px;
+    line-height: 47px;
+  }
+  .instructor {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+  }
+  .button {
+    font-weight: normal;
+    font-size: 12px;
+  }
+  .select {
+    font-size: 14px;
+    line-height: 16px;
+    padding: 5% 0 5% 0;
+  }
+  .checkbox {
+    margin-top: 30px;
+  }
+  .checkboxText {
+    margin-top: 45px;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 16px;
   }
 }
 
@@ -93,8 +138,8 @@
       .rowText {
         word-break: break-word;
       }
-      .iconScaling{
-        font-size:24px;
+      .iconScaling {
+        font-size: 24px;
       }
     }
     .emailPadding {
@@ -108,14 +153,13 @@
 
     .editButton {
       color: $darkenPrimaryFontColor;
-      border-radius: 0px;
       box-sizing: border-box;
       border: solid 2px $secondaryColor !important;
       white-space: nowrap;
       position: relative;
-      font-size: .9em !important;
-      > *{
-        font-size: .9em !important;
+      font-size: 0.9em !important;
+      > * {
+        font-size: 0.9em !important;
       }
     }
   }
@@ -129,18 +173,17 @@
     display: inline-flex;
     vertical-align: middle;
   }
-  .notification{
-      background-color:orange;
-      position: absolute;
-      top:10px;
-      left: 2.9em;
-    @include respond-to(medium-screens){
-     left : 1.4em 
+  .notification {
+    background-color: orange;
+    position: absolute;
+    top: 10px;
+    left: 2.9em;
+    @include respond-to(medium-screens) {
+      left: 1.4em;
     }
-    @include respond-to(handhelds){
-      left: 1.4em
+    @include respond-to(handhelds) {
+      left: 1.4em;
     }
-    
   }
   .left-align {
     margin-left: -40%;

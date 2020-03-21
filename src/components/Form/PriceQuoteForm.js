@@ -1,8 +1,8 @@
 /* eslint-disable max-lines-per-function */
 // React Imports
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {useHistory} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
 import PropTypes from "prop-types";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -18,13 +18,14 @@ import Add from "@material-ui/icons/CheckCircle";
 // Local Component Imports
 import "./Form.scss";
 import TextField from "@material-ui/core/es/TextField/TextField";
-import { bindActionCreators } from "redux";
+import {bindActionCreators} from "redux";
 import * as apiActions from "../../actions/apiActions";
-import { instance } from "../../actions/apiActions";
+import {instance} from "../../actions/apiActions";
 import * as userActions from "../../actions/userActions";
 import * as registrationActions from "../../actions/registrationActions";
-import { dayOfWeek, weeklySessionsParser } from "./FormUtils";
-import { usePrevious } from "../../actions/hooks";
+import {dayOfWeek, weeklySessionsParser} from "./FormUtils";
+import {usePrevious} from "../../actions/hooks";
+import {isExistingTutoring} from "../../utils";
 
 const CASH = "cash",
     CHECK = "check",
@@ -43,6 +44,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
     );
     const history = useHistory();
     const isAdmin = useSelector(({ auth }) => auth.isAdmin);
+    const currentPayingParent = useSelector((({ Registration }) => Registration.CurrentParent));
     const [priceQuote, setPriceQuote] = useState({});
     const prevPriceQuote = usePrevious(priceQuote);
     const [discounts, setDiscounts] = useState([]);
@@ -50,6 +52,8 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
     const [priceAdjustment, setPriceAdjustment] = useState(0);
     const prevPriceAdjustment = usePrevious(priceAdjustment);
     const [paymentMethod, setPaymentMethod] = useState(null);
+    const [tuitionQuote, setTuitionQuote] = useState(null);
+
     const handlePayMethodChange = useCallback((method) => () => {
         setPaymentMethod(method);
     }, []);
@@ -69,15 +73,22 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
             stateUpdated(priceAdjustment, prevPriceAdjustment)
         ) && priceAdjustment !== "") {
             const requestedQuote = {
-                "payment_method": paymentMethod,
+                "method": paymentMethod,
                 "classes": courses,
                 "tutoring": cleanTutoring.map((tutoring) => {
                     delete tutoring.new_course;
-                    return tutoring;
+                    return {
+                        ...tutoring,
+                        "duration": 1
+                    };
                 }),
                 "disabled_discounts": discounts.filter((discount) => !discount.enable).map(({ id }) => id),
                 "price_adjustment": Number(priceAdjustment),
             };
+
+            if(currentPayingParent.balance > 0){
+                requestedQuote["parent"] = currentPayingParent.user.id;
+            }
             // make price quote request
             instance.post("/pricing/quote/", requestedQuote).then((quoteResponse) => {
                 const responseDiscounts = JSON.stringify(quoteResponse.data.discounts);
@@ -91,8 +102,10 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                     const ResponseDiscountIDs = ResponseDiscounts.map((discount) => discount.id);
                     const discountNotInResponseButInState = discounts.filter((discount) => !ResponseDiscountIDs.includes(discount.id));
                     ResponseDiscounts = ResponseDiscounts.concat(discountNotInResponseButInState);
+
                     setDiscounts(ResponseDiscounts);
                 }
+
                 delete quoteResponse.data.discounts;
                 if (quoteResponse.data.price_adjustment !== priceAdjustment) {
                     setPriceAdjustment(quoteResponse.data.price_adjustment);
@@ -102,6 +115,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                 const stateQuote = JSON.stringify(priceQuote);
                 if (responseQuote !== stateQuote) {
                     setPriceQuote(quoteResponse.data);
+                    setTuitionQuote(requestedQuote);
                 }
             });
         }
@@ -128,33 +142,28 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
             const endDate = tutoring.new_course.schedule.end_date.substring(0, 10);
             const tutoringCourse = {
                 "subject": tutoring.new_course.title,
-                "day_of_week": dayOfWeek[tutoring.new_course.day_of_week],
+                "day_of_week": dayOfWeek[tutoring.new_course.day_of_week] || tutoring.new_course.schedule.days,
                 "start_time": tutoring.new_course.schedule.start_time,
                 "end_time": tutoring.new_course.schedule.end_time,
                 "start_date": startDate,
                 "end_date": endDate,
                 "max_capacity": 1,
-                "course_category": tutoring.category_id,
-                "academic_level": tutoring.academic_level,
-                "instructor": tutoring.new_course.instructor,
+                "course_category": tutoring.category_id || tutoring.new_course.category,
+                "academic_level": tutoring.academic_level || tutoring.new_course.academic_level,
+                "instructor": tutoring.new_course.instructor || tutoring.new_course.instructor_id,
                 "course_type": "tutoring",
                 "description": tutoring.new_course.description,
                 "is_confirmed": tutoring.new_course.is_confirmed,
             };
             tutoringRegistrations.push({
                 "newTutoringCourse": tutoringCourse,
-                "sessions": weeklySessionsParser(startDate, endDate),
+                "sessions": isExistingTutoring(tutoring.courseID) ? tutoring.sessions: weeklySessionsParser(startDate, endDate),
                 "student": tutoring.student_id,
+                "courseID": tutoring.courseID,
             });
         });
 
-        const paymentInfo = {
-            "base_amount": priceQuote.total,
-            "price_adjustment": priceAdjustment,
-            "method": paymentMethod,
-            "disabled_discounts": discounts.filter((discount) => !discount.enable),
-        };
-        api.initRegistration(tutoringRegistrations, courseRegistrations, paymentInfo);
+        api.initRegistration(tutoringRegistrations, courseRegistrations, tuitionQuote);
         history.push("/registration/receipt/");
     };
 
@@ -176,7 +185,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
             <Grid
                 item
                 xs={3}>
-                <FormControl>
+                <FormControl required>
                     <FormLabel>Select Payment Method</FormLabel>
                     <RadioGroup>
                         <FormControlLabel
@@ -243,23 +252,22 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                                 </Grid>
                             </Grid>
                             {
-                                discounts.map((discount, i) => (<Grid
+                                discounts
+                                    .map((discount, i) => (<Grid
                                     item
                                     key={i}>
                                     <Grid
                                         container
+                                        style={{height:"30px"}}
                                         direction="row"
                                         justify="flex-end">
                                         <Grid
                                             item
-                                            xs={1} />
-                                        <Grid
-                                            item
-                                            xs={3}>
+                                            xs={5}>
                                             <Typography
                                                 align="right"
                                                 className={`price-label
-                                                            ${discount.enable && "discount"}`}>
+                                                            ${discount.enable && " discount"}`}>
                                                 {
                                                     discount.enable
                                                         ? <Remove
@@ -279,12 +287,33 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                                                 align="right"
                                                 className={`discount-amount
                                                             ${discount.enable && "enable"}`}>
-                                                - {discount.amount}
+                                                - ${discount.amount}
                                             </Typography>
                                         </Grid>
                                     </Grid>
                                 </Grid>))
                             }
+                            <Grid
+                                container
+                                direction="row"
+                                justify="flex-end">
+                                <Grid
+                                    item
+                                    xs={4}>
+                                    <Typography
+                                        align="right"
+                                        className="price-label">
+                                        Applied Parent Account Balance
+                                    </Typography>
+                                </Grid>
+                                <Grid
+                                    item
+                                    xs={2}>
+                                    <Typography align="right">
+                                        {priceQuote.account_balance > 0 && "- $"} {priceQuote.account_balance}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
                             <Grid item>
                                 {/* Manual Price Adjustment for Admins */}
                                 {

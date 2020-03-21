@@ -27,10 +27,10 @@ import "./registration.scss";
 import {Link, Redirect, useRouteMatch} from "react-router-dom";
 import {stringToColor} from "components/FeatureViews/Accounts/accountUtils";
 import Loading from "../../Loading";
-import {DayConverter} from "../Accounts/TabComponents/CourseSessionStatus";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel"
-import {courseDateFormat} from "../../../utils";
+import {capitalizeString, courseDateFormat, DayConverter} from "../../../utils";
+import {weeklySessionsParser} from "../../Form/FormUtils";
 
 const formatDate = (date) => {
     if (!date) {
@@ -89,7 +89,7 @@ const RegistrationCourse = () => {
     // either doesn't exist or only has notes defined
     if (!course || Object.keys(course).length <= 1) {
         if (hooks.isLoading(courseStatus)) {
-            return <Loading />;
+            return <Loading paper />;
         }
 
         if (hooks.isFail(courseStatus)) {
@@ -104,7 +104,7 @@ const RegistrationCourse = () => {
     const instructor = instructors[course && course.instructor_id];
 
     const {start_date, end_date, start_time, end_time, days} = courseDateFormat(course);
-    console.log(end_date, course.schedule.end_date)
+
     return (
         <Grid
             className="registrationCourse"
@@ -159,7 +159,7 @@ const RegistrationCourse = () => {
                                 "marginLeft": "5px",
                                 "marginTop": "10px",
                             }}>
-                            {start_date} - {end_date}
+                            {start_date} - {end_date} ({weeklySessionsParser(start_date, end_date)} sessions)
                         </Typography>
                     </div>
                     <div className="info-section">
@@ -200,7 +200,7 @@ const RegistrationCourse = () => {
                             <Typography
                                 align="left"
                                 className="text">
-                                {DayConverter[new Date(start_date).getDay()]}
+                                {capitalizeString(DayConverter[new Date(start_date).getDay()])}
                             </Typography>
                             <Typography
                                 align="left"

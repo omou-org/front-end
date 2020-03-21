@@ -12,7 +12,7 @@ const theme = createMuiTheme({
         },
     },
     typography: {
-        useNextVariants: true
+
     },
     overrides: {
         MuiCssBaseline:{
@@ -27,6 +27,13 @@ const theme = createMuiTheme({
                 color: 'black;', // Some CSS
             },
         },
+        MuiBadge: {
+          colorPrimary:{
+              color: 'white',
+              marginRight: '6px',
+              marginTop: '4px'
+          }
+        },
         paper:{
             background:'#FAFAFA'
         },
@@ -35,15 +42,26 @@ const theme = createMuiTheme({
 
           },
         },
+
+        // New way of writing MuiTab 
         MuiTab: {
-            root: {
-                border:"2px solid #DBD7D7",
-            },
-            "selected":{
-                border:"3px solid #43B5D9",
-                backgroundColor:"#EBFAFF",
-            },
-        },
+            "root": {
+              "&$selected": {
+                "border": "3px solid #43B5D9",
+                "backgroundColor": "#EBFAFF"
+              }
+            }
+          },
+        //   Old way
+        // MuiTab: {
+        //     root: {
+        //         border:"2px solid #DBD7D7",
+        //     },
+        //     "selected":{
+        //         border:"3px solid #43B5D9",
+        //         backgroundColor:"#EBFAFF",
+        //     },
+        // },
         MuiStepIcon:{
             text:{
                 fill:"white",

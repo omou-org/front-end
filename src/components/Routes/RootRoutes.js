@@ -1,12 +1,12 @@
 // React Imports
 import {Redirect, Route, Switch} from "react-router-dom";
-import {connect} from "react-redux";
+import {useDispatch} from "react-redux";
 import {bindActionCreators} from "redux";
-import * as registrationActions from "../../actions/registrationActions";
-import React from "react";
+import {resetSubmitStatus} from "../../actions/registrationActions";
+import React, {useMemo} from "react";
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
-import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/CourseSessionStatus";
+import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/EnrollmentView";
 // import Dashboard from "../FeatureViews/Dashboard/Dashboard";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
@@ -25,8 +25,10 @@ import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
 import RegistrationReceipt from "../FeatureViews/Registration/RegistrationReceipt";
 
 
-function rootRoutes(props) {
-    props.registrationActions.resetSubmitStatus();
+export const RootRoutes = (props) => {
+    const dispatch = useDispatch();
+    dispatch(resetSubmitStatus());
+
     return (
         <Switch>
             <Route
@@ -44,8 +46,9 @@ function rootRoutes(props) {
                 path="/registration"
                 render={(passedProps) => <Registration {...passedProps} />} />
             {/* Scheduler Routes */}
-             <ProtectedRoute
-                exact path="/scheduler"
+            <ProtectedRoute
+                exact
+                path="/scheduler"
                 render={(passedProps) => <Scheduler {...passedProps} />} />
             <Route
                 path="/scheduler/view-session/:course_id/:session_id/:instructor_id"
@@ -55,13 +58,13 @@ function rootRoutes(props) {
                 path="/search"
                 render={(passedProps) => <SearchResults {...passedProps} />} />
 
-            {/*<ProtectedRoute*/}
+            {/* <ProtectedRoute*/}
             {/*    path='/scheduler/resource'*/}
             {/*    render={(passedProps) => <ResourceView {...passedProps} />} /> */}
 
             <ProtectedRoute
                 exact
-                path='/noresults'
+                path="/noresults"
                 render={(passedProps) => <NoResultsPage {...passedProps} />} />
 
             {/* Accounts */}
@@ -72,7 +75,7 @@ function rootRoutes(props) {
             <ProtectedRoute
                 exact
                 path="/accounts/parent/payment/:parentID/:paymentID"
-                render={(passedProps) => <RegistrationReceipt {...passedProps} />}/>
+                render={(passedProps) => <RegistrationReceipt {...passedProps} />} />
             <ProtectedRoute
                 exact
                 path="/accounts"
@@ -80,7 +83,7 @@ function rootRoutes(props) {
             <ProtectedRoute
                 exact
                 path="/accounts/:accountType/:accountID/:courseID"
-                render={(passedProps) => <CourseSessionStatus {...passedProps} />}/>
+                render={(passedProps) => <CourseSessionStatus {...passedProps} />} />
 
             {/* Registration Routes */}
             <ProtectedRoute
@@ -91,32 +94,21 @@ function rootRoutes(props) {
                 render={(passedProps) => <RegistrationCourse {...passedProps} />} />
             <ProtectedRoute
                 path="/registration/cart/"
-                render={(passedProps) => <RegistrationCart {...passedProps}/>}
-            />
+                render={(passedProps) => <RegistrationCart {...passedProps} />} />
             <ProtectedRoute
                 path="/registration/receipt/:paymentID?"
-                render={(passedProps) => <RegistrationReceipt {...passedProps}/> }
-            />
+                render={(passedProps) => <RegistrationReceipt {...passedProps} />} />
 
             {/* Admin Routes */}
             <AdminRoute
                 exact
                 path="/adminportal/:view?/:type?/:id?/:edit?"
-                render={(passedProps) => <AdminPortal/>}/>
+                render={(passedProps) => <AdminPortal {...passedProps} />} />
 
-            <Route path="/PageNotFound" component={ErrorNotFoundPage}/>
-            <Redirect to="/PageNotFound"/>
+            <Route
+                component={ErrorNotFoundPage}
+                path="/PageNotFound" />
+            <Redirect to="/PageNotFound" />
         </Switch>
     );
-}
-
-const mapStateToProps = (state) => ({});
-
-const mapDispatchToProps = (dispatch) => ({
-    registrationActions: bindActionCreators(registrationActions, dispatch),
-});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(rootRoutes);
+};

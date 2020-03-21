@@ -1,14 +1,14 @@
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
 import * as userActions from "../../../actions/userActions";
 import * as apiActions from "../../../actions/apiActions";
-import { GET } from "../../../actions/actionTypes";
-import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
+import {GET} from "../../../actions/actionTypes";
+import React, {Component} from "react";
+import {Redirect} from "react-router-dom";
 
-import { stringToColor } from "./accountUtils";
+import {stringToColor} from "./accountUtils";
 import Grid from "@material-ui/core/Grid";
-import { Paper, Typography } from "@material-ui/core";
+import {Paper, Typography} from "@material-ui/core";
 import "./Accounts.scss";
 
 import BackButton from "../../BackButton";
@@ -32,6 +32,7 @@ import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import ContactIcon from "@material-ui/icons/ContactPhoneOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import Loading from "../../Loading";
+import Badge from "@material-ui/core/Badge";
 
 const userTabs = {
     "instructor": [
@@ -58,12 +59,12 @@ const userTabs = {
     ],
     "student": [
         {
-            "tab_heading": "Current Sessions",
+            "tab_heading": "Current Course(s)",
             "tab_id": 3,
             "icon": <CurrentSessionsIcon className="TabIcon" />,
         },
         {
-            "tab_heading": "Past Sessions",
+            "tab_heading": "Past Course(s)",
             "tab_id": 4,
             "icon": <PastSessionsIcon className="TabIcon" />,
         },
@@ -85,11 +86,11 @@ const userTabs = {
             "tab_id": 8,
             "icon": <CurrentSessionsIcon className="TabIcon" />,
         },
-        {
-            "tab_heading": "Pay Courses",
-            "tab_id": 9,
-            "icon": <CurrentSessionsIcon className="TabIcon" />,
-        },
+        // {
+        //     "tab_heading": "Pay Courses",
+        //     "tab_id": 9,
+        //     "icon": <CurrentSessionsIcon className="TabIcon" />,
+        // },
         {
             "tab_heading": "Payment History",
             "tab_id": 5,
@@ -161,7 +162,7 @@ class UserProfile extends Component {
 
         // if looking at new profile, reset tab to the first one
         if (currAccType !== prevAccType || currAccID !== prevAccID) {
-            const {accountType, accountID} = this.props.computedMatch.params;
+            const { accountType, accountID } = this.props.computedMatch.params;
             this.props.userActions.fetchAccountNotes(accountID, accountType);
             let user;
             switch (accountType) {
@@ -206,14 +207,14 @@ class UserProfile extends Component {
                 user = null;
         }
         return user;
-    }
+    };
 
     getRequestStatus = () => {
         const { accountType, accountID } = this.props.computedMatch.params;
         return accountType === "receptionist"
             ? 200
             : this.props.requestStatus[accountType][GET][accountID];
-    }
+    };
 
     handleChange(e, newTabIndex) {
         e.preventDefault();
@@ -229,8 +230,17 @@ class UserProfile extends Component {
     renderNoteIcon() {
         if (this.getUser() && this.getUser().role != "receptionist") {
             if (this.hasImportantNotes()) {
+                const numImportantNotes = Object.values(this.getUser().notes)
+                    .reduce((total, {important}) => important ? total + 1: total, 0);
+
                 userTabs[this.getUser().role].find(tab => tab.tab_id === 7).icon =
-                    <><Avatar style={{ width: 10, height: 10 }} className="notification" /><NoteIcon className="TabIcon" /></>
+                    <Badge
+                        color="primary"
+                        badgeContent={numImportantNotes}
+                    >
+                        <NoteIcon className="TabIcon" />
+                    </Badge>
+
             }
             else {
                 userTabs[this.getUser().role].filter(tab => tab.tab_id === 7)[0].icon =
@@ -240,10 +250,10 @@ class UserProfile extends Component {
     }
 
     render() {
-        this.renderNoteIcon();
+        // this.renderNoteIcon();
         const status = this.getRequestStatus();
         if (!status || status === apiActions.REQUEST_STARTED) {
-            return <Loading/>
+            return <Loading />
         }
 
         const user = this.getUser();

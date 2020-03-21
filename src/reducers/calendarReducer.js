@@ -1,6 +1,7 @@
 import initialState from './initialState';
 import * as actions from "../actions/actionTypes"
 import {REQUEST_ALL} from "../actions/apiActions";
+import {setHours} from 'date-fns';
 
 export default function Calendar(state = initialState.CalendarData, { payload, type, }) {
     let newState = state;
@@ -45,10 +46,8 @@ export default function Calendar(state = initialState.CalendarData, { payload, t
                 CourseSessions: {},
             };
         case actions.GET_SESSIONS_SUCCESS:
-            // console.log("Succeeded", payload)
             return getSessions(state, payload);
         case actions.GET_SESSIONS_FAILED:
-            // console.log("failed to get sessions", payload);
             return newState;
         default:
             return newState;

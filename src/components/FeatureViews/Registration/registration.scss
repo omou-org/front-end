@@ -90,6 +90,7 @@
 .TabIcon {
   display: inline-flex;
   vertical-align: middle;
+  margin-right: 5px;
 }
 
 .course-categories {
@@ -426,7 +427,7 @@
 .course-heading {
   margin-top:10px;
   .icon {
-    color: $lightPrimaryFontColor
+    color: $lightPrimaryFontColor;
   }
 
   .date {
@@ -632,7 +633,7 @@
 .select-parent-search-wrapper {
   &.active {
     animation-name: expandHeight;
-    animation-duration: 1s;
+    animation-duration: 0.2s;
     height: 150px;
   }
 }
@@ -669,6 +670,11 @@
 .registration-cart {
   &.paper{
     padding:$paperPadding;
+  }
+
+  .cart-header {
+    color: white;
+    font-weight: 500;
   }
 }
 
@@ -718,4 +724,17 @@
 .student-cart-wrapper{
   margin-top: 20px;
   margin-bottom: 40px;
+}
+
+@keyframes confirmationAnimation {
+  from {color: $lightPrimaryFontColor}
+  to {color: $goodStatusColor;}
+}
+
+.course-icon{
+  color:$lightPrimaryFontColor;
+  &.confirmed{
+    animation-name:confirmationAnimation;
+    animation-duration: 0.25s;
+  }
 }

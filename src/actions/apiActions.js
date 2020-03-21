@@ -3,6 +3,7 @@ import * as types from "./actionTypes";
 import axios from "axios";
 import {typeToPostActions} from "./rootActions";
 import {academicLevelParse} from "../reducers/registrationReducer";
+import {dateFormat, timeFormat} from "../utils";
 
 export const instance = axios.create({
     "baseURL": process.env.REACT_APP_DOMAIN,
@@ -33,9 +34,14 @@ export const wrapGet = (endpoint, [startType, successType, failType], {id, confi
             const response = await instance.get(requestURL, config || {});
             // successful request
             newAction(successType, response);
-        } catch ({response}) {
-            // failed request
-            newAction(failType, response);
+        } catch (error) {
+            if (error.response) {
+                // failed request
+                newAction(failType, error.response);
+            } else {
+                // coding error
+                console.error(error);
+            }
         }
     };
 
@@ -57,14 +63,19 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
             const response = await instance.post(endpoint, data);
             // successful request
             newAction(successType, response);
-        } catch ({response}) {
-            // failed request
-            newAction(failType, response);
+        } catch (error) {
+            if (error.response) {
+                // failed request
+                newAction(failType, error.response);
+            } else {
+                // coding error
+                console.error(error);
+            }
         }
     };
 
 export const wrapPatch = (endpoint, [startType, successType, failType], {id, data, config}) =>
-    async (dispatch, getState) => {
+    async (dispatch) => {
         // creates a new action based on the response given
         const newAction = (type, response) => {
             dispatch({
@@ -135,7 +146,7 @@ export const submitNewSmallGroup = (form) => {
         });
         resolve();
     }).then(() => {
-        const newCourse = formatCourse(form["Group Details"], "small_group");
+        const newCourse = formatCourse(form, "small_group");
         instance.request({
             "data": newCourse,
             "method": "post",
@@ -165,42 +176,40 @@ export const durationParser = {
 };
 
 export const formatCourse = (formCourse, type) => {
+    const courseInfo = formCourse["Course Info"] || formCourse["Group Details"];
+    const tuitionInfo = formCourse["Tuition"] || formCourse["Group Details"];
 
     const dayOfWeek = () => {
         switch (startDate.getDay()) {
             case 0:
-                return "Sun";
+                return "sunday";
             case 1:
-                return "Mon";
+                return "monday";
             case 2:
-                return "Tue";
+                return "tuesday";
             case 3:
-                return "Wed";
+                return "wednesday";
             case 4:
-                return "Thu";
+                return "thursday";
             case 5:
-                return "Fri";
+                return "friday";
             case 6:
-                return "Sat";
+                return "saturday";
         }
     };
-    let startDate = new Date(formCourse["Start Date"]);
+
+    let startDate = new Date(courseInfo["Start Date"]);
     const day = dayOfWeek();
     let endDate = new Date(startDate);
     // 7 days * (number of sessions - 1) = because you can't count the first one
-    const numberOfSessions = formCourse["Number of Weekly Sessions"] - 1;
+    const numberOfSessions = tuitionInfo["# of Weekly Sessions"];
 
-    endDate = new Date(endDate.setDate(startDate.getDate() + 7 * numberOfSessions));
+    endDate = new Date(endDate.setDate(startDate.getDate() + 7 * (numberOfSessions - 1)));
 
-    const dateFormat = {
-        "year": "numeric",
-        "month": "2-digit",
-        "day": "2-digit",
-    };
     startDate = startDate.toLocaleString("sv-SE", dateFormat);
     endDate = endDate.toLocaleString("sv-SE", dateFormat);
 
-    const startString = formCourse["Start Time"];
+    const startString = courseInfo["Start Time"];
     let startTime = new Date(startString);
     let endTime = new Date(startString);
     const duration = {
@@ -210,29 +219,28 @@ export const formatCourse = (formCourse, type) => {
         "2 Hours": 2,
     };
 
-    endTime = new Date(endTime.setTime(endTime.getTime() + duration[formCourse.Duration] * 60 * 60 * 1000));
-    const timeFormat = {
-        "hour12": false,
-        "hour": "2-digit",
-        "minute": "2-digit",
-    };
+    endTime = new Date(endTime.setTime(endTime.getTime() + duration[tuitionInfo.Duration] * 60 * 60 * 1000));
+
     endTime = endTime.toLocaleString("eng-US", timeFormat);
     startTime = startTime.toLocaleString("eng-US", timeFormat);
 
     return {
-        "subject": formCourse["Course Name"],
+        "subject": courseInfo["Course Name"],
         "course_type": type.toLowerCase(),
-        "description": formCourse.Description,
-        "instructor": formCourse.Instructor.value,
+        "description": courseInfo.Description,
+        "instructor": courseInfo.Instructor.value,
         "day_of_week": day,
         "start_date": startDate,
         "end_date": endDate,
         "start_time": startTime,
         "end_time": endTime,
-        "max_capacity": formCourse.Capacity,
-        "course_category": formCourse.Category.value,
-        "academic_level": academicLevelParse[formCourse["Grade Level"]],
-        "is_confirmed": formCourse["Did instructor confirm?"] === "Yes, Instructor Confirm",
+        "max_capacity": courseInfo.Capacity,
+        "is_confirmed": courseInfo["Did instructor confirm?"] === "Yes, Instructor Confirm",
+        "sessions": numberOfSessions,
+        "course_category": tuitionInfo.Category.value,
+        "academic_level": academicLevelParse[tuitionInfo["Grade Level"]],
+        "hourly_tuition": tuitionInfo["Hourly Tuition"],
+        "total_tuition": tuitionInfo["Total Tuition"],
     };
 };
 

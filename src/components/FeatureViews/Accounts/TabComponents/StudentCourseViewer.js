@@ -9,9 +9,9 @@ import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import {NoListAlert} from "../../../NoListAlert";
-import {courseDateFormat} from "../../../../utils";
+import {courseDateFormat, dateTimeToDate} from "utils";
 
-const today = new Date();
+const today = dateTimeToDate(new Date());
 
 const paymentStatus = (numPaidCourses) => {
     if (numPaidCourses > 3) {
@@ -37,13 +37,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
     const coursePaymentStatusList = useMemo(() =>
         enrollments[studentID] ? Object.entries(enrollments[studentID])
             .map(([courseID, enrollment]) => {
-                let sessionCount = 0;
-                enrollment.payment_list.forEach(payment => {
-                    payment.registrations.forEach(registration => {
-                        sessionCount += registration.num_sessions;
-                    });
-                });
-                return { course: courseID, sessions: sessionCount }
+                return { course: courseID, sessions: enrollment.sessions_left }
             }) : [], [enrollments, studentID]);
     let coursePaymentStatus = {};
     coursePaymentStatusList.forEach(({ course, sessions }) => coursePaymentStatus[course] = sessions);
@@ -53,16 +47,11 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
             return 0;
         }
 
-        return Object.values(
-            enrollments[studentID][courseID].session_payment_status
-        ).reduce(
-            (numPaid, status) =>
-                status === 1 ? numPaid + 1 : numPaid, 0
-        );
+        return enrollments[studentID][courseID].sessions_left || 0;
     }, [enrollments, studentID]);
 
     const filterCourseByDate = useCallback((endDate) => {
-        const inputEndDate = new Date(endDate);
+        const inputEndDate = dateTimeToDate(new Date(endDate));
         // see if course is current or not
         // and match it appropriately with the passed filter
         return current === (inputEndDate >= today);
@@ -75,7 +64,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
 
     if (!enrollments[studentID] && !hooks.isSuccessful(enrollmentStatus)) {
         if (hooks.isLoading(enrollmentStatus, courseStatus)) {
-            return <Loading />;
+            return <Loading small loadingText="LOADING COURSES"/>;
         }
 
         if (hooks.isFail(enrollmentStatus, courseStatus)) {
@@ -97,7 +86,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
                         <Typography
                             align="left"
                             className="table-header">
-                            Session
+                            Course
                         </Typography>
                     </Grid>
                     <Grid
@@ -141,12 +130,13 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
                     container
                     spacing={8}>
                     {displayedCourses.length !== 0
-                        ? displayedCourses.map((courseID) => {
+                        ? displayedCourses
+                            .map((courseID) => {
                             const course = courses[courseID];
                             if (!course) {
                                 return "Loading...";
                             }
-                            const { days, start_date, end_date, start_time, end_time} = courseDateFormat(course);
+                            const { days, start_date, end_date, start_time, end_time } = courseDateFormat(course);
                             return (
                                 <Grid
                                     className="accounts-table-row"
@@ -182,7 +172,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
                                                 <Typography
                                                     align="left"
                                                     className="accounts-table-text">
-                                                    {days}
+                                                    {days.charAt(0).toUpperCase() + days.slice(1)}
                                                 </Typography>
                                             </Grid>
                                             <Grid

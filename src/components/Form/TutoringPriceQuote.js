@@ -4,7 +4,6 @@ import {useDispatch, useSelector} from "react-redux";
 import PropTypes from "prop-types";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/es/Typography/Typography";
 // Local Component Imports
 import "./Form.scss"
@@ -17,9 +16,9 @@ import {GET} from "../../actions/actionTypes";
 import {durationParser, REQUEST_ALL} from "../../actions/apiActions";
 import {academicLevelParse} from "../../reducers/registrationReducer";
 import InputLabel from "@material-ui/core/InputLabel";
+import {OutlinedSelect} from "../FeatureViews/Scheduler/SchedulerUtils";
 
-
-const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
+const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCategory}) => {
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -80,13 +79,17 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
     useEffect(()=>{
         if(priceRules && priceRules.length > 0){
             setCategoryList(uniqueCategories(priceRules));
-        };
+        }
     },[priceRules]);
 
     useEffect(()=>{
         if(category === null && academic_level === null &&
             categoryList.length > 0){
-            setCategory(categoryList[0]);
+            if(tutoringCategory){
+                setCategory(categoryList.find(category => category.id == tutoringCategory));
+            } else {
+                setCategory(categoryList[0]);
+            }
             // set tuition
             setHourlyTuition(()=>{
                 let matchingPriceRule = priceRules.find(rule => rule.category.id === categoryList[0].id);
@@ -114,6 +117,12 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
 
     const onCategoryChange = () => event => {
         setCategory(event.target.value);
+
+        handleUpdatePriceFields({
+            value: event.target.value.id,
+            label: event.target.value.name
+        }, academic_level, durationParser[event.target.value], sessions);
+
         // filter academic levels so only academic levels with the current category get displayed
         setAcademicList(()=>{
             let filteredByCategoryPriceRules = priceRules.filter(rule => rule.category.id === event.target.value.id);
@@ -159,6 +168,10 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
                     tuition: matchingPriceRule.hourly_tuition
                 }
             );
+            handleUpdatePriceFields({
+                value: category.id,
+                label: category.name
+            }, event.target.value, durationParser[duration], sessions);
             return matchingPriceRule.hourly_tuition;
         });
     };
@@ -172,6 +185,10 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
                 tuition: hourlyTuition
             }
         );
+        handleUpdatePriceFields({
+            value: category.id,
+            label: category.name
+        }, academic_level, durationParser[event.target.value], sessions);
     };
 
     const onSessionsChange = () => event => {
@@ -183,6 +200,10 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
                 tuition: hourlyTuition,
             }
         );
+        handleUpdatePriceFields({
+            value: category.id,
+            label: category.name
+        }, academic_level, durationParser[duration], event.target.value);
     };
 
     const onUpdateFields = event => {
@@ -191,7 +212,10 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
             value: category.id,
             label: category.name
         };
-        handleUpdatePriceFields(formattedCategory, academic_level, durationParser[duration], sessions);
+        handleUpdatePriceFields({
+            value: category.id,
+            label: category.name
+        }, academic_level, durationParser[duration], sessions);
     };
 
     const validFields = duration && sessions && academic_level && category;
@@ -200,7 +224,7 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
             <Grid item xs={12}>
                 <Typography>
                     Use the Tuition Quote Tool to give the customer an estimate of how much the total tuition
-                    will be. This tool DOES NOT set the final price of the course.
+                    will be. This tool will set the final tuition of the course.
                 </Typography>
                 <Grid container
                       className={"tutoring-price-quote"}
@@ -218,6 +242,12 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
                                     inputProps={{
                                         id:"category"
                                     }}
+                                    input={
+                                        <OutlinedSelect
+                                            id="select-category"
+                                            name="category"
+                                        />
+                                    }
                                 >
                                     {
                                         categoryList.map((category) =>
@@ -239,6 +269,12 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
                                     inputProps={{
                                         id:"academic-level"
                                     }}
+                                    input={
+                                        <OutlinedSelect
+                                            id="select-academic"
+                                            name="academic"
+                                        />
+                                    }
                                 >
                                     {
                                         academicList.map((grade) =>
@@ -252,12 +288,16 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
                                 </Select>
                             </Grid>
                             <Grid item xs={3}>
-                                <TextField
-                                    label={"Hourly Tuition"}
-                                    value={hourlyTuition || ''}
-                                    InputProps={{readOnly:true}}
-                                    variant={"outlined"}
-                                />
+                                    <InputLabel htmlFor={"hourly-tuition"}>Hourly Tuition</InputLabel>
+                                <div
+                                    style={{
+                                        padding: '10px 26px 10px 12px',
+                                    }}
+                                >
+                                    <Typography variant="h6">
+                                        {hourlyTuition}
+                                    </Typography>
+                                </div>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -325,21 +365,6 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields}) => {
                                     InputProps={{readOnly:true}}
                                     variant={"outlined"}
                                 />
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid item>
-                        {/*This button will update previously filled fields if you changed any field here.*/}
-                        <Grid container
-                              direction={"row"}
-                              justify={"flex-end"}>
-                            <Grid item xs={2}>
-                                <Button
-                                    disabled={!validFields}
-                                    onClick={onUpdateFields}
-                                >
-                                    Finalize Course Settings
-                                </Button>
                             </Grid>
                         </Grid>
                     </Grid>

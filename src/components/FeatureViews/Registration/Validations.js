@@ -19,6 +19,10 @@ export let InputValidation = (input, type) => {
             return DateValidation(input);
         case "time":
             return timeValidation(input);
+        case "password":
+            return passwordValidation(input);
+        case "name":
+            return nameValidation(input);
         default:
             return Boolean(input);
     }
@@ -39,30 +43,40 @@ let EmailValidation = (input) => {
 
 // Short input fields (i.e. name, school, city etc.)
 let ShortTextValidation = (input) => {
-    return !!input.match(/([A-Za-z ]+)(" ")?([A-Za-z ]+)?(" ")?([A-Za-z ]+)?$/);
+    return !!input.match(/[a-zA-Z][^#&<>\"~;$^%{}?]{1,500}$/);
 };
 
 // Address
 let AddressValidation = (input) => {
     // Old regex /\d{1,5}\s\w\s(\b\w*\b\s){1,2}?.\w*/
-    return !!input.match(/^[a-zA-Z0-9\s,.'-]{3,}$/ );
+    return !!input.match(/^[a-zA-Z0-9\s,.'-]{3,}$/);
 
 };
 
 // Zip Code
 let ZipCodeValidation = (input) => {
     return !!input.match(/^\d{5}(?:[-\s]\d{4})?$/)
-}
+};
 
 // Birthday format to MM/DD/YYYY
 let DateValidation = (input) => {
     // TODO: proper date validation
     // return !!input.match(/^((0|1)\d{1})\/((0|1|2|3)\d{1})\/((19|20)\d{2})/)
     return true;
-}
+};
 
 // Time format of HH:MM TODO: make actual time validation
 const timeValidation = (input) => {
     // (/^(1[0-2]|0?[1-9]):[0-5][0-9] (a|A|p|P)(m|M)$/u).test(input);
     return true;
-}
+};
+
+// Password validation 
+const passwordValidation = (input) => {
+    return true
+};
+
+// Name validation 
+let nameValidation = (input) => {
+    return !!input.match(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/)
+};

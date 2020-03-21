@@ -11,8 +11,9 @@ export default function admin(state = initialState.Admin, { payload, type, }) {
         case actions.PATCH_PRICE_RULE_SUCCESS:
             return updatePriceRule(newState, payload, "POST");
         case actions.POST_PRICE_RULE_FAILED:
-            console.log("Failed posting price rule");
             return {...newState};
+        case actions.GET_UNPAID_FAILED:
+            console.log("Failed to retrieve unpaid sessions");
         case actions.POST_DISCOUNT_PAYMENT_METHOD_SUCCESS:
             return updateDiscount(newState, payload, "POST", "PaymentMethod");
         case actions.POST_DISCOUNT_MULTI_COURSE_SUCCESS:
@@ -26,6 +27,9 @@ export default function admin(state = initialState.Admin, { payload, type, }) {
             return updateDiscount(newState, payload, "GET", "MultiCourse");
         case actions.GET_DISCOUNT_DATE_RANGE_SUCCESS:
             return updateDiscount(newState, payload, "GET", "DateRange");
+        case actions.GET_UNPAID_SUCCESS:
+            return updateUnpaid(newState, payload, "GET");
+    
 
         case actions.DELETE_DISCOUNT_PAYMENT_METHOD_SUCCESS:
             return updateDiscount(newState, payload, "DELETE", "PaymentMethod");
@@ -42,7 +46,7 @@ export default function admin(state = initialState.Admin, { payload, type, }) {
             return updateDiscount(newState, payload, "PATCH", "DateRange");
 
         default:
-            return state;
+            return state;   
     }
 }
 
@@ -74,6 +78,21 @@ const updatePriceRule = (state, payload, action) => {
         ...state,
         PriceRules,
     }
+};
+
+const updateUnpaid = (state, payload, action) => {
+    let {response} = payload;
+    let {data} = response;
+
+    switch(action) {
+        case "GET":{
+            
+            return {
+                ...state,
+                Unpaid:data,
+            };
+    }
+}
 };
 
 const updateDiscount = (state, payload, action, discountType) => {

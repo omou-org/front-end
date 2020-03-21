@@ -87,10 +87,16 @@ const InstructorCourses = ({ instructorID }) => {
                 </Grid>
             </Grid>
             <Grid
+                direction="row-reverse"
                 container
                 spacing={8}>
                 {
-                    courseIDs.map((courseID) => {
+                    courseIDs
+                        .sort((courseA, courseB) => {
+                            return new Date(courses[courseB].schedule.start_date) -
+                                new Date(courses[courseA].schedule.start_date);
+                        })
+                        .map((courseID) => {
                         const course = courses[courseID];
                         const { days, start_date, end_date, start_time, end_time, is_confirmed } = courseDateFormat(course);
                         return (
@@ -122,7 +128,7 @@ const InstructorCourses = ({ instructorID }) => {
                                             md={2}
                                             xs={2}>
                                             <Typography align="left">
-                                                {days}
+                                                {days.charAt(0).toUpperCase() + days.slice(1)}
                                             </Typography>
                                         </Grid>
                                         <Grid
