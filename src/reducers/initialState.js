@@ -67,8 +67,7 @@ export default {
         },
     },
     "Cats": {
-        secondCat: "",
-        Unpaid: ""
+        catGif: "",
     }
 
 };

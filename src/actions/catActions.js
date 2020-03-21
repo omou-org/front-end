@@ -2,20 +2,17 @@
 import * as types from './actionTypes';
 import axios from 'axios';
 
-export const instance = axios.create({
+export const giphy_instance = axios.create({
     "baseURL": "http://api.giphy.com/v1/gifs/",
 });
 
-export function receiveCats(meow) {
-    return { type: types.GET_GIF_SUCCESS, gifs: meow };
-}
 // Alter defaults after instance has been created
-delete instance.defaults.headers.common.Authorization;
+delete giphy_instance.defaults.headers.common.Authorization;
 
 export function fetchCats(meow) {
     return async (dispatch) => {
         try {
-            const response = await instance.get("random", {
+            const response = await giphy_instance.get("random", {
                 params: {
                     "tag": meow,
                     "api_key": "X7MCaaM0oOaoShVzhtqcEN8JiKF39oRu",

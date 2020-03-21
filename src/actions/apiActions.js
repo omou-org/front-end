@@ -1,9 +1,9 @@
 import * as types from "./actionTypes";
 
 import axios from "axios";
-import {typeToPostActions} from "./rootActions";
-import {academicLevelParse} from "../reducers/registrationReducer";
-import {dateFormat, timeFormat} from "../utils";
+import { typeToPostActions } from "./rootActions";
+import { academicLevelParse } from "../reducers/registrationReducer";
+import { dateFormat, timeFormat } from "../utils";
 
 export const instance = axios.create({
     "baseURL": process.env.REACT_APP_DOMAIN,
@@ -13,7 +13,7 @@ export const MISC_FAIL = 600;
 export const REQUEST_ALL = -1;
 export const REQUEST_STARTED = 1;
 
-export const wrapGet = (endpoint, [startType, successType, failType], {id, config}) =>
+export const wrapGet = (endpoint, [startType, successType, failType], { id, config }) =>
     async (dispatch) => {
         // creates a new action based on the response given
         const newAction = (type, response) => {
@@ -44,9 +44,6 @@ export const wrapGet = (endpoint, [startType, successType, failType], {id, confi
             }
         }
     };
-
-    
-
 export const wrapPost = (endpoint, [startType, successType, failType], data) =>
     async (dispatch) => {
         // creates a new action based on the response given
@@ -76,7 +73,7 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
         }
     };
 
-export const wrapPatch = (endpoint, [startType, successType, failType], {id, data, config}) =>
+export const wrapPatch = (endpoint, [startType, successType, failType], { id, data, config }) =>
     async (dispatch) => {
         // creates a new action based on the response given
         const newAction = (type, response) => {
@@ -96,13 +93,13 @@ export const wrapPatch = (endpoint, [startType, successType, failType], {id, dat
             const response = await instance.patch(`${endpoint}${id}/`, data, config || {});
             // successful request
             newAction(successType, response);
-        } catch ({response}) {
+        } catch ({ response }) {
             // failed request
             newAction(failType, response);
         }
     };
 
-export const wrapDelete = (endpoint, [startType, successType, failType], {id, config}) =>
+export const wrapDelete = (endpoint, [startType, successType, failType], { id, config }) =>
     async (dispatch, getState) => {
         // creates a new actions based on the response given
         const newAction = (type, response) => {
@@ -122,7 +119,7 @@ export const wrapDelete = (endpoint, [startType, successType, failType], {id, co
             const response = await instance.delete(`${endpoint}${id}/`, config || {});
             // successful response
             newAction(successType, response);
-        } catch ({response}) {
+        } catch ({ response }) {
             newAction(failType, response);
         }
     };
@@ -137,7 +134,7 @@ export const fetchCourses = (id) =>
             types.FETCH_COURSE_SUCCESSFUL,
             types.FETCH_COURSE_FAILED,
         ],
-        {id},
+        { id },
     );
 export const submitNewSmallGroup = (form) => {
     const [courseSuccessAction, courseFailAction] = typeToPostActions.course;
@@ -156,12 +153,16 @@ export const submitNewSmallGroup = (form) => {
         }).then((courseResponse) => {
             dispatch({
                 "type": types.ADD_SMALL_GROUP_REGISTRATION,
-                "payload": {"formMain": form,
-                    "new_course": courseResponse.data},
+                "payload": {
+                    "formMain": form,
+                    "new_course": courseResponse.data
+                },
             });
         }, (error) => {
-            dispatch({"type": courseFailAction,
-                "payload": error});
+            dispatch({
+                "type": courseFailAction,
+                "payload": error
+            });
         });
     });
 };

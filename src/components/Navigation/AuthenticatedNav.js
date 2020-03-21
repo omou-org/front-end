@@ -1,9 +1,10 @@
 // React Imports
-import React, {useCallback, useState} from "react";
-import {Redirect, useHistory} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {logout} from "../../actions/authActions";
+import React, { useCallback, useState } from "react";
+import { Redirect, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../actions/authActions";
 import NavLinkNoDup from "../Routes/NavLinkNoDup";
+import { RootRoutes } from "../Routes/RootRoutes";
 import PropTypes from "prop-types";
 
 // Material UI Imports
@@ -14,14 +15,13 @@ import LogoutIcon from "@material-ui/icons/ExitToAppOutlined";
 import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-
 // Local Component Imports
 import Search from "../../components/FeatureViews/Search/Search";
 
-const AuthenticatedNav = ({toggleDrawer}) => {
+const AuthenticatedNav = ({ toggleDrawer }) => {
     const dispatch = useDispatch();
     const history = useHistory();
-    const authToken = useSelector(({auth}) => auth.token);
+    const authToken = useSelector(({ auth }) => auth.token);
 
     const [mobileOpen, setMobileOpen] = useState(false);
     const [isMobileSearching, setMobileSearching] = useState(false);
@@ -70,7 +70,7 @@ const AuthenticatedNav = ({toggleDrawer}) => {
                             className="title"
                             component={NavLinkNoDup}
                             to="/">
-                                omou
+                            omou
                         </Typography>
                         <div style={{
                             "flex": 1,
@@ -78,6 +78,14 @@ const AuthenticatedNav = ({toggleDrawer}) => {
                     </>
                 }
                 <Search onMobileType={handleMobileSearch} />
+                {
+                    <Typography
+                        className='catsButton'
+                        to='/cats'
+                        component={NavLinkNoDup}>
+                        CATS</Typography>
+
+                }
                 {
                     !isMobileSearching && <LogoutIcon
                         className="logout-icon"

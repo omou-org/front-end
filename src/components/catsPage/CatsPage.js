@@ -2,29 +2,21 @@ import React, { useMemo, useEffect, useState, useRef, useCallback } from "react"
 import { withRouter } from "react-router-dom";
 import * as catActions from "../../actions/catActions"
 import { useDispatch, useSelector } from "react-redux";
-import ReactDOM from "react-dom";
 import { bindActionCreators } from "redux";
 import "./catsPage.scss"
-import *  as hooks from "actions/hooks"
-import cat1 from "./cat1.gif"
 import Loading from "components/Loading";
 
-function CatsPage() {
-    const [imageWidth, setImageWidth] = useState(0);
-    const [imageHeight, setImageHeight] = useState(0);
+const CatsPage = () => {
     const dispatch = useDispatch();
     const auth = useSelector((store) => store.auth)
-
     const api = useMemo(() => bindActionCreators(catActions, dispatch), [dispatch])
     const list = useSelector((store) => store.Cat)
+
     useEffect(() => {
         api.fetchCats("cats")
-    }, []);
-    const apiImage = list.secondCat;
-    const imgElement = React.useRef(null);
-    const targetRef = useRef();
+    }, [api]);
 
-
+    const apiImage = list.catGif;
     const COLORS = ["red", "green", "blue", "indigo", "violet"];
 
     const useBoundingClientRect = () => {
@@ -106,7 +98,7 @@ function CatsPage() {
         );
         return [ref, x, y, color];
     };
-    const [ref, x, y, color] = useColoredBouncer("red");
+    const [ref, x, y,] = useColoredBouncer("red");
     if (auth.first_name !== "Nelson" && auth.last_name !== "Ng") {
         return (<h1>Only Nelson is permitted to view this sanctuary</h1>);
     }
@@ -121,7 +113,7 @@ function CatsPage() {
             style={{
                 width: `${apiImage.width}px`,
                 height: `${apiImage.height}px`,
-                backgroundColor: color,
+                backgroundColor: "white",
                 transform: `translate(${x}px, ${y}px)`
             }}
         >
