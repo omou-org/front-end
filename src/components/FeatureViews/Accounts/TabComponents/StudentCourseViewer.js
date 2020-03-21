@@ -8,7 +8,7 @@ import Grid from "@material-ui/core/Grid";
 import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import {NoListAlert} from "../../../NoListAlert";
+import NoListAlert from "../../../NoListAlert";
 import {courseDateFormat, dateTimeToDate} from "utils";
 
 const today = dateTimeToDate(new Date());
