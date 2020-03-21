@@ -57,7 +57,7 @@ const EditSessionView = ({course, session, editSelection}) => {
         if (course && session) {
             let durationHours = Math.abs(session.end_datetime - session.start_datetime) / 36e5;
             if (durationHours === 0) {
-                durationHours = 1
+                durationHours = 1;
             }
             const category = categories.find((category) => category.id === course.category);
 

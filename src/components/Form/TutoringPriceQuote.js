@@ -39,7 +39,7 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCateg
                 .filter(rule => rule.course_type === courseType)
                 .map((rule) =>({
                 ...rule,
-                category: categories.find((category) => {return category.id === rule.category}),
+                    category: categories.find((category) => (category.id === rule.category)),
             })));
         }
     }, [categoryStatus, priceRuleStatus]);

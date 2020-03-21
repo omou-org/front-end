@@ -23,9 +23,8 @@ export default function Calendar(state = initialState.CalendarData, { payload, t
             const filter_value = payload.value;
 
             // Search by subject
-            newState.events_in_view.filter((allCourse) => {
-                return allCourse[filter_key] === filter_value;
-            })
+            newState.events_in_view
+                .filter((allCourse) => allCourse[filter_key] === filter_value)
                 .map((finalResult) => {
                     return {
                         ...finalResult
