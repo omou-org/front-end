@@ -32,7 +32,7 @@ import DialogContentText from "@material-ui/core/es/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import {NoListAlert} from "../../NoListAlert";
+import NoListAlert from "../../NoListAlert";
 import {sessionArray} from "../Scheduler/SchedulerUtils";
 import {SessionPaymentStatusChip} from "../../SessionPaymentStatusChip";
 import {upcomingSession} from "../../../utils";
