@@ -1,130 +1,107 @@
-import React, { useMemo, useEffect, useState, useRef, useCallback } from "react";
-import { withRouter } from "react-router-dom";
-import * as catActions from "../../actions/catActions"
-import { useDispatch, useSelector } from "react-redux";
-import { bindActionCreators } from "redux";
-import "./catsPage.scss"
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {bindActionCreators} from "redux";
+
+import "./catsPage.scss";
+import * as catActions from "actions/catActions";
 import Loading from "components/Loading";
+
+const getWindowSize = () => [window.innerWidth, window.innerHeight];
 
 const CatsPage = () => {
     const dispatch = useDispatch();
-    const auth = useSelector((store) => store.auth)
-    const api = useMemo(() => bindActionCreators(catActions, dispatch), [dispatch])
-    const list = useSelector((store) => store.Cat)
+    const auth = useSelector((store) => store.auth);
+    const api = useMemo(() =>
+        bindActionCreators(catActions, dispatch), [dispatch]);
+    const apiImage = useSelector(({Cat}) => Cat.catGif);
 
     useEffect(() => {
-        api.fetchCats("cats")
+        api.fetchCats("cats");
     }, [api]);
 
-    const apiImage = list.catGif;
-    const COLORS = ["red", "green", "blue", "indigo", "violet"];
+    const [[windowWidth, windowHeight], setSize] = useState(getWindowSize());
 
-    const useBoundingClientRect = () => {
-        const ref = useRef(null);
-        const rect = useMemo(
-            () =>
-                ref.current
-                    ? ref.current.getBoundingClientRect()
-                    : { width: 0, height: 0 },
-            [ref.current]
-        );
-        return [ref, rect];
-    };
+    const handleResize = useCallback(() => {
+        setSize(getWindowSize());
+    }, []);
 
-    const useRainbow = initialColor => {
-        const [colorIndex, setColorIndex] = useState(COLORS.indexOf(initialColor));
-        const next = useCallback(
-            () => setColorIndex(idx => (idx + 1) % COLORS.length),
-            [setColorIndex]
-        );
-        return [COLORS[colorIndex], next];
-    };
+    useEffect(() => {
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, [handleResize]);
 
-    const useViewport = () => {
-        const getSize = useCallback(
-            () => ({ width: window.innerWidth, height: window.innerHeight }),
-            []
-        );
-        const [{ width, height }, setSize] = useState(getSize());
-        useEffect(() => {
-            const handleResize = () => {
-                setSize(getSize());
-            };
-            window.addEventListener("resize", handleResize);
-            return () => window.removeEventListener("resize", handleResize);
-        }, []);
-        return [width, height];
-    };
+    const imgWidth = useMemo(() =>
+        Number(apiImage.width || 0), [apiImage.width]);
+    const imgHeight = useMemo(() =>
+        Number(apiImage.height || 0), [apiImage.height]);
 
-    const useColoredBouncer = startColor => {
-        const [color, nextColor] = useRainbow(startColor);
-        const [vw, vh] = useViewport();
-        const [ref, { width, height }] = useBoundingClientRect();
-        const [{ x, y }, setPosition] = useState({
-            x: Math.floor(Math.random() * (vw - width)),
-            xm: Math.random() > 0.5 ? 1.5 : -1.5,
-            y: Math.floor(Math.random() * (vh - width)),
-            ym: Math.random() > 0.5 ? 1.5 : -1.5
+    const [{x, y}, setPosition] = useState({
+        "x": Math.floor(Math.random() * (windowWidth - imgWidth)),
+        "xm": Math.random() > 0.5 ? 1.5 : -1.5,
+        "y": Math.floor(Math.random() * (windowHeight - imgWidth)),
+        "ym": Math.random() > 0.5 ? 1.5 : -1.5,
+    });
+    // top and left of the main area to bounce in, in pixels
+    const LEFT = 225,
+        TOP = 75;
+
+    const animate = useCallback(() => {
+        setPosition((oldPos) => {
+            const isCrashingLeft = oldPos.x <= LEFT && oldPos.xm < 0;
+            const isCrashingRight =
+                oldPos.x + imgWidth >= windowWidth && oldPos.xm > 0;
+            const isCrashingTop = oldPos.y <= TOP && oldPos.ym < 0;
+            const isCrashingBottom =
+                oldPos.y + imgHeight >= windowHeight && oldPos.ym > 0;
+            const newPos = {...oldPos};
+            if (isCrashingLeft || isCrashingRight) {
+                newPos.xm *= -1;
+                api.fetchCats("cats");
+            }
+            if (isCrashingTop || isCrashingBottom) {
+                newPos.ym *= -1;
+                api.fetchCats("cats");
+            }
+            newPos.x = Math.min(
+                Math.max(oldPos.x + newPos.xm, LEFT),
+                windowWidth - imgWidth
+            );
+            newPos.y = Math.min(
+                Math.max(oldPos.y + newPos.ym, TOP),
+                windowHeight - imgHeight
+            );
+            return newPos;
         });
-        useEffect(
-            () => {
-                const animate = () => {
-                    setPosition(p => {
-                        const isCrashingLeft = p.x <= 223 && p.xm < 0;
-                        const isCrashingRight = p.x + width >= vw && p.xm > 0;
-                        const isCrashingTop = p.y <= 64 && p.ym < 0;
-                        const isCrashingBottom = p.y + height >= vh && p.ym > 0;
-                        const np = { ...p };
-                        if (isCrashingLeft || isCrashingRight) {
-                            np.xm *= -1;
-                            nextColor();
-                            api.fetchCats("cats")
+    }, [windowWidth, windowHeight, imgWidth, imgHeight, api]);
 
-                        }
-                        if (isCrashingTop || isCrashingBottom) {
-                            np.ym *= -1;
-                            nextColor();
-                            api.fetchCats("cats")
-                        }
-                        np.x = Math.min(Math.max(p.x + np.xm, 0), vw - width);
-                        np.y = Math.min(Math.max(p.y + np.ym, 0), vh - height);
-                        return np;
-                    });
-                };
-                const intervalId = setInterval(animate, 1000 / 60);
-                return () => clearInterval(intervalId);
-            },
-            [vw, vh, width, height]
-        );
-        return [ref, x, y, color];
-    };
-    const [ref, x, y,] = useColoredBouncer("red");
-    if (auth.first_name !== "Nelson" && auth.last_name !== "Ng") {
-        return (<h1>Only Nelson is permitted to view this sanctuary</h1>);
+    useEffect(() => {
+        const intervalId = setInterval(animate, 1000 / 60);
+        return () => clearInterval(intervalId);
+    }, [animate]);
+
+    if (auth.first_name !== "Nelson" || auth.last_name !== "Ng") {
+        return <h1>Only Nelson is permitted to view this sanctuary</h1>;
     }
-    if (!apiImage.width || !apiImage.height) {
 
-        return <Loading />
+    if (!apiImage) {
+        return <Loading />;
     }
-    return (<div className="screensaver">
-        <section
-            ref={ref}
-            className="screensaver__bouncer"
-            style={{
-                width: `${apiImage.width}px`,
-                height: `${apiImage.height}px`,
-                backgroundColor: "white",
-                transform: `translate(${x}px, ${y}px)`
-            }}
-        >
-            <img
-                src={apiImage.url}
-            >
 
-            </img>
-        </section></div>);
+    return (
+        <div
+            className="screensaver">
+            <section
+                className="screensaver__bouncer"
+                style={{
+                    "backgroundColor": "white",
+                    "height": `${apiImage.height}px`,
+                    "transform": `translate(${x}px, ${y}px)`,
+                    "width": `${apiImage.width}px`,
+                }}>
+                <img src={apiImage.url} />
+            </section>
+        </div>
+    );
+};
 
-
-}
-
-export default withRouter(CatsPage);
+export default CatsPage;
