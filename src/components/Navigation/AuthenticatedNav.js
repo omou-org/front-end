@@ -4,7 +4,6 @@ import { Redirect, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../actions/authActions";
 import NavLinkNoDup from "../Routes/NavLinkNoDup";
-import { RootRoutes } from "../Routes/RootRoutes";
 import PropTypes from "prop-types";
 
 // Material UI Imports
@@ -78,14 +77,11 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
                     </>
                 }
                 <Search onMobileType={handleMobileSearch} />
-                {
-                    <Typography
-                        className='catsButton'
-                        to='/cats'
-                        component={NavLinkNoDup}>
-                        CATS</Typography>
-
-                }
+                <Typography
+                    className='catsButton'
+                    to='/cats'
+                    component={NavLinkNoDup}>
+                    CATS</Typography>
                 {
                     !isMobileSearching && <LogoutIcon
                         className="logout-icon"

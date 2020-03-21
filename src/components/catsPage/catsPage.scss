@@ -23,29 +23,3 @@
     top: 0;
   }
   
-  .screensaver__dvd {
-    font-size: calc(1em / 16 * 50);
-    letter-spacing: -0.1em;
-    text-indent: -0.16em;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: -0.2em;
-  }
-  
-  .screensaver__disc {
-    width: 80%;
-    margin: 0 auto;
-    padding-bottom: 4%;
-    border-style: solid;
-    border-color: black;
-    border-width: 10px 40px;
-    border-radius: 50%;
-    background: transparent;
-  }
-  
-  .screensaver__video {
-    font-size: calc(1em / 16 * 25);
-    font-weight: bold;
-    text-align: center;
-    text-transform: uppercase;
-  }

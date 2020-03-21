@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {bindActionCreators} from "redux";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { bindActionCreators } from "redux";
 
 import "./catsPage.scss";
 import * as catActions from "actions/catActions";
@@ -13,7 +13,7 @@ const CatsPage = () => {
     const auth = useSelector((store) => store.auth);
     const api = useMemo(() =>
         bindActionCreators(catActions, dispatch), [dispatch]);
-    const apiImage = useSelector(({Cat}) => Cat.catGif);
+    const apiImage = useSelector(({ Cat }) => Cat.catGif);
 
     useEffect(() => {
         api.fetchCats("cats");
@@ -35,7 +35,7 @@ const CatsPage = () => {
     const imgHeight = useMemo(() =>
         Number(apiImage.height || 0), [apiImage.height]);
 
-    const [{x, y}, setPosition] = useState({
+    const [{ x, y }, setPosition] = useState({
         "x": Math.floor(Math.random() * (windowWidth - imgWidth)),
         "xm": Math.random() > 0.5 ? 1.5 : -1.5,
         "y": Math.floor(Math.random() * (windowHeight - imgWidth)),
@@ -53,7 +53,7 @@ const CatsPage = () => {
             const isCrashingTop = oldPos.y <= TOP && oldPos.ym < 0;
             const isCrashingBottom =
                 oldPos.y + imgHeight >= windowHeight && oldPos.ym > 0;
-            const newPos = {...oldPos};
+            const newPos = { ...oldPos };
             if (isCrashingLeft || isCrashingRight) {
                 newPos.xm *= -1;
                 api.fetchCats("cats");

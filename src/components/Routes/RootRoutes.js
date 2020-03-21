@@ -23,7 +23,7 @@ import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
 import AdminRoute from "./AdminRoute";
 import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
 import RegistrationReceipt from "../FeatureViews/Registration/RegistrationReceipt";
-import CatsPage from "../catsPage/CatsPage";
+import CatsPage from "../CatsPage/CatsPage";
 
 
 export const RootRoutes = (props) => {

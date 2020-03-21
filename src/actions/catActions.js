@@ -6,8 +6,6 @@ export const giphy_instance = axios.create({
     "baseURL": "http://api.giphy.com/v1/gifs/",
 });
 
-// Alter defaults after instance has been created
-delete giphy_instance.defaults.headers.common.Authorization;
 
 export function fetchCats(meow) {
     return async (dispatch) => {

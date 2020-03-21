@@ -66,6 +66,7 @@ export default {
             PaymentMethod: [],
         },
     },
+    Unpaid: "",
     "Cats": {
         catGif: "",
     }

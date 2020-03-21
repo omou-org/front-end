@@ -8,10 +8,10 @@ export default function catReducer(state = initalState.Cats, { type, payload }) 
             newState["catGif"] = payload.response.data.data.images.fixed_height;
             return newState;
         case GET_GIF_FAIL:
-            console.log(payload);
+
             return newState;
         case GET_GIF_LOADING:
-            console.log("loading");
+
             return newState;
         default:
             return state;
