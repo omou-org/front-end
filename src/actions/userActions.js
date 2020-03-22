@@ -1,5 +1,10 @@
 import * as types from "./actionTypes";
-import {instance, wrapGet, wrapPatch, wrapPost} from "./apiActions";
+import {
+    instance, MISC_FAIL, REQUEST_ALL, REQUEST_STARTED, wrapGet, wrapPatch,
+} from "./apiActions";
+import {isFail, isLoading} from "./hooks";
+import {useCallback, useEffect, useMemo, useState} from "react";
+import {useDispatch} from "react-redux";
 
 export const patchInstructor = (id, data) => wrapPatch(
     "/account/instructor/",
@@ -8,7 +13,10 @@ export const patchInstructor = (id, data) => wrapPatch(
         types.PATCH_INSTRUCTOR_SUCCESSFUL,
         types.PATCH_INSTRUCTOR_FAILED,
     ],
-    {id:id, data: data}
+    {
+        data,
+        id,
+    }
 );
 
 export const fetchStudents = (id) => wrapGet(
@@ -18,7 +26,7 @@ export const fetchStudents = (id) => wrapGet(
         types.FETCH_STUDENT_SUCCESSFUL,
         types.FETCH_STUDENT_FAILED,
     ],
-    {id:id},
+    {id}
 );
 
 export const fetchParents = (id) => wrapGet(
@@ -28,7 +36,7 @@ export const fetchParents = (id) => wrapGet(
         types.FETCH_PARENT_SUCCESSFUL,
         types.FETCH_PARENT_FAILED,
     ],
-    {id:id},
+    {id}
 );
 
 export const fetchInstructors = (id) => wrapGet(
@@ -38,94 +46,212 @@ export const fetchInstructors = (id) => wrapGet(
         types.FETCH_INSTRUCTOR_SUCCESSFUL,
         types.FETCH_INSTRUCTOR_FAILED,
     ],
-    {id:id},
+    {id}
 );
 
-const wrapNoteGet = (endpoint, paramName, [startType, successType, failType], payloadInfo) =>
-    (ownerID, ownerType) => async (dispatch) => {
-        const newAction = (type, response) => {
-            dispatch({
-                type,
-                "payload": {
-                    ...(payloadInfo || {}),
-                    ownerID,
-                    ownerType,
-                    response,
-                },
-            });
+const wrapNoteGet =
+    (endpoint, paramName, [startType, successType, failType], payloadInfo) =>
+        (ownerID, ownerType) => async (dispatch) => {
+            const newAction = (type, response) => {
+                dispatch({
+                    "payload": {
+                        ...payloadInfo || {},
+                        ownerID,
+                        ownerType,
+                        response,
+                    },
+                    type,
+                });
+            };
+
+            // request starting
+            newAction(startType, {});
+
+            try {
+                const response = await instance.get(endpoint, {
+                    "params": {
+                        [paramName]: ownerID,
+                    },
+                });
+                // succesful request
+                newAction(successType, response);
+            } catch (error) {
+            // failed request
+                newAction(failType, error.response);
+            }
         };
 
-        // request starting
-        newAction(startType, {});
+const wrapUseNote = (endpoint, successType, payloadInfo) =>
+    (id, config, noFetchOnUndef) => {
+        const [status, setStatus] = useState(null);
+        const dispatch = useDispatch();
 
-        try {
-            const response = await instance.get(endpoint, {
-                "params": {
-                    [paramName]: ownerID,
-                },
-            });
-            // succesful request
-            newAction(successType, response);
-        } catch (error) {
-            // failed request
-            newAction(failType, error.response);
-        }
+        const handleError = useCallback((error) => {
+            if (error && error.response && error.response.status) {
+                setStatus(error.response.status);
+            } else {
+                setStatus(MISC_FAIL);
+                console.error(error);
+            }
+        }, []);
+
+        useEffect(() => {
+            let aborted = false;
+            // no id passed
+            if (typeof id === "undefined" || id === null) {
+                // if not to be optimized (i.e. a request_all is wanted)
+                if (!noFetchOnUndef) {
+                    (async () => {
+                        try {
+                            setStatus(REQUEST_STARTED);
+                            const response = await instance.get(
+                                endpoint,
+                                config
+                            );
+                            if (!aborted) {
+                                dispatch({
+                                    "payload": {
+                                        ...payloadInfo,
+                                        "id": REQUEST_ALL,
+                                        response,
+                                    },
+                                    "type": successType,
+                                });
+                                setStatus(response.status);
+                            }
+                        } catch (error) {
+                            if (!aborted) {
+                                handleError(error);
+                            }
+                        }
+                    })();
+                }
+            } else if (!Array.isArray(id)) {
+                // standard single item request
+                (async () => {
+                    try {
+                        setStatus(REQUEST_STARTED);
+                        const response = await instance.get(
+                            `${endpoint}${id}/`,
+                            config
+                        );
+                        if (!aborted) {
+                            dispatch({
+                                "payload": {
+                                    ...payloadInfo,
+                                    id,
+                                    response,
+                                },
+                                "type": successType,
+                            });
+                            setStatus(response.status);
+                        }
+                    } catch (error) {
+                        if (!aborted) {
+                            handleError(error);
+                        }
+                    }
+                })();
+            } else if (id.length > 0) {
+                // array of IDs to request (list of results requested)
+                (async () => {
+                    try {
+                        setStatus(REQUEST_STARTED);
+                        const response = await Promise.all(id.map(
+                            (individual) => instance.get(
+                                `${endpoint}${individual}/`,
+                                config
+                            )
+                        ));
+                        if (!aborted) {
+                            dispatch({
+                                "payload": {
+                                    ...payloadInfo,
+                                    id,
+                                    response,
+                                },
+                                "type": successType,
+                            });
+                            setStatus(response.reduce((finalStatus, {status}) =>
+                                isFail(status) ? status
+                                    : isFail(finalStatus) ? finalStatus
+                                        : isLoading(status) ? status
+                                            : finalStatus, 200));
+                        }
+                    } catch (error) {
+                        if (!aborted) {
+                            handleError(error);
+                        }
+                    }
+                })();
+            }
+            // if something about request changed
+            // discard old results and make new request
+            return () => {
+                setStatus(null);
+                aborted = true;
+            };
+        }, [config, dispatch, id, noFetchOnUndef, handleError]);
+        return status;
     };
 
-const wrapNotePost = (endpoint, [startType, successType, failType], payloadInfo) =>
-    (data, ownerType) => async (dispatch) => {
+const wrapNotePost =
+    (endpoint, [startType, successType, failType], payloadInfo) =>
+        (data, ownerType) => async (dispatch) => {
         // creates a new action based on the response given
-        const newAction = (type, response) => {
-            dispatch({
-                type,
-                "payload": {
-                    ...(payloadInfo || {}),
-                    response,
-                    ownerType,
-                },
-            });
+            const newAction = (type, response) => {
+                dispatch({
+                    "payload": {
+                        ...payloadInfo || {},
+                        ownerType,
+                        response,
+                    },
+                    type,
+                });
+            };
+
+            // request starting
+            newAction(startType, {});
+
+            try {
+                const response = await instance.post(endpoint, data);
+                // succesful request
+                newAction(successType, response);
+            } catch ({response}) {
+            // failed request
+                newAction(failType, response);
+            }
         };
 
-        // request starting
-        newAction(startType, {});
 
-        try {
-            const response = await instance.post(endpoint, data);
-            // succesful request
-            newAction(successType, response);
-        } catch ({response}) {
-            // failed request
-            newAction(failType, response);
-        }
-    };
-
-
-export const wrapNotePatch = (endpoint, [startType, successType, failType], payloadInfo) =>
-    (id, data, ownerType, ownerID) => async (dispatch) => {
+const wrapNotePatch =
+    (endpoint, [startType, successType, failType], payloadInfo) =>
+        (id, data, ownerType, ownerID) => async (dispatch) => {
         // creates a new action based on the response given
-        const newAction = (type, response) => {
-            dispatch({
-                type,
-                "payload": {
-                    ...(payloadInfo || {}),
-                    response,
-                    ownerType,
-                    ownerID,
-                },
-            });
-        };
-        // request starting
-        newAction(startType, {});
+            const newAction = (type, response) => {
+                dispatch({
+                    "payload": {
+                        ...payloadInfo || {},
+                        ownerID,
+                        ownerType,
+                        response,
+                    },
+                    type,
+                });
+            };
+            // request starting
+            newAction(startType, {});
 
-        try {
-            const response = await instance.patch(`${endpoint}${id}/`, data);
-            // succesful request
-            newAction(successType, response);
-        } catch (error) {
+            try {
+                const response = await instance
+                    .patch(`${endpoint}${id}/`, data);
+                // succesful request
+                newAction(successType, response);
+            } catch (error) {
             // failed request
-            newAction(failType, error.response);
-        }
-    };
+                newAction(failType, error.response);
+            }
+        };
 
 export const fetchAccountNotes = wrapNoteGet(
     "/account/note/",
@@ -183,8 +309,8 @@ export const patchCourseNote = wrapNotePatch(
     ]
 );
 
-export const fetchEnrollmentNotes = (enrollmentID, studentID, courseID) => {
-    return wrapNoteGet(
+export const fetchEnrollmentNotes = (enrollmentID, studentID, courseID) =>
+    wrapNoteGet(
         "/course/enrollment_note/",
         "enrollment_id",
         [
@@ -198,10 +324,24 @@ export const fetchEnrollmentNotes = (enrollmentID, studentID, courseID) => {
             studentID,
         }
     )(enrollmentID, "enrollment");
-};
 
-export const postEnrollmentNote = (data, enrollmentID, studentID, courseID) => {
-    return wrapNotePost(
+export const useEnrollmentNotes = (enrollmentID, studentID, courseID) =>
+    wrapUseNote(
+        "/course/enrollment_note/",
+        types.FETCH_ENROLLMENT_NOTE_SUCCESSFUL,
+        {
+            courseID,
+            enrollmentID,
+            studentID,
+        }
+    )(null, useMemo(() => ({
+        "params": {
+            "enrollment_id": enrollmentID,
+        },
+    }), [enrollmentID]));
+
+export const postEnrollmentNote =
+    (data, enrollmentID, studentID, courseID) => wrapNotePost(
         "/course/enrollment_note/",
         [
             types.POST_ENROLLMENT_NOTE_STARTED,
@@ -214,10 +354,9 @@ export const postEnrollmentNote = (data, enrollmentID, studentID, courseID) => {
             studentID,
         }
     )(data, "enrollment");
-};
 
-export const patchEnrollmentNote = (id, data, enrollmentID, studentID, courseID) => {
-    return wrapNotePatch(
+export const patchEnrollmentNote =
+    (id, data, enrollmentID, studentID, courseID) => wrapNotePatch(
         "/course/enrollment_note/",
         [
             types.PATCH_ENROLLMENT_NOTE_STARTED,
@@ -230,7 +369,6 @@ export const patchEnrollmentNote = (id, data, enrollmentID, studentID, courseID)
             studentID,
         }
     )(id, data, "enrollment", enrollmentID);
-};
 
 export const fetchOutOfOffice = () =>
     wrapGet(

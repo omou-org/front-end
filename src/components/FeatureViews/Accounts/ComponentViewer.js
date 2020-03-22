@@ -1,81 +1,67 @@
+import React, {useMemo} from "react";
 import PropTypes from "prop-types";
-import React from "react";
+
+import Grid from "@material-ui/core/Grid";
 
 import Bio from "./TabComponents/Bio";
-import Grid from "@material-ui/core/Grid";
 import InstructorCourses from "./TabComponents/InstructorCourses";
+import InstructorSchedule from "./TabComponents/InstructorSchedule";
 import Notes from "../Notes/Notes";
 import ParentContact from "./TabComponents/ParentContact";
 import PayCourses from "./TabComponents/PayCourses";
 import PaymentHistory from "./TabComponents/PaymentHistory";
-import InstructorSchedule from "./TabComponents/InstructorSchedule";
 import StudentCourseViewer from "./TabComponents/StudentCourseViewer";
 import StudentInfo from "./TabComponents/StudentInfo";
 
-const ComponentViewer = (props) => {
-    let component;
-
-    switch (props.inView) {
-        case 0:
-            component = <InstructorSchedule instructorID={props.user.user_id} />;
-            break;
-        case 1:
-            component = <InstructorCourses instructorID={props.user.user_id} />;
-            break;
-        case 2:
-            component = <Bio background={props.user.background} />;
-            break;
-        case 3:
-            component = (
-                <StudentCourseViewer
-                    current
-                    studentID={props.user.user_id} />
-            );
-            break;
-        case 4:
-            component = (
-                <StudentCourseViewer
-                    current={false}
-                    studentID={props.user.user_id} />
-            );
-            break;
-        case 5:
-            component = <PaymentHistory user_id={props.user.user_id} />;
-            break;
-        case 6:
-            component = <ParentContact parent_id={props.user.parent_id} />;
-            break;
-        case 7:
-            component = (
-                <Notes
-                    ownerID={props.user.user_id}
-                    ownerType={props.user.role} />
-            );
-            break;
-        case 8:
-            component = <StudentInfo user={props.user} />;
-            break;
-        case 9:
-            component = <PayCourses user={props.user} />;
-            break;
-        default:
-            component = <InstructorSchedule />;
-    }
+const ComponentViewer = ({inView, user}) => {
+    const component = useMemo(() => {
+        switch (inView) {
+            case 0:
+                return <InstructorSchedule instructorID={user.user_id} />;
+            case 1:
+                return <InstructorCourses instructorID={user.user_id} />;
+            case 2:
+                return <Bio background={user.background} />;
+            case 3:
+                return (
+                    <StudentCourseViewer
+                        current
+                        studentID={user.user_id} />
+                );
+            case 4:
+                return (
+                    <StudentCourseViewer
+                        current={false}
+                        studentID={user.user_id} />
+                );
+            case 5:
+                return <PaymentHistory user_id={user.user_id} />;
+            case 6:
+                return <ParentContact parent_id={user.parent_id} />;
+            case 7:
+                return (
+                    <Notes
+                        ownerID={user.user_id}
+                        ownerType={user.role} />
+                );
+            case 8:
+                return <StudentInfo user={user} />;
+            case 9:
+                return <PayCourses user={user} />;
+            default:
+                return null;
+        }
+    }, [inView, user]);
 
     return (
-        <Grid container>
-            <Grid
-                item
-                style={{"paddingTop": "15px"}}
-                xs={12}>
-                    {component}
-            </Grid>
+        <Grid className="profile-component-container">
+            {component}
         </Grid>
     );
 };
 
 ComponentViewer.propTypes = {
-    "inView": PropTypes.number.isRequired,
+    "inView": PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).isRequired,
     "user": PropTypes.shape({
         "background": PropTypes.object,
         "parent_id": PropTypes.oneOfType([

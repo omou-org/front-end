@@ -1,106 +1,120 @@
 import PropTypes from "prop-types";
-import { connect, useSelector } from 'react-redux';
-import React from 'react';
+import {useSelector} from "react-redux";
+import React, {useCallback} from "react";
 
-import Grid from '@material-ui/core/Grid';
-import { TableBody, TableHead } from "@material-ui/core";
-import Table from "@material-ui/core/Table";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
+import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import Loading from "../../../Loading";
-import NavLinkNoDup from "../../../Routes/NavLinkNoDup";
-import NoListAlert from "../../../NoListAlert";
-import { paymentToString, tuitionAmount } from "utils"
-import PaymentHistory from "../TabComponents/PaymentHistory"
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
 
-function PaymentTable({ paymentList, type, enrollmentID, courseID, }) {
-    const Payments = useSelector(({ Payments }) => Payments);
-    const courses = useSelector(({ Course }) => Course.NewCourseList);
+import {paymentToString, tuitionAmount} from "utils";
+import Loading from "components/Loading";
+import NavLinkNoDup from "components/Routes/NavLinkNoDup";
+import NoListAlert from "components/NoListAlert";
+
+const numericDateString = (date) => {
+    const DateObject = new Date(date);
+    return DateObject.toLocaleDateString("en-US", {
+        "day": "numeric",
+        "month": "numeric",
+        "year": "numeric",
+    });
+};
+
+const courseLabel = (enrollments) => enrollments &&
+    `${enrollments.length} Course${enrollments.length !== 1 ? "s" : ""}`;
+
+const PaymentTable = ({paymentList, type, enrollmentID, courseID}) => {
+    const course = useSelector(({Course}) => Course.NewCourseList[courseID]);
+
+    const numPaidSessionsByPayment = useCallback((paymentID) => {
+        const payment = paymentList.find(({id}) => id === paymentID);
+        if (!payment) {
+            return null;
+        }
+        const registration = payment.registrations.find(({enrollment}) =>
+            enrollment === enrollmentID);
+        if (!registration) {
+            return null;
+        }
+        return registration.num_sessions;
+    }, [paymentList, enrollmentID]);
 
 
-    if (paymentList && paymentList.length < 1) {
-        return <Loading />
-    } else if (!paymentList) {
-        return <NoListAlert list={"Payments"} />
+    if (!paymentList) {
+        return <Loading />;
+    } else if (paymentList.length === 0) {
+        return <NoListAlert list="Payments" />;
     }
 
-    let paidSessionsByPayment = () => {
-        let sessNumEnrollment = {};
-        if (type === "enrollment") {
-            paymentList.forEach(payment => {
-                payment.registrations.forEach(registration => {
-                    if (registration.enrollment === enrollmentID)
-                        sessNumEnrollment[payment.id] = registration.num_sessions;
-                });
-            });
-            return sessNumEnrollment;
-        }
-    };
+    return (
+        <Grid
+            item
+            md={12}>
+            <Paper className="payments-history">
+                <Table>
+                    <TableHead>
+                        <TableCell>ID</TableCell>
+                        <TableCell>Transaction Date</TableCell>
+                        <TableCell>
+                            {type === "enrollment" ? "Paid Sessions" : "Course"}
+                        </TableCell>
+                        <TableCell>Amount Paid</TableCell>
+                        <TableCell>Method</TableCell>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            paymentList.map((payment) => (
+                                <TableRow
+                                    component={NavLinkNoDup}
+                                    hover
+                                    key={payment.id}
+                                    to={`/accounts/parent/payment/${payment.parent}/${payment.id}`}>
+                                    <TableCell>
+                                        {payment.id}
+                                    </TableCell>
+                                    <TableCell>
+                                        {numericDateString(payment.created_at)}
+                                    </TableCell>
+                                    <TableCell>
+                                        {
+                                            type === "enrollment"
+                                                ? numPaidSessionsByPayment(payment.id)
+                                                : courseLabel(payment.registrations)
+                                        }
+                                    </TableCell>
+                                    <TableCell>
+                                        {
+                                            type === "enrollment"
+                                                ? tuitionAmount(
+                                                    course,
+                                                    numPaidSessionsByPayment(payment.id)
+                                                )
+                                                : payment.total
+                                        }
 
-    const numericDateString = (date) => {
-        let DateObject = new Date(date),
-            numericOptions = { year: "numeric", month: "numeric", day: "numeric" };
-        return DateObject.toLocaleDateString("en-US", numericOptions);
-    };
-
-    const CourseLabel = (enrollments) => {
-        return enrollments && `${enrollments.length} Course${enrollments.length !== 1 ? "s" : ""}`
-
-    };
-
-    return (<Grid item md={12}>
-        <Paper className={'payments-history'}>
-            <Table>
-                <TableHead>
-                    <TableCell>ID</TableCell>
-                    <TableCell>Transaction Date</TableCell>
-                    <TableCell>{type === "enrollment" ? "Paid Sessions" : "Course"}</TableCell>
-                    <TableCell>Amount Paid</TableCell>
-                    <TableCell>Method</TableCell>
-                </TableHead>
-                <TableBody>
-
-                    {
-                        paymentList.length > 0 ? paymentList.map((payment) => {
-                            return <TableRow
-                                hover
-                                component={NavLinkNoDup}
-                                to={`/accounts/parent/payment/${payment.parent}/${payment.id}`}
-                                key={payment.id}>
-                                <TableCell>
-                                    {payment.id}
-                                </TableCell>
-                                <TableCell>
-                                    {numericDateString(payment.created_at)}
-                                </TableCell>
-                                <TableCell>
-                                    {
-                                        type === "enrollment" ?
-                                            paidSessionsByPayment()[payment.id] :
-                                            CourseLabel(payment.registrations)
-                                    }
-                                </TableCell>
-                                <TableCell>
-                                    {type === "enrollment" ? tuitionAmount(courses[courseID], paidSessionsByPayment()[payment.id]) : payment.total}
-
-                                </TableCell>
-                                <TableCell>
-
-                                    {paymentToString(payment.method)}
-                                </TableCell>
-                            </TableRow>
-                        }) : <NoListAlert />
-                    }
-                </TableBody>
-            </Table>
-        </Paper>
-    </Grid>)
-}
+                                    </TableCell>
+                                    <TableCell>
+                                        {paymentToString(payment.method)}
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        }
+                    </TableBody>
+                </Table>
+            </Paper>
+        </Grid>
+    );
+};
 
 PaymentTable.propTypes = {
-    paymentList: PropTypes.array.isRequired,
-    type: PropTypes.oneOf(["enrollment", "parent"]).isRequired
+    "courseID": PropTypes.number.isRequired,
+    "enrollmentID": PropTypes.number.isRequired,
+    "paymentList": PropTypes.array.isRequired,
+    "type": PropTypes.oneOf(["enrollment", "parent"]).isRequired,
 };
 
 

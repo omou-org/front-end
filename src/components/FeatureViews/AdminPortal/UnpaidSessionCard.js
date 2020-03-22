@@ -9,6 +9,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 
 import * as adminUtils from "./AdminUtils";
+import {initials} from "utils";
 import {stringToColor} from "../Accounts/accountUtils";
 import {useSelector} from "react-redux";
 
@@ -37,7 +38,7 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
                         style={{
                             "backgroundColor": stringToColor(student.name),
                         }}>
-                        {adminUtils.initials(
+                        {initials(
                             student.first_name, student.last_name
                         )}
                     </Avatar>

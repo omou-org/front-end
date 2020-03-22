@@ -3,7 +3,7 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700');
 
 //Fonts
-h1, h2, h3, .heading {
+h1, h2, h3, h4, h5, h6, .heading {
   font-family: "Roboto Slab", serif !important;
   font-weight: 700 !important;
 }
@@ -16,17 +16,13 @@ h1, h2, h3, .heading {
   .icon > *{
     color:$primaryFontColor;
   }
-  
 }
-
 
 .primary.button{
   border:none !important;
   background-color: $primaryColor;
   color:white;
 }
-
-
 
 .paper{
   background-color: $paperColor !important;

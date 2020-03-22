@@ -5,19 +5,6 @@ export const statusColor = {
     "-3": "red",
 };
 
-export const initials = (first, last) => {
-    if (first) {
-        let firstI = first.charAt(0);
-        if (firstI.match(/[A-Z]/u)) {
-            firstI = first.charAt(0);
-        } else {
-            firstI = first.charAt(1);
-        }
-        const lastI = last.charAt(0);
-        return firstI + lastI;
-    }
-};
-
 export const amountDue = (hourlyTuition, sessionLeft, sessionDuration) =>
     hourlyTuition * sessionLeft * sessionDuration;
 
