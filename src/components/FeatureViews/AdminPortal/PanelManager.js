@@ -6,7 +6,7 @@ import {bindActionCreators} from "redux";
 import {GET} from "../../../actions/actionTypes";
 
 import Grid from "@material-ui/core/Grid";
-import {Button, Typography} from "@material-ui/core";
+import {Button, Typography, TextField} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import { NoListAlert } from "components/NoListAlert";
 import { FETCH_CATEGORIES_FAILED } from "actions/actionTypes";
@@ -35,6 +35,9 @@ function PanelManager(props) {
  * Fetches, configures, and displays a grid-structured panel for a given 
  * set in the store.
  * 
+ * ! IMPORTANT: This component depends on the fields being ordered in the object...
+ * ! it uses an index to differentiate fields in the record...
+ * ! id must ALWAYS be the first field, then it identifies fields from left to right
  * 
  * @prop {array} operations List of operation types (i.e ["READ", "UPDATE" ) => options are: READ, UPDATE, DELETE 
  */
@@ -42,6 +45,8 @@ function PanelManager(props) {
 
     const [categoryName, setCategoryName] = useState('');
     const [categoryDescription, setCategoryDescription] = useState('');
+
+    //recordState
     const [recordList, setRecordList] = useState([]);
 
     const records = useSelector(({Course}) => Course.CourseCategories);
@@ -117,9 +122,9 @@ function PanelManager(props) {
                     {recordElements}
                     <Grid item xs={2} md={2}>
                     <IconButton
-                        onClick={() => {alert("hello world")}}
+                        onClick={editRecord(record.id)}
                         >
-                        <EditIcon/>
+                    <EditIcon/>
                     </IconButton>
                 </Grid>
                 </Grid>
@@ -128,6 +133,90 @@ function PanelManager(props) {
         )
 
 };
+const editRecord = (id) => (e) => {
+    e.preventDefault();
+    console.log("it worked");
+    let editingRecord = recordList.find((record) => {return record.id === id});
+    let recordToUpload;
+    if(editingRecord) {
+        recordToUpload = {
+            id: editingRecord.id,
+            name: editingRecord.name,
+            description: editingRecord.description,
+        };
+
+        //! Should be updateRecord...ideally takes this as a prop
+        
+        api.updateCategory(id, recordToUpload);
+    }
+    editingRecord.editing = !editingRecord.editing;
+    let updatedRecordList = recordList.map((record) => {
+        if(record.id === id){
+            return editingRecord;
+        } else {
+            return record;
+        }
+    });
+    console.log(updatedRecordList);
+    setRecordList(updatedRecordList);
+};
+
+const handleEditRecord = (type, id) => (e) => {
+    let editingRecord = recordList.find((record) => {return record.id === id});
+    switch(type) {
+        case "name":
+            editingRecord.name = e.target.value;
+            break;
+        case "description":
+            editingRecord.description = e.target.value;
+            break;
+    }
+    
+
+    //! RecordToUpdateIndex = recordList.indexOf(editingRecord)
+    //! update record... => recordList[indexOf(editingRecord)] = editingRecord
+    let updatedRecordList = recordList.map((record) => {
+        if (record.id == id) {
+            return editingRecord;
+        } else {
+            return record;
+        }
+    });
+    setRecordList(updatedRecordList);
+};
+
+const editRecordRow = (record) => {
+    console.log("edit");
+    return (
+        <Paper square={true} className={"category-row"} >
+            <Grid container alignItems={"center"}>
+                <Grid item xs={3} md={3} >
+                    <TextField
+                        value={record.name}
+                        defaultValue={record.name}
+                        label={"Name"}
+                        onChange={handleEditRecord("name", record.id)}
+                    />
+                </Grid>
+                <Grid item xs={7} md={7}>
+                    <TextField
+                        value={record.description}
+                        defaultValue={record.description}
+                        label={"Description"}
+                        onChange={handleEditRecord("description", record.id)}
+                    />
+                </Grid>
+                <Grid item xs={2} md={2}>
+                    <Button
+                        onClick={editRecord(record.id)}
+                        className={"button"}>
+                            UPDATE
+                        </Button>
+                </Grid>
+            </Grid>
+        </Paper>
+    )
+}
     const generateGrid = () => {
         /**
          * Generates header with fields
@@ -165,10 +254,11 @@ function PanelManager(props) {
                     <Grid item xs={12}>
                         <Grid container spacing={8} alignItems={"center"}>
                             {
-                                records.length > 0 ? records.map((record) => {
+                                recordList.length > 0 ? recordList.map((record) => {
+                                    console.log(record);
                                     return (<Grid item xs={12} md={12} key={record.id}>
                                         {
-                                            viewRecordRow(record)
+                                            record.editing ? editRecordRow(record) : viewRecordRow(record)
                                         }
                                     </Grid>);
                                 }): <NoListAlert list={"Course Categories"} />
