@@ -13,6 +13,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import AdminIcon from "@material-ui/icons/Face"
 import ListItemText from "@material-ui/core/ListItemText";
+import { makeStyles } from '@material-ui/core/styles';
 // Old import
 // import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
 // New Import
@@ -29,7 +30,15 @@ import NavBarRoutes from "../Routes/NavBarRoutes";
 import LoginPage from "../Authentication/LoginPage";
 import {RootRoutes} from "../Routes/RootRoutes";
 
+const useStyles = makeStyles({
+    navigationIconStyle: {
+        height: "50px",
+    }
+  });
+  
+
 const Navigation = (props) => {
+    const classes = useStyles();
     const {pathname} = useLocation();
     const {token, isAdmin} = useSelector(({auth}) => auth);
 
@@ -87,7 +96,7 @@ const Navigation = (props) => {
                     <ListItem
                     // button prop empty? What is that?
                         // button
-                        className="listItem"
+                        className={`listItem ${classes.navigationIconStyle}`} 
                         component={NavLinkNoDup}
                         isActive={(match, location) => match
                             || (NavItem.name === "Scheduler" && location.pathname === "/")

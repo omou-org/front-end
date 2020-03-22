@@ -121,7 +121,7 @@ function AdminActionCenter(props) {
         <Grid
             className="admin-actions-wrapper"
             container
-            spacing={16}>
+            spacing={2}>
             <Grid item>
                 <Button
                     className={`button ${tabState[5] ? "active" : ""}`}

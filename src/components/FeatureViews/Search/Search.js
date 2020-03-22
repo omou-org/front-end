@@ -22,15 +22,12 @@ import {instance} from "actions/apiActions";
 
 const useStyles = makeStyles({
     navSelect: {
-    height: "43px",
-    border: "1px solid #eee",
-    background: "#ffffff",
-    borderRadius: "3px 0px 0px 3px",
-    // padding: "11px 20px 7px 15px",
-    paddingRight: "0px !important",
-    paddingLeft: "0px !important",
-    position: "relative",
-    // zIndex: "100"
+        height: "41px",
+        border: "1px solid #eee",
+        background: "#ffffff",
+        borderRadius: "3px 0px 0px 3px",
+        paddingRight: "0px !important",
+        paddingLeft: "0px !important",
     },
     navMenuItem: {
         paddingRight: "24px !important",

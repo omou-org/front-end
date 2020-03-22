@@ -39,10 +39,6 @@ body{
 
   /*Drawer Styling*/
 
-  div[class*="MuiDrawer-paperAnchorDockedLeft"] {
-    border: none !important;
-  }
-
   .OmouMain {
     @include respond-to(handhelds) {
       margin-left: 0;

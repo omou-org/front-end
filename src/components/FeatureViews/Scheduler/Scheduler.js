@@ -34,19 +34,36 @@ import {BootstrapInput, handleToolTip, sessionArray} from "./SchedulerUtils";
 import {Tooltip} from "@material-ui/core";
 import {arr_diff} from "../../Form/FormUtils";
 
-
-const styles = (theme) => ({
-    "root": {
-        "display": "flex",
-        "flexWrap": "wrap",
+const styles = theme => ({
+    root: {
+        display: "flex",
+        flexWrap: "wrap",
     },
-    "margin": {
-        "margin": theme.spacing(1),
+    margin: {
+        margin: theme.spacing(1),
     },
-    "bootstrapFormLabel": {
-        "fontSize": 18,
+    bootstrapFormLabel: {
+        fontSize: "18px"
     },
+    courseFilter: {
+        paddingRight: "10px"
+    }
 });
+
+// Calvin's code
+// const styles = (theme) => ({
+//     "root": {
+//         "display": "flex",
+//         "flexWrap": "wrap",
+//         "paddingRight": "123px",
+//     },
+//     "margin": {
+//         "margin": theme.spacing(1),
+//     },
+//     "bootstrapFormLabel": {
+//         "fontSize": 18,
+//     },
+// });
 
 
 
@@ -516,6 +533,7 @@ class Scheduler extends Component {
     };
 
     render() {
+        const { classes } = this.props
         return (
             <Paper elevation={2} className="paper scheduler">
                 <Typography
@@ -528,8 +546,6 @@ class Scheduler extends Component {
                 <Grid
                     className="scheduler-wrapper"
                     container
-                    // Old spacing
-                    // spacing={16}>
                     spacing={2}>
                     <Grid
                         className="scheduler-header"
@@ -574,6 +590,7 @@ class Scheduler extends Component {
                                         {this.state.calendarIcon
                                             ? <FormControl className="filter-select" >
                                                 <Select
+                                                    // className={classes.courseFilter}
                                                     input={
                                                         <BootstrapInput
                                                             id="filter-calendar-type"
