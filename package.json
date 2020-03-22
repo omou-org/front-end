@@ -62,6 +62,7 @@
     ]
   },
   "devDependencies": {
+    "cypress": "^4.2.0",
     "faker": "^4.1.0",
     "puppeteer": "^1.20.0",
     "redux-devtools-extension": "^2.13.8"
