@@ -100,6 +100,8 @@ class Scheduler extends Component {
         };
     }
 
+
+
     calendarComponentRef = React.createRef();
 
     componentDidMount() {
@@ -154,9 +156,10 @@ class Scheduler extends Component {
     }
 
     componentWillUnmount() {
-
+        console.log("test")
         this.props.calendarActions.resetSchedulerStatus();
     }
+
 
     formatSessions = (sessionState) => {
         let allSessions = [];
@@ -387,7 +390,6 @@ class Scheduler extends Component {
                 // sessionKey is the variable named inside the map, this is mapping over each coursekey
                 // session is the matched pairs of course and session objects
                 const session = this.props.sessions[courseKey][sessionKey];
-                session.title = session.title;
                 session.description = session.description ? session.description : "";
                 session.type = this.props.courses[session.course_id].type;
                 session.resourceId = this.props.courses[session.course_id].room_id ? this.props.courses[session.course_id].room_id : 1;
@@ -507,7 +509,6 @@ class Scheduler extends Component {
     onCourseSelect = (event) => {
         this.setState(() => {
             const courseSessionsArray = sessionArray(this.props.sessions);
-            const initialSessions = this.formatSessions(this.props.sessions);
             const selectedCourseIDs = event && event.map((course) => course.value);
             const calendarCourseIDs = [...new Set(courseSessionsArray.map((session) => session.course))];
             const nonSelectedCourseIDs = event ? arr_diff(selectedCourseIDs, calendarCourseIDs) : [];

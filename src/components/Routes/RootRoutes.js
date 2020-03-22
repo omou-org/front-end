@@ -1,9 +1,9 @@
 // React Imports
-import {Redirect, Route, Switch} from "react-router-dom";
-import {useDispatch} from "react-redux";
-import {bindActionCreators} from "redux";
-import {resetSubmitStatus} from "../../actions/registrationActions";
-import React, {useMemo} from "react";
+import { Redirect, Route, Switch } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { bindActionCreators } from "redux";
+import { resetSubmitStatus } from "../../actions/registrationActions";
+import React, { useMemo } from "react";
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/EnrollmentView";
@@ -23,9 +23,10 @@ import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
 import AdminRoute from "./AdminRoute";
 import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
 import RegistrationReceipt from "../FeatureViews/Registration/RegistrationReceipt";
+import CatsPage from "../CatsPage/CatsPage";
 
 
-export const RootRoutes = (props) => {
+export const RootRoutes = () => {
     const dispatch = useDispatch();
     dispatch(resetSubmitStatus());
 
@@ -61,7 +62,11 @@ export const RootRoutes = (props) => {
             {/* <ProtectedRoute*/}
             {/*    path='/scheduler/resource'*/}
             {/*    render={(passedProps) => <ResourceView {...passedProps} />} /> */}
-
+            <ProtectedRoute
+                exact
+                path="/cats"
+                render={(passedProps) => <CatsPage {...passedProps} />}
+            />
             <ProtectedRoute
                 exact
                 path="/noresults"

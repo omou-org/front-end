@@ -10,8 +10,9 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Loading from "../../../Loading";
 import NavLinkNoDup from "../../../Routes/NavLinkNoDup";
-import {NoListAlert} from "../../../NoListAlert";
-import {paymentToString, tuitionAmount} from "utils"
+import NoListAlert from "../../../NoListAlert";
+import { paymentToString, tuitionAmount } from "utils"
+import PaymentHistory from "../TabComponents/PaymentHistory"
 
 function PaymentTable({ paymentList, type, enrollmentID, courseID, }) {
     const Payments = useSelector(({ Payments }) => Payments);

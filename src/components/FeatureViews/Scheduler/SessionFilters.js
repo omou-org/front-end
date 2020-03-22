@@ -13,26 +13,6 @@ const styles = {
     },
 };
 
-const customStyles = {
-    menu: (provided, state) => ({
-        ...provided,
-        width: state.selectProps.width,
-        color: state.selectProps.menuColor,
-        padding: 20,
-    }),
-
-    control: (_, { selectProps: { width } }) => ({
-        width: width
-    }),
-
-    singleValue: (provided, state) => {
-        const opacity = state.isDisabled ? 0.5 : 1;
-        const transition = 'opacity 300ms';
-
-        return { ...provided, opacity, transition };
-    }
-};
-
 
 function SessionFilters({ onInstructorSelect, InstructorValue, InstructorOptions, CourseValue, onCourseSelect, CourseOptions, }) {
     let [anchorEl, setAnchorEl] = useState(null);

@@ -24,6 +24,7 @@
     "material-ui-pickers": "^2.2.4",
     "node-sass": "^4.13.1",
     "popper.js": "^1.16.0",
+    "prettier": "^2.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
@@ -42,7 +43,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "cypress open",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

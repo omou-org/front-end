@@ -1,6 +1,6 @@
 // React Imports
-import React, {useEffect, useMemo, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, {useEffect, useState} from "react";
+import {useSelector} from "react-redux";
 import PropTypes from "prop-types";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
@@ -10,22 +10,13 @@ import "./Form.scss"
 import TextField from "@material-ui/core/es/TextField/TextField";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import {bindActionCreators} from "redux";
-import * as adminActions from "../../actions/adminActions";
-import {GET} from "../../actions/actionTypes";
-import {durationParser, REQUEST_ALL} from "../../actions/apiActions";
+import {durationParser} from "../../actions/apiActions";
 import {academicLevelParse} from "../../reducers/registrationReducer";
 import InputLabel from "@material-ui/core/InputLabel";
 import {OutlinedSelect} from "../FeatureViews/Scheduler/SchedulerUtils";
+import * as hooks from "actions/hooks";
 
 const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCategory}) => {
-    const dispatch = useDispatch();
-    const api = useMemo(
-        () => ({
-            ...bindActionCreators(adminActions, dispatch),
-        }),
-        [dispatch]
-    );
     const [priceQuote, setPriceQuote] = useState(null);
     const [hourlyTuition, setHourlyTuition] = useState(null);
     const [duration, setDuration] = useState(null);
@@ -36,39 +27,27 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCateg
     const [academicList, setAcademicList] = useState([]);
     const [priceRules, setPriceRules] = useState(null);
 
-    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
     const adminPriceRules = useSelector(({"Admin": {PriceRules}}) => PriceRules);
     const categories = useSelector(({"Course":{CourseCategories}}) => CourseCategories);
 
-    useEffect(()=>{
-        api.fetchCategories();
-    },[api]);
+    const categoryStatus = hooks.useCategory();
+    const priceRuleStatus = hooks.usePriceRules();
 
     useEffect(()=>{
-        if(requestStatus.category[GET] === 200){
-            api.fetchPriceRules();
-        }
-    }, [requestStatus.category[GET]]);
-
-    useEffect(()=>{
-        if(requestStatus.priceRule[GET][REQUEST_ALL] === 200 &&
-        requestStatus.category[GET] === 200){
+        if (hooks.isSuccessful(categoryStatus, priceRuleStatus)) {
             setPriceRules(adminPriceRules
                 .filter(rule => rule.course_type === courseType)
                 .map((rule) =>({
                 ...rule,
-                category: categories.find((category) => {return category.id === rule.category}),
+                    category: categories.find((category) => (category.id === rule.category)),
             })));
         }
-    },[requestStatus.priceRule[GET][REQUEST_ALL], api]);
+    }, [categoryStatus, priceRuleStatus]);
 
     // get list of unique category objects from price rules
     const uniqueCategories = (rules) => Array.from(new Set(rules.map(rule => rule.category.id)))
-        .map(id => {
-            return {
-                ...priceRules.find(rule => rule.category.id === id).category
-            }
-        });
+        .map(id => priceRules.find(rule => rule.category.id === id).category);
+
     // get list of unique academic grades from price rules
     const uniqueAcademicGrades = (rules, categoryID) => {
         let filteredCategoryRules = rules.filter( rule => rule.category.id === categoryID);
@@ -206,19 +185,6 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCateg
         }, academic_level, durationParser[duration], event.target.value);
     };
 
-    const onUpdateFields = event => {
-        event.preventDefault();
-        let formattedCategory = {
-            value: category.id,
-            label: category.name
-        };
-        handleUpdatePriceFields({
-            value: category.id,
-            label: category.name
-        }, academic_level, durationParser[duration], sessions);
-    };
-
-    const validFields = duration && sessions && academic_level && category;
     return (
         <Grid container>
             <Grid item xs={12}>

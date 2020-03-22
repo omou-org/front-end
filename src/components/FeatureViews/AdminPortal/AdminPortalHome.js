@@ -1,23 +1,15 @@
 import React from "react";
-// Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
 import "./AdminPortal.scss";
-
 import UnpaidSessions from "./UnpaidSessions";
 
-function AdminPortalHome() {
+const AdminPortalHome = () => (
+    <Grid container>
+        <UnpaidSessions />
+    </Grid>
+);
 
-    return (
-            <Grid container>
-                <UnpaidSessions/>
-            </Grid>
-    )
-}   
-
-AdminPortalHome.propTypes = {
-    // courseTitle: PropTypes.string,
-    // admin: PropTypes.bool,
-};
+AdminPortalHome.propTypes = {};
 
 export default AdminPortalHome;

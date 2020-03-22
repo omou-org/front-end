@@ -94,8 +94,8 @@ const SelectParentDialog = ({onClose, open}) => {
     }, [actions, handleClose]);
 
     const handleOnInputChange = useCallback((input) => {
-        setSearching(true);
         if (input) {
+            setSearching(true);
             setInputString(input);
         }
     }, []);
@@ -135,7 +135,7 @@ const SelectParentDialog = ({onClose, open}) => {
             onClose={handleClose}
             open={open}>
             <DialogTitle id="simple-dialog-title">
-                <h3>Currently helping...</h3>
+                Currently helping...
             </DialogTitle>
             <DialogContent>
                 {
@@ -164,7 +164,7 @@ const SelectParentDialog = ({onClose, open}) => {
             </DialogContent>
             <DialogActions>
                 {
-                    currentParent && currentParent !== "none"
+                    currentParent && (currentParent !== "none")
                         ? <>
                             <Button onClick={handleExitParent}>
                                     Exit Parent

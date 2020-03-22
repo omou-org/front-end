@@ -119,7 +119,8 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                 }
             });
         }
-    }, [paymentMethod, courses, tutoring, discounts, priceAdjustment, priceQuote, prevPriceQuote, prevDiscounts, prevPriceAdjustment, cleanTutoring]);
+    }, [paymentMethod, courses, tutoring, discounts, priceAdjustment, currentPayingParent.balance, currentPayingParent.user.id,
+        priceQuote, prevPriceQuote, prevDiscounts, prevPriceAdjustment, cleanTutoring]);
 
     const handlePay = () => (e) => {
         e.preventDefault();

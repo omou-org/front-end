@@ -48,9 +48,9 @@ const RegistrationLanding = () => {
     const subjectOptions = useMemo(() => distinctObjectArray(
         Object.values(courses)
             // prevent a crash if some categories are not loaded yet
-            .filter(({ category }) => categories.find(({ id }) => category == id))
+            .filter(({category}) => categories.find(({id}) => Number(category) === id))
             .map(({ category }) => ({
-                "label": categories.find(({ id }) => category == id).name,
+                "label": categories.find(({id}) => Number(category) === id).name,
                 "value": category,
             }))
     ), [categories, courses]);
@@ -93,7 +93,7 @@ const RegistrationLanding = () => {
 
     const renderFilter = (filterType) => {
         let options = [];
-        if(isLoading || categories.length == 0){
+        if (isLoading || categories.length === 0) {
             return "";
         }
 
@@ -176,9 +176,9 @@ const RegistrationLanding = () => {
                 <Grid
                     className="catalog-setting-wrapper"
                     item
-                    md={4}
-                    xs={12}>
+                >
                     <Tabs
+                        indicatorColor="primary"
                         className="catalog-setting"
                         value={view}>
                         <Tab

@@ -47,23 +47,6 @@ function RegistrationReceipt(props) {
     const parent = parents[params.parentID];
     const paymentStatus = usePayment(params.paymentID && params.paymentID);
 
-    useEffect(() => {
-        if (isSuccessful(paymentStatus) &&
-            (JSON.stringify(prevPaymentReceipt) !== JSON.stringify(paymentReceipt) ||
-                JSON.stringify(prevPaymentReceipt) === "{}"
-            )
-        ) {
-            let payment = Payments[params.parentID][params.paymentID];
-            let enrollments = payment.registrations.map(registration => registration.enrollment_details);
-            setPaymentReceipt(payment);
-            setCourseReceipt(courseReceiptInitializer(enrollments));
-        }
-    }, [paymentStatus, paymentReceipt]);
-
-    if ((!registrationStatus || isFail(registrationStatus)) && !params.paymentID) {
-        return <Loading />
-    }
-
     const courseReceiptInitializer = (enrollments) => {
         let receipt = {};
         let studentIDs = [...new Set(enrollments.map(enrollment => enrollment.student))];
@@ -85,6 +68,23 @@ function RegistrationReceipt(props) {
         });
         return receipt;
     };
+
+    useEffect(() => {
+        if (isSuccessful(paymentStatus) &&
+            (JSON.stringify(prevPaymentReceipt) !== JSON.stringify(paymentReceipt) ||
+                JSON.stringify(prevPaymentReceipt) === "{}"
+            )
+        ) {
+            let payment = Payments[params.parentID][params.paymentID];
+            let enrollments = payment.registrations.map(registration => registration.enrollment_details);
+            setPaymentReceipt(payment);
+            setCourseReceipt(courseReceiptInitializer(enrollments));
+        }
+    }, [paymentStatus, paymentReceipt, courseReceiptInitializer, Payments, params.parentID, params.paymentID, prevPaymentReceipt]);
+
+    if ((!registrationStatus || isFail(registrationStatus)) && !params.paymentID) {
+        return <Loading />
+    }
 
     // If we're coming from the registration cart, set-up state variables after we've completed registration requests
     if (registrationStatus && registrationStatus.status >= 200 &&
@@ -115,8 +115,8 @@ function RegistrationReceipt(props) {
 
     const numSessions = (courseID, studentID) => paymentReceipt.registrations
         .find((registration) => (
-            registration.enrollment_details.student == studentID &&
-            registration.enrollment_details.course == courseID)).num_sessions;
+            registration.enrollment_details.student === Number(studentID) &&
+            registration.enrollment_details.course === Number(courseID))).num_sessions;
 
     const renderCourse = (enrolledCourse, studentID) => (<Grid item key={enrolledCourse.course_id}>
         <Grid
@@ -338,7 +338,7 @@ function RegistrationReceipt(props) {
                                     <Grid item xs={5}>
                                         <Typography
                                             align="right"
-                                            variant="subheading">
+                                            variant="subtitle1">
                                             - ${paymentReceipt.discount_total}
                                         </Typography>
                                     </Grid>
@@ -360,7 +360,7 @@ function RegistrationReceipt(props) {
                                     <Grid item xs={5}>
                                         <Typography
                                             align="right"
-                                            variant="subheading">
+                                            variant="subtitle1">
                                             {paymentReceipt.price_adjustment}
                                         </Typography>
                                     </Grid>
