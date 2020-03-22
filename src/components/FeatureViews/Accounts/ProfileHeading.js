@@ -1,423 +1,322 @@
-import {connect} from "react-redux";
-import React, {Component} from "react";
-import {Typography} from "@material-ui/core";
-import EmailIcon from "@material-ui/icons/EmailOutlined";
-import PhoneIcon from "@material-ui/icons/PhoneOutlined";
-import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
-import EditIcon from "@material-ui/icons/EditOutlined";
+import React, {useCallback, useMemo, useState} from "react";
+import {Link} from "react-router-dom";
+import PropTypes from "prop-types";
+import {useSelector} from "react-redux";
+
+import Button from "@material-ui/core/Button";
 import CalendarIcon from "@material-ui/icons/CalendarToday";
-import {ReactComponent as IDIcon} from "../../identifier.svg";
+import EditIcon from "@material-ui/icons/EditOutlined";
+import EmailIcon from "@material-ui/icons/EmailOutlined";
+import Grid from "@material-ui/core/Grid";
+import Hidden from "@material-ui/core/Hidden";
+import Menu from "@material-ui/core/Menu";
+import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
+import PhoneIcon from "@material-ui/icons/PhoneOutlined";
+import Typography from "@material-ui/core/Typography";
+
+import "./Accounts.scss";
+import {addDashes} from "./accountUtils";
 import {ReactComponent as BirthdayIcon} from "../../birthday.svg";
 import {ReactComponent as GradeIcon} from "../../grade.svg";
-import {ReactComponent as SchoolIcon} from "../../school.svg";
-import Grid from "@material-ui/core/Grid";
-import Chip from "@material-ui/core/Chip";
-import Button from "@material-ui/core/Button";
-import {NavLink} from "react-router-dom";
-import {addDashes} from "./accountUtils";
-import Hidden from "@material-ui/core/es/Hidden/Hidden";
-import OutOfOffice from "./OutOfOffice";
+import {ReactComponent as IDIcon} from "../../identifier.svg";
 import InstructorAvailability from "./InstructorAvailability";
-import "./Accounts.scss";
-import Menu from "@material-ui/core/Menu";
+import OutOfOffice from "./OutOfOffice";
+import RoleChip from "./RoleChip";
+import {ReactComponent as SchoolIcon} from "../../school.svg";
 
-class ProfileHeading extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            "open": false,
-            "anchorEl": null,
-        };
-    }
 
-    renderStudentProfile() {
-        return (
-            <Grid
-                item
-                xs={12}>
-                <Grid container>
-                    <Grid
-                        className="rowPadding"
-                        item
-                        md={1}
-                        xs={1}>
-                        <IDIcon className="iconScaling" />
-                    </Grid>
+const ProfileHeading = ({user}) => {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const isAdmin = useSelector(({auth}) => auth.isAdmin);
 
-                    <Grid
-                        className="rowPadding"
-                        item
-                        md={5}
-                        xs={5}>
-                        <Typography className="rowText">
-                            #{this.props.user.summit_id ? this.props.user.summit_id : this.props.user.user_id}
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        className="rowPadding"
-                        item
-                        md={1}
-                        xs={1}>
-                        <BirthdayIcon className="iconScaling" />
-                    </Grid>
-                    <Grid
-                        className="rowPadding"
-                        item
-                        md={5}
-                        xs={5}>
-                        <Typography className="rowText">
-                            {this.props.user.birthday}
-                        </Typography>
-                    </Grid>
+    const handleOpen = useCallback(({currentTarget}) => {
+        setAnchorEl(currentTarget);
+    }, []);
 
-                    <Grid
-                        className="rowPadding"
-                        item
-                        md={1}
-                        xs={1}>
-                        <GradeIcon className="iconScaling" />
-                    </Grid>
-                    <Grid
-                        className="rowPadding"
-                        item
-                        md={5}
-                        xs={5}>
-                        <Typography className="rowText">
-                            Grade {this.props.user.grade}
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        className="rowPadding"
-                        item
-                        md={1}
-                        xs={1}>
-                        <PhoneIcon className="iconScaling" />
-                    </Grid>
-                    <Grid
-                        className="rowPadding"
-                        item
-                        md={5}
-                        xs={5}>
-                        <Typography className="rowText">
-                            {addDashes(this.props.user.phone_number)}
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        className="rowPadding"
-                        item
-                        md={1}
-                        xs={1}>
-                        <SchoolIcon className="iconScaling" />
-                    </Grid>
-                    <Grid
-                        className="rowPadding"
-                        item
-                        md={5}
-                        xs={5}>
-                        <Typography className="rowText">
-                            {this.props.user.school}
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        className="emailPadding"
-                        item
-                        md={1}
-                        xs={1}>
-                        <a href={`mailto:${this.props.user.email}`}>
-                            <EmailIcon />
-                        </a>
-                    </Grid>
-                    <Grid
-                        className="emailPadding"
-                        item
-                        md={5}
-                        xs={5}>
-                        <a href={`mailto:${this.props.user.email}`}>
-                            <Typography className="rowText" >
-                                {this.props.user.email}
-                            </Typography>
-                        </a>
-                    </Grid>
-                </Grid>
-            </Grid>);
-    }
+    const handleClose = useCallback(() => {
+        setAnchorEl(null);
+    }, []);
 
-    renderTeacherProfile() {
-        return (
-            <Grid
-                item
-                xs={12}>
-                <Grid container>
-                    <Grid
-                        className="rowPadding"
-                        item
-                        md={1}>
-                        <IDIcon className="iconScaling" />
-                    </Grid>
-                    <Grid
-                        className="rowPadding"
-                        item
-                        md={11}>
-                        <Typography className="rowText">
-                            #{this.props.user.user_id}
-                        </Typography>
-                    </Grid>
-                    <Grid container>
-                        <Grid
-                            className="rowPadding"
-                            item
-                            md={1}>
-                            <PhoneIcon className="iconScaling" />
-                        </Grid>
-                        <Grid
-                            className="rowPadding"
-                            item
-                            md={11}>
-                            <Typography className="rowText">
-                                {addDashes(this.props.user.phone_number)}
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                </Grid>
-                <Grid container>
-                    <Grid
-                        className="emailPadding"
-                        item
-                        md={1}>
-                        <a href={`mailto:${this.props.user.email}`}>
-                            <EmailIcon />
-                        </a>
-                    </Grid>
-                    <Grid
-                        className="emailPadding"
-                        item
-                        md={11}>
-                        <a href={`mailto:${this.props.user.email}`}>
-                            <Typography className="rowText" >
-                                {this.props.user.email}
-                            </Typography>
-                        </a>
-                    </Grid>
-                </Grid>
-            </Grid>);
-    }
-
-    renderParentProfile() {
-        return (
-            <Grid
-                item
-                xs={12}>
-                <Grid container>
-                    <Grid
-                        className="rowPadding"
-                        item
-                        xs={1}>
-                        <IDIcon className="iconScaling" />
-                    </Grid>
-                    <Grid
-                        className="rowPadding"
-                        item
-                        xs={5}>
-                        <Typography className="rowText">
-                            #{this.props.user.user_id}
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        className="rowPadding"
-                        item
-                        xs={1}>
-                        <MoneyIcon className="iconScaling" />
-                    </Grid>
-                    <Grid
-                        className="rowPadding"
-                        item
-                        xs={5}>
-                        <Typography className="rowText">
-                            ${this.props.user.balance}
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        className="rowPadding"
-                        item
-                        xs={1}>
-                        <PhoneIcon className="iconScaling" />
-                    </Grid>
-                    <Grid
-                        className="rowPadding"
-                        item
-                        xs={5}>
-                        <Typography className="rowText">
-                            {addDashes(this.props.user.phone_number)}
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        className="rowPadding"
-                        item
-                        xs={6} />
-                    <Grid
-                        className="emailPadding"
-                        item
-                        xs={1}>
-                        <a href={`mailto:${this.props.user.email}`}>
-                            <EmailIcon />
-                        </a>
-                    </Grid>
-                    <Grid
-                        className="emailPadding"
-                        item
-                        xs={5}>
-                        <a href={`mailto:${this.props.user.email}`}>
-                            <Typography className="rowText" >
-                                {this.props.user.email}
-                            </Typography>
-                        </a>
-                    </Grid>
-                    <Grid
-                        className="rowPadding"
-                        item
-                        xs={6} />
-                </Grid>
-            </Grid>);
-    }
-
-    handleOpen = (e) => {
-        this.setState({
-            open: true,
-            anchorEl: e.currentTarget,
-        });
-    };
-
-    handleClose = (e) => {
-        e.preventDefault();
-        this.setState({
-            open: false,
-            anchorEl: null,
-        });
-    };
-
-    renderEditandAwayButton() {
-        if (this.props.user.role != "receptionist") {
-            return (
-                <>
-                    <Grid
-                        spacing={16}
-                        container
-                        align="right">
-
-                        <Grid item align= "right" className="editPadding">
-                            {
-                                this.props.user.role === "instructor" && <><Button
-                                    aria-controls="simple-menu"
-                                    aria-haspopup="true"
-                                    variant="outlined"
-                                    onClick={this.handleOpen}
-                                >
-                                    <CalendarIcon/>   Schedule Options
-                                </Button>
-                                <Menu
-                                    anchorEl={this.state.anchorEl}
-                                    keepMounted
-                                    open={this.state.open}
-                                    onClose={this.handleClose}
-                                >
-                                    <InstructorAvailability
-                                        button={false}
-                                        instructorID={this.props.user.user_id}
-                                    />
-                                    <OutOfOffice
-                                        button={false}
-                                        instructorID={this.props.user.user_id}
-                                    />
-                                </Menu>
-                                </>
-                            }
-                        </Grid>
-                        <Grid item md={1}>
-                        </Grid>
-                        <Grid item md={3} align="right" component={Hidden} mdDown className="editPadding">
-                            <Button
-                                variant="outlined"
-                                component={NavLink}
-                                to={`/registration/form/${this.props.user.role}/${this.props.user.user_id}/edit`}>
-                                <EditIcon />
-                                Edit Profile
-                            </Button>
-                        </Grid>
-                        <Grid item md={3} align="right" component={Hidden} lgUp className="editPadding">
-                            <Button
-                                variant="outlined"
-                                component={NavLink}
-                                to={`/registration/form/${this.props.user.role}/${this.props.user.user_id}/edit`}>
-                                <EditIcon />
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </>
-            );
-        }
-
-    }
-
-    render() {
-        let profileDetails;
-        switch (this.props.user.role) {
-            case "student":
-                profileDetails = this.renderStudentProfile();
-                break;
-            case "instructor":
-                profileDetails = this.renderTeacherProfile();
-                break;
-            case "parent":
-                profileDetails = this.renderParentProfile();
-                break;
-            case "receptionist":
-                profileDetails = this.renderTeacherProfile();
-                break;
-            default:
-        }
-        return (
-
-            <div>
+    const renderEditandAwayButton = () => (
+        <Grid
+            container
+            item
+            xs={4}>
+            {
+                user.role === "instructor" &&
                 <Grid
-                    alignItems="center"
-                    container
+                    align="left"
+                    className="schedule-button"
                     item
                     xs={12}>
-                    <Grid
-                        align="left"
-                        item
-                        xs={6}>
-                        <Grid
-                            alignItems="center"
-                            container>
-
-                            <h1 className="ProfileName">
-                                {this.props.user.name}
-                            </h1>
-                            <div style={{"paddingLeft": 30}}>
-                                <Hidden smDown>
-                                    <Chip
-                                        className={`userLabel ${this.props.user.role}`}
-                                        label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)} />
-                                </Hidden>
-                            </div>
-                        </Grid>
-                    </Grid>
-                    <Grid
-                        align="right"
-                        item
-                        xs={6}>
-                        {this.props.isAdmin && this.renderEditandAwayButton()}
-                    </Grid>
+                    <Button
+                        aria-controls="simple-menu"
+                        aria-haspopup="true"
+                        onClick={handleOpen}
+                        variant="outlined">
+                        <CalendarIcon />Schedule Options
+                    </Button>
+                    <Menu
+                        anchorEl={anchorEl}
+                        keepMounted
+                        onClose={handleClose}
+                        open={anchorEl !== null}>
+                        <InstructorAvailability
+                            button={false}
+                            instructorID={user.user_id} />
+                        <OutOfOffice
+                            button={false}
+                            instructorID={user.user_id} />
+                    </Menu>
                 </Grid>
-                {profileDetails}
-            </div>
+            }
+            {
+                isAdmin &&
+                <>
+                    <Grid
+                        component={Hidden}
+                        item
+                        mdDown
+                        xs={12}>
+                        <Button
+                            component={Link}
+                            to={`/registration/form/${user.role}/${user.user_id}/edit`}
+                            variant="outlined">
+                            <EditIcon />
+                            Edit Profile
+                        </Button>
+                    </Grid>
+                    <Grid
+                        component={Hidden}
+                        item
+                        lgUp
+                        xs={12}>
+                        <Button
+                            component={Link}
+                            to={`/registration/form/${user.role}/${user.user_id}/edit`}
+                            variant="outlined">
+                            <EditIcon />
+                        </Button>
+                    </Grid>
+                </>
+            }
+        </Grid>
+    );
+
+    const profileDetails = useMemo(() => {
+        const IDRow = ({width = 6}) => (
+            <>
+                <Grid
+                    className="rowPadding"
+                    item
+                    xs={1}>
+                    <IDIcon className="iconScaling" />
+                </Grid>
+                <Grid
+                    className="rowPadding"
+                    item
+                    xs={width - 1}>
+                    <Typography className="rowText">
+                        #{user.summit_id || user.user_id}
+                    </Typography>
+                </Grid>
+            </>
         );
-    }
-}
 
-const mapStateToProps = (state) => ({
-    "isAdmin": state.auth.isAdmin,
-});
+        const EmailRow = () => (
+            <>
+                <Grid
+                    className="emailPadding"
+                    item
+                    md={1}>
+                    <a href={`mailto:${user.email}`}>
+                        <EmailIcon />
+                    </a>
+                </Grid>
+                <Grid
+                    className="emailPadding"
+                    item
+                    md={5}>
+                    <a href={`mailto:${user.email}`}>
+                        <Typography className="rowText" >
+                            {user.email}
+                        </Typography>
+                    </a>
+                </Grid>
+            </>
+        );
 
-export default connect(mapStateToProps)(ProfileHeading);
+        const PhoneRow = ({width = 6}) => (
+            <>
+                <Grid
+                    className="rowPadding"
+                    item
+                    xs={1}>
+                    <PhoneIcon className="iconScaling" />
+                </Grid>
+                <Grid
+                    className="rowPadding"
+                    item
+                    xs={width - 1}>
+                    <Typography className="rowText">
+                        {addDashes(user.phone_number)}
+                    </Typography>
+                </Grid>
+            </>
+        );
+
+        const BirthdayRow = () => (
+            <>
+                <Grid
+                    className="rowPadding"
+                    item
+                    xs={1}>
+                    <BirthdayIcon className="iconScaling" />
+                </Grid>
+                <Grid
+                    className="rowPadding"
+                    item
+                    xs={5}>
+                    <Typography className="rowText">
+                        {user.birthday}
+                    </Typography>
+                </Grid>
+            </>
+        );
+
+        switch (user.role) {
+            case "student":
+                return (
+                    <>
+                        <IDRow />
+                        <BirthdayRow />
+                        <Grid
+                            className="rowPadding"
+                            item
+                            xs={1}>
+                            <GradeIcon className="iconScaling" />
+                        </Grid>
+                        <Grid
+                            className="rowPadding"
+                            item
+                            xs={5}>
+                            <Typography className="rowText">
+                                Grade {user.grade}
+                            </Typography>
+                        </Grid>
+                        <PhoneRow />
+                        <Grid
+                            className="rowPadding"
+                            item
+                            xs={1}>
+                            <SchoolIcon className="iconScaling" />
+                        </Grid>
+                        <Grid
+                            className="rowPadding"
+                            item
+                            xs={5}>
+                            <Typography className="rowText">
+                                {user.school}
+                            </Typography>
+                        </Grid>
+                        <EmailRow />
+                    </>
+                );
+            case "instructor":
+            case "receptionist":
+                return (
+                    <>
+                        <IDRow width={12} />
+                        <PhoneRow width={12} />
+                        <EmailRow />
+                    </>
+                );
+            case "parent":
+                return (
+                    <>
+                        <IDRow />
+                        <Grid
+                            className="rowPadding"
+                            item
+                            xs={1}>
+                            <MoneyIcon className="iconScaling" />
+                        </Grid>
+                        <Grid
+                            className="rowPadding"
+                            item
+                            xs={5}>
+                            <Typography className="rowText">
+                                ${user.balance}
+                            </Typography>
+                        </Grid>
+                        <PhoneRow width={12} />
+                        <EmailRow />
+                    </>
+                );
+            default:
+                return null;
+        }
+    }, [user]);
+
+    return (
+        <Grid
+            alignItems="center"
+            container
+            item
+            xs={12}>
+            <Grid
+                align="left"
+                alignItems="center"
+                container
+                item
+                xs={8}>
+                <Grid
+                    className="profile-name"
+                    item
+                    style={{"paddingRight": 10}}>
+                    <Typography variant="h4">
+                        {user.name}
+                    </Typography>
+                </Grid>
+                <Grid item>
+                    <Hidden smDown>
+                        <RoleChip role={user.role} />
+                    </Hidden>
+                </Grid>
+            </Grid>
+            {renderEditandAwayButton()}
+            <Grid
+                container
+                style={{
+                    "margin": user.role === "instructor" ? "-10px 0" : "10px 0",
+                }}>
+                {profileDetails}
+            </Grid>
+        </Grid>
+    );
+};
+
+ProfileHeading.propTypes = {
+    "user": PropTypes.shape({
+        "balance": PropTypes.string,
+        "birthday": PropTypes.string,
+        "email": PropTypes.string,
+        "grade": PropTypes.number,
+        "name": PropTypes.string,
+        "phone_number": PropTypes.string,
+        "role": PropTypes.oneOf([
+            "instructor",
+            "parent",
+            "receptionist",
+            "student",
+        ]),
+        "school": PropTypes.string,
+        "summit_id": PropTypes.string,
+        "user_id": PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number,
+        ]),
+    }).isRequired,
+};
+
+export default ProfileHeading;

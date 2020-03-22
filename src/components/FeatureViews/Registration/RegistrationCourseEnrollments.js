@@ -34,7 +34,7 @@ import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import NoListAlert from "../../NoListAlert";
 import {sessionArray} from "../Scheduler/SchedulerUtils";
-import {SessionPaymentStatusChip} from "../../SessionPaymentStatusChip";
+import SessionPaymentStatusChip from "../../SessionPaymentStatusChip";
 import {upcomingSession} from "../../../utils";
 
 const TableToolbar = (

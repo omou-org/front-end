@@ -18,9 +18,18 @@
   .tabs{
     text-align:left;
     left:0;
+
+    .tab {
+      min-width: 130px;
+    }
+
   }
   .heading {
     margin: 25px 0;
+  }
+
+  .card-container {
+    margin-top: 20px;
   }
 
   .toggleView {
@@ -45,10 +54,7 @@
 
     .row {
       cursor: pointer;
-    }
-
-    .editPadding{
-      margin-right:0%;
+      text-decoration: none;
     }
 
     .editButton {
@@ -102,10 +108,23 @@
     font-size: 14px;
     line-height: 16px;
   }
+  .save-availability {
+    color: white;
+  }
 }
+
+
 
 /*Profile Heading Styles*/
 .UserProfile {
+  .profile-component-container {
+    padding-top: 15px;
+  }
+
+  .schedule-button {
+    margin-bottom: 10px;
+  }
+
   .paper {
     padding: 3%;
 
@@ -195,6 +214,15 @@
   .profileIcons {
     font-size: 24px;
   }
+
+  .card-content {
+    margin-top: 10px;
+  }
+
+  .profile-details {
+    margin: 10px 0;
+  }
+
   .userLabel {
     color: white;
     font-size: 18px;
@@ -216,4 +244,12 @@
       background-color: $parentColor;
     }
   }
+}
+
+.ProfileCard {
+  cursor: pointer;
+}
+
+.avatar {
+  color: white;
 }
