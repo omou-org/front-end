@@ -46,16 +46,6 @@ function TestPanel() {
 
     const fetchPropFunction = api.fetchCategories;
 
-    useEffect(()=>{
-        if(categories.length !== categoryList.length){
-            let parsedCategoryList = categories.map((category)=>({
-                            ...category,
-                            editing: false,
-                        }));
-            setCategoryList(parsedCategoryList);
-        }
-    }, [categories]);
-
     const handleChange = (field) => (e) =>{
         switch(field){
             case "name":{
