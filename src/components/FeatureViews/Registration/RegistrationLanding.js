@@ -194,7 +194,7 @@ const RegistrationLanding = () => {
                 <Grid
                     container
                     layout="row"
-                    spacing={8}>
+                    spacing={1}>
                     <Grid
                         item
                         md={4}

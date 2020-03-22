@@ -346,7 +346,7 @@ function DiscountRow({discount, type, classes}){
                     </IconButton>
                 </Grid>
             </Grid>
-            <Grid container spacing={16} alignItems={"center"}>
+            <Grid container spacing={2} alignItems={"center"}>
                 {
                     Object.entries(DiscountFields)
                         .filter( ([fieldName, field]) => BaseFields.indexOf(fieldName) < 0 )

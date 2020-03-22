@@ -94,7 +94,7 @@ function ManageDiscounts() {
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                    <Grid container spacing={8} alignItems={"center"}>
+                    <Grid container spacing={1} alignItems={"center"}>
                         {
                             // display discounts with name + description
                             discountList.length > 0 ?

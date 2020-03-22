@@ -310,7 +310,7 @@ const Notes = ({ownerType, ownerID}) => {
             container
             item
             md={12}
-            spacing={16}>
+            spacing={2}>
             <Dialog
                 aria-describedby="simple-modal-description"
                 aria-labelledby="simple-modal-title"

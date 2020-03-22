@@ -89,7 +89,7 @@ const InstructorCourses = ({ instructorID }) => {
             <Grid
                 direction="row-reverse"
                 container
-                spacing={8}>
+                spacing={1}>
                 {
                     courseIDs
                         .sort((courseA, courseB) => {

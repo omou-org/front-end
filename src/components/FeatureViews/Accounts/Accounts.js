@@ -38,6 +38,16 @@ const styles = theme => ({
         flexGrow: 1,
         backgroundColor: theme.palette.background.paper,
     },
+    tableMain: {
+        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+        width: "100%",
+        display: "table",
+        borderSpacing: 0,
+        borderCollapse: "collapse"
+    },
+    tableRow: {
+        height: 57,
+    }
 });
 
 const tabStyle = {
@@ -160,11 +170,12 @@ class Accounts extends Component {
                 "fontSize": 14,
             },
         });
+        const { classes } = this.props;
 
         const tableView = () => (
-            <Table resizable={false} className="AccountsTable">
+            <Table resizable="false" className={`AccountsTable ${classes.tableMain}`}>
                 <TableHead>
-                    <TableRow>
+                    <TableRow className={classes.tableRow}>
                         <TableCell >Name</TableCell>
                         <TableCell >Email</TableCell>
                         <TableCell >Phone</TableCell>
@@ -246,7 +257,7 @@ class Accounts extends Component {
                     alignItems="center"
                     container
                     direction="row"
-                    spacing={16}
+                    spacing={2}
                     style={{ "marginTop": 20 }}
                     xs={12}>
                     {Object.values(userList).map((user) => (
@@ -357,7 +368,7 @@ class Accounts extends Component {
                         className="accounts-list-wrapper"
                         container
                         direction="row"
-                        spacing={8}>
+                        spacing={1}>
                         {
                             loading ? <Loading/> :
                             this.state.mobileView

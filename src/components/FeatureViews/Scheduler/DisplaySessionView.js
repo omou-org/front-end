@@ -174,7 +174,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                 className="session-view"
                 container
                 direction="row"
-                spacing={8}>
+                spacing={1}>
                 <Grid
                     item
                     sm={12}>
@@ -204,7 +204,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                     className="session-view-details"
                     container
                     item
-                    spacing={16}
+                    spacing={2}
                     xs={6}>
                     <Grid
                         item

@@ -300,7 +300,7 @@ class ProfileHeading extends Component {
             return (
                 <>
                     <Grid
-                        spacing={16}
+                        spacing={2}
                         container
                         align="right">
 

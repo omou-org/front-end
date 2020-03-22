@@ -230,7 +230,7 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCateg
                       className={"tutoring-price-quote"}
                       direction={"column"}
                       justify={"flex-end"}
-                      spacing={32}>
+                      spacing={4}>
                     <Grid item>
                         <Grid container direction={"row"} justify={"flex-end"}>
                             <Grid item xs={3}>

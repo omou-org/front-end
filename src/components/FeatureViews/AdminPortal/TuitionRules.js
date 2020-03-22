@@ -91,7 +91,7 @@ function TuitionRules() {
                 </Grid>
             </Grid>
             <Grid item xs={12}>
-                <Grid container spacing={8} alignItems={"center"}>
+                <Grid container spacing={1} alignItems={"center"}>
                     {
                         tuitionRules.length > 0 ? tuitionRules.map((tuition)=> {
                             return (tuition && <Grid item xs={12} md={12} key={tuition.id}>

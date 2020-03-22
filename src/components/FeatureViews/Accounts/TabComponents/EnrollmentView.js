@@ -230,7 +230,7 @@ const CourseSessionStatus = () => {
                         </Grid>
                         <Grid
                             container
-                            spacing={8}>
+                            spacing={1}>
                             {sessions.length !== 0
                                 ? sessions.map((session, i) => {
                                     const { day, date, startTime, endTime, status, tuition, id, course_id, instructor } =
@@ -344,7 +344,7 @@ const CourseSessionStatus = () => {
                         direction={"row"}
                         alignItems={"center"}
                         justify={"flex-start"}
-                        spacing={16}
+                        spacing={2}
                     >
                         <Grid item>
                             <AddSessions

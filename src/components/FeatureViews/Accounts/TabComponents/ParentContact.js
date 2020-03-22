@@ -27,7 +27,7 @@ const ParentContact = ({parent_id}) => {
             md={12}>
             <Grid
                 container
-                spacing={16}>
+                spacing={2}>
                 <Grid
                     item
                     md={12}

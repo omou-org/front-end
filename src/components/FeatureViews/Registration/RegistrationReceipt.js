@@ -227,7 +227,7 @@ function RegistrationReceipt(props) {
             />
             <Grid container
                 direction={"column"}
-                spacing={16}
+                spacing={2}
             >
                 <Grid item>
                     <Typography variant={"h2"} align={"left"}>
@@ -308,7 +308,7 @@ function RegistrationReceipt(props) {
                     <Grid container
                         direction="column"
                         justify="center"
-                        spacing={8}
+                        spacing={1}
                     >
                         <Grid item xs={12}>
                             {
@@ -390,7 +390,7 @@ function RegistrationReceipt(props) {
                 </Grid>
                 <Grid item xs={12} className={"receipt-actions"}>
                     <Grid container
-                        spacing={8}
+                        spacing={1}
                         direction="row"
                         justify="flex-end">
                         <Grid item>

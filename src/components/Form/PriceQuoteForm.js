@@ -220,14 +220,14 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                 xs={9}>
                 <Grid
                     container
-                    spacing={8}>
+                    spacing={1}>
                     <Grid
                         item
                         xs={12}>
                         <Grid
                             container
                             direction="column"
-                            spacing={8}>
+                            spacing={1}>
                             <Grid item>
                                 <Grid
                                     container

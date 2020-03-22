@@ -53,7 +53,7 @@ const AccountFilters = () => {
             container
             direction="row"
             item
-            spacing={16}>
+            spacing={2}>
             <Grid item>
                 <Typography
                     align="left"

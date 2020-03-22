@@ -27,7 +27,7 @@ const StudentInfo = ({user}) => {
             alignItems="center"
             container
             direction="row"
-            spacing={40}
+            spacing={5}
             md={12}
             xs={10}>
             {

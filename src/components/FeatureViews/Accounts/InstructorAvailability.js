@@ -165,11 +165,11 @@ const InstructorAvailability = ({ instructorID, button }) => {
                         alignItems="center"
                         container
                         direction="column"
-                        spacing={16}>
+                        spacing={2}>
                         <Grid item>
                             <Grid
                                 direction="row"
-                                spacing={32}
+                                spacing={4}
                                 container>
                                     {
                                         Object.values(availability)
@@ -197,7 +197,7 @@ const InstructorAvailability = ({ instructorID, button }) => {
                         <Grid item>
                             <Grid
                                 direction="row"
-                                spacing={32}
+                                spacing={4}
                                 container>
                                     {
                                         Object.values(availability)

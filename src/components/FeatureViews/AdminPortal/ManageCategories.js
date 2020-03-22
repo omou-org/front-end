@@ -125,7 +125,7 @@ function ManageCategories() {
                 </Grid>
             </Grid>
             <Grid item xs={12}>
-                <Grid container spacing={8} alignItems={"center"}>
+                <Grid container spacing={1} alignItems={"center"}>
                     {
                         categoryList.length > 0 ? categoryList
                             .sort((categoryA, categoryB) => (categoryB.id - categoryA.id))
