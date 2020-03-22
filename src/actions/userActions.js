@@ -263,6 +263,19 @@ export const fetchAccountNotes = wrapNoteGet(
     ]
 );
 
+export const useAccountNotes = (ownerID, ownerType) => wrapUseNote(
+    "/account/note/",
+    types.FETCH_ACCOUNT_NOTE_SUCCESSFUL,
+    {
+        ownerID,
+        ownerType,
+    }
+)(null, useMemo(() => ({
+    "params": {
+        "user_id": ownerID,
+    },
+}), [ownerID]));
+
 export const postAccountNote = wrapNotePost(
     "/account/note/",
     [

@@ -95,7 +95,6 @@ const PaymentTable = ({paymentList, type, enrollmentID, courseID}) => {
                                                 )
                                                 : payment.total
                                         }
-
                                     </TableCell>
                                     <TableCell>
                                         {paymentToString(payment.method)}

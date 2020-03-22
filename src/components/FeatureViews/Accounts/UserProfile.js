@@ -29,6 +29,7 @@ import BackButton from "components/BackButton";
 import ComponentViewer from "./ComponentViewer.js";
 import Loading from "components/Loading";
 import ProfileHeading from "./ProfileHeading.js";
+import {useAccountNotes} from "actions/userActions";
 import UserAvatar from "./UserAvatar";
 
 const userTabs = {
@@ -117,7 +118,10 @@ const UserProfile = () => {
     const {accountType, accountID} = useParams();
 
     const [tabIndex, setTabIndex] = useState(0);
+    const [displayTabs, setDisplayTabs] = useState(userTabs[accountType]);
+
     const fetchStatus = useUser(accountID, accountType);
+    useAccountNotes(accountID, accountType);
 
     const user = useMemo(() => {
         switch (accountType) {
@@ -182,47 +186,58 @@ const UserProfile = () => {
                     onChange={handleTabChange}
                     textColor="primary"
                     value={tabIndex}>
-                    {userTabs[accountType].map((tab) => (
+                    {displayTabs.map((tab) => (
                         <Tab
                             key={tab.tab_id}
                             label={<>{tab.icon} {tab.tab_heading}</>} />
                     ))}
                 </Tabs>
                 <ComponentViewer
-                    inView={userTabs[accountType][tabIndex].tab_id}
+                    inView={displayTabs[tabIndex].tab_id}
                     user={user} />
             </>
         );
-    }, [accountType, handleTabChange, tabIndex, user]);
+    }, [displayTabs, handleTabChange, tabIndex, user]);
 
     // reset to first tab when profile changes
     useEffect(() => {
         setTabIndex(0);
     }, [accountType, accountID]);
 
+    // reset tab list when profile type changes
+    useEffect(() => {
+        setDisplayTabs(userTabs[accountType]);
+    }, [accountType]);
 
     useEffect(() => {
-        if (user && user.role !== "receptionist") {
+        if (user) {
             const numImportantNotes = Object.values(user.notes || {})
                 .reduce((total, {important}) =>
                     important ? total + 1 : total, 0);
-
-            userTabs[user.role].find((tab) => tab.tab_id === 7).icon = (
-                <Badge
-                    badgeContent={numImportantNotes}
-                    color="primary">
-                    <NoteIcon className="TabIcon" />
-                </Badge>
-            );
+            if (user.role !== "receptionist") {
+                setDisplayTabs((prevTabs) => {
+                    const newTabs = [...prevTabs];
+                    const notesIndex = newTabs.findIndex((tab) => tab.tab_id === 7);
+                    newTabs[notesIndex] = {
+                        ...newTabs[notesIndex],
+                        "icon": (
+                            <Badge badgeContent={numImportantNotes} color="primary">
+                                <NoteIcon className="TabIcon" />
+                            </Badge>
+                        ),
+                    };
+                    return newTabs;
+                });
+            }
         }
     }, [user]);
 
-    if (hooks.isLoading(fetchStatus)) {
-        return <Loading />;
-    }
-
-    if (!user && hooks.isFail(fetchStatus)) {
-        return <Redirect to="/PageNotFound" />;
+    if (!user || Object.keys(user).length <= 1) {
+        if (hooks.isLoading(fetchStatus)) {
+            return <Loading />;
+        } else if (hooks.isFail(fetchStatus)) {
+            return <Redirect to="/PageNotFound" />;
+        }
     }
 
     return (
