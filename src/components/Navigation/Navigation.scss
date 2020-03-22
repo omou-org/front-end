@@ -35,7 +35,12 @@ body{
   .logout-icon{
     cursor:pointer;
   }
-
+  .catsButton{
+    cursor: pointer;
+    background: transparent;
+    color: #F5F5F5 ;
+    
+  }
   /*Drawer Styling*/
 
   div[class*="MuiDrawer-paperAnchorDockedLeft"] {

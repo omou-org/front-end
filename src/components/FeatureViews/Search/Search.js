@@ -1,10 +1,10 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import {useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 import AsyncCreatableSelect from "react-select/async-creatable";
-import {components} from "react-select";
+import { components } from "react-select";
 import FormControl from "@material-ui/core/FormControl";
 import Grid from "@material-ui/core/Grid";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -16,8 +16,8 @@ import {
     GET_ACCOUNT_SEARCH_QUERY_SUCCESS,
     GET_COURSE_SEARCH_QUERY_SUCCESS,
 } from "actions/actionTypes";
-import {isFail, useSearchParams} from "actions/hooks";
-import {instance} from "actions/apiActions";
+import { isFail, useSearchParams } from "actions/hooks";
+import { instance } from "actions/apiActions";
 
 const getPlaceholder = () => window.innerWidth < 800
     ? "Search"
@@ -25,7 +25,7 @@ const getPlaceholder = () => window.innerWidth < 800
 
 const noOptionsMessage = () => "Keep searching...";
 
-const {DropdownIndicator} = components;
+const { DropdownIndicator } = components;
 
 const searchIcon = (props) => (
     <DropdownIndicator {...props}>
@@ -41,13 +41,13 @@ const styles = {
         "border": 0,
         "boxShadow": "none",
     }),
-    "option": (provided, {isFocused}) => ({
+    "option": (provided, { isFocused }) => ({
         ...provided,
         "backgroundColor": isFocused ? "#43B5D9" : provided.backgroundColor,
     }),
 };
 
-const Search = ({onMobileType = () => {}}) => {
+const Search = ({ onMobileType = () => { } }) => {
     const dispatch = useDispatch();
     const history = useHistory();
     const [query, setQuery] = useState("");
@@ -107,7 +107,7 @@ const Search = ({onMobileType = () => {}}) => {
         }
     }, [filter, history]);
 
-    const handleItemSelect = useCallback(({label}) => {
+    const handleItemSelect = useCallback(({ label }) => {
         submitSearch(label);
     }, [submitSearch]);
 
@@ -116,7 +116,7 @@ const Search = ({onMobileType = () => {}}) => {
         submitSearch(query);
     }, [query, submitSearch]);
 
-    const changeFilter = useCallback(({"target": {value}}) => {
+    const changeFilter = useCallback(({ "target": { value } }) => {
         setFilter(value);
     }, []);
 
@@ -138,7 +138,7 @@ const Search = ({onMobileType = () => {}}) => {
             "type": GET_ACCOUNT_SEARCH_QUERY_SUCCESS,
         });
         return response.data.results
-            .map(({"user": {id, first_name, last_name}}) => ({
+            .map(({ "user": { id, first_name, last_name } }) => ({
                 "label": `${first_name} ${last_name}`,
                 "value": id,
             }));
@@ -162,7 +162,7 @@ const Search = ({onMobileType = () => {}}) => {
             "type": GET_COURSE_SEARCH_QUERY_SUCCESS,
         });
         return response.data.results
-            .map(({id, subject}) => ({
+            .map(({ id, subject }) => ({
                 "label": subject,
                 "value": id,
             }));
@@ -232,7 +232,7 @@ const Search = ({onMobileType = () => {}}) => {
                                 cacheOptions
                                 className="search-input"
                                 classNamePrefix="main-search"
-                                components={{"DropdownIndicator": searchIcon}}
+                                components={{ "DropdownIndicator": searchIcon }}
                                 createOptionPosition="first"
                                 formatCreateLabel={formatCreateLabel}
                                 loadOptions={loadOptions}

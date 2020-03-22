@@ -33,10 +33,10 @@ export default function users(state = initialState.Users, {payload, type}) {
 }
 
 const parseRelationship = {
-    "MOTHER": "Mother",
-    "FATHER": "Father",
-    "GUARDIAN": "Guardian",
-    "OTHER": "Other",
+    "mother": "Mother",
+    "father": "Father",
+    "guardian": "Guardian",
+    "other": "Other",
 };
 
 const dayToNum = {
@@ -426,15 +426,15 @@ const handleAccountSearchResults = (state, {response}) => {
     const {data} = response;
     data.results.forEach((account) => {
         switch (account.account_type) {
-            case "STUDENT": {
+            case "student": {
                 StudentList = updateStudent(StudentList, account.user.id, account);
                 break;
             }
-            case "PARENT": {
+            case "parent": {
                 ParentList = updateParent(ParentList, account.user.id, account);
                 break;
             }
-            case "INSTRUCTOR": {
+            case "instructor": {
                 InstructorList = updateInstructor(InstructorList, account.user.id, account);
             }
             // no default
