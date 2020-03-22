@@ -68,7 +68,10 @@ const updateCourseCategories = (state, payload, action) => {
                     return category;
                 }
             });
+            break;
         }
+        default:
+        // no default case
     }
     return JSON.parse(JSON.stringify(state));
 };
