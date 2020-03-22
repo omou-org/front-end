@@ -45,6 +45,7 @@ function TestPanel() {
     },[api]);
 
     const fetchPropFunction = api.fetchCategories;
+    const updateFunction = api.updateCategory;
 
     const handleChange = (field) => (e) =>{
         switch(field){
@@ -104,8 +105,9 @@ function TestPanel() {
         <br />
         <PanelManager
             fields={fields}
-            fetchFunctions={fetchPropFunction}
-            statusFunctions={categoryStatus}
+            fetchFunction={fetchPropFunction}
+            statusFunction={categoryStatus}
+            updateFunction={updateFunction}
         />
             </div>
     )
