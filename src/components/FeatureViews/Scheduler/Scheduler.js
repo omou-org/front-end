@@ -33,6 +33,7 @@ import SessionFilters from "./SessionFilters";
 import {BootstrapInput, handleToolTip, sessionArray} from "./SchedulerUtils";
 import {Tooltip} from "@material-ui/core";
 import {arr_diff} from "../../Form/FormUtils";
+import { MenuList } from '@material-ui/core';
 
 const styles = theme => ({
     root: {
