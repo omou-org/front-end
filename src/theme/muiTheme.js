@@ -1,4 +1,4 @@
-import {createMuiTheme} from '@material-ui/core/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
 // import purple from '@material-ui/core/colors/purple';
 
 const tabBorderRadius = "10px";
@@ -21,10 +21,10 @@ const theme = createMuiTheme({
 
     },
     overrides: {
-        MuiCssBaseline:{
-            '@global':{
-                body:{
-                    backgroundColor:"#ffffff"
+        MuiCssBaseline: {
+            '@global': {
+                body: {
+                    backgroundColor: "#ffffff"
                 }
             }
         },
@@ -34,28 +34,34 @@ const theme = createMuiTheme({
             },
         },
         MuiBadge: {
-          colorPrimary:{
-              color: 'white',
-              marginRight: '6px',
-              marginTop: '4px'
-          }
+            colorPrimary: {
+                color: 'white',
+                marginRight: '6px',
+                marginTop: '4px'
+            }
         },
-        paper:{
-            background:'#FAFAFA'
+        paper: {
+            background: '#FAFAFA'
+        },
+        MuiMenuItem: {
+            root: {
+                width: "100%",
+
+            }
         },
         MuiTabs: {
-          root: {
-              borderBottomLeftRadius: tabBorderRadius,
-              borderTopLeftRadius: tabBorderRadius,
-              borderBottomRightRadius: tabBorderRadius,
-              borderTopRightRadius: tabBorderRadius,
-          },
+            root: {
+                borderBottomLeftRadius: tabBorderRadius,
+                borderTopLeftRadius: tabBorderRadius,
+                borderBottomRightRadius: tabBorderRadius,
+                borderTopRightRadius: tabBorderRadius,
+            },
         },
 
         // New way of writing MuiTab 
         MuiTab: {
             root: {
-                border:"2px solid #DBD7D7",
+                border: "2px solid #DBD7D7",
                 color: lightPrimaryFontColor,
                 "&:first-of-type": {
                     borderBottomLeftRadius: tabBorderRadius,
@@ -74,9 +80,9 @@ const theme = createMuiTheme({
             },
             selected: {},
         },
-        MuiStepIcon:{
-            text:{
-                fill:"white",
+        MuiStepIcon: {
+            text: {
+                fill: "white",
             }
         }
     },
