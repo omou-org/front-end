@@ -1,4 +1,4 @@
-import {DELETE, GET, PATCH, POST} from "actions/actionTypes";
+import { DELETE, GET, PATCH, POST } from "actions/actionTypes";
 
 export default {
     "Authentication": initAuth(),
@@ -65,7 +65,10 @@ export default {
             DateRange: [],
             PaymentMethod: [],
         },
-        Unpaid:""
+    },
+    Unpaid: "",
+    "Cats": {
+        catGif: "",
     }
 
 };
