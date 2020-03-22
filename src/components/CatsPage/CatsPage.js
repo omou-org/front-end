@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { bindActionCreators } from "redux";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {bindActionCreators} from "redux";
 
 import "./catsPage.scss";
 import * as catActions from "actions/catActions";
