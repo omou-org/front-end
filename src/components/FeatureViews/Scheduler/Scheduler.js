@@ -157,7 +157,6 @@ class Scheduler extends Component {
     }
 
     componentWillUnmount() {
-        console.log("test")
         this.props.calendarActions.resetSchedulerStatus();
     }
 
