@@ -39,7 +39,22 @@ function PanelManager(props) {
  * ! it uses an index to differentiate fields in the record...
  * ! id must ALWAYS be the first field, then it identifies fields from left to right
  * 
- * @prop {array} operations List of operation types (i.e ["READ", "UPDATE" ) => options are: READ, UPDATE, DELETE 
+ * @prop {array} fields list of objects. Required field is name, col-width, optional params are editable, align
+ * ex.
+ * fields =     const fields = [
+        {
+            "name": "Category Name",
+            "col-width": 3,
+            
+        },
+        {
+            "name": "Description",
+            "col-width": 7,
+            "editable": "true"
+        }
+    ];
+    @prop {function} fetchFunction function which fetches records.
+    ex. api.fetchCategories
  */
     const zip = rows => rows[0].map((_, c) => rows.map(row=>row[c]));
 
@@ -62,7 +77,7 @@ function PanelManager(props) {
     );
     
     useEffect(() => {
-        props.fetchFunctions();
+        props.fetchFunction();
     }, [api]);
     
     useEffect(() => {
@@ -75,7 +90,7 @@ function PanelManager(props) {
         }
     }, [records]);
 
-    if(props.statusFunctions[GET] !== 200){
+    if(props.statusFunction[GET] !== 200){
         return <Loading />
     }
 
@@ -147,7 +162,7 @@ const editRecord = (id) => (e) => {
 
         //! Should be updateRecord...ideally takes this as a prop
         
-        api.updateCategory(id, recordToUpload);
+        props.updateFunction(id, recordToUpload);
     }
     editingRecord.editing = !editingRecord.editing;
     let updatedRecordList = recordList.map((record) => {
