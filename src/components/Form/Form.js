@@ -223,6 +223,7 @@ class Form extends Component {
                                             NewState[title][name] = id;
                                             break;
                                         }
+                                        break;
                                     default:
                                         NewState[title][name] = null;
                                 }
@@ -598,7 +599,7 @@ class Form extends Component {
                 "nextSection": this.validateSection(),
             });
         });
-    }
+    };
 
     handleReset() {
         this.setState({"activeStep": 0});
@@ -741,7 +742,10 @@ class Form extends Component {
                     prevState["Group Details"]["Grade Level"] = academicLevel;
                     prevState["Group Details"].Duration = sessionDuration;
                     prevState["Group Details"]["# of Weekly Sessions"] = numSessions;
+                    break;
                 }
+                default:
+                //no default case
             }
             return {
                 ...prevState,
@@ -994,12 +998,18 @@ class Form extends Component {
                 // setting the category name if it was given an id in URL
                 const currVal = this.state[label][fieldTitle];
                 if (currVal && typeof currVal !== "object") {
-                    const category = this.props.courseCategories.find(({id}) => id == currVal);
+                    const category = this.props.courseCategories.find(({id}) => Number(id) === Number(currVal));
                     if (category) {
-                        this.state[label][fieldTitle] = {
-                            "value": currVal,
-                            "label": category.name,
-                        };
+                        this.setState((oldState) => ({
+                            ...oldState,
+                            [label]: {
+                                ...oldState[label],
+                                [fieldTitle]: {
+                                    "value": currVal,
+                                    "label": category.name,
+                                }
+                            }
+                        }));
                     }
                 }
                 return (

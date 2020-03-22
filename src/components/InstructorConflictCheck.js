@@ -45,7 +45,7 @@ const InstructorConflictCheck = ({
             return false;
         }
         const conflictingID = data.conflicting_course || data.conflicting_session;
-        return !conflictingID || conflictingID != eventID;
+        return !conflictingID || conflictingID !== eventID;
     }, [eventID, ignoreAvailablity]);
 
     const handleSubmit = useCallback(async () => {

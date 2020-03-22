@@ -28,7 +28,7 @@ import DialogContentText from "@material-ui/core/es/DialogContentText/DialogCont
 import DialogActions from "@material-ui/core/DialogActions";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import PaymentTable from "./PaymentTable";
-import {NoListAlert} from "../../../NoListAlert";
+import NoListAlert from "../../../NoListAlert";
 import {GET} from "../../../../actions/actionTypes";
 import {SessionPaymentStatusChip} from "../../../SessionPaymentStatusChip";
 import AddSessions from "AddSessions";
@@ -247,8 +247,8 @@ const CourseSessionStatus = () => {
                                         >
                                             <Paper
                                                 square
-                                                className={`session-info 
-                                                ${highlightSession && " active"} 
+                                                className={`session-info
+                                                ${highlightSession && " active"}
                                                 ${upcomingSess.id == id && " upcoming-session"}`}>
                                                 <Grid container>
                                                     <Grid item xs={1} />

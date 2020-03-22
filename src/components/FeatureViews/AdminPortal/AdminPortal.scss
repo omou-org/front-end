@@ -14,7 +14,6 @@
 
   .add-category{
     margin-top:2%;
-    background-color:$primaryColor;
     color:white;
   }
 }
@@ -52,4 +51,66 @@
 .discount-type-wrapper{
   margin-top:20px;
   margin-bottom:15px;
+}
+
+.accounts-table-heading {
+  .table-header {
+    color: white;
+    font-weight: 500;
+  }
+}
+
+/* Unpaid Sessions */
+.unpaid-sessions-card {
+  height: 250px;
+  width: 220px;
+  margin: 10px;
+
+  .unpaid-avatar-container {
+    justify-content: center;
+
+    .unpaid-avatar {
+      color: white;
+      margin: 9px;
+      width: 47px;
+      height: 47px;
+      font-size: 20px;
+      align-self: center;
+      font-family: Roboto;
+    }
+  }
+
+  .unpaid-details {
+    text-align: center;
+
+    .unpaid-student-name {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+      text-align: center;
+    }
+
+    .unpaid-role-label {
+      background-color: #378BFF;
+      border-radius: 50px;
+      color: white;
+      height: 30px;
+      margin: 10px;
+      padding: 5px;
+      font-size: 14px;
+      align-self: center;
+      text-align: center;
+    }
+
+    .unpaid-status {
+      color: black;
+      height: 30px;
+      width: 30px;
+      line-height: 1;
+      margin: auto;
+      padding: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+  }
 }

@@ -26,7 +26,7 @@ import RegistrationReceipt from "../FeatureViews/Registration/RegistrationReceip
 import CatsPage from "../CatsPage/CatsPage";
 
 
-export const RootRoutes = (props) => {
+export const RootRoutes = () => {
     const dispatch = useDispatch();
     dispatch(resetSubmitStatus());
 
