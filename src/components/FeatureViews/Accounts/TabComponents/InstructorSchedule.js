@@ -1,22 +1,23 @@
-import * as hooks from "actions/hooks";
 import React, {useMemo} from "react";
-import FullCalendar from "@fullcalendar/react";
-import Loading from "components/Loading";
 import PropTypes from "prop-types";
-import timeGridPlugin from "@fullcalendar/timegrid";
 import {useSelector} from "react-redux";
+
+import FullCalendar from "@fullcalendar/react";
+import timeGridPlugin from "@fullcalendar/timegrid";
+
+import * as hooks from "actions/hooks";
+import {handleToolTip} from "../../Scheduler/SchedulerUtils";
+import Loading from "components/Loading";
 import {stringToColor} from "../accountUtils";
-import {handleToolTip} from "../../Scheduler/SchedulerUtils"
 
 const toHours = (ms) => ms / 1000 / 60 / 60;
 
-const InstructorSchedule = ({ instructorID }) => {
-    const sessions = useSelector(({ Calendar }) => Calendar.CourseSessions);
-    const courses = useSelector(({ Course }) => Course.NewCourseList);
-    const instructor = useSelector(({ Users }) => Users.InstructorList[instructorID]);
-    hooks.useOutOfOffice();
-    hooks.useCourse();
-    const OOOstatus = hooks.useInstructorAvailability(instructorID);
+const InstructorSchedule = ({instructorID}) => {
+    const sessions = useSelector(({Calendar}) => Calendar.CourseSessions);
+    const instructor = useSelector(({Users}) =>
+        Users.InstructorList[instructorID]);
+    const OOOstatus = hooks.useOutOfOffice();
+    const availabilityStatus = hooks.useInstructorAvailability(instructorID);
     const classEnrollmentStatus = hooks.useClassSessionsInPeriod("week");
     const tutoringEnrollmentStatus = hooks.useTutoringSessionsInPeriod("week");
 
@@ -26,11 +27,11 @@ const InstructorSchedule = ({ instructorID }) => {
                 "end": new Date(session.end_datetime),
                 "start": new Date(session.start_datetime),
                 "title": session.title,
-            })), [courses, sessions, instructorID]);
+            })), [sessions, instructorID]);
 
     const OOO = useMemo(() => instructor
         ? Object.values(instructor.schedule.time_off)
-            .map(({ all_day, description, start, end }) => {
+            .map(({all_day, description, start, end}) => {
                 const endDate = new Date(end);
                 // since the end date for allDay events is EXCLUSIVE
                 // must add one day to include the end specified by user
@@ -45,9 +46,9 @@ const InstructorSchedule = ({ instructorID }) => {
                 };
             })
         : []
-        , [instructor]);
+    , [instructor]);
 
-    const allDayOOO = useMemo(() => OOO.some(({ allDay }) => allDay), [OOO]);
+    const allDayOOO = useMemo(() => OOO.some(({allDay}) => allDay), [OOO]);
 
     const hoursWorked = useMemo(() =>
         Math.round(
@@ -63,47 +64,48 @@ const InstructorSchedule = ({ instructorID }) => {
                     return hours + toHours(end - Date.now());
                 }, 0) * 100
         ) / 100,
-        [sessions, instructorID]);
+    [sessions, instructorID]);
 
     const instructorBusinessHours = useMemo(() =>
         instructor
             ? Object.values(instructor.schedule.work_hours)
-                .map(({ day, start, end }) => ({
+                .map(({day, start, end}) => ({
                     "daysOfWeek": [day],
                     "endTime": end,
                     "startTime": start,
                 }))
             : [],
-        [instructor]);
+    [instructor]);
 
-    if (teachingSessions.length === 0 || OOO.length === 0) {
-        if (hooks.isLoading(tutoringEnrollmentStatus, classEnrollmentStatus, OOO)) {
+    if (teachingSessions.length === 0 && instructorBusinessHours.length === 0 &&
+        OOO.length === 0) {
+        if (hooks.isLoading(tutoringEnrollmentStatus, OOOstatus,
+            classEnrollmentStatus, availabilityStatus)) {
             return <Loading />;
-        }
-
-        if (hooks.isFail(tutoringEnrollmentStatus, classEnrollmentStatus, OOOstatus)) {
+        } else if (hooks.isFail(tutoringEnrollmentStatus, OOOstatus,
+            classEnrollmentStatus, availabilityStatus)) {
             return "Unable to load schedule!";
         }
     }
 
     return (
         <>
-            <h3 style={{ "float": "left" }}>
-                {hoursWorked} hour(s) worked this month
+            <h3 style={{"float": "left"}}>
+                {hoursWorked} hour{hoursWorked !== 1 && "s"} worked this month
             </h3>
             <FullCalendar
                 allDaySlot={allDayOOO}
                 businessHours={instructorBusinessHours}
-                columnHeaderFormat={{ "weekday": "short" }}
+                columnHeaderFormat={{"weekday": "short"}}
                 defaultView="timeGridWeek"
                 eventColor={stringToColor(instructor.name || "")}
-                events={[...teachingSessions, ...OOO]}
                 eventMouseEnter={handleToolTip}
+                events={[...teachingSessions, ...OOO]}
                 header={false}
                 height={337}
                 minTime="09:00:00"
-                slotDuration="01:00"
-                plugins={[timeGridPlugin]} />
+                plugins={[timeGridPlugin]}
+                slotDuration="01:00" />
         </>
     );
 };

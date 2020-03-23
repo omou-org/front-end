@@ -105,7 +105,7 @@ const Notes = ({ownerType, ownerID}) => {
     const [submitting, setSubmitting] = useState(false);
     const [isPost, setIsPost] = useState(false);
     const [error, setError] = useState(false);
-    const [deleteID, setDeleteID] = useState(false);
+    const [deleteID, setDeleteID] = useState(null);
     const [deleteError, setDeleteError] = useState(false);
 
     useEffect(() => {

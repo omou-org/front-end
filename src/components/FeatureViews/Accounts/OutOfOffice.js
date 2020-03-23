@@ -1,7 +1,5 @@
 import React, {useCallback, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {instance} from "actions/apiActions";
-import {POST_OOO_SUCCESS} from "actions/actionTypes";
 import PropTypes from "prop-types";
 
 import {DatePicker, TimePicker} from "material-ui-pickers";
@@ -16,10 +14,13 @@ import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 
 import "./Accounts.scss";
+import {instance} from "actions/apiActions";
 import InstructorConflictCheck from "components/InstructorConflictCheck";
+import {POST_OOO_SUCCESS} from "actions/actionTypes";
 
 const formatDate = (date, allDay) => {
-    const datePart = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    const datePart =
+        `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     const timePart = `${date.getHours()}:${date.getMinutes()}`;
     return allDay ? `${datePart} 00:00` : `${datePart} ${timePart}`;
 };
@@ -34,6 +35,7 @@ const OutOfOffice = ({instructorID, button}) => {
     const {name} = useSelector(({Users}) => Users.InstructorList[instructorID]);
 
     // for future error message
+    // eslint-disable-next-line no-unused-vars
     const [error, setError] = useState(false);
 
     const toggleAllDay = useCallback(({target}) => {
@@ -49,7 +51,7 @@ const OutOfOffice = ({instructorID, button}) => {
             const response = await instance.post(
                 "/account/instructor-out-of-office/",
                 {
-                    description: `${name} - ${description}`,
+                    "description": `${name} - ${description}`,
                     "end_datetime": formatDate(end, allDay),
                     "instructor": instructorID,
                     "start_datetime": formatDate(start, allDay),
@@ -65,7 +67,7 @@ const OutOfOffice = ({instructorID, button}) => {
         } catch {
             setError(true);
         }
-    }, [description, dispatch, instructorID, allDay, end, start]);
+    }, [name, description, dispatch, instructorID, allDay, end, start]);
 
     const canSubmit = useMemo(() => start && end && end > start, [start, end]);
 
@@ -96,10 +98,10 @@ const OutOfOffice = ({instructorID, button}) => {
                 open={openDialog}>
                 <DialogContent>
                     <div className="title">
-                    Schedule Out of Office
+                        Schedule Out of Office
                     </div>
                     <div className="instructor">
-                    Instructor: {name}
+                        Instructor: {name}
                     </div>
                     <TextField
                         label="Description"
