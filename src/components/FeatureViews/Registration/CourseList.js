@@ -11,10 +11,18 @@ import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import {capitalizeString, courseDateFormat} from "../../../utils";
 import Grow from "@material-ui/core/Grow";
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(theme => ({
+    font: {
+        color: theme.palette.common.black
+    }
+}))
 
 const CourseList = (props) => {
     let filteredCourses = props.filteredCourses.filter(course => course.capacity > 1);
     const instructors = useSelector(({ "Users": { InstructorList } }) => InstructorList);
+    const classes = useStyles();
     return filteredCourses.map((course) => {
         const {start_date, end_date, start_time, end_time, days} = courseDateFormat(course);
         const date = `${start_date} - ${end_date}`,
@@ -27,6 +35,7 @@ const CourseList = (props) => {
                         container
                         layout="row">
                         <Grid
+                            className={classes.font}
                             component={Link}
                             item
                             md={3}

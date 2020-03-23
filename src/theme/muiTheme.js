@@ -58,7 +58,6 @@ const theme = createMuiTheme({
             },
         },
 
-        // New way of writing MuiTab 
         MuiTab: {
             root: {
                 border: "2px solid #DBD7D7",

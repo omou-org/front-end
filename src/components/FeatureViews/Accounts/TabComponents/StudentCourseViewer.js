@@ -124,7 +124,7 @@ const StudentCourseViewer = ({studentID, current = true}) => {
             </Grid>
             <Grid
                 container
-                spacing={8}>
+                spacing={1}>
                 {displayedCourses.length !== 0
                     ? displayedCourses.map((courseID) => {
                         const course = courses[courseID];

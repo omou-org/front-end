@@ -127,7 +127,7 @@ const Accounts = () => {
     const tableView = useMemo(() => (
         <Table
             className="AccountsTable"
-            resizable={false}>
+            resizable="false">
             <TableHead>
                 <TableRow>
                     <TableCell>Name</TableCell>
@@ -208,7 +208,7 @@ const Accounts = () => {
             className="card-container"
             container
             direction="row"
-            spacing={16}
+            spacing={2}
             xs={12}>
             {
                 displayUsers.map((user) => (
@@ -329,7 +329,7 @@ const Accounts = () => {
                     container
                     direction="row"
                     justify="center"
-                    spacing={8}>
+                    spacing={1}>
                     {
                         loading
                             ? <Loading />

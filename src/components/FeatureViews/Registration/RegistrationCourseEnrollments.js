@@ -213,7 +213,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                                                         style={{"width": "40px",}}>
                                                         <SessionPaymentStatusChip
                                                             style={{
-                                                                "width": "50px",
+                                                                "width": "65px",
                                                                 "padding": "7px 0 0 10px",
                                                                 "borderRadius": "15px"
                                                             }}
