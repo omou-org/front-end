@@ -40,8 +40,13 @@ const theme = createMuiTheme({
                 marginTop: '4px'
             }
         },
+        MuiDrawer: {
+            paperAnchorLeft: {
+                zIndex: 1,
+            }
+        },
         paper: {
-            background: '#FAFAFA'
+            background: '#FAFAFA',
         },
         MuiMenuItem: {
             root: {
