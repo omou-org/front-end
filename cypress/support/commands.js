@@ -34,7 +34,7 @@ Cypress.Commands.add("login", (user) => {
  */
 
 Cypress.Commands.add('findDropdown', (element, text) => {
-    cy.get(`${element}`).type(text ? text : "")
+    cy.get(element).type(text || "")
     cy.focused().type('{downarrow}{enter}', { force: true })
 })
 //
