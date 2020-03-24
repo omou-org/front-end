@@ -39,13 +39,19 @@ Cypress.Commands.add("findDropdown", (element, text) => {
 });
 
 /***
- * @description: After the user as logged in, this will go to the registration tab
+ * @description: After the user as logged in, this will go to the registration tab and set the registering parent
  * @param {string} element : This is the react-select element you want to test
  * @param {string} text  : If you want to type anything inside the react-select
  * @return: finds the text and selects it
  */
 
-Cypress.Commands.add("setRegisteringParent", () => {});
+Cypress.Commands.add("setRegisteringParent", (parentName) => {
+  cy.contains("Registration").click();
+  cy.contains("SET PARENT").click();
+  cy.get(".select-parent-search__control").type(parentName);
+  cy.focused().type("{downarrow}{enter}", { force: true });
+  cy.get(".MuiDialogActions-root-493 > .MuiButtonBase-root-242").click();
+});
 //
 // -- This is a child command --
 // Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
