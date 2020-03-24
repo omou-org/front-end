@@ -57,9 +57,9 @@ Cypress.Commands.add("setRegisteringParent", (parentName) => {
  */
 
 Cypress.Commands.add("exitRegisteringParent", () => {
-	cy.contains("Registration").click();
-	cy.get(":nth-child(3) > .MuiButtonBase-root-242").click();
-	cy.get(".exit-parent").click();
+  cy.contains("Registration").click();
+  cy.get(":nth-child(3) > .MuiButtonBase-root-242").click();
+  cy.get(".exit-parent").click();
 });
 
 //
