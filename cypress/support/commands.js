@@ -35,7 +35,7 @@ Cypress.Commands.add("login", (user) => {
 
 Cypress.Commands.add("findDropdown", (element, text) => {
   cy.get(element).type(text || "");
-  cy.focused().type("{downarrow}{enter}", {force: true});
+  cy.focused().type("{downarrow}{enter}", { force: true });
 });
 
 /***
@@ -45,8 +45,7 @@ Cypress.Commands.add("findDropdown", (element, text) => {
  * @return: finds the text and selects it
  */
 
-Cypress.Commands.add("setRegisteringParent", () => {
-});
+Cypress.Commands.add("setRegisteringParent", () => {});
 //
 // -- This is a child command --
 // Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
