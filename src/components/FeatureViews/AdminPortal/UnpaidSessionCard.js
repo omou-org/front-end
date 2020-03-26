@@ -57,9 +57,9 @@ const statusStyle = (status) => ({
 })
 
 const UnpaidSessionCard = ({unpaidStudent}) => {
-
     const students = useSelector(({Users}) => Users.StudentList);
     const courses = useSelector(({Course}) => Course.NewCourseList);
+
     const student = students[unpaidStudent.student];
     const course = courses[unpaidStudent.course];
     const startTime = getTime(course.schedule.start_time);
@@ -67,8 +67,6 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
     const amtDue = amountDue(course.hourly_tuition, unpaidStudent.sessions_left, calculateSessionLength(startTime, endTime))
     const studentID = student.user_id;
     const courseID = course.course_id;
-
-
 
     return(
         <Card style= {{overflow: "visible"}}> 
@@ -103,7 +101,15 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
                 </CardContent>
             </CardActionArea>
         </Card>
-    )
-}
+    );
+};
+
+UnpaidSessionCard.propTypes = {
+    "unpaidStudent": PropTypes.shape({
+        "course": PropTypes.number.isRequired,
+        "sessions_left": PropTypes.number.isRequired,
+        "student": PropTypes.number.isRequired,
+    }).isRequired,
+};
 
 export default UnpaidSessionCard;

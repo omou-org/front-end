@@ -410,6 +410,8 @@
 }
 
 .notificationCourse {
+  width: 10px!important;
+  height: 10px!important;
   background-color: orange!important;
   position: absolute!important;
   top: 10px!important;
@@ -631,6 +633,7 @@
 
 // Registration Parent Styling
 .select-parent-search-wrapper {
+  height: 75px;
   &.active {
     animation-name: expandHeight;
     animation-duration: 0.2s;
@@ -652,6 +655,10 @@
 
 .select-parent-dialog{
   overflow-y: visible;
+
+  #simple-dialog-title {
+    width: 20vw;
+  }
 }
 .select-parent-search__menu{
   position:relative;

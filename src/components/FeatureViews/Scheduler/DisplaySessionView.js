@@ -29,8 +29,8 @@ import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 import DialogContentText from "@material-ui/core/es/DialogContentText";
 
 import InstructorSchedule from "../Accounts/TabComponents/InstructorSchedule";
-import {SessionPaymentStatusChip} from "../../SessionPaymentStatusChip";
-import AddSessions from "AddSessions";
+import SessionPaymentStatusChip from "../../SessionPaymentStatusChip";
+import AddSessions from "components/AddSessions";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import {capitalizeString} from "../../../utils";

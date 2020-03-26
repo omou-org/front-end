@@ -1,136 +1,138 @@
-import {connect} from "react-redux";
-import React, {Component} from "react";
-import BackButton from "../../BackButton";
-import Grid from "@material-ui/core/Grid";
-import {Card, Paper, Typography} from "@material-ui/core";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import ListView from "@material-ui/icons/ViewList";
-import CardView from "@material-ui/icons/ViewModule";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
+import React from "react";
+import PropTypes from "prop-types";
+
+import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
 import Chip from "@material-ui/core/Chip";
-import CardActions from "@material-ui/core/CardActions";
-import {withRouter} from "react-router-dom";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
-import PhoneIcon from "@material-ui/icons/PhoneOutlined";
+import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
-import { addDashes, stringToColor } from "./accountUtils";
+import {Link} from "react-router-dom";
+import PhoneIcon from "@material-ui/icons/PhoneOutlined";
+import Typography from "@material-ui/core/Typography";
 
-import { ReactComponent as IDIcon } from "../../identifier.svg";
-import './Accounts.scss';
+import "./Accounts.scss";
+import {addDashes} from "./accountUtils";
+import {capitalizeString} from "utils";
+import {ReactComponent as IDIcon} from "components/identifier.svg";
+import UserAvatar from "./UserAvatar";
 
-import Avatar from "@material-ui/core/Avatar";
-
-class ProfileCard extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            value: 0,
-            usersList: [],
-            viewToggle: true, // true = list, false = card view
-        };
-    }
-
-    goToRoute(route) {
-        this.props.history.push(route);
-    }
-
-    render() {
-        const styles = (username) => ({
-            "backgroundColor": stringToColor(username),
-            "color": "white",
-            "width": "7vw",
-            "height": "7vw",
-            "fontSize": 30,
-            "margin": 20,
-        });
-
-        return (
-            <Grid item xs={12} sm={6} className="ProfileCard">
-                {this.props.user && <Card key={this.props.user.user_id}
-                    style={{ cursor: "pointer" }}
-                    onClick={(event) => {
-                        event.preventDefault();
-                        this.goToRoute(this.props.route);
-                    }}>
+const ProfileCard = ({user, route}) => (
+    <Grid
+        item
+        sm={6}
+        xs={12}>
+        {
+            user &&
+            <Link to={route}>
+                <Card className="ProfileCard">
                     <Grid container>
-                        <Grid component={Hidden} xsDown item md={4}>
-                            <Avatar
-                                style={styles(this.props.user.name)}>{this.props.user.name.match(/\b(\w)/g).join("")}
-                            </Avatar>
+                        <Grid
+                            component={Hidden}
+                            item
+                            md={4}
+                            xsDown>
+                            <UserAvatar
+                                fontSize={30}
+                                margin="20px"
+                                name={user.name}
+                                size="7vw" />
                         </Grid>
-                        <Grid item xs={12} md={8}>
-                            <CardContent className={"text"}>
-                                <Typography gutterBottom variant={"h6"} component={"h2"} align={'left'}>
-                                    {this.props.user.name}
+                        <Grid
+                            item
+                            md={8}
+                            xs={12}>
+                            <CardContent className="text">
+                                <Typography
+                                    align="left"
+                                    component="h2"
+                                    gutterBottom
+                                    variant="h6">
+                                    {user.name}
                                 </Typography>
-                                <Typography component="p" align={'left'}>
+                                <Typography
+                                    align="left"
+                                    component="p">
                                     <Chip
-                                        style={{ cursor: "pointer" }}
-                                        className={`userLabel ${this.props.user.role}`}
-                                        label={this.props.user.role.charAt(0).toUpperCase() + this.props.user.role.slice(1)}
-                                    />
+                                        className={`userLabel ${user.role}`}
+                                        label={capitalizeString(user.role)} />
                                 </Typography>
                                 <Typography>
-                                    <Grid item xs={12} md={8} style={{ marginTop: 10 }}>
-                                        <Grid container>
-                                            <Grid item xs={2} md={3} align="left">
-                                                <IDIcon
-                                                    width={22}
-                                                    height={22} />
-                                            </Grid>
-                                            <Grid item xs={10} md={9} align="left">
-                                                #{this.props.user.user_id}
-                                            </Grid>
-                                            <Grid container>
-                                                <Grid item xs={2} md={3} align="left">
-                                                    <PhoneIcon />
-                                                </Grid>
-                                                <Grid item xs={10} md={9} align="left">
-                                                    {addDashes(this.props.user.phone_number)}
-                                                </Grid>
-                                            </Grid>
+                                    <Grid
+                                        className="card-content"
+                                        container>
+                                        <Grid
+                                            align="left"
+                                            item
+                                            md={3}
+                                            xs={2}>
+                                            <IDIcon
+                                                height={22}
+                                                width={22} />
                                         </Grid>
-                                        <Grid container>
-                                            <Grid item xs={2} md={3} align="left">
-                                                <EmailIcon />
-                                            </Grid>
-                                            <Grid item xs={10} md={9} align="left">
-                                                {this.props.user.email}
-                                            </Grid>
+                                        <Grid
+                                            align="left"
+                                            item
+                                            md={9}
+                                            xs={10}>
+                                            #{user.user_id}
+                                        </Grid>
+                                        <Grid
+                                            align="left"
+                                            item
+                                            md={3}
+                                            xs={2}>
+                                            <PhoneIcon />
+                                        </Grid>
+                                        <Grid
+                                            align="left"
+                                            item
+                                            md={9}
+                                            xs={10}>
+                                            {addDashes(user.phone_number)}
+                                        </Grid>
+                                        <Grid
+                                            align="left"
+                                            item
+                                            md={3}
+                                            xs={2}>
+                                            <EmailIcon />
+                                        </Grid>
+                                        <Grid
+                                            align="left"
+                                            item
+                                            md={9}
+                                            xs={10}>
+                                            {user.email}
                                         </Grid>
                                     </Grid>
                                 </Typography>
                             </CardContent>
                         </Grid>
                     </Grid>
-                </Card>}
-            </Grid>
-        )
-    }
-}
+                </Card>
+            </Link>
+        }
+    </Grid>
+);
 
-ProfileCard.propTypes = {};
+ProfileCard.propTypes = {
+    "route": PropTypes.string,
+    "user": PropTypes.shape({
+        "email": PropTypes.string,
+        "name": PropTypes.string,
+        "phone_number": PropTypes.string,
+        "role": PropTypes.oneOf([
+            "instructor",
+            "parent",
+            "receptionist",
+            "student",
+        ]).isRequired,
+        "user_id": PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number,
+        ]),
+    }).isRequired,
+};
 
-function mapStateToProps(state) {
-    return {
-        instructors: state.Users.InstructorList,
-        parents: state.Users.ParentList,
-        students: state.Users.StudentList,
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {};
-}
-
-export default withRouter(connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ProfileCard));
+export default ProfileCard;

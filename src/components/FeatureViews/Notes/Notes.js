@@ -1,26 +1,38 @@
 import React, {useCallback, useEffect, useMemo, useState} from "react";
-import * as userActions from "../../../actions/userActions";
-import * as hooks from "actions/hooks";
 import {useDispatch, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
 import PropTypes from "prop-types";
 
 import AddIcon from "@material-ui/icons/AddOutlined";
 import Button from "@material-ui/core/Button";
+import Delete from "@material-ui/icons/Delete";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import DoneIcon from "@material-ui/icons/CheckCircleOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import Grid from "@material-ui/core/Grid";
 import InputBase from "@material-ui/core/InputBase";
 import Loading from "components/Loading";
-import Modal from "@material-ui/core/Modal";
 import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 
+import "./Notes.scss";
 import "../Accounts/TabComponents/TabComponents.scss";
-import {GET, PATCH, POST} from "../../../actions/actionTypes";
-import {REQUEST_STARTED} from "../../../actions/apiActions";
+import * as hooks from "actions/hooks";
+import * as userActions from "actions/userActions";
+import {
+    DELETE_ACCOUNT_NOTE_SUCCESSFUL,
+    DELETE_COURSE_NOTE_SUCCESSFUL,
+    DELETE_ENROLLMENT_NOTE_SUCCESSFUL,
+    GET,
+    PATCH,
+    POST,
+} from "actions/actionTypes";
+import {instance, REQUEST_STARTED} from "actions/apiActions";
 
 const numericDateString = (date) =>
     (new Date(date)).toLocaleTimeString("en-US", {
@@ -93,6 +105,8 @@ const Notes = ({ownerType, ownerID}) => {
     const [submitting, setSubmitting] = useState(false);
     const [isPost, setIsPost] = useState(false);
     const [error, setError] = useState(false);
+    const [deleteID, setDeleteID] = useState(null);
+    const [deleteError, setDeleteError] = useState(false);
 
     useEffect(() => {
         if (ownerType === "course") {
@@ -134,12 +148,15 @@ const Notes = ({ownerType, ownerID}) => {
 
     const hideWarning = useCallback(() => {
         setAlert(false);
+        setDeleteID(null);
+        setError(false);
+        setDeleteError(false);
     }, []);
 
-    const notificationColor = {
+    const notificationColor = useMemo(() => ({
         "color": notification ? "red" : "grey",
         "cursor": "pointer",
-    };
+    }), [notification]);
 
     const saveNote = useCallback(() => {
         switch (ownerType) {
@@ -147,9 +164,9 @@ const Notes = ({ownerType, ownerID}) => {
                 const note = {
                     "body": noteBody,
                     "complete": false,
+                    "enrollment": ownerID.enrollmentID,
                     "important": notification,
                     "title": noteTitle,
-                    "enrollment": ownerID.enrollmentID,
                 };
                 if (editID) {
                     api.patchEnrollmentNote(editID, note, ownerID.enrollmentID, ownerID.studentID, ownerID.courseID);
@@ -165,9 +182,9 @@ const Notes = ({ownerType, ownerID}) => {
                 const note = {
                     "body": noteBody,
                     "complete": false,
+                    "course": ownerID,
                     "important": notification,
                     "title": noteTitle,
-                    "course": ownerID,
                 };
                 if (editID) {
                     api.patchCourseNote(editID, note, ownerType, ownerID);
@@ -199,26 +216,87 @@ const Notes = ({ownerType, ownerID}) => {
         }
     }, [api, noteBody, notification, noteTitle, ownerID, ownerType, editID]);
 
-    if (hooks.isLoading(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {
-        return <Loading small loadingText="NOTES LOADING" />;
+    const openDelete = (noteID) => () => {
+        setDeleteID(noteID);
+    };
+
+    const toggleNoteField = useCallback((noteID, field) => () => {
+        const note = {
+            [field]: !notes[noteID][field],
+        };
+        switch (ownerType) {
+            case "enrollment":
+                api.patchEnrollmentNote(noteID, note, ownerID.enrollmentID,
+                    ownerID.studentID, ownerID.courseID);
+                break;
+            case "course":
+                api.patchCourseNote(noteID, note, ownerType, ownerID);
+                break;
+            default:
+                api.patchAccountNote(noteID, note, ownerType, ownerID);
+        }
+    }, [api, notes, ownerType, ownerID]);
+
+
+    const handleDelete = useCallback(async () => {
+        let URL = "",
+            type = "";
+        switch (ownerType) {
+            case "course":
+                URL = "/course/catalog_note/";
+                type = DELETE_COURSE_NOTE_SUCCESSFUL;
+                break;
+            case "enrollment":
+                URL = "/course/enrollment_note/";
+                type = DELETE_ENROLLMENT_NOTE_SUCCESSFUL;
+                break;
+            default:
+                URL = "/account/note/";
+                type = DELETE_ACCOUNT_NOTE_SUCCESSFUL;
+                break;
+        }
+        try {
+            await instance.delete(`${URL}${deleteID}/`);
+            dispatch({
+                "payload": {
+                    "noteID": deleteID,
+                    ownerID,
+                    ownerType,
+                },
+                type,
+            });
+            hideWarning();
+        } catch (err) {
+            // if note not actually deleted
+            setDeleteError(true);
+        }
+    }, [deleteID, dispatch, hideWarning, ownerID, ownerType]);
+
+    if (hooks.isLoading(getRequestStatus) &&
+        (!notes || Object.entries(notes).length === 0)) {
+        return (
+            <Loading
+                loadingText="NOTES LOADING"
+                small />
+        );
     }
 
-    if (hooks.isFail(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {
+    if (hooks.isFail(getRequestStatus) &&
+        (!notes || Object.entries(notes).length === 0)) {
         return "Error loading notes!";
     }
 
     if (submitting && alert) {
         if (isPost && postRequestStatus && postRequestStatus !== REQUEST_STARTED) {
             setSubmitting(false);
-            if (postRequestStatus < 200 || postRequestStatus >= 300) {
+            if (hooks.isFail(postRequestStatus)) {
                 setError(true);
             } else {
                 setAlert(false);
             }
-        }
-        if (!isPost && patchRequestStatus && patchRequestStatus !== REQUEST_STARTED) {
+        } else if (!isPost && patchRequestStatus && patchRequestStatus !== REQUEST_STARTED) {
             setSubmitting(false);
-            if (patchRequestStatus < 200 || patchRequestStatus >= 300) {
+            if (hooks.isFail(patchRequestStatus)) {
                 setError(true);
             } else {
                 setAlert(false);
@@ -228,74 +306,112 @@ const Notes = ({ownerType, ownerID}) => {
 
     return (
         <Grid
+            className="notes-container"
             container
             item
             md={12}
             spacing={16}>
-            <Modal
+            <Dialog
                 aria-describedby="simple-modal-description"
                 aria-labelledby="simple-modal-title"
                 className="popup"
+                fullWidth
+                maxWidth="xs"
+                onClose={hideWarning}
                 open={alert}>
-                <div className="exit-popup">
-                    <Grid>
-                        <TextField
-                            className="textfield"
-                            id="standard-name"
-                            label="Subject"
-                            onChange={handleTitleUpdate}
-                            value={noteTitle} />
-                        <NotificationIcon
-                            className="notification"
-                            onClick={toggleNotification}
-                            style={notificationColor} />
-                    </Grid>
-                    <Grid>
-                        <InputBase
-                            className="note-body"
-                            inputProps={{"aria-label": "naked"}}
-                            margin="normal"
-                            multiline
-                            onChange={handleBodyUpdate}
-                            placeholder="Body (required)"
-                            required
-                            rows={15}
-                            value={noteBody}
-                            variant="filled" />
-                    </Grid>
-                    <Grid className="popUpActions">
-                        <Button onClick={hideWarning}>
-                            Cancel
-                        </Button>
-                        <Button
-                            disabled={!noteBody}
-                            onClick={saveNote}>
-                            {
-                                submitting
-                                    ? "Saving..."
-                                    : "Save"
-                            }
-                        </Button>
-                        {!submitting && error &&
-                            <span style={{"float": "right"}}>
+                <DialogTitle>
+                    <TextField
+                        className="textfield"
+                        id="standard-name"
+                        label="Subject"
+                        onChange={handleTitleUpdate}
+                        value={noteTitle} />
+                    <NotificationIcon
+                        className="notification"
+                        onClick={toggleNotification}
+                        style={notificationColor} />
+                </DialogTitle>
+                <DialogContent>
+                    <InputBase
+                        className="note-body"
+                        inputProps={{"aria-label": "naked"}}
+                        multiline
+                        onChange={handleBodyUpdate}
+                        placeholder="Body (required)"
+                        required
+                        rows={15}
+                        value={noteBody}
+                        variant="filled" />
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={hideWarning}
+                        variant="outlined">
+                        Cancel
+                    </Button>
+                    <Button
+                        color="primary"
+                        disabled={!noteBody}
+                        onClick={saveNote}
+                        variant="outlined">
+                        {submitting ? "Saving..." : "Save"}
+                    </Button>
+                    {
+                        !submitting && error &&
+                        <span style={{"float": "right"}}>
                                 Error while saving!
-                            </span>}
-                    </Grid>
-                </div>
-            </Modal>
+                        </span>
+                    }
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                aria-describedby="simple-modal-description"
+                aria-labelledby="simple-modal-title"
+                className="delete-popup"
+                fullWidth
+                maxWidth="xs"
+                onClose={hideWarning}
+                open={deleteID !== null}>
+                <DialogTitle>
+                    Confirm Delete
+                </DialogTitle>
+                <DialogContent>
+                    Are you sure you want to delete {
+                        notes[deleteID] && notes[deleteID].title
+                            ? `"${notes[deleteID].title}"`
+                            : "this note"
+                    }?
+                </DialogContent>
+                <DialogActions className="delete-actions">
+                    <Button
+                        className="cancel-button"
+                        onClick={hideWarning}
+                        variant="contained">
+                        Cancel
+                    </Button>
+                    <Button
+                        className="delete-button"
+                        onClick={handleDelete}
+                        variant="contained">
+                        Delete
+                    </Button>
+                    {
+                        deleteError &&
+                        <span style={{"float": "right"}}>
+                            Error while deleting!
+                        </span>
+                    }
+                </DialogActions>
+            </Dialog>
             <Grid
                 item
                 md={3}>
                 <div
                     className="addNote"
                     onClick={openNewNote}
-                    style={{
-                        "cursor": "pointer",
-                    }}>
+                    style={{"cursor": "pointer"}}>
                     <Typography className="center">
-                        <AddIcon />
-                        <br />
-                        Add Note
+                        <AddIcon /><br />Add Note
                     </Typography>
                 </div>
             </Grid>
@@ -309,8 +425,10 @@ const Notes = ({ownerType, ownerID}) => {
                             align="left"
                             className="noteHeader">
                             {note.title}
-                            {note.important &&
-                                <NotificationIcon className="noteNotification" />}
+                            <NotificationIcon
+                                className="noteNotification"
+                                onClick={toggleNoteField(note.id, "important")}
+                                style={note.important ? {"color": "red"} : {}} />
                         </Typography>
                         <Typography
                             align="left"
@@ -323,10 +441,16 @@ const Notes = ({ownerType, ownerID}) => {
                             {numericDateString(note.timestamp)}
                         </Typography>
                         <div className="actions">
+                            <Delete
+                                className="icon"
+                                onClick={openDelete(note.id)} />
                             <EditIcon
                                 className="icon"
                                 onClick={openExistingNote(note)} />
-                            <DoneIcon className="icon" />
+                            <DoneIcon
+                                className="icon"
+                                onClick={toggleNoteField(note.id, "complete")}
+                                style={note.complete ? {"color": "#43B5D9"} : {}} />
                         </div>
                     </Paper>
                 </Grid>

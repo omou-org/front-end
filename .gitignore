@@ -37,3 +37,7 @@ dist/
 node_modules/
 aws-exports.js
 awsconfiguration.json
+
+# cypress evidence
+cypress/videos/
+cypress/screenshots/

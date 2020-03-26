@@ -1,9 +1,7 @@
-import React, {useEffect, useMemo, useState, Container} from "react";
-// Material UI Imports
+import React from "react";
 import Grid from "@material-ui/core/Grid";
 
 import "./AdminPortal.scss";
-
 import UnpaidSessions from "./UnpaidSessions";
 
 function AdminPortalHome() {
@@ -15,9 +13,6 @@ function AdminPortalHome() {
     )
 }   
 
-AdminPortalHome.propTypes = {
-    // courseTitle: PropTypes.string,
-    // admin: PropTypes.bool,
-};
+AdminPortalHome.propTypes = {};
 
 export default AdminPortalHome;

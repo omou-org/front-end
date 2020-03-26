@@ -1,81 +1,64 @@
+import React, {useMemo} from "react";
 import PropTypes from "prop-types";
-import React from "react";
+
+import Grid from "@material-ui/core/Grid";
 
 import Bio from "./TabComponents/Bio";
-import Grid from "@material-ui/core/Grid";
 import InstructorCourses from "./TabComponents/InstructorCourses";
+import InstructorSchedule from "./TabComponents/InstructorSchedule";
 import Notes from "../Notes/Notes";
 import ParentContact from "./TabComponents/ParentContact";
 import PayCourses from "./TabComponents/PayCourses";
 import PaymentHistory from "./TabComponents/PaymentHistory";
-import InstructorSchedule from "./TabComponents/InstructorSchedule";
 import StudentCourseViewer from "./TabComponents/StudentCourseViewer";
 import StudentInfo from "./TabComponents/StudentInfo";
 
-const ComponentViewer = (props) => {
-    let component;
-
-    switch (props.inView) {
-        case 0:
-            component = <InstructorSchedule instructorID={props.user.user_id} />;
-            break;
-        case 1:
-            component = <InstructorCourses instructorID={props.user.user_id} />;
-            break;
-        case 2:
-            component = <Bio background={props.user.background} />;
-            break;
-        case 3:
-            component = (
-                <StudentCourseViewer
-                    current
-                    studentID={props.user.user_id} />
-            );
-            break;
-        case 4:
-            component = (
-                <StudentCourseViewer
-                    current={false}
-                    studentID={props.user.user_id} />
-            );
-            break;
-        case 5:
-            component = <PaymentHistory user_id={props.user.user_id} />;
-            break;
-        case 6:
-            component = <ParentContact parent_id={props.user.parent_id} />;
-            break;
-        case 7:
-            component = (
-                <Notes
-                    ownerID={props.user.user_id}
-                    ownerType={props.user.role} />
-            );
-            break;
-        case 8:
-            component = <StudentInfo user={props.user} />;
-            break;
-        case 9:
-            component = <PayCourses user={props.user} />;
-            break;
-        default:
-            component = <InstructorSchedule />;
-    }
+const ComponentViewer = ({inView, user}) => {
+    const componentsArray = useMemo(() => [
+        <InstructorSchedule
+            instructorID={user.user_id}
+            key={0} />,
+        <InstructorCourses
+            instructorID={user.user_id}
+            key={1} />,
+        <Bio
+            background={user.background}
+            key={2} />,
+        <StudentCourseViewer
+            current
+            key={3}
+            studentID={user.user_id} />,
+        <StudentCourseViewer
+            current={false}
+            key={4}
+            studentID={user.user_id} />,
+        <PaymentHistory
+            key={5}
+            user_id={user.user_id} />,
+        <ParentContact
+            key={6}
+            parent_id={user.parent_id} />,
+        <Notes
+            key={7}
+            ownerID={user.user_id}
+            ownerType={user.role} />,
+        <StudentInfo
+            key={8}
+            user={user} />,
+        <PayCourses
+            key={9}
+            user={user} />,
+    ], [user]);
 
     return (
-        <Grid container>
-            <Grid
-                item
-                style={{"paddingTop": "15px"}}
-                xs={12}>
-                    {component}
-            </Grid>
+        <Grid className="profile-component-container">
+            {componentsArray[inView]}
         </Grid>
     );
 };
 
 ComponentViewer.propTypes = {
-    "inView": PropTypes.number.isRequired,
+    "inView": PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).isRequired,
     "user": PropTypes.shape({
         "background": PropTypes.object,
         "parent_id": PropTypes.oneOfType([

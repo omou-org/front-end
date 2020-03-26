@@ -1,4 +1,6 @@
 import {instance} from "actions/apiActions";
+import {useCallback} from "react";
+import {useHistory} from "react-router-dom";
 
 export const timeFormat = {
     "hour12": false,
@@ -42,7 +44,7 @@ export const dateFormatter = (date) =>
         .toDateString()
         .substr(3);
 
-export const courseDateFormat = ({ schedule, is_confirmed }) => ({
+export const courseDateFormat = ({schedule, is_confirmed}) => ({
     "days": DayConverter[new Date(schedule.start_date).getDay()],
     "end_date": dateFormatter(schedule.end_date),
     "end_time": new Date(`2020-01-01${schedule.end_time}`)
@@ -71,7 +73,7 @@ export const courseDataParser = (course) => {
         "day": "numeric",
     };
 
-    let { schedule, status, tuition, course_id } = course;
+    const {schedule, status, tuition, course_id} = course;
     const DaysString = schedule.days;
 
     const endDate = new Date(schedule.end_date + schedule.end_time),
@@ -84,7 +86,7 @@ export const courseDataParser = (course) => {
         "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
         status,
         tuition,
-        "course_id": course_id
+        course_id,
     };
 };
 
@@ -175,26 +177,26 @@ export const paymentToString = (string) => {
         case "credit_card":
             return "Credit Card";
         default:
-            return capitalizeString(string)
+            return capitalizeString(string);
     }
 };
 
 export const gradeOptions = [
     {
         "label": "Elementary School",
-        "value": "elementary_lvl"
+        "value": "elementary_lvl",
     },
     {
         "label": "Middle School",
-        "value": "middle_lvl"
+        "value": "middle_lvl",
     },
     {
         "label": "High School",
-        "value": "high_lvl"
+        "value": "high_lvl",
     },
     {
         "label": "College",
-        "value": "college_lvl"
+        "value": "college_lvl",
     },
 ];
 
@@ -240,11 +242,11 @@ export const instructorConflictCheck = async (instructorID, start, end) => {
         const [sessionResponse, courseResponse] = await Promise.all([
             instance.get(
                 `/scheduler/validate/session/${instructorID}`,
-                { "params": sessionParams },
+                {"params": sessionParams}
             ),
             instance.get(
                 `/scheduler/validate/course/${instructorID}`,
-                { "params": courseParams },
+                {"params": courseParams}
             ),
         ]);
         return {
@@ -277,7 +279,6 @@ export const startAndEndDate = (start, end, pacific) => {
 };
 
 
-
 export const durationStringToNum = {
     "0.5 Hours": 0.5,
     "1 Hour": 1,
@@ -291,10 +292,11 @@ export const durationStringToNum = {
  * @param {Number} courseID - id of the course we want to look at
  * @returns {Object} "session" that's upcoming relative to today's date
  */
-export const upcomingSession = (sessions, courseID) => sessions.filter((session) => ((session.course == courseID) &&
-    dateTimeToDate(new Date(session.start_datetime)) >= dateTimeToDate(new Date())))
-    .sort((sessionA, sessionB) => (sessionA - sessionB))[0];
-
+export const upcomingSession = (sessions, courseID) => sessions
+    .filter((session) => String(session.course) == String(courseID))
+    .sort((sessionA, sessionB) =>
+        new Date(sessionA.start_datetime) - new Date(sessionB.start_datetime))
+    .find(({start_datetime}) => new Date(start_datetime) > Date.now());
 
 /**
  * @description calculate amount paid towards enrollment
@@ -302,19 +304,26 @@ export const upcomingSession = (sessions, courseID) => sessions.filter((session)
  * @param {Number} numSessions- Total number of session
  * @returns "Amount paid per enrollment"
  */
-
 export const tuitionAmount = (courseObject, numSessions) => {
-    let { schedule, hourly_tuition } = courseObject;
-    let { end_time, start_date, start_time } = schedule;
+    const {schedule, hourly_tuition} = courseObject;
+    const {end_time, start_date, start_time} = schedule;
     const HOUR = 36e5;
 
     // Turns string object into Date string
-    let end = `${start_date}${end_time}:00Z`,
+    const end = `${start_date}${end_time}:00Z`,
         start = `${start_date}${start_time}:00Z`,
         duration = Math.abs(new Date(end) - new Date(start)) / HOUR;
 
-
-    return (hourly_tuition * duration * numSessions).toFixed(2)
-
+    return (hourly_tuition * duration * numSessions).toFixed(2);
 };
 
+export const initials = (first, last) =>
+    first.charAt(0).toUpperCase() + last.charAt(0).toUpperCase();
+
+export const useGoToRoute = () => {
+    const history = useHistory();
+    const goToRoute = useCallback((route) => {
+        history.push(route);
+    }, [history]);
+    return goToRoute;
+};

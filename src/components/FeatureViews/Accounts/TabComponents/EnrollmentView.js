@@ -1,301 +1,287 @@
-import {Link, useHistory, useParams} from "react-router-dom";
-import BackButton from "../../../BackButton";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {Link, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import * as userActions from "actions/userActions";
-import * as calendarActions from "actions/calendarActions"
-import {bindActionCreators} from "redux";
-import * as hooks from "actions/hooks";
-import * as registrationActions from "actions/registrationActions";
-import * as apiActions from "actions/apiActions";
-import {REQUEST_ALL} from "actions/apiActions";
 
-import Grid from "@material-ui/core/Grid";
-import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
 import Avatar from "@material-ui/core/Avatar";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import Notes from "components/FeatureViews/Notes/Notes";
-import NoteIcon from "@material-ui/icons/NoteOutlined";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Loading from "components/Loading";
 import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/es/Dialog/Dialog";
-import DialogTitle from "@material-ui/core/es/DialogTitle/DialogTitle";
-import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
-import DialogContentText from "@material-ui/core/es/DialogContentText/DialogContentText";
+import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import FormControl from "@material-ui/core/FormControl";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormGroup from "@material-ui/core/FormGroup";
+import Grid from "@material-ui/core/Grid";
+import NoListAlert from "../../../NoListAlert";
+import NoteIcon from "@material-ui/icons/NoteOutlined";
+import Paper from "@material-ui/core/Paper";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import PaymentTable from "./PaymentTable";
-import {NoListAlert} from "../../../NoListAlert";
-import {GET} from "../../../../actions/actionTypes";
-import {SessionPaymentStatusChip} from "../../../SessionPaymentStatusChip";
-import AddSessions from "AddSessions";
-import {capitalizeString, DayConverter, upcomingSession} from "../../../../utils";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
+import SessionPaymentStatusChip from "components/SessionPaymentStatusChip";
 import Switch from "@material-ui/core/Switch";
-import FormControl from "@material-ui/core/FormControl";
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
+import Typography from "@material-ui/core/Typography";
+
+import * as hooks from "actions/hooks";
+import {
+    capitalizeString, DayConverter, upcomingSession, useGoToRoute,
+} from "utils";
+import {
+    deleteEnrollment,
+    initializeRegistration,
+} from "actions/registrationActions";
+import {resetSchedulerStatus, useSession} from "actions/calendarActions";
+import AddSessions from "components/AddSessions";
+import BackButton from "components/BackButton";
+import Loading from "components/Loading";
+import Notes from "components/FeatureViews/Notes/Notes";
+import {useEnrollmentNotes} from "actions/userActions";
 
 const timeOptions = {
     "hour": "2-digit",
     "minute": "2-digit",
 };
 const dateOptions = {
-    "year": "numeric",
-    "month": "numeric",
     "day": "numeric",
+    "month": "numeric",
+    "year": "numeric",
 };
 
 const CourseSessionStatus = () => {
-    const history = useHistory();
-
-    const { "accountID": studentID, courseID } = useParams();
-    const [activeTab, setActiveTab] = useState(0);
-    const courseSessions = useSelector(({ Calendar }) => Calendar.CourseSessions);
-    const usersList = useSelector(({ Users }) => Users);
-    const courses = useSelector(({ Course }) => Course.NewCourseList);
-    const enrollments = useSelector(({ Enrollments }) => Enrollments);
-    const requestStatus = useSelector(({ RequestStatus }) => RequestStatus);
-    const [highlightSession, setHighlightSession] = useState(false);
+    const dispatch = useDispatch();
+    const goToRoute = useGoToRoute();
+    const {"accountID": studentID, courseID} = useParams();
+    const courseSessions = useSelector(({Calendar}) => Calendar.CourseSessions);
+    const usersList = useSelector(({Users}) => Users);
+    const courses = useSelector(({Course}) => Course.NewCourseList);
+    const enrollments = useSelector(({Enrollments}) => Enrollments);
     const course = courses[courseID];
 
-    const dispatch = useDispatch();
-    const api = useMemo(
-        () => ({
-            ...bindActionCreators(userActions, dispatch),
-            ...bindActionCreators(calendarActions, dispatch),
-            ...bindActionCreators(registrationActions, dispatch),
-            ...bindActionCreators(apiActions, dispatch),
-        }),
-        [dispatch]
-    );
+    const [activeTab, setActiveTab] = useState(0);
+    const [highlightSession, setHighlightSession] = useState(false);
+    const [unenrollWarningOpen, setUnenrollWarningOpen] = useState(false);
 
+    const sessionConfig = useMemo(() => ({
+        "params": {
+            "course_id": courseID,
+        },
+    }), [courseID]);
+
+    const sessionStatus = useSession(null, sessionConfig);
     const studentStatus = hooks.useStudent(studentID);
     const courseStatus = hooks.useCourse(courseID);
-    const instructorStatus = hooks.useInstructor(course && course.instructor_id, true);
+    const instructorStatus =
+        hooks.useInstructor(course && course.instructor_id, true);
     const enrollmentStatus = hooks.useEnrollmentByCourse(courseID);
-    const courseTypeParse = {
-        "T": "tutoring",
-        "C": "course",
-    };
 
-    const enrollment = (enrollments[studentID] && enrollments[studentID][courseID]) || {};
-    useEffect(() => {
-        api.initializeRegistration();
-        api.fetchEnrollmentNotes(enrollment.enrollment_id, studentID, courseID);
-    }, [api, enrollment.enrollment_id, studentID, courseID]);
-
-    const [unenrollWarningOpen, setUnenrollWarningOpen] = useState(false);
+    const enrollment = useMemo(() =>
+        (enrollments[studentID] && enrollments[studentID][courseID]) || {},
+    [enrollments, studentID, courseID]);
+    useEnrollmentNotes(enrollment.enrollment_id, studentID,
+        courseID);
 
     const noteInfo = useMemo(() => ({
         courseID,
         "enrollmentID": enrollment.enrollment_id,
         studentID,
     }), [courseID, enrollment.enrollment_id, studentID]);
-    useEffect(() => {
-        if (course) {
-            api.fetchSession({
-                config: {
-                    params: {
-                        // time_frame: "month",
-                        view_option: courseTypeParse[course.type],
-                        time_shift: 0,
-                    }
-                }
-            });
-        }
-    }, [course, api]);
 
-    useEffect(() => {
-        return () => {
-            api.resetSchedulerStatus();
-        }
-    }, []);
+    const sessions = useMemo(() => Object.values(courseSessions || {})
+        .map((instructorSessions) => Object.values(instructorSessions))
+        .flat()
+        .filter((session) => session.course == courseID),
+    [courseSessions, courseID]);
 
-    const sessionDataParse = useCallback(({ start_datetime, end_datetime, course, status, id, instructor }) => {
-        const startDate = start_datetime && new Date(start_datetime);
-        const endDate = end_datetime && new Date(end_datetime);
+    const upcomingSess = upcomingSession(sessions, courseID) || {};
 
+    const studentParent = usersList.StudentList[studentID] &&
+        usersList.StudentList[studentID].parent_id;
+
+    const sessionDataParse = useCallback(({start_datetime, end_datetime, course,
+        status, id, instructor}) => {
         if (start_datetime && end_datetime && course) {
+            const startDate = new Date(start_datetime);
+            const endDate = new Date(end_datetime);
             return {
+                "course_id": course,
                 "date": startDate.toLocaleDateString("en-US", dateOptions),
                 "day": DayConverter[startDate.getDay()],
                 "endTime": endDate.toLocaleTimeString("en-US", timeOptions),
+                id,
+                instructor,
                 "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
                 status,
                 "tuition": course && courses[course].hourly_tuition,
-                "id": id,
-                "instructor": instructor,
-                "course_id": course
             };
         }
         return {};
-    }, [courses, api]);
+    }, [courses]);
+
+    const handleTabChange = useCallback((_, newTab) => {
+        setActiveTab(newTab);
+    }, []);
+
+    const handleHighlightSwitch = useCallback(() => {
+        setHighlightSession((prevHighlight) => !prevHighlight);
+    }, []);
+
+    const openUnenrollDialog = useCallback(() => {
+        setUnenrollWarningOpen(true);
+    }, []);
+
+    const closeUnenrollDialog = useCallback((toUnenroll) => () => {
+        setUnenrollWarningOpen(false);
+        if (toUnenroll) {
+            deleteEnrollment(enrollment)(dispatch);
+            goToRoute(`/accounts/student/${studentID}`);
+        }
+    }, [dispatch, enrollment, goToRoute, studentID]);
+
+    useEffect(() => {
+        dispatch(initializeRegistration());
+        dispatch(resetSchedulerStatus());
+    }, [dispatch]);
 
     // either doesn't exist or only has notes defined
-    if (!enrollment || Object.keys(enrollment).length <= 1) {
+    if (!enrollment || Object.keys(enrollment).length <= 1 ||
+        hooks.isLoading(courseStatus, enrollmentStatus, studentStatus,
+            instructorStatus, sessionStatus)) {
         return <Loading paper />;
     }
-    if (hooks.isLoading(courseStatus, enrollmentStatus, studentStatus, instructorStatus) ||
-        requestStatus.schedule[GET][REQUEST_ALL] !== 200
-    ) {
-        return <Loading paper />;
-    }
-    if (hooks.isFail(courseStatus, enrollmentStatus, studentStatus)) {
+    if (hooks.isFail(courseStatus, enrollmentStatus, studentStatus,
+        instructorStatus, sessionStatus)) {
         return "Error loading data";
     }
 
-    const courseSessionsArray = courseSessions && Object.values(courseSessions)
-        .map(instructorSessions => Object.values(instructorSessions))
-        .reduce((allSessions, instructorSessions) => {
-            return allSessions.concat(instructorSessions);
-        }, []);
-
-    const calendarSessions = courseSessions ? courseSessionsArray
-        .filter(session => session.course === Number(courseID)) : [];
-
-    const handleTabChange = (_, newTab) => {
-        setActiveTab(newTab);
-    };
-
-    const handleHighlightSwitch = () => {
-        setHighlightSession(!highlightSession);
-    };
-
-    const sessions = courseSessions
-        && calendarSessions.map((session) => session);
-
-    let parentOfCurrentStudent = usersList.StudentList[studentID].parent_id;
-
-    const handleUnenroll = event => {
-        event.preventDefault();
-        setUnenrollWarningOpen(true);
-    };
-
-    const closeUnenrollDialog = (toUnenroll) => event => {
-        event.preventDefault();
-        setUnenrollWarningOpen(false);
-        if (toUnenroll) {
-            api.deleteEnrollment(enrollment);
-            history.push(`/accounts/student/${studentID}`);
-        }
-    };
-
-    const upcomingSess = upcomingSession(sessions, courseID);
-
-    const renderMain = () => {
+    const mainContent = () => {
         switch (activeTab) {
             case 0:
                 return (
                     <>
                         <Grid
+                            className="accounts-table-heading"
+                            container
                             item
-                            md={12}
                             xs={12}>
                             <Grid
-                                className="accounts-table-heading"
-                                container>
-                                <Grid item xs={1} />
-                                <Grid
-                                    item
-                                    xs={2}>
-                                    <Typography
-                                        align="left"
-                                        className="table-text">
-                                        Session Date
-                                    </Typography>
-                                </Grid>
-                                {
-                                    [
-                                        { title: "Day", cols: 2, align: "left" },
-                                        { title: "Time", cols: 3, align: "left" },
-                                        { title: "Tuition", cols: 1, align: "left" },
-                                        { title: "Status", cols: 2, align: "center" }
-                                    ].map((header) => (
-                                        <Grid
-                                            item
-                                            key={header.title}
-                                            xs={header.cols}>
-                                            <Typography
-                                                align={header.align}
-                                                className="table-text">
-                                                {header.title}
-                                            </Typography>
-                                        </Grid>
-                                    ))
-                                }
+                                item
+                                xs={1} />
+                            <Grid
+                                item
+                                xs={2}>
+                                <Typography
+                                    align="left"
+                                    className="table-text">
+                                    Session Date
+                                </Typography>
+                            </Grid>
+                            <Grid
+                                item
+                                xs={2}>
+                                <Typography
+                                    align="left"
+                                    className="table-text">
+                                    Day
+                                </Typography>
+                            </Grid>
+                            <Grid
+                                item
+                                xs={3}>
+                                <Typography
+                                    align="left"
+                                    className="table-text">
+                                    Time
+                                </Typography>
+                            </Grid>
+                            <Grid
+                                item
+                                xs={1}>
+                                <Typography
+                                    align="left"
+                                    className="table-text">
+                                    Tuition
+                                </Typography>
+                            </Grid>
+                            <Grid
+                                item
+                                xs={2}>
+                                <Typography
+                                    align="center"
+                                    className="table-text">
+                                    Status
+                                </Typography>
                             </Grid>
                         </Grid>
                         <Grid
                             container
                             spacing={8}>
                             {sessions.length !== 0
-                                ? sessions.map((session, i) => {
-                                    const { day, date, startTime, endTime, status, tuition, id, course_id, instructor } =
+                                ? sessions.map((session) => {
+                                    const {day, date, startTime, endTime,
+                                        tuition, id, course_id, instructor} =
                                         sessionDataParse(session);
-
                                     return (
                                         <Grid
                                             className="accounts-table-row"
-                                            item
-                                            key={i}
-                                            xs={12}
-                                            to={course.course_type === "tutoring" ? `/scheduler/view-session/${course_id}/${id}/${instructor}` : `/registration/course/${course_id}`}
                                             component={Link}
-                                        >
+                                            item
+                                            key={id}
+                                            to={course.course_type === "tutoring" ? `/scheduler/view-session/${course_id}/${id}/${instructor}` : `/registration/course/${course_id}`}
+                                            xs={12}>
                                             <Paper
-                                                square
-                                                className={`session-info 
-                                                ${highlightSession && " active"} 
-                                                ${upcomingSess.id == id && " upcoming-session"}`}>
-                                                <Grid container>
-                                                    <Grid item xs={1} />
-                                                    <Grid
-                                                        item
-                                                        xs={2}>
-                                                        <Typography align="left">
-                                                            {date}
-                                                        </Typography>
-                                                    </Grid>
-                                                    <Grid
-                                                        item
-                                                        xs={2}>
-                                                        <Typography align="left">
-                                                            {capitalizeString(day)}
-                                                        </Typography>
-                                                    </Grid>
-                                                    <Grid
-                                                        item
-                                                        xs={3}>
-                                                        <Typography align="left">
-                                                            {startTime} - {endTime}
-                                                        </Typography>
-                                                    </Grid>
-                                                    <Grid
-                                                        item
-                                                        xs={1}>
-                                                        <Typography align="left">
-                                                            ${tuition}
-                                                        </Typography>
-                                                    </Grid>
-                                                    <Grid
-                                                        item
-                                                        xs={2}>
-                                                        <SessionPaymentStatusChip
-                                                            setPos
-                                                            enrollment={enrollment}
-                                                            session={session}
-                                                        />
-                                                    </Grid>
+                                                className={`session-info
+                                                ${highlightSession && " active"}
+                                                ${upcomingSess.id == id && " upcoming-session"}`}
+                                                component={Grid}
+                                                container
+                                                square>
+                                                <Grid
+                                                    item
+                                                    xs={1} />
+                                                <Grid
+                                                    item
+                                                    xs={2}>
+                                                    <Typography align="left">
+                                                        {date}
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid
+                                                    item
+                                                    xs={2}>
+                                                    <Typography align="left">
+                                                        {capitalizeString(day)}
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid
+                                                    item
+                                                    xs={3}>
+                                                    <Typography align="left">
+                                                        {startTime} - {endTime}
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid
+                                                    item
+                                                    xs={1}>
+                                                    <Typography align="left">
+                                                        ${tuition}
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid
+                                                    item
+                                                    xs={2}>
+                                                    <SessionPaymentStatusChip
+                                                        enrollment={enrollment}
+                                                        session={session}
+                                                        setPos />
                                                 </Grid>
                                             </Paper>
                                         </Grid>
                                     );
                                 })
-                                : <NoListAlert list={"Course"} />
-                            }
+                                : <NoListAlert list="Course" />}
                         </Grid>
                     </>
                 );
@@ -308,12 +294,12 @@ const CourseSessionStatus = () => {
             case 2:
                 return (
                     <PaymentTable
-                        type={"enrollment"}
                         courseID={course.course_id}
                         enrollmentID={enrollment.enrollment_id}
-                        paymentList={enrollment.payment_list} />
+                        paymentList={enrollment.payment_list}
+                        type="enrollment" />
                 );
-            // no default
+            default: return null;
         }
     };
 
@@ -332,39 +318,40 @@ const CourseSessionStatus = () => {
                     item
                     xs={12}>
                     <Typography
-                        className="course-session-title"
                         align="left"
+                        className="course-session-title"
                         variant="h3">
                         {course.title}
                     </Typography>
                 </Grid>
-                <Grid item md={12} >
-                    <Grid container
-                        className={"session-actions"}
-                        direction={"row"}
-                        alignItems={"center"}
-                        justify={"flex-start"}
-                        spacing={16}
-                    >
+                <Grid
+                    item
+                    md={12}>
+                    <Grid
+                        alignItems="center"
+                        className="session-actions"
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        spacing={16}>
                         <Grid item>
                             <AddSessions
                                 componentOption="button"
-                                parentOfCurrentStudent={parentOfCurrentStudent}
                                 enrollment={enrollment}
-                            />
+                                parentOfCurrentStudent={studentParent} />
                         </Grid>
                         <Grid item>
                             <Button
-                                onClick={handleUnenroll}
-                                className={"button unenroll"}
-                            >
+                                className="button unenroll"
+                                onClick={openUnenrollDialog}>
                                 Unenroll Course
                             </Button>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12}
+                    <Grid
                         className="participants"
-                    >
+                        item
+                        xs={12}>
                         <Typography align="left">
                             Student: {" "}
                             <Link to={`/accounts/student/${studentID}`}>
@@ -381,57 +368,63 @@ const CourseSessionStatus = () => {
                             Enrollment Balance Left: ${enrollment.balance}
                         </Typography>
                     </Grid>
-                    <Grid item xs={3} container alignItems="flex-start">
-                        <Grid item>
-                            <FormControl component="fieldset">
-                                <FormGroup>
-                                    <FormControlLabel
-                                        control={
-                                            <Switch
-                                                checked={highlightSession}
-                                                onChange={handleHighlightSwitch}
-                                                color="primary"
-                                                value="upcoming-session"
-                                            />
-                                        }
-                                        label="Highlight Upcoming Session"
-                                    />
-                                </FormGroup>
-                            </FormControl>
+                    {
+                        activeTab === 0 &&
+                        <Grid
+                            alignItems="flex-start"
+                            container
+                            item
+                            xs={3}>
+                            <Grid item>
+                                <FormControl component="fieldset">
+                                    <FormGroup>
+                                        <FormControlLabel
+                                            control={
+                                                <Switch
+                                                    checked={highlightSession}
+                                                    color="primary"
+                                                    onChange={handleHighlightSwitch}
+                                                    value="upcoming-session" />
+                                            }
+                                            label="Highlight Upcoming Session" />
+                                    </FormGroup>
+                                </FormControl>
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    }
                 </Grid>
                 <Tabs
+                    className="enrollment-tabs"
                     indicatorColor="primary"
                     onChange={handleTabChange}
-                    style={{
-                        "marginBottom": "10px",
-                    }}
                     value={activeTab}>
-                    <Tab
-                        label={<><RegistrationIcon className="NoteIcon" /> Registration</>} />
-                    <Tab
-                        label={
-                            Object.values(enrollment.notes).some(({ important }) => important)
-                                ? <><Avatar
-                                    className="notificationCourse"
-                                    style={{
-                                        "width": 10,
-                                        "height": 10
-                                    }} /><NoteIcon className="TabIcon" />  Notes
-                                </>
-                                : <><NoteIcon className="NoteIcon" /> Notes</>} />
-                    <Tab
-                        label={<><PaymentIcon className="TabIcon" /> Payments</>} />
+                    <Tab label={
+                        <>
+                            <RegistrationIcon className="NoteIcon" /> Registration
+                        </>
+                    } />
+                    <Tab label={
+                        Object.values(enrollment.notes)
+                            .some(({important}) => important)
+                            ? <>
+                                <Avatar className="notificationCourse" />
+                                <NoteIcon className="TabIcon" />  Notes
+                            </>
+                            : <><NoteIcon className="NoteIcon" /> Notes</>
+                    } />
+                    <Tab label={
+                        <>
+                            <PaymentIcon className="TabIcon" /> Payments
+                        </>
+                    } />
                 </Tabs>
                 <br />
-                {renderMain()}
+                {mainContent()}
             </Grid>
             <Dialog
-                open={unenrollWarningOpen}
-                onClose={closeUnenrollDialog(false)}
                 aria-labelledby="warn-unenroll"
-            >
+                onClose={closeUnenrollDialog(false)}
+                open={unenrollWarningOpen}>
                 <DialogTitle id="warn-unenroll">
                     Unenroll in {course.title}
                 </DialogTitle>
@@ -439,17 +432,17 @@ const CourseSessionStatus = () => {
                     <DialogContentText>
                         You are about to unenroll in <b>{course.title}</b> for <b>{usersList.StudentList[studentID].name}</b>.
                         Performing this action will credit <b>${enrollment.balance}</b> back to the parent's account balance.
-                    Are you sure you want to unenroll?
+                        Are you sure you want to unenroll?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        color={"secondary"}
+                        color="secondary"
                         onClick={closeUnenrollDialog(true)}>
                         Yes, unenroll
                     </Button>
                     <Button
-                        color={"primary"}
+                        color="primary"
                         onClick={closeUnenrollDialog(false)}>
                         Cancel
                     </Button>
@@ -458,5 +451,7 @@ const CourseSessionStatus = () => {
         </Paper>
     );
 };
+
+CourseSessionStatus.propTypes = {};
 
 export default CourseSessionStatus;

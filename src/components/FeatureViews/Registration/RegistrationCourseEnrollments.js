@@ -1,6 +1,6 @@
 import * as hooks from "actions/hooks";
 import {useSessionsInPeriod} from "actions/hooks";
-import React, {Fragment, useCallback, useEffect, useMemo, useState} from "react";
+import React, {Fragment, useEffect, useMemo, useState} from "react";
 import {addDashes} from "components/FeatureViews/Accounts/accountUtils";
 import {Link, NavLink} from "react-router-dom";
 import PropTypes from "prop-types";
@@ -32,9 +32,9 @@ import DialogContentText from "@material-ui/core/es/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import {NoListAlert} from "../../NoListAlert";
+import NoListAlert from "../../NoListAlert";
 import {sessionArray} from "../Scheduler/SchedulerUtils";
-import {SessionPaymentStatusChip} from "../../SessionPaymentStatusChip";
+import SessionPaymentStatusChip from "../../SessionPaymentStatusChip";
 import {upcomingSession} from "../../../utils";
 
 const TableToolbar = (
@@ -75,12 +75,13 @@ const RegistrationCourseEnrollments = ({courseID}) => {
         enrollment: null,
     });
 
-    const toggleExpanded = useCallback((studentID) => () => {
-        setExpanded((prevExpanded) => ({
-            ...prevExpanded,
-            [studentID]: !prevExpanded[studentID],
-        }));
-    }, []);
+    // TODO: for future release
+    // const toggleExpanded = useCallback((studentID) => () => {
+    //     setExpanded((prevExpanded) => ({
+    //         ...prevExpanded,
+    //         [studentID]: !prevExpanded[studentID],
+    //     }));
+    // }, []);
 
     const enrollmentStatus = hooks.useEnrollmentByCourse(courseID);
     const course = courses[courseID];

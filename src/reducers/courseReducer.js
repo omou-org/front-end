@@ -21,6 +21,8 @@ export default (state = initialState.Course, {payload, type}) => {
         case actions.POST_COURSE_NOTE_SUCCESSFUL:
         case actions.PATCH_COURSE_NOTE_SUCCESSFUL:
             return handleNotesPost(state, payload);
+        case actions.DELETE_COURSE_NOTE_SUCCESSFUL:
+            return handleNoteDelete(state, payload);
         case actions.ADD_SMALL_GROUP_REGISTRATION:
             const {new_course} = payload;
             return handleCoursePost(state, new_course);
@@ -66,7 +68,10 @@ const updateCourseCategories = (state, payload, action) => {
                     return category;
                 }
             });
+            break;
         }
+        default:
+        // no default case
     }
     return JSON.parse(JSON.stringify(state));
 };
@@ -168,6 +173,19 @@ const handleNotesFetch = (state, {ownerID, response}) => {
     });
     return newState;
 };
+
+const handleNoteDelete = (state, {ownerID, noteID}) => {
+    const newState = JSON.parse(JSON.stringify(state));
+    if (!newState.NewCourseList[ownerID]) {
+        newState.NewCourseList[ownerID] = {};
+    }
+    if (!newState.NewCourseList[ownerID].notes) {
+        newState.NewCourseList[ownerID].notes = {};
+    }
+    delete newState.NewCourseList[ownerID].notes[noteID];
+    return newState;
+};
+
 
 const handleCourseSearchResults = (state, payload) => {
     const {response} = payload;

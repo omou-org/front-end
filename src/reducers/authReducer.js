@@ -18,6 +18,7 @@ export default function auth(state = initialState.Authentication, {payload, type
 
 const onDetailFetch = (state, {response, token}) => ({
     ...state,
+    ...response.data,
     "isAdmin": response.data.is_staff,
     token,
 });
