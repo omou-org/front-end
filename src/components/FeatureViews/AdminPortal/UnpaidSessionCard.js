@@ -9,6 +9,7 @@ import Avatar from '@material-ui/core/Avatar';
 import {stringToColor} from "../Accounts/accountUtils";
 import {roleColor, initials, calculateSessionLength, getTime, statusColor, amountDue} from "./AdminUtils";
 import {useSelector} from "react-redux";
+import { NavLink } from "react-router-dom";
 
 const styles = (username) => ({
     "backgroundColor": stringToColor(username),
@@ -64,10 +65,17 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
     const startTime = getTime(course.schedule.start_time);
     const endTime = getTime(course.schedule.end_time);
     const amtDue = amountDue(course.hourly_tuition, unpaidStudent.sessions_left, calculateSessionLength(startTime, endTime))
+    const studentID = student.user_id;
+    const courseID = course.course_id;
+
+
 
     return(
         <Card style= {{overflow: "visible"}}> 
-            <CardActionArea style = {cardStyle}>
+            <CardActionArea 
+            style = {cardStyle} 
+                component={NavLink}
+                to={`/accounts/student/${studentID}/${courseID}`}>
                 <CardMedia>
                     <Grid container style={{justifyContent:"center"}}>
                         <Avatar 
