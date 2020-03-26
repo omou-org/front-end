@@ -32,8 +32,8 @@ export const fetchCategories = (id) => wrapGet(
 );
 
 export const useCategories = wrapUseEndpoint(
-    "/course/categories",
-    types.GET_CATEGORY_SUCCESS,
+    "/course/categories/",
+    types.GET_CATEGORY_SUCCESS
 );
 
 export const fetchUnpaid = (id) => wrapGet(
@@ -69,6 +69,11 @@ export const fetchPriceRules = () => wrapGet(
         types.GET_PRICE_RULE_FAILED,
     ],
     {}
+);
+
+export const usePriceRules = wrapUseEndpoint(
+    "/pricing/rule/",
+    types.GET_PRICE_RULE_SUCCESS
 );
 
 export const setPrice = ({Pricing}) => wrapPost(
