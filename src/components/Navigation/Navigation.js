@@ -91,8 +91,7 @@ const Navigation = (props) => {
             <List className="list">
                 {NavList.map((NavItem) => (
                     <ListItem
-                    // button prop empty? What is that?
-                        // button
+                        button
                         className={`listItem ${classes.navigationIconStyle}`} 
                         component={NavLinkNoDup}
                         isActive={(match, location) => match
