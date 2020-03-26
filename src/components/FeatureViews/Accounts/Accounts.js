@@ -38,15 +38,13 @@ const componentStyles = (theme) => ({
 });
 
 const useStyles = makeStyles({
-    tableMain: {
-        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-        width: "100%",
-        display: "table",
-        borderSpacing: 0,
-        borderCollapse: "collapse"
+    tableRowStyle: {
+        fontSize: "0.8125rem",
+        padding: "0px",
     },
-    tableRow: {
-        height: 57,
+    tableCellStyle: {
+      fontSize: "0.75rem",
+      color: "rgba(0, 0, 0, 0.54)"
     }
 })
 
@@ -129,11 +127,11 @@ const Accounts = () => {
             className="AccountsTable"
             resizable="false">
             <TableHead>
-                <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Email</TableCell>
-                    <TableCell>Phone</TableCell>
-                    <TableCell>Role</TableCell>
+                <TableRow >
+                    <TableCell className={classes.tableCellStyle}>Name</TableCell>
+                    <TableCell className={classes.tableCellStyle}>Email</TableCell>
+                    <TableCell className={classes.tableCellStyle}>Phone</TableCell>
+                    <TableCell className={classes.tableCellStyle}>Role</TableCell>
                     <TableCell />
                 </TableRow>
             </TableHead>
@@ -144,7 +142,7 @@ const Accounts = () => {
                         component={Link}
                         key={row.user_id}
                         to={`/accounts/${row.role}/${row.user_id}`}>
-                        <TableCell>
+                        <TableCell className={classes.tableRowStyle}>
                             <Grid
                                 alignItems="center"
                                 container

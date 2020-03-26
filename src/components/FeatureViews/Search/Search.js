@@ -25,13 +25,16 @@ const useStyles = makeStyles({
         height: "41px",
         border: "1px solid #eee",
         background: "#ffffff",
-        borderRadius: "3px 0px 0px 3px",
+        borderRadius: "3px,0px,0px,3px",
         // paddingRight: "0px !important",
         // paddingLeft: "0px !important",
     },
     navMenuItem: {
         // paddingRight: "24px !important",
-    }
+    },
+      dropdownStyle: {
+        borderRadius: "10px !important",
+      },
 });
 
 const getPlaceholder = () => window.innerWidth < 800
@@ -227,7 +230,9 @@ const Search = ({ onMobileType = () => { } }) => {
                                         "name": "primary-filter",
                                     }}
                                     onChange={changeFilter}
-                                    value={filter}>
+                                    value={filter}
+                                    MenuProps={{ classes: { paper: classes.dropdownStyle } }}
+                                    >
                                     <MenuItem value="all">
                                         All
                                     </MenuItem>

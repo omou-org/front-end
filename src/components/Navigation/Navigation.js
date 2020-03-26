@@ -14,9 +14,6 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import AdminIcon from "@material-ui/icons/Face"
 import ListItemText from "@material-ui/core/ListItemText";
 import { makeStyles } from '@material-ui/core/styles';
-// Old import
-// import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
-// New Import
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import EventIcon from "@material-ui/icons/Event";
 // Local Component Imports
@@ -33,7 +30,7 @@ import {RootRoutes} from "../Routes/RootRoutes";
 const useStyles = makeStyles({
     navigationIconStyle: {
         height: "50px",
-    }
+    },
   });
   
 

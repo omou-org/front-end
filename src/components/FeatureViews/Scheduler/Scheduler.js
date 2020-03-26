@@ -48,7 +48,11 @@ const styles = theme => ({
     },
     courseFilter: {
         paddingRight: "10px"
-    }
+    },
+    dropdownStyle: 
+    {
+      borderRadius: "10px",
+    },
 });
 
 // Calvin's code
@@ -591,14 +595,15 @@ class Scheduler extends Component {
                                         {this.state.calendarIcon
                                             ? <FormControl className="filter-select" >
                                                 <Select
-                                                    // className={classes.courseFilter}
                                                     input={
                                                         <BootstrapInput
                                                             id="filter-calendar-type"
                                                             name="courseFilter" />
                                                     }
                                                     onChange={this.handleFilterChange("calendarFilterValue")}
-                                                    value={this.state.calendarFilterValue}>
+                                                    value={this.state.calendarFilterValue}
+                                                    MenuProps={{ classes: { paper: classes.dropdownStyle } }}
+                                                    >
                                                     <MenuItem value="all">All</MenuItem>
                                                     <MenuItem value="class">Class</MenuItem>
                                                     <MenuItem value="tutoring">Tutoring</MenuItem>
@@ -614,7 +619,9 @@ class Scheduler extends Component {
                                                             name="courseFilter" />
                                                     }
                                                     onChange={this.handleResourceFilterChange("resourceFilterValue")}
-                                                    value={this.state.resourceFilterValue}>
+                                                    value={this.state.resourceFilterValue}
+                                                    MenuProps={{ classes: { paper: classes.dropdownStyle } }}
+                                                    >
                                                     <MenuItem value="R">Room</MenuItem>
                                                     <MenuItem value="I">Instructors</MenuItem>
                                                 </Select>
@@ -725,7 +732,9 @@ class Scheduler extends Component {
                                                 onChange={(event) =>
                                                     this.changeView(event.target.value)
                                                 }
-                                                value={this.state.viewValue}>
+                                                value={this.state.viewValue}
+                                                MenuProps={{ classes: { paper: classes.dropdownStyle } }}
+                                                >
                                                 <MenuItem value="timeGridDay">Day</MenuItem>
                                                 <MenuItem value="timeGridWeek">Week</MenuItem>
                                                 <MenuItem value="dayGridMonth">Month</MenuItem>
