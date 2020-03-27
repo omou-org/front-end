@@ -53,9 +53,15 @@ function PanelManager(props) {
             "editable": "true"
         }
     ];
-    @prop {function} fetchFunction function which fetches records.
+    @prop {array} fetchFunctions array of functions for fetching records.
     ex. api.fetchCategories
- */
+    
+    @prop {function} statusFunction function which returns fetch? status
+    ex. useSelector(({RequestStatus}) => RequestStatus.category)
+
+    @prop {updateFunction} updateFunction update
+ *    
+ **/
     const zip = rows => rows[0].map((_, c) => rows.map(row=>row[c]));
 
     const [categoryName, setCategoryName] = useState('');
@@ -77,7 +83,7 @@ function PanelManager(props) {
     );
     
     useEffect(() => {
-        props.fetchFunction();
+        props.fetchFunctions.forEach(fetchFn => fetchFn());
     }, [api]);
     
     useEffect(() => {

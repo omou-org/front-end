@@ -8,7 +8,7 @@ import ManageCategories from "../FeatureViews/AdminPortal/ManageCategories";
 import ManageDiscounts from "../FeatureViews/AdminPortal/ManageDiscounts";
 
 import TestPanel from "../FeatureViews/AdminPortal/TestPanel";
-
+import CustomTestPanel from "../FeatureViews/AdminPortal/customTestPanel";
 // Local Component Imports
 
 function AdminViewsRoutes() {
@@ -30,6 +30,11 @@ function AdminViewsRoutes() {
             <AdminRoute
                 path="/adminportal/test-paneldisplay" 
                 render={(passedProps) => <TestPanel {...passedProps} /> }/>
+
+            <AdminRoute
+                path="/adminportal/test2-paneldisplay" 
+                render={(passedProps) => <CustomTestPanel {...passedProps} /> }/>
+
 
             <AdminRoute
                 exact
