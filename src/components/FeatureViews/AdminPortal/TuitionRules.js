@@ -1,276 +1,226 @@
-import React, {useEffect, useMemo, useState} from "react";
-// Material UI Imports
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {bindActionCreators} from "redux";
+
+import CheckCircle from "@material-ui/icons/CheckCircle";
+import Edit from "@material-ui/icons/Edit";
 import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton";
+import MenuItem from "@material-ui/core/MenuItem";
+import Paper from "@material-ui/core/Paper";
+import Select from "@material-ui/core/Select";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
 
 import "./AdminPortal.scss";
+import * as adminActions from "actions/adminActions";
+import * as hooks from "actions/hooks";
+import {
+    academicLevelParse, courseTypeParse,
+} from "reducers/registrationReducer";
+import Loading from "components/Loading";
+import NoListAlert from "components/NoListAlert";
 
-import {bindActionCreators} from "redux";
-import {connect, useDispatch, useSelector} from "react-redux";
-import {Typography} from "@material-ui/core";
-import Paper from "@material-ui/core/Paper";
-import {withRouter} from "react-router-dom";
-import * as adminActions from "../../../actions/adminActions";
-import {GET} from "../../../actions/actionTypes";
-import {REQUEST_ALL} from "../../../actions/apiActions";
-import {academicLevelParse, courseTypeParse} from "../../../reducers/registrationReducer";
-import Edit from "@material-ui/icons/Edit";
-import TextField from "@material-ui/core/TextField";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import CheckCircle from "@material-ui/core/es/internal/svg-icons/CheckCircle";
-import IconButton from "@material-ui/core/IconButton";
-import NoListAlert from "../../NoListAlert";
+const academicLevelList =
+    ["College", "Middle School", "Elementary School", "High School"];
+const classSize = ["Tutoring", "Small Group"];
 
-function TuitionRules() {
+const TuitionRules = () => {
     const dispatch = useDispatch();
     const api = useMemo(
-        () => ({
-            ...bindActionCreators(adminActions, dispatch),
-        }),
+        () => bindActionCreators(adminActions, dispatch),
         [dispatch]
     );
     const [tuitionRules, setTuitionRules] = useState([]);
     const priceRules = useSelector(({"Admin": {PriceRules}}) => PriceRules);
-    const categories = useSelector(({"Course": {CourseCategories}}) => CourseCategories);
-    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
+    const categories =
+        useSelector(({"Course": {CourseCategories}}) => CourseCategories);
+    hooks.useCategory();
+    const priceRuleStatus = adminActions.usePriceRules();
 
-    useEffect(()=>{
-        api.fetchCategories();
-    },[api]);
+    useEffect(() => {
+        setTuitionRules((prevRules) =>
+            priceRules.map((price) => {
+                const prevRule = prevRules.find(({id}) => id === price.id);
+                return {
+                    ...price,
+                    "academic_level": academicLevelParse[price.academic_level],
+                    "course_type": courseTypeParse[price.course_type],
+                    "editing": prevRule ? prevRule.editing : false,
+                };
+            }));
+    }, [categories, priceRules, api]);
 
-    useEffect(()=>{
-        if(requestStatus.category[GET] === 200){
-            api.fetchPriceRules();
-        }
-    },[requestStatus.category[GET]]);
-
-    useEffect(()=>{
-        if(requestStatus.priceRule[GET][REQUEST_ALL] === 200 && categories) {
-            let parsedTuitionRulesList = priceRules.map((price)=>{
-                let category = categories.find(({id}) => {return id === price.category});
-                if(category){
-                    return {
-                        ...price,
-                        editing: false,
-                        category: category,
-                        academic_level: academicLevelParse[price.academic_level],
-                        course_type: courseTypeParse[price.course_type],
-                    }
-                }
-            });
-            setTuitionRules(parsedTuitionRulesList);
-        }
-    },[requestStatus.priceRule[GET][REQUEST_ALL], api]);
-
-    const displayTuitionRules = () => {
-        return <Grid container>
-            <Grid item xs={12}>
-                <Grid container className={'accounts-table-heading'}>
-                    <Grid item xs={3} md={3}>
-                        <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
-                            Category
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={3} md={3}>
-                        <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
-                            Grade
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={3} md={3}>
-                        <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
-                            Course Size
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={2} md={2}>
-                        <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
-                            Hourly Tuition
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={1} md={1}>
-                    </Grid>
-                </Grid>
-            </Grid>
-            <Grid item xs={12}>
-                <Grid container spacing={1} alignItems={"center"}>
-                    {
-                        tuitionRules.length > 0 ? tuitionRules.map((tuition)=> {
-                            return (tuition && <Grid item xs={12} md={12} key={tuition.id}>
-                                {   tuition.editing ?
-                                    editTuitionRow(tuition) :
-                                    viewTuitionRow(tuition)
-                                }
-                            </Grid>)
-                        }) : <NoListAlert list={"Tuition Rules"}/>
-                    }
-                </Grid>
-            </Grid>
-        </Grid>
-    };
-
-    const editTuition = (id) => (e) => {
-        e.preventDefault();
-        let editingRule = tuitionRules.find((rule)=>{return rule.id === id });
-        let ruleToUpload;
-        if(editingRule.editing){ //if we're about to update/we were just editing
-            ruleToUpload = {
+    const editTuition = useCallback((id) => () => {
+        const editingRule = tuitionRules.find((rule) => rule.id === id);
+        // if we're about to update/we were just editing
+        if (editingRule.editing) {
+            const ruleToUpload = {
                 ...editingRule,
-                category: editingRule.category.id,
-                course_type: courseTypeParse[editingRule.course_type],
-                academic_level: academicLevelParse[editingRule.academic_level],
-                hourly_tuition: Number(editingRule.hourly_tuition),
+                "academic_level":
+                    academicLevelParse[editingRule.academic_level],
+                "category": editingRule.category,
+                "course_type": courseTypeParse[editingRule.course_type],
+                "hourly_tuition": Number(editingRule.hourly_tuition),
             };
             delete ruleToUpload.editing;
             api.updatePriceRule(id, ruleToUpload);
         }
         editingRule.editing = !editingRule.editing;
-        let updatedRuleList = tuitionRules.map((rule)=>{
-            if(rule.id === id){
-                return editingRule;
-            } else {
-                return rule;
-            }
-        });
+        const updatedRuleList = tuitionRules.map((rule) => ({
+            ...rule,
+            "editing": rule.id === id ? !rule.editing : rule.editing,
+        }));
         setTuitionRules(updatedRuleList);
-    };
+    }, [api, tuitionRules]);
 
-    const viewTuitionRow = ({id ,category, hourly_tuition, academic_level, course_type}) => {
-        return (<Paper elevation={2} square={true} className={"category-row"} >
-            <Grid container alignItems={"center"}>
-                <Grid item xs={3} md={3}>
-                    <Typography align={'left'} >
-                        {category.name}
-                    </Typography>
-                </Grid>
-                <Grid item xs={3} md={3}>
-                    <Typography align={'left'} >
-                        {academic_level}
-                    </Typography>
-                </Grid>
-                <Grid item xs={3} md={3}>
-                    <Typography align={'left'}>
-                        {course_type}
-                    </Typography>
-                </Grid>
-                <Grid item xs={2} md={2}>
-                    <Typography align={'left'} >
-                        ${hourly_tuition}
-                    </Typography>
-                </Grid>
-                <Grid item xs={1} md={1}>
-                    <IconButton onClick={editTuition(id)}>
-                        <Edit/>
-                    </IconButton>
-                </Grid>
-            </Grid>
-        </Paper>)
-    };
+    const viewTuitionRow =
+        ({id, category, hourly_tuition, academic_level, course_type}) => {
+            const reduxCategory = categories.find((cat) => cat.id === category);
+            return (
+                <Paper className="category-row" square>
+                    <Grid alignItems="center" container>
+                        <Grid item xs={3}>
+                            <Typography align="left">
+                                {reduxCategory && reduxCategory.name}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <Typography align="left">
+                                {academic_level}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <Typography align="left">
+                                {course_type}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <Typography align="left">
+                                ${hourly_tuition}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={1}>
+                            <IconButton disabled={!categories}
+                                onClick={editTuition(id)}>
+                                <Edit />
+                            </IconButton>
+                        </Grid>
+                    </Grid>
+                </Paper>
+            );
+        };
 
-    const handleChange = (tuitionID, field) => event => {
-        let updatedTuitionRules = tuitionRules.map((tuitionRule) => {
-            if(tuitionRule.id === tuitionID){
-                return {
+    const handleRuleChange = (tuitionID, field) => (event) => {
+        setTuitionRules((oldRules) => oldRules.map((tuitionRule) =>
+            tuitionRule.id === tuitionID
+                ? {
                     ...tuitionRule,
                     [field]: event.target.value,
                 }
-            } else {
-                return tuitionRule;
-            }
-        });
-        setTuitionRules(updatedTuitionRules);
+                : tuitionRule));
     };
 
-    const editTuitionRow = ({id ,category, hourly_tuition, academic_level, course_type}) => {
-        let academicLevelList = ["College", "Middle School", "Elementary School", "High School"];
-        let classSize = ["Tutoring", "Small Group"];
-        return <Paper elevation={2} square={true} className={"category-row"} >
-            <Grid container alignItems={"center"}>
-                <Grid item xs={3} md={3} >
-                    <Select
-                        className={"tuition-field"}
-                        value={category}
-                        onChange={handleChange(id, "category")}
-                    >
-                        {
-                            categories.map((category)=>
-                                <MenuItem className={"menu-item"}
-                                    value={category} key={category.id}>
-                                    {category.name}
-                                </MenuItem>)
-                        }
-                    </Select>
-                </Grid>
-                <Grid item xs={3} md={3}>
-                    <Select
-                        className={"tuition-field"}
-                        value={academic_level}
-                        onChange={handleChange(id, "academic_level")}
-                    >
-                        {
-                            academicLevelList.map((grade, i)=>
-                                <MenuItem value={grade} key={i}>
+    const editTuitionRow =
+        ({id, category, hourly_tuition, academic_level, course_type}) => (
+            <Paper className="category-row" square>
+                <Grid alignItems="center" container>
+                    <Grid item xs={3}>
+                        <Select className="tuition-field"
+                            onChange={handleRuleChange(id, "category")}
+                            value={category}>
+                            {categories.map((cat) => (
+                                <MenuItem key={cat.id} value={cat.id}>
+                                    {cat.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Select className="tuition-field"
+                            onChange={handleRuleChange(id, "academic_level")}
+                            value={academic_level}>
+                            {academicLevelList.map((grade) => (
+                                <MenuItem key={grade} value={grade}>
                                     {grade}
-                                </MenuItem>)
-                        }
-                    </Select>
-                </Grid>
-                <Grid item xs={3} md={3}>
-                    <Select
-                        className={"tuition-field"}
-                        value={course_type}
-                        onChange={handleChange(id, "course_type")}
-                    >
-                        {
-                            classSize.map((size, i)=>
-                                <MenuItem value={size} key={i}>
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Select className="tuition-field"
+                            onChange={handleRuleChange(id, "course_type")}
+                            value={course_type}>
+                            {classSize.map((size) => (
+                                <MenuItem key={size} value={size}>
                                     {size}
-                                </MenuItem>)
-                        }
-                    </Select>
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <TextField className="tuition-field"
+                            onChange={handleRuleChange(id, "hourly_tuition")}
+                            type="number"
+                            value={hourly_tuition}
+                            variant="outlined" />
+                    </Grid>
+                    <Grid item xs={1}>
+                        <IconButton onClick={editTuition(id)}>
+                            <CheckCircle />
+                        </IconButton>
+                    </Grid>
                 </Grid>
-                <Grid item xs={2} md={2}>
-                    <TextField
-                        className={"tuition-field"}
-                        value={hourly_tuition}
-                        onChange={handleChange(id, "hourly_tuition")}
-                        type="number"
-                        variant="outlined"
-                    />
-                </Grid>
-                <Grid item xs={1} md={1}>
-                    <IconButton onClick={editTuition(id)}>
-                        <CheckCircle/>
-                    </IconButton>
-                </Grid>
-            </Grid>
-        </Paper>
-    };
+            </Paper>
+        );
 
     return (
         <div className="manage-tutition-wrapper">
-            <Typography
-                align="left"
-                variant="h5"
-                gutterBottom={true}
-            >
+            <Typography align="left" gutterBottom variant="h5">
                 Manage Tuition
             </Typography>
-            {
-                displayTuitionRules()
-            }
+            <Grid container>
+                <Grid className="accounts-table-heading table-header" container
+                    item xs={12}>
+                    <Grid item xs={3}>
+                        <Typography align="left" className="table-header">
+                            Category
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Typography align="left" className="table-header">
+                            Grade
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Typography align="left" className="table-header">
+                            Course Size
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Typography align="left" className="table-header">
+                            Hourly Tuition
+                        </Typography>
+                    </Grid>
+                </Grid>
+                <Grid alignItems="center" container item spacing={8} xs={12}>
+                    {tuitionRules.length > 0
+                        ? tuitionRules.map((tuition) => tuition && (
+                            <Grid item key={tuition.id} xs={12}>
+                                {tuition.editing
+                                    ? editTuitionRow(tuition)
+                                    : viewTuitionRow(tuition)}
+                            </Grid>
+                        ))
+                        : hooks.isLoading(priceRuleStatus)
+                            ? <Loading />
+                            : <NoListAlert list="Tuition Rules" />}
+                </Grid>
+            </Grid>
         </div>
     );
-}
-
-TuitionRules.propTypes = {
-    // courseTitle: PropTypes.string,
-    // admin: PropTypes.bool,
 };
-const mapStateToProps = (state) => ({
-    "registration": state.Registration,
-    "studentAccounts": state.Users.StudentList,
-    "courseList": state.Course.NewCourseList,
-});
 
-export default withRouter(connect(
-    mapStateToProps
-)(TuitionRules));
+TuitionRules.propTypes = {};
+
+export default TuitionRules;
