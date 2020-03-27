@@ -12,6 +12,7 @@ import Grid from "@material-ui/core/Grid";
 import {Button, Typography} from "@material-ui/core";
 
 function TestPanel() {
+    
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -19,7 +20,7 @@ function TestPanel() {
         }),
         [dispatch]
     );
-
+    
     const fields = [
         {
             "name": "Category Name",
@@ -38,13 +39,16 @@ function TestPanel() {
     const [categoryList, setCategoryList] = useState([]);
 
     const categories = useSelector(({Course}) => Course.CourseCategories);
-    const categoryStatus = useSelector(({RequestStatus}) => RequestStatus.category)
+    const categoryStatus = useSelector(({RequestStatus}) => RequestStatus.category);
+
+    
+    const customUseEffects = [];
 
     useEffect(()=>{
         api.fetchCategories();
     },[api]);
 
-    const fetchPropFunction = api.fetchCategories;
+    const fetchPropFunctions = [api.fetchCategories];
     const updateFunction = api.updateCategory;
 
     const handleChange = (field) => (e) =>{
@@ -105,9 +109,10 @@ function TestPanel() {
         <br />
         <PanelManager
             fields={fields}
-            fetchFunction={fetchPropFunction}
+            fetchFunctions={fetchPropFunctions}
             statusFunction={categoryStatus}
             updateFunction={updateFunction}
+            customUseEffects={customUseEffects}
         />
             </div>
     )
