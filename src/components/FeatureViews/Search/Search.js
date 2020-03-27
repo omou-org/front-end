@@ -10,7 +10,7 @@ import Grid from "@material-ui/core/Grid";
 import MenuItem from "@material-ui/core/MenuItem";
 import SearchIcon from "@material-ui/icons/Search";
 import Select from "@material-ui/core/Select";
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import "./Search.scss";
 import {
@@ -26,15 +26,14 @@ const useStyles = makeStyles({
         border: "1px solid #eee",
         background: "#ffffff",
         borderRadius: "3px,0px,0px,3px",
-        // paddingRight: "0px !important",
-        // paddingLeft: "0px !important",
-    },
-    navMenuItem: {
-        // paddingRight: "24px !important",
     },
       dropdownStyle: {
         borderRadius: "10px !important",
+        // zIndex: "9001"
       },
+      Trans: {
+          zIndex: "1998"
+      }
 });
 
 const getPlaceholder = () => window.innerWidth < 800
@@ -231,6 +230,7 @@ const Search = ({ onMobileType = () => { } }) => {
                                     }}
                                     onChange={changeFilter}
                                     value={filter}
+                                    classes={{root: classes.Trans}}
                                     MenuProps={{ classes: { paper: classes.dropdownStyle } }}
                                     >
                                     <MenuItem value="all">

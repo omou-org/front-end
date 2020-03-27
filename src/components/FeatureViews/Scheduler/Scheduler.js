@@ -55,23 +55,6 @@ const styles = theme => ({
     },
 });
 
-// Calvin's code
-// const styles = (theme) => ({
-//     "root": {
-//         "display": "flex",
-//         "flexWrap": "wrap",
-//         "paddingRight": "123px",
-//     },
-//     "margin": {
-//         "margin": theme.spacing(1),
-//     },
-//     "bootstrapFormLabel": {
-//         "fontSize": 18,
-//     },
-// });
-
-
-
 
 class Scheduler extends Component {
     constructor(props) {

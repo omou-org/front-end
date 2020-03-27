@@ -876,7 +876,6 @@ class Form extends Component {
                             className="student-align"
                             container
                             spacing={2000}>
-                                 {/*what does this spacing do and why is it so high?  */}
                             <SearchSelect
                                 className="search-options"
                                 disabled={disabled}

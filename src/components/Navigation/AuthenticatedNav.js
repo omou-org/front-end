@@ -14,8 +14,15 @@ import LogoutIcon from "@material-ui/icons/ExitToAppOutlined";
 import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
+import { makeStyles } from '@material-ui/core/styles';
 // Local Component Imports
 import Search from "../../components/FeatureViews/Search/Search";
+
+const useStyles = makeStyles({
+    navBar: {
+        zIndex: "1301"
+    }
+});
 
 const AuthenticatedNav = ({ toggleDrawer }) => {
     const dispatch = useDispatch();
@@ -24,6 +31,7 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
 
     const [mobileOpen, setMobileOpen] = useState(false);
     const [isMobileSearching, setMobileSearching] = useState(false);
+    const classes = useStyles();
 
     const handleDrawerToggle = useCallback(() => {
         toggleDrawer(!mobileOpen);
@@ -51,7 +59,9 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
     return (
         <AppBar
             className="OmouBar"
-            position="sticky">
+            position="sticky"
+            classes={{root: classes.navBar}}
+            >
             <Toolbar>
                 {
                     !isMobileSearching &&

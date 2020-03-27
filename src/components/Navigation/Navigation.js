@@ -31,6 +31,9 @@ const useStyles = makeStyles({
     navigationIconStyle: {
         height: "50px",
     },
+    navigationLeftList: {
+        width: "23%",
+    },
   });
   
 
@@ -129,7 +132,9 @@ const Navigation = (props) => {
                                         <Drawer
                                             onClose={handleDrawerToggle}
                                             open={mobileOpen}
-                                            variant="temporary">
+                                            variant="temporary"
+                                            classes={{paper: classes.navigationLeftList}}
+                                            >
                                             {drawer}
                                         </Drawer>
                                     </Hidden>
