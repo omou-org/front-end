@@ -29,11 +29,7 @@ const useStyles = makeStyles({
     },
       dropdownStyle: {
         borderRadius: "10px !important",
-        // zIndex: "9001"
       },
-      Trans: {
-          zIndex: "1998"
-      }
 });
 
 const getPlaceholder = () => window.innerWidth < 800
@@ -230,7 +226,6 @@ const Search = ({ onMobileType = () => { } }) => {
                                     }}
                                     onChange={changeFilter}
                                     value={filter}
-                                    classes={{root: classes.Trans}}
                                     MenuProps={{ classes: { paper: classes.dropdownStyle } }}
                                     >
                                     <MenuItem value="all">
