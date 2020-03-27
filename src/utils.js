@@ -2,6 +2,17 @@ import {instance} from "actions/apiActions";
 import {useCallback} from "react";
 import {useHistory} from "react-router-dom";
 
+export const durationParser = {
+    "0.5 Hours": 0.5,
+    "1 Hour": 1,
+    "1.5 Hours": 1.5,
+    "2 Hours": 2,
+    "0.5": "0.5 Hours",
+    "1": "1 Hour",
+    "1.5": "1.5 Hours",
+    "2": "2 Hours",
+};
+
 export const timeFormat = {
     "hour12": false,
     "hour": "2-digit",

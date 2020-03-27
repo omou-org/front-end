@@ -1,6 +1,8 @@
 import * as types from "./actionTypes";
 import {patchData, postData, submitParentAndStudent} from "./rootActions";
 import {formatCourse, instance, wrapGet, wrapPatch, wrapPost} from "./apiActions";
+import {wrapUseEndpoint} from "./hooks";
+import {useCallback} from "react";
 
 const parseGender = {
     "Male": "male",
@@ -314,7 +316,7 @@ export const initRegistration = (tutoringRegistrations, classRegistrations, paym
 const enrollmentEndpoint = "/course/enrollment/";
 const courseEndpoint = "/course/catalog/";
 
-export const fetchEnrollmentsByStudent = (user_id) => wrapGet(
+export const fetchEnrollmentsByStudent = (student_id) => wrapGet(
     enrollmentEndpoint,
     [
         types.FETCH_ENROLLMENT_STARTED,
@@ -324,11 +326,22 @@ export const fetchEnrollmentsByStudent = (user_id) => wrapGet(
     {
         "config": {
             "params": {
-                user_id,
+                student_id,
             },
         },
     }
 );
+
+const enrollmentByStudentConfig = (id) => ({
+    "params": {
+        "student_id": id,
+    },
+});
+
+export const useEnrollmentsByStudent = (studentID) => wrapUseEndpoint(
+    enrollmentEndpoint,
+    types.FETCH_ENROLLMENT_SUCCESSFUL
+)(studentID, enrollmentByStudentConfig, true);
 
 export const addCourse = (course) => wrapPost(
     courseEndpoint,
@@ -337,7 +350,7 @@ export const addCourse = (course) => wrapPost(
         types.POST_COURSE_SUCCESSFUL,
         types.POST_COURSE_FAILED,
     ],
-    course,
+    course
 );
 
 export const deleteEnrollment = ({enrollment_id, course_id, student_id}) => async (dispatch) => {
@@ -347,7 +360,7 @@ export const deleteEnrollment = ({enrollment_id, course_id, student_id}) => asyn
     });
     try {
         const unenrollResponse = await instance.delete(
-            `${enrollmentEndpoint}${enrollment_id}/`,
+            `${enrollmentEndpoint}${enrollment_id}/`
         );
         dispatch({
             "type": types.DELETE_ENROLLMENT_SUCCESS,

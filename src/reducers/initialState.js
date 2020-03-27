@@ -1320,7 +1320,7 @@ function initRegistrationForm() {
             },
         },
         submitStatus: null,
-        CurrentParent: "",
+        CurrentParent: null,
         registered_courses: null,
     };
 }

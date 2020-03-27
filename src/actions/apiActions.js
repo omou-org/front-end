@@ -1,9 +1,8 @@
 import * as types from "./actionTypes";
-
+import {dateFormat, DayConverter, durationParser, timeFormat} from "utils";
+import {academicLevelParse} from "reducers/registrationReducer";
 import axios from "axios";
-import { typeToPostActions } from "./rootActions";
-import { academicLevelParse } from "../reducers/registrationReducer";
-import { dateFormat, timeFormat } from "../utils";
+import {typeToPostActions} from "./rootActions";
 
 export const instance = axios.create({
     "baseURL": process.env.REACT_APP_DOMAIN,
@@ -13,7 +12,7 @@ export const MISC_FAIL = 600;
 export const REQUEST_ALL = -1;
 export const REQUEST_STARTED = 1;
 
-export const wrapGet = (endpoint, [startType, successType, failType], { id, config }) =>
+export const wrapGet = (endpoint, [startType, successType, failType], {id, config}) =>
     async (dispatch) => {
         // creates a new action based on the response given
         const newAction = (type, response) => {
@@ -73,7 +72,7 @@ export const wrapPost = (endpoint, [startType, successType, failType], data) =>
         }
     };
 
-export const wrapPatch = (endpoint, [startType, successType, failType], { id, data, config }) =>
+export const wrapPatch = (endpoint, [startType, successType, failType], {id, data, config}) =>
     async (dispatch) => {
         // creates a new action based on the response given
         const newAction = (type, response) => {
@@ -93,14 +92,14 @@ export const wrapPatch = (endpoint, [startType, successType, failType], { id, da
             const response = await instance.patch(`${endpoint}${id}/`, data, config || {});
             // successful request
             newAction(successType, response);
-        } catch ({ response }) {
+        } catch ({response}) {
             // failed request
             newAction(failType, response);
         }
     };
 
-export const wrapDelete = (endpoint, [startType, successType, failType], { id, config }) =>
-    async (dispatch, getState) => {
+export const wrapDelete = (endpoint, [startType, successType, failType], {id, config}) =>
+    async (dispatch) => {
         // creates a new actions based on the response given
         const newAction = (type, response) => {
             dispatch({
@@ -119,7 +118,7 @@ export const wrapDelete = (endpoint, [startType, successType, failType], { id, c
             const response = await instance.delete(`${endpoint}${id}/`, config || {});
             // successful response
             newAction(successType, response);
-        } catch ({ response }) {
+        } catch ({response}) {
             newAction(failType, response);
         }
     };
@@ -134,11 +133,11 @@ export const fetchCourses = (id) =>
             types.FETCH_COURSE_SUCCESSFUL,
             types.FETCH_COURSE_FAILED,
         ],
-        { id },
+        {id}
     );
 export const submitNewSmallGroup = (form) => {
-    const [courseSuccessAction, courseFailAction] = typeToPostActions.course;
-    return (dispatch, getState) => new Promise((resolve) => {
+    const [, courseFailAction] = typeToPostActions.course;
+    return (dispatch) => new Promise((resolve) => {
         dispatch({
             "type": types.SUBMIT_INITIATED,
             "payload": null,
@@ -155,56 +154,25 @@ export const submitNewSmallGroup = (form) => {
                 "type": types.ADD_SMALL_GROUP_REGISTRATION,
                 "payload": {
                     "formMain": form,
-                    "new_course": courseResponse.data
+                    "new_course": courseResponse.data,
                 },
             });
         }, (error) => {
             dispatch({
                 "type": courseFailAction,
-                "payload": error
+                "payload": error,
             });
         });
     });
 };
 
-export const durationParser = {
-    "0.5 Hours": 0.5,
-    "1 Hour": 1,
-    "1.5 Hours": 1.5,
-    "2 Hours": 2,
-    "0.5": "0.5 Hours",
-    "1": "1 Hour",
-    "1.5": "1.5 Hours",
-    "2": "2 Hours",
-};
-
 export const formatCourse = (formCourse, type) => {
     const courseInfo = formCourse["Course Info"] || formCourse["Group Details"];
-    const tuitionInfo = formCourse["Tuition"] || formCourse["Group Details"];
-
-    const dayOfWeek = () => {
-        switch (startDate.getDay()) {
-            case 0:
-                return "sunday";
-            case 1:
-                return "monday";
-            case 2:
-                return "tuesday";
-            case 3:
-                return "wednesday";
-            case 4:
-                return "thursday";
-            case 5:
-                return "friday";
-            case 6:
-                return "saturday";
-        }
-    };
+    const tuitionInfo = formCourse.Tuition || formCourse["Group Details"];
 
     let startDate = new Date(courseInfo["Start Date"]);
-    const day = dayOfWeek();
+    const day = DayConverter[startDate.getDay()];
     let endDate = new Date(startDate);
-    // 7 days * (number of sessions - 1) = because you can't count the first one
     const numberOfSessions = tuitionInfo["# of Weekly Sessions"];
 
     endDate = new Date(endDate.setDate(startDate.getDate() + 7 * (numberOfSessions - 1)));
@@ -215,14 +183,8 @@ export const formatCourse = (formCourse, type) => {
     const startString = courseInfo["Start Time"];
     let startTime = new Date(startString);
     let endTime = new Date(startString);
-    const duration = {
-        "0.5 Hours": 0.5,
-        "1 Hour": 1,
-        "1.5 Hours": 1.5,
-        "2 Hours": 2,
-    };
 
-    endTime = new Date(endTime.setTime(endTime.getTime() + duration[tuitionInfo.Duration] * 60 * 60 * 1000));
+    endTime = new Date(endTime.setTime(endTime.getTime() + durationParser[tuitionInfo.Duration] * 60 * 60 * 1000));
 
     endTime = endTime.toLocaleString("eng-US", timeFormat);
     startTime = startTime.toLocaleString("eng-US", timeFormat);
@@ -247,21 +209,12 @@ export const formatCourse = (formCourse, type) => {
     };
 };
 
-const courseName = (form, type) => {
-    if (type === "T") {
-        return `1:1 ${form.Instructor.value}${form[""]}`;
-    }
-};
-
 export const parseTime = (time) => {
-    let formattedTime;
-    if (typeof time === "string") {
-        const Hour = time.substr(17, 2);
-        const to12HourTime = (Hour % 12) || 12;
-        const ampm = Hour < 12 ? " am" : " pm";
-        formattedTime = to12HourTime + time.substr(19, 3) + ampm;
-    } else {
-        formattedTime = time;
+    if (typeof time !== "string") {
+        return time;
     }
-    return formattedTime;
+    const Hour = time.substr(17, 2);
+    const to12HourTime = (Hour % 12) || 12;
+    const ampm = Hour < 12 ? " am" : " pm";
+    return to12HourTime + time.substr(19, 3) + ampm;
 };
