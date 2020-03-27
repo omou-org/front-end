@@ -27,6 +27,7 @@ import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
 import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 import DialogContentText from "@material-ui/core/es/DialogContentText";
+import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
 
 import InstructorSchedule from "../Accounts/TabComponents/InstructorSchedule";
 import {SessionPaymentStatusChip} from "../../SessionPaymentStatusChip";
@@ -114,7 +115,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
             return <Loading />;
         }
         if (hooks.isFail(studentStatus)) {
-            return "Error loading enrollment details!";
+            return <LoadingError error="enrollment details"/>;
         }
     }
 

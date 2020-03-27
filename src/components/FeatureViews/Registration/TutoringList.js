@@ -11,6 +11,7 @@ import Loading from "components/Loading";
 import Grow from "@material-ui/core/Grow";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
 
 const trimString = (string, maxLen) =>
     string.length > maxLen
@@ -28,7 +29,7 @@ const TutoringList = () => {
     }
 
     if (hooks.isFail(categoryStatus)) {
-        return "Error loading subjects!";
+        return <LoadingError error="subjects"/>;
     }
 
     if(!registeringParent || registeringParent === "none"){

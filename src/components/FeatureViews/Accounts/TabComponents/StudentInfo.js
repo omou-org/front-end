@@ -6,6 +6,7 @@ import ProfileCard from "../ProfileCard";
 import PropTypes from "prop-types";
 import React from "react";
 import {useSelector} from "react-redux";
+import LoadingError from "./LoadingCourseError"
 
 const StudentInfo = ({user}) => {
     const studentList = useSelector(({Users}) => Users.StudentList);
@@ -18,7 +19,7 @@ const StudentInfo = ({user}) => {
             return <Loading />;
         }
         if (hooks.isFail(fetchStatus)) {
-            return "Error loading students!";
+            return <LoadingError error="students"/>;
         }
     }
 

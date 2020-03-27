@@ -15,6 +15,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
+import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
 
 import "theme/theme.scss";
 import "./registration.scss";
@@ -118,7 +119,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
             return <Loading small />;
         }
         if (hooks.isFail(studentStatus)) {
-            return "Error loading enrollment details!";
+            return <LoadingError error="enrollment details"/>;
         }
     }
 

@@ -37,6 +37,7 @@ import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import FormControl from "@material-ui/core/FormControl";
+import LoadingError from "./LoadingCourseError"
 
 const timeOptions = {
     "hour": "2-digit",
@@ -144,7 +145,7 @@ const CourseSessionStatus = () => {
         return <Loading paper />;
     }
     if (hooks.isFail(courseStatus, enrollmentStatus, studentStatus)) {
-        return "Error loading data";
+        return <LoadingError error="data"/>;
     }
 
     const courseSessionsArray = courseSessions && Object.values(courseSessions)

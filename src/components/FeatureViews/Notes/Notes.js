@@ -17,6 +17,7 @@ import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
 
 import "../Accounts/TabComponents/TabComponents.scss";
 import {GET, PATCH, POST} from "../../../actions/actionTypes";
@@ -204,7 +205,7 @@ const Notes = ({ownerType, ownerID}) => {
     }
 
     if (hooks.isFail(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {
-        return "Error loading notes!";
+        return <LoadingError error="notes"/>;
     }
 
     if (submitting && alert) {
