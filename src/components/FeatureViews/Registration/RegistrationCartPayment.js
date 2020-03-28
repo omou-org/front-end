@@ -107,9 +107,9 @@ const Payment = ({isOneCourse, selectedStudentID, selectedCourseID,
     };
 
     return (
-        <Grid container spacing={8}>
+        <Grid container spacing={1}>
             <Grid item xs={12}>
-                <Grid container justify="flex-end" spacing={16}>
+                <Grid container justify="flex-end" spacing={2}>
                     <Grid item xs={6} />
                     {isOneCourse &&
                         <>

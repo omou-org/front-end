@@ -13,8 +13,9 @@ import Typography from "@material-ui/core/Typography";
 import {capitalizeString, courseDateFormat} from "utils";
 
 const useStyles = makeStyles((theme) => ({
-    "font": {
+    "courseTitle": {
         "color": theme.palette.common.black,
+        "textDecoration": "none",
     },
 }));
 
@@ -22,7 +23,7 @@ const CourseList = ({filteredCourses}) => {
     const instructors = useSelector(({Users}) => Users.InstructorList);
     const currentParent =
         useSelector(({Registration}) => Registration.CurrentParent);
-    const {font} = useStyles();
+    const {courseTitle} = useStyles();
     return filteredCourses.filter(
         (course) => course.capacity > 1
     ).map((course) => {
@@ -34,7 +35,7 @@ const CourseList = ({filteredCourses}) => {
             <Grow in key={course.course_id}>
                 <Paper className="row">
                     <Grid alignItems="center" container layout="row">
-                        <Grid className={font} component={Link} item
+                        <Grid className={courseTitle} component={Link} item
                             md={3}
                             to={`/registration/course/${course.course_id}`}
                             xs={12}>
