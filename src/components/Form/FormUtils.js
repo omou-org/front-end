@@ -75,7 +75,7 @@ export const createDiscountPayload = (form) => {
         case "Payment Method Discount": {
             return {
                 ...discountPayload,
-                "payment_method": form["Discount Rules"]["Payment Method"].toLowerCase(),
+                "payment_method": form["Discount Rules"]["Payment Method"],
             };
         }
         // no default
@@ -133,6 +133,9 @@ export const gradeConverter = (grade) => {
 
 };
 
+const numToDay = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+
 export const formatDate = (start, end) => {
     const MonthConverter = {
         "0": "January",
@@ -170,7 +173,19 @@ export const formatDate = (start, end) => {
 
     }
 
-    return `${capitalizeString(Days)}, ${Month} ${dateNumber} <br> ${timeConverter(startTime)} - ${timeConverter(endTime)}`;
+    const finalTime = `${capitalizeString(Days)}, ${Month} ${dateNumber} <br> ${timeConverter(startTime)} - ${timeConverter(endTime)}`;
+
+    return finalTime;
+
+};
+
+const formatTime = (time) => {
+    if (!time) {
+        return null;
+    }
+    const [hrs, mins] = time.substring(1).split(":");
+    const hours = parseInt(hrs, 10);
+    return `${hours % 12 === 0 ? 12 : hours % 12}:${mins} ${hours >= 12 ? "PM" : "AM"}`;
 };
 
 export const loadEditCourseState = (course, inst) => ({
@@ -207,15 +222,15 @@ export function arr_diff(a1, a2) {
     const a = [],
         diff = [];
 
-    for (let i = 0; i < a1.length; i++) {
+    for (var i = 0; i < a1.length; i++) {
         a[a1[i]] = true;
     }
 
-    for (let j = 0; j < a2.length; j++) {
-        if (a[a2[j]]) {
-            delete a[a2[j]];
+    for (var i = 0; i < a2.length; i++) {
+        if (a[a2[i]]) {
+            delete a[a2[i]];
         } else {
-            a[a2[j]] = true;
+            a[a2[i]] = true;
         }
     }
 
@@ -243,8 +258,8 @@ export const loadInstructors = async (input) => {
         return [];
     }
     return response.data.results
-        .map(({ "user": { id, first_name, last_name, email } }) => ({
+        .map(({ "user": { user_id, first_name, last_name, email } }) => ({
             "label": `${first_name} ${last_name} - ${email}`,
-            "value": id,
+            "value": user_id,
         }));
 };

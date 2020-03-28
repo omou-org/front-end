@@ -10,8 +10,6 @@ export default function enrollment(state = initialState.Enrollments, {payload, t
         case actions.POST_ENROLLMENT_NOTE_SUCCESSFUL:
         case actions.PATCH_ENROLLMENT_NOTE_SUCCESSFUL:
             return handleEnrollmentNotesPost(state, payload);
-        case actions.DELETE_ENROLLMENT_NOTE_SUCCESSFUL:
-            return handleNoteDelete(state, payload);
         case actions.POST_ENROLLMENT_STARTED:
             return state;
         case actions.POST_ENROLLMENT_SUCCESS:
@@ -47,6 +45,23 @@ const handleEnrollment = (state, payload, requestType) => {
                     "notes": {},
                     "payment_list": payment_list,
                     "balance": enrollment_balance,
+                    "session_payment_status": {
+                        1: 1,
+                        2: 1,
+                        3: 1,
+                        4: 1,
+                        5: 1,
+                        6: 1,
+                        7: 1,
+                        8: 1,
+                        9: 1,
+                        10: 1,
+                        11: 1,
+                        12: 1,
+                        13: 1,
+                        14: 1,
+                        15: 1,
+                    },
                 };
 
                 newStudentData[course] = newCourseData;
@@ -91,11 +106,5 @@ const handleEnrollmentNoteFetch = (state, {courseID, studentID, response}) => {
     data.forEach((note) => {
         newState[studentID][courseID].notes[note.id] = note;
     });
-    return newState;
-};
-
-const handleNoteDelete = (state, {"ownerID": {courseID, studentID}, noteID}) => {
-    const newState = JSON.parse(JSON.stringify(state));
-    delete newState[studentID][courseID].notes[noteID];
     return newState;
 };

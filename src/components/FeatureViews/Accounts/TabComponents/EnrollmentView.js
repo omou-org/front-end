@@ -3,12 +3,12 @@ import BackButton from "../../../BackButton";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import * as userActions from "actions/userActions";
-import * as calendarActions from "actions/calendarActions"
+import * as calendarActions from "../../../../actions/calendarActions"
 import {bindActionCreators} from "redux";
 import * as hooks from "actions/hooks";
-import * as registrationActions from "actions/registrationActions";
-import * as apiActions from "actions/apiActions";
-import {REQUEST_ALL} from "actions/apiActions";
+import * as registrationActions from "../../../../actions/registrationActions";
+import * as apiActions from "../../../../actions/apiActions";
+import {REQUEST_ALL} from "../../../../actions/apiActions";
 
 import Grid from "@material-ui/core/Grid";
 import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
@@ -28,15 +28,11 @@ import DialogContentText from "@material-ui/core/es/DialogContentText/DialogCont
 import DialogActions from "@material-ui/core/DialogActions";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import PaymentTable from "./PaymentTable";
-import NoListAlert from "../../../NoListAlert";
+import {NoListAlert} from "../../../NoListAlert";
 import {GET} from "../../../../actions/actionTypes";
 import {SessionPaymentStatusChip} from "../../../SessionPaymentStatusChip";
 import AddSessions from "AddSessions";
-import {capitalizeString, DayConverter, upcomingSession} from "../../../../utils";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
-import FormControl from "@material-ui/core/FormControl";
+import {capitalizeString, DayConverter} from "../../../../utils";
 
 const timeOptions = {
     "hour": "2-digit",
@@ -46,6 +42,24 @@ const dateOptions = {
     "year": "numeric",
     "month": "numeric",
     "day": "numeric",
+};
+
+const courseDataParser = (course) => {
+    let { schedule, status, tuition, course_id } = course;
+    const DaysString = schedule.days;
+
+    const endDate = new Date(schedule.end_date + schedule.end_time),
+        startDate = new Date(schedule.start_date + schedule.start_time);
+
+    return {
+        "date": `${startDate.toLocaleDateString("en-US", dateOptions)} - ${endDate.toLocaleDateString("en-US", dateOptions)}`,
+        "day": DaysString,
+        "endTime": endDate.toLocaleTimeString("en-US", timeOptions),
+        "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
+        status,
+        tuition,
+        "course_id": course_id
+    };
 };
 
 const CourseSessionStatus = () => {
@@ -58,7 +72,6 @@ const CourseSessionStatus = () => {
     const courses = useSelector(({ Course }) => Course.NewCourseList);
     const enrollments = useSelector(({ Enrollments }) => Enrollments);
     const requestStatus = useSelector(({ RequestStatus }) => RequestStatus);
-    const [highlightSession, setHighlightSession] = useState(false);
     const course = courses[courseID];
 
     const dispatch = useDispatch();
@@ -136,12 +149,12 @@ const CourseSessionStatus = () => {
 
     // either doesn't exist or only has notes defined
     if (!enrollment || Object.keys(enrollment).length <= 1) {
-        return <Loading paper />;
+        return <Loading paper/>;
     }
     if (hooks.isLoading(courseStatus, enrollmentStatus, studentStatus, instructorStatus) ||
         requestStatus.schedule[GET][REQUEST_ALL] !== 200
     ) {
-        return <Loading paper />;
+        return <Loading paper/>;
     }
     if (hooks.isFail(courseStatus, enrollmentStatus, studentStatus)) {
         return "Error loading data";
@@ -160,10 +173,6 @@ const CourseSessionStatus = () => {
         setActiveTab(newTab);
     };
 
-    const handleHighlightSwitch = () => {
-        setHighlightSession(!highlightSession);
-    };
-
     const sessions = courseSessions
         && calendarSessions.map((session) => session);
 
@@ -177,13 +186,11 @@ const CourseSessionStatus = () => {
     const closeUnenrollDialog = (toUnenroll) => event => {
         event.preventDefault();
         setUnenrollWarningOpen(false);
-        if (toUnenroll) {
+        if(toUnenroll){
             api.deleteEnrollment(enrollment);
             history.push(`/accounts/student/${studentID}`);
         }
     };
-
-    const upcomingSess = upcomingSession(sessions, courseID);
 
     const renderMain = () => {
         switch (activeTab) {
@@ -197,7 +204,7 @@ const CourseSessionStatus = () => {
                             <Grid
                                 className="accounts-table-heading"
                                 container>
-                                <Grid item xs={1} />
+                                <Grid item xs={1}/>
                                 <Grid
                                     item
                                     xs={2}>
@@ -209,10 +216,10 @@ const CourseSessionStatus = () => {
                                 </Grid>
                                 {
                                     [
-                                        { title: "Day", cols: 2, align: "left" },
-                                        { title: "Time", cols: 3, align: "left" },
-                                        { title: "Tuition", cols: 1, align: "left" },
-                                        { title: "Status", cols: 2, align: "center" }
+                                        {title:"Day", cols:2, align: "left"},
+                                        {title:"Time", cols:3, align:"left"},
+                                        {title:"Tuition",cols:1, align:"left"},
+                                        {title:"Status", cols:2, align:"center"}
                                     ].map((header) => (
                                         <Grid
                                             item
@@ -245,18 +252,15 @@ const CourseSessionStatus = () => {
                                             to={course.course_type === "tutoring" ? `/scheduler/view-session/${course_id}/${id}/${instructor}` : `/registration/course/${course_id}`}
                                             component={Link}
                                         >
-                                            <Paper
-                                                square
-                                                className={`session-info
-                                                ${highlightSession && " active"}
-                                                ${upcomingSess.id == id && " upcoming-session"}`}>
+                                            <Paper square className="session-info">
                                                 <Grid container>
-                                                    <Grid item xs={1} />
+                                                    <Grid item xs={1}/>
                                                     <Grid
                                                         item
                                                         xs={2}>
                                                         <Typography align="left">
                                                             {date}
+
                                                         </Typography>
                                                     </Grid>
                                                     <Grid
@@ -287,7 +291,7 @@ const CourseSessionStatus = () => {
                                                             setPos
                                                             enrollment={enrollment}
                                                             session={session}
-                                                        />
+                                                            />
                                                     </Grid>
                                                 </Grid>
                                             </Paper>
@@ -309,7 +313,6 @@ const CourseSessionStatus = () => {
                 return (
                     <PaymentTable
                         type={"enrollment"}
-                        courseID={course.course_id}
                         enrollmentID={enrollment.enrollment_id}
                         paymentList={enrollment.payment_list} />
                 );
@@ -340,11 +343,11 @@ const CourseSessionStatus = () => {
                 </Grid>
                 <Grid item md={12} >
                     <Grid container
-                        className={"session-actions"}
-                        direction={"row"}
-                        alignItems={"center"}
-                        justify={"flex-start"}
-                        spacing={16}
+                          className={"session-actions"}
+                          direction={"row"}
+                          alignItems={"center"}
+                          justify={"flex-start"}
+                          spacing={16}
                     >
                         <Grid item>
                             <AddSessions
@@ -363,7 +366,7 @@ const CourseSessionStatus = () => {
                         </Grid>
                     </Grid>
                     <Grid item xs={12}
-                        className="participants"
+                          className="participants"
                     >
                         <Typography align="left">
                             Student: {" "}
@@ -380,25 +383,6 @@ const CourseSessionStatus = () => {
                         <Typography align="left">
                             Enrollment Balance Left: ${enrollment.balance}
                         </Typography>
-                    </Grid>
-                    <Grid item xs={3} container alignItems="flex-start">
-                        <Grid item>
-                            <FormControl component="fieldset">
-                                <FormGroup>
-                                    <FormControlLabel
-                                        control={
-                                            <Switch
-                                                checked={highlightSession}
-                                                onChange={handleHighlightSwitch}
-                                                color="primary"
-                                                value="upcoming-session"
-                                            />
-                                        }
-                                        label="Highlight Upcoming Session"
-                                    />
-                                </FormGroup>
-                            </FormControl>
-                        </Grid>
                     </Grid>
                 </Grid>
                 <Tabs
@@ -439,7 +423,7 @@ const CourseSessionStatus = () => {
                     <DialogContentText>
                         You are about to unenroll in <b>{course.title}</b> for <b>{usersList.StudentList[studentID].name}</b>.
                         Performing this action will credit <b>${enrollment.balance}</b> back to the parent's account balance.
-                    Are you sure you want to unenroll?
+                        Are you sure you want to unenroll?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

@@ -20,6 +20,25 @@ const parseDate = (date) => {
 
 };
 
+const parseTime = (time) => {
+    if (!time) {
+        return null;
+    }
+    // const [hourStr, secondPart] = time.split(":");
+    // const hourNum = parseInt(hourStr, 10);
+    // const hour = hourNum === 12 ? hourNum - 12 : hourNum;
+    // const [minute, dayHalf] = secondPart.split(" ");
+
+    // if (dayHalf.toUpperCase() === "PM") {
+    //     return `${hour + 12}:${minute}`;
+    // }
+    if (typeof time === "string") {
+        return time.substring(12, 16);
+    }
+    return time.toISOString().substring(12, 16);
+
+};
+
 export const getRegistrationForm = () =>
     ({"type": types.ALERT,
         "payload": "alert stuff"});

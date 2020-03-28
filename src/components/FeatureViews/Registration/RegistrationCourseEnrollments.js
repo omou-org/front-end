@@ -1,6 +1,6 @@
 import * as hooks from "actions/hooks";
 import {useSessionsInPeriod} from "actions/hooks";
-import React, {Fragment, useEffect, useMemo, useState} from "react";
+import React, {Fragment, useCallback, useEffect, useMemo, useState} from "react";
 import {addDashes} from "components/FeatureViews/Accounts/accountUtils";
 import {Link, NavLink} from "react-router-dom";
 import PropTypes from "prop-types";
@@ -32,10 +32,9 @@ import DialogContentText from "@material-ui/core/es/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import NoListAlert from "../../NoListAlert";
+import {NoListAlert} from "../../NoListAlert";
 import {sessionArray} from "../Scheduler/SchedulerUtils";
 import {SessionPaymentStatusChip} from "../../SessionPaymentStatusChip";
-import {upcomingSession} from "../../../utils";
 
 const TableToolbar = (
     <TableHead>
@@ -75,13 +74,12 @@ const RegistrationCourseEnrollments = ({courseID}) => {
         enrollment: null,
     });
 
-    // TODO: for future release
-    // const toggleExpanded = useCallback((studentID) => () => {
-    //     setExpanded((prevExpanded) => ({
-    //         ...prevExpanded,
-    //         [studentID]: !prevExpanded[studentID],
-    //     }));
-    // }, []);
+    const toggleExpanded = useCallback((studentID) => () => {
+        setExpanded((prevExpanded) => ({
+            ...prevExpanded,
+            [studentID]: !prevExpanded[studentID],
+        }));
+    }, []);
 
     const enrollmentStatus = hooks.useEnrollmentByCourse(courseID);
     const course = courses[courseID];
@@ -123,7 +121,11 @@ const RegistrationCourseEnrollments = ({courseID}) => {
         }
     }
 
-    const upcomingSess = upcomingSession(currentMonthSessions, courseID);
+    const today = new Date();
+    const upcomingSession = currentMonthSessions
+        .filter((session) => ((session.course == courseID) &&
+            new Date(session.start_datetime) >= today))
+        .sort((sessionA, sessionB) => (sessionA - sessionB))[0];
 
     const handleClick = event => {
         setStudentMenuAnchorEl(event.currentTarget);
@@ -213,11 +215,11 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                                                         style={{"width": "40px",}}>
                                                         <SessionPaymentStatusChip
                                                             style={{
-                                                                "width": "50px",
+                                                                "width": "45px",
                                                                 "padding": "7px 0 0 10px",
-                                                                "borderRadius": "15px"
+                                                                "borderRadius": "8px"
                                                             }}
-                                                            session={upcomingSess}
+                                                            session={upcomingSession}
                                                             enrollment={enrollment} />
                                                       </div>
                                                     : hooks.isFail(enrollmentStatus)
@@ -314,8 +316,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                 <Divider />
                 <DialogContent>
                     <DialogContentText>
-                        You are about to unenroll in <b>{course.title}</b> for
-                        <b>{ unenroll.enrollment && students[unenroll.enrollment.student_id].name}</b>.
+                        You are about to unenroll in <b>{course.title}</b> for <b>{ unenroll.student && students[unenroll.student].name}</b>.
                         Performing this action will credit the remaining enrollment balance back to the parent's account balance.
                         Are you sure you want to unenroll?
                     </DialogContentText>

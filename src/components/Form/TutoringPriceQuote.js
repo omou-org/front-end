@@ -1,22 +1,33 @@
 // React Imports
-import React, {useEffect, useState} from "react";
-import {useSelector} from "react-redux";
+import React, {useEffect, useMemo, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import PropTypes from "prop-types";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/es/Typography/Typography";
 // Local Component Imports
 import "./Form.scss"
 import TextField from "@material-ui/core/es/TextField/TextField";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import {durationParser} from "../../actions/apiActions";
+import {bindActionCreators} from "redux";
+import * as adminActions from "../../actions/adminActions";
+import {GET} from "../../actions/actionTypes";
+import {durationParser, REQUEST_ALL} from "../../actions/apiActions";
 import {academicLevelParse} from "../../reducers/registrationReducer";
 import InputLabel from "@material-ui/core/InputLabel";
-import {OutlinedSelect} from "../FeatureViews/Scheduler/SchedulerUtils";
-import * as hooks from "actions/hooks";
+import ConfirmIcon from "@material-ui/icons/CheckCircle";
 
-const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCategory}) => {
+
+const TutoringPriceQuote = ({courseType, handleUpdatePriceFields, tuitionConfirmed, tutoringCategory}) => {
+    const dispatch = useDispatch();
+    const api = useMemo(
+        () => ({
+            ...bindActionCreators(adminActions, dispatch),
+        }),
+        [dispatch]
+    );
     const [priceQuote, setPriceQuote] = useState(null);
     const [hourlyTuition, setHourlyTuition] = useState(null);
     const [duration, setDuration] = useState(null);
@@ -27,27 +38,39 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCateg
     const [academicList, setAcademicList] = useState([]);
     const [priceRules, setPriceRules] = useState(null);
 
+    const requestStatus = useSelector(({RequestStatus}) => RequestStatus);
     const adminPriceRules = useSelector(({"Admin": {PriceRules}}) => PriceRules);
     const categories = useSelector(({"Course":{CourseCategories}}) => CourseCategories);
 
-    const categoryStatus = hooks.useCategory();
-    const priceRuleStatus = hooks.usePriceRules();
+    useEffect(()=>{
+        api.fetchCategories();
+    },[api]);
 
     useEffect(()=>{
-        if (hooks.isSuccessful(categoryStatus, priceRuleStatus)) {
+        if(requestStatus.category[GET] === 200){
+            api.fetchPriceRules();
+        }
+    }, [requestStatus.category[GET]]);
+
+    useEffect(()=>{
+        if(requestStatus.priceRule[GET][REQUEST_ALL] === 200 &&
+        requestStatus.category[GET] === 200){
             setPriceRules(adminPriceRules
                 .filter(rule => rule.course_type === courseType)
                 .map((rule) =>({
                 ...rule,
-                    category: categories.find((category) => (category.id === rule.category)),
+                category: categories.find((category) => {return category.id === rule.category}),
             })));
         }
-    }, [categoryStatus, priceRuleStatus]);
+    },[requestStatus.priceRule[GET][REQUEST_ALL], api]);
 
     // get list of unique category objects from price rules
     const uniqueCategories = (rules) => Array.from(new Set(rules.map(rule => rule.category.id)))
-        .map(id => priceRules.find(rule => rule.category.id === id).category);
-
+        .map(id => {
+            return {
+                ...priceRules.find(rule => rule.category.id === id).category
+            }
+        });
     // get list of unique academic grades from price rules
     const uniqueAcademicGrades = (rules, categoryID) => {
         let filteredCategoryRules = rules.filter( rule => rule.category.id === categoryID);
@@ -96,12 +119,6 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCateg
 
     const onCategoryChange = () => event => {
         setCategory(event.target.value);
-
-        handleUpdatePriceFields({
-            value: event.target.value.id,
-            label: event.target.value.name
-        }, academic_level, durationParser[event.target.value], sessions);
-
         // filter academic levels so only academic levels with the current category get displayed
         setAcademicList(()=>{
             let filteredByCategoryPriceRules = priceRules.filter(rule => rule.category.id === event.target.value.id);
@@ -147,10 +164,6 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCateg
                     tuition: matchingPriceRule.hourly_tuition
                 }
             );
-            handleUpdatePriceFields({
-                value: category.id,
-                label: category.name
-            }, event.target.value, durationParser[duration], sessions);
             return matchingPriceRule.hourly_tuition;
         });
     };
@@ -164,10 +177,6 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCateg
                 tuition: hourlyTuition
             }
         );
-        handleUpdatePriceFields({
-            value: category.id,
-            label: category.name
-        }, academic_level, durationParser[event.target.value], sessions);
     };
 
     const onSessionsChange = () => event => {
@@ -179,12 +188,18 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCateg
                 tuition: hourlyTuition,
             }
         );
-        handleUpdatePriceFields({
-            value: category.id,
-            label: category.name
-        }, academic_level, durationParser[duration], event.target.value);
     };
 
+    const onUpdateFields = event => {
+        event.preventDefault();
+        let formattedCategory = {
+            value: category.id,
+            label: category.name
+        };
+        handleUpdatePriceFields(formattedCategory, academic_level, durationParser[duration], sessions);
+    };
+
+    const validFields = duration && sessions && academic_level && category;
     return (
         <Grid container>
             <Grid item xs={12}>
@@ -208,12 +223,6 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCateg
                                     inputProps={{
                                         id:"category"
                                     }}
-                                    input={
-                                        <OutlinedSelect
-                                            id="select-category"
-                                            name="category"
-                                        />
-                                    }
                                 >
                                     {
                                         categoryList.map((category) =>
@@ -235,12 +244,6 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCateg
                                     inputProps={{
                                         id:"academic-level"
                                     }}
-                                    input={
-                                        <OutlinedSelect
-                                            id="select-academic"
-                                            name="academic"
-                                        />
-                                    }
                                 >
                                     {
                                         academicList.map((grade) =>
@@ -254,16 +257,12 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCateg
                                 </Select>
                             </Grid>
                             <Grid item xs={3}>
-                                    <InputLabel htmlFor={"hourly-tuition"}>Hourly Tuition</InputLabel>
-                                <div
-                                    style={{
-                                        padding: '10px 26px 10px 12px',
-                                    }}
-                                >
-                                    <Typography variant="h6">
-                                        {hourlyTuition}
-                                    </Typography>
-                                </div>
+                                <TextField
+                                    label={"Hourly Tuition"}
+                                    value={hourlyTuition || ''}
+                                    InputProps={{readOnly:true}}
+                                    variant={"outlined"}
+                                />
                             </Grid>
                         </Grid>
                     </Grid>
@@ -331,6 +330,22 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCateg
                                     InputProps={{readOnly:true}}
                                     variant={"outlined"}
                                 />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item>
+                        {/*This button will update previously filled fields if you changed any field here.*/}
+                        <Grid container
+                              direction={"row"}
+                              justify={"flex-end"}>
+                            <Grid item xs={3}>
+                                 <ConfirmIcon className={`${tuitionConfirmed && "confirmed"} course-icon`} />
+                                <Button
+                                    disabled={!validFields}
+                                    onClick={onUpdateFields}
+                                >
+                                    Finalize Course Tuition
+                                </Button>
                             </Grid>
                         </Grid>
                     </Grid>

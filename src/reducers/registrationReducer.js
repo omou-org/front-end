@@ -29,6 +29,8 @@ export default function registration(state = initialState.RegistrationForms, { p
             return failedSubmit(state);
         case actions.POST_ADMIN_SUCCESSFUL:
             return successSubmit(state);
+        case actions.POST_STUDENT_FAILED:
+            return failedSubmit(state);
         case actions.POST_PARENT_SUCCESSFUL:
             return successSubmit(state);
         case actions.POST_PARENT_FAILED:
@@ -301,8 +303,6 @@ const addTutoringRegistration = (prevState, form) => {
             case "2 Hours": {
                 return 2;
             }
-            default:
-            //no default case
         }
     };
     const instructorConfirmation = form["Tutor Selection"]["Did instructor confirm?"] === "Yes, Instructor Confirm";

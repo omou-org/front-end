@@ -1,16 +1,17 @@
-import * as actions from "../actions/actionTypes";
-import initialState from "./initialState";
+import initialState from './initialState';
+import * as actions from "../actions/actionTypes"
 
-export default function admin(state = initialState.Admin, {payload, type}) {
-    const newState = state;
+export default function admin(state = initialState.Admin, { payload, type, }) {
+    let newState = state;
     switch (type) {
         case actions.GET_PRICE_RULE_SUCCESS:
             return updatePriceRule(newState, payload, "GET");
         case actions.POST_PRICE_RULE_SUCCESS:
             return updatePriceRule(newState, payload, "POST");
         case actions.PATCH_PRICE_RULE_SUCCESS:
-            return updatePriceRule(newState, payload, "PATCH");
-
+            return updatePriceRule(newState, payload, "POST");
+        case actions.POST_PRICE_RULE_FAILED:
+            return {...newState};
         case actions.POST_DISCOUNT_PAYMENT_METHOD_SUCCESS:
             return updateDiscount(newState, payload, "POST", "PaymentMethod");
         case actions.POST_DISCOUNT_MULTI_COURSE_SUCCESS:
@@ -24,9 +25,6 @@ export default function admin(state = initialState.Admin, {payload, type}) {
             return updateDiscount(newState, payload, "GET", "MultiCourse");
         case actions.GET_DISCOUNT_DATE_RANGE_SUCCESS:
             return updateDiscount(newState, payload, "GET", "DateRange");
-        case actions.GET_UNPAID_SUCCESS:
-            return handleUnpaidFetch(newState, payload, "GET");
-
 
         case actions.DELETE_DISCOUNT_PAYMENT_METHOD_SUCCESS:
             return updateDiscount(newState, payload, "DELETE", "PaymentMethod");
@@ -47,58 +45,68 @@ export default function admin(state = initialState.Admin, {payload, type}) {
     }
 }
 
-const updatePriceRule = (state, {response}, action) => {
-    const {data} = response;
-    let newPriceRules = [];
-    const {PriceRules} = state;
-    switch (action) {
-        case "GET":
-            newPriceRules = data;
+const updatePriceRule = (state, payload, action) => {
+    let {response} = payload;
+    let {data} = response;
+    let {PriceRules} = state;
+    switch(action){
+        case "GET":{
+            PriceRules = data;
             break;
-        case "POST":
-            newPriceRules = [...PriceRules, data];
+        }
+        case "POST":{
+            PriceRules.push(data);
             break;
-        case "PATCH":
-            newPriceRules = PriceRules.map((rule) =>
-                rule.id === data.id ? data : rule);
-        // no default
+        }
+        case "PATCH":{
+            let updatedPriceRule = PriceRules.find((rule) => {return rule.id === data.id});
+            PriceRules = PriceRules.map((rule)=>{
+                if(rule.id === data.id){
+                    return updatedPriceRule;
+                } else {
+                    return rule;
+                }
+            });
+        }
     }
     return {
         ...state,
-        "PriceRules": newPriceRules,
-    };
+        PriceRules,
+    }
 };
 
-const handleUnpaidFetch = (state, {response}) => ({
-    ...state,
-    "Unpaid": response.data,
-});
-
-const updateDiscount = (state, {response, id}, action, discountType) => {
-    const {data} = response;
-    const {Discounts} = state;
-    let newDiscounts = [];
-    switch (action) {
-        case "GET":
-            newDiscounts = data;
+const updateDiscount = (state, payload, action, discountType) => {
+    let {response, id} = payload;
+    let {data} = response;
+    let {Discounts} = state;
+    switch(action){
+        case "GET":{
+            Discounts[discountType] = data;
             break;
-        case "POST":
-            newDiscounts = [...Discounts[discountType], data];
+        }
+        case "POST":{
+            Discounts[discountType].push(data);
             break;
-        case "PATCH":
-            newDiscounts = Discounts[discountType].map((discount) =>
-                discount.id === id ? data : discount);
+        }
+        case "PATCH":{
+            let updatedDiscount = data;
+            Discounts[discountType] = Discounts[discountType].map((discount)=>{
+                if(discount.id === id){
+                    return updatedDiscount;
+                } else {
+                    return discount;
+                }
+            });
             break;
-        case "DELETE":
-            newDiscounts = Discounts[discountType].filter((discount) => discount.id !== id);
-        // no default
+        }
+        case "DELETE":{
+            Discounts[discountType] = Discounts[discountType].filter((discount)=>{
+                return discount.id !== id;
+            });
+        }
     }
-
     return {
         ...state,
-        "Discounts": {
-            ...Discounts,
-            [discountType]: newDiscounts,
-        },
-    };
+        Discounts,
+    }
 };

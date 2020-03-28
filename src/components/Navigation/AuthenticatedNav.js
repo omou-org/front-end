@@ -30,15 +30,15 @@ const AuthenticatedNav = ({toggleDrawer}) => {
         toggleDrawer(!mobileOpen);
         setMobileOpen((open) => !open);
 
-    }, [mobileOpen, toggleDrawer]);
+    }, []);
 
     const handleLogout = useCallback(() => {
         dispatch(logout());
         history.push("/login");
     }, [dispatch, history]);
 
-    const handleMobileSearch = (searchQuery) => {
-        setMobileSearching(searchQuery);
+    const handleSearch = (searchState) => {
+        setMobileSearching(searchState);
     };
 
     if (!authToken) {
@@ -77,7 +77,7 @@ const AuthenticatedNav = ({toggleDrawer}) => {
                         }} />
                     </>
                 }
-                <Search onMobileType={handleMobileSearch} />
+                <Search onMobile={handleSearch} />
                 {
                     !isMobileSearching && <LogoutIcon
                         className="logout-icon"

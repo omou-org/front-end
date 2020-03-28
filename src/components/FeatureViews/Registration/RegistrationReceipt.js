@@ -15,7 +15,6 @@ import Loading from "../../Loading";
 import {isFail, isLoading, isSuccessful, usePrevious} from "../../../actions/hooks";
 import {GET} from "../../../actions/actionTypes";
 import BackButton from "../../BackButton";
-import {paymentToString} from "utils"
 
 function RegistrationReceipt(props) {
     const currentPayingParent = useSelector((({ Registration }) => Registration.CurrentParent));
@@ -41,11 +40,28 @@ function RegistrationReceipt(props) {
     const [paymentReceipt, setPaymentReceipt] = useState({});
     const prevPaymentReceipt = usePrevious(paymentReceipt);
     const [courseReceipt, setCourseReceipt] = useState({});
-    const Registration = useSelector(({ Registration }) => Registration);
+    const Registration = useSelector(({Registration}) => Registration);
     const registrationStatus = useSubmitRegistration(Registration.registration);
 
     const parent = parents[params.parentID];
     const paymentStatus = usePayment(params.paymentID && params.paymentID);
+
+    useEffect(() => {
+        if (isSuccessful(paymentStatus) &&
+            (JSON.stringify(prevPaymentReceipt) !== JSON.stringify(paymentReceipt) ||
+                JSON.stringify(prevPaymentReceipt) === "{}"
+            )
+        ) {
+            let payment = Payments[params.parentID][params.paymentID];
+            let enrollments = payment.registrations.map(registration => registration.enrollment_details);
+            setPaymentReceipt(payment);
+            setCourseReceipt(courseReceiptInitializer(enrollments));
+        }
+    }, [paymentStatus, paymentReceipt]);
+    
+    if ((!registrationStatus || isFail(registrationStatus)) && !params.paymentID) {
+        return <Loading />
+    }
 
     const courseReceiptInitializer = (enrollments) => {
         let receipt = {};
@@ -68,23 +84,6 @@ function RegistrationReceipt(props) {
         });
         return receipt;
     };
-
-    useEffect(() => {
-        if (isSuccessful(paymentStatus) &&
-            (JSON.stringify(prevPaymentReceipt) !== JSON.stringify(paymentReceipt) ||
-                JSON.stringify(prevPaymentReceipt) === "{}"
-            )
-        ) {
-            let payment = Payments[params.parentID][params.paymentID];
-            let enrollments = payment.registrations.map(registration => registration.enrollment_details);
-            setPaymentReceipt(payment);
-            setCourseReceipt(courseReceiptInitializer(enrollments));
-        }
-    }, [paymentStatus, paymentReceipt, courseReceiptInitializer, Payments, params.parentID, params.paymentID, prevPaymentReceipt]);
-
-    if ((!registrationStatus || isFail(registrationStatus)) && !params.paymentID) {
-        return <Loading />
-    }
 
     // If we're coming from the registration cart, set-up state variables after we've completed registration requests
     if (registrationStatus && registrationStatus.status >= 200 &&
@@ -113,10 +112,10 @@ function RegistrationReceipt(props) {
         return <Loading />;
     }
 
-    const numSessions = (courseID, studentID) => paymentReceipt.registrations
-        .find((registration) => (
-            registration.enrollment_details.student === Number(studentID) &&
-            registration.enrollment_details.course === Number(courseID))).num_sessions;
+    const numSessions = (courseID, studentID) =>  paymentReceipt.registrations
+            .find((registration) => (
+            registration.enrollment_details.student == studentID &&
+                registration.enrollment_details.course == courseID)).num_sessions;
 
     const renderCourse = (enrolledCourse, studentID) => (<Grid item key={enrolledCourse.course_id}>
         <Grid
@@ -152,7 +151,7 @@ function RegistrationReceipt(props) {
                             <Grid item xs={4}>
                                 <Typography align="left">
                                     ${Math.round(enrolledCourse.hourly_tuition *
-                                        numSessions(enrolledCourse.course_id, studentID))}
+                                    numSessions(enrolledCourse.course_id, studentID))}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -297,7 +296,7 @@ function RegistrationReceipt(props) {
                                 </Grid>
                                 <Grid item xs={3}>
                                     <Typography align={"left"}>
-                                        {paymentToString(paymentReceipt.method)}
+                                        {paymentReceipt.method}
                                     </Typography>
                                 </Grid>
                             </Grid>
@@ -327,19 +326,21 @@ function RegistrationReceipt(props) {
                     >
                         {
                             paymentReceipt.discount_total >= 0 &&
-                            <Grid style={{ width: "100%" }}
+                            <Grid style={{width:"100%"}}
                                 item xs={3}>
                                 <Grid container direction="row">
                                     <Grid item xs={7}>
-                                        <Typography align="right">
+                                        <Typography
+                                            align="right"
+                                            variant="p">
                                             Discount Amount
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={5}>
                                         <Typography
                                             align="right"
-                                            variant="subtitle1">
-                                            - ${paymentReceipt.discount_total}
+                                            variant="subheading">
+                                             - ${paymentReceipt.discount_total}
                                         </Typography>
                                     </Grid>
                                 </Grid>
@@ -347,7 +348,7 @@ function RegistrationReceipt(props) {
                         }
                         {
                             paymentReceipt.price_adjustment > 0 &&
-                            <Grid style={{ width: "100%" }}
+                            <Grid style={{width:"100%"}}
                                 item xs={3}>
                                 <Grid container direction="row">
                                     <Grid item xs={7}>
@@ -360,15 +361,15 @@ function RegistrationReceipt(props) {
                                     <Grid item xs={5}>
                                         <Typography
                                             align="right"
-                                            variant="subtitle1">
+                                            variant="subheading">
                                             {paymentReceipt.price_adjustment}
                                         </Typography>
                                     </Grid>
                                 </Grid>
                             </Grid>
                         }
-                        <Grid style={{ width: "100%" }}
-                            item xs={3}>
+                        <Grid style={{width:"100%"}}
+                              item xs={3}>
                             <Grid container direction="row">
                                 <Grid item xs={7}>
                                     <Typography

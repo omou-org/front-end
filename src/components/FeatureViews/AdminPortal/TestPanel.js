@@ -48,7 +48,7 @@ function TestPanel() {
         api.fetchCategories();
     },[api]);
 
-    const fetchPropFunctions = [api.fetchCategories];
+    const fetchFunctions = [api.fetchCategories];
     const updateFunction = api.updateCategory;
 
     const handleChange = (field) => (e) =>{
@@ -109,8 +109,8 @@ function TestPanel() {
         <br />
         <PanelManager
             fields={fields}
-            fetchFunctions={fetchPropFunctions}
-            statusFunction={categoryStatus}
+            fetchFunctions={fetchFunctions}
+            statusFunctions={categoryStatus}
             updateFunction={updateFunction}
             customUseEffects={customUseEffects}
         />

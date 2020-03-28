@@ -19,7 +19,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import CheckCircle from "@material-ui/core/es/internal/svg-icons/CheckCircle";
 import IconButton from "@material-ui/core/IconButton";
-import NoListAlert from "../../NoListAlert";
+import {NoListAlert} from "../../NoListAlert";
 
 function TuitionRules() {
     const dispatch = useDispatch();

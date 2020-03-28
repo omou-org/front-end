@@ -121,7 +121,7 @@ const RegistrationCart = () => {
 
         setUpdatedCourse((prevCourses) => {
             const courseIndex = registered_courses[studentID]
-                .findIndex(({course_id}) => Number(courseID) === course_id);
+                .findIndex(({course_id}) => courseID == course_id);
             const course = courseList[courseID];
             const newOne = {
                 ...registered_courses[studentID][courseIndex],
@@ -138,14 +138,13 @@ const RegistrationCart = () => {
                 if (course) {
                     finalVal += weeklySessionsParser(course.schedule.start_date, course.schedule.end_date);
                 }
-
                 newOne.new_course = {
                     ...it.new_course,
                     "schedule": {
                         ...it.new_course.schedule,
                         // calculates appropriate date and formats it
                         "end_date": dateParser(new Date(it.new_course.schedule.start_date)
-                            .getTime() + 7 * 24 * 60 * 60 * 1000 * (finalVal-1) + 24 * 60 * 60 * 1000),
+                            .getTime() + 7 * 24 * 60 * 60 * 1000 * finalVal + 24 * 60 * 60 * 1000).slice(0, 10),
                     },
                 };
             }
@@ -334,7 +333,6 @@ const RegistrationCart = () => {
                                         </Grid>
                                     );
                                 }
-                                return "";
                             })
                         }
                     </Grid>
@@ -345,7 +343,7 @@ const RegistrationCart = () => {
 
     const renderPayment = (isOneCourse, selectedStudentID, selectedCourseID) => {
         const selectedRegistration = registered_courses[selectedStudentID]
-            .find(({course_id}) => Number(course_id) === Number(selectedCourseID));
+            .find(({course_id}) => course_id == selectedCourseID);
         const isSmallGroup = selectedCourseID.indexOf("T") === -1 && courseList[selectedCourseID].capacity < 5;
         const {form, course_id} = selectedRegistration;
         const formType = form ? form.form : "class";
@@ -371,7 +369,7 @@ const RegistrationCart = () => {
             Object.entries(selectedCourses).forEach(([studentID, studentVal]) => {
                 Object.entries(studentVal).forEach(([courseID, courseVal]) => {
                     const reduxCourse = registered_courses[studentID]
-                        .find(({course_id}) => Number(course_id) === Number(courseID));
+                        .find(({course_id}) => course_id == courseID);
                     if (reduxCourse.sessions !== courseVal.sessions) {
                         sameSessions = false;
                     }
@@ -390,7 +388,7 @@ const RegistrationCart = () => {
                 Object.entries(studentVal).forEach(([courseID, courseVal]) => {
                     if (courseVal.checked) {
                         const course = registered_courses[studentID]
-                            .find(({course_id}) => Number(course_id) === Number(courseID));
+                            .find(({course_id}) => course_id == courseID);
                         if (courseID.indexOf("T") > -1 )  {
                             // {category, academic_level, sessions, form}
                             let {category, academic_level, form, new_course} = course;

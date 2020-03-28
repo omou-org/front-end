@@ -1,4 +1,4 @@
-import {DELETE, GET, PATCH, POST} from "actions/actionTypes";
+import {DELETE, GET, NOT_SEARCHING, PATCH, POST, SEARCH_ALL} from "../actions/actionTypes";
 
 export default {
     "Authentication": initAuth(),
@@ -53,10 +53,29 @@ export default {
     },
     "RequestStatus": initRequests(),
     "SearchResults": {
-        "accountResultsNum": 0,
-        "accounts": {},
-        "courseResultsNum": 0,
-        "courses": {},
+        SearchQuery: "",
+        searchQueryStatus: {
+            account: "",
+            course: "",
+            searching: NOT_SEARCHING,
+        },
+        accounts: [],
+        courses: [],
+        params: {
+            account: {
+                profile: "",
+                gradeFilter: "",
+                sortAccount: "",
+                accountPage: 1,
+            },
+            course: {
+                courseType: "",
+                availability: "",
+                sortCourse: "",
+                coursePage: 1,
+            }
+        },
+        primaryFilter: SEARCH_ALL,
     },
     "Admin": {
         PriceRules: [],
@@ -65,8 +84,7 @@ export default {
             DateRange: [],
             PaymentMethod: [],
         },
-        Unpaid:""
-    }
+    },
 
 };
 
@@ -233,7 +251,7 @@ function initRegistrationForm() {
                 name: "Parent First Name",
                 type: "short text",
                 field_limit: 1,
-                required: true,
+                required: false,
                 full: true,
             },
             {
@@ -241,14 +259,14 @@ function initRegistrationForm() {
                 name: "Parent Last Name",
                 type: "short text",
                 field_limit: 1,
-                required: true,
+                required: false,
                 full: true,
             },
             {
                 field: "Relationship to Student",
                 name: "Relationship to Student",
                 type: "select",
-                required: true,
+                required: false,
                 field_limit: 1,
                 options: ["Mother", "Father", "Guardian", "Other"],
             },
@@ -265,7 +283,7 @@ function initRegistrationForm() {
                 name: "Parent Email",
                 type: "email",
                 field_limit: 1,
-                required: true,
+                required: false,
                 full: true,
             },
             {
@@ -273,7 +291,7 @@ function initRegistrationForm() {
                 name: "Phone Number",
                 type: "phone number",
                 field_limit: 1,
-                required: true,
+                required: false,
                 full: true,
             },
 
@@ -409,7 +427,7 @@ function initRegistrationForm() {
                     {
                         field: "Student First Name",
                         name: "Student First Name",
-                        type: "name",
+                        type: "short text",
                         required: true,
                         full: true,
                         field_limit: 1,
@@ -417,7 +435,7 @@ function initRegistrationForm() {
                     {
                         field: "Student Last Name",
                         name: "Student Last Name",
-                        type: "name",
+                        type: "short text",
                         required: true,
                         full: true,
                         field_limit: 1,
@@ -472,7 +490,7 @@ function initRegistrationForm() {
                     {
                         field: "First Name",
                         name: "First Name",
-                        type: "name",
+                        type: "short text",
                         field_limit: 1,
                         required: true,
                         full: true,
@@ -480,7 +498,7 @@ function initRegistrationForm() {
                     {
                         field: "Last Name",
                         name: "Last Name",
-                        type: "name",
+                        type: "short text",
                         field_limit: 1,
                         required: true,
                         full: true,
@@ -596,7 +614,7 @@ function initRegistrationForm() {
                     //     full: false,
                     //     field_limit: 1,
                     // },
-                ]
+                    ]
                 ,
                 ...studentInfoSection,
                 "Tutor Selection": [
@@ -743,7 +761,7 @@ function initRegistrationForm() {
                     {
                         field: "First Name",
                         name: "First Name",
-                        type: "name",
+                        type: "short text",
                         conditional: false,
                         required: true,
                         full: true,
@@ -752,7 +770,7 @@ function initRegistrationForm() {
                     {
                         field: "Last Name",
                         name: "Last Name",
-                        type: "name",
+                        type: "short text",
                         conditional: false,
                         required: true,
                         full: true,
@@ -1049,7 +1067,7 @@ function initRegistrationForm() {
                         name: "Duration",
                         type: "select",
                         options:
-                            ["0.5 Hours", "1 Hour", "1.5 Hours", "2 Hours"],
+                            ["0.5 Hours", "1 Hour",  "1.5 Hours", "2 Hours"],
                         conditional: false,
                         required: true,
                         full: false,
@@ -1298,7 +1316,7 @@ function initRegistrationForm() {
                     {
                         field: "Category Name",
                         name: "Category Name",
-                        type: "short text",
+                        type: "text",
                         conditional: false,
                         required: true,
                         full: true,
@@ -1307,7 +1325,7 @@ function initRegistrationForm() {
                     {
                         field: "Description",
                         name: "Description",
-                        type: "short text",
+                        type: "text",
                         conditional: false,
                         required: false,
                         full: true,

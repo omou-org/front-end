@@ -32,7 +32,6 @@ import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import ContactIcon from "@material-ui/icons/ContactPhoneOutlined";
 import Hidden from "@material-ui/core/es/Hidden/Hidden";
 import Loading from "../../Loading";
-import Badge from "@material-ui/core/Badge";
 
 const userTabs = {
     "instructor": [
@@ -59,12 +58,12 @@ const userTabs = {
     ],
     "student": [
         {
-            "tab_heading": "Current Course(s)",
+            "tab_heading": "Current Sessions",
             "tab_id": 3,
             "icon": <CurrentSessionsIcon className="TabIcon" />,
         },
         {
-            "tab_heading": "Past Course(s)",
+            "tab_heading": "Past Sessions",
             "tab_id": 4,
             "icon": <PastSessionsIcon className="TabIcon" />,
         },
@@ -86,11 +85,11 @@ const userTabs = {
             "tab_id": 8,
             "icon": <CurrentSessionsIcon className="TabIcon" />,
         },
-        // {
-        //     "tab_heading": "Pay Courses",
-        //     "tab_id": 9,
-        //     "icon": <CurrentSessionsIcon className="TabIcon" />,
-        // },
+        {
+            "tab_heading": "Pay Courses",
+            "tab_id": 9,
+            "icon": <CurrentSessionsIcon className="TabIcon" />,
+        },
         {
             "tab_heading": "Payment History",
             "tab_id": 5,
@@ -162,7 +161,7 @@ class UserProfile extends Component {
 
         // if looking at new profile, reset tab to the first one
         if (currAccType !== prevAccType || currAccID !== prevAccID) {
-            const { accountType, accountID } = this.props.computedMatch.params;
+            const {accountType, accountID} = this.props.computedMatch.params;
             this.props.userActions.fetchAccountNotes(accountID, accountType);
             let user;
             switch (accountType) {
@@ -230,17 +229,8 @@ class UserProfile extends Component {
     renderNoteIcon() {
         if (this.getUser() && this.getUser().role != "receptionist") {
             if (this.hasImportantNotes()) {
-                const numImportantNotes = Object.values(this.getUser().notes)
-                    .reduce((total, {important}) => important ? total + 1: total, 0);
-
                 userTabs[this.getUser().role].find(tab => tab.tab_id === 7).icon =
-                    <Badge
-                        color="primary"
-                        badgeContent={numImportantNotes}
-                    >
-                        <NoteIcon className="TabIcon" />
-                    </Badge>
-
+                    <><Avatar style={{ width: 10, height: 10 }} className="notification" /><NoteIcon className="TabIcon" /></>
             }
             else {
                 userTabs[this.getUser().role].filter(tab => tab.tab_id === 7)[0].icon =
@@ -253,7 +243,7 @@ class UserProfile extends Component {
         // this.renderNoteIcon();
         const status = this.getRequestStatus();
         if (!status || status === apiActions.REQUEST_STARTED) {
-            return <Loading />
+            return <Loading/>
         }
 
         const user = this.getUser();

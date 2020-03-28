@@ -8,10 +8,10 @@ import Grid from "@material-ui/core/Grid";
 import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import NoListAlert from "../../../NoListAlert";
-import {courseDateFormat, dateTimeToDate} from "utils";
+import {NoListAlert} from "../../../NoListAlert";
+import {courseDateFormat} from "../../../../utils";
 
-const today = dateTimeToDate(new Date());
+const today = new Date();
 
 const paymentStatus = (numPaidCourses) => {
     if (numPaidCourses > 3) {
@@ -51,7 +51,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
     }, [enrollments, studentID]);
 
     const filterCourseByDate = useCallback((endDate) => {
-        const inputEndDate = dateTimeToDate(new Date(endDate));
+        const inputEndDate = new Date(endDate);
         // see if course is current or not
         // and match it appropriately with the passed filter
         return current === (inputEndDate >= today);
@@ -64,7 +64,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
 
     if (!enrollments[studentID] && !hooks.isSuccessful(enrollmentStatus)) {
         if (hooks.isLoading(enrollmentStatus, courseStatus)) {
-            return <Loading small loadingText="LOADING COURSES"/>;
+            return <Loading />;
         }
 
         if (hooks.isFail(enrollmentStatus, courseStatus)) {
@@ -86,7 +86,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
                         <Typography
                             align="left"
                             className="table-header">
-                            Course
+                            Session
                         </Typography>
                     </Grid>
                     <Grid
@@ -130,13 +130,12 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
                     container
                     spacing={8}>
                     {displayedCourses.length !== 0
-                        ? displayedCourses
-                            .map((courseID) => {
+                        ? displayedCourses.map((courseID) => {
                             const course = courses[courseID];
                             if (!course) {
                                 return "Loading...";
                             }
-                            const { days, start_date, end_date, start_time, end_time } = courseDateFormat(course);
+                            const { days, start_date, end_date, start_time, end_time} = courseDateFormat(course);
                             return (
                                 <Grid
                                     className="accounts-table-row"

@@ -1,8 +1,8 @@
 import * as types from "./actionTypes";
 import {instance, MISC_FAIL, REQUEST_ALL, REQUEST_STARTED} from "./apiActions";
+import {toApiDate, toApiTime} from "utils";
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
-import {useLocation} from "react-router-dom";
 
 export const isFail = (...statuses) =>
     statuses.some((status) =>
@@ -28,63 +28,36 @@ export const isSuccessful = (...statuses) =>
  * (Optimization).
  * @returns {Number} status of the request (null if not started/canceled)
  */
-export const wrapUseEndpoint = (endpoint, successType) =>
-    (id, config, noFetchOnUndef) => {
-        const [status, setStatus] = useState(null);
-        const dispatch = useDispatch();
+export const wrapUseEndpoint = (endpoint, successType, config) => (id, noFetchOnUndef) => {
+    const [status, setStatus] = useState(null);
+    const dispatch = useDispatch();
 
-        const handleError = useCallback((error) => {
-            if (error && error.response && error.response.status) {
-                setStatus(error.response.status);
-            } else {
-                setStatus(MISC_FAIL);
-                console.error(error);
-            }
-        }, []);
+    const handleError = useCallback((error) => {
+        if (error && error.response && error.response.status) {
+            setStatus(error.response.status);
+        } else {
+            setStatus(MISC_FAIL);
+            console.error(error);
+        }
+    }, []);
 
-        useEffect(() => {
-            let aborted = false;
-            // no id passed
-            if (typeof id === "undefined" || id === null) {
+    useEffect(() => {
+        let aborted = false;
+        // no id passed
+        if (typeof id === "undefined" || id === null) {
             // if not to be optimized (i.e. a request_all is wanted)
-                if (!noFetchOnUndef) {
-                    (async () => {
-                        try {
-                            setStatus(REQUEST_STARTED);
-                            const response = await instance.get(
-                                endpoint,
-                                config
-                            );
-                            if (!aborted) {
-                                dispatch({
-                                    "payload": {
-                                        "id": REQUEST_ALL,
-                                        response,
-                                    },
-                                    "type": successType,
-                                });
-                                setStatus(response.status);
-                            }
-                        } catch (error) {
-                            if (!aborted) {
-                                handleError(error);
-                            }
-                        }
-                    })();
-                }
-            } else if (!Array.isArray(id)) {
-            // standard single item request
+            if (!noFetchOnUndef) {
                 (async () => {
                     try {
                         setStatus(REQUEST_STARTED);
                         const response = await instance.get(
-                            `${endpoint}${id}/`,
+                            endpoint,
                             config
                         );
                         if (!aborted) {
                             dispatch({
                                 "payload": {
-                                    id,
+                                    "id": REQUEST_ALL,
                                     response,
                                 },
                                 "type": successType,
@@ -97,47 +70,73 @@ export const wrapUseEndpoint = (endpoint, successType) =>
                         }
                     }
                 })();
-            } else if (id.length > 0) {
-            // array of IDs to request (list of results requested)
-                (async () => {
-                    try {
-                        setStatus(REQUEST_STARTED);
-                        const response = await Promise.all(id.map(
-                            (individual) => instance.get(
-                                `${endpoint}${individual}/`,
-                                config
-                            )
-                        ));
-                        if (!aborted) {
-                            dispatch({
-                                "payload": {
-                                    id,
-                                    response,
-                                },
-                                "type": successType,
-                            });
-                            setStatus(response.reduce((finalStatus, {status}) =>
-                                isFail(status) ? status
-                                    : isFail(finalStatus) ? finalStatus
-                                        : isLoading(status) ? status
-                                            : finalStatus, 200));
-                        }
-                    } catch (error) {
-                        if (!aborted) {
-                            handleError(error);
-                        }
-                    }
-                })();
             }
-            // if something about request changed (item to request, settings, etc.)
-            // discard old results and make new request
-            return () => {
-                setStatus(null);
-                aborted = true;
-            };
-        }, [config, dispatch, id, noFetchOnUndef, handleError]);
-        return status;
-    };
+        } else if (!Array.isArray(id)) {
+            // standard single item request
+            (async () => {
+                try {
+                    setStatus(REQUEST_STARTED);
+                    const response = await instance.get(
+                        `${endpoint}${id}/`,
+                        config
+                    );
+                    if (!aborted) {
+                        dispatch({
+                            "payload": {
+                                id,
+                                response,
+                            },
+                            "type": successType,
+                        });
+                        setStatus(response.status);
+                    }
+                } catch (error) {
+                    if (!aborted) {
+                        handleError(error);
+                    }
+                }
+            })();
+        } else if (id.length > 0) {
+            // array of IDs to request (list of results requested)
+            (async () => {
+                try {
+                    setStatus(REQUEST_STARTED);
+                    const response = await Promise.all(id.map(
+                        (individual) => instance.get(
+                            `${endpoint}${individual}/`,
+                            config
+                        )
+                    ));
+                    if (!aborted) {
+                        dispatch({
+                            "payload": {
+                                id,
+                                response,
+                            },
+                            "type": successType,
+                        });
+                        setStatus(response.reduce((finalStatus, {status}) =>
+                            isFail(status) ? status
+                                : isFail(finalStatus) ? finalStatus
+                                    : isLoading(status) ? status
+                                        : finalStatus, 200));
+                    }
+                } catch (error) {
+                    if (!aborted) {
+                        handleError(error);
+                    }
+                }
+            })();
+        }
+        // if something about request changed (item to request, settings, etc.)
+        // discard old results and make new request
+        return () => {
+            setStatus(null);
+            aborted = true;
+        };
+    }, [dispatch, id, noFetchOnUndef, handleError]);
+    return status;
+};
 
 export const useStudent = wrapUseEndpoint(
     "/account/student/",
@@ -169,11 +168,6 @@ export const useCategory = wrapUseEndpoint(
     types.GET_CATEGORY_SUCCESS,
 );
 
-export const usePriceRules = wrapUseEndpoint(
-    "/pricing/rule/",
-    types.GET_PRICE_RULE_SUCCESS,
-);
-
 export const useOutOfOffice = wrapUseEndpoint(
     "/account/instructor-out-of-office/",
     types.FETCH_OOO_SUCCESS,
@@ -187,93 +181,92 @@ export const useSession = wrapUseEndpoint(
 export const useEnrollmentByCourse = (courseID) => wrapUseEndpoint(
     "/course/enrollment/",
     types.FETCH_ENROLLMENT_SUCCESSFUL,
-)(null, useMemo(() => ({
-    "params": {
-        "course_id": courseID,
-    },
-}), [courseID]));
+    {
+        "params": {
+            "course_id": courseID,
+        },
+    }
+)(null);
 
 export const useEnrollmentByStudent = (studentID) => wrapUseEndpoint(
     "/course/enrollment/",
     types.FETCH_ENROLLMENT_SUCCESSFUL,
-)(null, useMemo(() => ({
-    "params": {
-        "user_id": studentID,
-    },
-}), [studentID]));
+    {
+        "params": {
+            "user_id": studentID,
+        },
+    }
+)(null);
 
 export const usePaymentByParent = (parentID) => wrapUseEndpoint(
     "/payment/payment/",
     types.GET_PAYMENT_PARENT_SUCCESS,
-)(null, useMemo(() => ({
-    "params": {
-        "parent": parentID,
-    },
-}), [parentID]));
+    {
+        "params": {
+            "parent": parentID,
+        },
+    }
+)(null);
 
 export const usePaymentByEnrollment = (enrollmentID) => wrapUseEndpoint(
     "/payment/payment/",
-    types.GET_PAYMENT_ENROLLMENT_SUCCESS
-)(null, useMemo(() => ({
-    "params": {
-        "enrollment": enrollmentID,
-    },
-}), [enrollmentID]));
+    types.GET_PAYMENT_ENROLLMENT_SUCCESS,
+    {
+        "params": {
+            "enrollment": enrollmentID,
+        },
+    }
+);
 
-export const useClassSessionsInPeriod = (time_frame, time_shift) =>
-    wrapUseEndpoint(
-        "/scheduler/session/",
-        types.GET_SESSIONS_SUCCESS,
-    )(null, useMemo(() => ({
+export const useClassSessionsInPeriod = (time_frame, time_shift) => wrapUseEndpoint(
+    "/scheduler/session/",
+    types.GET_SESSIONS_SUCCESS,
+    {
         "params": {
             time_frame,
             time_shift,
             "view_option": "class",
         },
-    }), [time_frame, time_shift]));
+    }
+)();
 
-export const useTutoringSessionsInPeriod = (time_frame, time_shift) =>
-    wrapUseEndpoint(
-        "/scheduler/session/",
-        types.GET_SESSIONS_SUCCESS,
-    )(null, useMemo(() => ({
+export const useTutoringSessionsInPeriod = (time_frame, time_shift) => wrapUseEndpoint(
+    "/scheduler/session/",
+    types.GET_SESSIONS_SUCCESS,
+    {
         "params": {
             time_frame,
             time_shift,
             "view_option": "tutoring",
         },
-    }), [time_frame, time_shift]));
+    }
+)();
 
-export const useSessionsInPeriod = (time_frame, time_shift) =>
-    wrapUseEndpoint(
-        "/scheduler/session/",
-        types.GET_SESSIONS_SUCCESS
-    )(null, useMemo(() => ({
+export const useSessionsInPeriod = (time_frame, time_shift) => wrapUseEndpoint(
+    "/scheduler/session/",
+    types.GET_SESSIONS_SUCCESS,
+    {
         "params": {
             time_frame,
             time_shift,
         },
-    }), [time_frame, time_shift]));
+    }
+)();
 
-export const useInstructorAvailability = (instructorID) =>
-    wrapUseEndpoint(
-        "/account/instructor-availability/",
-        types.FETCH_INSTRUCTOR_AVAILABILITY_SUCCESS
-    )(null, useMemo(() => ({
+export const useInstructorAvailability = (instructorID) => wrapUseEndpoint(
+    "/account/instructor-availability/",
+    types.FETCH_INSTRUCTOR_AVAILABILITY_SUCCESS,
+    {
         "params": {
             "instructor_id": instructorID,
         },
-    }), [instructorID]));
-
-export const useUnpaidSessions = wrapUseEndpoint(
-    "/payment/unpaid-sessions/",
-    types.GET_UNPAID_SUCCESS
-);
+    }
+)();
 
 // Hook
 export const usePrevious = (value) => {
-    // The ref object is a generic container whose current property is mutable
-    // and can hold any value, similar to an instance property on a class
+    // The ref object is a generic container whose current property is mutable ...
+    // ... and can hold any value, similar to an instance property on a class
     const ref = useRef();
 
     // Store current value in ref
@@ -283,9 +276,4 @@ export const usePrevious = (value) => {
 
     // Return previous value (happens before update in useEffect above)
     return ref.current;
-};
-
-export const useSearchParams = () => {
-    const {search} = useLocation();
-    return useMemo(() => new URLSearchParams(search), [search]);
 };

@@ -6,10 +6,9 @@ import AdminRoute from "./AdminRoute";
 import Form from "../Form/Form";
 import ManageCategories from "../FeatureViews/AdminPortal/ManageCategories";
 import ManageDiscounts from "../FeatureViews/AdminPortal/ManageDiscounts";
-import AdminPortalHome from "../FeatureViews/AdminPortal/AdminPortalHome";
 
 import TestPanel from "../FeatureViews/AdminPortal/TestPanel";
-import CustomTestPanel from "../FeatureViews/AdminPortal/customTestPanel";
+
 // Local Component Imports
 
 function AdminViewsRoutes() {
@@ -33,17 +32,12 @@ function AdminViewsRoutes() {
                 render={(passedProps) => <TestPanel {...passedProps} /> }/>
 
             <AdminRoute
-                path="/adminportal/test2-paneldisplay" 
-                render={(passedProps) => <CustomTestPanel {...passedProps} /> }/>
-
-
-            <AdminRoute
                 exact
                 path={"/adminportal/form/:type?"}
                 render={(passedProps) => <Form title={"Set Price Rule"}/>}/>
             <AdminRoute
                 path="/adminportal/"
-                render={(passedProps) => <AdminPortalHome {...passedProps}/> }/>
+                render={(passedProps) => <div/> }/>
 
         </Switch>
     );

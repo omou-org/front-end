@@ -32,6 +32,23 @@ import UnconfirmIcon from "@material-ui/icons/Cancel"
 import {capitalizeString, courseDateFormat, DayConverter} from "../../../utils";
 import {weeklySessionsParser} from "../../Form/FormUtils";
 
+const formatDate = (date) => {
+    if (!date) {
+        return null;
+    }
+    const [year, month, day] = date.split("-");
+    return `${month}/${day}/${year}`;
+};
+
+const formatTime = (time) => {
+    if (time) {
+        const [hrs, mins] = time.substring(1).split(":");
+        const hours = parseInt(hrs, 10);
+        return `${hours % 12 === 0 ? 12 : hours % 12}:${mins} ${hours >= 12 ? "PM" : "AM"}`;
+    }
+    return null;
+};
+
 const styles = (username) => ({
     "backgroundColor": stringToColor(username),
     "border": "1px solid white",
@@ -86,7 +103,7 @@ const RegistrationCourse = () => {
 
     const instructor = instructors[course && course.instructor_id];
 
-    const {start_date, end_date, start_time, end_time} = courseDateFormat(course);
+    const {start_date, end_date, start_time, end_time, days} = courseDateFormat(course);
 
     return (
         <Grid

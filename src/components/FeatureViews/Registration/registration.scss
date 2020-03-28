@@ -90,7 +90,6 @@
 .TabIcon {
   display: inline-flex;
   vertical-align: middle;
-  margin-right: 5px;
 }
 
 .course-categories {
@@ -631,7 +630,6 @@
 
 // Registration Parent Styling
 .select-parent-search-wrapper {
-  height: 75px;
   &.active {
     animation-name: expandHeight;
     animation-duration: 0.2s;
@@ -653,10 +651,6 @@
 
 .select-parent-dialog{
   overflow-y: visible;
-
-  #simple-dialog-title {
-    width: 20vw;
-  }
 }
 .select-parent-search__menu{
   position:relative;

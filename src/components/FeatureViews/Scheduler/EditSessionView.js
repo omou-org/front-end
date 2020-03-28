@@ -56,9 +56,7 @@ const EditSessionView = ({course, session, editSelection}) => {
     useEffect(() => {
         if (course && session) {
             let durationHours = Math.abs(session.end_datetime - session.start_datetime) / 36e5;
-            if (durationHours === 0) {
-                durationHours = 1;
-            }
+            durationHours === 0 ? durationHours = 1 : durationHours = durationHours;
             const category = categories.find((category) => category.id === course.category);
 
             setSessionFields({
@@ -242,9 +240,7 @@ const EditSessionView = ({course, session, editSelection}) => {
                             options={instructorList}
                             placeholder="Choose an Instructor"
                             value={sessionFields.instructor} />
-                        <FormControl
-                            style={{marginTop:"20px", marginBottom: "10px"}}
-                        >
+                        <FormControl>
                             <InputLabel>
                                 Is instructor confirmed?
                             </InputLabel>
@@ -260,24 +256,25 @@ const EditSessionView = ({course, session, editSelection}) => {
                             </Select>
                         </FormControl>
                     </Grid>
-                    {
-                        editSelection === EDIT_CURRENT_SESSION &&
-                        <Grid
-                            item
-                            xs={6}>
-                            <Typography variant="h5"> Date</Typography>
-                            <DatePicker
-                                inputVariant="outlined"
-                                onChange={handleDateTimeChange}
-                                value={sessionFields.start_time} />
-                        </Grid>
-                    }
+                    <Grid
+                        item
+                        xs={6}>
+                        <Typography variant="h5"> Date</Typography>
+                        <DatePicker
+                            inputVariant="outlined"
+                            label="Date"
+                            margin="normal"
+                            onChange={handleDateTimeChange}
+                            value={sessionFields.start_time} />
+                    </Grid>
                     <Grid
                         item
                         xs={6}>
                         <Typography variant="h5"> Start Time</Typography>
                         <TimePicker
                             inputVariant="outlined"
+                            label="Start Time"
+                            margin="normal"
                             onChange={handleDateTimeChange}
                             value={sessionFields.start_time} />
                     </Grid>

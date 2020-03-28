@@ -380,6 +380,7 @@ const mapStateToProps = (state) => ({
     "students": state.Users.StudentList,
     "isAdmin": state.auth.isAdmin,
     "requestStatus": state.RequestStatus,
+    "searchStatus": state.Search.searchQueryStatus.searching,
 });
 
 const mapDispatchToProps = (dispatch) => ({

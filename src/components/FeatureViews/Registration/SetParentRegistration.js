@@ -3,6 +3,7 @@ import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
+import {makeStyles} from "@material-ui/styles";
 import "./registration.scss";
 import SelectParentDialog from "./SelectParentDialog";
 import {bindActionCreators} from "redux";
@@ -11,7 +12,16 @@ import {connect, useDispatch} from "react-redux";
 import {stringToColor} from "../Accounts/accountUtils";
 import * as apiActions from "../../../actions/apiActions";
 import * as userActions from "../../../actions/userActions";
+import * as searchActions from "../../../actions/searchActions";
 import {Tooltip} from "@material-ui/core";
+
+const useStyles = makeStyles({
+    setParent: {
+        // backgroundColor:"#39A1C2",
+        // color: "white",
+        // padding: "",
+    }
+})
 
 function SetRegistrationActions(props) {
     const dispatch = useDispatch();
@@ -20,19 +30,26 @@ function SetRegistrationActions(props) {
             ...bindActionCreators(apiActions, dispatch),
             ...bindActionCreators(userActions, dispatch),
             ...bindActionCreators(registrationActions, dispatch),
+            ...bindActionCreators(searchActions, dispatch),
         }),
         [dispatch]
     );
+    const [anchorEl, setAnchorEl] = useState(null);
     const [dialogOpen, setDialog] = useState(false);
+    const classes = useStyles();
 
     const handleClick = () => (e) => {
         e.preventDefault();
         setDialog(true);
-    };
+    }
 
     const closeDialog = () => {
         setDialog(false);
-    };
+    }
+
+    function handleClose() {
+        setAnchorEl(null);
+    }
 
     useEffect(()=>{
         let pastRegisteredCourses = JSON.parse(sessionStorage.getItem("registered_courses"));
@@ -42,7 +59,7 @@ function SetRegistrationActions(props) {
                 api.initializeRegistration();
             }
         }
-    }, [api]);
+    },[]);
 
     return (
         <Grid item xs={2}>

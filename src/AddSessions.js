@@ -80,14 +80,6 @@ const AddSessions = ({componentOption, parentOfCurrentStudent, enrollment}) => {
                     Add Sessions
                 </MenuItem>
             }
-            default: {
-                return <Button
-                    onClick={handleRegisterMoreSessions}
-                    className={"button add-sessions"}
-                >
-                    Add Sessions
-                </Button>
-            }
         }
     };
 

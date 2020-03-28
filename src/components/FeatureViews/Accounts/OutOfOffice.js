@@ -3,20 +3,25 @@ import {useDispatch, useSelector} from "react-redux";
 import {instance} from "actions/apiActions";
 import {POST_OOO_SUCCESS} from "actions/actionTypes";
 import PropTypes from "prop-types";
+import {withStyles} from "@material-ui/core/styles";
+
 
 import {DatePicker, TimePicker} from "material-ui-pickers";
-import AwayIcon from "@material-ui/icons/EventBusy";
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
 import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import Grid from "@material-ui/core/Grid";
-import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 
 import "./Accounts.scss";
-import InstructorConflictCheck from "components/InstructorConflictCheck";
+import AwayIcon from "@material-ui/icons/EventBusy";
+import MenuItem from "@material-ui/core/MenuItem";
+
+const styles = {
+    "maxHeight": "80vh",
+    "minHeight": "80vh",
+};
 
 const formatDate = (date, allDay) => {
     const datePart = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
@@ -30,11 +35,11 @@ const OutOfOffice = ({instructorID, button}) => {
     const [start, setStart] = useState(null);
     const [end, setEnd] = useState(null);
     const [allDay, setAllDay] = useState(false);
-    const [openDialog, setOpenDialog] = useState(false);
-    const {name} = useSelector(({Users}) => Users.InstructorList[instructorID]);
-
     // for future error message
     const [error, setError] = useState(false);
+
+    const [openOOODialog, setOpenOOODialog] = useState(false);
+    const {name} = useSelector(({Users}) => Users.InstructorList[instructorID]);
 
     const toggleAllDay = useCallback(({target}) => {
         setAllDay(target.checked);
@@ -49,7 +54,7 @@ const OutOfOffice = ({instructorID, button}) => {
             const response = await instance.post(
                 "/account/instructor-out-of-office/",
                 {
-                    description: `${name} - ${description}`,
+                    description,
                     "end_datetime": formatDate(end, allDay),
                     "instructor": instructorID,
                     "start_datetime": formatDate(start, allDay),
@@ -61,7 +66,7 @@ const OutOfOffice = ({instructorID, button}) => {
                 },
                 "type": POST_OOO_SUCCESS,
             });
-            setOpenDialog(false);
+            setOpenOOODialog(false);
         } catch {
             setError(true);
         }
@@ -69,109 +74,115 @@ const OutOfOffice = ({instructorID, button}) => {
 
     const canSubmit = useMemo(() => start && end && end > start, [start, end]);
 
-    const toggleDialog = useCallback(() => {
-        setOpenDialog((prevOpen) => !prevOpen);
-    }, []);
+    const handleOpenOOODialog = (event) => {
+        event.preventDefault();
+        setOpenOOODialog(!openOOODialog);
+    };
 
-    return (
-        <>
-            {
-                button
-                    ? <Button
-                        onClick={toggleDialog}
-                        variant="outlined">
-                        <AwayIcon /> SET OOO
-                    </Button>
-                    : <MenuItem
-                        onClick={toggleDialog}>
-                        <AwayIcon /> SET OOO
-                    </MenuItem>
-            }
-            <Dialog
-                aria-labelledby="simple-dialog-title"
-                className="oooDialog"
-                fullWidth
-                maxWidth="md"
-                onClose={toggleDialog}
-                open={openDialog}>
-                <DialogContent>
-                    <div className="title">
+    return (<>
+        {
+            button ? <Button
+                onClick={handleOpenOOODialog}
+                variant="outlined"
+            >
+                <AwayIcon /> SET OOO
+            </Button> :
+                <MenuItem
+                    onClick={handleOpenOOODialog}
+                >
+                    <AwayIcon /> SET OOO
+                </MenuItem>
+        }
+
+        <Dialog
+            aria-labelledby="simple-dialog-title"
+            classes={{"paper": styles}}
+            className="oooDialog"
+            fullWidth
+            maxWidth="md"
+            onClose={handleOpenOOODialog}
+            open={openOOODialog}>
+            <DialogContent>
+                <div className="title">
                     Schedule Out of Office
-                    </div>
-                    <div className="instructor">
+                </div>
+                <div className="instructor">
                     Instructor: {name}
-                    </div>
-                    <TextField
-                        label="Description"
-                        onChange={updateDescription}
-                        value={description} />
+                </div>
+                <TextField
+                    label="Description"
+                    onChange={updateDescription}
+                    value={description} />
+                <Grid
+                    container
+                    item
+                    md={12}>
                     <Grid
-                        container
                         item
-                        md={12}>
-                        <Grid
-                            item
-                            md={3}>
-                            <div className="select">
-                                Select OOO Start Date
-                            </div>
-                            <DatePicker
-                                animateYearScrolling
-                                format="MM/dd/yyyy"
-                                label="Start Date"
-                                onChange={setStart}
-                                openTo="day"
-                                required
-                                value={start}
-                                views={["year", "month", "date"]} />
-                        </Grid>
-                        <Grid
-                            item
-                            md={3}>
-                            <div className="select">
-                                Select OOO End Date
-                            </div>
-                            <DatePicker
-                                animateYearScrolling
-                                format="MM/dd/yyyy"
-                                label="End Date"
-                                onChange={setEnd}
-                                openTo="day"
-                                required
-                                value={end}
-                                views={["year", "month", "date"]} />
-                        </Grid>
-                        <Grid
-                            item
-                            md={6} />
-                        <Grid
-                            item
-                            md={3}>
-                            <div className="select">
-                                Select OOO Start Time
-                            </div>
-                            <TimePicker
-                                disabled={allDay}
-                                label="Start Time"
-                                onChange={setStart}
-                                value={start} />
-                        </Grid>
-                        <Grid
-                            item
-                            md={3}>
-                            <div className="select">
-                                Select OOO End Time
-                            </div>
-                            <TimePicker
-                                disabled={allDay}
-                                label="End Time"
-                                onChange={setEnd}
-                                value={end} />
-                        </Grid>
-                        <Grid
-                            item
-                            md={2}>
-                            <Grid container>
+                        md={3}>
+                        <div className="select">
+                            * Select OOO Start Date
+                        </div>
+                        <DatePicker
+                            animateYearScrolling
+                            format="MM/dd/yyyy"
+                            label="Start Date"
+                            margin="normal"
+                            onChange={setStart}
+                            openTo="day"
+                            value={start}
+                            views={["year", "month", "date"]} />
+                    </Grid>
+                    <Grid
+                        item
+                        md={3}>
+                        <div className="select">
+                            * Select OOO End Date
+                        </div>
+                        <DatePicker
+                            animateYearScrolling
+                            format="MM/dd/yyyy"
+                            label="End Date"
+                            margin="normal"
+                            onChange={setEnd}
+                            openTo="day"
+                            value={end}
+                            views={["year", "month", "date"]} />
+                    </Grid>
+                    <Grid
+                        item
+                        md={6} />
+                    <Grid
+                        item
+                        md={3}>
+                        <div className="select">
+                            * Select OOO Start Time
+                        </div>
+                        <TimePicker
+                            autoOk
+                            disabled={allDay}
+                            label="Start Time"
+                            value={start}
+                            onChange={setStart} />
+                    </Grid>
+                    <Grid
+                        item
+                        md={3}>
+                        <div className="select">
+                            * Select OOO End Time
+                        </div>
+                        <TimePicker
+                            autoOk
+                            disabled={allDay}
+                            label="End Time"
+                            value={end}
+                            onChange={setEnd} />
+                    </Grid>
+                    <Grid
+                        item
+                        md={2}>
+                        <Grid container>
+                            <Grid>
                                 <Checkbox
                                     checked={allDay}
                                     className="checkbox"
@@ -180,45 +191,54 @@ const OutOfOffice = ({instructorID, button}) => {
                                     }}
                                     onChange={toggleAllDay}
                                     value="primary" />
+                            </Grid>
+                            <Grid>
                                 <div className="checkboxText">
                                     All Day
                                 </div>
                             </Grid>
                         </Grid>
                     </Grid>
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        className="button"
-                        onClick={toggleDialog}
-                        variant="outlined">
-                        Cancel
-                    </Button>
-                    <InstructorConflictCheck
-                        end={end}
-                        ignoreAvailablity
-                        instructorID={instructorID}
-                        onSubmit={handleSave}
-                        start={start}>
+                    <Grid
+                        item
+                        md={5} />
+                </Grid>
+                <Grid
+                    container
+                    md={12}>
+                    <Grid
+                        item
+                        md={8} />
+                    <Grid
+                        item
+                        md={2}>
+                        <Button
+                            className="button"
+                            onClick={handleOpenOOODialog}>
+                            Cancel
+                        </Button>
+                    </Grid>
+                    <Grid
+                        item
+                        md={2}>
                         <Button
                             className="button"
                             disabled={!canSubmit}
-                            variant="outlined">
+                            onClick={handleSave}>
                             Save OOO
                         </Button>
-                    </InstructorConflictCheck>
-                </DialogActions>
-            </Dialog>
-        </>
-    );
+                    </Grid>
+                </Grid>
+            </DialogContent>
+        </Dialog>
+    </>);
 };
 
 OutOfOffice.propTypes = {
-    "button": PropTypes.bool,
     "instructorID": PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number,
     ]).isRequired,
 };
 
-export default OutOfOffice;
+export default withStyles(styles)(OutOfOffice);

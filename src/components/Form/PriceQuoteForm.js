@@ -102,10 +102,8 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                     const ResponseDiscountIDs = ResponseDiscounts.map((discount) => discount.id);
                     const discountNotInResponseButInState = discounts.filter((discount) => !ResponseDiscountIDs.includes(discount.id));
                     ResponseDiscounts = ResponseDiscounts.concat(discountNotInResponseButInState);
-
                     setDiscounts(ResponseDiscounts);
                 }
-
                 delete quoteResponse.data.discounts;
                 if (quoteResponse.data.price_adjustment !== priceAdjustment) {
                     setPriceAdjustment(quoteResponse.data.price_adjustment);
@@ -119,8 +117,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                 }
             });
         }
-    }, [paymentMethod, courses, tutoring, discounts, priceAdjustment, currentPayingParent.balance, currentPayingParent.user.id,
-        priceQuote, prevPriceQuote, prevDiscounts, prevPriceAdjustment, cleanTutoring]);
+    }, [paymentMethod, courses, tutoring, discounts, priceAdjustment, priceQuote, prevPriceQuote, prevDiscounts, prevPriceAdjustment, cleanTutoring]);
 
     const handlePay = () => (e) => {
         e.preventDefault();
@@ -264,7 +261,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                                         justify="flex-end">
                                         <Grid
                                             item
-                                            xs={5}>
+                                            xs={3}>
                                             <Typography
                                                 align="right"
                                                 className={`price-label
@@ -278,7 +275,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                                                             className="add icon"
                                                             onClick={toggleDiscount(discount.id)} />
                                                 }
-                                                {discount.name} Discount
+                                                {discount.name || discount.discount_title} Discount
                                             </Typography>
                                         </Grid>
                                         <Grid

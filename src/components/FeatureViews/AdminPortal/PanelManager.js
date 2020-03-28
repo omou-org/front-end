@@ -18,11 +18,9 @@ import EditIcon from "@material-ui/icons/Edit";
 
 const zip = (arrays) => {
     /* Python-type zip util function
-
     example:
     zip([1, 2, 3], ['a', 'b', 'c']);
     >> [[1, 'a'], [2, 'b'], [3, 'c']]
-
     */
 
     return arrays[0].map((_,i) => {
@@ -58,7 +56,6 @@ function PanelManager(props) {
     
     @prop {function} statusFunction function which returns fetch? status
     ex. useSelector(({RequestStatus}) => RequestStatus.category)
-
     @prop {updateFunction} updateFunction update
  *    
  **/
@@ -96,7 +93,7 @@ function PanelManager(props) {
         }
     }, [records]);
 
-    if(props.statusFunction[GET] !== 200){
+    if(props.statusFunctions[GET] !== 200){
         return <Loading />
     }
 

@@ -1,459 +1,390 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {bindActionCreators} from "redux";
-import PropTypes from "prop-types";
-import {useDispatch} from "react-redux";
-
-import blue from "@material-ui/core/colors/blue";
-import Button from "@material-ui/core/Button/Button";
-import Delete from "@material-ui/icons/Delete";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Done from "@material-ui/icons/Done";
-import Edit from "@material-ui/icons/Edit";
+import React, {useMemo, useState, useEffect} from "react";
 import Grid from "@material-ui/core/Grid";
-import IconButton from "@material-ui/core/IconButton";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import Options from "@material-ui/icons/MoreVert";
 import Paper from "@material-ui/core/Paper";
-import Select from "@material-ui/core/Select";
-import Switch from "@material-ui/core/Switch";
+import {Typography} from "@material-ui/core";
+import Switch from "@material-ui/core/es/Switch";
+import IconButton from "@material-ui/core/es/IconButton";
+import Options from "@material-ui/icons/MoreVert";
+import Menu from "@material-ui/core/es/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import Edit from "@material-ui/icons/Edit";
+import Delete from "@material-ui/icons/Delete";
+import Dialog from "@material-ui/core/es/Dialog/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import Button from "@material-ui/core/es/Button/Button";
+import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
+import DialogTitle from "@material-ui/core/es/DialogTitle/DialogTitle";
+import {useDispatch} from "react-redux";
+import {bindActionCreators} from "redux";
+import * as adminActions from "../../../actions/adminActions";
 import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import {withStyles} from "@material-ui/core/styles";
-
-import * as adminActions from "actions/adminActions";
+import Done from "@material-ui/icons/Done";
+import {DatePicker } from "material-ui-pickers";
+import Select from "@material-ui/core/Select";
 import {dateParser} from "../../Form/FormUtils";
-import {DatePicker} from "material-ui-pickers";
+import { withStyles } from '@material-ui/core/styles';
+import blue from "@material-ui/core/es/colors/blue";
 
-const styles = () => ({
-    "colorBar": {},
-    "colorChecked": {},
-    "colorSwitchBase": {
-        "&$colorChecked": {
-            "& + $colorBar": {
-                "backgroundColor": blue[500],
-            },
-            "color": blue[500],
-        },
-        "color": blue[300],
+const styles = theme => ({
+    colorSwitchBase: {
+        color: blue[300],
+        '&$colorChecked':{
+            color: blue[500],
+            '& + $colorBar': {
+                backgroundColor: blue[500],
+            }
+        }
     },
+    colorBar: {},
+    colorChecked: {},
 });
 
-const parseAmountType = {
-    "Fixed": "fixed",
-    "Percent": "percent",
-    "fixed": "Fixed",
-    "percent": "Percent",
-};
-
-const DiscountRow = ({discount, type, classes}) => {
+function DiscountRow({discount, type, classes}){
     const dispatch = useDispatch();
     const api = useMemo(
-        () => bindActionCreators(adminActions, dispatch),
+        () => ({
+            ...bindActionCreators(adminActions, dispatch),
+        }),
         [dispatch]
     );
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [open, setOpen] = useState(false);
-    const [deleteWarning, setDeleteWarning] = useState(false);
-    const [DiscountFields, setDiscountFields] = useState(null);
-    const [editing, setEditing] = useState(false);
+    let [anchorEl, setAnchorEl ] = useState(null);
+    let [open, setOpen] = useState(false);
+    let [deleteWarning, setDeleteWarning] = useState(false);
+    let [DiscountFields, setDiscountFields] = useState(null);
+    let [editing, setEditing] = useState(false);
     const BaseFields = ["Name", "Description", "Active"];
 
-    const handleToggleEdit = useCallback(() => {
-        setOpen((prevOpen) => !prevOpen);
-    }, []);
+    const handleToggle = () => (e) =>{
+        e.preventDefault();
+        setOpen(!open);
+    };
 
-    useEffect(() => {
-        setDiscountFields(() => {
+    const parseAmountType = {
+        "Fixed":"fixed",
+        "Percent":"percent",
+        "fixed":"Fixed",
+        "percent":"Percent",
+    };
+
+    useEffect(()=>{
+        setDiscountFields(()=>{
             const {name, description, amount_type, amount} = discount;
             const baseDiscount = {
-                "Description": {
-                    "type": "text",
-                    "value": description,
-                },
-                "Name": {
-                    "type": "text",
-                    "value": name,
-                },
+                "Name": { value:name, type:"text"},
+                "Description": { value: description, type:"text"},
             };
             const discountAmount = {
-                "Amount": {
-                    "type": "number",
-                    "value": amount,
-                },
+                "Amount": { value: amount, type: "number" },
                 "Amount Type": {
-                    "options": ["Fixed", "Percent"],
-                    "type": "select",
-                    "value": parseAmountType[amount_type],
+                    value: parseAmountType[amount_type],
+                    type: "select",
+                    options: ["Fixed", "Percent"],
                 },
-            };
-            switch (type) {
-                case "MultiCourse": {
+            }
+            switch(type){
+                case "MultiCourse":{
                     return {
                         ...baseDiscount,
-                        "Minimum number of sessions": {
-                            "type": "text",
-                            "value": discount.num_sessions,
-                        },
+                        "Minimum number of sessions": { value: discount.num_sessions, type: "text"},
                         ...discountAmount,
-                    };
+                    }
                 }
-                case "DateRange": {
+                case "DateRange":{
                     return {
                         ...baseDiscount,
-                        "Discount End Date": {
-                            "type": "date",
-                            "value": discount.end_date,
-                        },
-                        "Discount Start Date": {
-                            "type": "date",
-                            "value": discount.start_date,
-                        },
+                        "Discount Start Date": { value: discount.start_date, type: "date"},
+                        "Discount End Date": { value: discount.end_date, type: "date"},
                         ...discountAmount,
-                    };
+                    }
                 }
-                case "PaymentMethod": {
+                case "PaymentMethod":{
                     return {
                         ...baseDiscount,
                         "Payment Method": {
-                            "options": [
-                                "Cash",
-                                "Check",
-                                "Credit Card",
-                                "International Credit Card",
-                            ],
-                            "type": "select",
-                            "value": discount.payment_method,
+                            value: discount.payment_method,
+                            type: "select",
+                            options: ["Cash", "Check", "Credit Card", "International Credit Card"],
                         },
                         ...discountAmount,
-                    };
+                    }
                 }
-                default:
-                    return baseDiscount;
             }
-        });
-    }, [discount, type]);
+        })
+    },[]);
 
-    const handleClick = useCallback(({currentTarget}) => {
-        setAnchorEl(currentTarget);
-        setOpen((prevOpen) => !prevOpen);
-    }, []);
+    const handleClick = event => {
+        setAnchorEl(event.currentTarget);
+        setOpen(!open);
+    };
 
-    const handleDelete = useCallback(() => {
-        setDeleteWarning((prevWarning) => !prevWarning);
-    }, []);
+    const handleDelete = event =>{
+        setDeleteWarning(!deleteWarning);
+    };
 
-    const handleDeleteDiscount = useCallback(
-        (discountID, discountType) => () => {
-            switch (discountType) {
-                case "MultiCourse": {
-                    api.deleteMultiCourseDiscount(discountID);
-                    break;
-                }
-                case "DateRange": {
-                    api.deleteDateRangeDiscount(discountID);
-                    break;
-                }
-                case "PaymentMethod": {
-                    api.deletePaymentMethodDiscount(discountID);
-                    break;
-                }
-                // no default
-            }
-        }, [api]
-    );
-
-    const handleDiscountToggleActive = (discountID, discountType, active) =>
-        () => {
-            const toggledActive = {"active": !active};
-            switch (discountType) {
-                case "MultiCourse":
-                    api.patchMultiCourseDiscount(discountID, toggledActive);
-                    break;
-                case "DateRange":
-                    api.patchDateRangeDiscount(discountID, toggledActive);
-                    break;
-                case "PaymentMethod":
-                    api.patchPaymentMethodDiscount(discountID, toggledActive);
-                    break;
-                // no default
-            }
-        };
-
-    const handleEdit = useCallback((event) => {
+    const handleDeleteDiscount = (discountID, discountType) => event => {
         event.preventDefault();
-        setEditing(!editing);
-        const updatedDiscount = {
-            "amount": DiscountFields.Amount.value,
-            "amount_type": parseAmountType[DiscountFields["Amount Type"].value],
-            "description": DiscountFields.Description.value,
-            "name": DiscountFields.Name.value,
-        };
-        switch (type) {
-            case "MultiCourse":
-                api.patchMultiCourseDiscount(discount.id, {
-                    ...updatedDiscount,
-                    "num_sessions":
-                        DiscountFields["Minimum number of sessions"].value,
-                });
+        switch(discountType){
+            case "MultiCourse":{
+                api.deleteMultiCourseDiscount(discountID);
                 break;
-            case "DateRange":
-                api.patchDateRangeDiscount(discount.id, {
-                    ...updatedDiscount,
-                    "end_date": dateParser(
-                        DiscountFields["Discount End Date"].value
-                    ).substring(0, 10),
-                    "start_date": dateParser(
-                        DiscountFields["Discount Start Date"].value
-                    ).substring(0, 10),
-                });
+            }
+            case "DateRange":{
+                api.deleteDateRangeDiscount(discountID);
                 break;
-            case "PaymentMethod":
-                api.patchPaymentMethodDiscount(discount.id, {
-                    ...updatedDiscount,
-                    "payment_method": DiscountFields["Payment Method"].value,
-                });
+            }
+            case "PaymentMethod":{
+                api.deletePaymentMethodDiscount(discountID);
                 break;
-            // no default
+            }
         }
-    }, [DiscountFields, api, discount.id, editing, type]);
+    };
 
-    const onDateChange = useCallback((field, fieldName) => (date) => {
-        setDiscountFields((prevFields) => ({
-            ...prevFields,
-            [fieldName]: {
-                ...field,
-                "value": date,
-            },
-        }));
-    }, []);
+    const handleDiscountToggle = (discountID, discountType, active) => event => {
+        event.preventDefault();
+        const toggledActive = { active:!active };
+        switch(discountType){
+            case "MultiCourse":{
+                api.patchMultiCourseDiscount(discountID, toggledActive);
+                break;
+            }
+            case "DateRange":{
+                api.patchDateRangeDiscount(discountID, toggledActive);
+                break;
+            }
+            case "PaymentMethod":{
+                api.patchPaymentMethodDiscount(discountID, toggledActive);
+                break;
+            }
+        }
+    };
 
-    const handleTextChange = useCallback((field, fieldName) => ({target}) => {
-        setDiscountFields((prevFields) => ({
-            ...prevFields,
-            [fieldName]: {
-                ...field,
-                "value": target.value,
-            },
-        }));
-    }, []);
-
-    const viewDiscount = () => (
-        <Grid
-            alignItems="center"
-            container>
-            <Grid
-                item
-                xs={3}>
-                <Typography align="left">
+    const viewDiscount = () => {
+        return (<Grid container alignItems={"center"}>
+            <Grid item xs={3} md={3} >
+                <Typography align={'left'}>
                     {discount.name}
                 </Typography>
             </Grid>
-            <Grid
-                item
-                xs={5}>
-                <Typography align="left">
+            <Grid item xs={5} md={5}>
+                <Typography align={'left'}>
                     {discount.description}
                 </Typography>
             </Grid>
-            <Grid
-                item
-                xs={2}>
+            <Grid item xs={2} md={2}>
                 <Switch
+                    onClick={handleDiscountToggle(discount.id, type, discount.active)}
                     checked={discount.active}
+                    value={`${discount.name} is ${discount.active ? "active":"inactive"}`}
                     classes={{
-                        "bar": classes.colorBar,
-                        "checked": classes.colorChecked,
-                        "switchBase": classes.colorSwitchBase,
+                        switchBase: classes.colorSwitchBase,
+                        checked: classes.colorChecked,
+                        bar: classes.colorBar,
                     }}
-                    onClick={handleDiscountToggleActive(
-                        discount.id, type, discount.active
-                    )}
-                    value={`${discount.name} is ${discount.active ? "active" : "inactive"}`} />
+                />
             </Grid>
-            <Grid
-                item
-                xs={2}>
+            <Grid item xs={2} md={2}>
                 <IconButton
-                    aria-controls="long-menu"
+                    aria-label={"more"}
+                    aria-controls={"long-menu"}
                     aria-haspopup="true"
-                    aria-label="more"
-                    onClick={handleClick}>
-                    <Options />
+                    onClick={handleClick}
+                >
+                    <Options/>
                 </IconButton>
                 <Menu
+                    id={"long-menu"}
                     anchorEl={anchorEl}
-                    id="long-menu"
                     keepMounted
-                    onClick={handleToggleEdit}
-                    open={open}>
+                    open={open}
+                    onClick={handleToggle()}
+                >
                     <MenuItem onClick={handleEdit}>
-                        <Edit />
+                        <Edit/>
                         EDIT
                     </MenuItem>
                     <MenuItem onClick={handleDelete}>
-                        <Delete />
+                        <Delete/>
                         DELETE
                     </MenuItem>
                 </Menu>
             </Grid>
-        </Grid>
-    );
+        </Grid>);
+    };
 
-    const renderField = useCallback((field, fieldName) => {
-        switch (field.type) {
-            case "text":
-                return (
-                    <TextField
-                        onChange={handleTextChange(field, fieldName)}
-                        value={field.value} />
-                );
-            case "number":
-                return (
-                    <TextField
-                        onChange={handleTextChange(field, fieldName)}
-                        type="number"
-                        value={field.value} />
-                );
-            case "date":
-                return (
-                    <DatePicker
-                        format="MM/dd/yyyy"
-                        label={field.name}
-                        margin="normal"
-                        onChange={onDateChange(field, fieldName)}
-                        openTo="day"
-                        value={field.value}
-                        views={["year", "month", "date"]} />
-                );
-            case "select":
-                return (
-                    <Select
-                        onChange={handleTextChange(field, fieldName)}
-                        value={field.value}>
-                        {
-                            field.options.map((option) => (
-                                <MenuItem
-                                    key={option}
-                                    value={option}>
-                                    {option}
-                                </MenuItem>
-                            ))
-                        }
-                    </Select>
-                );
-            // no default
+    const handleEdit = event => {
+        event.preventDefault();
+        setEditing(!editing);
+        switch(type){
+            case "MultiCourse":{
+                let data = {
+                    name: DiscountFields["Name"].value,
+                    description: DiscountFields["Description"].value,
+                    num_sessions: DiscountFields["Minimum number of sessions"].value,
+                    amount: DiscountFields["Amount"].value,
+                    amount_type: parseAmountType[DiscountFields["Amount Type"].value],
+                };
+                api.patchMultiCourseDiscount(discount.id, data);
+                break;
+            }
+            case "DateRange":{
+                let data = {
+                    name: DiscountFields["Name"].value,
+                    description: DiscountFields["Description"].value,
+                    amount: DiscountFields["Amount"].value,
+                    amount_type: parseAmountType[DiscountFields["Amount Type"].value],
+                    start_date: dateParser(DiscountFields["Discount Start Date"].value).substring(0,10),
+                    end_date: dateParser(DiscountFields["Discount End Date"].value).substring(0,10),
+                };
+                api.patchDateRangeDiscount(discount.id, data);
+                break;
+            }
+            case "PaymentMethod":{
+                let data = {
+                    name: DiscountFields["Name"].value,
+                    description: DiscountFields["Description"].value,
+                    amount: DiscountFields["Amount"].value,
+                    amount_type: parseAmountType[DiscountFields["Amount Type"].value],
+                    payment_method: DiscountFields["Payment Method"].value,
+                };
+                api.patchPaymentMethodDiscount(discount.id, data);
+                break;
+            }
         }
-    }, [handleTextChange, onDateChange]);
+    };
 
-    const editDiscount = () => (
-        <>
-            <Grid
-                alignItems="center"
-                container>
-                <Grid
-                    item
-                    xs={3}>
+    const onDateChange = (field, fieldName) => date => {
+        setDiscountFields({
+                ...DiscountFields,
+                [fieldName]: {
+                    ...field,
+                    value: date,
+                }
+            })
+    };
+
+    const handleTextChange = (field, fieldName) => event => {
+        setDiscountFields({
+            ...DiscountFields,
+            [fieldName]: {
+                ...field,
+                value: event.target.value,
+            }
+        });
+    };
+
+    const renderField = (field, fieldName) => {
+        switch(field.type){
+            case "text":
+                return <TextField
+                    value={field.value}
+                    onChange={handleTextChange(field, fieldName)}
+                />;
+            case "number":
+                return <TextField
+                    type={"number"}
+                    value={field.value}
+                    onChange={handleTextChange(field, fieldName)}
+                />;
+            case "date":
+                return <DatePicker
+                        margin="normal"
+                        label={field.name}
+                        value={field.value}
+                        onChange={onDateChange(field, fieldName)}
+                        openTo={"day"}
+                        format="MM/dd/yyyy"
+                        views={["year", "month", "date"]}
+                    />;
+            case "select":
+                return <Select
+                    value={field.value}
+                    onChange={handleTextChange(field, fieldName)}
+                >
+                    {
+                        field.options.map(option => (
+                            <MenuItem
+                                key={option}
+                                value={option}
+                            >
+                                {option}
+                            </MenuItem>
+                        ))
+                    }
+                </Select>
+        }
+    };
+
+    const editDiscount = () => {
+        return (<>
+            <Grid container alignItems={"center"}>
+                <Grid item xs={3} md={3} >
                     <TextField
-                        onChange={handleTextChange(DiscountFields.Name, "Name")}
-                        value={DiscountFields.Name.value} />
+                        value={DiscountFields["Name"].value}
+                        onChange={handleTextChange(DiscountFields["Name"], "Name")}
+                    />
                 </Grid>
-                <Grid
-                    item
-                    xs={5}>
+                <Grid item xs={5} md={5}>
                     <TextField
-                        onChange={handleTextChange(
-                            DiscountFields.Description, "Description"
-                        )}
-                        value={DiscountFields.Description.value} />
+                        value={DiscountFields["Description"].value}
+                        onChange={handleTextChange(DiscountFields["Description"], "Description")}
+                    />
                 </Grid>
-                <Grid
-                    item
-                    xs={2}>
+                <Grid item xs={2} md={2}>
                     <Switch
+                        onClick={handleDiscountToggle(discount.id, type, discount.active)}
                         checked={discount.active}
-                        onClick={handleDiscountToggleActive(
-                            discount.id, type, discount.active
-                        )}
-                        value={`${discount.name} is ${discount.active ? "active" : "inactive"}`} />
+                        value={`${discount.name} is ${discount.active ? "active":"inactive"}`}/>
                 </Grid>
-                <Grid
-                    item
-                    xs={2}>
+                <Grid item xs={2} md={2}>
                     <IconButton
-                        aria-controls="long-menu"
+                        aria-label={"more"}
+                        aria-controls={"long-menu"}
                         aria-haspopup="true"
-                        aria-label="more"
-                        onClick={handleEdit}>
-                        <Done />
+                        onClick={handleEdit}
+                    >
+                        <Done/>
                     </IconButton>
                 </Grid>
             </Grid>
-            <Grid
-                alignItems="center"
-                container
-                spacing={16}>
+            <Grid container spacing={16} alignItems={"center"}>
                 {
                     Object.entries(DiscountFields)
-                        .filter(([fieldName]) =>
-                            BaseFields.indexOf(fieldName) < 0)
-                        .map(([fieldName, field]) => (
-                            <Grid
-                                item
-                                key={field}>
-                                {renderField(field, fieldName)}
-                            </Grid>
-                        ))
+                        .filter( ([fieldName, field]) => BaseFields.indexOf(fieldName) < 0 )
+                        .map( ([fieldName, field]) => {
+                            return (
+                                <Grid item>
+                                    {
+                                        renderField(field, fieldName)
+                                    }
+                                </Grid>
+                            )
+                        })
                 }
             </Grid>
-        </>
-    );
+        </>)
+    };
 
-    return (
-        <Grid
-            item
-            key={discount.id}
-            xs={12}>
-            <Paper
-                className="category-row"
-                square >
-                {editing ? editDiscount() : viewDiscount()}
-            </Paper>
-            <Dialog
-                onClose={handleDelete}
-                open={deleteWarning}>
-                <DialogContent>
-                    <DialogTitle>
-                    Are you sure you want to delete {discount.name}?
-                    </DialogTitle>
-                    <DialogActions>
-                        <Button
-                            onClick={handleDeleteDiscount(discount.id, type)}>
-                            Yes, DELETE
-                        </Button>
-                        <Button onClick={handleDelete}>No, Exit</Button>
-                    </DialogActions>
-                </DialogContent>
-            </Dialog>
-        </Grid>
-    );
-};
-
-DiscountRow.propTypes = {
-    "classes": PropTypes.shape({
-        "bar": PropTypes.any,
-        "checked": PropTypes.any,
-        "switchBase": PropTypes.any,
-    }),
-    "discount": PropTypes.object.isRequired,
-    "type": PropTypes.oneOf([
-        "DateRange",
-        "MultiCourse",
-        "PaymentMethod",
-    ]).isRequired,
-};
+    return (<Grid item xs={12} md={12} key={discount.id}>
+        <Paper square={true} className={"category-row"} >
+            {
+                editing ? editDiscount() : viewDiscount()
+            }
+        </Paper>
+        <Dialog
+            open={deleteWarning}
+            onClose={handleDelete}
+        >
+            <DialogContent>
+                <DialogTitle>
+                    Are you sure you delete {discount.name}?
+                </DialogTitle>
+                <DialogActions>
+                    <Button onClick={handleDeleteDiscount(discount.id, type)}>Yes, DELETE</Button>
+                    <Button onClick={handleDelete}>No, Exit</Button>
+                </DialogActions>
+            </DialogContent>
+        </Dialog>
+    </Grid>)
+}
 
 export default withStyles(styles)(DiscountRow);

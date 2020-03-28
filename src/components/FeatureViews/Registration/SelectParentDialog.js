@@ -1,195 +1,241 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {bindActionCreators} from "redux";
-import PropTypes from "prop-types";
-
-import AsyncSelect from "react-select/async";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Grid from "@material-ui/core/Grid";
-
-import * as registrationActions from "actions/registrationActions";
-import * as userActions from "actions/userActions";
+import React from 'react';
+import PropTypes from 'prop-types';
+import Button from '@material-ui/core/Button';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import ReactSelect from 'react-select';
 import AccountsCards from "../Search/cards/AccountsCards";
-import {GET_ACCOUNT_SEARCH_QUERY_SUCCESS} from "actions/actionTypes";
-import {instance} from "actions/apiActions";
-import {isFail} from "actions/hooks";
+import {bindActionCreators} from "redux";
+import * as registrationActions from "../../../actions/registrationActions";
+import * as searchActions from "../../../actions/searchActions";
+import * as userActions from "../../../actions/userActions";
+import {connect} from "react-redux";
+import Grid from "@material-ui/core/Grid";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
+import {DialogActions, DialogContent} from "@material-ui/core";
 
-const defaultMessage = () => "Keep searching for a parent!";
+class SelectParentDialog extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            "inputParent": { value: "", label: "" },
+            "parentOptions": [],
+            "searchingParent": false,
+        };
+    }
 
-const SelectParentDialog = ({onClose, open}) => {
-    const dispatch = useDispatch();
-    const actions = useMemo(
-        () => ({
-            ...bindActionCreators(registrationActions, dispatch),
-            ...bindActionCreators(userActions, dispatch),
-        }),
-        [dispatch]
-    );
-    const [parentID, setParentID] = useState(null);
-    const [inputString, setInputString] = useState("");
-    const [searching, setSearching] = useState(false);
-    const parents = useSelector(({Users}) => Users.ParentList);
-    const currentParent = useSelector(({Registration}) => Registration.CurrentParent);
-    const registeredCourses = useSelector(({Registration}) => Registration.registered_courses);
-
-    useEffect(() => {
+    componentDidMount() {
         let pastParent = sessionStorage.getItem("CurrentParent");
-        const reduxPastParent = currentParent;
+        let reduxPastParent = this.props.registration.CurrentParent;
         if (pastParent !== "none" && !reduxPastParent) {
             pastParent = JSON.parse(pastParent);
-            actions.setRegisteringParent(pastParent);
+            this.props.registrationActions.setRegisteringParent(pastParent);
         }
-    }, [currentParent, actions]);
+    }
 
-    const handleClose = useCallback(() => {
+    handleClose = () => {
         // if there's something in the input
-        if (parentID) {
-            const parent = parents[parentID];
-            if (parent) {
-                const registeringParent = {
-                    "account_type": "PARENT",
-                    "balance": parent.balance,
-                    "birth_date": parent.birthday,
-                    "gender": parent.gender,
-                    "student_list": parent.student_ids,
-                    "user": {
-                        "email": parent.email,
-                        "first_name": parent.first_name,
-                        "id": parent.user_id,
-                        "last_name": parent.last_name,
-                        "name": parent.name,
+        if (this.state.inputParent.value !== "") {
+            let idStartIndex = this.state.inputParent.value.indexOf("-") + 1;
+            let parentID = Number(this.state.inputParent.value.substring(idStartIndex));
+            let selectedParent = this.state.parentList.find((account) => parentID == account.user.id);
+
+            if (selectedParent) {
+                selectedParent = {
+                    user: {
+                        id: selectedParent.user.id,
+                        email: selectedParent.user.email,
+                        first_name: selectedParent.user.first_name,
+                        last_name: selectedParent.user.last_name,
+                        name: selectedParent.user.first_name + " " + selectedParent.user.last_name,
                     },
-                    "user_uuid": parent.user_id,
+                    user_uuid: selectedParent.user.id,
+                    gender: selectedParent.gender,
+                    birth_date: selectedParent.birth_day,
+                    student_list: selectedParent.student_list,
+                    account_type: "PARENT",
+                    balance: selectedParent.balance,
                 };
 
-                actions.setRegisteringParent(registeringParent);
+                this.props.registrationActions.setRegisteringParent(selectedParent);
                 // Add students to redux once the registered parent has been set
-                registeringParent.student_list.forEach((studentID) => {
-                    actions.fetchStudents(studentID);
+                selectedParent.student_list.forEach((studentID) => {
+                    this.props.userActions.fetchStudents(studentID);
                 });
-                sessionStorage.setItem("CurrentParent", JSON.stringify(registeringParent));
+                sessionStorage.setItem("CurrentParent", JSON.stringify(selectedParent));
             }
         }
         // close the dialogue
-        onClose();
-    }, [parentID, parents, actions, onClose]);
+        this.props.onClose();
+    };
 
-    const handleOnChange = useCallback((event) => {
-        setParentID(event.value);
-        setInputString(event);
-        setSearching(false);
-    }, []);
-
-    const handleExitParent = useCallback((event) => {
-        event.preventDefault();
-        setParentID(null);
-        actions.setRegisteringParent("");
-        actions.closeRegistration("");
-        handleClose();
-    }, [actions, handleClose]);
-
-    const handleOnInputChange = useCallback((input) => {
-        if (input) {
-            setSearching(true);
-            setInputString(input);
-        }
-    }, []);
-
-    const loadOptions = useCallback(async (input) => {
-        const response = await instance.get("/search/account/", {
-            "params": {
-                "page": 1,
-                "profile": "parent",
-                "query": input,
-            },
+    handleOnChange = () => (e) => {
+        this.setState((oldState) => {
+            // update field with what's being typed by the user
+            oldState.inputParent = e;
+            oldState.searchingParent = false;
+            return oldState;
         });
-        if (isFail(response.status)) {
+    };
+
+    handleExitParent = () => (e) => {
+        e.preventDefault();
+
+        this.setState((oldState) => {
+            oldState.inputParent = { value: "", label: "" };
+            this.props.registrationActions.setRegisteringParent("");
+            return oldState;
+        }, () => {
+            this.props.registrationActions.closeRegistration("");
+            this.handleClose();
+        });
+
+    };
+
+    ActiveParentDialog = () => {
+        return (
+            <div className={"active-parent-dialog-content"}>
+                <Grid
+                    container
+                    direction="row"
+                    justify="center"
+                >
+                    <Grid item>
+                        <AccountsCards user={this.props.registration.CurrentParent} />
+                    </Grid>
+                </Grid>
+            </div>
+        )
+    };
+
+    handleSetParentButton = (e) => {
+        e.preventDefault();
+        this.handleClose();
+    };
+
+    renderParentSuggestionList = () => {
+        if (this.props.search) {
+            this.setState({
+                parentList: this.props.search.accounts,
+            });
+            return Object.values(this.props.search.accounts).map((parent) => {
+                return {
+                    value: parent.user.first_name + " " + parent.user.last_name + " - " + parent.user.id.toString(),
+                    label: parent.user.first_name + " " + parent.user.last_name,
+                };
+            });
+        } else {
             return [];
         }
-        dispatch({
-            "payload": {
-                "noChangeSearch": true,
-                response,
-            },
-            "type": GET_ACCOUNT_SEARCH_QUERY_SUCCESS,
+
+    };
+
+    handleOnInputChange = () => (e) => {
+        let input;
+        if (e !== "") {
+            input = {
+                value: e,
+                label: e
+            };
+            this.setState({ inputParent: input, searchingParent: true, },
+                () => {
+                    if (e !== "") {
+                        const requestConfig = { params: { query: this.state.inputParent.label, page: 1, profile: "parent" }, };
+                        this.props.searchActions.fetchSearchAccountQuery(requestConfig);
+                        this.setState({
+                            searchingParent: true,
+                            parentOptions: this.renderParentSuggestionList()
+                        });
+                    }
+                });
+        }
+    };
+
+    SetParentDialog = () => {
+        return (
+            <div
+                className={`select-parent-search-wrapper ${this.state.searchingParent ? "active" : ""}`}>
+                <ReactSelect
+                    noOptionsMessage={() => "Keep searching for a parent!"}
+                    classNamePrefix={"select-parent-search"}
+                    value={this.state.inputParent}
+                    options={this.state.parentOptions}
+                    onChange={this.handleOnChange()}
+                    onInputChange={this.handleOnInputChange()}
+                />
+            </div>
+        )
+    };
+
+
+
+    render() {
+        let allCoursesPerStudent = this.props.registration.registered_courses ? Object.values(this.props.registration.registered_courses) : [];
+        let allCourses = 0;
+        allCoursesPerStudent.forEach((studentCourses) => {
+            allCourses += studentCourses.length;
         });
-        return response.data.results
-            .map(({"user": {id, first_name, last_name}}) => ({
-                "label": `${first_name} ${last_name}`,
-                "value": id,
-            }));
-    }, [dispatch]);
-
-    const numToCheckout = Object.values(registeredCourses || {})
-        .reduce((count, studentCourses) => count + studentCourses.length, 0);
-
-    return (
-        <Dialog
-            aria-labelledby="simple-dialog-title"
-            className="select-parent-dialog"
-            onClose={handleClose}
-            open={open}>
-            <DialogTitle id="simple-dialog-title">
-                Currently helping...
-            </DialogTitle>
-            <DialogContent>
-                {
-                    currentParent && currentParent !== "none"
-                        ? <div className="active-parent-dialog-content">
-                            <Grid
-                                container
-                                direction="row"
-                                justify="center">
-                                <Grid item>
-                                    <AccountsCards user={currentParent} />
-                                </Grid>
-                            </Grid>
-                        </div>
-                        : <div className={`select-parent-search-wrapper ${searching && "active"}`}>
-                            <AsyncSelect
-                                classNamePrefix="select-parent-search"
-                                loadOptions={loadOptions}
-                                noOptionsMessage={defaultMessage}
-                                onChange={handleOnChange}
-                                onInputChange={handleOnInputChange}
-                                value={inputString} />
-                          </div>
-
-                }
-            </DialogContent>
-            <DialogActions>
-                {
-                    currentParent && (currentParent !== "none")
-                        ? <>
-                            <Button onClick={handleExitParent}>
+        return (
+            <Dialog className={"select-parent-dialog"}
+                onClose={this.handleClose}
+                aria-labelledby="simple-dialog-title" open={this.props.open}>
+                <DialogTitle id="simple-dialog-title">
+                    <h3>Currently helping...</h3>
+                </DialogTitle>
+                <DialogContent>
+                    {
+                        this.props.registration.CurrentParent &&
+                            this.props.registration.CurrentParent !== "none" ?
+                            this.ActiveParentDialog() :
+                            this.SetParentDialog()
+                    }
+                </DialogContent>
+                <DialogActions>
+                    {
+                        this.props.registration.CurrentParent &&
+                            this.props.registration.CurrentParent !== "none" ?
+                            <>
+                                <Button onClick={this.handleExitParent()}>
                                     Exit Parent
-                            </Button>
-                            <span>
-                                <Button
-                                    component={NavLinkNoDup}
-                                    disabled={numToCheckout === 0}
-                                    to="/registration/cart">
-                                        Checkout {numToCheckout} Courses
                                 </Button>
-                            </span>
-                          </>
-                        : <Button onClick={handleClose}>
+                                <span>
+                                    <Button
+                                        component={NavLinkNoDup}
+                                        to={"/registration/cart"}
+                                        disabled={allCourses === 0}
+                                    >
+                                        Checkout {allCourses} Courses
+                                    </Button>
+                                </span>
+                            </> :
+                            <Button
+                                onClick={this.handleSetParentButton}>
                                 Set Parent
-                          </Button>
-                }
-            </DialogActions>
-        </Dialog>
-    );
-};
+                            </Button>
+                    }
+                </DialogActions>
+            </Dialog>
+        );
+    }
+}
 
 SelectParentDialog.propTypes = {
-    "onClose": PropTypes.func.isRequired,
-    "open": PropTypes.bool.isRequired,
+    onClose: PropTypes.func,
 };
 
-export default SelectParentDialog;
+const mapStateToProps = (state) => ({
+    "registration": state.Registration,
+    "users": state.Users,
+    "search": state.Search,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    "registrationActions": bindActionCreators(registrationActions, dispatch),
+    "searchActions": bindActionCreators(searchActions, dispatch),
+    "userActions": bindActionCreators(userActions, dispatch),
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(SelectParentDialog);
