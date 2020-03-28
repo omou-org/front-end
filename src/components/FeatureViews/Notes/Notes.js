@@ -19,6 +19,7 @@ import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
 
 import "./Notes.scss";
 import "../Accounts/TabComponents/TabComponents.scss";
@@ -33,6 +34,18 @@ import {
     POST,
 } from "actions/actionTypes";
 import {instance, REQUEST_STARTED} from "actions/apiActions";
+
+const useStyles = makeStyles({
+    actionIcons: {
+        position: "absolute",
+        bottom: "5%",
+        right: "5%",
+    },
+    notesTitle: {
+        letterSpacing: "0.01071em",
+        fontSize: "0.875rem",
+    }
+});
 
 const numericDateString = (date) =>
     (new Date(date)).toLocaleTimeString("en-US", {
@@ -107,6 +120,7 @@ const Notes = ({ownerType, ownerID}) => {
     const [error, setError] = useState(false);
     const [deleteID, setDeleteID] = useState(null);
     const [deleteError, setDeleteError] = useState(false);
+    const classes = useStyles();
 
     useEffect(() => {
         if (ownerType === "course") {
@@ -423,7 +437,7 @@ const Notes = ({ownerType, ownerID}) => {
                     <Paper elevation={2} className="note">
                         <Typography
                             align="left"
-                            className="noteHeader">
+                            className={`noteHeader ${classes.notesTitle}`}>
                             {note.title}
                             <NotificationIcon
                                 className="noteNotification"
@@ -440,7 +454,7 @@ const Notes = ({ownerType, ownerID}) => {
                             style={{"fontWeight": "500"}}>
                             {numericDateString(note.timestamp)}
                         </Typography>
-                        <div className="actions">
+                        <div className={`actions ${classes.actionIcons}`}>
                             <Delete
                                 className="icon"
                                 onClick={openDelete(note.id)} />
