@@ -57,8 +57,9 @@
     ]
   },
   "devDependencies": {
-    "eslint": "^6.8.0",
     "cypress": "^4.2.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-cypress": "^2.10.3",
     "faker": "^4.1.0",
     "puppeteer": "^1.20.0",
     "redux-devtools-extension": "^2.13.8"
