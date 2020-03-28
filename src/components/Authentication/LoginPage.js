@@ -41,8 +41,7 @@ const LoginPage = () => {
     }, []);
 
     const failedLogin = isFail(loginStatus);
-
-    if (isLoading(loginStatus, fetchUserStatus)) {
+    if (isLoading(loginStatus) && isLoading(fetchUserStatus)) {
         return <Loading />;
     }
 
