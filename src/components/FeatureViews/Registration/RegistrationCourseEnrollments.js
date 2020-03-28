@@ -28,7 +28,7 @@ import * as calendarActions from "../../../actions/calendarActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Divider from "@material-ui/core/Divider";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/es/DialogContentText";
+import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";

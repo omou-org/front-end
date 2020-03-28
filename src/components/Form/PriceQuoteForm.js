@@ -12,12 +12,12 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/es/Typography/Typography";
+import Typography from "@material-ui/core/Typography/Typography";
 import Remove from "@material-ui/icons/Cancel";
 import Add from "@material-ui/icons/CheckCircle";
 // Local Component Imports
 import "./Form.scss";
-import TextField from "@material-ui/core/es/TextField/TextField";
+import TextField from "@material-ui/core/TextField/TextField";
 import {bindActionCreators} from "redux";
 import * as apiActions from "../../actions/apiActions";
 import {instance} from "../../actions/apiActions";

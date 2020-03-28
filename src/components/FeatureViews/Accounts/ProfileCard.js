@@ -6,7 +6,7 @@ import CardContent from "@material-ui/core/CardContent";
 import Chip from "@material-ui/core/Chip";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import Grid from "@material-ui/core/Grid";
-import Hidden from "@material-ui/core/es/Hidden/Hidden";
+import Hidden from "@material-ui/core/Hidden/Hidden";
 import {Link} from "react-router-dom";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Typography from "@material-ui/core/Typography";

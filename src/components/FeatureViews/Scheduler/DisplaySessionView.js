@@ -26,7 +26,7 @@ import * as hooks from "actions/hooks";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
 import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
-import DialogContentText from "@material-ui/core/es/DialogContentText";
+import DialogContentText from "@material-ui/core/DialogContentText";
 
 import InstructorSchedule from "../Accounts/TabComponents/InstructorSchedule";
 import SessionPaymentStatusChip from "../../SessionPaymentStatusChip";
