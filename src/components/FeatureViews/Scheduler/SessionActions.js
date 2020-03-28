@@ -29,7 +29,7 @@ class SessionView extends Component {
 
         return (
             <Grid item xs={12}>
-                <Paper className={"paper"}>
+                <Paper elevation={2} className={"paper"}>
                     <Grid container
                         direction="row"
                         justify="flex-start"

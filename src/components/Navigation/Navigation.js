@@ -13,7 +13,8 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import AdminIcon from "@material-ui/icons/Face"
 import ListItemText from "@material-ui/core/ListItemText";
-import MuiThemeProvider from "@material-ui/core/es/styles/MuiThemeProvider";
+import { makeStyles } from '@material-ui/core/styles';
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import EventIcon from "@material-ui/icons/Event";
 // Local Component Imports
 import "./Navigation.scss";
@@ -26,7 +27,18 @@ import NavBarRoutes from "../Routes/NavBarRoutes";
 import LoginPage from "../Authentication/LoginPage";
 import {RootRoutes} from "../Routes/RootRoutes";
 
+const useStyles = makeStyles({
+    navigationIconStyle: {
+        height: "50px",
+    },
+    navigationLeftList: {
+        width: "23%",
+    },
+  });
+  
+
 const Navigation = (props) => {
+    const classes = useStyles();
     const {pathname} = useLocation();
     const {token, isAdmin} = useSelector(({auth}) => auth);
 
@@ -83,7 +95,7 @@ const Navigation = (props) => {
                 {NavList.map((NavItem) => (
                     <ListItem
                         button
-                        className="listItem"
+                        className={`listItem ${classes.navigationIconStyle}`} 
                         component={NavLinkNoDup}
                         isActive={(match, location) => match
                             || (NavItem.name === "Scheduler" && location.pathname === "/")
@@ -120,7 +132,9 @@ const Navigation = (props) => {
                                         <Drawer
                                             onClose={handleDrawerToggle}
                                             open={mobileOpen}
-                                            variant="temporary">
+                                            variant="temporary"
+                                            classes={{paper: classes.navigationLeftList}}
+                                            >
                                             {drawer}
                                         </Drawer>
                                     </Hidden>

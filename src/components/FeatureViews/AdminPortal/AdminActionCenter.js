@@ -71,7 +71,7 @@ const AdminActionCenter = () => {
         <Grid
             className="admin-actions-wrapper"
             container
-            spacing={16}>
+            spacing={2}>
             <Grid item>
                 <Button
                     aria-controls="simple-menu"

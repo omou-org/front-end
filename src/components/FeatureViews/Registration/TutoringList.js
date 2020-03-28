@@ -43,7 +43,7 @@ const TutoringList = () => {
     }
 
     return (
-        <Grid alignItems="center" container direction="row" spacing={8}>
+        <Grid alignItems="center" container direction="row" spacing={1}>
             {categories.map(({id, name}) => (
                 <Grid alignItems="center" item key={id} md={4} sm={6} xs={12}>
                     <Card className="tutoring-card" component={Link}

@@ -288,7 +288,7 @@ const RegistrationCart = () => {
     return (
         <form>
             <Paper className="registration-cart paper">
-                <Grid container layout="row" spacing={8}>
+                <Grid container layout="row" spacing={1}>
                     <Grid item xs={12}>
                         <Grid container>
                             <Grid item={3}>

@@ -28,7 +28,7 @@ const StudentInfo = ({user}) => {
             container
             direction="row"
             md={12}
-            spacing={40}
+            spacing={5}
             xs={10}>
             {
                 loadedStudentIDs.map((studentID) => (

@@ -246,7 +246,7 @@ const updateCategoryFetch = (state, payload, status) =>{
     let newState = {...state};
     newState.category[actions.GET] = status;
     return newState;
-}
+};
 
 const updateCourseFetch = (state, id, status) => {
     let newState = JSON.parse(JSON.stringify(state));
@@ -376,10 +376,10 @@ const updateSessionStatus = (state, id, status) => {
     let newState = JSON.parse(JSON.stringify(state));
     newState.schedule[actions.GET][id] = status;
     return newState;
-}
+};
 
 const updateUnpaidStatus = (state, id, status) => {
     let newState = JSON.parse(JSON.stringify(state));
     newState.admin[actions.GET][id] = status;
     return newState;
-}
+};

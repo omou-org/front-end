@@ -4,10 +4,10 @@ import {useSelector} from "react-redux";
 import PropTypes from "prop-types";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/es/Typography/Typography";
+import Typography from "@material-ui/core/Typography/Typography";
 // Local Component Imports
 import "./Form.scss"
-import TextField from "@material-ui/core/es/TextField/TextField";
+import TextField from "@material-ui/core/TextField/TextField";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import {durationParser} from "utils";
@@ -196,7 +196,7 @@ const TutoringPriceQuote = ({courseType, handleUpdatePriceFields,  tutoringCateg
                       className={"tutoring-price-quote"}
                       direction={"column"}
                       justify={"flex-end"}
-                      spacing={32}>
+                      spacing={4}>
                     <Grid item>
                         <Grid container direction={"row"} justify={"flex-end"}>
                             <Grid item xs={3}>

@@ -184,7 +184,7 @@ const RegistrationReceipt = () => {
         const student = students[studentID];
         return (
             <Grid container direction="column" key={studentID}>
-                <Paper className="course-receipt">
+                <Paper elevation={2} className="course-receipt">
                     <Grid item>
                         <Typography align="left"
                             className="student-name"
@@ -204,7 +204,7 @@ const RegistrationReceipt = () => {
     };
 
     return (
-        <Paper className="paper registration-receipt">
+        <Paper elevation={2} className="paper registration-receipt">
             {params.paymentID &&
                 <>
                     <BackButton />
@@ -213,7 +213,7 @@ const RegistrationReceipt = () => {
             <Prompt message="Remember to please close out the parent first!"
                 when={currentPayingParent !== null &&
                     location.pathname.includes("receipt")} />
-            <Grid container direction="column" spacing={16}>
+            <Grid container direction="column" spacing={2}>
                 <Grid item>
                     <Typography align="left" variant="h2">
                         Payment Confirmation
@@ -279,7 +279,7 @@ const RegistrationReceipt = () => {
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container direction="column" justify="center"
-                        spacing={8}>
+                        spacing={1}>
                         <Grid item xs={12}>
                             {Object.entries(courseReceipt)
                                 .map(([studentID, enrolledCourses]) =>
@@ -344,7 +344,7 @@ const RegistrationReceipt = () => {
                 </Grid>
                 <Grid className="receipt-actions" item xs={12}>
                     <Grid container direction="row" justify="flex-end"
-                        spacing={8}>
+                        spacing={1}>
                         <Grid item>
                             <Button className="button" onClick={handlePrint}>
                                 Print

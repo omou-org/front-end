@@ -12,7 +12,6 @@ import NavLinkNoDup from "../Routes/NavLinkNoDup";
 const AuthenticatedNav = () => (
     <AppBar
         className="OmouBar"
-        color="default"
         position="sticky">
         <Toolbar>
             <Typography

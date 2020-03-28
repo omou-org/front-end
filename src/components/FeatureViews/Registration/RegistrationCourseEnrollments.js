@@ -30,6 +30,9 @@ import "./registration.scss";
 import * as hooks from "actions/hooks";
 import {addDashes} from "components/FeatureViews/Accounts/accountUtils";
 import {deleteEnrollment} from "actions/registrationActions";
+import {bindActionCreators} from "redux";
+import * as registrationActions from "../../../actions/registrationActions";
+import * as calendarActions from "../../../actions/calendarActions";
 import NoListAlert from "../../NoListAlert";
 import {sessionArray} from "../Scheduler/SchedulerUtils";
 import SessionPaymentStatusChip from "components/SessionPaymentStatusChip";
@@ -235,7 +238,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                                 {expanded[studentID] &&
                                     <TableRow align="left">
                                         <TableCell colSpan={5}>
-                                            <Paper elevation={0} square>
+                                            <Paper elevation={2} square>
                                                 <Typography className="expanded-container">
                                                     <span className="expanded-text">
                                                         <b>School</b>: {

@@ -156,7 +156,7 @@ const RegistrationLanding = () => {
     }
 
     return (
-        <Paper className="RegistrationLanding paper">
+        <Paper elevation={2} className="RegistrationLanding paper">
             <BackButton />
             <hr />
             <RegistrationActions />
@@ -175,7 +175,7 @@ const RegistrationLanding = () => {
                 </Grid>
             </Grid>
             {view === 0 &&
-                <Grid container layout="row" spacing={8}>
+                <Grid container layout="row" spacing={1}>
                     <Grid item md={4} xs={12}>
                         {renderFilter("instructor")}
                     </Grid>

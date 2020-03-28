@@ -160,12 +160,12 @@ const InstructorAvailability = ({instructorID, button = true}) => {
                         alignItems="center"
                         container
                         direction="column"
-                        spacing={16}>
+                        spacing={2}>
                         <Grid
                             container
                             direction="row"
                             item
-                            spacing={32}>
+                            spacing={4}>
                             {
                                 Object.values(availability)
                                     .filter(({day}) => day != 0)
@@ -195,7 +195,7 @@ const InstructorAvailability = ({instructorID, button = true}) => {
                             container
                             direction="row"
                             item
-                            spacing={32}>
+                            spacing={4}>
                             {
                                 Object.values(availability)
                                     .filter(({day}) => day != 0)

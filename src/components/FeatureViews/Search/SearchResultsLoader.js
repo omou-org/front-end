@@ -61,7 +61,7 @@ const SearchResultsLoader = ({numResults, query, accountPage, coursePage}) => (
                         <Grid
                             container
                             direction="row"
-                            spacing={16}>
+                            spacing={2}>
                             {
                                 [1, 2, 3, 4].map((account) => (
                                     <Grid
@@ -124,7 +124,7 @@ const SearchResultsLoader = ({numResults, query, accountPage, coursePage}) => (
                         <Grid
                             container
                             direction="row"
-                            spacing={8}>
+                            spacing={1}>
                             {[1, 2, 3, 4].map((course) => (
                                 <CoursesCards
                                     isLoading

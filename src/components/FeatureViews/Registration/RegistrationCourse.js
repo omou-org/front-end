@@ -72,7 +72,7 @@ const RegistrationCourse = () => {
 
     return (
         <Grid className="registrationCourse" item xs={12}>
-            <Paper className="paper content">
+            <Paper className="paper content" elevation={2}>
                 <Grid container justify="space-between">
                     <Grid item sm={3}>
                         <BackButton />

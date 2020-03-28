@@ -1,7 +1,7 @@
 import React, {useState} from "react";
-import IconButton from "@material-ui/core/es/IconButton";
+import IconButton from "@material-ui/core/IconButton";
 import FilterIcon from "@material-ui/icons/FilterList";
-import Menu from "@material-ui/core/es/Menu";
+import Menu from "@material-ui/core/Menu";
 import {withStyles} from '@material-ui/core/styles';
 import ReactSelect from "react-select";
 import {MenuItem, Tooltip} from "@material-ui/core";

@@ -1,5 +1,6 @@
-import PropTypes from "prop-types";
 import React from "react";
+import {makeStyles} from "@material-ui/core/styles";
+import PropTypes from "prop-types";
 import {useSelector} from "react-redux";
 
 import Button from "@material-ui/core/Button";
@@ -11,10 +12,17 @@ import Typography from "@material-ui/core/Typography";
 
 import {capitalizeString, courseDateFormat} from "utils";
 
+const useStyles = makeStyles((theme) => ({
+    "font": {
+        "color": theme.palette.common.black,
+    },
+}));
+
 const CourseList = ({filteredCourses}) => {
     const instructors = useSelector(({Users}) => Users.InstructorList);
     const currentParent =
         useSelector(({Registration}) => Registration.CurrentParent);
+    const {font} = useStyles();
     return filteredCourses.filter(
         (course) => course.capacity > 1
     ).map((course) => {
@@ -26,7 +34,7 @@ const CourseList = ({filteredCourses}) => {
             <Grow in key={course.course_id}>
                 <Paper className="row">
                     <Grid alignItems="center" container layout="row">
-                        <Grid className="no-underline" component={Link} item
+                        <Grid className={font} component={Link} item
                             md={3}
                             to={`/registration/course/${course.course_id}`}
                             xs={12}>

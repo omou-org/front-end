@@ -17,7 +17,7 @@ import TableBody from "@material-ui/core/TableBody";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
-import Select from "@material-ui/core/es/Select/Select";
+import Select from "@material-ui/core/Select/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 
 Date.daysBetween = function (date1, date2) {

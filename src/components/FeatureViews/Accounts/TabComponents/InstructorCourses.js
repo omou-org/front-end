@@ -89,7 +89,7 @@ const InstructorCourses = ({instructorID}) => {
             <Grid
                 container
                 direction="row-reverse"
-                spacing={8}>
+                spacing={1}>
                 {
                     courseIDs.sort((courseA, courseB) =>
                         new Date(courses[courseB].schedule.start_date) -
@@ -107,7 +107,7 @@ const InstructorCourses = ({instructorID}) => {
                                     key={courseID}
                                     to={`/registration/course/${courseID}`}
                                     xs={12}>
-                                    <Paper square>
+                                    <Paper elevation={2} square>
                                         <Grid container>
                                             <Grid
                                                 item
