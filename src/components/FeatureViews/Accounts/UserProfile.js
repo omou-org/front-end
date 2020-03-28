@@ -8,7 +8,7 @@ import ContactIcon from "@material-ui/icons/ContactPhoneOutlined";
 import CoursesIcon from "@material-ui/icons/SchoolOutlined";
 import CurrentSessionsIcon from "@material-ui/icons/AssignmentOutlined";
 import Grid from "@material-ui/core/Grid";
-import Hidden from "@material-ui/core/es/Hidden/Hidden";
+import Hidden from "@material-ui/core/Hidden/Hidden";
 import NoteIcon from "@material-ui/icons/NoteOutlined";
 import Paper from "@material-ui/core/Paper";
 import PastSessionsIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
@@ -154,7 +154,7 @@ const UserProfile = () => {
                         variant="h6">
                         Action Log
                     </Typography>
-                    <Paper className="paper">
+                    <Paper elevation={2} className="paper">
                         <Table className="ActionTable">
                             <TableHead>
                                 <TableRow>

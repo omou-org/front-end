@@ -217,7 +217,7 @@ const CourseSessionStatus = () => {
                         </Grid>
                         <Grid
                             container
-                            spacing={8}>
+                            spacing={1}>
                             {sessions.length !== 0
                                 ? sessions.map((session) => {
                                     const {day, date, startTime, endTime,
@@ -304,7 +304,7 @@ const CourseSessionStatus = () => {
     };
 
     return (
-        <Paper className="paper">
+        <Paper elevation={2} className="paper">
             <Grid
                 className="course-session-status"
                 container>
@@ -333,7 +333,7 @@ const CourseSessionStatus = () => {
                         container
                         direction="row"
                         justify="flex-start"
-                        spacing={16}>
+                        spacing={2}>
                         <Grid item>
                             <AddSessions
                                 componentOption="button"

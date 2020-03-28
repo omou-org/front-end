@@ -395,7 +395,7 @@ const DiscountRow = ({discount, type, classes}) => {
             <Grid
                 alignItems="center"
                 container
-                spacing={16}>
+                spacing={2}>
                 {
                     Object.entries(DiscountFields)
                         .filter(([fieldName]) =>

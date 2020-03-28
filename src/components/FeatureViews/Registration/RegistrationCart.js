@@ -421,7 +421,7 @@ const RegistrationCart = () => {
         return (
             <Grid
                 container
-                spacing={8}>
+                spacing={1}>
                 {
                     <Grid
                         item
@@ -429,7 +429,7 @@ const RegistrationCart = () => {
                         <Grid
                             container
                             justify="flex-end"
-                            spacing={16}>
+                            spacing={2}>
                             <Grid
                                 item
                                 xs={6} />
@@ -511,7 +511,7 @@ const RegistrationCart = () => {
                 <Grid
                     container
                     layout="row"
-                    spacing={8}>
+                    spacing={1}>
                     <Grid
                         item
                         xs={12}>

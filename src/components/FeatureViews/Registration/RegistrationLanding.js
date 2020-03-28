@@ -155,7 +155,7 @@ const RegistrationLanding = () => {
     };
 
     return (
-        <Paper className="RegistrationLanding paper">
+        <Paper elevation={2} className="RegistrationLanding paper">
             <BackButton />
             <hr />
             <RegistrationActions />
@@ -194,7 +194,7 @@ const RegistrationLanding = () => {
                 <Grid
                     container
                     layout="row"
-                    spacing={8}>
+                    spacing={1}>
                     <Grid
                         item
                         md={4}

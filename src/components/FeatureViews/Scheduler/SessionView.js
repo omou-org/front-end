@@ -83,7 +83,7 @@ class SessionView extends Component {
     render() {
         return (
             <Grid className="main-session-view" container>
-                <Paper
+                <Paper elevation={2}
                     className="paper session"
                     mt="2em" style={{ width: "100%" }}>
                     <Grid className="session-button" item>

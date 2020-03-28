@@ -211,7 +211,7 @@ const EditSessionView = ({course, session, editSelection}) => {
                     align="left"
                     className="session-view-details"
                     container
-                    spacing={16}
+                    spacing={2}
                     xs={6}>
                     <Grid
                         item

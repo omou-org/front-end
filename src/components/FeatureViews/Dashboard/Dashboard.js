@@ -15,7 +15,7 @@ class Dashboard extends Component {
     render() {
         return (<div className="`Dashboard`">
             <h1>Dashboard</h1>
-            <Grid container spacing={16} className="Root">
+            <Grid container spacing={2} className="Root">
                 <Card>
                     <CardActionArea>
                         <CardMedia>

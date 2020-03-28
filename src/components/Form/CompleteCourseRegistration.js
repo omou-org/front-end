@@ -75,7 +75,7 @@ export function CompleteCourseRegistration({ registeredCourseForm, courseType })
 
     return (
         <>
-            <Paper className={"paper course-receipt"}>
+            <Paper elevation={2} className={"paper course-receipt"}>
                 <Grid container>
                     <Grid
                         item

@@ -136,7 +136,7 @@ const ManageCategories = () => {
                 <Grid
                     alignItems="center"
                     container
-                    spacing={8}>
+                    spacing={1}>
                     {
                         categoryList.length > 0
                             ? categoryList
@@ -184,6 +184,7 @@ const ManageCategories = () => {
 
     const viewCategoryRow = ({name, description, id}) => (
         <Paper
+            elevation={2}
             className="category-row"
             square>
             <Grid
@@ -225,6 +226,7 @@ const ManageCategories = () => {
 
     const editCategoryRow = ({name, id, description}) => (
         <Paper
+            elevation={2}
             className="category-row"
             square>
             <Grid

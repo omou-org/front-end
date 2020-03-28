@@ -50,7 +50,7 @@ const TutoringList = () => {
             alignItems="center"
             container
             direction="row"
-            spacing={8}>
+            spacing={1}>
             {
                 categories.map(({id, name}) => (
                     <Grid

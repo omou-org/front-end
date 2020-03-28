@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import BackArrow from "@material-ui/icons/ArrowBack";
 import Modal from "@material-ui/core/Modal";
 import Button from "@material-ui/core/Button";
-import Hidden from "@material-ui/core/es/Hidden/Hidden";
+import Hidden from "@material-ui/core/Hidden/Hidden";
 import { Typography } from "@material-ui/core";
 
 class BackButton extends Component {

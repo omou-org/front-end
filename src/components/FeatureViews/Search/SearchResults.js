@@ -156,7 +156,7 @@ const SearchResults = () => {
             <Grid
                 item
                 xs={12}>
-                <Paper className="main-search-view">
+                <Paper elevation={2} className="main-search-view">
                     <Grid
                         className="searchResults"
                         item
@@ -213,7 +213,7 @@ const SearchResults = () => {
                                 <Grid
                                     container
                                     direction="row"
-                                    spacing={16}>
+                                    spacing={2}>
                                     {
                                         renderAccounts
                                     }
@@ -288,7 +288,7 @@ const SearchResults = () => {
                                 <Grid
                                     container
                                     direction="row"
-                                    spacing={8}>
+                                    spacing={1}>
                                     {renderCourses}
                                 </Grid>
                             </Grid>

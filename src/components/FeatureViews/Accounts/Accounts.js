@@ -18,7 +18,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Tabs from "@material-ui/core/Tabs";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
-import {withStyles} from "@material-ui/core/styles";
+import { makeStyles, withStyles} from "@material-ui/core/styles";
 
 import "./Accounts.scss";
 import * as hooks from "actions/hooks";
@@ -36,6 +36,17 @@ const componentStyles = (theme) => ({
         "flexGrow": 1,
     },
 });
+
+const useStyles = makeStyles({
+    tableRowStyle: {
+        fontSize: "0.8125rem",
+        padding: "0px",
+    },
+    tableCellStyle: {
+      fontSize: "0.75rem",
+      color: "rgba(0, 0, 0, 0.54)"
+    }
+})
 
 const stopPropagation = (event) => {
     event.stopPropagation();
@@ -110,16 +121,17 @@ const Accounts = () => {
         setViewToggle(view);
     }, []);
 
+    const classes = useStyles();
     const tableView = useMemo(() => (
         <Table
             className="AccountsTable"
-            resizable={false}>
+            resizable="false">
             <TableHead>
-                <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Email</TableCell>
-                    <TableCell>Phone</TableCell>
-                    <TableCell>Role</TableCell>
+                <TableRow >
+                    <TableCell className={classes.tableCellStyle}>Name</TableCell>
+                    <TableCell className={classes.tableCellStyle}>Email</TableCell>
+                    <TableCell className={classes.tableCellStyle}>Phone</TableCell>
+                    <TableCell className={classes.tableCellStyle}>Role</TableCell>
                     <TableCell />
                 </TableRow>
             </TableHead>
@@ -130,7 +142,7 @@ const Accounts = () => {
                         component={Link}
                         key={row.user_id}
                         to={`/accounts/${row.role}/${row.user_id}`}>
-                        <TableCell>
+                        <TableCell className={classes.tableRowStyle}>
                             <Grid
                                 alignItems="center"
                                 container
@@ -194,7 +206,7 @@ const Accounts = () => {
             className="card-container"
             container
             direction="row"
-            spacing={16}
+            spacing={2}
             xs={12}>
             {
                 displayUsers.map((user) => (
@@ -213,7 +225,7 @@ const Accounts = () => {
             className="Accounts"
             item
             xs={12}>
-            <Paper className="paper">
+            <Paper elevation={2} className="paper">
                 <BackButton />
                 <Hidden xsDown>
                     <hr />
@@ -315,7 +327,7 @@ const Accounts = () => {
                     container
                     direction="row"
                     justify="center"
-                    spacing={8}>
+                    spacing={1}>
                     {
                         loading
                             ? <Loading />

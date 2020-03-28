@@ -6,10 +6,11 @@ import CardContent from "@material-ui/core/CardContent";
 import Chip from "@material-ui/core/Chip";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import Grid from "@material-ui/core/Grid";
-import Hidden from "@material-ui/core/es/Hidden/Hidden";
+import Hidden from "@material-ui/core/Hidden/Hidden";
 import {Link} from "react-router-dom";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
 
 import "./Accounts.scss";
 import {addDashes} from "./accountUtils";
@@ -17,14 +18,22 @@ import {capitalizeString} from "utils";
 import {ReactComponent as IDIcon} from "components/identifier.svg";
 import UserAvatar from "./UserAvatar";
 
-const ProfileCard = ({user, route}) => (
+const useStyles = makeStyles({
+    linkUnderline: {
+        textDecoration: "none"
+    }
+});
+
+const ProfileCard = ({user, route}) => {
+    const classes = useStyles();
+    return (
     <Grid
         item
         sm={6}
         xs={12}>
         {
             user &&
-            <Link to={route}>
+            <Link to={route} className={classes.linkUnderline}>
                 <Card className="ProfileCard">
                     <Grid container>
                         <Grid
@@ -114,7 +123,7 @@ const ProfileCard = ({user, route}) => (
             </Link>
         }
     </Grid>
-);
+)};
 
 ProfileCard.propTypes = {
     "route": PropTypes.string,

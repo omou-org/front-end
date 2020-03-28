@@ -1,5 +1,5 @@
 // React Imports
-import { Switch } from "react-router-dom";
+import {Switch} from "react-router-dom";
 import React from "react";
 import TuitionRules from "../FeatureViews/AdminPortal/TuitionRules";
 import AdminRoute from "./AdminRoute";

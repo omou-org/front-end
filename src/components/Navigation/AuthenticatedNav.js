@@ -14,8 +14,10 @@ import LogoutIcon from "@material-ui/icons/ExitToAppOutlined";
 import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
+
 // Local Component Imports
 import Search from "../../components/FeatureViews/Search/Search";
+
 
 const AuthenticatedNav = ({ toggleDrawer }) => {
     const dispatch = useDispatch();
@@ -24,6 +26,7 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
 
     const [mobileOpen, setMobileOpen] = useState(false);
     const [isMobileSearching, setMobileSearching] = useState(false);
+
 
     const handleDrawerToggle = useCallback(() => {
         toggleDrawer(!mobileOpen);
@@ -51,8 +54,8 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
     return (
         <AppBar
             className="OmouBar"
-            color="default"
-            position="sticky">
+            position="sticky"
+            >
             <Toolbar>
                 {
                     !isMobileSearching &&

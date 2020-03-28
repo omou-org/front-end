@@ -10,6 +10,7 @@ import Grid from "@material-ui/core/Grid";
 import MenuItem from "@material-ui/core/MenuItem";
 import SearchIcon from "@material-ui/icons/Search";
 import Select from "@material-ui/core/Select";
+import { makeStyles } from '@material-ui/core/styles';
 
 import "./Search.scss";
 import {
@@ -18,6 +19,18 @@ import {
 } from "actions/actionTypes";
 import { isFail, useSearchParams } from "actions/hooks";
 import { instance } from "actions/apiActions";
+
+const useStyles = makeStyles({
+    navSelect: {
+        height: "41px",
+        border: "1px solid #eee",
+        background: "#ffffff",
+        borderRadius: "3px,0px,0px,3px",
+    },
+      dropdownStyle: {
+        borderRadius: "10px !important",
+      },
+});
 
 const getPlaceholder = () => window.innerWidth < 800
     ? "Search"
@@ -70,6 +83,8 @@ const Search = ({ onMobileType = () => { } }) => {
     }, [handleResize]);
 
     const searchParams = useSearchParams();
+
+    const classes = useStyles();
 
     // update filter if it was changed externally
     useEffect(() => {
@@ -203,14 +218,16 @@ const Search = ({ onMobileType = () => { } }) => {
                                 required
                                 variant="outlined">
                                 <Select
-                                    className="select-primary-filter"
-                                    disableUnderline
+                                    className={`select-primary-filter ${classes.navSelect}`}
+                                    disableunderline="true"
                                     inputProps={{
                                         "id": "primary-filter",
                                         "name": "primary-filter",
                                     }}
                                     onChange={changeFilter}
-                                    value={filter}>
+                                    value={filter}
+                                    MenuProps={{ classes: { paper: classes.dropdownStyle } }}
+                                    >
                                     <MenuItem value="all">
                                         All
                                     </MenuItem>

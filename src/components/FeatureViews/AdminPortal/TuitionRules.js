@@ -203,7 +203,7 @@ const TuitionRules = () => {
                         </Typography>
                     </Grid>
                 </Grid>
-                <Grid alignItems="center" container item spacing={8} xs={12}>
+                <Grid alignItems="center" container item spacing={1} xs={12}>
                     {tuitionRules.length > 0
                         ? tuitionRules.map((tuition) => tuition && (
                             <Grid item key={tuition.id} xs={12}>

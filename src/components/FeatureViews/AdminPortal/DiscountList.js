@@ -66,7 +66,7 @@ const DiscountList = ({discountType, discountList}) => (
                 <Grid
                     alignItems="center"
                     container
-                    spacing={8}>
+                    spacing={1}>
                     {
                         discountList.length > 0
                             ? discountList.map((discount) =>

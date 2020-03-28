@@ -33,22 +33,27 @@ import SessionFilters from "./SessionFilters";
 import {BootstrapInput, handleToolTip, sessionArray} from "./SchedulerUtils";
 import {Tooltip} from "@material-ui/core";
 import {arr_diff} from "../../Form/FormUtils";
+import { MenuList } from '@material-ui/core';
 
-
-const styles = (theme) => ({
-    "root": {
-        "display": "flex",
-        "flexWrap": "wrap",
+const styles = theme => ({
+    root: {
+        display: "flex",
+        flexWrap: "wrap",
     },
-    "margin": {
-        "margin": theme.spacing.unit,
+    margin: {
+        margin: theme.spacing(1),
     },
-    "bootstrapFormLabel": {
-        "fontSize": 18,
+    bootstrapFormLabel: {
+        fontSize: "18px"
+    },
+    courseFilter: {
+        paddingRight: "10px"
+    },
+    dropdownStyle: 
+    {
+      borderRadius: "10px",
     },
 });
-
-
 
 
 class Scheduler extends Component {
@@ -139,7 +144,6 @@ class Scheduler extends Component {
     }
 
     componentWillUnmount() {
-        console.log("test")
         this.props.calendarActions.resetSchedulerStatus();
     }
 
@@ -517,8 +521,9 @@ class Scheduler extends Component {
     };
 
     render() {
+        const { classes } = this.props
         return (
-            <Paper className="paper scheduler">
+            <Paper elevation={2} className="paper scheduler">
                 <Typography
                     align="left"
                     className="scheduler-title"
@@ -529,7 +534,7 @@ class Scheduler extends Component {
                 <Grid
                     className="scheduler-wrapper"
                     container
-                    spacing={16}>
+                    spacing={2}>
                     <Grid
                         className="scheduler-header"
                         item
@@ -579,7 +584,9 @@ class Scheduler extends Component {
                                                             name="courseFilter" />
                                                     }
                                                     onChange={this.handleFilterChange("calendarFilterValue")}
-                                                    value={this.state.calendarFilterValue}>
+                                                    value={this.state.calendarFilterValue}
+                                                    MenuProps={{ classes: { paper: classes.dropdownStyle } }}
+                                                    >
                                                     <MenuItem value="all">All</MenuItem>
                                                     <MenuItem value="class">Class</MenuItem>
                                                     <MenuItem value="tutoring">Tutoring</MenuItem>
@@ -595,7 +602,9 @@ class Scheduler extends Component {
                                                             name="courseFilter" />
                                                     }
                                                     onChange={this.handleResourceFilterChange("resourceFilterValue")}
-                                                    value={this.state.resourceFilterValue}>
+                                                    value={this.state.resourceFilterValue}
+                                                    MenuProps={{ classes: { paper: classes.dropdownStyle } }}
+                                                    >
                                                     <MenuItem value="R">Room</MenuItem>
                                                     <MenuItem value="I">Instructors</MenuItem>
                                                 </Select>
@@ -706,7 +715,9 @@ class Scheduler extends Component {
                                                 onChange={(event) =>
                                                     this.changeView(event.target.value)
                                                 }
-                                                value={this.state.viewValue}>
+                                                value={this.state.viewValue}
+                                                MenuProps={{ classes: { paper: classes.dropdownStyle } }}
+                                                >
                                                 <MenuItem value="timeGridDay">Day</MenuItem>
                                                 <MenuItem value="timeGridWeek">Week</MenuItem>
                                                 <MenuItem value="dayGridMonth">Month</MenuItem>
