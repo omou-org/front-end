@@ -1,21 +1,7 @@
 @import '../../theme/colors';
 @import '../../theme/sizes';
+
 .bg {
-    // @include respond-to(medium-up-screens){
-    //     padding: 37px;
-    //     width: 412px;
-    //     height: 400px;
-    //     margin-left: -20vw;
-    // }
-    // @include respond-to(handhelds){
-    //     position:absolute;
-    //     top:30vh;
-    //     left:0;
-    //     padding: 20px;
-    //     width: 100vw;
-    //     height: 100vh;
-    //     box-shadow:none !important;
-    // }
     padding: 37px;
     width: 412px;
     height: 400px;
