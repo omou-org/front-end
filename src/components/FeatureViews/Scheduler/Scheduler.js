@@ -1,821 +1,434 @@
-/* eslint-disable func-style */
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import React, {Component} from "react";
-import {withRouter} from "react-router-dom";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {makeStyles} from "@material-ui/core/styles";
+import {useHistory} from "react-router-dom";
+import {useSelector} from "react-redux";
 
-import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import listViewPlugin from "@fullcalendar/list";
+import FullCalendar from "@fullcalendar/react";
 import interactionPlugin from "@fullcalendar/interaction";
+import listViewPlugin from "@fullcalendar/list";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
+import timeGridPlugin from "@fullcalendar/timegrid";
 
-import * as calendarActions from "../../../actions/calendarActions";
-import * as courseActions from "../../../actions/apiActions";
-import * as userActions from "../../../actions/userActions";
-// Material-Ui dependencies
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
+import ChevronLeftOutlined from "@material-ui/icons/ChevronLeftOutlined";
+import ChevronRightOutlined from "@material-ui/icons/ChevronRightOutlined";
 import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import InputLabel from "@material-ui/core/InputLabel";
+import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
-import ChevronLeftOutlinedIcon from "@material-ui/icons/ChevronLeftOutlined";
-import ChevronRightOutlinedIcon from "@material-ui/icons/ChevronRightOutlined";
-import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
+import Paper from "@material-ui/core/Paper";
+import Select from "@material-ui/core/Select";
 import TodayIcon from "@material-ui/icons/Today";
-import {stringToColor} from "../Accounts/accountUtils";
-import {withStyles} from "@material-ui/core/styles";
+import Tooltip from "@material-ui/core/Tooltip";
+import Typography from "@material-ui/core/Typography";
+
 import "./scheduler.scss";
-import SessionFilters from "./SessionFilters";
+import * as calendarActions from "actions/calendarActions";
+import * as hooks from "actions/hooks";
 import {BootstrapInput, handleToolTip, sessionArray} from "./SchedulerUtils";
-import {Tooltip} from "@material-ui/core";
 import {arr_diff} from "../../Form/FormUtils";
+import SessionFilters from "./SessionFilters";
+import {stringToColor} from "../Accounts/accountUtils";
+import {uniques} from "utils";
 
-const styles = (theme) => ({
-  root: {
-    display: "flex",
-    flexWrap: "wrap",
-  },
-  margin: {
-    margin: theme.spacing(1),
-  },
-  bootstrapFormLabel: {
-    fontSize: "18px",
-  },
-  courseFilter: {
-    paddingRight: "10px",
-  },
-  dropdownStyle: {
-    borderRadius: "10px",
-  },
-});
+const useStyles = makeStyles((theme) => ({
+    "bootstrapFormLabel": {
+        "fontSize": "18px",
+    },
+    "courseFilter": {
+        "paddingRight": "10px",
+    },
+    "dropdownStyle": {
+        "borderRadius": "10px",
+    },
+    "margin": {
+        "margin": theme.spacing(1),
+    },
+    "root": {
+        "display": "flex",
+        "flexWrap": "wrap",
+    },
+}));
 
-class Scheduler extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      calendarResourcesViews: [],
-      calendarWeekends: true,
-      calendarResources: [],
-      calendarEvents: [],
-      oooEvents: [],
-      currentDate: "",
-      viewValue: "timeGridDay",
-      filterValue: "class",
-      resourceFilterValue: "R",
-      calendarFilterValue: "tutoring",
-      calendarIcon: true,
-      resourceIcon: false,
-      filterTypeCalendar: "",
-      timeShift: 0,
-      instructorFilter: "",
-      instructorOptions: [],
-      courseFilter: "",
-      courseOptions: [],
-      sessionFilter: false,
-      sessionFilterAnchor: null,
-    };
-    this.calendarViewToFilterVal = {
-      timeGridDay: "day",
-      timeGridWeek: "week",
-      dayGridMonth: "month",
-    };
-  }
+const calendarViewToFilterVal = {
+    "dayGridMonth": "month",
+    "timeGridDay": "day",
+    "timeGridWeek": "week",
+};
 
-  calendarComponentRef = React.createRef();
+const Scheduler = () => {
+    const classes = useStyles();
+    const history = useHistory();
 
-  componentDidMount() {
-    // this.props.courseActions.fetchCourses();
-    // this.props.userActions.fetchInstructors();
+    const courses = useSelector(({Course}) => Course.NewCourseList);
+    const sessions = useSelector(({Calendar}) => Calendar.CourseSessions);
+    const instructors = useSelector(({Users}) => Users.InstructorList);
 
-    this.props.userActions.fetchOutOfOffice();
-    this.props.calendarActions.fetchAllSessions({
-      config: {
-        params: {
-          time_frame: "day",
-          view_option: "tutoring",
-          time_shift: 0,
-        },
-      },
-      id: "",
-    });
-    this.setState({
-      currentDate: this.currentDate(),
-    });
-    this.setOOOEvents();
-  }
+    const prevState =
+        JSON.parse(sessionStorage.getItem("schedulerState")) || {};
+    const [courseType, setCourseType] =
+        useState(prevState.courseType || "tutoring");
+    const [courseFilter, setCourseFilter] = useState(prevState.courseFilter);
+    const [instructorFilter, setInstructorFilter] =
+        useState(prevState.instructorFilter);
+    const [timeShift, setTimeShift] = useState(prevState.timeShift || 0);
+    const [view, setView] = useState(prevState.view || "timeGridDay");
 
-  componentDidUpdate(prevProps) {
-    // this is why we need useEffect lol
-    if (
-        JSON.stringify(prevProps.sessions) !== JSON.stringify(this.props.sessions)
-    ) {
-      const initialSessions = this.formatSessions(this.props.sessions);
-      const courseSessionsArray = sessionArray(this.props.sessions);
-
-      this.setState({
-        calendarEvents: initialSessions,
-        instructorOptions: Object.entries(this.props.instructors).map(
-            ([instructorID, instructor]) => ({
-              value: Number(instructorID),
-              label: instructor.name,
-            })
-        ),
-        courseOptions:
-            courseSessionsArray &&
-            [
-              ...new Set(courseSessionsArray.map((session) => session.course)),
-            ].map((courseID) => ({
-              value: Number(courseID),
-              label: this.props.courses[Number(courseID)].title,
-            })),
-      });
-    }
-    if (
-        JSON.stringify(prevProps.instructors) !==
-        JSON.stringify(this.props.instructors)
-    ) {
-      this.setOOOEvents();
-    }
-  }
-
-  componentWillUnmount() {
-    this.props.calendarActions.resetSchedulerStatus();
-  }
-
-  formatSessions = (sessionState) => {
-    let allSessions = [];
-
-    Object.values(sessionState).forEach((sessions) => {
-      allSessions = allSessions.concat(
-          Object.values(sessions).map((session) => {
-            const instructorName =
-                this.props.courses[session.course] &&
-                this.props.instructors[session.instructor].name;
-            return {
-              id: session.id,
-              courseID: session.course,
-              title: session.title,
-              description: session.description ? session.description : "",
-              type: this.props.courses[session.course].type,
-              resourceId: this.props.courses[session.course_id]
-                  ? this.props.courses[session.course_id].room_id
-                  : 1,
-              start: new Date(session.start_datetime),
-              end: new Date(session.end_datetime),
-              instructor: instructorName,
-              instructor_id: session.instructor,
-              isConfirmed: session.is_confirmed,
-              color: stringToColor(instructorName),
-            };
-          })
-      );
-    });
-    return allSessions;
-  };
-
-  getInstructorSchedule = () => {
-    const instructor = this.props.instructors;
-    const instructorKey = Object.keys(this.props.instructors);
-
-    const instructorsSchedule = instructorKey.map(
-        (iKey) => instructor[iKey].schedule.work_hours
+    hooks.useCourse();
+    hooks.useInstructor();
+    hooks.useOutOfOffice();
+    calendarActions.useSessions(
+        calendarViewToFilterVal[view], timeShift, courseType
     );
-    let allInstructorSchedules = [];
-    instructorsSchedule.forEach((iList) => {
-      allInstructorSchedules = allInstructorSchedules.concat(
-          Object.values(iList)
-      );
-    });
-    return allInstructorSchedules;
-  };
 
-  setOOOEvents = () => {
-    let allInstructorSchedules = [];
-    if (!this.state.courseFilter) {
-      const {instructors} = this.props;
+    const calendarRef = useRef();
+    const calendarApi = calendarRef.current && calendarRef.current.getApi();
 
-      let OOOlist = Object.values(instructors);
-      if (this.state.instructorFilter) {
-        const IDList = this.state.instructorFilter.map(({value}) => value);
-        OOOlist = OOOlist.filter(({user_id}) => IDList.includes(user_id));
-      }
-      OOOlist = OOOlist.map(({schedule}) => schedule.time_off);
-      OOOlist.forEach((iList) => {
-        allInstructorSchedules = allInstructorSchedules.concat(
-            Object.values(iList).map(
+    const formatSessions = useCallback((sessionState) =>
+        Object.values(sessionState).reduce((all, sessionList) => all.concat(
+            Object.values(sessionList).filter(({course}) =>
+                course && courses[course])
+                .map((session) => {
+                    const instructorName = instructors[session.instructor].name
+                        || "";
+                    return {
+                        "color": stringToColor(instructorName),
+                        "courseID": session.course,
+                        "description": session.description,
+                        "end": new Date(session.end_datetime),
+                        "id": session.id,
+                        "instructor": instructorName,
+                        "instructor_id": session.instructor,
+                        "isConfirmed": session.is_confirmed,
+                        "resourceId": courses[session.course_id]
+                            ? courses[session.course_id].room_id
+                            : 1,
+                        "start": new Date(session.start_datetime),
+                        "title": session.title,
+                        "type": courses[session.course].type,
+                    };
+                })
+        ), []), [courses, instructors]);
+
+    const OOOEvents = useMemo(() => {
+        if (courseFilter) {
+            return [];
+        }
+        let OOOlist = Object.values(instructors);
+        if (instructorFilter) {
+            const IDList = instructorFilter.map(({value}) => String(value));
+            OOOlist = OOOlist.filter(({user_id}) =>
+                IDList.includes(String(user_id)));
+        }
+        return OOOlist.map(({schedule}) => schedule.time_off)
+            .reduce((allOOO, OOO) => allOOO.concat(Object.values(OOO).map(
                 ({start, end, description, instructor_id, all_day, ooo_id}) => {
-                  const instructor = instructors[instructor_id];
-                  const title =
-                      description ||
-                      (instructor
-                          ? `${instructor.name} Out of Office`
-                          : "Out of Office");
-                  const endDate = new Date(end);
-                  // since the end date for allDay events is EXCLUSIVE
-                  // must add one day to include the end specified by user
-                  if (all_day) {
-                    endDate.setDate(endDate.getDate() + 1);
-                  }
-                  return {
-                    allDay: all_day,
-                    color: stringToColor(instructor.name || ""),
-                    end: endDate,
-                    start,
-                    title,
-                    ooo_id,
-                  };
+                    const instructor = instructors[instructor_id];
+                    const title = description || (instructor
+                        ? `${instructor.name} Out of Office`
+                        : "Out of Office");
+                    const endDate = new Date(end);
+                    // since the end date for allDay events is EXCLUSIVE
+                    // must add one day to include the end specified by user
+                    if (all_day) {
+                        endDate.setDate(endDate.getDate() + 1);
+                    }
+                    return {
+                        "allDay": all_day,
+                        "color": stringToColor(instructor.name || ""),
+                        "end": endDate,
+                        ooo_id,
+                        start,
+                        title,
+                    };
                 }
-            )
-        );
-      });
-    }
-    this.setState({
-      oooEvents: allInstructorSchedules,
-    });
-  };
+            )), []);
+    }, [courseFilter, instructorFilter, instructors]);
 
-  // Full Calendar API used to change calendar views
-  currentDate = () => {
-    const calendarApi = this.calendarComponentRef.current.getApi();
-    const date = calendarApi.view.title;
-    return date;
-  };
+    const currentDate = calendarApi && calendarApi.view.title;
 
-  toggleWeekends = () => {
-    this.setState({
-      // update a property
-      calendarWeekends: !this.state.calendarWeekends,
-    });
-  };
+    // Change from day,week, and month views
+    const changeView = (value) => {
+        calendarApi.changeView(value);
+        calendarApi.today();
+        setView(value);
+        setTimeShift(0);
+    };
 
-  // Change from day,week, and month views
-  changeView = (value) => {
-    const calendarApi = this.calendarComponentRef.current.getApi();
-    calendarApi.changeView(value);
-    const filter = this.calendarViewToFilterVal[value];
+    const handleViewChange = ({target}) => {
+        changeView(target.value);
+    };
 
-    const date = this.currentDate();
-    calendarApi.today();
+    const goToNext = () => {
+        calendarApi.next();
+        setTimeShift((prevShift) => prevShift + 1);
+    };
 
-    this.props.calendarActions.fetchSession({
-      config: {
-        params: {
-          time_frame: filter,
-          view_option: this.state.calendarFilterValue,
-          time_shift: 0,
-        },
-      },
-    });
-    this.setState(() => ({
-      viewValue: value,
-      currentDate: date,
-      timeShift: 0,
-    }));
-  };
+    const goToPrev = () => {
+        calendarApi.prev();
+        setTimeShift((prevShift) => prevShift - 1);
+    };
 
-  goToNext = () => {
-    const calendarApi = this.calendarComponentRef.current.getApi();
-    calendarApi.next();
-    const date = this.currentDate();
-    this.props.calendarActions.fetchSession({
-      config: {
-        params: {
-          time_frame: this.calendarViewToFilterVal[this.state.viewValue],
-          view_option: this.state.calendarFilterValue,
-          time_shift: this.state.timeShift + 1,
-        },
-      },
-    });
-    this.setState((state) => ({
-      currentDate: date,
-      timeShift: state.timeShift + 1,
-    }));
-  };
+    const goToToday = () => {
+        calendarApi.today();
+        setTimeShift(0);
+    };
 
-  goToPrev = () => {
-    const calendarApi = this.calendarComponentRef.current.getApi();
-    calendarApi.prev();
-    const date = this.currentDate();
-    this.props.calendarActions.fetchSession({
-      config: {
-        params: {
-          time_frame: this.calendarViewToFilterVal[this.state.viewValue],
-          view_option: this.state.calendarFilterValue,
-          time_shift: this.state.timeShift - 1,
-        },
-      },
-    });
-    this.setState((state) => ({
-      currentDate: date,
-      timeShift: state.timeShift - 1,
-    }));
-  };
+    const handleCourseTypeChange = useCallback(({target}) => {
+        setCourseType(target.value);
+    }, []);
 
-  goToToday = () => {
-    const calendarApi = this.calendarComponentRef.current.getApi();
-    calendarApi.today();
-    const date = this.currentDate();
-    this.props.calendarActions.fetchSession({
-      config: {
-        params: {
-          time_frame: this.calendarViewToFilterVal[this.state.viewValue],
-          view_option: this.state.calendarFilterValue,
-          time_shift: 0,
-        },
-      },
-    });
-    this.setState({
-      currentDate: date,
-      timeShift: 0,
-    });
-  };
-
-  today = () => {
-    const calendarApi = this.calendarComponentRef.current.getApi();
-    calendarApi.today();
-    this.currentDate();
-  };
-
-  currentDate = () => {
-    const calendarApi = this.calendarComponentRef.current.getApi();
-    const date = calendarApi.view.title;
-    return date;
-  };
-
-  // This function changes the resouce view when click as well as change the color of the icon
-  changeViewToResource = () => {
-    const calendarApi = this.calendarComponentRef.current.getApi();
-    calendarApi.changeView("resourceTimeline");
-    this.currentDate();
-    this.setState({
-      resourceIcon: true,
-      calendarIcon: false,
-      calendarResourcesViews: this.getRoomResources(),
-      calendarEvents: JSON.parse(sessionStorage.getItem("calendarEvent")),
-      calendarResources: this.getRoomResources(),
-    });
-  };
-
-  changeViewToCalendar = () => {
-    const calendarApi = this.calendarComponentRef.current.getApi();
-    calendarApi.changeView("dayGridMonth");
-    this.currentDate();
-    this.setState({
-      calendarIcon: true,
-      resourceIcon: false,
-      calendarEvents: JSON.parse(sessionStorage.getItem("calendarEvent")),
-    });
-  };
-
-  // Function to parse the inital state into data that full calendar could
-  getEvents = () => {
-    const courseKeys = Object.keys(this.props.sessions);
-
-    // creates an array from courseKeys [0,1,2,3,...,10]
-    const sessionsInViewList = courseKeys.map((courseKey) => {
-      // course will get each session and map with courseKey
-      const course = this.props.sessions[courseKey];
-      // gets the keys to each session that was mapped
-      const courseSessionKeys = Object.keys(course);
-      // creates an array that maps through courseSessionKey
-      const courseSessions = courseSessionKeys.map((sessionKey) => {
-        // sessions = sessions from initial state
-        // courseKey is the key value from inital state
-        // sessionKey is the variable named inside the map, this is mapping over each coursekey
-        // session is the matched pairs of course and session objects
-        const session = this.props.sessions[courseKey][sessionKey];
-        session.description = session.description ? session.description : "";
-        session.type = this.props.courses[session.course_id].type;
-        session.resourceId = this.props.courses[session.course_id].room_id
-            ? this.props.courses[session.course_id].room_id
-            : 1;
-
-        return session;
-      });
-      return courseSessions;
-    });
-
-    let sessionsInView = [];
-    sessionsInViewList.forEach((sessionsList) => {
-      sessionsInView = sessionsInView.concat(sessionsList);
-    });
-
-    return sessionsInView.map((el) => ({
-      ...el,
-      url: `/scheduler/view-session/${el.course_id}/${el.session_id}`,
-    }));
-  };
-
-  // This function is used in material-ui for the eventhandler
-  handleFilterChange = (name) => (event) => {
-    const date = this.currentDate();
-    if (event.target.value) {
-      this.setState(() => {
-        this.props.calendarActions.fetchSession({
-          config: {
-            params: {
-              time_frame: this.calendarViewToFilterVal[this.state.viewValue],
-              view_option: event.target.value,
-              time_shift: this.state.timeShift,
-            },
-          },
-        });
-        return {
-          // "calendarEvents": newEvents,
-          currentDate: date,
-          [name]: event.target.value,
-        };
-      });
-      // sessionStorage.setItem("calendarEvent", JSON.stringify(newEvents));
-    }
-  };
-
-  handleResourceFilterChange = (name) => (event) => {
-    this.setState({
-      ...this.state,
-      [name]: event.target.value,
-    });
-    if (event.target.value === "R") {
-      const rooms = this.getRoomResources();
-      const currentCalendarEvents = this.getEvents();
-      this.setState({
-        // over here I need to change it back if user click back to Room
-        calendarResourcesViews: rooms,
-        calendarEvents: currentCalendarEvents,
-        calendarResources: rooms,
-      });
-    } else {
-      const instructors = this.getInstructorResources();
-      const instructorsSchedule = this.getInstructorSchedule();
-      this.setState({
-        calendarResourcesViews: instructors,
-        // This is where I need to update state and change it to the instructors schedule
-        calendarEvents: instructorsSchedule,
-      });
-    }
-  };
-
-  // gets the values of course object
-  getRoomResources = () =>
-      Object.values(this.props.courses).map(({room_id}) => ({
-        id: room_id,
-        title: `Room ${room_id}`,
-      }));
-
-  // gets values of instructors and places them in the resource col
-  getInstructorResources = () =>
-      Object.values(this.props.instructors).map((inst) => ({
-        id: inst.user_id,
-        title: inst.name,
-      }));
-
-  // go to session view
-  goToSessionView = ({event}) => {
-    const sessionID = event.id;
-    const {courseID, instructor_id} = event.extendedProps;
-    // dont redirect for OOO clicks
-    if (sessionID && courseID && instructor_id) {
-      this.props.history.push(
-          `/scheduler/view-session/${courseID}/${sessionID}/${instructor_id}`
-      );
-    }
-  };
-
-  onInstructorSelect = (event) => {
-    this.setState(() => {
-      const selectedInstructorIDs =
-          event && event.map((instructor) => instructor.value);
-      const calendarInstructorIDs = Object.keys(this.props.sessions);
-      const nonSelectedInstructors = event
-          ? arr_diff(selectedInstructorIDs, calendarInstructorIDs)
-          : [];
-
-      let filteredEvents = JSON.parse(JSON.stringify(this.props.sessions));
-      if (event && event.length > 0 && nonSelectedInstructors.length > 0) {
-        nonSelectedInstructors.forEach(
-            (instructorID) => delete filteredEvents[Number(instructorID)]
-        );
-      } else {
-        filteredEvents = this.props.sessions;
-      }
-      return {
-        instructorFilter: event,
-        calendarEvents: this.formatSessions(
-            filteredEvents,
-            this.state.timeShift
-        ),
-      };
-    }, this.setOOOEvents);
-  };
-
-  onCourseSelect = (event) => {
-    this.setState(() => {
-      const courseSessionsArray = sessionArray(this.props.sessions);
-      const selectedCourseIDs = event && event.map((course) => course.value);
-      const calendarCourseIDs = [
-        ...new Set(courseSessionsArray.map((session) => session.course)),
-      ];
-      const nonSelectedCourseIDs = event
-          ? arr_diff(selectedCourseIDs, calendarCourseIDs)
-          : [];
-
-      let filteredEvents = JSON.parse(JSON.stringify(this.props.sessions));
-      if (event && event.length > 0 && nonSelectedCourseIDs.length > 0) {
-        nonSelectedCourseIDs.forEach((courseID) => {
-          courseSessionsArray.forEach((session) => {
-            if (session.course === Number(courseID)) {
-              delete filteredEvents[session.instructor][session.id];
+    useEffect(() => {
+        if (calendarApi) {
+            const storedState =
+                JSON.parse(sessionStorage.getItem("schedulerState")) || {};
+            const oldView = storedState.view;
+            if (oldView) {
+                changeView(oldView);
             }
-          });
+            // if time is earlier, go back, otherwise go forward
+            goToToday();
+            for (let oldTimeShift = storedState.timeShift; oldTimeShift > 0;
+                oldTimeShift--) {
+                goToNext();
+            }
+            for (let oldTimeShift = storedState.timeShift; oldTimeShift < 0;
+                oldTimeShift++) {
+                goToPrev();
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [calendarApi]);
+
+    const goToSessionView = useCallback(({event}) => {
+        const sessionID = event.id;
+        const {courseID, instructor_id} = event.extendedProps;
+        // dont redirect for OOO clicks
+        if (sessionID && courseID && instructor_id) {
+            history.push(`/scheduler/view-session/${courseID}/${sessionID}/${instructor_id}`);
+        }
+    }, [history]);
+
+    const calendarEvents = useMemo(() => {
+        const filteredEvents = JSON.parse(JSON.stringify(sessions));
+
+        // apply instructors filter
+        const calendarInstructorIDs = Object.keys(sessions);
+        const nonSelectedInstructors = instructorFilter ?
+            arr_diff(
+                instructorFilter.map(({value}) => value),
+                calendarInstructorIDs
+            ) :
+            [];
+        nonSelectedInstructors.forEach((instructorID) => {
+            delete filteredEvents[instructorID];
         });
-      } else {
-        filteredEvents = this.props.sessions;
-      }
-      return {
-        courseFilter: event,
-        calendarEvents: this.formatSessions(filteredEvents),
-      };
-    }, this.setOOOEvents);
-  };
 
-  render() {
-    const {classes} = this.props;
+        // apply course type filter
+        const courseSessionsArray = sessionArray(sessions) || [];
+        if (courseType !== "all") {
+            courseSessionsArray
+                .filter(({course}) =>
+                    courses[course].course_type !== courseType)
+                .forEach((session) => {
+                    if (filteredEvents[session.instructor]) {
+                        delete filteredEvents[session.instructor][session.id];
+                    }
+                });
+        }
+
+        // apply courses filter
+        const selectedCourseIDs = courseFilter &&
+            courseFilter.map((course) => course.value);
+        const calendarCourseIDs = uniques(
+            courseSessionsArray.map(({course}) => course)
+        );
+        const nonSelectedCourseIDs = courseFilter
+            ? arr_diff(selectedCourseIDs, calendarCourseIDs)
+            : [];
+
+        nonSelectedCourseIDs.forEach((courseID) => {
+            courseSessionsArray
+                // eslint-disable-next-line eqeqeq
+                .filter(({course}) => course == courseID)
+                .forEach((session) => {
+                    delete filteredEvents[session.instructor][session.id];
+                });
+        });
+
+        return formatSessions(filteredEvents);
+    }, [
+        courseFilter, courseType, courses, formatSessions, instructorFilter,
+        sessions,
+    ]);
+
+    const instructorOptions = useMemo(() => Object.entries(instructors).map(
+        ([instructorID, instructor]) => ({
+            "label": instructor.name,
+            "value": instructorID,
+        })
+    ), [instructors]);
+    const courseSessionsArray = sessionArray(sessions);
+    const courseOptions = useMemo(() => courseSessionsArray &&
+        uniques(courseSessionsArray.map((session) => session.course))
+            .map((courseID) => ({
+                "label": courses[courseID] && courses[courseID].title,
+                "value": courseID,
+            })), [courseSessionsArray, courses]);
+
+    useEffect(() => {
+        sessionStorage.setItem("schedulerState", JSON.stringify({
+            courseFilter,
+            courseType,
+            instructorFilter,
+            timeShift,
+            view,
+        }));
+    }, [courseType, courseFilter, instructorFilter, timeShift, view]);
+
     return (
-        <Paper elevation={2} className="paper scheduler">
-          <Typography align="left" className="scheduler-title" variant="h3">
-            Scheduler
-          </Typography>
-          <br/>
-          <Grid className="scheduler-wrapper" container spacing={2}>
-            <Grid className="scheduler-header" item xs={12}>
-              <Grid container>
-                <Grid item xs={3}>
-                  <Grid
-                      className="scheduler-header-firstSet"
-                      container
-                      direction="row"
-                  >
-                    {/* <Grid item >*/}
-                    {/*    <IconButton*/}
-                    {/*        color={this.state.calendarIcon ? "primary" : "default"}*/}
-                    {/*        onClick={this.changeViewToCalendar}*/}
-                    {/*        className={"calendar-icon"} aria-label='next-month'>*/}
-                    {/*        <DateRangeOutlinedIcon />*/}
-                    {/*    </IconButton>*/}
-                    {/* </Grid>*/}
-                    {/* <Grid item >*/}
-                    {/*    <IconButton*/}
-                    {/*        color={this.state.resourceIcon ? "primary" : "default"}*/}
-                    {/*        onClick={this.changeViewToResource}*/}
-                    {/*        className={"resource-icon"}*/}
-                    {/*        aria-label='next-month'>*/}
-                    {/*        <ViewListIcon />*/}
-                    {/*    </IconButton>*/}
-                    {/* </Grid>*/}
-                    {/* <Grid item>*/}
-                    {/*    <IconButton*/}
-                    {/*        className={"next-month"}*/}
-                    {/*        aria-label='next-month'>*/}
-                    {/*        <SearchIcon />*/}
-                    {/*    </IconButton>*/}
-                    {/* </Grid>*/}
-
-                    <Grid item xs={8}>
-                      {this.state.calendarIcon ? (
-                          <FormControl className="filter-select">
-                            <Select
-                                input={
-                                  <BootstrapInput
-                                      id="filter-calendar-type"
-                                      name="courseFilter"
-                                  />
-                                }
-                                onChange={this.handleFilterChange(
-                                    "calendarFilterValue"
-                                )}
-                                value={this.state.calendarFilterValue}
-                                MenuProps={{
-                                  classes: {paper: classes.dropdownStyle},
-                                }}
-                            >
-                              <MenuItem value="all">All</MenuItem>
-                              <MenuItem value="class">Class</MenuItem>
-                              <MenuItem value="tutoring">Tutoring</MenuItem>
-                            </Select>
-                          </FormControl>
-                      ) : (
-                          <FormControl className="filter-select">
-                            <InputLabel htmlFor="filter-resource-type"/>
-
-                            <Select
-                                input={
-                                  <BootstrapInput
-                                      id="filter-calendar-type"
-                                      name="courseFilter"
-                                  />
-                                }
-                                onChange={this.handleResourceFilterChange(
-                                    "resourceFilterValue"
-                                )}
-                                value={this.state.resourceFilterValue}
-                                MenuProps={{
-                                  classes: {paper: classes.dropdownStyle},
-                                }}
-                            >
-                              <MenuItem value="R">Room</MenuItem>
-                              <MenuItem value="I">Instructors</MenuItem>
-                            </Select>
-                          </FormControl>
-                      )}
-                    </Grid>
-                    <Grid item xs={4}>
-                      {/* <IconButton*/}
-                      {/*    onClick={this.onFilterToggle(true)}*/}
-                      {/*    // aria-owns={sessionFilterAnchor ? 'sessionFilters' : undefined }*/}
-                      {/*    aria-haspopup={"true"}*/}
-                      {/*    aria-label={"filters"}*/}
-                      {/*    aria-controls={"sessionFilters"}*/}
-                      {/* >*/}
-                      {/*    <FilterIcon*/}
-
-                      {/*    />*/}
-                      {/* </IconButton>*/}
-                      {/* <Menu*/}
-                      {/*    id={"sessionFilters"}*/}
-                      {/*    anchorEl={sessionFilterAnchor}*/}
-                      {/*    open={Boolean(sessionFilterAnchor)}*/}
-                      {/*    onClose={this.onFilterToggle(false)}*/}
-                      {/*    keepMounted*/}
-                      {/* >*/}
-                      {/*    <ReactSelect*/}
-                      {/*        // style={{width:"100%"}}*/}
-                      {/*        value = { this.state.instructorFilter }*/}
-                      {/*        options={ this.state.instructorOptions }*/}
-                      {/*        onChange={ this.onInstructorSelect }*/}
-                      {/*        clearable*/}
-                      {/*        isMulti*/}
-                      {/*    />*/}
-                      {/* </Menu>*/}
-                      <SessionFilters
-                          CourseOptions={this.state.courseOptions}
-                          CourseValue={this.state.courseFilter}
-                          InstructorOptions={this.state.instructorOptions}
-                          InstructorValue={this.state.instructorFilter}
-                          onCourseSelect={this.onCourseSelect}
-                          onInstructorSelect={this.onInstructorSelect}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={6}>
-                  <div className="scheduler-header-date">
-                    <Grid item>
-                      <IconButton
-                          aria-label="prev-month"
-                          className="prev-month"
-                          onClick={this.goToPrev}
-                      >
-                        <ChevronLeftOutlinedIcon/>
-                      </IconButton>
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="h6">
-                        {this.state.currentDate}
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <IconButton
-                          aria-label="next-month"
-                          className="next-month"
-                          onClick={this.goToNext}
-                      >
-                        <ChevronRightOutlinedIcon/>
-                      </IconButton>
-                    </Grid>
-                  </div>
-                </Grid>
-                <Grid item xs={1}/>
-                <Grid item xs={2}>
-                  <Grid
-                      className="scheduler-header-last"
-                      container
-                      direction="row"
-                      justify="flex-end"
-                  >
+        <Paper className="paper scheduler" elevation={2}>
+            <Typography align="left" className="scheduler-title" variant="h3">
+                Scheduler
+            </Typography>
+            <br />
+            <Grid className="scheduler-wrapper" container spacing={2}>
+                <Grid className="scheduler-header" container item xs={12}>
                     <Grid item xs={3}>
-                      <Tooltip title="Go to Today">
-                        <IconButton
-                            aria-label="current-date-button"
-                            className="current-date-button"
-                            onClick={this.goToToday}
-                        >
-                          <TodayIcon/>
-                        </IconButton>
-                      </Tooltip>
+                        <Grid className="scheduler-header-firstSet"
+                            container direction="row">
+                            <Grid item xs={8}>
+                                <FormControl className="filter-select">
+                                    <Select input={
+                                        <BootstrapInput id="filter-calendar-type"
+                                            name="courseFilter" />
+                                    }
+                                        MenuProps={{
+                                        "classes": {
+                                            "paper": classes.dropdownStyle,
+                                        },
+                                    }}
+                                        onChange={handleCourseTypeChange}
+                                        value={courseType}>
+                                        <MenuItem value="all">All</MenuItem>
+                                        <MenuItem value="class">
+                                            Class
+                                        </MenuItem>
+                                        <MenuItem value="tutoring">
+                                            Tutoring
+                                        </MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <SessionFilters CourseOptions={courseOptions}
+                                    CourseValue={courseFilter}
+                                    InstructorOptions={instructorOptions}
+                                    InstructorValue={instructorFilter}
+                                    onCourseSelect={setCourseFilter}
+                                    onInstructorSelect={setInstructorFilter} />
+                            </Grid>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={9}>
-                      <FormControl className="filter-select">
-                        <Select
-                            input={
-                              <BootstrapInput
-                                  id="filter-calendar-type"
-                                  name="courseFilter"
-                              />
-                            }
-                            onChange={(event) =>
-                                this.changeView(event.target.value)
-                            }
-                            value={this.state.viewValue}
-                            MenuProps={{
-                              classes: {paper: classes.dropdownStyle},
-                            }}
-                        >
-                          <MenuItem value="timeGridDay">Day</MenuItem>
-                          <MenuItem value="timeGridWeek">Week</MenuItem>
-                          <MenuItem value="dayGridMonth">Month</MenuItem>
-                        </Select>
-                      </FormControl>
+                    <Grid item xs={6}>
+                        <div className="scheduler-header-date">
+                            <Grid item>
+                                <IconButton aria-label="prev-month"
+                                    className="prev-month" onClick={goToPrev}>
+                                    <ChevronLeftOutlined />
+                                </IconButton>
+                            </Grid>
+                            <Grid item>
+                                <Typography variant="h6">
+                                    {currentDate}
+                                </Typography>
+                            </Grid>
+                            <Grid item>
+                                <IconButton aria-label="next-month"
+                                    className="next-month" onClick={goToNext}>
+                                    <ChevronRightOutlined />
+                                </IconButton>
+                            </Grid>
+                        </div>
                     </Grid>
-                    {/* <Grid item>*/}
-                    {/*    <Button*/}
-                    {/*        onClick={this.changeViewToCalendar}*/}
-                    {/*    >Course</Button>*/}
-                    {/* </Grid>*/}
-                    {/* <Grid item >*/}
-                    {/*    <Button*/}
-                    {/*        onClick={this.changeViewToResource}*/}
-                    {/*    >Resource</Button>*/}
-                    {/* </Grid>*/}
-                  </Grid>
+                    <Grid item xs={1} />
+                    <Grid item xs={2}>
+                        <Grid className="scheduler-header-last" container
+                            direction="row" justify="flex-end">
+                            <Grid item xs={3}>
+                                <Tooltip title="Go to Today">
+                                    <IconButton aria-label="current-date-button"
+                                        className="current-date-button"
+                                        onClick={goToToday}>
+                                        <TodayIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
+                            <Grid item xs={9}>
+                                <FormControl className="filter-select">
+                                    <Select input={
+                                        <BootstrapInput id="filter-calendar-type"
+                                            name="courseFilter" />
+                                    }
+                                        MenuProps={{
+                                        "classes": {
+                                            "paper": classes.dropdownStyle,
+                                        },
+                                    }}
+                                        onChange={handleViewChange}
+                                        value={view}>
+                                        <MenuItem value="timeGridDay">
+                                            Day
+                                        </MenuItem>
+                                        <MenuItem value="timeGridWeek">
+                                            Week
+                                        </MenuItem>
+                                        <MenuItem value="dayGridMonth">
+                                            Month
+                                        </MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                    </Grid>
                 </Grid>
-              </Grid>
+                <Grid className="omou-calendar" item xs={12}>
+                    <FullCalendar contentHeight="400"
+                        defaultView="timeGridDay"
+                        displayEventTime
+                        eventClick={goToSessionView}
+                        eventColor="none"
+                        eventLimit={4}
+                        eventMouseEnter={handleToolTip}
+                        events={[...calendarEvents, ...OOOEvents]}
+                        header={false}
+                        minTime="07:00:00"
+                        nowIndicator
+                        plugins={[
+                            dayGridPlugin,
+                            timeGridPlugin,
+                            interactionPlugin,
+                            listViewPlugin,
+                            resourceTimelinePlugin,
+                        ]}
+                        ref={calendarRef}
+                        resourceAreaWidth="20%"
+                        resourceOrder="title"
+                        schedulerLicenseKey="GPL-My-Project-Is-Open-Source"
+                        timeZone="local"
+                        titleFormat={{
+                            "day": "numeric",
+                            "month": "long",
+                        }}
+                        views={{
+                            "dayGrid": {
+                                "titleFormat": {"month": "long"},
+                            },
+                        }} />
+                </Grid>
             </Grid>
-            <Grid className="omou-calendar" item xs={12}>
-              <FullCalendar
-                  contentHeight="400"
-                  defaultView="timeGridDay"
-                  displayEventTime
-                  eventClick={this.goToSessionView}
-                  eventColor="none"
-                  eventLimit={4}
-                  eventMouseEnter={!this.state.resourceIcon && handleToolTip}
-                  events={[...this.state.calendarEvents, ...this.state.oooEvents]}
-                  header={false}
-                  minTime="07:00:00"
-                  nowIndicator
-                  plugins={[
-                    dayGridPlugin,
-                    timeGridPlugin,
-                    interactionPlugin,
-                    listViewPlugin,
-                    resourceTimelinePlugin,
-                  ]}
-                  ref={this.calendarComponentRef}
-                  resourceAreaWidth="20%"
-                  resourceOrder="title"
-                  resources={this.state.calendarResourcesViews}
-                  schedulerLicenseKey="GPL-My-Project-Is-Open-Source"
-                  timeZone="local"
-                  titleFormat={{
-                    month: "long",
-                    day: "numeric",
-                  }}
-                  views={{
-                    dayGrid: {
-                      titleFormat: {
-                        month: "long",
-                      },
-                    },
-                  }}
-              />
-            </Grid>
-          </Grid>
         </Paper>
     );
-  }
-}
+};
 
-function mapStateToProps(state) {
-  return {
-    courses: state.Course.NewCourseList,
-    sessions: state.Calendar.CourseSessions,
-    instructors: state.Users.InstructorList,
-    requestStatus: state.RequestStatus,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    calendarActions: bindActionCreators(calendarActions, dispatch),
-    courseActions: bindActionCreators(courseActions, dispatch),
-    userActions: bindActionCreators(userActions, dispatch),
-  };
-}
-
-export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Scheduler))
-);
+export default Scheduler;

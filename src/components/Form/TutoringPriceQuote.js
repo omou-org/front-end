@@ -10,7 +10,7 @@ import "./Form.scss";
 import TextField from "@material-ui/core/TextField/TextField";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import {durationParser} from "utils";
+import {durationParser, uniques} from "utils";
 import {academicLevelParse} from "../../reducers/registrationReducer";
 import InputLabel from "@material-ui/core/InputLabel";
 import {OutlinedSelect} from "../FeatureViews/Scheduler/SchedulerUtils";
@@ -58,7 +58,7 @@ const TutoringPriceQuote = ({
 
   // get list of unique category objects from price rules
   const uniqueCategories = (rules) =>
-      Array.from(new Set(rules.map((rule) => rule.category.id))).map(
+      uniques(rules.map((rule) => rule.category.id)).map(
           (id) => priceRules.find((rule) => rule.category.id === id).category
       );
 
@@ -67,9 +67,8 @@ const TutoringPriceQuote = ({
     let filteredCategoryRules = rules.filter(
         (rule) => rule.category.id === categoryID
     );
-    return Array.from(
-        new Set(filteredCategoryRules.map((rule) => rule.academic_level))
-    ).map((grade) => academicLevelParse[grade]);
+    return uniques(filteredCategoryRules.map((rule) => rule.academic_level))
+      .map((grade) => academicLevelParse[grade]);
   };
 
   useEffect(() => {

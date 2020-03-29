@@ -1,4 +1,4 @@
-import React, {Fragment, useCallback, useEffect, useMemo, useState,} from "react";
+import React, {Fragment, useCallback, useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
@@ -34,6 +34,7 @@ import NoListAlert from "../../NoListAlert";
 import {sessionArray} from "../Scheduler/SchedulerUtils";
 import SessionPaymentStatusChip from "components/SessionPaymentStatusChip";
 import {upcomingSession} from "utils";
+import {useSessions} from "actions/calendarActions";
 
 const TableToolbar = (
     <TableHead>
@@ -51,16 +52,16 @@ const RegistrationCourseEnrollments = ({courseID}) => {
     const dispatch = useDispatch();
 
     const [expanded, setExpanded] = useState({});
-    const courses = useSelector(({Course: {NewCourseList}}) => NewCourseList);
-    const parents = useSelector(({Users: {ParentList}}) => ParentList);
-    const students = useSelector(({Users: {StudentList}}) => StudentList);
+    const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
+    const parents = useSelector(({"Users": {ParentList}}) => ParentList);
+    const students = useSelector(({"Users": {StudentList}}) => StudentList);
     const enrollments = useSelector(({Enrollments}) => Enrollments);
     const sessions = useSelector(({Calendar}) => Calendar.CourseSessions);
 
     const [studentMenuAnchorEl, setStudentMenuAnchorEl] = useState(null);
     const [unenroll, setUnenroll] = useState({
-        enrollment: null,
-        open: false,
+        "enrollment": null,
+        "open": false,
     });
 
     // TODO: for future release
@@ -76,10 +77,8 @@ const RegistrationCourseEnrollments = ({courseID}) => {
     const studentStatus = hooks.useStudent(course.roster);
 
     const parentList = useMemo(
-        () =>
-            course.roster
-        .filter((studentID) => students[studentID])
-                .map((studentID) => students[studentID].parent_id),
+        () => course.roster.filter((studentID) => students[studentID])
+            .map((studentID) => students[studentID].parent_id),
         [course.roster, students]
     );
     const parentStatus = hooks.useParent(parentList);
@@ -92,11 +91,10 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                     [studentID]: prevExpanded[studentID] || false,
                 }),
                 {}
-            )
-        );
+            ));
     }, [course.roster]);
 
-    const sessionStatus = hooks.useSessionsInPeriod("month", 0);
+    const sessionStatus = useSessions("month", 0);
 
     const loadedStudents = useMemo(
         () => course.roster.filter((studentID) => students[studentID]),
@@ -118,7 +116,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
         (enrollment) => () => {
             setUnenroll({
                 enrollment,
-                open: true,
+                "open": true,
             });
         },
         []
@@ -130,8 +128,8 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                 deleteEnrollment(unenroll.enrollment)(dispatch);
             }
             setUnenroll({
-                enrollment: null,
-                open: false,
+                "enrollment": null,
+                "open": false,
             });
             setStudentMenuAnchorEl(null);
         },
@@ -140,7 +138,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
 
     // no students enrolled
     if (course.roster.length === 0) {
-        return <NoListAlert list="Enrolled Students"/>;
+        return <NoListAlert list="Enrolled Students" />;
     }
 
     if (
@@ -149,7 +147,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
         hooks.isLoading(sessionStatus)
     ) {
         if (hooks.isLoading(studentStatus) || !currentMonthSessions) {
-            return <Loading small/>;
+            return <Loading small />;
         } else if (hooks.isFail(studentStatus)) {
             return "Error loading enrollment details!";
         }
@@ -163,12 +161,10 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                         {course.roster.length} / {course.capacity} Spaces Taken
                     </div>
                 </div>
-                <LinearProgress
-                    color="primary"
+                <LinearProgress color="primary"
                     value={(course.roster.length / course.capacity) * 100}
                     valueBuffer={100}
-                    variant="buffer"
-                />
+                    variant="buffer" />
             </div>
             <Table>
                 {TableToolbar}
@@ -183,26 +179,21 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                             <Fragment key={studentID}>
                                 <TableRow>
                                     <TableCell className="bold">
-                                        <Link
-                                            className="no-underline"
-                                            to={`/accounts/student/${studentID}`}
-                                        >
+                                        <Link className="no-underline"
+                                            to={`/accounts/student/${studentID}`}>
                                             {student.name}
                                         </Link>
                                     </TableCell>
                                     <TableCell>
                                         {parent ? (
-                                            <Link
-                                                className="no-underline"
-                                                to={`/accounts/parent/${student.parent_id}`}
-                                            >
+                                            <Link className="no-underline"
+                                                to={`/accounts/parent/${student.parent_id}`}>
                                                 {parent.name}
                                             </Link>
-                                        ) : hooks.isLoading(parentStatus) ? (
+                                        ) : hooks.isLoading(parentStatus) ?
                                             "Loading..."
-                                        ) : (
-                                            "Error"
-                                        )}
+                                            :
+                                            "Error"}
                                     </TableCell>
                                     <TableCell>
                                         {parent
@@ -212,49 +203,33 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                                                 : "Error"}
                                     </TableCell>
                                     <TableCell>
-                                        {enrollment ? (
-                                            <div key={studentID} style={{width: "40px"}}>
-                                                <SessionPaymentStatusChip
-                                                    className="session-status-chip"
-                                                    enrollment={enrollment}
-                                                    session={upcomingSess}
-                                                />
-                                            </div>
-                                        ) : hooks.isFail(enrollmentStatus) ? (
-                                            "Error!"
-                                        ) : (
-                                            "Loading..."
-                                        )}
+                                        <div style={{"width": "40px"}}>
+                                            <SessionPaymentStatusChip className="session-status-chip"
+                                                enrollment={enrollment}
+                                                session={upcomingSess} />
+                                        </div>
                                     </TableCell>
                                     <TableCell>
                                         <div className="actions" key={studentID}>
                                             {parent && (
-                                                <IconButton
-                                                    component={Link}
-                                                    to={`mailto:${parent.email}`}
-                                                >
-                                                    <EmailIcon/>
+                                                <IconButton component={Link}
+                                                    to={`mailto:${parent.email}`}>
+                                                    <EmailIcon />
                                                 </IconButton>
                                             )}
-                                            <IconButton
-                                                aria-controls="simple-menu"
+                                            <IconButton aria-controls="simple-menu"
                                                 aria-haspopup="true"
-                                                onClick={handleClick}
-                                            >
-                                                <MobileMenu/>
+                                                onClick={handleClick}>
+                                                <MobileMenu />
                                             </IconButton>
-                                            <Menu
-                                                anchorEl={studentMenuAnchorEl}
+                                            <Menu anchorEl={studentMenuAnchorEl}
                                                 id="simple-menu"
                                                 keepMounted
                                                 onClose={handleClose}
-                                                open={studentMenuAnchorEl !== null}
-                                            >
-                                                <MenuItem
-                                                    component={Link}
+                                                open={studentMenuAnchorEl !== null}>
+                                                <MenuItem component={Link}
                                                     onClick={handleClose}
-                                                    to={`/accounts/student/${studentID}/${courseID}`}
-                                                >
+                                                    to={`/accounts/student/${studentID}/${courseID}`}>
                                                     View Enrollment
                                                 </MenuItem>
                                                 <MenuItem onClick={handleUnenroll(enrollment)}>
@@ -275,19 +250,19 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                                         <TableCell colSpan={5}>
                                             <Paper elevation={2} square>
                                                 <Typography className="expanded-container">
-                          <span className="expanded-text">
-                            <b>School</b>: {student.school}
-                              <br/>
-                          </span>
                                                     <span className="expanded-text">
-                            <b>School Teacher</b>:{" "}
+                                                        <b>School</b>: {student.school}
+                                                        <br />
+                                                    </span>
+                                                    <span className="expanded-text">
+                                                        <b>School Teacher</b>:{" "}
                                                         {notes["Current Instructor in School"]}
-                                                        <br/>
-                          </span>
+                                                        <br />
+                                                    </span>
                                                     <span className="expanded-text">
-                            <b>Textbook:</b> {notes["Textbook Used"]}
-                                                        <br/>
-                          </span>
+                                                        <b>Textbook:</b> {notes["Textbook Used"]}
+                                                        <br />
+                                                    </span>
                                                 </Typography>
                                             </Paper>
                                         </TableCell>
@@ -298,19 +273,17 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                     })}
                 </TableBody>
             </Table>
-            <Dialog
-                aria-describedby="unenroll-dialog-description"
+            <Dialog aria-describedby="unenroll-dialog-description"
                 aria-labelledby="unenroll-dialog-title"
                 className="session-view-modal"
                 fullWidth
                 maxWidth="xs"
                 onClose={closeUnenrollDialog(false)}
-                open={unenroll.open}
-            >
+                open={unenroll.open}>
                 <DialogTitle id="unenroll-dialog-title">
                     Unenroll in {course.title}
                 </DialogTitle>
-                <Divider/>
+                <Divider />
                 <DialogContent>
                     <DialogContentText>
                         You are about to unenroll in <b>{course.title}</b> for
@@ -337,7 +310,7 @@ const RegistrationCourseEnrollments = ({courseID}) => {
 };
 
 RegistrationCourseEnrollments.propTypes = {
-    courseID: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    "courseID": PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         .isRequired,
 };
 
