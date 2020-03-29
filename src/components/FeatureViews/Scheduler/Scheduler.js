@@ -33,7 +33,6 @@ import SessionFilters from "./SessionFilters";
 import {BootstrapInput, handleToolTip, sessionArray} from "./SchedulerUtils";
 import {Tooltip} from "@material-ui/core";
 import {arr_diff} from "../../Form/FormUtils";
-import { MenuList } from '@material-ui/core';
 
 const styles = theme => ({
     root: {
@@ -59,33 +58,65 @@ const styles = theme => ({
 class Scheduler extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            "calendarResourcesViews": [],
-            "calendarWeekends": true,
-            "calendarResources": [],
-            "calendarEvents": [],
-            "oooEvents": [],
-            "currentDate": "",
-            "viewValue": "timeGridDay",
-            "filterValue": "class",
-            "resourceFilterValue": "R",
-            "calendarFilterValue": "tutoring",
-            "calendarIcon": true,
-            "resourceIcon": false,
-            "filterTypeCalendar": "",
-            "timeShift": 0,
-            "instructorFilter": "",
-            "instructorOptions": [],
-            "courseFilter": "",
-            "courseOptions": [],
-            "sessionFilter": false,
-            "sessionFilterAnchor": null,
-        };
+        // this.state = {
+        //     "calendarResourcesViews": [],
+        //     "calendarWeekends": true,
+        //     "calendarResources": [],
+        //     "calendarEvents": [],
+        //     "oooEvents": [],
+        //     "currentDate": "",
+        //     "viewValue": "timeGridDay",
+        //     "filterValue": "class",
+        //     "resourceFilterValue": "R",
+        //     "calendarFilterValue": "tutoring",
+        //     "calendarIcon": true,
+        //     "resourceIcon": false,
+        //     "filterTypeCalendar": "",
+        //     "timeShift": 0,
+        //     "instructorFilter": "",
+        //     "instructorOptions": [],
+        //     "courseFilter": "",
+        //     "courseOptions": [],
+        //     "sessionFilter": false,
+        //     "sessionFilterAnchor": null,
+        // };
         this.calendarViewToFilterVal = {
             "timeGridDay": "day",
             "timeGridWeek": "week",
             "dayGridMonth": "month",
         };
+        let prevState = {};
+        // in case there is malformed sessionStorage
+        try {
+            prevState = JSON.parse(sessionStorage.getItem("schedulerState"));
+        } catch (e) {
+            console.error(e);
+        } finally {
+            console.log(prevState);
+            this.state = {
+                "calendarEvents": [],
+                "calendarFilterValue": "tutoring",
+                "calendarIcon": true,
+                "calendarResources": [],
+                "calendarResourcesViews": [],
+                "calendarWeekends": true,
+                "courseFilter": "",
+                "courseOptions": [],
+                "currentDate": "",
+                // "currentView": "timeGridDay",
+                "filterTypeCalendar": "",
+                "filterValue": "class",
+                "instructorFilter": "",
+                "instructorOptions": [],
+                "resourceFilterValue": "R",
+                "resourceIcon": false,
+                "sessionFilter": false,
+                "sessionFilterAnchor": null,
+                "timeShift": 0,
+                // "viewValue": "timeGridDay",
+                ...prevState,
+            };
+        }
     }
 
 
@@ -107,7 +138,7 @@ class Scheduler extends Component {
             },
             "id": "",
         });
-        this.setState({
+        this.saveAndSetState({
             "currentDate": this.currentDate(),
         });
         this.setOOOEvents();
@@ -120,7 +151,7 @@ class Scheduler extends Component {
             const initialSessions = this.formatSessions(this.props.sessions);
             const courseSessionsArray = sessionArray(this.props.sessions);
 
-            this.setState({
+            this.saveAndSetState({
                 "calendarEvents": initialSessions,
                 "instructorOptions": Object.entries(this.props.instructors).map(
                     ([instructorID, instructor]) =>
@@ -147,6 +178,18 @@ class Scheduler extends Component {
         this.props.calendarActions.resetSchedulerStatus();
     }
 
+    saveAndSetState = (newState) => {
+        this.setState(newState, () => {
+            const saveState = {...this.state};
+            delete saveState.calendarEvents;
+            delete saveState.calendarResources;
+            delete saveState.calendarResourcesViews;
+            delete saveState.courseOptions;
+            delete saveState.instructorOptions;
+            console.log(saveState);
+            sessionStorage.setItem("schedulerState", JSON.stringify(saveState));
+        });
+    };
 
     formatSessions = (sessionState) => {
         let allSessions = [];
@@ -221,7 +264,7 @@ class Scheduler extends Component {
                 );
             });
         }
-        this.setState({
+        this.saveAndSetState({
             "oooEvents": allInstructorSchedules,
         });
     };
@@ -235,7 +278,7 @@ class Scheduler extends Component {
     };
 
     toggleWeekends = () => {
-        this.setState({ // update a property
+        this.saveAndSetState({ // update a property
             "calendarWeekends": !this.state.calendarWeekends,
         });
     };
@@ -258,7 +301,7 @@ class Scheduler extends Component {
                 },
             },
         });
-        this.setState(() => ({
+        this.saveAndSetState(() => ({
             "viewValue": value,
             "currentDate": date,
             "timeShift": 0,
@@ -278,7 +321,7 @@ class Scheduler extends Component {
                 },
             },
         });
-        this.setState((state) => ({
+        this.saveAndSetState((state) => ({
             "currentDate": date,
             "timeShift": state.timeShift + 1,
         }));
@@ -297,7 +340,7 @@ class Scheduler extends Component {
                 },
             },
         });
-        this.setState((state) => ({
+        this.saveAndSetState((state) => ({
             "currentDate": date,
             "timeShift": state.timeShift - 1,
         }));
@@ -316,7 +359,7 @@ class Scheduler extends Component {
                 },
             },
         });
-        this.setState({
+        this.saveAndSetState({
             "currentDate": date,
             "timeShift": 0,
         });
@@ -339,7 +382,7 @@ class Scheduler extends Component {
         const calendarApi = this.calendarComponentRef.current.getApi();
         calendarApi.changeView("resourceTimeline");
         this.currentDate();
-        this.setState({
+        this.saveAndSetState({
             "resourceIcon": true,
             "calendarIcon": false,
             "calendarResourcesViews": this.getRoomResources(),
@@ -353,7 +396,7 @@ class Scheduler extends Component {
         const calendarApi = this.calendarComponentRef.current.getApi();
         calendarApi.changeView("dayGridMonth");
         this.currentDate();
-        this.setState({
+        this.saveAndSetState({
             "calendarIcon": true,
             "resourceIcon": false,
             "calendarEvents": JSON.parse(sessionStorage.getItem("calendarEvent")),
@@ -403,7 +446,7 @@ class Scheduler extends Component {
     handleFilterChange = (name) => (event) => {
         const date = this.currentDate();
         if (event.target.value) {
-            this.setState(() => {
+            this.saveAndSetState(() => {
                 this.props.calendarActions.fetchSession({
                     "config": {
                         "params": {
@@ -425,14 +468,14 @@ class Scheduler extends Component {
     };
 
     handleResourceFilterChange = (name) => (event) => {
-        this.setState({
+        this.saveAndSetState({
             ...this.state,
             [name]: event.target.value,
         });
         if (event.target.value === "R") {
             const rooms = this.getRoomResources();
             const currentCalendarEvents = this.getEvents();
-            this.setState({
+            this.saveAndSetState({
                 // over here I need to change it back if user click back to Room
                 "calendarResourcesViews": rooms,
                 "calendarEvents": currentCalendarEvents,
@@ -441,7 +484,7 @@ class Scheduler extends Component {
         } else {
             const instructors = this.getInstructorResources();
             const instructorsSchedule = this.getInstructorSchedule();
-            this.setState({
+            this.saveAndSetState({
                 "calendarResourcesViews": instructors,
                 // This is where I need to update state and change it to the instructors schedule
                 "calendarEvents": instructorsSchedule,
@@ -474,7 +517,7 @@ class Scheduler extends Component {
     };
 
     onInstructorSelect = (event) => {
-        this.setState(() => {
+        this.saveAndSetState(() => {
             const selectedInstructorIDs = event && event.map((instructor) => instructor.value);
             const calendarInstructorIDs = Object.keys(this.props.sessions);
             const nonSelectedInstructors = event ? arr_diff(selectedInstructorIDs, calendarInstructorIDs) : [];
@@ -494,7 +537,7 @@ class Scheduler extends Component {
     };
 
     onCourseSelect = (event) => {
-        this.setState(() => {
+        this.saveAndSetState(() => {
             const courseSessionsArray = sessionArray(this.props.sessions);
             const selectedCourseIDs = event && event.map((course) => course.value);
             const calendarCourseIDs = [...new Set(courseSessionsArray.map((session) => session.course))];
@@ -521,7 +564,7 @@ class Scheduler extends Component {
     };
 
     render() {
-        const { classes } = this.props
+        const {classes} = this.props;
         return (
             <Paper elevation={2} className="paper scheduler">
                 <Typography
