@@ -16,6 +16,13 @@ export const isLoading = (...statuses) =>
 export const isSuccessful = (...statuses) =>
     statuses.every((status) => status && (status >= 200 && status < 300));
 
+
+const getConfig = (config, id) =>
+    typeof config === "function" ? config(id) : config;
+
+const getURL = (endpoint, id, noURLID) =>
+    !noURLID && id ? `${endpoint}${id}/` : endpoint;
+
 /**
  * Wrapper for hooks to use certain GET endpoints
  * config is optional object passed to the request
@@ -29,7 +36,7 @@ export const isSuccessful = (...statuses) =>
  * @returns {Number} status of the request (null if not started/canceled)
  */
 export const wrapUseEndpoint = (endpoint, successType) =>
-    (id, config, noFetchOnUndef) => {
+    (id, config, noURLID) => {
         const [status, setStatus] = useState(null);
         const dispatch = useDispatch();
 
@@ -46,40 +53,37 @@ export const wrapUseEndpoint = (endpoint, successType) =>
             let aborted = false;
             // no id passed
             if (typeof id === "undefined" || id === null) {
-            // if not to be optimized (i.e. a request_all is wanted)
-                if (!noFetchOnUndef) {
-                    (async () => {
-                        try {
-                            setStatus(REQUEST_STARTED);
-                            const response = await instance.get(
-                                endpoint,
-                                config
-                            );
-                            if (!aborted) {
-                                dispatch({
-                                    "payload": {
-                                        "id": REQUEST_ALL,
-                                        response,
-                                    },
-                                    "type": successType,
-                                });
-                                setStatus(response.status);
-                            }
-                        } catch (error) {
-                            if (!aborted) {
-                                handleError(error);
-                            }
-                        }
-                    })();
-                }
-            } else if (!Array.isArray(id)) {
-            // standard single item request
                 (async () => {
                     try {
                         setStatus(REQUEST_STARTED);
                         const response = await instance.get(
-                            `${endpoint}${id}/`,
-                            config
+                            getURL(endpoint, id, noURLID),
+                            getConfig(config)
+                        );
+                        if (!aborted) {
+                            dispatch({
+                                "payload": {
+                                    "id": REQUEST_ALL,
+                                    response,
+                                },
+                                "type": successType,
+                            });
+                            setStatus(response.status);
+                        }
+                    } catch (error) {
+                        if (!aborted) {
+                            handleError(error);
+                        }
+                    }
+                })();
+            } else if (!Array.isArray(id)) {
+                // standard single item request
+                (async () => {
+                    try {
+                        setStatus(REQUEST_STARTED);
+                        const response = await instance.get(
+                            getURL(endpoint, id, noURLID),
+                            getConfig(config, id)
                         );
                         if (!aborted) {
                             dispatch({
@@ -99,6 +103,123 @@ export const wrapUseEndpoint = (endpoint, successType) =>
                 })();
             } else if (id.length > 0) {
             // array of IDs to request (list of results requested)
+                // console.log("here", get);
+                (async () => {
+                    try {
+                        setStatus(REQUEST_STARTED);
+                        const response = await Promise.all(id.map(
+                            (individual) => instance.get(
+                                getURL(endpoint, individual, noURLID),
+                                getConfig(config, individual)
+                            )
+                        ));
+                        if (!aborted) {
+                            dispatch({
+                                "payload": {
+                                    id,
+                                    response,
+                                },
+                                "type": successType,
+                            });
+                            setStatus(response.reduce((finalStatus, {status}) =>
+                                isFail(status) ?
+                                    status
+                                    : isFail(finalStatus) ?
+                                        finalStatus
+                                        : isLoading(status) ?
+                                            status
+                                            : finalStatus, 200));
+                        }
+                    } catch (error) {
+                        if (!aborted) {
+                            handleError(error);
+                        }
+                    }
+                })();
+            }
+            // if something about request changed (item to request, settings, etc.)
+            // discard old results and make new request
+            return () => {
+                setStatus(null);
+                aborted = true;
+            };
+        }, [config, dispatch, id, handleError, noURLID]);
+        return status;
+    };
+
+export const wrapUseNote = (endpoint, successType, payloadInfo) =>
+    (id, config, noFetchOnUndef) => {
+        const [status, setStatus] = useState(null);
+        const dispatch = useDispatch();
+
+        const handleError = useCallback((error) => {
+            if (error && error.response && error.response.status) {
+                setStatus(error.response.status);
+            } else {
+                setStatus(MISC_FAIL);
+                console.error(error);
+            }
+        }, []);
+
+        useEffect(() => {
+            let aborted = false;
+            // no id passed
+            if (typeof id === "undefined" || id === null) {
+                // if not to be optimized (i.e. a request_all is wanted)
+                if (!noFetchOnUndef) {
+                    (async () => {
+                        try {
+                            setStatus(REQUEST_STARTED);
+                            const response = await instance.get(
+                                endpoint,
+                                config
+                            );
+                            if (!aborted) {
+                                dispatch({
+                                    "payload": {
+                                        ...payloadInfo,
+                                        "id": REQUEST_ALL,
+                                        response,
+                                    },
+                                    "type": successType,
+                                });
+                                setStatus(response.status);
+                            }
+                        } catch (error) {
+                            if (!aborted) {
+                                handleError(error);
+                            }
+                        }
+                    })();
+                }
+            } else if (!Array.isArray(id)) {
+                // standard single item request
+                (async () => {
+                    try {
+                        setStatus(REQUEST_STARTED);
+                        const response = await instance.get(
+                            `${endpoint}${id}/`,
+                            config
+                        );
+                        if (!aborted) {
+                            dispatch({
+                                "payload": {
+                                    ...payloadInfo,
+                                    id,
+                                    response,
+                                },
+                                "type": successType,
+                            });
+                            setStatus(response.status);
+                        }
+                    } catch (error) {
+                        if (!aborted) {
+                            handleError(error);
+                        }
+                    }
+                })();
+            } else if (id.length > 0) {
+                // array of IDs to request (list of results requested)
                 (async () => {
                     try {
                         setStatus(REQUEST_STARTED);
@@ -111,6 +232,7 @@ export const wrapUseEndpoint = (endpoint, successType) =>
                         if (!aborted) {
                             dispatch({
                                 "payload": {
+                                    ...payloadInfo,
                                     id,
                                     response,
                                 },
@@ -129,7 +251,7 @@ export const wrapUseEndpoint = (endpoint, successType) =>
                     }
                 })();
             }
-            // if something about request changed (item to request, settings, etc.)
+            // if something about request changed
             // discard old results and make new request
             return () => {
                 setStatus(null);
@@ -161,32 +283,32 @@ export const useCourse = wrapUseEndpoint(
 
 export const useEnrollment = wrapUseEndpoint(
     "/course/enrollment/",
-    types.FETCH_ENROLLMENT_SUCCESSFUL,
+    types.FETCH_ENROLLMENT_SUCCESSFUL
 );
 
 export const useCategory = wrapUseEndpoint(
     "/course/categories/",
-    types.GET_CATEGORY_SUCCESS,
+    types.GET_CATEGORY_SUCCESS
 );
 
 export const usePriceRules = wrapUseEndpoint(
     "/pricing/rule/",
-    types.GET_PRICE_RULE_SUCCESS,
+    types.GET_PRICE_RULE_SUCCESS
 );
 
 export const useOutOfOffice = wrapUseEndpoint(
     "/account/instructor-out-of-office/",
-    types.FETCH_OOO_SUCCESS,
+    types.FETCH_OOO_SUCCESS
 );
 
 export const useSession = wrapUseEndpoint(
     "/scheduler/session/",
-    types.GET_SESSIONS_SUCCESS,
+    types.GET_SESSIONS_SUCCESS
 );
 
 export const useEnrollmentByCourse = (courseID) => wrapUseEndpoint(
     "/course/enrollment/",
-    types.FETCH_ENROLLMENT_SUCCESSFUL,
+    types.FETCH_ENROLLMENT_SUCCESSFUL
 )(null, useMemo(() => ({
     "params": {
         "course_id": courseID,
@@ -195,7 +317,7 @@ export const useEnrollmentByCourse = (courseID) => wrapUseEndpoint(
 
 export const useEnrollmentByStudent = (studentID) => wrapUseEndpoint(
     "/course/enrollment/",
-    types.FETCH_ENROLLMENT_SUCCESSFUL,
+    types.FETCH_ENROLLMENT_SUCCESSFUL
 )(null, useMemo(() => ({
     "params": {
         "user_id": studentID,
@@ -204,7 +326,7 @@ export const useEnrollmentByStudent = (studentID) => wrapUseEndpoint(
 
 export const usePaymentByParent = (parentID) => wrapUseEndpoint(
     "/payment/payment/",
-    types.GET_PAYMENT_PARENT_SUCCESS,
+    types.GET_PAYMENT_PARENT_SUCCESS
 )(null, useMemo(() => ({
     "params": {
         "parent": parentID,
@@ -223,7 +345,7 @@ export const usePaymentByEnrollment = (enrollmentID) => wrapUseEndpoint(
 export const useClassSessionsInPeriod = (time_frame, time_shift) =>
     wrapUseEndpoint(
         "/scheduler/session/",
-        types.GET_SESSIONS_SUCCESS,
+        types.GET_SESSIONS_SUCCESS
     )(null, useMemo(() => ({
         "params": {
             time_frame,
@@ -235,7 +357,7 @@ export const useClassSessionsInPeriod = (time_frame, time_shift) =>
 export const useTutoringSessionsInPeriod = (time_frame, time_shift) =>
     wrapUseEndpoint(
         "/scheduler/session/",
-        types.GET_SESSIONS_SUCCESS,
+        types.GET_SESSIONS_SUCCESS
     )(null, useMemo(() => ({
         "params": {
             time_frame,

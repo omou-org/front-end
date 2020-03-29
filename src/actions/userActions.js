@@ -1,10 +1,9 @@
 import * as types from "./actionTypes";
 import {
-    instance, MISC_FAIL, REQUEST_ALL, REQUEST_STARTED, wrapGet, wrapPatch,
+    instance, wrapGet, wrapPatch,
 } from "./apiActions";
-import {isFail, isLoading} from "./hooks";
-import {useCallback, useEffect, useMemo, useState} from "react";
-import {useDispatch} from "react-redux";
+import {wrapUseNote} from "./hooks";
+import {useMemo} from "react";
 
 export const patchInstructor = (id, data) => wrapPatch(
     "/account/instructor/",
@@ -80,120 +79,6 @@ const wrapNoteGet =
                 newAction(failType, error.response);
             }
         };
-
-const wrapUseNote = (endpoint, successType, payloadInfo) =>
-    (id, config, noFetchOnUndef) => {
-        const [status, setStatus] = useState(null);
-        const dispatch = useDispatch();
-
-        const handleError = useCallback((error) => {
-            if (error && error.response && error.response.status) {
-                setStatus(error.response.status);
-            } else {
-                setStatus(MISC_FAIL);
-                console.error(error);
-            }
-        }, []);
-
-        useEffect(() => {
-            let aborted = false;
-            // no id passed
-            if (typeof id === "undefined" || id === null) {
-                // if not to be optimized (i.e. a request_all is wanted)
-                if (!noFetchOnUndef) {
-                    (async () => {
-                        try {
-                            setStatus(REQUEST_STARTED);
-                            const response = await instance.get(
-                                endpoint,
-                                config
-                            );
-                            if (!aborted) {
-                                dispatch({
-                                    "payload": {
-                                        ...payloadInfo,
-                                        "id": REQUEST_ALL,
-                                        response,
-                                    },
-                                    "type": successType,
-                                });
-                                setStatus(response.status);
-                            }
-                        } catch (error) {
-                            if (!aborted) {
-                                handleError(error);
-                            }
-                        }
-                    })();
-                }
-            } else if (!Array.isArray(id)) {
-                // standard single item request
-                (async () => {
-                    try {
-                        setStatus(REQUEST_STARTED);
-                        const response = await instance.get(
-                            `${endpoint}${id}/`,
-                            config
-                        );
-                        if (!aborted) {
-                            dispatch({
-                                "payload": {
-                                    ...payloadInfo,
-                                    id,
-                                    response,
-                                },
-                                "type": successType,
-                            });
-                            setStatus(response.status);
-                        }
-                    } catch (error) {
-                        if (!aborted) {
-                            handleError(error);
-                        }
-                    }
-                })();
-            } else if (id.length > 0) {
-                // array of IDs to request (list of results requested)
-                (async () => {
-                    try {
-                        setStatus(REQUEST_STARTED);
-                        const response = await Promise.all(id.map(
-                            (individual) => instance.get(
-                                `${endpoint}${individual}/`,
-                                config
-                            )
-                        ));
-                        if (!aborted) {
-                            dispatch({
-                                "payload": {
-                                    ...payloadInfo,
-                                    id,
-                                    response,
-                                },
-                                "type": successType,
-                            });
-                            setStatus(response.reduce((finalStatus, {status}) =>
-                                isFail(status) ? status
-                                    : isFail(finalStatus) ? finalStatus
-                                        : isLoading(status) ? status
-                                            : finalStatus, 200));
-                        }
-                    } catch (error) {
-                        if (!aborted) {
-                            handleError(error);
-                        }
-                    }
-                })();
-            }
-            // if something about request changed
-            // discard old results and make new request
-            return () => {
-                setStatus(null);
-                aborted = true;
-            };
-        }, [config, dispatch, id, noFetchOnUndef, handleError]);
-        return status;
-    };
 
 const wrapNotePost =
     (endpoint, [startType, successType, failType], payloadInfo) =>

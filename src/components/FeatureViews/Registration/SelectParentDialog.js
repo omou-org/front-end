@@ -1,6 +1,5 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {bindActionCreators} from "redux";
 import PropTypes from "prop-types";
 
 import AsyncSelect from "react-select/async";
@@ -11,9 +10,10 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
 
-import * as registrationActions from "actions/registrationActions";
-import * as userActions from "actions/userActions";
+import {setRegisteringParent, closeRegistration}
+    from "actions/registrationActions";
 import AccountsCards from "../Search/cards/AccountsCards";
+import {fetchStudents} from "actions/userActions";
 import {GET_ACCOUNT_SEARCH_QUERY_SUCCESS} from "actions/actionTypes";
 import {instance} from "actions/apiActions";
 import {isFail} from "actions/hooks";
@@ -23,28 +23,22 @@ const defaultMessage = () => "Keep searching for a parent!";
 
 const SelectParentDialog = ({onClose, open}) => {
     const dispatch = useDispatch();
-    const actions = useMemo(
-        () => ({
-            ...bindActionCreators(registrationActions, dispatch),
-            ...bindActionCreators(userActions, dispatch),
-        }),
-        [dispatch]
-    );
     const [parentID, setParentID] = useState(null);
     const [inputString, setInputString] = useState("");
     const [searching, setSearching] = useState(false);
     const parents = useSelector(({Users}) => Users.ParentList);
-    const currentParent = useSelector(({Registration}) => Registration.CurrentParent);
-    const registeredCourses = useSelector(({Registration}) => Registration.registered_courses);
+    const currentParent =
+        useSelector(({Registration}) => Registration.CurrentParent);
+    const registeredCourses =
+        useSelector(({Registration}) => Registration.registered_courses);
 
     useEffect(() => {
-        let pastParent = sessionStorage.getItem("CurrentParent");
-        const reduxPastParent = currentParent;
-        if (pastParent !== "none" && !reduxPastParent) {
-            pastParent = JSON.parse(pastParent);
-            actions.setRegisteringParent(pastParent);
+        if (!currentParent) {
+            dispatch(setRegisteringParent(
+                JSON.parse(sessionStorage.getItem("CurrentParent"))
+            ));
         }
-    }, [currentParent, actions]);
+    }, [currentParent, dispatch]);
 
     const handleClose = useCallback(() => {
         // if there's something in the input
@@ -67,17 +61,18 @@ const SelectParentDialog = ({onClose, open}) => {
                     "user_uuid": parent.user_id,
                 };
 
-                actions.setRegisteringParent(registeringParent);
+                dispatch(setRegisteringParent(registeringParent));
                 // Add students to redux once the registered parent has been set
                 registeringParent.student_list.forEach((studentID) => {
-                    actions.fetchStudents(studentID);
+                    fetchStudents(studentID)(dispatch);
                 });
-                sessionStorage.setItem("CurrentParent", JSON.stringify(registeringParent));
+                sessionStorage.setItem("CurrentParent",
+                    JSON.stringify(registeringParent));
             }
         }
         // close the dialogue
         onClose();
-    }, [parentID, parents, actions, onClose]);
+    }, [parentID, parents, dispatch, onClose]);
 
     const handleOnChange = useCallback((event) => {
         setParentID(event.value);
@@ -88,10 +83,10 @@ const SelectParentDialog = ({onClose, open}) => {
     const handleExitParent = useCallback((event) => {
         event.preventDefault();
         setParentID(null);
-        actions.setRegisteringParent("");
-        actions.closeRegistration("");
+        dispatch(setRegisteringParent(null));
+        dispatch(closeRegistration());
         handleClose();
-    }, [actions, handleClose]);
+    }, [dispatch, handleClose]);
 
     const handleOnInputChange = useCallback((input) => {
         if (input) {
@@ -129,8 +124,7 @@ const SelectParentDialog = ({onClose, open}) => {
         .reduce((count, studentCourses) => count + studentCourses.length, 0);
 
     return (
-        <Dialog
-            aria-labelledby="simple-dialog-title"
+        <Dialog aria-labelledby="simple-dialog-title"
             className="select-parent-dialog"
             onClose={handleClose}
             open={open}>
@@ -138,50 +132,42 @@ const SelectParentDialog = ({onClose, open}) => {
                 Currently helping...
             </DialogTitle>
             <DialogContent>
-                {
-                    currentParent && currentParent !== "none"
-                        ? <div className="active-parent-dialog-content">
-                            <Grid
-                                container
-                                direction="row"
-                                justify="center">
-                                <Grid item>
-                                    <AccountsCards user={currentParent} />
-                                </Grid>
+                {currentParent ?
+                    <div className="active-parent-dialog-content">
+                        <Grid container
+                            direction="row"
+                            justify="center">
+                            <Grid item>
+                                <AccountsCards user={currentParent} />
                             </Grid>
-                        </div>
-                        : <div className={`select-parent-search-wrapper ${searching && "active"}`}>
-                            <AsyncSelect
-                                classNamePrefix="select-parent-search"
-                                loadOptions={loadOptions}
-                                noOptionsMessage={defaultMessage}
-                                onChange={handleOnChange}
-                                onInputChange={handleOnInputChange}
-                                value={inputString} />
-                          </div>
-
-                }
+                        </Grid>
+                    </div> :
+                    <div className={`select-parent-search-wrapper ${searching && "active"}`}>
+                        <AsyncSelect classNamePrefix="select-parent-search"
+                            loadOptions={loadOptions}
+                            noOptionsMessage={defaultMessage}
+                            onChange={handleOnChange}
+                            onInputChange={handleOnInputChange}
+                            value={inputString} />
+                    </div>}
             </DialogContent>
             <DialogActions>
-                {
-                    currentParent && (currentParent !== "none")
-                        ? <>
-                            <Button onClick={handleExitParent}>
-                                    Exit Parent
+                {currentParent ?
+                    <>
+                        <Button onClick={handleExitParent}>
+                            Exit Parent
+                        </Button>
+                        <span>
+                            <Button component={NavLinkNoDup}
+                                disabled={numToCheckout === 0}
+                                to="/registration/cart">
+                                Checkout {numToCheckout} Courses
                             </Button>
-                            <span>
-                                <Button
-                                    component={NavLinkNoDup}
-                                    disabled={numToCheckout === 0}
-                                    to="/registration/cart">
-                                        Checkout {numToCheckout} Courses
-                                </Button>
-                            </span>
-                          </>
-                        : <Button onClick={handleClose}>
-                                Set Parent
-                          </Button>
-                }
+                        </span>
+                    </> :
+                    <Button onClick={handleClose}>
+                        Set Parent
+                    </Button>}
             </DialogActions>
         </Dialog>
     );

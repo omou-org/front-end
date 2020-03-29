@@ -10,7 +10,7 @@ import "./Form.scss"
 import TextField from "@material-ui/core/TextField/TextField";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import {durationParser} from "../../actions/apiActions";
+import {durationParser} from "utils";
 import {academicLevelParse} from "../../reducers/registrationReducer";
 import InputLabel from "@material-ui/core/InputLabel";
 import {OutlinedSelect} from "../FeatureViews/Scheduler/SchedulerUtils";
