@@ -29,43 +29,57 @@ const StudentCourseViewer = ({studentID, current = true}) => {
     const {pathname} = useLocation();
 
     const enrollmentStatus = hooks.useEnrollmentByStudent(studentID);
-    const courseList = useMemo(() => Object.keys(enrollments[studentID] || {}),
-        [enrollments, studentID]);
+    const courseList = useMemo(() => Object.keys(enrollments[studentID] || {}), [
+        enrollments,
+        studentID,
+    ]);
     const courseStatus = hooks.useCourse(courseList);
 
-    const coursePaymentStatus = useMemo(() =>
-        Object.entries(enrollments[studentID] || {})
-            .reduce((obj, [courseID, {sessions_left}]) => ({
-                ...obj,
-                [courseID]: sessions_left,
-            }), {}), [enrollments, studentID]);
+    const coursePaymentStatus = useMemo(
+        () =>
+            Object.entries(enrollments[studentID] || {}).reduce(
+                (obj, [courseID, {sessions_left}]) => ({
+                    ...obj,
+                    [courseID]: sessions_left,
+                }),
+                {}
+            ),
+        [enrollments, studentID]
+    );
 
-    const numPaidCourses = useCallback((courseID) => {
-        if (!enrollments[studentID][courseID]) {
-            return 0;
-        }
-        return enrollments[studentID][courseID].sessions_left || 0;
-    }, [enrollments, studentID]);
+    const numPaidCourses = useCallback(
+        (courseID) => {
+            if (!enrollments[studentID][courseID]) {
+                return 0;
+            }
+            return enrollments[studentID][courseID].sessions_left || 0;
+        },
+        [enrollments, studentID]
+    );
 
-    const filterCourseByDate = useCallback((endDate) => {
-        const inputEndDate = dateTimeToDate(new Date(endDate));
-        // see if course is current or not
-        // and match it appropriately with the passed filter
-        return current === (inputEndDate >= today);
-    }, [current]);
+    const filterCourseByDate = useCallback(
+        (endDate) => {
+            const inputEndDate = dateTimeToDate(new Date(endDate));
+            // see if course is current or not
+            // and match it appropriately with the passed filter
+            return current === inputEndDate >= today;
+        },
+        [current]
+    );
 
-    const displayedCourses = useMemo(() =>
-        courseList.filter((courseID) => courses[courseID] &&
-            filterCourseByDate(courses[courseID].schedule.end_date)),
-    [courseList, courses, filterCourseByDate]);
+    const displayedCourses = useMemo(
+        () =>
+            courseList.filter(
+                (courseID) =>
+                    courses[courseID] &&
+                    filterCourseByDate(courses[courseID].schedule.end_date)
+            ),
+        [courseList, courses, filterCourseByDate]
+    );
 
     if (!enrollments[studentID] && !hooks.isSuccessful(enrollmentStatus)) {
         if (hooks.isLoading(enrollmentStatus, courseStatus)) {
-            return (
-                <Loading
-                    loadingText="LOADING COURSES"
-                    small />
-            );
+            return <Loading loadingText="LOADING COURSES" small/>;
         } else if (hooks.isFail(enrollmentStatus, courseStatus)) {
             return "Error loading courses!";
         }
@@ -73,66 +87,47 @@ const StudentCourseViewer = ({studentID, current = true}) => {
 
     return (
         <>
-            <Grid
-                className="accounts-table-heading"
-                container>
-                <Grid
-                    item
-                    xs={4}>
-                    <Typography
-                        align="left"
-                        className="table-header">
+            <Grid className="accounts-table-heading" container>
+                <Grid item xs={4}>
+                    <Typography align="left" className="table-header">
                         Course
                     </Typography>
                 </Grid>
-                <Grid
-                    item
-                    xs={3}>
-                    <Typography
-                        align="left"
-                        className="table-header">
+                <Grid item xs={3}>
+                    <Typography align="left" className="table-header">
                         Dates
                     </Typography>
                 </Grid>
-                <Grid
-                    item
-                    xs={2}>
-                    <Typography
-                        align="left"
-                        className="table-header">
+                <Grid item xs={2}>
+                    <Typography align="left" className="table-header">
                         Class Day(s)
                     </Typography>
                 </Grid>
-                <Grid
-                    item
-                    xs={2}>
-                    <Typography
-                        align="left"
-                        className="table-header">
+                <Grid item xs={2}>
+                    <Typography align="left" className="table-header">
                         Time
                     </Typography>
                 </Grid>
-                <Grid
-                    item
-                    xs={1}>
-                    <Typography
-                        align="left"
-                        className="table-header">
+                <Grid item xs={1}>
+                    <Typography align="left" className="table-header">
                         Status
                     </Typography>
                 </Grid>
             </Grid>
-            <Grid
-                container
-                spacing={8}>
-                {displayedCourses.length !== 0
-                    ? displayedCourses.map((courseID) => {
+            <Grid container spacing={1}>
+                {displayedCourses.length !== 0 ? (
+                    displayedCourses.map((courseID) => {
                         const course = courses[courseID];
                         if (!course) {
                             return "Loading...";
                         }
-                        const {days, start_date, end_date, start_time,
-                            end_time} = courseDateFormat(course);
+                        const {
+                            days,
+                            start_date,
+                            end_date,
+                            start_time,
+                            end_time,
+                        } = courseDateFormat(course);
                         return (
                             <Grid
                                 className="accounts-table-row"
@@ -140,49 +135,36 @@ const StudentCourseViewer = ({studentID, current = true}) => {
                                 item
                                 key={courseID}
                                 to={`${pathname}/${courseID}`}
-                                xs={12}>
+                                xs={12}
+                            >
                                 <Paper square>
                                     <Grid container>
-                                        <Grid
-                                            item
-                                            xs={4}>
-                                            <Typography
-                                                align="left"
-                                                className="accounts-table-text">
+                                        <Grid item xs={4}>
+                                            <Typography align="left" className="accounts-table-text">
                                                 {course.title}
                                             </Typography>
                                         </Grid>
-                                        <Grid
-                                            item
-                                            xs={3}>
-                                            <Typography
-                                                align="left"
-                                                className="accounts-table-text">
+                                        <Grid item xs={3}>
+                                            <Typography align="left" className="accounts-table-text">
                                                 {start_date} - {end_date}
                                             </Typography>
                                         </Grid>
-                                        <Grid
-                                            item
-                                            xs={2}>
-                                            <Typography
-                                                align="left"
-                                                className="accounts-table-text">
+                                        <Grid item xs={2}>
+                                            <Typography align="left" className="accounts-table-text">
                                                 {capitalizeString(days)}
                                             </Typography>
                                         </Grid>
-                                        <Grid
-                                            item
-                                            xs={2}>
-                                            <Typography
-                                                align="left"
-                                                className="accounts-table-text">
+                                        <Grid item xs={2}>
+                                            <Typography align="left" className="accounts-table-text">
                                                 {start_time} - {end_time}
                                             </Typography>
                                         </Grid>
-                                        <Grid
-                                            item
-                                            xs={1}>
-                                            <div className={`sessions-left-chip ${paymentStatus(numPaidCourses(courseID))}`}>
+                                        <Grid item xs={1}>
+                                            <div
+                                                className={`sessions-left-chip ${paymentStatus(
+                                                    numPaidCourses(courseID)
+                                                )}`}
+                                            >
                                                 {coursePaymentStatus[courseID]}
                                             </div>
                                         </Grid>
@@ -191,18 +173,18 @@ const StudentCourseViewer = ({studentID, current = true}) => {
                             </Grid>
                         );
                     })
-                    : <NoListAlert list="Course" />}
+                ) : (
+                    <NoListAlert list="Course"/>
+                )}
             </Grid>
         </>
     );
 };
 
 StudentCourseViewer.propTypes = {
-    "current": PropTypes.bool,
-    "studentID": PropTypes.oneOfType([
-        PropTypes.number,
-        PropTypes.string,
-    ]).isRequired,
+    current: PropTypes.bool,
+    studentID: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+        .isRequired,
 };
 
 export default StudentCourseViewer;

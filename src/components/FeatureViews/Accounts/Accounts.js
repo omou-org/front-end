@@ -18,7 +18,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Tabs from "@material-ui/core/Tabs";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
-import {withStyles} from "@material-ui/core/styles";
+import {makeStyles, withStyles} from "@material-ui/core/styles";
 
 import "./Accounts.scss";
 import * as hooks from "actions/hooks";
@@ -31,9 +31,20 @@ import ProfileCard from "./ProfileCard";
 import UserAvatar from "./UserAvatar";
 
 const componentStyles = (theme) => ({
-    "root": {
-        "backgroundColor": theme.palette.background.paper,
-        "flexGrow": 1,
+    root: {
+        backgroundColor: theme.palette.background.paper,
+        flexGrow: 1,
+    },
+});
+
+const useStyles = makeStyles({
+    tableRowStyle: {
+        fontSize: "0.8125rem",
+        padding: "0px",
+    },
+    tableCellStyle: {
+        fontSize: "0.75rem",
+        color: "rgba(0, 0, 0, 0.54)",
     },
 });
 
@@ -47,16 +58,15 @@ const Accounts = () => {
 
     const prevState = JSON.parse(sessionStorage.getItem("AccountsState"));
     const [isMobile, setIsMobile] = useState(false);
-    const [tabIndex, setTabIndex] = useState(
-        prevState ? prevState.tabIndex : 0
-    );
+    const [tabIndex, setTabIndex] = useState(prevState ? prevState.tabIndex : 0);
     // true = list view, false = card view
     const [viewToggle, setViewToggle] = useState(
         prevState ? prevState.viewToggle : true
     );
 
     const statuses = [
-        hooks.useStudent(), hooks.useParent(),
+        hooks.useStudent(),
+        hooks.useParent(),
         hooks.useInstructor(),
     ];
 
@@ -92,147 +102,137 @@ const Accounts = () => {
                     .flat();
         }
         return newUsersList.sort((first, second) =>
-            first.name < second.name ? -1 : first.name > second.name ? 1 : 0);
+            first.name < second.name ? -1 : first.name > second.name ? 1 : 0
+        );
     }, [tabIndex, usersList]);
 
     useEffect(() => {
-        sessionStorage.setItem("AccountsState", JSON.stringify({
-            tabIndex,
-            viewToggle,
-        }));
+        sessionStorage.setItem(
+            "AccountsState",
+            JSON.stringify({
+                tabIndex,
+                viewToggle,
+            })
+        );
     }, [tabIndex, viewToggle]);
 
     const handleTabChange = useCallback((_, newIndex) => {
         setTabIndex(newIndex);
     }, []);
 
-    const setView = useCallback((view) => () => {
-        setViewToggle(view);
-    }, []);
+    const setView = useCallback(
+        (view) => () => {
+            setViewToggle(view);
+        },
+        []
+    );
 
-    const tableView = useMemo(() => (
-        <Table
-            className="AccountsTable"
-            resizable={false}>
-            <TableHead>
-                <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Email</TableCell>
-                    <TableCell>Phone</TableCell>
-                    <TableCell>Role</TableCell>
-                    <TableCell />
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {displayUsers.map((row) => (
-                    <TableRow
-                        className="row"
-                        component={Link}
-                        key={row.user_id}
-                        to={`/accounts/${row.role}/${row.user_id}`}>
-                        <TableCell>
-                            <Grid
-                                alignItems="center"
-                                container
-                                layout="row">
-                                <UserAvatar
-                                    fontSize={14}
-                                    margin={9}
-                                    name={row.name}
-                                    size={38} />
-                                {row.name}
-                            </Grid>
-                        </TableCell>
-                        <TableCell>
-                            <Tooltip title={row.email}>
-                                <span>
-                                    {row.email.substr(0, 20)}
-                                </span>
-                            </Tooltip>
-                        </TableCell>
-                        <TableCell>
-                            {addDashes(row.phone_number)}
-                        </TableCell>
-                        <TableCell>
-                            {capitalizeString(row.role)}
-                        </TableCell>
-                        <TableCell onClick={stopPropagation}>
-                            <Grid
-                                component={Hidden}
-                                mdDown>
-                                {
-                                    (row.role === "student" ||
+    const classes = useStyles();
+    const tableView = useMemo(
+        () => (
+            <Table className="AccountsTable" resizable="false">
+                <TableHead>
+                    <TableRow>
+                        <TableCell className={classes.tableCellStyle}>Name</TableCell>
+                        <TableCell className={classes.tableCellStyle}>Email</TableCell>
+                        <TableCell className={classes.tableCellStyle}>Phone</TableCell>
+                        <TableCell className={classes.tableCellStyle}>Role</TableCell>
+                        <TableCell/>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {displayUsers.map((row) => (
+                        <TableRow
+                            className="row"
+                            component={Link}
+                            key={row.user_id}
+                            to={`/accounts/${row.role}/${row.user_id}`}
+                        >
+                            <TableCell className={classes.tableRowStyle}>
+                                <Grid alignItems="center" container layout="row">
+                                    <UserAvatar
+                                        fontSize={14}
+                                        margin={9}
+                                        name={row.name}
+                                        size={38}
+                                    />
+                                    {row.name}
+                                </Grid>
+                            </TableCell>
+                            <TableCell>
+                                <Tooltip title={row.email}>
+                                    <span>{row.email.substr(0, 20)}</span>
+                                </Tooltip>
+                            </TableCell>
+                            <TableCell>{addDashes(row.phone_number)}</TableCell>
+                            <TableCell>{capitalizeString(row.role)}</TableCell>
+                            <TableCell onClick={stopPropagation}>
+                                <Grid component={Hidden} mdDown>
+                                    {(row.role === "student" ||
                                         row.role === "parent" ||
-                                        isAdmin) &&
+                                        isAdmin) && (
                                         <IconButton
                                             component={Link}
-                                            to={`/registration/form/${row.role}/${row.user_id}/edit`}>
-                                            <EditIcon />
+                                            to={`/registration/form/${row.role}/${row.user_id}/edit`}
+                                        >
+                                            <EditIcon/>
                                         </IconButton>
-                                }
-                            </Grid>
-                            <Grid
-                                component={Hidden}
-                                lgUp>
-                                <Button
-                                    component={Link}
-                                    to={`/registration/form/${row.role}/${row.user_id}/edit`}
-                                    variant="outlined">
-                                    <EditIcon />
-                                </Button>
-                            </Grid>
-                        </TableCell>
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-    ), [displayUsers, isAdmin]);
+                                    )}
+                                </Grid>
+                                <Grid component={Hidden} lgUp>
+                                    <Button
+                                        component={Link}
+                                        to={`/registration/form/${row.role}/${row.user_id}/edit`}
+                                        variant="outlined"
+                                    >
+                                        <EditIcon/>
+                                    </Button>
+                                </Grid>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        ),
+        [displayUsers, isAdmin]
+    );
 
-    const cardView = useMemo(() => (
-        <Grid
-            alignItems="center"
-            className="card-container"
-            container
-            direction="row"
-            spacing={16}
-            xs={12}>
-            {
-                displayUsers.map((user) => (
+    const cardView = useMemo(
+        () => (
+            <Grid
+                alignItems="center"
+                className="card-container"
+                container
+                direction="row"
+                spacing={2}
+                xs={12}
+            >
+                {displayUsers.map((user) => (
                     <ProfileCard
                         key={user.user_id}
                         route={`/accounts/${user.role}/${user.user_id}`}
-                        user={user} />))
-            }
-        </Grid>
-    ), [displayUsers]);
+                        user={user}
+                    />
+                ))}
+            </Grid>
+        ),
+        [displayUsers]
+    );
 
     const loading = hooks.isLoading(...statuses);
 
     return (
-        <Grid
-            className="Accounts"
-            item
-            xs={12}>
-            <Paper className="paper">
-                <BackButton />
+        <Grid className="Accounts" item xs={12}>
+            <Paper elevation={2} className="paper">
+                <BackButton/>
                 <Hidden xsDown>
-                    <hr />
+                    <hr/>
                 </Hidden>
-                <Typography
-                    align="left"
-                    className="heading"
-                    variant="h3">
+                <Typography align="left" className="heading" variant="h3">
                     Accounts
                 </Typography>
-                <Grid
-                    container
-                    direction="row">
-                    <Grid
-                        component={Hidden}
-                        item
-                        lgUp
-                        md={8}
-                        xs={10}>
+                <Grid container direction="row">
+                    <Grid component={Hidden} item lgUp md={8} xs={10}>
                         <Tabs
                             className="tabs"
                             indicatorColor="primary"
@@ -240,30 +240,16 @@ const Accounts = () => {
                             scrollButtons="on"
                             textColor="primary"
                             value={tabIndex}
-                            variant="scrollable">
-                            <Tab
-                                className="tab"
-                                label="ALL" />
-                            <Tab
-                                className="tab"
-                                label="INSTRUCTORS" />
-                            <Tab
-                                className="tab"
-                                label="STUDENTS" />
-                            <Tab
-                                className="tab"
-                                label="RECEPTIONIST" />
-                            <Tab
-                                className="tab"
-                                label="PARENTS" />
+                            variant="scrollable"
+                        >
+                            <Tab className="tab" label="ALL"/>
+                            <Tab className="tab" label="INSTRUCTORS"/>
+                            <Tab className="tab" label="STUDENTS"/>
+                            <Tab className="tab" label="RECEPTIONIST"/>
+                            <Tab className="tab" label="PARENTS"/>
                         </Tabs>
                     </Grid>
-                    <Grid
-                        component={Hidden}
-                        item
-                        md={8}
-                        mdDown
-                        xs={10}>
+                    <Grid component={Hidden} item md={8} mdDown xs={10}>
                         <Tabs
                             className="tabs"
                             indicatorColor="primary"
@@ -271,39 +257,29 @@ const Accounts = () => {
                             scrollButtons="off"
                             textColor="primary"
                             value={tabIndex}
-                            variant="scrollable">
-                            <Tab
-                                className="tab"
-                                label="ALL" />
-                            <Tab
-                                className="tab"
-                                label="INSTRUCTORS" />
-                            <Tab
-                                className="tab"
-                                label="STUDENTS" />
-                            <Tab
-                                className="tab"
-                                label="RECEPTIONIST" />
-                            <Tab
-                                className="tab"
-                                label="PARENTS" />
+                            variant="scrollable"
+                        >
+                            <Tab className="tab" label="ALL"/>
+                            <Tab className="tab" label="INSTRUCTORS"/>
+                            <Tab className="tab" label="STUDENTS"/>
+                            <Tab className="tab" label="RECEPTIONIST"/>
+                            <Tab className="tab" label="PARENTS"/>
                         </Tabs>
                     </Grid>
                     <Hidden smDown>
-                        <Grid
-                            className="toggleView"
-                            item
-                            md={3}>
+                        <Grid className="toggleView" item md={3}>
                             <Button
                                 className={`btn list ${viewToggle && "active"}`}
-                                onClick={setView(true)}>
-                                <ListView className={`icon ${viewToggle && "active"}`} />
+                                onClick={setView(true)}
+                            >
+                                <ListView className={`icon ${viewToggle && "active"}`}/>
                                 List View
                             </Button>
                             <Button
                                 className={`btn card ${!viewToggle && "active"}`}
-                                onClick={setView(false)} >
-                                <CardView className={`icon ${!viewToggle && "active"}`} />
+                                onClick={setView(false)}
+                            >
+                                <CardView className={`icon ${!viewToggle && "active"}`}/>
                                 Card View
                             </Button>
                         </Grid>
@@ -315,12 +291,15 @@ const Accounts = () => {
                     container
                     direction="row"
                     justify="center"
-                    spacing={8}>
-                    {
-                        loading
-                            ? <Loading />
-                            : isMobile || !viewToggle ? cardView : tableView
-                    }
+                    spacing={1}
+                >
+                    {loading ? (
+                        <Loading/>
+                    ) : isMobile || !viewToggle ? (
+                        cardView
+                    ) : (
+                        tableView
+                    )}
                 </Grid>
             </Paper>
         </Grid>

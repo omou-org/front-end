@@ -1,26 +1,26 @@
 // React Imports
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React, {useEffect, useState} from "react";
+import {useSelector} from "react-redux";
 import PropTypes from "prop-types";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/es/Typography/Typography";
+import Typography from "@material-ui/core/Typography/Typography";
 // Local Component Imports
 import "./Form.scss";
-import TextField from "@material-ui/core/es/TextField/TextField";
+import TextField from "@material-ui/core/TextField/TextField";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import { durationParser } from "../../actions/apiActions";
-import { academicLevelParse } from "../../reducers/registrationReducer";
+import {durationParser} from "utils";
+import {academicLevelParse} from "../../reducers/registrationReducer";
 import InputLabel from "@material-ui/core/InputLabel";
-import { OutlinedSelect } from "../FeatureViews/Scheduler/SchedulerUtils";
+import {OutlinedSelect} from "../FeatureViews/Scheduler/SchedulerUtils";
 import * as hooks from "actions/hooks";
 
 const TutoringPriceQuote = ({
-  courseType,
-  handleUpdatePriceFields,
-  tutoringCategory,
-}) => {
+                              courseType,
+                              handleUpdatePriceFields,
+                              tutoringCategory,
+                            }) => {
   const [priceQuote, setPriceQuote] = useState(null);
   const [hourlyTuition, setHourlyTuition] = useState(null);
   const [duration, setDuration] = useState(null);
@@ -32,10 +32,10 @@ const TutoringPriceQuote = ({
   const [priceRules, setPriceRules] = useState(null);
 
   const adminPriceRules = useSelector(
-    ({ Admin: { PriceRules } }) => PriceRules
+      ({Admin: {PriceRules}}) => PriceRules
   );
   const categories = useSelector(
-    ({ Course: { CourseCategories } }) => CourseCategories
+      ({Course: {CourseCategories}}) => CourseCategories
   );
 
   const categoryStatus = hooks.useCategory();
@@ -44,31 +44,31 @@ const TutoringPriceQuote = ({
   useEffect(() => {
     if (hooks.isSuccessful(categoryStatus, priceRuleStatus)) {
       setPriceRules(
-        adminPriceRules
-          .filter((rule) => rule.course_type === courseType)
-          .map((rule) => ({
-            ...rule,
-            category: categories.find(
-              (category) => category.id === rule.category
-            ),
-          }))
+          adminPriceRules
+              .filter((rule) => rule.course_type === courseType)
+              .map((rule) => ({
+                ...rule,
+                category: categories.find(
+                    (category) => category.id === rule.category
+                ),
+              }))
       );
     }
   }, [categoryStatus, priceRuleStatus]);
 
   // get list of unique category objects from price rules
   const uniqueCategories = (rules) =>
-    Array.from(new Set(rules.map((rule) => rule.category.id))).map(
-      (id) => priceRules.find((rule) => rule.category.id === id).category
-    );
+      Array.from(new Set(rules.map((rule) => rule.category.id))).map(
+          (id) => priceRules.find((rule) => rule.category.id === id).category
+      );
 
   // get list of unique academic grades from price rules
   const uniqueAcademicGrades = (rules, categoryID) => {
     let filteredCategoryRules = rules.filter(
-      (rule) => rule.category.id === categoryID
+        (rule) => rule.category.id === categoryID
     );
     return Array.from(
-      new Set(filteredCategoryRules.map((rule) => rule.academic_level))
+        new Set(filteredCategoryRules.map((rule) => rule.academic_level))
     ).map((grade) => academicLevelParse[grade]);
   };
 
@@ -80,13 +80,13 @@ const TutoringPriceQuote = ({
 
   useEffect(() => {
     if (
-      category === null &&
-      academic_level === null &&
-      categoryList.length > 0
+        category === null &&
+        academic_level === null &&
+        categoryList.length > 0
     ) {
       if (tutoringCategory) {
         setCategory(
-          categoryList.find((category) => category.id == tutoringCategory)
+            categoryList.find((category) => category.id == tutoringCategory)
         );
       } else {
         setCategory(categoryList[0]);
@@ -94,7 +94,7 @@ const TutoringPriceQuote = ({
       // set tuition
       setHourlyTuition(() => {
         let matchingPriceRule = priceRules.find(
-          (rule) => rule.category.id === categoryList[0].id
+            (rule) => rule.category.id === categoryList[0].id
         );
         return matchingPriceRule.hourly_tuition;
       });
@@ -109,7 +109,7 @@ const TutoringPriceQuote = ({
     }
   }, [category]);
 
-  const generatePriceQuote = ({ tuition, duration, sessions }) => {
+  const generatePriceQuote = ({tuition, duration, sessions}) => {
     if (tuition && duration && sessions) {
       setPriceQuote(() => {
         let quote = duration * sessions * tuition;
@@ -122,23 +122,23 @@ const TutoringPriceQuote = ({
     setCategory(event.target.value);
 
     handleUpdatePriceFields(
-      {
-        value: event.target.value.id,
-        label: event.target.value.name,
-      },
-      academic_level,
-      durationParser[event.target.value],
-      sessions
+        {
+          value: event.target.value.id,
+          label: event.target.value.name,
+        },
+        academic_level,
+        durationParser[event.target.value],
+        sessions
     );
 
     // filter academic levels so only academic levels with the current category get displayed
     setAcademicList(() => {
       let filteredByCategoryPriceRules = priceRules.filter(
-        (rule) => rule.category.id === event.target.value.id
+          (rule) => rule.category.id === event.target.value.id
       );
       let filteredAcademicLevels = uniqueAcademicGrades(
-        filteredByCategoryPriceRules,
-        event.target.value.id
+          filteredByCategoryPriceRules,
+          event.target.value.id
       );
 
       // if current academic level is unavailable, default to first one
@@ -152,8 +152,8 @@ const TutoringPriceQuote = ({
       setHourlyTuition(() => {
         let matchingPriceRule = priceRules.find((rule) => {
           return (
-            rule.category.id === event.target.value.id &&
-            rule.academic_level === academicLevelParse[academicLevel]
+              rule.category.id === event.target.value.id &&
+              rule.academic_level === academicLevelParse[academicLevel]
           );
         });
         generatePriceQuote({
@@ -172,9 +172,9 @@ const TutoringPriceQuote = ({
     setAcademicLevel(event.target.value);
     setHourlyTuition(() => {
       let matchingPriceRule = priceRules.find(
-        (rule) =>
-          rule.category.id === category.id &&
-          rule.academic_level === academicLevelParse[event.target.value]
+          (rule) =>
+              rule.category.id === category.id &&
+              rule.academic_level === academicLevelParse[event.target.value]
       );
       generatePriceQuote({
         duration: duration,
@@ -182,13 +182,13 @@ const TutoringPriceQuote = ({
         tuition: matchingPriceRule.hourly_tuition,
       });
       handleUpdatePriceFields(
-        {
-          value: category.id,
-          label: category.name,
-        },
-        event.target.value,
-        durationParser[duration],
-        sessions
+          {
+            value: category.id,
+            label: category.name,
+          },
+          event.target.value,
+          durationParser[duration],
+          sessions
       );
       return matchingPriceRule.hourly_tuition;
     });
@@ -202,13 +202,13 @@ const TutoringPriceQuote = ({
       tuition: hourlyTuition,
     });
     handleUpdatePriceFields(
-      {
-        value: category.id,
-        label: category.name,
-      },
-      academic_level,
-      durationParser[event.target.value],
-      sessions
+        {
+          value: category.id,
+          label: category.name,
+        },
+        academic_level,
+        durationParser[event.target.value],
+        sessions
     );
   };
 
@@ -220,143 +220,143 @@ const TutoringPriceQuote = ({
       tuition: hourlyTuition,
     });
     handleUpdatePriceFields(
-      {
-        value: category.id,
-        label: category.name,
-      },
-      academic_level,
-      durationParser[duration],
-      event.target.value
+        {
+          value: category.id,
+          label: category.name,
+        },
+        academic_level,
+        durationParser[duration],
+        event.target.value
     );
   };
 
   return (
-    <Grid container>
-      <Grid item xs={12}>
-        <Typography>
-          Use the Tuition Quote Tool to give the customer an estimate of how
-          much the total tuition will be. This tool will set the final tuition
-          of the course.
-        </Typography>
-        <Grid
-          container
-          className={"tutoring-price-quote"}
-          direction={"column"}
-          justify={"flex-end"}
-          spacing={32}
-        >
-          <Grid item>
-            <Grid container direction={"row"} justify={"flex-end"}>
-              <Grid item xs={3}>
-                <InputLabel htmlFor={"category"}>Category</InputLabel>
-                <Select
-                  value={category}
-                  onChange={onCategoryChange()}
-                  className={"field"}
-                  inputProps={{
-                    id: "category",
-                  }}
-                  input={
-                    <OutlinedSelect id="select-category" name="category" />
-                  }
-                >
-                  {categoryList.map((category) => (
-                    <MenuItem value={category} key={category.id}>
-                      {category.name}
+      <Grid container>
+        <Grid item xs={12}>
+          <Typography>
+            Use the Tuition Quote Tool to give the customer an estimate of how
+            much the total tuition will be. This tool will set the final tuition
+            of the course.
+          </Typography>
+          <Grid
+              container
+              className={"tutoring-price-quote"}
+              direction={"column"}
+              justify={"flex-end"}
+              spacing={4}
+          >
+            <Grid item>
+              <Grid container direction={"row"} justify={"flex-end"}>
+                <Grid item xs={3}>
+                  <InputLabel htmlFor={"category"}>Category</InputLabel>
+                  <Select
+                      value={category}
+                      onChange={onCategoryChange()}
+                      className={"field"}
+                      inputProps={{
+                        id: "category",
+                      }}
+                      input={
+                        <OutlinedSelect id="select-category" name="category"/>
+                      }
+                  >
+                    {categoryList.map((category) => (
+                        <MenuItem value={category} key={category.id}>
+                          {category.name}
+                        </MenuItem>
+                    ))}
+                  </Select>
+                </Grid>
+                <Grid item xs={3}>
+                  <InputLabel htmlFor={"academic-level"}>Grade Level</InputLabel>
+                  <Select
+                      value={academic_level}
+                      onChange={onAcademicLevelChange()}
+                      className={"field"}
+                      inputProps={{
+                        id: "academic-level",
+                      }}
+                      input={
+                        <OutlinedSelect id="select-academic" name="academic"/>
+                      }
+                  >
+                    {academicList.map((grade) => (
+                        <MenuItem value={grade} key={grade}>
+                          {grade}
+                        </MenuItem>
+                    ))}
+                  </Select>
+                </Grid>
+                <Grid item xs={3}>
+                  <InputLabel htmlFor={"hourly-tuition"}>
+                    Hourly Tuition
+                  </InputLabel>
+                  <div
+                      style={{
+                        padding: "10px 26px 10px 12px",
+                      }}
+                  >
+                    <Typography variant="h6">{hourlyTuition}</Typography>
+                  </div>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item>
+              <Grid container direction={"row"} justify={"flex-end"}>
+                <Grid item xs={3}>
+                  <InputLabel htmlFor={"duration"}>Duration</InputLabel>
+                  <Select
+                      value={duration}
+                      onChange={onDurationChange()}
+                      className={"field"}
+                      inputProps={{
+                        id: "academic-level",
+                      }}
+                  >
+                    <MenuItem value={1} key={1}>
+                      1 Hour
                     </MenuItem>
-                  ))}
-                </Select>
-              </Grid>
-              <Grid item xs={3}>
-                <InputLabel htmlFor={"academic-level"}>Grade Level</InputLabel>
-                <Select
-                  value={academic_level}
-                  onChange={onAcademicLevelChange()}
-                  className={"field"}
-                  inputProps={{
-                    id: "academic-level",
-                  }}
-                  input={
-                    <OutlinedSelect id="select-academic" name="academic" />
-                  }
-                >
-                  {academicList.map((grade) => (
-                    <MenuItem value={grade} key={grade}>
-                      {grade}
+                    <MenuItem value={1.5} key={2}>
+                      1.5 Hours
                     </MenuItem>
-                  ))}
-                </Select>
-              </Grid>
-              <Grid item xs={3}>
-                <InputLabel htmlFor={"hourly-tuition"}>
-                  Hourly Tuition
-                </InputLabel>
-                <div
-                  style={{
-                    padding: "10px 26px 10px 12px",
-                  }}
-                >
-                  <Typography variant="h6">{hourlyTuition}</Typography>
-                </div>
+                    <MenuItem value={2} key={3}>
+                      2 Hours
+                    </MenuItem>
+                    <MenuItem value={0.5} key={4}>
+                      0.5 Hour
+                    </MenuItem>
+                  </Select>
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-          <Grid item>
-            <Grid container direction={"row"} justify={"flex-end"}>
-              <Grid item xs={3}>
-                <InputLabel htmlFor={"duration"}>Duration</InputLabel>
-                <Select
-                  value={duration}
-                  onChange={onDurationChange()}
-                  className={"field"}
-                  inputProps={{
-                    id: "academic-level",
-                  }}
-                >
-                  <MenuItem value={1} key={1}>
-                    1 Hour
-                  </MenuItem>
-                  <MenuItem value={1.5} key={2}>
-                    1.5 Hours
-                  </MenuItem>
-                  <MenuItem value={2} key={3}>
-                    2 Hours
-                  </MenuItem>
-                  <MenuItem value={0.5} key={4}>
-                    0.5 Hour
-                  </MenuItem>
-                </Select>
+            <Grid item>
+              <Grid container direction={"row"} justify={"flex-end"}>
+                <Grid item xs={3}>
+                  <TextField
+                      className={"field"}
+                      label="Sessions"
+                      value={sessions}
+                      onChange={onSessionsChange()}
+                      type={"number"}
+                  />
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-          <Grid item>
-            <Grid container direction={"row"} justify={"flex-end"}>
-              <Grid item xs={3}>
-                <TextField
-                  className={"field"}
-                  label="Sessions"
-                  value={sessions}
-                  onChange={onSessionsChange()}
-                  type={"number"}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item>
-            <Grid container direction={"row"} justify={"flex-end"}>
-              <Grid item xs={3}>
-                <TextField
-                  label={"Total Tuition"}
-                  value={priceQuote || ""}
-                  InputProps={{ readOnly: true }}
-                  variant={"outlined"}
-                />
+            <Grid item>
+              <Grid container direction={"row"} justify={"flex-end"}>
+                <Grid item xs={3}>
+                  <TextField
+                      label={"Total Tuition"}
+                      value={priceQuote || ""}
+                      InputProps={{readOnly: true}}
+                      variant={"outlined"}
+                  />
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
       </Grid>
-    </Grid>
   );
 };
 

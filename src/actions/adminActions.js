@@ -1,12 +1,10 @@
 import * as types from "./actionTypes";
-import {
-    academicLevelParse,
-    courseTypeParse,
-} from "reducers/registrationReducer";
+import {academicLevelParse, courseTypeParse,} from "reducers/registrationReducer";
 import {wrapDelete, wrapGet, wrapPatch, wrapPost} from "./apiActions";
 import {wrapUseEndpoint} from "./hooks";
 
-export const addCategory = (categoryName, categoryDescription) => wrapPost(
+export const addCategory = (categoryName, categoryDescription) =>
+    wrapPost(
     "/course/categories/",
     [
         types.POST_CATEGORY_STARTED,
@@ -14,12 +12,13 @@ export const addCategory = (categoryName, categoryDescription) => wrapPost(
         types.POST_CATEGORY_FAILED,
     ],
     {
-        "description": categoryDescription,
-        "name": categoryName,
+        description: categoryDescription,
+        name: categoryName,
     }
-);
+    );
 
-export const fetchCategories = (id) => wrapGet(
+export const fetchCategories = (id) =>
+    wrapGet(
     "/course/categories/",
     [
         types.GET_CATEGORY_STARTED,
@@ -29,14 +28,15 @@ export const fetchCategories = (id) => wrapGet(
     {
         id,
     }
-);
+    );
 
 export const useCategories = wrapUseEndpoint(
-    "/course/categories",
-    types.GET_CATEGORY_SUCCESS,
+    "/course/categories/",
+    types.GET_CATEGORY_SUCCESS
 );
 
-export const fetchUnpaid = (id) => wrapGet(
+export const fetchUnpaid = (id) =>
+    wrapGet(
     "/payment/unpaid-sessions/",
     [
         types.GET_UNPAID_STARTED,
@@ -46,9 +46,10 @@ export const fetchUnpaid = (id) => wrapGet(
     {
         id,
     }
-);
+    );
 
-export const updateCategory = (id, updatedCategory) => wrapPatch(
+export const updateCategory = (id, updatedCategory) =>
+    wrapPatch(
     "/course/categories/",
     [
         types.PATCH_CATEGORY_STARTED,
@@ -57,11 +58,12 @@ export const updateCategory = (id, updatedCategory) => wrapPatch(
     ],
     {
         id,
-        "data": updatedCategory,
+        data: updatedCategory,
     }
-);
+    );
 
-export const fetchPriceRules = () => wrapGet(
+export const fetchPriceRules = () =>
+    wrapGet(
     "/pricing/rule/",
     [
         types.GET_PRICE_RULE_STARTED,
@@ -69,9 +71,15 @@ export const fetchPriceRules = () => wrapGet(
         types.GET_PRICE_RULE_FAILED,
     ],
     {}
+    );
+
+export const usePriceRules = wrapUseEndpoint(
+    "/pricing/rule/",
+    types.GET_PRICE_RULE_SUCCESS
 );
 
-export const setPrice = ({Pricing}) => wrapPost(
+export const setPrice = ({Pricing}) =>
+    wrapPost(
     "/pricing/rule/",
     [
         types.POST_PRICE_RULE_STARTED,
@@ -79,15 +87,16 @@ export const setPrice = ({Pricing}) => wrapPost(
         types.POST_PRICE_RULE_FAILED,
     ],
     {
-        "name": Pricing["Price Rule Name"],
-        "category": Pricing.Category.value,
-        "academic_level": academicLevelParse[Pricing["Select Grade"]],
-        "hourly_tuition": Pricing["Set Hourly Tuition ($)"],
-        "course_type": courseTypeParse[Pricing["Select Course Size"]],
+        name: Pricing["Price Rule Name"],
+        category: Pricing.Category.value,
+        academic_level: academicLevelParse[Pricing["Select Grade"]],
+        hourly_tuition: Pricing["Set Hourly Tuition ($)"],
+        course_type: courseTypeParse[Pricing["Select Course Size"]],
     }
-);
+    );
 
-export const updatePriceRule = (id, updatedPriceRule) => wrapPatch(
+export const updatePriceRule = (id, updatedPriceRule) =>
+    wrapPatch(
     "/pricing/rule/",
     [
         types.PATCH_PRICE_RULE_STARTED,
@@ -96,9 +105,9 @@ export const updatePriceRule = (id, updatedPriceRule) => wrapPatch(
     ],
     {
         id,
-        "data": updatedPriceRule,
+        data: updatedPriceRule,
     }
-);
+    );
 
 export const setDiscount = (discountType, discountPayload) => {
     switch (discountType) {
@@ -110,7 +119,7 @@ export const setDiscount = (discountType, discountPayload) => {
                     types.POST_DISCOUNT_MULTI_COURSE_SUCCESS,
                     types.POST_DISCOUNT_MULTI_COURSE_FAILED,
                 ],
-                discountPayload,
+                discountPayload
             );
         }
         case "Date Range Discount": {
@@ -121,7 +130,7 @@ export const setDiscount = (discountType, discountPayload) => {
                     types.POST_DISCOUNT_DATE_RANGE_SUCCESS,
                     types.POST_DISCOUNT_DATE_RANGE_FAILED,
                 ],
-                discountPayload,
+                discountPayload
             );
         }
         case "Payment Method Discount": {
@@ -132,7 +141,7 @@ export const setDiscount = (discountType, discountPayload) => {
                     types.POST_DISCOUNT_PAYMENT_METHOD_SUCCESS,
                     types.POST_DISCOUNT_PAYMENT_METHOD_FAILED,
                 ],
-                discountPayload,
+                discountPayload
             );
         }
         default:
@@ -140,7 +149,8 @@ export const setDiscount = (discountType, discountPayload) => {
     }
 };
 
-export const fetchMultiCourseDiscount = () => wrapGet(
+export const fetchMultiCourseDiscount = () =>
+    wrapGet(
     "/pricing/discount-multi-course/",
     [
         types.GET_DISCOUNT_MULTI_COURSE_STARTED,
@@ -148,9 +158,10 @@ export const fetchMultiCourseDiscount = () => wrapGet(
         types.GET_DISCOUNT_MULTI_COURSE_FAILED,
     ],
     {}
-);
+    );
 
-export const fetchPaymentMethodDiscount = () => wrapGet(
+export const fetchPaymentMethodDiscount = () =>
+    wrapGet(
     "/pricing/discount-payment-method/",
     [
         types.GET_DISCOUNT_PAYMENT_METHOD_STARTED,
@@ -158,9 +169,10 @@ export const fetchPaymentMethodDiscount = () => wrapGet(
         types.GET_DISCOUNT_PAYMENT_METHOD_FAILED,
     ],
     {}
-);
+    );
 
-export const fetchDateRangeDiscount = () => wrapGet(
+export const fetchDateRangeDiscount = () =>
+    wrapGet(
     "/pricing/discount-date-range/",
     [
         types.GET_DISCOUNT_DATE_RANGE_START,
@@ -168,25 +180,25 @@ export const fetchDateRangeDiscount = () => wrapGet(
         types.GET_DISCOUNT_DATE_RANGE_FAILED,
     ],
     {}
-);
+    );
 
 export const useMultiCourseDiscount = wrapUseEndpoint(
     "/pricing/discount-multi-course/",
-    types.GET_DISCOUNT_MULTI_COURSE_SUCCESS,
+    types.GET_DISCOUNT_MULTI_COURSE_SUCCESS
 );
 
 export const usePaymentMethodDiscount = wrapUseEndpoint(
     "/pricing/discount-payment-method/",
-    types.GET_DISCOUNT_PAYMENT_METHOD_SUCCESS,
+    types.GET_DISCOUNT_PAYMENT_METHOD_SUCCESS
 );
 
 export const useDateRangeDiscount = wrapUseEndpoint(
     "/pricing/discount-date-range/",
-    types.GET_DISCOUNT_DATE_RANGE_SUCCESS,
+    types.GET_DISCOUNT_DATE_RANGE_SUCCESS
 );
 
-
-export const deleteMultiCourseDiscount = (id) => wrapDelete(
+export const deleteMultiCourseDiscount = (id) =>
+    wrapDelete(
     "/pricing/discount-multi-course/",
     [
         types.DELETE_DISCOUNT_MULTI_COURSE_STARTED,
@@ -196,9 +208,10 @@ export const deleteMultiCourseDiscount = (id) => wrapDelete(
     {
         id,
     }
-);
+    );
 
-export const deletePaymentMethodDiscount = (id) => wrapDelete(
+export const deletePaymentMethodDiscount = (id) =>
+    wrapDelete(
     "/pricing/discount-payment-method/",
     [
         types.DELETE_DISCOUNT_PAYMENT_METHOD_STARTED,
@@ -208,9 +221,10 @@ export const deletePaymentMethodDiscount = (id) => wrapDelete(
     {
         id,
     }
-);
+    );
 
-export const deleteDateRangeDiscount = (id) => wrapDelete(
+export const deleteDateRangeDiscount = (id) =>
+    wrapDelete(
     "/pricing/discount-date-range/",
     [
         types.DELETE_DISCOUNT_DATE_RANGE_STARTED,
@@ -220,9 +234,10 @@ export const deleteDateRangeDiscount = (id) => wrapDelete(
     {
         id,
     }
-);
+    );
 
-export const patchMultiCourseDiscount = (id, payload) => wrapPatch(
+export const patchMultiCourseDiscount = (id, payload) =>
+    wrapPatch(
     "/pricing/discount-multi-course/",
     [
         types.PATCH_DISCOUNT_MULTI_COURSE_STARTED,
@@ -230,12 +245,13 @@ export const patchMultiCourseDiscount = (id, payload) => wrapPatch(
         types.PATCH_DISCOUNT_MULTI_COURSE_FAILED,
     ],
     {
-        "data": payload,
+        data: payload,
         id,
     }
-);
+    );
 
-export const patchPaymentMethodDiscount = (id, payload) => wrapPatch(
+export const patchPaymentMethodDiscount = (id, payload) =>
+    wrapPatch(
     "/pricing/discount-payment-method/",
     [
         types.PATCH_DISCOUNT_PAYMENT_METHOD_STARTED,
@@ -243,12 +259,13 @@ export const patchPaymentMethodDiscount = (id, payload) => wrapPatch(
         types.PATCH_DISCOUNT_PAYMENT_METHOD_FAILED,
     ],
     {
-        "data": payload,
+        data: payload,
         id,
     }
-);
+    );
 
-export const patchDateRangeDiscount = (id, payload) => wrapPatch(
+export const patchDateRangeDiscount = (id, payload) =>
+    wrapPatch(
     "/pricing/discount-date-range/",
     [
         types.PATCH_DISCOUNT_DATE_RANGE_STARTED,
@@ -256,7 +273,7 @@ export const patchDateRangeDiscount = (id, payload) => wrapPatch(
         types.PATCH_DISCOUNT_DATE_RANGE_FAILED,
     ],
     {
-        "data": payload,
+        data: payload,
         id,
     }
-);
+    );

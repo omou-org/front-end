@@ -8,47 +8,47 @@ import React from "react";
 import {useSelector} from "react-redux";
 
 const StudentInfo = ({user}) => {
-    const studentList = useSelector(({Users}) => Users.StudentList);
-    const fetchStatus = hooks.useStudent(user.student_ids);
-    const loadedStudentIDs = user.student_ids
-        .filter((studentID) => studentList[studentID]);
+	const studentList = useSelector(({Users}) => Users.StudentList);
+	const fetchStatus = hooks.useStudent(user.student_ids);
+	const loadedStudentIDs = user.student_ids.filter(
+		(studentID) => studentList[studentID]
+	);
 
-    if (loadedStudentIDs.length === 0) {
-        if (hooks.isLoading(fetchStatus)) {
-            return <Loading />;
-        }
-        if (hooks.isFail(fetchStatus)) {
-            return "Error loading students!";
-        }
-    }
+	if (loadedStudentIDs.length === 0) {
+		if (hooks.isLoading(fetchStatus)) {
+			return <Loading/>;
+		}
+		if (hooks.isFail(fetchStatus)) {
+			return "Error loading students!";
+		}
+	}
 
-    return (
-        <Grid
-            alignItems="center"
-            container
-            direction="row"
-            md={12}
-            spacing={40}
-            xs={10}>
-            {
-                loadedStudentIDs.map((studentID) => (
-                    <ProfileCard
-                        key={studentID}
-                        route={`/accounts/student/${studentID}`}
-                        user={studentList[studentID]} />
-                ))
-            }
-        </Grid>
-    );
+	return (
+		<Grid
+			alignItems="center"
+			container
+			direction="row"
+			md={12}
+			spacing={5}
+			xs={10}
+		>
+			{loadedStudentIDs.map((studentID) => (
+				<ProfileCard
+					key={studentID}
+					route={`/accounts/student/${studentID}`}
+					user={studentList[studentID]}
+				/>
+			))}
+		</Grid>
+	);
 };
 
 StudentInfo.propTypes = {
-    "user": PropTypes.shape({
-        "student_ids": PropTypes.arrayOf(PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.number,
-        ])).isRequired,
-    }).isRequired,
+	user: PropTypes.shape({
+		student_ids: PropTypes.arrayOf(
+			PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+		).isRequired,
+	}).isRequired,
 };
 
 export default StudentInfo;

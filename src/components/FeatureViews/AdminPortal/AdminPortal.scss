@@ -20,9 +20,6 @@
 
 .tuition-field {
   width:80%;
-  .menu-item{
-    text-align: left;
-  }
 }
 
 .admin-actions-wrapper{
@@ -53,11 +50,9 @@
   margin-bottom:15px;
 }
 
-.accounts-table-heading {
-  .table-header {
-    color: white;
-    font-weight: 500;
-  }
+.table-header {
+   color: white;
+   font-weight: 500;
 }
 
 /* Unpaid Sessions */

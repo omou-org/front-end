@@ -19,7 +19,7 @@ body{
 .Navigation {
   /*App Bar Styling*/
   .OmouBar {
-    z-index: 10000 !important;
+    background-color: $bioBackgroundColor;
   }
 
   .title {
@@ -42,10 +42,6 @@ body{
     
   }
   /*Drawer Styling*/
-
-  div[class*="MuiDrawer-paperAnchorDockedLeft"] {
-    border: none !important;
-  }
 
   .OmouMain {
     @include respond-to(handhelds) {

@@ -1,11 +1,10 @@
 // React Imports
-import React, { useCallback, useState } from "react";
-import { Redirect, useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../actions/authActions";
+import React, {useCallback, useState} from "react";
+import {Redirect, useHistory} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {logout} from "../../actions/authActions";
 import NavLinkNoDup from "../Routes/NavLinkNoDup";
 import PropTypes from "prop-types";
-
 // Material UI Imports
 import AppBar from "@material-ui/core/AppBar";
 import Hidden from "@material-ui/core/Hidden";
@@ -20,7 +19,7 @@ import Search from "../../components/FeatureViews/Search/Search";
 const AuthenticatedNav = ({ toggleDrawer }) => {
     const dispatch = useDispatch();
     const history = useHistory();
-    const authToken = useSelector(({ auth }) => auth.token);
+    const authToken = useSelector(({auth}) => auth.token);
 
     const [mobileOpen, setMobileOpen] = useState(false);
     const [isMobileSearching, setMobileSearching] = useState(false);
@@ -28,7 +27,6 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
     const handleDrawerToggle = useCallback(() => {
         toggleDrawer(!mobileOpen);
         setMobileOpen((open) => !open);
-
     }, [mobileOpen, toggleDrawer]);
 
     const handleLogout = useCallback(() => {
@@ -41,59 +39,47 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
     };
 
     if (!authToken) {
-        return (
-            <Redirect
-                push
-                to="/login" />
-        );
+        return <Redirect push to="/login"/>;
     }
 
     return (
-        <AppBar
-            className="OmouBar"
-            color="default"
-            position="sticky">
+        <AppBar className="OmouBar" position="sticky">
             <Toolbar>
-                {
-                    !isMobileSearching &&
+                {!isMobileSearching && (
                     <>
                         <Hidden lgUp>
                             <IconButton
                                 aria-label="Open Drawer"
                                 color="inherit"
-                                onClick={handleDrawerToggle}>
-                                <MenuIcon />
+                                onClick={handleDrawerToggle}
+                            >
+                                <MenuIcon/>
                             </IconButton>
                         </Hidden>
-                        <Typography
-                            className="title"
-                            component={NavLinkNoDup}
-                            to="/">
+                        <Typography className="title" component={NavLinkNoDup} to="/">
                             omou
                         </Typography>
-                        <div style={{
-                            "flex": 1,
-                        }} />
+                        <div
+                            style={{
+                                flex: 1,
+                            }}
+                        />
                     </>
-                }
-                <Search onMobileType={handleMobileSearch} />
-                <Typography
-                    className='catsButton'
-                    to='/cats'
-                    component={NavLinkNoDup}>
-                    CATS</Typography>
-                {
-                    !isMobileSearching && <LogoutIcon
-                        className="logout-icon"
-                        onClick={handleLogout} />
-                }
+                )}
+                <Search onMobileType={handleMobileSearch}/>
+                <Typography className="catsButton" to="/cats" component={NavLinkNoDup}>
+                    CATS
+                </Typography>
+                {!isMobileSearching && (
+                    <LogoutIcon className="logout-icon" onClick={handleLogout}/>
+                )}
             </Toolbar>
         </AppBar>
     );
 };
 
 AuthenticatedNav.propTypes = {
-    "toggleDrawer": PropTypes.func.isRequired,
+    toggleDrawer: PropTypes.func.isRequired,
 };
 
 export default AuthenticatedNav;
