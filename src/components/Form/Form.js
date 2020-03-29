@@ -51,7 +51,7 @@ import {DatePicker, TimePicker} from "material-ui-pickers";
 import * as utils from "./FormUtils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
 import InstructorConflictCheck from "components/InstructorConflictCheck";
-import {combineDateAndTime, durationStringToNum} from "utils";
+import {combineDateAndTime, durationStringToNum, uniques} from "utils";
 
 const parseGender = {
 	M: "Male",
@@ -1267,7 +1267,7 @@ class Form extends Component {
 				}
 			});
 		});
-		let uniqueVals = [...new Set(arr2)],
+		let uniqueVals = uniques(arr2),
 			indexOfString = -1;
 		uniqueVals.forEach((value, i) => {
 			if (typeof value === "string") {

@@ -2,7 +2,7 @@ import * as types from "./actionTypes";
 import {instance, MISC_FAIL, REQUEST_STARTED} from "./apiActions";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {isExistingTutoring} from "../utils";
+import {isExistingTutoring, uniques} from "utils";
 
 const enrollmentEndpoint = "/course/enrollment/";
 const courseEndpoint = "/course/catalog/";
@@ -225,7 +225,7 @@ export const usePayment = (id) => {
 					);
 
 					// get students
-					const uniqueStudentIDs = [...new Set(studentIDs)];
+					const uniqueStudentIDs = uniques(studentIDs);
 					const StudentResponses = await Promise.all(
 						uniqueStudentIDs.map((studentID) =>
 							instance.request({
@@ -244,7 +244,7 @@ export const usePayment = (id) => {
 					const courseIDs = Payment.data.registrations.map(
 						(registration) => registration.enrollment_details.course
 					);
-					const uniqueCourseIDs = [...new Set(courseIDs)];
+					const uniqueCourseIDs = uniques(courseIDs);
 					const CourseResponses = await Promise.all(
 						uniqueCourseIDs.map((courseID) =>
 							instance.request({
