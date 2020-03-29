@@ -20,9 +20,7 @@ import Typography from "@material-ui/core/Typography";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
 
 import "./registration.scss";
-import {
-    capitalizeString, courseDateFormat, DayConverter,
-} from "utils";
+import {capitalizeString, courseDateFormat, DayConverter} from "utils";
 import {isFail, isLoading, useCourse, useInstructor} from "actions/hooks";
 import {Link, Redirect, useRouteMatch} from "react-router-dom";
 import BackButton from "../../BackButton.js";
@@ -34,7 +32,9 @@ import UserAvatar from "../Accounts/UserAvatar";
 import {weeklySessionsParser} from "components/Form/FormUtils";
 
 const RegistrationCourse = () => {
-    const {"params": {courseID}} = useRouteMatch();
+    const {
+        params: {courseID},
+    } = useRouteMatch();
 
     const isAdmin = useSelector(({auth}) => auth.isAdmin);
     const courses = useSelector(({Course}) => Course.NewCourseList);
@@ -54,85 +54,93 @@ const RegistrationCourse = () => {
     // either doesn't exist or only has notes defined
     if (!course || Object.keys(course).length <= 1) {
         if (isLoading(courseStatus)) {
-            return <Loading paper />;
+            return <Loading paper/>;
         }
 
         if (isFail(courseStatus)) {
-            return <Redirect push to="/PageNotFound" />;
+            return <Redirect push to="/PageNotFound"/>;
         }
     }
 
-    const hasImportantNotes = Object.values(course.notes || {})
-        .some(({important}) => important);
+    const hasImportantNotes = Object.values(course.notes || {}).some(
+        ({important}) => important
+    );
 
     const instructor = instructors[course.instructor_id];
 
-    const {start_date, end_date, start_time, end_time} =
-        courseDateFormat(course);
+    const {start_date, end_date, start_time, end_time} = courseDateFormat(
+        course
+    );
 
     return (
         <Grid className="registrationCourse" item xs={12}>
             <Paper className="paper content" elevation={2}>
                 <Grid container justify="space-between">
                     <Grid item sm={3}>
-                        <BackButton />
+                        <BackButton/>
                     </Grid>
-                    <Grid item sm={2} />
+                    <Grid item sm={2}/>
                 </Grid>
-                <Divider className="top-divider" />
+                <Divider className="top-divider"/>
                 <Grid item lg={12}>
-                    <RegistrationActions courseTitle={course.course_title} />
+                    <RegistrationActions courseTitle={course.course_title}/>
                 </Grid>
                 <div className="course-heading">
                     <Typography align="left" variant="h3">
                         {course.title}
-                        {isAdmin &&
-                            <Button className="button" component={Link}
-                                to={`/registration/form/course_details/${courseID}/edit`}>
-                                <EditIcon className="icon" />
+                        {isAdmin && (
+                            <Button
+                                className="button"
+                                component={Link}
+                                to={`/registration/form/course_details/${courseID}/edit`}
+                            >
+                                <EditIcon className="icon"/>
                                 Edit Course
-                            </Button>}
+                            </Button>
+                        )}
                     </Typography>
                     <div className="date">
-                        <CalendarIcon align="left" className="icon" />
+                        <CalendarIcon align="left" className="icon"/>
                         <Typography align="left" className="sessions-text">
-                            {start_date} - {end_date} ({weeklySessionsParser(
-                                start_date, end_date
-                            )} sessions)
+                            {start_date} - {end_date} (
+                            {weeklySessionsParser(start_date, end_date)} sessions)
                         </Typography>
                     </div>
                     <div className="info-section">
                         <div className="course-info-header">
-                            <ClassIcon className="icon" />
+                            <ClassIcon className="icon"/>
                             <Typography align="left" className="text">
                                 Course Information
                             </Typography>
                         </div>
                         <div className="course-info-details">
-                            {
-                                instructor &&
+                            {instructor && (
                                 <>
-                                    {course.is_confirmed ?
-                                        <ConfirmIcon className="confirmed course-icon" /> :
-                                        <UnconfirmIcon className="unconfirmed course-icon" />}
-                                    <Chip avatar={
-                                        <UserAvatar fontSize={20}
-                                            name={instructor.name}
-                                            size={38} />
-                                    }
+                                    {course.is_confirmed ? (
+                                        <ConfirmIcon className="confirmed course-icon"/>
+                                    ) : (
+                                        <UnconfirmIcon className="unconfirmed course-icon"/>
+                                    )}
+                                    <Chip
+                                        avatar={
+                                            <UserAvatar
+                                                fontSize={20}
+                                                name={instructor.name}
+                                                size={38}
+                                            />
+                                        }
                                         className="chip"
                                         component={Link}
                                         label={instructor.name}
-                                        to={`/accounts/instructor/${instructor.user_id}`} />
+                                        to={`/accounts/instructor/${instructor.user_id}`}
+                                    />
                                 </>
-                            }
+                            )}
                             <Typography align="left" className="text">
                                 {start_time} - {end_time}
                             </Typography>
                             <Typography align="left" className="text">
-                                {capitalizeString(DayConverter[
-                                    new Date(start_date).getDay()
-                                ])}
+                                {capitalizeString(DayConverter[new Date(start_date).getDay()])}
                             </Typography>
                             <Typography align="left" className="text">
                                 Grade {course.grade}
@@ -143,29 +151,42 @@ const RegistrationCourse = () => {
                 <Typography align="left" className="description text">
                     {course.description}
                 </Typography>
-                <Tabs className="registration-course-tabs"
-                    indicatorColor="primary" onChange={handleTabChange}
-                    value={activeTab}>
-                    <Tab label={<>
-                        <RegistrationIcon className="NoteIcon" /> Registration
-                    </>} />
-                    <Tab label={
-                        hasImportantNotes ?
+                <Tabs
+                    className="registration-course-tabs"
+                    indicatorColor="primary"
+                    onChange={handleTabChange}
+                    value={activeTab}
+                >
+                    <Tab
+                        label={
                             <>
-                                <Avatar className="notificationCourse" />
-                                <NoteIcon className="TabIcon" /> Notes
-                            </> :
-                            <>
-                                <NoteIcon className="NoteIcon" /> Notes
+                                <RegistrationIcon className="NoteIcon"/> Registration
                             </>
-                    } />
+                        }
+                    />
+                    <Tab
+                        label={
+                            hasImportantNotes ? (
+                                <>
+                                    <Avatar className="notificationCourse"/>
+                                    <NoteIcon className="TabIcon"/> Notes
+                                </>
+                            ) : (
+                                <>
+                                    <NoteIcon className="NoteIcon"/> Notes
+                                </>
+                            )
+                        }
+                    />
                 </Tabs>
-                {activeTab === 0 &&
-                    <RegistrationCourseEnrollments courseID={courseID} />}
-                {activeTab === 1 &&
+                {activeTab === 0 && (
+                    <RegistrationCourseEnrollments courseID={courseID}/>
+                )}
+                {activeTab === 1 && (
                     <div className="notes-container">
-                        <Notes ownerID={courseID} ownerType="course" />
-                    </div>}
+                        <Notes ownerID={courseID} ownerType="course"/>
+                    </div>
+                )}
             </Paper>
         </Grid>
     );
