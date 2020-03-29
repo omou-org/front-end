@@ -38,7 +38,7 @@ const { DropdownIndicator } = components;
 
 const searchIcon = (props) => (
     <DropdownIndicator {...props}>
-      <SearchIcon className="search-icon-main"/>
+        <SearchIcon className="search-icon-main"/>
     </DropdownIndicator>
 );
 
@@ -50,15 +50,15 @@ const styles = {
     border: 0,
     boxShadow: "none",
   }),
-  option: (provided, {isFocused}) => ({
+    option: (provided, {isFocused}) => ({
     ...provided,
     backgroundColor: isFocused ? "#43B5D9" : provided.backgroundColor,
   }),
 };
 
 const Search = ({
-                  onMobileType = () => {
-                  }
+                    onMobileType = () => {
+                    }
                 }) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -97,176 +97,176 @@ const Search = ({
 
   const handleChange = useCallback(
       (input) => {
-        if (input) {
-          setQuery(input);
-          setMobileSearching(windowWidth < 800);
-          onMobileType(windowWidth < 800);
-        } else {
-          setMobileSearching(false);
-          onMobileType(false);
-        }
+          if (input) {
+              setQuery(input);
+              setMobileSearching(windowWidth < 800);
+              onMobileType(windowWidth < 800);
+          } else {
+              setMobileSearching(false);
+              onMobileType(false);
+          }
       },
       [onMobileType, windowWidth]
   );
 
   const submitSearch = useCallback(
       (input) => {
-        if (input) {
-          const params = new URLSearchParams({
-            query: input,
-          });
-          if (filter !== "all") {
-            params.set("filter", filter);
+          if (input) {
+              const params = new URLSearchParams({
+                  query: input,
+              });
+              if (filter !== "all") {
+                  params.set("filter", filter);
+              }
+              history.push({
+                  pathname: "/search/",
+                  search: params.toString(),
+              });
           }
-          history.push({
-            pathname: "/search/",
-            search: params.toString(),
-          });
-        }
       },
       [filter, history]
   );
 
   const handleItemSelect = useCallback(
       ({label}) => {
-        submitSearch(label);
+          submitSearch(label);
       },
       [submitSearch]
   );
 
   const handleSubmit = useCallback(
       (event) => {
-        event.preventDefault();
-        submitSearch(query);
+          event.preventDefault();
+          submitSearch(query);
       },
       [query, submitSearch]
   );
 
-  const changeFilter = useCallback(({target: {value}}) => {
+    const changeFilter = useCallback(({target: {value}}) => {
     setFilter(value);
   }, []);
 
   const searchAccounts = useCallback(
       async (input) => {
-        const response = await instance.get("/search/account/", {
-          params: {
-            page: 1,
-            query: input,
-          },
-        });
-        if (isFail(response.status)) {
-          return [];
-        }
-        dispatch({
-          payload: {
-            noChangeSearch: true,
-            response,
-          },
-          type: GET_ACCOUNT_SEARCH_QUERY_SUCCESS,
-        });
-        return response.data.results.map(
-            ({user: {id, first_name, last_name}}) => ({
-              label: `${first_name} ${last_name}`,
-              value: id,
-            })
-        );
+          const response = await instance.get("/search/account/", {
+              params: {
+                  page: 1,
+                  query: input,
+              },
+          });
+          if (isFail(response.status)) {
+              return [];
+          }
+          dispatch({
+              payload: {
+                  noChangeSearch: true,
+                  response,
+              },
+              type: GET_ACCOUNT_SEARCH_QUERY_SUCCESS,
+          });
+          return response.data.results.map(
+              ({user: {id, first_name, last_name}}) => ({
+                  label: `${first_name} ${last_name}`,
+                  value: id,
+              })
+          );
       },
       [dispatch]
   );
 
   const searchCourses = useCallback(
       async (input) => {
-        const response = await instance.get("/search/course/", {
-          params: {
-            page: 1,
-            query: input,
-          },
-        });
-        if (isFail(response.status)) {
-          return [];
-        }
-        dispatch({
-          payload: {
-            noChangeSearch: true,
-            response,
-          },
-          type: GET_COURSE_SEARCH_QUERY_SUCCESS,
-        });
-        return response.data.results.map(({id, subject}) => ({
-          label: subject,
-          value: id,
-        }));
+          const response = await instance.get("/search/course/", {
+              params: {
+                  page: 1,
+                  query: input,
+              },
+          });
+          if (isFail(response.status)) {
+              return [];
+          }
+          dispatch({
+              payload: {
+                  noChangeSearch: true,
+                  response,
+              },
+              type: GET_COURSE_SEARCH_QUERY_SUCCESS,
+          });
+          return response.data.results.map(({id, subject}) => ({
+              label: subject,
+              value: id,
+          }));
       },
       [dispatch]
   );
 
   const loadOptions = useCallback(
       async (input) => {
-        switch (filter) {
-          case "account":
-            return searchAccounts(input);
-          case "course":
-            return searchCourses(input);
-          default:
-            return [
-              ...(await searchAccounts(input)),
-              ...(await searchCourses(input)),
-            ];
-        }
+          switch (filter) {
+              case "account":
+                  return searchAccounts(input);
+              case "course":
+                  return searchCourses(input);
+              default:
+                  return [
+                      ...(await searchAccounts(input)),
+                      ...(await searchCourses(input)),
+                  ];
+          }
       },
       [filter, searchAccounts, searchCourses]
   );
 
   return (
       <Grid className="search" container>
-        {!mobileSearching && <Grid item xs={2}/>}
-        <Grid item xs={mobileSearching ? 12 : 10}>
-          <form onSubmit={handleSubmit}>
-            <Grid container>
-              <Grid item>
-                <FormControl
-                    className="search-selector"
-                    required
-                    variant="outlined"
-                >
-                  <Select
-                      className={`select-primary-filter ${classes.navSelect}`}
-                      disableunderline="true"
-                      inputProps={{
-                        id: "primary-filter",
-                        name: "primary-filter",
-                      }}
-                      onChange={changeFilter}
-                      value={filter}
-                      MenuProps={{classes: {paper: classes.dropdownStyle}}}
-                  >
-                    <MenuItem value="all">All</MenuItem>
-                    <MenuItem value="account">Account</MenuItem>
-                    <MenuItem value="course">Course</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item md={10} xs={mobileSearching ? 9 : 7}>
-                <AsyncCreatableSelect
-                    allowCreateWhileLoading
-                    cacheOptions
-                    className="search-input"
-                    classNamePrefix="main-search"
-                    components={{DropdownIndicator: searchIcon}}
-                    createOptionPosition="first"
-                    formatCreateLabel={formatCreateLabel}
-                    loadOptions={loadOptions}
-                    noOptionsMessage={noOptionsMessage}
-                    onChange={handleItemSelect}
-                    onInputChange={handleChange}
-                    placeholder={placeholder}
-                    styles={styles}
-                    value={query}
-                />
-              </Grid>
-            </Grid>
-          </form>
-        </Grid>
+          {!mobileSearching && <Grid item xs={2}/>}
+          <Grid item xs={mobileSearching ? 12 : 10}>
+              <form onSubmit={handleSubmit}>
+                  <Grid container>
+                      <Grid item>
+                          <FormControl
+                              className="search-selector"
+                              required
+                              variant="outlined"
+                          >
+                              <Select
+                                  className={`select-primary-filter ${classes.navSelect}`}
+                                  disableunderline="true"
+                                  inputProps={{
+                                      id: "primary-filter",
+                                      name: "primary-filter",
+                                  }}
+                                  onChange={changeFilter}
+                                  value={filter}
+                                  MenuProps={{classes: {paper: classes.dropdownStyle}}}
+                              >
+                                  <MenuItem value="all">All</MenuItem>
+                                  <MenuItem value="account">Account</MenuItem>
+                                  <MenuItem value="course">Course</MenuItem>
+                              </Select>
+                          </FormControl>
+                      </Grid>
+                      <Grid item md={10} xs={mobileSearching ? 9 : 7}>
+                          <AsyncCreatableSelect
+                              allowCreateWhileLoading
+                              cacheOptions
+                              className="search-input"
+                              classNamePrefix="main-search"
+                              components={{DropdownIndicator: searchIcon}}
+                              createOptionPosition="first"
+                              formatCreateLabel={formatCreateLabel}
+                              loadOptions={loadOptions}
+                              noOptionsMessage={noOptionsMessage}
+                              onChange={handleItemSelect}
+                              onInputChange={handleChange}
+                              placeholder={placeholder}
+                              styles={styles}
+                              value={query}
+                          />
+                      </Grid>
+                  </Grid>
+              </form>
+          </Grid>
       </Grid>
   );
 };

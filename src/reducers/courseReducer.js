@@ -24,12 +24,12 @@ export default (state = initialState.Course, {payload, type}) => {
     case actions.DELETE_COURSE_NOTE_SUCCESSFUL:
       return handleNoteDelete(state, payload);
     case actions.ADD_SMALL_GROUP_REGISTRATION:
-      const {new_course} = payload;
+        const {new_course} = payload;
       return handleCoursePost(state, new_course);
     case actions.GET_COURSE_SEARCH_QUERY_SUCCESS:
       return handleCourseSearchResults(state, payload);
     case actions.DELETE_ENROLLMENT_SUCCESS:
-      const newState = {...state};
+        const newState = {...state};
       const courseRoster = newState.NewCourseList[payload.courseID].roster;
       newState.NewCourseList[payload.courseID].roster.splice(
           courseRoster.indexOf(payload.studentID),
@@ -50,8 +50,8 @@ const parseTime = (time) => {
 };
 
 const updateCourseCategories = (state, payload, action) => {
-  let {response} = payload;
-  let {data} = response;
+    let {response} = payload;
+    let {data} = response;
   switch (action) {
     case "GET": {
       state["CourseCategories"] = data;
@@ -82,9 +82,9 @@ const updateCourseCategories = (state, payload, action) => {
 };
 
 const handleCoursePost = (state, response) => {
-  let {NewCourseList} = state;
+    let {NewCourseList} = state;
   if (Array.isArray(response)) {
-    response.forEach(({data}) => {
+      response.forEach(({data}) => {
       NewCourseList = updateCourse(NewCourseList, data.id, data);
     });
   } else {
@@ -102,7 +102,7 @@ const handleCoursePost = (state, response) => {
 };
 
 const handleCoursesFetch = (state, payload) => {
-  let {NewCourseList} = state;
+    let {NewCourseList} = state;
   let id, response;
   if (payload.id) {
     id = payload.id;
@@ -116,7 +116,7 @@ const handleCoursesFetch = (state, payload) => {
       NewCourseList = updateCourse(NewCourseList, course.id, course);
     });
   } else if (Array.isArray(id)) {
-    response.forEach(({data}) => {
+      response.forEach(({data}) => {
       NewCourseList = updateCourse(NewCourseList, data.id, data);
     });
   } else {
@@ -161,16 +161,16 @@ export const updateCourse = (courses, id, course) => ({
 
 const handleNotesPost = (state, {response, ...rest}) =>
     handleNotesFetch(state, {
-      response: {
-        ...response,
-        data: [response.data],
+        response: {
+            ...response,
+            data: [response.data],
     },
-      ownerID: response.data.course,
+        ownerID: response.data.course,
     ...rest,
     });
 
 const handleNotesFetch = (state, {ownerID, response}) => {
-  const {data} = response;
+    const {data} = response;
   const newState = JSON.parse(JSON.stringify(state));
   if (!newState.NewCourseList[ownerID]) {
     newState.NewCourseList[ownerID] = {};
@@ -197,9 +197,9 @@ const handleNoteDelete = (state, {ownerID, noteID}) => {
 };
 
 const handleCourseSearchResults = (state, payload) => {
-  const {response} = payload;
-  const {data} = response;
-  let {NewCourseList} = state;
+    const {response} = payload;
+    const {data} = response;
+    let {NewCourseList} = state;
   data.results.forEach((course) => {
     NewCourseList = updateCourse(NewCourseList, course.id, course);
   });

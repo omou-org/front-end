@@ -47,9 +47,9 @@ export default function admin(state = initialState.Admin, {payload, type}) {
 }
 
 const updatePriceRule = (state, {response}, action) => {
-  const {data} = response;
+    const {data} = response;
   let newPriceRules = [];
-  const {PriceRules} = state;
+    const {PriceRules} = state;
   switch (action) {
     case "GET":
       newPriceRules = data;
@@ -75,8 +75,8 @@ const handleUnpaidFetch = (state, {response}) => ({
 });
 
 const updateDiscount = (state, {response, id}, action, discountType) => {
-  const {data} = response;
-  const {Discounts} = state;
+    const {data} = response;
+    const {Discounts} = state;
   let newDiscounts = [];
   switch (action) {
     case "GET":
