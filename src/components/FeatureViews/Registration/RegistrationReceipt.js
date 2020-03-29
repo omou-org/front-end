@@ -15,7 +15,7 @@ import {usePayment, useSubmitRegistration} from "actions/multiCallHooks";
 import BackButton from "components/BackButton";
 import {GET} from "actions/actionTypes";
 import Loading from "components/Loading";
-import {paymentToString} from "utils";
+import {paymentToString, uniques} from "utils";
 
 const RegistrationReceipt = () => {
     const history = useHistory();
@@ -52,9 +52,9 @@ const RegistrationReceipt = () => {
     const courseReceiptInitializer = useCallback(
         (enrollments) => {
             const receipt = {};
-            const studentIDs = [
-                ...new Set(enrollments.map((enrollment) => enrollment.student)),
-            ];
+            const studentIDs = uniques(
+                enrollments.map((enrollment) => enrollment.student)
+            );
             studentIDs.forEach((id) => {
                 if (RequestStatus.student[GET][id] !== 200) {
                     api.fetchStudents(id);
