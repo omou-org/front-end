@@ -155,6 +155,7 @@ class Form extends Component {
 				case "tutoring": {
 					console.log('triggers')
 					console.log("numbah twoo")
+					console.log("is work?")
 					if (id && this.props.registeredCourses) {
 						if (id.indexOf("+") >= 0) {
 							const studentID = id.substring(0, id.indexOf("+"));
