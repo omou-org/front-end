@@ -509,13 +509,14 @@ class Form extends Component {
 		let nextSectionInput = false;
 		const currSectionTitle = this.state.activeSection;
 		// Get input from the conditional field
-		if (Array.isArray(this.getFormObject()[currSectionTitle])) {
+        if (Array.isArray(this.getFormObject()[currSectionTitle])) {
+            console.log("this should be a bad console log")
 			this.getFormObject()[currSectionTitle].some((field) => {
 				if (field.conditional) {
-					nextSectionInput = this.state[currSectionTitle][field.name];
-					return true;
+					nextSectionInput = this.state[currSectionTitle][field.name]
+					return true
 				}
-				return false;
+				return false
 			});
 		}
 		return nextSectionInput;
