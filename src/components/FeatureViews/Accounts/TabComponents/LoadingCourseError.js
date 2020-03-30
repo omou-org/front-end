@@ -1,13 +1,21 @@
 import { connect, useSelector } from 'react-redux';
 import React from 'react';
 import loadingCoursesError from "./loadingCoursesError.png";
+import {Typography} from "@material-ui/core";
+import PropTypes from "prop-types";
 
-function LoadingCoursesError(props){
+
+function LoadingCoursesError({error}){
     return(
-    <div>
+    <>
         <img style={{width:"10%"}} src={loadingCoursesError}/>
-        <h2>There was an error loading your {props.error}.</h2>
-    </div>);
+        <Typography variant="h6">There was an error loading your {error}.</Typography>
+    </>);
 }
+
+LoadingCoursesError.propTypes = {
+    "error":PropTypes.string.isRequired
+}
+
 
 export default LoadingCoursesError
