@@ -11,6 +11,7 @@ import Hidden from "@material-ui/core/Hidden";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
+import DashboardIcon from "@material-ui/icons/Dashboard";
 import AdminIcon from "@material-ui/icons/Face"
 import ListItemText from "@material-ui/core/ListItemText";
 import { makeStyles } from '@material-ui/core/styles';
@@ -43,11 +44,11 @@ const Navigation = (props) => {
     const {token, isAdmin} = useSelector(({auth}) => auth);
 
     const NavList = isAdmin ? [
-            // {
-            //     "name": "Dashboard",
-            //     "link": "/",
-            //     "icon": <DashboardIcon />,
-            // },
+            {
+                "name": "Dashboard",
+                "link": "/",
+                "icon": <DashboardIcon />,
+            },
             {
                 "name": "Scheduler",
                 "link": "/scheduler",
@@ -70,6 +71,11 @@ const Navigation = (props) => {
                 }
             ] :
         [
+            {
+                "name": "Dashboard",
+                "link": "/",
+                "icon": <DashboardIcon />,
+            },
             {
                 "name": "Scheduler",
                 "link": "/scheduler",
@@ -98,7 +104,7 @@ const Navigation = (props) => {
                         className={`listItem ${classes.navigationIconStyle}`} 
                         component={NavLinkNoDup}
                         isActive={(match, location) => match
-                            || (NavItem.name === "Scheduler" && location.pathname === "/")
+                            || (NavItem.name === "Dashboard" && location.pathname === "/")
                         }
                         key={NavItem.name}
                         to={NavItem.link}>

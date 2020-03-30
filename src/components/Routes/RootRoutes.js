@@ -15,6 +15,7 @@ import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage";
 import ProtectedRoute from "./ProtectedRoute";
 import Registration from "../FeatureViews/Registration/Registration";
 import RegistrationForm from "../Form/Form";
+import Dashboard from "../FeatureViews/Dashboard/Dashboard";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
 import SearchResults from "../FeatureViews/Search/SearchResults";
 import SessionView from "../FeatureViews/Scheduler/SessionView";
@@ -37,10 +38,11 @@ export const RootRoutes = () => {
                 render={(passedProps) => <LoginPage {...passedProps} />} />
 
             {/* Main Feature Views */}
+
             <ProtectedRoute
                 exact
                 path="/"
-                render={(passedProps) => <Scheduler {...passedProps} />} />
+                render={(passedProps) => <Dashboard {...passedProps} />} />
 
             <ProtectedRoute
                 exact
