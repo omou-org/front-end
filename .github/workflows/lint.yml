@@ -7,6 +7,5 @@ jobs:
         runs-on: ubuntu-latest
         steps:
           - uses: actions/checkout@v1
-          - uses: gimenete/eslint-action@master
-            with:
-                repo-token: ${{secrets.GITHUB_TOKEN}}
+          - uses: actions/setup-node@v1.1.0
+          - uses: hallee/eslint-action@master
