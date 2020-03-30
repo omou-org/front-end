@@ -26,3 +26,7 @@ jobs:
         CI: true
     - name: Setup Node.js for use with actions
       uses: actions/setup-node@v1.1.0
+    - name: ESLint
+      uses: hallee/eslint-action@master
+      with:
+        repo-token: ${{secrets.GITHUB_TOKEN}}
