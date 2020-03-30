@@ -872,9 +872,10 @@ class Form extends Component {
 						/>
 					);
 				}
-			case "select":
-				const value = this.state[label][fieldTitle];
-				const {options} = field;
+            case "select":
+            console.log("another one")
+				const value = this.state[label][fieldTitle]
+				const {options} = field
 				disabled =
 					disabled &&
 					fieldTitle !== "Relationship to Student" &&
