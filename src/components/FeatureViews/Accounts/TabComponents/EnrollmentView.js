@@ -21,6 +21,7 @@ import PaymentTable from "./PaymentTable";
 import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
 import SessionPaymentStatusChip from "components/SessionPaymentStatusChip";
 import Switch from "@material-ui/core/Switch";
+import LoadingError from "./LoadingCourseError"
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
@@ -170,6 +171,7 @@ const CourseSessionStatus = () => {
     ) {
         return <Loading paper />;
     }
+
     if (
         hooks.isFail(
             courseStatus,
@@ -179,7 +181,7 @@ const CourseSessionStatus = () => {
             sessionStatus
         )
     ) {
-        return "Error loading data";
+        return <LoadingError error="data"/>;
     }
 
     const mainContent = () => {

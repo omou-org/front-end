@@ -7,7 +7,7 @@ import Grid from "@material-ui/core/Grid";
 import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-
+import LoadingError from "./LoadingCourseError"
 import * as hooks from "actions/hooks";
 import {capitalizeString, courseDateFormat, dateTimeToDate} from "utils";
 import NoListAlert from "components/NoListAlert";
@@ -79,9 +79,10 @@ const StudentCourseViewer = ({studentID, current = true}) => {
 
     if (!enrollments[studentID] && !hooks.isSuccessful(enrollmentStatus)) {
         if (hooks.isLoading(enrollmentStatus, courseStatus)) {
-            return <Loading loadingText="LOADING COURSES" small/>;
-        } else if (hooks.isFail(enrollmentStatus, courseStatus)) {
-            return "Error loading courses!";
+            return <Loading small loadingText="LOADING COURSES"/>;
+        }
+        if (hooks.isFail(enrollmentStatus, courseStatus)) {
+            return <LoadingError error="courses"/>;
         }
     }
 

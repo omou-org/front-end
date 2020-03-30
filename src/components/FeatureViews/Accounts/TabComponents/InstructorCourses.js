@@ -10,6 +10,7 @@ import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
+import LoadingError from "./LoadingCourseError";
 
 import {capitalizeString, courseDateFormat} from "utils";
 
@@ -25,14 +26,16 @@ const InstructorCourses = ({instructorID}) => {
       [courses, instructorID]
   );
 
-  if (Object.keys(courses).length === 0) {
-    if (hooks.isLoading(courseStatus)) {
-      return <Loading/>;
+    if (Object.keys(courses).length === 0) {
+        if (hooks.isLoading(courseStatus)) {
+            return <Loading />;
+        }
+        if (hooks.isFail(courseStatus)) {
+            return <LoadingError error="courses"/>;
+        }
     }
-    if (hooks.isFail(courseStatus)) {
-      return "Error loading courses!";
-    }
-  }
+   
+  
 
   return (
       <Grid container>

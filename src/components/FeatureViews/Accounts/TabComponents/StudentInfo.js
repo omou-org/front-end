@@ -6,6 +6,7 @@ import ProfileCard from "../ProfileCard";
 import PropTypes from "prop-types";
 import React from "react";
 import {useSelector} from "react-redux";
+import LoadingError from "./LoadingCourseError"
 
 const StudentInfo = ({user}) => {
 	const studentList = useSelector(({Users}) => Users.StudentList);
@@ -14,14 +15,14 @@ const StudentInfo = ({user}) => {
 		(studentID) => studentList[studentID]
 	);
 
-	if (loadedStudentIDs.length === 0) {
-		if (hooks.isLoading(fetchStatus)) {
-			return <Loading/>;
-		}
-		if (hooks.isFail(fetchStatus)) {
-			return "Error loading students!";
-		}
-	}
+    if (loadedStudentIDs.length === 0) {
+        if (hooks.isLoading(fetchStatus)) {
+            return <Loading />;
+        }
+        if (hooks.isFail(fetchStatus)) {
+            return <LoadingError error="students"/>;
+        }
+    }
 
 	return (
 		<Grid

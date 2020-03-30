@@ -10,6 +10,7 @@ import {Link} from "react-router-dom";
 import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
 
 import {isFail, isLoading, useCategory} from "actions/hooks.js";
 import {truncateStrings} from "utils";
@@ -25,7 +26,7 @@ const TutoringList = () => {
 		if (isLoading(categoryStatus)) {
 			return <Loading/>;
 		} else if (isFail(categoryStatus)) {
-			return "Error loading subjects!";
+			return <LoadingError error="subjects"/>;
 		}
 	}
 

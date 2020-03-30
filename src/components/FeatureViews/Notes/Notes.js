@@ -19,6 +19,7 @@ import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
 import {makeStyles} from "@material-ui/core/styles";
 
 import "./Notes.scss";
@@ -323,12 +324,9 @@ const Notes = ({ownerType, ownerID}) => {
 		return <Loading loadingText="NOTES LOADING" small/>;
 	}
 
-	if (
-		hooks.isFail(getRequestStatus) &&
-		(!notes || Object.entries(notes).length === 0)
-	) {
-		return "Error loading notes!";
-	}
+    if (hooks.isFail(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {
+        return <LoadingError error="notes"/>;
+    }
 
 	if (submitting && alert) {
 		if (isPost && postRequestStatus && postRequestStatus !== REQUEST_STARTED) {
