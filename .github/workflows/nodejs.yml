@@ -26,3 +26,5 @@ jobs:
         CI: true
     - name: Setup Node.js for use with actions
       uses: actions/setup-node@v1.1.0
+    - name: ESLint Action
+      uses: hallee/eslint-action@1.0.1
