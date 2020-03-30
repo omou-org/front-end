@@ -436,7 +436,7 @@ class Form extends Component {
                                 });
                             }
                         }
-                    })();
+                    })()
                 }
                 // no default
             }
