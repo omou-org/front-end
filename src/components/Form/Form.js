@@ -443,7 +443,7 @@ class Form extends Component {
         }
         this.setState({
             "hasLoaded": true,
-        });
+        })
     }
 
     componentWillUnmount = () => {
