@@ -78,6 +78,7 @@ const RegistrationActions = () => {
 					{currentParent && (
 						<Grid item xs={2}>
 							<Button
+								data-cy="register-btn"
 								aria-controls="simple-menu"
 								aria-haspopup="true"
 								className="button"
@@ -93,7 +94,10 @@ const RegistrationActions = () => {
 				<Grid item xs={2}>
 					{currentParent ? (
 						<Tooltip title="Registering Parent">
-							<Button className="button" onClick={openDialog}>
+							<Button
+								data-cy="parent-btn"
+								className="button"
+								onClick={openDialog}>
 								<div
 									className="circle-icon"
 									style={{
@@ -104,7 +108,10 @@ const RegistrationActions = () => {
 							</Button>
 						</Tooltip>
 					) : (
-						<Button className="button set-parent" onClick={openDialog}>
+						<Button
+							data-cy="parent-btn"
+							className="button set-parent"
+							onClick={openDialog}>
 							<div className="circle-icon"/>
 							SET PARENT
 						</Button>
@@ -117,15 +124,24 @@ const RegistrationActions = () => {
 				onClose={closeRegisterMenu}
 				open={anchorEl !== null}
 			>
-				<MenuItem component={Link} to="/registration/form/course/">
+				<MenuItem
+					data-cy="course-registration"
+					component={Link}
+					to="/registration/form/course/">
 					<NewCourse className="icon innerIcon"/>
 					<ListItemText primary="COURSE"/>
 				</MenuItem>
-				<MenuItem component={Link} to="/registration/form/tutoring/">
+				<MenuItem
+					data-cy="tutoring-registration"
+					component={Link}
+					to="/registration/form/tutoring/">
 					<NewTutor className="icon innerIcon"/>
 					<ListItemText primary="TUTORING"/>
 				</MenuItem>
-				<MenuItem component={Link} to="/registration/form/small_group/">
+				<MenuItem
+					data-cy="small-group-registration"
+					component={Link}
+					to="/registration/form/small_group/">
 					<NewTutor className="icon innerIcon"/>
 					<ListItemText primary="SMALL GROUP"/>
 				</MenuItem>

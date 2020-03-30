@@ -172,7 +172,7 @@ const SelectParentDialog = ({onClose, open}) => {
             <DialogActions>
                 {currentParent ? (
                     <>
-                        <Button onClick={handleExitParent}>Exit Parent</Button>
+                        <Button data-cy="exit-parent-btn" onClick={handleExitParent}>Exit Parent</Button>
                         <span>
               <Button
                   component={NavLinkNoDup}
@@ -184,7 +184,7 @@ const SelectParentDialog = ({onClose, open}) => {
             </span>
                     </>
                 ) : (
-                    <Button onClick={handleClose}>Set Parent</Button>
+                    <Button data-cy="set-parent-btn" onClick={handleClose}>Set Parent</Button>
                 )}
             </DialogActions>
         </Dialog>
