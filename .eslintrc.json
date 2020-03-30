@@ -1,12 +1,14 @@
 {
     "env": {
+        "amd": true,
         "browser": true,
-        "es6": true
+        "es6": true,
+        "cypress/globals": true
     },
+    "parser": "babel-eslint",
     "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended",
-        "plugin:cypress/recommended"
+        "eslint:all",
+        "plugin:react/all"
     ],
     "parserOptions": {
         "ecmaFeatures": {
@@ -16,42 +18,220 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "react-hooks",
+        "cypress"
     ],
     "rules": {
+        "array-element-newline": [
+            "off",
+            "consistent"
+        ],
+        "capitalized-comments": "off",
+        "camelcase": "off",
+        "comma-dangle": [
+            "error",
+            {
+                "arrays": "always-multiline",
+                "objects": "always-multiline",
+                "imports": "always-multiline",
+                "exports": "always-multiline",
+                "functions": "never"
+            }
+        ],
+        "dot-location": [
+            "error",
+            "property"
+        ],
+        "eqeqeq": "warn",
+        "func-style": "warn",
+        "function-call-argument-newline": "off",
+        "function-paren-newline": [
+            "error",
+            "consistent"
+        ],
+        "id-length": [
+            "error",
+            {
+                "exceptions": [
+                    "_"
+                ]
+            }
+        ],
+        "implicit-arrow-linebreak": "off",
+        "template-curly-spacing": "off",
         "indent": [
             "error",
-            4
+            4,
+            {
+                "SwitchCase": 1,
+                            "ignoredNodes": ["TemplateLiteral"]
+            }
         ],
-        "linebreak-style": [
-            "error",
-            "unix"
+        "max-lines-per-function": [
+            "off"
         ],
-        "quotes": [
+        "max-statements": [
             "error",
-            "double"
+            40,
+            {
+                "ignoreTopLevelFunctions": true
+            }
         ],
-        "semi": [
+        "multiline-comment-style": "off",
+        "multiline-ternary": [
             "error",
-            "always"
-        ]
+            "always-multiline"
+        ],
+        "no-confusing-arrow": "off",
+        "no-console": [
+            "error",
+            {
+                "allow": [
+                    "warn",
+                    "error"
+                ]
+            }
+        ],
+        "no-empty-function": [
+            "error",
+            {
+                "allow": [
+                    "arrowFunctions"
+                ]
+            }
+        ],
+        "no-extra-parens": [
+            "error",
+            "all",
+            {
+                "ignoreJSX": "all",
+                "nestedBinaryExpressions": false
+            }
+        ],
+        "no-magic-numbers": "off",
+        "no-negated-condition": "off",
+        "no-nested-ternary": "warn",
+        "no-ternary": "off",
+        "no-unused-expressions": [
+            "error",
+            {
+                "allowShortCircuit": true
+            }
+        ],
+        "one-var": "off",
+        "operator-linebreak": "off",
+        "padded-blocks": "off",
+        "sort-imports": [
+            "warn",
+            {
+                "ignoreCase": true,
+                "ignoreDeclarationSort": false,
+                "ignoreMemberSort": false,
+                "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
+            }
+        ],
+        "space-before-function-paren": [
+            "error",
+            {
+                "anonymous": "always",
+                "named": "never",
+                "asyncArrow": "always"
+            }
+        ],
+        "yoda": [
+            "error",
+            "never",
+            {
+                "exceptRange": true
+            }
+        ],
+        "react/forbid-component-props": [
+            "warn",
+            {
+                "forbid": ["style"]
+            }
+        ],
+        "react/function-component-definition": [
+            "error",
+            {
+                "namedComponents": "arrow-function",
+                "unnamedComponents": "arrow-function"
+            }
+        ],
+        "react/jsx-closing-bracket-location": [
+            "error",
+            "after-props"
+        ],
+        "react/jsx-filename-extension": [
+            "error",
+            {
+                "extensions": [".js", ".jsx"]
+            }
+        ],
+        "react/jsx-first-prop-new-line": [
+            "error",
+            "never"
+        ],
+        "react/jsx-max-depth": [
+            "warn",
+            {
+                "max": 4
+            }
+        ],
+        "react/jsx-max-props-per-line": [
+            "error",
+            {
+                "maximum": 5,
+                "when": "multiline"
+            }
+        ],
+        "react/jsx-no-literals": "off",
+        "react/jsx-one-expression-per-line": "off",
+        "react/no-set-state": "off",
+        "react/no-multi-comp": [
+            "error",
+            {
+                "ignoreStateless": true
+            }
+        ],
+        "react/no-unescaped-entities": "warn",
+        "react/prop-types": [
+            "error",
+            {
+                "skipUndeclared": true
+            }
+        ],
+        "react/require-default-props": "off",
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "error",
+        "cypress/no-assigning-return-values": "error",
+        "cypress/no-unnecessary-waiting": "error",
+        "cypress/assertion-before-screenshot": "warn",
+        "cypress/no-force": "warn",
+        "cypress/require-data-selectors": "off"
     },
     "settings": {
         "react": {
+            "pragma": "React",
             "version": "detect"
         },
+        "propWrapperFunctions": [
+            // The names of any function used to wrap propTypes, e.g. `forbidExtraProps`. If this isn't set, any propTypes wrapped in a function will be skipped.
+            "forbidExtraProps",
+            {
+                "property": "freeze",
+                "object": "Object"
+            },
+            {
+                "property": "myFavoriteWrapper"
+            }
+        ],
         "linkComponents": [
+            // Components used as alternatives to <a> for linking, eg. <Link to={ url } />
             "Hyperlink",
             {
                 "name": "Link",
-                "linkAttribute": "to"
-            },
-            {
-                "name": "NavLink",
-                "linkAttribute": "to"
-            },
-            {
-                "name": "NavLinkNoDup",
                 "linkAttribute": "to"
             }
         ]

@@ -156,6 +156,7 @@ class Form extends Component {
 					console.log('triggers')
 					console.log("numbah twoo")
 					console.log("is work?")
+					console.log("errornesou")
 					if (id && this.props.registeredCourses) {
 						if (id.indexOf("+") >= 0) {
 							const studentID = id.substring(0, id.indexOf("+"));
@@ -431,7 +432,7 @@ class Form extends Component {
 							// succesful request
 							newAction(types.FETCH_PARENT_SUCCESSFUL, response);
 							parent = updateParent({}, id, response.data)[id];
-						} catch {
+						} catch (err) {
 							if (this.props.parents[id]) {
 								parent = this.props.parents[id];
 							} else {
@@ -468,6 +469,7 @@ class Form extends Component {
 	}
 
 	componentWillUnmount = () => {
+		console.log("please")
 		this.props.registrationActions.resetSubmitStatus();
 	};
 
