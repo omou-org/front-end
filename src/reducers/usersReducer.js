@@ -7,11 +7,11 @@ export default function users(state = initialState.Users, {payload, type}) {
     case actions.FETCH_STUDENT_SUCCESSFUL:
       return handleStudentsFetch(state, payload);
     case actions.FETCH_PARENT_SUCCESSFUL:
-      return handleParentsFetch(state, payload);
+      return handleParentsFetch(state, payload)
     case actions.FETCH_INSTRUCTOR_SUCCESSFUL:
-      return handleInstructorsFetch(state, payload);
+      return handleInstructorsFetch(state, payload)
     case actions.FETCH_ACCOUNT_NOTE_SUCCESSFUL:
-      return handleAccountNotesFetch(state, payload);
+      return handleAccountNotesFetch(state, payload)
     case actions.POST_ACCOUNT_NOTE_SUCCESSFUL:
     case actions.PATCH_ACCOUNT_NOTE_SUCCESSFUL:
       return handleAccountNotesPost(state, payload);
