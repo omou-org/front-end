@@ -8,13 +8,13 @@ export default function course(
 ) {
 	switch (type) {
 		case actions.POST_PAYMENT_SUCCESS:
-			return handlePayments(state, payload);
+			return handlePayments(state, payload)
 		case actions.GET_PAYMENT_PARENT_SUCCESS:
-			return handlePayments(state, payload);
+			return handlePayments(state, payload)
 		case actions.GET_PAYMENT_SUCCESS:
-			return handlePayments(state, payload);
+			return handlePayments(state, payload)
 		case actions.GET_PAYMENT_ENROLLMENT_SUCCESS:
-			return handlePayments(state, payload);
+			return handlePayments(state, payload)
 		default:
 			return state;
 	}
