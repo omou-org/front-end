@@ -27,6 +27,6 @@ jobs:
     - name: Setup Node.js for use with actions
       uses: actions/setup-node@v1.1.0
     - name: ESLint
-      uses: hallee/eslint-action@master
+      uses: a-b-r-o-w-n/eslint-action@v1.1.0
       with:
         repo-token: ${{secrets.GITHUB_TOKEN}}
