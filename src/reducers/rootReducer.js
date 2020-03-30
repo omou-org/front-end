@@ -9,18 +9,20 @@ import Enrollments from "./enrollmentReducer";
 import Payments from "./paymentsReducer";
 import Search from "./searchResultsReducer";
 import Admin from "./adminReducer";
+import Cat from "./catReducer";
 
 const rootReducer = combineReducers({
-    auth,
-    Calendar,
-    Course,
-    Enrollments,
-    Payments,
-    Registration,
-    Users,
-    RequestStatus,
-    Search,
-    Admin,
+	auth,
+	Calendar,
+	Course,
+	Enrollments,
+	Payments,
+	Registration,
+	Users,
+	RequestStatus,
+	Search,
+	Admin,
+	Cat,
 });
 
 export default rootReducer;

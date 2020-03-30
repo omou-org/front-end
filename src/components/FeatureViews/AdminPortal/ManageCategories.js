@@ -1,272 +1,223 @@
-import React, {useEffect, useMemo, useState} from "react";
-// Material UI Imports
+import React, {useCallback, useEffect, useMemo, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {bindActionCreators} from "redux";
+
+import Button from "@material-ui/core/Button";
+import EditIcon from "@material-ui/icons/Edit";
 import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton/IconButton";
+import Paper from "@material-ui/core/Paper";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
 
 import "./AdminPortal.scss";
+import * as adminActions from "actions/adminActions";
+import * as hooks from "actions/hooks";
+import Loading from "components/Loading";
+import NoListAlert from "components/NoListAlert";
 
-import {bindActionCreators} from "redux";
-import * as adminActions from "../../../actions/adminActions";
-import {connect, useDispatch, useSelector} from "react-redux";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import {withRouter} from "react-router-dom";
-import TextField from "@material-ui/core/TextField";
-import {NoListAlert} from "../../NoListAlert";
-import {GET} from "../../../actions/actionTypes";
-import Loading from "../../Loading";
-import IconButton from "@material-ui/core/IconButton/IconButton";
-import EditIcon from "@material-ui/icons/Edit";
-import Button from "@material-ui/core/Button";
+const ManageCategories = () => {
+	const dispatch = useDispatch();
+	const api = useMemo(() => bindActionCreators(adminActions, dispatch), [
+		dispatch,
+	]);
 
+	const [categoryName, setCategoryName] = useState("");
+	const [categoryDescription, setCategoryDescription] = useState("");
+	const [categoryList, setCategoryList] = useState([]);
 
-function ManageCategories() {
-    const dispatch = useDispatch();
-    const api = useMemo(
-        () => ({
-            ...bindActionCreators(adminActions, dispatch),
-        }),
-        [dispatch]
-    );
+	const categories = useSelector(
+		({Course: {CourseCategories}}) => CourseCategories
+	);
+	const categoryStatus = hooks.useCategory();
 
-    const [categoryName , setCategoryName] = useState("");
-    const [categoryDescription, setCategoryDescription] = useState("");
-    const [categoryList, setCategoryList] = useState([]);
+	useEffect(() => {
+		if (categories.length !== categoryList.length) {
+			const parsedCategoryList = categories.map((category) => ({
+				...category,
+				editing: false,
+			}));
+			setCategoryList(parsedCategoryList);
+		}
+	}, [categories, categoryList]);
 
-    const categories = useSelector(({Course: {CourseCategories}}) => CourseCategories);
-    const categoryStatus = useSelector(({RequestStatus})=> RequestStatus.category);
-    useEffect(()=>{
-        api.fetchCategories();
-    },[api]);
+	const handleChange = (setter) => ({target}) => {
+		setter(target.value);
+	};
 
-    useEffect(()=>{
-        if(categories.length !== categoryList.length){
-            let parsedCategoryList = categories.map((category)=>({
-                            ...category,
-                            editing: false,
-                        }));
-            setCategoryList(parsedCategoryList);
-        }
-    }, [categories, categoryList]);
+	const submitCategory = useCallback(() => {
+		api.addCategory(categoryName, categoryDescription);
+		setCategoryName("");
+		setCategoryDescription("");
+	}, [api, categoryName, categoryDescription]);
 
-    const handleChange = (field) => (e) =>{
-        switch(field){
-            case "name":{
-                setCategoryName(e.target.value);
-                break;
-            }
-            case "description":{
-                setCategoryDescription(e.target.value);
-                break;
-            }
-        }
-    };
+	const categoryForm = () => (
+		<Paper className="category-row new-category">
+			<Grid alignItems="center" container>
+				<Grid item xs={3}>
+					<TextField
+						className="field"
+						label="Category Name"
+						onChange={handleChange(setCategoryName)}
+						required
+						value={categoryName}
+					/>
+				</Grid>
+				<Grid item xs={7}>
+					<TextField
+						className="field"
+						label="Category Description"
+						multiline
+						onChange={handleChange(setCategoryDescription)}
+						value={categoryDescription}
+					/>
+				</Grid>
+				<Grid item xs={2}>
+					<Button
+						className="add-category"
+						color="primary"
+						disabled={categoryName === ""}
+						onClick={submitCategory}
+						variant="contained"
+					>
+						Add Category
+					</Button>
+				</Grid>
+			</Grid>
+		</Paper>
+	);
 
-    const submitCategory = () => (e) =>{
-        e.preventDefault();
-        if(categoryName !== ""){
-            api.addCategory(categoryName, categoryDescription);
-            setCategoryName("");
-            setCategoryDescription("");
-        }
-    };
+	const displayCategories = () => (
+		<Grid container>
+			<Grid item xs={12}>
+				<Grid className="accounts-table-heading" container>
+					<Grid item xs={3}>
+						<Typography align="left" className="table-header">
+							Category Name
+						</Typography>
+					</Grid>
+					<Grid item xs={7}>
+						<Typography align="left" className="table-header">
+							Description
+						</Typography>
+					</Grid>
+					<Grid item xs={2}>
+						<Typography align="center" className="table-header">
+							Edit
+						</Typography>
+					</Grid>
+				</Grid>
+			</Grid>
+			<Grid item xs={12}>
+				<Grid alignItems="center" container spacing={1}>
+					{categoryList.length > 0 ? (
+						categoryList
+							.sort((categoryA, categoryB) => categoryB.id - categoryA.id)
+							.map((category) => (
+								<Grid item key={category.id} xs={12}>
+									{category.editing
+										? editCategoryRow(category)
+										: viewCategoryRow(category)}
+								</Grid>
+							))
+					) : (
+						<NoListAlert list="Course Categories"/>
+					)}
+				</Grid>
+			</Grid>
+		</Grid>
+	);
 
-    const categoryForm = () => {
-        return (
-                <Paper className={"category-row new-category"}>
-                    <Grid container alignItems={"center"}>
-                        <Grid item xs={3}>
-                            <TextField
-                                className={"field"}
-                                label="Category Name"
-                                value={categoryName}
-                                onChange={handleChange("name")}
-                                required={true}
-                            />
-                        </Grid>
-                        <Grid item xs={7}>
-                            <TextField
-                                className={"field"}
-                                multiline={true}
-                                label="Category Description"
-                                value={categoryDescription}
-                                onChange={handleChange("description")}
-                            />
-                        </Grid>
-                        <Grid item xs={2}>
-                            <Button className="add-category"
-                                    onClick={submitCategory()}>
-                                Add Category
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </Paper>
-        )
-    };
+	const editCategory = (id) => () => {
+		const editingCategory = categoryList.find((category) => category.id === id);
+		if (editingCategory) {
+			api.updateCategory(id, {
+				description: editingCategory.description,
+				id: editingCategory.id,
+				name: editingCategory.name,
+			});
+		}
+		editingCategory.editing = !editingCategory.editing;
+		const updatedCategoryList = categoryList.map((category) => {
+			if (category.id === id) {
+				return editingCategory;
+			}
+			return category;
+		});
+		setCategoryList(updatedCategoryList);
+	};
 
-    const displayCategories = () => {
-        return <Grid container>
-            <Grid item xs={12}>
-                <Grid container className={'accounts-table-heading'}>
-                    <Grid item xs={3} md={3}>
-                        <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
-                            Category Name
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={7} md={7}>
-                        <Typography align={'left'} style={{color: 'white', fontWeight: '500'}}>
-                            Description
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={2} md={2}>
-                        <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
-                            Edit
-                        </Typography>
-                    </Grid>
-                </Grid>
-            </Grid>
-            <Grid item xs={12}>
-                <Grid container spacing={8} alignItems={"center"}>
-                    {
-                        categoryList.length > 0 ? categoryList
-                            .sort((categoryA, categoryB) => (categoryB.id - categoryA.id))
-                            .map((category) => {
-                                return (<Grid item xs={12} md={12} key={category.id}>
-                                    {
-                                        category.editing ? editCategoryRow(category) : viewCategoryRow(category)
-                                    }
-                                </Grid>);
-                        }) : <NoListAlert list={"Course Categories"}/>
-                    }
-                </Grid>
-            </Grid>
-        </Grid>
-    };
+	const viewCategoryRow = ({name, description, id}) => (
+		<Paper elevation={2} className="category-row" square>
+			<Grid alignItems="center" container>
+				<Grid item xs={3}>
+					<Typography align="left">{name}</Typography>
+				</Grid>
+				<Grid item xs={7}>
+					<Typography align="left">{description}</Typography>
+				</Grid>
+				<Grid item xs={2}>
+					<IconButton onClick={editCategory(id)}>
+						<EditIcon/>
+					</IconButton>
+				</Grid>
+			</Grid>
+		</Paper>
+	);
 
-    const editCategory = (id) => (e) => {
-        e.preventDefault();
-        let editingCategory = categoryList.find((category)=>{return category.id === id});
-        let categoryToUpload;
-        if(editingCategory){ //if we're about to update/we were just editing
-            categoryToUpload = {
-                id: editingCategory.id,
-                name: editingCategory.name,
-                description: editingCategory.description,
-            };
-            api.updateCategory(id, categoryToUpload);
-        }
-        editingCategory.editing = !editingCategory.editing;
-        let updatedCategoryList = categoryList.map((category)=>{
-            if(category.id === id){
-                return editingCategory;
-            } else {
-                return category;
-            }
-        });
-        setCategoryList(updatedCategoryList);
-    };
+	const handleEditCategory = (type, id) => ({target}) => {
+		const editingCategory = categoryList.find((category) => category.id === id);
+		editingCategory[type] = target.value;
+		setCategoryList(
+			categoryList.map((category) =>
+				category.id === id ? editingCategory : category
+			)
+		);
+	};
 
-    const viewCategoryRow = (category) => {
-        return (<Paper square={true} className={"category-row"} >
-            <Grid container alignItems={"center"}>
-                <Grid item xs={3} md={3} >
-                    <Typography align={'left'}>
-                        {category.name}
-                    </Typography>
-                </Grid>
-                <Grid item xs={7} md={7}>
-                    <Typography align={'left'}>
-                        {category.description}
-                    </Typography>
-                </Grid>
-                <Grid item xs={2} md={2}>
-                    <IconButton
-                        onClick={editCategory(category.id)}
-                        >
-                        <EditIcon/>
-                    </IconButton>
-                </Grid>
-            </Grid>
-        </Paper>)
-    };
+	const editCategoryRow = ({name, id, description}) => (
+		<Paper elevation={2} className="category-row" square>
+			<Grid alignItems="center" container>
+				<Grid item xs={3}>
+					<TextField
+						defaultValue={name}
+						fullWidth
+						label="Name"
+						onChange={handleEditCategory("name", id)}
+						value={name}
+					/>
+				</Grid>
+				<Grid item xs={7}>
+					<TextField
+						defaultValue={description}
+						fullWidth
+						label="Description"
+						onChange={handleEditCategory("description", id)}
+						value={description}
+					/>
+				</Grid>
+				<Grid item xs={2}>
+					<Button className="button" onClick={editCategory(id)}>
+						UPDATE
+					</Button>
+				</Grid>
+			</Grid>
+		</Paper>
+	);
 
-    const handleEditCategory = (type, id) => (e) =>{
-        let editingCategory = categoryList.find((category)=>{return category.id === id});
-        switch(type){
-            case "name":
-                editingCategory.name = e.target.value;
-                break;
-            case "description":
-                editingCategory.description = e.target.value;
-                break;
-        }
-        let updatedCategoryList = categoryList.map((category)=>{
-            if(category.id === id){
-                return editingCategory;
-            } else {
-                return category;
-            }
-        });
-        setCategoryList(updatedCategoryList);
-    };
+	if (hooks.isLoading(categoryStatus)) {
+		return <Loading/>;
+	}
 
-    const editCategoryRow = (category) => {
-        return(<Paper square={true} className={"category-row"} >
-            <Grid container alignItems={"center"}>
-                <Grid item xs={3} md={3} >
-                    <TextField
-                        value={category.name}
-                        defaultValue={category.name}
-                        label={"Name"}
-                        onChange={handleEditCategory("name",category.id)}
-                    />
-                </Grid>
-                <Grid item xs={7} md={7}>
-                    <TextField
-                        value={category.description}
-                        defaultValue={category.description}
-                        label={"Description"}
-                        onChange={handleEditCategory("description",category.id)}
-                    />
-                </Grid>
-                <Grid item xs={2} md={2}>
-                    <Button
-                        onClick={editCategory(category.id)}
-                        className={"button"}>
-                        UPDATE
-                    </Button>
-                </Grid>
-            </Grid>
-        </Paper>)
-    };
-
-    if(categoryStatus[GET] !== 200){
-        return <Loading/>
-    }
-
-    return (
-        <div>
-            <Typography variant={"h4"} align={"left"}>Manage Categories</Typography>
-            {
-                categoryForm()
-            }
-            {
-                displayCategories()
-            }
-        </div>
-    );
-}
-
-ManageCategories.propTypes = {
-    // courseTitle: PropTypes.string,
-    // admin: PropTypes.bool,
+	return (
+		<div>
+			<Typography align="left" variant="h4">
+				Manage Categories
+			</Typography>
+			{categoryForm()}
+			{displayCategories()}
+		</div>
+	);
 };
-const mapStateToProps = (state) => ({
-    "registration": state.Registration,
-    "studentAccounts": state.Users.StudentList,
-    "courseList": state.Course.NewCourseList,
-    "categories": state.Course.CourseCategories,
-});
 
-export default withRouter(connect(
-    mapStateToProps
-)(ManageCategories));
+export default ManageCategories;

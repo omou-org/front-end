@@ -9,44 +9,32 @@ import {useSelector} from "react-redux";
 import LoadingError from "./LoadingCourseError"
 
 const ParentContact = ({parent_id}) => {
-    const parentStatus = hooks.useParent(parent_id);
-    const parent = useSelector(({Users}) => Users.ParentList[parent_id]);
+	const parentStatus = hooks.useParent(parent_id);
+	const parent = useSelector(({Users}) => Users.ParentList[parent_id]);
 
-    if (!parent) {
-        if (hooks.isLoading(parentStatus)) {
-            return <Loading small loadingText="PARENT LOADING"/>;
-        }
+	if (!parent) {
+		if (hooks.isLoading(parentStatus)) {
+			return <Loading loadingText="PARENT LOADING" small/>;
+		}
 
         if (hooks.isFail(parentStatus)) {
             return <LoadingError error="parent"/>;
         }
     }
 
-    return (
-        <Grid
-            item
-            md={12}>
-            <Grid
-                container
-                spacing={16}>
-                <Grid
-                    item
-                    md={12}
-                    xs={10}>
-                    <ProfileCard
-                        route={`/accounts/parent/${parent_id}`}
-                        user={parent} />
-                </Grid>
-            </Grid>
-        </Grid>
-    );
+	return (
+		<Grid item md={12}>
+			<Grid container spacing={2}>
+				<Grid item md={12} xs={10}>
+					<ProfileCard route={`/accounts/parent/${parent_id}`} user={parent}/>
+				</Grid>
+			</Grid>
+		</Grid>
+	);
 };
 
 ParentContact.propTypes = {
-    "parent_id": PropTypes.oneOf([
-        PropTypes.string,
-        PropTypes.number,
-    ]).isRequired,
+	parent_id: PropTypes.oneOf([PropTypes.string, PropTypes.number]).isRequired,
 };
 
 export default ParentContact;

@@ -9,10 +9,11 @@ import {useSelector} from "react-redux";
 import LoadingError from "./LoadingCourseError"
 
 const StudentInfo = ({user}) => {
-    const studentList = useSelector(({Users}) => Users.StudentList);
-    const fetchStatus = hooks.useStudent(user.student_ids);
-    const loadedStudentIDs = user.student_ids
-        .filter((studentID) => studentList[studentID]);
+	const studentList = useSelector(({Users}) => Users.StudentList);
+	const fetchStatus = hooks.useStudent(user.student_ids);
+	const loadedStudentIDs = user.student_ids.filter(
+		(studentID) => studentList[studentID]
+	);
 
     if (loadedStudentIDs.length === 0) {
         if (hooks.isLoading(fetchStatus)) {
@@ -23,33 +24,32 @@ const StudentInfo = ({user}) => {
         }
     }
 
-    return (
-        <Grid
-            alignItems="center"
-            container
-            direction="row"
-            spacing={40}
-            md={12}
-            xs={10}>
-            {
-                loadedStudentIDs.map((studentID) => (
-                    <ProfileCard
-                        key={studentID}
-                        route={`/accounts/student/${studentID}`}
-                        user={studentList[studentID]} />
-                ))
-            }
-        </Grid>
-    );
+	return (
+		<Grid
+			alignItems="center"
+			container
+			direction="row"
+			md={12}
+			spacing={5}
+			xs={10}
+		>
+			{loadedStudentIDs.map((studentID) => (
+				<ProfileCard
+					key={studentID}
+					route={`/accounts/student/${studentID}`}
+					user={studentList[studentID]}
+				/>
+			))}
+		</Grid>
+	);
 };
 
 StudentInfo.propTypes = {
-    "user": PropTypes.shape({
-        "student_ids": PropTypes.arrayOf(PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.number,
-        ])).isRequired,
-    }).isRequired,
+	user: PropTypes.shape({
+		student_ids: PropTypes.arrayOf(
+			PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+		).isRequired,
+	}).isRequired,
 };
 
 export default StudentInfo;

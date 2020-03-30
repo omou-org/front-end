@@ -19,7 +19,7 @@ body{
 .Navigation {
   /*App Bar Styling*/
   .OmouBar {
-    z-index: 10000 !important;
+    background-color: $bioBackgroundColor;
   }
 
   .title {
@@ -35,12 +35,13 @@ body{
   .logout-icon{
     cursor:pointer;
   }
-
-  /*Drawer Styling*/
-
-  div[class*="MuiDrawer-paperAnchorDockedLeft"] {
-    border: none !important;
+  .catsButton{
+    cursor: pointer;
+    background: transparent;
+    color: #F5F5F5 ;
+    
   }
+  /*Drawer Styling*/
 
   .OmouMain {
     @include respond-to(handhelds) {

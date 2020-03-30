@@ -35,14 +35,14 @@ const EditSessionView = ({course, session, editSelection}) => {
     const history = useHistory();
 
     const [sessionFields, setSessionFields] = useState({
-        "start_time": "",
-        "instructor": "",
-        "end_time": "",
-        "title": "",
-        "category": "",
-        "is_confirmed": "",
-        "duration": "",
-        "updatedDuration": "",
+        start_time: "",
+        instructor: "",
+        end_time: "",
+        title: "",
+        category: "",
+        is_confirmed: "",
+        duration: "",
+        updatedDuration: "",
     });
 
     useEffect(() => {
@@ -50,18 +50,30 @@ const EditSessionView = ({course, session, editSelection}) => {
         api.fetchCourses();
     }, [api]);
 
-    const categories = useSelector(({"Course": {CourseCategories}}) => CourseCategories);
-    const instructors = useSelector(({"Users": {InstructorList}}) => InstructorList);
+    const categories = useSelector(
+        ({Course: {CourseCategories}}) => CourseCategories
+    );
+    const instructors = useSelector(
+        ({Users: {InstructorList}}) => InstructorList
+    );
 
     useEffect(() => {
         if (course && session) {
-            let durationHours = Math.abs(session.end_datetime - session.start_datetime) / 36e5;
-            durationHours === 0 ? durationHours = 1 : durationHours = durationHours;
-            const category = categories.find((category) => category.id === course.category);
+            let durationHours =
+                Math.abs(session.end_datetime - session.start_datetime) / 36e5;
+            if (durationHours === 0) {
+                durationHours = 1;
+            }
+            const category = categories.find(
+                (category) => category.id === course.category
+            );
 
             setSessionFields({
-                category: { value: category.id, label: category.name },
-                instructor: { value: session.instructor, label: instructors[session.instructor].name },
+                category: {value: category.id, label: category.name},
+                instructor: {
+                    value: session.instructor,
+                    label: instructors[session.instructor].name,
+                },
                 start_time: session.start_datetime,
                 end_time: session.end_datetime,
                 duration: durationHours,
@@ -74,7 +86,6 @@ const EditSessionView = ({course, session, editSelection}) => {
     const handleDateTimeChange = (date) => {
         const {end_time, duration} = sessionFields;
         if (date.end_time) {
-
         }
         end_time.setDate(date.getDate());
         end_time.setHours(date.getHours() + duration);
@@ -82,28 +93,27 @@ const EditSessionView = ({course, session, editSelection}) => {
 
         setSessionFields({
             ...sessionFields,
-            "start_time": date,
+            start_time: date,
             end_time,
         });
     };
 
-    const categoriesList = categories
-        .map(({id, name}) => ({
-            "value": id,
-            "label": name,
-        }));
+    const categoriesList = categories.map(({id, name}) => ({
+        value: id,
+        label: name,
+    }));
 
     const handleCategoryChange = (event) => {
         setSessionFields({
             ...sessionFields,
-            "category": event,
+            category: event,
         });
     };
 
     const handleInstructorChange = (event) => {
         setSessionFields({
             ...sessionFields,
-            "instructor": event,
+            instructor: event,
         });
     };
 
@@ -134,19 +144,25 @@ const EditSessionView = ({course, session, editSelection}) => {
                 break;
             default:
                 return;
-
         }
         setSessionFields({
             ...sessionFields,
-            "duration": event.target.value,
-            "end_time": newEndTime,
+            duration: event.target.value,
+            end_time: newEndTime,
         });
     };
 
     const courseDurationOptions = [1, 1.5, 2, 0.5];
 
     const updateSession = () => {
-        const {start_time, end_time, is_confirmed, instructor, duration, title} = sessionFields;
+        const {
+            start_time,
+            end_time,
+            is_confirmed,
+            instructor,
+            duration,
+            title,
+        } = sessionFields;
         switch (editSelection) {
             case EDIT_CURRENT_SESSION: {
                 const patchedSession = {
@@ -162,14 +178,17 @@ const EditSessionView = ({course, session, editSelection}) => {
             }
             case EDIT_ALL_SESSIONS: {
                 const patchedCourse = {
-                    "course_category": sessionFields.category.value,
-                    "subject": sessionFields.title,
-                    "start_time": start_time.toLocaleString("eng-US", timeFormat),
-                    "end_time": end_time.toLocaleString("eng-US", timeFormat),
-                    "instructor": instructor.value,
+                    course_category: sessionFields.category.value,
+                    subject: sessionFields.title,
+                    start_time: start_time.toLocaleString("eng-US", timeFormat),
+                    end_time: end_time.toLocaleString("eng-US", timeFormat),
+                    instructor: instructor.value,
                     is_confirmed,
-                    "start_date": start_time.toLocaleString("sv-SE", dateFormat),
-                    "end_date": course.schedule.end_date.toLocaleString("sv-SE", dateFormat),
+                    start_date: start_time.toLocaleString("sv-SE", dateFormat),
+                    end_date: course.schedule.end_date.toLocaleString(
+                        "sv-SE",
+                        dateFormat
+                    ),
                 };
                 api.patchCourse(course.course_id, patchedCourse);
             }
@@ -181,39 +200,35 @@ const EditSessionView = ({course, session, editSelection}) => {
     const onConfirmationChange = (event) => {
         setSessionFields({
             ...sessionFields,
-            "is_confirmed": event.target.value,
+            is_confirmed: event.target.value,
         });
     };
 
-    const instructorList = Object.values(instructors).map(({user_id, name, email}) => ({
-        "value": user_id,
-        "label": `${name} - ${email}`,
-    }));
+    const instructorList = Object.values(instructors).map(
+        ({user_id, name, email}) => ({
+            value: user_id,
+            label: `${name} - ${email}`,
+        })
+    );
 
     return (
         <>
-            <Grid
-                className="session-view"
-                container
-                direction="row"
-                spacing={2}>
-                <Grid
-                    item
-                    sm={12}>
+            <Grid className="session-view" container direction="row" spacing={2}>
+                <Grid item sm={12}>
                     <TextField
                         fullWidth
                         onChange={handleTextChange("title")}
-                        value={sessionFields.title} />
+                        value={sessionFields.title}
+                    />
                 </Grid>
                 <Grid
                     align="left"
                     className="session-view-details"
                     container
-                    spacing={16}
-                    xs={6}>
-                    <Grid
-                        item
-                        xs={6}>
+                    spacing={2}
+                    xs={6}
+                >
+                    <Grid item xs={6}>
                         <Typography variant="h5"> Subject </Typography>
                         <SearchSelect
                             className="search-options"
@@ -221,80 +236,67 @@ const EditSessionView = ({course, session, editSelection}) => {
                             onChange={handleCategoryChange}
                             options={categoriesList}
                             placeholder="Choose a Category"
-                            value={sessionFields.category} />
+                            value={sessionFields.category}
+                        />
                     </Grid>
-                    <Grid
-                        item
-                        xs={6}>
+                    <Grid item xs={6}>
                         <Typography variant="h5"> Room</Typography>
-                        <TextField
-                            value={course.room_id} />
+                        <TextField value={course.room_id}/>
                     </Grid>
 
-                    <Grid
-                        item
-                        xs={12}>
+                    <Grid item xs={12}>
                         <Typography variant="h5"> Instructor </Typography>
                         <SearchSelect
                             onChange={handleInstructorChange}
                             options={instructorList}
                             placeholder="Choose an Instructor"
-                            value={sessionFields.instructor} />
-                        <FormControl
-                            style={{marginTop:"20px", marginBottom: "10px"}}
-                        >
-                            <InputLabel>
-                                Is instructor confirmed?
-                            </InputLabel>
+                            value={sessionFields.instructor}
+                        />
+                        <FormControl style={{marginTop: "20px", marginBottom: "10px"}}>
+                            <InputLabel>Is instructor confirmed?</InputLabel>
                             <Select
                                 onChange={onConfirmationChange}
-                                value={sessionFields.is_confirmed}>
-                                <MenuItem value>
-                                    Yes, Instructor Confirmed.
-                                </MenuItem>
+                                value={sessionFields.is_confirmed}
+                            >
+                                <MenuItem value>Yes, Instructor Confirmed.</MenuItem>
                                 <MenuItem value={false}>
                                     No, Instructor is NOT Confirmed.
                                 </MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>
-                    {
-                        editSelection == EDIT_CURRENT_SESSION &&
-                        <Grid
-                            item
-                            xs={6}>
+                    {editSelection === EDIT_CURRENT_SESSION && (
+                        <Grid item xs={6}>
                             <Typography variant="h5"> Date</Typography>
                             <DatePicker
                                 inputVariant="outlined"
                                 onChange={handleDateTimeChange}
-                                value={sessionFields.start_time} />
+                                value={sessionFields.start_time}
+                            />
                         </Grid>
-                    }
-                    <Grid
-                        item
-                        xs={6}>
+                    )}
+                    <Grid item xs={6}>
                         <Typography variant="h5"> Start Time</Typography>
                         <TimePicker
                             inputVariant="outlined"
                             onChange={handleDateTimeChange}
-                            value={sessionFields.start_time} />
+                            value={sessionFields.start_time}
+                        />
                     </Grid>
 
-                    <Grid
-                        item
-                        xs={6}>
+                    <Grid item xs={6}>
                         <Typography variant="h5"> Duration </Typography>
                         <Select
                             onChange={handleDurationSelect}
-                            value={sessionFields.duration}>
-                            {courseDurationOptions.map((duration, index) => (<MenuItem
-                                key={index}
-                                value={duration}>
-                                {`${duration} hour(s)`}
-                                                                             </MenuItem>))}
+                            value={sessionFields.duration}
+                        >
+                            {courseDurationOptions.map((duration, index) => (
+                                <MenuItem key={index} value={duration}>
+                                    {`${duration} hour(s)`}
+                                </MenuItem>
+                            ))}
                         </Select>
                     </Grid>
-
                 </Grid>
             </Grid>
 
@@ -302,19 +304,22 @@ const EditSessionView = ({course, session, editSelection}) => {
                 className="session-detail-action-control"
                 container
                 direction="row"
-                justify="flex-end">
+                justify="flex-end"
+            >
                 <Grid item>
                     <InstructorConflictCheck
                         end={sessionFields.end_time}
-                        eventID={editSelection === EDIT_CURRENT_SESSION ? session.id : course.course_id}
+                        eventID={
+                            editSelection === EDIT_CURRENT_SESSION
+                                ? session.id
+                                : course.course_id
+                        }
                         instructorID={sessionFields.instructor.value}
                         start={sessionFields.start_time}
                         type={editSelection === EDIT_CURRENT_SESSION ? "session" : "course"}
-                        onSubmit={updateSession}>
-                        <Button
-                            className="button"
-                            color="secondary"
-                            variant="outlined">
+                        onSubmit={updateSession}
+                    >
+                        <Button className="button" color="secondary" variant="outlined">
                             Save
                         </Button>
                     </InstructorConflictCheck>

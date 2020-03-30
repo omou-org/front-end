@@ -3,7 +3,7 @@
 /*Registration*/
 
 .no-underline {
-  text-decoration: none!important;
+  text-decoration: none;
   color: inherit;
 }
 
@@ -168,18 +168,18 @@
   }
 }
 
-.actions {
+.spacing {
   cursor: pointer;
   color: $lightPrimaryFontColor;
 }
 
-.actions > * {
+.spacing > * {
   margin: 5px;
   color: $lightPrimaryFontColor;
   text-decoration: none;
 }
 
-.actions > * :hover {
+.spacing > * :hover {
   color: $darkenPrimaryFontColor;
   text-decoration: none;
 }
@@ -410,6 +410,8 @@
 }
 
 .notificationCourse {
+  width: 10px!important;
+  height: 10px!important;
   background-color: orange!important;
   position: absolute!important;
   top: 10px!important;
@@ -440,29 +442,23 @@
 
   .info-section {
     margin: 25px 0 5px 0;
+    text-align: left;
 
-    .first-line {
-      text-align: left;
-
-      .text {
+    .course-info-header > .text {
         font-weight: 500;
         margin: 10px 0 5px 5px;
         color: $lightPrimaryFontColor
-      }
     }
 
-    .first-line > *, .second-line > * {
+    .course-info-header > *, .course-info-details > * {
       display: inline-block;
     }
 
-    .second-line {
+    .course-info-details {
       .course-icon{
         margin-left:0;
         margin-bottom:-6px;
       }
-
-      text-align: left;
-
       .text, .chip {
         margin: 3px 55px 3px 0;
       }
@@ -559,6 +555,8 @@
     }
 
     .row {
+      cursor: pointer;
+
       .course-heading, .course-detail {
         padding: 5px 15px;
       }
@@ -580,6 +578,7 @@
 
       .course-action {
         background-color: #F5F5F5;
+        cursor: default;
         height: 120px;
         overflow-y: hidden;
 
@@ -627,10 +626,32 @@
   .registration-course-tabs{
     margin-bottom:10px;
   }
+
+  .course-heading {
+    .button {
+      background-color: white;
+      padding: 6px 10px;
+      float: right;
+    }
+
+    .icon {
+      font-size: 16px;
+    }
+
+    .sessions-text {
+      margin-left: 5px;
+      margin-top: 10px;
+    }
+  }
+
+  .notes-container {
+    padding-top: 20px;
+  }
 }
 
 // Registration Parent Styling
 .select-parent-search-wrapper {
+  height: 75px;
   &.active {
     animation-name: expandHeight;
     animation-duration: 0.2s;
@@ -652,6 +673,10 @@
 
 .select-parent-dialog{
   overflow-y: visible;
+
+  #simple-dialog-title {
+    width: 20vw;
+  }
 }
 .select-parent-search__menu{
   position:relative;
@@ -737,4 +762,18 @@
     animation-name:confirmationAnimation;
     animation-duration: 0.25s;
   }
+}
+
+.expanded-container {
+  padding: 10px;
+
+  .expanded-text {
+    padding: 5px;
+  }
+}
+
+.session-status-chip {
+  width: 50px;
+  padding: 7px 0 0 10px;
+  border-radius: 15px;
 }
