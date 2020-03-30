@@ -153,6 +153,7 @@ class Form extends Component {
 					break;
 				}
 				case "tutoring": {
+					console.log('triggers')
 					if (id && this.props.registeredCourses) {
 						if (id.indexOf("+") >= 0) {
 							const studentID = id.substring(0, id.indexOf("+"));
