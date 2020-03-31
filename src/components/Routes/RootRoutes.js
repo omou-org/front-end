@@ -1,7 +1,7 @@
 // React Imports
-import {Redirect, Route, Switch} from "react-router-dom";
-import {useDispatch} from "react-redux";
-import {resetSubmitStatus} from "../../actions/registrationActions";
+import { Redirect, Route, Switch } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { resetSubmitStatus } from "../../actions/registrationActions";
 import React from "react";
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
@@ -123,9 +123,10 @@ export const RootRoutes = () => {
                 path="/adminportal/:view?/:type?/:id?/:edit?"
                 render={(passedProps) => <AdminPortal {...passedProps} />}
             />
-
-            <Route component={ErrorNotFoundPage} path="/PageNotFound"/>
-            <Redirect to="/PageNotFound"/>
+            <Route path="/PageNotFound"
+                render={(passedProps) => <ErrorNotFoundPage {...passedProps} />}
+            />
+            <Redirect to="/PageNotFound" />
         </Switch>
     );
 };
