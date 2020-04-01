@@ -76,7 +76,8 @@
   }
 
   .unpaid-details {
-    text-align: center;
+    text-align: left;
+    font-size: .8rem;
 
     .unpaid-student-name {
       font-size: 16px;
@@ -97,7 +98,12 @@
       text-align: center;
     }
 
+    .unpaid-status-info {
+      font-size: 14px;
+    }
+
     .unpaid-status {
+      text-align: left;
       color: black;
       height: 30px;
       width: 30px;
