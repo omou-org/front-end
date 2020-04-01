@@ -38,7 +38,6 @@ const CourseList = ({filteredCourses}) => {
 			} = courseDateFormat(course);
 			const date = `${start_date} - ${end_date}`,
 				time = `${start_time} - ${end_time}`;
-				console.log(course)
 			return (
 				<Grow in key={course.course_id}>
 					<Paper className="row">
