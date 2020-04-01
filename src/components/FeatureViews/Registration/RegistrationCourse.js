@@ -18,6 +18,7 @@ import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
+import Moment from "react-moment"
 
 import "./registration.scss";
 import {capitalizeString, courseDateFormat, DayConverter} from "utils";
@@ -102,7 +103,11 @@ const RegistrationCourse = () => {
                     <div className="date">
                         <CalendarIcon align="left" className="icon"/>
                         <Typography align="left" className="sessions-text">
-                            {start_date} - {end_date} (
+                            <Moment format="MMM D YYYY" date={course.schedule.start_date}/>
+                            {" - "}
+                            <Moment format="MMM D YYYY" date={course.schedule.end_date}/>
+                            {" "}
+                            (
                             {weeklySessionsParser(start_date, end_date)} sessions)
                         </Typography>
                     </div>
@@ -137,10 +142,12 @@ const RegistrationCourse = () => {
                                 </>
                             )}
                             <Typography align="left" className="text">
-                                {start_time} - {end_time}
+                                <Moment format="h:mm a" date={course.schedule.start_date+course.schedule.start_time}/>
+                                {" - "}
+                                <Moment format="h:mm a" date={course.schedule.end_date+course.schedule.end_time}/>
                             </Typography>
                             <Typography align="left" className="text">
-                                {capitalizeString(DayConverter[new Date(start_date).getDay()])}
+                                <Moment format="dddd" date={course.schedule.start_date}/>
                             </Typography>
                             <Typography align="left" className="text">
                                 Grade {course.grade}
