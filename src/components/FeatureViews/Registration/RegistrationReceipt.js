@@ -169,11 +169,9 @@ const RegistrationReceipt = () => {
                                 </Grid>
                                 <Grid item xs={4}>
                                     <Typography align="left">
-                                        <Moment format="M/DD/YYYY" date={enrolledCourse.schedule.start_date} />
-                                        -
-
-                                        <Moment format="M/DD/YYYY" date={enrolledCourse.schedule.end_date} />
-
+                                        <Moment format="M/D/YYYY" date={enrolledCourse.schedule.start_date} />
+                                        {` - `}
+                                        <Moment format="M/D/YYYY" date={enrolledCourse.schedule.end_date} />
                                     </Typography>
                                 </Grid>
                                 <Grid className="course-label" item xs={2}>
