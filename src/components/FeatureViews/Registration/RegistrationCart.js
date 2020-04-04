@@ -16,6 +16,7 @@ import * as hooks from "actions/hooks";
 import * as registrationActions from "actions/registrationActions";
 import {dateParser, weeklySessionsParser} from "components/Form/FormUtils";
 import Payment from "./RegistrationCartPayment";
+import Moment from "react-moment"
 
 const RegistrationCart = () => {
   const dispatch = useDispatch();
@@ -223,20 +224,9 @@ const RegistrationCart = () => {
                       )
                       .map(({new_course, course_id}) => {
                         const course = new_course || courseList[course_id];
-                        const dateOptions = {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        };
                         const {checked, sessions, validated} = selectedCourses[
                             student_id
                             ][course_id];
-                        const start = new Date(
-                            course.schedule.start_date
-                        ).toLocaleDateString("en-US", dateOptions);
-                        const end = new Date(
-                            course.schedule.end_date
-                        ).toLocaleDateString("en-US", dateOptions);
 
                         return (
                             <Grid item key={course.course_id} xs={12}>
@@ -257,7 +247,15 @@ const RegistrationCart = () => {
                                 </Grid>
                                 <Grid item xs={3}>
                                   <Typography align="left">
-                                    {start} - {end}
+									  <Moment
+										  date={course.schedule.start_date}
+										  format="MMM d, YYYY"
+									  />
+									  {" - "}
+									  <Moment
+										  date={course.schedule.end_date}
+										  format="MMM d, YYYY"
+									  />
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={1}>
