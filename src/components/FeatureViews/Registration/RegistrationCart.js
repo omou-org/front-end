@@ -16,6 +16,7 @@ import * as hooks from "actions/hooks";
 import * as registrationActions from "actions/registrationActions";
 import {dateParser, weeklySessionsParser} from "components/Form/FormUtils";
 import Payment from "./RegistrationCartPayment";
+import Moment from "react-moment"
 
 const RegistrationCart = () => {
   const dispatch = useDispatch();
@@ -238,60 +239,68 @@ const RegistrationCart = () => {
 								  course.schedule.end_date
 							  ).toLocaleDateString("en-US", dateOptions);
 
-							  return (
-								  <Grid item key={course.course_id} xs={12}>
-									  <Grid
-										  alignItems="center"
-										  component={Paper}
-										  container
-										  square
-									  >
-										  <Grid item xs={1}>
-											  <Checkbox
-												  checked={checked}
-												  onChange={handleCourseSelect(student_id, course_id)}
-											  />
-										  </Grid>
-										  <Grid item xs={3}>
-											  <Typography align="left">{course.title}</Typography>
-										  </Grid>
-										  <Grid item xs={3}>
-											  <Typography align="left">
-												  {start} - {end}
-											  </Typography>
-										  </Grid>
-										  <Grid item xs={1}>
-											  {!checked ? (
-												  <Typography align="center">{sessions}</Typography>
-											  ) : (
-												  <TextField
-													  error={!validated}
-													  id="outlined-number"
-													  InputLabelProps={{
-														  shrink: true,
-													  }}
-													  label="Quantity"
-													  margin="normal"
-													  onChange={handleCourseSessionsChange(
-														  student_id,
-														  course_id
-													  )}
-													  type="number"
-													  value={sessions}
-													  variant="outlined"
-												  />
-											  )}
-										  </Grid>
-										  <Grid item xs={2}>
-											  <Typography align="center">{course.tuition}</Typography>
-										  </Grid>
-									  </Grid>
-								  </Grid>
-							  );
-						  })}
-				  </Grid>
-			  </Grid>
-		  )
+                        return (
+                            <Grid item key={course.course_id} xs={12}>
+                              <Grid
+                                  alignItems="center"
+                                  component={Paper}
+                                  container
+                                  square
+                              >
+                                <Grid item xs={1}>
+                                  <Checkbox
+                                      checked={checked}
+                                      onChange={handleCourseSelect(student_id, course_id)}
+                                  />
+                                </Grid>
+                                <Grid item xs={3}>
+                                  <Typography align="left">{course.title}</Typography>
+                                </Grid>
+                                <Grid item xs={3}>
+                                  <Typography align="left">
+									  <Moment
+										  date={course.schedule.start_date}
+										  format="MMM d, YYYY"
+									  />
+									  {" - "}
+									  <Moment
+										  date={course.schedule.end_date}
+										  format="MMM d, YYYY"
+									  />
+                                  </Typography>
+                                </Grid>
+                                <Grid item xs={1}>
+                                  {!checked ? (
+                                      <Typography align="center">{sessions}</Typography>
+                                  ) : (
+                                      <TextField
+                                          error={!validated}
+                                          id="outlined-number"
+                                          InputLabelProps={{
+                                            shrink: true,
+                                          }}
+                                          label="Quantity"
+                                          margin="normal"
+                                          onChange={handleCourseSessionsChange(
+                                              student_id,
+                                              course_id
+                                          )}
+                                          type="number"
+                                          value={sessions}
+                                          variant="outlined"
+                                      />
+                                  )}
+                                </Grid>
+                                <Grid item xs={2}>
+                                  <Typography align="center">{course.tuition}</Typography>
+                                </Grid>
+                              </Grid>
+                            </Grid>
+                        );
+                      })}
+                </Grid>
+              </Grid>
+          )
   );
 
   const selectedCourseOptions = () => {
