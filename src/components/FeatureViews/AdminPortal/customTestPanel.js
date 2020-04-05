@@ -20,10 +20,24 @@ function CustomTestPanel() {
         [dispatch]
     );
     
-    const fields = {
-
-    };
-    const fetchFunction =[
+    const fields = [
+        {
+            "name": "Discount Name",
+            "col-width": 3,
+            
+        },
+        {
+            "name": "Description",
+            "col-width": 7,
+            "editable": "true"
+        },
+        {
+            "name": "Active",
+            "col-width": 2,
+            "type": "toggle"
+        }
+    ];
+    const fetchFunctions =[
     api.fetchMultiCourseDiscount(),
     api.fetchPaymentMethodDiscount(),
     api.fetchDateRangeDiscount()
@@ -35,14 +49,32 @@ function CustomTestPanel() {
     const customUseEffects = [];
 
     return (
+        <>
+        <Typography variant={"h4"} align={"left"}>Manage Discounts</Typography>
         <PanelManager 
         fields={fields}
-        fetchFunction={fetchFunction}
+        fetchFunction={fetchFunctions[0]}
         statusFunction={statusFunction}
-        updateFunction={updateFunction}
+        updateFunction={updateFunction} //! Should be updateFunction[0]
         customUseEffects={customUseEffects}
         />
+        <PanelManager
+        fields={fields}
+        fetchFunction={fetchFunctions[1]}
+        statusFunction={statusFunction}
+        updateFunction={updateFunction} //! should be updateFunction[1]
+        customUseEffects={customUseEffects}
+        />
+        <PanelManager
+        fields={fields}
+        fetchFunction={fetchFunctions[2]}
+        statusFunction={statusFunction}
+        updateFunction={updateFunction} //! should be updateFunctin[2]
+        customUseEffects={customUseEffects}
+        />
+        </>
     )
+    
 }
 
 export default CustomTestPanel

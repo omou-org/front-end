@@ -41,14 +41,12 @@ function TestPanel() {
     const categories = useSelector(({Course}) => Course.CourseCategories);
     const categoryStatus = useSelector(({RequestStatus}) => RequestStatus.category);
 
-    
-    const customUseEffects = [];
 
     useEffect(()=>{
         api.fetchCategories();
     },[api]);
 
-    const fetchFunctions = [api.fetchCategories];
+    const fetchFunction = api.fetchCategories;
     const updateFunction = api.updateCategory;
 
     const handleChange = (field) => (e) =>{
@@ -71,9 +69,9 @@ function TestPanel() {
             setCategoryDescription("");
         }
     };
-    const TestForm = () => {
+    const categoryForm = () => {
         return (
-            <Paper className={"test-row new-test"}>
+            <Paper className={"category-row new-category"}>
                 <Grid container alignItems={"center"}>
                     <Grid item xs={3}>
                         <TextField
@@ -105,14 +103,15 @@ function TestPanel() {
     }
     return (
         <div>
-        {TestForm()}
+        <Typography variant={"h4"} align={"left"}>Manage Categories</Typography>
+        {categoryForm()}
         <br />
+        
         <PanelManager
             fields={fields}
-            fetchFunctions={fetchFunctions}
-            statusFunctions={categoryStatus}
+            fetchFunction={fetchFunction}
+            statusFunction={categoryStatus}
             updateFunction={updateFunction}
-            customUseEffects={customUseEffects}
         />
             </div>
     )

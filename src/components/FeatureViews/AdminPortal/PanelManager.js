@@ -1,3 +1,7 @@
+/*
+TODO: Change scss classes to general classes - reminder, this will break old
+*/
+
 import React, {useEffect, useMemo, useState} from "react";
 import * as adminActions from "../../../actions/adminActions";
 import "./AdminPortal.scss";
@@ -12,7 +16,7 @@ import { NoListAlert } from "components/NoListAlert";
 import { FETCH_CATEGORIES_FAILED } from "actions/actionTypes";
 
 import Loading from "../../Loading";
-
+import {isLoading} from "../../../actions/hooks.js"
 import IconButton from "@material-ui/core/IconButton/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 
@@ -37,7 +41,7 @@ function PanelManager(props) {
  * ! it uses an index to differentiate fields in the record...
  * ! id must ALWAYS be the first field, then it identifies fields from left to right
  * 
- * @prop {array} fields list of objects. Required field is name, col-width, optional params are editable, align
+ * @prop {array} fields list of objects
  * ex.
  * fields =     const fields = [
         {
@@ -49,38 +53,42 @@ function PanelManager(props) {
             "name": "Description",
             "col-width": 7,
             "editable": "true"
-        }
+        },
+            "name": "Active",
+            "col-width": "2",
+            "type": "toggle"
     ];
-    @prop {array} fetchFunctions array of functions for fetching records.
+    Possible Field Types: 
+        text, active, toggle, daterange, integer, money, enum.text, enum.collection
+
+    @prop {function} fetchFunction array of functions for fetching records.
     ex. api.fetchCategories
     
     @prop {function} statusFunction function which returns fetch? status
     ex. useSelector(({RequestStatus}) => RequestStatus.category)
-    @prop {updateFunction} updateFunction update
+
+    @prop {function} updateFunction update 
+
+    @prop {function} selectorHook selector that gets records from store
  *    
  **/
     const zip = rows => rows[0].map((_, c) => rows.map(row=>row[c]));
-
-    const [categoryName, setCategoryName] = useState('');
-    const [categoryDescription, setCategoryDescription] = useState('');
 
     //recordState
     const [recordList, setRecordList] = useState([]);
 
     const records = useSelector(({Course}) => Course.CourseCategories);
-    const categoryStatus = useSelector(({RequestStatus}) => RequestStatus.category)
 
     const dispatch = useDispatch();
 
     const api = useMemo(
-        () => ({
-            ...bindActionCreators(adminActions, dispatch),
-        }),
-        [dispatch]
-    );
+    () => bindActionCreators(adminActions, dispatch),
+    [dispatch]
+    ); 
+  
     
     useEffect(() => {
-        props.fetchFunctions.forEach(fetchFn => fetchFn());
+        props.fetchFunction();
     }, [api]);
     
     useEffect(() => {
@@ -93,13 +101,14 @@ function PanelManager(props) {
         }
     }, [records]);
 
-    if(props.statusFunctions[GET] !== 200){
+    if(isLoading(props.statusFunction[GET])){
         return <Loading />
     }
 
     const defaults = {
         "editable": "false",
-        "align": "left"
+        "align": "left",
+        "type": "text"
     };
 
     const addDefaults = (fields) => props.fields.map((field) => {
@@ -138,7 +147,7 @@ function PanelManager(props) {
                 <Grid container alignItems={"center"}>
                 
                     {recordElements}
-                    <Grid item xs={2} md={2}>
+                    <Grid item xs md>
                     <IconButton
                         onClick={editRecord(record.id)}
                         >
@@ -153,17 +162,12 @@ function PanelManager(props) {
 };
 const editRecord = (id) => (e) => {
     e.preventDefault();
-    console.log("it worked");
     let editingRecord = recordList.find((record) => {return record.id === id});
-    let recordToUpload;
+    let recordToUpload = {};
     if(editingRecord) {
-        recordToUpload = {
-            id: editingRecord.id,
-            name: editingRecord.name,
-            description: editingRecord.description,
-        };
-
-        //! Should be updateRecord...ideally takes this as a prop
+        Object.keys(editingRecord).forEach((key) => {
+            recordToUpload[key] = editingRecord[key]
+        });
         
         props.updateFunction(id, recordToUpload);
     }
@@ -175,21 +179,13 @@ const editRecord = (id) => (e) => {
             return record;
         }
     });
-    console.log(updatedRecordList);
     setRecordList(updatedRecordList);
 };
 
 const handleEditRecord = (type, id) => (e) => {
     let editingRecord = recordList.find((record) => {return record.id === id});
-    switch(type) {
-        case "name":
-            editingRecord.name = e.target.value;
-            break;
-        case "description":
-            editingRecord.description = e.target.value;
-            break;
-    }
-    
+    console.log("type: " + type);
+    editingRecord[type] = e.target.value;
 
     //! RecordToUpdateIndex = recordList.indexOf(editingRecord)
     //! update record... => recordList[indexOf(editingRecord)] = editingRecord
@@ -204,7 +200,6 @@ const handleEditRecord = (type, id) => (e) => {
 };
 
 const editRecordRow = (record) => {
-    console.log("edit");
     return (
         <Paper square={true} className={"category-row"} >
             <Grid container alignItems={"center"}>
@@ -273,7 +268,6 @@ const editRecordRow = (record) => {
                         <Grid container spacing={8} alignItems={"center"}>
                             {
                                 recordList.length > 0 ? recordList.map((record) => {
-                                    console.log(record);
                                     return (<Grid item xs={12} md={12} key={record.id}>
                                         {
                                             record.editing ? editRecordRow(record) : viewRecordRow(record)
@@ -287,11 +281,6 @@ const editRecordRow = (record) => {
             </Grid>
         )
     };
-
-    // const editRecord = (id) => (e) => {
-    //     e.preventDefault();
-    //     let editingRecord = records.find((record) => {return record.id === id});
-    // }
 
     return (
         <>
