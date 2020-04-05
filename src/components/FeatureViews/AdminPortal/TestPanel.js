@@ -24,7 +24,7 @@ function TestPanel() {
     const fields = [
         {
             "name": "Category Name",
-            "col-width": 3,
+            "col-width": 3
             
         },
         {

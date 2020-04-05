@@ -200,10 +200,31 @@ const handleEditRecord = (type, id) => (e) => {
 };
 
 const editRecordRow = (record) => {
+    const editElements = [];
+
+    // Object.keys(record).forEach((key) => {
+    //     console.log("key: " + key)
+    //     // console.log("value: " + record[key])
+    // }
+    fieldsWithDefaults.forEach((field, index) => {
+
+        editElements.push(
+
+                <Grid item xs={field["col-width"]} md={field["col-width"]}>
+                    <TextField
+                        value={Object.values(record)[index + 1]}
+                        defaultValue={Object.values(record)[index + 1]}
+                        label={field.name}
+                        onChange={handleEditRecord(Object.keys(record)[index + 1], record.id)}/>
+                </Grid>
+
+        );
+    })
     return (
         <Paper square={true} className={"category-row"} >
-            <Grid container alignItems={"center"}>
-                <Grid item xs={3} md={3} >
+            <Grid container alignItems={"left"}>
+                {editElements}
+                {/* <Grid item xs={3} md={3} >
                     <TextField
                         value={record.name}
                         defaultValue={record.name}
@@ -218,7 +239,7 @@ const editRecordRow = (record) => {
                         label={"Description"}
                         onChange={handleEditRecord("description", record.id)}
                     />
-                </Grid>
+                </Grid> */}
                 <Grid item xs={2} md={2}>
                     <Button
                         onClick={editRecord(record.id)}
