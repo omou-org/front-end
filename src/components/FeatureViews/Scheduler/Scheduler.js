@@ -226,7 +226,10 @@ const Scheduler = () => {
 
         // apply course type filter
         const courseSessionsArray = sessionArray(sessions) || [];
-        if (courseType !== "all") {
+        if (courseType !== "all" &&
+            courseSessionsArray.length > 0 &&
+            Object.keys(courses).length > 0
+        ) {
             courseSessionsArray
                 .filter(({course}) =>
                     courses[course].course_type !== courseType)
