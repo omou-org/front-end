@@ -16,18 +16,18 @@ import {stringToColor} from "../Accounts/accountUtils";
 import {useSelector} from "react-redux";
 
 const UnpaidSessionCard = ({unpaidStudent}) => {
-    const students = useSelector(({Users}) => Users.StudentList);
-    const courses = useSelector(({Course}) => Course.NewCourseList);
+	const students = useSelector(({Users}) => Users.StudentList);
+	const courses = useSelector(({Course}) => Course.NewCourseList);
 
-    const student = students[unpaidStudent.student];
-    const course = courses[unpaidStudent.course];
-    const startTime = adminUtils.getTime(course.schedule.start_time);
-    const endTime = adminUtils.getTime(course.schedule.end_time);
-    const amtDue = adminUtils.amountDue(
-        course.hourly_tuition,
-        unpaidStudent.sessions_left,
-        adminUtils.calculateSessionLength(startTime, endTime)
-    );
+	const student = students[unpaidStudent.student];
+	const course = courses[unpaidStudent.course];
+	const startTime = adminUtils.getTime(course.schedule.start_time);
+	const endTime = adminUtils.getTime(course.schedule.end_time);
+	const amtDue = adminUtils.amountDue(
+		course.hourly_tuition,
+		unpaidStudent.sessions_left,
+		adminUtils.calculateSessionLength(startTime, endTime)
+	);
 
     const studentID = student.user_id;
     const courseID = course.course_id;
@@ -82,11 +82,11 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
 };
 
 UnpaidSessionCard.propTypes = {
-    "unpaidStudent": PropTypes.shape({
-        "course": PropTypes.number.isRequired,
-        "sessions_left": PropTypes.number.isRequired,
-        "student": PropTypes.number.isRequired,
-    }).isRequired,
+	unpaidStudent: PropTypes.shape({
+		course: PropTypes.number.isRequired,
+		sessions_left: PropTypes.number.isRequired,
+		student: PropTypes.number.isRequired,
+	}).isRequired,
 };
 
 export default UnpaidSessionCard;

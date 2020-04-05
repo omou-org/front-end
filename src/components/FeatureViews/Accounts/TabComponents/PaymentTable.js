@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
-import {useSelector} from "react-redux";
-import React, {useCallback} from "react";
+import { useSelector } from "react-redux";
+import React, { useCallback } from "react";
 
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -10,10 +10,11 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 
-import {paymentToString, tuitionAmount} from "utils";
+import { paymentToString, tuitionAmount } from "utils";
 import Loading from "components/Loading";
 import NavLinkNoDup from "components/Routes/NavLinkNoDup";
 import NoListAlert from "components/NoListAlert";
+import Moment from "react-moment";
 
 const numericDateString = (date) => {
     const DateObject = new Date(date);
@@ -27,15 +28,15 @@ const numericDateString = (date) => {
 const courseLabel = (enrollments) => enrollments &&
     `${enrollments.length} Course${enrollments.length !== 1 ? "s" : ""}`;
 
-const PaymentTable = ({paymentList, type, enrollmentID, courseID}) => {
-    const course = useSelector(({Course}) => Course.NewCourseList[courseID]);
+const PaymentTable = ({ paymentList, type, enrollmentID, courseID }) => {
+    const course = useSelector(({ Course }) => Course.NewCourseList[courseID]);
 
     const numPaidSessionsByPayment = useCallback((paymentID) => {
-        const payment = paymentList.find(({id}) => id === paymentID);
+        const payment = paymentList.find(({ id }) => id === paymentID);
         if (!payment) {
             return null;
         }
-        const registration = payment.registrations.find(({enrollment}) =>
+        const registration = payment.registrations.find(({ enrollment }) =>
             enrollment === enrollmentID);
         if (!registration) {
             return null;
@@ -77,7 +78,7 @@ const PaymentTable = ({paymentList, type, enrollmentID, courseID}) => {
                                         {payment.id}
                                     </TableCell>
                                     <TableCell>
-                                        {numericDateString(payment.created_at)}
+                                        <Moment date={payment.created_at} format="M/DD/YYYY" />
                                     </TableCell>
                                     <TableCell>
                                         {

@@ -10,33 +10,25 @@ import {isLoading} from "actions/hooks";
 import Loading from "components/Loading";
 
 const ManageDiscounts = () => {
-    const discountList = useSelector(({"Admin": {Discounts}}) => Discounts);
-    const multiCourseStatus = adminActions.useMultiCourseDiscount();
-    const paymentMethodStatus = adminActions.usePaymentMethodDiscount();
-    const dateRangeStatus = adminActions.useDateRangeDiscount();
+	const discountList = useSelector(({Admin: {Discounts}}) => Discounts);
+	const multiCourseStatus = adminActions.useMultiCourseDiscount();
+	const paymentMethodStatus = adminActions.usePaymentMethodDiscount();
+	const dateRangeStatus = adminActions.useDateRangeDiscount();
 
-    if (isLoading(multiCourseStatus, paymentMethodStatus, dateRangeStatus)) {
-        return <Loading />;
-    }
+	if (isLoading(multiCourseStatus, paymentMethodStatus, dateRangeStatus)) {
+		return <Loading/>;
+	}
 
-    return (
-        <div>
-            <Typography
-                align="left"
-                variant="h4">
-                Manage Discounts
-            </Typography>
-            {
-                Object.entries(discountList)
-                    .map(([type, list]) => (
-                        <DiscountList
-                            discountList={list}
-                            discountType={type}
-                            key={type} />
-                    ))
-            }
-        </div>
-    );
+	return (
+		<div>
+			<Typography align="left" variant="h4">
+				Manage Discounts
+			</Typography>
+			{Object.entries(discountList).map(([type, list]) => (
+				<DiscountList discountList={list} discountType={type} key={type}/>
+			))}
+		</div>
+	);
 };
 
 ManageDiscounts.propTypes = {};

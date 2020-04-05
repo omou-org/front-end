@@ -11,42 +11,36 @@ import Loading from "components/Loading";
 import UnpaidSessionCard from "./UnpaidSessionCard";
 
 const UnpaidSessions = () => {
-    const UnpaidList = useSelector(({Admin}) => Admin.Unpaid) || [];
-    const studentList = useMemo(() =>
-        UnpaidList.map(({student}) => student), [UnpaidList]);
-    const courseList = useMemo(() =>
-        UnpaidList.map(({course}) => course), [UnpaidList]);
+	const UnpaidList = useSelector(({Admin}) => Admin.Unpaid) || [];
+	const studentList = useMemo(() => UnpaidList.map(({student}) => student), [
+		UnpaidList,
+	]);
+	const courseList = useMemo(() => UnpaidList.map(({course}) => course), [
+		UnpaidList,
+	]);
 
-    const studentStatus = hooks.useStudent(studentList);
-    const courseStatus = hooks.useCourse(courseList);
-    const unpaidSessionStatus = hooks.useUnpaidSessions();
+	const studentStatus = hooks.useStudent(studentList);
+	const courseStatus = hooks.useCourse(courseList);
+	const unpaidSessionStatus = hooks.useUnpaidSessions();
 
-    if (hooks.isLoading(studentStatus, courseStatus, unpaidSessionStatus)) {
-        return (
-            <Loading
-                loadingText="UNPAID SESSIONS LOADING"
-                small />
-        );
-    }
+	if (hooks.isLoading(studentStatus, courseStatus, unpaidSessionStatus)) {
+		return <Loading loadingText="UNPAID SESSIONS LOADING" small/>;
+	}
 
-    if (UnpaidList.length === 0) {
-        return (
-            <Card>
-                <CardContent>
-                    <Typography variant="h5">
-                        No unpaid sessions to display!
-                    </Typography>
-                    <HappyIcon fontSize="large" />
-                </CardContent>
-            </Card>
-        );
-    }
+	if (UnpaidList.length === 0) {
+		return (
+			<Card>
+				<CardContent>
+					<Typography variant="h5">No unpaid sessions to display!</Typography>
+					<HappyIcon fontSize="large"/>
+				</CardContent>
+			</Card>
+		);
+	}
 
-    return UnpaidList.map((unpaidStudent) => (
-        <UnpaidSessionCard
-            key={unpaidStudent}
-            unpaidStudent={unpaidStudent} />
-    ));
+	return UnpaidList.map((unpaidStudent) => (
+		<UnpaidSessionCard key={unpaidStudent} unpaidStudent={unpaidStudent}/>
+	));
 };
 
 export default UnpaidSessions;

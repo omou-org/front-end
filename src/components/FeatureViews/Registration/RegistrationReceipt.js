@@ -1,24 +1,28 @@
-import React, {useEffect, useMemo, useState} from "react";
-// Material UI Imports
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Prompt, useHistory, useLocation, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { bindActionCreators } from "redux";
+
+import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-
-import {bindActionCreators} from "redux";
-import * as registrationActions from "../../../actions/registrationActions";
-import {connect, useDispatch, useSelector} from "react-redux";
-import {Button, Typography} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
-import {Prompt, useLocation, useParams, withRouter} from "react-router-dom";
-import * as apiActions from "../../../actions/apiActions";
-import * as userActions from "../../../actions/userActions";
-import {usePayment, useSubmitRegistration} from "../../../actions/multiCallHooks";
-import Loading from "../../Loading";
-import {isFail, isLoading, isSuccessful, usePrevious} from "../../../actions/hooks";
-import {GET} from "../../../actions/actionTypes";
-import BackButton from "../../BackButton";
-import {paymentToString} from "utils"
+import Typography from "@material-ui/core/Typography";
 
-function RegistrationReceipt(props) {
-    const currentPayingParent = useSelector((({ Registration }) => Registration.CurrentParent));
+import * as registrationActions from "actions/registrationActions";
+import * as userActions from "actions/userActions";
+import { isFail, isLoading, isSuccessful, usePrevious } from "actions/hooks";
+import { usePayment, useSubmitRegistration } from "actions/multiCallHooks";
+import BackButton from "components/BackButton";
+import { GET } from "actions/actionTypes";
+import Loading from "components/Loading";
+import { paymentToString, uniques } from "utils";
+import Moment from "react-moment"
+
+const RegistrationReceipt = () => {
+    const history = useHistory();
+    const currentPayingParent = useSelector(
+        ({ Registration }) => Registration.CurrentParent
+    );
     const parents = useSelector(({ Users }) => Users.ParentList);
 
     const courses = useSelector(({ Course }) => Course.NewCourseList);
@@ -33,7 +37,6 @@ function RegistrationReceipt(props) {
         () => ({
             ...bindActionCreators(registrationActions, dispatch),
             ...bindActionCreators(userActions, dispatch),
-            ...bindActionCreators(apiActions, dispatch),
         }),
         [dispatch]
     );
@@ -47,256 +50,268 @@ function RegistrationReceipt(props) {
     const parent = parents[params.parentID];
     const paymentStatus = usePayment(params.paymentID && params.paymentID);
 
-    const courseReceiptInitializer = (enrollments) => {
-        let receipt = {};
-        let studentIDs = [...new Set(enrollments.map(enrollment => enrollment.student))];
-        studentIDs.forEach(id => {
-            if (RequestStatus.student[GET][id] !== 200) {
-                api.fetchStudents(id);
-            }
-
-            enrollments.forEach(enrollment => {
-
-                if (enrollment.student === id) {
-                    if (Array.isArray(receipt[id])) {
-                        receipt[id].push(courses[enrollment.course])
-                    } else {
-                        receipt[id] = [courses[enrollment.course]]
-                    }
+    const courseReceiptInitializer = useCallback(
+        (enrollments) => {
+            const receipt = {};
+            const studentIDs = uniques(
+                enrollments.map((enrollment) => enrollment.student)
+            );
+            studentIDs.forEach((id) => {
+                if (RequestStatus.student[GET][id] !== 200) {
+                    api.fetchStudents(id);
                 }
+
+                enrollments.forEach((enrollment) => {
+                    if (enrollment.student === id) {
+                        if (Array.isArray(receipt[id])) {
+                            receipt[id].push(courses[enrollment.course]);
+                        } else {
+                            receipt[id] = [courses[enrollment.course]];
+                        }
+                    }
+                });
             });
-        });
-        return receipt;
-    };
+            return receipt;
+        },
+        [RequestStatus.student, api, courses]
+    );
 
     useEffect(() => {
-        if (isSuccessful(paymentStatus) &&
+        if (
+            isSuccessful(paymentStatus) &&
             (JSON.stringify(prevPaymentReceipt) !== JSON.stringify(paymentReceipt) ||
-                JSON.stringify(prevPaymentReceipt) === "{}"
-            )
+                JSON.stringify(prevPaymentReceipt) === "{}")
         ) {
-            let payment = Payments[params.parentID][params.paymentID];
-            let enrollments = payment.registrations.map(registration => registration.enrollment_details);
+            const payment = Payments[params.parentID][params.paymentID];
+            const enrollments = payment.registrations.map(
+                (registration) => registration.enrollment_details
+            );
             setPaymentReceipt(payment);
             setCourseReceipt(courseReceiptInitializer(enrollments));
         }
-    }, [paymentStatus, paymentReceipt, courseReceiptInitializer, Payments, params.parentID, params.paymentID, prevPaymentReceipt]);
+    }, [
+        paymentStatus,
+        paymentReceipt,
+        courseReceiptInitializer,
+        Payments,
+        params.parentID,
+        params.paymentID,
+        prevPaymentReceipt,
+    ]);
 
-    if ((!registrationStatus || isFail(registrationStatus)) && !params.paymentID) {
-        return <Loading />
+    if (
+        (!registrationStatus || isFail(registrationStatus)) &&
+        !params.paymentID
+    ) {
+        return <Loading />;
     }
 
     // If we're coming from the registration cart, set-up state variables after we've completed registration requests
-    if (registrationStatus && registrationStatus.status >= 200 &&
-        Object.keys(paymentReceipt).length < 1) {
-        let payment = Payments[currentPayingParent.user.id][registrationStatus.paymentID];
+    if (
+        registrationStatus &&
+        registrationStatus.status >= 200 &&
+        Object.keys(paymentReceipt).length < 1
+    ) {
+        const payment =
+            Payments[currentPayingParent.user.id][registrationStatus.paymentID];
         setPaymentReceipt(payment);
-        let enrollments = payment.registrations.map(registration => registration.enrollment_details);
+        const enrollments = payment.registrations.map(
+            (registration) => registration.enrollment_details
+        );
         setCourseReceipt(courseReceiptInitializer(enrollments));
     }
 
     const handleCloseReceipt = () => (e) => {
         e.preventDefault();
-        props.history.push("/registration");
-        api.closeRegistration("");
+        history.push("/registration");
+        dispatch(registrationActions.closeRegistration());
     };
 
-    const renderParent = () => {
-        if (currentPayingParent) {
-            return currentPayingParent.user
-        } else {
-            return parent;
-        }
-    };
+    const getParent = () =>
+        currentPayingParent ? currentPayingParent.user : parent;
 
-    if (Object.keys(paymentReceipt).length < 1 || (isLoading(paymentStatus) && !registrationStatus) || !renderParent()) {
+    if (
+        Object.keys(paymentReceipt).length < 1 ||
+        (isLoading(paymentStatus) && !registrationStatus) ||
+        !getParent()
+    ) {
         return <Loading />;
     }
 
-    const numSessions = (courseID, studentID) => paymentReceipt.registrations
-        .find((registration) => (
-            registration.enrollment_details.student === Number(studentID) &&
-            registration.enrollment_details.course === Number(courseID))).num_sessions;
+    const numSessions = (courseID, studentID) =>
+        paymentReceipt.registrations.find(
+            (registration) =>
+                registration.enrollment_details.student == studentID &&
+                registration.enrollment_details.course == courseID
+        ).num_sessions;
 
-    const renderCourse = (enrolledCourse, studentID) => (<Grid item key={enrolledCourse.course_id}>
-        <Grid
-            className={"enrolled-course"}
-            container
-            direction="column"
-            justify="flex-start">
-            <Grid item>
-                <Typography align="left" className={"enrolled-course-title"}>
-                    {enrolledCourse.title}
-                </Typography>
-            </Grid>
-            <Grid item>
-                <Grid container direction="column" justify="flex-start">
-                    <Grid item>
-                        <Grid container direction="row">
-                            <Grid item xs={2}>
-                                <Typography align="left" className={"course-label"}>
-                                    Dates
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Typography align="left">
-                                    {new Date(enrolledCourse.schedule.start_date.replace(/-/g, '\/')).toLocaleDateString()} -
-                                    {new Date(enrolledCourse.schedule.end_date.replace(/-/g, '\/')).toLocaleDateString()}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={2} className={"course-label"}>
-                                <Typography align="left" className={"course-label"}>
-                                    Tuition
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Typography align="left">
-                                    ${Math.round(enrolledCourse.hourly_tuition *
-                                        numSessions(enrolledCourse.course_id, studentID))}
-                                </Typography>
+    const renderCourse = (enrolledCourse, studentID) => (
+        <Grid item key={enrolledCourse.course_id}>
+            <Grid
+                className="enrolled-course"
+                container
+                direction="column"
+                justify="flex-start"
+            >
+                <Grid item>
+                    <Typography align="left" className="enrolled-course-title">
+                        {enrolledCourse.title}
+                    </Typography>
+                </Grid>
+                <Grid item>
+                    <Grid container direction="column" justify="flex-start">
+                        <Grid item>
+                            <Grid container direction="row">
+                                <Grid item xs={2}>
+                                    <Typography align="left" className="course-label">
+                                        Dates
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography align="left">
+                                        <Moment format="M/D/YYYY" date={enrolledCourse.schedule.start_date} />
+                                        {` - `}
+                                        <Moment format="M/D/YYYY" date={enrolledCourse.schedule.end_date} />
+                                    </Typography>
+                                </Grid>
+                                <Grid className="course-label" item xs={2}>
+                                    <Typography align="left" className="course-label">
+                                        Tuition
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography align="left">
+                                        $
+                                        {Math.round(
+                                            enrolledCourse.hourly_tuition *
+                                            numSessions(enrolledCourse.course_id, studentID)
+                                        )}
+                                    </Typography>
+                                </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
-                    <Grid item>
-                        <Grid container direction="row">
-                            <Grid item xs={2}>
-                                <Typography align="left" className={"course-label"}>
-                                    Sessions
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Typography align="left">
-                                    {numSessions(enrolledCourse.course_id, studentID)}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={2}>
-                                <Typography align="left" className={"course-label"}>
-                                    Hourly Tuition
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Typography align="left">
-                                    ${enrolledCourse.hourly_tuition}
-                                </Typography>
+                        <Grid item>
+                            <Grid container direction="row">
+                                <Grid item xs={2}>
+                                    <Typography align="left" className="course-label">
+                                        Sessions
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography align="left">
+                                        {numSessions(enrolledCourse.course_id, studentID)}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={2}>
+                                    <Typography align="left" className="course-label">
+                                        Hourly Tuition
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography align="left">
+                                        ${enrolledCourse.hourly_tuition}
+                                    </Typography>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
             </Grid>
         </Grid>
-    </Grid>);
+    );
 
     const renderStudentReceipt = (studentID, enrolledCourses) => {
-        let student = students[studentID];
+        const student = students[studentID];
         return (
             <Grid container direction="column" key={studentID}>
-                <Paper className={"course-receipt"}>
+                <Paper elevation={2} className="course-receipt">
                     <Grid item>
-                        <Typography
-                            className={"student-name"}
-                            variant="h5"
-                            align="left">
+                        <Typography align="left" className="student-name" variant="h5">
                             {student.name} <span>- ID# {student.user_id}</span>
                         </Typography>
                     </Grid>
-                    {
-                        enrolledCourses.map(enrolledCourse => renderCourse(enrolledCourse, studentID))
-                    }
+                    {enrolledCourses.map((enrolledCourse) =>
+                        renderCourse(enrolledCourse, studentID)
+                    )}
                 </Paper>
-            </Grid>)
+            </Grid>
+        );
     };
 
-    const handlePrint = event => {
+    const handlePrint = (event) => {
         event.preventDefault();
         window.print();
     };
 
-
-
     return (
-        <Paper className={"paper registration-receipt"}>
-            {
-                params.paymentID && <>
+        <Paper elevation={2} className="paper registration-receipt">
+            {params.paymentID && (
+                <>
                     <BackButton />
                     <hr />
                 </>
-            }
+            )}
             <Prompt
-                when={currentPayingParent !== "none" && location.pathname.includes("receipt")}
-                message={"Remember to please close out the parent first!"}
+                message="Remember to please close out the parent first!"
+                when={
+                    currentPayingParent !== null && location.pathname.includes("receipt")
+                }
             />
-            <Grid container
-                direction={"column"}
-                spacing={16}
-            >
+            <Grid container direction="column" spacing={2}>
                 <Grid item>
-                    <Typography variant={"h2"} align={"left"}>
+                    <Typography align="left" variant="h2">
                         Payment Confirmation
                     </Typography>
                 </Grid>
                 <Grid item>
-                    <Typography variant={"h5"} align={"left"}>
-                        Thank you for your payment, {renderParent().name}
+                    <Typography align="left" variant="h5">
+                        Thank you for your payment, {getParent().name}
                     </Typography>
                 </Grid>
-                <Grid item xs={12}
-                    className={"receipt-info"}
-                >
-                    <Grid container direction={"column"}>
+                <Grid className="receipt-info" item xs={12}>
+                    <Grid container direction="column">
                         <Grid item xs={8}>
-                            <Grid container direction={"row"}>
+                            <Grid container direction="row">
                                 <Grid item xs={3}>
-                                    <Typography
-                                        className={"label"}
-                                        align={"left"}>
+                                    <Typography align="left" className="label">
                                         Order ID#:
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Typography align={"left"}>
-                                        {paymentReceipt.id}
-                                    </Typography>
+                                    <Typography align="left">{paymentReceipt.id}</Typography>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Typography
-                                        className={"label"}
-                                        align={"left"}>
+                                    <Typography align="left" className="label">
                                         Paid By:
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Typography align={"left"}>
-                                        {`
-                                        ${renderParent().name} - ID#:
-                                        ${renderParent().user_id || renderParent().id}
-                                    `}
+                                    <Typography align="left">
+                                        {getParent().name} - ID#:{" "}
+                                        {getParent().user_id || getParent().id}
                                     </Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
                         <Grid item xs={8}>
-                            <Grid container direction={"row"}>
+                            <Grid container direction="row">
                                 <Grid item xs={3}>
-                                    <Typography
-                                        className={"label"}
-                                        align={"left"}>
+                                    <Typography align="left" className="label">
                                         Order Date:
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Typography align={"left"}>
-                                        {new Date(paymentReceipt.created_at).toLocaleDateString()}
+                                    <Typography align="left">
+                                        <Moment format="M/DD/YYYY" date={paymentReceipt.created_at} />
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Typography
-                                        className={"label"}
-                                        align={"left"}>
+                                    <Typography align="left" className="label">
                                         Payment Method:
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Typography align={"left"}>
+                                    <Typography align="left">
                                         {paymentToString(paymentReceipt.method)}
                                     </Typography>
                                 </Grid>
@@ -305,82 +320,57 @@ function RegistrationReceipt(props) {
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                    <Grid container
-                        direction="column"
-                        justify="center"
-                        spacing={8}
-                    >
+                    <Grid container direction="column" justify="center" spacing={1}>
                         <Grid item xs={12}>
-                            {
-                                Object.entries(courseReceipt)
-                                    .map(([studentID, enrolledCourses]) =>
-                                        renderStudentReceipt(studentID, enrolledCourses))
-                            }
+                            {Object.entries(
+                                courseReceipt
+                            ).map(([studentID, enrolledCourses]) =>
+                                renderStudentReceipt(studentID, enrolledCourses)
+                            )}
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={12} className={"receipt-details"}>
-                    <Grid
-                        container
-                        direction="column"
-                        alignItems="flex-end"
-                    >
-                        {
-                            paymentReceipt.discount_total >= 0 &&
-                            <Grid style={{ width: "100%" }}
-                                item xs={3}>
+                <Grid className="receipt-details" item xs={12}>
+                    <Grid alignItems="flex-end" container direction="column">
+                        {paymentReceipt.discount_total >= 0 && (
+                            <Grid item style={{ width: "100%" }} xs={3}>
                                 <Grid container direction="row">
                                     <Grid item xs={7}>
-                                        <Typography align="right">
-                                            Discount Amount
-                                        </Typography>
+                                        <Typography align="right">Discount Amount</Typography>
                                     </Grid>
                                     <Grid item xs={5}>
-                                        <Typography
-                                            align="right"
-                                            variant="subtitle1">
+                                        <Typography align="right" variant="subtitle1">
                                             - ${paymentReceipt.discount_total}
                                         </Typography>
                                     </Grid>
                                 </Grid>
                             </Grid>
-                        }
-                        {
-                            paymentReceipt.price_adjustment > 0 &&
-                            <Grid style={{ width: "100%" }}
-                                item xs={3}>
+                        )}
+                        {paymentReceipt.price_adjustment > 0 && (
+                            <Grid item style={{ width: "100%" }} xs={3}>
                                 <Grid container direction="row">
                                     <Grid item xs={7}>
-                                        <Typography
-                                            align="right"
-                                            variant="p">
+                                        <Typography align="right" variant="p">
                                             Price Adjustment
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={5}>
-                                        <Typography
-                                            align="right"
-                                            variant="subtitle1">
+                                        <Typography align="right" variant="subtitle1">
                                             {paymentReceipt.price_adjustment}
                                         </Typography>
                                     </Grid>
                                 </Grid>
                             </Grid>
-                        }
-                        <Grid style={{ width: "100%" }}
-                            item xs={3}>
+                        )}
+                        <Grid item style={{ width: "100%" }} xs={3}>
                             <Grid container direction="row">
                                 <Grid item xs={7}>
-                                    <Typography
-                                        align="right"
-                                        variant="h6">
+                                    <Typography align="right" variant="h6">
                                         Total
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={5}>
-                                    <Typography
-                                        align="right"
-                                        variant="h6">
+                                    <Typography align="right" variant="h6">
                                         ${paymentReceipt.total}
                                     </Typography>
                                 </Grid>
@@ -388,39 +378,28 @@ function RegistrationReceipt(props) {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={12} className={"receipt-actions"}>
-                    <Grid container
-                        spacing={8}
-                        direction="row"
-                        justify="flex-end">
+                <Grid className="receipt-actions" item xs={12}>
+                    <Grid container direction="row" justify="flex-end" spacing={1}>
                         <Grid item>
-                            <Button onClick={handlePrint} className={"button"}>
+                            <Button className="button" onClick={handlePrint}>
                                 Print
                             </Button>
                         </Grid>
-                        {
-                            !location.pathname.includes("parent") &&
+                        {!location.pathname.includes("parent") && (
                             <Grid item>
                                 <Button
+                                    className="button primary"
                                     onClick={handleCloseReceipt()}
-                                    className={"button primary"}>
+                                >
                                     End Registration
                                 </Button>
                             </Grid>
-                        }
+                        )}
                     </Grid>
                 </Grid>
             </Grid>
         </Paper>
     );
-}
+};
 
-const mapStateToProps = (state) => ({
-    "registration": state.Registration,
-    "studentAccounts": state.Users.StudentList,
-    "courseList": state.Course.NewCourseList,
-});
-
-export default withRouter(connect(
-    mapStateToProps
-)(RegistrationReceipt));
+export default RegistrationReceipt;
