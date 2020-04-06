@@ -9,14 +9,15 @@ import Grow from "@material-ui/core/Grow";
 import {Link} from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import Moment from "react-moment"
 
 import {capitalizeString, courseDateFormat} from "utils";
 
 const useStyles = makeStyles((theme) => ({
-	courseTitle: {
-		color: theme.palette.common.black,
-		textDecoration: "none",
-	},
+  courseTitle: {
+    color: theme.palette.common.black,
+    textDecoration: "none",
+  },
 }));
 
 const CourseList = ({filteredCourses}) => {
@@ -66,7 +67,9 @@ const CourseList = ({filteredCourses}) => {
 										Date
 									</Grid>
 									<Grid align="left" item md={8} xs={9}>
-										{date}
+										<Moment format="MMM D YYYY" date={course.schedule.start_date}/>
+										{" - "}
+										<Moment format="MMM D YYYY" date={course.schedule.end_date}/>
 									</Grid>
 								</Grid>
 								<Grid className="course-detail" container>
@@ -74,7 +77,9 @@ const CourseList = ({filteredCourses}) => {
 										Time
 									</Grid>
 									<Grid align="left" item md={8} xs={9}>
-										{capitalizeString(days)} {time}
+										<Moment format="dddd h:mm a"date={course.schedule.start_date+course.schedule.start_time}/>
+										{" - "}
+										<Moment format="dddd h:mm a"date={course.schedule.end_date+course.schedule.end_time}/>
 									</Grid>
 								</Grid>
 								<Grid className="course-detail" container>

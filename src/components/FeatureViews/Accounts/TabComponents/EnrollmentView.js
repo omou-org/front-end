@@ -27,7 +27,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
 
 import * as hooks from "actions/hooks";
-import {capitalizeString, DayConverter, upcomingSession, useGoToRoute} from "utils";
+import {upcomingSession, useGoToRoute} from "utils";
 import {deleteEnrollment, initializeRegistration} from "actions/registrationActions";
 import AddSessions from "components/AddSessions";
 import BackButton from "components/BackButton";
@@ -35,6 +35,7 @@ import Loading from "components/Loading";
 import Notes from "components/FeatureViews/Notes/Notes";
 import {useEnrollmentNotes} from "actions/userActions";
 import {useSessionsWithConfig} from "actions/calendarActions";
+import Moment from "react-moment";
 
 const timeOptions = {
     "hour": "2-digit",
@@ -115,12 +116,11 @@ const CourseSessionStatus = () => {
                 const endDate = new Date(end_datetime);
                 return {
                     "course_id": course,
-                    "date": startDate.toLocaleDateString("en-US", dateOptions),
-                    "day": DayConverter[startDate.getDay()],
-                    "endTime": endDate.toLocaleTimeString("en-US", timeOptions),
+					"date": startDate,
+					"endTime": endDate,
                     id,
                     instructor,
-                    "startTime": startDate.toLocaleTimeString("en-US", timeOptions),
+					"startTime": start_datetime,
                     status,
                     "tuition": course && courses[course].hourly_tuition,
                 };
@@ -221,7 +221,6 @@ const CourseSessionStatus = () => {
                             {sessions.length !== 0 ?
                                 sessions.map((session) => {
                                     const {
-                                        day,
                                         date,
                                         startTime,
                                         endTime,
@@ -252,16 +251,34 @@ const CourseSessionStatus = () => {
                                                 square>
                                                 <Grid item xs={1} />
                                                 <Grid item xs={2}>
-                                                    <Typography align="left">{date}</Typography>
+													<Typography align="left">
+														<Moment
+															date={date}
+															format="M/D/YYYY"
+														/>
+													</Typography>
                                                 </Grid>
                                                 <Grid item xs={2}>
                                                     <Typography align="left">
-                                                        {capitalizeString(day)}
+														<Typography align="left">
+															<Moment
+																date={date}
+																format="dddd"
+															/>
+														</Typography>
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item xs={3}>
                                                     <Typography align="left">
-                                                        {startTime} - {endTime}
+														<Moment
+															date={startTime}
+															format="h:m A"
+														/>
+														{" - "}
+														<Moment
+															date={endTime}
+															format="h:m A"
+														/>
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item xs={1}>

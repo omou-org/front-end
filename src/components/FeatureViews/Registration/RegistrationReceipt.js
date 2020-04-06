@@ -1,7 +1,7 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {Prompt, useHistory, useLocation, useParams} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {bindActionCreators} from "redux";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Prompt, useHistory, useLocation, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { bindActionCreators } from "redux";
 
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -10,24 +10,25 @@ import Typography from "@material-ui/core/Typography";
 
 import * as registrationActions from "actions/registrationActions";
 import * as userActions from "actions/userActions";
-import {isFail, isLoading, isSuccessful, usePrevious} from "actions/hooks";
-import {usePayment, useSubmitRegistration} from "actions/multiCallHooks";
+import { isFail, isLoading, isSuccessful, usePrevious } from "actions/hooks";
+import { usePayment, useSubmitRegistration } from "actions/multiCallHooks";
 import BackButton from "components/BackButton";
-import {GET} from "actions/actionTypes";
+import { GET } from "actions/actionTypes";
 import Loading from "components/Loading";
-import {paymentToString, uniques} from "utils";
+import { paymentToString, uniques } from "utils";
+import Moment from "react-moment"
 
 const RegistrationReceipt = () => {
     const history = useHistory();
     const currentPayingParent = useSelector(
-        ({Registration}) => Registration.CurrentParent
+        ({ Registration }) => Registration.CurrentParent
     );
-    const parents = useSelector(({Users}) => Users.ParentList);
+    const parents = useSelector(({ Users }) => Users.ParentList);
 
-    const courses = useSelector(({Course}) => Course.NewCourseList);
-    const Payments = useSelector(({Payments}) => Payments);
-    const students = useSelector(({Users}) => Users.StudentList);
-    const RequestStatus = useSelector(({RequestStatus}) => RequestStatus);
+    const courses = useSelector(({ Course }) => Course.NewCourseList);
+    const Payments = useSelector(({ Payments }) => Payments);
+    const students = useSelector(({ Users }) => Users.StudentList);
+    const RequestStatus = useSelector(({ RequestStatus }) => RequestStatus);
 
     const location = useLocation();
     const params = useParams();
@@ -43,7 +44,7 @@ const RegistrationReceipt = () => {
     const [paymentReceipt, setPaymentReceipt] = useState({});
     const prevPaymentReceipt = usePrevious(paymentReceipt);
     const [courseReceipt, setCourseReceipt] = useState({});
-    const Registration = useSelector(({Registration}) => Registration);
+    const Registration = useSelector(({ Registration }) => Registration);
     const registrationStatus = useSubmitRegistration(Registration.registration);
 
     const parent = parents[params.parentID];
@@ -102,7 +103,7 @@ const RegistrationReceipt = () => {
         (!registrationStatus || isFail(registrationStatus)) &&
         !params.paymentID
     ) {
-        return <Loading/>;
+        return <Loading />;
     }
 
     // If we're coming from the registration cart, set-up state variables after we've completed registration requests
@@ -134,7 +135,7 @@ const RegistrationReceipt = () => {
         (isLoading(paymentStatus) && !registrationStatus) ||
         !getParent()
     ) {
-        return <Loading/>;
+        return <Loading />;
     }
 
     const numSessions = (courseID, studentID) =>
@@ -168,13 +169,9 @@ const RegistrationReceipt = () => {
                                 </Grid>
                                 <Grid item xs={4}>
                                     <Typography align="left">
-                                        {new Date(
-                                            enrolledCourse.schedule.start_date.replace(/-/g, "/")
-                                        ).toLocaleDateString()}{" "}
-                                        -
-                                        {new Date(
-                                            enrolledCourse.schedule.end_date.replace(/-/g, "/")
-                                        ).toLocaleDateString()}
+                                        <Moment format="M/D/YYYY" date={enrolledCourse.schedule.start_date} />
+                                        {` - `}
+                                        <Moment format="M/D/YYYY" date={enrolledCourse.schedule.end_date} />
                                     </Typography>
                                 </Grid>
                                 <Grid className="course-label" item xs={2}>
@@ -250,8 +247,8 @@ const RegistrationReceipt = () => {
         <Paper elevation={2} className="paper registration-receipt">
             {params.paymentID && (
                 <>
-                    <BackButton/>
-                    <hr/>
+                    <BackButton />
+                    <hr />
                 </>
             )}
             <Prompt
@@ -305,7 +302,7 @@ const RegistrationReceipt = () => {
                                 </Grid>
                                 <Grid item xs={3}>
                                     <Typography align="left">
-                                        {new Date(paymentReceipt.created_at).toLocaleDateString()}
+                                        <Moment format="M/DD/YYYY" date={paymentReceipt.created_at} />
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
@@ -336,7 +333,7 @@ const RegistrationReceipt = () => {
                 <Grid className="receipt-details" item xs={12}>
                     <Grid alignItems="flex-end" container direction="column">
                         {paymentReceipt.discount_total >= 0 && (
-                            <Grid item style={{width: "100%"}} xs={3}>
+                            <Grid item style={{ width: "100%" }} xs={3}>
                                 <Grid container direction="row">
                                     <Grid item xs={7}>
                                         <Typography align="right">Discount Amount</Typography>
@@ -350,7 +347,7 @@ const RegistrationReceipt = () => {
                             </Grid>
                         )}
                         {paymentReceipt.price_adjustment > 0 && (
-                            <Grid item style={{width: "100%"}} xs={3}>
+                            <Grid item style={{ width: "100%" }} xs={3}>
                                 <Grid container direction="row">
                                     <Grid item xs={7}>
                                         <Typography align="right" variant="p">
@@ -365,7 +362,7 @@ const RegistrationReceipt = () => {
                                 </Grid>
                             </Grid>
                         )}
-                        <Grid item style={{width: "100%"}} xs={3}>
+                        <Grid item style={{ width: "100%" }} xs={3}>
                             <Grid container direction="row">
                                 <Grid item xs={7}>
                                     <Typography align="right" variant="h6">
