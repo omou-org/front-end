@@ -1,16 +1,17 @@
-import React, {useCallback, useMemo} from "react";
+import React, { useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
-import {Link, useLocation} from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import LoadingError from "./LoadingCourseError"
 import * as hooks from "actions/hooks";
-import {capitalizeString, courseDateFormat, dateTimeToDate} from "utils";
+import { capitalizeString, courseDateFormat, dateTimeToDate } from "utils";
 import NoListAlert from "components/NoListAlert";
+import Moment from "react-moment";
 
 const today = dateTimeToDate(new Date());
 
@@ -23,10 +24,10 @@ const paymentStatus = (numPaidCourses) => {
     return "bad";
 };
 
-const StudentCourseViewer = ({studentID, current = true}) => {
-    const courses = useSelector(({Course}) => Course.NewCourseList);
-    const enrollments = useSelector(({Enrollments}) => Enrollments);
-    const {pathname} = useLocation();
+const StudentCourseViewer = ({ studentID, current = true }) => {
+    const courses = useSelector(({ Course }) => Course.NewCourseList);
+    const enrollments = useSelector(({ Enrollments }) => Enrollments);
+    const { pathname } = useLocation();
 
     const enrollmentStatus = hooks.useEnrollmentByStudent(studentID);
     const courseList = useMemo(() => Object.keys(enrollments[studentID] || {}), [
@@ -38,7 +39,7 @@ const StudentCourseViewer = ({studentID, current = true}) => {
     const coursePaymentStatus = useMemo(
         () =>
             Object.entries(enrollments[studentID] || {}).reduce(
-                (obj, [courseID, {sessions_left}]) => ({
+                (obj, [courseID, { sessions_left }]) => ({
                     ...obj,
                     [courseID]: sessions_left,
                 }),
@@ -79,10 +80,10 @@ const StudentCourseViewer = ({studentID, current = true}) => {
 
     if (!enrollments[studentID] && !hooks.isSuccessful(enrollmentStatus)) {
         if (hooks.isLoading(enrollmentStatus, courseStatus)) {
-            return <Loading small loadingText="LOADING COURSES"/>;
+            return <Loading small loadingText="LOADING COURSES" />;
         }
         if (hooks.isFail(enrollmentStatus, courseStatus)) {
-            return <LoadingError error="courses"/>;
+            return <LoadingError error="courses" />;
         }
     }
 
@@ -147,17 +148,23 @@ const StudentCourseViewer = ({studentID, current = true}) => {
                                         </Grid>
                                         <Grid item xs={3}>
                                             <Typography align="left" className="accounts-table-text">
-                                                {start_date} - {end_date}
+                                                {console.log(course)}
+                                                <Moment format="MMM D YYYY" date={course.schedule.start_date} />
+                                                {` - `}
+                                                <Moment format="MMM D YYYY" date={course.schedule.end_date} />
+
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={2}>
                                             <Typography align="left" className="accounts-table-text">
-                                                {capitalizeString(days)}
+                                                <Moment format="dddd" date={course.schedule.start_date} />
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={2}>
                                             <Typography align="left" className="accounts-table-text">
-                                                {start_time} - {end_time}
+                                                <Moment format="h:mm a" date={course.schedule.start_date + course.schedule.start_time} />
+                                                {` - `}
+                                                <Moment format="h:mm a" date={course.schedule.end_date + course.schedule.end_time} />
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={1}>
@@ -175,8 +182,8 @@ const StudentCourseViewer = ({studentID, current = true}) => {
                         );
                     })
                 ) : (
-                    <NoListAlert list="Course"/>
-                )}
+                        <NoListAlert list="Course" />
+                    )}
             </Grid>
         </>
     );
