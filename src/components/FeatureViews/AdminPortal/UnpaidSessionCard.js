@@ -9,6 +9,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import * as adminUtils from "./AdminUtils";
 import {initials} from "utils";
@@ -73,7 +74,11 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
                         <br />
                         Amount Due: ${amtDue}
                         <br />
-                        {course.title}
+                        <Tooltip title={course.title}>
+                            <Typography className="unpaid-status-info" noWrap={true}>
+                                {course.title}
+                            </Typography>
+                        </Tooltip>
                     </Typography>
                 </CardContent>
             </CardActionArea>
