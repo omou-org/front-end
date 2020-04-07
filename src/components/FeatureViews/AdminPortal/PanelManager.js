@@ -20,18 +20,6 @@ import {isLoading} from "../../../actions/hooks.js"
 import IconButton from "@material-ui/core/IconButton/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 
-const zip = (arrays) => {
-    /* Python-type zip util function
-    example:
-    zip([1, 2, 3], ['a', 'b', 'c']);
-    >> [[1, 'a'], [2, 'b'], [3, 'c']]
-    */
-
-    return arrays[0].map((_,i) => {
-        return arrays.map((array) => {return array[i]})
-    });
-}
-
 function PanelManager(props) {
 /**
  * Fetches, configures, and displays a grid-structured panel for a given 
@@ -43,11 +31,10 @@ function PanelManager(props) {
  * 
  * @prop {array} fields list of objects
  * ex.
- * fields =     const fields = [
+ * const fields = [
         {
             "name": "Category Name",
             "col-width": 3,
-            
         },
         {
             "name": "Description",
@@ -57,9 +44,19 @@ function PanelManager(props) {
             "name": "Active",
             "col-width": "2",
             "type": "toggle"
+        },
+        {
+            "name": "Discount",
+            "col-width": 5,
+            "type": "enumCollection",
+            "fetch": fetchFunction,
+            "update": updateFunction
+        }
     ];
     Possible Field Types: 
-        text, active, toggle, daterange, integer, money, enum.text, enum.collection
+        text, active, toggle, daterange, integer, money, enumText, enumCollection
+        ...
+        for enumCollection, the object needs "fetch" and "update" attributes 
 
     @prop {function} fetchFunction array of functions for fetching records.
     ex. api.fetchCategories
@@ -77,7 +74,7 @@ function PanelManager(props) {
     //recordState
     const [recordList, setRecordList] = useState([]);
 
-    const records = useSelector(({Course}) => Course.CourseCategories);
+    const records = props.selectorHook;
 
     const dispatch = useDispatch();
 
@@ -92,6 +89,7 @@ function PanelManager(props) {
     }, [api]);
     
     useEffect(() => {
+        console.log(records);
         if(records.length !== recordList.length) {
             let parsedRecordList = records.map((record) => ({
                 ...record,
@@ -101,9 +99,9 @@ function PanelManager(props) {
         }
     }, [records]);
 
-    if(isLoading(props.statusFunction[GET])){
-        return <Loading />
-    }
+    // if(isLoading(props.statusFunction[GET])){
+    //     return <Loading />
+    // }
 
     const defaults = {
         "editable": "false",
@@ -132,7 +130,6 @@ function PanelManager(props) {
         
         fieldsWithDefaults.forEach((field, index) => {
             recordElements.push(
-
                     <Grid item xs={field["col-width"]} md={field["col-width"]}>
                         <Typography align={field["align"]}>
                             {Object.values(record)[index + 1]}
@@ -184,7 +181,6 @@ const editRecord = (id) => (e) => {
 
 const handleEditRecord = (type, id) => (e) => {
     let editingRecord = recordList.find((record) => {return record.id === id});
-    console.log("type: " + type);
     editingRecord[type] = e.target.value;
 
     //! RecordToUpdateIndex = recordList.indexOf(editingRecord)
@@ -201,11 +197,6 @@ const handleEditRecord = (type, id) => (e) => {
 
 const editRecordRow = (record) => {
     const editElements = [];
-
-    // Object.keys(record).forEach((key) => {
-    //     console.log("key: " + key)
-    //     // console.log("value: " + record[key])
-    // }
     fieldsWithDefaults.forEach((field, index) => {
 
         editElements.push(
@@ -224,22 +215,6 @@ const editRecordRow = (record) => {
         <Paper square={true} className={"category-row"} >
             <Grid container alignItems={"left"}>
                 {editElements}
-                {/* <Grid item xs={3} md={3} >
-                    <TextField
-                        value={record.name}
-                        defaultValue={record.name}
-                        label={"Name"}
-                        onChange={handleEditRecord("name", record.id)}
-                    />
-                </Grid>
-                <Grid item xs={7} md={7}>
-                    <TextField
-                        value={record.description}
-                        defaultValue={record.description}
-                        label={"Description"}
-                        onChange={handleEditRecord("description", record.id)}
-                    />
-                </Grid> */}
                 <Grid item xs={2} md={2}>
                     <Button
                         onClick={editRecord(record.id)}
@@ -275,7 +250,7 @@ const editRecordRow = (record) => {
                     
                     <Grid container className={'accounts-table-heading'}>
                     {headerElements}
-                    <Grid item xs={2} md={2}>
+                    <Grid item xs md>
                         <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
                             Edit
                         </Typography>
@@ -284,19 +259,17 @@ const editRecordRow = (record) => {
                 </Grid>
 
                 {/* Directory */}
-                <Grid>
-                    <Grid item xs={12}>
-                        <Grid container spacing={8} alignItems={"center"}>
-                            {
-                                recordList.length > 0 ? recordList.map((record) => {
-                                    return (<Grid item xs={12} md={12} key={record.id}>
-                                        {
-                                            record.editing ? editRecordRow(record) : viewRecordRow(record)
-                                        }
-                                    </Grid>);
-                                }): <NoListAlert list={"Course Categories"} />
-                            }
-                        </Grid>
+                <Grid item xs={12} md={12}>
+                    <Grid container spacing={8} alignItems={"center"}>
+                        {
+                            recordList.length > 0 ? recordList.map((record) => {
+                                return (<Grid item xs={12} md={12} key={record.id}>
+                                    {
+                                        record.editing ? editRecordRow(record) : viewRecordRow(record)
+                                    }
+                                </Grid>);
+                            }): <NoListAlert list={"Course Categories"} />
+                        }
                     </Grid>
                 </Grid>
             </Grid>

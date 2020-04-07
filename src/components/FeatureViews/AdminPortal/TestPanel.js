@@ -48,7 +48,8 @@ function TestPanel() {
 
     const fetchFunction = api.fetchCategories;
     const updateFunction = api.updateCategory;
-
+    const selectorHook = categories;
+    
     const handleChange = (field) => (e) =>{
         switch(field){
             case "name":{
@@ -112,6 +113,7 @@ function TestPanel() {
             fetchFunction={fetchFunction}
             statusFunction={categoryStatus}
             updateFunction={updateFunction}
+            selectorHook={selectorHook}
         />
             </div>
     )

@@ -11,7 +11,7 @@ import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import {Button, Typography} from "@material-ui/core";
 
-function CustomTestPanel() {
+function ManageDiscountsTest() {
     const dispatch = useDispatch();
     const api = useMemo(
         () => ({
@@ -38,13 +38,24 @@ function CustomTestPanel() {
         }
     ];
     const fetchFunctions =[
-    api.fetchMultiCourseDiscount(),
-    api.fetchPaymentMethodDiscount(),
-    api.fetchDateRangeDiscount()
-    ]
-    const statusFunction = () => {};
+    api.fetchMultiCourseDiscount,
+    api.fetchPaymentMethodDiscount,
+    api.fetchDateRangeDiscount
+    ];
 
-    const updateFunction = () => {};
+    // const categories = useSelector(({Course}) => Course.CourseCategories);
+    // const selectorHook = categories;
+    const daterangeSelectorHook = useSelector(({"Admin":{Discounts}}) => Discounts["DateRange"]);
+    const multiCourseSelectorHook = useSelector(({"Admin": {Discounts}}) => Discounts["MultiCourse"]);
+    const paymentMethodSelectorHook = useSelector(({"Admin": {Discounts}}) => Discounts["PaymentMethod"]);
+
+    // console.log("DateRange:")
+    // console.log(daterangeSelectorHook);
+    const statusFunction = useSelector(({RequestStatus}) => RequestStatus);
+
+    const updateFunction = () => {
+        console.log("update fn");
+    };
 
     const customUseEffects = [];
 
@@ -54,6 +65,7 @@ function CustomTestPanel() {
         <PanelManager 
         fields={fields}
         fetchFunction={fetchFunctions[0]}
+        selectorHook={daterangeSelectorHook}
         statusFunction={statusFunction}
         updateFunction={updateFunction} //! Should be updateFunction[0]
         customUseEffects={customUseEffects}
@@ -61,6 +73,7 @@ function CustomTestPanel() {
         <PanelManager
         fields={fields}
         fetchFunction={fetchFunctions[1]}
+        selectorHook={multiCourseSelectorHook}
         statusFunction={statusFunction}
         updateFunction={updateFunction} //! should be updateFunction[1]
         customUseEffects={customUseEffects}
@@ -68,6 +81,7 @@ function CustomTestPanel() {
         <PanelManager
         fields={fields}
         fetchFunction={fetchFunctions[2]}
+        selectorHook={paymentMethodSelectorHook}
         statusFunction={statusFunction}
         updateFunction={updateFunction} //! should be updateFunctin[2]
         customUseEffects={customUseEffects}
@@ -77,4 +91,4 @@ function CustomTestPanel() {
     
 }
 
-export default CustomTestPanel
+export default ManageDiscountsTest
