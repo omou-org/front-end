@@ -39,21 +39,19 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
             component = {NavLink}
             to={`/accounts/students/${studentID}/${courseID}`}
             >
-                <CardMedia>
-                    <Grid
-                        className="unpaid-avatar-container"
-                        container>
-                        <Avatar
-                            className="unpaid-avatar"
-                            style={{
-                                "backgroundColor": stringToColor(student.name),
-                            }}>
-                            {initials(
-                                student.first_name, student.last_name
-                            )}
-                        </Avatar>
-                    </Grid>
-                </CardMedia>
+                <Grid
+                    className="unpaid-avatar-container"
+                    >   
+                    <Avatar
+                        className="unpaid-avatar"
+                        style={{
+                            "backgroundColor": stringToColor(student.name),
+                        }}>
+                        {initials(
+                            student.first_name, student.last_name
+                        )}
+                    </Avatar>
+                </Grid>
                 <CardContent className="unpaid-details">
                     <Typography className="unpaid-student-name">
                         {student.name}
