@@ -13,7 +13,7 @@ const Today = () => {
         today.map(({courses}) => courses), [today]);
 
     const courseStatus = hooks.useCourse(courseList);
-    const todayStatus = hooks.useSearchParams();
+    const todayStatus = hooks.useSearchParams({time: "today"});
     console.log(todayStatus + ' today');
     console.log(courseStatus + ' course')
 

@@ -57,6 +57,8 @@ export default {
         "accounts": {},
         "courseResultsNum": 0,
         "courses": {},
+        "sessionResultsNum": 0,
+        "sessions": {},
     },
     "Admin": {
         PriceRules: [],

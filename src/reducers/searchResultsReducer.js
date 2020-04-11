@@ -31,6 +31,17 @@ export default function search(
                 },
             };
         }
+        case actions.GET_SESSION_SEARCH_QUERY_SUCCESS: {
+            const {data} = payload.response;
+            return {
+                ...state,
+                "sessionResultsNum": data.count,
+                "sessions:": {
+                    ...state.sessions,
+                    [data.page]: data.results,
+                },
+            };
+        }
         default:
             return state;
     }

@@ -27,3 +27,14 @@ export const useSearchCourse = (query, page, course, availability, sort) =>
             },
         }), [availability, course, page, query, sort])
     );
+
+export const useSearchSession = (query, time, sort) =>
+    wrapUseEndpoint("/search/session/", types.GET_SESSION_SEARCH_QUERY_SUCCESS)(
+        null, useMemo(() => ({
+            "params": {
+                query,
+                time,
+                sort,
+            }
+        }), [query, time, sort])
+    );
