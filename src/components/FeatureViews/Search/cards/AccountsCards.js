@@ -27,7 +27,7 @@ const avatarStyles = (username) => ({
     "width": "3.5vw",
 
 });
-
+// When typing in Liz in search results, shows a padding issue where the card is much bigger
 const AccountsCards = ({user, isLoading}) => {
     const history = useHistory();
 

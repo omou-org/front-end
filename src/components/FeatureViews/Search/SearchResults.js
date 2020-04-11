@@ -23,20 +23,25 @@ import SearchResultsLoader from "./SearchResultsLoader";
 const toAPIPage = (page) => Math.floor((page + 1) / 2);
 
 const getDisplay = (results, page) => {
-  const selection = results[toAPIPage(page)];
+  console.log(`the results is ${results}, the page # arg is ${page}`);
+  console.log(results[page], page);
+  // const selection = results[toAPIPage(page)];
+  const selection = results[page];
+  console.log(selection)
   if (!selection) {
     // return dummy array
     return [];
   }
-  if (page % 2 === 1) {
-    return selection.slice(0, 4);
-  }
-  return selection.slice(4, 8);
+  // return selection.slice(0, 8);
+  return selection;
 };
 
+// May have to ask about this, but I think this is in regards to pagination
 const changePage = (setter, delta) => () => {
   setter((prevVal) => prevVal + delta);
 };
+
+console.log(changePage(803, 8))
 
 const SearchResults = () => {
   const history = useHistory();
@@ -46,10 +51,12 @@ const SearchResults = () => {
     courses,
     courseResultsNum,
   } = useSelector(({Search}) => Search);
+  // console.log(accounts, accountResultsNum);
   const [accountsPage, setAccountsPage] = useState(1);
   const [coursePage, setCoursePage] = useState(1);
 
   const searchParams = useSearchParams();
+  // console.log(searchParams);
   const filter = searchParams.get("filter"),
       query = searchParams.get("query"),
       sort = searchParams.get("sort");
@@ -109,7 +116,7 @@ const SearchResults = () => {
     }
     const accToDisplay = getDisplay(accounts, accountsPage);
     if (accToDisplay.length === 0) {
-      return Array(4)
+      return Array(8)
           .fill(null)
           .map((_, index) => (
               <Grid item key={index} sm={3}>
@@ -130,7 +137,7 @@ const SearchResults = () => {
     }
     const courseToDisplay = getDisplay(courses, coursePage);
     if (courseToDisplay.length === 0) {
-      return Array(4)
+      return Array(8)
           .fill(null)
           .map((_, index) => <CoursesCards isLoading key={index}/>);
     }
@@ -203,7 +210,7 @@ const SearchResults = () => {
                     <Grid container direction="row" spacing={2}>
                       {renderAccounts}
                     </Grid>
-                    {accountResultsNum > 4 && (
+                    {accountResultsNum > 8 && (
                         <div className="results-nav">
                           {
                             <IconButton
@@ -218,7 +225,7 @@ const SearchResults = () => {
                           {
                             <IconButton
                                 className="more"
-                                disabled={accountsPage * 4 >= accountResultsNum}
+                                disabled={accountsPage * 8 >= accountResultsNum}
                                 onClick={changePage(setAccountsPage, 1)}
                             >
                               <MoreResultsIcon/>
@@ -265,7 +272,7 @@ const SearchResults = () => {
                       {renderCourses}
                     </Grid>
                   </Grid>
-                  {courseResultsNum > 4 && (
+                  {courseResultsNum > 8 && (
                       <div className="results-nav">
                         <IconButton
                             className="less"
@@ -277,7 +284,7 @@ const SearchResults = () => {
                         {coursePage}
                         <IconButton
                             className="more"
-                            disabled={coursePage * 4 >= courseResultsNum}
+                            disabled={coursePage * 8 >= courseResultsNum}
                             onClick={changePage(setCoursePage, 1)}
                         >
                           <MoreResultsIcon/>

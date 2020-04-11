@@ -11,8 +11,6 @@ import "./Search.scss";
 import {BootstrapInput} from "../Scheduler/SchedulerUtils";
 import {useSearchParams} from "actions/hooks";
 
-console.log("push")
-
 const AccountFilters = () => {
 	const history = useHistory();
 	const searchParams = useSearchParams();
