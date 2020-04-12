@@ -1,5 +1,5 @@
 import * as types from "./actionTypes";
-import {useMemo} from "react";
+import {useMemo, wrapGet} from "react";
 import {wrapUseEndpoint} from "./hooks";
 
 export const useSearchAccount = (query, page, profile, grade, sort) =>
@@ -29,4 +29,5 @@ export const useSearchCourse = (query, page, course, availability, sort) =>
     );
 
 export const useSearchSession = () =>
-    wrapUseEndpoint("/search/session/?time=today", types.GET_SESSION_SEARCH_QUERY_SUCCESS);
+    wrapGet("/search/session/?date=today&page=1/", types.GET_SESSION_SEARCH_QUERY_SUCCESS);
+

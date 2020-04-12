@@ -271,8 +271,8 @@ export const useUnpaidSessions = wrapUseEndpoint(
 );
 
 export const useSessionSearchQuery = wrapUseEndpoint(
-    "/search/session/?time=today",
-    types.GET_SEARCH_SESSION_QUERY_SUCCESS
+    "/search/session/?date=today&page=1/",
+    types.GET_SESSION_SEARCH_QUERY_SUCCESS
 )
 
 // Hook

@@ -12,10 +12,25 @@
     
 }
 
-.Today {
-    .hello-user {
-        font-size: 36px;
-        color: red;
-    }
+.dashboard-greeting {
+    font-size: 50px;
 }
+
+.today-paper {
+    opacity: .5;
+}
+
+.today-card {
+    opacity: 1;
+    height: 220px;
+    width: 180px;
+    margin: 10px;
+    font-size: 8px;
+}
+
+.today-details {
+    text-align: left;
+}
+    
+
 

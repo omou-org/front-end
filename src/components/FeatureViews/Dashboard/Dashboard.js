@@ -1,4 +1,4 @@
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import React, { Component } from 'react';
 import './Dashboard.scss';
 import Today from './Today';
@@ -22,14 +22,21 @@ const Dashboard = () => {
     // const user = useSelector(({Auth}) => Authentication)
     // console.log(user)
 
+    const user = useSelector(({auth}) => auth.first_name) || [];
+
     return(
         <Paper elevation={3} style={{backgroundImage: `url(${background}`, backgroundSize: "100%", margin: "20px", padding: "20px", width: "90%", height: "90%"}}>
             <Grid container style={{height: "100%"}}>
-                <Paper style={{width: "60%", height: "60%"}}>
-                    <Today/>
+                <Paper className="today-paper">
+                    <Typography className="dashboard-greeting">
+                        Hello {user}!
+                    </Typography>
+                    <Grid container>
+                        <Today/>
+                    </Grid>
                 </Paper>
                 <br/>
-                <Paper style={{width: "50%", height: "20%"}}>
+                <Paper className="recent-update-paper">
                     <RecentUpdate/>
                 </Paper>
                 {/* <Grid item> */}

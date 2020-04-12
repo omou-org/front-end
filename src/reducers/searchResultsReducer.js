@@ -41,6 +41,5 @@ export default function search(
 }
 
 const handleSessionFetch = (state, {response}) => ({
-    ...state,
     "sessions": response.data,
 });
