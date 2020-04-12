@@ -12,12 +12,22 @@
     
 }
 
+.dashboard-paper {
+    background-image: url("./assets/dashboard-bg.jpg");
+    background-size: 100%;
+    margin: 20px;
+    padding: 20px;
+    width: 90%;
+    height: 90%;
+
+}
+
 .dashboard-greeting {
     font-size: 50px;
 }
 
 .today-paper {
-    opacity: .5;
+    opacity: .8;
 }
 
 .today-card {

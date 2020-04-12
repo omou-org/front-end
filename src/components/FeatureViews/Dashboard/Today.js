@@ -1,5 +1,6 @@
 import React, {useMemo} from 'react';
 import {useSelector} from "react-redux";
+import {useSearchSession} from "actions/searchActions";
 import * as hooks from "actions/hooks";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
@@ -18,7 +19,7 @@ const Today = () => {
     console.log(sessionArray);
 
     const instructorStatus = hooks.useInstructor();
-    const sessionStatus = hooks.useSessionSearchQuery();
+    const sessionStatus = useSearchSession(1, "today", "timeAsc");
 
     if (hooks.isLoading(sessionStatus)) {
         return (

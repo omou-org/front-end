@@ -19,13 +19,10 @@ import Paper from "@material-ui/core/Paper";
 
 const Dashboard = () => {
 
-    // const user = useSelector(({Auth}) => Authentication)
-    // console.log(user)
-
     const user = useSelector(({auth}) => auth.first_name) || [];
 
     return(
-        <Paper elevation={3} style={{backgroundImage: `url(${background}`, backgroundSize: "100%", margin: "20px", padding: "20px", width: "90%", height: "90%"}}>
+        <Paper className="dashboard-paper" elevation={3}>
             <Grid container style={{height: "100%"}}>
                 <Paper className="today-paper">
                     <Typography className="dashboard-greeting">
