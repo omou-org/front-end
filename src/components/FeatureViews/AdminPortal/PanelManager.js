@@ -79,7 +79,7 @@ function PanelManager(props) {
     const dispatch = useDispatch();
 
     const api = useMemo(
-    () => bindActionCreators(adminActions, dispatch),
+        () => bindActionCreators(adminActions, dispatch),
     [dispatch]
     ); 
   
@@ -89,7 +89,7 @@ function PanelManager(props) {
     }, [api]);
     
     useEffect(() => {
-        console.log(records);
+        // console.log(records);
         if(records.length !== recordList.length) {
             let parsedRecordList = records.map((record) => ({
                 ...record,
@@ -186,7 +186,7 @@ const handleEditRecord = (type, id) => (e) => {
     //! RecordToUpdateIndex = recordList.indexOf(editingRecord)
     //! update record... => recordList[indexOf(editingRecord)] = editingRecord
     let updatedRecordList = recordList.map((record) => {
-        if (record.id == id) {
+        if (record.id === id) {
             return editingRecord;
         } else {
             return record;
@@ -230,7 +230,6 @@ const editRecordRow = (record) => {
         /**
          * Generates header with fields
          */
-        
         const headerElements = [];
         for (const [index, value] of fieldsWithDefaults.entries()) {
 
@@ -262,7 +261,7 @@ const editRecordRow = (record) => {
                 <Grid item xs={12} md={12}>
                     <Grid container spacing={8} alignItems={"center"}>
                         {
-                            recordList.length > 0 ? recordList.map((record) => {
+                            props.recordArray.length > 0 ? props.recordArray.map((record) => {
                                 return (<Grid item xs={12} md={12} key={record.id}>
                                     {
                                         record.editing ? editRecordRow(record) : viewRecordRow(record)

@@ -26,8 +26,8 @@ function ManageTuitionTest() {
 
     const fetchFunction = api.fetchPriceRules;
     const statusFunction = useSelector(({RequestStatus}) => RequestStatus);
-    // const updateFunction = () => { console.log("hello world")}
     const selectorHook = priceRules;
+
     useEffect(()=>{
         api.fetchCategories();
     },[api]);
@@ -37,6 +37,7 @@ function ManageTuitionTest() {
             api.fetchPriceRules();
         }
     },[requestStatus.category[GET]]);
+    
     useEffect(()=>{
         if(requestStatus.priceRule[GET][REQUEST_ALL] === 200 && categories) {
             let parsedTuitionRulesList = priceRules.map((price)=>{

@@ -48,9 +48,6 @@ function ManageDiscountsTest() {
     const daterangeSelectorHook = useSelector(({"Admin":{Discounts}}) => Discounts["DateRange"]);
     const multiCourseSelectorHook = useSelector(({"Admin": {Discounts}}) => Discounts["MultiCourse"]);
     const paymentMethodSelectorHook = useSelector(({"Admin": {Discounts}}) => Discounts["PaymentMethod"]);
-
-    // console.log("DateRange:")
-    // console.log(daterangeSelectorHook);
     const statusFunction = useSelector(({RequestStatus}) => RequestStatus);
 
     const updateFunction = () => {
