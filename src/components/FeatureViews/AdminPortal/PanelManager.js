@@ -158,6 +158,7 @@ function PanelManager(props) {
 
 };
 const editRecord = (id) => (e) => {
+    console.log("editing")
     e.preventDefault();
     let editingRecord = recordList.find((record) => {return record.id === id});
     let recordToUpload = {};
@@ -226,59 +227,50 @@ const editRecordRow = (record) => {
         </Paper>
     )
 }
-    const generateGrid = () => {
-        /**
-         * Generates header with fields
-         */
-        const headerElements = [];
-        for (const [index, value] of fieldsWithDefaults.entries()) {
 
-            headerElements.push(
-                <Grid item xs={value["col-width"]} md={value["col-width"]} >
-                    <Typography align={value["align"]} style={{color: 'white', fontWeight: '500'}}>
-                        {value["name"]}
-                    </Typography>
-                </Grid>
-            )
-        }
 
-        return (
-            <Grid container>
-                {/* header */}
-                <Grid item xs={12}>
-                    
-                    <Grid container className={'accounts-table-heading'}>
-                    {headerElements}
-                    <Grid item xs md>
-                        <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
-                            Edit
-                        </Typography>
-                    </Grid>
-                    </Grid>
-                </Grid>
+    const headerElements = [];
+    for (const [index, value] of fieldsWithDefaults.entries()) {
 
-                {/* Directory */}
-                <Grid item xs={12} md={12}>
-                    <Grid container spacing={8} alignItems={"center"}>
-                        {
-                            props.recordArray.length > 0 ? props.recordArray.map((record) => {
-                                return (<Grid item xs={12} md={12} key={record.id}>
-                                    {
-                                        record.editing ? editRecordRow(record) : viewRecordRow(record)
-                                    }
-                                </Grid>);
-                            }): <NoListAlert list={"Course Categories"} />
-                        }
-                    </Grid>
-                </Grid>
+        headerElements.push(
+            <Grid item xs={value["col-width"]} md={value["col-width"]} >
+                <Typography align={value["align"]} style={{color: 'white', fontWeight: '500'}}>
+                    {value["name"]}
+                </Typography>
             </Grid>
         )
-    };
+    }
 
     return (
-        <>
-            {generateGrid()}
-        </>
+        <Grid container>
+                        {/* header */}
+                        <Grid item xs={12}>
+                            
+                            <Grid container className={'accounts-table-heading'}>
+                            {headerElements}
+                            <Grid item xs md>
+                                <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
+                                    Edit
+                                </Typography>
+                            </Grid>
+                            </Grid>
+                        </Grid>
+
+                        {/* Directory */}
+                        <Grid item xs={12} md={12}>
+                            <Grid container spacing={8} alignItems={"center"}>
+                                {
+                                    props.recordArray.length > 0 ? props.recordArray.map((record) => {
+                                        return (<Grid item xs={12} md={12} key={record.id}>
+                                            {
+                                                record.editing ? editRecordRow(record) : viewRecordRow(record)
+                                            }
+                                        </Grid>);
+                                    }): <NoListAlert list={"Course Categories"} />
+                                }
+                            </Grid>
+                        </Grid>
+                    </Grid>
     )
 }
 
