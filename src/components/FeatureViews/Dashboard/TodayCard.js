@@ -9,25 +9,35 @@ import Typography from "@material-ui/core/Typography";
 const TodayCard = ({session}) => {
 
     const instructors = useSelector(({Users}) => Users.InstructorList);
+    const courses = useSelector(({Course}) => Course.NewCourseList);
+
+    console.log(courses);
 
     const course = session.title
-    const instructor = session.instructor
+    const instructor = instructors[session.instructor].name
+    const startTime = courses[session.course].schedule.start_time
+    const roster = course[session.course].roster
+    const countStudents = 0;
+    if (roster)
+        {countStudents=roster.length};
+
+    console.log(roster);
 
     return (
         <Card className="today-card">
             <CardContent
                 className="today-details">
-                <Typography>
+                <Typography variant='h6' className='today-course-title'>
                     {course}
                 </Typography>
                 <Typography>
-                    <span class="material-icons">alarm</span>Happening Now
+                    <span className="material-icons">alarm</span>{startTime}
                 </Typography>
                 <Typography>
-                    <span class="material-icons">face</span>{instructor}
+                    <span className="material-icons">face</span>{instructor}
                 </Typography>
                 <Typography>
-                    <span class="material-icons">group</span> 20 students
+                    <span className="material-icons">group</span> {countStudents} students
                 </Typography>
             </CardContent>
         </Card>

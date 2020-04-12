@@ -3,7 +3,6 @@ import {useSelector} from "react-redux";
 import {useSearchSession} from "actions/searchActions";
 import * as hooks from "actions/hooks";
 import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
 import TodayCard from "./TodayCard";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -15,13 +14,14 @@ const Today = () => {
     const sessionArray = Object.values(sessionSearchResult) ;
     const instructorList = useMemo(() => 
         sessionArray.map(({instructor}) => instructor), [sessionArray]);
-
-    console.log(sessionArray);
+    const courseList = useMemo(() =>
+        sessionArray.map(({course}) => course), [sessionArray]);
 
     const instructorStatus = hooks.useInstructor();
-    const sessionStatus = useSearchSession(1, "today", "timeAsc");
+    const courseStatus = hooks.useCourse();
+    const sessionStatus = useSearchSession(1, "", "timeAsc");
 
-    if (hooks.isLoading(sessionStatus)) {
+    if (hooks.isLoading(instructorStatus, courseStatus, sessionStatus)) {
         return (
             <Loading
                 loadingText="SESSIONS ARE LOADING"

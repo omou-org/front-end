@@ -19,15 +19,20 @@
     padding: 20px;
     width: 90%;
     height: 90%;
+    text-align: left;
 
-}
-
-.dashboard-greeting {
-    font-size: 50px;
 }
 
 .today-paper {
     opacity: .8;
+    // width: 800px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    height: 250px;
+}
+
+.today-container {
+    height: 300px;
 }
 
 .today-card {
@@ -38,9 +43,10 @@
     font-size: 8px;
 }
 
-.today-details {
-    text-align: left;
+.today-course-title{
+    overflow: hidden;
 }
-    
+
+
 
 

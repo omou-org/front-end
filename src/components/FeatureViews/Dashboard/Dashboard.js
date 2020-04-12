@@ -23,24 +23,26 @@ const Dashboard = () => {
 
     return(
         <Paper className="dashboard-paper" elevation={3}>
-            <Grid container style={{height: "100%"}}>
-                <Paper className="today-paper">
-                    <Typography className="dashboard-greeting">
-                        Hello {user}!
-                    </Typography>
-                    <Grid container>
-                        <Today/>
-                    </Grid>
-                </Paper>
+            <Grid xs={8}>
+                <Typography variant="h2" className="dashboard-greeting">
+                    Hello {user}!
+                </Typography>
                 <br/>
-                <Paper className="recent-update-paper">
-                    <RecentUpdate/>
-                </Paper>
-                {/* <Grid item> */}
-                    {/* <Notes/>
-                    <br/> */}
-                    <UnpaidSessions/>
-                {/* </Grid> */}
+                <Typography variant='h4' className="dashboard-date">
+                    April 12, 2020
+                </Typography>
+                    <Paper className="today-paper">
+                        <Grid container>
+                            <Today/>
+                        </Grid>
+                    </Paper>
+                <Typography variant='h4'>
+                    Outstanding Payments
+                </Typography>
+                <UnpaidSessions/>
+            </Grid>
+            <Grid xs={3}>
+                Notes
             </Grid>
         </Paper>
     )
