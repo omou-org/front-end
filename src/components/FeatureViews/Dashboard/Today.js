@@ -10,13 +10,9 @@ import Loading from "components/Loading";
 import './Dashboard.scss';
 
 const Today = () => {
-    const sessionSearchResult = useSelector(({Search}) => Search.sessions) || [];
-    const sessionArray = Object.values(sessionSearchResult) ;
-    const instructorList = useMemo(() => 
-        sessionArray.map(({instructor}) => instructor), [sessionArray]);
-    const courseList = useMemo(() =>
-        sessionArray.map(({course}) => course), [sessionArray]);
-
+    const sessionSearchResult = useSelector(({Search}) => Search.sessions);
+    const sessionArray = sessionSearchResult.results ;
+    
     const instructorStatus = hooks.useInstructor();
     const courseStatus = hooks.useCourse();
     const sessionStatus = useSearchSession(1, "", "timeAsc");
@@ -44,10 +40,13 @@ const Today = () => {
     // return (
     //     <TodayCard/>
     // )
+
+ 
     return sessionArray.map((session) => (
             <TodayCard 
                 key={session}
-                session={session}/>
+                session={session}
+                />
     ));
 };
 

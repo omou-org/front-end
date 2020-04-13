@@ -16,6 +16,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Paper from "@material-ui/core/Paper";
+import DashboardNotes from './DashboardNotes';
 
 const Dashboard = () => {
 
@@ -23,26 +24,28 @@ const Dashboard = () => {
 
     return(
         <Paper className="dashboard-paper" elevation={3}>
-            <Grid xs={8}>
-                <Typography variant="h2" className="dashboard-greeting">
-                    Hello {user}!
-                </Typography>
-                <br/>
-                <Typography variant='h4' className="dashboard-date">
-                    April 12, 2020
-                </Typography>
-                    <Paper className="today-paper">
-                        <Grid container>
-                            <Today/>
-                        </Grid>
-                    </Paper>
-                <Typography variant='h4'>
-                    Outstanding Payments
-                </Typography>
-                <UnpaidSessions/>
-            </Grid>
-            <Grid xs={3}>
-                Notes
+            <Grid container justify="space-around">
+                <Grid item xs={9}>
+                    <Typography variant="h2" className="dashboard-greeting">
+                        Hello {user}!
+                    </Typography>
+                    <br/>
+                    <Typography variant='h4' className="dashboard-date">
+                        April 12, 2020
+                    </Typography>
+                        <Paper className="today-paper">
+                            <Grid container className="today-container" wrap = "nowrap">
+                                <Today/>
+                            </Grid>
+                        </Paper>
+                    <Typography variant='h4'>
+                        Outstanding Payments
+                    </Typography>
+                    <UnpaidSessions/>
+                </Grid>
+                <Grid item xs={3}>
+                    <DashboardNotes/>
+                </Grid>
             </Grid>
         </Paper>
     )

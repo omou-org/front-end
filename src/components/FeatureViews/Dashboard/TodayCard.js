@@ -4,6 +4,7 @@ import {useSelector} from "react-redux";
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from "@material-ui/core/Typography";
+import Tooltip from "@material-ui/core/Tooltip";
 
 
 const TodayCard = ({session}) => {
@@ -11,25 +12,22 @@ const TodayCard = ({session}) => {
     const instructors = useSelector(({Users}) => Users.InstructorList);
     const courses = useSelector(({Course}) => Course.NewCourseList);
 
-    console.log(courses);
-
     const course = session.title
     const instructor = instructors[session.instructor].name
     const startTime = courses[session.course].schedule.start_time
-    const roster = course[session.course].roster
-    const countStudents = 0;
-    if (roster)
-        {countStudents=roster.length};
+    const roster = courses[session.course].roster
+    const countStudents = roster.length
 
-    console.log(roster);
 
     return (
         <Card className="today-card">
             <CardContent
                 className="today-details">
-                <Typography variant='h6' className='today-course-title'>
-                    {course}
-                </Typography>
+                <Tooltip title={course}>
+                    <Typography variant='h6' className='today-course-title' noWrap={true}>
+                        {course}
+                    </Typography>
+                </Tooltip>
                 <Typography>
                     <span className="material-icons">alarm</span>{startTime}
                 </Typography>
