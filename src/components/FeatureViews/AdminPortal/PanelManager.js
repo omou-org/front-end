@@ -85,10 +85,6 @@ function PanelManager(props) {
   
     
     useEffect(() => {
-        props.fetchFunction();
-    }, [api]);
-    
-    useEffect(() => {
         // console.log(records);
         if(records.length !== recordList.length) {
             let parsedRecordList = records.map((record) => ({
@@ -99,9 +95,6 @@ function PanelManager(props) {
         }
     }, [records]);
 
-    // if(isLoading(props.statusFunction[GET])){
-    //     return <Loading />
-    // }
 
     const defaults = {
         "editable": "false",
@@ -158,9 +151,9 @@ function PanelManager(props) {
 
 };
 const editRecord = (id) => (e) => {
-    console.log("editing")
     e.preventDefault();
     let editingRecord = recordList.find((record) => {return record.id === id});
+    console.log("editing: " + editingRecord);
     let recordToUpload = {};
     if(editingRecord) {
         Object.keys(editingRecord).forEach((key) => {
@@ -177,6 +170,8 @@ const editRecord = (id) => (e) => {
             return record;
         }
     });
+    console.log("updated record list: ")
+    console.log(updatedRecordList)
     setRecordList(updatedRecordList);
 };
 
@@ -228,7 +223,6 @@ const editRecordRow = (record) => {
     )
 }
 
-
     const headerElements = [];
     for (const [index, value] of fieldsWithDefaults.entries()) {
 
@@ -243,34 +237,34 @@ const editRecordRow = (record) => {
 
     return (
         <Grid container>
-                        {/* header */}
-                        <Grid item xs={12}>
-                            
-                            <Grid container className={'accounts-table-heading'}>
-                            {headerElements}
-                            <Grid item xs md>
-                                <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
-                                    Edit
-                                </Typography>
-                            </Grid>
-                            </Grid>
-                        </Grid>
+            {/* header */}
+            <Grid item xs={12}>
+                
+                <Grid container className={'accounts-table-heading'}>
+                {headerElements}
+                <Grid item xs md>
+                    <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
+                        Edit
+                    </Typography>
+                </Grid>
+                </Grid>
+            </Grid>
 
-                        {/* Directory */}
-                        <Grid item xs={12} md={12}>
-                            <Grid container spacing={8} alignItems={"center"}>
+            {/* Directory */}
+            <Grid item xs={12} md={12}>
+                <Grid container spacing={8} alignItems={"center"}>
+                    {
+                        recordList.length > 0 ? recordList.map((record) => {
+                            return (<Grid item xs={12} md={12} key={record.id}>
                                 {
-                                    props.recordArray.length > 0 ? props.recordArray.map((record) => {
-                                        return (<Grid item xs={12} md={12} key={record.id}>
-                                            {
-                                                record.editing ? editRecordRow(record) : viewRecordRow(record)
-                                            }
-                                        </Grid>);
-                                    }): <NoListAlert list={"Course Categories"} />
+                                    record.editing ? editRecordRow(record) : viewRecordRow(record)
                                 }
-                            </Grid>
-                        </Grid>
-                    </Grid>
+                            </Grid>);
+                        }): <NoListAlert list={"Course Categories"} />
+                    }
+                </Grid>
+            </Grid>
+        </Grid>
     )
 }
 

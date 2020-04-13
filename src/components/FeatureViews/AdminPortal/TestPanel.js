@@ -46,7 +46,6 @@ function TestPanel() {
         api.fetchCategories();
     },[api]);
 
-    const fetchFunction = api.fetchCategories;
     const updateFunction = api.updateCategory;
     const selectorHook = categories;
     const handleChange = (field) => (e) =>{
@@ -111,7 +110,6 @@ function TestPanel() {
         <PanelManager
             fields={fields}
             recordArray={categories}
-            fetchFunction={fetchFunction}
             statusFunction={categoryStatus}
             updateFunction={updateFunction}
             selectorHook={selectorHook}

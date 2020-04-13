@@ -27,6 +27,7 @@ function ManageTuitionTest() {
     const fetchFunction = api.fetchPriceRules;
     const statusFunction = useSelector(({RequestStatus}) => RequestStatus);
     const selectorHook = priceRules;
+    const updateFunction = api.updatePriceRule;
 
     useEffect(()=>{
         api.fetchCategories();
@@ -85,6 +86,7 @@ function ManageTuitionTest() {
         fetchFunction={fetchFunction}
         statusFunction={statusFunction}
         selectorHook = {selectorHook}
+        updateFunction = {updateFunction}
         />
         </>
     )
