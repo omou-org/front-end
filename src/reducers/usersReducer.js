@@ -204,6 +204,55 @@ export const updateParent = (parents, id, parent) => ({
     },
 });
 
+export const handleAdminsFetch = (state, payload) => {
+    let id, response;
+    if (payload.id) {
+        id = payload.id;
+        response = payload.response;
+    } else {
+        id = payload.data.user.id;
+        response = payload;
+    }
+    let {ReceptionistList} = state;
+    if (id === REQUEST_ALL) {
+        response.data.forEach((admin) => {
+            ReceptionistList = updateAdmin(ReceptionistList, admin.user.id, admin);
+        });
+    } else if (Array.isArray(id)) {
+        response.forEach(({data}) => {
+            ReceptionistList = updateAdmin(ReceptionistList, data.user.id, data);
+        });
+    } else {
+        ReceptionistList = updateAdmin(ReceptionistList, id, response.data);
+    }
+    return {
+        ...state,
+        ReceptionistList,
+    };
+};
+
+export const updateAdmin = (admins, id, admin) => ({
+    ...admins,
+    [id]: {
+        "user_id": admin.user.id,
+        "gender": admin.gender,
+        "birthday": parseBirthday(admin.birth_date),
+        "address": admin.address,
+        "city": admin.city,
+        "phone_number": admin.phone_number,
+        "state": admin.state,
+        "zipcode": admin.zipcode,
+        "account_type": admin.user.account_type,
+        "first_name": admin.user.first_name,
+        "last_name": admin.user.last_name,
+        "name": `${admin.user.first_name} ${admin.user.last_name}`,
+        "email": admin.user.email,
+        "updated_at": admin.updated_at,
+        "role": "admin",
+        "notes": (admins[id] && admins[id].notes) || {},
+    },
+});
+
 export const handleStudentsFetch = (state, payload) => {
     let data;
     let id;

@@ -154,6 +154,11 @@ export const useInstructor = wrapUseEndpoint(
     types.FETCH_INSTRUCTOR_SUCCESSFUL
 );
 
+export const useAdmin = wrapUseEndpoint(
+    "/account/admin/",
+    types.FETCH_ADMIN_SUCCESSFUL
+);
+
 export const useCourse = wrapUseEndpoint(
     "/course/catalog/",
     types.FETCH_COURSE_SUCCESSFUL
