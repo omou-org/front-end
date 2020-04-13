@@ -8,9 +8,9 @@ import "./AdminPortal.scss";
 import {connect, useDispatch, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
 import {GET} from "../../../actions/actionTypes";
-
+import MenuItem from "@material-ui/core/MenuItem";
 import Grid from "@material-ui/core/Grid";
-import {Button, Typography, TextField} from "@material-ui/core";
+import {Button, Typography, TextField, Select} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import { NoListAlert } from "components/NoListAlert";
 import { FETCH_CATEGORIES_FAILED } from "actions/actionTypes";
@@ -194,8 +194,8 @@ const handleEditRecord = (type, id) => (e) => {
 const editRecordRow = (record) => {
     const editElements = [];
     fieldsWithDefaults.forEach((field, index) => {
-
-        editElements.push(
+        if (field["type"] === "text"){
+            editElements.push(
 
                 <Grid item xs={field["col-width"]} md={field["col-width"]}>
                     <TextField
@@ -204,8 +204,26 @@ const editRecordRow = (record) => {
                         label={field.name}
                         onChange={handleEditRecord(Object.keys(record)[index + 1], record.id)}/>
                 </Grid>
+            );
+        } else if (field["type"] === "enumCollection"){
+            editElements.push(
+                <Grid item xs={field["col-width"]} md={field["col-width"]}>
+                    <Select
+                        className={"tuition-field"} //! SWITCH CLASS NAME
+                        value={Object.values(record)[index + 1]}
+                        onChange={handleEditRecord(Object.keys(record)[index + 1], record.id)}>
+                         {
+                            field["options"].map((option)=>
+                                <MenuItem className={"menu-item"}
+                                    value={option} key={option.id}>
+                                    {option.name}
+                                </MenuItem>)
+                        }
+                    </Select>
+                </Grid>
+            )
+        }
 
-        );
     })
     return (
         <Paper square={true} className={"category-row"} >

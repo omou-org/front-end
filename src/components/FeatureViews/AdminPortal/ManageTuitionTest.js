@@ -61,8 +61,8 @@ function ManageTuitionTest() {
         {
             "name": "Category",
             "col-width": 3,
-            "type": "enumCollection"
-            // "fetch": fetchCategory
+            "type": "enumCollection",
+            "options": categories
         },
         {
             "name": "Grade",
