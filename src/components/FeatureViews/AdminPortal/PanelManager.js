@@ -115,9 +115,6 @@ function PanelManager(props) {
     });
 
     const fieldsWithDefaults = addDefaults(props.fields);
-
-
-
     const viewRecordRow = (record) => {
         const recordElements = [];
         
@@ -153,12 +150,15 @@ function PanelManager(props) {
 const editRecord = (id) => (e) => {
     e.preventDefault();
     let editingRecord = recordList.find((record) => {return record.id === id});
-    console.log("editing: " + editingRecord);
+    console.log("editing: ");
     let recordToUpload = {};
     if(editingRecord) {
         Object.keys(editingRecord).forEach((key) => {
+            // console.log("editingRecord[key]=> " + key + ": " + editingRecord[key])
+            // console.log("recordToUpload[key] => " + key + ": " + recordToUpload[key] )
             recordToUpload[key] = editingRecord[key]
         });
+
         
         props.updateFunction(id, recordToUpload);
     }
@@ -170,14 +170,14 @@ const editRecord = (id) => (e) => {
             return record;
         }
     });
-    console.log("updated record list: ")
-    console.log(updatedRecordList)
     setRecordList(updatedRecordList);
 };
 
 const handleEditRecord = (type, id) => (e) => {
+    e.preventDefault();
     let editingRecord = recordList.find((record) => {return record.id === id});
     editingRecord[type] = e.target.value;
+    console.log("handleEditRecord")
 
     //! RecordToUpdateIndex = recordList.indexOf(editingRecord)
     //! update record... => recordList[indexOf(editingRecord)] = editingRecord

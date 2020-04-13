@@ -95,8 +95,9 @@ function TuitionRules() {
                     {
                         tuitionRules.length > 0 ? tuitionRules.map((tuition)=> {
                             return (tuition && <Grid item xs={12} md={12} key={tuition.id}>
-                                {   
-                                    tuition.editing ? editTuitionRow(tuition) : viewTuitionRow(tuition)
+                                {   tuition.editing ?
+                                    editTuitionRow(tuition) :
+                                    viewTuitionRow(tuition)
                                 }
                             </Grid>)
                         }) : <NoListAlert list={"Tuition Rules"}/>
@@ -109,8 +110,6 @@ function TuitionRules() {
     const editTuition = (id) => (e) => {
         e.preventDefault();
         let editingRule = tuitionRules.find((rule)=>{return rule.id === id });
-        console.log("editing rule: ")
-        console.log(editingRule)
         let ruleToUpload;
         if(editingRule.editing){ //if we're about to update/we were just editing
             ruleToUpload = {

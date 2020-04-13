@@ -65,18 +65,19 @@ function ManageTuitionTest() {
             "options": categories
         },
         {
-            "name": "Grade",
-            "col-width": 3
+            "name": "Hourly Tuition",
+            "col-width": 2,
+            "type": "money"
         },
         {
             "name": "Course Size",
             "col-width": 3
         },
         {
-            "name": "Hourly Tuition",
-            "col-width": 2,
-            "type": "money"
+            "name": "Grade",
+            "col-width": 3
         }
+
     ]
     return (
         <>
