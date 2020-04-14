@@ -164,19 +164,21 @@ const editRecord = (id) => (e) => {
     }
     editingRecord.editing = !editingRecord.editing;
     let updatedRecordList = recordList.map((record) => {
-        if(record.id === id){
+        if(record.id == id){
             return editingRecord;
         } else {
             return record;
         }
     });
+    console.log(recordToUpload)
     setRecordList(updatedRecordList);
 };
 
 const handleEditRecord = (type, id) => (e) => {
     e.preventDefault();
     let editingRecord = recordList.find((record) => {return record.id === id});
-    editingRecord[type] = e.target.value;
+    console.log(e.target);
+    editingRecord[type] = e.target.label; //value
     console.log("handleEditRecord")
 
     //! RecordToUpdateIndex = recordList.indexOf(editingRecord)
@@ -192,6 +194,8 @@ const handleEditRecord = (type, id) => (e) => {
 };
 
 const editRecordRow = (record) => {
+    console.log("record")
+    console.log(record)
     const editElements = [];
     fieldsWithDefaults.forEach((field, index) => {
         if (field["type"] === "text"){
