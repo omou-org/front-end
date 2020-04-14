@@ -20,28 +20,32 @@ import CoursesCards from "./cards/CoursesCards";
 import NoResultsPage from "./NoResults/NoResultsPage";
 import SearchResultsLoader from "./SearchResultsLoader";
 
-const toAPIPage = (page) => Math.floor((page + 1) / 2);
+const toAPIPage = (page, filter) => filter ? page : Math.floor((page + 1) / 2);
 
-const getDisplay = (results, page) => {
-  console.log(`the results is ${results}, the page # arg is ${page}`);
-  console.log(results[page], page);
-  // const selection = results[toAPIPage(page)];
-  const selection = results[page];
-  console.log(selection)
+const maxArrayLength = (arr, filter) => {
+  const maxLength = filter ? 8 : 4; 
+  arr.length = Math.min(arr.length, maxLength);
+  return arr;  
+}
+
+const getDisplay = (results, page, filter) => {
+  let selection = results[toAPIPage(page, filter)];
   if (!selection) {
-    // return dummy array
     return [];
   }
-  // return selection.slice(0, 8);
-  return selection;
+  if(filter) {
+    selection = results[page]
+    return selection
+  }
+  if (page % 2 === 1) {
+    return selection.slice(0, 4);
+  }
+  return selection.slice(4, 8);
 };
 
-// May have to ask about this, but I think this is in regards to pagination
 const changePage = (setter, delta) => () => {
   setter((prevVal) => prevVal + delta);
 };
-
-console.log(changePage(803, 8))
 
 const SearchResults = () => {
   const history = useHistory();
@@ -51,37 +55,34 @@ const SearchResults = () => {
     courses,
     courseResultsNum,
   } = useSelector(({Search}) => Search);
-  // console.log(accounts, accountResultsNum);
   const [accountsPage, setAccountsPage] = useState(1);
   const [coursePage, setCoursePage] = useState(1);
-
+  
   const searchParams = useSearchParams();
-  // console.log(searchParams);
   const filter = searchParams.get("filter"),
-      query = searchParams.get("query"),
-      sort = searchParams.get("sort");
+  query = searchParams.get("query"),
+  sort = searchParams.get("sort");
   const accountStatus = useSearchAccount(
+    query,
+    toAPIPage(accountsPage, filter),
+    searchParams.get("profile"),
+    searchParams.get("grade"),
+    sort
+    );
+    const courseStatus = useSearchCourse(
       query,
-      toAPIPage(accountsPage),
-      searchParams.get("profile"),
-      searchParams.get("grade"),
-      sort
-  );
-  const courseStatus = useSearchCourse(
-      query,
-      toAPIPage(coursePage),
+      toAPIPage(coursePage, filter),
       searchParams.get("course"),
       searchParams.get("availability"),
       sort
-  );
+      );
+      
+      useEffect(() => {
+        setAccountsPage(1);
+        setCoursePage(1);
+      }, [query]);
 
-  // go back to 1st page on query change
-  useEffect(() => {
-    setAccountsPage(1);
-    setCoursePage(1);
-  }, [query]);
-
-  const goToFilter = (type) => () => {
+      const goToFilter = (type) => () => {
     history.push({
       pathname: "/search/",
       search: `?query=${query}&filter=${type}`,
@@ -114,9 +115,9 @@ const SearchResults = () => {
     if (accountResultsNum === 0) {
       return <></>;
     }
-    const accToDisplay = getDisplay(accounts, accountsPage);
+    const accToDisplay = getDisplay(accounts, accountsPage, filter);
     if (accToDisplay.length === 0) {
-      return Array(8)
+      return Array(filter === "account" ? 8 : 4)
           .fill(null)
           .map((_, index) => (
               <Grid item key={index} sm={3}>
@@ -124,7 +125,7 @@ const SearchResults = () => {
               </Grid>
           ));
     }
-    return accToDisplay.map((account) => (
+    return maxArrayLength(accToDisplay, filter).map((account) => (
         <Grid item key={account.user.id} sm={3}>
           <AccountsCards user={account}/>
         </Grid>
@@ -137,11 +138,11 @@ const SearchResults = () => {
     }
     const courseToDisplay = getDisplay(courses, coursePage);
     if (courseToDisplay.length === 0) {
-      return Array(8)
+      return Array(filter === "course" ? 8 : 4)
           .fill(null)
           .map((_, index) => <CoursesCards isLoading key={index}/>);
     }
-    return courseToDisplay.map((course) => (
+    return maxArrayLength(courseToDisplay, filter).map((course) => (
         <CoursesCards course={course} key={course.course_id}/>
     ));
   }, [courses, coursePage, courseResultsNum]);
@@ -210,7 +211,7 @@ const SearchResults = () => {
                     <Grid container direction="row" spacing={2}>
                       {renderAccounts}
                     </Grid>
-                    {accountResultsNum > 8 && (
+                    {accountResultsNum > 4 && (
                         <div className="results-nav">
                           {
                             <IconButton
@@ -225,7 +226,7 @@ const SearchResults = () => {
                           {
                             <IconButton
                                 className="more"
-                                disabled={accountsPage * 8 >= accountResultsNum}
+                                disabled={accountsPage * 4 >= accountResultsNum}
                                 onClick={changePage(setAccountsPage, 1)}
                             >
                               <MoreResultsIcon/>
@@ -272,7 +273,7 @@ const SearchResults = () => {
                       {renderCourses}
                     </Grid>
                   </Grid>
-                  {courseResultsNum > 8 && (
+                  {courseResultsNum > 4 && (
                       <div className="results-nav">
                         <IconButton
                             className="less"
@@ -284,7 +285,7 @@ const SearchResults = () => {
                         {coursePage}
                         <IconButton
                             className="more"
-                            disabled={coursePage * 8 >= courseResultsNum}
+                            disabled={coursePage * 4 >= courseResultsNum}
                             onClick={changePage(setCoursePage, 1)}
                         >
                           <MoreResultsIcon/>
