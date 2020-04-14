@@ -49,6 +49,34 @@
     overflow: hidden;
 }
 
+.db-notes-container{
+    margin: 20px;
+    padding: 20px;
+    display: inline-table
+}
+
+.addNote {
+    width: 100%;
+    height: 50%;
+}
+
+.note-container {
+    padding: 5px;
+}
+
+.noteNotification {
+    justify-content: flex-end;
+    align-content: center;
+}
+
+.datetime {
+    margin: 20px;
+}
+
+.button-group{
+    float: right;
+    padding-bottom: 5px;
+}
 
 
 

@@ -20,14 +20,14 @@ import DashboardNotes from './DashboardNotes';
 
 const Dashboard = () => {
 
-    const user = useSelector(({auth}) => auth.first_name) || [];
+    const user = useSelector(({auth}) => auth) || [];
 
     return(
         <Paper className="dashboard-paper" elevation={3}>
             <Grid container justify="space-around">
                 <Grid item xs={9}>
                     <Typography variant="h2" className="dashboard-greeting">
-                        Hello {user}!
+                        Hello {user.first_name}!
                     </Typography>
                     <br/>
                     <Typography variant='h4' className="dashboard-date">
@@ -43,8 +43,12 @@ const Dashboard = () => {
                     </Typography>
                     <UnpaidSessions/>
                 </Grid>
-                <Grid item xs={3}>
-                    <DashboardNotes/>
+                <Grid item xs={3} spacing={2} className='db-notes-container'>
+                    <DashboardNotes
+                        key = {user.id}
+                        id={user.id}
+                        first_name={user.first_name}
+                    />
                 </Grid>
             </Grid>
         </Paper>

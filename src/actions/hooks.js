@@ -159,6 +159,11 @@ export const useAdmin = wrapUseEndpoint(
     types.FETCH_ADMIN_SUCCESSFUL
 );
 
+export const useNote = wrapUseEndpoint(
+    "/account/note",
+    types.FETCH_ACCOUNT_NOTE_SUCCESSFUL    
+);
+
 export const useCourse = wrapUseEndpoint(
     "/course/catalog/",
     types.FETCH_COURSE_SUCCESSFUL
