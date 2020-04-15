@@ -67,6 +67,8 @@ function PanelManager(props) {
     @prop {function} updateFunction update 
 
     @prop {function} selectorHook selector that gets records from store
+
+    @prop {array} recordArray
  *    
  **/
     const zip = rows => rows[0].map((_, c) => rows.map(row=>row[c]));
@@ -74,7 +76,7 @@ function PanelManager(props) {
     //recordState
     const [recordList, setRecordList] = useState([]);
 
-    const records = props.selectorHook;
+    const records = props.collectionData
 
     const dispatch = useDispatch();
 
@@ -83,7 +85,26 @@ function PanelManager(props) {
     [dispatch]
     ); 
   
-    
+    const constructDirectoryObject = (fieldInfo, recordArray) => {
+        console.log("construcing object..");
+        console.log(recordArray)
+        console.log(fieldInfo)
+        Object.keys(fieldInfo).forEach((key) => {
+
+            records.forEach((record) => {
+                if (fieldInfo[key]["values"] === undefined){
+                    fieldInfo[key]["values"] = [record[key]];
+                } else {
+                    fieldInfo[key]["values"].push(record[key])
+                }
+            })
+        })
+        console.log("recordObjectWithFieldData")
+        console.log(fieldInfo)
+
+
+
+    }
     useEffect(() => {
         // console.log(records);
         if(records.length !== recordList.length) {
@@ -95,6 +116,9 @@ function PanelManager(props) {
         }
     }, [records]);
 
+    useEffect(() => {
+        constructDirectoryObject(fieldsWithDefaults, records);
+    }, [records]);
 
     const defaults = {
         "editable": "false",
@@ -221,7 +245,8 @@ const editRecordRow = (record) => {
                                 <MenuItem className={"menu-item"}
                                     value={option} key={option.id}>
                                     {option.name}
-                                </MenuItem>)
+                                </MenuItem>
+                            )
                         }
                     </Select>
                 </Grid>
@@ -256,6 +281,7 @@ const editRecordRow = (record) => {
             </Grid>
         )
     }
+
 
     return (
         <Grid container>

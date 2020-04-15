@@ -82,13 +82,13 @@ function ManageTuitionTest() {
     return (
         <>
         <h1>Manage Tuition Test</h1>
-        <PanelManager
-        fields={fields}
-        fetchFunction={fetchFunction}
-        statusFunction={statusFunction}
-        selectorHook = {selectorHook}
-        updateFunction = {updateFunction}
-        />
+            <PanelManager
+            fields={fields}
+            fetchFunction={fetchFunction}
+            statusFunction={statusFunction}
+            selectorHook = {selectorHook}
+            updateFunction = {updateFunction}
+            />
         </>
     )
 }

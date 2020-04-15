@@ -21,18 +21,18 @@ function TestPanel() {
         [dispatch]
     );
     
-    const fields = [
-        {
+    const fields = {
+        "name" : {
             "name": "Category Name",
             "col-width": 3
             
         },
-        {
+        "description": {
             "name": "Description",
             "col-width": 7,
             "editable": "true"
         }
-    ];
+    };
 
     const [categoryName, setCategoryName] = useState('');
     const [categoryDescription, setCategoryDescription] = useState('');
@@ -40,7 +40,6 @@ function TestPanel() {
 
     const categories = useSelector(({Course}) => Course.CourseCategories);
     const categoryStatus = useSelector(({RequestStatus}) => RequestStatus.category);
-
 
     useEffect(()=>{
         api.fetchCategories();
@@ -109,7 +108,7 @@ function TestPanel() {
         
         <PanelManager
             fields={fields}
-            recordArray={categories}
+            collectionData={categories}
             statusFunction={categoryStatus}
             updateFunction={updateFunction}
             selectorHook={selectorHook}
