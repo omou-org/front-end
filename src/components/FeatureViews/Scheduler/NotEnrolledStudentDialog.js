@@ -7,6 +7,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { withRouter } from "react-router-dom";
 import Button from "@material-ui/core/Button"
 import BackArrow from "@material-ui/icons/ArrowBack";
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'; 
+import "./scheduler.scss";
 
 const NotEnrolledStudentsDialog = (props) => {
     const [open, setOpen] = React.useState(true);
@@ -22,7 +24,9 @@ const NotEnrolledStudentsDialog = (props) => {
                 onClose={handleClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
+                className="notEnrolledStudentDialog"
             >
+                <ErrorOutlineIcon className="warningIcon"/>
                 <DialogTitle id="alert-dialog-title">{"OOPS!"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
