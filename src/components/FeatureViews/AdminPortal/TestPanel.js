@@ -23,12 +23,12 @@ function TestPanel() {
     
     const fields = {
         "name" : {
-            "name": "Category Name",
+            "label": "Category Name",
             "col-width": 3
             
         },
         "description": {
-            "name": "Description",
+            "label": "Description",
             "col-width": 7,
             "editable": "true"
         }

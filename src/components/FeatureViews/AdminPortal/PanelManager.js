@@ -126,18 +126,32 @@ function PanelManager(props) {
         "type": "text"
     };
 
-    const addDefaults = (fields) => props.fields.map((field) => {
-        //Add defaults field properties to the props.fields object
-        Object.keys(defaults).forEach((key) => {
-            if(field.hasOwnProperty(key)) {
-                //Do nothing, property is already set
-            } else {
-                field[key] = defaults[key];
-            }
-        });
-        return field;
-    });
+    // const addDefaults = (fields) => props.fields.map((field) => {
+    //     //Add defaults field properties to the props.fields object
+    //     Object.keys(defaults).forEach((key) => {
+    //         if(field.hasOwnProperty(key)) {
+    //             //Do nothing, property is already set
+    //         } else {
+    //             field[key] = defaults[key];
+    //         }
+    //     });
+    //     return field;
+    // });
 
+    const addDefaults = (fields) => {
+        let fieldsWithDefualts = {};
+        Object.keys(fields).forEach((field) => {
+            Object.keys(defaults).forEach((key) => {
+                if(fields[field].hasOwnProperty(key)) {
+                    //Do nothing, property is already set
+                } else {
+                    fields[field][key] = defaults[key];
+                }
+            })
+            console.log(fields)
+            return fields
+        })
+    }
     const fieldsWithDefaults = addDefaults(props.fields);
     const viewRecordRow = (record) => {
         const recordElements = [];
@@ -229,7 +243,7 @@ const editRecordRow = (record) => {
                     <TextField
                         value={Object.values(record)[index + 1]}
                         defaultValue={Object.values(record)[index + 1]}
-                        label={field.name}
+                        label={field.label}
                         onChange={handleEditRecord(Object.keys(record)[index + 1], record.id)}/>
                 </Grid>
             );
@@ -244,7 +258,7 @@ const editRecordRow = (record) => {
                             field["options"].map((option)=>
                                 <MenuItem className={"menu-item"}
                                     value={option} key={option.id}>
-                                    {option.name}
+                                    {option.label}
                                 </MenuItem>
                             )
                         }
@@ -276,7 +290,7 @@ const editRecordRow = (record) => {
         headerElements.push(
             <Grid item xs={value["col-width"]} md={value["col-width"]} >
                 <Typography align={value["align"]} style={{color: 'white', fontWeight: '500'}}>
-                    {value["name"]}
+                    {value["label"]}
                 </Typography>
             </Grid>
         )
