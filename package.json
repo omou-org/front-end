@@ -24,6 +24,8 @@
     "final-form": "^4.19.1",
     "material-ui-pickers": "^2.2.4",
     "mui-rff": "^2.1.9",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.28",
     "node-sass": "^4.13.1",
     "popper.js": "^1.16.1",
     "prettier": "^2.0.4",
@@ -31,6 +33,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-final-form": "^6.4.0",
+    "react-moment": "^0.9.7",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.1.0",
     "react-scripts": "^3.4.1",
@@ -65,6 +68,8 @@
     "cypress": "^4.4.0",
     "eslint": "^6.8.0",
     "eslint-plugin-cypress": "^2.10.3",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^3.0.0",
     "redux-devtools-extension": "^2.13.8"
   }
 }

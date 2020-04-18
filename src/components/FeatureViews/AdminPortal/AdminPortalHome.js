@@ -5,9 +5,9 @@ import "./AdminPortal.scss";
 import UnpaidSessions from "./UnpaidSessions";
 
 const AdminPortalHome = () => (
-    <Grid container>
-        <UnpaidSessions />
-    </Grid>
+	<Grid container>
+		<UnpaidSessions/>
+	</Grid>
 );
 
 AdminPortalHome.propTypes = {};

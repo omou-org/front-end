@@ -11,28 +11,31 @@ import AdminPortalHome from "../FeatureViews/AdminPortal/AdminPortalHome";
 // Local Component Imports
 
 function AdminViewsRoutes() {
-
     return (
         <Switch>
             <AdminRoute
                 path="/adminportal/tuition-rules"
-                render={(passedProps) => <TuitionRules {...passedProps}/> }/>
+                render={(passedProps) => <TuitionRules {...passedProps} />}
+            />
             <AdminRoute
                 path="/adminportal/manage-course-categories"
-                render={(passedProps) => <ManageCategories {...passedProps}/>}/>
+                render={(passedProps) => <ManageCategories {...passedProps} />}
+            />
             <AdminRoute
                 path={"/adminportal/manage-discounts"}
-                render={(passedProps) => <ManageDiscounts {...passedProps}/> }/>
+                render={(passedProps) => <ManageDiscounts {...passedProps} />}
+            />
             {/*    path="/adminportal/form/instructor"*/}
             {/*    render={(passedProps) => <Form {...passedProps}/> }/>*/}
             <AdminRoute
                 exact
                 path={"/adminportal/form/:type?"}
-                render={(passedProps) => <Form title={"Set Price Rule"}/>}/>
+                render={(passedProps) => <Form title={"Set Price Rule"}/>}
+            />
             <AdminRoute
                 path="/adminportal/"
-                render={(passedProps) => <AdminPortalHome {...passedProps}/> }/>
-
+                render={(passedProps) => <AdminPortalHome {...passedProps} />}
+            />
         </Switch>
     );
 }

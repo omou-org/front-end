@@ -10,38 +10,27 @@ import AdminViewsRoutes from "components/Routes/AdminViewsRoutes";
 import BackButton from "components/BackButton";
 
 const AdminPortal = () => (
-    <form>
-        <Paper className="registration-cart paper">
-            <Grid
-                container
-                layout="row">
-                <Grid
-                    item
-                    xs={12}>
-                    <BackButton />
-                    <hr />
-                </Grid>
-                <Grid
-                    item
-                    xs={12}>
-                    <Typography
-                        align="left"
-                        variant="h3">Admin Portal
-                    </Typography>
-                </Grid>
-                <Grid
-                    item
-                    xs={12}>
-                    <AdminActionCenter />
-                </Grid>
-                <Grid
-                    item
-                    xs={12}>
-                    <AdminViewsRoutes />
-                </Grid>
-            </Grid>
-        </Paper>
-    </form>
+	<form>
+		<Paper className="registration-cart paper">
+			<Grid container layout="row">
+				<Grid item xs={12}>
+					<BackButton/>
+					<hr/>
+				</Grid>
+				<Grid item xs={12}>
+					<Typography align="left" variant="h3">
+						Admin Portal
+					</Typography>
+				</Grid>
+				<Grid item xs={12}>
+					<AdminActionCenter/>
+				</Grid>
+				<Grid item xs={12}>
+					<AdminViewsRoutes/>
+				</Grid>
+			</Grid>
+		</Paper>
+	</form>
 );
 
 AdminPortal.propTypes = {};
