@@ -7,7 +7,7 @@ const parseGender = {
     "F": "female",
     "M": "male",
     "U": "unspecified"
-}
+};
 const mapFunc = (parser, data) => {
     let res = {};
     Object.entries(data).forEach(([key, message]) => {
@@ -104,7 +104,6 @@ const ADDRESS_FIELD = {
         "name": "phone_number",
         "label": "Phone Number",
         "type": "phone",
-        "required": true,
     },
     STATE_FIELD = {
         "name": "state",
@@ -179,9 +178,6 @@ export default {
                 ],
             },
         ],
-        "loadData": {
-            //
-        },
     },
     "admin": {
         "form": [
@@ -228,7 +224,6 @@ export default {
             // TODO: add admin fetching
         },
         "submit": async (dispatch, formData, id) => {
-            return;
             const responseToFormKey = {
                 "gender": ["user", "gender"],
                 "admin_type": ["user", "admin_type"],

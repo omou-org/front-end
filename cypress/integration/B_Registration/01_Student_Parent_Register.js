@@ -8,7 +8,6 @@ describe("Fills out form", () => {
 
     it("Loads page properly", () => {
         cy.get("[data-cy=nextButton]").should("be.disabled");
-        cy.wait(8000);
     });
 
     it("Fills out required student fields", () => {
