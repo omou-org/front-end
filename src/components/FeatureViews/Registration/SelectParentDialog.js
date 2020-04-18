@@ -91,7 +91,7 @@ const SelectParentDialog = ({onClose, open}) => {
 			setParentID(null);
 			dispatch(setRegisteringParent(null));
 			dispatch(closeRegistration());
-			handleClose();
+			onClose();
 		},
 		[dispatch, handleClose]
 	);

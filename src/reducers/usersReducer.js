@@ -441,15 +441,15 @@ const handleAccountSearchResults = (state, {response}) => {
   const {data} = response;
   data.results.forEach((account) => {
     switch (account.account_type) {
-      case "student": {
+		case "STUDENT": {
         StudentList = updateStudent(StudentList, account.user.id, account);
         break;
       }
-      case "parent": {
+		case "PARENT": {
         ParentList = updateParent(ParentList, account.user.id, account);
         break;
       }
-      case "instructor": {
+		case "INSTRUCTOR": {
         InstructorList = updateInstructor(
             InstructorList,
             account.user.id,
