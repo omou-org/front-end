@@ -1,6 +1,7 @@
 import * as types from "./actionTypes";
 import {
     instance, MISC_FAIL, REQUEST_ALL, REQUEST_STARTED, wrapGet, wrapPatch,
+    wrapPost,
 } from "./apiActions";
 import {isFail, isLoading} from "./hooks";
 import {useCallback, useEffect, useMemo, useState} from "react";
@@ -29,6 +30,29 @@ export const fetchStudents = (id) => wrapGet(
     {id}
 );
 
+export const postStudent = (student) => wrapPost(
+    "/account/student/",
+    [
+        null,
+        types.POST_STUDENT_SUCCESSFUL,
+        types.POST_STUDENT_FAILED,
+    ],
+    student,
+);
+
+export const patchStudent = (id, student) => wrapPatch(
+    "/account/student/",
+    [
+        null,
+        types.POST_STUDENT_SUCCESSFUL,
+        types.POST_STUDENT_FAILED,
+    ],
+    {
+        "data": student,
+        id,
+    },
+);
+
 export const fetchParents = (id) => wrapGet(
     "/account/parent/",
     [
@@ -37,6 +61,29 @@ export const fetchParents = (id) => wrapGet(
         types.FETCH_PARENT_FAILED,
     ],
     {id}
+);
+
+export const postParent = (parent) => wrapPost(
+    "/account/parent/",
+    [
+        null,
+        types.POST_PARENT_SUCCESSFUL,
+        types.POST_PARENT_FAILED,
+    ],
+    parent,
+);
+
+export const patchParent = (id, parent) => wrapPatch(
+    "/account/parent/",
+    [
+        null,
+        types.POST_PARENT_SUCCESSFUL,
+        types.POST_PARENT_FAILED,
+    ],
+    {
+        "data": parent,
+        id,
+    },
 );
 
 export const fetchInstructors = (id) => wrapGet(

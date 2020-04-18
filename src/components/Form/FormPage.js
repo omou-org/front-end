@@ -1,9 +1,8 @@
-import React from "react";
+import React, {useState} from "react";
 import Form from "./Form";
-
+import Forms from "./FormFormats";
 import {makeStyles} from "@material-ui/core/styles";
 
-import {Form as ReactForm} from "react-final-form";
 import Paper from "@material-ui/core/Paper";
 import Step from "@material-ui/core/Step";
 import StepContent from "@material-ui/core/StepContent";
@@ -11,24 +10,29 @@ import StepLabel from "@material-ui/core/StepLabel";
 import Stepper from "@material-ui/core/Stepper";
 import Typography from "@material-ui/core/Typography";
 
+import {Redirect, useParams, useHistory} from "react-router-dom";
 import {Autocomplete, KeyboardDatePicker, Select, TextField} from "./Fields";
 import BackButton from "../BackButton.js";
 import {makeValidate} from "mui-rff";
+import {useSelector, useDispatch} from "react-redux";
 import {Button} from "@material-ui/core";
 import * as Yup from "yup";
+import * as hooks from "actions/hooks";
+import * as userActions from "actions/userActions";
+import {removeDashes} from "utils";
 
 const GENDER_OPTIONS = [
     {
         "label": "Do Not Disclose",
-        "value": "U",
+        "value": "other",
     },
     {
         "label": "Male",
-        "value": "M",
+        "value": "male",
     },
     {
         "label": "Female",
-        "value": "F",
+        "value": "female",
     },
 ];
 
@@ -294,8 +298,23 @@ const generateFields = (format) => {
 
 const [schema, sections] = generateFields(base);
 const validate = makeValidate(schema);
+
 const FormPage = (props) => {
-    return <Form base={base} />;
+    const dispatch = useDispatch();
+    const history = useHistory();
+    const {type, id} = useParams();
+    const {form, load, submit} = Forms[type];
+    hooks.useStudent();
+    const user = useSelector(({Users}) => Users.StudentList[id]) || {};
+    const onSubmit = (formData) => submit(dispatch, formData, id);
+
+    if (!form) {
+        return <Redirect to="/PageNotFound" />;
+    }
+
+    return (
+        <Form base={form} initialData={id ? load(id) : {}} onSubmit={onSubmit} />
+    );
 };
 
 export default FormPage;

@@ -77,7 +77,7 @@ export const RootRoutes = () => {
                 render={(passedProps) => <CourseSessionStatus {...passedProps} />} />
 
             {/* Registration Routes */}
-            <ProtectedRoute path="/registration/form/:type/:id?/:edit?"
+            <ProtectedRoute path="/registration/form/:type/:id?"
                 render={(passedProps) => <FormPage {...passedProps} />} />
             <ProtectedRoute path="/registration/course/:courseID?/:courseTitle?"
                 render={(passedProps) => <RegistrationCourse {...passedProps} />} />

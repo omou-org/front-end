@@ -327,3 +327,5 @@ export const useGoToRoute = () => {
     }, [history]);
     return goToRoute;
 };
+
+export const removeDashes = (phoneNumber) => phoneNumber.replace(/-/ug, "");

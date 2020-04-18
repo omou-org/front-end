@@ -1,4 +1,4 @@
-const token = "token";
+const token = "e2c6fe2e04f5e658d179e051096aefc419f1212f";
 const userDetails = {
     "email": "maggie@summit.com",
     "first_name": "Maggie",
@@ -41,6 +41,7 @@ Cypress.Commands.add("login", () => {
                 "response": {
                     "data": {token},
                 },
+                "savePassword": true,
             },
         });
 });
