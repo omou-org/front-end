@@ -75,6 +75,7 @@ function PanelManager(props) {
 
     //recordState
     const [recordList, setRecordList] = useState([]);
+    const [directoryData, setDirectoryData] = useState({});
 
     const records = props.collectionData
 
@@ -84,27 +85,53 @@ function PanelManager(props) {
         () => bindActionCreators(adminActions, dispatch),
     [dispatch]
     ); 
-  
-    const constructDirectoryObject = (fieldInfo, recordArray) => {
-        console.log("construcing object..");
-        console.log(recordArray)
-        console.log(fieldInfo)
-        Object.keys(fieldInfo).forEach((key) => {
 
-            records.forEach((record) => {
-                if (fieldInfo[key]["values"] === undefined){
-                    fieldInfo[key]["values"] = [record[key]];
+    const defaults = {
+        "editable": "false",
+        "align": "left",
+        "type": "text"
+    };
+
+
+    const addDefaults = (fields) => {
+        Object.keys(fields).forEach((field) => {
+            Object.keys(defaults).forEach((key) => {
+                if(fields[field].hasOwnProperty(key)) {
+                    //Do nothing, property is already set
                 } else {
-                    fieldInfo[key]["values"].push(record[key])
+                    fields[field][key] = defaults[key];
                 }
             })
         })
-        console.log("recordObjectWithFieldData")
-        console.log(fieldInfo)
+        // console.log("fields")
+        // console.log(fields)
+        return fields
+    };
 
 
 
+
+    const constructDirectoryObject = (fieldInfo, recordArray) => {
+        console.log("construcing object..");
+        console.log("recordArray: ")
+        console.log(recordArray)
+        // console.log(fieldInfo)
+        recordArray.forEach((record) => {
+            Object.keys(record).forEach((key) => {
+                if (key !== "id") {
+                    if(fieldInfo[key]["values"]){
+                        fieldInfo[key]["values"].push(record[key])
+                    } else {
+                    fieldInfo[key]["values"] = [record[key]]
+                    }
+                }
+            })
+            console.log("recordObjectWithFieldData")
+            console.log(fieldInfo)
+            return fieldInfo
+        })
     }
+
     useEffect(() => {
         // console.log(records);
         if(records.length !== recordList.length) {
@@ -116,47 +143,13 @@ function PanelManager(props) {
         }
     }, [records]);
 
-    useEffect(() => {
-        constructDirectoryObject(fieldsWithDefaults, records);
-    }, [records]);
 
-    const defaults = {
-        "editable": "false",
-        "align": "left",
-        "type": "text"
-    };
 
-    // const addDefaults = (fields) => props.fields.map((field) => {
-    //     //Add defaults field properties to the props.fields object
-    //     Object.keys(defaults).forEach((key) => {
-    //         if(field.hasOwnProperty(key)) {
-    //             //Do nothing, property is already set
-    //         } else {
-    //             field[key] = defaults[key];
-    //         }
-    //     });
-    //     return field;
-    // });
-
-    const addDefaults = (fields) => {
-        let fieldsWithDefualts = {};
-        Object.keys(fields).forEach((field) => {
-            Object.keys(defaults).forEach((key) => {
-                if(fields[field].hasOwnProperty(key)) {
-                    //Do nothing, property is already set
-                } else {
-                    fields[field][key] = defaults[key];
-                }
-            })
-            console.log(fields)
-            return fields
-        })
-    }
-    const fieldsWithDefaults = addDefaults(props.fields);
+    
     const viewRecordRow = (record) => {
         const recordElements = [];
         
-        fieldsWithDefaults.forEach((field, index) => {
+        Object.values(directoryData).forEach((field, index) => {
             recordElements.push(
                     <Grid item xs={field["col-width"]} md={field["col-width"]}>
                         <Typography align={field["align"]}>
@@ -235,7 +228,7 @@ const editRecordRow = (record) => {
     console.log("record")
     console.log(record)
     const editElements = [];
-    fieldsWithDefaults.forEach((field, index) => {
+    directoryData.forEach((field, index) => {
         if (field["type"] === "text"){
             editElements.push(
 
@@ -283,10 +276,15 @@ const editRecordRow = (record) => {
         </Paper>
     )
 }
+    const constructDirectory = () => {
+        const fieldsWithDefaults = addDefaults(props.fields);
+        setDirectoryData(constructDirectoryObject(fieldsWithDefaults, records));
+        console.log("directortData")
+        console.log(directoryData)
+    }
 
     const headerElements = [];
-    for (const [index, value] of fieldsWithDefaults.entries()) {
-
+    for (const [index, value] of Object.keys(directoryData)) {
         headerElements.push(
             <Grid item xs={value["col-width"]} md={value["col-width"]} >
                 <Typography align={value["align"]} style={{color: 'white', fontWeight: '500'}}>
