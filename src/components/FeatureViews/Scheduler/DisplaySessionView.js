@@ -6,9 +6,8 @@ import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import {useDispatch, useSelector} from "react-redux";
 import {Tooltip, Typography, withStyles} from "@material-ui/core";
-import {NavLink, useParams} from "react-router-dom";
+import {NavLink, Redirect, useParams} from "react-router-dom";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import {Redirect} from "react-router-dom"
 import Button from "@material-ui/core/Button";
 import Loading from "../../Loading";
 import Avatar from "@material-ui/core/Avatar";
@@ -26,7 +25,7 @@ import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
 import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 import DialogContentText from "@material-ui/core/es/DialogContentText";
-import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
+import LoadingError from "../Accounts/TabComponents/LoadingCourseError"
 
 import InstructorSchedule from "../Accounts/TabComponents/InstructorSchedule";
 import SessionPaymentStatusChip from "../../SessionPaymentStatusChip";
@@ -101,7 +100,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
     );
 
     useEffect(() => {
-        if (studentStatus === 200) {
+        if (hooks.isSuccessful(studentStatus)) {
             setEnrolledStudents(
                 loadedStudents.map((studentID) => ({
                     ...students[studentID],
