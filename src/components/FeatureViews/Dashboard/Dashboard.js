@@ -18,11 +18,13 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Paper from "@material-ui/core/Paper";
 import DashboardNotes from './DashboardNotes';
+import moment from 'moment';
 
 const Dashboard = () => {
 
     const user = useSelector(({auth}) => auth) || [];
-
+    const currentDate = moment().format("dddd, DD MMMM")
+    
     return(
         <Paper className="dashboard-paper" elevation={3}>
             <Grid container justify="space-around">
@@ -35,7 +37,7 @@ const Dashboard = () => {
                         <Grid container>
                             <Grid item xs={9}>
                                 <Typography variant='h4' className="dashboard-date">
-                                    April 12, 2020
+                                    {currentDate}
                                 </Typography>
                             </Grid>
                             <Grid item xs={3}>
