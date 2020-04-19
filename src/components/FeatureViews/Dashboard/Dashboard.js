@@ -1,19 +1,11 @@
-import { connect, useSelector } from 'react-redux';
-import React, { Component } from 'react';
+import { useSelector } from 'react-redux';
+import React from 'react';
 import {NavLink} from 'react-router-dom';
 import './Dashboard.scss';
 import Today from './Today';
-import RecentUpdate from './RecentUpdate';
 import UnpaidSessions from './../AdminPortal/UnpaidSessions';
-import Notes from './../Notes/Notes';
-import background from "./assets/dashboard-bg.jpg";
 
 import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Paper from "@material-ui/core/Paper";
