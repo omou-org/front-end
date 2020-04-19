@@ -1,5 +1,6 @@
 import { connect, useSelector } from 'react-redux';
 import React, { Component } from 'react';
+import {NavLink} from 'react-router-dom';
 import './Dashboard.scss';
 import Today from './Today';
 import RecentUpdate from './RecentUpdate';
@@ -38,11 +39,20 @@ const Dashboard = () => {
                                 </Typography>
                             </Grid>
                             <Grid item xs={3}>
-                                <Button variant="contained" variant="outlined" style={{margin:"5px", float: "right"}}>View in Scheduler</Button>
+                                <Button 
+                                    variant="contained" 
+                                    variant="outlined" 
+                                    style={{margin:"5px", float: "right", position: "absolute"}}
+                                    component={NavLink}
+                                    to='/scheduler'
+                                    >View in Scheduler</Button>
                             </Grid>
                         </Grid>
-                        <Grid container className="today-container" wrap = "nowrap">
-                                <Today/>
+                        <Grid 
+                            container 
+                            className="today-container" 
+                            wrap = "nowrap">
+                            <Today/>
                         </Grid>
                     </Paper>
                     <Paper className='OP-paper'>
