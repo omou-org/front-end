@@ -420,28 +420,45 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                         }
                     </DialogActions>
                 </Dialog>
-                <Grid item xs={9}>
-                <Typography 
-                    variant="h5"
-                    style = {{margin:"10px"}}
-                >My Tasks
-                </Typography>
-                </Grid>
-                <Grid item xs={3}>
-                    <AssignmentTurnedInIcon fontSize = "large" style={{marginTop: "10px"}}/>
-                </Grid>
-                <Grid
-                    item
-                    xs={12}>
-                    <div
-                        className="addNote"
-                        onClick={openNewNote}
-                        style={{"cursor": "pointer", height: "100%"}}>
-                        <Typography className="center" style={{padding: 0}}>
-                            <AddIcon /> Add Note
-                        </Typography>
-                    </div>
-                </Grid>
+                {isDashboard
+                    ? <>
+                        <Grid item xs={9}>
+                            <Typography 
+                                variant="h5"
+                                style = {{margin:"10px"}}
+                            >My Tasks
+                            </Typography>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AssignmentTurnedInIcon fontSize = "large" style={{marginTop: "10px"}}/>
+                            </Grid>
+                            <Grid
+                                item
+                                xs={12}>
+                                <div
+                                    className="addNote"
+                                    onClick={openNewNote}
+                                    style={{"cursor": "pointer", height: "100%"}}>
+                                    <Typography className="center" style={{padding: 0}}>
+                                        <AddIcon /> Add Note
+                                    </Typography>
+                                </div>
+                            </Grid>
+                    </>
+                    :   <Grid item md={3}>
+                            <div
+                                className="addNote"
+                                onClick={openNewNote}
+                                style={{cursor: "pointer"}}
+                            >
+                                <Typography className="center">
+                                    <AddIcon/>
+                                    <br/>
+                                    Add Note
+                                </Typography>
+                            </div>
+                        </Grid>
+                }               
                 {notes && isDashboard && Object.values(notes).map((note) => (
                     <Grid
                     item
