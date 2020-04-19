@@ -22,8 +22,8 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
 
 	const student = students[unpaidStudent.student];
 	const course = courses[unpaidStudent.course];
-	const startTime = adminUtils.getTime(course.schedule.start_time);
-	const endTime = adminUtils.getTime(course.schedule.end_time);
+	const startTime = course.schedule.start_time;
+	const endTime = course.schedule.end_time;
 	const amtDue = adminUtils.amountDue(
 		course.hourly_tuition,
 		unpaidStudent.sessions_left,
