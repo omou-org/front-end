@@ -59,7 +59,6 @@ const numericDateString = (date) =>
 		month: "numeric",
 	});
 
-<<<<<<< HEAD
 const Notes = ({ownerType, ownerID, isDashboard}) => {
     const dispatch = useDispatch();
     const api = useMemo(() => bindActionCreators(userActions, dispatch), [dispatch]);
@@ -92,42 +91,6 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                 return RequestStatus.accountNote[GET][ownerID];
         }
     });
-=======
-const Notes = ({ownerType, ownerID}) => {
-	const dispatch = useDispatch();
-	const api = useMemo(() => bindActionCreators(userActions, dispatch), [
-		dispatch,
-	]);
-	const notes = useSelector(({Users, Course, Enrollments}) => {
-		switch (ownerType) {
-			case "student":
-				return Users.StudentList[ownerID].notes;
-			case "parent":
-				return Users.ParentList[ownerID].notes;
-			case "instructor":
-				return Users.InstructorList[ownerID].notes;
-			case "receptionist":
-				return Users.ReceptionistList[ownerID].notes;
-			case "course":
-				return Course.NewCourseList[ownerID].notes;
-			case "enrollment":
-				return Enrollments[ownerID.studentID][ownerID.courseID].notes;
-			default:
-				return null;
-		}
-	});
->>>>>>> development
-
-	const getRequestStatus = useSelector(({RequestStatus}) => {
-		switch (ownerType) {
-			case "course":
-				return RequestStatus.courseNote[GET][ownerID];
-			case "enrollment":
-				return RequestStatus.enrollmentNote[GET][ownerID.enrollmentID];
-			default:
-				return RequestStatus.accountNote[GET][ownerID];
-		}
-	});
 
 	const postRequestStatus = useSelector(({RequestStatus}) => {
 		switch (ownerType) {
@@ -366,7 +329,6 @@ const Notes = ({ownerType, ownerID}) => {
         return <LoadingError error="notes"/>;
     }
 
-<<<<<<< HEAD
         return (
             <Grid
                 className="notes-container"
@@ -594,170 +556,6 @@ const Notes = ({ownerType, ownerID}) => {
             </Grid>
         );
     // }
-=======
-	if (submitting && alert) {
-		if (isPost && postRequestStatus && postRequestStatus !== REQUEST_STARTED) {
-			setSubmitting(false);
-			if (hooks.isFail(postRequestStatus)) {
-				setError(true);
-			} else {
-				setAlert(false);
-			}
-		} else if (
-			!isPost &&
-			patchRequestStatus &&
-			patchRequestStatus !== REQUEST_STARTED
-		) {
-			setSubmitting(false);
-			if (hooks.isFail(patchRequestStatus)) {
-				setError(true);
-			} else {
-				setAlert(false);
-			}
-		}
-	}
-
-	return (
-		<Grid className="notes-container" container item md={12} spacing={2}>
-			<Dialog
-				aria-describedby="simple-modal-description"
-				aria-labelledby="simple-modal-title"
-				className="popup"
-				fullWidth
-				maxWidth="xs"
-				onClose={hideWarning}
-				open={alert}
-			>
-				<DialogTitle>
-					<TextField
-						className="textfield"
-						id="standard-name"
-						label="Subject"
-						onChange={handleTitleUpdate}
-						value={noteTitle}
-					/>
-					<NotificationIcon
-						className="notification"
-						onClick={toggleNotification}
-						style={notificationColor}
-					/>
-				</DialogTitle>
-				<DialogContent>
-					<InputBase
-						className="note-body"
-						inputProps={{"aria-label": "naked"}}
-						multiline
-						onChange={handleBodyUpdate}
-						placeholder="Body (required)"
-						required
-						rows={15}
-						value={noteBody}
-						variant="filled"
-					/>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={hideWarning} variant="outlined">
-						Cancel
-					</Button>
-					<Button
-						color="primary"
-						disabled={!noteBody}
-						onClick={saveNote}
-						variant="outlined"
-					>
-						{submitting ? "Saving..." : "Save"}
-					</Button>
-					{!submitting && error && (
-						<span style={{float: "right"}}>Error while saving!</span>
-					)}
-				</DialogActions>
-			</Dialog>
-			<Dialog
-				aria-describedby="simple-modal-description"
-				aria-labelledby="simple-modal-title"
-				className="delete-popup"
-				fullWidth
-				maxWidth="xs"
-				onClose={hideWarning}
-				open={deleteID !== null}
-			>
-				<DialogTitle>Confirm Delete</DialogTitle>
-				<DialogContent>
-					Are you sure you want to delete{" "}
-					{notes[deleteID] && notes[deleteID].title
-						? `"${notes[deleteID].title}"`
-						: "this note"}
-					?
-				</DialogContent>
-				<DialogActions className="delete-actions">
-					<Button
-						className="cancel-button"
-						onClick={hideWarning}
-						variant="contained"
-					>
-						Cancel
-					</Button>
-					<Button
-						className="delete-button"
-						onClick={handleDelete}
-						variant="contained"
-					>
-						Delete
-					</Button>
-					{deleteError && (
-						<span style={{float: "right"}}>Error while deleting!</span>
-					)}
-				</DialogActions>
-			</Dialog>
-			<Grid item md={3}>
-				<div
-					className="addNote"
-					onClick={openNewNote}
-					style={{cursor: "pointer"}}
-				>
-					<Typography className="center">
-						<AddIcon/>
-						<br/>
-						Add Note
-					</Typography>
-				</div>
-			</Grid>
-			{notes &&
-			Object.values(notes).map((note) => (
-				<Grid item key={note.id || note.body} xs={3}>
-					<Paper elevation={2} className="note">
-						<Typography
-							align="left"
-							className={`noteHeader ${classes.notesTitle}`}
-						>
-							{note.title}
-							<NotificationIcon
-								className="noteNotification"
-								onClick={toggleNoteField(note.id, "important")}
-								style={note.important ? {color: "red"} : {}}
-							/>
-						</Typography>
-						<Typography align="left" className="body">
-							{note.body}
-						</Typography>
-						<Typography className="date" style={{fontWeight: "500"}}>
-							{numericDateString(note.timestamp)}
-						</Typography>
-						<div className={`actions ${classes.actionIcons}`}>
-							<Delete className="icon" onClick={openDelete(note.id)}/>
-							<EditIcon className="icon" onClick={openExistingNote(note)}/>
-							<DoneIcon
-								className="icon"
-								onClick={toggleNoteField(note.id, "complete")}
-								style={note.complete ? {color: "#43B5D9"} : {}}
-							/>
-						</div>
-					</Paper>
-				</Grid>
-			))}
-		</Grid>
-	);
->>>>>>> development
 };
 
 Notes.propTypes = {

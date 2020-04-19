@@ -20,7 +20,6 @@ export const useSearchAccount = (query, page, profile, grade, sort) =>
 	);
 
 export const useSearchCourse = (query, page, course, availability, sort) =>
-<<<<<<< HEAD
     wrapUseEndpoint("/search/course/", types.GET_COURSE_SEARCH_QUERY_SUCCESS)(
         null, useMemo(() => ({
             "params": {
@@ -46,20 +45,3 @@ export const useSearchSession = (page, time, sort) =>
                 },
             }), [page, time, sort])
         );
-=======
-	wrapUseEndpoint("/search/course/", types.GET_COURSE_SEARCH_QUERY_SUCCESS)(
-		null,
-		useMemo(
-			() => ({
-				params: {
-					availability,
-					course,
-					page,
-					query,
-					sort,
-				},
-			}),
-			[availability, course, page, query, sort]
-		)
-	);
->>>>>>> development

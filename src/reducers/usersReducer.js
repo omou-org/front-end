@@ -3,7 +3,6 @@ import initialState from "./initialState";
 import {REQUEST_ALL} from "../actions/apiActions";
 
 export default function users(state = initialState.Users, {payload, type}) {
-<<<<<<< HEAD
     switch (type) {
         case actions.FETCH_STUDENT_SUCCESSFUL:
             return handleStudentsFetch(state, payload);
@@ -33,35 +32,6 @@ export default function users(state = initialState.Users, {payload, type}) {
         default:
             return state;
     }
-=======
-  switch (type) {
-    case actions.FETCH_STUDENT_SUCCESSFUL:
-      return handleStudentsFetch(state, payload);
-    case actions.FETCH_PARENT_SUCCESSFUL:
-      return handleParentsFetch(state, payload);
-    case actions.FETCH_INSTRUCTOR_SUCCESSFUL:
-      return handleInstructorsFetch(state, payload);
-    case actions.FETCH_ACCOUNT_NOTE_SUCCESSFUL:
-      return handleAccountNotesFetch(state, payload);
-    case actions.POST_ACCOUNT_NOTE_SUCCESSFUL:
-    case actions.PATCH_ACCOUNT_NOTE_SUCCESSFUL:
-      return handleAccountNotesPost(state, payload);
-    case actions.DELETE_ACCOUNT_NOTE_SUCCESSFUL:
-      return handleNoteDelete(state, payload);
-    case actions.POST_STUDENT_SUCCESSFUL:
-      return handleStudentPost(state, payload);
-    case actions.GET_ACCOUNT_SEARCH_QUERY_SUCCESS:
-      return handleAccountSearchResults(state, payload);
-    case actions.POST_OOO_SUCCESS:
-    case actions.FETCH_OOO_SUCCESS:
-      return handleOOOFetch(state, payload);
-    case actions.FETCH_INSTRUCTOR_AVAILABILITY_SUCCESS:
-    case actions.POST_INSTRUCTORAVAILABILITY_SUCCESS:
-      return handleAvailabilityFetch(state, payload);
-    default:
-      return state;
-  }
->>>>>>> development
 }
 
 const parseRelationship = {

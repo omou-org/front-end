@@ -14,14 +14,9 @@ import {stringToColor} from "../Accounts/accountUtils";
 import {useSelector} from "react-redux";
 
 const UnpaidSessionCard = ({unpaidStudent}) => {
-<<<<<<< HEAD
 
     const students = useSelector(({Users}) => Users.StudentList);
     const courses = useSelector(({Course}) => Course.NewCourseList);
-=======
-	const students = useSelector(({Users}) => Users.StudentList);
-	const courses = useSelector(({Course}) => Course.NewCourseList);
->>>>>>> development
 
 	const student = students[unpaidStudent.student];
 	const course = courses[unpaidStudent.course];

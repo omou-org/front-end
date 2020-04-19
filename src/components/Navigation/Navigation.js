@@ -11,12 +11,8 @@ import Hidden from "@material-ui/core/Hidden";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-<<<<<<< HEAD
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import AdminIcon from "@material-ui/icons/Face"
-=======
-import AdminIcon from "@material-ui/icons/Face";
->>>>>>> development
 import ListItemText from "@material-ui/core/ListItemText";
 import {makeStyles, ThemeProvider as MuiThemeProvider,} from "@material-ui/core/styles";
 import EventIcon from "@material-ui/icons/Event";
@@ -45,7 +41,6 @@ const Navigation = (props) => {
 	const {pathname} = useLocation();
 	const {token, isAdmin} = useSelector(({auth}) => auth);
 
-<<<<<<< HEAD
     const NavList = isAdmin ? [
             {
                 "name": "Dashboard",
@@ -95,83 +90,6 @@ const Navigation = (props) => {
                 "icon": <AssignmentIcon />,
             },
         ];
-
-    const [mobileOpen, setMobileOpen] = useState(false);
-
-    const drawer = (
-        <div className="DrawerList">
-            <List className="list">
-                {NavList.map((NavItem) => (
-                    <ListItem
-                        button
-                        className={`listItem ${classes.navigationIconStyle}`} 
-                        component={NavLinkNoDup}
-                        isActive={(match, location) => match
-                            || (NavItem.name === "Dashboard" && location.pathname === "/")
-                        }
-                        key={NavItem.name}
-                        to={NavItem.link}>
-                        <ListItemIcon className="icon">{NavItem.icon}</ListItemIcon>
-                        <ListItemText
-                            className="text"
-                            primary={NavItem.name} />
-                    </ListItem>
-                ))}
-            </List>
-        </div>
-    );
-
-
-    const handleDrawerToggle = useCallback(() => {
-        setMobileOpen((open) => !open);
-    }, []);
-=======
-	const NavList = isAdmin
-		? [
-			// {
-			//     "name": "Dashboard",
-			//     "link": "/",
-			//     "icon": <DashboardIcon />,
-			// },
-			{
-				name: "Scheduler",
-				link: "/scheduler",
-				icon: <EventIcon/>,
-			},
-			{
-				name: "Accounts",
-				link: "/accounts",
-				icon: <AccountsIcon/>,
-			},
-			{
-				name: "Registration",
-				link: "/registration",
-				icon: <AssignmentIcon/>,
-			},
-			{
-				name: "Admin",
-				link: "/adminportal",
-				icon: <AdminIcon/>,
-			},
-		]
-		: [
-			{
-				name: "Scheduler",
-				link: "/scheduler",
-				icon: <EventIcon/>,
-			},
-			{
-				name: "Accounts",
-				link: "/accounts",
-				icon: <AccountsIcon/>,
-        },
-			{
-				name: "Registration",
-				link: "/registration",
-				icon: <AssignmentIcon/>,
-			},
-		];
->>>>>>> development
 
 	const [mobileOpen, setMobileOpen] = useState(false);
 

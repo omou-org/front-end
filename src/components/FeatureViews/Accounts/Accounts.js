@@ -53,14 +53,8 @@ const stopPropagation = (event) => {
 };
 
 const Accounts = () => {
-<<<<<<< HEAD
-    const usersList = useSelector(({Users}) => Users);
-    console.log(usersList);
-    const isAdmin = useSelector(({auth}) => auth.isAdmin);
-=======
 	const usersList = useSelector(({Users}) => Users);
 	const isAdmin = useSelector(({auth}) => auth.isAdmin);
->>>>>>> development
 
 	const prevState = JSON.parse(sessionStorage.getItem("AccountsState"));
 	const [isMobile, setIsMobile] = useState(false);

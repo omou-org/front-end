@@ -41,12 +41,7 @@ export const RootRoutes = () => {
             <ProtectedRoute
                 exact
                 path="/"
-<<<<<<< HEAD
                 render={(passedProps) => <Dashboard {...passedProps} />} />
-=======
-                render={(passedProps) => <Scheduler {...passedProps} />}
-            />
->>>>>>> development
 
             <ProtectedRoute
                 exact
