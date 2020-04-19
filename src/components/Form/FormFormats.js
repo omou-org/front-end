@@ -1,12 +1,15 @@
 import * as types from "actions/actionTypes";
 import {instance} from "actions/apiActions";
 import {useSelector, useDispatch} from "react-redux";
+import React from "react";
 import {FORM_ERROR} from "final-form";
+import * as Fields from "./Fields";
+import * as Yup from "yup";
 
 const parseGender = {
     "F": "female",
     "M": "male",
-    "U": "unspecified"
+    "U": "unspecified",
 };
 const mapFunc = (parser, data) => {
     let res = {};
@@ -22,7 +25,7 @@ const mapFunc = (parser, data) => {
                 res[k2] = {
                     ...(res[k2] || {}),
                     ...obj,
-                }
+                };
             });
         }
     });
@@ -53,76 +56,93 @@ const formToRequest = (parser, data) => {
     return body;
 };
 
+const stringField = (label) => ({
+    "component": <Fields.TextField />,
+    "validator": Yup.string().matches(/[a-zA-Z][^#&<>"~;$^%{}?]+$/u,
+        `Invalid ${label}`),
+});
+
+const selectField = (options) => ({
+    "component": <Fields.Select data={options} />,
+    "validator": Yup.mixed().oneOf(options.map(({value}) => value)),
+});
+
+const STATE_OPTIONS = [
+    "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL",
+    "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME",
+    "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH",
+    "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI",
+    "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI",
+    "WY",
+];
+
 const ADDRESS_FIELD = {
         "name": "address",
         "label": "Address",
-        "type": "address",
+        ...stringField("Address"),
     },
     BIRTHDAY_FIELD = {
         "name": "birthday",
         "label": "Birth Date",
-        "type": "date",
-        "min": new Date("1900"),
-        "max": new Date(),
+        "component": <Fields.KeyboardDatePicker format="MM/dd/yyyy" />,
+        "validator": Yup.date().min(new Date("1900")).max(new Date()),
     },
     CITY_FIELD = {
         "name": "city",
         "label": "City",
-        "type": "string",
+        ...stringField("City"),
     },
     EMAIL_FIELD = {
         "name": "email",
         "label": "Email",
-        "type": "email",
+        "component": <Fields.TextField />,
+        "validator": Yup.string().email(),
         "required": true,
     },
     GENDER_FIELD = {
         "name": "gender",
         "label": "Gender",
-        "type": "select",
-        "options": [
+        ...selectField([
             {"label": "Do Not Disclose", "value": "U"},
             {"label": "Male", "value": "M"},
             {"label": "Female", "value": "F"},
-        ],
+        ]),
     },
     NAME_FIELDS = [
         {
             "name": "first_name",
             "label": "First Name",
-            "type": "name",
+            ...stringField("First Name"),
             "required": true,
         },
         {
             "name": "last_name",
             "label": "Last Name",
-            "type": "name",
+            ...stringField("Last Name"),
             "required": true,
         },
     ],
     PHONE_NUMBER_FIELD = {
         "name": "phone_number",
         "label": "Phone Number",
-        "type": "phone",
+        "component": <Fields.TextField />,
+        "validator": Yup.string().matches(/\d{3}-?\d{3}-?\d{4}?/u,
+            "Invalid phone number"),
     },
     STATE_FIELD = {
         "name": "state",
         "label": "State",
-        "type": "autocomplete",
-        "options": [
-            "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL",
-            "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME",
-            "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH",
-            "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI",
-            "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI",
-            "WY",
-        ],
+        "component": <Fields.Autocomplete options={STATE_OPTIONS} />,
+        "validator": Yup.mixed().oneOf(STATE_OPTIONS, "Invalid state"),
     },
     ZIPCODE_FIELD = {
         "name": "zipcode",
         "label": "Zip Code",
-        "type": "zipcode",
+        "component": <Fields.TextField />,
+        "validator": Yup.string().matches(/^\d{5}(?:[-\s]\d{4})?$/u,
+            "Invalid zipcode"),
     };
+
 
 export default {
     "student": {
@@ -136,16 +156,16 @@ export default {
                     {
                         "name": "grade",
                         "label": "Grade",
-                        "type": "number",
-                        "min": 1,
-                        "max": 13,
-                        "integer": true,
+                        "component": <Fields.TextField />,
+                        "validator": Yup.number()
+                            .typeError("Grade must be a number.").integer()
+                            .min(1).max(13),
                     },
                     BIRTHDAY_FIELD,
                     {
                         "name": "school",
                         "label": "School",
-                        "type": "string",
+                        ...stringField("School"),
                     },
                     PHONE_NUMBER_FIELD,
                 ],
@@ -158,14 +178,13 @@ export default {
                     {
                         "name": "relationship",
                         "label": "Relationship to Student",
-                        "type": "select",
-                        "required": true,
-                        "options": [
+                        ...selectField([
                             {"label": "Mother", "value": "mother"},
                             {"label": "Father", "value": "father"},
                             {"label": "Guardian", "value": "guardian"},
                             {"label": "Other", "value": "other"},
-                        ],
+                        ]),
+                        "required": true,
                     },
                     GENDER_FIELD,
                     EMAIL_FIELD,
@@ -178,6 +197,10 @@ export default {
                 ],
             },
         ],
+        "load": function useLoad() {
+            return {};
+        },
+        "submit": () => {},
     },
     "admin": {
         "form": [
@@ -189,7 +212,8 @@ export default {
                     {
                         "name": "password",
                         "label": "Password",
-                        "type": "password",
+                        "component": <Fields.TextField type="password" />,
+                        "validator": Yup.mixed(),
                         "required": true,
                     },
                     ...NAME_FIELDS,
@@ -202,12 +226,11 @@ export default {
                     {
                         "name": "admin_type",
                         "label": "Admin Type",
-                        "type": "select",
-                        "options": [
+                        ...selectField([
                             {"label": "Owner", "value": "owner"},
                             {"label": "Receptionist", "value": "receptionist"},
                             {"label": "Assistant", "value": "assistant"},
-                        ],
+                        ]),
                         "required": true,
                     },
                     GENDER_FIELD,

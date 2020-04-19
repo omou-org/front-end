@@ -18,6 +18,7 @@ node_modules/
 
 # Project Workspace specific files
 /.idea
+.eslintrc.js
 
 npm-debug.log*
 yarn-debug.log*

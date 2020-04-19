@@ -31,7 +31,7 @@ describe("Fills out form", () => {
             cy.get("[data-cy=student-gender-select]").click();
             cy.get(`[data-value=${student.gender}]`).click();
             cy.get("[data-cy=student-grade-input]").fastType(student.grade);
-            cy.get("[data-cy=student-birth_date-input]")
+            cy.get("[data-cy=student-birthday-input]")
                 .fastType(student.birth_date);
             cy.get("[data-cy=student-school-input]").fastType(student.school);
             cy.get("[data-cy=student-phone_number-input")
@@ -69,7 +69,7 @@ describe("Fills out form", () => {
         cy.fixture("users.json").then(({parent}) => {
             cy.get("[data-cy=parent-gender-select]").click();
             cy.get(`[data-value=${parent.gender}]`).click();
-            cy.get("[data-cy=parent-birth_date-input]")
+            cy.get("[data-cy=parent-birthday-input]")
                 .fastType(parent.birth_date);
             cy.get("[data-cy=parent-address-input]").fastType(parent.address);
             cy.get("[data-cy=parent-city-input]").fastType(parent.city);

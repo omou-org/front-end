@@ -24,8 +24,10 @@ export const KeyboardDatePicker = (props) => (
 );
 
 export const Autocomplete = ({name, options, ...props}) => {
-    const renderOption = useCallback((option) =>
-        <span data-cy={`${name}-${option}`}>{option}</span>, [name]);
+    const renderOption = useCallback(
+        (option) => <span data-cy={`${name}-${option}`}>{option}</span>,
+        [name],
+    );
     return (
         <Fields.Autocomplete name={name} options={options}
             renderOption={renderOption} {...props} />
