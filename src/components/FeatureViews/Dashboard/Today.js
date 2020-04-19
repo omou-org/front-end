@@ -15,7 +15,7 @@ const Today = () => {
     
     const instructorStatus = hooks.useInstructor();
     const courseStatus = hooks.useCourse();
-    const sessionStatus = useSearchSession(1, "", "timeAsc");
+    const sessionStatus = useSearchSession(1, "today", "timeAsc");
 
     if (hooks.isLoading(instructorStatus, courseStatus, sessionStatus)) {
         return (
