@@ -23,18 +23,32 @@
 
 }
 
+.dashboard-date {
+    margin-left: 10px !important;
+}
+
+.scheduler-button {
+    justify-content: flex-end;
+    flex-direction: row-reverse;
+}
+
+.OP-label {
+    margin-left: 10px !important;
+}
+
 .today-paper {
     background: rgba(255, 255, 255, 0.6) !important;
     height: 300px;
     margin: 10px;
-    overflow: hidden;
-    overflow-x: scroll;
+
     flex-shrink: 0;
 }
 
 .today-container {
     height: 270;
     flex-shrink: 0 !important;
+    overflow: hidden;
+    overflow-x: scroll;
 }
 
 .today-card {

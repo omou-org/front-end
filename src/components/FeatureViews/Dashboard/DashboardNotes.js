@@ -1,5 +1,5 @@
-import React, {useEffect, useMemo, useCallback, useState} from "react";
-import {useSelector} from "react-redux";
+import React from "react";
+// import {useSelector} from "react-redux";
 
 import * as hooks from "actions/hooks";
 import Loading from "components/Loading";
@@ -9,18 +9,10 @@ import Grid from "@material-ui/core/Grid";
 
 const DashboardNotes = (owner) => {
 
-    // console.log(owner);
-   
     const ownerID = owner.id;
     const ownerType = 'receptionist'
-    const userList = useSelector(({Users}) => Users);
-    // console.log(userList);
-
+    // const userList = useSelector(({Users}) => Users);
     const adminStatus = hooks.useAdmin();
-    // fetchAdmins(ownerID);
-    // useAccountNotes(ownerID, ownerType);
-
-
 
 if (hooks.isLoading(adminStatus)) {
     return (
@@ -42,6 +34,5 @@ if (hooks.isLoading(adminStatus)) {
        
     );
 };
-
 
 export default DashboardNotes;

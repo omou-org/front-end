@@ -15,7 +15,7 @@ import moment from 'moment';
 const Dashboard = () => {
 
     const user = useSelector(({auth}) => auth) || [];
-    const currentDate = moment().format("dddd, DD MMMM")
+    const currentDate = moment().format("dddd, MMMM DD")
     
     return(
         <Paper className="dashboard-paper" elevation={3}>
@@ -26,21 +26,17 @@ const Dashboard = () => {
                     </Typography>
                     <br/>
                     <Paper className="today-paper" container>
-                        <Grid container>
-                            <Grid item xs={9}>
+                        <Grid container style={{width: "100%", justifyContent:"space-between"}}>
                                 <Typography variant='h4' className="dashboard-date">
                                     {currentDate}
                                 </Typography>
-                            </Grid>
-                            <Grid item xs={3}>
                                 <Button 
                                     variant="contained" 
                                     variant="outlined" 
-                                    style={{margin:"5px", float: "right", position: "absolute"}}
+                                    style={{margin:"5px", float: "right"}}
                                     component={NavLink}
                                     to='/scheduler'
                                     >View in Scheduler</Button>
-                            </Grid>
                         </Grid>
                         <Grid 
                             container 
@@ -50,7 +46,7 @@ const Dashboard = () => {
                         </Grid>
                     </Paper>
                     <Paper className='OP-paper'>
-                    <Typography variant='h4'>
+                    <Typography variant='h4' className="OP-label">
                         Outstanding Payments
                     </Typography>
                     <UnpaidSessions/>
