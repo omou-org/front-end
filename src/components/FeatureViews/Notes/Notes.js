@@ -4,6 +4,8 @@ import {bindActionCreators} from "redux";
 import PropTypes from "prop-types";
 
 import AddIcon from "@material-ui/icons/AddOutlined";
+import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
+import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import Delete from "@material-ui/icons/Delete";
 import Dialog from "@material-ui/core/Dialog";
@@ -16,6 +18,7 @@ import Grid from "@material-ui/core/Grid";
 import InputBase from "@material-ui/core/InputBase";
 import Loading from "components/Loading";
 import NotificationIcon from "@material-ui/icons/NotificationImportant";
+import AnnouncementIcon from "@material-ui/icons/Announcement"
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -55,7 +58,7 @@ const numericDateString = (date) =>
         "month": "numeric",
     });
 
-const Notes = ({ownerType, ownerID}) => {
+const Notes = ({ownerType, ownerID, isDashboard}) => {
     const dispatch = useDispatch();
     const api = useMemo(() => bindActionCreators(userActions, dispatch), [dispatch]);
     const notes = useSelector(({Users, Course, Enrollments}) => {
@@ -318,160 +321,216 @@ const Notes = ({ownerType, ownerID}) => {
         }
     }
 
-    return (
-        <Grid
-            className="notes-container"
-            container
-            item
-            md={12}
-            spacing={2}>
-            <Dialog
-                aria-describedby="simple-modal-description"
-                aria-labelledby="simple-modal-title"
-                className="popup"
-                fullWidth
-                maxWidth="xs"
-                onClose={hideWarning}
-                open={alert}>
-                <DialogTitle>
-                    <TextField
-                        className="textfield"
-                        id="standard-name"
-                        label="Subject"
-                        onChange={handleTitleUpdate}
-                        value={noteTitle} />
-                    <NotificationIcon
-                        className="notification"
-                        onClick={toggleNotification}
-                        style={notificationColor} />
-                </DialogTitle>
-                <DialogContent>
-                    <InputBase
-                        className="note-body"
-                        inputProps={{"aria-label": "naked"}}
-                        multiline
-                        onChange={handleBodyUpdate}
-                        placeholder="Body (required)"
-                        required
-                        rows={15}
-                        value={noteBody}
-                        variant="filled" />
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        onClick={hideWarning}
-                        variant="outlined">
-                        Cancel
-                    </Button>
-                    <Button
-                        color="primary"
-                        disabled={!noteBody}
-                        onClick={saveNote}
-                        variant="outlined">
-                        {submitting ? "Saving..." : "Save"}
-                    </Button>
-                    {
-                        !submitting && error &&
-                        <span style={{"float": "right"}}>
-                                Error while saving!
-                        </span>
-                    }
-                </DialogActions>
-            </Dialog>
-            <Dialog
-                aria-describedby="simple-modal-description"
-                aria-labelledby="simple-modal-title"
-                className="delete-popup"
-                fullWidth
-                maxWidth="xs"
-                onClose={hideWarning}
-                open={deleteID !== null}>
-                <DialogTitle>
-                    Confirm Delete
-                </DialogTitle>
-                <DialogContent>
-                    Are you sure you want to delete {
-                        notes[deleteID] && notes[deleteID].title
-                            ? `"${notes[deleteID].title}"`
-                            : "this note"
-                    }?
-                </DialogContent>
-                <DialogActions className="delete-actions">
-                    <Button
-                        className="cancel-button"
-                        onClick={hideWarning}
-                        variant="contained">
-                        Cancel
-                    </Button>
-                    <Button
-                        className="delete-button"
-                        onClick={handleDelete}
-                        variant="contained">
-                        Delete
-                    </Button>
-                    {
-                        deleteError &&
-                        <span style={{"float": "right"}}>
-                            Error while deleting!
-                        </span>
-                    }
-                </DialogActions>
-            </Dialog>
+        return (
             <Grid
+                className="notes-container"
+                container
                 item
-                md={3}>
-                <div
-                    className="addNote"
-                    onClick={openNewNote}
-                    style={{"cursor": "pointer"}}>
-                    <Typography className="center">
-                        <AddIcon /><br />Add Note
-                    </Typography>
-                </div>
-            </Grid>
-            {notes && Object.values(notes).map((note) => (
+                xs={12}
+                spacing={2}>
+                <Dialog
+                    aria-describedby="simple-modal-description"
+                    aria-labelledby="simple-modal-title"
+                    className="popup"
+                    fullWidth
+                    maxWidth="xs"
+                    onClose={hideWarning}
+                    open={alert}>
+                    <DialogTitle>
+                        <TextField
+                            className="textfield"
+                            id="standard-name"
+                            label="Subject"
+                            onChange={handleTitleUpdate}
+                            value={noteTitle} />
+                        <NotificationIcon
+                            className="notification"
+                            onClick={toggleNotification}
+                            style={notificationColor} />
+                    </DialogTitle>
+                    <DialogContent>
+                        <InputBase
+                            className="note-body"
+                            inputProps={{"aria-label": "naked"}}
+                            multiline
+                            onChange={handleBodyUpdate}
+                            placeholder="Body (required)"
+                            required
+                            rows={15}
+                            value={noteBody}
+                            variant="filled" />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            onClick={hideWarning}
+                            variant="outlined">
+                            Cancel
+                        </Button>
+                        <Button
+                            color="primary"
+                            disabled={!noteBody}
+                            onClick={saveNote}
+                            variant="outlined">
+                            {submitting ? "Saving..." : "Save"}
+                        </Button>
+                        {
+                            !submitting && error &&
+                            <span style={{"float": "right"}}>
+                                    Error while saving!
+                            </span>
+                        }
+                    </DialogActions>
+                </Dialog>
+                <Dialog
+                    aria-describedby="simple-modal-description"
+                    aria-labelledby="simple-modal-title"
+                    className="delete-popup"
+                    fullWidth
+                    maxWidth="xs"
+                    onClose={hideWarning}
+                    open={deleteID !== null}>
+                    <DialogTitle>
+                        Confirm Delete
+                    </DialogTitle>
+                    <DialogContent>
+                        Are you sure you want to delete {
+                            notes[deleteID] && notes[deleteID].title
+                                ? `"${notes[deleteID].title}"`
+                                : "this note"
+                        }?
+                    </DialogContent>
+                    <DialogActions className="delete-actions">
+                        <Button
+                            className="cancel-button"
+                            onClick={hideWarning}
+                            variant="contained">
+                            Cancel
+                        </Button>
+                        <Button
+                            className="delete-button"
+                            onClick={handleDelete}
+                            variant="contained">
+                            Delete
+                        </Button>
+                        {
+                            deleteError &&
+                            <span style={{"float": "right"}}>
+                                Error while deleting!
+                            </span>
+                        }
+                    </DialogActions>
+                </Dialog>
+                <Grid item xs={9}>
+                <Typography 
+                    variant="h5"
+                    style = {{margin:"10px"}}
+                >My Tasks
+                </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                    <AssignmentTurnedInIcon fontSize = "large" style={{marginTop: "10px"}}/>
+                </Grid>
                 <Grid
                     item
-                    key={note.id || note.body}
-                    xs={3}>
-                    <Paper elevation={2} className="note">
-                        <Typography
-                            align="left"
-                            className={`noteHeader ${classes.notesTitle}`}>
-                            {note.title}
-                            <NotificationIcon
-                                className="noteNotification"
-                                onClick={toggleNoteField(note.id, "important")}
-                                style={note.important ? {"color": "red"} : {}} />
+                    xs={12}>
+                    <div
+                        className="addNote"
+                        onClick={openNewNote}
+                        style={{"cursor": "pointer", height: "100%"}}>
+                        <Typography className="center" style={{padding: 0}}>
+                            <AddIcon /> Add Note
                         </Typography>
-                        <Typography
-                            align="left"
-                            className="body">
-                            {note.body}
-                        </Typography>
-                        <Typography
-                            className="date"
-                            style={{"fontWeight": "500"}}>
-                            {numericDateString(note.timestamp)}
-                        </Typography>
-                        <div className={`actions ${classes.actionIcons}`}>
-                            <Delete
-                                className="icon"
-                                onClick={openDelete(note.id)} />
-                            <EditIcon
-                                className="icon"
-                                onClick={openExistingNote(note)} />
-                            <DoneIcon
-                                className="icon"
-                                onClick={toggleNoteField(note.id, "complete")}
-                                style={note.complete ? {"color": "#43B5D9"} : {}} />
-                        </div>
-                    </Paper>
+                    </div>
                 </Grid>
-            ))}
-        </Grid>
-    );
-
+                {notes && isDashboard && Object.values(notes).map((note) => (
+                    <Grid
+                    item
+                    key={note.id || note.body}
+                    xs={12}>
+                        <Paper elevation={2} className="note"
+                        style={{height: "150px", width: "100%"}}>
+                            <Typography
+                                align="left"
+                                className={`noteHeader ${classes.notesTitle}`}>
+                                {note.title}
+                                <Avatar
+                                    variant="square"
+                                    variant="rounded"
+                                    className="noteNotification"
+                                    onClick={toggleNoteField(note.id, "important")}
+                                    style={note.important ? {"background-color": "red"} : {}} >!
+                                </Avatar>
+                            </Typography>
+                            <Typography
+                                align="left"
+                                className="body">
+                                {note.body}
+                            </Typography>
+                            <Typography
+                                className="date"
+                                style={{"fontWeight": "500"}}>
+                                {numericDateString(note.timestamp)}
+                            </Typography>
+                            <div className={`actions ${classes.actionIcons}`}>
+                                <Delete
+                                    className="icon"
+                                    onClick={openDelete(note.id)} />
+                                <EditIcon
+                                    className="icon"
+                                    onClick={openExistingNote(note)} />
+                                <DoneIcon
+                                    className="icon"
+                                    onClick={toggleNoteField(note.id, "complete")}
+                                    style={note.complete ? {"color": "#43B5D9"} : {}} />
+                            </div>
+                        </Paper>
+                </Grid>
+                    
+                ))};
+                
+                {notes && !isDashboard && Object.values(notes).map((note) => (
+                    <Grid
+                        item
+                        key={note.id || note.body}
+                        xs={3}>
+                        <Paper elevation={2} className="note">
+                            <Typography
+                                align="left"
+                                className={`noteHeader ${classes.notesTitle}`}>
+                                {note.title}
+                                <NotificationIcon
+                                    className="noteNotification"
+                                    onClick={toggleNoteField(note.id, "important")}
+                                    style={note.important ? {"color": "red"} : {}} />
+                            </Typography>
+                            <Typography
+                                align="left"
+                                className="body">
+                                {note.body}
+                            </Typography>
+                            <Typography
+                                className="date"
+                                style={{"fontWeight": "500"}}>
+                                {numericDateString(note.timestamp)}
+                            </Typography>
+                            <div className={`actions ${classes.actionIcons}`}>
+                                <Delete
+                                    className="icon"
+                                    onClick={openDelete(note.id)} />
+                                <EditIcon
+                                    className="icon"
+                                    onClick={openExistingNote(note)} />
+                                <DoneIcon
+                                    className="icon"
+                                    onClick={toggleNoteField(note.id, "complete")}
+                                    style={note.complete ? {"color": "#43B5D9"} : {}} />
+                            </div>
+                        </Paper>
+                    </Grid>
+                ))}
+            </Grid>
+        );
+    // }
 };
 
 Notes.propTypes = {

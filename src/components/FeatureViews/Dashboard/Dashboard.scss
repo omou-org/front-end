@@ -18,14 +18,15 @@
     margin: 20px;
     padding: 20px;
     width: 90%;
-    height: 90%;
+    height: 95%;
     text-align: left;
 
 }
 
 .today-paper {
-    opacity: .8;
-    height: 250px;
+    background: rgba(255, 255, 255, 0.6) !important;
+    height: 300px;
+    margin: 10px;
 }
 
 .today-container {
@@ -49,34 +50,45 @@
     overflow: hidden;
 }
 
+.OP-paper{
+    background: rgba(255, 255, 255, 0.6) !important;
+    height: 320px;
+    margin: 10px;
+}
+
 .db-notes-container{
     margin: 20px;
     padding: 20px;
-    display: inline-table
+    // display: inline-table;
+    height: 90%;
 }
 
-.addNote {
-    width: 100%;
-    height: 50%;
+.db-notes-paper{
+    height: 70vh;
+    overflow-y: scroll;
 }
+// .addNote {
+//     width: 100%;
+//     height: 50%;
+// }
 
-.note-container {
-    padding: 5px;
-}
+// .note-container {
+//     padding: 5px;
+// }
 
-.noteNotification {
-    justify-content: flex-end;
-    align-content: center;
-}
+// .noteNotification {
+//     justify-content: flex-end;
+//     align-content: center;
+// }
 
-.datetime {
-    margin: 20px;
-}
+// .datetime {
+//     margin: 20px;
+// }
 
-.button-group{
-    float: right;
-    padding-bottom: 5px;
-}
+// .button-group{
+//     float: right;
+//     padding-bottom: 5px;
+// }
 
 
 

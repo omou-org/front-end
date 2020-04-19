@@ -25,23 +25,32 @@ const Dashboard = () => {
     return(
         <Paper className="dashboard-paper" elevation={3}>
             <Grid container justify="space-around">
-                <Grid item xs={9}>
+                <Grid item xs={9} spacing={2}>
                     <Typography variant="h2" className="dashboard-greeting">
                         Hello {user.first_name}!
                     </Typography>
                     <br/>
-                    <Typography variant='h4' className="dashboard-date">
-                        April 12, 2020
-                    </Typography>
-                        <Paper className="today-paper">
-                            <Grid container className="today-container" wrap = "nowrap">
-                                <Today/>
+                    <Paper className="today-paper" container>
+                        <Grid container>
+                            <Grid item xs={9}>
+                                <Typography variant='h4' className="dashboard-date">
+                                    April 12, 2020
+                                </Typography>
                             </Grid>
-                        </Paper>
+                            <Grid item xs={3}>
+                                <Button variant="contained" variant="outlined" style={{margin:"5px", float: "right"}}>View in Scheduler</Button>
+                            </Grid>
+                        </Grid>
+                        <Grid container className="today-container" wrap = "nowrap">
+                                <Today/>
+                        </Grid>
+                    </Paper>
+                    <Paper className='OP-paper'>
                     <Typography variant='h4'>
                         Outstanding Payments
                     </Typography>
                     <UnpaidSessions/>
+                    </Paper>
                 </Grid>
                 <Grid item xs={3} spacing={2} className='db-notes-container'>
                     <DashboardNotes
