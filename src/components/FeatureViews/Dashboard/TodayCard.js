@@ -5,6 +5,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
+import moment from 'moment';
 
 
 const TodayCard = ({session}) => {
@@ -14,11 +15,12 @@ const TodayCard = ({session}) => {
 
     const course = session.title
     const instructor = instructors[session.instructor].name
-    const startTime = courses[session.course].schedule.start_time
+    const startTime = (courses[session.course].schedule.start_time).slice(1)
     const roster = courses[session.course].roster
     const countStudents = roster.length
 
-
+    const formattedStartTime = moment(startTime, "HH:mm").format("h:mm a");
+ 
     return (
         <Card className="today-card">
             <CardContent
@@ -29,7 +31,7 @@ const TodayCard = ({session}) => {
                     </Typography>
                 </Tooltip>
                 <Typography>
-                    <span className="material-icons">alarm</span>{startTime}
+                    <span className="material-icons">alarm</span>{formattedStartTime}
                 </Typography>
                 <Typography>
                     <span className="material-icons">face</span>{instructor}
