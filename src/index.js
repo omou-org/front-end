@@ -1,4 +1,3 @@
-import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 import {applyMiddleware, createStore} from "redux";
 import App from "./App";
@@ -18,7 +17,7 @@ const store = createStore(
 ReactDOM.render(
     <Provider store={store}>
         <BrowserRouter>
-            <App />
+            <App/>
         </BrowserRouter>
     </Provider>,
     document.getElementById("root")
