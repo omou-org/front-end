@@ -94,6 +94,7 @@ function PanelManager(props) {
 
 
     const addDefaults = (fields) => {
+        let fieldsWithDefualts = {};
         Object.keys(fields).forEach((field) => {
             Object.keys(defaults).forEach((key) => {
                 if(fields[field].hasOwnProperty(key)) {
@@ -128,8 +129,9 @@ function PanelManager(props) {
             })
             console.log("recordObjectWithFieldData")
             console.log(fieldInfo)
-            return fieldInfo
+            
         })
+        return fieldInfo
     }
 
     useEffect(() => {
@@ -142,6 +144,11 @@ function PanelManager(props) {
             setRecordList(parsedRecordList);
         }
     }, [records]);
+    const fieldsWithDefaults = addDefaults(props.fields);
+
+    useEffect(() => {
+        setDirectoryData(constructDirectoryObject(fieldsWithDefaults, records));
+    }, [records, fieldsWithDefaults, constructDirectoryObject])
 
 
 
@@ -149,7 +156,7 @@ function PanelManager(props) {
     const viewRecordRow = (record) => {
         const recordElements = [];
         
-        Object.values(directoryData).forEach((field, index) => {
+        Object.values(fieldsWithDefaults).forEach((field, index) => {
             recordElements.push(
                     <Grid item xs={field["col-width"]} md={field["col-width"]}>
                         <Typography align={field["align"]}>
@@ -228,7 +235,7 @@ const editRecordRow = (record) => {
     console.log("record")
     console.log(record)
     const editElements = [];
-    directoryData.forEach((field, index) => {
+    fieldsWithDefaults.forEach((field, index) => {
         if (field["type"] === "text"){
             editElements.push(
 
@@ -276,15 +283,12 @@ const editRecordRow = (record) => {
         </Paper>
     )
 }
-    const constructDirectory = () => {
-        const fieldsWithDefaults = addDefaults(props.fields);
-        setDirectoryData(constructDirectoryObject(fieldsWithDefaults, records));
-        console.log("directortData")
-        console.log(directoryData)
-    }
+    console.log("directorydata: ")
+    console.log(directoryData)
 
     const headerElements = [];
-    for (const [index, value] of Object.keys(directoryData)) {
+    for (const [index, value] of Object.keys(fieldsWithDefaults)) {
+        // console.log(directoryData)
         headerElements.push(
             <Grid item xs={value["col-width"]} md={value["col-width"]} >
                 <Typography align={value["align"]} style={{color: 'white', fontWeight: '500'}}>
