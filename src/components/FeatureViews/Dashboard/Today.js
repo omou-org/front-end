@@ -45,13 +45,6 @@ const Today = () => {
         )
     }
  
-    // return (sessionArray.map((session) => (
-    //         <TodayCard 
-    //             key={session}
-    //             session={session}
-    //             />)
-    // ));
-
         return (
             <>
             {sessionArray.map((session)=> (
@@ -60,8 +53,6 @@ const Today = () => {
                     session={session}
                     />)
             )}
-            {/* menu here
-            map filtered session array here */}
         </>
         )
 };
