@@ -44,7 +44,7 @@ const Navigation = (props) => {
     const NavList = isAdmin ? [
             {
                 "name": "Dashboard",
-                "link": "/",
+                "link": "/dashboard",
                 "icon": <DashboardIcon />,
             },
             {
@@ -57,23 +57,23 @@ const Navigation = (props) => {
                 "link": "/accounts",
                 "icon": <AccountsIcon />,
             },
-                {
-                    "name": "Registration",
-                    "link": "/registration",
-                    "icon": <AssignmentIcon />,
-                },
-                {
-                    "name": "Admin",
-                    "link": "/adminportal",
-                    "icon": <AdminIcon/>,
-                }
+			{
+				"name": "Registration",
+				"link": "/registration",
+				"icon": <AssignmentIcon />,
+			},
+			{
+				"name": "Admin",
+				"link": "/adminportal",
+				"icon": <AdminIcon/>,
+			}
             ] :
         [
-            {
-                "name": "Dashboard",
-                "link": "/",
-                "icon": <DashboardIcon />,
-            },
+            // {
+            //     "name": "Dashboard",
+            //     "link": "/dashboard",
+            //     "icon": <DashboardIcon />,
+            // },
             {
                 "name": "Scheduler",
                 "link": "/scheduler",
@@ -83,7 +83,7 @@ const Navigation = (props) => {
             "name": "Accounts",
             "link": "/accounts",
             "icon": <AccountsIcon />,
-        },
+    	    },
             {
                 "name": "Registration",
                 "link": "/registration",

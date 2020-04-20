@@ -6,7 +6,6 @@ import React from "react";
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/EnrollmentView";
-// import Dashboard from "../FeatureViews/Dashboard/Dashboard";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
 import LoginPage from "../Authentication/LoginPage.js";
@@ -41,7 +40,8 @@ export const RootRoutes = () => {
             <ProtectedRoute
                 exact
                 path="/"
-                render={(passedProps) => <Dashboard {...passedProps} />} />
+                render={(passedProps) => <Scheduler {...passedProps} />}
+            />
 
             <ProtectedRoute
                 exact
@@ -62,6 +62,11 @@ export const RootRoutes = () => {
                 exact
                 path="/search"
                 render={(passedProps) => <SearchResults {...passedProps} />}
+            />
+            <ProtectedRoute
+                exact
+                path="/dashboard"
+                render={(passedProps) => <Dashboard {...passedProps} />}
             />
 
             {/* <ProtectedRoute*/}
