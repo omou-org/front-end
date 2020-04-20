@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import * as types from "actions/actionTypes";
 import {instance} from "actions/apiActions";
 import {useSelector, useDispatch} from "react-redux";
@@ -5,12 +6,19 @@ import React from "react";
 import {FORM_ERROR} from "final-form";
 import * as Fields from "./Fields";
 import * as Yup from "yup";
+import * as hooks from "actions/hooks";
 
-const parseGender = {
+const shortToLongGender = {
     "F": "female",
     "M": "male",
     "U": "unspecified",
 };
+const longToShortGender = {
+    "female": "F",
+    "male": "M",
+    "unspecified": "U",
+};
+
 const mapFunc = (parser, data) => {
     let res = {};
     Object.entries(data).forEach(([key, message]) => {
@@ -45,7 +53,6 @@ const parseDate = (date) => {
 const formToRequest = (parser, data) => {
     let body = {};
     Object.entries(parser).forEach(([key, path]) => {
-        console.log(parser, key, path)
         if (Array.isArray(path)) {
             body[key] = data[path[0]][path[1]];
         } else {
@@ -103,9 +110,9 @@ const ADDRESS_FIELD = {
         "name": "gender",
         "label": "Gender",
         ...selectField([
-            {"label": "Do Not Disclose", "value": "U"},
-            {"label": "Male", "value": "M"},
-            {"label": "Female", "value": "F"},
+            {"label": "Do Not Disclose", "value": "unspecified"},
+            {"label": "Male", "value": "male"},
+            {"label": "Female", "value": "female"},
         ]),
     },
     NAME_FIELDS = [
@@ -197,10 +204,89 @@ export default {
                 ],
             },
         ],
-        "load": function useLoad() {
-            return {};
+        "load": (id) => {
+            const studentStatus = hooks.useStudent(id);
+            const {parent_id, ...student} = useSelector(({Users}) => Users.StudentList[id]) || {};
+            hooks.useParent(parent_id);
+            const {relationship, ...parent} = useSelector(({Users}) => Users.ParentList[parent_id]) || {};
+            if (hooks.isFail(studentStatus)) {
+                return null;
+            }
+            return {
+                student,
+                "parent": {
+                    ...parent,
+                    "relationship": (relationship || "").toLowerCase(),
+                },
+            };
         },
-        "submit": () => {},
+        "submit": async (dispatch, formData, id) => {
+            const studentResponseToFormKey = {
+                "gender": ["student", "gender"],
+                "birth_date": ["student", "birthday"],
+                "address": ["parent", "address"],
+                "city": ["parent", "city"],
+                "phone_number": ["student", "phone_number"],
+                "state": ["parent", "state"],
+                "zipcode": ["parent", "zipcode"],
+                "grade": ["student", "grade"],
+                "school": ["student", "school"],
+                "user": {
+                    "first_name": ["student", "first_name"],
+                    "last_name": ["student", "last_name"],
+                    "email": ["student", "email"],
+                },
+            };
+            const parentResponseToFormKey = {
+                "gender": ["parent", "gender"],
+                "birth_date": ["parent", "birthday"],
+                "address": ["parent", "address"],
+                "city": ["parent", "city"],
+                "phone_number": ["student", "phone_number"],
+                "state": ["parent", "state"],
+                "zipcode": ["parent", "zipcode"],
+                "relationship": ["parent", "relationship"],
+                "user": {
+                    "first_name": ["parent", "first_name"],
+                    "last_name": ["parent", "last_name"],
+                    "email": ["parent", "email"],
+                },
+            };
+            const parent = formToRequest(parentResponseToFormKey, formData);
+            parent.birth_date = parseDate(parent.birth_date);
+            const student = formToRequest(studentResponseToFormKey, formData);
+            student.birth_date = parseDate(student.birth_date);
+            try {
+                const parentResponse = await instance.post("/account/parent/",
+                    parent);
+                console.log(parentResponse)
+                dispatch({
+                    "type": types.POST_PARENT_SUCCESSFUL,
+                    "payload": parentResponse,
+                });
+                student.primary_parent = parentResponse.id;
+                let studentResponse;
+                if (id) {
+                    studentResponse = await instance.patch(
+                        `/account/student/${id}/`, student,
+                    );
+                } else {
+                    studentResponse = await instance.post(
+                        "/account/student/", student,
+                    );
+                }
+                console.log(studentResponse);
+                dispatch({
+                    "type": types.POST_STUDENT_SUCCESSFUL,
+                    "payload": studentResponse,
+                });
+            } catch (error) {
+                console.log(error)
+                return {
+                    [FORM_ERROR]: error.response.data,
+                };
+            }
+        },
     },
     "admin": {
         "form": [
@@ -264,7 +350,6 @@ export default {
                 },
             };
             const admin = formToRequest(responseToFormKey, formData);
-            admin.gender = parseGender[admin.gender];
             admin.birth_date = parseDate(admin.birth_date);
             try {
                 const response = await instance.post("/account/admin/", admin);
@@ -274,8 +359,6 @@ export default {
                 //     "payload": response,
                 // });
             } catch ({response}) {
-                console.log(response);
-                console.log(mapFunc(responseToFormKey, response.data))
                 return {
                     ...mapFunc(responseToFormKey, response.data),
                     [FORM_ERROR]: response.data,

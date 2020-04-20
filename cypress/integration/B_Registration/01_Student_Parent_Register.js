@@ -88,9 +88,9 @@ describe("Fills out form", () => {
                 "response": {
                     "user": {
                         "id": student.id,
-                        "email": "",
+                        "email": ""
                         "first_name": student.first_name,
-                        "last_name": student.las_name,
+                        "last_name": student.last_name,
                     },
                     "user_uuid": null,
                     "gender": student.gender,
@@ -115,10 +115,10 @@ describe("Fills out form", () => {
                 "method": "POST",
                 "response": {
                     "user": {
-                        "id": student.id,
-                        "email": "",
-                        "first_name": student.first_name,
-                        "last_name": student.las_name,
+                        "id": parent.id,
+                        "email": parent.email,
+                        "first_name": parent.first_name,
+                        "last_name": parent.last_name,
                     },
                     "user_uuid": null,
                     "gender": student.gender,
@@ -127,9 +127,7 @@ describe("Fills out form", () => {
                     "city": parent.city,
                     "phone_number": removeDashes(student.phone_number),
                     "state": parent.state,
-                    "zipcode": parent.zipcode,
-                    "grade": 10,
-                    "school": "Standup HS",
+                    "relationship": parent.relationship,
                     "primary_parent": parent.id,
                     "secondary_parent": null,
                     "enrollment_id_list": [],
@@ -140,7 +138,6 @@ describe("Fills out form", () => {
                 "responseType": "application/json",
             });
             cy.get("[data-cy=submitButton]").click();
-            cy.get("[data-cy=submittedContainer]");
         });
     });
 });
