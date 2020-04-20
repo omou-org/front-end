@@ -11,13 +11,21 @@ import './Dashboard.scss';
 
 const Today = () => {
     const sessionSearchResult = useSelector(({Search}) => Search.sessions);
+    const categories = useSelector(({Course}) => Course.CourseCategories);
     const sessionArray = sessionSearchResult.results ;
     
     const instructorStatus = hooks.useInstructor();
     const courseStatus = hooks.useCourse();
-    const sessionStatus = useSearchSession(1, "today", "timeAsc");
+    const sessionStatus = useSearchSession("", 1, "", "timeAsc");
+    const categoryStatus = hooks.useCategory();
 
-    if (hooks.isLoading(instructorStatus, courseStatus, sessionStatus)) {
+
+    let categoryList = [];
+    if (categories.length>0) {
+        categoryList = categories.map(({name}) => name);
+    }
+
+    if (hooks.isLoading(instructorStatus, courseStatus, sessionStatus, categoryStatus)) {
         return (
             <Loading
                 loadingText="SESSIONS ARE LOADING"
@@ -27,7 +35,7 @@ const Today = () => {
 
     if (sessionArray.length === 0) {
         return (
-            <Card className="today-card">
+            <Card className="today-card" >
                 <CardContent>
                     <Typography>
                         No sessions today!
@@ -36,18 +44,26 @@ const Today = () => {
             </Card>
         )
     }
-
-    // return (
-    //     <TodayCard/>
-    // )
-
  
-    return sessionArray.map((session) => (
-            <TodayCard 
-                key={session}
-                session={session}
-                />
-    ));
+    // return (sessionArray.map((session) => (
+    //         <TodayCard 
+    //             key={session}
+    //             session={session}
+    //             />)
+    // ));
+
+        return (
+            <>
+            {sessionArray.map((session)=> (
+                <TodayCard
+                    key={session}
+                    session={session}
+                    />)
+            )}
+            {/* menu here
+            map filtered session array here */}
+        </>
+        )
 };
 
 export default Today;

@@ -38,7 +38,7 @@
 
 .today-paper {
     background: rgba(255, 255, 255, 0.6) !important;
-    height: 300px;
+    height: 370px;
     margin: 10px;
 
     flex-shrink: 0;
@@ -53,7 +53,7 @@
 
 .today-card {
     opacity: 1;
-    height: 220px;
+    height: 145px;
     min-width: 180px;
     margin: 10px;
     font-size: 8px;
@@ -63,9 +63,13 @@
     overflow: hidden;
 }
 
+.today-card-details{
+    font-size: .8rem !important;
+}
+
 .OP-paper{
     background: rgba(255, 255, 255, 0.6) !important;
-    height: 320px;
+    height: 300px;
     margin: 10px;
 }
 

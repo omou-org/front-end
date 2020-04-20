@@ -5,6 +5,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
+import Divider from "@material-ui/core/Divider";
 import moment from 'moment';
 
 
@@ -26,17 +27,19 @@ const TodayCard = ({session}) => {
             <CardContent
                 className="today-details">
                 <Tooltip title={course}>
-                    <Typography variant='h6' className='today-course-title' noWrap={true}>
+                    <Typography variant='subtitle2' gutterBottom className='today-course-title' noWrap={true}>
                         {course}
                     </Typography>
                 </Tooltip>
-                <Typography>
-                    <span className="material-icons">alarm</span>{formattedStartTime}
+                <Divider/>
+                <br/>
+                <Typography variant="body2" className="today-card-details">
+                    <span className="material-icons">alarm</span> {formattedStartTime}
                 </Typography>
-                <Typography>
-                    <span className="material-icons">face</span>{instructor}
+                <Typography variant="body2" className="today-card-details">
+                    <span className="material-icons">face</span> {instructor}
                 </Typography>
-                <Typography>
+                <Typography variant="body2" className="today-card-details">
                     <span className="material-icons">group</span> {countStudents} students
                 </Typography>
             </CardContent>
