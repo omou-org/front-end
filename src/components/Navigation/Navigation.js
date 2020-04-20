@@ -69,11 +69,11 @@ const Navigation = (props) => {
 			}
             ] :
         [
-            // {
-            //     "name": "Dashboard",
-            //     "link": "/dashboard",
-            //     "icon": <DashboardIcon />,
-            // },
+            {
+                "name": "Dashboard",
+                "link": "/dashboard",
+                "icon": <DashboardIcon />,
+            },
             {
                 "name": "Scheduler",
                 "link": "/scheduler",
