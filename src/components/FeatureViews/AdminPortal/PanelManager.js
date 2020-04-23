@@ -92,7 +92,6 @@ function PanelManager(props) {
         "type": "text"
     };
 
-
     const addDefaults = (fields) => {
         let fieldsWithDefualts = {};
         Object.keys(fields).forEach((field) => {
@@ -104,38 +103,10 @@ function PanelManager(props) {
                 }
             })
         })
-        // console.log("fields")
-        // console.log(fields)
         return fields
     };
 
-
-
-
-    const constructDirectoryObject = (fieldInfo, recordArray) => {
-        console.log("construcing object..");
-        console.log("recordArray: ")
-        console.log(recordArray)
-        // console.log(fieldInfo)
-        recordArray.forEach((record) => {
-            Object.keys(record).forEach((key) => {
-                if (key !== "id") {
-                    if(fieldInfo[key]["values"]){
-                        fieldInfo[key]["values"].push(record[key])
-                    } else {
-                    fieldInfo[key]["values"] = [record[key]]
-                    }
-                }
-            })
-            console.log("recordObjectWithFieldData")
-            console.log(fieldInfo)
-            
-        })
-        return fieldInfo
-    }
-
     useEffect(() => {
-        // console.log(records);
         if(records.length !== recordList.length) {
             let parsedRecordList = records.map((record) => ({
                 ...record,
@@ -147,15 +118,48 @@ function PanelManager(props) {
     const fieldsWithDefaults = addDefaults(props.fields);
 
     useEffect(() => {
+        const constructDirectoryObject = (fieldInfo, recordArray) => {
+            recordArray.forEach((record) => {
+                Object.keys(record).forEach((key) => {
+                    if (key !== "id") {
+                        if(fieldInfo[key]["values"]){
+                            fieldInfo[key]["values"].push(record[key])
+                        } else {
+                        fieldInfo[key]["values"] = [record[key]]
+                        }
+                    }
+                })
+            })
+            return fieldInfo
+        }
+
         setDirectoryData(constructDirectoryObject(fieldsWithDefaults, records));
-    }, [records, fieldsWithDefaults, constructDirectoryObject])
+    }, [records, fieldsWithDefaults])
 
+    const getRecord = (index) => Object.values(directoryData).map((field) => {
+        console.log("field")
+        console.log(field)
+        return field["values"][index]
+    })
+    
+    const viewHeader = () => Object.values(directoryData).map((field) => {
 
+        return (
+            <Grid item xs={field["col-width"]} md={field["col-width"]} >
+                <Typography align={field.align} style={{color: 'white', fontWeight: '500'}}>
+                    {field.label}
+                </Typography>
+            </Grid>
+        )
+    })
 
     
     const viewRecordRow = (record) => {
         const recordElements = [];
-        
+        console.log("directorydata: ")
+        console.log(directoryData)
+        console.log("record")
+        console.log(getRecord(0))
         Object.values(fieldsWithDefaults).forEach((field, index) => {
             recordElements.push(
                     <Grid item xs={field["col-width"]} md={field["col-width"]}>
@@ -188,12 +192,9 @@ function PanelManager(props) {
 const editRecord = (id) => (e) => {
     e.preventDefault();
     let editingRecord = recordList.find((record) => {return record.id === id});
-    console.log("editing: ");
     let recordToUpload = {};
     if(editingRecord) {
         Object.keys(editingRecord).forEach((key) => {
-            // console.log("editingRecord[key]=> " + key + ": " + editingRecord[key])
-            // console.log("recordToUpload[key] => " + key + ": " + recordToUpload[key] )
             recordToUpload[key] = editingRecord[key]
         });
 
@@ -208,16 +209,13 @@ const editRecord = (id) => (e) => {
             return record;
         }
     });
-    console.log(recordToUpload)
     setRecordList(updatedRecordList);
 };
 
 const handleEditRecord = (type, id) => (e) => {
     e.preventDefault();
     let editingRecord = recordList.find((record) => {return record.id === id});
-    console.log(e.target);
     editingRecord[type] = e.target.label; //value
-    console.log("handleEditRecord")
 
     //! RecordToUpdateIndex = recordList.indexOf(editingRecord)
     //! update record... => recordList[indexOf(editingRecord)] = editingRecord
@@ -232,8 +230,6 @@ const handleEditRecord = (type, id) => (e) => {
 };
 
 const editRecordRow = (record) => {
-    console.log("record")
-    console.log(record)
     const editElements = [];
     fieldsWithDefaults.forEach((field, index) => {
         if (field["type"] === "text"){
@@ -283,20 +279,8 @@ const editRecordRow = (record) => {
         </Paper>
     )
 }
-    console.log("directorydata: ")
-    console.log(directoryData)
 
-    const headerElements = [];
-    for (const [index, value] of Object.keys(fieldsWithDefaults)) {
-        // console.log(directoryData)
-        headerElements.push(
-            <Grid item xs={value["col-width"]} md={value["col-width"]} >
-                <Typography align={value["align"]} style={{color: 'white', fontWeight: '500'}}>
-                    {value["label"]}
-                </Typography>
-            </Grid>
-        )
-    }
+
 
 
     return (
@@ -305,7 +289,7 @@ const editRecordRow = (record) => {
             <Grid item xs={12}>
                 
                 <Grid container className={'accounts-table-heading'}>
-                {headerElements}
+                {viewHeader()}
                 <Grid item xs md>
                     <Typography align={'center'} style={{color: 'white', fontWeight: '500'}}>
                         Edit
