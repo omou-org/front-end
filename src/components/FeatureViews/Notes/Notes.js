@@ -373,6 +373,7 @@ const Notes = ({ownerType, ownerID}) => {
 						className="notification"
 						onClick={toggleNotification}
 						style={notificationColor}
+						data-cy="dialog-notification"
 					/>
 				</DialogTitle>
 				<DialogContent>
@@ -458,7 +459,11 @@ const Notes = ({ownerType, ownerID}) => {
 			{notes &&
 			Object.values(notes).map((note) => (
 				<Grid item key={note.id || note.body} xs={3}>
-					<Paper elevation={2} className="note">
+					<Paper 
+					elevation={2} 
+					className="note"
+					data-cy="note-card"
+					>
 						<Typography
 							align="left"
 							className={`noteHeader ${classes.notesTitle}`}
@@ -468,6 +473,7 @@ const Notes = ({ownerType, ownerID}) => {
 								className="noteNotification"
 								onClick={toggleNoteField(note.id, "important")}
 								style={note.important ? {color: "red"} : {}}
+								data-cy="notify-icon"
 							/>
 						</Typography>
 						<Typography align="left" className="body">
@@ -478,7 +484,11 @@ const Notes = ({ownerType, ownerID}) => {
 						</Typography>
 						<div className={`actions ${classes.actionIcons}`}>
 							<Delete className="icon" onClick={openDelete(note.id)}/>
-							<EditIcon className="icon" onClick={openExistingNote(note)}/>
+							<EditIcon 
+								className="icon" 
+								onClick={openExistingNote(note)}
+								data-cy="edit-btn"
+							/>
 							<DoneIcon
 								className="icon"
 								onClick={toggleNoteField(note.id, "complete")}

@@ -10,7 +10,7 @@ const userDetails = {
 describe("A:00Login_spec", () => {
   it("Loads login page", () => {
     cy.visit("");
-    cy.get("[data-cy=signInButton");
+    cy.get("[data-cy=signInButton]");
   });
 
   it("Toggles Remember Me", () => {
