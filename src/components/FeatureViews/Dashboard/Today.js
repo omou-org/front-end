@@ -33,7 +33,7 @@ const Today = () => {
         );
     }
 
-    if (sessionArray.length === 0) {
+    if (!sessionArray || sessionArray.length === 0) {
         return (
             <Card className="today-card" >
                 <CardContent>
@@ -45,6 +45,7 @@ const Today = () => {
         )
     }
  
+    else if (sessionArray) {
         return (
             <>
             {sessionArray.map((session)=> (
@@ -55,6 +56,7 @@ const Today = () => {
             )}
         </>
         )
+    };
 };
 
 export default Today;
