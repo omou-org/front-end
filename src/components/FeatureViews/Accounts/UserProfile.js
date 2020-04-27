@@ -189,6 +189,7 @@ const UserProfile = () => {
 					{displayTabs.map((tab) => (
 						<Tab
 							key={tab.tab_id}
+							data-cy="note-tab"
 							label={
 								<>
 									{tab.icon} {tab.tab_heading}

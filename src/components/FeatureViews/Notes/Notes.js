@@ -483,7 +483,11 @@ const Notes = ({ownerType, ownerID}) => {
 							{numericDateString(note.timestamp)}
 						</Typography>
 						<div className={`actions ${classes.actionIcons}`}>
-							<Delete className="icon" onClick={openDelete(note.id)}/>
+							<Delete 
+							className="icon" 
+							onClick={openDelete(note.id)} 
+							data-cy="delete-btn"
+							/>
 							<EditIcon 
 								className="icon" 
 								onClick={openExistingNote(note)}
