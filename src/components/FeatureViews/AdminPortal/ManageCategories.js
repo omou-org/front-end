@@ -61,6 +61,7 @@ const ManageCategories = () => {
 						onChange={handleChange(setCategoryName)}
 						required
 						value={categoryName}
+						data-cy="manage-categories-name"
 					/>
 				</Grid>
 				<Grid item xs={7}>
@@ -70,6 +71,7 @@ const ManageCategories = () => {
 						multiline
 						onChange={handleChange(setCategoryDescription)}
 						value={categoryDescription}
+						data-cy="manage-categories-description"
 					/>
 				</Grid>
 				<Grid item xs={2}>
@@ -79,6 +81,7 @@ const ManageCategories = () => {
 						disabled={categoryName === ""}
 						onClick={submitCategory}
 						variant="contained"
+						data-cy="manage-categories-add-btn"
 					>
 						Add Category
 					</Button>
