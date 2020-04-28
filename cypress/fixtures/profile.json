@@ -1,5 +1,11 @@
+  
 {
-  "id": 8739,
-  "name": "Jane",
-  "email": "jane@example.com"
-}
+  "admin": {
+  "email": "maggie@summit.com",
+  "password": "password"
+  },
+  "receptionist": {
+  "email": "test",
+  "password": "test2"
+  }
+ }

@@ -373,6 +373,7 @@ const Notes = ({ownerType, ownerID}) => {
 						className="notification"
 						onClick={toggleNotification}
 						style={notificationColor}
+						data-cy="dialog-notification"
 					/>
 				</DialogTitle>
 				<DialogContent>
@@ -477,8 +478,16 @@ const Notes = ({ownerType, ownerID}) => {
 							{numericDateString(note.timestamp)}
 						</Typography>
 						<div className={`actions ${classes.actionIcons}`}>
-							<Delete className="icon" onClick={openDelete(note.id)}/>
-							<EditIcon className="icon" onClick={openExistingNote(note)}/>
+							<Delete 
+							className="icon" 
+							onClick={openDelete(note.id)}
+							data-cy="delete-btn"
+							/>
+							<EditIcon 
+							className="icon" 
+							onClick={openExistingNote(note)}
+							data-cy="edit-btn"
+							/>
 							<DoneIcon
 								className="icon"
 								onClick={toggleNoteField(note.id, "complete")}
