@@ -160,7 +160,7 @@ const ManageCategories = () => {
 					<Typography align="left">{description}</Typography>
 				</Grid>
 				<Grid item xs={2}>
-					<IconButton onClick={editCategory(id)}>
+					<IconButton onClick={editCategory(id)} data-cy="category-edit-btn">
 						<EditIcon/>
 					</IconButton>
 				</Grid>
@@ -188,6 +188,7 @@ const ManageCategories = () => {
 						label="Name"
 						onChange={handleEditCategory("name", id)}
 						value={name}
+						data-cy="category-edit-name"
 					/>
 				</Grid>
 				<Grid item xs={7}>
@@ -197,10 +198,15 @@ const ManageCategories = () => {
 						label="Description"
 						onChange={handleEditCategory("description", id)}
 						value={description}
+						data-cy="category-edit-description"
 					/>
 				</Grid>
 				<Grid item xs={2}>
-					<Button className="button" onClick={editCategory(id)}>
+					<Button 
+					className="button" 
+					onClick={editCategory(id)}
+					data-cy=""
+					>
 						UPDATE
 					</Button>
 				</Grid>
