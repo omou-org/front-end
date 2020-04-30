@@ -14,32 +14,13 @@ import DashboardNotes from './DashboardNotes';
 import moment from 'moment';
 import * as hooks from "actions/hooks";
 import Loading from "components/Loading";
+import TodayFiltered from "./TodayFiltered";
 
 
 const Dashboard = () => {
 
     const user = useSelector(({auth}) => auth) || [];
     const currentDate = moment().format("dddd, MMMM DD")
-    const categories = useSelector(({Course}) => Course.CourseCategories);
-    let categoryList = [];
-    if (categories.length>0) {
-        categoryList = categories.map(({name}) => JSON.parse(JSON.stringify(({
-            "value": name,
-            "label": name,
-        }))));
-    }
-
-    const categoryStatus = hooks.useCategory();
-
-    if(hooks.isLoading(categoryStatus)) {
-        return (
-            <Loading
-                loadingText = "DASHBOARD IS LOADING"
-            />
-        )
-    }
-
-    console.log(categoryList);
 
     return(
         <Paper className="dashboard-paper" elevation={3}>
@@ -68,12 +49,7 @@ const Dashboard = () => {
                             wrap = "nowrap">
                             <Today/>
                         </Grid>
-                        <Select
-                            className="category-options"
-                            closeMenuOnSelect={true}
-                            options={categoryList}
-                            placeholder={'Choose a Category'}
-                        />
+                    <TodayFiltered/>
                     </Paper>
                     <Paper className='OP-paper'>
                     <Typography variant='h5' className="OP-label">

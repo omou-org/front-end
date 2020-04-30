@@ -19,12 +19,6 @@ const Today = () => {
     const sessionStatus = useSearchSession("", 1, "", "timeAsc");
     const categoryStatus = hooks.useCategory();
 
-
-    let categoryList = [];
-    if (categories.length>0) {
-        categoryList = categories.map(({name}) => name);
-    }
-
     if (hooks.isLoading(instructorStatus, courseStatus, sessionStatus, categoryStatus)) {
         return (
             <Loading
