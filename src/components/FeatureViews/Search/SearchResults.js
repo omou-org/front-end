@@ -21,8 +21,6 @@ import NoResultsPage from "./NoResults/NoResultsPage";
 import SearchResultsLoader from "./SearchResultsLoader";
 import {capitalizeString} from "../../../utils";
 
-const toAPIPage = (page) => Math.floor((page + 1) / 2);
-
 const getDisplay = (results, page) => {
 	const selection = results[page];
   if (!selection) {
