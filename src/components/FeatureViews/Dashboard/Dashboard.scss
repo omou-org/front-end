@@ -45,7 +45,7 @@
 }
 
 .today-container {
-    height: 270;
+    height: 300px;
     flex-shrink: 0 !important;
     overflow: hidden;
     overflow-x: scroll;
@@ -53,7 +53,7 @@
 
 .today-card {
     opacity: 1;
-    height: 145px;
+    height: 250px;
     min-width: 180px;
     margin: 10px;
     font-size: 8px;
@@ -71,6 +71,13 @@
     background: rgba(255, 255, 255, 0.6) !important;
     height: 300px;
     margin: 10px;
+}
+
+.unpaid-container{
+    height: 300px;
+    flex-shrink: 0 !important;
+    overflow: hidden;
+    overflow-x: scroll;
 }
 
 .db-notes-container{

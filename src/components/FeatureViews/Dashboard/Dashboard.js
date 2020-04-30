@@ -31,17 +31,23 @@ const Dashboard = () => {
                     </Typography>
                     <br/>
                     <Paper className="today-paper" container>
-                        <Grid container style={{width: "100%", justifyContent:"space-between"}}>
+                        <Grid container style={{width: "100%", justifyContent:"space-between", padding: "5px"}}>
+                                <Grid item xs={4}>
                                 <Typography variant='h5' className="dashboard-date">
                                     {currentDate}
                                 </Typography>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <TodayFiltered/>
+                                </Grid>
                                 <Button 
                                     variant="contained" 
                                     variant="outlined" 
                                     style={{margin:"5px", float: "right"}}
                                     component={NavLink}
                                     to='/scheduler'
-                                    >View in Scheduler</Button>
+                                    >View in Scheduler
+                                </Button>
                         </Grid>
                         <Grid 
                             container 
@@ -49,13 +55,17 @@ const Dashboard = () => {
                             wrap = "nowrap">
                             <Today/>
                         </Grid>
-                    <TodayFiltered/>
                     </Paper>
                     <Paper className='OP-paper'>
-                    <Typography variant='h5' className="OP-label">
-                        Outstanding Payments
-                    </Typography>
-                    <UnpaidSessions/>
+                        <Typography variant='h5' className="OP-label">
+                            Outstanding Payments
+                        </Typography>
+                        <Grid
+                            container
+                            classname="unpaid-container"
+                            wrap = "nowrap">
+                            <UnpaidSessions/>
+                        </Grid>
                     </Paper>
                 </Grid>
                 <Grid item xs={3} spacing={2} className='db-notes-container'>

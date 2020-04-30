@@ -11,7 +11,7 @@ const TodayFiltered = () => {
 
     const [currentFilter, setCurrentFilter] = useState({
         showFiltered: false,
-        filter: "Math"
+        filter: ""
     });
 
     const handleChange = e => {
@@ -24,11 +24,16 @@ const TodayFiltered = () => {
         categoryList = categories.map(({name, id}) => JSON.parse(JSON.stringify(({
             "label": name,
         }))));
+        categoryList.push({
+            "label": "Choose a Category"
+        })
 
     }
     const sessionSearchResult = useSelector(({Search}) => Search.sessions);
     const filteredSessionArray = sessionSearchResult.results ;
     useSearchSession(currentFilter.filter, 1, "", "timeAsc");
+
+    console.log(filteredSessionArray);
 
     const categoryStatus = hooks.useCategory();
     
