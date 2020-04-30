@@ -38,7 +38,7 @@ const RegistrationCart = () => {
 
   const courseIDs = useMemo(
 	  () => {
-		  if (registered_courses.length > 0) {
+		  if (Object.values(registered_courses).length > 0) {
 			  return Object.values(registered_courses)
 				  .flat()
 				  .map(({course_id}) => course_id)

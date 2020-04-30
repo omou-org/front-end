@@ -21,14 +21,7 @@ import NoResultsPage from "./NoResults/NoResultsPage";
 import SearchResultsLoader from "./SearchResultsLoader";
 import {capitalizeString} from "../../../utils";
 
-const getDisplay = (results, page) => {
-	const selection = results[page];
-  if (!selection) {
-    // return dummy array
-    return [];
-  }
-	return selection;
-};
+const getDisplay = (results, page) => results[page] || [];
 
 const changePage = (setter, delta) => () => {
   setter((prevVal) => prevVal + delta);
@@ -50,17 +43,10 @@ const SearchResults = () => {
       query = searchParams.get("query"),
       sort = searchParams.get("sort");
 
-	const getPageSize = (filter) => {
-		switch (filter) {
-			case "account":
-			case "course": {
-				return 12;
-			}
-			default: {
-				return 4;
-			}
-		}
-	};
+  const getPageSize = (filter) => filter ? {
+    "account": 12,
+    "course": 12,
+  } : 4;
 
   const accountStatus = useSearchAccount(
       query,
