@@ -46,7 +46,7 @@ const SearchResults = () => {
   const getPageSize = (filter) => filter ? {
     "account": 12,
     "course": 12,
-  } : 4;
+  }[filter] : 4;
 
   const accountStatus = useSearchAccount(
       query,
