@@ -14,9 +14,53 @@ import * as adminUtils from "./AdminUtils";
 import {initials} from "utils";
 import {stringToColor} from "../Accounts/accountUtils";
 import {useSelector} from "react-redux";
+import { makeStyles } from "@material-ui/styles";
+
+
+const useStyles = makeStyles((theme) => ({
+    card: {
+        [theme.breakpoints.down('md')]: {
+            width: "20vw",
+            paddingLeft: "10px",
+            paddingRight: "10px",
+            paddingTop: "0px",
+            fontSize: "10px",
+        }
+    },
+
+    avatarContainer: {
+        [theme.breakpoints.down('md')]: {
+            padding: "5px",
+            transform: "scale(.8)",
+        }
+    },
+    details: {
+        [theme.breakpoints.down('md')]: {
+            padding: "5px",
+        }
+    },
+    name: {
+        [theme.breakpoints.down('md')]: {
+            fontSize: '12px',
+        }
+    },
+    label: {
+        [theme.breakpoints.down('md')]: {
+            transform: 'scale(0.8)',
+        }
+    },
+    info: {
+        [theme.breakpoints.down('md')]: {
+            transform: "scale(.8)",
+            top: "-20px",
+            position: "relative",
+        }
+    }
+
+}))
 
 const UnpaidSessionCard = ({unpaidStudent}) => {
-
+    const classes = useStyles();
     const students = useSelector(({Users}) => Users.StudentList);
     const courses = useSelector(({Course}) => Course.NewCourseList);
 
@@ -34,16 +78,16 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
     const courseID = course.course_id;
 
     return (
-        <Card className="unpaid-sessions-card">
+        <Card className={`unpaid-sessions-card ${classes.card}`}>
             <CardActionArea
             component = {NavLink}
             to={`/accounts/students/${studentID}/${courseID}`}
             >
                 <Grid
-                    className="unpaid-avatar-container"
+                    className={`unpaid-avatar-container ${classes.avatarContainer}`}
                     >   
                     <Avatar
-                        className="unpaid-avatar"
+                        className={`unpaid-avatar ${classes.avatar}`}
                         style={{
                             "backgroundColor": stringToColor(student.name),
                         }}>
@@ -52,14 +96,14 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
                         )}
                     </Avatar>
                 </Grid>
-                <CardContent className="unpaid-details">
-                    <Typography className="unpaid-student-name">
+                <CardContent className={`unpaid-details ${classes.details}`}>
+                    <Typography className={`unpaid-student-name ${classes.name}`}>
                         {student.name}
                     </Typography>
-                    <Typography className="unpaid-role-label">
+                    <Typography className={`unpaid-role-label ${classes.label}`}>
                         Student
                     </Typography>
-                    <Typography className="unpaid-status-info">
+                    <Typography className={`unpaid-status-info ${classes.info}`}>
                         Payment Status: <span
                             className="unpaid-status"
                             style={{

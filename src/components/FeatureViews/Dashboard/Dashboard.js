@@ -19,6 +19,11 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.down('md')]: {
             padding: "0px"
         }
+    },
+    date: {
+        [theme.breakpoints.down('md')]: {
+            fontSize: "20px"
+        }
     }
 }))
 
@@ -38,12 +43,11 @@ const Dashboard = () => {
                     <Paper className="today-paper" container>
                         <Grid container style={{width: "100%", justifyContent:"space-between", padding: "5px"}}>
                                 <Grid item xs={4}>
-                                <Typography variant='h5' className="dashboard-date">
+                                <Typography variant='h5' className={`dashboard-date ${classes.date}`}>
                                     {currentDate}
                                 </Typography>
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <TodayFiltered/>
                                 </Grid>
                                 <Button 
                                     variant="contained" 
@@ -53,6 +57,9 @@ const Dashboard = () => {
                                     to='/scheduler'
                                     >View in Scheduler
                                 </Button>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <TodayFiltered/>
                         </Grid>
                         <Grid 
                             container 
