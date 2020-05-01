@@ -329,6 +329,28 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
         return <LoadingError error="notes"/>;
     }
 
+	if (submitting && alert) {
+		if (isPost && postRequestStatus && postRequestStatus !== REQUEST_STARTED) {
+			setSubmitting(false);
+			if (hooks.isFail(postRequestStatus)) {
+				setError(true);
+			} else {
+				setAlert(false);
+			}
+		} else if (
+			!isPost &&
+			patchRequestStatus &&
+			patchRequestStatus !== REQUEST_STARTED
+		) {
+			setSubmitting(false);
+			if (hooks.isFail(patchRequestStatus)) {
+				setError(true);
+			} else {
+				setAlert(false);
+			}
+		}
+	}
+
         return (
             <Grid
                 className="notes-container"
