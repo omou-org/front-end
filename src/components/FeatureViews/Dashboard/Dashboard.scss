@@ -15,8 +15,8 @@
     background-size: 100%;
     margin: 20px;
     padding: 20px;
-    width: 95%;
-    height: 95%;
+    width: 82vw;
+    height: 82vh;
     text-align: left;
 
 }
@@ -36,14 +36,13 @@
 
 .today-paper {
     background: rgba(255, 255, 255, 0.6) !important;
-    height: 370px;
+    height: 35vh;
     margin: 10px;
-
     flex-shrink: 0;
 }
 
 .today-container {
-    height: 300px;
+    height: 29vh;
     flex-shrink: 0 !important;
     overflow: hidden;
     overflow-x: scroll;
@@ -51,8 +50,8 @@
 
 .today-card {
     opacity: 1;
-    height: 250px;
-    min-width: 180px;
+    height: 25vh;
+    min-width: 10vw;
     margin: 10px;
     font-size: 8px;
 }
@@ -67,12 +66,12 @@
 
 .OP-paper{
     background: rgba(255, 255, 255, 0.6) !important;
-    height: 330px;
+    height: 32vh;
     margin: 10px;
 }
 
 .unpaid-container{
-    height: 320px;
+    height: 25vh;
     flex-shrink: 0 !important;
     overflow: hidden;
     overflow-x: scroll;
@@ -86,7 +85,7 @@
 }
 
 .db-notes-paper{
-    height: 75.7vh;
+    height: 68vh;
     overflow-y: scroll;
     margin-top: 52px;
 }
