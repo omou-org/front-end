@@ -18,7 +18,6 @@ import Grid from "@material-ui/core/Grid";
 import InputBase from "@material-ui/core/InputBase";
 import Loading from "components/Loading";
 import NotificationIcon from "@material-ui/icons/NotificationImportant";
-import AnnouncementIcon from "@material-ui/icons/Announcement"
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -533,7 +532,7 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                         </Paper>
                 </Grid>
                     
-                ))};
+                ))}
                 
                 {notes && !isDashboard && Object.values(notes).map((note) => (
                     <Grid
@@ -576,7 +575,7 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                     </Grid>
                 ))}
             </Grid>
-        );
+        )
     // }
 };
 

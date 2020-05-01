@@ -11,12 +11,11 @@ import './Dashboard.scss';
 
 const Today = () => {
     const sessionSearchResult = useSelector(({Search}) => Search.sessions);
-    const categories = useSelector(({Course}) => Course.CourseCategories);
     const sessionArray = sessionSearchResult.results ;
     
     const instructorStatus = hooks.useInstructor();
     const courseStatus = hooks.useCourse();
-    const sessionStatus = useSearchSession("", 1, "", "timeAsc");
+    const sessionStatus = useSearchSession("", 1, "today", "timeAsc");
     const categoryStatus = hooks.useCategory();
 
     if (hooks.isLoading(instructorStatus, courseStatus, sessionStatus, categoryStatus)) {
