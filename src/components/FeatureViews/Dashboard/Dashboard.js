@@ -12,10 +12,18 @@ import Paper from "@material-ui/core/Paper";
 import DashboardNotes from './DashboardNotes';
 import moment from 'moment';
 import TodayFiltered from "./TodayFiltered";
+import { makeStyles } from "@material-ui/styles";
 
+const useStyles = makeStyles((theme) => ({
+    root: {
+        [theme.breakpoints.down('md')]: {
+            padding: "0px"
+        }
+    }
+}))
 
 const Dashboard = () => {
-
+    const classes = useStyles();
     const user = useSelector(({auth}) => auth) || [];
     const currentDate = moment().format("dddd, MMMM DD")
 
@@ -65,7 +73,7 @@ const Dashboard = () => {
                         </Grid>
                     </Paper>
                 </Grid>
-                <Grid item xs={3} spacing={2} className='db-notes-container'>
+                <Grid item xs={3} spacing={2} className={`db-notes-container ${classes.root}`}>
                     <DashboardNotes
                         key = {user.id}
                         id={user.id}

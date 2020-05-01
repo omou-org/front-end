@@ -38,7 +38,7 @@ import {
 } from "actions/actionTypes";
 import {instance, REQUEST_STARTED} from "actions/apiActions";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
 	actionIcons: {
 		position: "absolute",
 		bottom: "5%",
@@ -48,7 +48,23 @@ const useStyles = makeStyles({
 		letterSpacing: "0.01071em",
 		fontSize: "0.875rem",
 	},
-});
+	dateDisplay: {
+		[theme.breakpoints.down('md')]: {
+			fontSize: ".625rem",
+			fontWeight: "200px"
+        }
+	},
+	actionDashboardIcons: {
+		position: "absolute",
+		bottom: "5%",
+		right: "5%",
+		[theme.breakpoints.down('md')]: {
+			transform: "scale(.7)",
+			bottom: "2%",
+			right: "0%"
+		}
+	}
+}));
 
 const numericDateString = (date) =>
 	new Date(date).toLocaleTimeString("en-US", {
@@ -513,11 +529,11 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                                 {note.body}
                             </Typography>
                             <Typography
-                                className="date"
+                                className={`date ${isDashboard? classes.dateDisplay : null}`}
                                 style={{"fontWeight": "500"}}>
                                 {numericDateString(note.timestamp)}
                             </Typography>
-                            <div className={`actions ${classes.actionIcons}`}>
+                            <div className={`actions ${isDashboard? classes.actionDashboardIcons : classes.actionIcons}`}>
                                 <Delete
                                     className="icon"
                                     onClick={openDelete(note.id)} />
