@@ -35,8 +35,6 @@ const TodayFiltered = () => {
 
     const categoryStatus = hooks.useCategory();
     
-    console.log(filteredSessionArray);
-
     if(hooks.isLoading(categoryStatus)) {
         return(
             <Loading

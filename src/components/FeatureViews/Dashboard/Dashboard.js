@@ -4,7 +4,6 @@ import {NavLink} from 'react-router-dom';
 import './Dashboard.scss';
 import Today from './Today';
 import UnpaidSessions from './../AdminPortal/UnpaidSessions';
-import Select from 'react-select';
 
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
@@ -12,8 +11,6 @@ import Typography from '@material-ui/core/Typography';
 import Paper from "@material-ui/core/Paper";
 import DashboardNotes from './DashboardNotes';
 import moment from 'moment';
-import * as hooks from "actions/hooks";
-import Loading from "components/Loading";
 import TodayFiltered from "./TodayFiltered";
 
 
