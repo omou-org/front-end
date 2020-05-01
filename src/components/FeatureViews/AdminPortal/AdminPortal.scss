@@ -60,9 +60,11 @@
   height: 25vh;
   width: 12vw;
   margin: 10px;
+  padding: 12px;
 
   .unpaid-avatar-container {
     justify-content: center;
+    display: flex;
 
     .unpaid-avatar {
       color: white;
@@ -76,7 +78,7 @@
   }
 
   .unpaid-details {
-    text-align: center;
+    text-align: left;
 
     .unpaid-student-name {
       font-size: 16px;
@@ -95,6 +97,10 @@
       font-size: 14px;
       align-self: center;
       text-align: center;
+    }
+
+    .unpaid-status-info {
+      font-size: 14px;
     }
 
     .unpaid-status {
