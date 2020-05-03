@@ -13,10 +13,10 @@
 .dashboard-paper {
     background-image: url("./assets/dashboard-bg.jpg");
     background-size: 100%;
-    margin: 20px;
+    margin: 5px;
     padding: 20px;
-    width: 82vw;
-    height: 85vh;
+    // width: 80vw;
+    // height: 85vh;
     text-align: left;
 }
 
@@ -47,10 +47,21 @@
     overflow-x: scroll;
 }
 
+.today-container::-webkit-scrollbar {
+    background-color: transparent;
+}
+ 
+.today-container::-webkit-scrollbar-thumb {
+    background-color: slategrey;
+    outline: 1px solid slategrey;
+    height: 20px;
+    border-radius: 10px;
+}
+
 .today-card {
     opacity: 1;
-    height: 21vh;
-    min-width: 10vw;
+    // height: 21vh;
+    // min-width: 10vw;
     margin: 10px;
     font-size: 8px;
 }
@@ -89,3 +100,17 @@
     margin-top: 52px;
 }
 
+.db-notes-paper::-webkit-scrollbar {
+    background-color: transparent;
+}
+ 
+.db-notes-paper::-webkit-scrollbar-thumb {
+    background-color: slategrey;
+    outline: 1px solid slategrey;
+    height: 20px;
+    border-radius: 10px;
+}
+
+.category-options{
+    padding-left: 10px;
+}

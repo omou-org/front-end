@@ -30,8 +30,8 @@ const TodayFiltered = () => {
 
     }
     const sessionSearchResult = useSelector(({Search}) => Search.sessions);
-    const filteredSessionArray = sessionSearchResult.results ;
-    useSearchSession(currentFilter.filter, 1, "today", "timeAsc");
+    // const filteredSessionArray = sessionSearchResult.results ;
+    useSearchSession(currentFilter.filter, 1, "", "timeAsc");
 
     const categoryStatus = hooks.useCategory();
     
