@@ -368,6 +368,7 @@ const Notes = ({ownerType, ownerID}) => {
 						label="Subject"
 						onChange={handleTitleUpdate}
 						value={noteTitle}
+						data-cy="textfield"
 					/>
 					<NotificationIcon
 						className="notification"
@@ -387,6 +388,7 @@ const Notes = ({ownerType, ownerID}) => {
 						rows={15}
 						value={noteBody}
 						variant="filled"
+						data-cy="note-body"
 					/>
 				</DialogContent>
 				<DialogActions>
@@ -435,6 +437,7 @@ const Notes = ({ownerType, ownerID}) => {
 						className="delete-button"
 						onClick={handleDelete}
 						variant="contained"
+						data-cy="delete-confirm"
 					>
 						Delete
 					</Button>
@@ -448,6 +451,7 @@ const Notes = ({ownerType, ownerID}) => {
 					className="addNote"
 					onClick={openNewNote}
 					style={{cursor: "pointer"}}
+					data-cy="add-note"
 				>
 					<Typography className="center">
 						<AddIcon/>
@@ -467,6 +471,7 @@ const Notes = ({ownerType, ownerID}) => {
 						<Typography
 							align="left"
 							className={`noteHeader ${classes.notesTitle}`}
+							data-cy="note-header"
 						>
 							{note.title}
 							<NotificationIcon
@@ -476,7 +481,11 @@ const Notes = ({ownerType, ownerID}) => {
 								data-cy="notify-icon"
 							/>
 						</Typography>
-						<Typography align="left" className="body">
+						<Typography 
+						align="left" 
+						className="body"
+						data-cy="body"
+						>
 							{note.body}
 						</Typography>
 						<Typography className="date" style={{fontWeight: "500"}}>
