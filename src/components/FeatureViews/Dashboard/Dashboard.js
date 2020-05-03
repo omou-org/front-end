@@ -59,21 +59,13 @@ const Dashboard = () => {
                                         >View in Scheduler
                                     </Button>
                             </Grid>
-                            <Grid item xs={4}>
-                                <TodayFiltered/>
-                            </Grid>
+                            <Grid item xs={4}></Grid>
+                            <TodayFiltered/>
                             <Grid 
                                 container 
                                 className="today-container" 
                                 wrap = "nowrap">
-                                    <Grid item xs={12}
-                                    direction="row"
-                                    flex-wrap="nowrap"
-                                    >   
-                                    <Grid container>
-                                        <Today/>
-                                    </Grid>
-                                    </Grid>
+                                <Today/>
                             </Grid>
                         </Paper>
                         <Paper className='OP-paper'>

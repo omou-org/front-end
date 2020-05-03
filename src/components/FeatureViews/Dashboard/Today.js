@@ -28,7 +28,7 @@ const Today = () => {
 
     if (!sessionArray || sessionArray.length === 0) {
         return (
-            <Card className="today-card" xs={3}>
+            <Card className="today-card">
                 <CardContent>
                     <Typography>
                         No sessions today!
