@@ -1,11 +1,9 @@
 describe("M_01_Add_Category_spec", () => {
-	it("Login", () => {
+	it("Will login and go to the admins page and click on manage course", () => {
 		cy.fixture("profile").then((user) => {
 			cy.login({email: user.admin.email, password: user.admin.password});
 		});
-	});
-	it("Will go to the admins page and click on manage course", () => {
-		cy.get("a[href*='/admin']").click();
+		cy.visit("http://localhost:3000/adminportal")
 		cy.contains("Manage Course").click();
 		cy.contains("COURSE CATEGORIES").click();
 	});
