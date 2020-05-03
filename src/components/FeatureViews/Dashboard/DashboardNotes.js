@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
             height: "68vh",
             overflowY: "scroll",
             marginTop: "72px",
-        }
+        },
     }
 }))
 

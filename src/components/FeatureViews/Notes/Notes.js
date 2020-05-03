@@ -49,7 +49,8 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: "0.875rem",
 	},
 	dateDisplay: {
-		[theme.breakpoints.down('md')]: {
+		fontSize: ".825rem",
+			[theme.breakpoints.down('md')]: {
 			fontSize: ".625rem",
 			fontWeight: "200px"
         }

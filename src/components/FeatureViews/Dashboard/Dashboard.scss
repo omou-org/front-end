@@ -89,3 +89,13 @@
     margin-top: 52px;
 }
 
+.db-notes-paper::-webkit-scrollbar {
+    background-color: transparent;
+}
+
+.db-notes-paper::-webkit-scrollbar-thumb {
+    background-color: slategrey;
+    outline: 1px solid slategrey;
+    height: 20px;
+    border-radius: 4px;
+}

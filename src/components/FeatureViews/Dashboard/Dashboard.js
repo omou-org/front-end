@@ -18,7 +18,10 @@ const useStyles = makeStyles((theme) => ({
     root: {
         [theme.breakpoints.down('md')]: {
             padding: "0px"
-        }
+        },
+        // [theme.breakpoints.down('lg')]: {
+        //     // padding: "0px"
+        // }
     },
     date: {
         [theme.breakpoints.down('md')]: {
@@ -80,7 +83,7 @@ const Dashboard = () => {
                         </Grid>
                     </Paper>
                 </Grid>
-                <Grid item xs={3} spacing={2} className={`db-notes-container ${classes.root}`}>
+                <Grid item xs={3} sm={3} md={3} lg={3} xl={3} spacing={2} className={`db-notes-container ${classes.root}`}>
                     <DashboardNotes
                         key = {user.id}
                         id={user.id}
