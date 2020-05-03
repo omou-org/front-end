@@ -93,7 +93,7 @@ function PanelManager(props) {
     };
 
     const addDefaults = (fields) => {
-        let fieldsWithDefualts = {};
+        let fieldsWithDefaults = {};
         Object.keys(fields).forEach((field) => {
             Object.keys(defaults).forEach((key) => {
                 if(fields[field].hasOwnProperty(key)) {
@@ -119,6 +119,7 @@ function PanelManager(props) {
 
     useEffect(() => {
         const constructDirectoryObject = (fieldInfo, recordArray) => {
+            fieldInfo["ids"] = []
             recordArray.forEach((record) => {
                 Object.keys(record).forEach((key) => {
                     if (key !== "id") {
@@ -127,18 +128,33 @@ function PanelManager(props) {
                         } else {
                         fieldInfo[key]["values"] = [record[key]]
                         }
+                    } else if (key === "id") {
+                        fieldInfo["ids"].push(record[key])
                     }
                 })
             })
             return fieldInfo
         }
-
         setDirectoryData(constructDirectoryObject(fieldsWithDefaults, records));
+        console.log("directoryDagta inside useEffect:")
+        console.log(directoryData["description"])
+        
+        // const getRecordList = () => {
+        //     const rList = [];
+        //     for(let i = 0; i <= directoryData["ids"].length; i++ ) {
+        //         const record = Object.values(directoryData).map(obj => {
+        //             return obj.values[i];
+        //         });
+        //         rList.push(record);
+        //     }
+        //     console.log("rList")
+        //     console.log(rList);
+        //     return rList;
+        // }
+        
     }, [records, fieldsWithDefaults])
 
     const getRecord = (index) => Object.values(directoryData).map((field) => {
-        console.log("field")
-        console.log(field)
         return field["values"][index]
     })
     
@@ -154,20 +170,19 @@ function PanelManager(props) {
     })
 
     
-    const viewRecordRow = (record) => {
+    const viewRecordRow = (record, index) => {
         const recordElements = [];
         console.log("directorydata: ")
         console.log(directoryData)
         console.log("record")
-        console.log(getRecord(0))
-        Object.values(fieldsWithDefaults).forEach((field, index) => {
+        console.log(getRecord(index))
+        Object.values(directoryData).forEach((field, index) => {
             recordElements.push(
-                    <Grid item xs={field["col-width"]} md={field["col-width"]}>
-                        <Typography align={field["align"]}>
-                            {Object.values(record)[index + 1]}
-                        </Typography>
-                    </Grid>
-
+                <Grid item xs={field["col-width"]} md={field["col-width"]}>
+                    <Typography align={field["align"]}>
+                        {Object.values(record)[index + 1]}
+                    </Typography>
+                </Grid>
             );
         })
 
@@ -190,6 +205,7 @@ function PanelManager(props) {
 
 };
 const editRecord = (id) => (e) => {
+    console.log("editRecord()")
     e.preventDefault();
     let editingRecord = recordList.find((record) => {return record.id === id});
     let recordToUpload = {};
@@ -213,6 +229,7 @@ const editRecord = (id) => (e) => {
 };
 
 const handleEditRecord = (type, id) => (e) => {
+    console.log("handleEditRecord()")
     e.preventDefault();
     let editingRecord = recordList.find((record) => {return record.id === id});
     editingRecord[type] = e.target.label; //value
@@ -229,39 +246,42 @@ const handleEditRecord = (type, id) => (e) => {
     setRecordList(updatedRecordList);
 };
 
-const editRecordRow = (record) => {
+const editRecordRow = (record, index) => {
     const editElements = [];
-    fieldsWithDefaults.forEach((field, index) => {
-        if (field["type"] === "text"){
-            editElements.push(
-
-                <Grid item xs={field["col-width"]} md={field["col-width"]}>
-                    <TextField
-                        value={Object.values(record)[index + 1]}
-                        defaultValue={Object.values(record)[index + 1]}
-                        label={field.label}
-                        onChange={handleEditRecord(Object.keys(record)[index + 1], record.id)}/>
-                </Grid>
-            );
-        } else if (field["type"] === "enumCollection"){
-            editElements.push(
-                <Grid item xs={field["col-width"]} md={field["col-width"]}>
-                    <Select
-                        className={"tuition-field"} //! SWITCH CLASS NAME
-                        value={Object.values(record)[index + 1]}
-                        onChange={handleEditRecord(Object.keys(record)[index + 1], record.id)}>
-                         {
-                            field["options"].map((option)=>
-                                <MenuItem className={"menu-item"}
-                                    value={option} key={option.id}>
-                                    {option.label}
-                                </MenuItem>
-                            )
-                        }
-                    </Select>
-                </Grid>
-            )
+    Object.keys(directoryData).forEach((fieldKey) => {
+        if (fieldKey !== "ids"){
+            if (directoryData[fieldKey]["type"] === "text"){
+                editElements.push(
+    
+                    <Grid item xs={directoryData[fieldKey]["col-width"]} md={directoryData[fieldKey]["col-width"]}>
+                        <TextField
+                            value={directoryData[fieldKey].values[index]}
+                            defaultValue={directoryData[fieldKey].values[index]}
+                            label={directoryData[fieldKey].label}
+                            onChange={handleEditRecord(fieldKey, directoryData["ids"][index])}/>
+                    </Grid>
+                );
+            } else if (directoryData[fieldKey]["type"] === "enumCollection"){
+                editElements.push(
+                    <Grid item xs={directoryData[fieldKey]["col-width"]} md={directoryData[fieldKey]["col-width"]}>
+                        <Select
+                            className={"tuition-field"} //! SWITCH CLASS NAME
+                            value={directoryData[fieldKey].values[index]}
+                            onChange={handleEditRecord(fieldKey, directoryData["ids"][index])}>
+                             {
+                                directoryData[fieldKey]["options"].map((option)=>
+                                    <MenuItem className={"menu-item"}
+                                        value={option} key={option.id}>
+                                        {option.label}
+                                    </MenuItem>
+                                )
+                            }
+                        </Select>
+                    </Grid>
+                )
+            }
         }
+
 
     })
     return (
@@ -279,7 +299,6 @@ const editRecordRow = (record) => {
         </Paper>
     )
 }
-
 
 
 
@@ -302,10 +321,10 @@ const editRecordRow = (record) => {
             <Grid item xs={12} md={12}>
                 <Grid container spacing={8} alignItems={"center"}>
                     {
-                        recordList.length > 0 ? recordList.map((record) => {
+                        recordList.length > 0 ? recordList.map((record, index) => {
                             return (<Grid item xs={12} md={12} key={record.id}>
                                 {
-                                    record.editing ? editRecordRow(record) : viewRecordRow(record)
+                                    record.editing ? editRecordRow(record, index) : viewRecordRow(record, index)
                                 }
                             </Grid>);
                         }): <NoListAlert list={"Course Categories"} />
