@@ -36,62 +36,63 @@ const Dashboard = () => {
     const currentDate = moment().format("dddd, MMMM DD")
 
     return(
-        <Paper className="dashboard-paper" elevation={3}>
-            <Grid container justify="space-around">
-                <Grid item xs={9} spacing={2}>
-                    <Typography variant="h4" className="dashboard-greeting">
-                        Hello {user.first_name}!
-                    </Typography>
-                    <br/>
-                    <Paper className="today-paper" container>
-                        <Grid container style={{width: "100%", justifyContent:"space-between", padding: "5px"}}>
-                                <Grid item xs={4}>
-                                <Typography variant='h5' className={`dashboard-date ${classes.date}`}>
-                                    {currentDate}
-                                </Typography>
-                                </Grid>
-                                <Grid item xs={4}>
-                                </Grid>
-                                <Button 
-                                    variant="contained" 
-                                    variant="outlined" 
-                                    style={{margin:"5px", float: "right"}}
-                                    component={NavLink}
-                                    to='/scheduler'
-                                    >View in Scheduler
-                                </Button>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <TodayFiltered/>
-                        </Grid>
-                        <Grid 
-                            container 
-                            className="today-container" 
-                            wrap = "nowrap">
-                            <Today/>
-                        </Grid>
-                    </Paper>
-                    <Paper className='OP-paper'>
-                        <Typography variant='h5' className="OP-label">
-                            Outstanding Payments
+        <Grid container>
+            <Paper className="dashboard-paper" elevation={3}>
+                <Grid container justify="space-around">
+                    <Grid item xs={9} spacing={2}>
+                        <Typography variant="h4" className="dashboard-greeting">
+                            Hello {user.first_name}!
                         </Typography>
-                        <Grid
-                            container
-                            classname="unpaid-container"
-                            wrap = "nowrap">
-                            <UnpaidSessions/>
-                        </Grid>
-                    </Paper>
+                        <br/>
+                        <Paper className="today-paper" container>
+                            <Grid container style={{width: "100%", justifyContent:"space-between", padding: "5px"}}>
+                                    <Grid item xs={4}>
+                                    <Typography variant='h5' className={`dashboard-date ${classes.date}`}>
+                                        {currentDate}
+                                    </Typography>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                    </Grid>
+                                    <Button 
+                                        variant="contained" 
+                                        variant="outlined" 
+                                        style={{margin:"5px", float: "right"}}
+                                        component={NavLink}
+                                        to='/scheduler'
+                                        >View in Scheduler
+                                    </Button>
+                            </Grid>
+                            <Grid item xs={4}></Grid>
+                            <TodayFiltered/>
+                            <Grid 
+                                container 
+                                className="today-container" 
+                                wrap = "nowrap">
+                                <Today/>
+                            </Grid>
+                        </Paper>
+                        <Paper className='OP-paper'>
+                            <Typography variant='h5' className="OP-label">
+                                Outstanding Payments
+                            </Typography>
+                            <Grid
+                                container
+                                classname="unpaid-container"
+                                wrap = "nowrap">
+                                <UnpaidSessions/>
+                            </Grid>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={3} spacing={2} className={`db-notes-container ${classes.root}`}>
+                        <DashboardNotes
+                            key = {user.id}
+                            id={user.id}
+                            first_name={user.first_name}
+                        />
+                    </Grid>
                 </Grid>
-                <Grid item xs={3} sm={3} md={3} lg={3} xl={3} spacing={2} className={`db-notes-container ${classes.root}`}>
-                    <DashboardNotes
-                        key = {user.id}
-                        id={user.id}
-                        first_name={user.first_name}
-                    />
-                </Grid>
-            </Grid>
-        </Paper>
+            </Paper>
+        </Grid>
     )
 };
 

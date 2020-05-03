@@ -50,10 +50,10 @@ const useStyles = makeStyles((theme) => ({
 	},
 	dateDisplay: {
 		fontSize: ".825rem",
-			[theme.breakpoints.down('md')]: {
+		[theme.breakpoints.down('md')]: {
 			fontSize: ".625rem",
 			fontWeight: "200px"
-        }
+		}
 	},
 	actionDashboardIcons: {
 		position: "absolute",
