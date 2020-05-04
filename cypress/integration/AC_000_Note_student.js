@@ -1,4 +1,4 @@
-describe("Add Category", () => {
+describe("Add Student Note", () => {
     it("Adds a note to course", () => {
         const noteTitle = 'a cypress test note';
         cy.login({email: "maggie@summit.com", password: "password"});
