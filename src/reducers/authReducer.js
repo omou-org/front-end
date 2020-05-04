@@ -2,8 +2,8 @@ import * as actions from "./../actions/actionTypes";
 import initialState from "./initialState";
 
 export default function auth(
-    state = initialState.Authentication,
-    {payload, type}
+	state = initialState.Authentication,
+	{payload, type}
 ) {
   switch (type) {
     case actions.LOGIN_SUCCESSFUL:

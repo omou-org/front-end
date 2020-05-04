@@ -4,12 +4,12 @@
  * @return: Getting past login screen and into the Scheduler component
  */
 Cypress.Commands.add("login", (user) => {
-	cy.visit("http://localhost:3000/");
-	cy.get(".email").type(user.email);
-	cy.get(".password").type(user.password);
-	cy.get('[type="checkbox"]').click();
-	cy.get('[type="submit"]').click();
-	cy.contains("Scheduler");
+  cy.visit("http://localhost:3000/");
+  cy.get(".email").type(user.email);
+  cy.get(".password").type(user.password);
+  cy.get('[type="checkbox"]').click();
+  cy.get('[type="submit"]').click();
+  cy.contains("Scheduler");
 });
 
 /** *
@@ -19,8 +19,8 @@ Cypress.Commands.add("login", (user) => {
  * @return: finds the text and selects it
  */
 Cypress.Commands.add("findDropdown", (element, text) => {
-	cy.get(element).type(text || "");
-	cy.focused().type("{downarrow}{enter}", {force: true});
+  cy.get(element).type(text || "");
+  cy.focused().type("{downarrow}{enter}", {force: true});
 });
 
 /**
@@ -28,12 +28,12 @@ Cypress.Commands.add("findDropdown", (element, text) => {
  * @param {String} text Text to type
  */
 Cypress.Commands.add(
-	"fastType",
-	{
-		prevSubject: true,
-	},
-	(subject, text) =>
-		cy.get(subject).type(text, {
-			delay: 0,
-		})
+    "fastType",
+    {
+      prevSubject: true,
+    },
+    (subject, text) =>
+        cy.get(subject).type(text, {
+          delay: 0,
+        })
 );
