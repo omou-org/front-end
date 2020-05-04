@@ -64,7 +64,13 @@ const useStyles = makeStyles((theme) => ({
 			bottom: "2%",
 			right: "0%"
 		}
-	}
+	},
+	notesNotification: {
+        [theme.breakpoints.down('md')]: {
+            height: "20px",
+            width: "20px"
+        }
+    }
 }));
 
 const numericDateString = (date) =>
@@ -519,8 +525,7 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                                 <Avatar
                                     variant="square"
                                     variant="rounded"
-                                    className="noteNotification"
-                                    onClick={toggleNoteField(note.id, "important")}
+									className={`noteNotification ${isDashboard ? classes.notesNotification : null }`}                                    onClick={toggleNoteField(note.id, "important")}
                                     style={note.important ? {"background-color": "red"} : {}} >!
                                 </Avatar>
                             </Typography>

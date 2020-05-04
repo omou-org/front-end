@@ -7,10 +7,18 @@ import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
 import Divider from "@material-ui/core/Divider";
 import moment from 'moment';
+import { makeStyles } from "@material-ui/styles";
 
+const useStyles = makeStyles((theme) => ({
+    icons: {
+        [theme.breakpoints.down('lg')]: {
+            transform:"scale(.8)",
+        }
+    },
+}));
 
 const TodayCard = ({session}) => {
-
+    const classes = useStyles();
     const instructors = useSelector(({Users}) => Users.InstructorList);
     const courses = useSelector(({Course}) => Course.NewCourseList);
 
@@ -34,13 +42,13 @@ const TodayCard = ({session}) => {
                 <Divider/>
                 <br/>
                 <Typography variant="body2" className="today-card-details">
-                    <span className="material-icons">alarm</span> {formattedStartTime}
+                    <span className={`material-icons ${classes.icons}`}>alarm</span> {formattedStartTime}
                 </Typography>
                 <Typography variant="body2" className="today-card-details">
-                    <span className="material-icons">face</span> {instructor}
+                    <span className={`material-icons ${classes.icons}`}>face</span> {instructor}
                 </Typography>
                 <Typography variant="body2" className="today-card-details">
-                    <span className="material-icons">group</span> {countStudents} students
+                    <span className={`material-icons ${classes.icons}`}>group</span> {countStudents} students
                 </Typography>
             </CardContent>
         </Card>

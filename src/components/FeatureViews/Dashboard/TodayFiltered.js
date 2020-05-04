@@ -15,23 +15,25 @@ const TodayFiltered = () => {
     });
 
     const handleChange = e => {
-        setCurrentFilter({filter: e.label, showFiltered: true})
+        setCurrentFilter({filter: e.value, showFiltered: true})
     }
     
     const categories = useSelector(({Course}) => Course.CourseCategories);
     let categoryList = {};
     if (categories.length>0) {
-        categoryList = categories.map(({name, id}) => JSON.parse(JSON.stringify(({
+        categoryList = categories.map(({name}) => JSON.parse(JSON.stringify(({
             "label": name,
+            "value": name
         }))));
         categoryList.push({
-            "label": "Choose a Category"
+            "label": "Choose a Category",
+            "value": ""
         })
 
     }
-    const sessionSearchResult = useSelector(({Search}) => Search.sessions);
-    // const filteredSessionArray = sessionSearchResult.results ;
-    useSearchSession(currentFilter.filter, 1, "", "timeAsc");
+
+    useSelector(({Search}) => Search.sessions);
+    useSearchSession(currentFilter.filter, 1, "today", "timeAsc");
 
     const categoryStatus = hooks.useCategory();
     
@@ -51,7 +53,6 @@ const TodayFiltered = () => {
         placeholder={'Choose a Category'}
         onValueClick={(e) => e.preventDefault()}
         onChange={handleChange}
-        value={categoryList.id}
     />
     )
 }
