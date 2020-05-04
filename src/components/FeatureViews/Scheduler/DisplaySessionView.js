@@ -1,17 +1,18 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 
-import {bindActionCreators} from "redux";
+import { bindActionCreators } from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
-import {useDispatch, useSelector} from "react-redux";
-import {Tooltip, Typography, withStyles} from "@material-ui/core";
-import {NavLink, Redirect, useParams} from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Tooltip, Typography, withStyles } from "@material-ui/core";
+import { NavLink, useParams } from "react-router-dom";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import { Redirect } from "react-router-dom"
 import Button from "@material-ui/core/Button";
 import Loading from "../../Loading";
 import Avatar from "@material-ui/core/Avatar";
-import {stringToColor} from "../Accounts/accountUtils";
+import { stringToColor } from "../Accounts/accountUtils";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Divider from "@material-ui/core/Divider";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -19,11 +20,11 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import Radio from "@material-ui/core/Radio";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
-import {dayOfWeek} from "../../Form/FormUtils";
+import { dayOfWeek } from "../../Form/FormUtils";
 import * as hooks from "actions/hooks";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
-import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
+import { EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION } from "./SessionView";
 import DialogContentText from "@material-ui/core/es/DialogContentText";
 import LoadingError from "../Accounts/TabComponents/LoadingCourseError"
 
@@ -32,7 +33,7 @@ import SessionPaymentStatusChip from "../../SessionPaymentStatusChip";
 import AddSessions from "components/AddSessions";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import {capitalizeString} from "../../../utils";
+import { capitalizeString } from "../../../utils";
 
 const StyledMenu = withStyles({
     "paper": {
@@ -46,9 +47,9 @@ const StyledMenu = withStyles({
         elevation={0}
         getContentAnchorEl={null}
         transformOrigin={{
-        "vertical": "top",
-        "horizontal": "center",
-    }}
+            "vertical": "top",
+            "horizontal": "center",
+        }}
         {...props} />
 ));
 
@@ -61,23 +62,23 @@ const styles = (username) => ({
     "marginRight": 10,
 });
 
-const DisplaySessionView = ({course, session, handleToggleEditing}) => {
+const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
     const dispatch = useDispatch();
     const api = useMemo(
         () => bindActionCreators(registrationActions, dispatch),
         [dispatch]
     );
 
-    const {instructor_id} = useParams();
+    const { instructor_id } = useParams();
 
     const instructors = useSelector(
-        ({"Users": {InstructorList}}) => InstructorList
+        ({ "Users": { InstructorList } }) => InstructorList
     );
     const categories = useSelector(
-        ({"Course": {CourseCategories}}) => CourseCategories
+        ({ "Course": { CourseCategories } }) => CourseCategories
     );
-    const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
-    const students = useSelector(({"Users": {StudentList}}) => StudentList);
+    const courses = useSelector(({ "Course": { NewCourseList } }) => NewCourseList);
+    const students = useSelector(({ "Users": { StudentList } }) => StudentList);
 
     const [enrolledStudents, setEnrolledStudents] = useState(false);
     const [edit, setEdit] = useState(false);
@@ -90,7 +91,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
     }, [api]);
 
     const enrollmentStatus = hooks.useEnrollmentByCourse(course.course_id);
-    const enrollments = useSelector(({Enrollments}) => Enrollments);
+    const enrollments = useSelector(({ Enrollments }) => Enrollments);
     const reduxCourse = courses[course.course_id];
     const studentStatus = hooks.useStudent(reduxCourse.roster);
 
@@ -114,11 +115,11 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
             return <Loading />;
         }
         if (hooks.isFail(studentStatus)) {
-            return <LoadingError error="enrollment details"/>;
+            return <LoadingError error="enrollment details" />;
         }
     }
 
-    const instructor = instructors[instructor_id] || {"name": "N/A"};
+    const instructor = instructors[instructor_id] || { "name": "N/A" };
     const studentKeys = Object.keys(enrolledStudents);
 
     const handleTutoringMenuClick = (event) => {
@@ -162,7 +163,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
     // enrollment not found in database
     if ((Object.entries(enrollments).length === 0 && enrollments.constructor === Object) &&
         hooks.isSuccessful(enrollmentStatus)) {
-        return <Redirect to="/PageNotFound" />;
+        return <Redirect to="/NotEnrolledStudent" />;
     }
     if (!course || !categories || (
         Object.entries(enrollments).length === 0 && enrollments.constructor === Object)) {
@@ -224,11 +225,11 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                             {session.is_confirmed ? (
                                 <ConfirmIcon className="confirmed course-icon" />
                             ) : (
-                                <UnconfirmIcon className="unconfirmed course-icon" />
-                            )}
+                                    <UnconfirmIcon className="unconfirmed course-icon" />
+                                )}
                         </Typography>
                         {course && (
-                            <NavLink style={{"textDecoration": "none"}}
+                            <NavLink style={{ "textDecoration": "none" }}
                                 to={`/accounts/instructor/${instructor.user_id}`}>
                                 <Tooltip aria-label="Instructor Name" title={instructor.name}>
                                     <Avatar style={styles(instructor.name)}>
@@ -245,7 +246,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                         <Grid container direction="row">
                             {studentKeys.map((key) => (
                                 <NavLink key={key}
-                                    style={{"textDecoration": "none"}}
+                                    style={{ "textDecoration": "none" }}
                                     to={`/accounts/student/${enrolledStudents[key].user_id}/${course.course_id}`}>
                                     <Tooltip title={enrolledStudents[key].name}>
                                         <Avatar style={styles(enrolledStudents[key].name)}>
