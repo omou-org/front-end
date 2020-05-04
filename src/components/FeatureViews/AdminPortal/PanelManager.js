@@ -75,7 +75,9 @@ function PanelManager(props) {
 
     //recordState
     const [recordList, setRecordList] = useState([]);
-    const [directoryData, setDirectoryData] = useState({});
+    const [directoryData, setDirectoryData] = useState({
+        "ids": []
+    });
 
     const records = props.collectionData
 
@@ -136,21 +138,7 @@ function PanelManager(props) {
             return fieldInfo
         }
         setDirectoryData(constructDirectoryObject(fieldsWithDefaults, records));
-        console.log("directoryDagta inside useEffect:")
-        console.log(directoryData["description"])
         
-        // const getRecordList = () => {
-        //     const rList = [];
-        //     for(let i = 0; i <= directoryData["ids"].length; i++ ) {
-        //         const record = Object.values(directoryData).map(obj => {
-        //             return obj.values[i];
-        //         });
-        //         rList.push(record);
-        //     }
-        //     console.log("rList")
-        //     console.log(rList);
-        //     return rList;
-        // }
         
     }, [records, fieldsWithDefaults])
 
@@ -172,15 +160,17 @@ function PanelManager(props) {
     
     const viewRecordRow = (record, index) => {
         const recordElements = [];
-        console.log("directorydata: ")
-        console.log(directoryData)
-        console.log("record")
-        console.log(getRecord(index))
+        // console.log("directorydata: ")
+        // console.log(directoryData)
+
+        console.log("record:");
+        console.log(record);
+
         Object.values(directoryData).forEach((field, index) => {
             recordElements.push(
                 <Grid item xs={field["col-width"]} md={field["col-width"]}>
                     <Typography align={field["align"]}>
-                        {Object.values(record)[index + 1]}
+                        {Object.values(record)[index]}
                     </Typography>
                 </Grid>
             );
@@ -193,7 +183,7 @@ function PanelManager(props) {
                     {recordElements}
                     <Grid item xs md>
                     <IconButton
-                        onClick={editRecord(record.id)}
+                        onClick={editRecord(record[2])}
                         >
                     <EditIcon/>
                     </IconButton>
@@ -301,7 +291,18 @@ const editRecordRow = (record, index) => {
 }
 
 
-
+const getRecordList = () => {
+    const rList = [];
+    for(let i = 0; i <= directoryData["ids"].length; i++ ) {
+        const record = Object.values(directoryData).map(obj => {
+            return obj.values[i];
+        });
+        rList.push(record);
+    }
+    console.log("rList")
+    console.log(rList);
+    return rList;
+}
     return (
         <Grid container>
             {/* header */}
@@ -321,10 +322,13 @@ const editRecordRow = (record, index) => {
             <Grid item xs={12} md={12}>
                 <Grid container spacing={8} alignItems={"center"}>
                     {
-                        recordList.length > 0 ? recordList.map((record, index) => {
-                            return (<Grid item xs={12} md={12} key={record.id}>
+                        directoryData["ids"].length > 0 ? directoryData["ids"].map((id, index) => {
+                            return (<Grid item xs={12} md={12} key={id}>
                                 {
-                                    record.editing ? editRecordRow(record, index) : viewRecordRow(record, index)
+                                    // record.editing ? editRecordRow(record, index) : viewRecordRow(record, index)
+                                    viewRecordRow(Object.values(directoryData).map(value => {
+                                        return value["values"][index]
+                                    }), index)
                                 }
                             </Grid>);
                         }): <NoListAlert list={"Course Categories"} />
