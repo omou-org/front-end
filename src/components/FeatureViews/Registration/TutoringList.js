@@ -10,7 +10,7 @@ import {Link} from "react-router-dom";
 import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
+import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
 
 import {isFail, isLoading, useCategory} from "actions/hooks.js";
 import {truncateStrings} from "utils";

@@ -425,10 +425,18 @@ const CourseSessionStatus = () => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button color="secondary" onClick={closeUnenrollDialog(true)}>
+					<Button
+						variant="outlined"
+						color="secondary"
+						onClick={closeUnenrollDialog(true)}
+					>
                         Yes, unenroll
                     </Button>
-                    <Button color="primary" onClick={closeUnenrollDialog(false)}>
+					<Button
+						variant="outlined"
+						color="primary"
+						onClick={closeUnenrollDialog(false)}
+					>
                         Cancel
                     </Button>
                 </DialogActions>

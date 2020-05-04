@@ -241,7 +241,7 @@ const addClassRegistration = (prevState, form) => {
   }
 
   const enrollmentObject = {
-    type: "class",
+	  course_type: "class",
     student_id: studentID,
     course_id: Number(courseID),
     enrollment_note: studentInfoNote,
@@ -412,7 +412,7 @@ const addSmallGroupRegistration = (prevState, {formMain, new_course}) => {
   } = formMain;
 
   const enrollmentObject = {
-    type: "small_group",
+	  course_type: "small_group",
     student_id: studentID,
     course_id: new_course.id,
     enrollment_note: "",

@@ -24,7 +24,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
-import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
+import LoadingError from "../Accounts/TabComponents/LoadingCourseError"
 
 import "theme/theme.scss";
 import "./registration.scss";
@@ -299,10 +299,18 @@ const RegistrationCourseEnrollments = ({courseID}) => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button color="secondary" onClick={closeUnenrollDialog(true)}>
+                    <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={closeUnenrollDialog(true)}
+                    >
                         Yes, unenroll
                     </Button>
-                    <Button color="primary" onClick={closeUnenrollDialog(false)}>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={closeUnenrollDialog(false)}
+                    >
                         Cancel
                     </Button>
                 </DialogActions>
