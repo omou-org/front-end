@@ -72,15 +72,12 @@ describe("add_notes_spec", () => {
         cy.contains("Cancel").click();
     });
     it("Will check the notes tab if the notes icon has a yellow svg", () => {
-        cy.get(".notificationCourse").should('exist');
+        cy.get("[data-cy=note-number-of-icons]").last().should('exist');
     })
     it("Will delete all notes", () => {
         cy.get("[data-cy=delete-btn]").last().click();
-        cy.get(".delete-button").click();
+        cy.get("[data-cy=delete-confirm]").click();
         cy.get("[data-cy=delete-btn]").first().click();
-        cy.get(".delete-button").click();
-    });
-    it("Will check the notes tab to and show that the notes notification should not exist", () => {
-        cy.get(".notificationCourse").should("not.exist");
+        cy.get("[data-cy=delete-confirm]").click();
     });
 })

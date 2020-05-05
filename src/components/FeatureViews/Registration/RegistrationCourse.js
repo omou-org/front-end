@@ -2,6 +2,7 @@ import React, {useCallback, useState} from "react";
 import {useSelector} from "react-redux";
 
 import Avatar from "@material-ui/core/Avatar";
+import Badge from "@material-ui/core/Badge";
 import Button from "@material-ui/core/Button";
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 import Chip from "@material-ui/core/Chip";
@@ -18,6 +19,7 @@ import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
+import { makeStyles } from "@material-ui/core/styles";
 import Moment from "react-moment"
 
 import "./registration.scss";
@@ -32,18 +34,29 @@ import {useCourseNotes} from "actions/courseActions";
 import UserAvatar from "../Accounts/UserAvatar";
 import {weeklySessionsParser} from "components/Form/FormUtils";
 
+
+const useStyles = makeStyles(theme => ({
+	editCourseBtn: {
+        marginRight: "81px",
+        [theme.breakpoints.down('md')]: {
+            marginRight: "0"
+        }
+	}
+}))
+
 const RegistrationCourse = () => {
 	const {
-		params: {courseID},
+        params: {courseID},
 	} = useRouteMatch();
-
+    
 	const isAdmin = useSelector(({auth}) => auth.isAdmin);
 	const courses = useSelector(({Course}) => Course.NewCourseList);
 	const instructors = useSelector(({Users}) => Users.InstructorList);
+    const classes = useStyles();
 	const course = courses[courseID];
-
+    
 	const [activeTab, setActiveTab] = useState(0);
-
+    
 	useCourseNotes(courseID);
 	const courseStatus = useCourse(courseID);
 	useInstructor(course && course.instructor_id);
@@ -61,17 +74,18 @@ const RegistrationCourse = () => {
 		if (isFail(courseStatus)) {
 			return <Redirect push to="/PageNotFound"/>;
 		}
-	}
-
-	const hasImportantNotes = Object.values(course.notes || {}).some(
-		({important}) => important
+    }
+    
+	const hasImportantNotes = Object.values(course.notes || {}).reduce(
+		(total, {important}) => (important ? total + 1 : total), 0
 	);
 
 	const instructor = instructors[course.instructor_id];
 
 	const {start_date, end_date, start_time, end_time} = courseDateFormat(
 		course
-	);
+    );
+    
 
     return (
         <Grid className="registrationCourse" item xs={12}>
@@ -91,7 +105,7 @@ const RegistrationCourse = () => {
                         {course.title}
                         {isAdmin && (
                             <Button
-                                className="button"
+                                className={`button ${classes.editCourseBtn}`}
                                 component={Link}
                                 to={`/registration/form/course_details/${courseID}/edit`}
                             >
@@ -175,12 +189,16 @@ const RegistrationCourse = () => {
                         label={
                             hasImportantNotes ? (
                                 <>
-                                    <Avatar className="notificationCourse"/>
-                                    <NoteIcon className="TabIcon"/> Notes
+                                    {/* <Avatar className="notificationCourse" data-cy="notification-course"/>
+                                     */}
+                                     <Badge badgeContent={hasImportantNotes} color="primary" data-cy="note-number-of-icons">
+								        <NoteIcon className="TabIcon" />
+							        </Badge>
+                                    Notes
                                 </>
                             ) : (
                                 <>
-                                    <NoteIcon className="NoteIcon"/> Notes
+                                    <NoteIcon className="NoteIcon" data-cy="note-number-of-icons"/> Notes
                                 </>
                             )
                         }
