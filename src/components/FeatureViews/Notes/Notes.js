@@ -368,11 +368,13 @@ const Notes = ({ownerType, ownerID}) => {
 						label="Subject"
 						onChange={handleTitleUpdate}
 						value={noteTitle}
+						data-cy="textfield"
 					/>
 					<NotificationIcon
 						className="notification"
 						onClick={toggleNotification}
 						style={notificationColor}
+						data-cy="dialog-notification"
 					/>
 				</DialogTitle>
 				<DialogContent>
@@ -386,6 +388,7 @@ const Notes = ({ownerType, ownerID}) => {
 						rows={15}
 						value={noteBody}
 						variant="filled"
+						data-cy="note-body"
 					/>
 				</DialogContent>
 				<DialogActions>
@@ -434,6 +437,7 @@ const Notes = ({ownerType, ownerID}) => {
 						className="delete-button"
 						onClick={handleDelete}
 						variant="contained"
+						data-cy="delete-confirm"
 					>
 						Delete
 					</Button>
@@ -447,6 +451,7 @@ const Notes = ({ownerType, ownerID}) => {
 					className="addNote"
 					onClick={openNewNote}
 					style={{cursor: "pointer"}}
+					data-cy="add-note"
 				>
 					<Typography className="center">
 						<AddIcon/>
@@ -458,27 +463,45 @@ const Notes = ({ownerType, ownerID}) => {
 			{notes &&
 			Object.values(notes).map((note) => (
 				<Grid item key={note.id || note.body} xs={3}>
-					<Paper elevation={2} className="note">
+					<Paper 
+					elevation={2} 
+					className="note"
+					data-cy="note-card"
+					>
 						<Typography
 							align="left"
 							className={`noteHeader ${classes.notesTitle}`}
+							data-cy="note-header"
 						>
 							{note.title}
 							<NotificationIcon
 								className="noteNotification"
 								onClick={toggleNoteField(note.id, "important")}
 								style={note.important ? {color: "red"} : {}}
+								data-cy="notify-icon"
 							/>
 						</Typography>
-						<Typography align="left" className="body">
+						<Typography 
+						align="left" 
+						className="body"
+						data-cy="body"
+						>
 							{note.body}
 						</Typography>
 						<Typography className="date" style={{fontWeight: "500"}}>
 							{numericDateString(note.timestamp)}
 						</Typography>
 						<div className={`actions ${classes.actionIcons}`}>
-							<Delete className="icon" onClick={openDelete(note.id)}/>
-							<EditIcon className="icon" onClick={openExistingNote(note)}/>
+							<Delete 
+							className="icon" 
+							onClick={openDelete(note.id)} 
+							data-cy="delete-btn"
+							/>
+							<EditIcon 
+								className="icon" 
+								onClick={openExistingNote(note)}
+								data-cy="edit-btn"
+							/>
 							<DoneIcon
 								className="icon"
 								onClick={toggleNoteField(note.id, "complete")}
