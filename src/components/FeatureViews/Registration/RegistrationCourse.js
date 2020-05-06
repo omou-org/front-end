@@ -18,6 +18,7 @@ import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
+import Tooltip from "@material-ui/core/Tooltip";
 import Moment from "react-moment";
 
 import "./registration.scss";
@@ -174,7 +175,8 @@ const RegistrationCourse = () => {
 								<RegistrationIcon className="NoteIcon"/> Registration
 							</>
 						}
-					/>
+						/>
+				<Tooltip title="This is an Important Note!" interactive>
 					<Tab
 						label={
 							hasImportantNotes ? (
@@ -189,6 +191,7 @@ const RegistrationCourse = () => {
 							)
 						}
 					/>
+				</Tooltip>
 				</Tabs>
 				{activeTab === 0 && (
 					<RegistrationCourseEnrollments courseID={courseID}/>

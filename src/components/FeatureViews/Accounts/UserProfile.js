@@ -22,6 +22,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import "./Accounts.scss";
 import * as hooks from "actions/hooks";
@@ -187,6 +188,18 @@ const UserProfile = () => {
 					value={tabIndex}
 				>
 					{displayTabs.map((tab) => (
+						tab.tab_id === 7 ?
+						<Tooltip title="This is an Important Note!" interactive>
+						<Tab
+							key={tab.tab_id}
+							label={
+								<>
+									{tab.icon} {tab.tab_heading}
+								</>
+							}
+						/>
+						</Tooltip> 
+						: 
 						<Tab
 							key={tab.tab_id}
 							label={
