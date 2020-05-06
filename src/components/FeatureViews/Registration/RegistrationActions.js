@@ -12,7 +12,7 @@ import NewCourse from "@material-ui/icons/School";
 import NewTutor from "@material-ui/icons/Group";
 import NewUser from "@material-ui/icons/PersonAdd";
 import Tooltip from "@material-ui/core/Tooltip";
-import {withStyles} from "@material-ui/core/styles";
+import { withStyles, makeStyles } from "@material-ui/core/styles";
 
 import "./registration.scss";
 import SelectParentDialog from "./SelectParentDialog";
@@ -31,6 +31,15 @@ const StyledMenu = withStyles({
 		{...props}
 	/>
 ));
+
+const useStyles = makeStyles(theme => ({
+	newStudentBtn: {
+        right: "48px",
+        [theme.breakpoints.down('md')]: {
+            right: "0px"
+        }
+	}
+}))
 
 const RegistrationActions = () => {
 	const currentParent = useSelector(
@@ -55,6 +64,8 @@ const RegistrationActions = () => {
 		setDialog(false);
 	}, []);
 
+	const classes = useStyles();
+
 	return (
 		<>
 			<Grid
@@ -65,7 +76,7 @@ const RegistrationActions = () => {
 			>
 				<Grid item md={2}>
 					<Button
-						className="button"
+						className={`button ${classes.newStudentBtn}`}
 						color="secondary"
 						component={Link}
 						to="/registration/form/student"

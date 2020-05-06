@@ -37,10 +37,7 @@ import {weeklySessionsParser} from "components/Form/FormUtils";
 
 const useStyles = makeStyles(theme => ({
 	editCourseBtn: {
-        marginRight: "81px",
-        [theme.breakpoints.down('md')]: {
-            marginRight: "0"
-        }
+        float: "none !important",
 	}
 }))
 
