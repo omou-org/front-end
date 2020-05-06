@@ -362,13 +362,16 @@ const Notes = ({ownerType, ownerID}) => {
 				open={alert}
 			>
 				<DialogTitle>
-					<TextField
-						className="textfield"
+					<InputBase
+        				className="textfield"
+        				defaultValue="Naked input"
+						inputProps={{ 'aria-label': 'naked' }}
 						id="standard-name"
-						label="Subject"
+						placeholder="Subject"
 						onChange={handleTitleUpdate}
 						value={noteTitle}
-					/>
+						variant="filled"
+      				/>
 					<NotificationIcon
 						className="notification"
 						onClick={toggleNotification}
