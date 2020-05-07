@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from "@material-ui/core/Paper";
 import DashboardNotes from './DashboardNotes';
 import moment from 'moment';
+import Moment from 'react-moment';
 import TodayFiltered from "./TodayFiltered";
 import { makeStyles } from "@material-ui/styles";
 
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 const Dashboard = () => {
     const classes = useStyles();
     const user = useSelector(({auth}) => auth) || [];
-    const currentDate = moment().format("dddd, MMMM DD")
+    const currentDate = moment()
 
     return(
         <Grid container>
@@ -49,12 +50,16 @@ const Dashboard = () => {
                         <Paper className="today-paper" container>
                             <Grid container style={{width: "100%", justifyContent:"space-between", padding: "5px"}}>
                                     <Grid item xs={5}>
-                                    <Typography variant='h5' className={`dashboard-date ${classes.date}`}>
+                                    {/* <Typography variant='h5' className={`dashboard-date ${classes.date}`}>
                                         {currentDate}
-                                    </Typography>
+                                    </Typography> */}
+                                    <Moment 
+                                        className={`dashboard-date ${classes.date}`}
+                                        format="dddd, MMMM DD">
+                                        {currentDate}
+                                    </Moment>
                                     </Grid>
                                     <Button 
-                                        variant="contained" 
                                         variant="outlined" 
                                         style={{margin:"5px", float: "right"}}
                                         component={NavLink}
