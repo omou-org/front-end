@@ -34,10 +34,14 @@ const StyledMenu = withStyles({
 
 const useStyles = makeStyles(theme => ({
 	newStudentBtn: {
-        right: "48px",
-        [theme.breakpoints.down('md')]: {
-            right: "0px"
-        }
+		float: "left"
+        // right: "48px",
+        // [theme.breakpoints.down('md')]: {
+        //     right: "0px"
+        // }
+	},
+	buttonGridContainer: {
+		paddingLeft: "0px"
 	}
 }))
 
@@ -69,7 +73,7 @@ const RegistrationActions = () => {
 	return (
 		<>
 			<Grid
-				className="registration-action-control"
+				className={`registration-action-control ${classes.buttonGridContainer}`}
 				container
 				direction="row"
 				justify="flex-start"
