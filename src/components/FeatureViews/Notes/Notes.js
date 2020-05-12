@@ -21,6 +21,7 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
 import {makeStyles} from "@material-ui/core/styles";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import "./Notes.scss";
 import "../Accounts/TabComponents/TabComponents.scss";
@@ -392,6 +393,7 @@ const Notes = ({ownerType, ownerID}) => {
 					<Button onClick={hideWarning} variant="outlined">
 						Cancel
 					</Button>
+					<Tooltip title="This is an Important Note!" interactive>
 					<Button
 						color="primary"
 						disabled={!noteBody}
@@ -400,6 +402,7 @@ const Notes = ({ownerType, ownerID}) => {
 					>
 						{submitting ? "Saving..." : "Save"}
 					</Button>
+					</Tooltip> 
 					{!submitting && error && (
 						<span style={{float: "right"}}>Error while saving!</span>
 					)}
