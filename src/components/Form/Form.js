@@ -935,6 +935,7 @@ class Form extends Component {
 								this.handleFieldUpdate.bind(this)(label, field, e.target.value);
 							}}
 							type={this.state.showPassword ? "text" : "password"}
+							data-cy="form-password"
 						/>
 					</FormControl>
 				);
@@ -1179,6 +1180,7 @@ class Form extends Component {
 							openTo={fieldTitle === "Birthday" ? "year" : "day"}
 							value={this.state[label][fieldTitle]}
 							views={["year", "month", "date"]}
+							data-cy="date-picker-form"
 						/>
 					</Grid>
 				);
@@ -1242,6 +1244,7 @@ class Form extends Component {
 						required={field.required}
 						type={field.type === "number" ? "Number" : "text"}
 						value={textValue}
+						data-cy="form-input"
 					/>
 				);
 		}
@@ -1482,7 +1485,11 @@ class Form extends Component {
 									);
 								return (
 									<div className="fields-wrapper" key={j} style={{}}>
-										<Grid className="student-align" container>
+										<Grid 
+											className="student-align" 
+											container
+											data-cy="user-info-input"
+										>
 											{label === this.state.activeSection &&
 											this.renderField(field, label, j)}
 										</Grid>
@@ -1527,6 +1534,7 @@ class Form extends Component {
 											color="primary"
 											disabled={!nextSection}
 											variant="contained"
+											data-cy="form-btn"
 										>
 											{activeStep === steps.length - 1
 												? this.props.submitPending

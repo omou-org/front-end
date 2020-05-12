@@ -67,6 +67,7 @@ class BackButton extends Component {
 				<Button
 					className="control course button"
 					onClick={this.handleClick.bind(this)}
+					data-cy="back-btn"
 				>
 					<BackArrow className="icon"/>
 					<span className="label">Back</span>
