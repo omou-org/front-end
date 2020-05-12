@@ -14,6 +14,7 @@ import DoneIcon from "@material-ui/icons/CheckCircleOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import Grid from "@material-ui/core/Grid";
 import InputBase from "@material-ui/core/InputBase";
+import Input from "@material-ui/core/Input";
 import Loading from "components/Loading";
 import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
@@ -362,7 +363,7 @@ const Notes = ({ownerType, ownerID}) => {
 				open={alert}
 			>
 				<DialogTitle>
-					<InputBase
+					<Input
         				className="textfield"
         				defaultValue="Naked input"
 						inputProps={{ 'aria-label': 'naked' }}
