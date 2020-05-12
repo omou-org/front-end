@@ -446,39 +446,41 @@ const Scheduler = () => {
                     </Grid>
                 </Grid>
                 <Grid className="omou-calendar" item xs={12}>
-                    <FullCalendar contentHeight="400"
-								  defaultView="timeGridDay"
-								  displayEventTime
-								  eventClick={goToSessionView}
-								  eventColor="none"
-								  eventLimit={4}
-								  eventMouseEnter={handleToolTip}
-								  events={[...calendarEvents, ...OOOEvents]}
-								  header={false}
-								  minTime="07:00:00"
-								  nowIndicator
-								  plugins={[
-                            dayGridPlugin,
-                            timeGridPlugin,
-                            interactionPlugin,
-                            listViewPlugin,
-                            resourceTimelinePlugin,
-                        ]}
-								  ref={calendarRef}
-								  resourceAreaWidth="20%"
-								  resourceOrder="title"
-								  schedulerLicenseKey="GPL-My-Project-Is-Open-Source"
-								  themeSystem="standard"
-								  timeZone="local"
-								  titleFormat={{
-                            "day": "numeric",
-                            "month": "long",
-                        }}
-								  views={{
-                            "dayGrid": {
-                                "titleFormat": {"month": "long"},
-                            },
-                        }} />
+					<FullCalendar
+						contentHeight="400"
+						defaultView="timeGridDay"
+						displayEventTime
+						eventClick={goToSessionView}
+						eventColor="none"
+						eventLimit={4}
+						eventMouseEnter={handleToolTip}
+						events={[...calendarEvents, ...OOOEvents]}
+						header={false}
+						minTime="07:00:00"
+						nowIndicator
+						plugins={[
+							dayGridPlugin,
+							timeGridPlugin,
+							interactionPlugin,
+							listViewPlugin,
+							resourceTimelinePlugin,
+						]}
+						ref={calendarRef}
+						resourceAreaWidth="20%"
+						resourceOrder="title"
+						schedulerLicenseKey="GPL-My-Project-Is-Open-Source"
+						themeSystem="standard"
+						timeZone="local"
+						titleFormat={{
+							"day": "numeric",
+							"month": "long",
+						}}
+						views={{
+							"dayGrid": {
+								"titleFormat": {"month": "long"},
+							},
+						}
+						}/>
                 </Grid>
             </Grid>
         </Paper>

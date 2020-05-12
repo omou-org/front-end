@@ -12,6 +12,7 @@ import PayCourses from "./TabComponents/PayCourses";
 import PaymentHistory from "./TabComponents/PaymentHistory";
 import StudentCourseViewer from "./TabComponents/StudentCourseViewer";
 import StudentInfo from "./TabComponents/StudentInfo";
+import UnpaidSessionsCart from "./TabComponents/UnpaidSessionsCart";
 
 const ComponentViewer = ({inView, user}) => {
 	const componentsArray = useMemo(
@@ -26,6 +27,7 @@ const ComponentViewer = ({inView, user}) => {
 			<Notes key={7} ownerID={user.user_id} ownerType={user.role}/>,
 			<StudentInfo key={8} user={user}/>,
 			<PayCourses key={9} user={user}/>,
+			<UnpaidSessionsCart key={10} user={user}/>
 		],
 		[user]
 	);

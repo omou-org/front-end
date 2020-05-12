@@ -67,6 +67,11 @@ const userTabs = {
 			tab_id: 5,
 		},
 		{
+			icon: <PaymentIcon className="TabIcon"/>,
+			tab_heading: "Unpaid Sessions Cart",
+			tab_id: 10,
+		},
+		{
 			icon: <NoteIcon className="TabIcon"/>,
 			tab_heading: "Notes",
 			tab_id: 7,
