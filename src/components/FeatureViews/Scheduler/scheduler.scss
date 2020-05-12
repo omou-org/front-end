@@ -5,6 +5,8 @@
 @import "~@fullcalendar/timegrid/main.css";
 @import "../../../theme/colors";
 @import "../../../theme/sizes";
+@import '~@fullcalendar/core/main.css';
+@import '~@fullcalendar/daygrid/main.css';
 
 // Session view
 .scheduler {
