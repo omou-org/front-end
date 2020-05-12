@@ -21,7 +21,8 @@ import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
+import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
+import IconButton from "@material-ui/core/IconButton";
 import {makeStyles} from "@material-ui/core/styles";
 
 import "./Notes.scss";
@@ -44,6 +45,10 @@ const useStyles = makeStyles((theme) => ({
 		bottom: "5%",
 		right: "5%",
 	},
+	icons: {
+		padding: "3px",
+		transform: "scale(.8)",
+	},
 	notesTitle: {
 		letterSpacing: "0.01071em",
 		fontSize: "0.875rem",
@@ -57,10 +62,10 @@ const useStyles = makeStyles((theme) => ({
 	},
 	actionDashboardIcons: {
 		position: "absolute",
-		bottom: "5%",
-		right: "5%",
+		bottom: "1%",
+		right: "1%",
 		[theme.breakpoints.down('md')]: {
-			transform: "scale(.7)",
+			transform: "scale(.6)",
 			bottom: "2%",
 			right: "0%"
 		}
@@ -534,23 +539,35 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                                 className="body">
                                 {note.body}
                             </Typography>
-                            <Typography
-                                className={`date ${isDashboard? classes.dateDisplay : null}`}
-                                style={{"fontWeight": "500"}}>
-                                {numericDateString(note.timestamp)}
-                            </Typography>
-                            <div className={`actions ${isDashboard? classes.actionDashboardIcons : classes.actionIcons}`}>
-                                <Delete
-                                    className="icon"
-                                    onClick={openDelete(note.id)} />
-                                <EditIcon
-                                    className="icon"
-                                    onClick={openExistingNote(note)} />
-                                <DoneIcon
-                                    className="icon"
-                                    onClick={toggleNoteField(note.id, "complete")}
-                                    style={note.complete ? {"color": "#43B5D9"} : {}} />
-                            </div>
+							<Grid container>
+								<Grid item xs={6}>
+									<Typography
+									className={`date ${isDashboard? classes.dateDisplay : null}`}
+									style={{"fontWeight": "500"}}>
+									{numericDateString(note.timestamp)}
+									</Typography>
+								</Grid>
+								<Grid item xs={6}>
+									<div className={`actions ${isDashboard? classes.actionDashboardIcons : classes.actionIcons}`}>
+									<IconButton
+										className={classes.icons}
+										onClick={openDelete(note.id)}>
+										<Delete/>
+									</IconButton>
+									<IconButton
+										className={classes.icons}
+										onClick={openExistingNote(note)}>
+										<EditIcon/>
+									</IconButton>
+									<IconButton
+										className={classes.icons}
+										onClick={toggleNoteField(note.id, "complete")}
+										style={note.complete ? {"color": "#43B5D9"} : {}}>
+										<DoneIcon/>
+									</IconButton>
+									</div>
+								</Grid>
+							</Grid>
                         </Paper>
                 </Grid>
                     
