@@ -3,7 +3,7 @@ describe("M_01_Add_Category_spec", () => {
 		cy.fixture("profile").then((user) => {
 			cy.login({email: user.admin.email, password: user.admin.password});
 		});
-		cy.visit("http://localhost:3000/adminportal")
+		cy.visit("adminportal")
 		cy.contains("Manage Course").click();
 		cy.contains("COURSE CATEGORIES").click();
 	});
