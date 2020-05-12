@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {bindActionCreators} from "redux";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 
 import AddIcon from "@material-ui/icons/AddOutlined";
@@ -19,8 +19,8 @@ import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
-import {makeStyles} from "@material-ui/core/styles";
+import LoadingError from "../Accounts/TabComponents/LoadingCourseError"
+import { makeStyles } from "@material-ui/core/styles";
 
 import "./Notes.scss";
 import "../Accounts/TabComponents/TabComponents.scss";
@@ -34,7 +34,7 @@ import {
 	PATCH,
 	POST,
 } from "actions/actionTypes";
-import {instance, REQUEST_STARTED} from "actions/apiActions";
+import { instance, REQUEST_STARTED } from "actions/apiActions";
 
 const useStyles = makeStyles({
 	actionIcons: {
@@ -56,12 +56,12 @@ const numericDateString = (date) =>
 		month: "numeric",
 	});
 
-const Notes = ({ownerType, ownerID}) => {
+const Notes = ({ ownerType, ownerID }) => {
 	const dispatch = useDispatch();
 	const api = useMemo(() => bindActionCreators(userActions, dispatch), [
 		dispatch,
 	]);
-	const notes = useSelector(({Users, Course, Enrollments}) => {
+	const notes = useSelector(({ Users, Course, Enrollments }) => {
 		switch (ownerType) {
 			case "student":
 				return Users.StudentList[ownerID].notes;
@@ -80,7 +80,7 @@ const Notes = ({ownerType, ownerID}) => {
 		}
 	});
 
-	const getRequestStatus = useSelector(({RequestStatus}) => {
+	const getRequestStatus = useSelector(({ RequestStatus }) => {
 		switch (ownerType) {
 			case "course":
 				return RequestStatus.courseNote[GET][ownerID];
@@ -91,7 +91,7 @@ const Notes = ({ownerType, ownerID}) => {
 		}
 	});
 
-	const postRequestStatus = useSelector(({RequestStatus}) => {
+	const postRequestStatus = useSelector(({ RequestStatus }) => {
 		switch (ownerType) {
 			case "course":
 				return RequestStatus.courseNote[POST];
@@ -102,7 +102,7 @@ const Notes = ({ownerType, ownerID}) => {
 		}
 	});
 
-	const patchRequestStatus = useSelector(({RequestStatus}) => {
+	const patchRequestStatus = useSelector(({ RequestStatus }) => {
 		switch (ownerType) {
 			case "course":
 				return RequestStatus.courseNote[PATCH][ownerID];
@@ -321,12 +321,12 @@ const Notes = ({ownerType, ownerID}) => {
 		hooks.isLoading(getRequestStatus) &&
 		(!notes || Object.entries(notes).length === 0)
 	) {
-		return <Loading loadingText="NOTES LOADING" small/>;
+		return <Loading loadingText="NOTES LOADING" small />;
 	}
 
-    if (hooks.isFail(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {
-        return <LoadingError error="notes"/>;
-    }
+	if (hooks.isFail(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {
+		return <LoadingError error="notes" />;
+	}
 
 	if (submitting && alert) {
 		if (isPost && postRequestStatus && postRequestStatus !== REQUEST_STARTED) {
@@ -365,7 +365,6 @@ const Notes = ({ownerType, ownerID}) => {
 					<TextField
 						className="textfield"
 						id="standard-name"
-						label="Subject"
 						onChange={handleTitleUpdate}
 						value={noteTitle}
 					/>
@@ -378,7 +377,7 @@ const Notes = ({ownerType, ownerID}) => {
 				<DialogContent>
 					<InputBase
 						className="note-body"
-						inputProps={{"aria-label": "naked"}}
+						inputProps={{ "aria-label": "naked" }}
 						multiline
 						onChange={handleBodyUpdate}
 						placeholder="Body (required)"
@@ -401,7 +400,7 @@ const Notes = ({ownerType, ownerID}) => {
 						{submitting ? "Saving..." : "Save"}
 					</Button>
 					{!submitting && error && (
-						<span style={{float: "right"}}>Error while saving!</span>
+						<span style={{ float: "right" }}>Error while saving!</span>
 					)}
 				</DialogActions>
 			</Dialog>
@@ -438,7 +437,7 @@ const Notes = ({ownerType, ownerID}) => {
 						Delete
 					</Button>
 					{deleteError && (
-						<span style={{float: "right"}}>Error while deleting!</span>
+						<span style={{ float: "right" }}>Error while deleting!</span>
 					)}
 				</DialogActions>
 			</Dialog>
@@ -446,48 +445,48 @@ const Notes = ({ownerType, ownerID}) => {
 				<div
 					className="addNote"
 					onClick={openNewNote}
-					style={{cursor: "pointer"}}
+					style={{ cursor: "pointer" }}
 				>
 					<Typography className="center">
-						<AddIcon/>
-						<br/>
+						<AddIcon />
+						<br />
 						Add Note
 					</Typography>
 				</div>
 			</Grid>
 			{notes &&
-			Object.values(notes).map((note) => (
-				<Grid item key={note.id || note.body} xs={3}>
-					<Paper elevation={2} className="note">
-						<Typography
-							align="left"
-							className={`noteHeader ${classes.notesTitle}`}
-						>
-							{note.title}
-							<NotificationIcon
-								className="noteNotification"
-								onClick={toggleNoteField(note.id, "important")}
-								style={note.important ? {color: "red"} : {}}
-							/>
-						</Typography>
-						<Typography align="left" className="body">
-							{note.body}
-						</Typography>
-						<Typography className="date" style={{fontWeight: "500"}}>
-							{numericDateString(note.timestamp)}
-						</Typography>
-						<div className={`actions ${classes.actionIcons}`}>
-							<Delete className="icon" onClick={openDelete(note.id)}/>
-							<EditIcon className="icon" onClick={openExistingNote(note)}/>
-							<DoneIcon
-								className="icon"
-								onClick={toggleNoteField(note.id, "complete")}
-								style={note.complete ? {color: "#43B5D9"} : {}}
-							/>
-						</div>
-					</Paper>
-				</Grid>
-			))}
+				Object.values(notes).map((note) => (
+					<Grid item key={note.id || note.body} xs={3}>
+						<Paper elevation={2} className="note">
+							<Typography
+								align="left"
+								className={`noteHeader ${classes.notesTitle}`}
+							>
+								{note.title}
+								<NotificationIcon
+									className="noteNotification"
+									onClick={toggleNoteField(note.id, "important")}
+									style={note.important ? { color: "red" } : {}}
+								/>
+							</Typography>
+							<Typography align="left" className="body">
+								{note.body}
+							</Typography>
+							<Typography className="date" style={{ fontWeight: "500" }}>
+								{numericDateString(note.timestamp)}
+							</Typography>
+							<div className={`actions ${classes.actionIcons}`}>
+								<Delete className="icon" onClick={openDelete(note.id)} />
+								<EditIcon className="icon" onClick={openExistingNote(note)} />
+								<DoneIcon
+									className="icon"
+									onClick={toggleNoteField(note.id, "complete")}
+									style={note.complete ? { color: "#43B5D9" } : {}}
+								/>
+							</div>
+						</Paper>
+					</Grid>
+				))}
 		</Grid>
 	);
 };
