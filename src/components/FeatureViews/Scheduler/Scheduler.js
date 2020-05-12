@@ -21,6 +21,7 @@ import Select from "@material-ui/core/Select";
 import TodayIcon from "@material-ui/icons/Today";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
+import ListIcon from "@material-ui/icons/List"
 
 import "./scheduler.scss";
 import * as calendarActions from "actions/calendarActions";
@@ -323,7 +324,14 @@ const Scheduler = () => {
                                     </Select>
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={4}>
+							<Grid item xs={2}>
+								<IconButton>
+									<ListIcon
+										onClick={() => changeView("listWeek")}
+									/>
+								</IconButton>
+							</Grid>
+							<Grid item xs={2}>
                                 <SessionFilters CourseOptions={courseOptions}
                                     CourseValue={courseFilter}
                                     InstructorOptions={instructorOptions}
