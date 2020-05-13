@@ -9,9 +9,10 @@ import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden/Hidden";
 import {Link} from "react-router-dom";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
 import Typography from "@material-ui/core/Typography";
 import {makeStyles} from "@material-ui/core/styles";
-
 import "./Accounts.scss";
 import {addDashes} from "./accountUtils";
 import {capitalizeString} from "utils";
@@ -49,12 +50,19 @@ const ProfileCard = ({user, route}) => {
 										variant="h6"
 									>
 										{user.name}
+									<IconButton 
+									component={Link}
+									to={`/registration/form/${user.role}/${user.user_id}/edit`}>
+										<EditIcon/>
+									</IconButton>
 									</Typography>
+
 									<Typography align="left" component="p">
 										<Chip
 											className={`userLabel ${user.role}`}
 											label={capitalizeString(user.role)}
 										/>
+
 									</Typography>
 									<Typography>
 										<Grid className="card-content" container>
@@ -78,6 +86,7 @@ const ProfileCard = ({user, route}) => {
 											</Grid>
 										</Grid>
 									</Typography>
+
 								</CardContent>
 							</Grid>
 						</Grid>

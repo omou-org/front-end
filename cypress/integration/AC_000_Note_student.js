@@ -19,7 +19,7 @@ describe("Add Student Note", () => {
 
         //uncheck alert
         cy.contains(noteTitle).parent().find('.noteHeader > .MuiSvgIcon-root').click();
-        cy.should('have.css', 'color', 'rgba(0, 0, 0, 0.87)');
+        cy.should('have.css', 'color', 'rgba(0, 0, 0, 0.87)')
 
         //edit note
         cy.contains(noteTitle).parent().find('.actions > :nth-child(2)').click();
