@@ -68,7 +68,7 @@ const AccountsCards = ({user, isLoading}) => {
                     <Hidden mdDown>
                         <Grid
                             item
-                            md={3}
+                            md={4}
                             xs={4}>
                             <Avatar style={avatarStyles(fullName)}>
                                 {fullName.match(/\b(\w)/ug).join("")}
@@ -77,13 +77,13 @@ const AccountsCards = ({user, isLoading}) => {
                     </Hidden>
                     <Grid
                         item
-                        md={9}
+                        md={8}
                         xs={8}>
                         <CardContent className="cardText">
                             <Typography
                                 align="left"
                                 style={{"fontWeight": "500"}}>
-                                {truncateStrings(`${user.user.first_name} ${user.user.last_name}`, 20)}
+                                {truncateStrings(`${user.user.first_name} ${user.user.last_name}`, 10)}
                             </Typography>
                             <Grid align="left">
                                 <Chip

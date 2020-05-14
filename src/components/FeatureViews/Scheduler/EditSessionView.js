@@ -1,27 +1,28 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
+import {Link} from "react-router-dom";
 
-import {bindActionCreators} from "redux";
+import { bindActionCreators } from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import * as calendarActions from "../../../actions/calendarActions";
 import * as userActions from "../../../actions/userActions.js";
-import {useDispatch, useSelector} from "react-redux";
-import {FormControl, Typography} from "@material-ui/core";
-import {useHistory, withRouter} from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { FormControl, Typography } from "@material-ui/core";
+import { useHistory, withRouter } from "react-router-dom";
 import * as apiActions from "../../../actions/apiActions";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import {DatePicker, TimePicker} from "material-ui-pickers";
+import { DatePicker, TimePicker } from "material-ui-pickers";
 import SearchSelect from "react-select";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
-import {dateFormat, timeFormat} from "../../../utils";
+import { EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION } from "./SessionView";
+import { dateFormat, timeFormat } from "../../../utils";
 import InstructorConflictCheck from "components/InstructorConflictCheck";
 
-const EditSessionView = ({course, session, editSelection}) => {
+const EditSessionView = ({ course, session, editSelection }) => {
 	const dispatch = useDispatch();
 	const api = useMemo(
 		() => ({
@@ -51,10 +52,10 @@ const EditSessionView = ({course, session, editSelection}) => {
 	}, [api]);
 
 	const categories = useSelector(
-		({Course: {CourseCategories}}) => CourseCategories
+		({ Course: { CourseCategories } }) => CourseCategories
 	);
 	const instructors = useSelector(
-		({Users: {InstructorList}}) => InstructorList
+		({ Users: { InstructorList } }) => InstructorList
 	);
 
 	useEffect(() => {
@@ -69,7 +70,7 @@ const EditSessionView = ({course, session, editSelection}) => {
 			);
 
 			setSessionFields({
-				category: {value: category.id, label: category.name},
+				category: { value: category.id, label: category.name },
 				instructor: {
 					value: session.instructor,
 					label: instructors[session.instructor].name,
@@ -84,7 +85,7 @@ const EditSessionView = ({course, session, editSelection}) => {
 	}, [categories, course, instructors, session]);
 
 	const handleDateTimeChange = (date) => {
-		const {end_time, duration} = sessionFields;
+		const { end_time, duration } = sessionFields;
 		if (date.end_time) {
 		}
 		end_time.setDate(date.getDate());
@@ -98,7 +99,7 @@ const EditSessionView = ({course, session, editSelection}) => {
 		});
 	};
 
-	const categoriesList = categories.map(({id, name}) => ({
+	const categoriesList = categories.map(({ id, name }) => ({
 		value: id,
 		label: name,
 	}));
@@ -125,7 +126,7 @@ const EditSessionView = ({course, session, editSelection}) => {
 	};
 
 	const handleDurationSelect = (event) => {
-		const {start_time} = sessionFields;
+		const { start_time } = sessionFields;
 		const newEndTime = new Date(start_time);
 
 		switch (event.target.value) {
@@ -205,7 +206,7 @@ const EditSessionView = ({course, session, editSelection}) => {
 	};
 
 	const instructorList = Object.values(instructors).map(
-		({user_id, name, email}) => ({
+		({ user_id, name, email }) => ({
 			value: user_id,
 			label: `${name} - ${email}`,
 		})
@@ -241,7 +242,7 @@ const EditSessionView = ({course, session, editSelection}) => {
 					</Grid>
 					<Grid item xs={6}>
 						<Typography variant="h5"> Room</Typography>
-						<TextField value={course.room_id}/>
+						<TextField value={course.room_id} />
 					</Grid>
 
 					<Grid item xs={12}>
@@ -252,7 +253,7 @@ const EditSessionView = ({course, session, editSelection}) => {
 							placeholder="Choose an Instructor"
 							value={sessionFields.instructor}
 						/>
-						<FormControl style={{marginTop: "20px", marginBottom: "10px"}}>
+						<FormControl style={{ marginTop: "20px", marginBottom: "10px" }}>
 							<InputLabel>Is instructor confirmed?</InputLabel>
 							<Select
 								onChange={onConfirmationChange}
@@ -319,10 +320,20 @@ const EditSessionView = ({course, session, editSelection}) => {
 						type={editSelection === EDIT_CURRENT_SESSION ? "session" : "course"}
 						onSubmit={updateSession}
 					>
-						<Button className="button" color="secondary" variant="outlined">
-							Save
+						<Grid container>
+							<Grid item md={6}>
+								<Button className="button" color="secondary" variant="outlined">
+									Save
 						</Button>
+							</Grid>
+							
+						</Grid>
 					</InstructorConflictCheck>
+					<Grid item md={6}>
+								<Button className="button" component={Link} to={`/`} color="secondary" variant="outlined">
+									Cancel
+						</Button>
+							</Grid>
 				</Grid>
 			</Grid>
 		</>

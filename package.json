@@ -23,7 +23,7 @@
     "material-ui-pickers": "^2.2.4",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.28",
-    "node-sass": "^4.13.1",
+    "node-sass": "^4.14.1",
     "popper.js": "^1.16.1",
     "prettier": "^2.0.2",
     "prop-types": "^15.7.2",
@@ -60,7 +60,7 @@
     ]
   },
   "devDependencies": {
-    "cypress": "^4.2.0",
+    "cypress": "^4.5.0",
     "eslint": "^6.8.0",
     "eslint-plugin-cypress": "^2.10.3",
     "eslint-plugin-react": "^7.19.0",

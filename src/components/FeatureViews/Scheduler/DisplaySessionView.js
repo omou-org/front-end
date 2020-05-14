@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
+import {Link} from "react-router-dom";
 
 import { bindActionCreators } from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
@@ -367,7 +368,8 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
                     <Button color="primary" onClick={handleEditToggle(true)}>
                         Cancel
                     </Button>
-                    <Button color="primary" onClick={handleEditToggle(false)}>
+                   
+                    <Button color="primary" component={Link} to={"edit"} onClick={handleEditToggle(false)}>
                         Confirm to Edit
                     </Button>
                 </DialogActions>

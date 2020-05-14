@@ -15,6 +15,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Registration from "../FeatureViews/Registration/Registration";
 import RegistrationForm from "../Form/Form";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
+import EditSessionView from "../FeatureViews/Scheduler/EditSessionView";
 import SearchResults from "../FeatureViews/Search/SearchResults";
 import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
@@ -58,6 +59,10 @@ export const RootRoutes = () => {
             <Route
                 path="/scheduler/view-session/:course_id/:session_id/:instructor_id"
                 render={(passedProps) => <SessionView {...passedProps} />}
+            />
+            <Route
+                path="/scheduler/view-session/:course_id/:session_id/:instructor_id/edit"
+                render={(passedProps) => <EditSessionView {...passedProps} />}
             />
             <ProtectedRoute
                 exact
