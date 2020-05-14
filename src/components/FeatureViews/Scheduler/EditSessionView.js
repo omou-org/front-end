@@ -21,6 +21,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION } from "./SessionView";
 import { dateFormat, timeFormat } from "../../../utils";
 import InstructorConflictCheck from "components/InstructorConflictCheck";
+import BackButton from "../../BackButton";
 
 const EditSessionView = ({ course, session, editSelection }) => {
 	const dispatch = useDispatch();
@@ -308,6 +309,8 @@ const EditSessionView = ({ course, session, editSelection }) => {
 				justify="flex-end"
 			>
 				<Grid item>
+
+				<Grid container>
 					<InstructorConflictCheck
 						end={sessionFields.end_time}
 						eventID={
@@ -320,21 +323,17 @@ const EditSessionView = ({ course, session, editSelection }) => {
 						type={editSelection === EDIT_CURRENT_SESSION ? "session" : "course"}
 						onSubmit={updateSession}
 					>
-						<Grid container>
 							<Grid item md={6}>
 								<Button className="button" color="secondary" variant="outlined">
 									Save
 						</Button>
 							</Grid>
-							
-						</Grid>
 					</InstructorConflictCheck>
 					<Grid item md={6}>
-								<Button className="button" component={Link} to={`/`} color="secondary" variant="outlined">
-									Cancel
-						</Button>
+								<BackButton warn={true} icon="cancel" label="cancel"/>
 							</Grid>
 				</Grid>
+			</Grid>
 			</Grid>
 		</>
 	);

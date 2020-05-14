@@ -1,12 +1,14 @@
-import React, {Component} from "react";
-import {withRouter} from "react-router-dom";
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import BackArrow from "@material-ui/icons/ArrowBack";
 import Modal from "@material-ui/core/Modal";
 import Button from "@material-ui/core/Button";
 import Hidden from "@material-ui/core/Hidden/Hidden";
-import {Typography} from "@material-ui/core";
+import { Typography } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
+
 
 class BackButton extends Component {
 	constructor(props) {
@@ -14,6 +16,17 @@ class BackButton extends Component {
 		this.state = {
 			alert: false,
 		};
+	}
+
+	label() {
+		var label = "";
+		if (this.props.label == null) {
+			label = "Back";
+		}
+		if (this.props.label == "cancel") {
+			label = "Cancel";
+		}
+		return label;
 	}
 
 	handleClick() {
@@ -61,6 +74,15 @@ class BackButton extends Component {
 		this.goBack();
 	}
 
+	renderIcon() {
+		if (this.props.icon == null) {
+			return <BackArrow className="icon"/>
+		}
+		if (this.props.icon == "cancel") {
+			return null;
+		}
+	}
+
 	render() {
 		return (
 			<Hidden mdDown>
@@ -68,8 +90,10 @@ class BackButton extends Component {
 					className="control course button"
 					onClick={this.handleClick.bind(this)}
 				>
-					<BackArrow className="icon"/>
-					<span className="label">Back</span>
+					<Grid container>
+					{this.renderIcon()}
+					<span className="label">{this.label()}</span>
+					</Grid>
 				</Button>
 				<Modal
 					aria-labelledby="simple-modal-title"
@@ -80,7 +104,7 @@ class BackButton extends Component {
 					<div className="exit-popup">
 						<Typography variant="h6" id="modal-title">
 							{this.props.alertMessage ||
-							"Are you sure you want to leave unsaved changes?"}
+								"Are you sure you want to leave unsaved changes?"}
 						</Typography>
 						<Button
 							onClick={(e) => {

@@ -28,6 +28,8 @@ import UnconfirmIcon from "@material-ui/icons/Cancel";
 import { EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION } from "./SessionView";
 import DialogContentText from "@material-ui/core/es/DialogContentText";
 import LoadingError from "../Accounts/TabComponents/LoadingCourseError"
+import FormControl from "@material-ui/core/FormControl";
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import InstructorSchedule from "../Accounts/TabComponents/InstructorSchedule";
 import SessionPaymentStatusChip from "../../SessionPaymentStatusChip";
@@ -289,6 +291,7 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
                         <>
                             <Button className="button" onClick={handleTutoringMenuClick}>
                                 Tutoring Options
+                                <ArrowDropDownIcon/>
                             </Button>
                             <StyledMenu anchorEl={tutoringActionsAnchor}
                                 keepMounted
