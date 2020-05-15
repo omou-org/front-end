@@ -19,7 +19,7 @@ import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
+import LoadingError from "../Accounts/TabComponents/LoadingCourseError"
 import { makeStyles } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
 
@@ -369,11 +369,13 @@ const Notes = ({ ownerType, ownerID }) => {
 						onChange={handleTitleUpdate}
 						value={noteTitle}
 					/>
-					<NotificationIcon
-						className="notification"
-						onClick={toggleNotification}
-						style={notificationColor}
-					/>
+					<Tooltip title="This is an Important Note!" interactive>
+						<NotificationIcon
+							className="notification"
+							onClick={toggleNotification}
+							style={notificationColor}
+						/>
+					</Tooltip>
 				</DialogTitle>
 				<DialogContent>
 					<InputBase
@@ -392,7 +394,6 @@ const Notes = ({ ownerType, ownerID }) => {
 					<Button onClick={hideWarning} variant="outlined">
 						Cancel
 					</Button>
-					<Tooltip title="This is an Important Note!" interactive>
 					<Button
 						color="primary"
 						disabled={!noteBody}
@@ -401,7 +402,7 @@ const Notes = ({ ownerType, ownerID }) => {
 					>
 						{submitting ? "Saving..." : "Save"}
 					</Button>
-					</Tooltip> 
+
 					{!submitting && error && (
 						<span style={{ float: "right" }}>Error while saving!</span>
 					)}
@@ -457,7 +458,8 @@ const Notes = ({ ownerType, ownerID }) => {
 					</Typography>
 				</div>
 			</Grid>
-			{notes &&
+			{
+				notes &&
 				Object.values(notes).map((note) => (
 					<Grid item key={note.id || note.body} xs={3}>
 						<Paper elevation={2} className="note">
@@ -489,8 +491,9 @@ const Notes = ({ ownerType, ownerID }) => {
 							</div>
 						</Paper>
 					</Grid>
-				))}
-		</Grid>
+				))
+			}
+		</Grid >
 	);
 };
 
