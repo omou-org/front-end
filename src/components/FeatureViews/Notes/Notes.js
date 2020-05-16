@@ -369,11 +369,13 @@ const Notes = ({ ownerType, ownerID }) => {
 						onChange={handleTitleUpdate}
 						value={noteTitle}
 					/>
+					<Tooltip title="This is an Important Note!" interactive>
 					<NotificationIcon
 						className="notification"
 						onClick={toggleNotification}
 						style={notificationColor}
 					/>
+					</Tooltip>
 				</DialogTitle>
 				<DialogContent>
 					<InputBase
@@ -392,7 +394,6 @@ const Notes = ({ ownerType, ownerID }) => {
 					<Button onClick={hideWarning} variant="outlined">
 						Cancel
 					</Button>
-					<Tooltip title="This is an Important Note!" interactive>
 					<Button
 						color="primary"
 						disabled={!noteBody}
@@ -401,7 +402,6 @@ const Notes = ({ ownerType, ownerID }) => {
 					>
 						{submitting ? "Saving..." : "Save"}
 					</Button>
-					</Tooltip> 
 					{!submitting && error && (
 						<span style={{ float: "right" }}>Error while saving!</span>
 					)}
