@@ -193,9 +193,11 @@ function ManageCategories() {
         let editingCategory = categoryList.find((category)=>{return category.id === id});
         switch(type){
             case "name":
+                console.log("name: e.target.value: " + e.target.value)
                 editingCategory.name = e.target.value;
                 break;
             case "description":
+                console.log("description: e.target.value: " + e.target.value)
                 editingCategory.description = e.target.value;
                 break;
         }

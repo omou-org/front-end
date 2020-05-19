@@ -25,9 +25,6 @@ function PanelManager(props) {
  * Fetches, configures, and displays a grid-structured panel for a given 
  * set in the store.
  * 
- * ! IMPORTANT: This component depends on the fields being ordered in the object...
- * ! it uses an index to differentiate fields in the record...
- * ! id must ALWAYS be the first field, then it identifies fields from left to right
  * 
  * @prop {array} fields list of objects
  * ex.
@@ -76,7 +73,8 @@ function PanelManager(props) {
     //recordState
     const [recordList, setRecordList] = useState([]);
     const [directoryData, setDirectoryData] = useState({
-        "ids": []
+        "ids": [],
+        "editing" : []
     });
 
     const records = props.collectionData
@@ -97,31 +95,40 @@ function PanelManager(props) {
     const addDefaults = (fields) => {
         let fieldsWithDefaults = {};
         Object.keys(fields).forEach((field) => {
-            Object.keys(defaults).forEach((key) => {
-                if(fields[field].hasOwnProperty(key)) {
-                    //Do nothing, property is already set
-                } else {
-                    fields[field][key] = defaults[key];
-                }
-            })
+            if (field !== "ids" && field !== "editing") {
+                Object.keys(defaults).forEach((key) => {
+                    if(fields[field].hasOwnProperty(key)) {
+                        //Do nothing, property is already set
+                    } else {
+                        fields[field][key] = defaults[key];
+                    }
+                })
+            }
+
         })
+        
         return fields
     };
 
-    useEffect(() => {
-        if(records.length !== recordList.length) {
-            let parsedRecordList = records.map((record) => ({
-                ...record,
-                editing: false,
-            }));
-            setRecordList(parsedRecordList);
-        }
-    }, [records]);
+    // useEffect(() => {
+    //     console.log("records: " + records)
+    //     if(records.length !== recordList.length) {
+    //         let parsedRecordList = records.map((record) => ({
+    //             ...record,
+    //             editing: false,
+    //         }));
+    //         setRecordList(parsedRecordList);
+    //     }
+    // }, [records]);
+
     const fieldsWithDefaults = addDefaults(props.fields);
+
+
 
     useEffect(() => {
         const constructDirectoryObject = (fieldInfo, recordArray) => {
-            fieldInfo["ids"] = []
+            fieldInfo["ids"] = [];
+            fieldInfo["editing"] = [];
             recordArray.forEach((record) => {
                 Object.keys(record).forEach((key) => {
                     if (key !== "id") {
@@ -134,13 +141,24 @@ function PanelManager(props) {
                         fieldInfo["ids"].push(record[key])
                     }
                 })
+                fieldInfo["editing"].push(false);
             })
+            console.log(fieldInfo)
             return fieldInfo
         }
         setDirectoryData(constructDirectoryObject(fieldsWithDefaults, records));
         
         
     }, [records, fieldsWithDefaults])
+
+    useEffect(() => {
+        const propRecords = [];
+        for(let i = 0; i <= directoryData.length; i++){ 
+            records.push(getRecord(i))
+            
+        }
+        setRecordList(records)
+    }, [directoryData])
 
     const getRecord = (index) => Object.values(directoryData).map((field) => {
         return field["values"][index]
@@ -160,11 +178,6 @@ function PanelManager(props) {
     
     const viewRecordRow = (record, index) => {
         const recordElements = [];
-        // console.log("directorydata: ")
-        // console.log(directoryData)
-
-        console.log("record:");
-        console.log(record);
 
         Object.values(directoryData).forEach((field, index) => {
             recordElements.push(
@@ -183,7 +196,7 @@ function PanelManager(props) {
                     {recordElements}
                     <Grid item xs md>
                     <IconButton
-                        onClick={editRecord(record[2])}
+                        onClick={editRecord(record)}
                         >
                     <EditIcon/>
                     </IconButton>
@@ -194,17 +207,45 @@ function PanelManager(props) {
         )
 
 };
-const editRecord = (id) => (e) => {
+// const editRecord = (id) => (e) => {
+//     console.log("editRecord()")
+//     console.log(id);
+//     e.preventDefault();
+
+//     let editingRecord = recordList.find((record) => {return record.id === id});
+//     let recordToUpload = {};
+
+//     if(editingRecord) {
+//         Object.keys(editingRecord).forEach((key) => {
+//             recordToUpload[key] = editingRecord[key]
+//         });
+
+        
+//         props.updateFunction(id, recordToUpload);
+//     }
+//     editingRecord.editing = !editingRecord.editing;
+//     let updatedRecordList = recordList.map((record) => {
+//         if(record.id == id){
+//             return editingRecord;
+//         } else {
+//             return record;
+//         }
+//     });
+//     setRecordList(updatedRecordList);
+// };
+
+const editRecord = (index) => (e) => {
     console.log("editRecord()")
+    console.log(index);
     e.preventDefault();
-    let editingRecord = recordList.find((record) => {return record.id === id});
+
+    // let editingRecord = recordList.find((record) => {return record.id === id});
     let recordToUpload = {};
+
     if(editingRecord) {
         Object.keys(editingRecord).forEach((key) => {
             recordToUpload[key] = editingRecord[key]
         });
-
-        
         props.updateFunction(id, recordToUpload);
     }
     editingRecord.editing = !editingRecord.editing;
@@ -215,14 +256,14 @@ const editRecord = (id) => (e) => {
             return record;
         }
     });
-    setRecordList(updatedRecordList);
+    setDirectoryData(updatedRecordList);
 };
 
 const handleEditRecord = (type, id) => (e) => {
     console.log("handleEditRecord()")
     e.preventDefault();
     let editingRecord = recordList.find((record) => {return record.id === id});
-    editingRecord[type] = e.target.label; //value
+    editingRecord[type] = e.target.label;
 
     //! RecordToUpdateIndex = recordList.indexOf(editingRecord)
     //! update record... => recordList[indexOf(editingRecord)] = editingRecord
@@ -233,10 +274,13 @@ const handleEditRecord = (type, id) => (e) => {
             return record;
         }
     });
-    setRecordList(updatedRecordList);
+    setDirectoryData(updatedRecordList);
 };
 
 const editRecordRow = (record, index) => {
+    console.log("record in editRecordRow: ")
+    console.log(record)
+    
     const editElements = [];
     Object.keys(directoryData).forEach((fieldKey) => {
         if (fieldKey !== "ids"){
@@ -291,18 +335,7 @@ const editRecordRow = (record, index) => {
 }
 
 
-const getRecordList = () => {
-    const rList = [];
-    for(let i = 0; i <= directoryData["ids"].length; i++ ) {
-        const record = Object.values(directoryData).map(obj => {
-            return obj.values[i];
-        });
-        rList.push(record);
-    }
-    console.log("rList")
-    console.log(rList);
-    return rList;
-}
+
     return (
         <Grid container>
             {/* header */}
@@ -323,10 +356,14 @@ const getRecordList = () => {
                 <Grid container spacing={8} alignItems={"center"}>
                     {
                         directoryData["ids"].length > 0 ? directoryData["ids"].map((id, index) => {
-                            return (<Grid item xs={12} md={12} key={id}>
+                            return (<Grid item xs={12} md={12} key={index}>
                                 {
                                     // record.editing ? editRecordRow(record, index) : viewRecordRow(record, index)
-                                    viewRecordRow(Object.values(directoryData).map(value => {
+                                    directoryData["editing"][index] ? 
+                                    editRecordRow(Object.values(directoryData).map(value => {
+                                        return value["values"][index]
+                                    }), index)
+                                    : viewRecordRow(Object.values(directoryData).map(value => {
                                         return value["values"][index]
                                     }), index)
                                 }
