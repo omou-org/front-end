@@ -12,15 +12,12 @@ import Grid from '@material-ui/core/Grid';
 
 
 const Today = () => {
-    const sessionSearchResult = useSelector(({Search}) => Search.sessions);
-    const sessionArray = sessionSearchResult.results ;
-    
+    const sessionResults = useSelector(({Search}) => Search.sessions);
+    const sessionArray = sessionResults[1];
     const instructorStatus = hooks.useInstructor();
     const courseStatus = hooks.useCourse();
     const sessionStatus = useSearchSession("", 1, "today", "timeAsc");
     const categoryStatus = hooks.useCategory();
-
-    console.log(sessionArray);
 
     if (hooks.isLoading(instructorStatus, courseStatus, sessionStatus, categoryStatus)) {
         return (

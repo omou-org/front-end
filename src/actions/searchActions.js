@@ -32,9 +32,6 @@ export const useSearchCourse = (query, page, course, availability, sort) =>
         }), [availability, course, page, query, sort])
     );
 
-// export const useSearchSession = () =>
-//     wrapGet("/search/session/?date=today&page=1/", types.GET_SESSION_SEARCH_QUERY_SUCCESS);
-
 export const useSearchSession = (query, page, time, sort) =>
         wrapUseEndpoint("/search/session/", types.GET_SESSION_SEARCH_QUERY_SUCCESS)(
             null, useMemo(() => ({

@@ -89,12 +89,14 @@
 
 .db-notes-container{
     margin: 20px;
+    margin-right: 0px;
     padding: 20px;
     // display: inline-table;
     height: 90%;
 }
 
 .db-notes-paper{
+    padding-left: 30px;
     height: 70vh;
     overflow-y: scroll;
     margin-top: 52px;

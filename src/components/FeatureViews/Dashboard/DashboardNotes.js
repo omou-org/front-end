@@ -34,7 +34,7 @@ if (hooks.isLoading(adminStatus)) {
 }
     return (
         <Paper className={`db-notes-paper ${classes.root}`}>
-            <Grid style={{margin:"10px"}}>
+            <Grid>
                 <Notes
                     ownerID = {ownerID}
                     ownerType = {ownerType}

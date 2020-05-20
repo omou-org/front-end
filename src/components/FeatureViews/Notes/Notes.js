@@ -482,7 +482,7 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                         <Grid item xs={9}>
                             <Typography 
                                 variant="h5"
-                                style = {{margin:"10px"}}
+                                style = {{marginTop:"10px"}}
                             >My Tasks
                             </Typography>
                             </Grid>

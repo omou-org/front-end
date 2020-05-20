@@ -8,7 +8,16 @@ import {useSearchSession} from "actions/searchActions";
 
 
 const TodayFiltered = () => {
+    let sessions = useSelector(({Search}) => Search.sessions);
+    sessions = sessions[1];
+    const allCategories = useSelector(({Course}) => Course.CourseCategories);
+    let courses = useSelector(({Course}) => Course.NewCourseList);
+    let presentCategories;
+    let categoryID;
+    let categoryNames;
+    let categoryList = {};
 
+    console.log(courses);
     const [currentFilter, setCurrentFilter] = useState({
         showFiltered: false,
         filter: ""
@@ -17,23 +26,50 @@ const TodayFiltered = () => {
     const handleChange = e => {
         setCurrentFilter({filter: e.value, showFiltered: true})
     }
-    
-    const categories = useSelector(({Course}) => Course.CourseCategories);
-    let categoryList = {};
-    if (categories.length>0) {
-        categoryList = categories.map(({name}) => JSON.parse(JSON.stringify(({
-            "label": name,
-            "value": name
-        }))));
+
+    console.log(sessions);
+    console.log(allCategories);
+
+    if (sessions){
+        const courseArray = Object.values(courses);
+        console.log(courseArray);
+        presentCategories = sessions.map(({course}) => course);
+        // presentCategories = [...new Set(presentCategories)];
+        categoryID = courseArray.filter(allCourses=> {
+            return presentCategories.some(coursesToday=> {
+                return coursesToday == allCourses.course_id
+            }); 
+          })
+        categoryID = categoryID.map(({category}) => category);
+        console.log(categoryID);
+        categoryNames = categoryID.map(e => allCategories.filter(arr => arr.id ===e).map(y=>y.name)).flat()
+
+        categoryNames = [...new Set(categoryNames)];
+
+        if (categoryNames && categoryNames.length>0) {
+         
+            categoryList = categoryNames.map((name) => { 
+              return {
+                "label": name, 
+                "value": name
+              }; 
+            });    
         categoryList.push({
             "label": "Choose a Category",
             "value": ""
         })
+        }
+
+        console.log(categoryList);
 
     }
 
-    useSelector(({Search}) => Search.sessions);
+    console.log(presentCategories);
+    console.log(categoryNames);
+    console.log(categoryList);
     useSearchSession(currentFilter.filter, 1, "today", "timeAsc");
+    useSelector(({Search}) => Search.sessions);
+
 
     const categoryStatus = hooks.useCategory();
     
