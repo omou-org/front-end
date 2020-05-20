@@ -17,7 +17,6 @@ const TodayFiltered = () => {
     let categoryNames;
     let categoryList = {};
 
-    console.log(courses);
     const [currentFilter, setCurrentFilter] = useState({
         showFiltered: false,
         filter: ""
@@ -26,9 +25,6 @@ const TodayFiltered = () => {
     const handleChange = e => {
         setCurrentFilter({filter: e.value, showFiltered: true})
     }
-
-    console.log(sessions);
-    console.log(allCategories);
 
     if (sessions){
         const courseArray = Object.values(courses);
@@ -43,7 +39,6 @@ const TodayFiltered = () => {
         categoryID = categoryID.map(({category}) => category);
         console.log(categoryID);
         categoryNames = categoryID.map(e => allCategories.filter(arr => arr.id ===e).map(y=>y.name)).flat()
-
         categoryNames = [...new Set(categoryNames)];
 
         if (categoryNames && categoryNames.length>0) {
@@ -59,18 +54,11 @@ const TodayFiltered = () => {
             "value": ""
         })
         }
-
-        console.log(categoryList);
-
     }
 
-    console.log(presentCategories);
-    console.log(categoryNames);
-    console.log(categoryList);
     useSearchSession(currentFilter.filter, 1, "today", "timeAsc");
     useSelector(({Search}) => Search.sessions);
-
-
+    
     const categoryStatus = hooks.useCategory();
     
     if(hooks.isLoading(categoryStatus)) {
