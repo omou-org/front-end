@@ -276,8 +276,8 @@ const CourseSessionStatus = () => {
 														/>
 														{" - "}
 														<Moment
-															date={endTime}
-															format="h:m A"
+                                                            date={endTime}
+                                                            format="h:mm A"
 														/>
                                                     </Typography>
                                                 </Grid>

@@ -14,6 +14,7 @@ import StudentCourseViewer from "./TabComponents/StudentCourseViewer";
 import StudentInfo from "./TabComponents/StudentInfo";
 
 const ComponentViewer = ({inView, user}) => {
+
 	const componentsArray = useMemo(
 		() => [
 			<InstructorSchedule instructorID={user.user_id} key={0}/>,

@@ -1,15 +1,15 @@
-import React, { useCallback, useMemo } from "react";
+import React, {useCallback, useMemo} from "react";
 import PropTypes from "prop-types";
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 
-import { Link, useLocation } from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import LoadingError from "./LoadingCourseError"
 import * as hooks from "actions/hooks";
-import { capitalizeString, courseDateFormat, dateTimeToDate } from "utils";
+import {courseDateFormat, dateTimeToDate} from "utils";
 import NoListAlert from "components/NoListAlert";
 import Moment from "react-moment";
 
@@ -148,7 +148,6 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
                                         </Grid>
                                         <Grid item xs={3}>
                                             <Typography align="left" className="accounts-table-text">
-                                                {console.log(course)}
                                                 <Moment format="MMM D YYYY" date={course.schedule.start_date} />
                                                 {` - `}
                                                 <Moment format="MMM D YYYY" date={course.schedule.end_date} />
