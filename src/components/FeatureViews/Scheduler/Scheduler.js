@@ -303,14 +303,14 @@ const Scheduler = () => {
         }));
     }, [courseType, courseFilter, instructorFilter, timeShift, view]);
 
-	const viewType = (viewSetting) => {
-		const currentView = viewSetting.toLowerCase();
-		if (currentView.includes("day")) {
-			return "day";
+	const viewType = () => {
+		const currentView = view.toLowerCase();
+		if (currentView.includes("month")) {
+			return "month";
 		} else if (currentView.includes("week")) {
 			return "week";
-		} else if (currentView.includes("month")) {
-			return "month"
+		} else if (currentView.includes("day")) {
+			return "day"
 		}
 		return "day";
 	};
@@ -428,7 +428,7 @@ const Scheduler = () => {
                                         },
                                     }}
 											onChange={handleViewChange}
-											value={viewType(view)}
+											value={viewType()}
 									>
 										<MenuItem value="day">
                                             Day
