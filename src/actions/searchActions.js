@@ -2,7 +2,7 @@ import * as types from "./actionTypes";
 import {useMemo} from "react";
 import {wrapUseEndpoint} from "./hooks";
 
-export const useSearchAccount = (query, page, profile, grade, sort) =>
+export const useSearchAccount = (query, page, size, profile, grade, sort) =>
 	wrapUseEndpoint("/search/account/", types.GET_ACCOUNT_SEARCH_QUERY_SUCCESS)(
 		null,
 		useMemo(
@@ -10,6 +10,7 @@ export const useSearchAccount = (query, page, profile, grade, sort) =>
 				params: {
 					grade,
 					page,
+					size,
 					profile,
 					query,
 					sort,
@@ -19,7 +20,7 @@ export const useSearchAccount = (query, page, profile, grade, sort) =>
 		)
 	);
 
-export const useSearchCourse = (query, page, course, availability, sort) =>
+export const useSearchCourse = (query, page, size, course, availability, sort) =>
 	wrapUseEndpoint("/search/course/", types.GET_COURSE_SEARCH_QUERY_SUCCESS)(
 		null,
 		useMemo(
@@ -28,6 +29,7 @@ export const useSearchCourse = (query, page, course, availability, sort) =>
 					availability,
 					course,
 					page,
+					size,
 					query,
 					sort,
 				},

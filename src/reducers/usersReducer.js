@@ -459,10 +459,10 @@ const handleAccountSearchResults = (state, {response}) => {
         // no default
     }
   });
-  return {
+	return JSON.parse(JSON.stringify({
     ...state,
     InstructorList,
     ParentList,
     StudentList,
-  };
+	}));
 };

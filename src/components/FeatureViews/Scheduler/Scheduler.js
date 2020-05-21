@@ -148,6 +148,7 @@ const Scheduler = () => {
             )), []);
     }, [courseFilter, instructorFilter, instructors]);
 
+
     const currentDate = calendarApi && calendarApi.view.title;
 
     // Change from day,week, and month views
