@@ -14,7 +14,7 @@ import {Button, Typography, TextField, Select} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import { NoListAlert } from "components/NoListAlert";
 import { FETCH_CATEGORIES_FAILED } from "actions/actionTypes";
-
+import {withRouter} from "react-router-dom";
 import Loading from "../../Loading";
 import {isLoading} from "../../../actions/hooks.js"
 import IconButton from "@material-ui/core/IconButton/IconButton";
@@ -129,7 +129,7 @@ function PanelManager(props) {
         const constructDirectoryObject = (fieldInfo, recordArray) => {
             fieldInfo["ids"] = [];
             fieldInfo["editing"] = [];
-            recordArray.forEach((record) => {
+            recordArray.forEach((record, index) => {
                 Object.keys(record).forEach((key) => {
                     if (key !== "id") {
                         if(fieldInfo[key]["values"]){
@@ -141,9 +141,12 @@ function PanelManager(props) {
                         fieldInfo["ids"].push(record[key])
                     }
                 })
-                fieldInfo["editing"].push(false);
+                if(fieldInfo["editing"][index]) {
+
+                } else {
+                    fieldInfo["editing"].push(false);
+                }
             })
-            console.log(fieldInfo)
             return fieldInfo
         }
         setDirectoryData(constructDirectoryObject(fieldsWithDefaults, records));
@@ -151,18 +154,18 @@ function PanelManager(props) {
         
     }, [records, fieldsWithDefaults])
 
-    useEffect(() => {
-        const propRecords = [];
-        for(let i = 0; i <= directoryData.length; i++){ 
-            records.push(getRecord(i))
+    // useEffect(() => {
+    //     const propRecords = [];
+    //     for(let i = 0; i <= directoryData.length; i++){ 
+    //         records.push(getRecord(i))
             
-        }
-        setRecordList(records)
-    }, [directoryData])
+    //     }
+    //     setRecordList(records)
+    // }, [directoryData])
 
-    const getRecord = (index) => Object.values(directoryData).map((field) => {
-        return field["values"][index]
-    })
+    // const getRecord = (index) => Object.values(directoryData).map((field) => {
+    //     return field["values"][index]
+    // })
     
     const viewHeader = () => Object.values(directoryData).map((field) => {
 
@@ -196,7 +199,7 @@ function PanelManager(props) {
                     {recordElements}
                     <Grid item xs md>
                     <IconButton
-                        onClick={editRecord(record)}
+                        onClick={editRecord(index)}
                         >
                     <EditIcon/>
                     </IconButton>
@@ -205,136 +208,131 @@ function PanelManager(props) {
 
             </Paper>
         )
+    };
 
-};
-// const editRecord = (id) => (e) => {
-//     console.log("editRecord()")
-//     console.log(id);
-//     e.preventDefault();
+    // const editRecord = (id) => (e) => {
 
-//     let editingRecord = recordList.find((record) => {return record.id === id});
-//     let recordToUpload = {};
+    //     e.preventDefault();
 
-//     if(editingRecord) {
-//         Object.keys(editingRecord).forEach((key) => {
-//             recordToUpload[key] = editingRecord[key]
-//         });
+    //     let editingRecord = recordList.find((record) => {return record.id === id});
+    //     let recordToUpload = {};
+
+    //     if(editingRecord) {
+    //         Object.keys(editingRecord).forEach((key) => {
+    //             recordToUpload[key] = editingRecord[key]
+    //         });
+    //         props.updateFunction(id, recordToUpload);
+    //     }
+    //     editingRecord.editing = !editingRecord.editing;
+    //     let updatedRecordList = recordList.map((record) => {
+    //         if(record.id == id){
+    //             return editingRecord;
+    //         } else {
+    //             return record;
+    //         }
+    //     });
+    //     setDirectoryData(updatedRecordList);
+    // };
+
+    const editRecord = (index) => (e) => {
+        e.preventDefault();
+        const recordToEdit = {};
+
+        let mutableDirectoryData = directoryData;
+        Object.keys(directoryData).map(key => {
+            if (key == "editing") {
+                // Do nothing
+            } else if (key == "ids") {
+                recordToEdit["id"] = directoryData["ids"][index]
+
+            } else {
+                recordToEdit[key] = directoryData[key]["values"][index];
+            }
+  
+        });
+        props.updateFunction(recordToEdit["id"], recordToEdit);
+
+        mutableDirectoryData["editing"][index] = !directoryData["editing"][index];
+        setDirectoryData(mutableDirectoryData)
+
+    }
+
+    const handleEditRecord = (type, id) => (e) => {
+        e.preventDefault();
+        let editingRecord = recordList.find((record) => {return record.id === id});
+        editingRecord[type] = e.target.label;
+
+        //! RecordToUpdateIndex = recordList.indexOf(editingRecord)
+        //! update record... => recordList[indexOf(editingRecord)] = editingRecord
+        let updatedRecordList = recordList.map((record) => {
+            if (record.id === id) {
+                return editingRecord;
+            } else {
+                return record;
+            }
+        });
+        setDirectoryData(updatedRecordList);
+    };
+
+    const editRecordRow = (record, index) => {
 
         
-//         props.updateFunction(id, recordToUpload);
-//     }
-//     editingRecord.editing = !editingRecord.editing;
-//     let updatedRecordList = recordList.map((record) => {
-//         if(record.id == id){
-//             return editingRecord;
-//         } else {
-//             return record;
-//         }
-//     });
-//     setRecordList(updatedRecordList);
-// };
-
-const editRecord = (index) => (e) => {
-    console.log("editRecord()")
-    console.log(index);
-    e.preventDefault();
-
-    // let editingRecord = recordList.find((record) => {return record.id === id});
-    let recordToUpload = {};
-
-    if(editingRecord) {
-        Object.keys(editingRecord).forEach((key) => {
-            recordToUpload[key] = editingRecord[key]
-        });
-        props.updateFunction(id, recordToUpload);
-    }
-    editingRecord.editing = !editingRecord.editing;
-    let updatedRecordList = recordList.map((record) => {
-        if(record.id == id){
-            return editingRecord;
-        } else {
-            return record;
-        }
-    });
-    setDirectoryData(updatedRecordList);
-};
-
-const handleEditRecord = (type, id) => (e) => {
-    console.log("handleEditRecord()")
-    e.preventDefault();
-    let editingRecord = recordList.find((record) => {return record.id === id});
-    editingRecord[type] = e.target.label;
-
-    //! RecordToUpdateIndex = recordList.indexOf(editingRecord)
-    //! update record... => recordList[indexOf(editingRecord)] = editingRecord
-    let updatedRecordList = recordList.map((record) => {
-        if (record.id === id) {
-            return editingRecord;
-        } else {
-            return record;
-        }
-    });
-    setDirectoryData(updatedRecordList);
-};
-
-const editRecordRow = (record, index) => {
-    console.log("record in editRecordRow: ")
-    console.log(record)
-    
-    const editElements = [];
-    Object.keys(directoryData).forEach((fieldKey) => {
-        if (fieldKey !== "ids"){
-            if (directoryData[fieldKey]["type"] === "text"){
-                editElements.push(
-    
-                    <Grid item xs={directoryData[fieldKey]["col-width"]} md={directoryData[fieldKey]["col-width"]}>
-                        <TextField
-                            value={directoryData[fieldKey].values[index]}
-                            defaultValue={directoryData[fieldKey].values[index]}
-                            label={directoryData[fieldKey].label}
-                            onChange={handleEditRecord(fieldKey, directoryData["ids"][index])}/>
-                    </Grid>
-                );
-            } else if (directoryData[fieldKey]["type"] === "enumCollection"){
-                editElements.push(
-                    <Grid item xs={directoryData[fieldKey]["col-width"]} md={directoryData[fieldKey]["col-width"]}>
-                        <Select
-                            className={"tuition-field"} //! SWITCH CLASS NAME
-                            value={directoryData[fieldKey].values[index]}
-                            onChange={handleEditRecord(fieldKey, directoryData["ids"][index])}>
-                             {
-                                directoryData[fieldKey]["options"].map((option)=>
-                                    <MenuItem className={"menu-item"}
-                                        value={option} key={option.id}>
-                                        {option.label}
-                                    </MenuItem>
-                                )
-                            }
-                        </Select>
-                    </Grid>
-                )
+        const editElements = [];
+        Object.keys(directoryData).forEach((fieldKey) => {
+            if (fieldKey !== "ids"){
+                if (directoryData[fieldKey]["type"] === "text"){
+                    editElements.push(
+        
+                        <Grid item xs={directoryData[fieldKey]["col-width"]} md={directoryData[fieldKey]["col-width"]}>
+                            <TextField
+                                value={directoryData[fieldKey].values[index]}
+                                defaultValue={directoryData[fieldKey].values[index]}
+                                label={directoryData[fieldKey].label}
+                                onChange={handleEditRecord(fieldKey, directoryData["ids"][index])}/>
+                        </Grid>
+                    );
+                } else if (directoryData[fieldKey]["type"] === "enumCollection"){
+                    editElements.push(
+                        <Grid item xs={directoryData[fieldKey]["col-width"]} md={directoryData[fieldKey]["col-width"]}>
+                            <Select
+                                className={"tuition-field"} //! SWITCH CLASS NAME
+                                value={directoryData[fieldKey].values[index]}
+                                onChange={handleEditRecord(fieldKey, directoryData["ids"][index])}>
+                                {
+                                    directoryData[fieldKey]["options"].map((option)=>
+                                        <MenuItem className={"menu-item"}
+                                            value={option} key={option.id}>
+                                            {option.label}
+                                        </MenuItem>
+                                    )
+                                }
+                            </Select>
+                        </Grid>
+                    )
+                }
             }
-        }
 
 
-    })
-    return (
-        <Paper square={true} className={"category-row"} >
-            <Grid container alignItems={"left"}>
-                {editElements}
-                <Grid item xs={2} md={2}>
-                    <Button
-                        onClick={editRecord(record.id)}
-                        className={"button"}>
-                            UPDATE
-                        </Button>
+        })
+        return (
+            <Paper square={true} className={"category-row"} >
+                <Grid container alignItems={"left"}>
+                    {editElements}
+                    <Grid item xs={2} md={2}>
+                        <Button
+                            onClick={editRecord(index)}
+                            className={"button"}>
+                                UPDATE
+                            </Button>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </Paper>
-    )
-}
-
-
+            </Paper>
+        )
+    }
+    const categoryStatus = useSelector(({RequestStatus})=> RequestStatus.category);
+    if(categoryStatus[GET] !== 200){
+        return <Loading/>
+    }
 
     return (
         <Grid container>
@@ -376,4 +374,13 @@ const editRecordRow = (record, index) => {
     )
 }
 
-export default PanelManager
+// export default PanelManager
+const mapStateToProps = (state) => ({
+    "registration": state.Registration,
+    "studentAccounts": state.Users.StudentList,
+    "courseList": state.Course.NewCourseList,
+    "categories": state.Course.CourseCategories,
+})
+export default withRouter(connect(
+    mapStateToProps
+)(PanelManager));

@@ -152,17 +152,19 @@ function ManageCategories() {
                 name: editingCategory.name,
                 description: editingCategory.description,
             };
+            console.log("updated category");
+            console.log(categoryToUpload);
             api.updateCategory(id, categoryToUpload);
         }
         editingCategory.editing = !editingCategory.editing;
-        let updatedCategoryList = categoryList.map((category)=>{
-            if(category.id === id){
-                return editingCategory;
-            } else {
-                return category;
-            }
-        });
-        setCategoryList(updatedCategoryList);
+        // let updatedCategoryList = categoryList.map((category)=>{
+        //     if(category.id === id){
+        //         return editingCategory;
+        //     } else {
+        //         return category;
+        //     }
+        // });
+        // setCategoryList(updatedCategoryList);
     };
 
     const viewCategoryRow = (category) => {
@@ -193,14 +195,13 @@ function ManageCategories() {
         let editingCategory = categoryList.find((category)=>{return category.id === id});
         switch(type){
             case "name":
-                console.log("name: e.target.value: " + e.target.value)
                 editingCategory.name = e.target.value;
                 break;
             case "description":
-                console.log("description: e.target.value: " + e.target.value)
                 editingCategory.description = e.target.value;
                 break;
         }
+        console.log(categoryList)
         let updatedCategoryList = categoryList.map((category)=>{
             if(category.id === id){
                 return editingCategory;
