@@ -4,8 +4,8 @@ import {createMuiTheme} from "@material-ui/core/styles";
 const tabBorderRadius = "10px";
 
 // Font Colors
-const lightPrimaryFontColor = "#767474";
-const secondaryFontColor = "#228eb2";
+export const lightPrimaryFontColor = "#767474";
+export const secondaryFontColor = "#228eb2";
 
 const theme = createMuiTheme({
 	palette: {

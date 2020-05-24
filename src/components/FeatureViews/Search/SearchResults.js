@@ -19,20 +19,9 @@ import CourseFilters from "./CourseFilters";
 import CoursesCards from "./cards/CoursesCards";
 import NoResultsPage from "./NoResults/NoResultsPage";
 import SearchResultsLoader from "./SearchResultsLoader";
+import {capitalizeString} from "../../../utils";
 
-const toAPIPage = (page) => Math.floor((page + 1) / 2);
-
-const getDisplay = (results, page) => {
-  const selection = results[toAPIPage(page)];
-  if (!selection) {
-    // return dummy array
-    return [];
-  }
-  if (page % 2 === 1) {
-    return selection.slice(0, 4);
-  }
-  return selection.slice(4, 8);
-};
+const getDisplay = (results, page) => results[page] || [];
 
 const changePage = (setter, delta) => () => {
   setter((prevVal) => prevVal + delta);
@@ -53,16 +42,24 @@ const SearchResults = () => {
   const filter = searchParams.get("filter"),
       query = searchParams.get("query"),
       sort = searchParams.get("sort");
+
+  const getPageSize = (filter) => filter ? {
+    "account": 12,
+    "course": 12,
+  }[filter] : 4;
+
   const accountStatus = useSearchAccount(
       query,
-      toAPIPage(accountsPage),
+	  accountsPage,
+	  getPageSize(filter),
       searchParams.get("profile"),
       searchParams.get("grade"),
       sort
   );
   const courseStatus = useSearchCourse(
       query,
-      toAPIPage(coursePage),
+	  coursePage,
+	  getPageSize(filter),
       searchParams.get("course"),
       searchParams.get("availability"),
       sort
@@ -108,6 +105,7 @@ const SearchResults = () => {
       return <></>;
     }
     const accToDisplay = getDisplay(accounts, accountsPage);
+
     if (accToDisplay.length === 0) {
       return Array(4)
           .fill(null)
@@ -134,9 +132,10 @@ const SearchResults = () => {
           .fill(null)
           .map((_, index) => <CoursesCards isLoading key={index}/>);
     }
+
     return courseToDisplay.map((course) => (
-        <CoursesCards course={course} key={course.course_id}/>
-    ));
+		<CoursesCards course={course} key={course.id}/>
+	));
   }, [courses, coursePage, courseResultsNum]);
 
   if (isLoading(statuses)) {
@@ -160,7 +159,7 @@ const SearchResults = () => {
           <Paper elevation={2} className="main-search-view">
             <Grid className="searchResults" item xs={12}>
               <Typography align="left" className="search-title" variant="h3">
-                {numResults} Search Result{numResults !== 1 && "s"} for {filter} "
+				  {numResults} Search Result{numResults !== 1 && "s"} for {filter && capitalizeString(filter)} "
                 {query}"
               </Typography>
             </Grid>
@@ -203,7 +202,7 @@ const SearchResults = () => {
                     <Grid container direction="row" spacing={2}>
                       {renderAccounts}
                     </Grid>
-                    {accountResultsNum > 4 && (
+					  {accountResultsNum > getPageSize(filter) && (
                         <div className="results-nav">
                           {
                             <IconButton
@@ -217,9 +216,9 @@ const SearchResults = () => {
                           {accountsPage}
                           {
                             <IconButton
-                                className="more"
-                                disabled={accountsPage * 4 >= accountResultsNum}
-                                onClick={changePage(setAccountsPage, 1)}
+								className="more"
+								disabled={accountsPage * getPageSize(filter) >= accountResultsNum}
+								onClick={changePage(setAccountsPage, 1)}
                             >
                               <MoreResultsIcon/>
                             </IconButton>
@@ -265,7 +264,7 @@ const SearchResults = () => {
                       {renderCourses}
                     </Grid>
                   </Grid>
-                  {courseResultsNum > 4 && (
+					{courseResultsNum > getPageSize(filter) && (
                       <div className="results-nav">
                         <IconButton
                             className="less"
@@ -276,9 +275,9 @@ const SearchResults = () => {
                         </IconButton>
                         {coursePage}
                         <IconButton
-                            className="more"
-                            disabled={coursePage * 4 >= courseResultsNum}
-                            onClick={changePage(setCoursePage, 1)}
+							className="more"
+							disabled={coursePage * getPageSize(filter) >= courseResultsNum}
+							onClick={changePage(setCoursePage, 1)}
                         >
                           <MoreResultsIcon/>
                         </IconButton>

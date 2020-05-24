@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {bindActionCreators} from "redux";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 
 import AddIcon from "@material-ui/icons/AddOutlined";
@@ -21,9 +21,15 @@ import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+<<<<<<< HEAD
 import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
 import IconButton from "@material-ui/core/IconButton";
 import {makeStyles} from "@material-ui/core/styles";
+=======
+import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
+import { makeStyles } from "@material-ui/core/styles";
+import Tooltip from "@material-ui/core/Tooltip";
+>>>>>>> development
 
 import "./Notes.scss";
 import "../Accounts/TabComponents/TabComponents.scss";
@@ -37,7 +43,7 @@ import {
 	PATCH,
 	POST,
 } from "actions/actionTypes";
-import {instance, REQUEST_STARTED} from "actions/apiActions";
+import { instance, REQUEST_STARTED } from "actions/apiActions";
 
 const useStyles = makeStyles((theme) => ({
 	actionIcons: {
@@ -119,7 +125,7 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
         }
     });
 
-	const postRequestStatus = useSelector(({RequestStatus}) => {
+	const postRequestStatus = useSelector(({ RequestStatus }) => {
 		switch (ownerType) {
 			case "course":
 				return RequestStatus.courseNote[POST];
@@ -130,7 +136,7 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
 		}
 	});
 
-	const patchRequestStatus = useSelector(({RequestStatus}) => {
+	const patchRequestStatus = useSelector(({ RequestStatus }) => {
 		switch (ownerType) {
 			case "course":
 				return RequestStatus.courseNote[PATCH][ownerID];
@@ -349,12 +355,12 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
 		hooks.isLoading(getRequestStatus) &&
 		(!notes || Object.entries(notes).length === 0)
 	) {
-		return <Loading loadingText="NOTES LOADING" small/>;
+		return <Loading loadingText="NOTES LOADING" small />;
 	}
 
-    if (hooks.isFail(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {
-        return <LoadingError error="notes"/>;
-    }
+	if (hooks.isFail(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {
+		return <LoadingError error="notes" />;
+	}
 
 	if (submitting && alert) {
 		if (isPost && postRequestStatus && postRequestStatus !== REQUEST_STARTED) {

@@ -21,6 +21,8 @@ import Select from "@material-ui/core/Select";
 import TodayIcon from "@material-ui/icons/Today";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
+import ListIcon from "@material-ui/icons/List"
+import CalendarIcon from "@material-ui/icons/CalendarToday";
 
 import "./scheduler.scss";
 import * as calendarActions from "actions/calendarActions";
@@ -30,6 +32,7 @@ import {arr_diff} from "../../Form/FormUtils";
 import SessionFilters from "./SessionFilters";
 import {stringToColor} from "../Accounts/accountUtils";
 import {uniques} from "utils";
+import {secondaryFontColor} from "../../../theme/muiTheme";
 
 const useStyles = makeStyles((theme) => ({
     "bootstrapFormLabel": {
@@ -145,6 +148,7 @@ const Scheduler = () => {
             )), []);
     }, [courseFilter, instructorFilter, instructors]);
 
+
     const currentDate = calendarApi && calendarApi.view.title;
 
     // Change from day,week, and month views
@@ -156,7 +160,18 @@ const Scheduler = () => {
     };
 
     const handleViewChange = ({target}) => {
-        changeView(target.value);
+		const gridValue = {
+			"day": "timeGridDay",
+			"week": "timeGridWeek",
+			"month": "dayGridMonth",
+		};
+		const listValue = {
+			"day": "listDay",
+			"week": "listWeek",
+			"month": "listMonth"
+		};
+		const viewType = view.toLowerCase().includes("grid") ? gridValue : listValue;
+		changeView(viewType[target.value]);
     };
 
     const goToNext = () => {
@@ -289,6 +304,18 @@ const Scheduler = () => {
         }));
     }, [courseType, courseFilter, instructorFilter, timeShift, view]);
 
+	const viewType = () => {
+		const currentView = view.toLowerCase();
+		if (currentView.includes("month")) {
+			return "month";
+		} else if (currentView.includes("week")) {
+			return "week";
+		} else if (currentView.includes("day")) {
+			return "day"
+		}
+		return "day";
+	};
+
     return (
         <Paper className="paper scheduler" elevation={2}>
             <Typography align="left" className="scheduler-title" variant="h3">
@@ -297,33 +324,28 @@ const Scheduler = () => {
             <br />
             <Grid className="scheduler-wrapper" container spacing={2}>
                 <Grid className="scheduler-header" container item xs={12}>
-                    <Grid item xs={3}>
+					<Grid item xs={4}>
                         <Grid className="scheduler-header-firstSet"
                             container direction="row">
-                            <Grid item xs={8}>
-                                <FormControl className="filter-select">
-                                    <Select input={
-                                        <BootstrapInput id="filter-calendar-type"
-                                            name="courseFilter" />
-                                    }
-                                        MenuProps={{
-                                        "classes": {
-                                            "paper": classes.dropdownStyle,
-                                        },
-                                    }}
-                                        onChange={handleCourseTypeChange}
-                                        value={courseType}>
-                                        <MenuItem value="all">All</MenuItem>
-                                        <MenuItem value="class">
-                                            Class
-                                        </MenuItem>
-                                        <MenuItem value="tutoring">
-                                            Tutoring
-                                        </MenuItem>
-                                    </Select>
-                                </FormControl>
+							<Grid item>
+								<IconButton
+									onClick={() => changeView("timeGridDay")}
+								>
+									<CalendarIcon
+										style={{color: view.toLowerCase().includes("grid") && secondaryFontColor}}
+									/>
+								</IconButton>
                             </Grid>
-                            <Grid item xs={4}>
+							<Grid item>
+								<IconButton
+									onClick={() => changeView("listWeek")}
+								>
+									<ListIcon
+										style={{color: view === "listWeek" && secondaryFontColor}}
+									/>
+								</IconButton>
+							</Grid>
+							<Grid item>
                                 <SessionFilters CourseOptions={courseOptions}
                                     CourseValue={courseFilter}
                                     InstructorOptions={instructorOptions}
@@ -331,30 +353,58 @@ const Scheduler = () => {
                                     onCourseSelect={setCourseFilter}
                                     onInstructorSelect={setInstructorFilter} />
                             </Grid>
+							<Grid item xs={6}>
+								<FormControl className="filter-select">
+									<Select input={
+										<BootstrapInput id="filter-calendar-type"
+														name="courseFilter"/>
+									}
+											MenuProps={{
+												"classes": {
+													"paper": classes.dropdownStyle,
+												},
+											}}
+											onChange={handleCourseTypeChange}
+											value={courseType}>
+										<MenuItem value="all">All</MenuItem>
+										<MenuItem value="class">
+											Class
+										</MenuItem>
+										<MenuItem value="tutoring">
+											Tutoring
+										</MenuItem>
+									</Select>
+								</FormControl>
+							</Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={6}>
-                        <div className="scheduler-header-date">
-                            <Grid item>
-                                <IconButton aria-label="prev-month"
-                                    className="prev-month" onClick={goToPrev}>
-                                    <ChevronLeftOutlined />
-                                </IconButton>
-                            </Grid>
-                            <Grid item>
-                                <Typography variant="h6">
-                                    {currentDate}
-                                </Typography>
-                            </Grid>
-                            <Grid item>
-                                <IconButton aria-label="next-month"
-                                    className="next-month" onClick={goToNext}>
-                                    <ChevronRightOutlined />
-                                </IconButton>
-                            </Grid>
-                        </div>
+					<Grid
+						item
+						xs={4}
+						container
+						direction="row"
+						justify="center"
+						alignItems="center"
+					>
+						<Grid item>
+							<IconButton aria-label="prev-month"
+										className="prev-month" onClick={goToPrev}>
+								<ChevronLeftOutlined/>
+							</IconButton>
+						</Grid>
+						<Grid item>
+							<Typography variant="h6">
+								{currentDate}
+							</Typography>
+						</Grid>
+						<Grid item>
+							<IconButton aria-label="next-month"
+										className="next-month" onClick={goToNext}>
+								<ChevronRightOutlined/>
+							</IconButton>
+						</Grid>
                     </Grid>
-                    <Grid item xs={1} />
+					<Grid item xs={2}/>
                     <Grid item xs={2}>
                         <Grid className="scheduler-header-last" container
                             direction="row" justify="flex-end">
@@ -373,20 +423,21 @@ const Scheduler = () => {
                                         <BootstrapInput id="filter-calendar-type"
                                             name="courseFilter" />
                                     }
-                                        MenuProps={{
+											MenuProps={{
                                         "classes": {
                                             "paper": classes.dropdownStyle,
                                         },
                                     }}
-                                        onChange={handleViewChange}
-                                        value={view}>
-                                        <MenuItem value="timeGridDay">
+											onChange={handleViewChange}
+											value={viewType()}
+									>
+										<MenuItem value="day">
                                             Day
                                         </MenuItem>
-                                        <MenuItem value="timeGridWeek">
+										<MenuItem value="week">
                                             Week
                                         </MenuItem>
-                                        <MenuItem value="dayGridMonth">
+										<MenuItem value="month">
                                             Month
                                         </MenuItem>
                                     </Select>
@@ -397,33 +448,34 @@ const Scheduler = () => {
                 </Grid>
                 <Grid className="omou-calendar" item xs={12}>
                     <FullCalendar contentHeight="400"
-                        defaultView="timeGridDay"
-                        displayEventTime
-                        eventClick={goToSessionView}
-                        eventColor="none"
-                        eventLimit={4}
-                        eventMouseEnter={handleToolTip}
-                        events={[...calendarEvents, ...OOOEvents]}
-                        header={false}
-                        minTime="07:00:00"
-                        nowIndicator
-                        plugins={[
+								  defaultView="timeGridDay"
+								  displayEventTime
+								  eventClick={goToSessionView}
+								  eventColor="none"
+								  eventLimit={4}
+								  eventMouseEnter={handleToolTip}
+								  events={[...calendarEvents, ...OOOEvents]}
+								  header={false}
+								  minTime="07:00:00"
+								  nowIndicator
+								  plugins={[
                             dayGridPlugin,
                             timeGridPlugin,
                             interactionPlugin,
                             listViewPlugin,
                             resourceTimelinePlugin,
                         ]}
-                        ref={calendarRef}
-                        resourceAreaWidth="20%"
-                        resourceOrder="title"
-                        schedulerLicenseKey="GPL-My-Project-Is-Open-Source"
-                        timeZone="local"
-                        titleFormat={{
+								  ref={calendarRef}
+								  resourceAreaWidth="20%"
+								  resourceOrder="title"
+								  schedulerLicenseKey="GPL-My-Project-Is-Open-Source"
+								  themeSystem="standard"
+								  timeZone="local"
+								  titleFormat={{
                             "day": "numeric",
                             "month": "long",
                         }}
-                        views={{
+								  views={{
                             "dayGrid": {
                                 "titleFormat": {"month": "long"},
                             },
