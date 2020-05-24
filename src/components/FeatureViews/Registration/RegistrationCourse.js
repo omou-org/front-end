@@ -31,6 +31,8 @@ import RegistrationCourseEnrollments from "./RegistrationCourseEnrollments";
 import {useCourseNotes} from "actions/courseActions";
 import UserAvatar from "../Accounts/UserAvatar";
 import {weeklySessionsParser} from "components/Form/FormUtils";
+import {useQuery} from "@apollo/react-hooks";
+import {GET_COURSE_DETAILS} from "../../../queryFragments";
 
 const RegistrationCourse = () => {
 	const {
@@ -43,6 +45,10 @@ const RegistrationCourse = () => {
 	const course = courses[courseID];
 
 	const [activeTab, setActiveTab] = useState(0);
+
+	const {data, loading, error} = useQuery(GET_COURSE_DETAILS);
+
+	console.log(data, loading, error);
 
 	useCourseNotes(courseID);
 	const courseStatus = useCourse(courseID);
