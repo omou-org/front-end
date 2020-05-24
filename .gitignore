@@ -16,6 +16,7 @@ package-lock.json
 .env.development.local
 .env.test.local
 .env.production.local
+.eslintrc.js
 
 # Project Workspace specific files
 /.idea
