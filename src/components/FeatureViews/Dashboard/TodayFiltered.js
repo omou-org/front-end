@@ -30,7 +30,6 @@ const TodayFiltered = () => {
         const courseArray = Object.values(courses);
         console.log(courseArray);
         presentCategories = sessions.map(({course}) => course);
-        // presentCategories = [...new Set(presentCategories)];
         categoryID = courseArray.filter(allCourses=> {
             return presentCategories.some(coursesToday=> {
                 return coursesToday == allCourses.course_id
@@ -38,7 +37,7 @@ const TodayFiltered = () => {
           })
         categoryID = categoryID.map(({category}) => category);
         console.log(categoryID);
-        categoryNames = categoryID.map(e => allCategories.filter(arr => arr.id ===e).map(y=>y.name)).flat()
+        categoryNames = categoryID.map(e => allCategories.filter(arr => arr.id ===e).map(category=>category.name)).flat()
         categoryNames = [...new Set(categoryNames)];
 
         if (categoryNames && categoryNames.length>0) {
