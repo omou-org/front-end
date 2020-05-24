@@ -331,7 +331,7 @@ export const useEnrollmentByStudent = (studentID) =>
         useMemo(
             () => ({
                 "params": {
-                    "user_id": studentID,
+                    "student_id": studentID,
                 },
             }),
             [studentID]
