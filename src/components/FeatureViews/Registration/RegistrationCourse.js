@@ -21,9 +21,7 @@ import UnconfirmIcon from "@material-ui/icons/Cancel";
 import Moment from "react-moment";
 
 import "./registration.scss";
-import {courseDateFormat} from "utils";
-import {isFail, isLoading, useCourse, useInstructor} from "actions/hooks";
-import {Link, Redirect, useRouteMatch} from "react-router-dom";
+import {Link, useRouteMatch} from "react-router-dom";
 import BackButton from "../../BackButton.js";
 import Loading from "components/Loading";
 import RegistrationActions from "./RegistrationActions";
@@ -32,7 +30,42 @@ import {useCourseNotes} from "actions/courseActions";
 import UserAvatar from "../Accounts/UserAvatar";
 import {weeklySessionsParser} from "components/Form/FormUtils";
 import {useQuery} from "@apollo/react-hooks";
-import {GET_COURSE_DETAILS} from "../../../queryFragments";
+import gql from "graphql-tag";
+import {SIMPLE_COURSE_DATA} from "../../../queryFragments";
+import {fullName} from "../../../utils";
+
+export const GET_COURSE_DETAILS = gql`
+	query CourseDetails($courseId: Int!){
+		course(courseId: $courseId) {
+			subject
+			endDate
+			startDate
+			startTime
+			endTime
+			description
+			academicLevel
+			maxCapacity
+			instructor {
+			  user {
+				id
+				firstName
+				lastName
+			  }
+			}
+			isConfirmed
+			...SimpleCourse
+		}
+		courseNotes(courseId: $courseId) {
+		    body
+			complete
+			id
+			important
+			timestamp
+			title	
+		}
+	}
+	${SIMPLE_COURSE_DATA}
+	`;
 
 const RegistrationCourse = () => {
 	const {
@@ -40,44 +73,48 @@ const RegistrationCourse = () => {
 	} = useRouteMatch();
 
 	const isAdmin = useSelector(({auth}) => auth.isAdmin);
-	const courses = useSelector(({Course}) => Course.NewCourseList);
-	const instructors = useSelector(({Users}) => Users.InstructorList);
-	const course = courses[courseID];
 
 	const [activeTab, setActiveTab] = useState(0);
 
-	const {data, loading, error} = useQuery(GET_COURSE_DETAILS);
-
-	console.log(data, loading, error);
+	const {data, loading, error} = useQuery(GET_COURSE_DETAILS, {
+		variables: {courseId: courseID}
+	});
 
 	useCourseNotes(courseID);
-	const courseStatus = useCourse(courseID);
-	useInstructor(course && course.instructor_id);
 
 	const handleTabChange = useCallback((_, newTab) => {
 		setActiveTab(newTab);
 	}, []);
 
-	// either doesn't exist or only has notes defined
-	if (!course || Object.keys(course).length <= 1) {
-		if (isLoading(courseStatus)) {
-			return <Loading paper/>;
-		}
-
-		if (isFail(courseStatus)) {
-			return <Redirect push to="/PageNotFound"/>;
-		}
+	if (loading) {
+		return <Loading/>
 	}
+	if (error) {
+		return <Typography>
+			There's been an error! Error: {error.message}
+		</Typography>
+	}
+	const {
+		"course": {
+			subject,
+			endDate,
+			startDate,
+			startTime,
+			endTime,
+			description,
+			academicLevel,
+			maxCapacity,
+			instructor,
+			isConfirmed,
+		},
+		courseNotes
+	} = data;
 
-	const hasImportantNotes = Object.values(course.notes || {}).some(
+	const hasImportantNotes = Object.values(courseNotes || {}).some(
 		({important}) => important
 	);
 
-	const instructor = instructors[course.instructor_id];
-
-	const {start_date, end_date, start_time, end_time} = courseDateFormat(
-		course
-	);
+	const instructorName = fullName(instructor.user);
 
 	return (
 		<Grid className="registrationCourse" item xs={12}>
@@ -90,11 +127,11 @@ const RegistrationCourse = () => {
 				</Grid>
 				<Divider className="top-divider"/>
 				<Grid item lg={12}>
-					<RegistrationActions courseTitle={course.course_title}/>
+					<RegistrationActions courseTitle={subject}/>
 				</Grid>
 				<div className="course-heading">
 					<Typography align="left" variant="h3">
-						{course.title}
+						{subject}
 						{isAdmin && (
 							<Button
 								className="button"
@@ -109,10 +146,10 @@ const RegistrationCourse = () => {
 					<div className="date">
 						<CalendarIcon align="left" className="icon"/>
 						<Typography align="left" className="sessions-text">
-							<Moment format="MMM D YYYY" date={course.schedule.start_date}/>
+							<Moment format="MMM D YYYY" date={startDate}/>
 							{" - "}
-							<Moment format="MMM D YYYY" date={course.schedule.end_date}/> (
-							{weeklySessionsParser(start_date, end_date)} sessions)
+							<Moment format="MMM D YYYY" date={endDate}/> (
+							{weeklySessionsParser(startDate, endDate)} sessions)
 						</Typography>
 					</div>
 					<div className="info-section">
@@ -125,7 +162,7 @@ const RegistrationCourse = () => {
 						<div className="course-info-details">
 							{instructor && (
 								<>
-									{course.is_confirmed ? (
+									{isConfirmed ? (
 										<ConfirmIcon className="confirmed course-icon"/>
 									) : (
 										<UnconfirmIcon className="unconfirmed course-icon"/>
@@ -134,39 +171,39 @@ const RegistrationCourse = () => {
 										avatar={
 											<UserAvatar
 												fontSize={20}
-												name={instructor.name}
+												name={instructorName}
 												size={38}
 											/>
 										}
 										className="chip"
 										component={Link}
-										label={instructor.name}
-										to={`/accounts/instructor/${instructor.user_id}`}
+										label={instructorName}
+										to={`/accounts/instructor/${instructor.user.id}`}
 									/>
 								</>
 							)}
 							<Typography align="left" className="text">
 								<Moment
 									format="h:mm a"
-									date={course.schedule.start_date + course.schedule.start_time}
+									date={startDate + "T" + startTime}
 								/>
 								{" - "}
 								<Moment
 									format="h:mm a"
-									date={course.schedule.end_date + course.schedule.end_time}
+									date={endDate + "T" + endTime}
 								/>
 							</Typography>
 							<Typography align="left" className="text">
-								<Moment format="dddd" date={course.schedule.start_date}/>
+								<Moment format="dddd" date={startDate}/>
 							</Typography>
 							<Typography align="left" className="text">
-								Grade {course.grade}
+								Grade {academicLevel}
 							</Typography>
 						</div>
 					</div>
 				</div>
 				<Typography align="left" className="description text">
-					{course.description}
+					{description}
 				</Typography>
 				<Tabs
 					className="registration-course-tabs"
@@ -197,7 +234,11 @@ const RegistrationCourse = () => {
 					/>
 				</Tabs>
 				{activeTab === 0 && (
-					<RegistrationCourseEnrollments courseID={courseID}/>
+					<RegistrationCourseEnrollments
+						courseID={courseID}
+						maxCapacity={maxCapacity}
+						courseTitle={subject}
+					/>
 				)}
 				{activeTab === 1 && (
 					<div className="notes-container">
