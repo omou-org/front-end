@@ -17,7 +17,7 @@ const store = createStore(
 );
 
 const client = new ApolloClient({
-    uri: process.env.REACT_APP_DOMAIN,
+    uri: process.env.REACT_APP_DOMAIN + "/graphql",
     // note: since graphql endpoint atm has no authentication, this is not tested
     request: (operation) => {
         operation.setContext({
