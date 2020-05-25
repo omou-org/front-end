@@ -33,3 +33,13 @@ export const GET_COURSES_DETAILS = gql`
 		subject
 	}
 	`;
+
+export const GET_CATEGORIES = gql`
+	query CourseCategoriesList {
+		courseCategories { 
+			name
+			id
+			description
+		}
+	  }
+	`;

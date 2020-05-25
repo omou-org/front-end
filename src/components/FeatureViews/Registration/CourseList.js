@@ -11,7 +11,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Moment from "react-moment";
 
-import {courseDateFormat} from "utils";
+import {fullName} from "utils";
 
 const useStyles = makeStyles((theme) => ({
   courseTitle: {
@@ -21,25 +21,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CourseList = ({filteredCourses}) => {
-  const instructors = useSelector(({Users}) => Users.InstructorList);
   const currentParent = useSelector(
       ({Registration}) => Registration.CurrentParent
   );
   const {courseTitle} = useStyles();
+
   return filteredCourses
-      .filter((course) => course.capacity > 1)
+	  .filter((course) => course.maxCapacity > 1)
       .map((course) => {
-        const {
-          start_date,
-          end_date,
-          start_time,
-          end_time,
-          days,
-        } = courseDateFormat(course);
-        const date = `${start_date} - ${end_date}`,
-            time = `${start_time} - ${end_time}`;
         return (
-            <Grow in key={course.course_id}>
+			<Grow in key={course.id}>
               <Paper className="row">
                 <Grid alignItems="center" container layout="row">
                   <Grid
@@ -51,16 +42,16 @@ const CourseList = ({filteredCourses}) => {
                       xs={12}
                   >
                     <Typography align="left" className="course-heading">
-                      {course.title}
+						{course.subject}
                     </Typography>
                   </Grid>
                   <Grid
-                      className="no-underline"
-                      component={Link}
-                      item
-                      md={5}
-                      to={`/registration/course/${course.course_id}`}
-                      xs={12}
+					  className="no-underline"
+					  component={Link}
+					  item
+					  md={5}
+					  to={`/registration/course/${course.id}`}
+					  xs={12}
                   >
                     <Grid className="course-detail" container>
                       <Grid align="left" className="heading-det" item md={4} xs={3}>
@@ -68,13 +59,13 @@ const CourseList = ({filteredCourses}) => {
                       </Grid>
                       <Grid align="left" item md={8} xs={9}>
                         <Moment
-                            format="MMM D YYYY"
-                            date={course.schedule.start_date}
+							format="MMM D YYYY"
+							date={course.startDate}
                         />
                         {" - "}
                         <Moment
-                            format="MMM D YYYY"
-                            date={course.schedule.end_date}
+							format="MMM D YYYY"
+							date={course.endDate}
                         />
                       </Grid>
                     </Grid>
@@ -84,15 +75,13 @@ const CourseList = ({filteredCourses}) => {
                       </Grid>
                       <Grid align="left" item md={8} xs={9}>
                         <Moment
-                            format="dddd h:mm a"
-                            date={
-                              course.schedule.start_date + course.schedule.start_time
-                            }
+							format="dddd h:mm a"
+							date={course.startDate + "T" + course.startTime}
                         />
                         {" - "}
                         <Moment
-                            format="dddd h:mm a"
-                            date={course.schedule.end_date + course.schedule.end_time}
+							format="dddd h:mm a"
+							date={course.startDate + course.endTime}
                         />
                       </Grid>
                     </Grid>
@@ -101,8 +90,7 @@ const CourseList = ({filteredCourses}) => {
                         Instructor
                       </Grid>
                       <Grid align="left" item md={8} xs={9}>
-                        {instructors[course.instructor_id] &&
-                        instructors[course.instructor_id].name}
+						  {fullName(course.instructor.user)}
                       </Grid>
                     </Grid>
                     <Grid className="course-detail" container>
@@ -110,7 +98,7 @@ const CourseList = ({filteredCourses}) => {
                         Tuition
                       </Grid>
                       <Grid align="left" item md={8} xs={9}>
-                        {course.total_tuition && `$${course.total_tuition}`}
+						  ${course.totalTuition}
                       </Grid>
                     </Grid>
                   </Grid>
@@ -124,17 +112,17 @@ const CourseList = ({filteredCourses}) => {
                       xs={12}
                   >
                     <Grid className="course-status" item xs={6}>
-                      {course.roster.length} / {course.capacity}
+						{course.enrollmentSet.length} / {course.maxCapacity}
                       <span className="label">Enrolled</span>
                     </Grid>
                     <Grid item xs={6}>
                       {currentParent && (
                           <Button
-                              className="button primary"
-                              component={Link}
-                              disabled={course.capacity <= course.roster.length}
-                              to={`/registration/form/course/${course.course_id}`}
-                              variant="contained"
+							  className="button primary"
+							  component={Link}
+							  disabled={course.maxCapacity <= course.enrollmentSet.length}
+							  to={`/registration/form/course/${course.course_id}`}
+							  variant="contained"
                           >
                             + REGISTER
                           </Button>
