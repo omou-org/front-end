@@ -26,18 +26,16 @@ import BackButton from "../../BackButton.js";
 import Loading from "components/Loading";
 import RegistrationActions from "./RegistrationActions";
 import RegistrationCourseEnrollments from "./RegistrationCourseEnrollments";
-import {useCourseNotes} from "actions/courseActions";
 import UserAvatar from "../Accounts/UserAvatar";
 import {weeklySessionsParser} from "components/Form/FormUtils";
 import {useQuery} from "@apollo/react-hooks";
 import gql from "graphql-tag";
-import {SIMPLE_COURSE_DATA} from "../../../queryFragments";
-import {fullName} from "../../../utils";
+import {SIMPLE_COURSE_DATA} from "queryFragments";
+import {fullName} from "utils";
 
 export const GET_COURSE_DETAILS = gql`
-	query CourseDetails($courseId: Int!){
+	query CourseDetails($courseId: ID!){
 		course(courseId: $courseId) {
-			subject
 			endDate
 			startDate
 			startTime
@@ -80,8 +78,6 @@ const RegistrationCourse = () => {
 		variables: {courseId: courseID}
 	});
 
-	useCourseNotes(courseID);
-
 	const handleTabChange = useCallback((_, newTab) => {
 		setActiveTab(newTab);
 	}, []);
@@ -96,7 +92,7 @@ const RegistrationCourse = () => {
 	}
 	const {
 		"course": {
-			subject,
+			title,
 			endDate,
 			startDate,
 			startTime,
@@ -127,11 +123,11 @@ const RegistrationCourse = () => {
 				</Grid>
 				<Divider className="top-divider"/>
 				<Grid item lg={12}>
-					<RegistrationActions courseTitle={subject}/>
+					<RegistrationActions courseTitle={title}/>
 				</Grid>
 				<div className="course-heading">
 					<Typography align="left" variant="h3">
-						{subject}
+						{title}
 						{isAdmin && (
 							<Button
 								className="button"
@@ -237,7 +233,7 @@ const RegistrationCourse = () => {
 					<RegistrationCourseEnrollments
 						courseID={courseID}
 						maxCapacity={maxCapacity}
-						courseTitle={subject}
+						courseTitle={title}
 					/>
 				)}
 				{activeTab === 1 && (

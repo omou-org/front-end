@@ -30,7 +30,6 @@ const TutoringList = () => {
 		return <LoadingError error={error.message}/>
 	}
 
-	console.log(data);
 	const categories = data.courseCategories;
 
 	if (!registeringParent) {

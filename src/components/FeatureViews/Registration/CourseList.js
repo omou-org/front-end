@@ -38,11 +38,11 @@ const CourseList = ({filteredCourses}) => {
                       component={Link}
                       item
                       md={3}
-                      to={`/registration/course/${course.course_id}`}
+                      to={`/registration/course/${course.id}`}
                       xs={12}
                   >
                     <Typography align="left" className="course-heading">
-						{course.subject}
+                      {course.title}
                     </Typography>
                   </Grid>
                   <Grid

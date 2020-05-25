@@ -1,17 +1,16 @@
-import React, {useCallback, useMemo} from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import {useSelector} from "react-redux";
 
 import {Link, useLocation} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import LoadingError from "./LoadingCourseError";
-import * as hooks from "actions/hooks";
-import {courseDateFormat, dateTimeToDate} from "utils";
+import {dateTimeToDate} from "utils";
 import NoListAlert from "components/NoListAlert";
 import Moment from "react-moment";
+import gql from "graphql-tag";
+import {useQuery} from "@apollo/react-hooks";
 
 const today = dateTimeToDate(new Date());
 
@@ -24,68 +23,51 @@ const paymentStatus = (numPaidCourses) => {
 	return "bad";
 };
 
-const StudentCourseViewer = ({ studentID, current = true }) => {
-	const courses = useSelector(({Course}) => Course.NewCourseList);
-	const enrollments = useSelector(({Enrollments}) => Enrollments);
+export const GET_STUDENT_ENROLLMENTS = gql`
+	query StudentEnrollments($studentId: ID!) { 
+		enrollments(studentId: $studentId) {
+			id
+			enrollmentBalance
+			sessionsLeft
+			lastPaidSessionDatetime
+			course {
+			  title
+			  endDate
+			  startDate
+			  endTime
+			  startTime
+			  id
+			}
+		}
+	}
+`;
+
+const StudentCourseViewer = ({studentID, current}) => {
 	const {pathname} = useLocation();
 
-	const enrollmentStatus = hooks.useEnrollmentByStudent(studentID);
-	const courseList = useMemo(() => Object.keys(enrollments[studentID] || {}), [
-		enrollments,
-		studentID,
-	]);
-	const courseStatus = hooks.useCourse(courseList);
+	const {data, loading, error} = useQuery(GET_STUDENT_ENROLLMENTS, {
+		variables: {studentId: studentID}
+	});
 
-	const coursePaymentStatus = useMemo(
-		() =>
-			Object.entries(enrollments[studentID] || {}).reduce(
-				(obj, [courseID, {sessions_left}]) => ({
-					...obj,
-					[courseID]: sessions_left,
-				}),
-				{}
-			),
-		[enrollments, studentID]
-	);
+	if (loading) {
+		return <Loading/>
+	}
+	if (error) {
+		return <Typography>
+			There's been an error! Error: {error.message}
+		</Typography>
+	}
 
-	const numPaidCourses = useCallback(
-		(courseID) => {
-			if (!enrollments[studentID][courseID]) {
-				return 0;
-			}
-			return enrollments[studentID][courseID].sessions_left || 0;
-		},
-		[enrollments, studentID]
-	);
+	const {enrollments} = data;
 
-	const filterCourseByDate = useCallback(
-		(endDate) => {
+	const filterCourseByDate = (endDate) => {
 			const inputEndDate = dateTimeToDate(new Date(endDate));
 			// see if course is current or not
 			// and match it appropriately with the passed filter
-			return current === inputEndDate >= today;
-		},
-		[current]
-	);
+		return current === (inputEndDate >= today);
+	};
 
-	const displayedCourses = useMemo(
-		() =>
-			courseList.filter(
-				(courseID) =>
-					courses[courseID] &&
-					filterCourseByDate(courses[courseID].schedule.end_date)
-			),
-		[courseList, courses, filterCourseByDate]
-	);
-
-	if (!enrollments[studentID] && !hooks.isSuccessful(enrollmentStatus)) {
-		if (hooks.isLoading(enrollmentStatus, courseStatus)) {
-			return <Loading small loadingText="LOADING COURSES"/>;
-		}
-		if (hooks.isFail(enrollmentStatus, courseStatus)) {
-			return <LoadingError error="courses"/>;
-		}
-	}
+	const displayedEnrollments = enrollments.filter(({course}) => filterCourseByDate(course.endDate));
 
 	return (
 		<>
@@ -117,45 +99,34 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
 				</Grid>
 			</Grid>
 			<Grid container spacing={1}>
-				{displayedCourses.length !== 0 ? (
-					displayedCourses.map((courseID) => {
-						const course = courses[courseID];
-						if (!course) {
-							return "Loading...";
-						}
-						const {
-							days,
-							start_date,
-							end_date,
-							start_time,
-							end_time,
-						} = courseDateFormat(course);
+				{displayedEnrollments.length !== 0 ? (
+					displayedEnrollments.map((enrollment) => {
 						return (
 							<Grid
 								className="accounts-table-row"
 								component={Link}
 								item
-								key={courseID}
-								to={`${pathname}/${courseID}`}
+								key={enrollment.id}
+								to={`${pathname}/${enrollment.course.id}`}
 								xs={12}
 							>
 								<Paper square>
 									<Grid container>
 										<Grid item xs={4}>
 											<Typography align="left" className="accounts-table-text">
-												{course.title}
+												{enrollment.course.title}
 											</Typography>
 										</Grid>
 										<Grid item xs={3}>
 											<Typography align="left" className="accounts-table-text">
 												<Moment
 													format="MMM D YYYY"
-													date={course.schedule.start_date}
+													date={enrollment.course.startDate}
 												/>
 												{` - `}
 												<Moment
 													format="MMM D YYYY"
-													date={course.schedule.end_date}
+													date={enrollment.course.endDate}
 												/>
 											</Typography>
 										</Grid>
@@ -163,7 +134,7 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
 											<Typography align="left" className="accounts-table-text">
 												<Moment
 													format="dddd"
-													date={course.schedule.start_date}
+													date={enrollment.course.startDate}
 												/>
 											</Typography>
 										</Grid>
@@ -172,15 +143,18 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
 												<Moment
 													format="h:mm a"
 													date={
-														course.schedule.start_date +
-														course.schedule.start_time
+														enrollment.course.startDate
+														+ "T" +
+														enrollment.course.startTime
 													}
 												/>
 												{` - `}
 												<Moment
 													format="h:mm a"
 													date={
-														course.schedule.end_date + course.schedule.end_time
+														enrollment.course.endDate
+														+ "T" +
+														enrollment.course.endTime
 													}
 												/>
 											</Typography>
@@ -188,10 +162,11 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
 										<Grid item xs={1}>
 											<div
 												className={`sessions-left-chip ${paymentStatus(
-													numPaidCourses(courseID)
+													enrollment.sessionsLeft ?
+														Number(enrollment.sessionsLeft) : 4
 												)}`}
 											>
-												{coursePaymentStatus[courseID]}
+												{enrollment.sessionsLeft}
 											</div>
 										</Grid>
 									</Grid>

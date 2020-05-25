@@ -7,7 +7,7 @@ export const SIMPLE_COURSE_DATA = gql`
 fragment SimpleCourse on CourseType {
 	id
 	courseType
-	subject
+	title
   }
 `;
 
@@ -23,16 +23,14 @@ fragment moreCourse on CourseType {
       name
     }
     ...SimpleCourse
-  }
-	`;
+  }`;
 
 export const GET_COURSES_DETAILS = gql`
 	query courses($after: String) {
 		courseId
 		courseType
-		subject
-	}
-	`;
+		title
+	}`;
 
 export const GET_CATEGORIES = gql`
 	query CourseCategoriesList {

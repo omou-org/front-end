@@ -16,6 +16,7 @@ import RegistrationActions from "./RegistrationActions";
 import TutoringList from "./TutoringList";
 import gql from "graphql-tag";
 import {useQuery} from "@apollo/react-hooks";
+import {SIMPLE_COURSE_DATA} from "queryFragments";
 
 const customStyles = {
     clearIndicator: (base, state) => ({
@@ -55,7 +56,7 @@ export const GET_COURSES = gql`
             endTime
             startTime
             startDate
-            subject
+            title
             totalTuition
             instructor {
               user {
@@ -68,14 +69,15 @@ export const GET_COURSES = gql`
               id
             }
             maxCapacity
-            courseType
             academicLevel
             courseCategory { 
                 name
                 id
              }
+          	...SimpleCourse
           }
 	}
+	${SIMPLE_COURSE_DATA}
 	`;
 
 const RegistrationLanding = () => {

@@ -15,6 +15,14 @@ import Moment from "react-moment";
 
 import {courseDateFormat} from "utils";
 
+export const GET_INSTRUCTOR_ENROLLMENTS = `
+  query InstructorEnrollments($instructorId) { 
+    courses(filter: { instructor.user.id: $instructorId){
+      title
+    }
+  }
+`;
+
 const InstructorCourses = ({ instructorID }) => {
   const courses = useSelector(({ Course }) => Course.NewCourseList);
   const courseStatus = hooks.useCourse();
@@ -42,7 +50,7 @@ const InstructorCourses = ({ instructorID }) => {
         <Grid className="accounts-table-heading" container>
           <Grid item xs={4}>
             <Typography align="left" className="table-header">
-              Session
+				Course
             </Typography>
           </Grid>
           <Grid item xs={3}>

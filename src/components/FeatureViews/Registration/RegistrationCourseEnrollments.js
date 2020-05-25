@@ -33,7 +33,7 @@ import {useQuery} from "@apollo/react-hooks";
 import {fullName} from "../../../utils";
 
 export const GET_ENROLLMENT_DETAILS = gql`
-	query EnrollmentDetails($courseId: Int!){
+	query EnrollmentDetails($courseId: ID!){
 		enrollments(courseId: $courseId) {
             student {
               primaryParent {
@@ -133,12 +133,7 @@ const RegistrationCourseEnrollments = ({courseID, maxCapacity, courseTitle}) => 
         </Typography>
     }
 
-    const {
-        enrollments,
-        // course
-    } = data;
-
-    console.log(enrollments, enrollments.find(({id}) => id == unenroll.enrollment));
+    const {enrollments} = data;
 
     return (
         <>
