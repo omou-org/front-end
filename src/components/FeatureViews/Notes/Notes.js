@@ -21,15 +21,10 @@ import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-<<<<<<< HEAD
 import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
 import IconButton from "@material-ui/core/IconButton";
 import {makeStyles} from "@material-ui/core/styles";
-=======
-import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
-import { makeStyles } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
->>>>>>> development
 
 import "./Notes.scss";
 import "../Accounts/TabComponents/TabComponents.scss";

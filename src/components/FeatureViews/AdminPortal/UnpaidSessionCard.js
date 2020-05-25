@@ -71,10 +71,21 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
 		unpaidStudent.sessions_left,
 		adminUtils.calculateSessionLength(startTime, endTime)
 	);
+    
+    let studentID;
+    let courseID;
+    
+    if(!student){
+    return(
+        <>
+        </>
+    )
+    }
 
-    const studentID = student.user_id;
-    const courseID = course.course_id;
-
+    else if(student){
+    studentID = student.user_id;
+    courseID = course.course_id;
+    
     return (
         <Grid item md={6} lg={3} className={classes.grid}>
             <Card className={`unpaid-sessions-card ${classes.card}`}>
@@ -126,6 +137,7 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
             </Card>
         </Grid>
     );
+    }
 };
 
 UnpaidSessionCard.propTypes = {
