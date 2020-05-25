@@ -9,6 +9,7 @@ import CardActionArea from "@material-ui/core/CardActionArea";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
+import Loading from "components/Loading";
 
 import * as adminUtils from "./AdminUtils";
 import {initials} from "utils";
@@ -77,8 +78,7 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
     
     if(!student){
     return(
-        <>
-        </>
+        <Loading></Loading>
     )
     }
 
