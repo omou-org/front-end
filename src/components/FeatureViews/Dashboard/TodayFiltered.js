@@ -49,7 +49,7 @@ const TodayFiltered = () => {
               }; 
             });    
         categoryList.push({
-            "label": "Choose a Category",
+            "label": "All Categories",
             "value": ""
         })
         }

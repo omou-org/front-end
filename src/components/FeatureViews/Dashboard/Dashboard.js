@@ -48,11 +48,8 @@ const Dashboard = () => {
                         </Typography>
                         <br/>
                         <Paper className="today-paper" container>
-                            <Grid container style={{width: "100%", justifyContent:"space-between", padding: "5px"}}>
+                            <Grid container>
                                     <Grid item xs={5}>
-                                    {/* <Typography variant='h5' className={`dashboard-date ${classes.date}`}>
-                                        {currentDate}
-                                    </Typography> */}
                                     <Moment 
                                         className={`dashboard-date ${classes.date}`}
                                         format="dddd, MMMM DD">
@@ -84,8 +81,9 @@ const Dashboard = () => {
                             </Typography>
                             <Grid
                                 container
-                                classname="unpaid-container"
-                                wrap = "nowrap">
+                                className="unpaid-container"
+                                wrap = "nowrap"
+                                direction = "row">
                                 <UnpaidSessions/>
                             </Grid>
                         </Paper>

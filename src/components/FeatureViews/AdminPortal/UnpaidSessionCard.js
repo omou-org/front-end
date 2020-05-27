@@ -78,7 +78,7 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
     
     if(!student){
     return(
-        <Loading></Loading>
+        <Loading small/>
     )
     }
 

@@ -40,6 +40,8 @@
     height: 35vh;
     margin: 10px;
     flex-shrink: 0;
+    justify-content: space-between;
+    padding: 5px;
 }
 
 .today-container {
@@ -64,6 +66,7 @@
     opacity: 1;
     margin: 10px;
     font-size: 8px;
+    min-width: 150px;
 }
 
 .today-course-title{
@@ -78,13 +81,27 @@
     background: rgba(255, 255, 255, 0.6) !important;
     height: 34vh;
     margin: 10px;
+    flex-shrink: 0;
+    justify-content: space-between;
+    padding: 5px;
 }
 
 .unpaid-container{
-    height: 27vh;
+    height: 30vh;
     flex-shrink: 0 !important;
     overflow: hidden !important;
     overflow-x: scroll !important;
+}
+
+.unpaid-container::-webkit-scrollbar {
+    background-color: transparent;
+}
+ 
+.unpaid-container::-webkit-scrollbar-thumb {
+    background-color: slategrey;
+    outline: 1px solid slategrey;
+    height: 20px;
+    border-radius: 10px;
 }
 
 .db-notes-container{
