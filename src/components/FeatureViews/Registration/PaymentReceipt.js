@@ -1,7 +1,6 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useMemo} from "react";
 import {Prompt, useHistory, useLocation, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {bindActionCreators} from "redux";
 
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -9,144 +8,102 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 
 import * as registrationActions from "actions/registrationActions";
-import * as userActions from "actions/userActions";
-import {isFail, isLoading, isSuccessful, usePrevious} from "actions/hooks";
-import {usePayment, useSubmitRegistration} from "actions/multiCallHooks";
 import BackButton from "components/BackButton";
-import {GET} from "actions/actionTypes";
 import Loading from "components/Loading";
 import {paymentToString, uniques} from "utils";
 import Moment from "react-moment";
+import gql from "graphql-tag";
+import {useQuery} from "@apollo/react-hooks";
+import {bindActionCreators} from "redux";
+import {fullName} from "../../../utils";
 
-const RegistrationReceipt = () => {
+export const GET_PAYMENT = gql`
+	query Payment($paymentId:ID!){
+		payment(paymentId: $paymentId) {
+			id
+			createdAt
+			registrationSet {
+			  id
+			  enrollment {
+				course {
+				  hourlyTuition
+				  title
+				  startDate
+				  endDate
+				  id
+				}
+				id
+				student {
+				  user {
+					lastName
+					firstName
+					id
+				  }
+				}
+			  }
+			  numSessions
+			}
+			total
+			method
+			parent {
+			  user {
+				firstName
+				lastName
+				id
+			  }
+			}
+			priceAdjustment
+			subTotal
+			discountTotal
+		}
+	}
+`;
+
+const PaymentReceipt = () => {
 	const history = useHistory();
+	const location = useLocation();
+	const params = useParams();
+
+	const {data, loading, error} = useQuery(GET_PAYMENT,
+		{variables: {paymentId: params.paymentID}}
+	);
+
 	const currentPayingParent = useSelector(
 		({Registration}) => Registration.CurrentParent
 	);
-	const parents = useSelector(({Users}) => Users.ParentList);
 
-	const courses = useSelector(({Course}) => Course.NewCourseList);
-	const Payments = useSelector(({Payments}) => Payments);
-	const students = useSelector(({Users}) => Users.StudentList);
-	const RequestStatus = useSelector(({RequestStatus}) => RequestStatus);
-
-	const location = useLocation();
-	const params = useParams();
 	const dispatch = useDispatch();
 	const api = useMemo(
-		() => ({
-			...bindActionCreators(registrationActions, dispatch),
-			...bindActionCreators(userActions, dispatch),
-		}),
+		() => bindActionCreators(registrationActions, dispatch),
 		[dispatch]
 	);
 
-	const [paymentReceipt, setPaymentReceipt] = useState({});
-	const prevPaymentReceipt = usePrevious(paymentReceipt);
-	const [courseReceipt, setCourseReceipt] = useState({});
-	const Registration = useSelector(({Registration}) => Registration);
-	const registrationStatus = useSubmitRegistration(Registration.registration);
-
-	const parent = parents[params.parentID];
-	const paymentStatus = usePayment(params.paymentID && params.paymentID);
-
-	const courseReceiptInitializer = useCallback(
-		(enrollments) => {
-			const receipt = {};
-			const studentIDs = uniques(
-				enrollments.map((enrollment) => enrollment.student)
-			);
-			studentIDs.forEach((id) => {
-				if (RequestStatus.student[GET][id] !== 200) {
-					api.fetchStudents(id);
-				}
-
-				enrollments.forEach((enrollment) => {
-					if (enrollment.student === id) {
-						if (Array.isArray(receipt[id])) {
-							receipt[id].push(courses[enrollment.course]);
-						} else {
-							receipt[id] = [courses[enrollment.course]];
-						}
-					}
-				});
-			});
-			return receipt;
-		},
-		[RequestStatus.student, api, courses]
-	);
-
-	useEffect(() => {
-		if (
-			isSuccessful(paymentStatus) &&
-			(JSON.stringify(prevPaymentReceipt) !== JSON.stringify(paymentReceipt) ||
-				JSON.stringify(prevPaymentReceipt) === "{}")
-		) {
-			const payment = Payments[params.parentID][params.paymentID];
-			const enrollments = payment.registrations.map(
-				(registration) => registration.enrollment_details
-			);
-			setPaymentReceipt(payment);
-			setCourseReceipt(courseReceiptInitializer(enrollments));
-		}
-	}, [
-		paymentStatus,
-		paymentReceipt,
-		courseReceiptInitializer,
-		Payments,
-		params.parentID,
-		params.paymentID,
-		prevPaymentReceipt,
-	]);
-
-	if (
-		(!registrationStatus || isFail(registrationStatus)) &&
-		!params.paymentID
-	) {
-		return <Loading/>;
+	if (loading) {
+		return <Loading/>
+	}
+	if (error) {
+		return <Typography>
+			There's been an error! Error: {error.message}
+		</Typography>
 	}
 
-	// If we're coming from the registration cart, set-up state variables after we've completed registration requests
-	if (
-		registrationStatus &&
-		registrationStatus.status >= 200 &&
-		Object.keys(paymentReceipt).length < 1
-	) {
-		const payment =
-			Payments[currentPayingParent.user.id][registrationStatus.paymentID];
-		setPaymentReceipt(payment);
-		const enrollments = payment.registrations.map(
-			(registration) => registration.enrollment_details
-		);
-		setCourseReceipt(courseReceiptInitializer(enrollments));
-	}
+	const {payment} = data;
+	const {parent, registrationSet} = payment;
+	const studentIDs = uniques(registrationSet.map((registration) => registration.enrollment.student.user.id));
+	// Array of student registrations (array)
+	const registrations = studentIDs.map((studentID) => registrationSet
+		.filter((registration) => registration.enrollment.student.user.id === studentID));
 
 	const handleCloseReceipt = () => (e) => {
 		e.preventDefault();
 		history.push("/registration");
-		dispatch(registrationActions.closeRegistration());
+		dispatch(api.closeRegistration());
 	};
 
-	const getParent = () =>
-		currentPayingParent ? currentPayingParent.user : parent;
-
-	if (
-		Object.keys(paymentReceipt).length < 1 ||
-		(isLoading(paymentStatus) && !registrationStatus) ||
-		!getParent()
-	) {
-		return <Loading/>;
-	}
-
-	const numSessions = (courseID, studentID) =>
-		paymentReceipt.registrations.find(
-			(registration) =>
-				registration.enrollment_details.student == studentID &&
-				registration.enrollment_details.course == courseID
-		).num_sessions;
-
-	const renderCourse = (enrolledCourse, studentID) => (
-		<Grid item key={enrolledCourse.course_id}>
+	const renderCourse = (registration) => {
+		const {enrollment} = registration;
+		const {course} = enrollment;
+		return (<Grid item key={enrollment.id}>
 			<Grid
 				className="enrolled-course"
 				container
@@ -155,7 +112,7 @@ const RegistrationReceipt = () => {
 			>
 				<Grid item>
 					<Typography align="left" className="enrolled-course-title">
-						{enrolledCourse.title}
+						{course.title}
 					</Typography>
 				</Grid>
 				<Grid item>
@@ -171,12 +128,12 @@ const RegistrationReceipt = () => {
 									<Typography align="left">
 										<Moment
 											format="M/D/YYYY"
-											date={enrolledCourse.schedule.start_date}
+											date={course.startDate}
 										/>
 										{` - `}
 										<Moment
 											format="M/D/YYYY"
-											date={enrolledCourse.schedule.end_date}
+											date={course.endDate}
 										/>
 									</Typography>
 								</Grid>
@@ -189,8 +146,8 @@ const RegistrationReceipt = () => {
 									<Typography align="left">
 										$
 										{Math.round(
-											enrolledCourse.hourly_tuition *
-											numSessions(enrolledCourse.course_id, studentID)
+											course.hourlyTuition *
+											registration.numSessions
 										)}
 									</Typography>
 								</Grid>
@@ -205,7 +162,7 @@ const RegistrationReceipt = () => {
 								</Grid>
 								<Grid item xs={4}>
 									<Typography align="left">
-										{numSessions(enrolledCourse.course_id, studentID)}
+										{registration.numSessions}
 									</Typography>
 								</Grid>
 								<Grid item xs={2}>
@@ -215,7 +172,7 @@ const RegistrationReceipt = () => {
 								</Grid>
 								<Grid item xs={4}>
 									<Typography align="left">
-										${enrolledCourse.hourly_tuition}
+										${course.hourlyTuition}
 									</Typography>
 								</Grid>
 							</Grid>
@@ -224,20 +181,22 @@ const RegistrationReceipt = () => {
 				</Grid>
 			</Grid>
 		</Grid>
-	);
+		)
+	};
 
-	const renderStudentReceipt = (studentID, enrolledCourses) => {
-		const student = students[studentID];
+	const renderStudentReceipt = (registrations) => {
+		// we're given a student's list of registrations so we can take the first registration's student user object
+		const student = registrations[0].enrollment.student.user;
 		return (
-			<Grid container direction="column" key={studentID}>
+			<Grid container direction="column" key={student.id}>
 				<Paper elevation={2} className="course-receipt">
 					<Grid item>
 						<Typography align="left" className="student-name" variant="h5">
-							{student.name} <span>- ID# {student.user_id}</span>
+							{fullName(student)} <span>- ID# {student.id}</span>
 						</Typography>
 					</Grid>
-					{enrolledCourses.map((enrolledCourse) =>
-						renderCourse(enrolledCourse, studentID)
+					{registrations.map((registration) =>
+						renderCourse(registration)
 					)}
 				</Paper>
 			</Grid>
@@ -271,7 +230,7 @@ const RegistrationReceipt = () => {
 				</Grid>
 				<Grid item>
 					<Typography align="left" variant="h5">
-						Thank you for your payment, {getParent().name}
+						Thank you for your payment, {parent.user.firstName}
 					</Typography>
 				</Grid>
 				<Grid className="receipt-info" item xs={12}>
@@ -284,7 +243,7 @@ const RegistrationReceipt = () => {
 									</Typography>
 								</Grid>
 								<Grid item xs={3}>
-									<Typography align="left">{paymentReceipt.id}</Typography>
+									<Typography align="left">{payment.id}</Typography>
 								</Grid>
 								<Grid item xs={3}>
 									<Typography align="left" className="label">
@@ -293,8 +252,8 @@ const RegistrationReceipt = () => {
 								</Grid>
 								<Grid item xs={3}>
 									<Typography align="left">
-										{getParent().name} - ID#:{" "}
-										{getParent().user_id || getParent().id}
+										{fullName(parent.user)} - ID#:{" "}
+										{parent.user.id}
 									</Typography>
 								</Grid>
 							</Grid>
@@ -310,7 +269,7 @@ const RegistrationReceipt = () => {
 									<Typography align="left">
 										<Moment
 											format="M/DD/YYYY"
-											date={paymentReceipt.created_at}
+											date={payment.createdAt}
 										/>
 									</Typography>
 								</Grid>
@@ -321,7 +280,7 @@ const RegistrationReceipt = () => {
 								</Grid>
 								<Grid item xs={3}>
 									<Typography align="left">
-										{paymentToString(paymentReceipt.method)}
+										{paymentToString(payment.method)}
 									</Typography>
 								</Grid>
 							</Grid>
@@ -331,17 +290,15 @@ const RegistrationReceipt = () => {
 				<Grid item xs={12}>
 					<Grid container direction="column" justify="center" spacing={1}>
 						<Grid item xs={12}>
-							{Object.entries(
-								courseReceipt
-							).map(([studentID, enrolledCourses]) =>
-								renderStudentReceipt(studentID, enrolledCourses)
+							{registrations.map((registration) =>
+								renderStudentReceipt(registration)
 							)}
 						</Grid>
 					</Grid>
 				</Grid>
 				<Grid className="receipt-details" item xs={12}>
 					<Grid alignItems="flex-end" container direction="column">
-						{paymentReceipt.discount_total >= 0 && (
+						{payment.discountTotal >= 0 && (
 							<Grid item style={{width: "100%"}} xs={3}>
 								<Grid container direction="row">
 									<Grid item xs={7}>
@@ -349,13 +306,13 @@ const RegistrationReceipt = () => {
 									</Grid>
 									<Grid item xs={5}>
 										<Typography align="right" variant="subtitle1">
-											- ${paymentReceipt.discount_total}
+											- ${payment.discountTotal}
 										</Typography>
 									</Grid>
 								</Grid>
 							</Grid>
 						)}
-						{paymentReceipt.price_adjustment > 0 && (
+						{payment.priceAdjustment > 0 && (
 							<Grid item style={{width: "100%"}} xs={3}>
 								<Grid container direction="row">
 									<Grid item xs={7}>
@@ -365,7 +322,7 @@ const RegistrationReceipt = () => {
 									</Grid>
 									<Grid item xs={5}>
 										<Typography align="right" variant="subtitle1">
-											{paymentReceipt.price_adjustment}
+											{payment.priceAdjustment}
 										</Typography>
 									</Grid>
 								</Grid>
@@ -380,7 +337,7 @@ const RegistrationReceipt = () => {
 								</Grid>
 								<Grid item xs={5}>
 									<Typography align="right" variant="h6">
-										${paymentReceipt.total}
+										${payment.total}
 									</Typography>
 								</Grid>
 							</Grid>
@@ -411,4 +368,4 @@ const RegistrationReceipt = () => {
 	);
 };
 
-export default RegistrationReceipt;
+export default PaymentReceipt;

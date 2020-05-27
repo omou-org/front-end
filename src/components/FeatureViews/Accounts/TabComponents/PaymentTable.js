@@ -70,10 +70,10 @@ const PaymentTable = ({ paymentList, type, enrollmentID, courseID }) => {
                         {
                             paymentList.map((payment) => (
                                 <TableRow
-                                    component={NavLinkNoDup}
-                                    hover
-                                    key={payment.id}
-                                    to={`/accounts/parent/payment/${payment.parent}/${payment.id}`}>
+									component={NavLinkNoDup}
+									hover
+									key={payment.id}
+									to={`/accounts/parent/payment/${payment.id}`}>
                                     <TableCell>
                                         {payment.id}
                                     </TableCell>

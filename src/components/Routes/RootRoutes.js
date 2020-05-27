@@ -1,7 +1,7 @@
 // React Imports
-import { Redirect, Route, Switch } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { resetSubmitStatus } from "../../actions/registrationActions";
+import {Redirect, Route, Switch} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {resetSubmitStatus} from "../../actions/registrationActions";
 import React from "react";
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
@@ -21,10 +21,9 @@ import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
 import AdminRoute from "./AdminRoute";
 import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
-import RegistrationReceipt from "../FeatureViews/Registration/RegistrationReceipt";
+import PaymentReceipt from "../FeatureViews/Registration/PaymentReceipt";
 import CatsPage from "../CatsPage/CatsPage";
-import NotEnrolledStudentDialog from "../FeatureViews/Scheduler/NotEnrolledStudentDialog"
-import NotEnrolledStudentsDialog from "../FeatureViews/Scheduler/NotEnrolledStudentDialog";
+import NotEnrolledStudentsDialog from "../FeatureViews/Scheduler/NotEnrolledStudentDialog"
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -86,9 +85,9 @@ export const RootRoutes = () => {
                 render={(passedProps) => <UserProfile {...passedProps} />}
             />
             <ProtectedRoute
-                exact
-                path="/accounts/parent/payment/:parentID/:paymentID"
-                render={(passedProps) => <RegistrationReceipt {...passedProps} />}
+				exact
+				path="/accounts/parent/payment/:paymentID"
+				render={(passedProps) => <PaymentReceipt {...passedProps} />}
             />
             <ProtectedRoute
                 exact
@@ -115,8 +114,8 @@ export const RootRoutes = () => {
                 render={(passedProps) => <RegistrationCart {...passedProps} />}
             />
             <ProtectedRoute
-                path="/registration/receipt/:paymentID?"
-                render={(passedProps) => <RegistrationReceipt {...passedProps} />}
+				path="/registration/receipt/:paymentID?"
+				render={(passedProps) => <PaymentReceipt {...passedProps} />}
             />
 
             <ProtectedRoute
