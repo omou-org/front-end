@@ -48,7 +48,7 @@ const Dashboard = () => {
                         </Typography>
                         <br/>
                         <Paper className="today-paper" container>
-                            <Grid container>
+                            <Grid container className="today-header-container">
                                     <Grid item xs={5}>
                                     <Moment 
                                         className={`dashboard-date ${classes.date}`}
@@ -82,8 +82,7 @@ const Dashboard = () => {
                             <Grid
                                 container
                                 className="unpaid-container"
-                                wrap = "nowrap"
-                                direction = "row">
+                                wrap = "nowrap">
                                 <UnpaidSessions/>
                             </Grid>
                         </Paper>
