@@ -16,7 +16,7 @@ const Today = () => {
     const sessionArray = sessionResults[1];
     const instructorStatus = hooks.useInstructor();
     const courseStatus = hooks.useCourse();
-    const sessionStatus = useSearchSession("", 1, "", "timeAsc");
+    const sessionStatus = useSearchSession("", 1, "today", "timeAsc");
     const categoryStatus = hooks.useCategory();
 
     if (hooks.isLoading(instructorStatus, courseStatus, sessionStatus, categoryStatus)) {
