@@ -56,7 +56,12 @@
 }
 
 /* Unpaid Sessions */
-.unpaid-sessions-card {
+
+.no-unpaid-sessions {
+  margin: 10px;
+}
+
+.unpaid-sessions-card { 
   transform:scale(.9);
   margin: 10px;
   min-width: 175px;
