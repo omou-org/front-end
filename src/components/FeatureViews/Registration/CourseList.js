@@ -12,6 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import Moment from "react-moment";
 
 import {fullName} from "utils";
+import {useCourse} from "actions/hooks";
 
 const useStyles = makeStyles((theme) => ({
   courseTitle: {
@@ -25,6 +26,7 @@ const CourseList = ({filteredCourses}) => {
       ({Registration}) => Registration.CurrentParent
   );
   const {courseTitle} = useStyles();
+	const courseStatus = useCourse();
 
   return filteredCourses
 	  .filter((course) => course.maxCapacity > 1)
@@ -121,7 +123,7 @@ const CourseList = ({filteredCourses}) => {
 							  className="button primary"
 							  component={Link}
 							  disabled={course.maxCapacity <= course.enrollmentSet.length}
-							  to={`/registration/form/course/${course.course_id}`}
+							  to={`/registration/form/course/${course.id}`}
 							  variant="contained"
                           >
                             + REGISTER

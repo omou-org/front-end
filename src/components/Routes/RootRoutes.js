@@ -24,6 +24,7 @@ import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
 import PaymentReceipt from "../FeatureViews/Registration/PaymentReceipt";
 import CatsPage from "../CatsPage/CatsPage";
 import NotEnrolledStudentsDialog from "../FeatureViews/Scheduler/NotEnrolledStudentDialog"
+import RegistrationReceipt from "../Form/RegistrationReceipt";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -114,8 +115,8 @@ export const RootRoutes = () => {
                 render={(passedProps) => <RegistrationCart {...passedProps} />}
             />
             <ProtectedRoute
-				path="/registration/receipt/:paymentID?"
-				render={(passedProps) => <PaymentReceipt {...passedProps} />}
+                path="/registration/receipt/:paymentID?"
+                render={(passedProps) => <RegistrationReceipt {...passedProps} />}
             />
 
             <ProtectedRoute

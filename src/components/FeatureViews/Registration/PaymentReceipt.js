@@ -59,13 +59,13 @@ export const GET_PAYMENT = gql`
 	}
 `;
 
-const PaymentReceipt = () => {
+const PaymentReceipt = ({paymentID}) => {
 	const history = useHistory();
 	const location = useLocation();
 	const params = useParams();
 
 	const {data, loading, error} = useQuery(GET_PAYMENT,
-		{variables: {paymentId: params.paymentID}}
+		{variables: {paymentId: params.paymentID || paymentID}}
 	);
 
 	const currentPayingParent = useSelector(
@@ -201,11 +201,6 @@ const PaymentReceipt = () => {
 				</Paper>
 			</Grid>
 		);
-	};
-
-	const handlePrint = (event) => {
-		event.preventDefault();
-		window.print();
 	};
 
 	return (
@@ -346,11 +341,6 @@ const PaymentReceipt = () => {
 				</Grid>
 				<Grid className="receipt-actions" item xs={12}>
 					<Grid container direction="row" justify="flex-end" spacing={1}>
-						<Grid item>
-							<Button className="button" onClick={handlePrint}>
-								Print
-							</Button>
-						</Grid>
 						{!location.pathname.includes("parent") && (
 							<Grid item>
 								<Button
