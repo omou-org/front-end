@@ -28,29 +28,20 @@ const UnpaidSessions = () => {
 		return <Loading loadingText="UNPAID SESSIONS LOADING" small/>;
 	}
 
-	return (
-		<Card className="no-unpaid-sessions">
-			<CardContent>
-				<Typography variant="h5">No unpaid sessions to display!</Typography>
-				<HappyIcon fontSize="large"/>
-			</CardContent>
-		</Card>
-	);
+	if (UnpaidList.length === 0) {
+		return (
+			<Card>
+				<CardContent>
+					<Typography variant="h5">No unpaid sessions to display!</Typography>
+					<HappyIcon fontSize="large"/>
+				</CardContent>
+			</Card>
+		);
+	}
 
-	// if (UnpaidList.length === 0) {
-	// 	return (
-	// 		<Card>
-	// 			<CardContent>
-	// 				<Typography variant="h5">No unpaid sessions to display!</Typography>
-	// 				<HappyIcon fontSize="large"/>
-	// 			</CardContent>
-	// 		</Card>
-	// 	);
-	// }
-
-	// return UnpaidList.map((unpaidStudent) => (
-	// 	<UnpaidSessionCard key={unpaidStudent} unpaidStudent={unpaidStudent}/>
-	// ));
+	return UnpaidList.map((unpaidStudent) => (
+		<UnpaidSessionCard key={unpaidStudent} unpaidStudent={unpaidStudent}/>
+	));
 };
 
 export default UnpaidSessions;

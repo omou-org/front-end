@@ -49,7 +49,7 @@ const Dashboard = () => {
                         <br/>
                         <Paper className="today-paper" container>
                             <Grid container className="today-header-container">
-                                    <Grid item xs={5}>
+                                    <Grid item xs={7}>
                                     <Moment 
                                         className={`dashboard-date ${classes.date}`}
                                         format="dddd, MMMM DD">

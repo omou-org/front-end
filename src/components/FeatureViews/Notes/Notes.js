@@ -56,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	dateDisplay: {
 		fontSize: ".825rem",
+		position: "relative",
 		[theme.breakpoints.down('md')]: {
 			fontSize: ".625rem",
 			fontWeight: "200px"
@@ -65,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
 		position: "absolute",
 		bottom: "1%",
 		right: "1%",
+		margin: theme.spacing(1),
 		[theme.breakpoints.down('md')]: {
 			transform: "scale(.6)",
 			bottom: "2%",
@@ -531,7 +533,8 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                                 <Avatar
                                     variant="square"
                                     variant="rounded"
-									className={`noteNotification ${isDashboard ? classes.notesNotification : null }`}                                    onClick={toggleNoteField(note.id, "important")}
+									className={`noteNotification ${isDashboard ? classes.notesNotification : null }`}                                    
+									onClick={toggleNoteField(note.id, "important")}
                                     style={note.important ? {"background-color": "red"} : {}} >!
                                 </Avatar>
                             </Typography>
@@ -541,29 +544,33 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                                 {note.body}
                             </Typography>
 							<Grid container>
-								<Grid item xs={6}>
+								<Grid item xs={12}>
 									<Typography
-									className={`date ${isDashboard? classes.dateDisplay : null}`}
-									style={{"fontWeight": "500"}}>
+									className={`date ${classes.dateDisplay}`}>
 									{numericDateString(note.timestamp)}
 									</Typography>
 								</Grid>
-								<Grid item xs={6}>
-									<div className={`actions ${isDashboard? classes.actionDashboardIcons : classes.actionIcons}`}>
+								<Grid item xs={12}>
+									<div className={`actions ${classes.actionDashboardIcons}`}>
 									<IconButton
 										className={classes.icons}
-										onClick={openDelete(note.id)}>
+										onClick={openDelete(note.id)}
+										size="small"
+										edge="start">
 										<Delete/>
 									</IconButton>
 									<IconButton
 										className={classes.icons}
-										onClick={openExistingNote(note)}>
+										onClick={openExistingNote(note)}
+										size="small">
 										<EditIcon/>
 									</IconButton>
 									<IconButton
 										className={classes.icons}
 										onClick={toggleNoteField(note.id, "complete")}
-										style={note.complete ? {"color": "#43B5D9"} : {}}>
+										style={note.complete ? {"color": "#43B5D9"} : {}}
+										size="small"
+										edge="end">
 										<DoneIcon/>
 									</IconButton>
 									</div>
