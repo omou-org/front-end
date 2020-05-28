@@ -15,11 +15,14 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 // Local Component Imports
 import Search from "../../components/FeatureViews/Search/Search";
+import Avatar from "@material-ui/core/Avatar";
+import {stringToColor} from "../FeatureViews/Accounts/accountUtils";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const AuthenticatedNav = ({ toggleDrawer }) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
-	const authToken = useSelector(({auth}) => auth.token);
+	const authUser = useSelector(({auth}) => auth);
 
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const [isMobileSearching, setMobileSearching] = useState(false);
@@ -38,9 +41,11 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
 		setMobileSearching(searchQuery);
 	};
 
-	if (!authToken) {
+	if (!authUser.token) {
 		return <Redirect push to="/login"/>;
 	}
+
+	const name = `${authUser.first_name} ${authUser.last_name}`;
 
 	return (
 		<AppBar className="OmouBar" position="sticky">
@@ -67,6 +72,22 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
 					</>
 				)}
 				<Search onMobileType={handleMobileSearch}/>
+				<Tooltip title={`${name}'s Profile`}>
+					<Avatar
+						className="avatar"
+						alt={name}
+						style={{
+							"backgroundColor": stringToColor(name),
+							fontSize: ".9em",
+							height: "30px", width: "30px",
+							textDecoration: "none"
+						}}
+						component={NavLinkNoDup}
+						to={"/accounts/parent/2"}
+					>
+						{name.match(/\b\w/ug).join("")}
+					</Avatar>
+				</Tooltip>
 				<Typography className="catsButton" to="/cats" component={NavLinkNoDup}>
 					CATS
 				</Typography>
