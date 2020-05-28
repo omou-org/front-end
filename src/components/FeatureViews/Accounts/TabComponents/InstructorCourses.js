@@ -85,11 +85,6 @@ const InstructorCourses = ({ instructorID }) => {
           .map((courseID) => {
             const course = courses[courseID];
             const {
-              days,
-              start_date,
-              end_date,
-              start_time,
-              end_time,
               is_confirmed,
             } = courseDateFormat(course);
             return (
