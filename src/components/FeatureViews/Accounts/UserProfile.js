@@ -32,6 +32,7 @@ import Loading from "components/Loading";
 import ProfileHeading from "./ProfileHeading.js";
 import {useAccountNotes} from "actions/userActions";
 import UserAvatar from "./UserAvatar";
+import SettingsIcon from "@material-ui/icons/Settings"
 
 const userTabs = {
 	instructor: [
@@ -55,6 +56,11 @@ const userTabs = {
 			tab_heading: "Notes",
 			tab_id: 7,
 		},
+		{
+			icon: <SettingsIcon className="SettingsIcon"/>,
+			tab_heading: "Notification Settings",
+			tab_id: 10,
+		}
 	],
 	parent: [
 		{
@@ -72,6 +78,11 @@ const userTabs = {
 			tab_heading: "Notes",
 			tab_id: 7,
 		},
+		{
+			icon: <SettingsIcon className="SettingsIcon"/>,
+			tab_heading: "Notification Settings",
+			tab_id: 10,
+		}
 	],
 	student: [
 		{
