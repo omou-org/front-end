@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
-import Recharts from "recharts";
-import { makeStyles } from "@material-ui/core/styles";
+import {
+  Chart,
+  BarSeries,
+  Title,
+  ArgumentAxis,
+  ValueAxis,
+  Legend,
+} from '@devexpress/dx-react-chart-material-ui';
+import { Animation } from '@devexpress/dx-react-chart';
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core";
@@ -39,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: "28px",
     fontFamily: "Roboto",
     fontStyle: "normal",
+    color: "#666666",
   },
   chromeTabStart: {
     alignSelf: "flex-end",
@@ -87,6 +96,26 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "300",
     fontStyle: "normal",
   },
+  chartPaper: {
+    // height: "260px",
+    width: "332px",
+    marginLeft: "1.675em",
+    marginTop: "3.7875em",
+  },
+  popSub: {
+    float: "left",
+    marginLeft: "24px",
+    marginTop: "20px",
+    marginBottom: "10px",
+    fontWeight: "bold",
+    lineHeight: "28px",
+    fontFamily: "Roboto",
+    fontStyle: "normal",
+    color: "#666666",
+  },
+  legendBar: {
+    marginLeft: "1.25em"
+  }
 }));
 
 const AdminDashboard = (props) => {
@@ -146,24 +175,35 @@ const AdminDashboard = (props) => {
               <Grid item xs={12}>
                 <TabPanel index={0} value={index}>
                   <Grid item xs>
-                  <Typography className={classes.tabName} classes>
-                    QUICK SNAPSHOT
-                  </Typography>
-                  <Grid container>
-                    <Grid item md={2} className={classes.snapshot}>
-                      <Snapshot snapName="Revenue" number="$200k" />
-                    </Grid>
-                    <Grid item md={2} className={classes.snapshot}>
-                    <Snapshot snapName="Outstanding Payments" number="$877" />
-                    </Grid>
-                    <Grid item md={2} className={classes.snapshot}>
-                    <Snapshot snapName="Total Sessions" number="45" />
+                    <Typography className={classes.tabName}>
+                      QUICK SNAPSHOT
+                    </Typography>
+                    <Grid container>
+                      <Grid item md={2} className={classes.snapshot}>
+                        <Snapshot snapName="Revenue" number="$200k" />
+                      </Grid>
+                      <Grid item md={2} className={classes.snapshot}>
+                        <Snapshot
+                          snapName="Outstanding Payments"
+                          number="$877"
+                        />
+                      </Grid>
+                      <Grid item md={2} className={classes.snapshot}>
+                        <Snapshot snapName="Total Sessions" number="45" />
+                      </Grid>
+                      <Grid item xs>
+                        Outstanding Payments
+                      </Grid>
+                      <Grid container direction="column">
+                        <Grid item md={2}>
+                          <Typography className={classes.popSub}>
+                            POPULAR SUBJECT
+                          </Typography>
+                          <PopularSubject />
+                        </Grid>
+                      </Grid>
                     </Grid>
                   </Grid>
-                </Grid>
-                <Grid item xs>
-                  Outstanding Payments
-                </Grid>
                 </TabPanel>
                 <TabPanel index={1} value={index}>
                   Page Two
@@ -190,9 +230,81 @@ const Snapshot = (props) => {
       <Typography className={classes.snapName}>{props.snapName}</Typography>
       <br />
       <br />
-      <Typography className={classes.number}>
-        {props.number}
-      </Typography>
+      <Typography className={classes.number}>{props.number}</Typography>
+    </Paper>
+  );
+};
+
+const styles = theme => ({
+  xAxis: {
+    fontSize: ".4rem",
+    
+  },
+  titleText: {
+    transform: "rotate(270deg)",
+    fontSize: ".5rem",
+    textAlign: "left",
+    position: "relative",
+    right: "20.1875em",
+    top: "1em"
+  },
+  bars: {
+    backgroundColor: "pink"
+  }
+});
+
+const TextComponent = withStyles(styles)(({ classes, ...restProps }) => (
+  <Title.Text {...restProps} className={classes.titleText} />
+));
+
+const Root = withStyles(styles)(({ classes, ...restProps }) => (
+  <ArgumentAxis.Root {...restProps} className={classes.xAxis} />
+));
+
+const LabelComponent = withStyles(styles)(({ classes, ...restProps }) => (
+  <ArgumentAxis.Label {...restProps} className={classes.xAxis} />
+));
+
+const TickComponent = withStyles(styles)(({ classes, ...restProps }) => (
+  <ArgumentAxis.Tick {...restProps} className={classes.bar} />
+));
+
+
+const PopularSubject = (props) => {
+  const classes = useStyles();
+  const data = [
+    { class: 'ALGEBRA', session: 48 },
+    { class: 'SAT ENG', session: 37 },
+    { class: 'AP CHEM', session: 33 },
+    { class: 'GEOMETRY', session: 31 },
+    { class: 'COLLEGE PREP', session: 26 },
+  ];
+  const [chartData, setChartData] = useState(data);
+  
+
+  
+  return (
+    <Paper elevation={0} className={classes.chartPaper}>
+        <Chart
+          data={chartData}
+          height={213}
+          width={294}
+          className={classes.legendBar}
+          >
+          <ArgumentAxis rootComponent={Root} labelComponent={LabelComponent} tickComponent={TickComponent}/>
+          <ValueAxis max={60} />
+
+          <BarSeries
+            name="NUMBER OF SESSIONS"
+            valueField="session"
+            argumentField="class"
+            barWidth={.5}
+            maxBarWidth={18}
+          />
+          <Animation />
+          <Title text="NUMBER OF SESSIONS" textComponent={TextComponent}/>
+          {/* <Legend position="left" /> */}
+        </Chart>
     </Paper>
   );
 };

@@ -84,7 +84,8 @@ const useTabStyles = makeStyles(({ palette, spacing, breakpoints }) => {
     wrapper: {
       zIndex: 2,
       marginTop: spacing(0.5),
-      textTransform: "initial"
+      textTransform: "initial",    
+      color: "#666666",
     }
   };
 });
