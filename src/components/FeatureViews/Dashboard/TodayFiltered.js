@@ -1,11 +1,10 @@
-import { useSelector } from 'react-redux';
-import React, { useState, useEffect } from 'react';
+import {useSelector} from 'react-redux';
+import React, {useState} from 'react';
 import './Dashboard.scss';
 import Loading from "components/Loading";
 import Select from 'react-select';
 import * as hooks from "actions/hooks";
 import {useSearchSession} from "actions/searchActions";
-
 
 const TodayFiltered = () => {
     let sessions = useSelector(({Search}) => Search.sessions);
@@ -24,41 +23,52 @@ const TodayFiltered = () => {
 
     const handleChange = e => {
         setCurrentFilter({filter: e.value, showFiltered: true})
-    }
+    };
 
+    // move this code chunk further down so that you know both the categories and the courses have been loaded
     if (sessions){
-        const courseArray = Object.values(courses);
-        presentCategories = sessions.map(({course}) => course);
-        categoryID = courseArray.filter(allCourses=> {
-            return presentCategories.some(coursesToday=> {
+        const courseArray = Object.values(courses); // list of all course objects
+        presentCategories = sessions.map(({course}) => course); // list of current session categories
+        categoryID = courseArray.filter(allCourses => { // rename to coursesTodayList
+            return presentCategories.some(coursesToday => {
                 return coursesToday == allCourses.course_id
-            }); 
-          })
-        categoryID = categoryID.map(({category}) => category);
-        categoryNames = categoryID.map(e => allCategories.filter(arr => arr.id ===e).map(category=>category.name)).flat()
+            });
+        });
+        // courseArray.filter( allCourses => presentCategories.some(...) );
+        categoryID = categoryID.map(({category}) => category); // rename to categoryIdList
+        categoryNames = categoryID
+            .map(e => allCategories.filter(arr => arr.id === e) // use find function to find category you're looking for
+                .map(category => category.name))
+            .flat();
         categoryNames = [...new Set(categoryNames)];
 
-        if (categoryNames && categoryNames.length>0) {
-         
-            categoryList = categoryNames.map((name) => { 
-              return {
-                "label": name, 
-                "value": name
-              }; 
-            });    
-        categoryList.push({
+        //[ 1, 2, 3, 4, 5, 5, 6]
+        // .filter(5) => [ 5, 5]
+        // .filter(1) => [ 1 ]
+        // [ [1], [2], [3], [5, 5]]
+        // .flat() [ 1, 2, 3, 5, 5]
+
+        if (categoryNames && categoryNames.length > 0) {
+
+            categoryList = categoryNames.map((name) => ({
+                    "label": name, // human readable
+                    "value": name // code readable => change to category id
+                })
+            );
+            categoryList.push({ // delete, use the isClearable prop in the react-select component
             "label": "All Categories",
             "value": ""
         })
         }
     }
 
-    useSearchSession(currentFilter.filter, 1, "today", "timeAsc");
-    useSelector(({Search}) => Search.sessions);
-    
-    const categoryStatus = hooks.useCategory();
-    
-    if(hooks.isLoading(categoryStatus)) {
+    // move to earlier in the code
+    useSearchSession(currentFilter.filter, 1, "today", "timeAsc"); // TODO: ask Matt why use category name as filter?
+    useSelector(({Search}) => Search.sessions); // delete
+
+    const categoryStatus = hooks.useCategory(); // move this to earlier in the code
+
+    if (hooks.isLoading(categoryStatus)) { // move this earlier in the code
         return(
             <Loading
                 loadingText = "LOADING"
@@ -76,6 +86,6 @@ const TodayFiltered = () => {
         onChange={handleChange}
     />
     )
-}
+};
 
 export default TodayFiltered;
