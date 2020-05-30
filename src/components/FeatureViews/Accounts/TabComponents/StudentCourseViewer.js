@@ -148,7 +148,6 @@ const StudentCourseViewer = ({ studentID, current = true }) => {
 										</Grid>
 										<Grid item xs={3}>
 											<Typography align="left" className="accounts-table-text">
-												{console.log(course)}
 												<Moment
 													format="MMM D YYYY"
 													date={course.schedule.start_date}

@@ -19,8 +19,9 @@ import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import LoadingError from "../Accounts/TabComponents/LoadingCourseError"
+import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
 import { makeStyles } from "@material-ui/core/styles";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import "./Notes.scss";
 import "../Accounts/TabComponents/TabComponents.scss";
@@ -368,11 +369,13 @@ const Notes = ({ ownerType, ownerID }) => {
 						onChange={handleTitleUpdate}
 						value={noteTitle}
 					/>
+					<Tooltip title="This is an Important Note!" interactive>
 					<NotificationIcon
 						className="notification"
 						onClick={toggleNotification}
 						style={notificationColor}
 					/>
+					</Tooltip>
 				</DialogTitle>
 				<DialogContent>
 					<InputBase

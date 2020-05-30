@@ -174,7 +174,7 @@ const RegistrationCourse = () => {
 								<RegistrationIcon className="NoteIcon"/> Registration
 							</>
 						}
-					/>
+						/>
 					<Tab
 						label={
 							hasImportantNotes ? (
