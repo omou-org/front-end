@@ -155,17 +155,13 @@ const SearchResults = () => {
     return <NoResultsPage />;
   }
 
-  const handleBack = () => {
-    history.goBack()
-  }
-
   return (
     <Grid className="search-results" container>
       <Grid item xs={12}>
         <Paper elevation={2} className="main-search-view" align="left">
-          {filter !== null ? <Grid className="prevResults" item xs={12}>
+          {filter !== null && <Grid className="prevResults" item xs={12}>
             <BackButton style={{ marginBottom: "2vh" }} btnText="To All Search Results" />
-          </Grid> : ""}
+          </Grid>}
           <Grid className="searchResults" item xs={12}>
             <Typography align="left" className="search-title" variant="h3">
               {numResults} Search Result{numResults !== 1 && "s"} for {filter && capitalizeString(filter)} "
