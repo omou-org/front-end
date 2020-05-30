@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { bindActionCreators } from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
@@ -92,7 +92,6 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
     useEffect(() => {
         api.initializeRegistration();
     }, [api]);
-
     const enrollmentStatus = hooks.useEnrollmentByCourse(course.course_id);
     const enrollments = useSelector(({ Enrollments }) => Enrollments);
     const reduxCourse = courses[course.course_id];
@@ -291,7 +290,7 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
                         <>
                             <Button className="button" onClick={handleTutoringMenuClick}>
                                 Tutoring Options
-                                <ArrowDropDownIcon/>
+                                <ArrowDropDownIcon />
                             </Button>
                             <StyledMenu anchorEl={tutoringActionsAnchor}
                                 keepMounted
@@ -371,8 +370,11 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
                     <Button color="primary" onClick={handleEditToggle(true)}>
                         Cancel
                     </Button>
-                   
-                    <Button color="primary" component={Link} to={"edit"} onClick={handleEditToggle(false)}>
+                    <Button
+                        color="primary"
+                        component={NavLink}
+                        to={{"pathname":`/scheduler/edit-session/${course.course_id}/${session.id}/${instructor_id}/edit`
+                        ,"state":{course:course, session:session}}}>
                         Confirm to Edit
                     </Button>
                 </DialogActions>

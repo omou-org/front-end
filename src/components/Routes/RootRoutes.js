@@ -61,7 +61,7 @@ export const RootRoutes = () => {
                 render={(passedProps) => <SessionView {...passedProps} />}
             />
             <Route
-                path="/scheduler/view-session/:course_id/:session_id/:instructor_id/edit"
+                path="/scheduler/edit-session/:course_id/:session_id/:instructor_id/edit"
                 render={(passedProps) => <EditSessionView {...passedProps} />}
             />
             <ProtectedRoute
