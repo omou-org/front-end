@@ -63,6 +63,7 @@ const AccountsCards = ({user, isLoading}) => {
                 style={{
                     "cursor": "pointer",
                     "padding": "10px",
+                    "height":"23vh"
                 }}>
                 <Grid container>
                     <Hidden mdDown>
@@ -83,7 +84,7 @@ const AccountsCards = ({user, isLoading}) => {
                             <Typography
                                 align="left"
                                 style={{"fontWeight": "500"}}>
-                                {truncateStrings(`${user.user.first_name} ${user.user.last_name}`, 10)}
+                                {truncateStrings(`${user.user.first_name} ${user.user.last_name}`, 20)}
                             </Typography>
                             <Grid align="left">
                                 <Chip
@@ -124,7 +125,9 @@ const AccountsCards = ({user, isLoading}) => {
                                         <Grid
                                             item
                                             xs={10}>
+                                                <Typography noWrap={true} style={{"fontSize":10}}>
                                             {user.user.email}
+                                            </Typography>
                                         </Grid>
                                     </Grid>
                                 }
