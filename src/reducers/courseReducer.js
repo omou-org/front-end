@@ -135,7 +135,7 @@ export const updateCourse = (courses, id, course) => ({
       notes: {},
     }),
     course_id: id,
-    title: course.subject || "",
+	  title: course.title || "",
     schedule: {
       start_date: course.start_date,
       end_date: course.end_date,
