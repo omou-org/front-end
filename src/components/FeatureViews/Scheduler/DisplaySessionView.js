@@ -38,6 +38,7 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { capitalizeString } from "../../../utils";
 
+
 const StyledMenu = withStyles({
     "paper": {
         "border": "1px solid #d3d4d5",
@@ -286,6 +287,15 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
                 direction="row"
                 justify="flex-end">
                 <Grid item>
+                    <Button className="button"
+                        color="secondary"
+                        component={NavLink}
+                        to={`/registration/course/${course.course_id}`}
+                        variant="outlined">
+                        Course Page
+                    </Button>
+                </Grid>
+                <Grid item>
                     {studentKeys.length === 1 && (
                         <>
                             <Button className="button" onClick={handleTutoringMenuClick}>
@@ -315,30 +325,13 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
                     )}
                 </Grid>
                 <Grid item>
-                    <Button className="button"
-                        color="secondary"
+                    <Button 
+                        className="editButton"
+                        color="primary"
                         onClick={handleEditToggle(true)}
                         to="/"
                         variant="outlined">
-                        Edit Session
-                    </Button>
-                </Grid>
-                <Grid item>
-                    <Button className="button"
-                        color="secondary"
-                        component={NavLink}
-                        to={`/registration/course/${course.course_id}`}
-                        variant="outlined">
-                        Course Page
-                    </Button>
-                </Grid>
-                <Grid item>
-                    <Button className="button"
-                        color="secondary"
-                        component={NavLink}
-                        to="/scheduler"
-                        variant="outlined">
-                        Return to scheduling
+                        Reschedule
                     </Button>
                 </Grid>
             </Grid>
@@ -373,8 +366,10 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
                     <Button
                         color="primary"
                         component={NavLink}
-                        to={{"pathname":`/scheduler/edit-session/${course.course_id}/${session.id}/${instructor_id}/edit`
-                        ,"state":{course:course, session:session}}}>
+                        to={{
+                            "pathname": `/scheduler/edit-session/${course.course_id}/${session.id}/${instructor_id}/edit`
+                            , "state": { course: course, session: session }
+                        }}>
                         Confirm to Edit
                     </Button>
                 </DialogActions>
