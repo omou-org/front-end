@@ -67,8 +67,8 @@ const useStyles = makeStyles((theme) => ({
 		bottom: "1%",
 		right: "1%",
 		margin: theme.spacing(1),
-		[theme.breakpoints.down('md')]: {
-			transform: "scale(.6)",
+		[theme.breakpoints.down('lg')]: {
+			transform: "scale(.5)",
 			bottom: "2%",
 			right: "0%"
 		}

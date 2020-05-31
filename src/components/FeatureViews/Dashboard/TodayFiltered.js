@@ -29,7 +29,7 @@ const TodayFiltered = () => {
         e ? setCurrentFilter({filter: e.value, showFiltered: true}): setCurrentFilter({filter:"", showFiltered: false});
     };
 
-    useSearchSession(currentFilter.filter, 1, "", "", "timeAsc"); 
+    useSearchSession(currentFilter.filter, 1, "", "today", "timeAsc"); 
 
     if (hooks.isLoading(categoryStatus)) { 
         return(
