@@ -142,20 +142,12 @@ const StudentCourseViewer = ({studentID, current}) => {
 											<Typography align="left" className="accounts-table-text">
 												<Moment
 													format="h:mm a"
-													date={
-														enrollment.course.startDate
-														+ "T" +
-														enrollment.course.startTime
-													}
+													date={`${enrollment.course.startDate}T${enrollment.course.startTime}`}
 												/>
 												{` - `}
 												<Moment
 													format="h:mm a"
-													date={
-														enrollment.course.endDate
-														+ "T" +
-														enrollment.course.endTime
-													}
+													date={`${enrollment.course.endDate}T${enrollment.course.endTime}`}
 												/>
 											</Typography>
 										</Grid>
