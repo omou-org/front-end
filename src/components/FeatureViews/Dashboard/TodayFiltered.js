@@ -64,10 +64,6 @@ const TodayFiltered = () => {
                     "value": name // code readable => change to category id
                 })
             );
-        //     categoryList.push({ // delete, use the isClearable prop in the react-select component
-        //     "label": "All Categories",
-        //     "value": ""
-        // })
         }
     }
 
