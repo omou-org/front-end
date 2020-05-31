@@ -59,7 +59,7 @@ const calendarViewToFilterVal = {
     "timeGridWeek": "week",
 };
 
-const Scheduler = () => {
+const Scheduler = (props) => {
     const classes = useStyles();
     const history = useHistory();
 
@@ -75,7 +75,9 @@ const Scheduler = () => {
     const [instructorFilter, setInstructorFilter] =
         useState(prevState.instructorFilter);
     const [timeShift, setTimeShift] = useState(prevState.timeShift || 0);
-    const [view, setView] = useState(prevState.view || "timeGridDay");
+    let timeView;
+    props.location.state ? timeView = "timeGridDay": timeView = prevState.view || "timeGridDay";
+    const [view, setView] = useState(timeView)
 
     hooks.useCourse();
     hooks.useInstructor();

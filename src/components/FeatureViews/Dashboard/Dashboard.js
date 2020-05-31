@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import React from 'react';
-import {NavLink} from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 import './Dashboard.scss';
 import Today from './Today';
 import UnpaidSessions from './../AdminPortal/UnpaidSessions';
@@ -37,6 +37,8 @@ const Dashboard = () => {
     const classes = useStyles();
     const user = useSelector(({auth}) => auth) || [];
     const currentDate = moment()
+    let location = useLocation();
+    console.log(location.pathname);
 
     return(
         <Grid container>
@@ -59,8 +61,12 @@ const Dashboard = () => {
                                     <Button 
                                         variant="outlined" 
                                         style={{margin:"5px", float: "right"}}
-                                        component={NavLink}
-                                        to='/scheduler'
+                                        component={Link}
+                                        to={{
+                                            pathname: "/scheduler",
+                                            state: { isDashboard: true}
+                                        }}
+                                        // to='/scheduler'
                                         >View in Scheduler
                                     </Button>
                             </Grid>

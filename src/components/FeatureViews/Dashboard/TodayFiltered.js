@@ -56,7 +56,6 @@ const TodayFiltered = () => {
                 .map(category => category.name))
             .flat();
         categoryNames = [...new Set(categoryNames)];
-        console.log(categoryNames)
 
         if (categoryNames && categoryNames.length > 0) {
 
