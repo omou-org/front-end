@@ -26,10 +26,10 @@ const TodayFiltered = () => {
     });
 
     const handleChange = e => {
-        setCurrentFilter({filter: e.value, showFiltered: true})
+        e ? setCurrentFilter({filter: e.value, showFiltered: true}): setCurrentFilter({filter:"", showFiltered: false});
     };
 
-    useSearchSession(currentFilter.filter, 1, "", "today", "timeAsc"); 
+    useSearchSession(currentFilter.filter, 1, "", "", "timeAsc"); 
 
     if (hooks.isLoading(categoryStatus)) { 
         return(
@@ -64,10 +64,10 @@ const TodayFiltered = () => {
                     "value": name // code readable => change to category id
                 })
             );
-            categoryList.push({ // delete, use the isClearable prop in the react-select component
-            "label": "All Categories",
-            "value": ""
-        })
+        //     categoryList.push({ // delete, use the isClearable prop in the react-select component
+        //     "label": "All Categories",
+        //     "value": ""
+        // })
         }
     }
 

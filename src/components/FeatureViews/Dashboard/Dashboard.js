@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import React from 'react';
-import {Link, useLocation} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import './Dashboard.scss';
 import Today from './Today';
 import UnpaidSessions from './../AdminPortal/UnpaidSessions';
@@ -37,8 +37,6 @@ const Dashboard = () => {
     const classes = useStyles();
     const user = useSelector(({auth}) => auth) || [];
     const currentDate = moment()
-    let location = useLocation();
-    console.log(location.pathname);
 
     return(
         <Grid container>
