@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
 	dateDisplay: {
 		fontSize: ".825rem",
 		position: "relative",
-		[theme.breakpoints.down('md')]: {
+		[theme.breakpoints.down('lg')]: {
 			fontSize: ".625rem",
 			fontWeight: "200px"
 		}
@@ -66,10 +66,9 @@ const useStyles = makeStyles((theme) => ({
 		position: "absolute",
 		bottom: "1%",
 		right: "1%",
-		margin: theme.spacing(1),
 		[theme.breakpoints.down('lg')]: {
 			transform: "scale(.5)",
-			bottom: "2%",
+			bottom: "0%",
 			right: "0%"
 		}
 	},
