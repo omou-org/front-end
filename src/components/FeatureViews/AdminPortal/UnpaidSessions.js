@@ -30,7 +30,7 @@ const UnpaidSessions = () => {
 
 	if (UnpaidList.length === 0) {
 		return (
-			<Card>
+			<Card className="no-unpaid-sessions">
 				<CardContent>
 					<Typography variant="h5">No unpaid sessions to display!</Typography>
 					<HappyIcon fontSize="large"/>
