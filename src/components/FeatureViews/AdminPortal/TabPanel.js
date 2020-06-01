@@ -6,7 +6,7 @@ import Paper from "@material-ui/core/Paper";
 
 export default function TabPanel(props) {
     const { children, value, index, ...other } = props;
-    console.log(children)
+    // console.log(children)
   
     return (
       <div
@@ -31,4 +31,3 @@ export default function TabPanel(props) {
     index: PropTypes.any.isRequired,
     value: PropTypes.any.isRequired,
   };
-  
