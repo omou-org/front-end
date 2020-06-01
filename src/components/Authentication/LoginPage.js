@@ -99,14 +99,16 @@ const LoginPage = () => {
                     <Grid item>
                         <FormControlLabel
                             control={<Checkbox checked={savePassword}
+                                inputProps={{"data-cy": "rememberMe"}}
                                 onChange={toggleSavePassword} />}
                             label="Remember Me" />
                     </Grid>
                     <Grid item>
-                        <Link className={classes.forgot} to={{
-                            "pathname": "/forgotpassword",
-                            "state": {email},
-                        }}>
+                        <Link className={classes.forgot}
+                            data-cy="forgotPassword" to={{
+                                "pathname": "/forgotpassword",
+                                "state": {email},
+                            }}>
                             Forgot Password?
                         </Link>
                     </Grid>

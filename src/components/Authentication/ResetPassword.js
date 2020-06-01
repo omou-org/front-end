@@ -56,7 +56,7 @@ const ResetPassword = () => {
             </Typography>
             {submitted ?
                 <Button className={classes.primaryButton} color="primary"
-                    component={Link} to={{
+                    component={Link} data-cy="return" to={{
                         "pathname": "/login",
                         "state": {email},
                     }} variant="contained">
@@ -74,14 +74,15 @@ const ResetPassword = () => {
                     <Grid alignItems="center" container justify="space-evenly">
                         <Grid item>
                             <Button className={classes.primaryButton}
-                                color="primary" disabled={!password}
+                                color="primary" data-cy="reset"
+                                disabled={!password}
                                 type="submit" variant="contained">
                                 Reset Password
                             </Button>
                         </Grid>
                         <Grid item>
                             <Button className={classes.secondaryButton}
-                                component={Link} to={{
+                                component={Link} data-cy="return" to={{
                                     "pathname": "/login",
                                     "state": {email},
                                 }} variant="outlined">

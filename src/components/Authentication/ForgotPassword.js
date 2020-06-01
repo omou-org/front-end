@@ -48,7 +48,7 @@ const ForgotPassword = () => {
             </Typography>
             {submitted ?
                 <Button className={classes.primaryButton} color="primary"
-                    component={Link} to={{
+                    component={Link} data-cy="return" to={{
                         "pathname": "/login",
                         "state": {email},
                     }} variant="contained">
@@ -59,7 +59,7 @@ const ForgotPassword = () => {
                         label="E-Mail" margin="normal"
                         onChange={handleEmailInput} value={email} />
                     <Button className={classes.primaryButton} color="primary"
-                        data-cy="signInButton" disabled={!email}
+                        data-cy="reset" disabled={!email}
                         type="submit" variant="contained">
                         Send Reset Email
                     </Button>
