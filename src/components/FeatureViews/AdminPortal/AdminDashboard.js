@@ -321,7 +321,7 @@ const styles = (theme) => ({
     textAlign: "left",
     position: "relative",
     right: "15.1875em",
-    top: "4em",
+    top: "1aem",
     fontStyle: "normal",
     color: "#747D88",
   },
@@ -530,7 +530,7 @@ const RevenuebyQuarter = () => {
   ));
   
   const TextComponent = withStyles(styles)(({ classes, ...restProps }) => (
-    <Title.Text {...restProps} className={classes.titleText} />
+    <Title.Text {...restProps} className={classes.legendText} />
   ));
   
 
