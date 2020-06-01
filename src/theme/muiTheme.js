@@ -16,6 +16,7 @@ const theme = createMuiTheme({
         },
     },
     "colors": {
+        "black": "#000000",
         "darkGray": "#666666",
     },
     "typography": {},

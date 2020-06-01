@@ -8,13 +8,14 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Grid from "@material-ui/core/Grid";
 import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
+import PasswordInput from "./PasswordInput";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import {makeStyles} from "@material-ui/core/styles";
-import useAuthStyles from "./styles.js";
 
 import {isFail, isLoading, isSuccessful} from "actions/hooks";
 import {login, resetAttemptStatus} from "actions/authActions.js";
+import {makeStyles} from "@material-ui/core/styles";
+import useAuthStyles from "./styles.js";
 
 const useStyles = makeStyles((theme) => ({
     "forgot": {
@@ -88,10 +89,10 @@ const LoginPage = () => {
                     inputProps={{"data-cy": "emailField"}} label="E-Mail"
                     margin="normal" onChange={handleTextInput(setEmail)}
                     value={email} />
-                <TextField autoComplete="current-password"
+                <PasswordInput autoComplete="current-password"
                     error={failedLogin || password === ""} fullWidth
                     inputProps={{"data-cy": "passwordField"}} label="Password"
-                    onChange={handleTextInput(setPassword)} type="password"
+                    onChange={handleTextInput(setPassword)}
                     value={password} />
                 <Grid alignItems="center" className={classes.options} container
                     justify="space-between">
@@ -110,11 +111,28 @@ const LoginPage = () => {
                         </Link>
                     </Grid>
                 </Grid>
-                <Button className={classes.primaryButton} color="primary"
-                    data-cy="signInButton" disabled={!email || !password}
-                    type="submit" variant="contained">
-                    sign in
-                </Button>
+                <Grid alignItems="center" container justify="space-evenly">
+                    <Grid item>
+                        <Button className={classes.primaryButton}
+                            color="primary" data-cy="signInButton"
+                            disabled={!email || !password} type="submit"
+                            variant="contained">
+                            sign in
+                        </Button>
+                    </Grid>
+                    <Grid item>
+                        <Button className={classes.secondaryButton}
+                            component={Link} to={{
+                                "pathname": "/newaccount",
+                                "state": {
+                                    email,
+                                    password,
+                                },
+                            }} variant="outlined">
+                            New Account
+                        </Button>
+                    </Grid>
+                </Grid>
             </form>
             {failedLogin && (
                 <Typography color="error" data-cy="errorMessage">

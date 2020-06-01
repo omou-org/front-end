@@ -37,9 +37,8 @@ const ForgotPassword = () => {
     };
 
     return (
-        <Paper className={`${classes.root} ${classes.wide}`}>
-            <Typography align="center" className={classes.header}
-                color="primary">
+        <Paper className={classes.root}>
+            <Typography align="left" className={classes.header} color="primary">
                 {submitted ? "reset email sent!" : "forgot your password?"}
             </Typography>
             <Typography align="left" className={classes.info}>
@@ -52,8 +51,7 @@ const ForgotPassword = () => {
                     component={Link} to={{
                         "pathname": "/login",
                         "state": {email},
-                    }}
-                    variant="contained">
+                    }} variant="contained">
                     Back to login
                 </Button> :
                 <form onSubmit={handleSubmit}>

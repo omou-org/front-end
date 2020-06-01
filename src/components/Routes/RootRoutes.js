@@ -9,19 +9,24 @@ import Accounts from "../FeatureViews/Accounts/Accounts";
 import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
 import AdminRoute from "./AdminRoute";
 import CatsPage from "../CatsPage/CatsPage";
-import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/EnrollmentView";
+import CourseSessionStatus from
+    "../FeatureViews/Accounts/TabComponents/EnrollmentView";
 // import Dashboard from "../FeatureViews/Dashboard/Dashboard";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
+import ForgotPassword from "../Authentication/ForgotPassword";
 import LoginPage from "../Authentication/LoginPage.js";
 import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage";
-import NotEnrolledStudentsDialog from "../FeatureViews/Scheduler/NotEnrolledStudentDialog";
-import ForgotPassword from "../Authentication/ForgotPassword";
+import NotEnrolledStudentsDialog from
+    "../FeatureViews/Scheduler/NotEnrolledStudentDialog";
 import ProtectedRoute from "./ProtectedRoute";
 import Registration from "../FeatureViews/Registration/Registration";
 import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
-import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
+import RegistrationCourse from
+    "../FeatureViews/Registration/RegistrationCourse";
 import RegistrationForm from "../Form/Form";
-import RegistrationReceipt from "../FeatureViews/Registration/RegistrationReceipt";
+import RegistrationReceipt from
+    "../FeatureViews/Registration/RegistrationReceipt";
+import ResetPassword from "../Authentication/ResetPassword";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
 import SearchResults from "../FeatureViews/Search/SearchResults";
 import SessionView from "../FeatureViews/Scheduler/SessionView";
@@ -36,6 +41,9 @@ export const RootRoutes = () => {
             {/* Authentication views */}
             <Route path="/forgotpassword">
                 <ForgotPassword />
+            </Route>
+            <Route path="/resetpassword">
+                <ResetPassword />
             </Route>
             <Route path="/login">
                 <LoginPage />

@@ -30,6 +30,9 @@ const useAuthStyles = makeStyles((theme) => ({
             "width": "80vw",
         },
     },
+    "secondaryButton": {
+        "margin-top": "20px",
+    },
 }));
 
 export default useAuthStyles;
