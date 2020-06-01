@@ -497,7 +497,7 @@ const handleAccountSearchResults = (state, {response}) => {
   let {StudentList, ParentList, InstructorList} = state;
   const {data} = response;
   data.results.forEach((account) => {
-    switch (account.account_type) {
+	  switch (account.account_type.toUpperCase()) {
 		case "STUDENT": {
         StudentList = updateStudent(StudentList, account.user.id, account);
         break;
@@ -516,10 +516,10 @@ const handleAccountSearchResults = (state, {response}) => {
         // no default
     }
   });
-  return {
+	return JSON.parse(JSON.stringify({
     ...state,
     InstructorList,
     ParentList,
     StudentList,
-  };
+	}));
 };

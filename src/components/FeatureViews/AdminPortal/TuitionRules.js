@@ -56,7 +56,7 @@ const TuitionRules = () => {
 
 	const editTuition = useCallback(
 		(id) => () => {
-			const editingRule = tuitionRules.find((rule) => rule.id === id);
+			const editingRule = tuitionRules.find((rule) => rule.id == id);
 			// if we're about to update/we were just editing
 			if (editingRule.editing) {
 				const ruleToUpload = {

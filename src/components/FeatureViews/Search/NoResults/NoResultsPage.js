@@ -13,26 +13,26 @@ const NoResultsPage = () => {
 		<Grid container className={"no-results"}>
 			<Grid item xs={12}>
 				<Paper elevation={2} className={"paper"}>
-					<BackButton/>
-					<hr/>
+					<BackButton />
+					<hr />
 					<div className="center">
 						<Typography variant={"h3"}>Sorry, no results were found</Typography>
-						<br/>
+						<br />
 						<div className="left">
 							<Typography variant={"h7"}>Search suggestions</Typography>
-							<Typography variant={"h6"}>
+							<Typography variant={"body1"}>
 								Check your spelling
-								<br/>
+								<br />
 								Try more general words
 							</Typography>
 
 							<Typography variant={"h7"}>Popular pages</Typography>
 							<Typography variant={"h6"}>
 								<Link href="/scheduler">Scheduler</Link>
-								<br/>
-								<Link href={"/registration"}>Registration Catalogue</Link>
+								<br />
+								<Link href={"/registration"}>Registration</Link>
 							</Typography>
-							<div className="space"/>
+							<div className="space" />
 						</div>
 					</div>
 				</Paper>

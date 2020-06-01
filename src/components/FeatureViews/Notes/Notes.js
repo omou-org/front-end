@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {bindActionCreators} from "redux";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 
 import AddIcon from "@material-ui/icons/AddOutlined";
@@ -21,8 +21,10 @@ import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
+import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
+import IconButton from "@material-ui/core/IconButton";
 import {makeStyles} from "@material-ui/core/styles";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import "./Notes.scss";
 import "../Accounts/TabComponents/TabComponents.scss";
@@ -36,7 +38,7 @@ import {
 	PATCH,
 	POST,
 } from "actions/actionTypes";
-import {instance, REQUEST_STARTED} from "actions/apiActions";
+import { instance, REQUEST_STARTED } from "actions/apiActions";
 
 const useStyles = makeStyles((theme) => ({
 	actionIcons: {
@@ -44,27 +46,38 @@ const useStyles = makeStyles((theme) => ({
 		bottom: "5%",
 		right: "5%",
 	},
+	icons: {
+		padding: "3px",
+		transform: "scale(.8)",
+	},
 	notesTitle: {
 		letterSpacing: "0.01071em",
 		fontSize: "0.875rem",
 	},
 	dateDisplay: {
 		fontSize: ".825rem",
-		[theme.breakpoints.down('md')]: {
+		position: "relative",
+		[theme.breakpoints.down('lg')]: {
 			fontSize: ".625rem",
 			fontWeight: "200px"
 		}
 	},
 	actionDashboardIcons: {
 		position: "absolute",
-		bottom: "5%",
-		right: "5%",
-		[theme.breakpoints.down('md')]: {
-			transform: "scale(.7)",
-			bottom: "2%",
+		bottom: "1%",
+		right: "1%",
+		[theme.breakpoints.down('lg')]: {
+			transform: "scale(.5)",
+			bottom: "0%",
 			right: "0%"
 		}
-	}
+	},
+	notesNotification: {
+        [theme.breakpoints.down('md')]: {
+            height: "20px",
+            width: "20px"
+        }
+    }
 }));
 
 const numericDateString = (date) =>
@@ -108,7 +121,7 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
         }
     });
 
-	const postRequestStatus = useSelector(({RequestStatus}) => {
+	const postRequestStatus = useSelector(({ RequestStatus }) => {
 		switch (ownerType) {
 			case "course":
 				return RequestStatus.courseNote[POST];
@@ -119,7 +132,7 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
 		}
 	});
 
-	const patchRequestStatus = useSelector(({RequestStatus}) => {
+	const patchRequestStatus = useSelector(({ RequestStatus }) => {
 		switch (ownerType) {
 			case "course":
 				return RequestStatus.courseNote[PATCH][ownerID];
@@ -338,12 +351,12 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
 		hooks.isLoading(getRequestStatus) &&
 		(!notes || Object.entries(notes).length === 0)
 	) {
-		return <Loading loadingText="NOTES LOADING" small/>;
+		return <Loading loadingText="NOTES LOADING" small />;
 	}
 
-    if (hooks.isFail(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {
-        return <LoadingError error="notes"/>;
-    }
+	if (hooks.isFail(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {
+		return <LoadingError error="notes" />;
+	}
 
 	if (submitting && alert) {
 		if (isPost && postRequestStatus && postRequestStatus !== REQUEST_STARTED) {
@@ -471,7 +484,7 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                         <Grid item xs={9}>
                             <Typography 
                                 variant="h5"
-                                style = {{margin:"10px"}}
+                                style = {{marginTop:"10px"}}
                             >My Tasks
                             </Typography>
                             </Grid>
@@ -519,8 +532,8 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                                 <Avatar
                                     variant="square"
                                     variant="rounded"
-                                    className="noteNotification"
-                                    onClick={toggleNoteField(note.id, "important")}
+									className={`noteNotification ${isDashboard ? classes.notesNotification : null }`}                                    
+									onClick={toggleNoteField(note.id, "important")}
                                     style={note.important ? {"background-color": "red"} : {}} >!
                                 </Avatar>
                             </Typography>
@@ -529,23 +542,39 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                                 className="body">
                                 {note.body}
                             </Typography>
-                            <Typography
-                                className={`date ${isDashboard? classes.dateDisplay : null}`}
-                                style={{"fontWeight": "500"}}>
-                                {numericDateString(note.timestamp)}
-                            </Typography>
-                            <div className={`actions ${isDashboard? classes.actionDashboardIcons : classes.actionIcons}`}>
-                                <Delete
-                                    className="icon"
-                                    onClick={openDelete(note.id)} />
-                                <EditIcon
-                                    className="icon"
-                                    onClick={openExistingNote(note)} />
-                                <DoneIcon
-                                    className="icon"
-                                    onClick={toggleNoteField(note.id, "complete")}
-                                    style={note.complete ? {"color": "#43B5D9"} : {}} />
-                            </div>
+							<Grid container>
+								<Grid item xs={12}>
+									<Typography
+									className={`date ${classes.dateDisplay}`}>
+									{numericDateString(note.timestamp)}
+									</Typography>
+								</Grid>
+								<Grid item xs={12}>
+									<div className={`actions ${classes.actionDashboardIcons}`}>
+									<IconButton
+										className={classes.icons}
+										onClick={openDelete(note.id)}
+										size="small"
+										edge="start">
+										<Delete/>
+									</IconButton>
+									<IconButton
+										className={classes.icons}
+										onClick={openExistingNote(note)}
+										size="small">
+										<EditIcon/>
+									</IconButton>
+									<IconButton
+										className={classes.icons}
+										onClick={toggleNoteField(note.id, "complete")}
+										style={note.complete ? {"color": "#43B5D9"} : {}}
+										size="small"
+										edge="end">
+										<DoneIcon/>
+									</IconButton>
+									</div>
+								</Grid>
+							</Grid>
                         </Paper>
                 </Grid>
                     

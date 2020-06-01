@@ -56,11 +56,15 @@
 }
 
 /* Unpaid Sessions */
-.unpaid-sessions-card {
-  height: 26vh;
-  width: 14vw;
+
+.no-unpaid-sessions {
   margin: 10px;
-  padding: 12px;
+}
+
+.unpaid-sessions-card { 
+  transform:scale(.9);
+  margin: 10px;
+  min-width: 175px;
 
   .unpaid-avatar-container {
     justify-content: center;
@@ -100,7 +104,7 @@
     }
 
     .unpaid-status-info {
-      font-size: 14px;
+      font-size: 12px;
     }
 
     .unpaid-status {

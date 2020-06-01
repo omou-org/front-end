@@ -34,14 +34,32 @@ export default function search(
                 },
             };
         }
-        case actions.GET_SESSION_SEARCH_QUERY_SUCCESS: {
-            return handleSessionFetch(newState, payload, "GET");
-        }
-        default:
-            return state;
-    }
-}
 
-const handleSessionFetch = (state, {response}) => ({
-    "sessions": response.data,
-});
+        case actions.GET_SESSION_SEARCH_QUERY_SUCCESS: {
+            const {data} = payload.response;
+            return{
+                ...state,
+                sessionResultsNum: data.count,
+                sessions: {
+                    ...state.sessions,
+                    [data.page]: data.results,
+                },
+            };
+        }
+
+        default: 
+            return state;
+    };
+};
+
+//         case actions.GET_SESSION_SEARCH_QUERY_SUCCESS: {
+//             return handleSessionFetch(newState, payload, "GET");
+//         }
+//         default:
+//             return state;
+//     }
+// }
+
+// const handleSessionFetch = (state, {response}) => ({
+//     "sessions": response.data,
+// });

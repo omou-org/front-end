@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import React from 'react';
-import {NavLink} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import './Dashboard.scss';
 import Today from './Today';
 import UnpaidSessions from './../AdminPortal/UnpaidSessions';
@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from "@material-ui/core/Paper";
 import DashboardNotes from './DashboardNotes';
 import moment from 'moment';
+import Moment from 'react-moment';
 import TodayFiltered from "./TodayFiltered";
 import { makeStyles } from "@material-ui/styles";
 
@@ -27,13 +28,18 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.down('md')]: {
             fontSize: "20px"
         }
+    },
+    todayCard: {
+        [theme.breakpoints.down('md')]: {
+            fontSize: "6px"
+        }
     }
 }))
 
 const Dashboard = () => {
     const classes = useStyles();
     const user = useSelector(({auth}) => auth) || [];
-    const currentDate = moment().format("dddd, MMMM DD")
+    const currentDate = moment()
 
     return(
         <Grid container>
@@ -45,29 +51,34 @@ const Dashboard = () => {
                         </Typography>
                         <br/>
                         <Paper className="today-paper" container>
-                            <Grid container style={{width: "100%", justifyContent:"space-between", padding: "5px"}}>
-                                    <Grid item xs={4}>
-                                    <Typography variant='h5' className={`dashboard-date ${classes.date}`}>
+                            <Grid container className="today-header-container">
+                                    <Grid item xs={7}>
+                                    <Moment 
+                                        className={`dashboard-date ${classes.date}`}
+                                        format="dddd, MMMM DD">
                                         {currentDate}
-                                    </Typography>
-                                    </Grid>
-                                    <Grid item xs={4}>
+                                    </Moment>
                                     </Grid>
                                     <Button 
-                                        variant="contained" 
                                         variant="outlined" 
                                         style={{margin:"5px", float: "right"}}
-                                        component={NavLink}
-                                        to='/scheduler'
+                                        component={Link}
+                                        to={{
+                                            pathname: "/scheduler",
+                                            state: { isDashboard: true}
+                                        }}
+                                        // to='/scheduler'
                                         >View in Scheduler
                                     </Button>
                             </Grid>
-                            <Grid item xs={4}></Grid>
-                            <TodayFiltered/>
+                            <Grid item sm={6} md={6} lg={4}>
+                                <TodayFiltered/>
+                            </Grid>
                             <Grid 
                                 container 
                                 className="today-container" 
-                                wrap = "nowrap">
+                                wrap = "nowrap"
+                                direction = "row">
                                 <Today/>
                             </Grid>
                         </Paper>
@@ -77,7 +88,7 @@ const Dashboard = () => {
                             </Typography>
                             <Grid
                                 container
-                                classname="unpaid-container"
+                                className="unpaid-container"
                                 wrap = "nowrap">
                                 <UnpaidSessions/>
                             </Grid>

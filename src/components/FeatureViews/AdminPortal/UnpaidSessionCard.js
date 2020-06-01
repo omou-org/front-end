@@ -9,6 +9,7 @@ import CardActionArea from "@material-ui/core/CardActionArea";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
+import Loading from "components/Loading";
 
 import * as adminUtils from "./AdminUtils";
 import {initials} from "utils";
@@ -20,7 +21,6 @@ import { makeStyles } from "@material-ui/styles";
 const useStyles = makeStyles((theme) => ({
     card: {
         [theme.breakpoints.down('md')]: {
-            width: "20vw",
             paddingLeft: "10px",
             paddingRight: "10px",
             paddingTop: "0px",
@@ -55,8 +55,7 @@ const useStyles = makeStyles((theme) => ({
             top: "-20px",
             position: "relative",
         }
-    }
-
+    },
 }))
 
 const UnpaidSessionCard = ({unpaidStudent}) => {
@@ -73,59 +72,72 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
 		unpaidStudent.sessions_left,
 		adminUtils.calculateSessionLength(startTime, endTime)
 	);
+    
+    let studentID;
+    let courseID;
+    
+    if(!student){
+    return(
+        <Loading small/>
+    )
+    }
 
-    const studentID = student.user_id;
-    const courseID = course.course_id;
-
+    else if(student){
+    studentID = student.user_id;
+    courseID = course.course_id;
+    
     return (
-        <Card className={`unpaid-sessions-card ${classes.card}`}>
-            <CardActionArea
-            component = {NavLink}
-            to={`/accounts/students/${studentID}/${courseID}`}
-            >
-                <Grid
-                    className={`unpaid-avatar-container ${classes.avatarContainer}`}
-                    >   
-                    <Avatar
-                        className={`unpaid-avatar ${classes.avatar}`}
-                        style={{
-                            "backgroundColor": stringToColor(student.name),
-                        }}>
-                        {initials(
-                            student.first_name, student.last_name
-                        )}
-                    </Avatar>
-                </Grid>
-                <CardContent className={`unpaid-details ${classes.details}`}>
-                    <Typography className={`unpaid-student-name ${classes.name}`}>
-                        {student.name}
-                    </Typography>
-                    <Typography className={`unpaid-role-label ${classes.label}`}>
-                        Student
-                    </Typography>
-                    <Typography className={`unpaid-status-info ${classes.info}`}>
-                        Payment Status: <span
-                            className="unpaid-status"
+        <Grid item md={6} lg={3} className={classes.grid}>
+            <Card className={`unpaid-sessions-card ${classes.card}`}>
+                <CardActionArea
+                component = {NavLink}
+                to={`/accounts/students/${studentID}/${courseID}`}
+                >
+                    <Grid
+                        className={`unpaid-avatar-container ${classes.avatarContainer}`}
+                        >   
+                        <Avatar
+                            className={`unpaid-avatar ${classes.avatar}`}
                             style={{
-                                "backgroundColor": adminUtils.statusColor[
-                                    unpaidStudent.sessions_left
-                                ],
+                                "backgroundColor": stringToColor(student.name),
                             }}>
-                            {unpaidStudent.sessions_left}
-                        </span>
-                        <br />
-                        Amount Due: ${amtDue}
-                        <br />
-                        <Tooltip title={course.title}>
-                            <Typography className="unpaid-status-info" noWrap={true}>
-                                {course.title}
-                            </Typography>
-                        </Tooltip>
-                    </Typography>
-                </CardContent>
-            </CardActionArea>
-        </Card>
+                            {initials(
+                                student.first_name, student.last_name
+                            )}
+                        </Avatar>
+                    </Grid>
+                    <CardContent className={`unpaid-details ${classes.details}`}>
+                        <Typography className={`unpaid-student-name ${classes.name}`}>
+                            {student.name}
+                        </Typography>
+                        <Typography className={`unpaid-role-label ${classes.label}`}>
+                            Student
+                        </Typography>
+                        <Typography className={`unpaid-status-info ${classes.info}`}>
+                            Payment Status: <span
+                                className="unpaid-status"
+                                style={{
+                                    "backgroundColor": adminUtils.statusColor[
+                                        unpaidStudent.sessions_left
+                                    ],
+                                }}>
+                                {unpaidStudent.sessions_left}
+                            </span>
+                            <br />
+                            Amount Due: ${amtDue}
+                            <br />
+                            <Tooltip title={course.title}>
+                                <Typography className="unpaid-status-info" noWrap={true}>
+                                    {course.title}
+                                </Typography>
+                            </Tooltip>
+                        </Typography>
+                    </CardContent>
+                </CardActionArea>
+            </Card>
+        </Grid>
     );
+    }
 };
 
 UnpaidSessionCard.propTypes = {

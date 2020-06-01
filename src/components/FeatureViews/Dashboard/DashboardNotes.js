@@ -23,7 +23,6 @@ const DashboardNotes = (owner) => {
 
     const ownerID = owner.id;
     const ownerType = 'receptionist'
-    // const userList = useSelector(({Users}) => Users);
     const adminStatus = hooks.useAdmin();
 
 if (hooks.isLoading(adminStatus)) {
@@ -34,8 +33,8 @@ if (hooks.isLoading(adminStatus)) {
     );  
 }
     return (
-        <Paper className={`db-notes-paper ${classes.root}`} style={{background: "rgba(255, 255, 255, 0.6)"}}>
-            <Grid style={{margin:"10px"}}>
+        <Paper className={`db-notes-paper ${classes.root}`}>
+            <Grid>
                 <Notes
                     ownerID = {ownerID}
                     ownerType = {ownerType}

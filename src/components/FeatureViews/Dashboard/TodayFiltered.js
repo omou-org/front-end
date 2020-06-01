@@ -1,13 +1,24 @@
-import { useSelector } from 'react-redux';
-import React, { useState, useEffect } from 'react';
+import {useSelector} from 'react-redux';
+import React, {useState} from 'react';
 import './Dashboard.scss';
 import Loading from "components/Loading";
 import Select from 'react-select';
 import * as hooks from "actions/hooks";
 import {useSearchSession} from "actions/searchActions";
 
-
 const TodayFiltered = () => {
+    const categoryStatus = hooks.useCategory(); 
+    let sessions = useSelector(({Search}) => Search.sessions);
+    sessions = sessions[1];
+    const allCategories = useSelector(({Course}) => Course.CourseCategories);
+    let courses = useSelector(({Course}) => Course.NewCourseList);
+    let currentSessionCategories;
+    let categoryIdList;
+    let courseTodayList;
+    let categoryNames;
+    let categoryList = {};
+    let isDisabled;
+
 
     const [currentFilter, setCurrentFilter] = useState({
         showFiltered: false,
@@ -15,27 +26,12 @@ const TodayFiltered = () => {
     });
 
     const handleChange = e => {
-        setCurrentFilter({filter: e.label, showFiltered: true})
-    }
-    
-    const categories = useSelector(({Course}) => Course.CourseCategories);
-    let categoryList = {};
-    if (categories.length>0) {
-        categoryList = categories.map(({name, id}) => JSON.parse(JSON.stringify(({
-            "label": name,
-        }))));
-        categoryList.push({
-            "label": "Choose a Category"
-        })
+        e ? setCurrentFilter({filter: e.value, showFiltered: true}): setCurrentFilter({filter:"", showFiltered: false});
+    };
 
-    }
-    const sessionSearchResult = useSelector(({Search}) => Search.sessions);
-    // const filteredSessionArray = sessionSearchResult.results ;
-    useSearchSession(currentFilter.filter, 1, "", "timeAsc");
+    useSearchSession(currentFilter.filter, 1, "", "today", "timeAsc"); 
 
-    const categoryStatus = hooks.useCategory();
-    
-    if(hooks.isLoading(categoryStatus)) {
+    if (hooks.isLoading(categoryStatus)) { 
         return(
             <Loading
                 loadingText = "LOADING"
@@ -43,17 +39,47 @@ const TodayFiltered = () => {
         )
     }   
 
+
+
+    if (sessions){
+        sessions.length>0 ? isDisabled=false: isDisabled=true;
+        const coureObjectsList = Object.values(courses); 
+        currentSessionCategories = sessions.map(({course}) => course); 
+        courseTodayList = coureObjectsList.filter(allCourses => { 
+            return currentSessionCategories.some(coursesToday => {
+                return coursesToday == allCourses.course_id
+            });
+        });
+        categoryIdList = courseTodayList.map(({category}) => category); // 
+        categoryNames = categoryIdList
+            .map(e => allCategories.filter(arr => arr.id === e) // use find function to find category you're looking for
+                .map(category => category.name))
+            .flat();
+        categoryNames = [...new Set(categoryNames)];
+
+        if (categoryNames && categoryNames.length > 0) {
+
+            categoryList = categoryNames.map((name) => ({
+                    "label": name, // human readable
+                    "value": name // code readable => change to category id
+                })
+            );
+        }
+    }
+
     return (
         <Select
         className="category-options"
         closeMenuOnSelect={true}
+        isClearable={true}
+        isDisabled={isDisabled}
         options={categoryList}
         placeholder={'Choose a Category'}
         onValueClick={(e) => e.preventDefault()}
         onChange={handleChange}
-        value={categoryList.id}
+        
     />
     )
-}
+};
 
 export default TodayFiltered;
