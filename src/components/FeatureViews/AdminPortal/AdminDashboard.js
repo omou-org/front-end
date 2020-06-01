@@ -16,9 +16,12 @@ import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core";
+import Avatar from "@material-ui/core/Avatar";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Card from "@material-ui/core/Card";
+import CardMedia from "@material-ui/core/CardMedia";
+import CardContent from "@material-ui/core/CardContent";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
@@ -30,6 +33,8 @@ import ProfileCard from "../Accounts/ProfileCard";
 import UserAvatar from "../Accounts/UserAvatar"
 import "./AdminPortal.scss";
 import {useSelector} from "react-redux";
+import {stringToColor} from "../Accounts/accountUtils";
+
 
 const baseTheme = createMuiTheme();
 
@@ -133,6 +138,25 @@ const useStyles = makeStyles((theme) => ({
   },
   piePosition: {
     marginLeft: "2.75em"
+  },
+  opCard:{
+    // width: "80% !important",
+    margin: "20px !important",
+    padding: "10px !important",
+  },
+  opAvatar:{
+    width: "65px",
+    height: "65px",
+    fontSize: "30px",
+    alignSelf: "center",
+    fontFamily: "Roboto"
+  },
+  opDetail:{
+    fontSize: "12px",
+    textAlign: "left"
+  },
+  amtdue:{
+    color: "red",
   }
 }));
 
@@ -146,7 +170,39 @@ const AdminDashboard = (props) => {
     { label: "Manage Pricing" },
     { label: "Access Control" },
   ];
-	const unpaidList = useSelector(({Admin}) => Admin.Unpaid);
+  
+  const OPdata = [
+    {
+    name: "David Hong",
+    initials: "DH",
+    due: 350
+    }, 
+    {
+      name: "Jimmy Chiu",
+      initials: "JC",
+      due: 300
+    },
+    {
+      name: "Kelly Smith",
+      initials: "KS",
+      due: 288
+    },
+    {
+      name: "Sarah Pullman",
+      initials: "SP",
+      due: 260
+    },
+    {
+      name: "Aaron Ames",
+      initials:"AA",
+      due: 200
+    },
+    {
+      name: "May Lee",
+      initials: "ML",
+      due: 199
+    },
+  ]
 
 
   // const displayUsers = useMemo(() => {
@@ -162,7 +218,6 @@ const AdminDashboard = (props) => {
     return setIndex(i);
   };
 
-  console.log(unpaidList);
 
 
   return (
@@ -253,12 +308,18 @@ const AdminDashboard = (props) => {
                     </Grid>
                   </Grid>
                   <Grid item xs={3}>
-                  <Typography className={classes.tabName}>
-                      OUTSTANDING PAYMENTS
-                    </Typography>
-                    <Grid item xs={4}>
-                      <OutstandingPaymentCard />
-                    </Grid>
+                      <Grid item xs={12}>
+                        <Typography className={classes.tabName}>
+                          OUTSTANDING PAYMENTS
+                        </Typography>
+                      </Grid>
+                      <Grid container spacing={2}>
+                        <Grid item xs={10}>
+                          {OPdata.map((op)=> (
+                            <OutstandingPaymentCard op={op} name={op.name} due={op.due} initials={op.initials}/> 
+                          ))}
+                        </Grid>
+                      </Grid>
                   </Grid>
                 </Grid>
                 </TabPanel>
@@ -280,14 +341,42 @@ const AdminDashboard = (props) => {
   );
 };
 
-const OutstandingPaymentCard = props => {
-  return (
-    <Card>
-      <UserAvatar name={"Wilson"}/>
+const OutstandingPaymentCard = op => {
+
+  const classes = useStyles();
+  return(
+    
+    <Card className={classes.opCard}>
+      <Grid container>
+        <Grid item xs={3}>
+          {/* <CardMedia> */}
+            <Avatar
+              className={classes.opAvatar}
+              style={{
+                backgroundColor: stringToColor(op.name)
+              }}
+            >{op.initials}
+            </Avatar>
+          {/* </CardMedia> */}
+        </Grid>
+        <Grid item xs={9} className={classes.opDetail}>
+          <CardContent>
+            <Grid item xs={12}>
+              <Typography variant="subtitle2">
+                {op.name}
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="caption text">
+                Amount Due: <span className={classes.amtdue}>${op.due}</span>
+              </Typography>
+            </Grid>
+          </CardContent>
+        </Grid>
+      </Grid>
     </Card>
   )
 }
-
 
 const Snapshot = (props) => {
   const classes = useStyles();
