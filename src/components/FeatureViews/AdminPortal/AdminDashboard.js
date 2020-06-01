@@ -7,7 +7,9 @@ import {
   ArgumentAxis,
   ValueAxis,
   Legend,
+  Tooltip,
 } from "@devexpress/dx-react-chart-material-ui";
+import { EventTracker } from "@devexpress/dx-react-chart"
 // import { Chart, SeriesTemplate, CommonSeriesSettings, Title } from 'devextreme-react/chart';
 import { Animation, LineSeries } from "@devexpress/dx-react-chart";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
@@ -424,6 +426,8 @@ const PopularSubject = (props) => {
       /> */}
         <Animation />
         <Title text="NUMBER OF SESSIONS" textComponent={TextComponent} />
+        <EventTracker />
+        <Tooltip />
         {/* <Legend position="left" /> */}
       </Chart>
     </Paper>
@@ -459,6 +463,8 @@ const ClassEnrollment = () => {
             text="324/400 Spaces Filled"
             position="bottom"
           />
+               <EventTracker />
+                  <Tooltip />
           <Animation />
         </Chart>
       </Paper>
@@ -502,6 +508,8 @@ const InstructorUtilization = () => {
           barWidth={0.3}
           pointComponent={BarComponent}
         />
+             <EventTracker />
+                <Tooltip />
       </Chart>
     </Paper>
   )
@@ -543,6 +551,8 @@ const RevenuebyQuarter = () => {
         // seriesComponent={LineComponent}
       />
       <Title text="THOUSANDS($)" textComponent={TextComponent} />
+      <EventTracker />
+      <Tooltip />
       <Animation />
     </Chart>
   </Paper>
