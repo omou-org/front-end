@@ -25,6 +25,7 @@ import RegistrationReceipt from "../FeatureViews/Registration/RegistrationReceip
 import CatsPage from "../CatsPage/CatsPage";
 import NotEnrolledStudentDialog from "../FeatureViews/Scheduler/NotEnrolledStudentDialog"
 import NotEnrolledStudentsDialog from "../FeatureViews/Scheduler/NotEnrolledStudentDialog";
+import AdminDashboard from "../FeatureViews/AdminPortal/AdminDashboard";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -123,6 +124,9 @@ export const RootRoutes = () => {
                 path='/NotEnrolledStudent'
                 render={(passedProps) => <NotEnrolledStudentsDialog {...passedProps} />} />
             {/* Admin Routes */}
+            <ProtectedRoute
+                path="/admindashboard"
+                render={(passedProps) => <AdminDashboard {...passedProps} />} />
             <AdminRoute
                 exact
                 path="/adminportal/:view?/:type?/:id?/:edit?"
