@@ -15,7 +15,7 @@ import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import LoginPage from "../Authentication/LoginPage.js";
 import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage";
 import NotEnrolledStudentsDialog from "../FeatureViews/Scheduler/NotEnrolledStudentDialog";
-import PasswordReset from "../Authentication/PasswordReset";
+import ForgotPassword from "../Authentication/ForgotPassword";
 import ProtectedRoute from "./ProtectedRoute";
 import Registration from "../FeatureViews/Registration/Registration";
 import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
@@ -34,8 +34,8 @@ export const RootRoutes = () => {
     return (
         <Switch>
             {/* Authentication views */}
-            <Route path="/passwordreset">
-                <PasswordReset />
+            <Route path="/forgotpassword">
+                <ForgotPassword />
             </Route>
             <Route path="/login">
                 <LoginPage />

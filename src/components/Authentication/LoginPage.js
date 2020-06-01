@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from "react";
-import {Link, Redirect, useHistory} from "react-router-dom";
+import {Link, Redirect, useHistory, useLocation} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 
 import Button from "@material-ui/core/Button";
@@ -11,6 +11,7 @@ import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import {makeStyles} from "@material-ui/core/styles";
+import useAuthStyles from "./styles.js";
 
 import {isFail, isLoading, isSuccessful} from "actions/hooks";
 import {login, resetAttemptStatus} from "actions/authActions.js";
@@ -20,39 +21,11 @@ const useStyles = makeStyles((theme) => ({
         "color": theme.colors.darkGray,
         "text-decoration": "none",
     },
-    "header": {
-        "font-family": "'Roboto Slab', serif",
-        "font-size": "36px",
-        "font-style": "normal",
-        "font-weight": "bold",
-        "line-height": "47px",
-    },
-    "root": {
-        "height": "400px",
-        "left": "50%",
-        "padding": "37px",
-        "position": "fixed",
-        "top": "50%",
-        "transform": "translate(-50%, -50%)",
+    "smallerRoot": {
         [theme.breakpoints.up("sm")]: {
-            "padding": "55px",
             "width": "412px",
         },
-        [theme.breakpoints.down("xs")]: {
-            "box-shadow": "none",
-            "margin-top": "6vh",
-            "padding": "10px",
-            "width": "80vw",
-        },
     },
-    "signIn": {
-        "color": "white",
-        "margin-top": "20px",
-        [theme.breakpoints.down("xs")]: {
-            "width": "85%",
-        },
-    },
-
 }));
 
 // eslint-disable-next-line max-statements
@@ -60,16 +33,20 @@ const LoginPage = () => {
     const fetchUserStatus = useSelector(
         ({RequestStatus}) => RequestStatus.userFetch,
     );
+    const {state} = useLocation();
     const loginStatus = useSelector(({RequestStatus}) => RequestStatus.login);
     const dispatch = useDispatch();
     const history = useHistory();
 
-    const [email, setEmail] = useState(null);
+    const [email, setEmail] = useState(state?.email);
     const [password, setPassword] = useState(null);
     const [savePassword, setSavePassword] = useState(false);
     const [shouldRedirect, setShouldRedirect] = useState(true);
 
-    const classes = useStyles();
+    const classes = {
+        ...useStyles(),
+        ...useAuthStyles(),
+    };
 
     const handleTextInput = useCallback((setter) => ({target}) => {
         setter(target.value);
@@ -101,7 +78,7 @@ const LoginPage = () => {
     }
 
     return (
-        <Paper className={classes.root}>
+        <Paper className={`${classes.root} ${classes.smallerRoot}`}>
             <Typography align="center" className={classes.header}
                 color="primary">
                 sign in
@@ -125,12 +102,15 @@ const LoginPage = () => {
                             label="Remember Me" />
                     </Grid>
                     <Grid item>
-                        <Link className={classes.forgot} to="/passwordreset">
+                        <Link className={classes.forgot} to={{
+                            "pathname": "/forgotpassword",
+                            "state": {email},
+                        }}>
                             Forgot Password?
                         </Link>
                     </Grid>
                 </Grid>
-                <Button className={classes.signIn} color="primary"
+                <Button className={classes.primaryButton} color="primary"
                     data-cy="signInButton" disabled={!email || !password}
                     type="submit" variant="contained">
                     sign in
