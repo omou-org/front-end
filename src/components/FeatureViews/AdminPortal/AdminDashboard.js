@@ -9,7 +9,7 @@ import {
   Legend,
   Tooltip,
 } from "@devexpress/dx-react-chart-material-ui";
-import { EventTracker } from "@devexpress/dx-react-chart"
+import { EventTracker, HoverState } from "@devexpress/dx-react-chart"
 // import { Chart, SeriesTemplate, CommonSeriesSettings, Title } from 'devextreme-react/chart';
 import { Animation, LineSeries } from "@devexpress/dx-react-chart";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
@@ -321,7 +321,7 @@ const styles = (theme) => ({
     textAlign: "left",
     position: "relative",
     right: "15.1875em",
-    top: "1aem",
+    top: "4em",
     fontStyle: "normal",
     color: "#747D88",
   },
@@ -427,6 +427,7 @@ const PopularSubject = (props) => {
         <Animation />
         <Title text="NUMBER OF SESSIONS" textComponent={TextComponent} />
         <EventTracker />
+        <HoverState />
         <Tooltip />
         {/* <Legend position="left" /> */}
       </Chart>
@@ -464,6 +465,7 @@ const ClassEnrollment = () => {
             position="bottom"
           />
                <EventTracker />
+               <HoverState />
                   <Tooltip />
           <Animation />
         </Chart>
@@ -509,6 +511,7 @@ const InstructorUtilization = () => {
           pointComponent={BarComponent}
         />
              <EventTracker />
+             <HoverState />
                 <Tooltip />
       </Chart>
     </Paper>
@@ -530,7 +533,7 @@ const RevenuebyQuarter = () => {
   ));
   
   const TextComponent = withStyles(styles)(({ classes, ...restProps }) => (
-    <Title.Text {...restProps} className={classes.legendText} />
+    <Title.Text {...restProps} className={classes.titleText} />
   ));
   
 
@@ -552,6 +555,7 @@ const RevenuebyQuarter = () => {
       />
       <Title text="THOUSANDS($)" textComponent={TextComponent} />
       <EventTracker />
+      <HoverState />
       <Tooltip />
       <Animation />
     </Chart>
