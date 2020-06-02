@@ -19,12 +19,12 @@ const avatarStyles = (username) => ({
     "backgroundColor": stringToColor(username),
     "color": "white",
     "fontSize": 20,
-    "height": "3.5vw",
+    "height": 50,
     "marginBottom": 17,
     "marginLeft": 17,
     "marginRight": 17,
     "marginTop": 30,
-    "width": "3.5vw",
+    "width": 50,
 
 });
 
@@ -63,10 +63,9 @@ const AccountsCards = ({user, isLoading}) => {
                 style={{
                     "cursor": "pointer",
                     "padding": "10px",
-                    "height":"23vh"
+                    "height":"160px",
                 }}>
                 <Grid container>
-                    <Hidden mdDown>
                         <Grid
                             item
                             md={4}
@@ -75,7 +74,6 @@ const AccountsCards = ({user, isLoading}) => {
                                 {fullName.match(/\b(\w)/ug).join("")}
                             </Avatar>
                         </Grid>
-                    </Hidden>
                     <Grid
                         item
                         md={8}
