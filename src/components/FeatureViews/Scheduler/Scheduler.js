@@ -96,16 +96,6 @@ const Scheduler = () => {
             "#72FFFF", "#43D9D9", "#92E2DE", "#BAF7F3",
             "#1F82A1", "#588FA0", "#88ACB7", "#BEDAE2",
             "#96007E", "#B96AAC", "#CD9BC5", "#CD9BC5"]
-    const palette2 =
-        ["#FCA8E4", "#FFC5EF",
-            "#EB5757", "#FF9191",
-            "#56CCF2", "#9B51E0",
-            "#27AE60", "#6FCF97",
-            "#FEBF87", "#FFE3CA",
-            "#F4D77D", "#FFEDB5",
-            "#92E2DE", "#BAF7F3",
-            "#88ACB7", "#BEDAE2",
-            "#CD9BC5", "#CD9BC5"]
     const hashCode = (string) => {
         let hash = 0;
         for (let i = 0; i < string.length; i += 1) {
@@ -114,7 +104,7 @@ const Scheduler = () => {
         return hash;
     }
     const colorizer = (string) => {
-        return palette2[hashCode(string) % 40]
+        return palette[hashCode(string) % 40]
     }
 
     const formatSessions = useCallback((sessionState) =>
