@@ -103,7 +103,8 @@ const CourseCards = ({course, isLoading = false}) => {
                     <Grid
                         container
                         item>
-                        <Grid
+                        <Grid 
+                        item xs={12}
                             className="courseRow">
                             <Typography className="courseText">
                                 Dates: {
@@ -115,6 +116,7 @@ const CourseCards = ({course, isLoading = false}) => {
                             </Typography>
                         </Grid>
                         <Grid
+                            item xs={12}
                             className="courseRow">
                             <Tooltip title={course.subject}>
                                 <Typography className="courseText">
@@ -123,6 +125,7 @@ const CourseCards = ({course, isLoading = false}) => {
                             </Tooltip>
                         </Grid>
                         <Grid
+                            item xs={12}
                             className="courseRow">
                             <Typography className="courseText">
                                     Teacher: {
