@@ -377,4 +377,4 @@ export const uniques = (array) => array.filter(
  * Returns full name given a user object
  * @param {Object} user
  */
-export const fullName = (user) => `${user.firstName} ${user.lastName}`;
+export const fullName = ({firstName, lastName}) => `${firstName} ${lastName}`;
