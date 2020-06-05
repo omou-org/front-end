@@ -1,5 +1,3 @@
-const removeDashes = (phoneNumber) => phoneNumber.replace(/-/ug, "");
-
 describe("Fills out form", () => {
     before(() => {
         cy.visit("registration/form/student");
@@ -88,7 +86,7 @@ describe("Fills out form", () => {
                 "response": {
                     "user": {
                         "id": student.id,
-                        "email": ""
+                        "email": "",
                         "first_name": student.first_name,
                         "last_name": student.last_name,
                     },

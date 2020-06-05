@@ -1,43 +1,31 @@
-// React Imports
-import {Switch} from "react-router-dom";
 import React from "react";
-import TuitionRules from "../FeatureViews/AdminPortal/TuitionRules";
+import {Switch} from "react-router-dom";
+
+import AdminPortalHome from "../FeatureViews/AdminPortal/AdminPortalHome";
 import AdminRoute from "./AdminRoute";
-import Form from "../Form/Form";
+import FormPage from "../Form/FormPage";
 import ManageCategories from "../FeatureViews/AdminPortal/ManageCategories";
 import ManageDiscounts from "../FeatureViews/AdminPortal/ManageDiscounts";
-import AdminPortalHome from "../FeatureViews/AdminPortal/AdminPortalHome";
+import TuitionRules from "../FeatureViews/AdminPortal/TuitionRules";
 
-// Local Component Imports
-
-function AdminViewsRoutes() {
-    return (
-        <Switch>
-            <AdminRoute
-                path="/adminportal/tuition-rules"
-                render={(passedProps) => <TuitionRules {...passedProps} />}
-            />
-            <AdminRoute
-                path="/adminportal/manage-course-categories"
-                render={(passedProps) => <ManageCategories {...passedProps} />}
-            />
-            <AdminRoute
-                path={"/adminportal/manage-discounts"}
-                render={(passedProps) => <ManageDiscounts {...passedProps} />}
-            />
-            {/*    path="/adminportal/form/instructor"*/}
-            {/*    render={(passedProps) => <Form {...passedProps}/> }/>*/}
-            <AdminRoute
-                exact
-                path={"/adminportal/form/:type?"}
-                render={(passedProps) => <Form title={"Set Price Rule"}/>}
-            />
-            <AdminRoute
-                path="/adminportal/"
-                render={(passedProps) => <AdminPortalHome {...passedProps} />}
-            />
-        </Switch>
-    );
-}
+const AdminViewsRoutes = () => (
+    <Switch>
+        <AdminRoute path="/adminportal/tuition-rules">
+            <TuitionRules />
+        </AdminRoute>
+        <AdminRoute path="/adminportal/manage-course-categories">
+            <ManageCategories />
+        </AdminRoute>
+        <AdminRoute path="/adminportal/manage-discounts">
+            <ManageDiscounts />
+        </AdminRoute>
+        <AdminRoute path="/adminportal/form/:type?">
+            <FormPage />
+        </AdminRoute>
+        <AdminRoute path="/adminportal">
+            <AdminPortalHome />
+        </AdminRoute>
+    </Switch>
+);
 
 export default AdminViewsRoutes;

@@ -11,7 +11,7 @@ const useSelectStyles = makeStyles({
 });
 
 export const TextField = (props) =>
-    <Fields.TextField margin="normal" {...props} />;
+    <Fields.TextField {...props} />;
 
 export const Select = (props) => {
     const {select} = useSelectStyles();
@@ -19,7 +19,7 @@ export const Select = (props) => {
 };
 
 export const KeyboardDatePicker = (props) => (
-    <Fields.KeyboardDatePicker dateFunsUtils={DateFnsUtils} margin="normal"
+    <Fields.KeyboardDatePicker dateFunsUtils={DateFnsUtils}
         {...props} />
 );
 
@@ -33,3 +33,7 @@ export const Autocomplete = ({name, options, ...props}) => {
             renderOption={renderOption} {...props} />
     );
 };
+
+export const Checkboxes = (props) => (
+    <Fields.Checkboxes {...props} />
+)

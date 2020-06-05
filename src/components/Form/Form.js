@@ -66,7 +66,7 @@ const generateFields = (format) => {
     return [schema, sections];
 };
 
-const Form = ({base, initialData, onSubmit, "receipt": Receipt = FormReceipt}) => {
+const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormReceipt, onNext}) => {
     const [activeStep, setActiveStep] = useState(0);
     const [showReceipt, setShowReceipt] = useState(false);
     const [submittedData, setSubmittedData] = useState(null);
@@ -76,8 +76,10 @@ const Form = ({base, initialData, onSubmit, "receipt": Receipt = FormReceipt}) =
     const validate = makeValidate(schema);
 
     const handleNext = useCallback(() => {
+        onNext && onNext()
+        // handleConditional(formValues)
         setActiveStep((prevStep) => prevStep + 1);
-    }, []);
+    }, [onNext]);
 
     const handleBack = useCallback(() => {
         setActiveStep((prevStep) => prevStep - 1);
@@ -92,6 +94,7 @@ const Form = ({base, initialData, onSubmit, "receipt": Receipt = FormReceipt}) =
         return errors;
     }, [onSubmit]);
 
+    console.log(base);
     const renderStep = useCallback((index, {label, name, fields}, errors, submitting) => (
         <Step key={label}>
             <StepLabel className={classes.stepLabel}>{label}</StepLabel>
@@ -106,6 +109,10 @@ const Form = ({base, initialData, onSubmit, "receipt": Receipt = FormReceipt}) =
                             "data-cy": `${name}-${field.props.name}-input`,
                         },
                         "name": `${name}.${field.props.name}`,
+                        "onBlur": (...params) => {
+                            console.log(field.onChange)
+                            console.log("BLUUR")
+                        },
                     }))}
                 {index > 0 && index < sections.length &&
                     <Button data-cy="backButton" onClick={handleBack}>
@@ -141,17 +148,19 @@ const Form = ({base, initialData, onSubmit, "receipt": Receipt = FormReceipt}) =
     ), [activeStep, renderStep, sections]);
 
     return (
-        <Paper className={`registration-form ${classes.root}`}>
-            <BackButton />
+        // <Paper className={`registration-form ${classes.root}`}>
+        //     <BackButton />
+        <div className={`registration-form ${classes.root}`}>
             <Typography align="left" className="heading" data-cy="formTitle"
                 variant="h3">
-                Course Category
+                {title}
             </Typography>
             {showReceipt ?
                 <Receipt formData={submittedData} /> :
                 <ReactForm initialValues={initialData} onSubmit={submit}
                     render={render} validate={validate} />}
-        </Paper>
+        </div>
+        // {/* </Paper> */}
     );
 };
 
