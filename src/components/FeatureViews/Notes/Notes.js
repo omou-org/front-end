@@ -21,9 +21,9 @@ import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
 import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
+import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import {makeStyles} from "@material-ui/core/styles";
-import Tooltip from "@material-ui/core/Tooltip";
 
 import "./Notes.scss";
 import "../Accounts/TabComponents/TabComponents.scss";
@@ -102,8 +102,6 @@ const DATA_KEY = {
     "enrollment": "enrollmentNotes",
 };
 
-
-// eslint-disable-next-line complexity, max-statements
 const Notes = ({ownerType, ownerID}) => {
     const dispatch = useDispatch();
     const api = useMemo(() => bindActionCreators(userActions, dispatch), [dispatch]);
@@ -363,7 +361,8 @@ const Notes = ({ownerType, ownerID}) => {
                 maxWidth="xs" onClose={hideWarning} open={alert}>
                 <DialogTitle>
                     <TextField className="textfield" id="standard-name"
-                        onChange={handleTitleUpdate} value={noteTitle} />
+                        onChange={handleTitleUpdate} placeholder="Title"
+                        value={noteTitle} />
                     <Tooltip interactive title="This is an Important Note!">
                         <NotificationIcon className="notification"
                             onClick={toggleNotification}
@@ -397,10 +396,11 @@ const Notes = ({ownerType, ownerID}) => {
                 open={deleteID !== null}>
                 <DialogTitle>Confirm Delete</DialogTitle>
                 <DialogContent>
-                    Are you sure you want to delete {getNoteByID(deleteID) &&
-                        getNoteByID(deleteID).title ?
-                        `"${getNoteByID(deleteID).title}"` :
-                        "this note"}?
+                    Are you sure you want to delete {
+                        getNoteByID(deleteID)?.title ?
+                            `"${getNoteByID(deleteID).title}"` :
+                            "this note"
+                    }?
                 </DialogContent>
                 <DialogActions className="delete-actions">
                     <Button className="cancel-button" onClick={hideWarning}
@@ -425,7 +425,7 @@ const Notes = ({ownerType, ownerID}) => {
                     </Typography>
                 </div>
             </Grid>
-            {notes && Object.values(notes).map((note) => (
+            {Object.values(notes).map((note) => (
                 <Grid item key={note.id || note.body} xs={3}>
                     <Paper className="note" elevation={2}>
                         <Typography align="left"
