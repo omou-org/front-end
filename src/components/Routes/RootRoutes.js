@@ -1,7 +1,7 @@
 // React Imports
-import {Redirect, Route, Switch} from "react-router-dom";
-import {useDispatch} from "react-redux";
-import {resetSubmitStatus} from "../../actions/registrationActions";
+import { Redirect, Route, Switch } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { resetSubmitStatus } from "../../actions/registrationActions";
 import React from "react";
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
@@ -23,6 +23,8 @@ import AdminRoute from "./AdminRoute";
 import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
 import RegistrationReceipt from "../FeatureViews/Registration/RegistrationReceipt";
 import CatsPage from "../CatsPage/CatsPage";
+import NotEnrolledStudentDialog from "../FeatureViews/Scheduler/NotEnrolledStudentDialog"
+import NotEnrolledStudentsDialog from "../FeatureViews/Scheduler/NotEnrolledStudentDialog";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -82,6 +84,9 @@ export const RootRoutes = () => {
             <ProtectedRoute path="/registration/receipt/:paymentID?"
                 render={(passedProps) => <RegistrationReceipt {...passedProps} />} />
 
+            <ProtectedRoute
+                path='/NotEnrolledStudent'
+                render={(passedProps) => <NotEnrolledStudentsDialog {...passedProps} />} />
             {/* Admin Routes */}
             <AdminRoute exact
                 path="/adminportal/:view?/:type?/:id?/:edit?"

@@ -144,7 +144,7 @@ const SelectParentDialog = ({onClose, open}) => {
 			onClose={handleClose}
 			open={open}
 		>
-			<DialogTitle id="simple-dialog-title">Currently helping...</DialogTitle>
+			<DialogTitle id="simple-dialog-title">Currently helping</DialogTitle>
 			<DialogContent>
 				{currentParent ? (
 					<div className="active-parent-dialog-content">

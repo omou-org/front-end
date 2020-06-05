@@ -264,7 +264,7 @@ export const instructorConflictCheck = async (instructorID, start, end) => {
         "end_time": toApiTime(end),
         "start_time": toApiTime(start),
     };
-
+    
     const courseParams = {
         "end_date": toApiDate(end),
         "end_time": toApiTime(end),

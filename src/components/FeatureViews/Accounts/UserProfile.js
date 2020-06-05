@@ -23,6 +23,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
 
+
 import "./Accounts.scss";
 import * as hooks from "actions/hooks";
 import BackButton from "components/BackButton";
@@ -187,6 +188,16 @@ const UserProfile = () => {
 					value={tabIndex}
 				>
 					{displayTabs.map((tab) => (
+						tab.tab_id === 7 ?
+						<Tab
+							key={tab.tab_id}
+							label={
+								<>
+									{tab.icon} {tab.tab_heading}
+								</>
+							}
+						/>
+						: 
 						<Tab
 							key={tab.tab_id}
 							label={

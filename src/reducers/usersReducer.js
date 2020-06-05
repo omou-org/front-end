@@ -456,7 +456,7 @@ const handleAccountSearchResults = (state, {response}) => {
                     account,
                 );
             }
-        // No default
+            // no default
         }
     });
     return {

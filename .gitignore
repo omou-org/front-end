@@ -2,6 +2,7 @@
 node_modules/
 /.pnp
 .pnp.js
+package-lock.json
 
 # testing
 /coverage
@@ -15,6 +16,7 @@ node_modules/
 .env.development.local
 .env.test.local
 .env.production.local
+.eslintrc.js
 
 # Project Workspace specific files
 /.idea

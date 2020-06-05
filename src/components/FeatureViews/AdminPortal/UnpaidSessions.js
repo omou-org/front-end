@@ -23,7 +23,7 @@ const UnpaidSessions = () => {
 	const courseStatus = hooks.useCourse(courseList);
 	const unpaidSessionStatus = hooks.useUnpaidSessions();
 
-	if (hooks.isLoading(studentStatus, courseStatus, unpaidSessionStatus)) {
+	if (hooks.isLoading(studentStatus, courseStatus, unpaidSessionStatus) && (courseStatus !== null && studentStatus !== null)) {
 		return <Loading loadingText="UNPAID SESSIONS LOADING" small/>;
 	}
 

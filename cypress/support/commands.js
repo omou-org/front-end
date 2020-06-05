@@ -53,8 +53,8 @@ Cypress.Commands.add("login", () => {
  * @return: finds the text and selects it
  */
 Cypress.Commands.add("findDropdown", (element, text) => {
-	cy.get(element).type(text || "");
-	cy.focused().type("{downarrow}{enter}", {force: true});
+  cy.get(element).type(text || "");
+  cy.focused().type("{downarrow}{enter}", {force: true});
 });
 
 /**
@@ -62,12 +62,12 @@ Cypress.Commands.add("findDropdown", (element, text) => {
  * @param {String} text Text to type
  */
 Cypress.Commands.add(
-	"fastType",
-	{
-		prevSubject: true,
-	},
-	(subject, text) =>
-		cy.get(subject).type(text, {
-			delay: 0,
-		})
+    "fastType",
+    {
+      prevSubject: true,
+    },
+    (subject, text) =>
+        cy.get(subject).type(text, {
+          delay: 0,
+        })
 );
