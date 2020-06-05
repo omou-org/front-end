@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
-import { useSelector } from "react-redux";
-import React, { useCallback } from "react";
+import {useSelector} from "react-redux";
+import React, {useCallback} from "react";
 
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -10,7 +10,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 
-import { paymentToString, tuitionAmount } from "utils";
+import {paymentToString, tuitionAmount} from "utils";
 import Loading from "components/Loading";
 import NavLinkNoDup from "components/Routes/NavLinkNoDup";
 import NoListAlert from "components/NoListAlert";
@@ -70,10 +70,10 @@ const PaymentTable = ({ paymentList, type, enrollmentID, courseID }) => {
                         {
                             paymentList.map((payment) => (
                                 <TableRow
-                                    component={NavLinkNoDup}
-                                    hover
-                                    key={payment.id}
-                                    to={`/accounts/parent/payment/${payment.parent}/${payment.id}`}>
+									component={NavLinkNoDup}
+									hover
+									key={payment.id}
+									to={`/accounts/parent/payment/${payment.id}`}>
                                     <TableCell>
                                         {payment.id}
                                     </TableCell>
@@ -84,7 +84,7 @@ const PaymentTable = ({ paymentList, type, enrollmentID, courseID }) => {
                                         {
                                             type === "enrollment"
                                                 ? numPaidSessionsByPayment(payment.id)
-                                                : courseLabel(payment.registrations)
+												: courseLabel(payment.registrationSet)
                                         }
                                     </TableCell>
                                     <TableCell>
@@ -94,7 +94,7 @@ const PaymentTable = ({ paymentList, type, enrollmentID, courseID }) => {
                                                     course,
                                                     numPaidSessionsByPayment(payment.id)
                                                 )
-                                                : payment.total
+												: `$${payment.total}`
                                         }
                                     </TableCell>
                                     <TableCell>

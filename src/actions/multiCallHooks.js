@@ -89,7 +89,7 @@ export const useSubmitRegistration = (registrationDependencies) => {
 					let currEnrollments = await Promise.all(
 						classRegistrations.map(({student, course}) =>
 							instance.get(
-								`/course/enrollment/?student=${student}&course_id=${course}`
+								`/course/enrollment/?student_id=${student}&course_id=${course}`
 							)
 						)
 					);
