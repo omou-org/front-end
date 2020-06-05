@@ -41,7 +41,8 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "tar": "^4.4.11",
-    "tippy.js": "^4.3.5"
+    "tippy.js": "^4.3.5",
+    "graphql-tag": "latest"
   },
   "homepage": "https://omoulearning.com",
   "scripts": {
