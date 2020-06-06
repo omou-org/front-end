@@ -12,10 +12,7 @@ const AdminRoute = ({component, children, render, ...rest}) => {
     [token, isAdmin, component, children, render, rest]);
 
     return (
-        <Route
-            {...rest}
-            exact
-            render={renderFunc} />
+        <Route {...rest} render={renderFunc} />
     );
 };
 

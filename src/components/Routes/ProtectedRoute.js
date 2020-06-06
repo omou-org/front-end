@@ -12,10 +12,7 @@ const ProtectedRoute = ({component, children, render, ...rest}) => {
     [token, component, render, rest, children]);
 
     return (
-        <Route
-            {...rest}
-            exact
-            render={renderFunc} />
+        <Route {...rest} render={renderFunc} />
     );
 };
 

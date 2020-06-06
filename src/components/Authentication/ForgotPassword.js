@@ -1,7 +1,8 @@
 import React, {useCallback, useState} from "react";
 import useAuthStyles from "./styles";
+import {useSelector} from "react-redux";
 
-import {Link, useLocation} from "react-router-dom";
+import {Link, useLocation, useHistory, Redirect} from "react-router-dom";
 
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
@@ -18,8 +19,10 @@ const useStyles = makeStyles((theme) => ({
 
 const ForgotPassword = () => {
     const {state} = useLocation();
+    const history = useHistory();
     const [email, setEmail] = useState(state?.email);
     const [submitted, setSubmitted] = useState(false);
+    const {token} = useSelector(({auth}) => auth);
 
     const handleEmailInput = useCallback(({target}) => {
         setEmail(target.value);
@@ -35,6 +38,14 @@ const ForgotPassword = () => {
         ...useAuthStyles(),
         ...useStyles(),
     };
+
+    if (token) {
+        if (history.length > 2) {
+            history.goBack();
+        } else {
+            return <Redirect to="/" />;
+        }
+    }
 
     return (
         <Paper className={classes.root}>

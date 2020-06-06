@@ -1,10 +1,11 @@
 import React, {useCallback, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import useAuthStyles from "./styles";
+import {useSelector} from "react-redux";
 
+import {Link, useHistory, Redirect} from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import {Link} from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import PasswordInput from "./PasswordInput";
 import Typography from "@material-ui/core/Typography";
@@ -25,9 +26,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ResetPassword = () => {
+    const history = useHistory();
     const [password, setPassword] = useState("");
     const [submitted, setSubmitted] = useState(false);
     const email = "nelson@summit.com";
+    const {token} = useSelector(({auth}) => auth);
 
     const handlePasswordInput = useCallback(({target}) => {
         setPassword(target.value);
@@ -43,6 +46,14 @@ const ResetPassword = () => {
         ...useAuthStyles(),
         ...useStyles(),
     };
+
+    if (token) {
+        if (history.length > 2) {
+            history.goBack();
+        } else {
+            return <Redirect to="/" />;
+        }
+    }
 
     return (
         <Paper className={classes.root}>
