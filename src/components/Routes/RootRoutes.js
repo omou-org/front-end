@@ -18,14 +18,14 @@ import LoginPage from "../Authentication/LoginPage.js";
 import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage";
 import NotEnrolledStudentsDialog from
     "../FeatureViews/Scheduler/NotEnrolledStudentDialog";
+import PaymentReceipt from "../FeatureViews/Registration/PaymentReceipt";
 import ProtectedRoute from "./ProtectedRoute";
 import Registration from "../FeatureViews/Registration/Registration";
 import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
 import RegistrationCourse from
     "../FeatureViews/Registration/RegistrationCourse";
 import RegistrationForm from "../Form/Form";
-import RegistrationReceipt from
-    "../FeatureViews/Registration/RegistrationReceipt";
+import RegistrationReceipt from "../Form/RegistrationReceipt";
 import ResetPassword from "../Authentication/ResetPassword";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
 import SearchResults from "../FeatureViews/Search/SearchResults";
@@ -81,8 +81,8 @@ export const RootRoutes = () => {
                 <UserProfile />
             </ProtectedRoute>
             <ProtectedRoute exact
-                path="/accounts/parent/payment/:parentID/:paymentID">
-                <RegistrationReceipt />
+                path="/accounts/parent/payment/:paymentID">
+                <PaymentReceipt />
             </ProtectedRoute>
             <ProtectedRoute exact path="/accounts">
                 <Accounts />

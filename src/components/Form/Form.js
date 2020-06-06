@@ -86,6 +86,7 @@ class Form extends Component {
 		this.props.userActions.fetchInstructors();
 		this.props.registrationActions.initializeRegistration();
 		this.props.adminActions.fetchCategories();
+		this.props.apiActions.fetchCourses();
 		if (this.props.match.params.edit === "edit") {
 			switch (formType) {
 				case "instructor": {
@@ -206,6 +207,7 @@ class Form extends Component {
 						};
 
 						let course = null;
+
 						if (this.props.courses.hasOwnProperty(id)) {
 							const {course_id, title} = this.props.courses[
 								this.props.match.params.id
