@@ -374,3 +374,9 @@ export const removeDashes = (phoneNumber) => phoneNumber.replace(/-/ug, "");
 export const uniques = (array) => array.filter(
     (element, index, filteredArray) => filteredArray.indexOf(element) === index
 );
+
+/***
+ * Returns full name given a user object
+ * @param {Object} user
+ */
+export const fullName = ({firstName, lastName}) => `${firstName} ${lastName}`;
