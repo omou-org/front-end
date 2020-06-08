@@ -87,7 +87,8 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
 
     const submit = useCallback(async (formData) => {
         const errors = await onSubmit(formData);
-        if (!errors) {
+		if (!errors) {
+			console.log(formData);
             setSubmittedData(formData);
             setShowReceipt(true);
         }
@@ -156,7 +157,7 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                 {title}
             </Typography>
             {showReceipt ?
-                <Receipt formData={submittedData} /> :
+				<Receipt format={base} formData={submittedData} /> :
                 <ReactForm initialValues={initialData} onSubmit={submit}
                     render={render} validate={validate} />}
         </div>

@@ -12,18 +12,18 @@ import rootReducer from "./reducers/rootReducer.js";
 import thunk from "redux-thunk";
 
 const store = createStore(
-	rootReducer,
-	composeWithDevTools(applyMiddleware(thunk))
+    rootReducer,
+    composeWithDevTools(applyMiddleware(thunk)),
 );
 
-const client = new ApolloClient({
-    uri: process.env.REACT_APP_DOMAIN + "/graphql",
+export const client = new ApolloClient({
+    "uri": `${process.env.REACT_APP_DOMAIN }/graphql`,
     // note: since graphql endpoint atm has no authentication, this is not tested
-    request: (operation) => {
+    "request": (operation) => {
         operation.setContext({
-            "Authorization": `Token ${sessionStorage.getItem("authToken")}`
-        })
-    }
+            "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
+        });
+    },
 });
 
 ReactDOM.render(
@@ -34,12 +34,12 @@ ReactDOM.render(
             </BrowserRouter>
         </ApolloProvider>
     </Provider>,
-    document.getElementById("root")
+    document.getElementById("root"),
 );
 
 // expose store when run in Cypress
 if (window.Cypress) {
-	window.store = store;
+    window.store = store;
 }
 
 // If you want your app to work offline and load faster, you can change

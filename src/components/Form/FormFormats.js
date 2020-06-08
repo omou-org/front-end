@@ -1,10 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable func-name-matching */
-/* eslint-disable no-magic-numbers */
-/* eslint-disable newline-per-chained-call */
-/* eslint-disable array-element-newline */
-/* eslint-disable sort-keys */
-/* eslint-disable object-property-newline */
 import * as types from "actions/actionTypes";
 import {instance} from "actions/apiActions";
 import {useSelector} from "react-redux";
@@ -13,7 +6,9 @@ import {FORM_ERROR} from "final-form";
 import * as Fields from "./Fields";
 import * as Yup from "yup";
 import * as hooks from "actions/hooks";
-import * as moment from 'moment';
+import * as moment from "moment";
+import {client} from "index";
+import gql from "graphql-tag";
 
 export const responseToForm = (parser, data) => {
     const res = {};
@@ -38,10 +33,9 @@ export const responseToForm = (parser, data) => {
     return res;
 };
 
-// eslint-disable-next-line no-confusing-arrow
-export const submitToApi = (endpoint, data, id) => id ?
+export const submitToApi = (endpoint, data, id) => (id ?
     instance.patch(`${endpoint}${id}/`, data) :
-    instance.post(endpoint, data);
+    instance.post(endpoint, data));
 
 export const parseDate = (date) => {
     if (!date) {
@@ -67,9 +61,9 @@ export const formToRequest = (parser, data) => {
 };
 
 export const selectField = (options) => ({
-    "component": <Fields.Select data={options} />,
-    "validator": Yup.mixed().oneOf(options.map(({value}) => value)),
-}),
+        "component": <Fields.Select data={options} />,
+        "validator": Yup.mixed().oneOf(options.map(({value}) => value)),
+    }),
     stringField = (label) => ({
         "component": <Fields.TextField />,
         label,
@@ -100,8 +94,8 @@ export const ACADEMIC_LVL_FIELD = {
         "name": "address",
         ...stringField("Address"),
     },
-    BIRTHDAY_FIELD = {
-        "name": "birthday",
+    BIRTH_DATE_FIELD = {
+        "name": "birthDate",
         "label": "Birth Date",
         "component": <Fields.KeyboardDatePicker format="MM/dd/yyyy" />,
         "validator": Yup.date().max(moment()),
@@ -121,9 +115,9 @@ export const ACADEMIC_LVL_FIELD = {
         "name": "gender",
         "label": "Gender",
         ...selectField([
-            {"label": "Do Not Disclose", "value": "unspecified"},
-            {"label": "Male", "value": "male"},
-            {"label": "Female", "value": "female"},
+            {"label": "Do Not Disclose", "value": "UNSPECIFIED"},
+            {"label": "Male", "value": "MALE"},
+            {"label": "Female", "value": "FEMALE"},
         ]),
     },
     HOURLY_TUITION_FIELD = {
@@ -141,18 +135,18 @@ export const ACADEMIC_LVL_FIELD = {
     },
     NAME_FIELDS = [
         {
-            "name": "first_name",
+            "name": "firstName",
             ...stringField("First Name"),
             "required": true,
         },
         {
-            "name": "last_name",
+            "name": "lastName",
             ...stringField("Last Name"),
             "required": true,
         },
     ],
     PHONE_NUMBER_FIELD = {
-        "name": "phone_number",
+        "name": "phoneNumber",
         "label": "Phone Number",
         "component": <Fields.TextField />,
         "validator": Yup.string().matches(/\d{3}-?\d{3}-?\d{4}?/u,
@@ -204,7 +198,7 @@ const PARENT_FIELDS = {
         GENDER_FIELD,
         EMAIL_FIELD,
         PHONE_NUMBER_FIELD,
-        BIRTHDAY_FIELD,
+        BIRTH_DATE_FIELD,
         ADDRESS_FIELD,
         CITY_FIELD,
         STATE_FIELD,
@@ -218,7 +212,7 @@ const STUDENT_INFO_FIELDS = {
     "fields": [
         {
             "name": "current_instructor",
-            ...stringField("Current Instructor in School")
+            ...stringField("Current Instructor in School"),
         },
         {
             "name": "textbook",
@@ -246,9 +240,6 @@ const STUDENT_INFO_FIELDS = {
 export default {
     "student": {
         "title": "Student",
-        // "conditionals": {
-        //     "parent": (student) => student.name === Joe
-        // }
         "form": [
             {
                 "name": "student",
@@ -266,7 +257,7 @@ export default {
                             .min(1).max(13),
                         // "conditional": showParent if grade = 10
                     },
-                    BIRTHDAY_FIELD,
+                    BIRTH_DATE_FIELD,
                     {
                         "name": "school",
                         ...stringField("School"),
@@ -371,9 +362,6 @@ export default {
                         "component": <Fields.TextField type="password" />,
                         "validator": Yup.mixed(),
                         "required": true,
-                        "onChange": (params) => {
-                            console.log(params);
-                        }
                     },
                     ...NAME_FIELDS,
                 ],
@@ -383,17 +371,17 @@ export default {
                 "label": "User Information",
                 "fields": [
                     {
-                        "name": "admin_type",
+                        "name": "adminType",
                         "label": "Admin Type",
                         ...selectField([
-                            {"label": "Owner", "value": "owner"},
-                            {"label": "Receptionist", "value": "receptionist"},
-                            {"label": "Assistant", "value": "assistant"},
+                            {"label": "Owner", "value": "OWNER"},
+                            {"label": "Receptionist", "value": "RECEPTIONIST"},
+                            {"label": "Assistant", "value": "ASSISTANT"},
                         ]),
                         "required": true,
                     },
                     GENDER_FIELD,
-                    BIRTHDAY_FIELD,
+                    BIRTH_DATE_FIELD,
                     ADDRESS_FIELD,
                     CITY_FIELD,
                     PHONE_NUMBER_FIELD,
@@ -403,40 +391,102 @@ export default {
             },
         ],
         // TODO: add administrator loading
-        "load": () => {},
-        "submit": async (dispatch, formData, id) => {
-            const responseToFormKey = {
-                "gender": ["user", "gender"],
-                "admin_type": ["user", "admin_type"],
-                "birth_date": ["user", "birthday"],
-                "address": ["user", "address"],
-                "city": ["user", "city"],
-                "phone_number": ["user", "phone_number"],
-                "state": ["user", "state"],
-                "zipcode": ["user", "zipcode"],
+        "load": async (id) => {
+            const GET_ADMIN = gql`
+            query GetAdmin($userID: ID!) {
+                admin(userId: $userID) {
+                    user {
+                    id
+                    email
+                    firstName
+                    lastName
+                    }
+                    adminType
+                    gender
+                    phoneNumber
+                    birthDate
+                    address
+                    city
+                    state
+                    zipcode
+                }
+            }`;
+            try {
+                const {"data": {admin}} = await client.query({
+                    "query": GET_ADMIN,
+                    "variables": {
+                        "userID": id,
+                    },
+                });
+                return {
+                    "login": admin.user,
+                    "user": admin,
+                };
+            } catch (error) {
+                return null;
+            }
+        },
+        "submit": async (formData, id) => {
+            const CREATE_ADMIN = gql`
+            mutation CreateAdmin(
+                $address: String,
+                $adminType: AdminTypeEnum,
+                $birthDate: Date,
+                $city: String,
+                $gender: GenderEnum,
+                $phoneNumber: String,
+                $state: String,
+                $email: String,
+                $firstName: String!,
+                $lastName: String!,
+                $password: String,
+                $zipcode: String
+            ) {
+                createAdmin(
+                    user: {
+                        firstName: $firstName, lastName: $lastName,
+                        password: $password, email: $email
+                    },
+                    address: $address,
+                    adminType: $adminType,
+                    birthDate: $birthDate,
+                    city: $city,
+                    gender: $gender,
+                    phoneNumber: $phoneNumber,
+                    state: $state,
+                    zipcode: $zipcode
+                ) {
+                    admin {
+                        userUuid
+                        birthDate
+                        address
+                        city
+                        phoneNumber
+                        state
+                        zipcode
+                    }
+                }
+            }
+            `;
+            const modifiedData = {
+                ...formData,
                 "user": {
-                    "first_name": ["login", "first_name"],
-                    "last_name": ["login", "last_name"],
-                    "password": ["login", "password"],
-                    "email": ["login", "email"],
+                    ...formData.user,
+                    "birthDate": parseDate(formData.user.birthDate),
                 },
             };
-            const admin = formToRequest(responseToFormKey, formData);
-            admin.birth_date = parseDate(admin.birth_date);
             try {
-                const response = await submitToApi("/account/admin/", admin, id);
-
-                /*
-                 * TODO: add admin storage in redux
-                 * dispatch({
-                 *     "type": types.POST_ADMIN_SUCCESSFUL,
-                 *     "payload": response,
-                 * });
-                 */
-            } catch ({response}) {
+                await client.mutate({
+                    "mutation": CREATE_ADMIN,
+                    "variables": Object.values(modifiedData)
+                        .reduce((obj, section) => ({
+                            ...obj,
+                            ...section,
+                        }), {}),
+                });
+            } catch (error) {
                 return {
-                    ...responseToForm(responseToFormKey, response.data),
-                    [FORM_ERROR]: response.data,
+                    [FORM_ERROR]: error,
                 };
             }
         },
@@ -513,13 +563,6 @@ export default {
                 "label": "Course Info",
                 "fields": [
                     {
-                        // "handleConditional": () => {
-                        //     if (value === x) toggleConditional()
-                        // }
-                        // "onChange": (value) => {
-                        //     if (value === "new")
-                        //         variables.newObj = true
-                        // }
                         "name": "subject",
                         "required": true,
                         ...stringField("Course Name"),
@@ -545,10 +588,9 @@ export default {
                         "validator": Yup.number().min(1).integer(),
                     },
                 ],
-                "next": "tuition"
+                "next": "tuition",
             },
             {
-                // showIf: variables.newObj === true,
                 "name": "tuition",
                 "label": "Tuition",
                 "fields": [
@@ -601,7 +643,7 @@ export default {
         ],
         // TODO: loading and submitting with GraphQL
         "load": (id) => {},
-        "submit": async (dispatch, formData, id) => {},
+        "submit": async (formData, id) => {},
     },
     "instructor": {
         "title": "Instructor",
@@ -618,7 +660,7 @@ export default {
                     CITY_FIELD,
                     ZIPCODE_FIELD,
                     STATE_FIELD,
-                    BIRTHDAY_FIELD,
+                    BIRTH_DATE_FIELD,
                 ],
             },
             {
@@ -627,11 +669,11 @@ export default {
                 "fields": [
                     {
                         "name": "subjects",
-                        ...stringField("Subjects Tutor Can Teach")
+                        ...stringField("Subjects Tutor Can Teach"),
                     },
                     {
                         "name": "experience",
-                        ...stringField("Teaching Experience (Years)")
+                        ...stringField("Teaching Experience (Years)"),
                     },
                     {
                         "name": "background",
@@ -657,8 +699,8 @@ export default {
                 "fields": [{
                     "name": "student",
                     // TODO: student select field
-                    ...stringField("Student")
-                }]
+                    ...stringField("Student"),
+                }],
             },
             STUDENT_INFO_FIELDS,
             {
@@ -668,9 +710,9 @@ export default {
                     "name": "course",
                     // TODO: course select field
                     ...stringField("Course"),
-                }]
-            }
-        ]
+                }],
+            },
+        ],
     },
     "tutoring": {
         "title": "tutoring",
@@ -682,7 +724,7 @@ export default {
                     "name": "student",
                     // TODO: student select field
                     ...stringField("Student"),
-                }]
+                }],
             },
             STUDENT_INFO_FIELDS,
             {

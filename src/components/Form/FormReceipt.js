@@ -4,7 +4,7 @@ import Button from "@material-ui/core/Button";
 import {Link} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 
-const FormReceipt = ({formData}) => (
+const FormReceipt = ({formData, format}) => (
     <div style={{
         "margin": "2%",
         "padding": "5px",
@@ -23,15 +23,15 @@ const FormReceipt = ({formData}) => (
             <Typography align="left" className="title">
                 Confirmation
             </Typography>
-            {Object.entries(formData).map(([sectionLabel, fields]) => (
+            {Object.entries(formData).map(([sectionLabel, fields], sectionIndex) => (
                 <div key={sectionLabel}>
                     <Typography align="left" className="section-title">
-                        {sectionLabel}
+                        {format[sectionIndex].label}
                     </Typography>
-                    {Object.entries(fields).map(([label, value]) => (
+                    {Object.entries(fields).map(([label, value], fieldIndex) => (
                         <div key={label}>
                             <Typography align="left" className="field-title">
-                                {label}
+                                {format[sectionIndex].fields[fieldIndex].label}
                             </Typography>
                             <Typography align="left" className="field-value">
                                 {/* TODO: better way of rendering field values */}
