@@ -88,14 +88,12 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
     const submit = useCallback(async (formData) => {
         const errors = await onSubmit(formData);
 		if (!errors) {
-			console.log(formData);
             setSubmittedData(formData);
             setShowReceipt(true);
         }
         return errors;
     }, [onSubmit]);
 
-    console.log(base);
     const renderStep = useCallback((index, {label, name, fields}, errors, submitting) => (
         <Step key={label}>
             <StepLabel className={classes.stepLabel}>{label}</StepLabel>
@@ -111,8 +109,6 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                         },
                         "name": `${name}.${field.props.name}`,
                         "onBlur": (...params) => {
-                            console.log(field.onChange)
-                            console.log("BLUUR")
                         },
                     }))}
                 {index > 0 && index < sections.length &&

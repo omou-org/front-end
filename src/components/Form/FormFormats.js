@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import * as types from "actions/actionTypes";
 import {instance} from "actions/apiActions";
 import {useSelector} from "react-redux";

@@ -14,16 +14,18 @@ const FormPage = () => {
         useCallback((formData) => submit(formData, id), [id, submit]);
 
     useEffect(() => {
-        let abort = false;
-        (async () => {
-            const data = await load(id);
-            if (!abort) {
-                setInitialData(data);
-            }
-        })();
-        return () => {
-            abort = true;
-        };
+        if (id) {
+            let abort = false;
+            (async () => {
+                const data = await load(id);
+                if (!abort) {
+                    setInitialData(data);
+                }
+            })();
+            return () => {
+                abort = true;
+            };
+        }
     }, [id, load]);
 
     if (!form || (id && initialData === null)) {
