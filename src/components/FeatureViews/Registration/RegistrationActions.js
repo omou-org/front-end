@@ -71,7 +71,7 @@ const RegistrationActions = () => {
 						to="/registration/form/student"
 						variant="outlined"
 					>
-						<NewUser className="icon"/> New Student
+						<NewUser className="icon"/> Register New Student
 					</Button>
 				</Grid>
 				<Grid item md={8}>
@@ -85,7 +85,7 @@ const RegistrationActions = () => {
 								onClick={openRegisterMenu}
 								variant="outlined"
 							>
-								<AssignmentIcon className="icon"/> Register
+								<AssignmentIcon className="icon"/> Register New Course
 							</Button>
 						</Grid>
 					)}
@@ -106,7 +106,7 @@ const RegistrationActions = () => {
 					) : (
 						<Button className="button set-parent" onClick={openDialog}>
 							<div className="circle-icon"/>
-							SET PARENT
+							SELECT PARENT
 						</Button>
 					)}
 				</Grid>
