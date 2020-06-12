@@ -68,7 +68,6 @@ const CourseCards = ({course, isLoading = false}) => {
                 <Grid container>
                     <Grid
                         item
-                        align="left"
                         sm={12}>
                         <Typography
                             align="left"
@@ -78,7 +77,6 @@ const CourseCards = ({course, isLoading = false}) => {
                     </Grid>
                     <Grid
                         item
-                        align="left"
                         sm="auto">
                         {
                             course.max_capacity > course.enrollment_list.length
@@ -106,7 +104,7 @@ const CourseCards = ({course, isLoading = false}) => {
                         container
                         item>
                         <Grid 
-                        item align="left" xs={12}
+                        item xs={12}
                             className="courseRow">
                             <Typography className="courseText">
                                 Dates: {
@@ -118,7 +116,7 @@ const CourseCards = ({course, isLoading = false}) => {
                             </Typography>
                         </Grid>
                         <Grid
-                            item align="left" xs={12}
+                            item xs={12}
                             className="courseRow">
                             <Tooltip title={course.subject}>
                                 <Typography className="courseText">
@@ -127,7 +125,7 @@ const CourseCards = ({course, isLoading = false}) => {
                             </Tooltip>
                         </Grid>
                         <Grid
-                            item align="left" xs={12}
+                            item xs={12}
                             className="courseRow">
                             <Typography className="courseText">
                                     Teacher: {
