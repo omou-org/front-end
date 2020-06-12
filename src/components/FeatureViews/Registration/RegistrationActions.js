@@ -71,7 +71,7 @@ const RegistrationActions = () => {
 						to="/registration/form/student"
 						variant="outlined"
 					>
-						<NewUser className="icon"/> Register New Student
+						<NewUser className="icon"/> New Student
 					</Button>
 				</Grid>
 				<Grid item md={8}>
@@ -85,7 +85,7 @@ const RegistrationActions = () => {
 								onClick={openRegisterMenu}
 								variant="outlined"
 							>
-								<AssignmentIcon className="icon"/> Register New Course
+								<AssignmentIcon className="icon"/> Enroll Student
 							</Button>
 						</Grid>
 					)}
