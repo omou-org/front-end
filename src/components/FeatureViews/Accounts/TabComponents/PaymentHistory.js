@@ -1,29 +1,40 @@
-import React, {useMemo} from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import {useSelector} from "react-redux";
-
-import {isFail, isLoading, usePaymentByParent} from "actions/hooks";
 import Loading from "components/Loading";
 import PaymentTable from "./PaymentTable";
+import {useQuery} from "@apollo/react-hooks";
+import Typography from "@material-ui/core/Typography";
+import gql from "graphql-tag";
 
-const PaymentHistory = ({user_id}) => {
-    const parentPayment = useSelector(({Payments}) => Payments[user_id]);
-    const paymentStatus = usePaymentByParent(user_id);
-
-    const payments = useMemo(() =>
-        parentPayment && Object.values(parentPayment), [parentPayment]);
-
-    if (!parentPayment) {
-        if (isLoading(paymentStatus)) {
-            return (
-                <Loading
-                    loadingText="LOADING PAYMENTS"
-                    small />
-            );
-        } else if (isFail(paymentStatus)) {
-            return "Error loading payments!";
+export const GET_PARENT_PAYMENTS = gql`
+    query ParentPayments($parentId: ID!) {
+        payments(parentId: $parentId) {
+            id
+            createdAt
+            registrationSet {
+              id
+            }
+            total
+            method
         }
     }
+`;
+
+const PaymentHistory = ({user_id}) => {
+	const {data, loading, error} = useQuery(GET_PARENT_PAYMENTS,
+		{variables: {parentId: user_id}}
+	);
+
+	if (loading) {
+		return <Loading/>
+	}
+	if (error) {
+		return <Typography>
+			There's been an error! Error: {error.message}
+		</Typography>
+    }
+
+	const {payments} = data;
 
     return (
         <PaymentTable
