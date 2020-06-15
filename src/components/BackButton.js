@@ -57,7 +57,7 @@ const BackButton = (props) => {
 			default:
 				console.warn(`Unhandled backbutton action ${actionName}`);
 		}
-		this.goBack();
+		goBack();
 	}
 
 	const denyAction = (actionName) => {
