@@ -156,7 +156,8 @@ function initRequests() {
 function initAuth() {
 	return {
 		token: null,
-		isAdmin: false,
+		// TODO: revert this to false when graphQL supports fetching login details
+		isAdmin: true,
 	};
 }
 
