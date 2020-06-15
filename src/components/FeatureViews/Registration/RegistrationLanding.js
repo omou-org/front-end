@@ -1,5 +1,4 @@
-import React, {useCallback, useMemo, useState} from "react";
-import {useSelector} from "react-redux";
+import React, {useCallback, useState} from "react";
 
 import BackButton from "components/BackButton";
 import Grid from "@material-ui/core/Grid";
@@ -10,12 +9,14 @@ import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
 
-import * as hooks from "actions/hooks";
-import {distinctObjectArray, gradeOptions} from "utils";
+import {distinctObjectArray, fullName, gradeOptions} from "utils";
 import CourseList from "./CourseList";
 import Loading from "components/Loading";
 import RegistrationActions from "./RegistrationActions";
 import TutoringList from "./TutoringList";
+import gql from "graphql-tag";
+import {useQuery} from "@apollo/react-hooks";
+import {SIMPLE_COURSE_DATA} from "queryFragments";
 
 const customStyles = {
     clearIndicator: (base, state) => ({
@@ -48,14 +49,39 @@ const ClearIndicator = (indicatorProps) => {
     );
 };
 
-const RegistrationLanding = () => {
-    const courses = useSelector(({Course}) => Course.NewCourseList);
-    const instructors = useSelector(({Users}) => Users.InstructorList);
-    const categories = useSelector(({Course}) => Course.CourseCategories);
+export const GET_COURSES = gql`
+	query CourseList {
+		courses {
+            endDate
+            endTime
+            startTime
+            startDate
+            title
+            totalTuition
+            instructor {
+              user {
+                firstName
+                lastName
+                id
+              }
+            }
+            enrollmentSet {
+              id
+            }
+            maxCapacity
+            academicLevel
+            courseCategory { 
+                name
+                id
+             }
+          	...SimpleCourse
+          }
+	}
+	${SIMPLE_COURSE_DATA}
+	`;
 
-    const courseStatus = hooks.useCourse();
-    const instructorStatus = hooks.useInstructor();
-    const categoryStatus = hooks.useCategory();
+const RegistrationLanding = () => {
+	const {data, loading, error} = useQuery(GET_COURSES);
 
     const [view, setView] = useState(0);
     const [courseFilters, setCourseFilters] = useState({
@@ -71,75 +97,64 @@ const RegistrationLanding = () => {
         []
     );
 
-    const instructorOptions = useMemo(
-        () =>
-            Object.values(instructors).map(({name, user_id}) => ({
-                label: name,
-                value: user_id,
-            })),
-        [instructors]
-    );
+	if (loading) {
+		return <Loading/>
+	}
+	if (error) {
+		return <Typography>
+			There's been an error! Error: {error.message}
+		</Typography>
+	}
 
-    const subjectOptions = useMemo(
-        () =>
-            distinctObjectArray(
+	const {courses} = data;
+
+
+	const instructorOptions = distinctObjectArray(
+		Object.values(courses).map(({instructor}) => ({
+			label: fullName(instructor.user),
+			value: instructor.user.id,
+		})));
+
+	const subjectOptions = distinctObjectArray(
         Object.values(courses)
         // prevent a crash if some categories are not loaded yet
-            .filter(({category}) => categories.find(({id}) => category == id))
-            .map(({category}) => ({
-                label: categories.find(({id}) => category == id).name,
-                value: category,
+			.filter(({courseCategory}) => courses.find(({courseCategory: {id}}) => courseCategory.id == id))
+			.map(({courseCategory}) => ({
+				label: courseCategory.name,
+				value: courseCategory.id,
             }))
-            ),
-        [categories, courses]
     );
 
-    const filteredCourses = useMemo(
-        () =>
-            Object.entries(courseFilters)
+	const filteredCourses = Object.entries(courseFilters)
         .filter(([, filters]) => filters.length > 0)
-        .reduce((courseList, [filterName, filters]) => {
+		.reduce((courses, [filterName, filters]) => {
             const mappedValues = filters.map(({value}) => value);
             switch (filterName) {
                 case "instructor":
-                    return courseList.filter(({instructor_id}) =>
-                        mappedValues.includes(instructor_id)
+					return courses.filter(({instructor}) =>
+						mappedValues.includes(instructor.user.id)
                     );
                 case "subject":
-                    return courseList.filter(({category}) =>
-                        mappedValues.includes(category)
+					return courses.filter(({courseCategory}) =>
+						mappedValues.includes(courseCategory.id)
                     );
                 case "grade":
-                    return courseList.filter(({academic_level}) =>
-                        mappedValues.includes(academic_level)
+					return courses.filter(({academicLevel}) =>
+						mappedValues.includes(academicLevel.toLowerCase())
                     );
                 default:
-                    return courseList;
+					return courses;
             }
-        }, Object.values(courses)),
-        [courses, courseFilters]
-    );
+		}, Object.values(courses));
 
-    const handleFilterChange = useCallback(
-        (filterType) => (filters) => {
+	const handleFilterChange = (filterType) => (filters) => {
             setCourseFilters((prevFilters) => ({
                 ...prevFilters,
                 [filterType]: filters || [],
             }));
-        },
-        []
-    );
+	};
 
-    const isLoading =
-        hooks.isLoading(courseStatus, categoryStatus, instructorStatus) &&
-        Object.entries(courses).length === 0;
-
-    const renderFilter = useCallback(
-        (filterType) => {
-            if (categories.length === 0) {
-                return null;
-            }
-
+	const renderFilter = (filterType) => {
             let options = [];
             switch (filterType) {
                 case "instructor":
@@ -167,19 +182,7 @@ const RegistrationLanding = () => {
                     value={courseFilters[filterType]}
                 />
             );
-        },
-        [
-            categories.length,
-            courseFilters,
-            handleFilterChange,
-            instructorOptions,
-            subjectOptions,
-        ]
-    );
-
-    if (hooks.isFail(courseStatus) && Object.entries(courses).length) {
-        return "Unable to load courses!";
-    }
+	};
 
     return (
         <Paper elevation={2} className="RegistrationLanding paper">
@@ -219,9 +222,7 @@ const RegistrationLanding = () => {
                 </Grid>
             )}
             <div className="registration-table">
-                {isLoading ? (
-                    <Loading/>
-                ) : view === 0 ? (
+				{view === 0 ? (
                     <CourseList filteredCourses={filteredCourses}/>
                 ) : (
                     <TutoringList/>

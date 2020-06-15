@@ -10,12 +10,14 @@ import { Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 
 
-class BackButton extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			alert: false,
-		};
+const BackButton = (props) => {
+
+	const [alert, setAlert] = React.useState(false);
+
+	const goBack = () => {
+		// only call user defined function from parent component if defined
+		props.onBack && props.onBack();
+		props.history.goBack();
 	}
 
 	label() {
@@ -35,31 +37,23 @@ class BackButton extends Component {
 				alert: true,
 			});
 		} else {
-			this.goBack();
+			goBack();
 		}
 	}
 
-	hideWarning() {
-		this.setState({
-			alert: false,
-		});
+	const hideWarning = () => {
+		setAlert(false);
 	}
 
-	goBack() {
-		// only call user defined function from parent component if defined
-		this.props.onBack && this.props.onBack();
-		this.props.history.goBack();
-	}
-
-	saveForm() {
+	const saveForm = () => {
 		//enter future code to save form
 	}
 
-	confirmAction(actionName) {
+	const confirmAction = (actionName) => {
 		//actionName is a string
 		switch (actionName) {
 			case "saveForm":
-				this.saveForm();
+				saveForm();
 				break;
 			default:
 				console.warn(`Unhandled backbutton action ${actionName}`);
@@ -67,11 +61,11 @@ class BackButton extends Component {
 		this.goBack();
 	}
 
-	denyAction(actionName) {
+	const denyAction = (actionName) => {
 		// switch(actionName){
 		//future switch statement for denyAction functions
 		// }
-		this.goBack();
+		goBack();
 	}
 
 	renderIcon() {
