@@ -31,7 +31,7 @@ const TodayFiltered = () => {
 
     useSearchSession(currentFilter.filter, 1, "", "today", "timeAsc"); 
 
-    if (hooks.isLoading(categoryStatus)) { 
+    if (hooks.isLoading(categoryStatus && sessions)) { 
         return(
             <Loading
                 loadingText = "LOADING"
@@ -43,11 +43,11 @@ const TodayFiltered = () => {
 
     if (sessions){
         sessions.length>0 ? isDisabled=false: isDisabled=true;
-        const coureObjectsList = Object.values(courses); 
+        const courseObjectsList = Object.values(courses); 
         currentSessionCategories = sessions.map(({course}) => course); 
-        courseTodayList = coureObjectsList.filter(allCourses => { 
-            return currentSessionCategories.some(coursesToday => {
-                return coursesToday == allCourses.course_id
+        courseTodayList = courseObjectsList.filter(allCourses => 
+            {currentSessionCategories.some(coursesToday => 
+                {coursesToday == allCourses.course_id
             });
         });
         categoryIdList = courseTodayList.map(({category}) => category); // 

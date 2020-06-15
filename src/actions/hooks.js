@@ -439,11 +439,6 @@ export const useUnpaidSessions = wrapUseEndpoint(
     types.GET_UNPAID_SUCCESS
 );
 
-// export const useSessionSearchQuery = wrapUseEndpoint(
-//     "/search/session/?date=today&page=1/",
-//     types.GET_SESSION_SEARCH_QUERY_SUCCESS
-// )
-
 // Hook
 export const usePrevious = (value) => {
     // The ref object is a generic container whose current property is mutable

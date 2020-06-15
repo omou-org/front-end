@@ -64,7 +64,6 @@ const Dashboard = () => {
                                             pathname: "/scheduler",
                                             state: { isDashboard: true}
                                         }}
-                                        // to='/scheduler'
                                         >View in Scheduler
                                     </Button>
                             </Grid>
