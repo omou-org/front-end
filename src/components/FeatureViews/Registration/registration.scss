@@ -288,19 +288,19 @@
 
   .label {
     position: relative;
-    top: -7px;
     font-style: normal;
-    line-height: 13px;
+    margin:auto;
+    text-align:center;
   }
 }
 
 // the back button on the course registration page
+
 .course.control {
   position: relative;
-  text-align: left;
+  text-align: center;
   display: block;
   margin-bottom: 30px;
-  padding: 6px 10px 0 10px;
   background-color: white;
   @include respond-to(handhelds){
     margin-bottom: 30px;
@@ -632,6 +632,7 @@
       background-color: white;
       padding: 6px 10px;
       float: right;
+      margin-right:2.5%;
     }
 
     .icon {
