@@ -34,7 +34,7 @@ const BackButton = (props) => {
 
 	const handleClick = () => {
 		if (props.warn) {
-			setAlert=true;
+			setAlert(true);
 		} else {
 			goBack();
 		}
