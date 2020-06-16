@@ -1,6 +1,7 @@
-import React, {useCallback} from "react";
+import React from "react";
+import gql from "graphql-tag";
 import PropTypes from "prop-types";
-import {useHistory} from "react-router-dom";
+import {useQuery} from "@apollo/react-hooks";
 
 import Avatar from "@material-ui/core/Avatar";
 import Card from "@material-ui/core/Card";
@@ -9,6 +10,7 @@ import Chip from "@material-ui/core/Chip";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden/Hidden";
+import {Link} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 
 import {capitalizeString, truncateStrings} from "utils";
@@ -28,118 +30,136 @@ const avatarStyles = (username) => ({
 
 });
 
-const AccountsCards = ({user, isLoading}) => {
-    const history = useHistory();
+const USER_DETAILS = gql`
+    fragment UserDetails on UserType {
+    email
+    lastName
+    firstName
+    }`;
 
-    const goToAccount = useCallback(() => {
-        history.push(`/accounts/${user.account_type.toLowerCase()}/${user.user.id}`);
-    }, [history, user]);
+const QUERIES = {
+    "ADMIN": gql`
+        query AdminFetch($userID: ID!) {
+            admin(userId: $userID) {
+                user {
+                    ...UserDetails
+                }
+            }
+        }
+        ${USER_DETAILS}`,
+    "INSTRUCTOR": gql`
+        query InstructorFetch($userID: ID!) {
+            instructor(userId: $userID) {
+                user {
+                    ...UserDetails
+                }
+            }
+        }
+        ${USER_DETAILS}`,
+    "PARENT": gql`
+        query ParentFetch($userID: ID!) {
+            parent(userId: $userID) {
+                user {
+                    ...UserDetails
+                }
+            }
+        }
+        ${USER_DETAILS}`,
+    "STUDENT": gql`
+        query StudentFetch($userID: ID!) {
+            student(userId: $userID) {
+                user {
+                    ...UserDetails
+                }
+            }
+        }
+        ${USER_DETAILS}`,
+};
 
-    if (isLoading) {
+const AccountsCards = ({accountType, userID, isLoading}) => {
+    // needs a defined query, else it breaks
+    const {data, loading} = useQuery(QUERIES[accountType] || QUERIES.STUDENT, {
+        "variables": {userID},
+    });
+
+    if (isLoading || loading) {
         return (
-            <Grid item>
-                <Card style={{"height": "130px"}}>
-                    <CardContent>
-                        <Typography
-                            color="textSecondary"
-                            gutterBottom
-                            variant="h4">
-                            Loading...
-                        </Typography>
-                    </CardContent>
-                </Card>
-            </Grid>
+            <Card style={{"height": "130px"}}>
+                <CardContent>
+                    <Typography color="textSecondary"
+                        gutterBottom
+                        variant="h4">
+                        Loading...
+                    </Typography>
+                </CardContent>
+            </Card>
         );
     }
 
-    const fullName = `${user.user.first_name} ${user.user.last_name}`;
+    const [{user}] = Object.values(data);
+    const fullName = `${user.firstName} ${user.lastName}`;
 
     return (
-        <Grid item>
-            <Card
-                className="AccountsCards"
-                key={user.id}
-                onClick={goToAccount}
+        <Link to={`/accounts/${accountType.toLowerCase()}/${userID}`}
+            style={{"textDecoration": "none"}}>
+            <Card className="AccountsCards" key={userID}
                 style={{
-                    "cursor": "pointer",
                     "padding": "10px",
                 }}>
                 <Grid container>
                     <Hidden mdDown>
-                        <Grid
-                            item
-                            md={3}
-                            xs={4}>
+                        <Grid item md={3}>
                             <Avatar style={avatarStyles(fullName)}>
                                 {fullName.match(/\b(\w)/ug).join("")}
                             </Avatar>
                         </Grid>
                     </Hidden>
-                    <Grid
-                        item
-                        md={9}
-                        xs={8}>
+                    <Grid item md={9} xs={8}>
                         <CardContent className="cardText">
-                            <Typography
-                                align="left"
+                            <Typography align="left"
                                 style={{"fontWeight": "500"}}>
-                                {truncateStrings(`${user.user.first_name} ${user.user.last_name}`, 20)}
+                                {truncateStrings(fullName, 20)}
                             </Typography>
                             <Grid align="left">
-                                <Chip
-                                    className={`userLabel ${user.account_type.toLowerCase()}`}
-                                    label={capitalizeString(user.account_type)}
-                                    style={{"cursor": "pointer"}} />
+                                <Chip className={`userLabel ${accountType.toLowerCase()}`}
+                                    label={capitalizeString(accountType)} />
                             </Grid>
-                            <Grid
-                                item
-                                style={{"marginTop": 10}}
-                                xs={12}>
-                                <Grid
-                                    container
-                                    justify="flex-start">
-                                    <Grid
-                                        item
-                                        xs={2}>
-                                        <IDIcon
-                                            height={14}
-                                            width={14} />
+                            <Grid item style={{"marginTop": 10}} xs={12}>
+                                <Grid container justify="flex-start">
+                                    <Grid item xs={2}>
+                                        <IDIcon height={14} width={14} />
                                     </Grid>
-                                    <Grid
-                                        item
-                                        xs={10}>
-                                        # {user.user.id}
+                                    <Grid item xs={10}>
+                                        # {userID}
                                     </Grid>
                                 </Grid>
-                                {
-                                    user.account_type !== "STUDENT" &&
-                                    <Grid
-                                        container
-                                        justify="flex-start">
-                                        <Grid
-                                            item
-                                            xs={2}>
-                                            <EmailIcon style={{"fontSize": 14}} />
+                                {user.email &&
+                                    <Grid container justify="flex-start">
+                                        <Grid item xs={2}>
+                                            <EmailIcon
+                                                style={{"fontSize": 14}} />
                                         </Grid>
-                                        <Grid
-                                            item
-                                            xs={10}>
-                                            {user.user.email}
+                                        <Grid item xs={10}>
+                                            {user.email}
                                         </Grid>
-                                    </Grid>
-                                }
+                                    </Grid>}
                             </Grid>
                         </CardContent>
                     </Grid>
                 </Grid>
             </Card>
-        </Grid>
+        </Link>
     );
 };
 
 AccountsCards.propTypes = {
+    "accountType": PropTypes
+        .oneOf(["STUDENT", "PARENT", "INSTRUCTOR", "ADMIN"]),
     "isLoading": PropTypes.bool,
-    "user": PropTypes.object,
+    "userID": PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]),
 };
 
 export default AccountsCards;

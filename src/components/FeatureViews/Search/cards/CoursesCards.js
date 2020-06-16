@@ -1,20 +1,20 @@
-import React, {useCallback} from "react";
+import React from "react";
+import gql from "graphql-tag";
 import PropTypes from "prop-types";
-import {useHistory} from "react-router-dom";
-import {useSelector} from "react-redux";
+import {useQuery} from "@apollo/react-hooks";
 
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Chip from "@material-ui/core/Chip";
 import Grid from "@material-ui/core/Grid";
+import {Link} from "react-router-dom";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 
 import "../Search.scss";
-import * as hooks from "actions/hooks";
 import {truncateStrings} from "utils";
 
-const handleLocaleDateString = (start, end) => {
+const getLocaleDateString = (start, end) => {
     if (start && end) {
         const s1 = new Date(start.replace(/-/ug, "/"));
         const s2 = new Date(end.replace(/-/ug, "/"));
@@ -22,27 +22,37 @@ const handleLocaleDateString = (start, end) => {
     }
 };
 
-const CourseCards = ({course, isLoading = false}) => {
-    const history = useHistory();
-    const instructors = useSelector(({Users}) => Users.InstructorList);
-    hooks.useInstructor(course && course.instructor);
+const COURSE_QUERY = gql`
+    query CourseFetch($courseID: ID!) {
+        course(courseId: $courseID) {
+            instructor {
+                user {
+                    firstName
+                    lastName
+                }
+            }
+            enrollmentSet {
+                id
+            }
+            maxCapacity
+            endDate
+            title
+            startDate
+        }
+    }
+`;
 
-    const goToCoursePage = useCallback((event) => {
-        event.preventDefault();
-        const courseID = course.course_id || course.id;
-        history.push(`/registration/course/${courseID}/${course.subject}`);
-    }, [course, history]);
+const CourseCards = ({courseID, isLoading = false}) => {
+    const {data, loading} = useQuery(COURSE_QUERY, {
+        "variables": {courseID},
+    });
 
-    if (!course || isLoading) {
+    if (loading || isLoading) {
         return (
-            <Grid
-                item
-                xs={3}>
+            <Grid item xs={3}>
                 <Card style={{"height": "148px"}}>
                     <CardContent>
-                        <Typography
-                            color="textSecondary"
-                            gutterBottom
+                        <Typography color="textSecondary" gutterBottom
                             variant="h4">
                             Loading...
                         </Typography>
@@ -52,95 +62,64 @@ const CourseCards = ({course, isLoading = false}) => {
         );
     }
 
+    const {course} = data;
+    const instructorName = `${course.instructor.user.firstName} ${course.instructor.user.lastName}`;
+
     return (
-        <Grid
-            item
-            onClick={goToCoursePage}
-            sm={3}
-            style={{"padding": "10px"}}
-            xs={12}>
-            <Card
-                className="CourseCards"
-                style={{
-                    "cursor": "pointer",
-                    "height": "148px",
-                }}>
+        <Link style={{
+            "padding": "10px",
+            "textDecoration": "none",
+        }} to={`/registration/course/${courseID}`}>
+            <Card className="CourseCards" style={{"height": "148px"}}>
                 <Grid container>
-                    <Grid
-                        item
-                        sm={12}>
-                        <Typography
-                            align="left"
-                            variant="subtitle2">
-                            {course.subject}
+                    <Grid item sm={12}>
+                        <Typography align="left" variant="subtitle2">
+                            {course.title}
                         </Typography>
                     </Grid>
-                    <Grid
-                        item
-                        sm="auto">
-                        {
-                            course.max_capacity > course.enrollment_list.length
-                                ? <Chip
-                                    color="primary"
-                                    label="Open"
-                                    style={{
-                                        "color": "white",
-                                        "cursor": "pointer",
-                                        "height": "15px",
-                                        "width": "9rem",
-                                    }} />
-                                : <Chip
-                                    color="secondary"
-                                    label="Full"
-                                    style={{
-                                        "color": "white",
-                                        "cursor": "pointer",
-                                        "height": "15px",
-                                        "width": "9rem",
-                                    }} />
-                        }
+                    <Grid item sm="auto">
+                        {course.maxCapacity > course.enrollmentSet.length ?
+                            <Chip color="primary" label="Open" style={{
+                                "color": "white",
+                                "cursor": "pointer",
+                                "height": "15px",
+                                "width": "9rem",
+                            }} /> :
+                            <Chip color="secondary" label="Full" style={{
+                                "color": "white",
+                                "cursor": "pointer",
+                                "height": "15px",
+                                "width": "9rem",
+                            }} />}
                     </Grid>
-                    <Grid
-                        container
-                        item>
-                        <Grid
-                            className="courseRow">
+                    <Grid className="courseRow" item>
+                        <Typography className="courseText">
+                            Dates: {getLocaleDateString(
+                                course.startDate,
+                                course.endDate,
+                            )}
+                        </Typography>
+                    </Grid>
+                    <Grid className="courseRow" item>
+                        <Tooltip title={course.title}>
                             <Typography className="courseText">
-                                Dates: {
-                                    handleLocaleDateString(
-                                        course.start_date,
-                                        course.end_date
-                                    )
-                                }
+                                Name: {truncateStrings(course.title, 20)}
                             </Typography>
-                        </Grid>
-                        <Grid
-                            className="courseRow">
-                            <Tooltip title={course.subject}>
-                                <Typography className="courseText">
-                                    Name: {truncateStrings(course.subject, 20)}
-                                </Typography>
-                            </Tooltip>
-                        </Grid>
-                        <Grid
-                            className="courseRow">
-                            <Typography className="courseText">
-                                    Teacher: {
-                                    instructors[course.instructor]
-                                        ? instructors[course.instructor].name
-                                        : "Loading..."
-                                }
-                            </Typography>
-                        </Grid>
+                        </Tooltip>
+                    </Grid>
+                    <Grid className="courseRow" item>
+                        <Typography className="courseText">
+                            Teacher: {instructorName}
+                        </Typography>
                     </Grid>
                 </Grid>
             </Card>
-        </Grid>
+        </Link>
     );
 };
 
 CourseCards.propTypes = {
-    "course": PropTypes.object.isRequired,
+    "courseID": PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     "isLoading": PropTypes.bool,
 };
 

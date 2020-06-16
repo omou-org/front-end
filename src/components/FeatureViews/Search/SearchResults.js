@@ -1,299 +1,292 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
+import React, {useEffect, useMemo, useState} from "react";
+import gql from "graphql-tag";
+import {useQuery} from "@apollo/react-hooks";
+import {useSearchParams} from "actions/hooks";
 
 import Chip from "@material-ui/core/Chip";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import LessResultsIcon from "@material-ui/icons/KeyboardArrowLeft";
+import {Link} from "react-router-dom";
 import MoreResultsIcon from "@material-ui/icons/KeyboardArrowRight";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 
-import BackButton from "../../BackButton"
-
 import "./Search.scss";
-import { isLoading, useSearchParams } from "actions/hooks";
-import { useSearchAccount, useSearchCourse } from "actions/searchActions";
 import AccountFilters from "./AccountFilters";
 import AccountsCards from "./cards/AccountsCards";
+import BackButton from "../../BackButton";
 import CourseFilters from "./CourseFilters";
 import CoursesCards from "./cards/CoursesCards";
 import NoResultsPage from "./NoResults/NoResultsPage";
-import SearchResultsLoader from "./SearchResultsLoader";
-import { capitalizeString } from "../../../utils";
-
-const getDisplay = (results, page) => results[page] || [];
+import {capitalizeString} from "utils";
 
 const changePage = (setter, delta) => () => {
-  setter((prevVal) => prevVal + delta);
+    setter((prevVal) => prevVal + delta);
 };
 
+const getPageSize = (filter) => (filter ? 12 : 4);
+
+const ACCOUNT_SEARCH = gql`
+    query AccountSearch($grade: Int, $page: Int, $pageSize: Int,
+        $profile: String, $query: String!, $sort: String) {
+        accountSearch(query: $query, page: $page, pageSize: $pageSize,
+            grade: $grade, profile: $profile, sort: $sort) {
+            results {
+                ... on StudentType {
+                    user {
+                    id
+                    }
+                    accountType
+                }
+                ... on ParentType {
+                    user {
+                    id
+                    }
+                    accountType
+                }
+                ... on InstructorType {
+                    user {
+                    id
+                    }
+                    accountType
+                }
+                ... on AdminType {
+                    user {
+                    id
+                    }
+                    accountType
+                }
+            }
+            total
+        }
+    }`;
+
+const COURSE_SEARCH = gql`
+    query CourseSearch($query: String!, $availability: String, $size: Int,
+        $type: String, $page: Int, $pageSize: Int, $sort: String) {
+        courseSearch(query: $query, availability: $availability,
+            courseSize: $size, courseType: $type, page: $page,
+            pageSize: $pageSize, sort: $sort) {
+            total
+            results {
+                id
+            }
+        }
+    }`;
+
 const SearchResults = () => {
-  const history = useHistory();
-  const {
-    accounts,
-    accountResultsNum,
-    courses,
-    courseResultsNum,
-  } = useSelector(({ Search }) => Search);
-  const [accountsPage, setAccountsPage] = useState(1);
-  const [coursePage, setCoursePage] = useState(1);
+    const [accountsPage, setAccountsPage] = useState(1);
+    const [coursePage, setCoursePage] = useState(1);
 
-  const searchParams = useSearchParams();
-  const filter = searchParams.get("filter"),
-    query = searchParams.get("query"),
-    sort = searchParams.get("sort");
+    const searchParams = useSearchParams();
+    const filter = searchParams.get("filter"),
+        query = searchParams.get("query"),
+        sort = searchParams.get("sort");
 
-  const getPageSize = (filter) => filter ? {
-    "account": 12,
-    "course": 12,
-  }[filter] : 4;
-
-  const accountStatus = useSearchAccount(
-    query,
-    accountsPage,
-    getPageSize(filter),
-    searchParams.get("profile"),
-    searchParams.get("grade"),
-    sort
-  );
-  const courseStatus = useSearchCourse(
-    query,
-    coursePage,
-    getPageSize(filter),
-    searchParams.get("course"),
-    searchParams.get("availability"),
-    sort
-  );
-
-  // go back to 1st page on query change
-  useEffect(() => {
-    setAccountsPage(1);
-    setCoursePage(1);
-  }, [query]);
-
-  const goToFilter = (type) => () => {
-    history.push({
-      pathname: "/search/",
-      search: `?query=${query}&filter=${type}`,
+    const accountQuery = useQuery(ACCOUNT_SEARCH, {
+        "variables": {
+            "grade": searchParams.get("grade"),
+            "page": accountsPage,
+            "pageSize": getPageSize(filter),
+            "profile": searchParams.get("profile"),
+            query,
+            sort,
+        },
     });
-  };
 
-  const numResults = useMemo(() => {
-    switch (filter) {
-      case "account":
-        return accountResultsNum;
-      case "course":
-        return courseResultsNum;
-      default:
-        return accountResultsNum + courseResultsNum;
+    const courseQuery = useQuery(COURSE_SEARCH, {
+        "variables": {
+            "availability": searchParams.get("availability"),
+            "page": coursePage,
+            "pageSize": getPageSize(filter),
+            "profile": searchParams.get("profile"),
+            query,
+            sort,
+            "type": searchParams.get("course"),
+        },
+    });
+
+    // go back to 1st page on query change
+    useEffect(() => {
+        setAccountsPage(1);
+        setCoursePage(1);
+    }, [query]);
+
+    const numAccResults = accountQuery.data?.accountSearch.total;
+    const numCourseResults = courseQuery.data?.courseSearch.total;
+
+    const numResults = useMemo(() => {
+        switch (filter) {
+            case "account":
+                return numAccResults;
+            case "course":
+                return numCourseResults;
+            default:
+                return numAccResults + numCourseResults;
+        }
+    }, [filter, numAccResults, numCourseResults]);
+
+    const renderAccounts = useMemo(() => (accountQuery.loading ?
+        Array(4).fill(null)
+            .map((_, index) => (
+                <Grid item key={index} sm={3}>
+                    <AccountsCards isLoading />
+                </Grid>
+            )) :
+        accountQuery.data.accountSearch.results
+            .map(({user, accountType}) => (
+                <Grid item key={user.id} sm={3}>
+                    <AccountsCards accountType={accountType} userID={user.id} />
+                </Grid>
+            ))), [accountQuery]);
+
+    const renderCourses = useMemo(() => (courseQuery.loading ?
+        Array(4).fill(null)
+            .map((_, index) => (
+                <Grid item key={index} sm={3}>
+                    <CoursesCards isLoading />
+                </Grid>
+            )) :
+        courseQuery.data.courseSearch.results.map(({id}) => (
+            <Grid item key={id} sm={3}>
+                <CoursesCards courseID={id} />
+            </Grid>
+        ))
+    ), [courseQuery]);
+
+    if (!(courseQuery.isLoading || accountQuery.isLoading) &&
+        numResults === 0) {
+        return <NoResultsPage />;
     }
-  }, [filter, accountResultsNum, courseResultsNum]);
 
-  const statuses = useMemo(() => {
-    switch (filter) {
-      case "account":
-        return accountStatus;
-      case "course":
-        return courseStatus;
-      default:
-        return [accountStatus, courseStatus];
-    }
-  }, [filter, accountStatus, courseStatus]);
-
-  const renderAccounts = useMemo(() => {
-    if (accountResultsNum === 0) {
-      return <></>;
-    }
-    const accToDisplay = getDisplay(accounts, accountsPage);
-
-    if (accToDisplay.length === 0) {
-      return Array(4)
-        .fill(null)
-        .map((_, index) => (
-          <Grid item key={index} sm={3}>
-            <AccountsCards isLoading />
-          </Grid>
-        ));
-    }
-    return accToDisplay.map((account) => (
-      <Grid item key={account.user.id} sm={3}>
-        <AccountsCards user={account} />
-      </Grid>
-    ));
-  }, [accountResultsNum, accounts, accountsPage]);
-
-  const renderCourses = useMemo(() => {
-    if (courseResultsNum === 0) {
-      return <></>;
-    }
-    const courseToDisplay = getDisplay(courses, coursePage);
-    if (courseToDisplay.length === 0) {
-      return Array(4)
-        .fill(null)
-        .map((_, index) => <CoursesCards isLoading key={index} />);
-    }
-
-    return courseToDisplay.map((course) => (
-      <CoursesCards course={course} key={course.id} />
-    ));
-  }, [courses, coursePage, courseResultsNum]);
-
-  if (isLoading(statuses)) {
     return (
-      <SearchResultsLoader
-        accountPage={accountsPage}
-        coursePage={coursePage}
-        numResults={numResults}
-        query={query}
-      />
+        <Grid className="search-results" container>
+            <Grid item xs={12}>
+                <Paper align="left" className="main-search-view" elevation={2}>
+                    {filter &&
+                        <Grid className="prevResults" item xs={12}>
+                            <BackButton btnText="To All Search Results"
+                                style={{"marginBottom": "2vh"}} />
+                        </Grid>}
+                    <Grid className="searchResults" item xs={12}>
+                        <Typography align="left" className="search-title"
+                            variant="h3">
+                            {numResults} Search Result{numResults !== 1 && "s"} for {filter && capitalizeString(filter)} "
+                            {query}"
+                        </Typography>
+                    </Grid>
+                    {filter !== "course" && (
+                        <div className="account-results-wrapper">
+                            {filter === "account" && (
+                                <Grid item xs={12}>
+                                    <AccountFilters />
+                                </Grid>
+                            )}
+                            {numAccResults !== 0 && <hr />}
+                            <Grid item xs={12}>
+                                <Grid alignItems="center" container
+                                    direction="row" justify="space-between">
+                                    <Grid className="searchResults" item>
+                                        <Typography align="left"
+                                            className="resultsColor"
+                                            gutterBottom>
+                                            {numAccResults > 0 && "Accounts"}
+                                        </Typography>
+                                    </Grid>
+                                    {numAccResults > 0 &&
+                                        filter !== "account" && (
+                                        <Grid item>
+                                            <Link to={{
+                                                "pathname": "/search/",
+                                                "search": `?query=${query}&filter=account`,
+                                            }}>
+                                                <Chip className="searchChip"
+                                                    label="See All Accounts" />
+                                            </Link>
+                                        </Grid>
+                                    )}
+                                </Grid>
+                                <Grid container direction="row" spacing={2}>
+                                    {renderAccounts}
+                                </Grid>
+                                {numAccResults > getPageSize(filter) && (
+                                    <div className="results-nav">
+                                        <IconButton
+                                            className="less"
+                                            disabled={accountsPage === 1}
+                                            onClick={changePage(setAccountsPage, -1)}>
+                                            <LessResultsIcon />
+                                        </IconButton>
+                                        {accountsPage}
+                                        <IconButton
+                                            className="more"
+                                            disabled={accountsPage * getPageSize(filter) >= numAccResults}
+                                            onClick={changePage(setAccountsPage, 1)}>
+                                            <MoreResultsIcon />
+                                        </IconButton>
+                                    </div>
+                                )}
+                            </Grid>
+                        </div>
+                    )}
+                    {filter !== "account" && (
+                        <div className="course-results-wrapper">
+                            {filter === "course" && (
+                                <Grid item xs={12}>
+                                    <CourseFilters />
+                                </Grid>
+                            )}
+                            {numCourseResults !== 0 && <hr />}
+                            <Grid item xs={12}>
+                                <Grid alignItems="center" container
+                                    direction="row" justify="space-between">
+                                    <Grid className="searchResults" item>
+                                        <Typography align="left"
+                                            className="resultsColor">
+                                            {numCourseResults > 0 &&
+                                                filter !== "course" &&
+                                                "Courses"}
+                                        </Typography>
+                                    </Grid>
+                                    {numCourseResults > 0 &&
+                                        filter !== "course" && (
+                                        <Grid item>
+                                            <Link to={{
+                                                "pathname": "/search/",
+                                                "search": `?query=${query}&filter=course`,
+                                            }}>
+                                                <Chip className="searchChip"
+                                                    label="See All Courses" />
+                                            </Link>
+                                        </Grid>
+                                    )}
+                                </Grid>
+                                <Grid container direction="row" spacing={1}>
+                                    {renderCourses}
+                                </Grid>
+                            </Grid>
+                            {numCourseResults > getPageSize(filter) && (
+                                <div className="results-nav">
+                                    <IconButton className="less"
+                                        disabled={coursePage === 1}
+                                        onClick={changePage(setCoursePage, -1)}>
+                                        <LessResultsIcon />
+                                    </IconButton>
+                                    {coursePage}
+                                    <IconButton className="more"
+                                        disabled={coursePage * getPageSize(filter) >= numCourseResults}
+                                        onClick={changePage(setCoursePage, 1)}>
+                                        <MoreResultsIcon />
+                                    </IconButton>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </Paper>
+            </Grid>
+        </Grid>
     );
-  }
-
-  if (numResults === 0) {
-    return <NoResultsPage />;
-  }
-
-  return (
-    <Grid className="search-results" container>
-      <Grid item xs={12}>
-        <Paper elevation={2} className="main-search-view" align="left">
-          {filter !== null && <Grid className="prevResults" item xs={12}>
-            <BackButton style={{ marginBottom: "2vh" }} btnText="To All Search Results" />
-          </Grid>}
-          <Grid className="searchResults" item xs={12}>
-            <Typography align="left" className="search-title" variant="h3">
-              {numResults} Search Result{numResults !== 1 && "s"} for {filter && capitalizeString(filter)} "
-                {query}"
-              </Typography>
-          </Grid>
-          {filter !== "course" && (
-            <div className="account-results-wrapper">
-              {filter === "account" && (
-                <Grid item xs={12}>
-                  <Grid container>
-                    <AccountFilters />
-                  </Grid>
-                </Grid>
-              )}
-              {accountResultsNum !== 0 && <hr />}
-              <Grid item xs={12}>
-                <Grid
-                  alignItems="center"
-                  container
-                  direction="row"
-                  justify="space-between"
-                >
-                  <Grid className="searchResults" item>
-                    <Typography
-                      align="left"
-                      className="resultsColor"
-                      gutterBottom
-                    >
-                      {accountResultsNum > 0 && "Accounts"}
-                    </Typography>
-                  </Grid>
-                  {accountResultsNum > 0 && filter !== "account" && (
-                    <Grid item>
-                      <Chip
-                        className="searchChip"
-                        label="See All Accounts"
-                        onClick={goToFilter("account")}
-                      />
-                    </Grid>
-                  )}
-                </Grid>
-                <Grid container direction="row" spacing={2}>
-                  {renderAccounts}
-                </Grid>
-                {accountResultsNum > getPageSize(filter) && (
-                  <div className="results-nav">
-                    {
-                      <IconButton
-                        className="less"
-                        disabled={accountsPage === 1}
-                        onClick={changePage(setAccountsPage, -1)}
-                      >
-                        <LessResultsIcon />
-                      </IconButton>
-                    }
-                    {accountsPage}
-                    {
-                      <IconButton
-                        className="more"
-                        disabled={accountsPage * getPageSize(filter) >= accountResultsNum}
-                        onClick={changePage(setAccountsPage, 1)}
-                      >
-                        <MoreResultsIcon />
-                      </IconButton>
-                    }
-                  </div>
-                )}
-              </Grid>
-            </div>
-          )}
-          {filter !== "account" && (
-            <div className="course-results-wrapper">
-              {filter === "course" && (
-                <Grid item xs={12}>
-                  <Grid container>
-                    <CourseFilters />
-                  </Grid>
-                </Grid>
-              )}
-              {courseResultsNum !== 0 && <hr />}
-              <Grid item xs={12}>
-                <Grid
-                  alignItems="center"
-                  container
-                  direction="row"
-                  justify="space-between"
-                >
-                  <Grid className="searchResults" item>
-                    <Typography align="left" className="resultsColor">
-                      {courseResultsNum > 0 && filter !== "course" && "Courses"}
-                    </Typography>
-                  </Grid>
-                  {courseResultsNum > 0 && filter !== "course" && (
-                    <Grid item style={{ paddingRight: "1vh" }}>
-                      <Chip
-                        className="searchChip"
-                        label="See All Courses"
-                        onClick={goToFilter("course")}
-                      />
-                    </Grid>
-                  )}
-                </Grid>
-                <Grid container direction="row" spacing={1}>
-                  {renderCourses}
-                </Grid>
-              </Grid>
-              {courseResultsNum > getPageSize(filter) && (
-                <div className="results-nav">
-                  <IconButton
-                    className="less"
-                    disabled={coursePage === 1}
-                    onClick={changePage(setCoursePage, -1)}
-                  >
-                    <LessResultsIcon />
-                  </IconButton>
-                  {coursePage}
-                  <IconButton
-                    className="more"
-                    disabled={coursePage * getPageSize(filter) >= courseResultsNum}
-                    onClick={changePage(setCoursePage, 1)}
-                  >
-                    <MoreResultsIcon />
-                  </IconButton>
-                </div>
-              )}
-            </div>
-          )}
-        </Paper>
-      </Grid>
-    </Grid>
-  );
 };
 
 export default SearchResults;
