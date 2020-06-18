@@ -2,7 +2,6 @@ import React, {useCallback, useState} from "react";
 import {useSelector} from "react-redux";
 
 import AccountsIcon from "@material-ui/icons/Contacts";
-import AdminIcon from "@material-ui/icons/Face";
 import AppBar from "@material-ui/core/AppBar";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import Drawer from "@material-ui/core/Drawer";

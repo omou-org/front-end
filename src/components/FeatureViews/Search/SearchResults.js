@@ -118,9 +118,9 @@ const SearchResults = () => {
         ));
     }
     return accToDisplay.map((account) => (
-      <Grid item key={account.user.id} sm={3}>
-        <AccountsCards user={account} />
-      </Grid>
+        <Grid item key={account.user.id} xl={4} md={3} sm={3} xs={12}>
+          <AccountsCards user={account}/>
+        </Grid>
     ));
   }, [accountResultsNum, accounts, accountsPage]);
 
