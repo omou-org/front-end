@@ -47,8 +47,7 @@ const TodayFiltered = () => {
         currentSessionCategories = sessions.map(({course}) => course); 
         courseTodayList = courseObjectsList.filter(allCourses => 
             {currentSessionCategories.some(coursesToday => 
-                {coursesToday == allCourses.course_id
-            });
+                coursesToday == allCourses.course_id);
         });
         categoryIdList = courseTodayList.map(({category}) => category); // 
         categoryNames = categoryIdList

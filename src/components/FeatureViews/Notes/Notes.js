@@ -23,15 +23,9 @@ import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
 import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
-<<<<<<< HEAD
 import Typography from "@material-ui/core/Typography";
-import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
 import IconButton from "@material-ui/core/IconButton";
-import {makeStyles} from "@material-ui/core/styles";
-=======
->>>>>>> development
 import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
 import {makeStyles} from "@material-ui/core/styles";
 
 import "./Notes.scss";
@@ -44,7 +38,6 @@ import {
 } from "actions/actionTypes";
 import {instance} from "actions/apiActions";
 
-<<<<<<< HEAD
 const useStyles = makeStyles((theme) => ({
 	actionIcons: {
 		position: "absolute",
@@ -84,19 +77,6 @@ const useStyles = makeStyles((theme) => ({
         }
     }
 }));
-=======
-const useStyles = makeStyles({
-    "actionIcons": {
-        "bottom": "5%",
-        "position": "absolute",
-        "right": "5%",
-    },
-    "notesTitle": {
-        "fontSize": "0.875rem",
-        "letterSpacing": "0.01071em",
-    },
-});
->>>>>>> development
 
 const numericDateString = (date) => new Date(date).toLocaleTimeString("en-US", {
     "day": "numeric",
@@ -105,40 +85,6 @@ const numericDateString = (date) => new Date(date).toLocaleTimeString("en-US", {
     "month": "numeric",
 });
 
-<<<<<<< HEAD
-const Notes = ({ownerType, ownerID, isDashboard}) => {
-    const dispatch = useDispatch();
-    const api = useMemo(() => bindActionCreators(userActions, dispatch), [dispatch]);
-    const notes = useSelector(({Users, Course, Enrollments}) => {
-        switch (ownerType) {
-            case "student":
-                return Users.StudentList[ownerID].notes;
-            case "parent":
-                return Users.ParentList[ownerID].notes;
-            case "instructor":
-                return Users.InstructorList[ownerID].notes;
-            case "receptionist":
-                return Users.ReceptionistList[ownerID].notes;
-            case "course":
-                return Course.NewCourseList[ownerID].notes;
-            case "enrollment":
-                return Enrollments[ownerID.studentID][ownerID.courseID].notes;
-            default:
-                return null;
-        }
-    });
-
-    const getRequestStatus = useSelector(({RequestStatus}) => {
-        switch (ownerType) {
-            case "course":
-                return RequestStatus.courseNote[GET][ownerID];
-            case "enrollment":
-                return RequestStatus.enrollmentNote[GET][ownerID.enrollmentID];
-            default:
-                return RequestStatus.accountNote[GET][ownerID];
-        }
-    });
-=======
 const QUERIES = {
     "account": gql`
         query AccountNotesQuery($ownerID: ID!) {
@@ -203,9 +149,8 @@ const DATA_KEY = {
     "course": "courseNotes",
     "enrollment": "enrollmentNotes",
 };
->>>>>>> development
 
-const Notes = ({ownerType, ownerID}) => {
+const Notes = ({ownerType, ownerID, isDashboard}) => {
     const dispatch = useDispatch();
     const api = useMemo(
         () => bindActionCreators(userActions, dispatch), [dispatch],
@@ -378,7 +323,6 @@ const Notes = ({ownerType, ownerID}) => {
         return <LoadingError error="notes" />;
     }
 
-<<<<<<< HEAD
         return (
             <Grid
                 className="notes-container"
@@ -403,7 +347,7 @@ const Notes = ({ownerType, ownerID}) => {
                             value={noteTitle} />
                         <NotificationIcon
                             className="notification"
-                            onClick={toggleNotification}
+                            onClick={toggleImportant}
                             style={notificationColor} />
                     </DialogTitle>
                     <DialogContent>
@@ -426,13 +370,13 @@ const Notes = ({ownerType, ownerID}) => {
                         </Button>
                         <Button
                             color="primary"
-                            disabled={!noteBody}
+                            disabled={!noteBody || createResults.loading}
                             onClick={saveNote}
                             variant="outlined">
-                            {submitting ? "Saving..." : "Save"}
+                            {createResults.loading ? "Saving..." : "Save"}
                         </Button>
                         {
-                            !submitting && error &&
+                            createResults.error &&
                             <span style={{"float": "right"}}>
                                     Error while saving!
                             </span>
@@ -622,111 +566,6 @@ const Notes = ({ownerType, ownerID}) => {
             </Grid>
         )
     // }
-=======
-    return (
-        <Grid className="notes-container" container item md={12} spacing={2}>
-            <Dialog aria-describedby="simple-modal-description"
-                aria-labelledby="simple-modal-title" className="popup" fullWidth
-                maxWidth="xs" onClose={hideWarning} open={alert}>
-                <DialogTitle>
-                    <TextField className="textfield" id="standard-name"
-                        onChange={handleTitleUpdate} placeholder="Title"
-                        value={noteTitle} />
-                    <Tooltip interactive title="This is an Important Note!">
-                        <NotificationIcon className="notification"
-                            onClick={toggleImportant}
-                            style={notificationColor} />
-                    </Tooltip>
-                </DialogTitle>
-                <DialogContent>
-                    <InputBase className="note-body"
-                        inputProps={{"aria-label": "naked"}} multiline
-                        onChange={handleBodyUpdate}
-                        placeholder="Body (required)" required rows={15}
-                        value={noteBody} variant="filled" />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={hideWarning} variant="outlined">
-                        Cancel
-                    </Button>
-                    <Button color="primary"
-                        disabled={!noteBody || createResults.loading}
-                        onClick={saveNote} variant="outlined">
-                        {createResults.loading ? "Saving..." : "Save"}
-                    </Button>
-                    {createResults.error &&
-                        <span style={{"float": "right"}}>
-                            Error while saving!
-                        </span>}
-                </DialogActions>
-            </Dialog>
-            <Dialog aria-describedby="simple-modal-description"
-                aria-labelledby="simple-modal-title" className="delete-popup"
-                fullWidth maxWidth="xs" onClose={hideWarning}
-                open={deleteID !== null}>
-                <DialogTitle>Confirm Delete</DialogTitle>
-                <DialogContent>
-                    Are you sure you want to delete {
-                        getNoteByID(deleteID)?.title ?
-                            `"${getNoteByID(deleteID).title}"` :
-                            "this note"
-                    }?
-                </DialogContent>
-                <DialogActions className="delete-actions">
-                    <Button className="cancel-button" onClick={hideWarning}
-                        variant="contained">
-                        Cancel
-                    </Button>
-                    <Button className="delete-button" onClick={handleDelete}
-                        variant="contained">
-                        Delete
-                    </Button>
-                    {deleteError &&
-                        <span style={{"float": "right"}}>
-                            Error while deleting!
-                        </span>}
-                </DialogActions>
-            </Dialog>
-            <Grid item md={3}>
-                <div className="addNote" onClick={openNewNote}
-                    style={{"cursor": "pointer"}}>
-                    <Typography className="center">
-                        <AddIcon /><br />Add Note
-                    </Typography>
-                </div>
-            </Grid>
-            {Object.values(notes).map((note) => (
-                <Grid item key={note.id || note.body} xs={3}>
-                    <Paper className="note" elevation={2}>
-                        <Typography align="left"
-                            className={`noteHeader ${classes.notesTitle}`}>
-                            {note.title}
-                            <NotificationIcon className="noteNotification"
-                                onClick={toggleNoteField(note.id, "important")}
-                                style={note.important ? {"color": "red"} : {}} />
-                        </Typography>
-                        <Typography align="left" className="body">
-                            {note.body}
-                        </Typography>
-                        <Typography className="date"
-                            style={{"fontWeight": "500"}}>
-                            {numericDateString(note.timestamp)}
-                        </Typography>
-                        <div className={`actions ${classes.actionIcons}`}>
-                            <Delete className="icon"
-                                onClick={openDelete(note.id)} />
-                            <EditIcon className="icon"
-                                onClick={openExistingNote(note)} />
-                            <DoneIcon className="icon"
-                                onClick={toggleNoteField(note.id, "complete")}
-                                style={note.complete ? {"color": "#43B5D9"} : {}} />
-                        </div>
-                    </Paper>
-                </Grid>
-            ))}
-        </Grid>
-    );
->>>>>>> development
 };
 
 Notes.propTypes = {
