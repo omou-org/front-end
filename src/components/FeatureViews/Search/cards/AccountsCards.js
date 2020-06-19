@@ -21,12 +21,12 @@ const avatarStyles = (username) => ({
     "backgroundColor": stringToColor(username),
     "color": "white",
     "fontSize": 20,
-    "height": "3.5vw",
+    "height": 50,
     "marginBottom": 17,
     "marginLeft": 17,
     "marginRight": 17,
     "marginTop": 30,
-    "width": "3.5vw",
+    "width": 50,
 
 });
 
@@ -100,21 +100,20 @@ const AccountsCards = ({accountType, userID, isLoading}) => {
     const fullName = `${user.firstName} ${user.lastName}`;
 
     return (
-        <Link to={`/accounts/${accountType.toLowerCase()}/${userID}`}
-            style={{"textDecoration": "none"}}>
+        <Link style={{"textDecoration": "none"}}
+            to={`/accounts/${accountType.toLowerCase()}/${userID}`}>
             <Card className="AccountsCards" key={userID}
                 style={{
                     "padding": "10px",
+                    "height": "160px",
                 }}>
                 <Grid container>
-                    <Hidden mdDown>
-                        <Grid item md={3}>
-                            <Avatar style={avatarStyles(fullName)}>
-                                {fullName.match(/\b(\w)/ug).join("")}
-                            </Avatar>
-                        </Grid>
-                    </Hidden>
-                    <Grid item md={9} xs={8}>
+                    <Grid item xs={4}>
+                        <Avatar style={avatarStyles(fullName)}>
+                            {fullName.match(/\b(\w)/ug).join("")}
+                        </Avatar>
+                    </Grid>
+                    <Grid item xs={8}>
                         <CardContent className="cardText">
                             <Typography align="left"
                                 style={{"fontWeight": "500"}}>
@@ -140,7 +139,10 @@ const AccountsCards = ({accountType, userID, isLoading}) => {
                                                 style={{"fontSize": 14}} />
                                         </Grid>
                                         <Grid item xs={10}>
-                                            {user.email}
+                                            <Typography noWrap
+                                                style={{"fontSize": 10}}>
+                                                {user.email}
+                                            </Typography>
                                         </Grid>
                                     </Grid>}
                             </Grid>

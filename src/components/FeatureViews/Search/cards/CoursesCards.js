@@ -72,40 +72,44 @@ const CourseCards = ({courseID, isLoading = false}) => {
         }} to={`/registration/course/${courseID}`}>
             <Card className="CourseCards" style={{"height": "148px"}}>
                 <Grid container>
-                    <Grid item sm={12}>
-                        <Typography align="left" variant="subtitle2">
+                    <Grid align="left" item sm={12}>
+                        <Typography
+                            align="left"
+                            variant="subtitle2">
                             {course.title}
                         </Typography>
                     </Grid>
-                    <Grid item sm="auto">
+                    <Grid align="left" item sm="auto">
                         {course.maxCapacity > course.enrollmentSet.length ?
                             <Chip color="primary" label="Open" style={{
-                                "color": "white",
-                                "cursor": "pointer",
-                                "height": "15px",
-                                "width": "9rem",
-                            }} /> :
+                                    "color": "white",
+                                    "cursor": "pointer",
+                                    "height": "15px",
+                                    "width": "9rem",
+                                }} /> :
                             <Chip color="secondary" label="Full" style={{
-                                "color": "white",
-                                "cursor": "pointer",
-                                "height": "15px",
-                                "width": "9rem",
-                            }} />}
+                                    "color": "white",
+                                    "cursor": "pointer",
+                                    "height": "15px",
+                                    "width": "9rem",
+                                }} />}
                     </Grid>
-                    <Grid className="courseRow" item>
-                        <Typography className="courseText">
-                            Dates: {getLocaleDateString(
-                                course.startDate,
-                                course.endDate,
-                            )}
-                        </Typography>
-                    </Grid>
-                    <Grid className="courseRow" item>
-                        <Tooltip title={course.title}>
+                    <Grid container item>
+                        <Grid align="left" className="courseRow" item xs={12}>
                             <Typography className="courseText">
-                                Name: {truncateStrings(course.title, 20)}
+                                Dates: {getLocaleDateString(
+                                    course.startDate,
+                                    course.endDate,
+                                )}
                             </Typography>
-                        </Tooltip>
+                        </Grid>
+                        <Grid align="left" className="courseRow" item xs={12}>
+                            <Tooltip title={course.title}>
+                                <Typography className="courseText">
+                                    Name: {truncateStrings(course.title, 20)}
+                                </Typography>
+                            </Tooltip>
+                        </Grid>
                     </Grid>
                     <Grid className="courseRow" item>
                         <Typography className="courseText">
