@@ -28,6 +28,7 @@
     "devextreme-react": "^20.1.3",
     "dotenv": "^8.2.0",
     "graphql": "^15.0.0",
+    "graphql-tag": "^2.10.3",
     "material-ui-pickers": "^2.2.4",
     "moment": "2.24.0",
     "moment-timezone": "^0.5.31",

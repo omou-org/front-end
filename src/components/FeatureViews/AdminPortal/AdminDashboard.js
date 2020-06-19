@@ -34,6 +34,8 @@ import UserAvatar from "../Accounts/UserAvatar"
 import "./AdminPortal.scss";
 import {useSelector} from "react-redux";
 import {stringToColor} from "../Accounts/accountUtils";
+import gql from "graphql-tag";
+import { useQuery } from "@apollo/react-hooks";
 
 
 const baseTheme = createMuiTheme();
@@ -171,6 +173,47 @@ const AdminDashboard = (props) => {
     { label: "Access Control" },
   ];
   
+  const QUERIES = {
+    "unpaidsessions": gql`query MyQuery {
+      unpaidSessions {
+        paymentList {
+          parent {
+            user {
+              firstName
+              lastName
+            }
+          }
+        }
+        course {
+          startTime
+          endTime
+          hourlyTuition
+        }
+        lastPaidSessionDatetime
+      }
+    }
+    `,
+  }
+
+// console.log(UNPAID_SESSIONS)
+
+ const unpaidSessionsData = useQuery(QUERIES["unpaidsessions"])
+//  console.log(unpaidSessionsData)
+ 
+ 
+ const calculateUnpaidSessions = data => {
+   if(unpaidSessionsData.data) {
+     const y = unpaidSessionsData.data.unpaidSessions.map(x=> {
+       const { endTime, startTime, hourlyTuition } = x.course
+       console.log(endTime, startTime, hourlyTuition)
+     })
+    //  console.log(y)
+    }
+};
+
+ calculateUnpaidSessions()
+
+
   const OPdata = [
     {
     name: "David Hong",
