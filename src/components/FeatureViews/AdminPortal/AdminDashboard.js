@@ -36,6 +36,7 @@ import {useSelector} from "react-redux";
 import {stringToColor} from "../Accounts/accountUtils";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
+import moment from "moment";
 
 
 const baseTheme = createMuiTheme();
@@ -181,6 +182,7 @@ const AdminDashboard = (props) => {
             user {
               firstName
               lastName
+              id
             }
           }
         }
@@ -200,18 +202,29 @@ const AdminDashboard = (props) => {
  const unpaidSessionsData = useQuery(QUERIES["unpaidsessions"])
 //  console.log(unpaidSessionsData)
  
- 
- const calculateUnpaidSessions = data => {
+const getTime = (time) => {
+  const strTime = String(time);
+  const minutes = parseInt(strTime.slice(-2), 10) / 60;
+  const hours = parseInt(strTime.substring(1), 10);
+  return hours + minutes;
+}; 
+
+ const calculateUnpaidSessions = () => {
    if(unpaidSessionsData.data) {
-     const y = unpaidSessionsData.data.unpaidSessions.map(x=> {
-       const { endTime, startTime, hourlyTuition } = x.course
-       console.log(endTime, startTime, hourlyTuition)
-     })
-    //  console.log(y)
-    }
+     const TotalAmountDue = unpaidSessionsData.data.unpaidSessions.map(time=> {
+     const { endTime, startTime, hourlyTuition } = time.course
+     const totalTime = getTime(endTime) - getTime(startTime);
+     const dollarsPerSession = totalTime * hourlyTuition;
+     const lastPaidSessionDateTime = time.lastPaidSessionDatetime.substring(0,10).replace("-", "").replace("-", "");
+    const missedPaymentSessions = moment().diff(lastPaidSessionDateTime, 'days') / 7
+     const AmountDue = dollarsPerSession * Math.ceil(missedPaymentSessions)
+      return AmountDue
+     });
+     return TotalAmountDue;
+    };
 };
 
- calculateUnpaidSessions()
+ console.log(calculateUnpaidSessions())
 
 
   const OPdata = [
