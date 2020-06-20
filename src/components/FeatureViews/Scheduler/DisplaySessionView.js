@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
+import { Link } from "react-router-dom";
 
 import { bindActionCreators } from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
@@ -27,6 +28,8 @@ import UnconfirmIcon from "@material-ui/icons/Cancel";
 import { EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION } from "./SessionView";
 import DialogContentText from "@material-ui/core/es/DialogContentText";
 import LoadingError from "../Accounts/TabComponents/LoadingCourseError"
+import FormControl from "@material-ui/core/FormControl";
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import InstructorSchedule from "../Accounts/TabComponents/InstructorSchedule";
 import SessionPaymentStatusChip from "../../SessionPaymentStatusChip";
@@ -89,7 +92,6 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
     useEffect(() => {
         api.initializeRegistration();
     }, [api]);
-
     const enrollmentStatus = hooks.useEnrollmentByCourse(course.course_id);
     const enrollments = useSelector(({ Enrollments }) => Enrollments);
     const reduxCourse = courses[course.course_id];
@@ -288,6 +290,7 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
                         <>
                             <Button className="button" onClick={handleTutoringMenuClick}>
                                 Tutoring Options
+                                <ArrowDropDownIcon />
                             </Button>
                             <StyledMenu anchorEl={tutoringActionsAnchor}
                                 keepMounted
@@ -367,7 +370,11 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
                     <Button color="primary" onClick={handleEditToggle(true)}>
                         Cancel
                     </Button>
-                    <Button color="primary" onClick={handleEditToggle(false)}>
+                    <Button
+                        color="primary"
+                        component={NavLink}
+                        to={{"pathname":`/scheduler/edit-session/${course.course_id}/${session.id}/${instructor_id}/edit`
+                        ,"state":{course:course, session:session}}}>
                         Confirm to Edit
                     </Button>
                 </DialogActions>

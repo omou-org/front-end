@@ -28,6 +28,7 @@ import RegistrationForm from "../Form/Form";
 import RegistrationReceipt from "../Form/RegistrationReceipt";
 import ResetPassword from "../Authentication/ResetPassword";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
+import EditSessionView from "../FeatureViews/Scheduler/EditSessionView";
 import SearchResults from "../FeatureViews/Search/SearchResults";
 import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
@@ -58,9 +59,24 @@ export const RootRoutes = () => {
             </ProtectedRoute>
 
             {/* Scheduler Routes */}
-            <ProtectedRoute exact path="/scheduler">
-                <Scheduler />
-            </ProtectedRoute>
+            <ProtectedRoute
+                exact
+                path="/scheduler"
+                render={(passedProps) => <Scheduler {...passedProps} />}
+            />
+            <Route
+                path="/scheduler/view-session/:course_id/:session_id/:instructor_id"
+                render={(passedProps) => <SessionView {...passedProps} />}
+            />
+            <Route
+                path="/scheduler/edit-session/:course_id/:session_id/:instructor_id/edit"
+                render={(passedProps) => <EditSessionView {...passedProps} />}
+            />
+            <ProtectedRoute
+                exact
+                path="/search"
+                render={(passedProps) => <SearchResults {...passedProps} />}
+            />
 
             <ProtectedRoute path="/scheduler/view-session/:course_id/:session_id/:instructor_id">
                 <SessionView />
