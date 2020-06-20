@@ -45,9 +45,9 @@ const UnpaidSessions = () => {
 		return <Loading loadingText="UNPAID SESSIONS LOADING" small/>;
 	}
 
-	// const UnpaidList = data.unpaidSessions;
+	const UnpaidList = data.unpaidSessions;
 
-	// if (UnpaidList.length === 0) {
+	if (UnpaidList.length === 0) {
 		return (
 			<Card className="no-unpaid-sessions">
 				<CardContent>
@@ -58,9 +58,9 @@ const UnpaidSessions = () => {
 		);
 	}
 
-	// return UnpaidList.map((unpaidStudent) => (
-	// 	<UnpaidSessionCard key={unpaidStudent} unpaidStudent={unpaidStudent}/>
-	// ));
-// };
+	return UnpaidList.map((unpaidStudent) => (
+		<UnpaidSessionCard key={unpaidStudent} unpaidStudent={unpaidStudent}/>
+	));
+};
 
 export default UnpaidSessions;
