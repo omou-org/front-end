@@ -53,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: "0.875rem",
 	},
 	dateDisplay: {
+        bottom: "20px",
 		fontSize: ".825rem",
 		position: "relative",
 		[theme.breakpoints.down('lg')]: {
@@ -61,16 +62,19 @@ const useStyles = makeStyles((theme) => ({
 		}
 	},
 	actionDashboardIcons: {
-		position: "absolute",
+        position: "absolute",
+        float: "left",
 		bottom: "1%",
 		right: "1%",
 		[theme.breakpoints.down('lg')]: {
-			transform: "scale(.5)",
+			// transform: "scale(1)",
 			bottom: "0%",
 			right: "0%"
 		}
 	},
 	notesNotification: {
+        float: "right",
+        cursor: "pointer",   
         height: "30px",
         width: "30px",
         [theme.breakpoints.down('md')]: {
@@ -477,7 +481,7 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                                 <Avatar
                                     variant="square"
                                     variant="rounded"
-									className={`noteNotification ${isDashboard ? classes.notesNotification : null }`}                                    
+									className={`noteNotification${isDashboard ? classes.notesNotification : null }`}                                    
 									onClick={toggleNoteField(note.id, "important")}
                                     style={note.important ? {"background-color": "red"} : {}} >!
                                 </Avatar>
@@ -495,7 +499,7 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
 									</Typography>
 								</Grid>
 								<Grid item xs={12}>
-									<div className={`actions ${classes.actionDashboardIcons}`}>
+									<div className={`date ${classes.actionDashboardIcons}`}>
 									<IconButton
 										className={classes.icons}
 										onClick={openDelete(note.id)}
