@@ -1,7 +1,11 @@
 import {DELETE, GET, PATCH, POST} from "actions/actionTypes";
 
 export default {
-	Authentication: initAuth(),
+    Authentication: {
+        "token": null,
+        "email": null,
+        "accountType": null,
+    },
 	RegistrationForms: initRegistrationForm(),
 	SignUpForm: initSignUpForm(),
 	Course: {
@@ -150,13 +154,6 @@ function initRequests() {
 		payment: {
 			[GET]: {},
 		},
-	};
-}
-
-function initAuth() {
-	return {
-		token: null,
-		isAdmin: false,
 	};
 }
 
