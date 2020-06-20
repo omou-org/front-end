@@ -25,7 +25,7 @@ import Typography from "@material-ui/core/Typography";
 import "./Accounts.scss";
 import {addDashes} from "./accountUtils";
 import BackButton from "components/BackButton";
-import {capitalizeString} from "utils";
+import {capitalizeString, USER_TYPES} from "utils";
 import IconButton from "@material-ui/core/IconButton";
 import LoadingHandler from "components/LoadingHandler";
 import ProfileCard from "./ProfileCard";
@@ -81,7 +81,8 @@ const stopPropagation = (event) => {
 };
 
 const Accounts = () => {
-    const isAdmin = useSelector(({auth}) => auth.isAdmin);
+    const isAdmin =
+        useSelector(({auth}) => auth.accountType) === USER_TYPES.admin;
     const {loading, error, data} = useQuery(QUERY_USERS);
 
     const prevState = JSON.parse(sessionStorage.getItem("AccountsState"));
@@ -197,8 +198,8 @@ const Accounts = () => {
                         </TableCell>
                         <TableCell onClick={stopPropagation}>
                             <Grid component={Hidden} mdDown>
-                                {(row.accountType === "student" ||
-                                    row.accountType === "parent" ||
+                                {(row.accountType === USER_TYPES.student ||
+                                    row.accountType === USER_TYPES.parent ||
                                     isAdmin) && (
                                     <IconButton component={Link}
                                         to={`/registration/form/${row.accountType}/${row.user.id}/edit`}>

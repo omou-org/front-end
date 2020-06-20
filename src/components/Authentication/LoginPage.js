@@ -14,7 +14,7 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 
 import {makeStyles} from "@material-ui/core/styles";
-import {setCredentials} from "actions/authActions.js";
+import {setToken} from "actions/authActions.js";
 import useAuthStyles from "./styles.js";
 
 const useStyles = makeStyles((theme) => ({
@@ -33,6 +33,7 @@ const LOGIN = gql`
     mutation Login($password: String!, $username: String!) {
         tokenAuth(password: $password, username: $username) {
             token
+            payload
         }
     }
 `;
@@ -50,8 +51,8 @@ const LoginPage = () => {
     const [login, {loading}] = useMutation(LOGIN, {
         "errorPolicy": "ignore",
         "ignoreResults": true,
-        "onCompleted": ({tokenAuth}) => {
-            dispatch(setCredentials({"token": tokenAuth.token}, shouldSave));
+        "onCompleted": async ({tokenAuth}) => {
+            dispatch(await setToken(tokenAuth.token, shouldSave));
         },
         // for whatever reason, this function prevents an unhandled rejection
         "onError": () => {

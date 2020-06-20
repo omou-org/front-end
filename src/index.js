@@ -18,7 +18,7 @@ import {InMemoryCache} from "apollo-cache-inmemory";
 import {onError} from "apollo-link-error";
 import {setContext} from "apollo-link-context";
 
-import {setCredentials} from "actions/authActions";
+import {setToken} from "actions/authActions";
 
 const store = createStore(
     rootReducer,
@@ -43,8 +43,8 @@ const authLink = setContext((_, {headers}) => {
     const {token} = store.getState().auth;
     return {
         "headers": {
-            ...headers,
             "Authorization": token ? `JWT ${token}` : "",
+            ...headers,
         },
     };
 });
@@ -54,28 +54,13 @@ export const client = new ApolloClient({
     "link": authLink.concat(httpLink),
 });
 
-(async () => {
-    const VERIFY_TOKEN = gql`
-        mutation VerifyToken($token: String!) {
-            verifyToken(token: $token) {
-                payload
-            }
-        }`;
+const token = localStorage.getItem("token");
 
-    const token = JSON.parse(localStorage.getItem("auth"))?.token;
-
-    if (token) {
-        try {
-            await client.mutate({
-                "mutation": VERIFY_TOKEN,
-                "variables": {token},
-            });
-            store.dispatch(setCredentials({token}));
-        } catch {
-            localStorage.removeItem("auth");
-        }
-    }
-})();
+if (token) {
+    (async () => {
+        store.dispatch(await setToken(token));
+    })();
+}
 
 ReactDOM.render(
     <Provider store={store}>

@@ -1,7 +1,10 @@
-import * as actions from "./../actions/actionTypes";
+import * as actions from "actions/actionTypes";
 import initialState from "./initialState";
 
-export default (state = initialState.Authentication, {payload, type}) => {
+const Authentication = {initialState};
+
+export default (state = Authentication, {payload, type}) => {
+    console.log(type, payload)
     switch (type) {
         case actions.SET_CREDENTIALS:
             return {
@@ -9,10 +12,7 @@ export default (state = initialState.Authentication, {payload, type}) => {
                 ...payload,
             };
         case actions.LOGOUT:
-            return {
-                "isAdmin": false,
-                "token": null,
-            };
+            return Authentication;
         default:
             return state;
     }
