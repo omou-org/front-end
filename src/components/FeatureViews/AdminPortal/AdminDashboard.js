@@ -37,6 +37,7 @@ import {stringToColor} from "../Accounts/accountUtils";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import moment from "moment";
+import Loading from "../../Loading";
 
 
 const baseTheme = createMuiTheme();
@@ -197,69 +198,78 @@ const AdminDashboard = (props) => {
     `,
   }
 
-// console.log(UNPAID_SESSIONS)
+  const arr = [];
 
- const unpaidSessionsData = useQuery(QUERIES["unpaidsessions"])
-//  console.log(unpaidSessionsData)
+  const dummy = {
+    course: {startTime: "09:00:00", endTime: "11:00:00", hourlyTuition: 100,},
+    lastPaidSessionDatetime: "2020-06-12T22:15:00+00:00",
+    paymentList: [
+      {
+        parent: {
+          user: {
+            firstName: "Stop", lastName:"Nesting", id: "4",
+            __typename: "ParentType"
+          }
+        }
+      }
+    ],
+  }
+
+  const janetmann = {
+    course: {startTime: "15:15:00", endTime: "16:15:00", hourlyTuition: 100,},
+    lastPaidSessionDatetime: "2020-06-14T22:15:00+00:00",
+    paymentList: [
+      {
+        parent: {
+          user: {
+            firstName: "Janet", lastName:"Mann", id: "3",
+          }
+        }
+      }
+    ],
+  }
+
+
+
+
+ const {data, loading, error} = useQuery(QUERIES["unpaidsessions"])
+//  console.log(data)
+ 
  
 const getTime = (time) => {
-  const strTime = String(time);
-  const minutes = parseInt(strTime.slice(-2), 10) / 60;
-  const hours = parseInt(strTime.substring(1), 10);
+  const minutes = parseInt(time.slice(-2), 10) / 60;
+  const hours = parseInt(time.substring(0,2), 10);
   return hours + minutes;
 }; 
 
- const calculateUnpaidSessions = () => {
-   if(unpaidSessionsData.data) {
-     const TotalAmountDue = unpaidSessionsData.data.unpaidSessions.map(time=> {
-     const { endTime, startTime, hourlyTuition } = time.course
+ const unpaidSessionsObj = () => {
+     const parentObj = data.unpaidSessions.map(user=> {
+     const { endTime, startTime, hourlyTuition } = user.course
      const totalTime = getTime(endTime) - getTime(startTime);
      const dollarsPerSession = totalTime * hourlyTuition;
-     const lastPaidSessionDateTime = time.lastPaidSessionDatetime.substring(0,10).replace("-", "").replace("-", "");
-    const missedPaymentSessions = moment().diff(lastPaidSessionDateTime, 'days') / 7
-     const AmountDue = dollarsPerSession * Math.ceil(missedPaymentSessions)
-      return AmountDue
-     });
-     return TotalAmountDue;
-    };
-};
+     const lastPaidSessionDateTime = user.lastPaidSessionDatetime.substring(0,10).replace("-", "").replace("-", "");
+     const missedPaymentSessions = moment().diff(lastPaidSessionDateTime, 'days') / 7
+     const amountDue = dollarsPerSession * Math.ceil(missedPaymentSessions)
+     const firstName= user.paymentList[0].parent.user.firstName;
+     const lastName= user.paymentList[0].parent.user.lastName;
+     const id= user.paymentList[0].parent.user.id;
+     return {name: `${firstName} ${lastName}`, initial: `${firstName.charAt(0)}${lastName.charAt(0)}`, id: id, due: amountDue}
 
- console.log(calculateUnpaidSessions())
+  });
+  return parentObj;
+ };
 
+// const grabUnpaidSessionsObj = () => {
+//   const fullName = data.unpaidSessions.map(parents => 
+//   }))
+//   return fullName
+// }
 
-  const OPdata = [
-    {
-    name: "David Hong",
-    initials: "DH",
-    due: 350
-    }, 
-    {
-      name: "Jimmy Chiu",
-      initials: "JC",
-      due: 300
-    },
-    {
-      name: "Kelly Smith",
-      initials: "KS",
-      due: 288
-    },
-    {
-      name: "Sarah Pullman",
-      initials: "SP",
-      due: 260
-    },
-    {
-      name: "Aaron Ames",
-      initials:"AA",
-      due: 200
-    },
-    {
-      name: "May Lee",
-      initials: "ML",
-      due: 199
-    },
-  ]
+const unpaidSessionsCard = () => {
+  const userObj = unpaidSessionsObj()
+  return userObj;
 
+}
 
   // const displayUsers = useMemo(() => {
 	// 	let newUsersList = [];
@@ -274,6 +284,10 @@ const getTime = (time) => {
     return setIndex(i);
   };
 
+  if(loading) return <Loading />
+  data.unpaidSessions.push(dummy, janetmann);
+// console.log(unpaidSessionsObj())
+console.log(unpaidSessionsCard())
 
 
   return (
@@ -371,9 +385,7 @@ const getTime = (time) => {
                       </Grid>
                       <Grid container spacing={2}>
                         <Grid item xs={10}>
-                          {OPdata.map((op)=> (
-                            <OutstandingPaymentCard op={op} name={op.name} due={op.due} initials={op.initials}/> 
-                          ))}
+                          
                         </Grid>
                       </Grid>
                   </Grid>
