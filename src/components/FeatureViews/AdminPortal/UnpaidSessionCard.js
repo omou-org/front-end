@@ -16,6 +16,7 @@ import {initials} from "utils";
 import {stringToColor} from "../Accounts/accountUtils";
 import {useSelector} from "react-redux";
 import { makeStyles } from "@material-ui/styles";
+import { fullName } from "utils";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -61,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
 const UnpaidSessionCard = ({unpaidStudent}) => {
     const classes = useStyles();
     
-    const studentName = `${unpaidStudent.student.user.firstName} ${unpaidStudent.student.user.lastName}`
+    const studentName = fullName(unpaidStudent.student.user.firstName, unpaidStudent.student.user.lastName)
     const studentFirstName = unpaidStudent.student.user.firstName;
     const studentLastName = unpaidStudent.student.user.lastName;
     const studentID = unpaidStudent.student.user.id;
