@@ -53,7 +53,7 @@ export const RootRoutes = () => {
 
             {/* Main Feature Views */}
 
-            <ProtectedRoute
+            <Route
                 exact
                 path="/"
                 render={(passedProps) => <Dashboard {...passedProps} />}

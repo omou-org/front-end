@@ -16,13 +16,14 @@ import { useQuery } from "@apollo/react-hooks";
 const Today = () => {
     const QUERIES = {
         "sessions": gql`query MyQuery {
-            sessionSearch(query: "") {
+            sessionSearch(query: "", time: "today", sort: "timeAsc") {
               results {
                 id
                 course {
                   title
                   startTime
                   maxCapacity
+                  id
                   enrollmentSet {
                     id
                   }
@@ -40,8 +41,8 @@ const Today = () => {
                 }
               }
             }
-          }                  
-          `
+          }
+        `
     }
 
     const { data, loading, error } = useQuery(QUERIES["sessions"]);

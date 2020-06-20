@@ -9,6 +9,7 @@ import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 
 const TodayFiltered = () => {
+
     const categoryStatus = hooks.useCategory(); 
     let sessions = useSelector(({Search}) => Search.sessions);
     sessions = sessions[1];
@@ -20,9 +21,10 @@ const TodayFiltered = () => {
     let categoryNames;
     let categoryList = {};
     let isDisabled;
+    let categoryQuery = "";
 
     const QUERIES = {
-        "categories": gql `query MyQuery {
+        "categories": gql`query MyQuery {
             courseCategories {
               id
               name
@@ -31,7 +33,34 @@ const TodayFiltered = () => {
               }
             }
           }
-          `
+          `,
+          "sessions": gql`query MyQuery {
+            sessionSearch(query: "${categoryQuery}", time: "today", sort: "timeAsc") {
+              results {
+                id
+                course {
+                  title
+                  startTime
+                  maxCapacity
+                  enrollmentSet {
+                    id
+                  }
+                  courseCategory {
+                    id
+                    name
+                  }
+                  instructor {
+                    user {
+                      firstName
+                      lastName
+                      id
+                    }
+                  }
+                }
+              }
+            }
+          }
+        `
     }
 
     const { data, loading, error } = useQuery(QUERIES["categories"]);
@@ -46,7 +75,7 @@ const TodayFiltered = () => {
         e ? setCurrentFilter({filter: e.value, showFiltered: true}): setCurrentFilter({filter:"", showFiltered: false});
     };
 
-    useSearchSession(currentFilter.filter, 1, "", "today", "timeAsc"); 
+    // useSearchSession(currentFilter.filter, 1, "", "today", "timeAsc"); 
 
     if (loading) { 
         return(
