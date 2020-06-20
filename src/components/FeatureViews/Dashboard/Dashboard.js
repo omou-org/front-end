@@ -52,15 +52,18 @@ const Dashboard = () => {
     };
 
     const QUERIES = {
-        "categories": gql`query MyQuery {
-            courseCategories {
-              id
-              name
-              courseSet {
-                id
+        "categories": gql`query todayCategories {
+            sessionSearch(query: "", time: "today", sort: "timeAsc") {
+              results {
+                course {
+                  courseCategory {
+                    id
+                    name
+                  }
+                }
               }
             }
-          }
+          }          
           `
     }
     
@@ -72,9 +75,9 @@ const Dashboard = () => {
         );
     }
 
-    let categoryList = data.courseCategories.map(category=> ({
-        "label": category.name,
-        "value": category.id
+    const categoryList = data.sessionSearch.results.map(category=> ({
+        "label": category.course.courseCategory.name,
+        "value": category.course.courseCategory.id
     }));
 
     return(

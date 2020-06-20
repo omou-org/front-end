@@ -14,7 +14,6 @@ import { useQuery } from "@apollo/react-hooks";
 
 
 const Today = (filter) => {
-    console.log(filter)
     const QUERIES = {
         "sessions": gql`
             query todaySessionQuery($filter: String="") {
@@ -59,7 +58,6 @@ const Today = (filter) => {
         );
     }
     const sessionArray = data.sessionSearch.results
-    console.log(sessionArray);
 
     if (!sessionArray || sessionArray.length === 0) {
         return (

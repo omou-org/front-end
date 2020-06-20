@@ -71,6 +71,8 @@ const useStyles = makeStyles((theme) => ({
 		}
 	},
 	notesNotification: {
+        height: "30px",
+        width: "30px",
         [theme.breakpoints.down('md')]: {
             height: "20px",
             width: "20px"
