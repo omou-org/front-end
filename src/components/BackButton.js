@@ -10,127 +10,118 @@ import { Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 
 
-class BackButton extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			alert: false,
-		};
-	}
+const BackButton = (props) => {
 
-	label() {
+	const [alert, setAlert] = React.useState(false);
+
+	const goBack = () => {
+		// only call user defined function from parent component if defined
+		props.onBack && props.onBack();
+		props.history.goBack();
+
+	}
+	const label = () => {
 		var label = "";
-		if (this.props.label == null) {
+		if (props.label == null) {
 			label = "Back";
 		}
-		if (this.props.label == "cancel") {
+		if (props.label == "cancel") {
 			label = "Cancel";
 		}
 		return label;
 	}
 
-	handleClick() {
-		if (this.props.warn) {
-			this.setState({
-				alert: true,
-			});
+
+	const handleClick = () => {
+		if (props.warn) {
+			setAlert(true);
 		} else {
-			this.goBack();
+			goBack();
 		}
 	}
 
-	hideWarning() {
-		this.setState({
-			alert: false,
-		});
+	const hideWarning = () => {
+		setAlert(false);
 	}
 
-	goBack() {
-		// only call user defined function from parent component if defined
-		this.props.onBack && this.props.onBack();
-		this.props.history.goBack();
-	}
-
-	saveForm() {
+	const saveForm = () => {
 		//enter future code to save form
 	}
 
-	confirmAction(actionName) {
+	const confirmAction = (actionName) => {
 		//actionName is a string
 		switch (actionName) {
 			case "saveForm":
-				this.saveForm();
+				saveForm();
 				break;
 			default:
 				console.warn(`Unhandled backbutton action ${actionName}`);
 		}
-		this.goBack();
+		goBack();
 	}
 
-	denyAction(actionName) {
+	const denyAction = (actionName) => {
 		// switch(actionName){
 		//future switch statement for denyAction functions
 		// }
-		this.goBack();
+		goBack();
 	}
 
-	renderIcon() {
-		if (this.props.icon == null) {
-			return <BackArrow className="icon"/>
+	const renderIcon = () => {
+		if (props.icon == null) {
+			return <BackArrow className="icon" />
 		}
-		if (this.props.icon == "cancel") {
+		if (props.icon == "cancel") {
 			return null;
 		}
 	}
 
-	render() {
-		return (
-			<Hidden mdDown>
-				<Button
-					className="control course button"
-					onClick={this.handleClick.bind(this)}
-				>
-					<Grid container>
-					{this.renderIcon()}
-					<span className="label">{this.label()}</span>
-					</Grid>
-				</Button>
-				<Modal
-					aria-labelledby="simple-modal-title"
-					aria-describedby="simple-modal-description"
-					open={this.state.alert}
-					onClick={this.hideWarning.bind(this)}
-				>
-					<div className="exit-popup">
-						<Typography variant="h6" id="modal-title">
-							{this.props.alertMessage ||
-								"Are you sure you want to leave unsaved changes?"}
-						</Typography>
-						<Button
-							onClick={(e) => {
-								e.preventDefault();
-								this.denyAction.bind(this)(this.props.denyAction);
-							}}
-							color="secondary"
-							className="button secondary"
-						>
-							{this.props.alertDenyText || "No, leave me here"}
-						</Button>
-						<Button
-							onClick={(e) => {
-								e.preventDefault();
-								this.confirmAction.bind(this)(this.props.confirmAction);
-							}}
-							color="primary"
-							className="button primary"
-						>
-							{this.props.alertConfirmText || "Yes, take me back"}
-						</Button>
-					</div>
-				</Modal>
-			</Hidden>
-		);
-	}
+	return (
+		<Hidden mdDown>
+			<Button
+				className="control course button"
+				onClick={()=>{handleClick()}}
+			>
+				<Grid container>
+					{renderIcon()}
+					<span className="label">{label()}</span>
+				</Grid>
+			</Button>
+			<Modal
+				aria-labelledby="simple-modal-title"
+				aria-describedby="simple-modal-description"
+				open={alert}
+				onClick={()=>{hideWarning()}}
+			>
+				<div className="exit-popup">
+					<Typography variant="h6" id="modal-title">
+						{props.alertMessage ||
+							"Are you sure you want to leave unsaved changes?"}
+					</Typography>
+					<Button
+						onClick={(e) => {
+							e.preventDefault();
+							(denyAction());
+						}}
+						color="secondary"
+						className="button secondary"
+					>
+						{props.alertDenyText || "No, leave me here"}
+					</Button>
+					<Button
+						onClick={(e) => {
+							e.preventDefault();
+							(confirmAction());
+						}}
+						color="primary"
+						className="button primary"
+					>
+						{props.alertConfirmText || "Yes, take me back"}
+					</Button>
+				</div>
+			</Modal>
+		</Hidden>
+	);
 }
 
 BackButton.propTypes = {
