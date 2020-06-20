@@ -20,9 +20,8 @@ import {instance} from "actions/apiActions";
 const useStyles = makeStyles({
   navSelect: {
     height: "41px",
-      // border: "1px solid #eee",
     background: "#ffffff",
-    borderRadius: "3px,0px,0px,3px",
+	  borderRadius: "5px,0px,0px,5px",
   },
   dropdownStyle: {
     borderRadius: "10px !important",
