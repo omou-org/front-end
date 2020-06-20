@@ -168,6 +168,7 @@ const AdminDashboard = (props) => {
   // console.log(props);
   const classes = useStyles();
   const [index, setIndex] = useState(0);
+  // const [unpaidSessions, setUnpaidSessions] = useState([]);
   const tabs = [
     { label: "Dashboard" },
     { label: "Manage Courses" },
@@ -198,8 +199,20 @@ const AdminDashboard = (props) => {
     `,
   }
 
-  const arr = [];
+  const {data, loading, error} = useQuery(QUERIES["unpaidsessions"])
+  // console.log(data)
 
+
+  // useEffect(() => {
+  //   if(loading === false && data) {
+  //    const arrData = filterAndAddDuplicates(unpaidSessionsObj())
+  //    setUnpaidSessions(arrData);
+  //   }
+  // }, [loading, data])
+  
+
+
+  
   const dummy = {
     course: {startTime: "09:00:00", endTime: "11:00:00", hourlyTuition: 100,},
     lastPaidSessionDatetime: "2020-06-12T22:15:00+00:00",
@@ -229,35 +242,47 @@ const AdminDashboard = (props) => {
     ],
   }
 
+  const getTime = (time) => {
+    const minutes = parseInt(time.slice(-2), 10) / 60;
+    const hours = parseInt(time.substring(0,2), 10);
+    return hours + minutes;
+  }; 
+  
+   const unpaidSessionsObj = () => {
+     
+       const parentObj = data?.unpaidSessions.map(user=> {
+       const { endTime, startTime, hourlyTuition } = user.course
+       const totalTime = getTime(endTime) - getTime(startTime);
+       const dollarsPerSession = totalTime * hourlyTuition;
+       const lastPaidSessionDateTime = user.lastPaidSessionDatetime.substring(0,10).replace("-", "").replace("-", "");
+       const missedPaymentSessions = moment().diff(lastPaidSessionDateTime, 'days') / 7
+       const amountDue = dollarsPerSession * Math.ceil(missedPaymentSessions)
+       const firstName= user.paymentList[0].parent.user.firstName;
+       const lastName= user.paymentList[0].parent.user.lastName;
+       const id= user.paymentList[0].parent.user.id;
+       return {name: `${firstName} ${lastName}`, initial: `${firstName.charAt(0)}${lastName.charAt(0)}`, id: id, due: amountDue}
+    });
+    return parentObj || [];
+   };
 
+  const filterAndAddDuplicates = arr => {
+    console.log(arr)
+    const results = arr.reduce((r, {id, due, name, initial}) => {
+      const temp = r.find(res => res.id === id);
+      if(!temp) {
+        r.push({id, due, name, initial})
+      } else {
+        temp.due += due;
+      }
+      return r
+    }, []);
+    return results
+    // first we must find all duplicates of the object by the id
+    // We then need to add those due amounts togehter and return the results
+    // After, we push it back to the array and we return it in the function
+  } 
 
-
- const {data, loading, error} = useQuery(QUERIES["unpaidsessions"])
-//  console.log(data)
  
- 
-const getTime = (time) => {
-  const minutes = parseInt(time.slice(-2), 10) / 60;
-  const hours = parseInt(time.substring(0,2), 10);
-  return hours + minutes;
-}; 
-
- const unpaidSessionsObj = () => {
-     const parentObj = data.unpaidSessions.map(user=> {
-     const { endTime, startTime, hourlyTuition } = user.course
-     const totalTime = getTime(endTime) - getTime(startTime);
-     const dollarsPerSession = totalTime * hourlyTuition;
-     const lastPaidSessionDateTime = user.lastPaidSessionDatetime.substring(0,10).replace("-", "").replace("-", "");
-     const missedPaymentSessions = moment().diff(lastPaidSessionDateTime, 'days') / 7
-     const amountDue = dollarsPerSession * Math.ceil(missedPaymentSessions)
-     const firstName= user.paymentList[0].parent.user.firstName;
-     const lastName= user.paymentList[0].parent.user.lastName;
-     const id= user.paymentList[0].parent.user.id;
-     return {name: `${firstName} ${lastName}`, initial: `${firstName.charAt(0)}${lastName.charAt(0)}`, id: id, due: amountDue}
-
-  });
-  return parentObj;
- };
 
 // const grabUnpaidSessionsObj = () => {
 //   const fullName = data.unpaidSessions.map(parents => 
@@ -265,11 +290,7 @@ const getTime = (time) => {
 //   return fullName
 // }
 
-const unpaidSessionsCard = () => {
-  const userObj = unpaidSessionsObj()
-  return userObj;
 
-}
 
   // const displayUsers = useMemo(() => {
 	// 	let newUsersList = [];
@@ -284,10 +305,14 @@ const unpaidSessionsCard = () => {
     return setIndex(i);
   };
 
+
   if(loading) return <Loading />
   data.unpaidSessions.push(dummy, janetmann);
+  const unpaidSessions = filterAndAddDuplicates(unpaidSessionsObj());
+  const unpaidSessionsComponent = unpaidSessions.map(card => <OutstandingPaymentCard name={card.name} initials={card.initial} due={card.due}/>)
+  console.log(unpaidSessions)
 // console.log(unpaidSessionsObj())
-console.log(unpaidSessionsCard())
+// console.log(unpaidSessionsCard())
 
 
   return (
@@ -385,7 +410,7 @@ console.log(unpaidSessionsCard())
                       </Grid>
                       <Grid container spacing={2}>
                         <Grid item xs={10}>
-                          
+                          {unpaidSessionsComponent}
                         </Grid>
                       </Grid>
                   </Grid>
