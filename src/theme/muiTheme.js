@@ -48,6 +48,7 @@ const theme = createMuiTheme({
             "paperAnchorDockedLeft": {
                 "borderRight": "none",
                 backgroundColor: neutralBackgroundColor,
+                padding: "1vw",
             }
         },
         "paper": {
@@ -55,7 +56,7 @@ const theme = createMuiTheme({
         },
         "MuiPaper": {
             "root": {
-                padding: "15px"
+                padding: "3%"
             }
         },
         "MuiMenuItem": {

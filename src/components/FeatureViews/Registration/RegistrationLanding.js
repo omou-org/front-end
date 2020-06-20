@@ -185,7 +185,7 @@ const RegistrationLanding = () => {
 	};
 
     return (
-        <Paper elevation={2} className="RegistrationLanding paper">
+		<Paper elevation={2} className="RegistrationLanding">
             <BackButton/>
             <hr/>
             <RegistrationActions/>
