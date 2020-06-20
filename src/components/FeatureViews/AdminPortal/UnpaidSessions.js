@@ -41,18 +41,6 @@ const UnpaidSessions = () => {
 
 	const { data, loading, error } = useQuery(QUERIES["unpaidSessions"]);
 
-	// const UnpaidList = useSelector(({Admin}) => Admin.Unpaid) || [];
-	// const studentList = useMemo(() => UnpaidList.map(({student}) => student), [
-	// 	UnpaidList,
-	// ]);
-	// const courseList = useMemo(() => UnpaidList.map(({course}) => course), [
-	// 	UnpaidList,
-	// ]);
-
-	// const studentStatus = hooks.useStudent(studentList);
-	// const courseStatus = hooks.useCourse(courseList);
-	// const unpaidSessionStatus = hooks.useUnpaidSessions();
-
 	if (loading){
 		return <Loading loadingText="UNPAID SESSIONS LOADING" small/>;
 	}
