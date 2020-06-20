@@ -21,27 +21,22 @@ const useStyles = makeStyles((theme) => ({
 
 const TodayCard = ({session}) => {
     const classes = useStyles();
-    const instructors = useSelector(({Users}) => Users.InstructorList);
-    const courses = useSelector(({Course}) => Course.NewCourseList);
-    const course = session.title
-    const instructor = instructors[session.instructor].name
-    const startTime = (courses[session.course].schedule.start_time).slice(1)
-    const roster = courses[session.course].roster
-    const countStudents = roster.length
-
+    const countStudents = session.course.enrollmentSet.length
+    const instructor = `${session.course.instructor.user.firstName} ${session.course.instructor.user.lastName}`
+    const startTime = session.course.startTime
     const formattedStartTime = moment(startTime, "HH:mm").format("h:mm a");
 
     return (
         <Card className="today-card">
             <CardActionArea
                 component = {NavLink}
-                to={`/scheduler/view-session/${session.course}/${session.id}/${session.instructor}`}                
+                to={`/scheduler/view-session/${session.course.id}/${session.id}/${session.course.instructor.user.id}`}                
             >
                 <CardContent
                     className="today-details">
-                    <Tooltip title={course}>
+                    <Tooltip title={session.course.title}>
                         <Typography variant='subtitle2' gutterBottom className='today-course-title' noWrap={true}>
-                            {course}
+                            {session.course.title}
                         </Typography>
                     </Tooltip>
                     <Divider/>

@@ -9,23 +9,53 @@ import CardContent from "@material-ui/core/CardContent";
 import Loading from "components/Loading";
 import './Dashboard.scss';
 import Grid from '@material-ui/core/Grid';
+import gql from "graphql-tag";
+import { useQuery } from "@apollo/react-hooks";
 
 
 const Today = () => {
-    const sessionResults = useSelector(({Search}) => Search.sessions);
-    const sessionStatus = useSearchSession("", 1, "", "today", "timeAsc");
-    const sessionArray = sessionResults[1];
-    const instructorStatus = hooks.useInstructor();
-    const courseStatus = hooks.useCourse();
-    const categoryStatus = hooks.useCategory();
+    const QUERIES = {
+        "sessions": gql`query MyQuery {
+            sessionSearch(query: "") {
+              results {
+                id
+                course {
+                  title
+                  startTime
+                  maxCapacity
+                  enrollmentSet {
+                    id
+                  }
+                  courseCategory {
+                    id
+                    name
+                  }
+                  instructor {
+                    user {
+                      firstName
+                      lastName
+                      id
+                    }
+                  }
+                }
+              }
+            }
+          }                  
+          `
+    }
 
-    if (hooks.isLoading(instructorStatus, courseStatus, sessionStatus, categoryStatus)) {
+    const { data, loading, error } = useQuery(QUERIES["sessions"]);
+
+    if (loading) {
         return (
             <Loading
                 loadingText="SESSIONS ARE LOADING"
                 small />
         );
     }
+    const sessionArray = data.sessionSearch.results
+
+    console.log(sessionArray);
 
     if (!sessionArray || sessionArray.length === 0) {
         return (
