@@ -53,9 +53,10 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: "0.875rem",
 	},
 	dateDisplay: {
-        bottom: "20px",
+        bottom: "40px !important",
 		fontSize: ".825rem",
-		position: "relative",
+        position: "relative",
+        padding: "3px",
 		[theme.breakpoints.down('lg')]: {
 			fontSize: ".625rem",
 			fontWeight: "200px"
@@ -64,16 +65,11 @@ const useStyles = makeStyles((theme) => ({
 	actionDashboardIcons: {
         position: "absolute",
         float: "left",
-		bottom: "1%",
-		right: "1%",
-		[theme.breakpoints.down('lg')]: {
-			// transform: "scale(1)",
-			bottom: "0%",
-			right: "0%"
-		}
+        padding: "0"
 	},
 	notesNotification: {
-        float: "right",
+        // position: "absolute",
+        // float: "right",
         cursor: "pointer",   
         height: "30px",
         width: "30px",
@@ -481,7 +477,7 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                                 <Avatar
                                     variant="square"
                                     variant="rounded"
-									className={`noteNotification${isDashboard ? classes.notesNotification : null }`}                                    
+									className={`noteNotification ${isDashboard ? classes.notesNotification : null }`}                                    
 									onClick={toggleNoteField(note.id, "important")}
                                     style={note.important ? {"background-color": "red"} : {}} >!
                                 </Avatar>
