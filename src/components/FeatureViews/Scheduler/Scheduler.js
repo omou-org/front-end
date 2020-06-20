@@ -317,7 +317,7 @@ const Scheduler = () => {
 	};
 
     return (
-        <Paper className="paper scheduler" elevation={2}>
+		<Paper className="scheduler" elevation={2}>
             <Typography align="left" className="scheduler-title" variant="h3">
                 Scheduler
             </Typography>

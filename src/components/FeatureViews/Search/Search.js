@@ -20,12 +20,13 @@ import {instance} from "actions/apiActions";
 const useStyles = makeStyles({
   navSelect: {
     height: "41px",
-    border: "1px solid #eee",
+      // border: "1px solid #eee",
     background: "#ffffff",
     borderRadius: "3px,0px,0px,3px",
   },
   dropdownStyle: {
     borderRadius: "10px !important",
+      padding: "0"
   },
 });
 
@@ -52,7 +53,6 @@ const styles = {
   }),
   option: (provided, {isFocused}) => ({
     ...provided,
-    backgroundColor: isFocused ? "#43B5D9" : provided.backgroundColor,
   }),
 };
 

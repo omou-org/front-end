@@ -19,7 +19,8 @@ body{
 .Navigation {
   /*App Bar Styling*/
   .OmouBar {
-    background-color: $bioBackgroundColor;
+    //background-color: $bioBackgroundColor;
+    padding: 0;
   }
 
   .title {
@@ -29,7 +30,7 @@ body{
     font-size: 24px;
     line-height: 26px;
     text-decoration: none;
-    color: $primaryColor;
+    color: white;
   }
 
   .logout-icon{
@@ -60,10 +61,11 @@ body{
       margin-left: $drawerWidth;
     }
 
-    padding: 0 3%;
+    padding: 1% 3%;
     height: 92vh;
     overflow-x: hidden;
     overflow-y: scroll;
+    background-color: #FAFAFA;
   }
 
   .DrawerList {
