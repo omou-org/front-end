@@ -73,6 +73,11 @@ const Dashboard = () => {
         );
     }
 
+    if (error){
+        console.error(error);
+        return <>There has been an error!</>
+    }
+
     const categoryList = data.sessionSearch.results.map(category=> ({
         "label": category.course.courseCategory.name,
         "value": category.course.courseCategory.id

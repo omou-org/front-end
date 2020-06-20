@@ -55,6 +55,12 @@ const Today = (filter) => {
                 small />
         );
     }
+
+    if (error){
+        console.error(error);
+        return <>There has been an error loading today's sessions!</>
+    }
+
     const sessionArray = data.sessionSearch.results
 
     if (!sessionArray || sessionArray.length === 0) {
