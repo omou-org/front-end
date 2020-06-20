@@ -11,7 +11,7 @@ export const amountDue = (hourlyTuition, sessionLeft, sessionDuration) =>
 export const getTime = (time) => {
     const strTime = String(time);
     const minutes = parseInt(strTime.slice(-2), 10) / 60;
-    const hours = parseInt(strTime.substring(1), 10);
+    const hours = parseInt(strTime.substring(1, 2), 10);
     return hours + minutes;
 };
 
