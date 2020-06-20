@@ -55,8 +55,6 @@ const Today = () => {
     }
     const sessionArray = data.sessionSearch.results
 
-    console.log(sessionArray);
-
     if (!sessionArray || sessionArray.length === 0) {
         return (
             <Card className="today-card">

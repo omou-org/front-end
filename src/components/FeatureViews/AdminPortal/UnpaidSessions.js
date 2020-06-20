@@ -1,5 +1,8 @@
 import React, {useMemo} from "react";
 import {useSelector} from "react-redux";
+import { useQuery } from "@apollo/react-hooks";
+import gql from "graphql-tag";
+
 
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -12,21 +15,49 @@ import "./AdminPortal.scss";
 
 const UnpaidSessions = () => {
 
-	const UnpaidList = useSelector(({Admin}) => Admin.Unpaid) || [];
-	const studentList = useMemo(() => UnpaidList.map(({student}) => student), [
-		UnpaidList,
-	]);
-	const courseList = useMemo(() => UnpaidList.map(({course}) => course), [
-		UnpaidList,
-	]);
+	const QUERIES = {
+		"unpaidSessions": gql`query MyQuery {
+			unpaidSessions {
+			  student {
+				user {
+				  id
+				  firstName
+				  lastName
+				}
+			  }
+			  course {
+				id
+				title
+				startTime
+				endTime
+				hourlyTuition
+			  }
+			  sessionsLeft
+			  lastPaidSessionDatetime
+			}
+		  }
+		  `
+	}
 
-	const studentStatus = hooks.useStudent(studentList);
-	const courseStatus = hooks.useCourse(courseList);
-	const unpaidSessionStatus = hooks.useUnpaidSessions();
+	const { data, loading, error } = useQuery(QUERIES["unpaidSessions"]);
 
-	if (hooks.isLoading(studentStatus, courseStatus, unpaidSessionStatus) && (courseStatus !== null && studentStatus !== null)) {
+	// const UnpaidList = useSelector(({Admin}) => Admin.Unpaid) || [];
+	// const studentList = useMemo(() => UnpaidList.map(({student}) => student), [
+	// 	UnpaidList,
+	// ]);
+	// const courseList = useMemo(() => UnpaidList.map(({course}) => course), [
+	// 	UnpaidList,
+	// ]);
+
+	// const studentStatus = hooks.useStudent(studentList);
+	// const courseStatus = hooks.useCourse(courseList);
+	// const unpaidSessionStatus = hooks.useUnpaidSessions();
+
+	if (loading){
 		return <Loading loadingText="UNPAID SESSIONS LOADING" small/>;
 	}
+
+	const UnpaidList = data.unpaidSessions;
 
 	if (UnpaidList.length === 0) {
 		return (

@@ -5,6 +5,8 @@ import Loading from "components/Loading";
 import Select from 'react-select';
 import * as hooks from "actions/hooks";
 import {useSearchSession} from "actions/searchActions";
+import gql from "graphql-tag";
+import { useQuery } from "@apollo/react-hooks";
 
 const TodayFiltered = () => {
     const categoryStatus = hooks.useCategory(); 
@@ -19,6 +21,21 @@ const TodayFiltered = () => {
     let categoryList = {};
     let isDisabled;
 
+    const QUERIES = {
+        "categories": gql `query MyQuery {
+            courseCategories {
+              id
+              name
+              courseSet {
+                id
+              }
+            }
+          }
+          `
+    }
+
+    const { data, loading, error } = useQuery(QUERIES["categories"]);
+
 
     const [currentFilter, setCurrentFilter] = useState({
         showFiltered: false,
@@ -31,7 +48,7 @@ const TodayFiltered = () => {
 
     useSearchSession(currentFilter.filter, 1, "", "today", "timeAsc"); 
 
-    if (hooks.isLoading(categoryStatus && sessions)) { 
+    if (loading) { 
         return(
             <Loading
                 loadingText = "LOADING"
@@ -39,7 +56,7 @@ const TodayFiltered = () => {
         )
     }   
 
-
+    console.log(data);
 
     if (sessions){
         sessions.length>0 ? isDisabled=false: isDisabled=true;
