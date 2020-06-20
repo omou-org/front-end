@@ -14,8 +14,7 @@ import { useQuery } from "@apollo/react-hooks";
 
 
 const Today = (filter) => {
-    const QUERIES = {
-        "sessions": gql`
+    const TODAY_SESSION_QUERY= gql`
             query todaySessionQuery($filter: String="") {
                 sessionSearch(query: $filter, time: "today", sort: "timeAsc") {
                 results {
@@ -44,9 +43,8 @@ const Today = (filter) => {
                 }
             }
         `
-    }
 
-    const { data, loading, error } = useQuery(QUERIES["sessions"], {
+    const { data, loading, error } = useQuery(TODAY_SESSION_QUERY, {
         variables: filter,
     })
 

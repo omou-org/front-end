@@ -15,8 +15,7 @@ import "./AdminPortal.scss";
 
 const UnpaidSessions = () => {
 
-	const QUERIES = {
-		"unpaidSessions": gql`query MyQuery {
+	const UNPAID_SESSION_QUERY = gql`query unpaidSessionQuery {
 			unpaidSessions {
 			  student {
 				user {
@@ -37,9 +36,8 @@ const UnpaidSessions = () => {
 			}
 		  }
 		  `
-	}
 
-	const { data, loading, error } = useQuery(QUERIES["unpaidSessions"]);
+	const { data, loading, error } = useQuery(UNPAID_SESSION_QUERY);
 
 	if (loading){
 		return <Loading loadingText="UNPAID SESSIONS LOADING" small/>;

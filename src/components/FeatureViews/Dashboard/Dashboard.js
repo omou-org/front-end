@@ -51,8 +51,7 @@ const Dashboard = () => {
         e ? setCurrentFilter({filter: e.label, showFiltered: true}): setCurrentFilter({filter:"", showFiltered: false});
     };
 
-    const QUERIES = {
-        "categories": gql`query todayCategories {
+    const CATEGORY_QUERY = gql`query categoryQuery {
             sessionSearch(query: "", time: "today", sort: "timeAsc") {
               results {
                 course {
@@ -65,9 +64,8 @@ const Dashboard = () => {
             }
           }          
           `
-    }
     
-    const { data, loading, error } = useQuery(QUERIES["categories"]);
+    const { data, loading, error } = useQuery(CATEGORY_QUERY);
 
     if (loading) {
         return (
