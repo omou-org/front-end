@@ -1,6 +1,8 @@
-import React, {useCallback, useState} from "react";
+import React, { useCallback, useState } from "react";
 
+import { useSelector } from "react-redux";
 import BackButton from "components/BackButton";
+import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import Paper from "@material-ui/core/Paper";
@@ -8,15 +10,17 @@ import SearchSelect from "react-select";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
+import Badge from "@material-ui/core/Badge";
+import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 
-import {distinctObjectArray, fullName, gradeOptions} from "utils";
+import { distinctObjectArray, fullName, gradeOptions } from "utils";
 import CourseList from "./CourseList";
 import Loading from "components/Loading";
 import RegistrationActions from "./RegistrationActions";
 import TutoringList from "./TutoringList";
 import gql from "graphql-tag";
-import {useQuery} from "@apollo/react-hooks";
-import {SIMPLE_COURSE_DATA} from "queryFragments";
+import { useQuery } from "@apollo/react-hooks";
+import { SIMPLE_COURSE_DATA } from "queryFragments";
 
 const customStyles = {
     clearIndicator: (base, state) => ({
@@ -34,9 +38,9 @@ const CustomClearText = () => "clear all";
 
 const ClearIndicator = (indicatorProps) => {
     const {
-        children = <CustomClearText/>,
+        children = <CustomClearText />,
         getStyles,
-        innerProps: {ref, ...restInnerProps},
+        innerProps: { ref, ...restInnerProps },
     } = indicatorProps;
     return (
         <div
@@ -44,7 +48,7 @@ const ClearIndicator = (indicatorProps) => {
             style={getStyles("clearIndicator", indicatorProps)}
             {...restInnerProps}
         >
-            <div style={{padding: "0px 5px"}}>{children}</div>
+            <div style={{ padding: "0px 5px" }}>{children}</div>
         </div>
     );
 };
@@ -81,7 +85,24 @@ export const GET_COURSES = gql`
 	`;
 
 const RegistrationLanding = () => {
-	const {data, loading, error} = useQuery(GET_COURSES);
+    const registeredCourses = useSelector(
+        ({ Registration }) => Registration.registered_courses
+    );
+
+    const numToCheckout = Object.values(registeredCourses || {}).reduce(
+        (count, studentCourses) => count + studentCourses.length,
+        0
+    );
+
+    const displayBadge = () =>{
+        if (numToCheckout == null){
+            return 0;
+        }
+        else{
+            return numToCheckout;
+        }
+    }
+    const { data, loading, error } = useQuery(GET_COURSES);
 
     const [view, setView] = useState(0);
     const [courseFilters, setCourseFilters] = useState({
@@ -97,98 +118,112 @@ const RegistrationLanding = () => {
         []
     );
 
-	if (loading) {
-		return <Loading/>
-	}
-	if (error) {
-		return <Typography>
-			There's been an error! Error: {error.message}
-		</Typography>
-	}
+    if (loading) {
+        return <Loading />
+    }
+    if (error) {
+        return <Typography>
+            There's been an error! Error: {error.message}
+        </Typography>
+    }
 
-	const {courses} = data;
+    const { courses } = data;
 
 
-	const instructorOptions = distinctObjectArray(
-		Object.values(courses).map(({instructor}) => ({
-			label: fullName(instructor.user),
-			value: instructor.user.id,
-		})));
+    const instructorOptions = distinctObjectArray(
+        Object.values(courses).map(({ instructor }) => ({
+            label: fullName(instructor.user),
+            value: instructor.user.id,
+        })));
 
-	const subjectOptions = distinctObjectArray(
+    const subjectOptions = distinctObjectArray(
         Object.values(courses)
-        // prevent a crash if some categories are not loaded yet
-			.filter(({courseCategory}) => courses.find(({courseCategory: {id}}) => courseCategory.id == id))
-			.map(({courseCategory}) => ({
-				label: courseCategory.name,
-				value: courseCategory.id,
+            // prevent a crash if some categories are not loaded yet
+            .filter(({ courseCategory }) => courses.find(({ courseCategory: { id } }) => courseCategory.id == id))
+            .map(({ courseCategory }) => ({
+                label: courseCategory.name,
+                value: courseCategory.id,
             }))
     );
 
-	const filteredCourses = Object.entries(courseFilters)
+    const filteredCourses = Object.entries(courseFilters)
         .filter(([, filters]) => filters.length > 0)
-		.reduce((courses, [filterName, filters]) => {
-            const mappedValues = filters.map(({value}) => value);
+        .reduce((courses, [filterName, filters]) => {
+            const mappedValues = filters.map(({ value }) => value);
             switch (filterName) {
                 case "instructor":
-					return courses.filter(({instructor}) =>
-						mappedValues.includes(instructor.user.id)
+                    return courses.filter(({ instructor }) =>
+                        mappedValues.includes(instructor.user.id)
                     );
                 case "subject":
-					return courses.filter(({courseCategory}) =>
-						mappedValues.includes(courseCategory.id)
+                    return courses.filter(({ courseCategory }) =>
+                        mappedValues.includes(courseCategory.id)
                     );
                 case "grade":
-					return courses.filter(({academicLevel}) =>
-						mappedValues.includes(academicLevel.toLowerCase())
+                    return courses.filter(({ academicLevel }) =>
+                        mappedValues.includes(academicLevel.toLowerCase())
                     );
                 default:
-					return courses;
+                    return courses;
             }
-		}, Object.values(courses));
+        }, Object.values(courses));
 
-	const handleFilterChange = (filterType) => (filters) => {
-            setCourseFilters((prevFilters) => ({
-                ...prevFilters,
-                [filterType]: filters || [],
-            }));
-	};
+    const handleFilterChange = (filterType) => (filters) => {
+        setCourseFilters((prevFilters) => ({
+            ...prevFilters,
+            [filterType]: filters || [],
+        }));
+    };
 
-	const renderFilter = (filterType) => {
-            let options = [];
-            switch (filterType) {
-                case "instructor":
-                    options = instructorOptions;
-                    break;
-                case "subject":
-                    options = subjectOptions;
-                    break;
-                case "grade":
-                    options = gradeOptions;
-                    break;
-                // no default
-            }
+    const renderFilter = (filterType) => {
+        let options = [];
+        switch (filterType) {
+            case "instructor":
+                options = instructorOptions;
+                break;
+            case "subject":
+                options = subjectOptions;
+                break;
+            case "grade":
+                options = gradeOptions;
+                break;
+            // no default
+        }
 
-            return (
-                <SearchSelect
-                    className="filter-options"
-                    closeMenuOnSelect={false}
-                    components={{ClearIndicator}}
-                    isMulti
-                    onChange={handleFilterChange(filterType)}
-                    options={options}
-                    placeholder={`All ${filterType}s`}
-                    styles={customStyles}
-                    value={courseFilters[filterType]}
-                />
-            );
-	};
+        return (
+            <SearchSelect
+                className="filter-options"
+                closeMenuOnSelect={false}
+                components={{ ClearIndicator }}
+                isMulti
+                onChange={handleFilterChange(filterType)}
+                options={options}
+                placeholder={`All ${filterType}s`}
+                styles={customStyles}
+                value={courseFilters[filterType]}
+            />
+        );
+    };
 
     return (
         <Paper elevation={2} className="RegistrationLanding paper">
-            <BackButton/>
-            <hr/>
-            <RegistrationActions/>
+            <Grid container>
+                <Grid item md={1}>
+                    <BackButton />
+                </Grid>
+                <Grid item md={10}>
+
+                </Grid>
+                <Grid item md={1}>
+                    <Button>
+                        <Badge badgeContent={displayBadge()} color="primary" showZero>
+                            <ShoppingCartOutlinedIcon style={{fontSize:30}}/>
+                        </Badge>
+                    </Button>
+                </Grid>
+            </Grid>
+            <hr />
+            <RegistrationActions />
             <Grid container layout="row">
                 <Grid item md={8} xs={12}>
                     <Typography align="left" className="heading" variant="h3">
@@ -201,8 +236,8 @@ const RegistrationLanding = () => {
                         indicatorColor="primary"
                         value={view}
                     >
-                        <Tab label="Courses" onClick={updateView(0)}/>
-                        <Tab label="Tutoring" onClick={updateView(1)}/>
+                        <Tab label="Courses" onClick={updateView(0)} />
+                        <Tab label="Tutoring" onClick={updateView(1)} />
                     </Tabs>
                 </Grid>
             </Grid>
@@ -222,11 +257,11 @@ const RegistrationLanding = () => {
                 </Grid>
             )}
             <div className="registration-table">
-				{view === 0 ? (
-                    <CourseList filteredCourses={filteredCourses}/>
+                {view === 0 ? (
+                    <CourseList filteredCourses={filteredCourses} />
                 ) : (
-                    <TutoringList/>
-                )}
+                        <TutoringList />
+                    )}
             </div>
         </Paper>
     );
