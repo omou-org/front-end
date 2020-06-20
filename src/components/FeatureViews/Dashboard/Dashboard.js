@@ -1,9 +1,12 @@
 import { useSelector } from 'react-redux';
-import React from 'react';
+import { useQuery } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
+import React, {useState} from 'react';
 import {Link} from 'react-router-dom';
 import './Dashboard.scss';
 import Today from './Today';
 import UnpaidSessions from './../AdminPortal/UnpaidSessions';
+import Loading from "components/Loading";
 
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
@@ -12,7 +15,7 @@ import Paper from "@material-ui/core/Paper";
 import DashboardNotes from './DashboardNotes';
 import moment from 'moment';
 import Moment from 'react-moment';
-import TodayFiltered from "./TodayFiltered";
+import Select from 'react-select';
 import { makeStyles } from "@material-ui/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -37,6 +40,42 @@ const Dashboard = () => {
     const classes = useStyles();
     const user = useSelector(({auth}) => auth) || [];
     const currentDate = moment()
+    let isDisabled;
+
+    const [currentFilter, setCurrentFilter] = useState({
+        showFiltered: false,
+        filter: ""
+    });
+
+    const handleChange = e => {
+        e ? setCurrentFilter({filter: e.label, showFiltered: true}): setCurrentFilter({filter:"", showFiltered: false});
+    };
+
+    const QUERIES = {
+        "categories": gql`query MyQuery {
+            courseCategories {
+              id
+              name
+              courseSet {
+                id
+              }
+            }
+          }
+          `
+    }
+    
+    const { data, loading, error } = useQuery(QUERIES["categories"]);
+
+    if (loading) {
+        return (
+            <Loading/>
+        );
+    }
+
+    let categoryList = data.courseCategories.map(category=> ({
+        "label": category.name,
+        "value": category.id
+    }));
 
     return(
         <Grid container>
@@ -68,14 +107,25 @@ const Dashboard = () => {
                                     </Button>
                             </Grid>
                             <Grid item sm={6} md={6} lg={4}>
-                                <TodayFiltered/>
+                                <Select
+                                    className="category-options"
+                                    closeMenuOnSelect={true}
+                                    isClearable={true}
+                                    isDisabled={isDisabled}
+                                    options={categoryList}
+                                    placeholder={'Choose a Category'}
+                                    onValueClick={(e) => e.preventDefault()}
+                                    onChange={handleChange}
+                                    />
                             </Grid>
                             <Grid 
                                 container 
                                 className="today-container" 
                                 wrap = "nowrap"
                                 direction = "row">
-                                <Today/>
+                                <Today
+                                filter = {currentFilter.filter}
+                                />
                             </Grid>
                         </Paper>
                         <Paper className='OP-paper'>

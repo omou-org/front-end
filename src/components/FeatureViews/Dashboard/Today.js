@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useEffect} from 'react';
 import {useSelector} from "react-redux";
 import {useSearchSession} from "actions/searchActions";
 import * as hooks from "actions/hooks";
@@ -13,39 +13,43 @@ import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 
 
-const Today = () => {
+const Today = (filter) => {
+    console.log(filter)
     const QUERIES = {
-        "sessions": gql`query MyQuery {
-            sessionSearch(query: "", time: "today", sort: "timeAsc") {
-              results {
-                id
-                course {
-                  title
-                  startTime
-                  maxCapacity
-                  id
-                  enrollmentSet {
+        "sessions": gql`
+            query todaySessionQuery($filter: String="") {
+                sessionSearch(query: $filter, time: "today", sort: "timeAsc") {
+                results {
                     id
-                  }
-                  courseCategory {
+                    course {
+                    title
+                    startTime
+                    maxCapacity
                     id
-                    name
-                  }
-                  instructor {
-                    user {
-                      firstName
-                      lastName
-                      id
+                    enrollmentSet {
+                        id
                     }
-                  }
+                    courseCategory {
+                        id
+                        name
+                    }
+                    instructor {
+                        user {
+                        firstName
+                        lastName
+                        id
+                        }
+                    }
+                    }
                 }
-              }
+                }
             }
-          }
         `
     }
 
-    const { data, loading, error } = useQuery(QUERIES["sessions"]);
+    const { data, loading, error } = useQuery(QUERIES["sessions"], {
+        variables: filter,
+    })
 
     if (loading) {
         return (
@@ -55,6 +59,7 @@ const Today = () => {
         );
     }
     const sessionArray = data.sessionSearch.results
+    console.log(sessionArray);
 
     if (!sessionArray || sessionArray.length === 0) {
         return (
