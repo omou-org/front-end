@@ -31,7 +31,7 @@ import {weeklySessionsParser} from "components/Form/FormUtils";
 import {useQuery} from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import {SIMPLE_COURSE_DATA} from "queryFragments";
-import {fullName} from "utils";
+import {fullName, USER_TYPES} from "utils";
 
 export const GET_COURSE_DETAILS = gql`
 	query CourseDetails($courseId: ID!){
@@ -59,7 +59,7 @@ export const GET_COURSE_DETAILS = gql`
 			id
 			important
 			timestamp
-			title	
+			title
 		}
 	}
 	${SIMPLE_COURSE_DATA}
@@ -69,8 +69,8 @@ const RegistrationCourse = () => {
 	const {
 		params: {courseID},
 	} = useRouteMatch();
-
-	const isAdmin = useSelector(({auth}) => auth.isAdmin);
+	const isAdmin =
+		useSelector(({auth}) => auth.accountType) === USER_TYPES.admin;
 
 	const [activeTab, setActiveTab] = useState(0);
 
