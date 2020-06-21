@@ -1,12 +1,14 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import React from "react";
+import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
 import BackArrow from "@material-ui/icons/ArrowBack";
 import Modal from "@material-ui/core/Modal";
 import Button from "@material-ui/core/Button";
 import Hidden from "@material-ui/core/Hidden/Hidden";
-import { Typography } from "@material-ui/core";
+import {Typography} from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
+
 
 const BackButton = (props) => {
 
@@ -16,23 +18,35 @@ const BackButton = (props) => {
 		// only call user defined function from parent component if defined
 		props.onBack && props.onBack();
 		props.history.goBack();
-	}
+
+	};
+	const label = () => {
+		var label = "";
+		if (props.label == null) {
+			label = "Back";
+		}
+		if (props.label == "cancel") {
+			label = "Cancel";
+		}
+		return label;
+	};
+
 
 	const handleClick = () => {
 		if (props.warn) {
-			setAlert(true)
+			setAlert(true);
 		} else {
 			goBack();
 		}
-	}
+	};
 
 	const hideWarning = () => {
 		setAlert(false);
-	}
+	};
 
 	const saveForm = () => {
 		//enter future code to save form
-	}
+	};
 
 	const confirmAction = (actionName) => {
 		//actionName is a string
@@ -43,31 +57,41 @@ const BackButton = (props) => {
 			default:
 				console.warn(`Unhandled backbutton action ${actionName}`);
 		}
-		this.goBack();
-	}
+		goBack();
+	};
 
 	const denyAction = (actionName) => {
 		// switch(actionName){
 		//future switch statement for denyAction functions
 		// }
 		goBack();
-	}
+	};
 
+	const renderIcon = () => {
+		if (props.icon == null) {
+			return <BackArrow className="icon" />
+		}
+		if (props.icon == "cancel") {
+			return null;
+		}
+	};
 
 	return (
 		<Hidden mdDown>
 			<Button
 				className="control course button"
-				onClick={handleClick.bind(this)}
+				onClick={()=>{handleClick()}}
 			>
-				<BackArrow className="icon" />
-				<span className="label">{props.btnText || "Back"}</span>
+				<Grid container>
+					{renderIcon()}
+					<span className="label">{label()}</span>
+				</Grid>
 			</Button>
 			<Modal
 				aria-labelledby="simple-modal-title"
 				aria-describedby="simple-modal-description"
 				open={alert}
-				onClick={hideWarning.bind(this)}
+				onClick={()=>{hideWarning()}}
 			>
 				<div className="exit-popup">
 					<Typography variant="h6" id="modal-title">
@@ -77,7 +101,7 @@ const BackButton = (props) => {
 					<Button
 						onClick={(e) => {
 							e.preventDefault();
-							denyAction.bind(this)(props.denyAction);
+							(denyAction());
 						}}
 						color="secondary"
 						className="button secondary"
@@ -87,7 +111,7 @@ const BackButton = (props) => {
 					<Button
 						onClick={(e) => {
 							e.preventDefault();
-							confirmAction.bind(this)(props.confirmAction);
+							(confirmAction());
 						}}
 						color="primary"
 						className="button primary"
@@ -98,8 +122,7 @@ const BackButton = (props) => {
 			</Modal>
 		</Hidden>
 	);
-
-}
+};
 
 BackButton.propTypes = {
 	history: PropTypes.shape({

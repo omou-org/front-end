@@ -1,5 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useState} from "react";
+import gql from "graphql-tag";
 import {Link} from "react-router-dom";
+import {useQuery} from "@apollo/react-hooks";
 import {useSelector} from "react-redux";
 
 import Button from "@material-ui/core/Button";
@@ -9,7 +11,6 @@ import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import ListView from "@material-ui/icons/ViewList";
 import {makeStyles} from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
 import Tab from "@material-ui/core/Tab";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -21,14 +22,45 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 
 import "./Accounts.scss";
-import * as hooks from "actions/hooks";
 import {addDashes} from "./accountUtils";
-import BackButton from "components/BackButton";
-import {capitalizeString} from "utils";
+import BackButton from "components/OmouComponents/BackButton";
+import {capitalizeString, USER_TYPES} from "utils";
 import IconButton from "@material-ui/core/IconButton";
-import LoadingHandler from "components/LoadingHandler";
+import LoadingHandler from "components/OmouComponents/LoadingHandler";
 import ProfileCard from "./ProfileCard";
+import {simpleUser} from "queryFragments";
 import UserAvatar from "./UserAvatar";
+import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
+
+const QUERY_USERS = gql`
+    query UserQuery {
+        students {
+            user {
+                ...SimpleUser
+                email
+            }
+            accountType
+            phoneNumber
+        }
+        parents {
+            user {
+                ...SimpleUser
+                email
+            }
+            accountType
+            phoneNumber
+        }
+        instructors {
+            user {
+                ...SimpleUser
+                email
+            }
+            accountType
+            phoneNumber
+        }
+    }
+    ${simpleUser}
+`;
 
 const TABS = ["ALL", "INSTRUCTORS", "STUDENTS", "RECEPTIONIST", "PARENTS"]
     .map((label) => <Tab className="tab" key={label} label={label} />);
@@ -49,8 +81,9 @@ const stopPropagation = (event) => {
 };
 
 const Accounts = () => {
-    const usersList = useSelector(({Users}) => Users);
-    const isAdmin = useSelector(({auth}) => auth.isAdmin);
+    const isAdmin =
+        useSelector(({auth}) => auth.accountType) === USER_TYPES.admin;
+    const {loading, error, data} = useQuery(QUERY_USERS);
 
     const prevState = JSON.parse(sessionStorage.getItem("AccountsState"));
     const [isMobile, setIsMobile] = useState(false);
@@ -61,12 +94,6 @@ const Accounts = () => {
     const [viewToggle, setViewToggle] = useState(
         prevState ? prevState.viewToggle : true,
     );
-
-    const statuses = [
-        hooks.useStudent(),
-        hooks.useParent(),
-        hooks.useInstructor(),
-    ];
 
     const handleResize = useCallback(() => {
         setIsMobile(window.innerWidth <= 760);
@@ -80,38 +107,43 @@ const Accounts = () => {
     }, [handleResize]);
 
     const displayUsers = useMemo(() => {
+        if (!data) {
+            return [];
+        }
         let newUsersList = [];
         switch (tabIndex) {
             case 1:
-                newUsersList = Object.values(usersList.InstructorList);
+                newUsersList = data.instructors;
                 break;
             case 2:
-                newUsersList = Object.values(usersList.StudentList);
+                newUsersList = data.students;
                 break;
             case 3:
-                newUsersList = Object.values(usersList.ReceptionistList);
+                // TODO: receptionist
+                newUsersList = [];
                 break;
             case 4:
-                newUsersList = Object.values(usersList.ParentList);
+                newUsersList = data.parents;
                 break;
             default:
-                newUsersList = Object.values(usersList)
-                    .map((list) => Object.values(list))
-                    .flat();
+                newUsersList = Object.values(data).flat();
         }
-        return newUsersList.sort((first, second) => (
-            first.name < second.name ? -1 : first.name > second.name ? 1 : 0
-        ));
-    }, [tabIndex, usersList]);
+        return newUsersList
+            .map((user) => ({
+                ...user,
+                "accountType": user.accountType.toLowerCase(),
+                "name": `${user.user.firstName} ${user.user.lastName}`,
+            }))
+            .sort((first, second) => (
+                first.name < second.name ? -1 : first.name > second.name ? 1 : 0
+            ));
+    }, [data, tabIndex]);
 
     useEffect(() => {
-        sessionStorage.setItem(
-            "AccountsState",
-            JSON.stringify({
-                tabIndex,
-                viewToggle,
-            }),
-        );
+        sessionStorage.setItem("AccountsState", JSON.stringify({
+            tabIndex,
+            viewToggle,
+        }));
     }, [tabIndex, viewToggle]);
 
     const handleTabChange = useCallback((_, newIndex) => {
@@ -123,96 +155,86 @@ const Accounts = () => {
     }, []);
 
     const classes = useStyles();
-    const tableView = useMemo(
-        () => (
-            <Table className="AccountsTable" resizable="false">
-                <TableHead>
-                    <TableRow>
-                        <TableCell className={classes.tableCellStyle}>
-                            Name
+    const tableView = useMemo(() => (
+        <Table className="AccountsTable" resizable="false">
+            <TableHead>
+                <TableRow>
+                    <TableCell className={classes.tableCellStyle}>
+                        Name
+                    </TableCell>
+                    <TableCell className={classes.tableCellStyle}>
+                        Email
+                    </TableCell>
+                    <TableCell className={classes.tableCellStyle}>
+                        Phone
+                    </TableCell>
+                    <TableCell className={classes.tableCellStyle}>
+                        Role
+                    </TableCell>
+                    <TableCell />
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                {displayUsers.map((row) => (
+                    <TableRow className="row" component={Link}
+                        key={row.user.id}
+                        to={`/accounts/${row.accountType}/${row.user.id}`}>
+                        <TableCell className={classes.tableRowStyle}>
+                            <Grid alignItems="center" container
+                                layout="row">
+                                <UserAvatar fontSize={14} margin={9}
+                                    name={row.name} size={38} />
+                                {row.name}
+                            </Grid>
                         </TableCell>
-                        <TableCell className={classes.tableCellStyle}>
-                            Email
+                        <TableCell>
+                            <Tooltip title={row.user.email}>
+                                <span>{row.user.email.substr(0, 20)}</span>
+                            </Tooltip>
                         </TableCell>
-                        <TableCell className={classes.tableCellStyle}>
-                            Phone
+                        <TableCell>{addDashes(row.phoneNumber)}</TableCell>
+                        <TableCell>
+                            {capitalizeString(row.accountType)}
                         </TableCell>
-                        <TableCell className={classes.tableCellStyle}>
-                            Role
-                        </TableCell>
-                        <TableCell />
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {displayUsers.map((row) => (
-                        <TableRow className="row" component={Link}
-                            key={row.user_id}
-                            to={`/accounts/${row.role}/${row.user_id}`}>
-                            <TableCell className={classes.tableRowStyle}>
-                                <Grid alignItems="center"
-                                    container layout="row">
-                                    <UserAvatar fontSize={14} margin={9}
-                                        name={row.name} size={38} />
-                                    {row.name}
-                                </Grid>
-                            </TableCell>
-                            <TableCell>
-                                <Tooltip title={row.email}>
-                                    <span>{row.email.substr(0, 20)}</span>
-                                </Tooltip>
-                            </TableCell>
-                            <TableCell>{addDashes(row.phone_number)}</TableCell>
-                            <TableCell>{capitalizeString(row.role)}</TableCell>
-                            <TableCell onClick={stopPropagation}>
-                                <Grid component={Hidden} mdDown>
-                                    {(row.role === "student" ||
-                                        row.role === "parent" ||
-                                        isAdmin) && (
-                                        <IconButton component={Link}
-                                            to={`/registration/form/${row.role}/${row.user_id}/edit`}>
-                                            <EditIcon />
-                                        </IconButton>
-                                    )}
-                                </Grid>
-                                <Grid component={Hidden} lgUp>
-                                    <Button component={Link}
-                                        to={`/registration/form/${row.role}/${row.user_id}/edit`}
-                                        variant="outlined">
+                        <TableCell onClick={stopPropagation}>
+                            <Grid component={Hidden} mdDown>
+                                {(row.accountType === USER_TYPES.student ||
+                                    row.accountType === USER_TYPES.parent ||
+                                    isAdmin) && (
+                                    <IconButton component={Link}
+                                        to={`/registration/form/${row.accountType}/${row.user.id}/edit`}>
                                         <EditIcon />
-                                    </Button>
-                                </Grid>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        ),
-        [classes.tableCellStyle, classes.tableRowStyle, displayUsers, isAdmin],
-    );
-
-    const cardView = useMemo(
-        () => (
-            <Grid
-                alignItems="center"
-                className="card-container"
-                container
-                direction="row"
-                spacing={2}
-                xs={12}>
-                {displayUsers.map((user) => (
-                    <ProfileCard
-                        key={user.user_id}
-                        route={`/accounts/${user.role}/${user.user_id}`}
-                        user={user} />
+                                    </IconButton>
+                                )}
+                            </Grid>
+                            <Grid component={Hidden} lgUp>
+                                <Button component={Link}
+                                    to={`/registration/form/${row.accountType}/${row.user.id}/edit`}
+                                    variant="outlined">
+                                    <EditIcon />
+                                </Button>
+                            </Grid>
+                        </TableCell>
+                    </TableRow>
                 ))}
-            </Grid>
-        ),
-        [displayUsers],
-    );
+            </TableBody>
+        </Table>
+    ), [classes.tableCellStyle, classes.tableRowStyle, displayUsers, isAdmin]);
+
+    const cardView = useMemo(() => (
+        <Grid alignItems="center" className="card-container" container
+            direction="row" spacing={2} xs={12}>
+            {displayUsers.map((user) => (
+                <ProfileCard key={user.user_id}
+                    route={`/accounts/${user.role}/${user.user_id}`}
+                    user={user} />
+            ))}
+        </Grid>
+    ), [displayUsers]);
 
     return (
         <Grid className="Accounts" item xs={12}>
-            <Paper className="paper" elevation={2}>
+            <BackgroundPaper elevation={2}>
                 <BackButton />
                 <Hidden xsDown>
                     <hr />
@@ -255,12 +277,11 @@ const Accounts = () => {
                 </Grid>
                 <Grid alignItems="center" className="accounts-list-wrapper"
                     container direction="row" justify="center" spacing={1}>
-                    <LoadingHandler error={hooks.isFail(...statuses)}
-                        loading={hooks.isLoading(...statuses)}>
+                    <LoadingHandler error={error} loading={loading}>
                         {isMobile || !viewToggle ? cardView : tableView}
                     </LoadingHandler>
                 </Grid>
-            </Paper>
+            </BackgroundPaper>
         </Grid>
     );
 };

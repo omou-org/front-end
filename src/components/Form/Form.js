@@ -15,7 +15,7 @@ import {updateCourse} from "reducers/courseReducer";
 // Material UI Imports
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import Paper from "@material-ui/core/Paper";
 import Select from "@material-ui/core/Select";
 import Stepper from "@material-ui/core/Stepper";
@@ -38,7 +38,7 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import InputAdornment from "@material-ui/core/InputAdornment";
 // Outside React Component
 import SearchSelect from "react-select";
-import BackButton from "../BackButton.js";
+import BackButton from "../OmouComponents/BackButton.js";
 import Modal from "@material-ui/core/Modal";
 import CompleteCourseRegistration from "./CompleteCourseRegistration";
 
@@ -50,7 +50,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import {DatePicker, TimePicker} from "material-ui-pickers";
 import * as utils from "./FormUtils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
-import InstructorConflictCheck from "components/InstructorConflictCheck";
+import InstructorConflictCheck from "components/OmouComponents/InstructorConflictCheck";
 import {combineDateAndTime, durationStringToNum, uniques} from "utils";
 
 const parseGender = {
@@ -86,6 +86,7 @@ class Form extends Component {
 		this.props.userActions.fetchInstructors();
 		this.props.registrationActions.initializeRegistration();
 		this.props.adminActions.fetchCategories();
+		this.props.apiActions.fetchCourses();
 		if (this.props.match.params.edit === "edit") {
 			switch (formType) {
 				case "instructor": {
@@ -206,6 +207,7 @@ class Form extends Component {
 						};
 
 						let course = null;
+
 						if (this.props.courses.hasOwnProperty(id)) {
 							const {course_id, title} = this.props.courses[
 								this.props.match.params.id
