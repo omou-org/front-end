@@ -43,9 +43,9 @@ const UnpaidSessions = () => {
 		return <Loading loadingText="UNPAID SESSIONS LOADING" small/>;
 	}
 
-	if (error){
+    if (error){
         console.error(error);
-        return <>There has been an error loading UnpaidSessions</>
+        return <>There has been an error: {error.message}</>
     }
 
 	const UnpaidList = data.unpaidSessions;

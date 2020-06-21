@@ -58,7 +58,7 @@ const Dashboard = () => {
                   courseCategory {
                     id
                     name
-                  }
+                  }f
                 }
               }
             }
@@ -75,7 +75,7 @@ const Dashboard = () => {
 
     if (error){
         console.error(error);
-        return <>There has been an error!</>
+        return <>There has been an error: {error.message}</>
     }
 
     const categoryList = data.sessionSearch.results.map(category=> ({
