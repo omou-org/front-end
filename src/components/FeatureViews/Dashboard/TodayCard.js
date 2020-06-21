@@ -23,7 +23,8 @@ const useStyles = makeStyles((theme) => ({
 const TodayCard = ({session}) => {
     const classes = useStyles();
     const countStudents = session.course.enrollmentSet.length
-    const instructorFullName = fullName(session.course.instructor.user.firstName, session.course.instructor.user.lastName)
+    const instructorObj = session.course.instructor.user;
+    const instructorFullName = fullName(instructorObj)
     const startTime = session.course.startTime
     const formattedStartTime = moment(startTime, "HH:mm").format("h:mm a");
 

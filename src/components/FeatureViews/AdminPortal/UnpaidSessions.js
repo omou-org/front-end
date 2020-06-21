@@ -48,9 +48,9 @@ const UnpaidSessions = () => {
         return <>There has been an error: {error.message}</>
     }
 
-	const UnpaidList = data.unpaidSessions;
+	// const UnpaidList = data.unpaidSessions;
 
-	if (UnpaidList.length === 0) {
+	// if (UnpaidList.length === 0) {
 		return (
 			<Card className="no-unpaid-sessions">
 				<CardContent>
@@ -59,11 +59,11 @@ const UnpaidSessions = () => {
 				</CardContent>
 			</Card>
 		);
-	}
+	// }
 
-	return UnpaidList.map((unpaidStudent) => (
-		<UnpaidSessionCard key={unpaidStudent} unpaidStudent={unpaidStudent}/>
-	));
+// 	return UnpaidList.map((unpaidStudent) => (
+// 		<UnpaidSessionCard key={unpaidStudent} unpaidStudent={unpaidStudent}/>
+// 	));
 };
 
 export default UnpaidSessions;

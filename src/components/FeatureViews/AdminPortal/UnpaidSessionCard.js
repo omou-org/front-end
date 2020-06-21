@@ -62,7 +62,8 @@ const useStyles = makeStyles((theme) => ({
 const UnpaidSessionCard = ({unpaidStudent}) => {
     const classes = useStyles();
     
-    const studentName = fullName(unpaidStudent.student.user.firstName, unpaidStudent.student.user.lastName)
+    const studentObj = unpaidStudent.student.user;
+    const studentName = fullName(studentObj);
     const studentFirstName = unpaidStudent.student.user.firstName;
     const studentLastName = unpaidStudent.student.user.lastName;
     const studentID = unpaidStudent.student.user.id;

@@ -16,7 +16,7 @@ import { useQuery } from "@apollo/react-hooks";
 const Today = (filter) => {
     const TODAY_SESSION_QUERY= gql`
             query todaySessionQuery($filter: String="") {
-                sessionSearch(query: $filter, time: "today", sort: "timeAsc") {
+                sessionSearch(query: $filter, time: "", sort: "timeAsc") {
                 results {
                     id
                     course {
@@ -60,7 +60,7 @@ const Today = (filter) => {
         console.error(error);
         return <>There has been an error: {error.message}</>
     }
-    
+
     const sessionArray = data.sessionSearch.results
 
     if (!sessionArray || sessionArray.length === 0) {

@@ -68,8 +68,6 @@ const useStyles = makeStyles((theme) => ({
         padding: "0"
 	},
 	notesNotification: {
-        // position: "absolute",
-        // float: "right",
         cursor: "pointer",   
         height: "30px",
         width: "30px",

@@ -58,7 +58,7 @@ const Dashboard = () => {
                   courseCategory {
                     id
                     name
-                  }f
+                  }
                 }
               }
             }
