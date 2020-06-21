@@ -5,7 +5,7 @@ import {Paper, Tooltip, Typography} from "@material-ui/core";
 import AccountsCards from "../FeatureViews/Search/cards/AccountsCards";
 import Grid from "@material-ui/core/Grid";
 import * as hooks from "../../actions/hooks";
-import Loading from "../Loading";
+import Loading from "../OmouComponents/Loading";
 import {stringToColor} from "../FeatureViews/Accounts/accountUtils";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";

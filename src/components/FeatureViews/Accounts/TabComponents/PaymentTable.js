@@ -11,9 +11,9 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 
 import {paymentToString, tuitionAmount} from "utils";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import NavLinkNoDup from "components/Routes/NavLinkNoDup";
-import NoListAlert from "components/NoListAlert";
+import NoListAlert from "components/OmouComponents/NoListAlert";
 import Moment from "react-moment";
 
 const numericDateString = (date) => {

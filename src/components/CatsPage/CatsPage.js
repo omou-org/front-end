@@ -4,7 +4,7 @@ import {bindActionCreators} from "redux";
 
 import "./catsPage.scss";
 import * as catActions from "actions/catActions";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 
 const getWindowSize = () => [window.innerWidth, window.innerHeight];
 

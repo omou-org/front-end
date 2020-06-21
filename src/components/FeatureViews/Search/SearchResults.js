@@ -15,7 +15,7 @@ import Typography from "@material-ui/core/Typography";
 import "./Search.scss";
 import AccountFilters from "./AccountFilters";
 import AccountsCards from "./cards/AccountsCards";
-import BackButton from "../../BackButton";
+import BackButton from "../../OmouComponents/BackButton";
 import CourseFilters from "./CourseFilters";
 import CoursesCards from "./cards/CoursesCards";
 import NoResultsPage from "./NoResults/NoResultsPage";

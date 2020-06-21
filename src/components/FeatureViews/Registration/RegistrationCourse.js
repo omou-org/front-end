@@ -22,8 +22,8 @@ import Moment from "react-moment";
 
 import "./registration.scss";
 import {Link, useRouteMatch} from "react-router-dom";
-import BackButton from "../../BackButton.js";
-import Loading from "components/Loading";
+import BackButton from "../../OmouComponents/BackButton.js";
+import Loading from "components/OmouComponents/Loading";
 import RegistrationActions from "./RegistrationActions";
 import RegistrationCourseEnrollments from "./RegistrationCourseEnrollments";
 import UserAvatar from "../Accounts/UserAvatar";

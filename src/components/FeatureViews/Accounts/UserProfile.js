@@ -26,9 +26,9 @@ import Typography from "@material-ui/core/Typography";
 
 import "./Accounts.scss";
 import * as hooks from "actions/hooks";
-import BackButton from "components/BackButton";
+import BackButton from "components/OmouComponents/BackButton";
 import ComponentViewer from "./ComponentViewer.js";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import ProfileHeading from "./ProfileHeading.js";
 import {useAccountNotes} from "actions/userActions";
 import UserAvatar from "./UserAvatar";

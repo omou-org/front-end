@@ -1,9 +1,8 @@
 import React, {useCallback, useState} from "react";
 
-import BackButton from "components/BackButton";
+import BackButton from "components/OmouComponents/BackButton";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
-import Paper from "@material-ui/core/Paper";
 import SearchSelect from "react-select";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
@@ -11,12 +10,13 @@ import Typography from "@material-ui/core/Typography";
 
 import {distinctObjectArray, fullName, gradeOptions} from "utils";
 import CourseList from "./CourseList";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import RegistrationActions from "./RegistrationActions";
 import TutoringList from "./TutoringList";
 import gql from "graphql-tag";
 import {useQuery} from "@apollo/react-hooks";
 import {SIMPLE_COURSE_DATA} from "queryFragments";
+import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 
 const customStyles = {
     clearIndicator: (base, state) => ({
@@ -185,7 +185,7 @@ const RegistrationLanding = () => {
 	};
 
     return (
-		<Paper elevation={2} className="RegistrationLanding">
+		<BackgroundPaper elevation={2} className="RegistrationLanding">
             <BackButton/>
             <hr/>
             <RegistrationActions/>
@@ -221,14 +221,14 @@ const RegistrationLanding = () => {
                     </Hidden>
                 </Grid>
             )}
-            <div className="registration-table">
+			<Grid container spacing={5} className="registration-table">
 				{view === 0 ? (
                     <CourseList filteredCourses={filteredCourses}/>
                 ) : (
                     <TutoringList/>
                 )}
-            </div>
-        </Paper>
+			</Grid>
+		</BackgroundPaper>
     );
 };
 
