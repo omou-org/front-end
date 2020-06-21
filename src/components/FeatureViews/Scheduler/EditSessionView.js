@@ -56,6 +56,7 @@ const EditSessionView = ({ editSelection }) => {
 		[dispatch]
 	);
 	const history = useHistory();
+	console.log("asd)";
 	const { course_id, session_id } = useParams();
 	const { loading, error, data } = useQuery(GET_COURSES, {variables: {id:course_id}});
 	console.log(loading, error, data);
