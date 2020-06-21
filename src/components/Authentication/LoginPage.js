@@ -1,20 +1,20 @@
-import React, {useCallback, useState} from "react";
-import {Link, Redirect, useHistory, useLocation} from "react-router-dom";
+import React, {useCallback, useEffect, useState} from "react";
+import {Link, useHistory, useLocation} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
+import gql from "graphql-tag";
+import {useMutation} from "@apollo/react-hooks";
 
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Grid from "@material-ui/core/Grid";
-import Loading from "components/Loading";
 import Paper from "@material-ui/core/Paper";
 import PasswordInput from "./PasswordInput";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 
-import {isFail, isLoading, isSuccessful} from "actions/hooks";
-import {login, resetAttemptStatus} from "actions/authActions.js";
 import {makeStyles} from "@material-ui/core/styles";
+import {setToken} from "actions/authActions.js";
 import useAuthStyles from "./styles.js";
 
 const useStyles = makeStyles((theme) => ({
@@ -29,20 +29,48 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-// eslint-disable-next-line max-statements
+const LOGIN = gql`
+    mutation Login($password: String!, $username: String!) {
+        tokenAuth(password: $password, username: $username) {
+            token
+            payload
+        }
+    }
+`;
+
 const LoginPage = () => {
-    const fetchUserStatus = useSelector(
-        ({RequestStatus}) => RequestStatus.userFetch,
-    );
-    const {state} = useLocation();
-    const loginStatus = useSelector(({RequestStatus}) => RequestStatus.login);
-    const dispatch = useDispatch();
     const history = useHistory();
+    const {state} = useLocation();
+    const dispatch = useDispatch();
+    const token = useSelector(({auth}) => auth.token);
 
     const [email, setEmail] = useState(state?.email);
     const [password, setPassword] = useState(null);
-    const [savePassword, setSavePassword] = useState(false);
-    const [shouldRedirect, setShouldRedirect] = useState(true);
+    const [shouldSave, setShouldSave] = useState(false);
+    const [hasError, setHasError] = useState(false);
+    const [login, {loading}] = useMutation(LOGIN, {
+        "errorPolicy": "ignore",
+        "ignoreResults": true,
+        "onCompleted": async ({tokenAuth}) => {
+            dispatch(await setToken(tokenAuth.token, shouldSave));
+        },
+        // for whatever reason, this function prevents an unhandled rejection
+        "onError": () => {
+            setHasError(true);
+        },
+    });
+
+    // must wait for token to update in redux before redirecting
+    // otherwise ProtectedRoute's check will trigger and redirect us back here
+    useEffect(() => {
+        if (token) {
+            if (history.length > 2) {
+                history.goBack();
+            } else {
+                history.push("/");
+            }
+        }
+    }, [token, history]);
 
     const classes = {
         ...useStyles(),
@@ -51,32 +79,22 @@ const LoginPage = () => {
 
     const handleTextInput = useCallback((setter) => ({target}) => {
         setter(target.value);
-        dispatch(resetAttemptStatus());
-    }, [dispatch]);
+        setHasError(false);
+    }, []);
 
     const handleSubmit = useCallback((event) => {
         event.preventDefault();
-        login(email, password, savePassword)(dispatch);
-    }, [dispatch, email, password, savePassword]);
+        login({
+            "variables": {
+                password,
+                "username": email,
+            },
+        });
+    }, [login, email, password]);
 
     const toggleSavePassword = useCallback(({target}) => {
-        setSavePassword(target.checked);
+        setShouldSave(target.checked);
     }, []);
-
-    const failedLogin = isFail(loginStatus);
-    if (isLoading(loginStatus) && isLoading(fetchUserStatus)) {
-        return <Loading />;
-    }
-
-    if ((isSuccessful(fetchUserStatus) || isSuccessful(loginStatus)) &&
-        shouldRedirect) {
-        if (history.length > 2) {
-            history.goBack();
-        } else {
-            return <Redirect to="/" />;
-        }
-        setShouldRedirect(false);
-    }
 
     return (
         <Paper className={`${classes.root} ${classes.smallerRoot}`}>
@@ -85,12 +103,12 @@ const LoginPage = () => {
                 sign in
             </Typography>
             <form onSubmit={handleSubmit}>
-                <TextField error={failedLogin || email === ""} fullWidth
+                <TextField error={hasError || email === ""} fullWidth
                     inputProps={{"data-cy": "emailField"}} label="E-Mail"
                     margin="normal" onChange={handleTextInput(setEmail)}
                     value={email} />
                 <PasswordInput autoComplete="current-password"
-                    error={failedLogin || password === ""} fullWidth
+                    error={hasError || password === ""} fullWidth
                     inputProps={{"data-cy": "passwordField"}} label="Password"
                     onChange={handleTextInput(setPassword)}
                     value={password} />
@@ -98,7 +116,7 @@ const LoginPage = () => {
                     justify="space-between">
                     <Grid item>
                         <FormControlLabel
-                            control={<Checkbox checked={savePassword}
+                            control={<Checkbox checked={shouldSave}
                                 inputProps={{"data-cy": "rememberMe"}}
                                 onChange={toggleSavePassword} />}
                             label="Remember Me" />
@@ -117,8 +135,8 @@ const LoginPage = () => {
                     <Grid item>
                         <Button className={classes.primaryButton}
                             color="primary" data-cy="signInButton"
-                            disabled={!email || !password} type="submit"
-                            variant="contained">
+                            disabled={!email || !password || loading}
+                            type="submit" variant="contained">
                             sign in
                         </Button>
                     </Grid>
@@ -136,7 +154,7 @@ const LoginPage = () => {
                     </Grid>
                 </Grid>
             </form>
-            {failedLogin && (
+            {hasError && (
                 <Typography color="error" data-cy="errorMessage">
                     Invalid credentials
                 </Typography>

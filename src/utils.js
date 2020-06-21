@@ -2,6 +2,14 @@ import {instance} from "actions/apiActions";
 import {useCallback} from "react";
 import {useHistory} from "react-router-dom";
 
+export const USER_TYPES = {
+    "admin": "ADMIN",
+    "instructor": "INSTRUCTOR",
+    "parent": "PARENT",
+    "receptionist": "RECEPTIONIST",
+    "student": "STUDENT",
+};
+
 export const durationParser = {
     "0.5 Hours": 0.5,
     "1 Hour": 1,
@@ -264,7 +272,7 @@ export const instructorConflictCheck = async (instructorID, start, end) => {
         "end_time": toApiTime(end),
         "start_time": toApiTime(start),
     };
-    
+
     const courseParams = {
         "end_date": toApiDate(end),
         "end_time": toApiTime(end),

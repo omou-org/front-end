@@ -26,6 +26,8 @@ import {RootRoutes} from "../Routes/RootRoutes";
 import AuthenticatedNav from "../Navigation/AuthenticatedNav";
 import UnauthenticatedNav from "../Navigation/UnauthenticatedNav";
 
+import {USER_TYPES} from "utils";
+
 const useStyles = makeStyles({
     "navigationIconStyle": {
         "height": "50px",
@@ -37,7 +39,10 @@ const useStyles = makeStyles({
 
 const Navigation = () => {
     const classes = useStyles();
-    const {token, isAdmin} = useSelector(({auth}) => auth);
+    const {token} = useSelector(({auth}) => auth);
+
+    const isAdmin =
+        useSelector(({auth}) => auth.accountType) === USER_TYPES.admin;
 
     const NavList = isAdmin ? [
             {

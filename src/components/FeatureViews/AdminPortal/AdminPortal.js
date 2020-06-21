@@ -11,7 +11,7 @@ import BackButton from "components/BackButton";
 
 const AdminPortal = () => (
 	<form>
-		<Paper className="registration-cart paper">
+		<Paper className="registration-cart">
 			<Grid container layout="row">
 				<Grid item xs={12}>
 					<BackButton/>

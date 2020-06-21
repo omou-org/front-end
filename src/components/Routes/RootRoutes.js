@@ -1,17 +1,17 @@
 // React Imports
 import {Redirect, Route, Switch} from "react-router-dom";
-import {useDispatch} from "react-redux";
-import {resetSubmitStatus} from "actions/registrationActions";
 import React from "react";
+import {useDispatch} from "react-redux";
 
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
 import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
-import AdminRoute from "./AdminRoute";
+import AuthenticatedRoute from "./AuthenticatedRoute";
 import CatsPage from "../CatsPage/CatsPage";
 import CourseSessionStatus from
     "../FeatureViews/Accounts/TabComponents/EnrollmentView";
 // import Dashboard from "../FeatureViews/Dashboard/Dashboard";
+import EditSessionView from "../FeatureViews/Scheduler/EditSessionView";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import ForgotPassword from "../Authentication/ForgotPassword";
 import LoginPage from "../Authentication/LoginPage.js";
@@ -19,7 +19,6 @@ import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage";
 import NotEnrolledStudentsDialog from
     "../FeatureViews/Scheduler/NotEnrolledStudentDialog";
 import PaymentReceipt from "../FeatureViews/Registration/PaymentReceipt";
-import ProtectedRoute from "./ProtectedRoute";
 import Registration from "../FeatureViews/Registration/Registration";
 import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
 import RegistrationCourse from
@@ -29,10 +28,12 @@ import Dashboard from "../FeatureViews/Dashboard/Dashboard";
 import RegistrationReceipt from "../Form/RegistrationReceipt";
 import ResetPassword from "../Authentication/ResetPassword";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
-import EditSessionView from "../FeatureViews/Scheduler/EditSessionView";
 import SearchResults from "../FeatureViews/Search/SearchResults";
 import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
+
+import {resetSubmitStatus} from "actions/registrationActions";
+import {USER_TYPES} from "utils";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -53,96 +54,78 @@ export const RootRoutes = () => {
 
             {/* Main Feature Views */}
 
-            <Route
-                exact
-                path="/"
+            <AuthenticatedRoute exact path="/"
                 render={(passedProps) => <Dashboard {...passedProps} />}
             />
-            <ProtectedRoute exact path="/registration">
+            <AuthenticatedRoute exact path="/registration">
                 <Registration />
-            </ProtectedRoute>
+            </AuthenticatedRoute>
 
             {/* Scheduler Routes */}
-            <ProtectedRoute
-                exact
-                path="/scheduler"
-                render={(passedProps) => <Scheduler {...passedProps} />}
-            />
-            <Route
-                path="/scheduler/view-session/:course_id/:session_id/:instructor_id"
-                render={(passedProps) => <SessionView {...passedProps} />}
-            />
-            <Route
-                path="/scheduler/edit-session/:course_id/:session_id/:instructor_id/edit"
-                render={(passedProps) => <EditSessionView {...passedProps} />}
-            />
-            <ProtectedRoute
-                exact
-                path="/search"
-                render={(passedProps) => <SearchResults {...passedProps} />}
-            />
-            <ProtectedRoute
-                exact
-                path="/dashboard"
-                render={(passedProps) => <Dashboard {...passedProps} />}
-            />
-
-            <ProtectedRoute path="/scheduler/view-session/:course_id/:session_id/:instructor_id">
+            <AuthenticatedRoute exact path="/scheduler">
+                <Scheduler />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/scheduler/view-session/:course_id/:session_id/:instructor_id">
                 <SessionView />
-            </ProtectedRoute>
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/scheduler/edit-session/:course_id/:session_id/:instructor_id/edit">
+                <EditSessionView />
+            </AuthenticatedRoute>
 
-            <ProtectedRoute exact path="/search">
+            <AuthenticatedRoute exact path="/search">
                 <SearchResults />
-            </ProtectedRoute>
-            <ProtectedRoute exact path="/cats">
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/cats">
                 <CatsPage />
-            </ProtectedRoute>
-            <ProtectedRoute exact path="/noresults">
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/noresults">
                 <NoResultsPage />
-            </ProtectedRoute>
+            </AuthenticatedRoute>
 
             {/* Accounts */}
-            <ProtectedRoute exact path="/accounts/:accountType/:accountID">
+            <AuthenticatedRoute exact path="/accounts/:accountType/:accountID">
                 <UserProfile />
-            </ProtectedRoute>
-            <ProtectedRoute exact
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact
                 path="/accounts/parent/payment/:paymentID">
                 <PaymentReceipt />
-            </ProtectedRoute>
-            <ProtectedRoute exact path="/accounts">
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/accounts">
                 <Accounts />
-            </ProtectedRoute>
-            <ProtectedRoute exact
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact
                 path="/accounts/:accountType/:accountID/:courseID">
                 <CourseSessionStatus />
-            </ProtectedRoute>
+            </AuthenticatedRoute>
 
             {/* Registration Routes */}
-            <ProtectedRoute path="/registration/form/:type/:id?/:edit?">
+            <AuthenticatedRoute path="/registration/form/:type/:id?/:edit?">
                 <RegistrationForm />
-            </ProtectedRoute>
-            <ProtectedRoute
+            </AuthenticatedRoute>
+            <AuthenticatedRoute
                 path="/registration/course/:courseID?/:courseTitle?">
                 <RegistrationCourse />
-            </ProtectedRoute>
-            <ProtectedRoute path="/registration/cart/">
+            </AuthenticatedRoute>
+            <AuthenticatedRoute path="/registration/cart/">
                 <RegistrationCart />
-            </ProtectedRoute>
-            <ProtectedRoute path="/registration/receipt/:paymentID?">
+            </AuthenticatedRoute>
+            <AuthenticatedRoute path="/registration/receipt/:paymentID?">
                 <RegistrationReceipt />
-            </ProtectedRoute>
-            <ProtectedRoute path="/NotEnrolledStudent">
+            </AuthenticatedRoute>
+            <AuthenticatedRoute path="/NotEnrolledStudent">
                 <NotEnrolledStudentsDialog />
-            </ProtectedRoute>
+            </AuthenticatedRoute>
 
             {/* Admin Routes */}
-            <AdminRoute exact path="/adminportal/:view?/:type?/:id?/:edit?">
+            <AuthenticatedRoute exact
+                path="/adminportal/:view?/:type?/:id?/:edit?"
+                users={[USER_TYPES.admin]}>
                 <AdminPortal />
-            </AdminRoute>
+            </AuthenticatedRoute>
 
-            <Route path="/PageNotFound">
+            <AuthenticatedRoute path="/PageNotFound">
                 <ErrorNotFoundPage />
-            </Route>
+            </AuthenticatedRoute>
             <Redirect to="/PageNotFound" />
         </Switch>
     );
