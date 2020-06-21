@@ -234,7 +234,7 @@ const Accounts = () => {
 
     return (
         <Grid className="Accounts" item xs={12}>
-            <Paper className="paper" elevation={2}>
+			<Paper elevation={2}>
                 <BackButton />
                 <Hidden xsDown>
                     <hr />
