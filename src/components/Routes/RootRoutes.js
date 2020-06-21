@@ -57,6 +57,9 @@ export const RootRoutes = () => {
             <AuthenticatedRoute exact path="/"
                 render={(passedProps) => <Dashboard {...passedProps} />}
             />
+            <AuthenticatedRoute exact path ="/dashboard"
+                render={(passedProps) => <Dashboard {...passedProps} />}
+            />
             <AuthenticatedRoute exact path="/registration">
                 <Registration />
             </AuthenticatedRoute>
