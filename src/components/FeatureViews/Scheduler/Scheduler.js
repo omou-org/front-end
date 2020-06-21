@@ -328,166 +328,164 @@ const Scheduler = () => {
 					Scheduler
 				</Typography>
 				<br/>
-				<div className="scheduler-wrapper">
-					<Grid className="scheduler-header" container item xs={12}>
-						<Grid item xs={4}>
-							<Grid className="scheduler-header-firstSet"
-								  container direction="row">
-								<Grid item>
-									<IconButton
-										onClick={() => changeView("timeGridDay")}
-									>
-										<CalendarIcon
-											style={{color: view.toLowerCase().includes("grid") && secondaryFontColor}}
-										/>
-									</IconButton>
-								</Grid>
-								<Grid item>
-									<IconButton
-										onClick={() => changeView("listWeek")}
-									>
-										<ListIcon
-											style={{color: view === "listWeek" && secondaryFontColor}}
-										/>
-									</IconButton>
-								</Grid>
-								<Grid item>
-									<SessionFilters CourseOptions={courseOptions}
-													CourseValue={courseFilter}
-													InstructorOptions={instructorOptions}
-													InstructorValue={instructorFilter}
-													onCourseSelect={setCourseFilter}
-													onInstructorSelect={setInstructorFilter}/>
-								</Grid>
-								<Grid item xs={6}>
-									<FormControl className="filter-select">
-										<Select input={
-											<BootstrapInput id="filter-calendar-type"
-															name="courseFilter"/>
-										}
-												MenuProps={{
-													"classes": {
-														"paper": classes.dropdownStyle,
-													},
-												}}
-												onChange={handleCourseTypeChange}
-												value={courseType}>
-											<MenuItem value="all">All</MenuItem>
-											<MenuItem value="class">
-												Class
-											</MenuItem>
-											<MenuItem value="tutoring">
-												Tutoring
-											</MenuItem>
-										</Select>
-									</FormControl>
-								</Grid>
-							</Grid>
-						</Grid>
-						<Grid
-							item
-							xs={4}
-							container
-							direction="row"
-							justify="center"
-							alignItems="center"
-						>
+				<Grid className="scheduler-header scheduler-wrapper" container item xs={12}>
+					<Grid item xs={4}>
+						<Grid className="scheduler-header-firstSet"
+							  container direction="row">
 							<Grid item>
-								<IconButton aria-label="prev-month"
-											className="prev-month" onClick={goToPrev}>
-									<ChevronLeftOutlined/>
+								<IconButton
+									onClick={() => changeView("timeGridDay")}
+								>
+									<CalendarIcon
+										style={{color: view.toLowerCase().includes("grid") && secondaryFontColor}}
+									/>
 								</IconButton>
 							</Grid>
 							<Grid item>
-								<Typography variant="h6">
-									{currentDate}
-								</Typography>
-							</Grid>
-							<Grid item>
-								<IconButton aria-label="next-month"
-											className="next-month" onClick={goToNext}>
-									<ChevronRightOutlined/>
+								<IconButton
+									onClick={() => changeView("listWeek")}
+								>
+									<ListIcon
+										style={{color: view === "listWeek" && secondaryFontColor}}
+									/>
 								</IconButton>
 							</Grid>
-						</Grid>
-						<Grid item xs={2}/>
-						<Grid item xs={2}>
-							<Grid className="scheduler-header-last" container
-								  direction="row" justify="flex-end">
-								<Grid item xs={3}>
-									<Tooltip title="Go to Today">
-										<IconButton aria-label="current-date-button"
-													className="current-date-button"
-													onClick={goToToday}>
-											<TodayIcon/>
-										</IconButton>
-									</Tooltip>
-								</Grid>
-								<Grid item xs={9}>
-									<FormControl className="filter-select">
-										<Select input={
-											<BootstrapInput id="filter-calendar-type"
-															name="courseFilter"/>
-										}
-												MenuProps={{
-													"classes": {
-														"paper": classes.dropdownStyle,
-													},
-												}}
-												onChange={handleViewChange}
-												value={viewType()}
-										>
-											<MenuItem value="day">
-												Day
-											</MenuItem>
-											<MenuItem value="week">
-												Week
-											</MenuItem>
-											<MenuItem value="month">
-												Month
-											</MenuItem>
-										</Select>
-									</FormControl>
-								</Grid>
+							<Grid item>
+								<SessionFilters CourseOptions={courseOptions}
+												CourseValue={courseFilter}
+												InstructorOptions={instructorOptions}
+												InstructorValue={instructorFilter}
+												onCourseSelect={setCourseFilter}
+												onInstructorSelect={setInstructorFilter}/>
+							</Grid>
+							<Grid item xs={6}>
+								<FormControl className="filter-select">
+									<Select input={
+										<BootstrapInput id="filter-calendar-type"
+														name="courseFilter"/>
+									}
+											MenuProps={{
+												"classes": {
+													"paper": classes.dropdownStyle,
+												},
+											}}
+											onChange={handleCourseTypeChange}
+											value={courseType}>
+										<MenuItem value="all">All</MenuItem>
+										<MenuItem value="class">
+											Class
+										</MenuItem>
+										<MenuItem value="tutoring">
+											Tutoring
+										</MenuItem>
+									</Select>
+								</FormControl>
 							</Grid>
 						</Grid>
 					</Grid>
-					<Grid className="omou-calendar" item xs={12}>
-						<FullCalendar contentHeight="400"
-									  defaultView="timeGridDay"
-									  displayEventTime
-									  eventClick={goToSessionView}
-									  eventColor="none"
-									  eventLimit={4}
-									  eventMouseEnter={handleToolTip}
-									  events={[...calendarEvents, ...OOOEvents]}
-									  header={false}
-									  minTime="07:00:00"
-									  nowIndicator
-									  plugins={[
-										  dayGridPlugin,
-										  timeGridPlugin,
-										  interactionPlugin,
-										  listViewPlugin,
-										  resourceTimelinePlugin,
-									  ]}
-									  ref={calendarRef}
-									  resourceAreaWidth="20%"
-									  resourceOrder="title"
-									  schedulerLicenseKey="GPL-My-Project-Is-Open-Source"
-									  themeSystem="standard"
-									  timeZone="local"
-									  titleFormat={{
-										  "day": "numeric",
-										  "month": "long",
-									  }}
-									  views={{
-										  "dayGrid": {
-											  "titleFormat": {"month": "long"},
-										  },
-									  }}/>
+					<Grid
+						item
+						xs={4}
+						container
+						direction="row"
+						justify="center"
+						alignItems="center"
+					>
+						<Grid item>
+							<IconButton aria-label="prev-month"
+										className="prev-month" onClick={goToPrev}>
+								<ChevronLeftOutlined/>
+							</IconButton>
+						</Grid>
+						<Grid item>
+							<Typography variant="h6">
+								{currentDate}
+							</Typography>
+						</Grid>
+						<Grid item>
+							<IconButton aria-label="next-month"
+										className="next-month" onClick={goToNext}>
+								<ChevronRightOutlined/>
+							</IconButton>
+						</Grid>
 					</Grid>
-				</div>
+					<Grid item xs={2}/>
+					<Grid item xs={2}>
+						<Grid className="scheduler-header-last" container
+							  direction="row" justify="flex-end">
+							<Grid item xs={3}>
+								<Tooltip title="Go to Today">
+									<IconButton aria-label="current-date-button"
+												className="current-date-button"
+												onClick={goToToday}>
+										<TodayIcon/>
+									</IconButton>
+								</Tooltip>
+							</Grid>
+							<Grid item xs={9}>
+								<FormControl className="filter-select">
+									<Select input={
+										<BootstrapInput id="filter-calendar-type"
+														name="courseFilter"/>
+									}
+											MenuProps={{
+												"classes": {
+													"paper": classes.dropdownStyle,
+												},
+											}}
+											onChange={handleViewChange}
+											value={viewType()}
+									>
+										<MenuItem value="day">
+											Day
+										</MenuItem>
+										<MenuItem value="week">
+											Week
+										</MenuItem>
+										<MenuItem value="month">
+											Month
+										</MenuItem>
+									</Select>
+								</FormControl>
+							</Grid>
+						</Grid>
+					</Grid>
+				</Grid>
+				<Grid className="omou-calendar" item xs={12}>
+					<FullCalendar contentHeight="400"
+								  defaultView="timeGridDay"
+								  displayEventTime
+								  eventClick={goToSessionView}
+								  eventColor="none"
+								  eventLimit={4}
+								  eventMouseEnter={handleToolTip}
+								  events={[...calendarEvents, ...OOOEvents]}
+								  header={false}
+								  minTime="07:00:00"
+								  nowIndicator
+								  plugins={[
+									  dayGridPlugin,
+									  timeGridPlugin,
+									  interactionPlugin,
+									  listViewPlugin,
+									  resourceTimelinePlugin,
+								  ]}
+								  ref={calendarRef}
+								  resourceAreaWidth="20%"
+								  resourceOrder="title"
+								  schedulerLicenseKey="GPL-My-Project-Is-Open-Source"
+								  themeSystem="standard"
+								  timeZone="local"
+								  titleFormat={{
+									  "day": "numeric",
+									  "month": "long",
+								  }}
+								  views={{
+									  "dayGrid": {
+										  "titleFormat": {"month": "long"},
+									  },
+								  }}/>
+				</Grid>
 			</Paper>
 		</Grid>
     );
