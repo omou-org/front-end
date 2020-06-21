@@ -20,7 +20,7 @@ import "./AdminPortal.scss";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import moment from "moment";
-import Loading from "../../Loading";
+import Loading from "../../OmouComponents/Loading";
 
 const baseTheme = createMuiTheme();
 
