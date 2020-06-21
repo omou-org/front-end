@@ -21,14 +21,7 @@ const BackButton = (props) => {
 
 	}
 	const label = () => {
-		var label = "";
-		if (props.label == null) {
-			label = "Back";
-		}
-		if (props.label == "cancel") {
-			label = "Cancel";
-		}
-		return label;
+		return(props.label || "Back")
 	}
 
 

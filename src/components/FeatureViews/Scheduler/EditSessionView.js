@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import { Link } from "react-router-dom";
-
+import { Redirect, useParams } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import * as calendarActions from "../../../actions/calendarActions";
@@ -22,8 +22,27 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION } from "./SessionView";
 import { dateFormat, timeFormat } from "../../../utils";
 import InstructorConflictCheck from "components/InstructorConflictCheck";
+import { useQuery } from "@apollo/react-hooks";
 import BackButton from "../../BackButton";
+import gql from "graphql-tag";
 import "./scheduler.scss";
+
+const GET_COURSES = gql`
+	query getCourses($id: ID!){
+		course(courseId: $id) {
+			sessionSet {
+				createdAt
+				details
+				endDatetime
+				id
+				isConfirmed
+				startDatetime
+				title
+				updatedAt
+			  }
+		}  
+	}
+`
 
 const EditSessionView = ({ editSelection }) => {
 	const dispatch = useDispatch();
@@ -37,9 +56,16 @@ const EditSessionView = ({ editSelection }) => {
 		[dispatch]
 	);
 	const history = useHistory();
+	const { course_id, session_id } = useParams();
+	const { loading, error, data } = useQuery(GET_COURSES, {variables: {id:course_id}});
+	console.log(loading, error, data);
+
+	const userList = useSelector(({ Courses }) => Courses);
+	//console.log(course_id, session_id);
 	const location = useLocation();
 	const { course, session } = location.state;
 	console.log(course, session);
+
 
 	const [sessionFields, setSessionFields] = useState({
 		start_time: "",

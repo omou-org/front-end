@@ -116,8 +116,8 @@ const useUser = (id, type) => {
 
 const UserProfile = () => {
 	const userList = useSelector(({Users}) => Users);
+	console.log(userList);
 	const {accountType, accountID} = useParams();
-
 	const [tabIndex, setTabIndex] = useState(0);
 	const [displayTabs, setDisplayTabs] = useState(userTabs[accountType]);
 
