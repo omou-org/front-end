@@ -1,29 +1,28 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
-import { Link } from "react-router-dom";
+import {useHistory, useLocation, withRouter} from "react-router-dom";
 
-import { bindActionCreators } from "redux";
+import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import * as calendarActions from "../../../actions/calendarActions";
 import * as userActions from "../../../actions/userActions.js";
-import { useDispatch, useSelector } from "react-redux";
-import { FormControl, Typography } from "@material-ui/core";
-import { useHistory, withRouter, useLocation } from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {FormControl, Typography} from "@material-ui/core";
 import * as apiActions from "../../../actions/apiActions";
 import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
-import { DatePicker, TimePicker } from "material-ui-pickers";
+import {DatePicker, TimePicker} from "material-ui-pickers";
 import SearchSelect from "react-select";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import { EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION } from "./SessionView";
-import { dateFormat, timeFormat } from "../../../utils";
-import InstructorConflictCheck from "components/InstructorConflictCheck";
-import BackButton from "../../BackButton";
+import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
+import {dateFormat, timeFormat} from "../../../utils";
+import InstructorConflictCheck from "components/OmouComponents/InstructorConflictCheck";
+import BackButton from "../../OmouComponents/BackButton";
 import "./scheduler.scss";
+import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 
 const EditSessionView = ({ editSelection }) => {
 	const dispatch = useDispatch();
@@ -219,7 +218,7 @@ const EditSessionView = ({ editSelection }) => {
 	);
 	return (
 		<Grid container className="main-session-view">
-			<Paper
+			<BackgroundPaper
 				elevation={2}
 				className="paper session"
 				mt="2em"
@@ -347,7 +346,7 @@ const EditSessionView = ({ editSelection }) => {
 						</Grid>
 					</Grid>
 				</Grid>
-			</Paper>
+			</BackgroundPaper>
 		</Grid>
 	);
 };

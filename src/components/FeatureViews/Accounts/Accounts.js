@@ -11,7 +11,6 @@ import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import ListView from "@material-ui/icons/ViewList";
 import {makeStyles} from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
 import Tab from "@material-ui/core/Tab";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -24,13 +23,14 @@ import Typography from "@material-ui/core/Typography";
 
 import "./Accounts.scss";
 import {addDashes} from "./accountUtils";
-import BackButton from "components/BackButton";
+import BackButton from "components/OmouComponents/BackButton";
 import {capitalizeString, USER_TYPES} from "utils";
 import IconButton from "@material-ui/core/IconButton";
-import LoadingHandler from "components/LoadingHandler";
+import LoadingHandler from "components/OmouComponents/LoadingHandler";
 import ProfileCard from "./ProfileCard";
 import {simpleUser} from "queryFragments";
 import UserAvatar from "./UserAvatar";
+import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 
 const QUERY_USERS = gql`
     query UserQuery {
@@ -234,7 +234,7 @@ const Accounts = () => {
 
     return (
         <Grid className="Accounts" item xs={12}>
-			<Paper elevation={2}>
+            <BackgroundPaper elevation={2}>
                 <BackButton />
                 <Hidden xsDown>
                     <hr />
@@ -281,7 +281,7 @@ const Accounts = () => {
                         {isMobile || !viewToggle ? cardView : tableView}
                     </LoadingHandler>
                 </Grid>
-            </Paper>
+            </BackgroundPaper>
         </Grid>
     );
 };

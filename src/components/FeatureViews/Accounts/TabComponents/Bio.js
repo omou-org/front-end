@@ -7,7 +7,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import {useSelector} from "react-redux";
 import {isLoading, useCategory} from "../../../../actions/hooks";
-import Loading from "../../../Loading";
+import Loading from "../../../OmouComponents/Loading";
 
 const Bio = ({"background": {bio, experience, languages, subjects}}) => {
 	const categories = useSelector(({Course}) => Course.CourseCategories);

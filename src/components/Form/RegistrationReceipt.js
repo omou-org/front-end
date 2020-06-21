@@ -2,7 +2,7 @@ import React, {useCallback, useMemo} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useSubmitRegistration} from "actions/multiCallHooks";
 import {isLoading} from "actions/hooks";
-import Loading from "../Loading";
+import Loading from "../OmouComponents/Loading";
 import PaymentReceipt from "../FeatureViews/Registration/PaymentReceipt";
 import Button from "@material-ui/core/Button";
 import {bindActionCreators} from "redux";

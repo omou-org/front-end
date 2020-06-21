@@ -13,7 +13,7 @@ import Divider from "@material-ui/core/Divider";
 import EmailIcon from "@material-ui/icons/Email";
 import IconButton from "@material-ui/core/IconButton";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import MobileMenu from "@material-ui/icons/MoreVert";

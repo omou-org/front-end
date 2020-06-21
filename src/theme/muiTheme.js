@@ -54,11 +54,6 @@ const theme = createMuiTheme({
         "paper": {
             "background": "#FAFAFA",
         },
-        "MuiPaper": {
-            "root": {
-                padding: "3%"
-            }
-        },
         "MuiMenuItem": {
             "root": {
                 "width": "100%",
