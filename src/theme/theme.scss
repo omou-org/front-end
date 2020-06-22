@@ -1,11 +1,12 @@
 @import '../theme/colors';
 @import '../theme/sizes';
-@import url('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700');
+@import url('https://fonts.googleapis.com/css?family=Roboto+Slab:300,400,700');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
 
 //Fonts
-h1, h2, h3, h4, h5, h6, .heading {
-  font-family: "Roboto Slab", serif !important;
-  font-weight: 700 !important;
+.heading {
+  font-family: "Roboto Slab", serif;
+  font-weight: 700;
 }
 
 .button {

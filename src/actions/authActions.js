@@ -14,12 +14,27 @@ const GET_ACCOUNT_TYPE = gql`
         userInfo(userName: $username) {
             ... on AdminType {
                 accountType
+                user {
+                    id
+                    firstName
+                    lastName
+                }
             }
             ... on InstructorType {
                 accountType
+                user {
+                    id
+                    firstName
+                    lastName
+                }
             }
             ... on ParentType {
                 accountType
+                user {
+                    id
+                    firstName
+                    lastName
+                }
             }
         }
     }`;
@@ -47,7 +62,7 @@ export const setToken = async (token, shouldSave) => {
             "query": GET_ACCOUNT_TYPE,
             "variables": {"username": email},
         });
-        const {accountType} = userInfo;
+		const {accountType, user} = userInfo;
 
         if (shouldSave) {
             localStorage.setItem("token", token);
@@ -57,6 +72,7 @@ export const setToken = async (token, shouldSave) => {
                 accountType,
                 email,
                 token,
+				user,
             },
             "type": types.SET_CREDENTIALS,
         };

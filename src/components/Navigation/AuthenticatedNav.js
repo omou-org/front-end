@@ -2,7 +2,7 @@ import React, {useCallback, useState} from "react";
 import PropTypes from "prop-types";
 
 import {logout} from "actions/authActions";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 
 import Hidden from "@material-ui/core/Hidden";
@@ -13,10 +13,10 @@ import NavLinkNoDup from "../Routes/NavLinkNoDup";
 import Search from "components/FeatureViews/Search/Search";
 import Typography from "@material-ui/core/Typography";
 // Local Component Imports
-import Search from "../../components/FeatureViews/Search/Search";
 import Avatar from "@material-ui/core/Avatar";
 import {stringToColor} from "../FeatureViews/Accounts/accountUtils";
 import Tooltip from "@material-ui/core/Tooltip";
+import {fullName} from "../../utils";
 
 const AuthenticatedNav = ({ toggleDrawer }) => {
 	const dispatch = useDispatch();
@@ -39,6 +39,8 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
     const handleMobileSearch = useCallback((searchQuery) => {
         setMobileSearching(searchQuery);
     }, []);
+
+	const name = fullName(authUser.user);
 
     return (
         <>
@@ -69,7 +71,7 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
 						textDecoration: "none"
 					}}
 					component={NavLinkNoDup}
-					to={"/accounts/parent/2"}
+					to={`/accounts/${authUser.accountType.toLowerCase()}/${authUser.user.id}`}
 				>
 					{name.match(/\b\w/ug).join("")}
 				</Avatar>
