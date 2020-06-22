@@ -8,9 +8,9 @@ const LoadingHandler = ({loading, error, children, ...props}) => {
         return <Loading {...props} />;
     }
     if (error) {
-        return "Error loading!";
+        return <Loading {...props} />;
     }
-    return children;
+    return <Loading {...props} />;
 };
 
 LoadingHandler.propTypes = {

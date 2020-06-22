@@ -13,7 +13,7 @@ const Loading = ({
         return (
             <Paper className="paper" style={{"height": "100vh"}}>
                 <Typography variant="h3">{loadingText}</Typography>
-                <img alt="loading penguin" src={newLoading} style={{width:30, paddingTop:"25%"}}/>
+                <img alt="loading penguin" src={newLoading} style={{width:"20%", paddingTop:"25%"}}/>
             </Paper>
         );
     }
@@ -31,7 +31,7 @@ const Loading = ({
     }
     return (
         <div className="paper" style={{"height": "70vh"}}>
-            <img alt="loading penguin" src={newLoading} style={{width:30, paddingTop:"25%"}}/>
+            <img alt="loading penguin" src={newLoading} style={{width:"20%", paddingTop:"25%"}}/>
             <Typography variant="h3">
                 {loadingText}
             </Typography>
