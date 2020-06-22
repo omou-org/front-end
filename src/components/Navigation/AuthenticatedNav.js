@@ -12,10 +12,16 @@ import MenuIcon from "@material-ui/icons/Menu";
 import NavLinkNoDup from "../Routes/NavLinkNoDup";
 import Search from "components/FeatureViews/Search/Search";
 import Typography from "@material-ui/core/Typography";
+// Local Component Imports
+import Search from "../../components/FeatureViews/Search/Search";
+import Avatar from "@material-ui/core/Avatar";
+import {stringToColor} from "../FeatureViews/Accounts/accountUtils";
+import Tooltip from "@material-ui/core/Tooltip";
 
-const AuthenticatedNav = ({toggleDrawer}) => {
-    const dispatch = useDispatch();
-    const history = useHistory();
+const AuthenticatedNav = ({ toggleDrawer }) => {
+	const dispatch = useDispatch();
+	const history = useHistory();
+	const authUser = useSelector(({auth}) => auth);
 
     const [mobileOpen, setMobileOpen] = useState(false);
     const [isMobileSearching, setMobileSearching] = useState(false);
@@ -52,6 +58,22 @@ const AuthenticatedNav = ({toggleDrawer}) => {
                 </>
             )}
             <Search onMobileType={handleMobileSearch} />
+			<Tooltip title={`${name}'s Profile`}>
+				<Avatar
+					className="avatar"
+					alt={name}
+					style={{
+						"backgroundColor": stringToColor(name),
+						fontSize: ".9em",
+						height: "30px", width: "30px",
+						textDecoration: "none"
+					}}
+					component={NavLinkNoDup}
+					to={"/accounts/parent/2"}
+				>
+					{name.match(/\b\w/ug).join("")}
+				</Avatar>
+			</Tooltip>
             <Typography className="catsButton" component={NavLinkNoDup}
                 to="/cats">
                 CATS
