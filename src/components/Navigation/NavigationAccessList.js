@@ -10,7 +10,7 @@ import DashboardIcon from "@material-ui/icons/Dashboard"
  * */
 
 export const NavList = {
-	"OWNER": [
+	"ADMIN": [
 		{
 			"name": "Dashboard",
 			"link": "/",

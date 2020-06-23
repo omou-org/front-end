@@ -7,7 +7,7 @@ export default function DashboardSwitch() {
 	const AuthUser = useSelector(({auth}) => auth);
 	const ACCOUNT_TYPE = AuthUser.accountType;
 	return ({
-		"OWNER": <Dashboard/>,
+		"ADMIN": <Dashboard/>,
 		"RECEPTIONIST": <Dashboard/>,
 		"INSTRUCTOR": <InstructorDashboard user={AuthUser}/>,
 	}[ACCOUNT_TYPE])

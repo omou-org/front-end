@@ -45,14 +45,14 @@ const Navigation = () => {
         setMobileOpen((open) => !open);
     }, []);
 
-    if (!NavigationList || !ACCOUNT_TYPE) {
+	if ((!NavigationList || !ACCOUNT_TYPE) && token) {
         return <Loading/>
     }
 
     const drawer = (
         <div className="DrawerList">
             <List className="list">
-                {NavigationList.map((NavItem) => (
+				{NavigationList && NavigationList.map((NavItem) => (
                     <ListItem
                         button
                         className={`listItem ${classes.navigationIconStyle}`}
