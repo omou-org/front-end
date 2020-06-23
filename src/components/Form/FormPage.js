@@ -29,11 +29,11 @@ const FormPage = () => {
     }, [id, load]);
 
     if (!form || (id && initialData === null)) {
-        return <Redirect push to="/PageNotFound" />;
+        return <Redirect to="/PageNotFound" />;
     }
 
     return (
-        <Paper>
+        <Paper className="paper">
             <BackButton />
             <Form base={form} initialData={initialData} onSubmit={onSubmit}
                 title={`${title} ${id ? "Editing" : "Registration"}`} />

@@ -1,5 +1,4 @@
 import * as serviceWorker from "./serviceWorker";
-import ApolloClient from "apollo-boost";
 import {applyMiddleware, createStore} from "redux";
 import {ApolloProvider} from "@apollo/react-hooks";
 import App from "./App";
@@ -10,21 +9,37 @@ import React from "react";
 import ReactDOM from "react-dom";
 import rootReducer from "./reducers/rootReducer.js";
 import thunk from "redux-thunk";
+import {ApolloClient} from 'apollo-client';
+import {InMemoryCache} from "apollo-cache-inmemory";
+import {HttpLink} from "apollo-link-http";
+import {onError} from "apollo-link-error";
+import {ApolloLink} from "apollo-link";
+
+export const client = new ApolloClient({
+    "cache": new InMemoryCache(),
+    "link": ApolloLink.from([
+        onError(({graphQLErrors, networkError}) => {
+            if (graphQLErrors) {
+                graphQLErrors.forEach(({message, locations, path}) => {
+                    console.error(
+                        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+                    );
+                });
+            }
+            if (networkError) {
+                console.error(`[Network error]: ${networkError}`);
+            }
+        }),
+        new HttpLink({
+            "uri": `${process.env.REACT_APP_DOMAIN}/graphql`,
+        }),
+    ]),
+});
 
 const store = createStore(
     rootReducer,
     composeWithDevTools(applyMiddleware(thunk)),
 );
-
-export const client = new ApolloClient({
-    "uri": `${process.env.REACT_APP_DOMAIN }/graphql`,
-    // note: since graphql endpoint atm has no authentication, this is not tested
-    "request": (operation) => {
-        operation.setContext({
-            "Authorization": `Token ${sessionStorage.getItem("authToken")}`,
-        });
-    },
-});
 
 ReactDOM.render(
     <Provider store={store}>

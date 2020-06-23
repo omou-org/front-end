@@ -160,10 +160,9 @@ export const ACADEMIC_LVL_FIELD = {
         "validator": Yup.date(),
     },
     START_TIME_FIELD = {
-        // TODO: time picker
         "name": "start_time",
         "label": "Start Time",
-        "component": <Fields.KeyboardDatePicker format="MM/dd/yyyy" />,
+        "component": <Fields.KeyboardTimePicker />,
         "validator": Yup.date(),
     },
     STATE_FIELD = {
@@ -391,7 +390,6 @@ export default {
                 ],
             },
         ],
-        // TODO: add administrator loading
         "load": async (id) => {
             const GET_ADMIN = gql`
             query GetAdmin($userID: ID!) {
@@ -576,12 +574,12 @@ export default {
                         // TODO: instructor select
                         "name": "instructor",
                         "label": "Instructor",
-                        "component": <Fields.TextField />,
+                        "component": <Fields.InstructorSelect />,
                         "validator": Yup.mixed(),
                     },
                     INSTRUCTOR_CONFIRM_FIELD,
-                    // START_DATE,
-                    // START_TIME,
+                    START_DATE_FIELD,
+                    START_TIME_FIELD,
                     {
                         "name": "max_capacity",
                         "label": "Capacity",
@@ -650,7 +648,7 @@ export default {
         "title": "Instructor",
         "form": [
             {
-                "name": "basic_info",
+                "name": "basicInfo",
                 "label": "Basic Information",
                 "fields": [
                     ...NAME_FIELDS,
@@ -669,6 +667,7 @@ export default {
                 "label": "Experience",
                 "fields": [
                     {
+                        // TODO: subject/course category selector
                         "name": "subjects",
                         ...stringField("Subjects Tutor Can Teach"),
                     },
@@ -687,8 +686,50 @@ export default {
                 ],
             },
         ],
-        // TODO: loading and submitting with GraphQL
-        "load": (id) => {},
+        "load": async (id) => {
+            const GET_INSTRUCTOR = gql`
+            query GetInstructor($userID: ID) {
+                instructor(userId: $userID) {
+                    address
+                    user {
+                    firstName
+                    lastName
+                    email
+                    }
+                    phoneNumber
+                    gender
+                    city
+                    state
+                    zipcode
+                    birthDate
+                    biography
+                    experience
+                    language
+                    subjects {
+                    name
+                    id
+                    }
+                }
+            }`;
+            try {
+                const {"data": {instructor}} = await client.query({
+                    "query": GET_INSTRUCTOR,
+                    "variables": {
+                        "userID": id,
+                    },
+                });
+                return {
+                    "basicInfo": {
+                        ...instructor,
+                        ...instructor.user,
+                    },
+                    "experience": instructor,
+                };
+            } catch (error) {
+                return null;
+            }
+
+        },
         "submit": async (dispatch, formData, id) => {},
     },
     "course": {

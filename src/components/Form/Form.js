@@ -2,7 +2,6 @@ import React, {useCallback, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 
 import {Form as ReactForm} from "react-final-form";
-import Paper from "@material-ui/core/Paper";
 import Step from "@material-ui/core/Step";
 import StepContent from "@material-ui/core/StepContent";
 import StepLabel from "@material-ui/core/StepLabel";
@@ -10,8 +9,6 @@ import Stepper from "@material-ui/core/Stepper";
 import Typography from "@material-ui/core/Typography";
 import FormReceipt from "./FormReceipt";
 
-import {Autocomplete, KeyboardDatePicker, Select, TextField} from "./Fields";
-import BackButton from "../BackButton.js";
 import {Debug, makeValidate} from "mui-rff";
 import {Button} from "@material-ui/core";
 import * as Yup from "yup";
@@ -66,7 +63,7 @@ const generateFields = (format) => {
     return [schema, sections];
 };
 
-const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormReceipt, onNext}) => {
+const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormReceipt}) => {
     const [activeStep, setActiveStep] = useState(0);
     const [showReceipt, setShowReceipt] = useState(false);
     const [submittedData, setSubmittedData] = useState(null);
@@ -76,10 +73,8 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
     const validate = makeValidate(schema);
 
     const handleNext = useCallback(() => {
-        onNext && onNext()
-        // handleConditional(formValues)
         setActiveStep((prevStep) => prevStep + 1);
-    }, [onNext]);
+    }, []);
 
     const handleBack = useCallback(() => {
         setActiveStep((prevStep) => prevStep - 1);
@@ -87,7 +82,7 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
 
     const submit = useCallback(async (formData) => {
         const errors = await onSubmit(formData);
-		if (!errors) {
+        if (!errors) {
             setSubmittedData(formData);
             setShowReceipt(true);
         }
@@ -133,8 +128,9 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
     const render = useCallback(({handleSubmit, errors, submitError, submitting}) => (
         <form noValidate onSubmit={handleSubmit}>
             <Stepper activeStep={activeStep} orientation="vertical">
-                {sections.map((section, index) =>
-                    renderStep(index, section, errors, submitting))}
+                {sections.map((section, index) => renderStep(
+                    index, section, errors, submitting,
+                ))}
             </Stepper>
             {submitError &&
                 <div className="error">
@@ -145,19 +141,16 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
     ), [activeStep, renderStep, sections]);
 
     return (
-        // <Paper className={`registration-form ${classes.root}`}>
-        //     <BackButton />
         <div className={`registration-form ${classes.root}`}>
             <Typography align="left" className="heading" data-cy="formTitle"
                 variant="h3">
                 {title}
             </Typography>
             {showReceipt ?
-				<Receipt format={base} formData={submittedData} /> :
+                <Receipt formData={submittedData} format={base} /> :
                 <ReactForm initialValues={initialData} onSubmit={submit}
                     render={render} validate={validate} />}
         </div>
-        // {/* </Paper> */}
     );
 };
 

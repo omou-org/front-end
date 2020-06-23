@@ -10,8 +10,7 @@ const useSelectStyles = makeStyles({
     },
 });
 
-export const TextField = (props) =>
-    <Fields.TextField {...props} />;
+export const {TextField, Checkboxes} = Fields;
 
 export const Select = (props) => {
     const {select} = useSelectStyles();
@@ -20,6 +19,11 @@ export const Select = (props) => {
 
 export const KeyboardDatePicker = (props) => (
     <Fields.KeyboardDatePicker dateFunsUtils={DateFnsUtils}
+        {...props} />
+);
+
+export const KeyboardTimePicker = (props) => (
+    <Fields.KeyboardTimePicker dateFunsUtils={DateFnsUtils}
         {...props} />
 );
 
@@ -34,6 +38,46 @@ export const Autocomplete = ({name, options, ...props}) => {
     );
 };
 
-export const Checkboxes = (props) => (
-    <Fields.Checkboxes {...props} />
-)
+/*
+query GetCourse($courseID: ID!) {
+  course(courseId: $courseID) {
+    title
+    description
+    instructor {
+      user {
+        id
+      }
+    }
+    isConfirmed
+    maxCapacity
+    courseCategory {
+      id
+    }
+    academicLevel
+    endTime
+    endDate
+    hourlyTuition
+    totalTuition
+    numSessions
+    startDate
+    startTime
+  }
+}
+*/
+
+export const InstructorSelect = ({name, ...props}) => {
+    const renderOption = useCallback(
+        (option) => <span data-cy={`${name}-${option.name}`}>{option.name}</span>,
+        [name],
+    );
+    const options = [{
+        "id": 1,
+        "name": "Dan",
+    }];
+
+    return (
+        <Fields.Autocomplete name={name} options={options}
+            getOptionLabel={(option) => option.name}
+            renderOption={renderOption} {...props} />
+    );
+};

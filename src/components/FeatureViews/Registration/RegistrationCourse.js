@@ -59,7 +59,7 @@ export const GET_COURSE_DETAILS = gql`
 			id
 			important
 			timestamp
-			title	
+			title
 		}
 	}
 	${SIMPLE_COURSE_DATA}
@@ -132,7 +132,7 @@ const RegistrationCourse = () => {
 							<Button
 								className="button"
 								component={Link}
-								to={`/registration/form/course_details/${courseID}/edit`}
+								to={`/registration/form/course_details/${courseID}`}
 							>
 								<EditIcon className="icon"/>
 								Edit Course
