@@ -67,8 +67,9 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
 					style={{
 						"backgroundColor": stringToColor(name),
 						fontSize: ".9em",
-						height: "30px", width: "30px",
-						textDecoration: "none"
+						height: "40px", width: "40px",
+						textDecoration: "none",
+						border: "2px solid white"
 					}}
 					component={NavLinkNoDup}
 					to={`/accounts/${authUser.accountType.toLowerCase()}/${authUser.user.id}`}
