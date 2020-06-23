@@ -7,7 +7,7 @@ import ForwardArrow from "@material-ui/icons/ArrowForward";
 import Grid from "@material-ui/core/Grid";
 import Grow from "@material-ui/core/Grow";
 import {Link} from "react-router-dom";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import LoadingError from "../Accounts/TabComponents/LoadingCourseError";

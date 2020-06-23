@@ -16,7 +16,6 @@ import FormControl from "@material-ui/core/FormControl";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
-import Paper from "@material-ui/core/Paper";
 import Select from "@material-ui/core/Select";
 import TodayIcon from "@material-ui/icons/Today";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -33,6 +32,8 @@ import SessionFilters from "./SessionFilters";
 import {stringToColor} from "../Accounts/accountUtils";
 import {uniques} from "utils";
 import {secondaryFontColor} from "../../../theme/muiTheme";
+import BackButton from "../../OmouComponents/BackButton";
+import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 
 const useStyles = makeStyles((theme) => ({
     "bootstrapFormLabel": {
@@ -317,16 +318,20 @@ const Scheduler = () => {
 	};
 
     return (
-        <Paper className="paper scheduler" elevation={2}>
-            <Typography align="left" className="scheduler-title" variant="h3">
-                Scheduler
-            </Typography>
-            <br />
-            <Grid className="scheduler-wrapper" container spacing={2}>
-                <Grid className="scheduler-header" container item xs={12}>
+		<Grid item xs={12} container>
+			<BackgroundPaper className="scheduler" elevation={2}>
+				<Grid item xs={12}>
+					<BackButton/>
+					<hr/>
+				</Grid>
+				<Typography align="left" className="scheduler-title" variant="h3">
+					Scheduler
+				</Typography>
+				<br/>
+				<Grid className="scheduler-header scheduler-wrapper" container item xs={12}>
 					<Grid item xs={4}>
-                        <Grid className="scheduler-header-firstSet"
-                            container direction="row">
+						<Grid className="scheduler-header-firstSet"
+							  container direction="row">
 							<Grid item>
 								<IconButton
 									onClick={() => changeView("timeGridDay")}
@@ -335,7 +340,7 @@ const Scheduler = () => {
 										style={{color: view.toLowerCase().includes("grid") && secondaryFontColor}}
 									/>
 								</IconButton>
-                            </Grid>
+							</Grid>
 							<Grid item>
 								<IconButton
 									onClick={() => changeView("listWeek")}
@@ -346,13 +351,13 @@ const Scheduler = () => {
 								</IconButton>
 							</Grid>
 							<Grid item>
-                                <SessionFilters CourseOptions={courseOptions}
-                                    CourseValue={courseFilter}
-                                    InstructorOptions={instructorOptions}
-                                    InstructorValue={instructorFilter}
-                                    onCourseSelect={setCourseFilter}
-                                    onInstructorSelect={setInstructorFilter} />
-                            </Grid>
+								<SessionFilters CourseOptions={courseOptions}
+												CourseValue={courseFilter}
+												InstructorOptions={instructorOptions}
+												InstructorValue={instructorFilter}
+												onCourseSelect={setCourseFilter}
+												onInstructorSelect={setInstructorFilter}/>
+							</Grid>
 							<Grid item xs={6}>
 								<FormControl className="filter-select">
 									<Select input={
@@ -376,8 +381,8 @@ const Scheduler = () => {
 									</Select>
 								</FormControl>
 							</Grid>
-                        </Grid>
-                    </Grid>
+						</Grid>
+					</Grid>
 					<Grid
 						item
 						xs={4}
@@ -403,51 +408,51 @@ const Scheduler = () => {
 								<ChevronRightOutlined/>
 							</IconButton>
 						</Grid>
-                    </Grid>
+					</Grid>
 					<Grid item xs={2}/>
-                    <Grid item xs={2}>
-                        <Grid className="scheduler-header-last" container
-                            direction="row" justify="flex-end">
-                            <Grid item xs={3}>
-                                <Tooltip title="Go to Today">
-                                    <IconButton aria-label="current-date-button"
-                                        className="current-date-button"
-                                        onClick={goToToday}>
-                                        <TodayIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid>
-                            <Grid item xs={9}>
-                                <FormControl className="filter-select">
-                                    <Select input={
-                                        <BootstrapInput id="filter-calendar-type"
-                                            name="courseFilter" />
-                                    }
+					<Grid item xs={2}>
+						<Grid className="scheduler-header-last" container
+							  direction="row" justify="flex-end">
+							<Grid item xs={3}>
+								<Tooltip title="Go to Today">
+									<IconButton aria-label="current-date-button"
+												className="current-date-button"
+												onClick={goToToday}>
+										<TodayIcon/>
+									</IconButton>
+								</Tooltip>
+							</Grid>
+							<Grid item xs={9}>
+								<FormControl className="filter-select">
+									<Select input={
+										<BootstrapInput id="filter-calendar-type"
+														name="courseFilter"/>
+									}
 											MenuProps={{
-                                        "classes": {
-                                            "paper": classes.dropdownStyle,
-                                        },
-                                    }}
+												"classes": {
+													"paper": classes.dropdownStyle,
+												},
+											}}
 											onChange={handleViewChange}
 											value={viewType()}
 									>
 										<MenuItem value="day">
-                                            Day
-                                        </MenuItem>
+											Day
+										</MenuItem>
 										<MenuItem value="week">
-                                            Week
-                                        </MenuItem>
+											Week
+										</MenuItem>
 										<MenuItem value="month">
-                                            Month
-                                        </MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
-                <Grid className="omou-calendar" item xs={12}>
-                    <FullCalendar contentHeight="400"
+											Month
+										</MenuItem>
+									</Select>
+								</FormControl>
+							</Grid>
+						</Grid>
+					</Grid>
+				</Grid>
+				<Grid className="omou-calendar" item xs={12}>
+					<FullCalendar contentHeight="400"
 								  defaultView="timeGridDay"
 								  displayEventTime
 								  eventClick={goToSessionView}
@@ -459,12 +464,12 @@ const Scheduler = () => {
 								  minTime="07:00:00"
 								  nowIndicator
 								  plugins={[
-                            dayGridPlugin,
-                            timeGridPlugin,
-                            interactionPlugin,
-                            listViewPlugin,
-                            resourceTimelinePlugin,
-                        ]}
+									  dayGridPlugin,
+									  timeGridPlugin,
+									  interactionPlugin,
+									  listViewPlugin,
+									  resourceTimelinePlugin,
+								  ]}
 								  ref={calendarRef}
 								  resourceAreaWidth="20%"
 								  resourceOrder="title"
@@ -472,17 +477,17 @@ const Scheduler = () => {
 								  themeSystem="standard"
 								  timeZone="local"
 								  titleFormat={{
-                            "day": "numeric",
-                            "month": "long",
-                        }}
+									  "day": "numeric",
+									  "month": "long",
+								  }}
 								  views={{
-                            "dayGrid": {
-                                "titleFormat": {"month": "long"},
-                            },
-                        }} />
-                </Grid>
-            </Grid>
-        </Paper>
+									  "dayGrid": {
+										  "titleFormat": {"month": "long"},
+									  },
+								  }}/>
+				</Grid>
+			</BackgroundPaper>
+		</Grid>
     );
 };
 

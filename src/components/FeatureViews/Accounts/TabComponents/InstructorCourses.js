@@ -6,7 +6,7 @@ import {useSelector} from "react-redux";
 
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import Grid from "@material-ui/core/Grid";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import UnconfirmIcon from "@material-ui/icons/Cancel";

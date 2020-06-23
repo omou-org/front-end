@@ -11,7 +11,6 @@ import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import ListView from "@material-ui/icons/ViewList";
 import {makeStyles} from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
 import Tab from "@material-ui/core/Tab";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -24,13 +23,14 @@ import Typography from "@material-ui/core/Typography";
 
 import "./Accounts.scss";
 import {addDashes} from "./accountUtils";
-import BackButton from "components/BackButton";
-import {capitalizeString} from "utils";
+import BackButton from "components/OmouComponents/BackButton";
+import {capitalizeString, USER_TYPES} from "utils";
 import IconButton from "@material-ui/core/IconButton";
-import LoadingHandler from "components/LoadingHandler";
+import LoadingHandler from "components/OmouComponents/LoadingHandler";
 import ProfileCard from "./ProfileCard";
 import {simpleUser} from "queryFragments";
 import UserAvatar from "./UserAvatar";
+import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 
 const QUERY_USERS = gql`
     query UserQuery {
@@ -81,7 +81,8 @@ const stopPropagation = (event) => {
 };
 
 const Accounts = () => {
-    const isAdmin = useSelector(({auth}) => auth.isAdmin);
+    const isAdmin =
+        useSelector(({auth}) => auth.accountType) === USER_TYPES.admin;
     const {loading, error, data} = useQuery(QUERY_USERS);
 
     const prevState = JSON.parse(sessionStorage.getItem("AccountsState"));
@@ -197,8 +198,8 @@ const Accounts = () => {
                         </TableCell>
                         <TableCell onClick={stopPropagation}>
                             <Grid component={Hidden} mdDown>
-                                {(row.accountType === "student" ||
-                                    row.accountType === "parent" ||
+                                {(row.accountType === USER_TYPES.student ||
+                                    row.accountType === USER_TYPES.parent ||
                                     isAdmin) && (
                                     <IconButton component={Link}
                                         to={`/registration/form/${row.accountType}/${row.user.id}`}>
@@ -233,7 +234,7 @@ const Accounts = () => {
 
     return (
         <Grid className="Accounts" item xs={12}>
-            <Paper className="paper" elevation={2}>
+            <BackgroundPaper elevation={2}>
                 <BackButton />
                 <Hidden xsDown>
                     <hr />
@@ -280,7 +281,7 @@ const Accounts = () => {
                         {isMobile || !viewToggle ? cardView : tableView}
                     </LoadingHandler>
                 </Grid>
-            </Paper>
+            </BackgroundPaper>
         </Grid>
     );
 };

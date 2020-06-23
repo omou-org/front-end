@@ -2,29 +2,35 @@ import React from "react";
 import {Switch} from "react-router-dom";
 
 import AdminPortalHome from "../FeatureViews/AdminPortal/AdminPortalHome";
-import AdminRoute from "./AdminRoute";
+import AuthenticatedRoute from "./AuthenticatedRoute";
 import FormPage from "../Form/FormPage";
 import ManageCategories from "../FeatureViews/AdminPortal/ManageCategories";
 import ManageDiscounts from "../FeatureViews/AdminPortal/ManageDiscounts";
 import TuitionRules from "../FeatureViews/AdminPortal/TuitionRules";
 
+import {USER_TYPES} from "utils";
+
 const AdminViewsRoutes = () => (
     <Switch>
-        <AdminRoute path="/adminportal/tuition-rules">
+        <AuthenticatedRoute path="/adminportal/tuition-rules"
+            users={[USER_TYPES.admin]}>
             <TuitionRules />
-        </AdminRoute>
-        <AdminRoute path="/adminportal/manage-course-categories">
+        </AuthenticatedRoute>
+        <AuthenticatedRoute path="/adminportal/manage-course-categories"
+            users={[USER_TYPES.admin]}>
             <ManageCategories />
-        </AdminRoute>
-        <AdminRoute path="/adminportal/manage-discounts">
+        </AuthenticatedRoute>
+        <AuthenticatedRoute path="/adminportal/manage-discounts"
+            users={[USER_TYPES.admin]}>
             <ManageDiscounts />
-        </AdminRoute>
-        <AdminRoute path="/adminportal/form/:type?">
-            <FormPage />
-        </AdminRoute>
-        <AdminRoute path="/adminportal">
+        </AuthenticatedRoute>
+        <AuthenticatedRoute exact path="/adminportal/form/:type?"
+            users={[USER_TYPES.admin]}>
+            <FormPage title="Set Price Rule" />
+        </AuthenticatedRoute>
+        <AuthenticatedRoute path="/adminportal/" users={[USER_TYPES.admin]}>
             <AdminPortalHome />
-        </AdminRoute>
+        </AuthenticatedRoute>
     </Switch>
 );
 

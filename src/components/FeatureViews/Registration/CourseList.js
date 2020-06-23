@@ -5,7 +5,6 @@ import {useSelector} from "react-redux";
 
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import Grow from "@material-ui/core/Grow";
 import {Link} from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
@@ -32,7 +31,7 @@ const CourseList = ({filteredCourses}) => {
 	  .filter((course) => course.maxCapacity > 1)
       .map((course) => {
         return (
-			<Grow in key={course.id}>
+			<Grid item xs={12} key={course.id}>
               <Paper className="row">
                 <Grid alignItems="center" container layout="row">
                   <Grid
@@ -133,7 +132,7 @@ const CourseList = ({filteredCourses}) => {
                   </Grid>
                 </Grid>
               </Paper>
-            </Grow>
+			</Grid>
         );
     });
 };

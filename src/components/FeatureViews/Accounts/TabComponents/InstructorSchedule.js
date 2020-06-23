@@ -7,7 +7,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 
 import * as hooks from "actions/hooks";
 import {handleToolTip} from "../../Scheduler/SchedulerUtils";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import {stringToColor} from "../accountUtils";
 
 const toHours = (ms) => ms / 1000 / 60 / 60;

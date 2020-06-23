@@ -1,6 +1,5 @@
 import * as serviceWorker from "./serviceWorker";
 import {applyMiddleware, createStore} from "redux";
-import {ApolloProvider} from "@apollo/react-hooks";
 import App from "./App";
 import {BrowserRouter} from "react-router-dom";
 import {composeWithDevTools} from "redux-devtools-extension";
@@ -15,31 +14,52 @@ import {HttpLink} from "apollo-link-http";
 import {onError} from "apollo-link-error";
 import {ApolloLink} from "apollo-link";
 
-export const client = new ApolloClient({
-    "cache": new InMemoryCache(),
-    "link": ApolloLink.from([
-        onError(({graphQLErrors, networkError}) => {
-            if (graphQLErrors) {
-                graphQLErrors.forEach(({message, locations, path}) => {
-                    console.error(
-                        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
-                    );
-                });
-            }
-            if (networkError) {
-                console.error(`[Network error]: ${networkError}`);
-            }
-        }),
-        new HttpLink({
-            "uri": `${process.env.REACT_APP_DOMAIN}/graphql`,
-        }),
-    ]),
-});
+import {ApolloProvider} from "@apollo/react-hooks";
+import {setContext} from "apollo-link-context";
+
+import {setToken} from "actions/authActions";
 
 const store = createStore(
     rootReducer,
     composeWithDevTools(applyMiddleware(thunk)),
 );
+
+const httpLink = ApolloLink.from([
+    onError(({graphQLErrors, networkError}) => {
+        if (graphQLErrors) {
+            console.error("[GraphQL Error(s)]", graphQLErrors);
+        }
+        if (networkError) {
+            console.error(networkError);
+        }
+    }),
+    new HttpLink({
+        "uri": `${process.env.REACT_APP_DOMAIN}/graphql`,
+    }),
+]);
+
+const authLink = setContext((_, {headers}) => {
+    const {token} = store.getState().auth;
+    return {
+        "headers": {
+            "Authorization": token ? `JWT ${token}` : "",
+            ...headers,
+        },
+    };
+});
+
+export const client = new ApolloClient({
+    "cache": new InMemoryCache(),
+    "link": authLink.concat(httpLink),
+});
+
+const token = localStorage.getItem("token");
+
+if (token) {
+    (async () => {
+        store.dispatch(await setToken(token));
+    })();
+}
 
 ReactDOM.render(
     <Provider store={store}>
