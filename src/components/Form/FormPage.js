@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {Redirect, useParams} from "react-router-dom";
 
-import BackButton from "../BackButton.js";
+import BackButton from "components/OmouComponents/BackButton.js";
 import Form from "./Form";
 import Forms from "./FormFormats";
 import Paper from "@material-ui/core/Paper";

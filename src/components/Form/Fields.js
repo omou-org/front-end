@@ -1,8 +1,10 @@
-import React, {useCallback} from "react";
-
+import React, {useCallback, useState} from "react";
 import * as Fields from "mui-rff";
 import DateFnsUtils from "@date-io/date-fns";
 import {makeStyles} from "@material-ui/core/styles";
+import {useQuery} from "@apollo/react-hooks";
+
+const getLabel = ({label}) => label;
 
 const useSelectStyles = makeStyles({
     "select": {
@@ -38,46 +40,30 @@ export const Autocomplete = ({name, options, ...props}) => {
     );
 };
 
-/*
-query GetCourse($courseID: ID!) {
-  course(courseId: $courseID) {
-    title
-    description
-    instructor {
-      user {
-        id
-      }
-    }
-    isConfirmed
-    maxCapacity
-    courseCategory {
-      id
-    }
-    academicLevel
-    endTime
-    endDate
-    hourlyTuition
-    totalTuition
-    numSessions
-    startDate
-    startTime
-  }
-}
-*/
+export const DataSelect = ({request, optionsMap, name, ...props}) => {
+    const [query, setQuery] = useState();
 
-export const InstructorSelect = ({name, ...props}) => {
+    const handleQueryChange = useCallback((_, newQuery) => {
+        setQuery(newQuery);
+    }, []);
+
+    const {data, loading} = useQuery(request, {
+        "variables": {query},
+    });
+
     const renderOption = useCallback(
-        (option) => <span data-cy={`${name}-${option.name}`}>{option.name}</span>,
+        ({label}) => <span data-cy={`${name}-${label}`}>{label}</span>,
         [name],
     );
-    const options = [{
-        "id": 1,
-        "name": "Dan",
-    }];
+
+    const options = data ? optionsMap(data) : [];
 
     return (
-        <Fields.Autocomplete name={name} options={options}
-            getOptionLabel={(option) => option.name}
+        <Fields.Autocomplete getOptionLabel={getLabel}
+            loading={loading}
+            name={name}
+            onInputChange={handleQueryChange}
+            options={options}
             renderOption={renderOption} {...props} />
     );
 };

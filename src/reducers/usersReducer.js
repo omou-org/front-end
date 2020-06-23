@@ -2,7 +2,7 @@ import * as actions from "./../actions/actionTypes";
 import initialState from "./initialState";
 import {REQUEST_ALL} from "../actions/apiActions";
 
-export default function users (state = initialState.Users, {payload, type}) {
+export default function users(state = initialState.Users, {payload, type}) {
     switch (type) {
         case actions.FETCH_STUDENT_SUCCESSFUL:
             return handleStudentsFetch(state, payload);
@@ -235,7 +235,6 @@ export const handleStudentsFetch = (state, payload) => {
 };
 
 export const handleStudentPost = (state, {data}) => {
-    console.log(data);
     let {StudentList, ParentList} = state;
     StudentList = updateStudent(StudentList, data.user.id, data);
     // Add student to parent in state
@@ -298,8 +297,8 @@ const updateOOO = (
         ...newInstructors[instructor].schedule.time_off,
         [id]: {
             "all_day":
-          start.getHours() === end.getHours() &&
-          start.getMinutes() === end.getMinutes(),
+                start.getHours() === end.getHours() &&
+                start.getMinutes() === end.getMinutes(),
             description,
             end,
             "instructor_id": instructor,

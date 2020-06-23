@@ -99,25 +99,28 @@ const RegistrationLanding = () => {
         return <Loading />;
     }
     if (error) {
-        return (<Typography>
-            There's been an error! Error: {error.message}
-        </Typography>);
+        return (
+            <Typography>
+                There's been an error! Error: {error.message}
+            </Typography>
+        );
     }
 
     const {courses} = data;
 
 
     const instructorOptions = distinctObjectArray(
-        Object.values(courses).map(({instructor}) => ({
-            "label": fullName(instructor.user),
-            "value": instructor.user.id,
-        })),
+        Object.values(courses)
+            .filter(({instructor}) => instructor)
+            .map(({instructor}) => ({
+                "label": fullName(instructor.user),
+                "value": instructor.user.id,
+            })),
     );
 
     const subjectOptions = distinctObjectArray(
         Object.values(courses)
-        // prevent a crash if some categories are not loaded yet
-            .filter(({courseCategory}) => courses.find(({"courseCategory": {id}}) => courseCategory.id == id))
+            .filter(({courseCategory}) => courseCategory)
             .map(({courseCategory}) => ({
                 "label": courseCategory.name,
                 "value": courseCategory.id,
