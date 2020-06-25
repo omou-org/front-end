@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function InstructorDashboard({user}) {
 	const classes = useStyles();
-	return (<BackgroundPaper>
+	return (<BackgroundPaper styles={{"backgroundColor": "#EBFAFF"}}>
 		<Grid
 			container
 			spacing={5}
@@ -39,9 +39,48 @@ export default function InstructorDashboard({user}) {
 					</Typography>
 				</Grid>
 			</Grid>
-			<Grid item className={classes.root}>
+			<Grid item xs={12}>
 				<Paper>
-
+					<Grid container>
+						<Grid item xs={6}>
+							<Typography>
+								Your Upcoming Session
+							</Typography>
+						</Grid>
+						<Grid item xs={2}>
+							<Typography variant="subtitle1">
+								Total Completed Courses
+							</Typography>
+						</Grid>
+						<Grid item xs={2}>
+							<Typography variant="subtitle1">
+								Total Students Taught
+							</Typography>
+						</Grid>
+						<Grid item xs={2}>
+							<Typography variant="subtitle1">
+								Total Hours Taught
+							</Typography>
+						</Grid>
+					</Grid>
+				</Paper>
+			</Grid>
+			<Grid item xs={8}>
+				<Paper>
+					<Grid container direction="column">
+						<Grid item xs={8}>
+							a
+						</Grid>
+					</Grid>
+				</Paper>
+			</Grid>
+			<Grid item xs={4}>
+				<Paper>
+					<Grid container direction="column">
+						<Grid item xs={4}>
+							a
+						</Grid>
+					</Grid>
 				</Paper>
 			</Grid>
 		</Grid>
