@@ -141,7 +141,7 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
     ), [activeStep, renderStep, sections]);
 
     return (
-        <div className={`registration-form ${classes.root}`}>
+		<div className={classes.root}>
             <Typography align="left" className="heading" data-cy="formTitle"
                 variant="h3">
                 {title}

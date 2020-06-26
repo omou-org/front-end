@@ -4,7 +4,7 @@ import {Redirect, useParams} from "react-router-dom";
 import BackButton from "components/OmouComponents/BackButton.js";
 import Form from "./Form";
 import Forms from "./FormFormats";
-import Paper from "@material-ui/core/Paper";
+import BackgroundPaper from "../OmouComponents/BackgroundPaper";
 
 const FormPage = () => {
     const {type, id} = useParams();
@@ -33,11 +33,11 @@ const FormPage = () => {
     }
 
     return (
-        <Paper className="paper">
+        <BackgroundPaper>
             <BackButton />
             <Form base={form} initialData={initialData} onSubmit={onSubmit}
                 title={`${title} ${id ? "Editing" : "Registration"}`} />
-        </Paper>
+        </BackgroundPaper>
     );
 };
 
