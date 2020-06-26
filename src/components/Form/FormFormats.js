@@ -736,7 +736,6 @@ export default {
                 "name": "tuition",
                 "label": "Tuition",
                 "fields": [
-                    // TODO: category select
                     {
                         "name": "courseCategory",
                         "label": "Category",
@@ -883,7 +882,6 @@ export default {
                 "courseInfo": {
                     ...courseInfo,
                     "instructor": courseInfo.instructor.value,
-                    "startDate": courseInfo.startDate,
                     "endDate": courseInfo.startDate
                         .add(tuition.numSessions - 1, "w"),
                     "endTime": courseInfo.startTime.add(tuition.duration, "h")
@@ -935,16 +933,20 @@ export default {
                 "label": "Experience",
                 "fields": [
                     {
-                        // TODO: subject/course category selector
                         "name": "subjects",
-                        ...stringField("Subjects Tutor Can Teach"),
+                        "label": "Subjects Tutor Can Teach",
+                        "component": React.cloneElement(
+                            categorySelect("subjects"),
+                            {"multiple": true},
+                        ),
+                        "validator": Yup.mixed(),
                     },
                     {
                         "name": "experience",
                         ...stringField("Teaching Experience (Years)"),
                     },
                     {
-                        "name": "background",
+                        "name": "biography",
                         ...stringField("Background"),
                     },
                     {
@@ -960,9 +962,9 @@ export default {
                 instructor(userId: $userID) {
                     address
                     user {
-                    firstName
-                    lastName
-                    email
+                        firstName
+                        lastName
+                        email
                     }
                     phoneNumber
                     gender
@@ -974,8 +976,8 @@ export default {
                     experience
                     language
                     subjects {
-                    name
-                    id
+                        name
+                        id
                     }
                 }
             }`;
@@ -988,16 +990,68 @@ export default {
                 });
                 return {
                     "basicInfo": {
-                        ...instructor,
-                        ...instructor.user,
+                        "firstName": instructor.user.firstName,
+                        "lastName": instructor.user.lastName,
+                        "email": instructor.user.email,
+                        "phoneNumber": instructor.phoneNumber,
+                        "gender": instructor.gender,
+                        "address": instructor.address,
+                        "city": instructor.city,
+                        "zipcode": instructor.zipcode,
+                        "state": instructor.state,
+                        "birthDate": instructor.birthDate,
                     },
-                    "experience": instructor,
+                    "experience": {
+                        "subjects": instructor.subjects.map(({name, id}) => ({
+                            "label": name,
+                            "value": id,
+                        })),
+                        "experience": instructor.experience,
+                        "biography": instructor.biography,
+                        "language": instructor.language,
+                    },
                 };
             } catch (error) {
                 return null;
             }
         },
-        "submit": async (dispatch, formData, id) => {},
+        "submit": async (formData, id) => {
+            const CREATE_INSTRUCTOR = gql`
+            mutation CreateInstructor($firstName: String!, $lastName: String!, $email: String, $phoneNumber: String, $gender: GenderEnum, $address: String, $city: String, $state: String, $subjects: [ID], $experience: String, $biography: String, $language: String, $birthDate: Date, $zipcode: String) {
+                createInstructor(user: {firstName: $firstName, lastName: $lastName, email: $email, password: "abcdefgh"}, address: $address, biography: $biography, birthDate: $birthDate, city: $city, experience: $experience, gender: $gender, language: $language, phoneNumber: $phoneNumber, subjects: $subjects, state: $state, zipcode: $zipcode) {
+                    instructor {
+                    user {
+                        id
+                    }
+                    }
+                }
+            }
+            `;
+
+            const {basicInfo, experience} = formData;
+            const modifiedData = {
+                basicInfo,
+                "experience": {
+                    ...experience,
+                    "subjects": experience.subjects.map(({value}) => value),
+                },
+            };
+
+            try {
+                await client.mutate({
+                    "mutation": CREATE_INSTRUCTOR,
+                    "variables": Object.values(modifiedData)
+                        .reduce((obj, section) => ({
+                            ...obj,
+                            ...section,
+                        }), {}),
+                });
+            } catch (error) {
+                return {
+                    [FORM_ERROR]: error,
+                };
+            }
+        },
     },
     "course": {
         "title": "Course",
