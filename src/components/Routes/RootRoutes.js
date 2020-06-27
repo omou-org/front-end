@@ -30,6 +30,7 @@ import Scheduler from "../FeatureViews/Scheduler/Scheduler";
 import SearchResults from "../FeatureViews/Search/SearchResults";
 import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
+import CourseManagement from "../FeatureViews/Courses/CourseManagement";
 
 import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
@@ -121,10 +122,21 @@ export const RootRoutes = () => {
                 <AdminPortal />
             </AuthenticatedRoute>
 
+            {/* Course Management Routes */}
+            <AuthenticatedRoute 
+            path="/coursemanagement"
+            users={[USER_TYPES.admin]}
+            >
+                <CourseManagement />
+            </AuthenticatedRoute>
+
             <AuthenticatedRoute path="/PageNotFound">
                 <ErrorNotFoundPage />
             </AuthenticatedRoute>
             <Redirect to="/PageNotFound" />
+
+
+
         </Switch>
     );
 };
