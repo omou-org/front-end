@@ -2,7 +2,7 @@ import React from "react";
 import {NavLink, withRouter} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {Paper, Tooltip, Typography} from "@material-ui/core";
-import AccountsCards from "../FeatureViews/Search/cards/AccountsCards";
+import AccountCard from "../FeatureViews/Search/cards/AccountCard";
 import Grid from "@material-ui/core/Grid";
 import * as hooks from "../../actions/hooks";
 import Loading from "../OmouComponents/Loading";
@@ -145,7 +145,7 @@ export function CompleteCourseRegistration({
                   alignItems="center"
               >
                 <Grid item xs={8}>
-                  <AccountsCards user={student}/>
+                  <AccountCard user={student}/>
                 </Grid>
               </Grid>
             </Grid>
