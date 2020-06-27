@@ -36,7 +36,7 @@ const USER_DETAILS = gql`
     firstName
     }`;
 
-const QUERIES = {
+export const ACCOUNT_QUERIES = {
     "ADMIN": gql`
         query AdminFetch($userID: ID!) {
             admin(userId: $userID) {
@@ -77,7 +77,7 @@ const QUERIES = {
 
 const AccountsCards = ({accountType, userID, isLoading}) => {
     // needs a defined query, else it breaks
-    const {data, loading} = useQuery(QUERIES[accountType] || QUERIES.STUDENT, {
+    const {data, loading} = useQuery(ACCOUNT_QUERIES[accountType] || ACCOUNT_QUERIES.STUDENT, {
         "variables": {userID},
     });
 

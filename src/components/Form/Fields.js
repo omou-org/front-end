@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, {useCallback, useState} from "react";
 
 import * as Fields from "mui-rff";
@@ -22,12 +23,12 @@ export const Select = (props) => {
 
 export const KeyboardDatePicker = (props) => (
     <Fields.KeyboardDatePicker dateFunsUtils={DateFnsUtils} openTo="year"
-        {...props} />
+                               {...props} />
 );
 
 export const KeyboardTimePicker = (props) => (
     <Fields.KeyboardTimePicker dateFunsUtils={DateFnsUtils}
-        {...props} />
+                               {...props} />
 );
 
 export const Autocomplete = ({name, options, ...props}) => {
@@ -37,7 +38,7 @@ export const Autocomplete = ({name, options, ...props}) => {
     );
     return (
         <Fields.Autocomplete name={name} options={options}
-            renderOption={renderOption} {...props} />
+                             renderOption={renderOption} {...props} />
     );
 };
 
@@ -61,10 +62,10 @@ export const DataSelect = ({request, optionsMap, name, ...props}) => {
 
     return (
         <Fields.Autocomplete getOptionLabel={getLabel}
-            loading={loading}
-            name={name}
-            onInputChange={handleQueryChange}
-            options={options}
-            renderOption={renderOption} {...props} />
+                             loading={loading}
+                             name={name}
+                             onInputChange={handleQueryChange}
+                             options={options}
+                             renderOption={renderOption} {...props} />
     );
 };

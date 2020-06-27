@@ -17,6 +17,7 @@ import {withStyles} from "@material-ui/core/styles";
 import "./registration.scss";
 import SelectParentDialog from "./SelectParentDialog";
 import {stringToColor} from "../Accounts/accountUtils";
+import {fullName} from "../../../utils";
 
 const StyledMenu = withStyles({
 	paper: {
@@ -54,6 +55,8 @@ const RegistrationActions = () => {
 	const closeDialog = useCallback(() => {
 		setDialog(false);
 	}, []);
+
+	const parentName = currentParent && fullName(currentParent.user);
 
 	return (
 		<>
@@ -97,10 +100,10 @@ const RegistrationActions = () => {
 								<div
 									className="circle-icon"
 									style={{
-										backgroundColor: stringToColor(currentParent.user.name),
+										backgroundColor: stringToColor(parentName),
 									}}
 								/>
-								{currentParent.user.name}
+								{parentName}
 							</Button>
 						</Tooltip>
 					) : (
@@ -117,15 +120,15 @@ const RegistrationActions = () => {
 				onClose={closeRegisterMenu}
 				open={anchorEl !== null}
 			>
-				<MenuItem component={Link} to="/form/course_register/">
+				<MenuItem component={Link} to="/registration/form/class-registration">
 					<NewCourse className="icon innerIcon"/>
-					<ListItemText primary="COURSE"/>
+					<ListItemText primary="CLASS"/>
 				</MenuItem>
-				<MenuItem component={Link} to="/form/tutoring/">
+				<MenuItem component={Link} to="/registration/form/class-registration">
 					<NewTutor className="icon innerIcon"/>
 					<ListItemText primary="TUTORING"/>
 				</MenuItem>
-				<MenuItem component={Link} to="/form/small_group/">
+				<MenuItem component={Link} to="form/small_group/">
 					<NewTutor className="icon innerIcon"/>
 					<ListItemText primary="SMALL GROUP"/>
 				</MenuItem>

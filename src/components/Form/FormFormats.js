@@ -10,6 +10,7 @@ import * as hooks from "actions/hooks";
 import * as moment from "moment";
 import {client} from "index";
 import gql from "graphql-tag";
+import {fullName} from "../../utils";
 
 export const responseToForm = (parser, data) => {
     const res = {};
@@ -337,6 +338,22 @@ const SEARCH_INSTRUCTORS = gql`
     }
 `;
 
+const SEARCH_STUDENTS = gql`
+    query StudentSearch($query: String!) {
+        accountSearch(query: $query, profile: "STUDENT") {
+            results {
+                ... on StudentType {
+                    user {
+                        id
+                        firstName
+                        lastName
+                    }
+                }
+            }
+        }
+    }
+`;
+
 const GET_CATEGORIES = gql`
     query GetCategories {
         courseCategories {
@@ -346,15 +363,40 @@ const GET_CATEGORIES = gql`
     }
 `;
 
-const instructorMap = ({accountSearch}) => accountSearch.results.map(({user}) => ({
+const GET_COURSES = gql`
+    query GetCourses {
+      courses {
+        title
+        id
+        instructor {
+          user {
+            lastName
+            firstName
+          }
+        }
+      }
+    }
+`;
+
+const userMap = ({accountSearch}) => accountSearch.results.map(({user}) => ({
     "label": `${user.firstName} ${user.lastName}`,
     "value": user.id,
 }));
 
 const instructorSelect = (name) => (
-    <Fields.DataSelect name={name} optionsMap={instructorMap}
-        request={SEARCH_INSTRUCTORS} />
+	<Fields.DataSelect name={name} optionsMap={userMap}
+					   request={SEARCH_INSTRUCTORS} />
 );
+
+const studentSelect = (name) => (
+	<Fields.DataSelect name={name} optionsMap={userMap}
+					   request={SEARCH_STUDENTS}/>
+);
+
+const courseMap = ({courses}) => courses.map(({title, instructor, id}) => ({
+	"label": `${title} - ${fullName(instructor.user)}`,
+	"value": id,
+}));
 
 const categoryMap = ({courseCategories}) => courseCategories.map(({id, name}) => ({
     "label": name,
@@ -365,6 +407,27 @@ const categorySelect = (name) => (
     <Fields.DataSelect name={name} optionsMap={categoryMap}
         request={GET_CATEGORIES} />
 );
+
+const createRegistrationInfo = (course, student) => ({
+	course: {
+		existing_id: typeof course === "string" && course,
+		...(typeof course !== "string" && course),
+	},
+	student: student,
+	numSessions: 0,
+	status: "REGISTERING"
+});
+
+const submitRegistration = (student, course) => {
+	const registrationState = JSON.parse(sessionStorage.getItem("registrations"));
+	const newRegistrationInfo = createRegistrationInfo(student, course);
+	const existingStudentRegistration = registrationState?.[student] || [];
+	const newRegistrationState = {
+		[student]: [newRegistrationInfo, ...existingStudentRegistration],
+		...registrationState,
+	};
+	sessionStorage.setItem("registrations", JSON.stringify(newRegistrationState));
+};
 
 export default {
     "student": {
@@ -1057,8 +1120,8 @@ export default {
             }
         },
     },
-    "course": {
-        "title": "Course",
+	"class-registration": {
+		"title": "Class Registration",
         "form": [
             {
                 "name": "student",
@@ -1066,8 +1129,9 @@ export default {
                 "fields": [
                     {
                         "name": "student",
-                        // TODO: student select field
-                        ...stringField("Student"),
+						"label": "Student",
+						"component": studentSelect("Student"),
+						"validator": Yup.mixed(),
                     },
                 ],
             },
@@ -1077,16 +1141,20 @@ export default {
                 "label": "Course",
                 "fields": [
                     {
-                        "name": "course",
-                        // TODO: course select field
-                        ...stringField("Course"),
+						"name": "class",
+						"label": "Class",
+						"component": <Fields.DataSelect name="Classes" optionsMap={courseMap} request={GET_COURSES}/>,
+						"validator": Yup.mixed(),
                     },
                 ],
             },
         ],
+		"submit": (formData) => {
+			submitRegistration(formData.student.student.value, formData.course.class.value);
+		}
     },
-    "tutoring": {
-        "title": "tutoring",
+	"tutoring-registration": {
+		"title": "Tutoring Registration",
         "form": [
             {
                 "name": "student",
@@ -1094,8 +1162,15 @@ export default {
                 "fields": [
                     {
                         "name": "student",
-                        // TODO: student select field
-                        ...stringField("Student"),
+						"label": "Student",
+						"fields": [
+							{
+								"name": "student",
+								"label": "Student",
+								"component": studentSelect("Student"),
+								"validator": Yup.mixed(),
+							},
+						],
                     },
                 ],
             },

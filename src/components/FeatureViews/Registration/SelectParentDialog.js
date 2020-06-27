@@ -30,9 +30,7 @@ query GetParents($query: String!) {
           id
           email
         }
-        birthDate
         studentList
-        gender
       }
     }
   }
@@ -69,23 +67,13 @@ const SelectParentDialog = ({onClose, open}) => {
 	const handleClose = useCallback(() => {
 		// if there's something in the input
 		if (parent) {
-			const registeringParent = {
-				account_type: "PARENT",
-				balance: parent.balance,
-				birth_date: parent.birthDate,
-				gender: parent.gender,
-				student_list: parent.studentList,
-				user: {
-					email: parent.user.email,
-					first_name: parent.user.firstName,
-					id: parent.user.id,
-					last_name: parent.user.lastName,
-					name: fullName(parent.user),
-					...parent.user,
-				},
-			};
+			const registeringParent = parent;
 
 			dispatch(setRegisteringParent(registeringParent));
+			sessionStorage.setItem("registrations", JSON.stringify({
+				currentParent: parent,
+			}));
+
 			// Add students to redux once the registered parent has been set
 			// TODO: redo registration flow
 			// registeringParent.student_list.forEach((studentID) => {
