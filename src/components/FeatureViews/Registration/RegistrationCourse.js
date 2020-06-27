@@ -132,7 +132,7 @@ const RegistrationCourse = () => {
 							<Button
 								className="button"
 								component={Link}
-								to={`/registration/form/course_details/${courseID}/edit`}
+								to={`/registration/form/course_details/${courseID}`}
 							>
 								<EditIcon className="icon"/>
 								Edit Course
