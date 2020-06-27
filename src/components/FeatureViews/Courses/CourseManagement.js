@@ -16,7 +16,7 @@ import Loading from "../../OmouComponents/Loading";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 
 const baseTheme = createMuiTheme();
-
+const skyBlue = {backgroundColor: "rgba(235, 250, 255, 0.5)"}
 const BootstrapInput = withStyles((theme) => ({
   root: {
     "label + &": {
@@ -75,17 +75,11 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "5px",
   },
   menuSelect: {
-    '&:hover': {
-        backgroundColor: "rgba(235, 250, 255, 0.5)",
-    }
+    '&:hover': {backgroundColor: skyBlue.backgroundColor, color: "#28ABD5"},
+    '&:focus': skyBlue,
   },
   menuSelected: {
-    '&:hover': {
-    backgroundColor: "rgba(235, 250, 255, 0.5)",
-    },
-    '&:selected': {
-        backgroundColor: "rgba(235, 250, 255, 0.5)",
-  },
+    backgroundColor: skyBlue.backgroundColor += "!important",
 },
 }));
 
@@ -113,6 +107,7 @@ const CourseManagement = () => {
                   id="demo-customized-select"
                   value={state.age}
                   onChange={handleChange}
+                  classes={{select: classes.menuSelect}}
                   input={<BootstrapInput />}
                   MenuProps={{
                     classes:{list: classes.dropdown
@@ -131,8 +126,8 @@ const CourseManagement = () => {
                   {/* <MenuItem value="">
                     <em>None</em>
                   </MenuItem> */}
-                  <MenuItem className={classes.menuSelect} value={"start-date"}>Start Date (Latest)</MenuItem>
-                  <MenuItem className={classes.menuSelect} value={"class-name"}>Class Name(A-Z)</MenuItem>
+                  <MenuItem className={classes.menuSelect} value={"start-date"} ListItemClasses={{ selected: classes.menuSelected}}>Start Date (Latest)</MenuItem>
+                  <MenuItem className={classes.menuSelect} value={"class-name"} ListItemClasses={{ selected: classes.menuSelected}}>Class Name(A-Z)</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -175,6 +170,7 @@ const CourseManagement = () => {
                   value={state.age}
                   onChange={handleChange}
                   input={<BootstrapInput />}
+                  SelectDisplayProps={classes.menuSelect}
                   MenuProps={{
                     classes:{list: classes.dropdown
                     },
