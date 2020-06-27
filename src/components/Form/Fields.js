@@ -1,4 +1,5 @@
 import React, {useCallback, useState} from "react";
+
 import * as Fields from "mui-rff";
 import DateFnsUtils from "@date-io/date-fns";
 import {makeStyles} from "@material-ui/core/styles";
@@ -20,7 +21,7 @@ export const Select = (props) => {
 };
 
 export const KeyboardDatePicker = (props) => (
-    <Fields.KeyboardDatePicker dateFunsUtils={DateFnsUtils}
+    <Fields.KeyboardDatePicker dateFunsUtils={DateFnsUtils} openTo="year"
         {...props} />
 );
 

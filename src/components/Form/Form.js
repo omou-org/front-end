@@ -15,13 +15,19 @@ import * as Yup from "yup";
 
 
 const useStyles = makeStyles({
-    "stepLabel": {
-        "textAlign": "left",
+    "buttons": {
+        "& Button": {
+            "margin": "10px",
+        },
+        "textAlign": "right",
     },
     "root": {
         "& .MuiSelect-select-root": {
             "width": 200,
         },
+    },
+    "step": {
+        "textAlign": "left",
     },
 });
 
@@ -90,8 +96,8 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
     }, [onSubmit]);
 
     const renderStep = useCallback((index, {label, name, fields}, errors, submitting) => (
-        <Step key={label}>
-            <StepLabel className={classes.stepLabel}>{label}</StepLabel>
+        <Step className={classes.step} key={label}>
+            <StepLabel>{label}</StepLabel>
             <StepContent>
                 {fields.map((field) => React.cloneElement(field,
                     {
@@ -102,28 +108,33 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                         "inputProps": {
                             "data-cy": `${name}-${field.props.name}-input`,
                         },
+                        "margin": "normal",
                         "name": `${name}.${field.props.name}`,
-                        "onBlur": (...params) => {
-                        },
                     }))}
-                {index > 0 && index < sections.length &&
-                    <Button data-cy="backButton" onClick={handleBack}>
-                        Back
-                    </Button>}
-                {index < sections.length - 1 &&
-                    <Button data-cy="nextButton"
-                        disabled={Boolean(errors[name])} onClick={handleNext}>
-                        Next
-                    </Button>}
-                {index === sections.length - 1 &&
-                    <Button data-cy="submitButton"
-                        disabled={Boolean(errors[name]) || submitting}
-                        type="submit">
-                        {submitting ? "Submitting" : "Submit"}
-                    </Button>}
+                <div className={classes.buttons}>
+                    {index > 0 && index < sections.length &&
+                        <Button data-cy="backButton" onClick={handleBack}
+                            variant="outlined">
+                            Back
+                        </Button>}
+                    {index < sections.length - 1 &&
+                        <Button data-cy="nextButton"
+                            disabled={Boolean(errors[name])}
+                            onClick={handleNext}
+                            variant="outlined">
+                            Next
+                        </Button>}
+                    {index === sections.length - 1 &&
+                        <Button data-cy="submitButton"
+                            disabled={Boolean(errors[name]) || submitting}
+                            type="submit"
+                            variant="outlined">
+                            {submitting ? "Submitting" : "Submit"}
+                        </Button>}
+                </div>
             </StepContent>
         </Step>
-    ), [classes.stepLabel, sections.length, handleBack, handleNext]);
+    ), [classes.step, classes.buttons, sections.length, handleBack, handleNext]);
 
     const render = useCallback(({handleSubmit, errors, submitError, submitting}) => (
         <form noValidate onSubmit={handleSubmit}>
@@ -136,12 +147,11 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                 <div className="error">
                     An error occured while submitting. Try again.
                 </div>}
-            <Debug />
         </form>
     ), [activeStep, renderStep, sections]);
 
     return (
-		<div className={classes.root}>
+        <div className={classes.root}>
             <Typography align="left" className="heading" data-cy="formTitle"
                 variant="h3">
                 {title}

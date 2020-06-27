@@ -28,6 +28,18 @@ const FormPage = () => {
         }
     }, [id, load]);
 
+    const withDefaultData = form.reduce((data, {name, fields}) => ({
+        ...data,
+        [name]: {
+            ...fields.filter((field) => typeof field.default !== "undefined")
+                .reduce((sectionData, field) => ({
+                    ...sectionData,
+                    [field.name]: field.default,
+                }), {}),
+            ...initialData?.[name],
+        },
+    }), {});
+
     if (!form || (id && initialData === null)) {
         return <Redirect to="/PageNotFound" />;
     }
@@ -35,7 +47,7 @@ const FormPage = () => {
     return (
         <BackgroundPaper>
             <BackButton />
-            <Form base={form} initialData={initialData} onSubmit={onSubmit}
+            <Form base={form} initialData={withDefaultData} onSubmit={onSubmit}
                 title={`${title} ${id ? "Editing" : "Registration"}`} />
         </BackgroundPaper>
     );

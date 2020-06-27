@@ -62,9 +62,9 @@ export const formToRequest = (parser, data) => {
 };
 
 export const selectField = (options) => ({
-    "component": <Fields.Select data={options} />,
-    "validator": Yup.mixed().oneOf(options.map(({value}) => value)),
-}),
+        "component": <Fields.Select data={options} />,
+        "validator": Yup.mixed().oneOf(options.map(({value}) => value)),
+    }),
     stringField = (label) => ({
         "component": <Fields.TextField />,
         label,
@@ -127,27 +127,27 @@ const STATE_OPTIONS = [
 ];
 
 export const ACADEMIC_LVL_FIELD = {
-    "name": "academicLevel",
-    "label": "Grade",
-    ...selectField([
-        {
-            "label": "Elementary School",
-            "value": "ELEMENTARY_LVL",
-        },
-        {
-            "label": "Middle School",
-            "value": "MIDDLE_LVL",
-        },
-        {
-            "label": "High School",
-            "value": "HIGH_LVL",
-        },
-        {
-            "label": "College",
-            "value": "COLLEGE_LVL",
-        },
-    ]),
-},
+        "name": "academicLevel",
+        "label": "Grade",
+        ...selectField([
+            {
+                "label": "Elementary School",
+                "value": "ELEMENTARY_LVL",
+            },
+            {
+                "label": "Middle School",
+                "value": "MIDDLE_LVL",
+            },
+            {
+                "label": "High School",
+                "value": "HIGH_LVL",
+            },
+            {
+                "label": "College",
+                "value": "COLLEGE_LVL",
+            },
+        ]),
+    },
     ADDRESS_FIELD = {
         "name": "address",
         ...stringField("Address"),
@@ -192,7 +192,6 @@ export const ACADEMIC_LVL_FIELD = {
         "validator": Yup.number().min(0),
     },
     INSTRUCTOR_CONFIRM_FIELD = {
-        // TODO: refine
         "name": "isConfirmed",
         "label": "",
         "component": <Fields.Checkboxes
@@ -239,13 +238,15 @@ export const ACADEMIC_LVL_FIELD = {
     STATE_FIELD = {
         "name": "state",
         "label": "State",
-        "component": <Fields.Autocomplete options={STATE_OPTIONS} />,
+        "component": <Fields.Autocomplete options={STATE_OPTIONS} textFieldProps={{
+            "fullWidth": false,
+        }} />,
         "validator": Yup.mixed().oneOf(STATE_OPTIONS, "Invalid state"),
     },
     ZIPCODE_FIELD = {
         "name": "zipcode",
         "label": "Zip Code",
-        "component": <Fields.TextField />,
+        "component": <Fields.TextField textInputProps={{"fullWidth": false}} />,
         "validator": Yup.string().matches(/^\d{5}(?:[-\s]\d{4})?$/u,
             "Invalid zipcode"),
     };
@@ -320,7 +321,6 @@ const STUDENT_INFO_FIELDS = {
     ],
 };
 
-
 const SEARCH_INSTRUCTORS = gql`
     query InstructorSearch($query: String!) {
         accountSearch(query: $query, profile: "INSTRUCTOR") {
@@ -346,18 +346,24 @@ const GET_CATEGORIES = gql`
     }
 `;
 
+const instructorMap = ({accountSearch}) => accountSearch.results.map(({user}) => ({
+    "label": `${user.firstName} ${user.lastName}`,
+    "value": user.id,
+}));
+
 const instructorSelect = (name) => (
-    <Fields.DataSelect name={name} optionsMap={({accountSearch}) => accountSearch.results.map(({user}) => ({
-        "label": `${user.firstName} ${user.lastName}`,
-        "value": user.id,
-    }))} request={SEARCH_INSTRUCTORS} />
+    <Fields.DataSelect name={name} optionsMap={instructorMap}
+        request={SEARCH_INSTRUCTORS} />
 );
 
+const categoryMap = ({courseCategories}) => courseCategories.map(({id, name}) => ({
+    "label": name,
+    "value": id,
+}));
+
 const categorySelect = (name) => (
-    <Fields.DataSelect name={name} optionsMap={({courseCategories}) => courseCategories.map(({id, name}) => ({
-        "label": name,
-        "value": id,
-    }))} request={GET_CATEGORIES} />
+    <Fields.DataSelect name={name} optionsMap={categoryMap}
+        request={GET_CATEGORIES} />
 );
 
 export default {
@@ -367,7 +373,6 @@ export default {
             {
                 "name": "student",
                 "label": "Student Information",
-                // "showIf": (student) => student.name === Joe
                 "fields": [
                     ...NAME_FIELDS,
                     GENDER_FIELD,
@@ -380,7 +385,6 @@ export default {
                             .integer()
                             .min(1)
                             .max(13),
-                        // "conditional": showParent if grade = 10
                     },
                     BIRTH_DATE_FIELD,
                     {
@@ -443,7 +447,6 @@ export default {
             const parent = formToRequest(parentResponseToFormKey, formData);
             parent.birth_date = parseDate(parent.birth_date);
             const student = formToRequest(studentResponseToFormKey, formData);
-            // Student.birth_date = parseDate(student.birth_date);
             try {
                 const parentResponse = await instance.post("/account/parent/",
                     parent);
@@ -940,6 +943,7 @@ export default {
                             {"multiple": true},
                         ),
                         "validator": Yup.mixed(),
+                        "default": [],
                     },
                     {
                         "name": "experience",
