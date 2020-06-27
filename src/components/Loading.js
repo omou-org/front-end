@@ -5,15 +5,22 @@ import Paper from "@material-ui/core/Paper";
 import Penguin from "./penguin.gif";
 import Typography from "@material-ui/core/Typography";
 import Test from "./Comp-1-2.gif";
+import "./Loading.scss";
+
 
 const Loading = ({
     paper = false, small = false, loadingText = "",
 }) => {
     if (paper) {
         return (
-            <Paper className="paper" style={{"height": "100vh"}}>
+            <Paper className="paper" style={{ "height": "100vh" }}>
                 <Typography variant="h3">{loadingText}</Typography>
-                <img alt="loading penguin" src={Test} style={{width:"20%", paddingTop:"25%",}}/>
+                <h1>
+                    <span>o</span>
+                    <span>m</span>
+                    <span>o</span>
+                    <span>u</span>
+                </h1>
             </Paper>
         );
     }
@@ -30,8 +37,13 @@ const Loading = ({
         );
     }
     return (
-        <div className="paper" style={{"height": "70vh"}}>
-            <img alt="loading penguin" src={Test} style={{width:"20%", paddingTop:"25%",}}/>
+        <div className="paper" style={{ "height": "70vh", "color": "43B5D" }}>
+                <h1>
+                    <span>o</span>
+                    <span>m</span>
+                    <span>o</span>
+                    <span>u</span>
+                </h1>
             <Typography variant="h3">
                 {loadingText}
             </Typography>
