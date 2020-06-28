@@ -10,7 +10,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
 
 import {closeRegistration, setRegisteringParent,} from "actions/registrationActions";
-import AccountsCards from "../Search/cards/AccountsCards";
+import AccountsCard from "../Search/cards/AccountsCard";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
 import gql from "graphql-tag";
 import {useLazyQuery} from "@apollo/react-hooks";
@@ -148,7 +148,7 @@ const SelectParentDialog = ({onClose, open}) => {
 					<div className="active-parent-dialog-content">
 						<Grid container direction="row" justify="center">
 							<Grid item>
-								<AccountsCards accountType={"PARENT"} userID={currentParent.user.id}/>
+								<AccountCard user={currentParent}/>
 							</Grid>
 						</Grid>
 					</div>
