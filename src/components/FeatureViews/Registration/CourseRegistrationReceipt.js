@@ -1,7 +1,7 @@
 import React from "react";
 import gql from "graphql-tag";
 import Grid from "@material-ui/core/Grid";
-import AccountsCards from "../Search/cards/AccountsCards";
+import AccountCard from "../Search/cards/AccountCard";
 import {useParams} from "react-router-dom"
 import {useQuery} from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
@@ -96,7 +96,7 @@ export default function CourseRegistrationReceipt({formData, format}) {
 		<Divider orientation="vertical" flexItem/>
 		<Grid item md={2}/>
 		<Grid item md={3} xs={12}>
-			<AccountsCards accountType="STUDENT" userID={formData.selectStudent}/>
+			<AccountCard accountType="STUDENT" userID={formData.selectStudent}/>
 		</Grid>
 		<Grid container
 			  item xs={12}

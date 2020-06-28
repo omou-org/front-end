@@ -95,7 +95,7 @@ const AccountCard = ({accountType, userID, isLoading}) => {
         );
     }
 
-    const [{user}] = Object.values(data);
+	const [{user}] = Object.values(data);
     const fullName = `${user.firstName} ${user.lastName}`;
 
     return (
