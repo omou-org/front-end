@@ -15,12 +15,20 @@ const theme = createMuiTheme({
             "main": neutralBackgroundColor,
             "default": neutralBackgroundColor,
         },
+		text: {
+			// primary: "#FFFFFF",
+		}
     },
     "colors": {
         "black": "#000000",
         "darkGray": "#666666",
     },
-    "typography": {},
+	"typography": {
+		subtitle2: {
+			fontWeight: 500,
+			fontSize: 12,
+		}
+	},
     "overrides": {
         "MuiCssBaseline": {
             "@global": {
@@ -33,6 +41,9 @@ const theme = createMuiTheme({
             "text": {
                 "color": "black",
             },
+			containedPrimary: {
+				color: "#FFFFFF",
+			}
         },
         "MuiBadge": {
             "colorPrimary": {

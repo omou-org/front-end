@@ -5,6 +5,8 @@ import * as Fields from "mui-rff";
 import DateFnsUtils from "@date-io/date-fns";
 import {makeStyles} from "@material-ui/core/styles";
 import {useQuery} from "@apollo/react-hooks";
+import gql from "graphql-tag";
+import {fullName} from "../../utils";
 
 const getLabel = ({label}) => label;
 
@@ -68,4 +70,28 @@ export const DataSelect = ({request, optionsMap, name, ...props}) => {
                              options={options}
                              renderOption={renderOption} {...props} />
     );
+};
+
+const GET_STUDENTS = gql`
+    query GetStudents($userIds: [ID]!) {
+      userInfos(userIds: $userIds) {
+        ... on StudentType {
+          user {
+            firstName
+            lastName
+            id
+          }
+        }
+      }
+    }
+`;
+
+export const StudentSelect = () => {
+	const studentList = JSON.parse(sessionStorage.getItem("registrations")).currentParent.studentList;
+	const {data} = useQuery(GET_STUDENTS, {variables: {userIds: studentList}});
+	const studentOptions = data?.userInfos.map(student => ({
+		label: fullName(student.user),
+		value: student.user.id,
+	})) || [];
+	return <Select data={studentOptions} name="selectStudent" label="Select Student"/>
 };

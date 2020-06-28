@@ -5,12 +5,13 @@ import {useSelector} from "react-redux";
 import React from "react";
 import {FORM_ERROR} from "final-form";
 import * as Fields from "./Fields";
+import {StudentSelect} from "./Fields";
 import * as Yup from "yup";
 import * as hooks from "actions/hooks";
 import * as moment from "moment";
 import {client} from "index";
 import gql from "graphql-tag";
-import {fullName} from "../../utils";
+import {arraysMatch, fullName, getEndDate, getEndTime} from "../../utils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
 
 export const responseToForm = (parser, data) => {
@@ -409,7 +410,7 @@ const categorySelect = (name) => (
         request={GET_CATEGORIES} />
 );
 
-const createRegistrationInfo = (course, student) => ({
+const createRegistrationInfo = (student, course) => ({
 	course: {
 		existing_id: typeof course === "string" && course,
 		...(typeof course !== "string" && course),
@@ -419,8 +420,7 @@ const createRegistrationInfo = (course, student) => ({
 	status: "REGISTERING"
 });
 
-const submitRegistration = (student, course) => {
-	const registrationState = JSON.parse(sessionStorage.getItem("registrations"));
+const saveRegistration = (student, course, registrationState) => {
 	const newRegistrationInfo = createRegistrationInfo(student, course);
 	const existingStudentRegistration = registrationState?.[student] || [];
 	const newRegistrationState = {
@@ -428,6 +428,21 @@ const submitRegistration = (student, course) => {
 		...registrationState,
 	};
 	sessionStorage.setItem("registrations", JSON.stringify(newRegistrationState));
+};
+
+const submitRegistration = (student, course) => {
+	const registrationState = JSON.parse(sessionStorage.getItem("registrations"));
+	const existingEnrollmentsByStudents = Object.entries(registrationState)
+		.map(([studentID, studentRegistrations]) =>
+			Array.isArray(studentRegistrations) ? studentRegistrations
+				.map(registration => [studentID, registration.course.existing_id]) : []
+		);
+	const isEnrolled = existingEnrollmentsByStudents.map(studentEnrollments =>
+		studentEnrollments.filter((enrollment) => arraysMatch(enrollment, [student, course])))
+		.some(studentEnrollments => studentEnrollments.length > 0);
+	if (!isEnrolled) {
+		saveRegistration(student, course, registrationState);
+	}
 };
 
 export default {
@@ -1131,7 +1146,7 @@ export default {
                     {
                         "name": "student",
 						"label": "Student",
-						"component": studentSelect("Student"),
+						"component": <StudentSelect/>,
 						"validator": Yup.mixed(),
                     },
                 ],
@@ -1151,7 +1166,7 @@ export default {
             },
         ],
 		"submit": (formData) => {
-			submitRegistration(formData.student.student.value, formData.course.class.value);
+			submitRegistration(formData.selectStudent, formData.course.class.value);
 		}
     },
 	"tutoring-registration": {
@@ -1164,40 +1179,38 @@ export default {
                     {
                         "name": "student",
 						"label": "Student",
-						"component": studentSelect("Student"),
+						"component": <StudentSelect/>,
 						"validator": Yup.mixed(),
                     },
                 ],
             },
             STUDENT_INFO_FIELDS,
             {
-                "name": "instructor",
-                "label": "Tutor Selection",
+				"name": "tutoring_details",
+				"label": "Tutoring Details",
                 "fields": [
-                    {
-                        "name": "instructor",
-                        // TODO: instructor select field
-                        ...stringField("Instructor"),
-                    },
+					{
+						"name": "instructor",
+						"label": "Instructor",
+						"component": instructorSelect("instructor"),
+						"validator": Yup.mixed(),
+					},
                     {
                         "name": "course",
                         ...stringField("Course Name"),
                     },
                     INSTRUCTOR_CONFIRM_FIELD,
-                ],
-            },
-            {
-                "name": "schedule",
-                "label": "Schedule",
-                "fields": [
-                    {
-                        ...START_DATE_FIELD,
-                        "required": true,
-                    },
-                    {
-                        ...START_TIME_FIELD,
-                        "required": true,
-                    },
+					{
+						...START_DATE_FIELD,
+						"required": true,
+					},
+					{
+						"name": "startTime",
+						"label": "Start Time",
+						"component": <Fields.KeyboardTimePicker/>,
+						"validator": Yup.date(),
+						"required": true,
+					},
                 ],
             },
             {
@@ -1216,8 +1229,17 @@ export default {
             },
         ],
 		"submit": (formData) => {
-			console.log(formData);
+			const course = {
+				title: formData.tutoring_details.course,
+				instructor: formData.tutoring_details.instructor.value,
+				startDate: formData.tutoring_details.startDate,
+				endDate: getEndDate(formData.tutoring_details.startDate, formData.sessions),
+				startTime: formData.tutoring_details.startTime,
+				endTime: getEndTime(formData.tutoring_details.startTime, formData.duration),
+			};
+			submitRegistration(formData.selectStudent, course);
 		}
+
     },
     "course_category": {
         "title": "Course",

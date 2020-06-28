@@ -1,0 +1,56 @@
+import React, {useCallback, useEffect, useState} from "react";
+import Forms from "../../Form/FormFormats";
+import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
+import Form from "../../Form/Form";
+import BackButton from "../../OmouComponents/BackButton";
+import CourseRegistrationReceipt from "./CourseRegistrationReceipt";
+import {Redirect, useParams} from "react-router-dom"
+
+export default function RegistrationForm() {
+	const {type, id} = useParams();
+	const {form, load, submit, title} = Forms[type];
+	const [initialData, setInitialData] = useState();
+	const onSubmit =
+		useCallback((formData) => submit(formData, id), [id, submit]);
+
+	useEffect(() => {
+		if (id) {
+			let abort = false;
+			(async () => {
+				const data = await load(id);
+				if (!abort) {
+					setInitialData(data);
+				}
+			})();
+			return () => {
+				abort = true;
+			};
+		}
+	}, [id, load]);
+
+	const withDefaultData = form.reduce((data, {name, fields}) => ({
+		...data,
+		[name]: {
+			...fields.filter((field) => typeof field.default !== "undefined")
+				.reduce((sectionData, field) => ({
+					...sectionData,
+					[field.name]: field.default,
+				}), {}),
+			...initialData?.[name],
+		},
+	}), {});
+
+	if (!form || (id && initialData === null)) {
+		return <Redirect to="/PageNotFound"/>;
+	}
+
+	return (
+		<BackgroundPaper>
+			<BackButton/>
+			<Form base={form} initialData={withDefaultData} onSubmit={onSubmit}
+				  title={`${title} ${id ? "Editing" : "Registration"}`}
+				  receipt={CourseRegistrationReceipt}
+			/>
+		</BackgroundPaper>
+	);
+}

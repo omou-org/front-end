@@ -108,11 +108,11 @@ const TutoringPriceQuote = ({
 				<Grid item md={4}>
 					<Fields.Select
 						data={categoryOptions}
-						name="Categories"
+						name="categories"
 						label="Category"
 						input={<BootstrapInput id="category-options"/>}
 					/>
-					<OnChange name="Categories">
+					<OnChange name="categories">
 						{(value) => {
 							setCategoryValue(value);
 							setDisabledAcademicLevel(false);
@@ -121,7 +121,7 @@ const TutoringPriceQuote = ({
 				</Grid>
 				<Grid item md={4}>
 					<Fields.Select
-						name="AcademicLevels"
+						name="academicLevels"
 						label="Academic Levels"
 						disabled={disabledAcademicLevel}
 						input={<BootstrapInput id="category-options"/>}
@@ -134,7 +134,7 @@ const TutoringPriceQuote = ({
 							))
 						}
 					</Fields.Select>
-					<OnChange name="AcademicLevels">
+					<OnChange name="academicLevels">
 						{(value) => {
 							const hourlyTuition = priceRules[value].hourlyTuition;
 							setHourlyTuitionValue(hourlyTuition);
@@ -153,7 +153,7 @@ const TutoringPriceQuote = ({
 			</Grid>
 			<Grid item md={4}>
 				<Fields.Select
-					name="Duration"
+					name="duration"
 					label="Duration"
 					variant="outlined"
 					// fullWidth
@@ -163,13 +163,13 @@ const TutoringPriceQuote = ({
 					<MenuItem value="1.5">1.5 Hours</MenuItem>
 					<MenuItem value="2">2 Hours</MenuItem>
 				</Fields.Select>
-				<OnChange name="Duration">
+				<OnChange name="duration">
 					{(value) => setDurationValue(value)}
 				</OnChange>
 			</Grid>
 			<Grid item md={4}>
-				<Fields.TextField name="Number of Sessions" label="Number of Sessions"/>
-				<OnChange name="Sessions">
+				<Fields.TextField name="sessions" label="Number of Sessions"/>
+				<OnChange name="sessions">
 					{(value) => setSessionsValue(value)}
 				</OnChange>
 			</Grid>

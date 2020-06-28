@@ -388,3 +388,41 @@ export const uniques = (array) => array.filter(
  * @param {Object} user
  */
 export const fullName = ({firstName, lastName}) => `${firstName} ${lastName}`;
+
+/**
+ * Returns the end date given the number of weekly sessions
+ * @param {Date} startDate
+ * @param {Int} numSessions
+ * */
+export const getEndDate = (startDate, numSessions) => (
+    new Date(startDate.setDate(startDate.getDate() + 7 * (numSessions - 1)))
+);
+
+/**
+ * Returns the end date given the number of weekly sessions
+ * @param {Date} startTime
+ * @param {Number} duration
+ * */
+export const getEndTime = (startTime, duration) => (
+    new Date(startTime.setTime(startTime.getTime() + Number(duration) * 60 * 60 * 1000))
+);
+
+/**
+ * Returns if 2 arrays are the same
+ * @param {Array} arr1
+ * @param {Array} arr2
+ * */
+export const arraysMatch = function (arr1, arr2) {
+    console.log(arr1, arr2);
+    // Check if the arrays are the same length
+    if (arr1.length !== arr2.length) return false;
+
+    // Check if all items exist and are in the same order
+    for (var i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) return false;
+    }
+
+    // Otherwise, return true
+    return true;
+
+};

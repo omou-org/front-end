@@ -2,28 +2,24 @@
 import {Redirect, Route, Switch} from "react-router-dom";
 import React from "react";
 import {useDispatch} from "react-redux";
-
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
 import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
 import AuthenticatedRoute from "./AuthenticatedRoute";
 import CatsPage from "../CatsPage/CatsPage";
-import CourseSessionStatus from
-    "../FeatureViews/Accounts/TabComponents/EnrollmentView";
+import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/EnrollmentView";
 // import Dashboard from "../FeatureViews/Dashboard/Dashboard";
 import EditSessionView from "../FeatureViews/Scheduler/EditSessionView";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import ForgotPassword from "../Authentication/ForgotPassword";
 import LoginPage from "../Authentication/LoginPage.js";
 import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage";
-import NotEnrolledStudentsDialog from
-    "../FeatureViews/Scheduler/NotEnrolledStudentDialog";
+import NotEnrolledStudentsDialog from "../FeatureViews/Scheduler/NotEnrolledStudentDialog";
 import PaymentReceipt from "../FeatureViews/Registration/PaymentReceipt";
 import Registration from "../FeatureViews/Registration/Registration";
 import FormPage from "../Form/FormPage";
 import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
-import RegistrationCourse from
-    "../FeatureViews/Registration/RegistrationCourse";
+import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
 import RegistrationReceipt from "../Form/RegistrationReceipt";
 import ResetPassword from "../Authentication/ResetPassword";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
@@ -33,6 +29,7 @@ import UserProfile from "../FeatureViews/Accounts/UserProfile";
 
 import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
+import RegistrationForm from "../FeatureViews/Registration/RegistrationForm";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -98,7 +95,7 @@ export const RootRoutes = () => {
 
             {/* Registration Routes */}
             <AuthenticatedRoute path="/registration/form/:type/:id?">
-                <FormPage />
+				<RegistrationForm/>
             </AuthenticatedRoute>
             <AuthenticatedRoute
                 path="/registration/course/:courseID?/:courseTitle?">
@@ -120,6 +117,12 @@ export const RootRoutes = () => {
                 users={[USER_TYPES.admin]}>
                 <AdminPortal />
             </AuthenticatedRoute>
+			<AuthenticatedRoute exact
+								path="/form/:type/:id?"
+								users={[USER_TYPES.admin]}
+			>
+				<FormPage/>
+			</AuthenticatedRoute>
 
             <AuthenticatedRoute path="/PageNotFound">
                 <ErrorNotFoundPage />
