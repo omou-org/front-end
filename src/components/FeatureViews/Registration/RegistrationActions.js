@@ -124,7 +124,7 @@ const RegistrationActions = () => {
 					<NewCourse className="icon innerIcon"/>
 					<ListItemText primary="CLASS"/>
 				</MenuItem>
-				<MenuItem component={Link} to="/registration/form/class-registration">
+				<MenuItem component={Link} to="/registration/form/tutoring-registration/">
 					<NewTutor className="icon innerIcon"/>
 					<ListItemText primary="TUTORING"/>
 				</MenuItem>

@@ -9,7 +9,7 @@ import Stepper from "@material-ui/core/Stepper";
 import Typography from "@material-ui/core/Typography";
 import FormReceipt from "./FormReceipt";
 
-import {Debug, makeValidate} from "mui-rff";
+import {makeValidate} from "mui-rff";
 import {Button} from "@material-ui/core";
 import * as Yup from "yup";
 
@@ -95,7 +95,7 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
         return errors;
     }, [onSubmit]);
 
-    const renderStep = useCallback((index, {label, name, fields}, errors, submitting) => (
+    const renderStep = useCallback((index, {label, name, fields}, errors, submitting, mutators) => (
         <Step className={classes.step} key={label}>
             <StepLabel>{label}</StepLabel>
             <StepContent>
@@ -110,6 +110,7 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                         },
                         "margin": "normal",
                         "name": `${name}.${field.props.name}`,
+                        "mutators": mutators,
                     }))}
                 <div className={classes.buttons}>
                     {index > 0 && index < sections.length &&
@@ -136,11 +137,11 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
         </Step>
     ), [classes.step, classes.buttons, sections.length, handleBack, handleNext]);
 
-    const render = useCallback(({handleSubmit, errors, submitError, submitting}) => (
+    const render = useCallback(({handleSubmit, errors, submitError, submitting, form}) => (
         <form noValidate onSubmit={handleSubmit}>
             <Stepper activeStep={activeStep} orientation="vertical">
                 {sections.map((section, index) => renderStep(
-                    index, section, errors, submitting,
+                    index, section, errors, submitting, form.mutators
                 ))}
             </Stepper>
             {submitError &&
@@ -149,7 +150,6 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                 </div>}
         </form>
     ), [activeStep, renderStep, sections]);
-
     return (
         <div className={classes.root}>
             <Typography align="left" className="heading" data-cy="formTitle"
@@ -159,7 +159,12 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
             {showReceipt ?
                 <Receipt formData={submittedData} format={base} /> :
                 <ReactForm initialValues={initialData} onSubmit={submit}
-                    render={render} validate={validate} />}
+                           mutators={{
+                               setHourlyTuition: ([name], state, utils) => {
+                                   utils.changeValue(state, 'hourlyTuition', () => name)
+                               }
+                           }}
+                           render={render} validate={validate} />}
         </div>
     );
 };

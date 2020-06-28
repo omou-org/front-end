@@ -11,6 +11,7 @@ import * as moment from "moment";
 import {client} from "index";
 import gql from "graphql-tag";
 import {fullName} from "../../utils";
+import TutoringPriceQuote from "./TutoringPriceQuote";
 
 export const responseToForm = (parser, data) => {
     const res = {};
@@ -1121,7 +1122,7 @@ export default {
         },
     },
 	"class-registration": {
-		"title": "Class Registration",
+		"title": "Class",
         "form": [
             {
                 "name": "student",
@@ -1154,7 +1155,7 @@ export default {
 		}
     },
 	"tutoring-registration": {
-		"title": "Tutoring Registration",
+		"title": "Tutoring",
         "form": [
             {
                 "name": "student",
@@ -1163,14 +1164,8 @@ export default {
                     {
                         "name": "student",
 						"label": "Student",
-						"fields": [
-							{
-								"name": "student",
-								"label": "Student",
-								"component": studentSelect("Student"),
-								"validator": Yup.mixed(),
-							},
-						],
+						"component": studentSelect("Student"),
+						"validator": Yup.mixed(),
                     },
                 ],
             },
@@ -1212,11 +1207,17 @@ export default {
                     {
                         // TODO: price quote tool
                         "name": "price",
-                        ...stringField("Price Quote"),
+						"label": "Price",
+						"component": <TutoringPriceQuote courseType={"TUTORING"}/>,
+						"validator": Yup.mixed(),
                     },
                 ],
+
             },
         ],
+		"submit": (formData) => {
+			console.log(formData);
+		}
     },
     "course_category": {
         "title": "Course",
