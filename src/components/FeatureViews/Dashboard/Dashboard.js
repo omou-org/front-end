@@ -40,7 +40,8 @@ const useStyles = makeStyles((theme) => ({
 const Dashboard = () => {
     const classes = useStyles();
     const {email} = useSelector(({auth}) => auth) || [];
-    const USER_QUERY = gql`query userQuery($email: String = "gglinoga@gmail.com") {
+    const emailQuery = { "email": email }
+    const USER_QUERY = gql`query userQuery($email: String="") {
         accountSearch(query: $email) {
           results {
             ... on AdminType {
@@ -59,7 +60,7 @@ const Dashboard = () => {
       `;
       
     const user = useQuery(USER_QUERY, { 
-        variables: email, 
+        variables: emailQuery, 
     })
 
     const userFirstName = user?.data?.accountSearch?.results[0]?.user?.firstName;
@@ -194,8 +195,8 @@ const Dashboard = () => {
                     </Grid>
                     <Grid item xs={3} spacing={2} className={`db-notes-container ${classes.root}`}>
                         <DashboardNotes
-                            key = {user.id}
-                            id={user.id}
+                            key = {userID}
+                            id={userID}
                             first_name={userFirstName}
                         />
                     </Grid>
