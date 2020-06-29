@@ -6,7 +6,7 @@ import {Link} from 'react-router-dom';
 import './Dashboard.scss';
 import Today from './Today';
 import UnpaidSessions from './../AdminPortal/UnpaidSessions';
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
@@ -41,22 +41,32 @@ const Dashboard = () => {
     const classes = useStyles();
     const {email} = useSelector(({auth}) => auth) || [];
     console.log(email)
-    const USER_QUERY = gql`query userQuery {
-        admin(email: "gglinoga@gmail.com") {
-          user {
-            firstName
-            id
+    const USER_QUERY = gql`query userQuery($email: String = "gglinoga@gmail.com") {
+        accountSearch(query: $email) {
+          results {
+            ... on AdminType {
+              user {
+                email
+                firstName
+                id
+              }
+            }
           }
         }
       }
       
       
+      
       `;
-    
-    const user = useQuery(USER_QUERY, { variables: email }).data;
-    const userFirstName = user.firstName;
-    const userID = user.ID;
+      
+    const user = useQuery(USER_QUERY, { 
+        variables: email, 
+    })
+
     console.log(user);
+
+    const userFirstName = user?.data?.accountSearch?.results[0]?.user?.firstName;
+    const userID = user?.data?.accountSearch?.results[0]?.user?.id;
     const currentDate = moment()
     let isDisabled;
 

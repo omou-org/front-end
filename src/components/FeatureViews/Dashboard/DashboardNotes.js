@@ -2,7 +2,7 @@ import React from "react";
 // import {useSelector} from "react-redux";
 
 import * as hooks from "actions/hooks";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import Notes from "./../Notes/Notes";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";

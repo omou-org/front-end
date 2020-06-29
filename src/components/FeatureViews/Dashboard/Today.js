@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import TodayCard from "./TodayCard";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import './Dashboard.scss';
 import Grid from '@material-ui/core/Grid';
 import gql from "graphql-tag";

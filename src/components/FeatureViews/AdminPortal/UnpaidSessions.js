@@ -16,25 +16,26 @@ import "./AdminPortal.scss";
 const UnpaidSessions = () => {
 
 	const UNPAID_SESSION_QUERY = gql`query unpaidSessionQuery {
-			unpaidSessions {
-			  student {
-				user {
-				  id
-				  firstName
-				  lastName
-				}
-			  }
-			  course {
-				id
-				title
-				startTime
-				endTime
-				hourlyTuition
-			  }
-			  sessionsLeft
-			  lastPaidSessionDatetime
+		unpaidSessions {
+		  student {
+			user {
+			  firstName
+			  lastName
+			  id
 			}
 		  }
+		  course {
+			id
+			title
+			startTime
+			endTime
+			hourlyTuition
+		  }
+		  sessionsLeft
+		  lastPaidSessionDatetime
+		}
+	  }
+	  
 		  `
 
 	const { data, loading, error } = useQuery(UNPAID_SESSION_QUERY);
