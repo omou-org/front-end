@@ -2,7 +2,6 @@
 import React, {useCallback, useState} from "react";
 
 import * as Fields from "mui-rff";
-import DateFnsUtils from "@date-io/date-fns";
 import {makeStyles} from "@material-ui/core/styles";
 import {useQuery} from "@apollo/react-hooks";
 import gql from "graphql-tag";
@@ -24,13 +23,11 @@ export const Select = (props) => {
 };
 
 export const KeyboardDatePicker = (props) => (
-    <Fields.KeyboardDatePicker dateFunsUtils={DateFnsUtils} openTo="year"
-                               {...props} />
+	<Fields.KeyboardDatePicker openTo="year" {...props} />
 );
 
 export const KeyboardTimePicker = (props) => (
-    <Fields.KeyboardTimePicker dateFunsUtils={DateFnsUtils}
-                               {...props} />
+	<Fields.KeyboardTimePicker {...props} />
 );
 
 export const Autocomplete = ({name, options, ...props}) => {

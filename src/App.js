@@ -6,15 +6,20 @@ import moment from "moment-timezone";
 import Navigation from "./components/Navigation/Navigation";
 
 import "./theme/theme.scss";
+import MuiPickersUtilsProvider from "@material-ui/pickers/MuiPickersUtilsProvider";
+import MomentUtils from "@date-io/moment";
 
 Moment.globalMoment = moment;
 Moment.globalTimezone = "America/Los_Angeles";
 
 const App = () => (
-    <div className="App">
-        <CssBaseline />
-        <Navigation />
-    </div>
+    <MuiPickersUtilsProvider utils={MomentUtils} libInstance={moment}>
+        <div className="App">
+            <CssBaseline/>
+            <Navigation/>
+        </div>
+    </MuiPickersUtilsProvider>
+
 );
 
 export default App;

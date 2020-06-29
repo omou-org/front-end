@@ -58,7 +58,7 @@ const SelectParentDialog = ({onClose, open}) => {
 		if (!currentParent) {
 			dispatch(
 				setRegisteringParent(
-					JSON.parse(sessionStorage.getItem("registrations")).currentParent
+					JSON.parse(sessionStorage.getItem("registrations"))?.currentParent
 				)
 			);
 		}

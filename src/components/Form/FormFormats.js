@@ -235,7 +235,7 @@ export const ACADEMIC_LVL_FIELD = {
     START_TIME_FIELD = {
         "name": "startTime",
         "label": "Start Time",
-        "component": <Fields.KeyboardTimePicker />,
+        "component": <Fields.KeyboardTimePicker format="hh:mm"/>,
         "validator": Yup.date(),
     },
     STATE_FIELD = {
@@ -1205,11 +1205,8 @@ export default {
 						"required": true,
 					},
 					{
-						"name": "startTime",
-						"label": "Start Time",
-						"component": <Fields.KeyboardTimePicker/>,
-						"validator": Yup.date(),
-						"required": true,
+                        ...START_TIME_FIELD,
+                        "required": true,
 					},
                 ],
             },
@@ -1237,6 +1234,7 @@ export default {
 				startTime: formData.tutoring_details.startTime,
 				endTime: getEndTime(formData.tutoring_details.startTime, formData.duration),
 			};
+            console.log(course);
 			submitRegistration(formData.selectStudent, course);
 		}
 
