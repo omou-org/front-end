@@ -40,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
 const Dashboard = () => {
     const classes = useStyles();
     const {email} = useSelector(({auth}) => auth) || [];
-    console.log(email)
     const USER_QUERY = gql`query userQuery($email: String = "gglinoga@gmail.com") {
         accountSearch(query: $email) {
           results {
@@ -62,8 +61,6 @@ const Dashboard = () => {
     const user = useQuery(USER_QUERY, { 
         variables: email, 
     })
-
-    console.log(user);
 
     const userFirstName = user?.data?.accountSearch?.results[0]?.user?.firstName;
     const userID = user?.data?.accountSearch?.results[0]?.user?.id;
