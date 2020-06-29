@@ -474,7 +474,6 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                                 {note.title}
                                 <Avatar
                                     variant="square"
-                                    variant="rounded"
 									className={`noteNotification ${isDashboard ? classes.notesNotification : null }`}                                    
 									onClick={toggleNoteField(note.id, "important")}
                                     style={note.important ? {"background-color": "red"} : {}} >!

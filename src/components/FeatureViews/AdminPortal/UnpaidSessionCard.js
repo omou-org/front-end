@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {NavLink} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 import Avatar from "@material-ui/core/Avatar";
 import Card from "@material-ui/core/Card";
@@ -64,14 +64,8 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
     
     const studentObj = unpaidStudent.student.user;
     const studentName = fullName(studentObj);
-    const studentFirstName = unpaidStudent.student.user.firstName;
-    const studentLastName = unpaidStudent.student.user.lastName;
-    const studentID = unpaidStudent.student.user.id;
-    const courseID = unpaidStudent.course.id;
-    const courseTitle = unpaidStudent.course.title;
-    const startTime = unpaidStudent.course.startTime;
-    const endTime = unpaidStudent.course.endTime;
-    const hourlyTuition = unpaidStudent.course.hourlyTuition;
+    const { studentFirstName, studentLastName, studentID} = unpaidStudent.student.user;
+    const { courseID, courseTitle, startTime, endTime, hourlyTuition } = unpaidStudent.course
     const sessionsLeft = unpaidStudent.sessionsLeft;
 	const amtDue = adminUtils.amountDue(
 		hourlyTuition,
@@ -83,7 +77,7 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
         <Grid item md={6} lg={3} className={classes.grid}>
             <Card className={`unpaid-sessions-card ${classes.card}`}>
                 <CardActionArea
-                component = {NavLink}
+                component = {Link}
                 to={`/accounts/students/${studentID}/${courseID}`}
                 >
                     <Grid

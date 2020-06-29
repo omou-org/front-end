@@ -17,6 +17,7 @@ import moment from 'moment';
 import Moment from 'react-moment';
 import Select from 'react-select';
 import { makeStyles } from "@material-ui/styles";
+import { DELETE_ENROLLMENT_FAILED } from 'actions/actionTypes';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -38,21 +39,51 @@ const useStyles = makeStyles((theme) => ({
 
 const Dashboard = () => {
     const classes = useStyles();
-    const user = useSelector(({auth}) => auth) || [];
+    const {email} = useSelector(({auth}) => auth) || [];
+    console.log(email)
+    const USER_QUERY = gql`query userQuery {
+        admin(email: "gglinoga@gmail.com") {
+          user {
+            firstName
+            id
+          }
+        }
+      }
+      
+      
+      `;
+    
+    const user = useQuery(USER_QUERY, { variables: email }).data;
+    const userFirstName = user.firstName;
+    const userID = user.ID;
+    console.log(user);
     const currentDate = moment()
     let isDisabled;
 
+    
     const [currentFilter, setCurrentFilter] = useState({
         showFiltered: false,
         filter: ""
     });
 
+
     const handleChange = e => {
-        e ? setCurrentFilter({filter: e.label, showFiltered: true}): setCurrentFilter({filter:"", showFiltered: false});
+        if (e){
+            setCurrentFilter({
+                filter: e.label,
+                showFiltered: true
+            })
+        }
+        else{
+            setCurrentFilter({
+                filter: "",
+                showFiltered: false
+            })
+        }
     };
 
     const CATEGORY_QUERY = gql`query categoryQuery {
-            sessionSearch(query: "", time: "today", sort: "timeAsc") {
+            sessionSearch(query: "", time: "", sort: "timeAsc") {
               results {
                 course {
                   courseCategory {
@@ -83,13 +114,21 @@ const Dashboard = () => {
         "value": category.course.courseCategory.id
     }));
 
+    if (categoryList.length===0){
+        isDisabled=true;
+    }
+
+    else if (categoryList.length>0){
+        isDisabled=false;
+    }
+
     return(
         <Grid container>
             <Paper className="dashboard-paper" elevation={3}>
                 <Grid container justify="space-around">
                     <Grid item xs={9} spacing={2}>
                         <Typography variant="h4" className="dashboard-greeting">
-                            Hello {user.first_name}!
+                            Hello {userFirstName}!
                         </Typography>
                         <br/>
                         <Paper className="today-paper" container>
@@ -150,7 +189,7 @@ const Dashboard = () => {
                         <DashboardNotes
                             key = {user.id}
                             id={user.id}
-                            first_name={user.first_name}
+                            first_name={userFirstName}
                         />
                     </Grid>
                 </Grid>

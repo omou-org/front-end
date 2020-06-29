@@ -6,7 +6,7 @@ export const statusColor = {
 };
 
 export const amountDue = (hourlyTuition, sessionLeft, sessionDuration) =>
-    (hourlyTuition * (sessionLeft-1) * sessionDuration * (-1)).toFixed(2);
+    (hourlyTuition * -(sessionLeft-1) * sessionDuration).toFixed(2);
 
 export const getTime = (time) => {
     const strTime = String(time);
