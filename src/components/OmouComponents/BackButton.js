@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import React from "react";
+import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
 import BackArrow from "@material-ui/icons/ArrowBack";
 import Modal from "@material-ui/core/Modal";
 import Button from "@material-ui/core/Button";
 import Hidden from "@material-ui/core/Hidden/Hidden";
-import { Typography } from "@material-ui/core";
+import {Typography} from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 
 
@@ -19,7 +19,7 @@ const BackButton = (props) => {
 		props.onBack && props.onBack();
 		props.history.goBack();
 
-	}
+	};
 	const label = () => {
 		var label = "";
 		if (props.label == null) {
@@ -29,7 +29,7 @@ const BackButton = (props) => {
 			label = "Cancel";
 		}
 		return label;
-	}
+	};
 
 
 	const handleClick = () => {
@@ -38,15 +38,15 @@ const BackButton = (props) => {
 		} else {
 			goBack();
 		}
-	}
+	};
 
 	const hideWarning = () => {
 		setAlert(false);
-	}
+	};
 
 	const saveForm = () => {
 		//enter future code to save form
-	}
+	};
 
 	const confirmAction = (actionName) => {
 		//actionName is a string
@@ -58,14 +58,14 @@ const BackButton = (props) => {
 				console.warn(`Unhandled backbutton action ${actionName}`);
 		}
 		goBack();
-	}
+	};
 
 	const denyAction = (actionName) => {
 		// switch(actionName){
 		//future switch statement for denyAction functions
 		// }
 		goBack();
-	}
+	};
 
 	const renderIcon = () => {
 		if (props.icon == null) {
@@ -74,7 +74,7 @@ const BackButton = (props) => {
 		if (props.icon == "cancel") {
 			return null;
 		}
-	}
+	};
 
 	return (
 		<Hidden mdDown>
@@ -122,7 +122,7 @@ const BackButton = (props) => {
 			</Modal>
 		</Hidden>
 	);
-}
+};
 
 BackButton.propTypes = {
 	history: PropTypes.shape({

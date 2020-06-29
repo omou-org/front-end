@@ -18,7 +18,7 @@ import DoneIcon from "@material-ui/icons/CheckCircleOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import Grid from "@material-ui/core/Grid";
 import InputBase from "@material-ui/core/InputBase";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
 import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
@@ -32,9 +32,9 @@ import "./Notes.scss";
 import "../Accounts/TabComponents/TabComponents.scss";
 import * as userActions from "actions/userActions";
 import {
-    DELETE_ACCOUNT_NOTE_SUCCESSFUL,
-    DELETE_COURSE_NOTE_SUCCESSFUL,
-    DELETE_ENROLLMENT_NOTE_SUCCESSFUL,
+	DELETE_ACCOUNT_NOTE_SUCCESSFUL,
+	DELETE_COURSE_NOTE_SUCCESSFUL,
+	DELETE_ENROLLMENT_NOTE_SUCCESSFUL,
 } from "actions/actionTypes";
 import {instance} from "actions/apiActions";
 

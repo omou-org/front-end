@@ -1,18 +1,18 @@
 import React from "react";
 
 import Link from "@material-ui/core/Link";
-import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 
-import BackButton from "../../../BackButton";
+import BackButton from "../../../OmouComponents/BackButton";
 import "./NoResultsPage.scss";
 import Grid from "@material-ui/core/Grid";
+import BackgroundPaper from "../../../OmouComponents/BackgroundPaper";
 
 const NoResultsPage = () => {
 	return (
 		<Grid container className={"no-results"}>
 			<Grid item xs={12}>
-				<Paper elevation={2} className={"paper"}>
+				<BackgroundPaper elevation={2}>
 					<BackButton />
 					<hr />
 					<div className="center">
@@ -35,7 +35,7 @@ const NoResultsPage = () => {
 							<div className="space" />
 						</div>
 					</div>
-				</Paper>
+				</BackgroundPaper>
 			</Grid>
 		</Grid>
 	);

@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import PaymentTable from "./PaymentTable";
 import {useQuery} from "@apollo/react-hooks";
 import Typography from "@material-ui/core/Typography";

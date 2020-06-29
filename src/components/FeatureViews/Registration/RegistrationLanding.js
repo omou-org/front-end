@@ -1,9 +1,8 @@
 import React, {useCallback, useState} from "react";
 
-import BackButton from "components/BackButton";
+import BackButton from "components/OmouComponents/BackButton";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
-import Paper from "@material-ui/core/Paper";
 import SearchSelect from "react-select";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
@@ -11,22 +10,23 @@ import Typography from "@material-ui/core/Typography";
 
 import {distinctObjectArray, fullName, gradeOptions} from "utils";
 import CourseList from "./CourseList";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import RegistrationActions from "./RegistrationActions";
 import TutoringList from "./TutoringList";
 import gql from "graphql-tag";
 import {useQuery} from "@apollo/react-hooks";
 import {SIMPLE_COURSE_DATA} from "queryFragments";
+import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 
 const customStyles = {
-    clearIndicator: (base, state) => ({
+    "clearIndicator": (base, state) => ({
         ...base,
-        color: state.isFocused ? "blue" : "black",
-        cursor: "pointer",
+        "color": state.isFocused ? "blue" : "black",
+        "cursor": "pointer",
     }),
-    option: (base) => ({
+    "option": (base) => ({
         ...base,
-        textAlign: "left",
+        "textAlign": "left",
     }),
 };
 
@@ -34,17 +34,16 @@ const CustomClearText = () => "clear all";
 
 const ClearIndicator = (indicatorProps) => {
     const {
-        children = <CustomClearText/>,
+        children = <CustomClearText />,
         getStyles,
-        innerProps: {ref, ...restInnerProps},
+        "innerProps": {ref, ...restInnerProps},
     } = indicatorProps;
     return (
         <div
             ref={ref}
             style={getStyles("clearIndicator", indicatorProps)}
-            {...restInnerProps}
-        >
-            <div style={{padding: "0px 5px"}}>{children}</div>
+            {...restInnerProps}>
+            <div style={{"padding": "0px 5px"}}>{children}</div>
         </div>
     );
 };
@@ -70,125 +69,121 @@ export const GET_COURSES = gql`
             }
             maxCapacity
             academicLevel
-            courseCategory { 
+            courseCategory {
                 name
                 id
              }
           	...SimpleCourse
-          }
-	}
-	${SIMPLE_COURSE_DATA}
-	`;
+        }
+    }
+    ${SIMPLE_COURSE_DATA}`;
 
 const RegistrationLanding = () => {
-	const {data, loading, error} = useQuery(GET_COURSES);
+    const {data, loading, error} = useQuery(GET_COURSES);
 
     const [view, setView] = useState(0);
     const [courseFilters, setCourseFilters] = useState({
-        grade: [],
-        instructor: [],
-        subject: [],
+        "grade": [],
+        "instructor": [],
+        "subject": [],
     });
 
     const updateView = useCallback(
         (newView) => () => {
             setView(newView);
         },
-        []
+        [],
     );
 
-	if (loading) {
-		return <Loading/>
-	}
-	if (error) {
-		return <Typography>
-			There's been an error! Error: {error.message}
-		</Typography>
-	}
+    if (loading) {
+        return <Loading />;
+    }
+    if (error) {
+        return (
+            <Typography>
+                There's been an error! Error: {error.message}
+            </Typography>
+        );
+    }
 
-	const {courses} = data;
+    const {courses} = data;
 
 
-	const instructorOptions = distinctObjectArray(
-		Object.values(courses).map(({instructor}) => ({
-			label: fullName(instructor.user),
-			value: instructor.user.id,
-		})));
-
-	const subjectOptions = distinctObjectArray(
+    const instructorOptions = distinctObjectArray(
         Object.values(courses)
-        // prevent a crash if some categories are not loaded yet
-			.filter(({courseCategory}) => courses.find(({courseCategory: {id}}) => courseCategory.id == id))
-			.map(({courseCategory}) => ({
-				label: courseCategory.name,
-				value: courseCategory.id,
-            }))
+            .filter(({instructor}) => instructor)
+            .map(({instructor}) => ({
+                "label": fullName(instructor.user),
+                "value": instructor.user.id,
+            })),
     );
 
-	const filteredCourses = Object.entries(courseFilters)
+    const subjectOptions = distinctObjectArray(
+        Object.values(courses)
+            .filter(({courseCategory}) => courseCategory)
+            .map(({courseCategory}) => ({
+                "label": courseCategory.name,
+                "value": courseCategory.id,
+            })),
+    );
+
+    const filteredCourses = Object.entries(courseFilters)
         .filter(([, filters]) => filters.length > 0)
-		.reduce((courses, [filterName, filters]) => {
+        .reduce((courses, [filterName, filters]) => {
             const mappedValues = filters.map(({value}) => value);
             switch (filterName) {
                 case "instructor":
-					return courses.filter(({instructor}) =>
-						mappedValues.includes(instructor.user.id)
-                    );
+                    return courses.filter(({instructor}) => mappedValues.includes(instructor.user.id));
                 case "subject":
-					return courses.filter(({courseCategory}) =>
-						mappedValues.includes(courseCategory.id)
-                    );
+                    return courses.filter(({courseCategory}) => mappedValues.includes(courseCategory.id));
                 case "grade":
-					return courses.filter(({academicLevel}) =>
-						mappedValues.includes(academicLevel.toLowerCase())
-                    );
+                    return courses.filter(({academicLevel}) => mappedValues.includes(academicLevel.toLowerCase()));
                 default:
-					return courses;
+                    return courses;
             }
-		}, Object.values(courses));
+        }, Object.values(courses));
 
-	const handleFilterChange = (filterType) => (filters) => {
-            setCourseFilters((prevFilters) => ({
-                ...prevFilters,
-                [filterType]: filters || [],
-            }));
-	};
+    const handleFilterChange = (filterType) => (filters) => {
+        setCourseFilters((prevFilters) => ({
+            ...prevFilters,
+            [filterType]: filters || [],
+        }));
+    };
 
-	const renderFilter = (filterType) => {
-            let options = [];
-            switch (filterType) {
-                case "instructor":
-                    options = instructorOptions;
-                    break;
-                case "subject":
-                    options = subjectOptions;
-                    break;
-                case "grade":
-                    options = gradeOptions;
-                    break;
+    const renderFilter = (filterType) => {
+        let options = [];
+        switch (filterType) {
+            case "instructor":
+                options = instructorOptions;
+                break;
+            case "subject":
+                options = subjectOptions;
+                break;
+            case "grade":
+                options = gradeOptions;
+                break;
                 // no default
-            }
+        }
 
-            return (
-                <SearchSelect
-                    className="filter-options"
-                    closeMenuOnSelect={false}
-                    components={{ClearIndicator}}
-                    isMulti
-                    onChange={handleFilterChange(filterType)}
-                    options={options}
-                    placeholder={`All ${filterType}s`}
-                    styles={customStyles}
-                    value={courseFilters[filterType]}
-                />
-            );
-	};
+        return (
+            <SearchSelect
+                className="filter-options"
+                closeMenuOnSelect={false}
+                components={{ClearIndicator}}
+                isMulti
+                onChange={handleFilterChange(filterType)}
+                options={options}
+                placeholder={`All ${filterType}s`}
+                styles={customStyles}
+                value={courseFilters[filterType]} />
+        );
+    };
 
     return (
-		<Paper elevation={2} className="RegistrationLanding">
-            <BackButton/>
-            <hr/>
-            <RegistrationActions/>
+        <BackgroundPaper className="RegistrationLanding" elevation={2}>
+            <BackButton />
+            <hr />
+            <RegistrationActions />
             <Grid container layout="row">
                 <Grid item md={8} xs={12}>
                     <Typography align="left" className="heading" variant="h3">
@@ -199,10 +194,9 @@ const RegistrationLanding = () => {
                     <Tabs
                         className="catalog-setting"
                         indicatorColor="primary"
-                        value={view}
-                    >
-                        <Tab label="Courses" onClick={updateView(0)}/>
-                        <Tab label="Tutoring" onClick={updateView(1)}/>
+                        value={view}>
+                        <Tab label="Courses" onClick={updateView(0)} />
+                        <Tab label="Tutoring" onClick={updateView(1)} />
                     </Tabs>
                 </Grid>
             </Grid>
@@ -221,14 +215,12 @@ const RegistrationLanding = () => {
                     </Hidden>
                 </Grid>
             )}
-            <div className="registration-table">
-				{view === 0 ? (
-                    <CourseList filteredCourses={filteredCourses}/>
-                ) : (
-                    <TutoringList/>
-                )}
-            </div>
-        </Paper>
+            <Grid className="registration-table" container spacing={5}>
+                {view === 0 ?
+                    <CourseList filteredCourses={filteredCourses} /> :
+                    <TutoringList />}
+            </Grid>
+        </BackgroundPaper>
     );
 };
 

@@ -9,7 +9,7 @@ import CardContent from "@material-ui/core/CardContent";
 import HappyIcon from "@material-ui/icons/SentimentVerySatisfied";
 import Typography from "@material-ui/core/Typography";
 import * as hooks from "actions/hooks";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import UnpaidSessionCard from "./UnpaidSessionCard";
 import "./AdminPortal.scss";
 

@@ -1,17 +1,17 @@
 import React from "react";
 
 import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 
 import "./AdminPortal.scss";
 import AdminActionCenter from "./AdminActionCenter";
 import AdminViewsRoutes from "components/Routes/AdminViewsRoutes";
-import BackButton from "components/BackButton";
+import BackButton from "components/OmouComponents/BackButton";
+import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 
 const AdminPortal = () => (
 	<form>
-		<Paper className="registration-cart">
+		<BackgroundPaper className="registration-cart">
 			<Grid container layout="row">
 				<Grid item xs={12}>
 					<BackButton/>
@@ -29,7 +29,7 @@ const AdminPortal = () => (
 					<AdminViewsRoutes/>
 				</Grid>
 			</Grid>
-		</Paper>
+		</BackgroundPaper>
 	</form>
 );
 

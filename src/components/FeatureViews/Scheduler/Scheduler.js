@@ -16,7 +16,6 @@ import FormControl from "@material-ui/core/FormControl";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
-import Paper from "@material-ui/core/Paper";
 import Select from "@material-ui/core/Select";
 import TodayIcon from "@material-ui/icons/Today";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -33,7 +32,8 @@ import SessionFilters from "./SessionFilters";
 import {stringToColor} from "../Accounts/accountUtils";
 import {uniques} from "utils";
 import {secondaryFontColor} from "../../../theme/muiTheme";
-import BackButton from "../../BackButton";
+import BackButton from "../../OmouComponents/BackButton";
+import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 
 const useStyles = makeStyles((theme) => ({
     "bootstrapFormLabel": {
@@ -320,7 +320,7 @@ const Scheduler = (props) => {
 
     return (
 		<Grid item xs={12} container>
-			<Paper className="scheduler" elevation={2}>
+			<BackgroundPaper className="scheduler" elevation={2}>
 				<Grid item xs={12}>
 					<BackButton/>
 					<hr/>
@@ -487,7 +487,7 @@ const Scheduler = (props) => {
 									  },
 								  }}/>
 				</Grid>
-			</Paper>
+			</BackgroundPaper>
 		</Grid>
     );
 };

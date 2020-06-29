@@ -1,7 +1,12 @@
 import * as types from "./actionTypes";
-import {instance, wrapGet, wrapPatch} from "./apiActions";
+import {
+    instance, MISC_FAIL, REQUEST_ALL, REQUEST_STARTED, wrapGet, wrapPatch,
+    wrapPost,
+} from "./apiActions";
+import {isFail, isLoading} from "./hooks";
+import {useCallback, useEffect, useMemo, useState} from "react";
+import {useDispatch} from "react-redux";
 import {wrapUseNote} from "./hooks";
-import {useMemo} from "react";
 
 export const patchInstructor = (id, data) =>
 	wrapPatch(
@@ -28,8 +33,30 @@ export const fetchStudents = (id) =>
 		{id}
 	);
 
-export const fetchParents = (id) =>
-	wrapGet(
+export const postStudent = (student) => wrapPost(
+    "/account/student/",
+    [
+        null,
+        types.POST_STUDENT_SUCCESSFUL,
+        types.POST_STUDENT_FAILED,
+    ],
+    student,
+);
+
+export const patchStudent = (id, student) => wrapPatch(
+    "/account/student/",
+    [
+        null,
+        types.POST_STUDENT_SUCCESSFUL,
+        types.POST_STUDENT_FAILED,
+    ],
+    {
+        "data": student,
+        id,
+    },
+);
+
+export const fetchParents = (id) => wrapGet(
     "/account/parent/",
     [
 		types.FETCH_PARENT_STARTED,
@@ -39,8 +66,30 @@ export const fetchParents = (id) =>
 		{id}
 	);
 
-export const fetchInstructors = (id) =>
-	wrapGet(
+export const postParent = (parent) => wrapPost(
+    "/account/parent/",
+    [
+        null,
+        types.POST_PARENT_SUCCESSFUL,
+        types.POST_PARENT_FAILED,
+    ],
+    parent,
+);
+
+export const patchParent = (id, parent) => wrapPatch(
+    "/account/parent/",
+    [
+        null,
+        types.POST_PARENT_SUCCESSFUL,
+        types.POST_PARENT_FAILED,
+    ],
+    {
+        "data": parent,
+        id,
+    },
+);
+
+export const fetchInstructors = (id) => wrapGet(
     "/account/instructor/",
     [
 		types.FETCH_INSTRUCTOR_STARTED,
