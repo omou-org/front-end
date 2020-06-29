@@ -76,7 +76,7 @@ const Scheduler = (props) => {
     const [instructorFilter, setInstructorFilter] =
         useState(prevState.instructorFilter);
     const [timeShift, setTimeShift] = useState(prevState.timeShift || 0);
-    const timeView = props.location.state ? "timeGridDay" : prevState.view || "timeGridDay";    
+    const timeView = props?.location?.state ? "timeGridDay" : prevState.view || "timeGridDay";    
     const [view, setView] = useState(timeView);
 
     hooks.useCourse();
