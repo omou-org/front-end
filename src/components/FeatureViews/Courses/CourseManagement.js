@@ -6,6 +6,7 @@ import { createMuiTheme } from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import InputLabel from "@material-ui/core/InputLabel";
+import Chip from "@material-ui/core/Chip";
 import InputBase from "@material-ui/core/InputBase";
 import FormControl from "@material-ui/core/FormControl";
 import Divder from "@material-ui/core/Divider";
@@ -82,7 +83,23 @@ const useStyles = makeStyles((theme) => ({
   },
   menuSelected: {
     backgroundColor: skyBlue.backgroundColor += "!important",
-},
+  },
+  highlightName: {
+    fontFamily: "Roboto",
+    fontStyle: "normal",
+    fontWeight: "700",
+    fontSize: "1.15rem",
+    lineHeigh: "1.25em",
+    color: "#28ABD5"
+  },
+  displayCardMargins: {
+    marginTop: "1em",
+    marginBottom: "1em",
+  },
+  chipSize: {
+    height: "2.5625em",
+    width: "7.5em",
+  },
 }));
 
 const CourseManagement = () => {
@@ -115,32 +132,66 @@ const CourseManagement = () => {
 
   if(loading) return <Loading />;
   if(error) return console.error(error.message);
-  console.log(data);
 
-  const CourseDisplayCard = ({ title, day, endDate, endTime, startTime, startDate, instructor}) => {
-    const { firstName, lastName } = instructor.user
+  const CourseDisplayCard = ({ title, day, endDate, endTime, startTime, startDate, instructor, index}) => {
+    const classes = useStyles();
+    const [activeTime, setActiveTime] = useState("Past");
+    const [activeColor, setActiveColor] = useState("#BDBDBD");
+    const { firstName, lastName } = instructor.user;
     const letterDayManipulation = day.substring(1,3).toLowerCase();
-    const firstLetterDayManipulation = day.substring(0, 1)
+    const firstLetterDayManipulation = day.substring(0, 1);
     const abbreviatedDay = firstLetterDayManipulation + letterDayManipulation;
     const startingTime = moment(startTime, "HH:mm").format("h:mm A");
     const endingTime = moment(endTime, "HH:mm").format("h:mm A");
     const startingDate = moment(startDate).calendar();
     const endingDate = moment(endDate).calendar();
 
-    return (
-      <Grid container justify="flex-start">
-        <Grid item xs={8}>
-    <Typography variant="h5">{title}</Typography>
-        </Grid>
-        <Grid item xs={4}>Active</Grid>
-    <Grid item xs={2}>{`By: ${firstName} ${lastName}`}</Grid>
-    <Divder orientation="vertical" flexItem />
-    <Grid item xs={6}>{`Time: ${startingDate} - ${endingDate} ${abbreviatedDay} ${startingTime} - ${endingTime} `}</Grid>
-      </Grid>
-    )
-  }
+    useEffect(() => {
+      const currentTime = moment().format("LT")
+      if(currentTime > startTime && currentTime < endTime) {
+        setActiveTime("Active")
+        setActiveColor("#6FCF97")
+      } else {
+        setActiveTime("Past");
+        setActiveColor("#BDBDBD");
+      }
+    }, [activeTime]);
 
-  const courseDisplayList = data.courses.map(e => <CourseDisplayCard title={e.title} day={e.dayOfWeek} endDate={e.endDate} endTime={e.endTime} startTime={e.startTime} startDate={e.startDate} instructor={e.instructor}/>);
+    const handleClick = e => {
+      const currentTarget = e.currentTarget;
+      const currentIndex = currentTarget.getAttribute("data-active");
+      if(currentTarget.getAttribute("data-active") === "inactive") {
+        currentTarget.setAttribute("data-active", "active");
+        return currentTarget.style.backgroundColor = "#EBFAFF"
+      }
+      if(currentTarget.getAttribute("data-active") === "active") {
+        currentTarget.setAttribute("data-active", "inactive");
+        return currentTarget.style.backgroundColor = "#FFFFFF"
+      }
+        
+      
+    }
+
+    return (
+      <>
+      <Grid container justify="flex-start" style={{paddingTop: "4.25em"}} data-active="inactive" onClick={handleClick}>
+        <Grid item xs={6}>
+
+    <Typography variant="h4" align="left" style={{marginLeft: ".85em"}}>{title}</Typography>
+        </Grid>
+        <Grid item xs={6} style={{textAlign: "left"}}>
+      <Chip label={activeTime} className={classes.chipSize} style={{backgroundColor: activeColor}}/>
+        </Grid>
+    <Grid item xs={2} style={{maxWidth: "12.66667%"}} className={classes.displayCardMargins}><Typography variant="body1" align="left" style={{marginLeft: "1.85em"}}>By: <span className={classes.highlightName}>{`${firstName} ${lastName}`}</span></Typography></Grid>
+    <Divder orientation="vertical" flexItem style={{height: "2em", marginTop: "1em"}}/>
+    <Grid item xs={6}><Typography variant="body1" align="left" style={{marginLeft: "1.2em"}} className={classes.displayCardMargins}>{`Time: ${startingDate} - ${endingDate} ${abbreviatedDay} ${startingTime} - ${endingTime} `}</Typography></Grid>
+      </Grid>
+    <Divder />
+    </>
+    )
+  };
+
+  const courseDisplayList = data.courses.map((e, i) => <CourseDisplayCard title={e.title} day={e.dayOfWeek} endDate={e.endDate} endTime={e.endTime} startTime={e.startTime} startDate={e.startDate} instructor={e.instructor} index={i}/>);
 
   return (
     <Grid item xs={12}>
