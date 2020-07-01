@@ -61,6 +61,7 @@ const RegistrationActions = () => {
 	return (
 		<>
 			<Grid
+				item
 				className="registration-action-control"
 				container
 				direction="row"
@@ -128,7 +129,7 @@ const RegistrationActions = () => {
 					<NewTutor className="icon innerIcon"/>
 					<ListItemText primary="TUTORING"/>
 				</MenuItem>
-				<MenuItem component={Link} to="form/small_group/">
+				<MenuItem component={Link} to="/registration/form/small-group-registration/">
 					<NewTutor className="icon innerIcon"/>
 					<ListItemText primary="SMALL GROUP"/>
 				</MenuItem>

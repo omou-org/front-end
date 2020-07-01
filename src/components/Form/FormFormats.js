@@ -11,7 +11,7 @@ import * as hooks from "actions/hooks";
 import * as moment from "moment";
 import {client} from "index";
 import gql from "graphql-tag";
-import {arraysMatch, fullName, getEndDate, getEndTime} from "../../utils";
+import {arraysMatch, fullName} from "../../utils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
 
 export const responseToForm = (parser, data) => {
@@ -72,8 +72,36 @@ export const selectField = (options) => ({
         "component": <Fields.TextField />,
         label,
         "validator": Yup.string().matches(/[a-zA-Z][^#&<>"~;$^%{}?]+$/u,
+
             `Invalid ${label}`),
     });
+
+const SEARCH_INSTRUCTORS = gql`
+    query InstructorSearch($query: String!) {
+        accountSearch(query: $query, profile: "INSTRUCTOR") {
+            results {
+                ... on InstructorType {
+                    user {
+                        id
+                        firstName
+                        lastName
+                    }
+                }
+            }
+        }
+    }
+`;
+
+const userMap = ({accountSearch}) => accountSearch.results.map(({user}) => ({
+	"label": `${user.firstName} ${user.lastName}`,
+	"value": user.id,
+}));
+
+const instructorSelect = (name) => (
+	<Fields.DataSelect name={name} optionsMap={userMap}
+					   request={SEARCH_INSTRUCTORS}/>
+);
+
 
 const STATE_OPTIONS = [
     "AL",
@@ -324,21 +352,46 @@ const STUDENT_INFO_FIELDS = {
     ],
 };
 
-const SEARCH_INSTRUCTORS = gql`
-    query InstructorSearch($query: String!) {
-        accountSearch(query: $query, profile: "INSTRUCTOR") {
-            results {
-                ... on InstructorType {
-                    user {
-                        id
-                        firstName
-                        lastName
-                    }
-                }
-            }
-        }
-    }
-`;
+const TUTORING_COURSE_SECTIONS = [
+	{
+		"name": "tutoring_details",
+		"label": "Tutoring Details",
+		"fields": [
+			{
+				"name": "instructor",
+				"label": "Instructor",
+				"component": instructorSelect("instructor"),
+				"validator": Yup.mixed(),
+			},
+			{
+				"name": "course",
+				...stringField("Course Name"),
+			},
+			INSTRUCTOR_CONFIRM_FIELD,
+			{
+				...START_DATE_FIELD,
+				"required": true,
+			},
+			{
+				...START_TIME_FIELD,
+				"required": true,
+			},
+		],
+	},
+	{
+		"name": "tuition",
+		"label": "Tuition Quote Tool",
+		"fields": [
+			{
+				// TODO: price quote tool
+				"name": "price",
+				"label": "Price",
+				"component": <TutoringPriceQuote courseType={"TUTORING"}/>,
+				"validator": Yup.mixed(),
+			},
+		],
+
+	},];
 
 const SEARCH_STUDENTS = gql`
     query StudentSearch($query: String!) {
@@ -380,16 +433,6 @@ const GET_COURSES = gql`
     }
 `;
 
-const userMap = ({accountSearch}) => accountSearch.results.map(({user}) => ({
-    "label": `${user.firstName} ${user.lastName}`,
-    "value": user.id,
-}));
-
-const instructorSelect = (name) => (
-	<Fields.DataSelect name={name} optionsMap={userMap}
-					   request={SEARCH_INSTRUCTORS} />
-);
-
 const studentSelect = (name) => (
 	<Fields.DataSelect name={name} optionsMap={userMap}
 					   request={SEARCH_STUDENTS}/>
@@ -409,6 +452,16 @@ const categorySelect = (name) => (
     <Fields.DataSelect name={name} optionsMap={categoryMap}
         request={GET_CATEGORIES} />
 );
+
+const createTutoringDetails = (courseType, formData) => ({
+	title: formData.tutoring_details.course,
+	instructor: formData.tutoring_details.instructor.value,
+	startDate: moment(formData.tutoring_details.startDate, "DD-MM-YYYY"),
+	endDate: moment(new Date(formData.tutoring_details.startDate), "DD-MM-YYYY").add(formData.sessions, 'weeks'),
+	startTime: moment(formData.tutoring_details.startTime, "hh:mm"),
+	endTime: moment(new Date(formData.tutoring_details.endTime), "hh:mm").add(formData.duration, 'hours'),
+	courseType,
+});
 
 const createRegistrationInfo = (student, course) => ({
 	course: {
@@ -1185,60 +1238,42 @@ export default {
                 ],
             },
             STUDENT_INFO_FIELDS,
-            {
-				"name": "tutoring_details",
-				"label": "Tutoring Details",
-                "fields": [
-					{
-						"name": "instructor",
-						"label": "Instructor",
-						"component": instructorSelect("instructor"),
-						"validator": Yup.mixed(),
-					},
-                    {
-                        "name": "course",
-                        ...stringField("Course Name"),
-                    },
-                    INSTRUCTOR_CONFIRM_FIELD,
-					{
-						...START_DATE_FIELD,
-						"required": true,
-					},
-					{
-                        ...START_TIME_FIELD,
-                        "required": true,
-					},
-                ],
-            },
-            {
-                "name": "tuition",
-                "label": "Tuition Quote Tool",
-                "fields": [
-                    {
-                        // TODO: price quote tool
-                        "name": "price",
-						"label": "Price",
-						"component": <TutoringPriceQuote courseType={"TUTORING"}/>,
-						"validator": Yup.mixed(),
-                    },
-                ],
-
-            },
+			...TUTORING_COURSE_SECTIONS,
         ],
 		"submit": (formData) => {
-			const course = {
-				title: formData.tutoring_details.course,
-				instructor: formData.tutoring_details.instructor.value,
-				startDate: formData.tutoring_details.startDate,
-				endDate: getEndDate(formData.tutoring_details.startDate, formData.sessions),
-				startTime: formData.tutoring_details.startTime,
-				endTime: getEndTime(formData.tutoring_details.startTime, formData.duration),
-			};
+			console.log(formData, moment(formData.tutoring_details.startDate, "DD-MM-YYYY").add(formData.sessions, 'weeks'));
+			const course = createTutoringDetails("tutoring", formData);
             console.log(course);
 			submitRegistration(formData.selectStudent, course);
 		}
 
-    },
+	},
+	"small-group-registration": {
+		"title": "New Small Group Tutoring",
+		"form": [
+			{
+				"name": "student",
+				"label": "Student",
+				"fields": [
+					{
+						"name": "student",
+						"label": "Student",
+						"component": <StudentSelect/>,
+						"validator": Yup.mixed(),
+					},
+				],
+			},
+			STUDENT_INFO_FIELDS,
+			...TUTORING_COURSE_SECTIONS,
+		],
+		"submit": (formData) => {
+			console.log(formData, moment(formData.tutoring_details.startDate, "DD-MM-YYYY").add(formData.sessions, 'weeks'));
+			const course = createTutoringDetails("smallGroup", formData);
+			console.log(course);
+			submitRegistration(formData.selectStudent, course);
+		}
+
+	},
     "course_category": {
         "title": "Course",
         "form": [

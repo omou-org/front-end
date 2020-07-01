@@ -395,7 +395,7 @@ export const fullName = ({firstName, lastName}) => `${firstName} ${lastName}`;
  * @param {Int} numSessions
  * */
 export const getEndDate = (startDate, numSessions) => (
-    new Date(startDate.setDate(startDate.getDate() + 7 * (numSessions - 1)))
+	new Date(new Date(startDate).setDate(startDate.getDate() + 7 * (numSessions - 1)))
 );
 
 /**
@@ -404,7 +404,7 @@ export const getEndDate = (startDate, numSessions) => (
  * @param {Number} duration
  * */
 export const getEndTime = (startTime, duration) => (
-    new Date(startTime.setTime(startTime.getTime() + Number(duration) * 60 * 60 * 1000))
+	new Date(new Date(startTime).setTime(startTime.getTime() + Number(duration) * 60 * 60 * 1000))
 );
 
 /**

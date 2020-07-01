@@ -36,8 +36,13 @@ export default function CourseRegistrationReceipt({formData, format}) {
 	const {type} = useParams();
 	const {data, loading, error} = useQuery(GET_COURSE, {
 		variables: {courseId: formData.course?.class.value},
-		skip: type === "tutoring-registration"
+		skip: type === "tutoring-registration" || type === "small-group-registration"
 	});
+
+	const courseType = {
+		"tutoring-registration": "tutoring",
+		"small-group-registration": "smallGroup",
+	}[type];
 
 	if (loading) {
 		return <Loading small/>
@@ -47,17 +52,21 @@ export default function CourseRegistrationReceipt({formData, format}) {
 	}
 
 	//TODO: fix the dates....ugh.
+	const createTutoringRegistration = (formData, courseType) => ({
+		title: formData.tutoring_details.course,
+		instructor: formData.tutoring_details.instructor.label,
+		startDate: formData.tutoring_details.startDate,
+		endDate: new Date(formData.tutoring_details.startDate
+			.setDate(formData.tutoring_details.startDate.getDate() + 7 * (formData.sessions - 1))),
+		startTime: formData.tutoring_details.startTime,
+		endTime: new Date(formData.tutoring_details.startTime
+			.setTime(formData.tutoring_details.startTime.getTime() + Number(formData.duration) * 60 * 60 * 1000)),
+		courseType,
+	});
+
 	const course = {
-		"tutoring-registration": formData.tutoring_details && {
-			title: formData.tutoring_details.course,
-			instructor: formData.tutoring_details.instructor.label,
-			startDate: formData.tutoring_details.startDate,
-			endDate: new Date(formData.tutoring_details.startDate
-				.setDate(formData.tutoring_details.startDate.getDate() + 7 * (formData.sessions - 1))),
-			startTime: formData.tutoring_details.startTime,
-			endTime: new Date(formData.tutoring_details.startTime
-				.setTime(formData.tutoring_details.startTime.getTime() + Number(formData.duration) * 60 * 60 * 1000)),
-		},
+		"tutoring-registration": formData.tutoring_details && createTutoringRegistration(formData, courseType),
+		"small-group-registration": formData.tutoring_details && createTutoringRegistration(formData, courseType),
 		"class-registration": data && {
 			instructor: fullName(data.course.instructor.user),
 			title: data.course.title,
