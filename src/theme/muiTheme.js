@@ -5,14 +5,15 @@ const tabBorderRadius = "10px";
 // Font Colors
 export const lightPrimaryFontColor = "#767474";
 export const secondaryFontColor = "#228eb2";
+export const neutralBackgroundColor = "#FAFAFA";
 
 const theme = createMuiTheme({
     "palette": {
         "primary": {"main": "#43B5D9"},
         "secondary": {"main": "#a6a6a6"},
         "background": {
-            "main": "#ffffff",
-            "default": "#ffffff",
+            "main": neutralBackgroundColor,
+            "default": neutralBackgroundColor,
         },
     },
     "colors": {
@@ -24,7 +25,7 @@ const theme = createMuiTheme({
         "MuiCssBaseline": {
             "@global": {
                 "body": {
-                    "backgroundColor": "#ffffff",
+                    "backgroundColor": neutralBackgroundColor,
                 },
             },
         },
@@ -44,6 +45,11 @@ const theme = createMuiTheme({
             "paperAnchorLeft": {
                 "zIndex": 1,
             },
+            "paperAnchorDockedLeft": {
+                "borderRight": "none",
+                backgroundColor: neutralBackgroundColor,
+                padding: "1vw",
+            }
         },
         "paper": {
             "background": "#FAFAFA",

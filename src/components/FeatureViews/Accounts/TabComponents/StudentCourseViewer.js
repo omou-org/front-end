@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 
 import {Link, useLocation} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import {dateTimeToDate} from "utils";
-import NoListAlert from "components/NoListAlert";
+import NoListAlert from "components/OmouComponents/NoListAlert";
 import Moment from "react-moment";
 import gql from "graphql-tag";
 import {useQuery} from "@apollo/react-hooks";

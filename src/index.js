@@ -8,14 +8,13 @@ import React from "react";
 import ReactDOM from "react-dom";
 import rootReducer from "./reducers/rootReducer.js";
 import thunk from "redux-thunk";
-
-import {ApolloClient} from "apollo-client";
-import {ApolloLink} from "apollo-link";
-import {ApolloProvider} from "@apollo/react-hooks";
-import gql from "graphql-tag";
-import {HttpLink} from "apollo-link-http";
+import {ApolloClient} from 'apollo-client';
 import {InMemoryCache} from "apollo-cache-inmemory";
+import {HttpLink} from "apollo-link-http";
 import {onError} from "apollo-link-error";
+import {ApolloLink} from "apollo-link";
+
+import {ApolloProvider} from "@apollo/react-hooks";
 import {setContext} from "apollo-link-context";
 
 import {setToken} from "actions/authActions";

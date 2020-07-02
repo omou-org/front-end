@@ -8,14 +8,15 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 
 import * as registrationActions from "actions/registrationActions";
-import BackButton from "components/BackButton";
-import Loading from "components/Loading";
+import BackButton from "components/OmouComponents/BackButton";
+import Loading from "components/OmouComponents/Loading";
 import {paymentToString, uniques} from "utils";
 import Moment from "react-moment";
 import gql from "graphql-tag";
 import {useQuery} from "@apollo/react-hooks";
 import {bindActionCreators} from "redux";
 import {fullName} from "../../../utils";
+import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 
 export const GET_PAYMENT = gql`
 	query Payment($paymentId:ID!){
@@ -204,7 +205,7 @@ const PaymentReceipt = ({paymentID}) => {
 	};
 
 	return (
-		<Paper elevation={2} className="paper registration-receipt">
+		<BackgroundPaper elevation={2} className="registration-receipt">
 			{params.paymentID && (
 				<>
 					<BackButton/>
@@ -354,7 +355,7 @@ const PaymentReceipt = ({paymentID}) => {
 					</Grid>
 				</Grid>
 			</Grid>
-		</Paper>
+		</BackgroundPaper>
 	);
 };
 

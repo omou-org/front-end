@@ -3,7 +3,7 @@ import {bindActionCreators} from "redux";
 import * as calendarActions from "../../../actions/calendarActions";
 import PropTypes from "prop-types";
 import React, {Component} from "react";
-import BackButton from "../../BackButton.js";
+import BackButton from "../../OmouComponents/BackButton.js";
 import "../../../theme/theme.scss";
 import "./scheduler.scss";
 import * as apiActions from "../../../actions/apiActions";
