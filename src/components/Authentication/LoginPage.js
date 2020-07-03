@@ -59,7 +59,7 @@ const LoginPage = () => {
 
      const [getUserType, 
             { data }
-          ] = useLazyQuery(GET_USER_TYPE, {variables: {query:{"username":email}}});
+          ] = useLazyQuery(GET_USER_TYPE, {variables: {"username":email}});
           console.log(data, email);
     const [login, { loading }] = useMutation(LOGIN, {
         "errorPolicy": "ignore",
@@ -114,7 +114,7 @@ const LoginPage = () => {
     }
 
     const renderLogin = () => {
-        switch (userType) {
+        switch (data) {
             case "Admin":
                 return (
                 <Paper className={`${classes.root} ${classes.smallerRoot}`}>
@@ -181,23 +181,23 @@ const LoginPage = () => {
                     )}
                 </Paper>)
 
-            case "asd":
+            case "Parent":
                 return (
                     <div>sdasd</div>
                 );
             default:
                 return (<div>asd
                     
-                    <form onSubmit={renderLogin}>
+                    <form >
                     <TextField error={hasError || email === ""} fullWidth
                             inputProps={{ "data-cy": "emailField" }} label="E-Mail"
                             margin="normal" onChange={handleTextInput(setEmail)}
                             value={email} />
                         
-                    <Button onClick={()=>getUserType()} type="submit">
+                    <Button onClick={()=>getUserType()}>
                         asd
                     </Button>
-                        {data}
+                        
                         </form>
                         
 
