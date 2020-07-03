@@ -57,10 +57,8 @@ const LoginPage = () => {
     const [shouldSave, setShouldSave] = useState(false);
     const [hasError, setHasError] = useState(false);
 
-     const [getUserType, 
-            { data }
-          ] = useLazyQuery(GET_USER_TYPE, {variables: {"username":email}});
-          console.log(data, email);
+    const [getUserType, { data }] = ()=>{useLazyQuery(GET_USER_TYPE, {variables: {"username":email}}),
+    setUserType(data.userType)};
     const [login, { loading }] = useMutation(LOGIN, {
         "errorPolicy": "ignore",
         "ignoreResults": true,
@@ -109,12 +107,17 @@ const LoginPage = () => {
         setShouldSave(target.checked);
     }, []);
 
-    const checkUserType = () =>{
-        console.log()
+    const handleCheck = () =>{
+        getUserType()
+        setUserType(data.userType);
+    }
+
+    const handlelog = ()=>{
+        console.log(userType)
     }
 
     const renderLogin = () => {
-        switch (data) {
+        switch (userType) {
             case "Admin":
                 return (
                 <Paper className={`${classes.root} ${classes.smallerRoot}`}>
@@ -188,14 +191,17 @@ const LoginPage = () => {
             default:
                 return (<div>asd
                     
-                    <form >
+                    <form>
                     <TextField error={hasError || email === ""} fullWidth
                             inputProps={{ "data-cy": "emailField" }} label="E-Mail"
                             margin="normal" onChange={handleTextInput(setEmail)}
                             value={email} />
                         
-                    <Button onClick={()=>getUserType()}>
+                    <Button onClick={()=>handleCheck()}>
                         asd
+                    </Button>
+                    <Button onClick={handlelog}>
+                        asddasd
                     </Button>
                         
                         </form>
