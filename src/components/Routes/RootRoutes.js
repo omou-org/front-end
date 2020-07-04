@@ -30,6 +30,7 @@ import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
 import DashboardSwitch from "../FeatureViews/Dashboard/DashboardSwitch";
+import TeachingLogContainer from "../FeatureViews/TeachingLog/TeachingLogContainer";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -109,6 +110,13 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/NotEnrolledStudent">
                 <NotEnrolledStudentsDialog />
+            </AuthenticatedRoute>
+
+            {/* Instructor Routes */}
+            <AuthenticatedRoute path="/teaching-log"
+                                users={[USER_TYPES.instructor]}
+            >
+                <TeachingLogContainer/>
             </AuthenticatedRoute>
 
             {/* Admin Routes */}

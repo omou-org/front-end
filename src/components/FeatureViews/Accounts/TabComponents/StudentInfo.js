@@ -10,8 +10,8 @@ import LoadingError from "./LoadingCourseError";
 
 const StudentInfo = ({user}) => {
 	const studentList = useSelector(({Users}) => Users.StudentList);
-	const fetchStatus = hooks.useStudent(user.student_ids);
-	const loadedStudentIDs = user.student_ids.filter(
+	const fetchStatus = hooks.useStudent(user.studentList);
+	const loadedStudentIDs = user.studentList.filter(
 		(studentID) => studentList[studentID]
 	);
 
