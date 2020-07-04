@@ -1,7 +1,8 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 import {useMutation, useQuery} from "@apollo/react-hooks";
 import {bindActionCreators} from "redux";
 import gql from "graphql-tag";
+import {makeStyles} from "@material-ui/core/styles";
 import PropTypes from "prop-types";
 import {useDispatch} from "react-redux";
 
@@ -23,29 +24,46 @@ import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
-import {makeStyles} from "@material-ui/core/styles";
 
 import "./Notes.scss";
-import "../Accounts/TabComponents/TabComponents.scss";
 import * as userActions from "actions/userActions";
 import {
-	DELETE_ACCOUNT_NOTE_SUCCESSFUL,
-	DELETE_COURSE_NOTE_SUCCESSFUL,
-	DELETE_ENROLLMENT_NOTE_SUCCESSFUL,
+    DELETE_ACCOUNT_NOTE_SUCCESSFUL,
+    DELETE_COURSE_NOTE_SUCCESSFUL,
+    DELETE_ENROLLMENT_NOTE_SUCCESSFUL,
 } from "actions/actionTypes";
 import {instance} from "actions/apiActions";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     "actionIcons": {
         "bottom": "5%",
         "position": "absolute",
         "right": "5%",
     },
+    "addNote": {
+        "backgroundColor": "#f5f5f5",
+        "border": "1.5px dashed #999999",
+        "cursor": "pointer",
+        "height": "250px",
+        "padding": "7%",
+        "position": "relative",
+    },
+    "center": {
+        "paddingTop": "35%",
+    },
+    "deleteActions": {
+        "& Button": {
+            "color": "white",
+        },
+    },
+    "deleteButton": {
+        "backgroundColor": theme.palette.error.main,
+    },
     "notesTitle": {
         "fontSize": "0.875rem",
         "letterSpacing": "0.01071em",
     },
-});
+}));
 
 const numericDateString = (date) => new Date(date).toLocaleTimeString("en-US", {
     "day": "numeric",
@@ -95,9 +113,9 @@ const QUERIES = {
 
 const MUTATIONS = {
     "account": gql`
-        mutation EditNote($userID: Int!, $title: String!, $body: String,
-            $complete: Boolean, $important: Boolean) {
-            createNote(userId: $userID, title: $title, important: $important,
+        mutation CreateAccountNote($ownerID: ID!, $title: String,
+            $body: String!, $complete: Boolean, $important: Boolean) {
+            createNote(userId: $ownerID, title: $title, important: $important,
                 body: $body, complete: $complete) {
                 note {
                     id
@@ -108,46 +126,56 @@ const MUTATIONS = {
                     title
                 }
             }
-        }
-    `,
-    // other mutations not yet implemented
+        }`,
+    "course": gql`
+        mutation CreateCourseNote($ownerID: ID!, $title: String, $body: String!,
+            $complete: Boolean, $important: Boolean) {
+            createCourseNote(course: $ownerID, title: $title,
+                important: $important, body: $body, complete: $complete) {
+                courseNote {
+                    id
+                    body
+                    complete
+                    important
+                    timestamp
+                    title
+                }
+            }
+        }`,
+    "enrollment": gql`
+        mutation CreateEnrollmentNote($ownerID: ID!, $title: String,
+            $body: String!, $complete: Boolean, $important: Boolean) {
+            createEnrollmentNote(enrollment: $ownerID, title: $title,
+                important: $important, body: $body, complete: $complete) {
+                enrollmentNote {
+                    id
+                    body
+                    complete
+                    important
+                    timestamp
+                    title
+                }
+            }
+        }`,
 };
 
-const DATA_KEY = {
+const QUERY_KEY = {
     "account": "notes",
     "course": "courseNotes",
     "enrollment": "enrollmentNotes",
 };
 
+const MUTATION_KEY = {
+    "account": "createNote",
+    "course": "createCourseNote",
+    "enrollment": "createEnrollmentNote",
+};
+
+// eslint-disable-next-line max-statements
 const Notes = ({ownerType, ownerID}) => {
     const dispatch = useDispatch();
     const api = useMemo(
         () => bindActionCreators(userActions, dispatch), [dispatch],
-    );
-    const [createNote, createResults] = useMutation(MUTATIONS[ownerType], {
-        "update": (cache, {data}) => {
-            const {"note": newNote} = data.createNote;
-            const {"notes": cachedNotes} = cache.readQuery({
-                "query": QUERIES[ownerType],
-                "variables": {ownerID},
-            });
-            cache.writeQuery({
-                "data": {
-                    "notes": [...cachedNotes, newNote],
-                },
-                "query": QUERIES[ownerType],
-                "variables": {ownerID},
-            });
-        },
-    });
-
-    const query = useQuery(QUERIES[ownerType], {
-        "variables": {ownerID},
-    });
-
-    const notes = query.data?.[DATA_KEY[ownerType]] || [];
-    const getNoteByID = useCallback(
-        (noteID) => notes.find(({id}) => noteID == id), [notes],
     );
 
     const [alert, setAlert] = useState(false);
@@ -159,12 +187,35 @@ const Notes = ({ownerType, ownerID}) => {
     const [deleteError, setDeleteError] = useState(false);
     const classes = useStyles();
 
-    // close new note dialog when the note is created
-    useEffect(() => {
-        if (createResults.data) {
+    const [createNote, createResults] = useMutation(MUTATIONS[ownerType], {
+        "onCompleted": () => {
             setAlert(false);
-        }
-    }, [createResults]);
+        },
+        "update": (cache, {data}) => {
+            const [newNote] = Object.values(data[MUTATION_KEY[ownerType]]);
+            const cachedNotes = cache.readQuery({
+                "query": QUERIES[ownerType],
+                "variables": {ownerID},
+            })[QUERY_KEY[ownerType]];
+
+            cache.writeQuery({
+                "data": {
+                    [QUERY_KEY[ownerType]]: [...cachedNotes, newNote],
+                },
+                "query": QUERIES[ownerType],
+                "variables": {ownerID},
+            });
+        },
+    });
+
+    const query = useQuery(QUERIES[ownerType], {
+        "variables": {ownerID},
+    });
+
+    const notes = query.data?.[QUERY_KEY[ownerType]] || [];
+    const getNoteByID = useCallback(
+        (noteID) => notes.find(({id}) => noteID == id), [notes],
+    );
 
     const openNewNote = useCallback(() => {
         setAlert(true);
@@ -206,23 +257,16 @@ const Notes = ({ownerType, ownerID}) => {
     }), [important]);
 
     const saveNote = useCallback(() => {
-        switch (ownerType) {
-            // TODO: wait for mutations for other note types
-            case "account": {
-                createNote({
-                    "variables": {
-                        "body": noteBody,
-                        "complete": false,
-                        important,
-                        "title": noteTitle,
-                        "userID": ownerID,
-                    },
-                });
-                break;
-            }
-            // no default
-        }
-    }, [noteBody, important, noteTitle, ownerID, ownerType, createNote]);
+        createNote({
+            "variables": {
+                "body": noteBody,
+                "complete": false,
+                important,
+                ownerID,
+                "title": noteTitle,
+            },
+        });
+    }, [createNote, important, noteBody, noteTitle, ownerID]);
 
     const openDelete = useCallback((noteID) => () => {
         setDeleteID(noteID);
@@ -293,7 +337,7 @@ const Notes = ({ownerType, ownerID}) => {
     }
 
     return (
-        <Grid className="notes-container" container item md={12} spacing={2}>
+        <Grid container item md={12} spacing={2}>
             <Dialog aria-describedby="simple-modal-description"
                 aria-labelledby="simple-modal-title" className="popup" fullWidth
                 maxWidth="xs" onClose={hideWarning} open={alert}>
@@ -341,12 +385,13 @@ const Notes = ({ownerType, ownerID}) => {
                             "this note"
                     }?
                 </DialogContent>
-                <DialogActions className="delete-actions">
-                    <Button className="cancel-button" onClick={hideWarning}
+                <DialogActions className={classes.deleteActions}>
+                    <Button color="primary" onClick={hideWarning}
                         variant="contained">
                         Cancel
                     </Button>
-                    <Button className="delete-button" onClick={handleDelete}
+                    <Button className={classes.deleteButton}
+                        onClick={handleDelete}
                         variant="contained">
                         Delete
                     </Button>
@@ -357,9 +402,8 @@ const Notes = ({ownerType, ownerID}) => {
                 </DialogActions>
             </Dialog>
             <Grid item md={3}>
-                <div className="addNote" onClick={openNewNote}
-                    style={{"cursor": "pointer"}}>
-                    <Typography className="center">
+                <div className={classes.addNote} onClick={openNewNote}>
+                    <Typography className={classes.center}>
                         <AddIcon /><br />Add Note
                     </Typography>
                 </div>
@@ -398,26 +442,10 @@ const Notes = ({ownerType, ownerID}) => {
 };
 
 Notes.propTypes = {
-    "ownerID": PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-        PropTypes.shape({
-            "courseID":
-                PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-            "enrollmentID":
-                PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-            "studentID":
-                PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        }),
-    ]).isRequired,
-    "ownerType": PropTypes.oneOf([
-        "course",
-        "enrollment",
-        "instructor",
-        "parent",
-        "receptionist",
-        "student",
-    ]).isRequired,
+    "ownerID": PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+        .isRequired,
+    "ownerType": PropTypes.oneOf(["account", "course", "enrollment"])
+        .isRequired,
 };
 
 export default Notes;
