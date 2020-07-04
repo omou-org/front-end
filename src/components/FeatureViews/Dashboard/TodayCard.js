@@ -9,7 +9,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Divider from "@material-ui/core/Divider";
 import moment from 'moment';
 import { makeStyles } from "@material-ui/styles";
-import {NavLink} from 'react-router-dom';
+import { Link  } from 'react-router-dom';
 import {fullName} from "utils";
 
 const useStyles = makeStyles((theme) => ({
@@ -30,9 +30,10 @@ const TodayCard = ({session}) => {
 
     return (
         <Card className="today-card">
+            component = {Link}
+                to={`/scheduler/view-session/${session.course.id}/${session.id}/${session.course.instructor.user.id}`} 
             <CardActionArea
-                component = {NavLink}
-                to={`/scheduler/view-session/${session.course.id}/${session.id}/${session.course.instructor.user.id}`}                
+                               
             >
                 <CardContent
                     className="today-details">
