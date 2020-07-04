@@ -17,9 +17,10 @@ import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage";
 import NotEnrolledStudentsDialog from "../FeatureViews/Scheduler/NotEnrolledStudentDialog";
 import PaymentReceipt from "../FeatureViews/Registration/PaymentReceipt";
 import Registration from "../FeatureViews/Registration/Registration";
+import FormPage from "../Form/FormPage";
 import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
-import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
-import RegistrationForm from "../Form/Form";
+import RegistrationCourse from
+    "../FeatureViews/Registration/RegistrationCourse";
 import RegistrationReceipt from "../Form/RegistrationReceipt";
 import ResetPassword from "../Authentication/ResetPassword";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
@@ -95,8 +96,8 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
 
             {/* Registration Routes */}
-            <AuthenticatedRoute path="/registration/form/:type/:id?/:edit?">
-                <RegistrationForm />
+            <AuthenticatedRoute path="/registration/form/:type/:id?">
+                <FormPage />
             </AuthenticatedRoute>
             <AuthenticatedRoute
                 path="/registration/course/:courseID?/:courseTitle?">
