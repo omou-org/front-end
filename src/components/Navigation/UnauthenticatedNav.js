@@ -1,8 +1,9 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
+import "./Navigation.scss";
 
 const UnauthenticatedNav = () => {
-    return (<div>owo</div>)
+    return (<Typography className="unauthenticatedNav">omou</Typography>)
 
 }
 

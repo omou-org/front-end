@@ -1,8 +1,8 @@
-@import '../../theme/colors';
-@import '../../theme/sizes';
-@import url('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700');
+@import "../../theme/colors";
+@import "../../theme/sizes";
+@import url("https://fonts.googleapis.com/css?family=Roboto+Slab:400,700");
 
-body{
+body {
   overflow-y: hidden;
 }
 
@@ -24,7 +24,7 @@ body{
   }
 
   .title {
-    font-family: 'Roboto Slab', serif;
+    font-family: "Roboto Slab", serif;
     font-style: normal;
     font-weight: 700;
     font-size: 24px;
@@ -33,15 +33,14 @@ body{
     color: white;
   }
 
-  .logout-icon{
-    cursor:pointer;
+  .logout-icon {
+    cursor: pointer;
     color: white;
   }
-  .catsButton{
+  .catsButton {
     cursor: pointer;
     background: transparent;
     color: transparent;
-    
   }
   /*Drawer Styling*/
 
@@ -66,7 +65,7 @@ body{
     height: 92vh;
     overflow-x: hidden;
     overflow-y: scroll;
-    background-color: #FAFAFA;
+    background-color: #fafafa;
   }
 
   .DrawerList {
@@ -85,7 +84,7 @@ body{
       margin: 3%;
     }
 
-    .list .listItem .text>span {
+    .list .listItem .text > span {
       font-weight: 500;
       font-size: $navigationSize;
       color: $primaryFontColor;
@@ -96,18 +95,18 @@ body{
       background-color: $primaryLightColor;
       border: solid 2px $primaryDarkColor;
 
-      .text>span {
+      .text > span {
         color: $primaryFontColor;
       }
 
-      .icon>* {
+      .icon > * {
         color: $primaryDarkColor;
       }
     }
   }
 
   .loginToggle {
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
@@ -132,4 +131,19 @@ body{
   @include respond-to(ipad-landscape) {
     padding-top: 80px !important;
   }
+}
+
+.unauthenticatedNav {
+  text-align: "left";
+  position: fixed;
+  width: 97px;
+  height: 48px;
+  left: 30px;
+  top: 28px;
+  
+  font-family: Roboto Slab;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 36px;
+  line-height: 47px;
 }
