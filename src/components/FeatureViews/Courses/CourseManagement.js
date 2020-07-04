@@ -12,7 +12,7 @@ import FormControl from "@material-ui/core/FormControl";
 import Divder from "@material-ui/core/Divider";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
@@ -120,6 +120,7 @@ const CourseDisplayCard = ({
   id,
 }) => {
   const classes = useStyles();
+  let history = useHistory();
   const [activeTime, setActiveTime] = useState("Past");
   const [activeColor, setActiveColor] = useState("#BDBDBD");
   const [bgColor, setBgColor] = useState("#FFFFFF");
@@ -147,10 +148,7 @@ const CourseDisplayCard = ({
   }, [activeTime]);
 
   const handleClick = (e) => {
-    const currentDiv = e.target;
-    console.log("clicked")
-    console.log(id)
-    return <Link to={`/class/${id}`} />
+    history.push(`/class/${id}`)
   };
 
   return (
@@ -163,9 +161,9 @@ const CourseDisplayCard = ({
         data-active="inactive"
         onMouseEnter={() => setBgColor("#EBFAFF")}
         onMouseLeave={() => setBgColor("#FFFFFF")}
-        // onClick={handleClick}
-        component={Link}
-        to={`/class/${id}`}
+        onClick={handleClick}
+        // component={Link}
+        // to={`/class/${id}`}
       >
         <Grid item xs={6}>
           <Typography variant="h4" align="left" style={{ marginLeft: ".85em" }}>
@@ -264,16 +262,16 @@ const CourseManagement = () => {
   if (error) return console.error(error.message);
   console.log(data)
 
-  const courseDisplayList = data.courses.map((e) => (
+  const courseDisplayList = data.courses.map((courses) => (
     <CourseDisplayCard
-      title={e.title}
-      day={e.dayOfWeek}
-      endDate={e.endDate}
-      endTime={e.endTime}
-      startTime={e.startTime}
-      startDate={e.startDate}
-      instructor={e.instructor}
-      id={e.courseId}
+      title={courses.title}
+      day={courses.dayOfWeek}
+      endDate={courses.endDate}
+      endTime={courses.endTime}
+      startTime={courses.startTime}
+      startDate={courses.startDate}
+      instructor={courses.instructor}
+      id={courses.courseId}
     />
   ));
 
