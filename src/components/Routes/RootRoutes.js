@@ -31,6 +31,7 @@ import SearchResults from "../FeatureViews/Search/SearchResults";
 import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseManagement from "../FeatureViews/Courses/CourseManagement";
+import CourseClasses from "../FeatureViews/Courses/CourseClasses"
 
 import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
@@ -128,6 +129,12 @@ export const RootRoutes = () => {
             users={[USER_TYPES.admin]}
             >
                 <CourseManagement />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute 
+            path="/class/:id?"
+            users={[USER_TYPES.admin]}
+            >
+                <CourseClasses />
             </AuthenticatedRoute>
 
             <AuthenticatedRoute path="/PageNotFound">

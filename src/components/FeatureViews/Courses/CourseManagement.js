@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import { ThemeProvider } from "@material-ui/styles";
@@ -12,6 +12,7 @@ import FormControl from "@material-ui/core/FormControl";
 import Divder from "@material-ui/core/Divider";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import { Link } from "react-router-dom";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
@@ -19,7 +20,7 @@ import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import moment from "moment";
 
 const baseTheme = createMuiTheme();
-const skyBlue = {backgroundColor: "rgba(235, 250, 255, 0.5)"}
+const skyBlue = { backgroundColor: "rgba(235, 250, 255, 0.5)" };
 const BootstrapInput = withStyles((theme) => ({
   root: {
     "label + &": {
@@ -61,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
   },
   containerMargins: {
     marginTop: "1.25em",
-    marginBottom: "1.25em"
+    marginBottom: "1.25em",
   },
   margin: {
     margin: theme.spacing(1.5),
@@ -78,11 +79,11 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "5px",
   },
   menuSelect: {
-    '&:hover': {backgroundColor: skyBlue.backgroundColor, color: "#28ABD5"},
-    '&:focus': skyBlue,
+    "&:hover": { backgroundColor: skyBlue.backgroundColor, color: "#28ABD5" },
+    "&:focus": skyBlue,
   },
   menuSelected: {
-    backgroundColor: skyBlue.backgroundColor += "!important",
+    backgroundColor: (skyBlue.backgroundColor += "!important"),
   },
   highlightName: {
     fontFamily: "Roboto",
@@ -90,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "700",
     fontSize: "1.15rem",
     lineHeigh: "1.25em",
-    color: "#28ABD5"
+    color: "#28ABD5",
   },
   displayCardMargins: {
     marginTop: "1em",
@@ -100,17 +101,145 @@ const useStyles = makeStyles((theme) => ({
     height: "2.5625em",
     width: "7.5em",
   },
+  mainCardContainer: {
+    paddingTop: "4.25em",
+    width: "97%",
+    marginLeft: "1.5em",
+    marginTop: ".5em",
+  },
 }));
+
+const CourseDisplayCard = ({
+  title,
+  day,
+  endDate,
+  endTime,
+  startTime,
+  startDate,
+  instructor,
+  id,
+}) => {
+  const classes = useStyles();
+  const [activeTime, setActiveTime] = useState("Past");
+  const [activeColor, setActiveColor] = useState("#BDBDBD");
+  const [bgColor, setBgColor] = useState("#FFFFFF");
+  // const [currentTarget, setCurrentTarget] = useState();
+  // const [tempTarget, setTempTarget] = useState();
+  // const [previousTarget, setPreviousTarget] = useState();
+  const { firstName, lastName } = instructor.user;
+  const letterDayManipulation = day.substring(1, 3).toLowerCase();
+  const firstLetterDayManipulation = day.substring(0, 1);
+  const abbreviatedDay = firstLetterDayManipulation + letterDayManipulation;
+  const startingTime = moment(startTime, "HH:mm").format("h:mm A");
+  const endingTime = moment(endTime, "HH:mm").format("h:mm A");
+  const startingDate = moment(startDate).calendar();
+  const endingDate = moment(endDate).calendar();
+
+  useEffect(() => {
+    const currentTime = moment().format("LT");
+    if (currentTime > startTime && currentTime < endTime) {
+      setActiveTime("Active");
+      setActiveColor("#6FCF97");
+    } else {
+      setActiveTime("Past");
+      setActiveColor("#BDBDBD");
+    }
+  }, [activeTime]);
+
+  const handleClick = (e) => {
+    const currentDiv = e.target;
+    console.log("clicked")
+    console.log(id)
+    return <Link to={`/class/${id}`} />
+  };
+
+  return (
+    <>
+      <Grid
+        container
+        justify="flex-start"
+        className={classes.mainCardContainer}
+        style={{ backgroundColor: `${bgColor}` }}
+        data-active="inactive"
+        onMouseEnter={() => setBgColor("#EBFAFF")}
+        onMouseLeave={() => setBgColor("#FFFFFF")}
+        // onClick={handleClick}
+        component={Link}
+        to={`/class/${id}`}
+      >
+        <Grid item xs={6}>
+          <Typography variant="h4" align="left" style={{ marginLeft: ".85em" }}>
+            {title}
+          </Typography>
+        </Grid>
+        <Grid item xs={6} style={{ textAlign: "left" }}>
+          <Chip
+            label={activeTime}
+            className={classes.chipSize}
+            style={{ backgroundColor: activeColor }}
+          />
+        </Grid>
+        <Grid
+          item
+          xs={2}
+          style={{ maxWidth: "12.66667%" }}
+          className={classes.displayCardMargins}
+        >
+          <Typography
+            variant="body1"
+            align="left"
+            style={{ marginLeft: "1.85em" }}
+          >
+            By:{" "}
+            <span
+              className={classes.highlightName}
+            >{`${firstName} ${lastName}`}</span>
+          </Typography>
+        </Grid>
+        <Divder
+          orientation="vertical"
+          flexItem
+          style={{ height: "2em", marginTop: "1em" }}
+        />
+        <Grid item xs={6}>
+          <Typography
+            variant="body1"
+            align="left"
+            style={{ marginLeft: "1.2em" }}
+            className={classes.displayCardMargins}
+          >{`Time: ${startingDate} - ${endingDate} ${abbreviatedDay} ${startingTime} - ${endingTime} `}</Typography>
+        </Grid>
+      </Grid>
+      <Divder />
+    </>
+  );
+};
 
 const CourseManagement = () => {
   const classes = useStyles();
-  const [state, setState] = useState("");
+  const [tab1, setTab1] = useState("");
+  const [tab2, setTab2] = useState("");
+  const [tab3, setTab3] = useState("");
+  const [tab4, setTab4] = useState("");
 
-  const handleChange = (event) => {
-    setState(event.target.value);
+  const handleChange1 = (event) => {
+    setTab1(event.target.value);
   };
 
-  const GET_COURSES = gql`query getCourses {
+  const handleChange2 = (event) => {
+    setTab2(event.target.value);
+  };
+
+  const handleChange3 = (event) => {
+    setTab3(event.target.value);
+  };
+
+  const handleChange4 = (event) => {
+    setTab4(event.target.value);
+  };
+
+  const GET_COURSES = gql`
+  query getCourses {
     courses {
       dayOfWeek
       endDate
@@ -124,74 +253,29 @@ const CourseManagement = () => {
           lastName
         }
       }
+      courseId
     }
-  }  
-  `
+  }
+  `;
 
   const { data, loading, error } = useQuery(GET_COURSES);
 
-  if(loading) return <Loading />;
-  if(error) return console.error(error.message);
+  if (loading) return <Loading />;
+  if (error) return console.error(error.message);
+  console.log(data)
 
-  const CourseDisplayCard = ({ title, day, endDate, endTime, startTime, startDate, instructor, index}) => {
-    const classes = useStyles();
-    const [activeTime, setActiveTime] = useState("Past");
-    const [activeColor, setActiveColor] = useState("#BDBDBD");
-    const { firstName, lastName } = instructor.user;
-    const letterDayManipulation = day.substring(1,3).toLowerCase();
-    const firstLetterDayManipulation = day.substring(0, 1);
-    const abbreviatedDay = firstLetterDayManipulation + letterDayManipulation;
-    const startingTime = moment(startTime, "HH:mm").format("h:mm A");
-    const endingTime = moment(endTime, "HH:mm").format("h:mm A");
-    const startingDate = moment(startDate).calendar();
-    const endingDate = moment(endDate).calendar();
-
-    useEffect(() => {
-      const currentTime = moment().format("LT")
-      if(currentTime > startTime && currentTime < endTime) {
-        setActiveTime("Active")
-        setActiveColor("#6FCF97")
-      } else {
-        setActiveTime("Past");
-        setActiveColor("#BDBDBD");
-      }
-    }, [activeTime]);
-
-    const handleClick = e => {
-      const currentTarget = e.currentTarget;
-      const currentIndex = currentTarget.getAttribute("data-active");
-      if(currentTarget.getAttribute("data-active") === "inactive") {
-        currentTarget.setAttribute("data-active", "active");
-        return currentTarget.style.backgroundColor = "#EBFAFF"
-      }
-      if(currentTarget.getAttribute("data-active") === "active") {
-        currentTarget.setAttribute("data-active", "inactive");
-        return currentTarget.style.backgroundColor = "#FFFFFF"
-      }
-        
-      
-    }
-
-    return (
-      <>
-      <Grid container justify="flex-start" style={{paddingTop: "4.25em"}} data-active="inactive" onClick={handleClick}>
-        <Grid item xs={6}>
-
-    <Typography variant="h4" align="left" style={{marginLeft: ".85em"}}>{title}</Typography>
-        </Grid>
-        <Grid item xs={6} style={{textAlign: "left"}}>
-      <Chip label={activeTime} className={classes.chipSize} style={{backgroundColor: activeColor}}/>
-        </Grid>
-    <Grid item xs={2} style={{maxWidth: "12.66667%"}} className={classes.displayCardMargins}><Typography variant="body1" align="left" style={{marginLeft: "1.85em"}}>By: <span className={classes.highlightName}>{`${firstName} ${lastName}`}</span></Typography></Grid>
-    <Divder orientation="vertical" flexItem style={{height: "2em", marginTop: "1em"}}/>
-    <Grid item xs={6}><Typography variant="body1" align="left" style={{marginLeft: "1.2em"}} className={classes.displayCardMargins}>{`Time: ${startingDate} - ${endingDate} ${abbreviatedDay} ${startingTime} - ${endingTime} `}</Typography></Grid>
-      </Grid>
-    <Divder />
-    </>
-    )
-  };
-
-  const courseDisplayList = data.courses.map((e, i) => <CourseDisplayCard title={e.title} day={e.dayOfWeek} endDate={e.endDate} endTime={e.endTime} startTime={e.startTime} startDate={e.startDate} instructor={e.instructor} index={i}/>);
+  const courseDisplayList = data.courses.map((e) => (
+    <CourseDisplayCard
+      title={e.title}
+      day={e.dayOfWeek}
+      endDate={e.endDate}
+      endTime={e.endTime}
+      startTime={e.startTime}
+      startDate={e.startDate}
+      instructor={e.instructor}
+      id={e.courseId}
+    />
+  ));
 
   return (
     <Grid item xs={12}>
@@ -200,35 +284,49 @@ const CourseManagement = () => {
           Course Management
         </Typography>
         <Paper elevation={4} className={classes.appBar}>
-          <Grid container alignItems="center" className={classes.containerMargins}>
+          <Grid
+            container
+            alignItems="center"
+            className={classes.containerMargins}
+          >
             <Grid item xs={3}>
               <FormControl className={classes.margin}>
                 <Select
                   labelId="demo-customized-select-label"
                   id="demo-customized-select"
-                  value={state.age}
-                  onChange={handleChange}
-                  classes={{select: classes.menuSelect}}
+                  displayEmpty
+                  value={tab1}
+                  onChange={handleChange1}
+                  classes={{ select: classes.menuSelect }}
                   input={<BootstrapInput />}
                   MenuProps={{
-                    classes:{list: classes.dropdown
-                    },
+                    classes: { list: classes.dropdown },
                     anchorOrigin: {
                       vertical: "bottom",
-                      horizontal: "left"
+                      horizontal: "left",
                     },
                     transformOrigin: {
                       vertical: "top",
-                      horizontal: "left"
+                      horizontal: "left",
                     },
                     getContentAnchorEl: null,
                   }}
                 >
-                  {/* <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem> */}
-                  <MenuItem className={classes.menuSelect} value={"start-date"} ListItemClasses={{ selected: classes.menuSelected}}>Start Date (Latest)</MenuItem>
-                  <MenuItem className={classes.menuSelect} value={"class-name"} ListItemClasses={{ selected: classes.menuSelected}}>Class Name(A-Z)</MenuItem>
+                  {tab1 === "" ? <MenuItem value="">Sort By</MenuItem> : null}
+                  <MenuItem
+                    className={classes.menuSelect}
+                    value={"start-date"}
+                    ListItemClasses={{ selected: classes.menuSelected }}
+                  >
+                    Start Date (Latest)
+                  </MenuItem>
+                  <MenuItem
+                    className={classes.menuSelect}
+                    value={"class-name"}
+                    ListItemClasses={{ selected: classes.menuSelected }}
+                  >
+                    Class Name(A-Z)
+                  </MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -237,29 +335,41 @@ const CourseManagement = () => {
                 <Select
                   labelId="demo-customized-select-label"
                   id="demo-customized-select"
-                  value={state.age}
-                  onChange={handleChange}
+                  displayEmpty
+                  value={tab2}
+                  onChange={handleChange2}
+                  classes={{ select: classes.menuSelect }}
                   input={<BootstrapInput />}
                   MenuProps={{
-                    classes:{list: classes.dropdown
-                    },
+                    classes: { list: classes.dropdown },
                     anchorOrigin: {
                       vertical: "bottom",
-                      horizontal: "left"
+                      horizontal: "left",
                     },
                     transformOrigin: {
                       vertical: "top",
-                      horizontal: "left"
+                      horizontal: "left",
                     },
                     getContentAnchorEl: null,
                   }}
                 >
-                  <MenuItem value="">
-                    <em>None</em>
+                  {tab2 === "" ? (
+                    <MenuItem value="">All Grades</MenuItem>
+                  ) : null}
+                  <MenuItem
+                    className={classes.menuSelect}
+                    value={"start-date"}
+                    ListItemClasses={{ selected: classes.menuSelected }}
+                  >
+                    Start Date (Latest)
                   </MenuItem>
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
+                  <MenuItem
+                    className={classes.menuSelect}
+                    value={"class-name"}
+                    ListItemClasses={{ selected: classes.menuSelected }}
+                  >
+                    Class Name(A-Z)
+                  </MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -268,30 +378,41 @@ const CourseManagement = () => {
                 <Select
                   labelId="demo-customized-select-label"
                   id="demo-customized-select"
-                  value={state.age}
-                  onChange={handleChange}
+                  displayEmpty
+                  value={tab3}
+                  onChange={handleChange3}
+                  classes={{ select: classes.menuSelect }}
                   input={<BootstrapInput />}
-                  SelectDisplayProps={classes.menuSelect}
                   MenuProps={{
-                    classes:{list: classes.dropdown
-                    },
+                    classes: { list: classes.dropdown },
                     anchorOrigin: {
                       vertical: "bottom",
-                      horizontal: "left"
+                      horizontal: "left",
                     },
                     transformOrigin: {
                       vertical: "top",
-                      horizontal: "left"
+                      horizontal: "left",
                     },
                     getContentAnchorEl: null,
                   }}
                 >
-                  <MenuItem value="">
-                    <em>None</em>
+                  {tab3 === "" ? (
+                    <MenuItem value="">All Subjects</MenuItem>
+                  ) : null}
+                  <MenuItem
+                    className={classes.menuSelect}
+                    value={"start-date"}
+                    ListItemClasses={{ selected: classes.menuSelected }}
+                  >
+                    Start Date (Latest)
                   </MenuItem>
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
+                  <MenuItem
+                    className={classes.menuSelect}
+                    value={"class-name"}
+                    ListItemClasses={{ selected: classes.menuSelected }}
+                  >
+                    Class Name(A-Z)
+                  </MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -300,29 +421,41 @@ const CourseManagement = () => {
                 <Select
                   labelId="demo-customized-select-label"
                   id="demo-customized-select"
-                  value={state.age}
-                  onChange={handleChange}
+                  displayEmpty
+                  value={tab4}
+                  onChange={handleChange4}
+                  classes={{ select: classes.menuSelect }}
                   input={<BootstrapInput />}
                   MenuProps={{
-                    classes:{list: classes.dropdown
-                    },
+                    classes: { list: classes.dropdown },
                     anchorOrigin: {
                       vertical: "bottom",
-                      horizontal: "left"
+                      horizontal: "left",
                     },
                     transformOrigin: {
                       vertical: "top",
-                      horizontal: "left"
+                      horizontal: "left",
                     },
                     getContentAnchorEl: null,
                   }}
                 >
-                  <MenuItem value="">
-                    <em>None</em>
+                  {tab4 === "" ? (
+                    <MenuItem value="">All Instructors</MenuItem>
+                  ) : null}
+                  <MenuItem
+                    className={classes.menuSelect}
+                    value={"start-date"}
+                    ListItemClasses={{ selected: classes.menuSelected }}
+                  >
+                    Start Date (Latest)
                   </MenuItem>
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
+                  <MenuItem
+                    className={classes.menuSelect}
+                    value={"class-name"}
+                    ListItemClasses={{ selected: classes.menuSelected }}
+                  >
+                    Class Name(A-Z)
+                  </MenuItem>
                 </Select>
               </FormControl>
             </Grid>
