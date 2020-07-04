@@ -148,7 +148,7 @@ const CourseDisplayCard = ({
   }, [activeTime]);
 
   const handleClick = (e) => {
-    history.push(`/class/${id}`)
+    history.push(`/coursemanagement/class/${id}`)
   };
 
   return (

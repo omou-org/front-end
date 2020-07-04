@@ -127,11 +127,13 @@ export const RootRoutes = () => {
             <AuthenticatedRoute 
             path="/coursemanagement"
             users={[USER_TYPES.admin]}
+            exact
             >
                 <CourseManagement />
             </AuthenticatedRoute>
+
             <AuthenticatedRoute 
-            path="/class/:id?"
+           path="/coursemanagement/class/:id?"
             users={[USER_TYPES.admin]}
             >
                 <CourseClasses />
