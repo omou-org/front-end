@@ -118,17 +118,14 @@ const Navigation = () => {
         setMobileOpen((open) => !open);
     }, []);
 
+
     return (
         <ThemeProvider theme={OmouTheme}>
             <div className="Navigation">
-                <AppBar className="OmouBar" position="sticky">
-                    <Toolbar>
                         {token ?
                             <AuthenticatedNav
                                 toggleDrawer={handleDrawerToggle} /> :
                             <UnauthenticatedNav />}
-                    </Toolbar>
-                </AppBar>
                 {token && (
                     <nav className="OmouDrawer">
                         <Hidden implementation="css" smUp>
