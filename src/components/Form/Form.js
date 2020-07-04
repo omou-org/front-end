@@ -9,7 +9,7 @@ import Stepper from "@material-ui/core/Stepper";
 import Typography from "@material-ui/core/Typography";
 import FormReceipt from "./FormReceipt";
 
-import {Debug, makeValidate} from "mui-rff";
+import {makeValidate} from "mui-rff";
 import {Button} from "@material-ui/core";
 import * as Yup from "yup";
 
@@ -69,7 +69,7 @@ const generateFields = (format) => {
     return [schema, sections];
 };
 
-const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormReceipt}) => {
+const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormReceipt, stepperOrientation = "vertical"}) => {
     const [activeStep, setActiveStep] = useState(0);
     const [showReceipt, setShowReceipt] = useState(false);
     const [submittedData, setSubmittedData] = useState(null);
@@ -95,10 +95,9 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
         return errors;
     }, [onSubmit]);
 
-    const renderStep = useCallback((index, {label, name, fields}, errors, submitting) => (
-        <Step className={classes.step} key={label}>
-            <StepLabel>{label}</StepLabel>
-            <StepContent>
+    const renderStepContent = useCallback((index, {name, fields}, errors, submitting) => {
+        const content = (
+            <>
                 {fields.map((field) => React.cloneElement(field,
                     {
                         "SelectDisplayProps": {
@@ -113,42 +112,69 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                     }))}
                 <div className={classes.buttons}>
                     {index > 0 && index < sections.length &&
-                        <Button data-cy="backButton" onClick={handleBack}
-                            variant="outlined">
-                            Back
-                        </Button>}
+                    <Button data-cy="backButton" onClick={handleBack}
+                        variant="outlined">
+                        Back
+                    </Button>}
                     {index < sections.length - 1 &&
-                        <Button data-cy="nextButton"
-                            disabled={Boolean(errors[name])}
-                            onClick={handleNext}
-                            variant="outlined">
-                            Next
-                        </Button>}
+                    <Button data-cy="nextButton"
+                        disabled={Boolean(errors[name])}
+                        onClick={handleNext}
+                        variant="outlined">
+                        Next
+                    </Button>}
                     {index === sections.length - 1 &&
-                        <Button data-cy="submitButton"
-                            disabled={Boolean(errors[name]) || submitting}
-                            type="submit"
-                            variant="outlined">
-                            {submitting ? "Submitting" : "Submit"}
-                        </Button>}
+                    <Button data-cy="submitButton"
+                        disabled={Boolean(errors[name]) || submitting}
+                        type="submit"
+                        variant="outlined">
+                        {submitting ? "Submitting" : "Submit"}
+                    </Button>}
                 </div>
-            </StepContent>
-        </Step>
-    ), [classes.step, classes.buttons, sections.length, handleBack, handleNext]);
+            </>
+        );
 
-    const render = useCallback(({handleSubmit, errors, submitError, submitting}) => (
+        return content;
+    }, [classes.buttons, sections.length, handleBack, handleNext]);
+
+    const renderVertical = useCallback(({handleSubmit, errors, submitError, submitting}) => (
         <form noValidate onSubmit={handleSubmit}>
-            <Stepper activeStep={activeStep} orientation="vertical">
-                {sections.map((section, index) => renderStep(
-                    index, section, errors, submitting,
-                ))}
+            <Stepper activeStep={activeStep} orientation={stepperOrientation}>
+                {sections.map((section, index) => (
+                    <Step className={classes.step} key={section.label}>
+                        <StepLabel>{section.label}</StepLabel>
+                        <StepContent>
+                            {renderStepContent(
+                                index, section, errors, submitting,
+                            )}
+                        </StepContent>
+                    </Step>))}
             </Stepper>
             {submitError &&
                 <div className="error">
                     An error occured while submitting. Try again.
                 </div>}
         </form>
-    ), [activeStep, renderStep, sections]);
+    ), [activeStep, renderStepContent, sections, stepperOrientation, classes.step]);
+
+    const renderHorizontal = useCallback(({handleSubmit, errors, submitError, submitting}) => (
+        <form noValidate onSubmit={handleSubmit}>
+            <Stepper activeStep={activeStep} orientation={stepperOrientation}>
+                {sections.map(({label}) => (
+                    <Step className={classes.step} key={label}>
+                        <StepLabel>{label}</StepLabel>
+                    </Step>
+                ))}
+            </Stepper>
+            {renderStepContent(
+                activeStep, sections[activeStep], errors, submitting,
+            )}
+            {submitError &&
+                <div className="error">
+                    An error occured while submitting. Try again.
+                </div>}
+        </form>
+    ), [activeStep, renderStepContent, sections, stepperOrientation, classes.step]);
 
     return (
         <div className={classes.root}>
@@ -159,7 +185,9 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
             {showReceipt ?
                 <Receipt formData={submittedData} format={base} /> :
                 <ReactForm initialValues={initialData} onSubmit={submit}
-                    render={render} validate={validate} />}
+                    render={stepperOrientation === "horizontal" ?
+                        renderHorizontal :
+                        renderVertical} validate={validate} />}
         </div>
     );
 };

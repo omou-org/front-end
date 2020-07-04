@@ -9,7 +9,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import PasswordInput from "./PasswordInput";
+import {PasswordInput} from "../Form/Fields";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 
@@ -107,7 +107,7 @@ const LoginPage = () => {
                     inputProps={{"data-cy": "emailField"}} label="E-Mail"
                     margin="normal" onChange={handleTextInput(setEmail)}
                     value={email} />
-                <PasswordInput autoComplete="current-password"
+                <PasswordInput isField={false} autoComplete="current-password"
                     error={hasError || password === ""} fullWidth
                     inputProps={{"data-cy": "passwordField"}} label="Password"
                     onChange={handleTextInput(setPassword)}
@@ -143,7 +143,7 @@ const LoginPage = () => {
                     <Grid item>
                         <Button className={classes.secondaryButton}
                             component={Link} to={{
-                                "pathname": "/newaccount",
+                                "pathname": "/new/parent",
                                 "state": {
                                     email,
                                     password,
