@@ -17,6 +17,7 @@ import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
+import { fullName } from "../../../utils";
 import moment from "moment";
 
 const baseTheme = createMuiTheme();
@@ -128,6 +129,7 @@ const CourseDisplayCard = ({
   // const [tempTarget, setTempTarget] = useState();
   // const [previousTarget, setPreviousTarget] = useState();
   const { firstName, lastName } = instructor.user;
+  const concatFullName = fullName(instructor.user);
   const letterDayManipulation = day.substring(1, 3).toLowerCase();
   const firstLetterDayManipulation = day.substring(0, 1);
   const abbreviatedDay = firstLetterDayManipulation + letterDayManipulation;
@@ -149,6 +151,7 @@ const CourseDisplayCard = ({
 
   const handleClick = (e) => {
     history.push(`/coursemanagement/class/${id}`)
+    // console.log("does this work?")
   };
 
   return (
@@ -162,8 +165,6 @@ const CourseDisplayCard = ({
         onMouseEnter={() => setBgColor("#EBFAFF")}
         onMouseLeave={() => setBgColor("#FFFFFF")}
         onClick={handleClick}
-        // component={Link}
-        // to={`/class/${id}`}
       >
         <Grid item xs={6}>
           <Typography variant="h4" align="left" style={{ marginLeft: ".85em" }}>
@@ -179,8 +180,8 @@ const CourseDisplayCard = ({
         </Grid>
         <Grid
           item
-          xs={2}
-          style={{ maxWidth: "12.66667%" }}
+          xs={3}
+          // style={{ maxWidth: "12.66667%" }}
           className={classes.displayCardMargins}
         >
           <Typography
@@ -191,7 +192,7 @@ const CourseDisplayCard = ({
             By:{" "}
             <span
               className={classes.highlightName}
-            >{`${firstName} ${lastName}`}</span>
+            >{`${concatFullName}`}</span>
           </Typography>
         </Grid>
         <Divder
@@ -260,7 +261,7 @@ const CourseManagement = () => {
 
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
-  console.log(data)
+  // console.log(data)
 
   const courseDisplayList = data.courses.map((courses) => (
     <CourseDisplayCard

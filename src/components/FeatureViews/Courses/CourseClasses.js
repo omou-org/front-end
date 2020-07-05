@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
@@ -21,6 +21,9 @@ import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import BackButton from "../../OmouComponents/BackButton";
 import ChromeTabs from "../../OmouComponents/ChromeTabs";
 import TabPanel from "../../OmouComponents/TabPanel";
+import ClassInfo from "./ClassInfo";
+import StudentEnrollment from "./StudentEnrollment";
+import Studentenrollment from "./StudentEnrollment";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -113,7 +116,9 @@ const CourseClasses = () => {
   const { name } = data.course.courseCategory;
   const { firstName, lastName } = data.course.instructor.user;
 
-  const x = enrollmentSet.map((e) => console.log(e));
+  console.log(enrollmentSet);
+  const x = enrollmentSet.map((e) => e);
+  console.log(x)
 
   const letterDayManipulation = dayOfWeek.substring(1, 3).toLowerCase();
   const firstLetterDayManipulation = dayOfWeek.substring(0, 1);
@@ -226,6 +231,8 @@ const CourseClasses = () => {
                       bgColor: "#ffffff",
                       selectedBgColor: "#EBFAFF",
                       color: "rgba(102, 102, 102, 0.87)",
+                      leftValue: 0,
+                      rightValue: 0,
                     }}
                     tabProps={{
                       disableRipple: true,
@@ -237,11 +244,11 @@ const CourseClasses = () => {
               <Divider />
               </AppBar>
               <Grid container>
-                <TabPanel index={0} value={index}>
-                <Typography variant="body2">{description}</Typography>
+                <TabPanel index={0} value={index} backgroundColor="#FFFFFF">
+                <ClassInfo description={description} />
                 </TabPanel>
                 <TabPanel index={1} value={index}>
-                  Page Two
+                  <Studentenrollment />
                 </TabPanel>
                 <TabPanel index={2} value={index}>
                   Page Three

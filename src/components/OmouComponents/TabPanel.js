@@ -5,8 +5,7 @@ import PropTypes from "prop-types";
 import Paper from "@material-ui/core/Paper";
 
 export default function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-    // console.log(children)
+    const { children, value, index, backgroundColor, ...other } = props;
   
     return (
       <div
@@ -18,7 +17,7 @@ export default function TabPanel(props) {
       >
         {value === index && (
           <Box>
-            <Paper elevation={0} style={{backgroundColor: "#EFF9FC"}}>{children}</Paper>
+            <Paper elevation={0} style={{backgroundColor: backgroundColor}}>{children}</Paper>
             {/* <Typography>{children}</Typography> */}
           </Box>
         )}
