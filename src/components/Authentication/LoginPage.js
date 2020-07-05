@@ -20,7 +20,6 @@ import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import { makeStyles } from "@material-ui/core/styles";
 import { setToken } from "actions/authActions.js";
 import useAuthStyles from "./styles.js";
-import Chip from '@material-ui/core/Chip';
 import { ReactComponent as Ellipse1 } from "./loginImages/ellipse1.svg";
 import { ReactComponent as Ellipse2 } from "./loginImages/ellipse2.svg";
 import { ReactComponent as Picture1 } from "./loginImages/picture1.svg";
@@ -29,7 +28,6 @@ import { ReactComponent as Ellipse4 } from "./loginImages/ellipse4.svg";
 import { ReactComponent as Picture2 } from "./loginImages/picture2.svg";
 import { ReactComponent as Picture3 } from "./loginImages/picture3.svg";
 import { ReactComponent as Picture4 } from "./loginImages/picture4.svg";
-
 import "./LoginPage.scss";
 
 const useStyles = makeStyles((theme) => ({
@@ -75,6 +73,7 @@ const LoginPage = () => {
         variables: { "username": realEmail },
         onCompleted: data => { setUserType(data.userType) }
     });
+    
     const [login, { loginLoading }] = useMutation(LOGIN, {
         "errorPolicy": "ignore",
         "ignoreResults": true,
@@ -98,20 +97,6 @@ const LoginPage = () => {
             }
         }
     }, [token, history]);
-
-    // useEffect(()=>{
-    //     if(!data || loading){
-    //         console.log("here")
-    //         return(<TextField error={hasError || email === ""} fullWidth
-    //         inputProps={{ "data-cy": "emailField" }} label="E-Mail"
-    //         margin="normal" onChange={handleTextInput(setEmail)}
-    //         value={email} />)
-    //     }
-    //     else{
-    //         console.log("there")
-    //         setUserType(data.userType)
-    //     }
-    // }, [data, loading])
 
     const classes = {
         ...useStyles(),
@@ -142,11 +127,7 @@ const LoginPage = () => {
         getUserType()
     }
 
-    const handlelog = () => {
-        console.log(data)
-    }
-
-    const renderEmail = () => {
+    const renderEmailLogin = () => {
         return (
             <div>
                 <Ellipse1 className="ellipse1" />
@@ -199,7 +180,8 @@ const LoginPage = () => {
                 </form>
             </div>)
     }
-    const renderOther = () => {
+
+    const renderOtherLogins = () => {
         switch (userType) {
             case "Parent":
                 return (
@@ -429,95 +411,15 @@ const LoginPage = () => {
         }
     }
 
-    const checkValidEmail = () => {
-    }
-
-    const renderLog = () => {
+    const renderLogin = () => {
         return (
-            userType ? renderOther() : renderEmail()
+            userType ? renderOtherLogins() : renderEmailLogin()
         );
     }
 
-    // const renderLogin = () => {
-    //     switch (userType) {
-    //         case "Admin":
-    //             return (
-
-
-    //         case "Parent":
-    //             return (
-    //                 <div>sdasd</div>
-    //             );
-    //         default:
-
-    //     }
-    // }
     return (
-        renderLog()
-        // <Paper className={`${classes.root} ${classes.smallerRoot}`}>
-        //     <Typography align="center" className={classes.header}
-        //         color="primary">
-        //         sign in
-        // </Typography>
-        //     <form onSubmit={handleLogin}>
-        //         <TextField error={hasError || email === ""} fullWidth
-        //             inputProps={{ "data-cy": "emailField" }} label="E-Mail"
-        //             margin="normal" onChange={handleTextInput(setEmail)}
-        //             value={email} />
-        //         <PasswordInput autoComplete="current-password"
-        //             error={hasError || password === ""} fullWidth
-        //             inputProps={{ "data-cy": "passwordField" }} label="Password"
-        //             onChange={handleTextInput(setPassword)}
-        //             value={password} />
-        //         <Grid alignItems="center" className={classes.options} container
-        //             justify="space-between">
-        //             <Grid item>
-        //                 <FormControlLabel
-        //                     control={<Checkbox checked={shouldSave}
-        //                         inputProps={{ "data-cy": "rememberMe" }}
-        //                         onChange={toggleSavePassword} />}
-        //                     label="Remember Me" />
-        //             </Grid>
-        //             <Grid item>
-        //                 <Link className={classes.forgot}
-        //                     data-cy="forgotPassword" to={{
-        //                         "pathname": "/forgotpassword",
-        //                         "state": { email },
-        //                     }}>
-        //                     Forgot Password?
-        //             </Link>
-        //             </Grid>
-        //         </Grid>
-        //         <Grid alignItems="center" container justify="space-evenly">
-        //             <Grid item>
-        //                 <Button className={classes.primaryButton}
-        //                     color="primary" data-cy="signInButton"
-        //                     disabled={!email || !password || loading}
-        //                     type="submit" variant="contained">
-        //                     sign in
-        //             </Button>
-        //             </Grid>
-        //             <Grid item>
-        //                 <Button className={classes.secondaryButton}
-        //                     component={Link} to={{
-        //                         "pathname": "/newaccount",
-        //                         "state": {
-        //                             email,
-        //                             password,
-        //                         },
-        //                     }} variant="outlined">
-        //                     New Account
-        //             </Button>
-        //             </Grid>
-        //         </Grid>
-        //     </form>
-        //     {hasError && (
-        //         <Typography color="error" data-cy="errorMessage">
-        //             Invalid credentials
-        //         </Typography>
-        //     )}
-        // </Paper>
-    );
+        renderLogin()
+       );
 
 };
 
