@@ -46,7 +46,8 @@ const PasswordInput = ({ label = "Password", ...props }) => {
                     <VpnKeyOutlinedIcon style={{ color: "grey" }} />
                 </InputAdornment>
             ),
-        }} />
+        }} 
+        {...props}/>
     );
 };
 
