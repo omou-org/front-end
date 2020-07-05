@@ -154,7 +154,6 @@ const Navigation = () => {
                 : <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <RootRoutes />
                     </MuiPickersUtilsProvider>}
-
             </div>
         </ThemeProvider>
     );

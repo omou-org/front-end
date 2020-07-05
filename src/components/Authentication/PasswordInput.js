@@ -1,45 +1,52 @@
-import React, {useCallback, useState} from "react";
-import {makeStyles} from "@material-ui/core/styles";
-
-import FormControl from "@material-ui/core/FormControl";
+import React, { useCallback, useState } from "react";
 import IconButton from "@material-ui/core/IconButton";
-import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
-import InputLabel from "@material-ui/core/InputLabel";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import TextField from "@material-ui/core/TextField";
+import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
+import "./LoginPage.scss";
 
-const useStyles = makeStyles({
-    "root": {
-        "width": "100%",
-    },
-});
-
-const PasswordInput = ({label = "Password", ...props}) => {
+const PasswordInput = ({ label = "Password", ...props }) => {
     const [showPassword, setShowPassword] = useState(false);
+    const [password, setPassword] = useState(null);
 
     const toggleVisibility = useCallback(() => {
         setShowPassword((show) => !show);
+
     }, []);
 
-    const classes = useStyles();
 
-    return (
-        <FormControl className={classes.root}>
-            <InputLabel htmlFor="password">{label}</InputLabel>
-            <Input
-                endAdornment={
-                    <InputAdornment position="end">
-                        <IconButton aria-label="toggle password visibility"
-                            onClick={toggleVisibility}>
-                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                        </IconButton>
-                    </InputAdornment>
-                }
-                id="password"
-                type={showPassword ? "text" : "password"}
-                {...props} />
-        </FormControl>
+
+    const handleTextInput = useCallback((setter) => ({ target }) => {
+        setter(target.value);
+    }, []);
+
+    return (<TextField
+        htmlFor="password"
+        className="TextField"
+        value={password}
+        variant="outlined"
+        fullWidth="true"
+        id="password"
+        type={showPassword ? "text" : "password"}
+        onChange={handleTextInput(setPassword)}
+        placeholder={showPassword ? "text" : "password"}
+        InputProps={{
+            endAdornment: (
+                <InputAdornment position="end">
+                    <IconButton aria-label="toggle password visibility"
+                        onClick={toggleVisibility}>
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                </InputAdornment>
+            ),
+            startAdornment: (
+                <InputAdornment position="start">
+                    <VpnKeyOutlinedIcon style={{ color: "grey" }} />
+                </InputAdornment>
+            ),
+        }} />
     );
 };
 

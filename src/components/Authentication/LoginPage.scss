@@ -1,5 +1,20 @@
+.logo {
+    padding-top: 1%;
+    padding-left: 1.5%;
+    .title {
+        position: absolute;
+        font-family: "Roboto Slab", serif;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 24px;
+        line-height: 26px;
+        text-decoration: none;
+        color: white;
+    }
+}
+
 .emailLogin {
-    padding-top: 10%;
+    padding-top: 12%;
     .inputRounded .MuiOutlinedInput-root {
         border-radius: 50px;
     }
@@ -7,9 +22,18 @@
         border-radius: 300px;
     }
     .TextField {
-        padding-top: 3%;
         width: 80%;
-        padding-bottom: 6%;
+        padding-bottom: 3%;
+    }
+    .forgotPassword {
+        text-decoration: none;
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 15px;
+        line-height: 23px;
+        color:black;
+        margin-top:10px;
     }
     .welcomeText {
         font-family: "Roboto Slab";
@@ -17,26 +41,31 @@
         font-weight: bold;
         font-size: 52px;
         line-height: 69px;
+        color: #43b5d9;
+        padding-bottom: 3%;
     }
-    .signInButton {
-        width: 80%;
-        background: #ffffff;
-        border: 1px solid #747d88;
-        box-sizing: border-box;
-        box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
-        border-radius: 50px;
-        padding: 8px 0 8px 0;
-        color: #666666;
-    }
-    .createAccountButton {
-        width: 80%;
-        background: #43b5d9;
-        border: 1px solid #43b5d9;
-        box-sizing: border-box;
-        box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
-        border-radius: 50px;
-        padding: 8px 0 8px 0;
-        color: white;
+    .buttonContainer {
+        padding-top: 3%;
+        .signInButton {
+            width: 80%;
+            background: #ffffff;
+            border: 1px solid #747d88;
+            box-sizing: border-box;
+            box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+            border-radius: 50px;
+            padding: 8px 0 8px 0;
+            color: #666666;
+        }
+        .createAccountButton {
+            width: 80%;
+            background: #43b5d9;
+            border: 1px solid #43b5d9;
+            box-sizing: border-box;
+            box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+            border-radius: 50px;
+            padding: 8px 0 8px 0;
+            color: white;
+        }
     }
 }
 .ellipse1 {
@@ -54,8 +83,7 @@
 }
 .picture1 {
     position: absolute;
-    bottom:0;
-    left:0;
-    font-size:10px;
-
+    bottom: 0;
+    left: 0;
+    font-size: 10px;
 }

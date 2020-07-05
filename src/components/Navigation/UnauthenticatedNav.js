@@ -1,10 +1,8 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
-import "./Navigation.scss";
 
-const UnauthenticatedNav = () => {
-    return (<Typography className="unauthenticatedNav">omou</Typography>)
+const AuthenticatedNav = () => (
+    <div/>
+);
 
-}
-
-export default UnauthenticatedNav;
+export default AuthenticatedNav;
