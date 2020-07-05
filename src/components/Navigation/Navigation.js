@@ -3,6 +3,7 @@ import {useSelector} from "react-redux";
 
 import AccountsIcon from "@material-ui/icons/Contacts";
 import AdminIcon from "@material-ui/icons/Face";
+import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 import AppBar from "@material-ui/core/AppBar";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import Drawer from "@material-ui/core/Drawer";
@@ -56,14 +57,19 @@ const Navigation = () => {
                 "icon": <EventIcon />,
             },
             {
-                "name": "Accounts",
-                "link": "/accounts",
-                "icon": <AccountsIcon />,
-            },
-            {
                 "name": "Registration",
                 "link": "/registration",
                 "icon": <AssignmentIcon />,
+            },
+            {
+                "name": "Course Management",
+                "link": "/coursemanagement",
+                "icon": <ImportContactsIcon />
+            },
+            {
+                "name": "Accounts",
+                "link": "/accounts",
+                "icon": <AccountsIcon />,
             },
             {
                 "name": "Admin",

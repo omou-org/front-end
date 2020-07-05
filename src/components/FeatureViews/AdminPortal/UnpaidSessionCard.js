@@ -7,6 +7,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import Loading from "../../OmouComponents/Loading"
 
 import * as adminUtils from "./AdminUtils";
 import {initials} from "utils";
@@ -16,9 +17,12 @@ import {useSelector} from "react-redux";
 const UnpaidSessionCard = ({unpaidStudent}) => {
 	const students = useSelector(({Users}) => Users.StudentList);
 	const courses = useSelector(({Course}) => Course.NewCourseList);
-
+	
+	
 	const student = students[unpaidStudent.student];
 	const course = courses[unpaidStudent.course];
+	if(!student) return <Loading /> 
+	if(!course) return <Loading />
 	const startTime = adminUtils.getTime(course.schedule.start_time);
 	const endTime = adminUtils.getTime(course.schedule.end_time);
 	const amtDue = adminUtils.amountDue(
