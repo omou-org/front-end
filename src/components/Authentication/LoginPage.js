@@ -20,8 +20,10 @@ import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import { makeStyles } from "@material-ui/core/styles";
 import { setToken } from "actions/authActions.js";
 import useAuthStyles from "./styles.js";
-import {ReactComponent as Ellipse1} from "./ellipse/ellipse1.svg";
-import {ReactComponent as Ellipse2} from "./ellipse/ellipse2.svg";
+import Chip from '@material-ui/core/Chip';
+import { ReactComponent as Ellipse1 } from "./ellipse/ellipse1.svg";
+import { ReactComponent as Ellipse2 } from "./ellipse/ellipse2.svg";
+import { ReactComponent as Picture1 } from "./ellipse/picture1.svg";
 import "./LoginPage.scss";
 
 const useStyles = makeStyles((theme) => ({
@@ -58,12 +60,13 @@ const LoginPage = () => {
     const token = useSelector(({ auth }) => auth.token);
     const [userType, setUserType] = useState("");
     const [email, setEmail] = useState(state?.email);
+    const [realEmail, setRealEmail] = useState("");
     const [password, setPassword] = useState(null);
     const [shouldSave, setShouldSave] = useState(false);
     const [hasError, setHasError] = useState(false);
 
     const [getUserType, { data, loading }] = useLazyQuery(GET_USER_TYPE, {
-        variables: { "username": email },
+        variables: { "username": realEmail},
         onCompleted: data => { setUserType(data.userType) }
     });
     const [login, { loginLoading }] = useMutation(LOGIN, {
@@ -129,6 +132,7 @@ const LoginPage = () => {
     }, []);
 
     const handleCheck = () => {
+        setRealEmail(email);
         getUserType()
     }
 
@@ -138,38 +142,51 @@ const LoginPage = () => {
 
     const renderEmail = () => {
         return (
-        <div>
-
-<Ellipse1 className="ellipse1"/>
-<Ellipse2 className="ellipse2"/>
-            <form className="emailLogin">
-                <Grid container>
-                    <Grid item md={6}></Grid>
-                    <Grid item md={6}>
-                    <TextField error={hasError || email === ""} fullWidth
-                        inputProps={{ "data-cy": "emailField" }} 
-                        margin="normal" 
-                        onChange={handleTextInput(setEmail)}
-                        value={email} 
-                        variant="outlined" 
-                        className="TextField"
-                        InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <EmailOutlinedIcon style={{color:"grey"}}/>
-                              </InputAdornment>
-                            ),
-                          }}/>
-                    <Button>
-                        CREATE ACCOUNT
-                    </Button>
-                    <Button onClick={() => handleCheck()}>
-                        SIGN IN
-                     </Button>
-                     </Grid>
-                </Grid>
-            </form>
-        </div>)
+            <div>
+                <Ellipse1 className="ellipse1"/>
+                <Ellipse2 className="ellipse2"/>
+                <Picture1 className="picture1"/>
+                <form className="emailLogin">
+                    <Grid container>
+                        <Grid item md={6}></Grid>
+                        <Grid item md={6}>
+                            <Typography className="welcomeText">
+                                Welcome to Summit
+                            </Typography>
+                            <TextField error={hasError || email === ""} fullWidth
+                                inputProps={{ "data-cy": "emailField" }}
+                                margin="normal"
+                                onChange={handleTextInput(setEmail)}
+                                value={email}
+                                placeholder="E-Mail"
+                                variant="outlined"
+                                className="TextField"
+                                fullWidth="true"
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <EmailOutlinedIcon style={{ color: "grey" }} />
+                                        </InputAdornment>
+                                    ),
+                                }} />
+                            <Grid container item>
+                                <Grid item md={2}/>
+                                <Grid item md={4}>
+                                <Button className="createAccountButton">
+                                    CREATE ACCOUNT
+                                </Button>
+                                </Grid>
+                                <Grid item md={4}>
+                                <Button className="signInButton" onClick={() => handleCheck()}>
+                                    SIGN IN
+                                </Button>
+                                </Grid>
+                                <Grid item md={2}/>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </form>
+            </div>)
     }
     const renderOther = () => {
         switch (userType) {

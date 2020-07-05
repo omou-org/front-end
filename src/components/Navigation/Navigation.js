@@ -145,11 +145,16 @@ const Navigation = () => {
                         </Hidden>
                     </nav>
                 )}
+                {token ?
                 <main className="OmouMain">
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <RootRoutes />
                     </MuiPickersUtilsProvider>
                 </main>
+                : <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <RootRoutes />
+                    </MuiPickersUtilsProvider>}
+
             </div>
         </ThemeProvider>
     );
