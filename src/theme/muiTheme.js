@@ -4,6 +4,7 @@ import {createMuiTheme} from "@material-ui/core/styles";
 const tabBorderRadius = "10px";
 // Theme Colors
 export const omouBlue = "#43B5D9";
+export const skyBlue = "#EBFAFF";
 
 // Font Colors
 export const lightPrimaryFontColor = "#767474";
@@ -114,6 +115,17 @@ const theme = createMuiTheme({
                 "fill": "white",
             },
         },
+        MuiTableRow: {
+            head: {
+                backgroundColor: skyBlue,
+            }
+        },
+        MuiTableCell: {
+            head: {
+                color: secondaryFontColor,
+                fontWeight: 600,
+            }
+        }
     },
 });
 

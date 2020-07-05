@@ -13,8 +13,6 @@ import Toolbar from "@material-ui/core/Toolbar";
 import {makeStyles, ThemeProvider} from "@material-ui/core/styles";
 
 import "./Navigation.scss";
-import DateFnsUtils from "@date-io/date-fns";
-import {MuiPickersUtilsProvider} from "material-ui-pickers";
 import OmouTheme from "../../theme/muiTheme";
 import {RootRoutes} from "../Routes/RootRoutes";
 
@@ -104,9 +102,7 @@ const Navigation = () => {
                     </nav>
                 )}
                 <main className="OmouMain">
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <RootRoutes />
-                    </MuiPickersUtilsProvider>
+                    <RootRoutes/>
                 </main>
             </div>
         </ThemeProvider>

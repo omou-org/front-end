@@ -26,7 +26,7 @@ export default function TeachingLogEntry({session: {title, endDatetime, startDat
 	return (<>
 		<TableRow className={classes.root}>
 			<TableCell>{id}</TableCell>
-			<TableCell><Moment date={startDatetime} format="d/m/YYYY"/></TableCell>
+			<TableCell><Moment date={startDatetime} format="MM/DD/YYYY"/></TableCell>
 			<TableCell>{title}</TableCell>
 			<TableCell>
 				<Moment date={startDatetime} format="h:mm a"/>-
@@ -35,9 +35,11 @@ export default function TeachingLogEntry({session: {title, endDatetime, startDat
 			<TableCell>
 				{moment.duration(moment(endDatetime).diff(moment(startDatetime))).asHours()}
 			</TableCell>
-			<IconButton aria-label="expand teaching log" size="small" onClick={() => setOpen(!open)}>
-				{open ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
-			</IconButton>
+			<TableCell>
+				<IconButton aria-label="expand teaching log" size="small" onClick={() => setOpen(!open)}>
+					{open ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
+				</IconButton>
+			</TableCell>
 		</TableRow>
 		<TableRow>
 			<TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={6}>

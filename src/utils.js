@@ -1,6 +1,7 @@
 import {instance} from "actions/apiActions";
 import {useCallback} from "react";
 import {useHistory} from "react-router-dom";
+import moment from "moment";
 
 export const USER_TYPES = {
     "admin": "ADMIN",
@@ -388,3 +389,11 @@ export const uniques = (array) => array.filter(
  * @param {Object} user
  */
 export const fullName = ({firstName, lastName}) => `${firstName} ${lastName}`;
+
+/**
+ * Returns duration in hours using Moment.js
+ * @param startDatetime
+ * @param endDatetime
+ * */
+export const getDuration = (startDatetime, endDatetime) =>
+    moment.duration(moment(endDatetime).diff(moment(startDatetime))).asHours();
