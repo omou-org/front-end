@@ -73,7 +73,7 @@ const LoginPage = () => {
         variables: { "username": realEmail },
         onCompleted: data => { setUserType(data.userType) }
     });
-    
+
     const [login, { loginLoading }] = useMutation(LOGIN, {
         "errorPolicy": "ignore",
         "ignoreResults": true,
@@ -419,7 +419,7 @@ const LoginPage = () => {
 
     return (
         renderLogin()
-       );
+    );
 
 };
 

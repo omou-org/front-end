@@ -31,7 +31,7 @@ const PasswordInput = ({ label = "Password", ...props }) => {
         id="password"
         type={showPassword ? "text" : "password"}
         onChange={handleTextInput(setPassword)}
-        placeholder={showPassword ? "text" : "password"}
+        placeholder={showPassword ? "text" : "Password"}
         InputProps={{
             endAdornment: (
                 <InputAdornment position="end">
