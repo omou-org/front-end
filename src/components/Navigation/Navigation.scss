@@ -58,7 +58,7 @@ body {
     }
 
     @include respond-to(wide-screens) {
-      margin-left: $drawerWidth;
+      margin-left: 0;
     }
 
     padding: 2.2% 3%;

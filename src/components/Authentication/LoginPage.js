@@ -20,7 +20,8 @@ import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import { makeStyles } from "@material-ui/core/styles";
 import { setToken } from "actions/authActions.js";
 import useAuthStyles from "./styles.js";
-import {ReactComponent as Ellipsis1} from "./ellipsis/ellipsis1.svg";
+import {ReactComponent as Ellipse1} from "./ellipse/ellipse1.svg";
+import {ReactComponent as Ellipse2} from "./ellipse/ellipse2.svg";
 import "./LoginPage.scss";
 
 const useStyles = makeStyles((theme) => ({
@@ -139,7 +140,8 @@ const LoginPage = () => {
         return (
         <div>
 
-<Ellipsis1/>
+<Ellipse1 className="ellipse1"/>
+<Ellipse2 className="ellipse2"/>
             <form className="emailLogin">
                 <Grid container>
                     <Grid item md={6}></Grid>

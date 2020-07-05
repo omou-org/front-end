@@ -1,5 +1,5 @@
-import React, {useCallback, useState} from "react";
-import {useSelector} from "react-redux";
+import React, { useCallback, useState } from "react";
+import { useSelector } from "react-redux";
 
 import AccountsIcon from "@material-ui/icons/Contacts";
 import AdminIcon from "@material-ui/icons/Face";
@@ -12,18 +12,19 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import NavLinkNoDup from "../Routes/NavLinkNoDup";
-import {makeStyles, ThemeProvider} from "@material-ui/core/styles";
+import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import "./Navigation.scss";
 import DateFnsUtils from "@date-io/date-fns";
-import {MuiPickersUtilsProvider} from "material-ui-pickers";
+import { MuiPickersUtilsProvider } from "material-ui-pickers";
 import OmouTheme from "../../theme/muiTheme";
-import {RootRoutes} from "../Routes/RootRoutes";
+import { RootRoutes } from "../Routes/RootRoutes";
 
 import AuthenticatedNav from "../Navigation/AuthenticatedNav";
 import UnauthenticatedNav from "../Navigation/UnauthenticatedNav";
 
-import {USER_TYPES} from "utils";
+import { USER_TYPES } from "utils";
 
 const useStyles = makeStyles({
     "navigationIconStyle": {
@@ -36,10 +37,10 @@ const useStyles = makeStyles({
 
 const Navigation = () => {
     const classes = useStyles();
-    const {token} = useSelector(({auth}) => auth);
+    const { token } = useSelector(({ auth }) => auth);
 
     const isAdmin =
-        useSelector(({auth}) => auth.accountType) === USER_TYPES.admin;
+        useSelector(({ auth }) => auth.accountType) === USER_TYPES.admin;
 
     const NavList = isAdmin ?
         [
@@ -116,19 +117,21 @@ const Navigation = () => {
         setMobileOpen((open) => !open);
     }, []);
 
+    const matches = useMediaQuery('(margin-left: 233px)');
+    console.log(useMediaQuery("margin-left:233px"))
 
     return (
         <ThemeProvider theme={OmouTheme}>
             <div className="Navigation">
-                        {token ?
-                            <AuthenticatedNav
-                                toggleDrawer={handleDrawerToggle} /> :
-                            <UnauthenticatedNav />}
+                {token ?
+                    <AuthenticatedNav
+                        toggleDrawer={handleDrawerToggle} /> :
+                    <UnauthenticatedNav />}
                 {token && (
                     <nav className="OmouDrawer">
                         <Hidden implementation="css" smUp>
                             <Drawer
-                                classes={{"paper": classes.navigationLeftList}}
+                                classes={{ "paper": classes.navigationLeftList }}
                                 onClose={handleDrawerToggle}
                                 open={mobileOpen}
                                 variant="temporary">
