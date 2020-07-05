@@ -21,14 +21,16 @@ const useTabStyles = makeStyles(({ palette, spacing, breakpoints }) => {
     if (Color(color).isLight()) return palette.text.primary;
     return palette.common.white;
   };
+
+
   return {
-    root: ({ bgColor = defaultBgColor, minWidth = defaultMinWidth }) => ({
+    root: ({ bgColor = defaultBgColor, minWidth = defaultMinWidth, leftValue, rightValue }) => ({
       opacity: 1,
       overflow: "initial",
       paddingLeft: spacing(2),
       paddingRight: spacing(2),
-      borderTopLeftRadius: spacing(1),
-      borderTopRightRadius: spacing(1),
+      borderTopLeftRadius: spacing(leftValue),
+      borderTopRightRadius: spacing(rightValue),
       color: getTextColor(bgColor),
       backgroundColor: bgColor,
       transition: "0.2s",
