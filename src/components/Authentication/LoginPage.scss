@@ -12,8 +12,22 @@
         color: white;
     }
 }
+.logo2 {
+    padding-top: 1%;
+    padding-left: 1.5%;
+    .title {
+        position: absolute;
+        font-family: "Roboto Slab", serif;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 24px;
+        line-height: 26px;
+        text-decoration: none;
+        color: #43B5D9;
+    }
+}
 
-.emailLogin {
+.Login {
     padding-top: 12%;
     .inputRounded .MuiOutlinedInput-root {
         border-radius: 50px;
@@ -32,8 +46,8 @@
         font-weight: normal;
         font-size: 15px;
         line-height: 23px;
-        color:black;
-        margin-top:10px;
+        color: black;
+        padding-top: 30px;
     }
     .welcomeText {
         font-family: "Roboto Slab";
@@ -43,6 +57,21 @@
         line-height: 69px;
         color: #43b5d9;
         padding-bottom: 3%;
+    }
+    .optionsContainer {
+        .buttonSpacing {
+            padding-top: 3%;
+            .signInButton {
+                width: 80%;
+                background: #43b5d9;
+                border: 1px solid #43b5d9;
+                box-sizing: border-box;
+                box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+                border-radius: 50px;
+                padding: 8px 0 8px 0;
+                color: white;
+            }
+        }
     }
     .buttonContainer {
         padding-top: 3%;
@@ -85,5 +114,19 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    font-size: 10px;
+}
+.ellipse3{
+    position: absolute;
+    top: 0;
+    right:0;
+}
+.ellipse4{
+    position:absolute;
+    left:0;
+    bottom:0;
+}
+.picture2{
+    position: absolute;
+    bottom: 0;
+    left: 0;
 }

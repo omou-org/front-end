@@ -21,9 +21,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import { setToken } from "actions/authActions.js";
 import useAuthStyles from "./styles.js";
 import Chip from '@material-ui/core/Chip';
-import { ReactComponent as Ellipse1 } from "./ellipse/ellipse1.svg";
-import { ReactComponent as Ellipse2 } from "./ellipse/ellipse2.svg";
-import { ReactComponent as Picture1 } from "./ellipse/picture1.svg";
+import { ReactComponent as Ellipse1 } from "./loginImages/ellipse1.svg";
+import { ReactComponent as Ellipse2 } from "./loginImages/ellipse2.svg";
+import { ReactComponent as Picture1 } from "./loginImages/picture1.svg";
+import { ReactComponent as Ellipse3 } from "./loginImages/ellipse3.svg";
+import { ReactComponent as Ellipse4 } from "./loginImages/ellipse4.svg"; 
+import { ReactComponent as Picture2 } from "./loginImages/picture2.svg";
+
 import "./LoginPage.scss";
 
 const useStyles = makeStyles((theme) => ({
@@ -151,7 +155,7 @@ const LoginPage = () => {
                         omou
                 </Typography>
                 </div>
-                <form className="emailLogin">
+                <form className="Login">
                     <Grid container>
                         <Grid item md={6}></Grid>
                         <Grid item md={6}>
@@ -198,15 +202,15 @@ const LoginPage = () => {
             case "Parent":
                 return (
                     <div>
-                        <Ellipse1 className="ellipse1" />
-                        <Ellipse2 className="ellipse2" />
-                        <Picture1 className="picture1" />
-                        <div className="logo">
+                        <Ellipse3 className="ellipse3" />
+                        <Ellipse4 className="ellipse4" />
+                        <Picture2 className="picture2" />
+                        <div className="logo2">
                             <Typography className="title">
                                 omou
                 </Typography>
                         </div>
-                        <form className="emailLogin">
+                        <form className="Login">
                             <Grid container>
                                 <Grid item md={6}></Grid>
                                 <Grid item md={6}>
@@ -235,7 +239,7 @@ const LoginPage = () => {
                                         inputProps={{ "data-cy": "passwordField" }} label="Password"
                                         onChange={handleTextInput(setPassword)}
                                         value={password} />
-                                    <Grid container item>
+                                    <Grid container item className="optionsContainer">
                                         <Grid item md={2} />
                                         <Grid item md={4}>
                                             <FormControlLabel
@@ -244,7 +248,7 @@ const LoginPage = () => {
                                                     onChange={toggleSavePassword} />}
                                                 label="Remember Me" />
                                         </Grid>
-                                        <Grid item md={4}>
+                                        <Grid item md={4} style={{ paddingTop: 10 }}>
                                             <Link className="forgotPassword"
                                                 data-cy="forgotPassword" to={{
                                                     "pathname": "/forgotpassword",
@@ -254,6 +258,13 @@ const LoginPage = () => {
                                             </Link>
                                         </Grid>
                                         <Grid item md={2} />
+                                        <Grid item md={4} />
+                                        <Grid item md={4} className="buttonSpacing">
+                                            <Button className="signInButton" onClick={() => handleCheck()}>
+                                                SIGN IN
+                                            </Button>
+                                        </Grid>
+                                        <Grid item md={4} />
                                     </Grid>
                                 </Grid>
                             </Grid>
