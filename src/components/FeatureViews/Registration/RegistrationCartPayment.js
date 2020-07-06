@@ -127,7 +127,7 @@ const Payment = ({
 									<Button
 										className="button"
 										component={Link}
-										to={`/registration/form/course_details/${selectedCourseID}`}
+										to={`/registration/form/course_details/${selectedCourseID}/edit`}
 									>
 										Edit Group Course
 									</Button>
@@ -137,7 +137,7 @@ const Payment = ({
 								<Button
 									className="button"
 									component={Link}
-									to={`/registration/form/${formType}/${selectedStudentID}+${course_id}`}
+									to={`/registration/form/${formType}/${selectedStudentID}+${course_id}/edit`}
 								>
 									Edit Registration
 								</Button>

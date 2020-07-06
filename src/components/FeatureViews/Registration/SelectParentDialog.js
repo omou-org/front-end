@@ -11,7 +11,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
 
 import {closeRegistration, setRegisteringParent,} from "actions/registrationActions";
-import AccountCard from "../Search/cards/AccountCard";
+import AccountsCards from "../Search/cards/AccountsCards";
 import {fetchStudents} from "actions/userActions";
 import {GET_ACCOUNT_SEARCH_QUERY_SUCCESS} from "actions/actionTypes";
 import {instance} from "actions/apiActions";
@@ -150,7 +150,7 @@ const SelectParentDialog = ({onClose, open}) => {
 					<div className="active-parent-dialog-content">
 						<Grid container direction="row" justify="center">
 							<Grid item>
-								<AccountCard user={currentParent}/>
+								<AccountsCards user={currentParent}/>
 							</Grid>
 						</Grid>
 					</div>

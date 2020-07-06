@@ -13,7 +13,7 @@ const Bio = ({"background": {bio, experience, languages, subjects}}) => {
 	const categories = useSelector(({Course}) => Course.CourseCategories);
 	const categoryStatus = useCategory();
 	if (isLoading(categoryStatus)) {
-		return <Loading />
+		return <Loading/>
 	}
 
 	return (
@@ -53,7 +53,7 @@ const Bio = ({"background": {bio, experience, languages, subjects}}) => {
 									<Chip
 										className="bioChip"
 										label={exp}
-										variant="outlined" />
+										variant="outlined"/>
 								</Grid>
 							))
 						}
@@ -65,6 +65,7 @@ const Bio = ({"background": {bio, experience, languages, subjects}}) => {
 						<Grid className="bioDescription">
 							Subjects offered:
 						</Grid>
+						{console.log(categories)}
 						{
 							subjects && subjects.map((subject) => (
 								<Grid
@@ -73,7 +74,7 @@ const Bio = ({"background": {bio, experience, languages, subjects}}) => {
 									<Chip
 										className="bioChip"
 										label={categories[subject + 1].name}
-										variant="outlined" />
+										variant="outlined"/>
 								</Grid>
 							))
 						}
@@ -92,7 +93,7 @@ const Bio = ({"background": {bio, experience, languages, subjects}}) => {
 									<Chip
 										className="bioChip"
 										label={language}
-										variant="outlined" />
+										variant="outlined"/>
 								</Grid>
 							))
 						}
@@ -104,12 +105,12 @@ const Bio = ({"background": {bio, experience, languages, subjects}}) => {
 };
 
 Bio.propTypes = {
-	"background": PropTypes.shape({
-		"bio": PropTypes.string,
-		"experience": PropTypes.any,
-		"languages": PropTypes.any,
-		"subjects": PropTypes.any,
-	}).isRequired,
+    "background": PropTypes.shape({
+        "bio": PropTypes.string,
+        "experience": PropTypes.any,
+        "languages": PropTypes.any,
+        "subjects": PropTypes.any,
+    }).isRequired,
 };
 
 export default Bio;

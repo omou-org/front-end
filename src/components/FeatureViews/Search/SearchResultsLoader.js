@@ -10,8 +10,8 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 
 import "./Search.scss";
-import AccountCard from "./cards/AccountCard";
-import CourseCard from "./cards/CourseCard";
+import AccountsCards from "./cards/AccountsCards";
+import CoursesCards from "./cards/CoursesCards";
 
 const SearchResultsLoader = ({
 								 numResults,
@@ -48,7 +48,7 @@ const SearchResultsLoader = ({
 						<Grid container direction="row" spacing={2}>
 							{[1, 2, 3, 4].map((account) => (
 								<Grid item key={account} sm={3}>
-									<AccountCard isLoading/>
+									<AccountsCards isLoading/>
 								</Grid>
 							))}
 						</Grid>
@@ -87,7 +87,7 @@ const SearchResultsLoader = ({
 						</Grid>
 						<Grid container direction="row" spacing={1}>
 							{[1, 2, 3, 4].map((course) => (
-								<CourseCard isLoading key={course}/>
+								<CoursesCards isLoading key={course}/>
 							))}
 						</Grid>
 					</Grid>

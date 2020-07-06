@@ -1,9 +1,10 @@
 import * as actions from "actions/actionTypes";
 import initialState from "./initialState";
 
-const {Authentication} = initialState;
+const Authentication = {initialState};
 
 export default (state = Authentication, {payload, type}) => {
+    console.log(type, payload)
     switch (type) {
         case actions.SET_CREDENTIALS:
             return {

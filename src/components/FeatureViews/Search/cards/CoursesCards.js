@@ -42,7 +42,7 @@ const COURSE_QUERY = gql`
     }
 `;
 
-const CourseCard = ({courseID, isLoading = false}) => {
+const CourseCards = ({courseID, isLoading = false}) => {
     const {data, loading} = useQuery(COURSE_QUERY, {
         "variables": {courseID},
     });
@@ -70,7 +70,7 @@ const CourseCard = ({courseID, isLoading = false}) => {
             "padding": "10px",
             "textDecoration": "none",
         }} to={`/registration/course/${courseID}`}>
-            <Card className="CourseCard" style={{"height": "148px"}}>
+            <Card className="CourseCards" style={{"height": "148px"}}>
                 <Grid container>
                     <Grid align="left" item sm={12}>
                         <Typography
@@ -122,9 +122,9 @@ const CourseCard = ({courseID, isLoading = false}) => {
     );
 };
 
-CourseCard.propTypes = {
+CourseCards.propTypes = {
     "courseID": PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     "isLoading": PropTypes.bool,
 };
 
-export default CourseCard;
+export default CourseCards;

@@ -14,10 +14,10 @@ import Typography from "@material-ui/core/Typography";
 
 import "./Search.scss";
 import AccountFilters from "./AccountFilters";
-import AccountCard from "./cards/AccountCard";
+import AccountsCards from "./cards/AccountsCards";
 import BackButton from "../../OmouComponents/BackButton";
 import CourseFilters from "./CourseFilters";
-import CourseCard from "./cards/CourseCard";
+import CoursesCards from "./cards/CoursesCards";
 import NoResultsPage from "./NoResults/NoResultsPage";
 import {capitalizeString} from "utils";
 
@@ -131,13 +131,13 @@ const SearchResults = () => {
         Array(4).fill(null)
             .map((_, index) => (
                 <Grid item key={index} sm={3}>
-                    <AccountCard isLoading />
+                    <AccountsCards isLoading />
                 </Grid>
             )) :
         accountQuery.data.accountSearch.results
             .map(({user, accountType}) => (
                 <Grid item key={user.id} sm={3}>
-                    <AccountCard accountType={accountType} userID={user.id} />
+                    <AccountsCards accountType={accountType} userID={user.id} />
                 </Grid>
             ))), [accountQuery]);
 
@@ -145,12 +145,12 @@ const SearchResults = () => {
         Array(4).fill(null)
             .map((_, index) => (
                 <Grid item key={index} sm={3}>
-                    <CourseCard isLoading />
+                    <CoursesCards isLoading />
                 </Grid>
             )) :
         courseQuery.data.courseSearch.results.map(({id}) => (
             <Grid item key={id} sm={3}>
-                <CourseCard courseID={id} />
+                <CoursesCards courseID={id} />
             </Grid>
         ))
     ), [courseQuery]);

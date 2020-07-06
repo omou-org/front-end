@@ -3,7 +3,7 @@ import {Switch} from "react-router-dom";
 
 import AdminPortalHome from "../FeatureViews/AdminPortal/AdminPortalHome";
 import AuthenticatedRoute from "./AuthenticatedRoute";
-import FormPage from "../Form/FormPage";
+import Form from "../Form/Form";
 import ManageCategories from "../FeatureViews/AdminPortal/ManageCategories";
 import ManageDiscounts from "../FeatureViews/AdminPortal/ManageDiscounts";
 import TuitionRules from "../FeatureViews/AdminPortal/TuitionRules";
@@ -26,7 +26,7 @@ const AdminViewsRoutes = () => (
         </AuthenticatedRoute>
         <AuthenticatedRoute exact path="/adminportal/form/:type?"
             users={[USER_TYPES.admin]}>
-            <FormPage title="Set Price Rule" />
+            <Form title="Set Price Rule" />
         </AuthenticatedRoute>
         <AuthenticatedRoute path="/adminportal/" users={[USER_TYPES.admin]}>
             <AdminPortalHome />

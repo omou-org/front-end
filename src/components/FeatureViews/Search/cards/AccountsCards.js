@@ -76,7 +76,7 @@ const QUERIES = {
         ${USER_DETAILS}`,
 };
 
-const AccountCard = ({accountType, userID, isLoading}) => {
+const AccountsCards = ({accountType, userID, isLoading}) => {
     // needs a defined query, else it breaks
     const {data, loading} = useQuery(QUERIES[accountType] || QUERIES.STUDENT, {
         "variables": {userID},
@@ -102,7 +102,7 @@ const AccountCard = ({accountType, userID, isLoading}) => {
     return (
         <Link style={{"textDecoration": "none"}}
             to={`/accounts/${accountType.toLowerCase()}/${userID}`}>
-            <Card className="AccountCard" key={userID}
+            <Card className="AccountsCards" key={userID}
                 style={{
                     "padding": "10px",
                     "height": "160px",
@@ -154,7 +154,7 @@ const AccountCard = ({accountType, userID, isLoading}) => {
     );
 };
 
-AccountCard.propTypes = {
+AccountsCards.propTypes = {
     "accountType": PropTypes
         .oneOf(["STUDENT", "PARENT", "INSTRUCTOR", "ADMIN"]),
     "isLoading": PropTypes.bool,
@@ -164,4 +164,4 @@ AccountCard.propTypes = {
     ]),
 };
 
-export default AccountCard;
+export default AccountsCards;

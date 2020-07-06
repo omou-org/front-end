@@ -1,49 +1,15 @@
-const token = "e2c6fe2e04f5e658d179e051096aefc419f1212f";
-const userDetails = {
-    "email": "maggie@summit.com",
-    "first_name": "Maggie",
-    "id": 1,
-    "is_staff": true,
-    "last_name": "Huang",
-};
-
 /** *
  * @description: This command helps you log into Omou to work on any other test
  * @param {Object} user: Should take in the props "email" && "password"
  * @return: Getting past login screen and into the Scheduler component
-*/
-Cypress.Commands.add("login", () => {
-    cy.server();
-    cy.route({
-        "method": "POST",
-        "response": {
-            token,
-        },
-        "responseType": "application/json",
-        "status": 200,
-        "url": "/auth_token/",
-        "withCredentials": true,
-    });
-    cy.route({
-        "method": "GET",
-        "response": userDetails,
-        "responseType": "application/json",
-        "status": 200,
-        "url": "/account/user/",
-        "withCredentials": true,
-    });
-    cy
-        .window()
-        .its("store")
-        .invoke("dispatch", {
-            "type": "LOGIN_SUCCESSFUL",
-            "payload": {
-                "response": {
-                    "data": {token},
-                },
-                "savePassword": true,
-            },
-        });
+ */
+Cypress.Commands.add("login", (user) => {
+  cy.visit("http://localhost:3000/");
+  cy.get(".email").type(user.email);
+  cy.get(".password").type(user.password);
+  cy.get('[type="checkbox"]').click();
+  cy.get('[type="submit"]').click();
+  cy.contains("Scheduler");
 });
 
 /** *

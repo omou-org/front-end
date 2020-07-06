@@ -7,11 +7,11 @@ import CardActions from "@material-ui/core/CardActions";
 import { withRouter } from "react-router-dom";
 import "../Search.scss";
 
-function UpcomingSessionCard(props) {
+function UpcomingSessionCards(props) {
     return (
         <Grid item xs={12} sm={3} style={{ padding: "10px" }}>
             <Card key={props.user.user_id}
-                className={"UpcomingSessionCard"}
+                className={"UpcomingSessionCards"}
                 style={{ cursor: "pointer" }}
             >
                 <Grid container>
@@ -67,7 +67,7 @@ function UpcomingSessionCard(props) {
 }
 
 
-UpcomingSessionCard.propTypes = {};
+UpcomingSessionCards.propTypes = {};
 
 function mapStateToProps(state) {
     return {
@@ -84,4 +84,4 @@ function mapDispatchToProps(dispatch) {
 export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(UpcomingSessionCard));
+)(UpcomingSessionCards));

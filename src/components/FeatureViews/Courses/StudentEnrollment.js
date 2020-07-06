@@ -7,6 +7,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { fullName} from "../../../utils";
 
 const useStyles = makeStyles({
     table: {
@@ -27,8 +28,27 @@ const useStyles = makeStyles({
   ];
 
   
-const Studentenrollment = ({}) => {
+const Studentenrollment = ({enrollment}) => {
     const classes = useStyles();
+    const enrollmentCell = enrollment.sort((firstStudent, secondStudent) => (firstStudent.student.user.lastName < secondStudent.student.user.lastName ? -1 : 0)).map(students => {
+        const { accountType, primaryParent, user } = students.student;
+        const concatFullStudentName = fullName(user);
+        const concatFullParentName = fullName(primaryParent.user);
+        const studentId = user.id;
+        const phoneNumber = primaryParent.phoneNumber;
+        const parentId = primaryParent.user.id
+        
+        return (
+            <TableRow key={concatFullStudentName}>
+            <TableCell component="th" scope="row">
+              {concatFullStudentName}
+            </TableCell>
+            <TableCell align="right">{}</TableCell>
+            <TableCell align="right">{}</TableCell>
+          </TableRow>
+        )
+    })
+    console.log(enrollmentCell);
 
     return (
         <>
@@ -36,11 +56,9 @@ const Studentenrollment = ({}) => {
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+            <TableCell>Student</TableCell>
+            <TableCell align="right">Parent</TableCell>
+            <TableCell align="right">Phone</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
