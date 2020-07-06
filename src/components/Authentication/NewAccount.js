@@ -32,7 +32,7 @@ const basicInfo = [
 ];
 
 const CHECK_EMAIL = gql`query CheckEmail($email:String) {
-  userType(userName: $email)
+    userType(userName: $email)
 }`;
 
 
@@ -82,6 +82,15 @@ const NewAccount = () => {
             await client.mutate({
                 "mutation": CREATE_PARENT,
                 "variables": formData,
+                "update": (cache) => {
+                    cache.writeQuery({
+                        "data": {
+                            "userType": "Parent",
+                        },
+                        "query": CHECK_EMAIL,
+                        "variables": {"email": formData.email},
+                    });
+                },
             });
             setActiveStep((prevStep) => prevStep + 1);
         } catch (error) {
@@ -134,10 +143,10 @@ const NewAccount = () => {
         const labels = ["Basic Information", "Account Created"];
         return (
             <>
-                <Typography className="welcomeText">
+                <Typography className="welcomeText formTitle">
                     Create a Parent Account
                 </Typography>
-                <ReactForm onSubmit={submit} render={({handleSubmit, values}) => (
+                <ReactForm validateOnBlur onSubmit={submit} render={({handleSubmit, values}) => (
                     <form noValidate onSubmit={handleSubmit}>
                         <Stepper activeStep={activeStep} alternativeLabel orientation="horizontal" style={{
                             "margin": "-300px 0 -20px 0",
@@ -187,7 +196,7 @@ const NewAccount = () => {
     );
 
     return (
-        <div>
+        <div className="createAccContainer">
             <Ellipse3 className="ellipse3" />
             <Ellipse4 className="ellipse4" />
             <Picture2 className="picture1" />
@@ -197,7 +206,7 @@ const NewAccount = () => {
                 </Typography>
             </div>
 
-            <div className="Login">
+            <div className={`Login ${type === "parent" && "formLogin"}`}>
                 <Grid container>
                     <Grid item md={6} />
                     <Grid className="createAccount" item md={6}>

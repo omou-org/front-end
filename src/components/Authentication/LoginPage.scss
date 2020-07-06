@@ -100,15 +100,16 @@
     }
     .createAccount {
         .welcomeText {
+            font-size: 40px;
             padding-bottom: 0;
         }
+
         .TextField {
             width: 60%;
-            margin-bottom: -20px;
+            margin-bottom: -12px;
         }
 
         .formButton {
-            // width: 70%;
             background-color: white;
             border: 1px solid $secondaryColor;
             box-sizing: border-box;
@@ -148,6 +149,7 @@
     position: absolute;
     top: 0;
     right:0;
+    z-index: -1;
 }
 .ellipse4{
     position:absolute;
@@ -173,4 +175,10 @@
     background: none!important;
     padding: none;
     margin: -0px 0 -10px 0 !important;
+}
+
+.createAccContainer {
+    .Login.formLogin {
+        padding-top: 6%;
+    }
 }
