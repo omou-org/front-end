@@ -23,7 +23,6 @@ import ChromeTabs from "../../OmouComponents/ChromeTabs";
 import TabPanel from "../../OmouComponents/TabPanel";
 import ClassInfo from "./ClassInfo";
 import StudentEnrollment from "./StudentEnrollment";
-import Studentenrollment from "./StudentEnrollment";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -82,14 +81,22 @@ const CourseClasses = () => {
             user {
               firstName
               lastName
+              id
             }
             primaryParent {
               user {
                 firstName
                 lastName
+                id
               }
+              accountType
+              phoneNumber
             }
+            accountType
           }
+        }
+        sessionSet {
+          startDatetime
         }
       }
     }
@@ -100,7 +107,7 @@ const CourseClasses = () => {
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
 
-//   console.log(data);
+  console.log(data);
 
   const {
     academicLevel,
@@ -112,13 +119,19 @@ const CourseClasses = () => {
     startDate,
     startTime,
     title,
+    sessionSet,
   } = data.course;
   const { name } = data.course.courseCategory;
   const { firstName, lastName } = data.course.instructor.user;
 
-  console.log(enrollmentSet);
-  const x = enrollmentSet.map((e) => e);
-  console.log(x)
+  // console.log(academicLevel);
+
+  // console.log(enrollmentSet);
+  // const x = enrollmentSet.map((e) => e);
+  // console.log(x)
+
+  // const y = sessionSet.map((e, i) => e);
+  // console.log(y)
 
   const letterDayManipulation = dayOfWeek.substring(1, 3).toLowerCase();
   const firstLetterDayManipulation = dayOfWeek.substring(0, 1);
@@ -248,10 +261,9 @@ const CourseClasses = () => {
                 <ClassInfo description={description} />
                 </TabPanel>
                 <TabPanel index={1} value={index}>
-                  <Studentenrollment />
                 </TabPanel>
                 <TabPanel index={2} value={index}>
-                  Page Three
+                  <StudentEnrollment enrollment={enrollmentSet} session={sessionSet}/>
                 </TabPanel>
                 <TabPanel index={3} value={index}>
                   Page Four
