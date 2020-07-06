@@ -157,7 +157,7 @@ const LoginPage = () => {
                                 placeholder="E-Mail"
                                 variant="outlined"
                                 className="TextField"
-                                helperText={hasError ? "Sorry, we couldn't find a user for that email." : ""}
+                                helperText={hasError ? "Sorry, we couldn't find a user for that email." : " "}
                                 fullWidth="true"
                                 InputProps={{
                                     startAdornment: (
