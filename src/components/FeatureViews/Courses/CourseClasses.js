@@ -22,6 +22,7 @@ import BackButton from "../../OmouComponents/BackButton";
 import ChromeTabs from "../../OmouComponents/ChromeTabs";
 import TabPanel from "../../OmouComponents/TabPanel";
 import ClassInfo from "./ClassInfo";
+import Announcements from "./Announcements";
 import StudentEnrollment from "./StudentEnrollment";
 
 const useStyles = makeStyles((theme) => ({
@@ -104,9 +105,9 @@ const CourseClasses = () => {
 
   const { data, loading, error } = useQuery(GET_CLASSES, { variables: id });
 
+  
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
-
   console.log(data);
 
   const {
@@ -261,9 +262,10 @@ const CourseClasses = () => {
                 <ClassInfo description={description} />
                 </TabPanel>
                 <TabPanel index={1} value={index}>
+                  <Announcements />
                 </TabPanel>
                 <TabPanel index={2} value={index}>
-                  <StudentEnrollment enrollment={enrollmentSet} session={sessionSet}/>
+                <StudentEnrollment enrollment={enrollmentSet} session={sessionSet}/>
                 </TabPanel>
                 <TabPanel index={3} value={index}>
                   Page Four

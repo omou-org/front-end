@@ -373,6 +373,8 @@ export const useGoToRoute = () => {
     return goToRoute;
 };
 
+export const removeDashes = (phoneNumber) => phoneNumber.replace(/-/ug, "");
+
 /**
  * Removes duplicate values from an array
  * @param {Array} array Array to de-duplicate

@@ -151,7 +151,7 @@ const CourseDisplayCard = ({
 
   const handleClick = (e) => {
     history.push(`/coursemanagement/class/${id}`)
-    // console.log("does this work?")
+    console.log(id)
   };
 
   return (
