@@ -164,9 +164,16 @@ const LoginPage = () => {
                             <Grid container item className="buttonContainer">
                                 <Grid item md={2} />
                                 <Grid item md={4}>
-                                    <Button className="createAccountButton">
-                                        CREATE ACCOUNT
-                                </Button>
+                                <Button className="createAccountButton"
+                            component={Link} to={{
+                                "pathname": "/new/parent",
+                                "state": {
+                                    email,
+                                    password,
+                                },
+                            }} variant="outlined">
+                            CREATE ACCOUNT
+                        </Button>
                                 </Grid>
                                 <Grid item md={4}>
                                     <Button className="signInButton" onClick={() => handleCheck()}>
