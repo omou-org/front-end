@@ -5,7 +5,6 @@ import {useDispatch} from "react-redux";
 
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
-import NewAccount from "../Authentication/NewAccount";
 import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
 import AuthenticatedRoute from "./AuthenticatedRoute";
 import CatsPage from "../CatsPage/CatsPage";
@@ -50,11 +49,6 @@ export const RootRoutes = () => {
             </Route>
             <Route path="/login">
                 <LoginPage />
-            </Route>
-
-
-            <Route path="/new/:type">
-                <NewAccount />
             </Route>
 
             {/* Main Feature Views */}

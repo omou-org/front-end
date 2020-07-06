@@ -216,14 +216,6 @@ export const ACADEMIC_LVL_FIELD = {
             "required": true,
         },
     ],
-    PASSWORD_FIELD = {
-        "name": "password",
-        "label": "Password",
-        "component": <Fields.PasswordInput />,
-        "validator": Yup.mixed(),
-        "required": true,
-
-    },
     PHONE_NUMBER_FIELD = {
         "name": "phoneNumber",
         "label": "Phone Number",
@@ -492,7 +484,13 @@ export default {
                 "label": "Login Details",
                 "fields": [
                     EMAIL_FIELD,
-                    PASSWORD_FIELD,
+                    {
+                        "name": "password",
+                        "label": "Password",
+                        "component": <Fields.TextField type="password" />,
+                        "validator": Yup.mixed(),
+                        "required": true,
+                    },
                     ...NAME_FIELDS,
                 ],
             },

@@ -1,13 +1,5 @@
 import React, {useCallback, useState} from "react";
 
-import IconButton from "@material-ui/core/IconButton";
-import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import MuiTextField from "@material-ui/core/TextField";
-import Tooltip from "@material-ui/core/Tooltip";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
-
 import * as Fields from "mui-rff";
 import DateFnsUtils from "@date-io/date-fns";
 import {makeStyles} from "@material-ui/core/styles";
@@ -74,37 +66,5 @@ export const DataSelect = ({request, optionsMap, name, ...props}) => {
             onInputChange={handleQueryChange}
             options={options}
             renderOption={renderOption} {...props} />
-    );
-};
-
-
-export const PasswordInput = ({label = "Password", isField = true, ...props}) => {
-    const [showPassword, setShowPassword] = useState(false);
-
-    const toggleVisibility = useCallback(() => {
-        setShowPassword((show) => !show);
-    }, []);
-
-    return React.createElement(
-        isField ? TextField : MuiTextField,
-        {
-            "InputProps": {
-                "endAdornment": (
-                    <InputAdornment position="end">
-                        <IconButton aria-label="toggle password visibility"
-                            onClick={toggleVisibility}>
-                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                        </IconButton>
-                        <Tooltip aria-label="passwordInfo" title="Passwords must be at least 8 characters and contain a number or a symbol.">
-                            <InfoOutlinedIcon />
-                        </Tooltip>
-                    </InputAdornment>
-                ),
-            },
-            "id": "password",
-            "label": "Password",
-            "type": showPassword ? "text" : "password",
-            ...props,
-        },
     );
 };
