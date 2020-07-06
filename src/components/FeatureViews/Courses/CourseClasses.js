@@ -22,7 +22,7 @@ import BackButton from "../../OmouComponents/BackButton";
 import ChromeTabs from "../../OmouComponents/ChromeTabs";
 import TabPanel from "../../OmouComponents/TabPanel";
 import ClassInfo from "./ClassInfo";
-import StudentEnrollment from "./StudentEnrollment";
+import Announcements from "./Announcements";
 import Studentenrollment from "./StudentEnrollment";
 
 const useStyles = makeStyles((theme) => ({
@@ -97,10 +97,10 @@ const CourseClasses = () => {
 
   const { data, loading, error } = useQuery(GET_CLASSES, { variables: id });
 
+  
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
-
-//   console.log(data);
+  console.log(data);
 
   const {
     academicLevel,
@@ -248,10 +248,10 @@ const CourseClasses = () => {
                 <ClassInfo description={description} />
                 </TabPanel>
                 <TabPanel index={1} value={index}>
-                  <Studentenrollment />
+                  <Announcements />
                 </TabPanel>
                 <TabPanel index={2} value={index}>
-                  Page Three
+                  <Studentenrollment />
                 </TabPanel>
                 <TabPanel index={3} value={index}>
                   Page Four
