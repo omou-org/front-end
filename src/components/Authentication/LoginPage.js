@@ -71,7 +71,11 @@ const LoginPage = () => {
 
     const [getUserType, { data, loading }] = useLazyQuery(GET_USER_TYPE, {
         variables: { "username": realEmail },
-        onCompleted: data => { setUserType(data.userType) }
+        onCompleted: data => { setUserType(data.userType); 
+            if(userType===""){
+                setHasError(true);
+        } 
+    }
     });
 
     const [login, { loginLoading }] = useMutation(LOGIN, {
@@ -153,6 +157,7 @@ const LoginPage = () => {
                                 placeholder="E-Mail"
                                 variant="outlined"
                                 className="TextField"
+                                helperText={hasError ? "Sorry, we couldn't find a user for that email." : ""}
                                 fullWidth="true"
                                 InputProps={{
                                     startAdornment: (
