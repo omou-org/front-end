@@ -24,6 +24,7 @@ import TabPanel from "../../OmouComponents/TabPanel";
 import ClassInfo from "./ClassInfo";
 import Announcements from "./Announcements";
 import StudentEnrollment from "./StudentEnrollment";
+import CourseSessions from "./CourseSessions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -265,10 +266,10 @@ const CourseClasses = () => {
                   <Announcements />
                 </TabPanel>
                 <TabPanel index={2} value={index}>
-                <StudentEnrollment enrollment={enrollmentSet} session={sessionSet}/>
+                <StudentEnrollment enrollment={enrollmentSet} />
                 </TabPanel>
                 <TabPanel index={3} value={index}>
-                  Page Four
+                  <CourseSessions session={sessionSet}/>
                 </TabPanel>
               </Grid>
             </ThemeProvider>

@@ -33,8 +33,9 @@ const Studentenrollment = ({enrollment}) => {
     const enrollmentCell = enrollment.sort((firstStudent, secondStudent) => (firstStudent.student.user.lastName < secondStudent.student.user.lastName ? -1 : 0)).map(students => {
         const { accountType, primaryParent, user } = students.student;
         const concatFullStudentName = fullName(user);
-        const concatFullParentName = fullName(primaryParent.user);
         const studentId = user.id;
+        const concatFullParentName = fullName(primaryParent.user);
+        const parentAccountType = primaryParent.accountType;
         const phoneNumber = primaryParent.phoneNumber;
         const parentId = primaryParent.user.id
         
@@ -43,12 +44,12 @@ const Studentenrollment = ({enrollment}) => {
             <TableCell component="th" scope="row">
               {concatFullStudentName}
             </TableCell>
-            <TableCell align="right">{}</TableCell>
-            <TableCell align="right">{}</TableCell>
+            <TableCell align="right">{concatFullParentName}</TableCell>
+            <TableCell align="right">{phoneNumber}</TableCell>
           </TableRow>
         )
     })
-    console.log(enrollmentCell);
+    // console.log(enrollmentCell);
 
     return (
         <>
@@ -62,17 +63,7 @@ const Studentenrollment = ({enrollment}) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.name}>
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
-              <TableCell align="right">{row.protein}</TableCell>
-            </TableRow>
-          ))}
+          {enrollmentCell}
         </TableBody>
       </Table>
     </TableContainer>
