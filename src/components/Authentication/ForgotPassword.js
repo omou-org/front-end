@@ -1,5 +1,8 @@
 import React, {useCallback, useState} from "react";
+import gql from "graphql-tag";
+import {makeStyles} from "@material-ui/core/styles";
 import useAuthStyles from "./styles";
+import {useMutation} from "@apollo/react-hooks";
 import {useSelector} from "react-redux";
 
 import {Link, useLocation, useHistory, Redirect} from "react-router-dom";
@@ -8,7 +11,6 @@ import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import {makeStyles} from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
     "info": {
@@ -17,12 +19,22 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const REQUEST_RESET = gql`
+    mutation RequestReset($email: String!) {
+        requestPasswordReset(email: $email) {
+            status
+        }
+    }`;
+
 const ForgotPassword = () => {
     const {state} = useLocation();
     const history = useHistory();
-    const [email, setEmail] = useState(state?.email);
-    const [submitted, setSubmitted] = useState(false);
+    const [email, setEmail] = useState(state?.email || "");
     const {token} = useSelector(({auth}) => auth);
+    const [requested, setRequested] = useState(false);
+    const [requestReset] = useMutation(REQUEST_RESET, {
+        "ignoreResults": true,
+    });
 
     const handleEmailInput = useCallback(({target}) => {
         setEmail(target.value);
@@ -30,9 +42,9 @@ const ForgotPassword = () => {
 
     const handleSubmit = useCallback((event) => {
         event.preventDefault();
-        // TODO: send email
-        setSubmitted(true);
-    }, []);
+        requestReset({"variables": {email}});
+        setRequested(true);
+    }, [email, requestReset]);
 
     const classes = {
         ...useAuthStyles(),
@@ -50,14 +62,14 @@ const ForgotPassword = () => {
     return (
         <Paper className={classes.root}>
             <Typography align="left" className={classes.header} color="primary">
-                {submitted ? "reset email sent!" : "forgot your password?"}
+                {requested ? "reset email sent!" : "forgot your password?"}
             </Typography>
             <Typography align="left" className={classes.info}>
-                {submitted ?
+                {requested ?
                     "Follow the instructions on the email to reset your password." :
                     "Enter the email for your account and we will send you an email link to reset your password:"}
             </Typography>
-            {submitted ?
+            {requested ?
                 <Button className={classes.primaryButton} color="primary"
                     component={Link} data-cy="return" to={{
                         "pathname": "/login",

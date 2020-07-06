@@ -53,7 +53,7 @@ export const RootRoutes = () => {
             </Route>
 
 
-            <Route path="/new/:type">
+            <Route path="/new/:type?">
                 <NewAccount />
             </Route>
 

@@ -1,7 +1,10 @@
 import React, {useCallback, useState} from "react";
+import gql from "graphql-tag";
 import {makeStyles} from "@material-ui/core/styles";
 import useAuthStyles from "./styles";
+import {useQuery, useMutation} from "@apollo/react-hooks";
 import {useSelector} from "react-redux";
+import {useSearchParams} from "actions/hooks";
 
 import {Link, Redirect, useHistory} from "react-router-dom";
 import Button from "@material-ui/core/Button";
@@ -10,6 +13,7 @@ import Paper from "@material-ui/core/Paper";
 import {PasswordInput} from "../Form/Fields";
 import Typography from "@material-ui/core/Typography";
 
+import Loading from "components/OmouComponents/Loading";
 
 const useStyles = makeStyles((theme) => ({
     "email": {},
@@ -25,11 +29,28 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const GET_EMAIL = gql`
+    query GetEmail($token:String) {
+        emailFromToken(token: $token)
+    }`;
+
+const RESET_PASSWORD = gql`
+    mutation ResetPassword($password: String!, $token: String!) {
+        resetPassword(newPassword: $password, token: $token) {
+            status
+        }
+    }`;
+
+// eslint-disable-next-line max-statements
 const ResetPassword = () => {
+    const params = useSearchParams();
+    const resetToken = params.get("token");
     const history = useHistory();
     const [password, setPassword] = useState("");
     const [submitted, setSubmitted] = useState(false);
-    const email = "nelson@summit.com";
+    const emailStatus = useQuery(GET_EMAIL, {"variables": {"token": resetToken}});
+    const email = emailStatus.data?.emailFromToken;
+    const [resetPassword, resetStatus] = useMutation(RESET_PASSWORD);
     const {token} = useSelector(({auth}) => auth);
 
     const handlePasswordInput = useCallback(({target}) => {
@@ -38,9 +59,13 @@ const ResetPassword = () => {
 
     const handleSubmit = useCallback((event) => {
         event.preventDefault();
-        // TODO: reset password
-        setSubmitted(true);
-    }, []);
+        resetPassword({
+            "variables": {
+                password,
+                "token": resetToken,
+            },
+        });
+    }, [password, resetPassword, resetToken]);
 
     const classes = {
         ...useAuthStyles(),
@@ -55,17 +80,36 @@ const ResetPassword = () => {
         }
     }
 
+    if (emailStatus.loading) {
+        return <Loading />;
+    }
+
+    if (emailStatus?.error) {
+        return (
+            <Paper className={classes.root}>
+                <Typography align="left" className={classes.header} color="primary">
+                    reset password
+                </Typography>
+                <Typography align="left" className={classes.info}>
+                    Invalid token.
+                </Typography>
+            </Paper>
+        );
+    }
+
+    const success = resetStatus.data?.resetPassword.status === "success";
+
     return (
         <Paper className={classes.root}>
             <Typography align="left" className={classes.header} color="primary">
-                {submitted ? "reset successful!" : "reset password"}
+                {success ? "reset successful!" : "reset password"}
             </Typography>
             <Typography align="left" className={classes.info}>
-                {submitted ?
+                {success ?
                     "You can now log in with your new password." :
                     <>Reset password for <span className={email}>{email}</span></>}
             </Typography>
-            {submitted ?
+            {success ?
                 <Button className={classes.primaryButton} color="primary"
                     component={Link} data-cy="return" to={{
                         "pathname": "/login",
@@ -78,15 +122,11 @@ const ResetPassword = () => {
                         inputProps={{"data-cy": "passwordField"}}
                         isField={false} label="new password" margin="normal"
                         onChange={handlePasswordInput} value={password} />
-                    <Typography align="left" className={classes.requirements}
-                        variant="body2">
-                        Password requirements...
-                    </Typography>
                     <Grid alignItems="center" container justify="space-evenly">
                         <Grid item>
                             <Button className={classes.primaryButton}
                                 color="primary" data-cy="reset"
-                                disabled={!password}
+                                disabled={!password || resetStatus.loading}
                                 type="submit" variant="contained">
                                 Reset Password
                             </Button>
