@@ -23,7 +23,6 @@ const GET_ACCOUNT_TYPE = gql`
             }
             ... on InstructorType {
                 accountType
-                phoneNumber
                 user {
                     id
                     firstName
@@ -33,7 +32,6 @@ const GET_ACCOUNT_TYPE = gql`
             }
             ... on ParentType {
                 accountType
-                phoneNumber
                 user {
                     id
                     firstName
@@ -55,7 +53,7 @@ export const setToken = async (token, shouldSave) => {
             "mutation": GET_EMAIL,
             "variables": {token},
         });
-
+        console.log("just got token verified!");
         const email = verifyToken.payload.username;
 
         const {"data": {userInfo}} = await client.query({
@@ -67,8 +65,9 @@ export const setToken = async (token, shouldSave) => {
             "query": GET_ACCOUNT_TYPE,
             "variables": {"username": email},
         });
+        console.log("userI");
         const {accountType, user, phoneNumber} = userInfo;
-
+        console.log(shouldSave, token);
         if (shouldSave) {
             localStorage.setItem("token", token);
         }

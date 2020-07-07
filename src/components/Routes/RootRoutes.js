@@ -19,8 +19,7 @@ import PaymentReceipt from "../FeatureViews/Registration/PaymentReceipt";
 import Registration from "../FeatureViews/Registration/Registration";
 import FormPage from "../Form/FormPage";
 import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
-import RegistrationCourse from
-    "../FeatureViews/Registration/RegistrationCourse";
+import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
 import RegistrationReceipt from "../Form/RegistrationReceipt";
 import ResetPassword from "../Authentication/ResetPassword";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
@@ -32,6 +31,7 @@ import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
 import DashboardSwitch from "../FeatureViews/Dashboard/DashboardSwitch";
 import TeachingLogContainer from "../FeatureViews/TeachingLog/TeachingLogContainer";
+import AvailabilityContainer from "../FeatureViews/Availability/AvailabilityContainer";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -118,6 +118,10 @@ export const RootRoutes = () => {
                                 users={[USER_TYPES.instructor]}
             >
                 <TeachingLogContainer/>
+            </AuthenticatedRoute>
+            <AuthenticatedRoute path="/availability"
+                                users={[USER_TYPES.instructor]}>
+                <AvailabilityContainer/>
             </AuthenticatedRoute>
 
             {/* Admin Routes */}

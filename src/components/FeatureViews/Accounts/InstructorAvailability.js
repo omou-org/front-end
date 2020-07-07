@@ -9,7 +9,7 @@ import DialogActions from "@material-ui/core/DialogActions/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import Grid from "@material-ui/core/Grid";
 import MenuItem from "@material-ui/core/MenuItem";
-import {TimePicker} from "material-ui-pickers";
+import {TimePicker} from "@material-ui/pickers";
 
 import "./Accounts.scss";
 import {capitalizeString, DayConverter} from "utils";

@@ -71,6 +71,11 @@ export const NavList = {
 			"icon": <EventIcon/>,
 		},
 		{
+			"name": "My Availability",
+			"link": "/availability",
+			"icon": <EventIcon/>,
+		},
+		{
 			"name": "Teaching Log",
 			"link": "/teaching-log",
 			"icon": <EventIcon/>,

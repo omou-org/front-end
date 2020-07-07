@@ -52,6 +52,7 @@ const LoginPage = () => {
         "errorPolicy": "ignore",
         "ignoreResults": true,
         "onCompleted": async ({tokenAuth}) => {
+            console.log("async started, setting token");
             dispatch(await setToken(tokenAuth.token, shouldSave));
         },
         // for whatever reason, this function prevents an unhandled rejection
@@ -84,6 +85,7 @@ const LoginPage = () => {
 
     const handleSubmit = useCallback((event) => {
         event.preventDefault();
+        console.log("logging in!");
         login({
             "variables": {
                 password,
