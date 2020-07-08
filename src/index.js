@@ -19,13 +19,6 @@ import { setContext } from "apollo-link-context";
 
 import { setToken } from "actions/authActions";
 
-import { useState, useEffect } from 'react';
-import { Admin, Resource, ListGuesser } from 'react-admin';
-import buildGraphQLProvider from 'ra-data-graphql-simple';
-import { useApolloClient } from "@apollo/react-hooks";
-import jsonServerProvider from 'ra-data-json-server';
-import { createBrowserHistory } from 'history';
-
 const store = createStore(
     rootReducer,
     composeWithDevTools(applyMiddleware(thunk)),
@@ -68,20 +61,14 @@ if (token) {
     })();
 }
 
-const history = createBrowserHistory()
-
-const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
 ReactDOM.render(
-    <Admin dataProvider={{ dataProvider }} history={history}>
-        <Resource name="posts" list={ListGuesser} />
-        <Provider store={store}>
-            <ApolloProvider client={client}>
-                <BrowserRouter>
-                    <App />
-                </BrowserRouter>
-            </ApolloProvider>
-        </Provider>
-    </Admin>,
+    <Provider store={store}>
+        <ApolloProvider client={client}>
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+        </ApolloProvider>
+    </Provider>,
     document.getElementById("root"),
 );
 
