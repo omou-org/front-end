@@ -90,15 +90,18 @@ export default function RegistrationCartContainer() {
 	if (loading || coursesResponse.loading) return <Loading small/>;
 
 	const studentData = data.userInfos;
-	// const courseData = coursesResponse.data.courses;
-
-	console.log(registrationCart);
 
 	return (<RegistrationContext.Provider value={{registrationCart, updateSession}}>
 			<BackgroundPaper>
 				<Typography variant="h2" align="left">Registration Cart</Typography>
-				<Typography variant="h5" align="left">Pay for Course(s)</Typography>
-				<Grid container>
+				<Typography
+					style={{fontSize: "2em"}}
+					align="left"
+					gutterBottom
+				>
+					Pay for Course(s)
+				</Typography>
+				<Grid container direction="row" spacing={5}>
 					{
 						Object.entries(registrationCart).map(([studentId, registration]) =>
 							<StudentRegistrationEntry
