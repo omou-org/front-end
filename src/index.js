@@ -14,15 +14,20 @@ import { HttpLink } from "apollo-link-http";
 import { onError } from "apollo-link-error";
 import { ApolloLink } from "apollo-link";
 
+
+
 import { ApolloProvider } from "@apollo/react-hooks";
 import { setContext } from "apollo-link-context";
 
 import { setToken } from "actions/authActions";
 
+
+
 const store = createStore(
     rootReducer,
     composeWithDevTools(applyMiddleware(thunk)),
 );
+
 
 const httpLink = ApolloLink.from([
     onError(({ graphQLErrors, networkError }) => {
@@ -64,10 +69,11 @@ if (token) {
 ReactDOM.render(
     <Provider store={store}>
         <ApolloProvider client={client}>
-            <BrowserRouter>
+            <BrowserRouter >
                 <App />
             </BrowserRouter>
         </ApolloProvider>
+
     </Provider>,
     document.getElementById("root"),
 );

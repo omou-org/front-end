@@ -1,33 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { Admin, Resource, ListGuesser } from 'react-admin';
-import buildGraphQLProvider from 'ra-data-graphql-simple';
-import { useApolloClient } from "@apollo/react-hooks";
-import { createBrowserHistory } from 'history';
-import { useHistory } from 'react-router-dom';
+import React from 'react';
+import { Admin, Resource, ListGuesser, } from 'react-admin';
+import jsonServerProvider from "ra-data-json-server"
 
-const history = createBrowserHistory();
+import { Provider } from 'react-redux'
+import { createHashHistory } from 'history';
 
-const ManageCategories2 = () => {
-    const [categories, setCategories] = useState({})
-    const [dataProvider, setDataProvider] = useState({})
 
-    const client = useApolloClient();
+import createAdminStore from '../../../createAdminStore';
+
+import { UserList } from './UserList'
 
 
 
-    useEffect(() => {
-        buildGraphQLProvider({ client: client })
-            .then((result) => {
-                setDataProvider(result)
-            });
-    }, [])
+// dependency injection
+const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
+const authProvider = () => Promise.resolve();
+const history = createHashHistory();
 
-    return (
+const App = () => (
+    <Provider
+        store={createAdminStore({
+            authProvider,
+            dataProvider,
+            history,
+        })}
+    >
         <Admin dataProvider={dataProvider} history={history}>
             <Resource name="posts" list={ListGuesser} />
+            <Resource name='users' list={UserList} />
         </Admin>
-    )
-}
+    </Provider>
+);
 
-
-export default ManageCategories2
+export default App
