@@ -121,6 +121,14 @@ export default function CourseRegistrationReceipt({formData, format}) {
 				>
 					REGISTER MORE
 				</Button>
+				<Button
+					color="primary"
+					variant="contained"
+					component={NavLinkNoDup}
+					to={'/registration/cart/'}
+				>
+					CHECKOUT
+				</Button>
 			</Grid>
 		</Grid>
 	</Grid>)

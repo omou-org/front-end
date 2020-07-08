@@ -11,8 +11,9 @@ import * as hooks from "actions/hooks";
 import * as moment from "moment";
 import {client} from "index";
 import gql from "graphql-tag";
-import {arraysMatch, fullName} from "../../utils";
+import {fullName} from "../../utils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
+import {createTutoringDetails, submitRegistration} from "../OmouComponents/RegistrationUtils";
 
 export const responseToForm = (parser, data) => {
     const res = {};
@@ -452,51 +453,6 @@ const categorySelect = (name) => (
     <Fields.DataSelect name={name} optionsMap={categoryMap}
         request={GET_CATEGORIES} />
 );
-
-const createTutoringDetails = (courseType, formData) => ({
-	title: formData.tutoring_details.course,
-	instructor: formData.tutoring_details.instructor.value,
-	startDate: moment(formData.tutoring_details.startDate, "DD-MM-YYYY"),
-	endDate: moment(new Date(formData.tutoring_details.startDate), "DD-MM-YYYY").add(formData.sessions, 'weeks'),
-	startTime: moment(formData.tutoring_details.startTime, "hh:mm"),
-	endTime: moment(new Date(formData.tutoring_details.endTime), "hh:mm").add(formData.duration, 'hours'),
-	courseType,
-});
-
-const createRegistrationInfo = (student, course) => ({
-	course: {
-		existing_id: typeof course === "string" && course,
-		...(typeof course !== "string" && course),
-	},
-	student: student,
-	numSessions: 0,
-	status: "REGISTERING"
-});
-
-const saveRegistration = (student, course, registrationState) => {
-	const newRegistrationInfo = createRegistrationInfo(student, course);
-	const existingStudentRegistration = registrationState?.[student] || [];
-	const newRegistrationState = {
-		[student]: [newRegistrationInfo, ...existingStudentRegistration],
-		...registrationState,
-	};
-	sessionStorage.setItem("registrations", JSON.stringify(newRegistrationState));
-};
-
-const submitRegistration = (student, course) => {
-	const registrationState = JSON.parse(sessionStorage.getItem("registrations"));
-	const existingEnrollmentsByStudents = Object.entries(registrationState)
-		.map(([studentID, studentRegistrations]) =>
-			Array.isArray(studentRegistrations) ? studentRegistrations
-				.map(registration => [studentID, registration.course.existing_id]) : []
-		);
-	const isEnrolled = existingEnrollmentsByStudents.map(studentEnrollments =>
-		studentEnrollments.filter((enrollment) => arraysMatch(enrollment, [student, course])))
-		.some(studentEnrollments => studentEnrollments.length > 0);
-	if (!isEnrolled) {
-		saveRegistration(student, course, registrationState);
-	}
-};
 
 export default {
     "student": {
@@ -1272,7 +1228,6 @@ export default {
 			console.log(course);
 			submitRegistration(formData.selectStudent, course);
 		}
-
 	},
     "course_category": {
         "title": "Course",

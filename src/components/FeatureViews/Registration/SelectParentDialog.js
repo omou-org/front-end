@@ -18,6 +18,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import {fullName} from "../../../utils";
 import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import {closeRegistrationCart} from "../../OmouComponents/RegistrationUtils";
 
 const GET_PARENTS_QUERY = gql`
 query GetParents($query: String!) {
@@ -94,6 +95,7 @@ const SelectParentDialog = ({onClose, open}) => {
 			setParent(null);
 			dispatch(setRegisteringParent(null));
 			dispatch(closeRegistration());
+			closeRegistrationCart();
 			onClose();
 		},
 		[dispatch, handleClose]

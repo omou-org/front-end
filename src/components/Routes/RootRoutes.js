@@ -18,7 +18,6 @@ import NotEnrolledStudentsDialog from "../FeatureViews/Scheduler/NotEnrolledStud
 import PaymentReceipt from "../FeatureViews/Registration/PaymentReceipt";
 import Registration from "../FeatureViews/Registration/Registration";
 import FormPage from "../Form/FormPage";
-import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
 import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
 import RegistrationReceipt from "../Form/RegistrationReceipt";
 import ResetPassword from "../Authentication/ResetPassword";
@@ -30,6 +29,7 @@ import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
 import RegistrationForm from "../FeatureViews/Registration/RegistrationForm";
+import RegistrationCartContainer from "../FeatureViews/Registration/RegistrationCart/RegistrationCartContainer";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -102,7 +102,7 @@ export const RootRoutes = () => {
                 <RegistrationCourse />
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/registration/cart/">
-                <RegistrationCart />
+                <RegistrationCartContainer/>
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/registration/receipt/:paymentID?">
                 <RegistrationReceipt />

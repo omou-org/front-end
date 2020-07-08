@@ -1,6 +1,7 @@
 import {instance} from "actions/apiActions";
 import {useCallback} from "react";
 import {useHistory} from "react-router-dom";
+import moment from "moment";
 
 export const USER_TYPES = {
     "admin": "ADMIN",
@@ -357,6 +358,18 @@ export const tuitionAmount = (courseObject, numSessions) => {
         duration = Math.abs(new Date(end) - new Date(start)) / HOUR;
 
     return (hourly_tuition * duration * numSessions).toFixed(2);
+};
+
+/**
+ * @description calculate amount towards enrollment based on new course object
+ * @param {Object} courseObject - course object with a start and an end time and hourly tuition
+ * @param {Number} numSessions - total number of sessions
+ * @returns "Amount paid"
+ * */
+export const getTuitionAmount = (courseObject, numSessions) => {
+    const {startTime, endTime, hourlyTuition} = courseObject;
+    const duration = moment.duration(moment("2020-01-01T" + endTime).diff(moment("2020-01-01T" + startTime))).asHours();
+    return (hourlyTuition * duration * numSessions).toFixed(2);
 };
 
 export const initials = (first, last) =>
