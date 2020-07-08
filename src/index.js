@@ -1,23 +1,30 @@
 import * as serviceWorker from "./serviceWorker";
-import {applyMiddleware, createStore} from "redux";
+import { applyMiddleware, createStore } from "redux";
 import App from "./App";
-import {BrowserRouter} from "react-router-dom";
-import {composeWithDevTools} from "redux-devtools-extension";
+import { BrowserRouter } from "react-router-dom";
+import { composeWithDevTools } from "redux-devtools-extension";
 import Provider from "react-redux/es/components/Provider";
 import React from "react";
 import ReactDOM from "react-dom";
 import rootReducer from "./reducers/rootReducer.js";
 import thunk from "redux-thunk";
-import {ApolloClient} from 'apollo-client';
-import {InMemoryCache} from "apollo-cache-inmemory";
-import {HttpLink} from "apollo-link-http";
-import {onError} from "apollo-link-error";
-import {ApolloLink} from "apollo-link";
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache } from "apollo-cache-inmemory";
+import { HttpLink } from "apollo-link-http";
+import { onError } from "apollo-link-error";
+import { ApolloLink } from "apollo-link";
 
-import {ApolloProvider} from "@apollo/react-hooks";
-import {setContext} from "apollo-link-context";
+import { ApolloProvider } from "@apollo/react-hooks";
+import { setContext } from "apollo-link-context";
 
-import {setToken} from "actions/authActions";
+import { setToken } from "actions/authActions";
+
+import { useState, useEffect } from 'react';
+import { Admin, Resource, ListGuesser } from 'react-admin';
+import buildGraphQLProvider from 'ra-data-graphql-simple';
+import { useApolloClient } from "@apollo/react-hooks";
+import jsonServerProvider from 'ra-data-json-server';
+import { createBrowserHistory } from 'history';
 
 const store = createStore(
     rootReducer,
@@ -25,7 +32,7 @@ const store = createStore(
 );
 
 const httpLink = ApolloLink.from([
-    onError(({graphQLErrors, networkError}) => {
+    onError(({ graphQLErrors, networkError }) => {
         if (graphQLErrors) {
             console.error("[GraphQL Error(s)]", graphQLErrors);
         }
@@ -38,8 +45,8 @@ const httpLink = ApolloLink.from([
     }),
 ]);
 
-const authLink = setContext((_, {headers}) => {
-    const {token} = store.getState().auth;
+const authLink = setContext((_, { headers }) => {
+    const { token } = store.getState().auth;
     return {
         "headers": {
             "Authorization": token ? `JWT ${token}` : "",
@@ -61,14 +68,20 @@ if (token) {
     })();
 }
 
+const history = createBrowserHistory()
+
+const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
 ReactDOM.render(
-    <Provider store={store}>
-        <ApolloProvider client={client}>
-            <BrowserRouter>
-                <App />
-            </BrowserRouter>
-        </ApolloProvider>
-    </Provider>,
+    <Admin dataProvider={{ dataProvider }} history={history}>
+        <Resource name="posts" list={ListGuesser} />
+        <Provider store={store}>
+            <ApolloProvider client={client}>
+                <BrowserRouter>
+                    <App />
+                </BrowserRouter>
+            </ApolloProvider>
+        </Provider>
+    </Admin>,
     document.getElementById("root"),
 );
 

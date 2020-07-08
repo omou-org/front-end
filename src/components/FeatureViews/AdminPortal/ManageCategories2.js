@@ -1,23 +1,13 @@
-
-
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Moment from "react-moment";
-import moment from "moment-timezone";
-import Navigation from "./components/Navigation/Navigation";
-
-import "./theme/theme.scss";
-
 import React, { useState, useEffect } from 'react';
 import { Admin, Resource, ListGuesser } from 'react-admin';
 import buildGraphQLProvider from 'ra-data-graphql-simple';
 import { useApolloClient } from "@apollo/react-hooks";
 import { createBrowserHistory } from 'history';
+import { useHistory } from 'react-router-dom';
 
+const history = createBrowserHistory();
 
-Moment.globalMoment = moment;
-Moment.globalTimezone = "America/Los_Angeles";
-
-const App = () => {
+const ManageCategories2 = () => {
     const [categories, setCategories] = useState({})
     const [dataProvider, setDataProvider] = useState({})
 
@@ -31,20 +21,13 @@ const App = () => {
                 setDataProvider(result)
             });
     }, [])
+
     return (
-        <>
-            <Admin dataProvider={dataProvider} >
-                <Resource name="posts" list={ListGuesser} />
-            </Admin>
-            <div className="App">
-                <CssBaseline />
-                <Navigation />
-            </div>
-        </>
+        <Admin dataProvider={dataProvider} history={history}>
+            <Resource name="posts" list={ListGuesser} />
+        </Admin>
     )
-};
+}
 
 
-
-
-export default App;
+export default ManageCategories2

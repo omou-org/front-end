@@ -1,14 +1,15 @@
 import React from "react";
-import {Switch} from "react-router-dom";
+import { Switch } from "react-router-dom";
 
 import AdminPortalHome from "../FeatureViews/AdminPortal/AdminPortalHome";
 import AuthenticatedRoute from "./AuthenticatedRoute";
 import FormPage from "../Form/FormPage";
+import ManageCategories2 from "../FeatureViews/AdminPortal/ManageCategories2";
 import ManageCategories from "../FeatureViews/AdminPortal/ManageCategories";
 import ManageDiscounts from "../FeatureViews/AdminPortal/ManageDiscounts";
 import TuitionRules from "../FeatureViews/AdminPortal/TuitionRules";
 
-import {USER_TYPES} from "utils";
+import { USER_TYPES } from "utils";
 
 const AdminViewsRoutes = () => (
     <Switch>
@@ -18,7 +19,7 @@ const AdminViewsRoutes = () => (
         </AuthenticatedRoute>
         <AuthenticatedRoute path="/adminportal/manage-course-categories"
             users={[USER_TYPES.admin]}>
-            <ManageCategories />
+            <ManageCategories2 />
         </AuthenticatedRoute>
         <AuthenticatedRoute path="/adminportal/manage-discounts"
             users={[USER_TYPES.admin]}>
