@@ -7,7 +7,7 @@ import "./Accounts.scss";
 import {stringToColor} from "./accountUtils";
 
 
-const UserAvatar = ({name, size = 40, fontSize = size, margin = 0}) => {
+const UserAvatar = ({name, size = 40, fontSize = size * 0.8, margin = 0}) => {
     const style = useMemo(() => ({
         "backgroundColor": stringToColor(name),
         fontSize,

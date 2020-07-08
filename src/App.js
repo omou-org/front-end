@@ -3,6 +3,7 @@ import React from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Moment from "react-moment";
 import moment from "moment-timezone";
+// import moment from "moment";
 import Navigation from "./components/Navigation/Navigation";
 
 import "./theme/theme.scss";
@@ -19,7 +20,6 @@ const App = () => (
             <Navigation/>
         </div>
     </MuiPickersUtilsProvider>
-
 );
 
 export default App;

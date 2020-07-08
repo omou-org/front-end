@@ -30,6 +30,9 @@ import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
 import RegistrationForm from "../FeatureViews/Registration/RegistrationForm";
 import RegistrationCartContainer from "../FeatureViews/Registration/RegistrationCart/RegistrationCartContainer";
+import DashboardSwitch from "../FeatureViews/Dashboard/DashboardSwitch";
+import TeachingLogContainer from "../FeatureViews/TeachingLog/TeachingLogContainer";
+import AvailabilityContainer from "../FeatureViews/Availability/AvailabilityContainer";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -50,7 +53,7 @@ export const RootRoutes = () => {
 
             {/* Main Feature Views */}
             <AuthenticatedRoute exact path="/">
-                <Scheduler />
+                <DashboardSwitch/>
             </AuthenticatedRoute>
             <AuthenticatedRoute exact path="/registration">
                 <Registration />
@@ -109,6 +112,17 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/NotEnrolledStudent">
                 <NotEnrolledStudentsDialog />
+            </AuthenticatedRoute>
+
+            {/* Instructor Routes */}
+            <AuthenticatedRoute path="/teaching-log"
+                                users={[USER_TYPES.instructor]}
+            >
+                <TeachingLogContainer/>
+            </AuthenticatedRoute>
+            <AuthenticatedRoute path="/availability"
+                                users={[USER_TYPES.instructor]}>
+                <AvailabilityContainer/>
             </AuthenticatedRoute>
 
             {/* Admin Routes */}

@@ -439,3 +439,10 @@ export const arraysMatch = function (arr1, arr2) {
     return true;
 
 };
+/**
+ * Returns duration in hours using Moment.js
+ * @param startDatetime
+ * @param endDatetime
+ * */
+export const getDuration = (startDatetime, endDatetime) =>
+    moment.duration(moment(endDatetime).diff(moment(startDatetime))).asHours();
