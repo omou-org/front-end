@@ -13,7 +13,7 @@ export const createTutoringDetails = (courseType, formData) => ({
 
 const createRegistrationInfo = (student, course) => ({
 	course: {
-		existing_id: typeof course === "string" && course,
+		id: typeof course === "string" && course,
 		...(typeof course !== "string" && course),
 	},
 	student: student,

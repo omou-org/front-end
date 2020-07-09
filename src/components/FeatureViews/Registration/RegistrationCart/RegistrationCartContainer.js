@@ -8,6 +8,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import {RegistrationContext} from "./RegistrationContext";
 import StudentRegistrationEntry from "./StudentRegistrationsEntry";
+import PaymentBoard from "./PaymentBoard";
 
 const GET_STUDENT_INFOS = gql`
 	query GetStudentInfos($userIds: [ID]!) {
@@ -56,8 +57,8 @@ export default function RegistrationCartContainer() {
 				let registrationCart = {};
 				studentIds.forEach(studentId => {
 					registrationCart[studentId] = registrationCartState[studentId].map(registration => ({
+						...registration,
 						course: courseData.find(course => course.id === registration.course.existing_id),
-						numSessions: registration.numSessions,
 						checked: false,
 					}));
 				});
@@ -91,7 +92,7 @@ export default function RegistrationCartContainer() {
 
 	const studentData = data.userInfos;
 
-	return (<RegistrationContext.Provider value={{registrationCart, updateSession}}>
+	return (<RegistrationContext.Provider value={{registrationCart, currentParent, updateSession}}>
 			<BackgroundPaper>
 				<Typography variant="h2" align="left">Registration Cart</Typography>
 				<Typography
@@ -101,15 +102,20 @@ export default function RegistrationCartContainer() {
 				>
 					Pay for Course(s)
 				</Typography>
-				<Grid container direction="row" spacing={5}>
-					{
-						Object.entries(registrationCart).map(([studentId, registration]) =>
-							<StudentRegistrationEntry
-								key={studentId}
-								student={studentData.find(student => student.user.id === studentId)}
-								registrationList={registration}
-							/>)
-					}
+				<Grid container item>
+					<Grid container direction="row" spacing={5}>
+						{
+							Object.entries(registrationCart).map(([studentId, registration]) =>
+								<StudentRegistrationEntry
+									key={studentId}
+									student={studentData.find(student => student.user.id === studentId)}
+									registrationList={registration}
+								/>)
+						}
+					</Grid>
+					<Grid container item justify="space-between" style={{marginTop: "50px"}}>
+						<PaymentBoard/>
+					</Grid>
 				</Grid>
 			</BackgroundPaper>
 		</RegistrationContext.Provider>
