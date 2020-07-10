@@ -13,10 +13,7 @@ const PasswordInput = ({ label = "Password", ...props }) => {
 
     const toggleVisibility = useCallback(() => {
         setShowPassword((show) => !show);
-
-    }, []);
-
-
+    }, [setPassword, props.show]);
 
     const handleTextInput = useCallback((setter) => ({ target }) => {
         setter(target.value);

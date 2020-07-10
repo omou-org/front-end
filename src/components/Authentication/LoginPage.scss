@@ -9,21 +9,12 @@
         font-size: 24px;
         line-height: 26px;
         text-decoration: none;
-        color: white;
-    }
-}
-.logo2 {
-    padding-top: 1%;
-    padding-left: 1.5%;
-    .title {
-        position: absolute;
-        font-family: "Roboto Slab", serif;
-        font-style: normal;
-        font-weight: 700;
-        font-size: 24px;
-        line-height: 26px;
-        text-decoration: none;
-        color: #43B5D9;
+        &.var1{
+            color:white;
+        }
+        &.var2{
+            color: #43B5D9;
+        }
     }
 }
 
@@ -97,31 +88,27 @@
         }
     }
 }
-.ellipse1 {
+.ellipse{
     position: absolute;
-    width: 1941.01px;
-    height: 1304.46px;
-    left: -776.74px;
-    top: -635.8px;
-    transform: matrix(0.98, 0.19, -0.19, 0.98, 0, 0);
-}
-.ellipse2 {
-    position: absolute;
-    bottom: 0;
-    right: 0;
+    &.var1{
+        left:0;
+        top:0;
+    }
+    &.var2{
+        bottom:0;
+        right:0;
+    }
+    &.var3{
+        top:0;
+        right:0;
+    }
+    &.var4{
+        left:0;
+        bottom:0;
+    }
 }
 .picture1 {
     position: absolute;
     bottom: 0;
     left: 0;
-}
-.ellipse3{
-    position: absolute;
-    top: 0;
-    right:0;
-}
-.ellipse4{
-    position:absolute;
-    left:0;
-    bottom:0;
 }
