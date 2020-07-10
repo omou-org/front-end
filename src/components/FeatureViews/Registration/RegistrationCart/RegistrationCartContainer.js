@@ -46,7 +46,7 @@ export default function RegistrationCartContainer() {
 	const studentIds = Object.keys(registrationCartState);
 	// create list of courses to fetch
 	const courseIds = [].concat.apply([], Object.values(registrationCartState))
-		.map(({course}) => course.existing_id);
+		.map(({course}) => course.id);
 	const {data, loading} = useQuery(GET_STUDENT_INFOS, {variables: {userIds: studentIds}});
 	const coursesResponse = useQuery(GET_COURSES_TO_REGISTER, {variables: {courseIds: courseIds}});
 
@@ -58,7 +58,7 @@ export default function RegistrationCartContainer() {
 				studentIds.forEach(studentId => {
 					registrationCart[studentId] = registrationCartState[studentId].map(registration => ({
 						...registration,
-						course: courseData.find(course => course.id === registration.course.existing_id),
+						course: courseData.find(course => course.id === registration.course.id),
 						checked: false,
 					}));
 				});

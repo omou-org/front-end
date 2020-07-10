@@ -70,7 +70,6 @@ export default function PaymentBoard() {
 	]);
 	const {priceAdjustmentValue, setPriceAdjustmentValue} = useState('');
 	const classes = useRowStyles();
-
 	const classRegistrations = [].concat(Object.values(registrationCart).flat())
 		.filter(registration => registration.course.id && registration.checked)
 		.map(({course, numSessions, student}) => ({
