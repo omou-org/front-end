@@ -10,6 +10,7 @@ export const skyBlue = "#EBFAFF";
 export const lightPrimaryFontColor = "#767474";
 export const secondaryFontColor = "#228eb2";
 export const neutralBackgroundColor = "#FAFAFA";
+export const errorRed = "#c0392b";
 
 const defaultFontProps = {
     fontFamily: 'Roboto Slab',

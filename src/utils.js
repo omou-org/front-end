@@ -446,3 +446,45 @@ export const arraysMatch = function (arr1, arr2) {
  * */
 export const getDuration = (startDatetime, endDatetime) =>
     moment.duration(moment(endDatetime).diff(moment(startDatetime))).asHours();
+
+/**
+ * @description set year, month, date, and seconds to be the same default value - useful for comparing hh:mm only
+ * @returns {Moment} datetime
+ * */
+export const setCurrentDate = (time) => {
+    time.set('year', 2020);
+    time.set('month', 1);
+    time.set('date', 1);
+    time.set('seconds', 1);
+    return time;
+};
+
+/**
+ * @description check if there are any time conflicts within a list of time segments
+ * @param {Array} timeSegments array of time segments = array of valid start and end times
+ * @return Boolean error message if there's a conflict or false if there's no conflicts
+ * */
+export const checkTimeSegmentOverlap = (timeSegments) => {
+    if (timeSegments.length === 1) return false;
+
+    timeSegments.sort((timeSegment1, timeSegment2) =>
+        setCurrentDate(timeSegment1[0]).isBefore(setCurrentDate(timeSegment2[0]))
+    );
+
+    const timeSegmentString = ([startTime, endTime]) =>
+        `${startTime.format("hh:mm A")} - ${endTime.format("hh:mm A")}`;
+
+    for (let i = 0; i < timeSegments.length - 1; i++) {
+        const currentStartTime = setCurrentDate(timeSegments[i][0]);
+        const currentEndTime = setCurrentDate(timeSegments[i][1]);
+        const nextStartTime = setCurrentDate(timeSegments[i + 1][0]);
+        const nextEndTime = setCurrentDate(timeSegments[i + 1][1]);
+
+        if (currentEndTime > nextStartTime || nextStartTime === currentStartTime) {
+            return `Whoops. ${timeSegmentString(timeSegments[i])} has a conflict with 
+				${timeSegmentString(timeSegments[i + 1])}! Please correct it.`;
+        }
+    }
+
+    return false;
+};
