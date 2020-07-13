@@ -12,7 +12,6 @@ import Grid from '@material-ui/core/Grid';
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 
-
 const Today = (filter) => {
     const TODAY_SESSION_QUERY= gql`
             query todaySessionQuery($filter: String="") {
