@@ -24,6 +24,7 @@ import FormPage from "../Form/FormPage";
 import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
 import RegistrationCourse from
     "../FeatureViews/Registration/RegistrationCourse";
+import Dashboard from "../FeatureViews/Dashboard/Dashboard";
 import RegistrationReceipt from "../Form/RegistrationReceipt";
 import ResetPassword from "../Authentication/ResetPassword";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
@@ -52,9 +53,13 @@ export const RootRoutes = () => {
             </Route>
 
             {/* Main Feature Views */}
-            <AuthenticatedRoute exact path="/">
-                <Scheduler />
-            </AuthenticatedRoute>
+
+            <AuthenticatedRoute exact path="/"
+                render={(passedProps) => <Dashboard {...passedProps} />}
+            />
+            <AuthenticatedRoute exact path ="/dashboard"
+                render={(passedProps) => <Dashboard {...passedProps} />}
+            />
             <AuthenticatedRoute exact path="/registration">
                 <Registration />
             </AuthenticatedRoute>

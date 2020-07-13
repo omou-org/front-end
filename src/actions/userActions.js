@@ -99,23 +99,30 @@ export const fetchInstructors = (id) => wrapGet(
 		{id}
 	);
 
-const wrapNoteGet = (
-	endpoint,
-	paramName,
-	[startType, successType, failType],
-	payloadInfo
-) => (ownerID, ownerType) => async (dispatch) => {
-	const newAction = (type, response) => {
-		dispatch({
-			payload: {
-				...(payloadInfo || {}),
-				ownerID,
-				ownerType,
-				response,
-			},
-			type,
-		});
-	};
+export const fetchAdmins = (id) => wrapGet(
+    "/account/admin/",
+    [
+        types.FETCH_ADMIN_STARTED,
+        types.FETCH_ADMIN_SUCCESSFUL,
+        types.FETCH_ADMIN_FAILED,
+    ],
+    {id}
+)
+
+const wrapNoteGet =
+    (endpoint, paramName, [startType, successType, failType], payloadInfo) =>
+        (ownerID, ownerType) => async (dispatch) => {
+            const newAction = (type, response) => {
+                dispatch({
+                    "payload": {
+                        ...payloadInfo || {},
+                        ownerID,
+                        ownerType,
+                        response,
+                    },
+                    type,
+                });
+            };
 
 	// request starting
 	newAction(startType, {});
