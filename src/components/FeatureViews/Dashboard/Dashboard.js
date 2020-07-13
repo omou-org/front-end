@@ -40,11 +40,30 @@ const useStyles = makeStyles((theme) => ({
 const Dashboard = () => {
     const classes = useStyles();
     const {email} = useSelector(({auth}) => auth) || [];
+    const [currentFilter, setCurrentFilter] = useState({
+        showFiltered: false,
+        filter: ""
+    });
+
     const emailQuery = { "email": email }
-    const USER_QUERY = gql`query userQuery($email: String="") {
+
+    const DASHBOARD_QUERY = gql`query DashboardQuery($email: String="") {
+        sessionSearch(query: "", time: "", sort: "timeAsc") {
+          results {
+            course {
+              courseCategory {
+                id
+                name
+              }
+            }
+          }
+        }
         accountSearch(query: $email) {
+          total
           results {
             ... on AdminType {
+              userUuid
+              birthDate
               user {
                 email
                 firstName
@@ -55,25 +74,26 @@ const Dashboard = () => {
         }
       }
       
-      
-      
-      `;
-      
-    const user = useQuery(USER_QUERY, { 
-        variables: emailQuery, 
-    })
-
-    const userFirstName = user?.data?.accountSearch?.results[0]?.user?.firstName;
-    const userID = user?.data?.accountSearch?.results[0]?.user?.id;
-    const currentDate = moment()
-    let isDisabled;
-
-    
-    const [currentFilter, setCurrentFilter] = useState({
-        showFiltered: false,
-        filter: ""
+    ` 
+     
+    const { data, loading, error } = useQuery(DASHBOARD_QUERY, {
+        variables: emailQuery
     });
 
+    if (loading) {
+        return (
+            <Loading/>
+        );
+    }
+
+    if (error){
+        console.error(error);
+        return <>There has been an error: {error.message}</>
+    }
+
+    const { firstName, id } = data.accountSearch.results[0].user;
+    const currentDate = moment()
+    let isDisabled;
 
     const handleChange = e => {
         if (e){
@@ -90,32 +110,6 @@ const Dashboard = () => {
         }
     };
 
-    const CATEGORY_QUERY = gql`query categoryQuery {
-            sessionSearch(query: "", time: "", sort: "timeAsc") {
-              results {
-                course {
-                  courseCategory {
-                    id
-                    name
-                  }
-                }
-              }
-            }
-          }          
-          `
-    
-    const { data, loading, error } = useQuery(CATEGORY_QUERY);
-
-    if (loading) {
-        return (
-            <Loading/>
-        );
-    }
-
-    if (error){
-        console.error(error);
-        return <>There has been an error: {error.message}</>
-    }
 
     const categoryList = data.sessionSearch.results.map(category=> ({
         "label": category.course.courseCategory.name,
@@ -134,9 +128,9 @@ const Dashboard = () => {
         <Grid container>
             <Paper className="dashboard-paper" elevation={3}>
                 <Grid container justify="space-around">
-                    <Grid item xs={9} spacing={2}>
+                    <Grid item xs={9} >
                         <Typography variant="h4" className="dashboard-greeting">
-                            Hello {userFirstName}!
+                            Hello {firstName}!
                         </Typography>
                         <br/>
                         <Paper className="today-paper" container>
@@ -193,11 +187,11 @@ const Dashboard = () => {
                             </Grid>
                         </Paper>
                     </Grid>
-                    <Grid item xs={3} spacing={2} className={`db-notes-container ${classes.root}`}>
+                    <Grid item xs={3} className={`db-notes-container ${classes.root}`}>
                         <DashboardNotes
-                            key = {userID}
-                            id={userID}
-                            first_name={userFirstName}
+                            key = {id}
+                            id={id}
+                            first_name={firstName}
                         />
                     </Grid>
                 </Grid>
