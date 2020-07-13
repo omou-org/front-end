@@ -19,7 +19,6 @@ const App = () => (
         <Admin dataProvider={dataProvider} history={history}>
             <Resource edit={CategoryEdit} list={CategoryList}
                 name="courseCategories" show={CategoryShow} />
-            <Resource list={ListGuesser} name="users" />
         </Admin>
     </Provider>
 );

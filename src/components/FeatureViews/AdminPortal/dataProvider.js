@@ -24,6 +24,19 @@ const QUERIES_ONE = {
         }`,
 };
 
+const MUTATION_UPDATE = {
+    "courseCategories": gql`
+        mutation UpdateCategory($id: ID!, $name: String!, $description: String) {
+            createCourseCategory(id: $id, name: $name, description: $description) {
+                courseCategory {
+                    description
+                    id
+                    name
+                }
+            }
+        }`,
+};
+
 const getTypes = gql`
     query GetFieldTypes($type:String!) {
         __type(name: $type) {
@@ -48,6 +61,13 @@ export default {
             });
 
             const [records] = Object.values(dataResponse.data);
+
+            if (records.length === 0) {
+                return {
+                    "data": [],
+                    "total": 0,
+                };
+            }
 
             const typeResponse = await client.query({
                 "query": getTypes,
@@ -96,6 +116,24 @@ export default {
 
             return {
                 "data": Object.values(data)[0],
+            };
+        } catch (error) {
+            return error;
+        }
+    },
+    "update": async (resource, {id, data}) => {
+        const mutation = MUTATION_UPDATE[resource];
+        try {
+            const response = await client.mutate({
+                mutation,
+                "variables": {
+                    ...data,
+                    id,
+                },
+            });
+
+            return {
+                "data": Object.values(response.data)[0],
             };
         } catch (error) {
             return error;

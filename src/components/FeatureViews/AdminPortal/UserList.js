@@ -17,7 +17,6 @@ export const CategoryList = (props) => (
 export const CategoryEdit = (props) => (
     <Edit {...props}>
         <SimpleForm>
-            <TextInput source="id" />
             <TextInput source="name" />
             <TextInput source="description" />
         </SimpleForm>
