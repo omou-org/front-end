@@ -118,10 +118,7 @@ const Dashboard = () => {
         "value": category.course.courseCategory.id
     }));
 
-    console.log(data);
-
     const uniqueCategoryList = categoryList.filter( onlyUnique );
-    console.log (uniqueCategoryList)
     if (uniqueCategoryList.length===0){
         isDisabled=true;
     }
