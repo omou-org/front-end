@@ -29,12 +29,9 @@ const TodayCard = ({session}) => {
     const formattedStartTime = moment(startTime, "HH:mm").format("h:mm a");
 
     return (
-        <Card className="today-card"
-            component = {Link}
+        <Card className="today-card">
+            <CardActionArea component = {Link}
                 to={`/scheduler/view-session/${session.course.id}/${session.id}/${session.course.instructor.user.id}`}> 
-            <CardActionArea
-                               
-            >
                 <CardContent
                     className="today-details">
                     <Tooltip title={session.course.title}>

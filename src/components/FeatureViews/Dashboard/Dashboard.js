@@ -48,7 +48,7 @@ const Dashboard = () => {
     const emailQuery = { "email": email }
 
     const DASHBOARD_QUERY = gql`query DashboardQuery($email: String="") {
-        sessionSearch(query: "", time: "", sort: "timeAsc") {
+        sessionSearch(query: "", time: "today", sort: "timeAsc") {
           results {
             course {
               courseCategory {
@@ -110,7 +110,7 @@ const Dashboard = () => {
         }
     };
 
-    const onlyUnique = (value, index, self) {
+    const onlyUnique = (value, index, self) => {
         return self.indexOf(value) === index;
     }
 
@@ -119,7 +119,10 @@ const Dashboard = () => {
         "value": category.course.courseCategory.id
     }));
 
+    console.log(data);
+
     const uniqueCategoryList = categoryList.filter( onlyUnique );
+    console.log (uniqueCategoryList)
     if (uniqueCategoryList.length===0){
         isDisabled=true;
     }

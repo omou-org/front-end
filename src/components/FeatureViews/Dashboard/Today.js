@@ -17,7 +17,7 @@ const Today = (filter) => {
     console.log(filter)
     const TODAY_SESSION_QUERY= gql`
             query todaySessionQuery($filter: String="") {
-                sessionSearch(query: $filter, time: "", sort: "timeAsc") {
+                sessionSearch(query: $filter, time: "today", sort: "timeAsc") {
                 results {
                     id
                     course {
