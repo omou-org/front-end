@@ -546,11 +546,11 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                                 item
                                 xs={12}>
                                 <div
-                                    className="addNote"
+                                    className={`addNote ${classes.addNote}`}
                                     onClick={openNewNote}
-                                    style={{"cursor": "pointer", height: "100%"}}>
+                                    style={{"cursor": "pointer", height: "100%", backgroundColor: "white"}}>
                                     <Typography className="center" style={{padding: 0}}>
-                                        <AddIcon /> Add Note dashboard
+                                        <AddIcon /> Add Note
                                     </Typography>
                                 </div>
                             </Grid>
