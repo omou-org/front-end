@@ -7,7 +7,8 @@ import Tab from "@material-ui/core/Tab";
 
 const useTabsStyles = makeStyles(() => ({
   indicator: {
-    display: "none"
+    display: "none",
+    marginTop: "1.1em",
   }
 }));
 
@@ -24,13 +25,14 @@ const useTabStyles = makeStyles(({ palette, spacing, breakpoints }) => {
 
 
   return {
-    root: ({ bgColor = defaultBgColor, minWidth = defaultMinWidth, leftValue, rightValue }) => ({
+    root: ({ bgColor = defaultBgColor, minWidth = defaultMinWidth, leftValue, rightValue, topMargin }) => ({
       opacity: 1,
       overflow: "initial",
       paddingLeft: spacing(2),
       paddingRight: spacing(2),
       borderTopLeftRadius: spacing(leftValue),
       borderTopRightRadius: spacing(rightValue),
+      marginTop: topMargin,
       color: getTextColor(bgColor),
       backgroundColor: bgColor,
       transition: "0.2s",

@@ -7,11 +7,15 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Grid from "@material-ui/core/Grid";
+import MailOutlineIcon from '@material-ui/icons/MailOutline';
+import ChatIcon from '@material-ui/icons/Chat';
+import { Link } from "react-router-dom";
 import { fullName} from "../../../utils";
 
 const useStyles = makeStyles({
     table: {
-      minWidth: 650,
+      minWidth: 1460,
     },
   });
   
@@ -35,17 +39,19 @@ const Studentenrollment = ({enrollment}) => {
         const concatFullStudentName = fullName(user);
         const studentId = user.id;
         const concatFullParentName = fullName(primaryParent.user);
-        const parentAccountType = primaryParent.accountType;
+        const parentAccountType = primaryParent.accountType.toLowerCase();
         const phoneNumber = primaryParent.phoneNumber;
         const parentId = primaryParent.user.id
         
         return (
             <TableRow key={concatFullStudentName}>
-            <TableCell component="th" scope="row">
+            <TableCell component="th" scope="row" component={Link} to={`/accounts/${accountType.toLowerCase()}/${studentId}`} style={{textDecoration: "none", fontWeight: 700}}>
               {concatFullStudentName}
             </TableCell>
-            <TableCell align="right">{concatFullParentName}</TableCell>
+            <TableCell align="right" component={Link} to={`/accounts/${parentAccountType}/${parentId}`} style={{textDecoration: "none"}}>{concatFullParentName}</TableCell>
             <TableCell align="right">{phoneNumber}</TableCell>
+            <TableCell align="right"><MailOutlineIcon /></TableCell>
+            <TableCell align="right"><ChatIcon /></TableCell>
           </TableRow>
         )
     })
@@ -53,6 +59,7 @@ const Studentenrollment = ({enrollment}) => {
 
     return (
         <>
+        <Grid item xs={12}>
          <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
@@ -60,6 +67,8 @@ const Studentenrollment = ({enrollment}) => {
             <TableCell>Student</TableCell>
             <TableCell align="right">Parent</TableCell>
             <TableCell align="right">Phone</TableCell>
+            <TableCell align="right"></TableCell>
+            <TableCell align="right"></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -67,6 +76,7 @@ const Studentenrollment = ({enrollment}) => {
         </TableBody>
       </Table>
     </TableContainer>
+    </Grid>
         </>
     )
 }

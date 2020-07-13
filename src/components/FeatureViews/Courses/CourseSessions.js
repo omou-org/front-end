@@ -14,9 +14,13 @@ import moment from "moment";
 const useStyles = makeStyles((theme) => ({
     root: {
       width: '100%',
-      maxWidth: 360,
+      minWidth: 1460,
       backgroundColor: theme.palette.background.paper,
     },
+    listItems: {
+      paddingTop: "3em",
+      paddingBottom: "1em",
+    }
   }));
 
 const CourseSessions = ({ session }) => {
@@ -27,7 +31,7 @@ const CourseSessions = ({ session }) => {
         console.log(startingDate)
         return(
             <>
-        <ListItem>
+        <ListItem className={classes.listItems}>
         <ListItemText primary={`Session ${index + 1} (${startingDate})`} />
       </ListItem>
       <Divider />

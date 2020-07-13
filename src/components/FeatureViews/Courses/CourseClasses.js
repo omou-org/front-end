@@ -42,6 +42,12 @@ const useStyles = makeStyles((theme) => ({
   alignTitleLeft: {
     textAlign: "left",
   },
+  dataFontDate: {
+    fontWeight: "600",
+  },
+  dividerColor: {
+    backgroundColor: "black",
+  },
 }));
 
 const baseTheme = createMuiTheme();
@@ -184,6 +190,7 @@ const CourseClasses = () => {
             <Typography
               variant="body1"
               align="left"
+              className={classes.dataFontDate}
             >{`${startingDate} - ${endingDate}`}</Typography>
           </Grid>
           <Grid item xs={2}>
@@ -193,6 +200,7 @@ const CourseClasses = () => {
             <Typography
               variant="body1"
               align="left"
+              className={classes.dataFontDate}
             >{`${abbreviatedDay} ${startingTime} - ${endingTime}`}</Typography>
           </Grid>
         </Grid>
@@ -204,13 +212,14 @@ const CourseClasses = () => {
             <Typography
               variant="body1"
               align="left"
+              className={classes.dataFontDate}
             >{`${firstName} ${lastName}`}</Typography>
           </Grid>
           <Grid item xs={2}>
             <Typography variant="body2" align="left">
               Grade
             </Typography>
-            <Typography variant="body1" align="left">
+            <Typography variant="body1" align="left" className={classes.dataFontDate}>
               {academicLevel}
             </Typography>
           </Grid>
@@ -218,7 +227,7 @@ const CourseClasses = () => {
             <Typography variant="body2" align="left">
               Subject
             </Typography>
-            <Typography variant="body1" align="left">
+            <Typography variant="body1" align="left" className={classes.dataFontDate}>
               {name}
             </Typography>
           </Grid>
@@ -246,6 +255,7 @@ const CourseClasses = () => {
                       bgColor: "#ffffff",
                       selectedBgColor: "#EBFAFF",
                       color: "rgba(102, 102, 102, 0.87)",
+                      topMargin: "1.1em",
                       leftValue: 0,
                       rightValue: 0,
                     }}
@@ -256,7 +266,7 @@ const CourseClasses = () => {
                     onChange={handleChange}
                   />
                 </Toolbar>
-              <Divider />
+              <Divider classes={{root: classes.dividerColor}}/>
               </AppBar>
               <Grid container>
                 <TabPanel index={0} value={index} backgroundColor="#FFFFFF">
