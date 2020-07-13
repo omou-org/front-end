@@ -110,17 +110,21 @@ const Dashboard = () => {
         }
     };
 
+    const onlyUnique = (value, index, self) {
+        return self.indexOf(value) === index;
+    }
 
     const categoryList = data.sessionSearch.results.map(category=> ({
         "label": category.course.courseCategory.name,
         "value": category.course.courseCategory.id
     }));
 
-    if (categoryList.length===0){
+    const uniqueCategoryList = categoryList.filter( onlyUnique );
+    if (uniqueCategoryList.length===0){
         isDisabled=true;
     }
 
-    else if (categoryList.length>0){
+    else if (uniqueCategoryList.length>0){
         isDisabled=false;
     }
 
@@ -159,7 +163,7 @@ const Dashboard = () => {
                                     closeMenuOnSelect={true}
                                     isClearable={true}
                                     isDisabled={isDisabled}
-                                    options={categoryList}
+                                    options={uniqueCategoryList}
                                     placeholder={'Choose a Category'}
                                     onValueClick={(e) => e.preventDefault()}
                                     onChange={handleChange}
