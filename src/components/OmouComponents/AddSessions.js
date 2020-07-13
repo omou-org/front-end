@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useMemo, useState} from "react";
 import {bindActionCreators} from "redux";
-import * as registrationActions from "../actions/registrationActions";
+import * as registrationActions from "../../actions/registrationActions";
 import Button from "@material-ui/core/Button";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";

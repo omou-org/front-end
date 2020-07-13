@@ -1,12 +1,11 @@
-// React Imports
-import {connect, useSelector} from "react-redux";
-import {useLocation, withRouter} from "react-router-dom";
 import React, {useCallback, useState} from "react";
-import NavLinkNoDup from "../Routes/NavLinkNoDup";
-// Material UI Imports
+import {useSelector} from "react-redux";
+
 import AccountsIcon from "@material-ui/icons/Contacts";
+import AppBar from "@material-ui/core/AppBar";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import Drawer from "@material-ui/core/Drawer";
+import EventIcon from "@material-ui/icons/Event";
 import Hidden from "@material-ui/core/Hidden";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -14,32 +13,36 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import AdminIcon from "@material-ui/icons/Face"
 import ListItemText from "@material-ui/core/ListItemText";
-import {makeStyles, ThemeProvider as MuiThemeProvider,} from "@material-ui/core/styles";
-import EventIcon from "@material-ui/icons/Event";
-// Local Component Imports
+import NavLinkNoDup from "../Routes/NavLinkNoDup";
+import Toolbar from "@material-ui/core/Toolbar";
+import {makeStyles, ThemeProvider} from "@material-ui/core/styles";
+
 import "./Navigation.scss";
-import CustomTheme from "../../theme/muiTheme";
-import {bindActionCreators} from "redux";
-import * as registrationActions from "../../actions/registrationActions";
 import DateFnsUtils from "@date-io/date-fns";
 import {MuiPickersUtilsProvider} from "material-ui-pickers";
-import NavBarRoutes from "../Routes/NavBarRoutes";
-import LoginPage from "../Authentication/LoginPage";
+import OmouTheme from "../../theme/muiTheme";
 import {RootRoutes} from "../Routes/RootRoutes";
 
+import AuthenticatedNav from "../Navigation/AuthenticatedNav";
+import UnauthenticatedNav from "../Navigation/UnauthenticatedNav";
+
+import {USER_TYPES} from "utils";
+
 const useStyles = makeStyles({
-	navigationIconStyle: {
-		height: "50px",
-	},
-	navigationLeftList: {
-		width: "23%",
-	},
+    "navigationIconStyle": {
+        "height": "50px",
+    },
+    "navigationLeftList": {
+        "width": "23%",
+    },
 });
 
-const Navigation = (props) => {
-	const classes = useStyles();
-	const {pathname} = useLocation();
-	const {token, isAdmin} = useSelector(({auth}) => auth);
+const Navigation = () => {
+    const classes = useStyles();
+    const {token} = useSelector(({auth}) => auth);
+
+    const isAdmin =
+        useSelector(({auth}) => auth.accountType) === USER_TYPES.admin;
 
     const NavList = isAdmin ? [
             {
@@ -91,85 +94,72 @@ const Navigation = (props) => {
             },
         ];
 
-	const [mobileOpen, setMobileOpen] = useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
 
-	const drawer = (
-		<div className="DrawerList">
-			<List className="list">
-				{NavList.map((NavItem) => (
-					<ListItem
-						button
-						className={`listItem ${classes.navigationIconStyle}`}
-						component={NavLinkNoDup}
-						isActive={(match, location) =>
-							match ||
-							(NavItem.name === "Scheduler" && location.pathname === "/")
-						}
-						key={NavItem.name}
-						to={NavItem.link}
-					>
-						<ListItemIcon className="icon">{NavItem.icon}</ListItemIcon>
-						<ListItemText className="text" primary={NavItem.name}/>
-					</ListItem>
-				))}
-			</List>
-		</div>
-	);
+    const drawer = (
+        <div className="DrawerList">
+            <List className="list">
+                {NavList.map((NavItem) => (
+                    <ListItem
+                        button
+                        className={`listItem ${classes.navigationIconStyle}`}
+                        component={NavLinkNoDup}
+                        isActive={(match, location) => match ||
+                            (NavItem.name === "Scheduler" &&
+                                location.pathname === "/")}
+                        key={NavItem.name}
+                        to={NavItem.link}>
+                        <ListItemIcon className="icon">
+                            {NavItem.icon}
+                        </ListItemIcon>
+                        <ListItemText className="text" primary={NavItem.name} />
+                    </ListItem>
+                ))}
+            </List>
+        </div>
+    );
 
-	const handleDrawerToggle = useCallback(() => {
-		setMobileOpen((open) => !open);
-	}, []);
+    const handleDrawerToggle = useCallback(() => {
+        setMobileOpen((open) => !open);
+    }, []);
 
-	return (
-		<MuiThemeProvider theme={CustomTheme}>
-			<div className="Navigation">
-				<NavBarRoutes toggleDrawer={handleDrawerToggle}/>
-				{
-					<nav className="OmouDrawer">
-						{token ? (
-							<>
-								<Hidden implementation="css" smUp>
-									<Drawer
-										onClose={handleDrawerToggle}
-										open={mobileOpen}
-										variant="temporary"
-										classes={{paper: classes.navigationLeftList}}
-									>
-										{drawer}
-									</Drawer>
-								</Hidden>
-								<Hidden implementation="css" mdDown>
-									<Drawer open variant="permanent">
-										{drawer}
-									</Drawer>
-								</Hidden>
-							</>
-						) : (
-							""
-						)}
-					</nav>
-				}
-				{token ? (
-					<main className="OmouMain">
-						<MuiPickersUtilsProvider utils={DateFnsUtils}>
-							<RootRoutes/>
-						</MuiPickersUtilsProvider>
-					</main>
-				) : (
-					<LoginPage/>
-				)}
-			</div>
-		</MuiThemeProvider>
-	);
+    return (
+        <ThemeProvider theme={OmouTheme}>
+            <div className="Navigation">
+                <AppBar className="OmouBar" position="sticky">
+                    <Toolbar>
+                        {token ?
+                            <AuthenticatedNav
+                                toggleDrawer={handleDrawerToggle} /> :
+                            <UnauthenticatedNav />}
+                    </Toolbar>
+                </AppBar>
+                {token && (
+                    <nav className="OmouDrawer">
+                        <Hidden implementation="css" smUp>
+                            <Drawer
+                                classes={{"paper": classes.navigationLeftList}}
+                                onClose={handleDrawerToggle}
+                                open={mobileOpen}
+                                variant="temporary">
+                                {drawer}
+                            </Drawer>
+                        </Hidden>
+                        <Hidden implementation="css" mdDown>
+                            <Drawer open variant="permanent">
+                                {drawer}
+                            </Drawer>
+                        </Hidden>
+                    </nav>
+                )}
+                <main className="OmouMain">
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <RootRoutes />
+                    </MuiPickersUtilsProvider>
+                </main>
+            </div>
+        </ThemeProvider>
+    );
 };
-const mapStateToProps = (state) => ({
-	isAdmin: state.auth.isAdmin,
-});
 
-const mapDispatchToProps = (dispatch) => ({
-	registrationActions: bindActionCreators(registrationActions, dispatch),
-});
-
-export default withRouter(
-	connect(mapStateToProps, mapDispatchToProps)(Navigation)
-);
+export default Navigation;

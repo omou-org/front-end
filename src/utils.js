@@ -2,6 +2,14 @@ import {instance} from "actions/apiActions";
 import {useCallback} from "react";
 import {useHistory} from "react-router-dom";
 
+export const USER_TYPES = {
+    "admin": "ADMIN",
+    "instructor": "INSTRUCTOR",
+    "parent": "PARENT",
+    "receptionist": "RECEPTIONIST",
+    "student": "STUDENT",
+};
+
 export const durationParser = {
     "0.5 Hours": 0.5,
     "1 Hour": 1,
@@ -264,7 +272,7 @@ export const instructorConflictCheck = async (instructorID, start, end) => {
         "end_time": toApiTime(end),
         "start_time": toApiTime(start),
     };
-    
+
     const courseParams = {
         "end_date": toApiDate(end),
         "end_time": toApiTime(end),
@@ -365,6 +373,8 @@ export const useGoToRoute = () => {
     return goToRoute;
 };
 
+export const removeDashes = (phoneNumber) => phoneNumber.replace(/-/ug, "");
+
 /**
  * Removes duplicate values from an array
  * @param {Array} array Array to de-duplicate
@@ -372,3 +382,9 @@ export const useGoToRoute = () => {
 export const uniques = (array) => array.filter(
     (element, index, filteredArray) => filteredArray.indexOf(element) === index
 );
+
+/***
+ * Returns full name given a user object
+ * @param {Object} user
+ */
+export const fullName = ({firstName, lastName}) => `${firstName} ${lastName}`;

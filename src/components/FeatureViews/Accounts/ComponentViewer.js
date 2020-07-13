@@ -24,7 +24,7 @@ const ComponentViewer = ({inView, user}) => {
 			<StudentCourseViewer current={false} key={4} studentID={user.user_id}/>,
 			<PaymentHistory key={5} user_id={user.user_id}/>,
 			<ParentContact key={6} parent_id={user.parent_id}/>,
-			<Notes key={7} ownerID={user.user_id} ownerType={user.role}/>,
+			<Notes key={7} ownerID={user.user_id} ownerType="account"/>,
 			<StudentInfo key={8} user={user}/>,
 			<PayCourses key={9} user={user}/>,
 		],

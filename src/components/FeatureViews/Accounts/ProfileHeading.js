@@ -23,10 +23,12 @@ import InstructorAvailability from "./InstructorAvailability";
 import OutOfOffice from "./OutOfOffice";
 import RoleChip from "./RoleChip";
 import {ReactComponent as SchoolIcon} from "../../school.svg";
+import {USER_TYPES} from "utils";
 
 const ProfileHeading = ({ user }) => {
 	const [anchorEl, setAnchorEl] = useState(null);
-	const isAdmin = useSelector(({auth}) => auth.isAdmin);
+	const isAdmin =
+		useSelector(({auth}) => auth.accountType) === USER_TYPES.admin;
 
 	const handleOpen = useCallback(({currentTarget}) => {
 		setAnchorEl(currentTarget);
@@ -68,7 +70,7 @@ const ProfileHeading = ({ user }) => {
 					<Grid component={Hidden} item mdDown xs={12}>
 						<Button
 							component={Link}
-							to={`/registration/form/${user.role}/${user.user_id}/edit`}
+							to={`/registration/form/${user.role}/${user.user_id}`}
 							variant="outlined"
 						>
 							<EditIcon/>
@@ -78,7 +80,7 @@ const ProfileHeading = ({ user }) => {
 					<Grid component={Hidden} item lgUp xs={12}>
 						<Button
 							component={Link}
-							to={`/registration/form/${user.role}/${user.user_id}/edit`}
+							to={`/registration/form/${user.role}/${user.user_id}`}
 							variant="outlined"
 						>
 							<EditIcon/>

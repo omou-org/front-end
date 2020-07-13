@@ -2,7 +2,7 @@ import React from "react";
 // import {useSelector} from "react-redux";
 
 import * as hooks from "actions/hooks";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import Notes from "./../Notes/Notes";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -22,7 +22,7 @@ const DashboardNotes = (owner) => {
     const classes = useStyles();
 
     const ownerID = owner.id;
-    const ownerType = 'receptionist'
+    const ownerType = 'account'
     const adminStatus = hooks.useAdmin();
 
 if (hooks.isLoading(adminStatus)) {
@@ -36,8 +36,8 @@ if (hooks.isLoading(adminStatus)) {
         <Paper className={`db-notes-paper ${classes.root}`}>
             <Grid>
                 <Notes
-                    ownerID = {ownerID}
                     ownerType = {ownerType}
+                    ownerID = {ownerID}
                     isDashboard = {true}
                     >
                 </Notes>

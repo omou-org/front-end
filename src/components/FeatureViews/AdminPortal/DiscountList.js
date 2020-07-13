@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 
 import "./AdminPortal.scss";
 import DiscountRow from "./DiscountRow";
-import NoListAlert from "components/NoListAlert";
+import NoListAlert from "components/OmouComponents/NoListAlert";
 
 const discountTypeParser = {
 	DateRange: "Date Range Discount",

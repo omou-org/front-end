@@ -9,7 +9,8 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Divider from "@material-ui/core/Divider";
 import moment from 'moment';
 import { makeStyles } from "@material-ui/styles";
-import {NavLink} from 'react-router-dom';
+import { Link  } from 'react-router-dom';
+import {fullName} from "utils";
 
 const useStyles = makeStyles((theme) => ({
     icons: {
@@ -21,27 +22,24 @@ const useStyles = makeStyles((theme) => ({
 
 const TodayCard = ({session}) => {
     const classes = useStyles();
-    const instructors = useSelector(({Users}) => Users.InstructorList);
-    const courses = useSelector(({Course}) => Course.NewCourseList);
-    const course = session.title
-    const instructor = instructors[session.instructor].name
-    const startTime = (courses[session.course].schedule.start_time).slice(1)
-    const roster = courses[session.course].roster
-    const countStudents = roster.length
-
+    const countStudents = session.course.enrollmentSet.length
+    const instructorObj = session.course.instructor.user;
+    const instructorFullName = fullName(instructorObj)
+    const startTime = session.course.startTime
     const formattedStartTime = moment(startTime, "HH:mm").format("h:mm a");
 
     return (
         <Card className="today-card">
+            component = {Link}
+                to={`/scheduler/view-session/${session.course.id}/${session.id}/${session.course.instructor.user.id}`} 
             <CardActionArea
-                component = {NavLink}
-                to={`/scheduler/view-session/${session.course}/${session.id}/${session.instructor}`}                
+                               
             >
                 <CardContent
                     className="today-details">
-                    <Tooltip title={course}>
+                    <Tooltip title={session.course.title}>
                         <Typography variant='subtitle2' gutterBottom className='today-course-title' noWrap={true}>
-                            {course}
+                            {session.course.title}
                         </Typography>
                     </Tooltip>
                     <Divider/>
@@ -50,7 +48,7 @@ const TodayCard = ({session}) => {
                         <span className={`material-icons ${classes.icons}`}>alarm</span> {formattedStartTime}
                     </Typography>
                     <Typography variant="body2" className="today-card-details">
-                        <span className={`material-icons ${classes.icons}`}>face</span> {instructor}
+                        <span className={`material-icons ${classes.icons}`}>face</span> {instructorFullName}
                     </Typography>
                     <Typography variant="body2" className="today-card-details">
                         <span className={`material-icons ${classes.icons}`}>group</span> {countStudents} students

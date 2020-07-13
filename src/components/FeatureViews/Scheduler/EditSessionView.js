@@ -1,6 +1,7 @@
 import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
+import {useHistory, useLocation, withRouter} from "react-router-dom";
 
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
@@ -8,7 +9,6 @@ import * as calendarActions from "../../../actions/calendarActions";
 import * as userActions from "../../../actions/userActions.js";
 import {useDispatch, useSelector} from "react-redux";
 import {FormControl, Typography} from "@material-ui/core";
-import {useHistory, withRouter} from "react-router-dom";
 import * as apiActions from "../../../actions/apiActions";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -19,9 +19,12 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 import {dateFormat, timeFormat} from "../../../utils";
-import InstructorConflictCheck from "components/InstructorConflictCheck";
+import InstructorConflictCheck from "components/OmouComponents/InstructorConflictCheck";
+import BackButton from "../../OmouComponents/BackButton";
+import "./scheduler.scss";
+import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 
-const EditSessionView = ({course, session, editSelection}) => {
+const EditSessionView = ({editSelection}) => {
 	const dispatch = useDispatch();
 	const api = useMemo(
 		() => ({
@@ -33,6 +36,8 @@ const EditSessionView = ({course, session, editSelection}) => {
 		[dispatch]
 	);
 	const history = useHistory();
+	const location = useLocation();
+	const {course, session} = location.state;
 
 	const [sessionFields, setSessionFields] = useState({
 		start_time: "",
@@ -210,122 +215,138 @@ const EditSessionView = ({course, session, editSelection}) => {
 			label: `${name} - ${email}`,
 		})
 	);
-
 	return (
-		<>
-			<Grid className="session-view" container direction="row" spacing={2}>
-				<Grid item sm={12}>
-					<TextField
-						fullWidth
-						onChange={handleTextChange("title")}
-						value={sessionFields.title}
-					/>
+		<Grid container className="main-session-view">
+			<BackgroundPaper
+				elevation={2}
+				className="paper session"
+				mt="2em"
+				style={{width: "100%"}}>
+				<Grid className="session-button" item>
+					<BackButton />
 				</Grid>
-				<Grid
-					align="left"
-					className="session-view-details"
-					container
-					spacing={2}
-					xs={6}
-				>
-					<Grid item xs={6}>
-						<Typography variant="h5"> Subject </Typography>
-						<SearchSelect
-							className="search-options"
-							isClearable
-							onChange={handleCategoryChange}
-							options={categoriesList}
-							placeholder="Choose a Category"
-							value={sessionFields.category}
+				<Grid className="session-view" container direction="row" spacing={2}>
+					<Grid item sm={12}>
+						<TextField
+							fullWidth
+							onChange={handleTextChange("title")}
+							value={sessionFields.title}
 						/>
 					</Grid>
-					<Grid item xs={6}>
-						<Typography variant="h5"> Room</Typography>
-						<TextField value={course.room_id}/>
-					</Grid>
-
-					<Grid item xs={12}>
-						<Typography variant="h5"> Instructor </Typography>
-						<SearchSelect
-							onChange={handleInstructorChange}
-							options={instructorList}
-							placeholder="Choose an Instructor"
-							value={sessionFields.instructor}
-						/>
-						<FormControl style={{marginTop: "20px", marginBottom: "10px"}}>
-							<InputLabel>Is instructor confirmed?</InputLabel>
-							<Select
-								onChange={onConfirmationChange}
-								value={sessionFields.is_confirmed}
-							>
-								<MenuItem value>Yes, Instructor Confirmed.</MenuItem>
-								<MenuItem value={false}>
-									No, Instructor is NOT Confirmed.
-								</MenuItem>
-							</Select>
-						</FormControl>
-					</Grid>
-					{editSelection === EDIT_CURRENT_SESSION && (
+					<Grid
+						align="left"
+						className="session-view-details"
+						container
+						spacing={2}
+						xs={6}
+					>
 						<Grid item xs={6}>
-							<Typography variant="h5"> Date</Typography>
-							<DatePicker
+							<Typography variant="h5"> Subject </Typography>
+							<SearchSelect
+								className="search-options"
+								isClearable
+								onChange={handleCategoryChange}
+								options={categoriesList}
+								placeholder="Choose a Category"
+								value={sessionFields.category}
+							/>
+						</Grid>
+						<Grid item xs={6}>
+							<Typography variant="h5"> Room</Typography>
+							<TextField value={course.room_id} />
+						</Grid>
+
+						<Grid item xs={12}>
+							<Typography variant="h5"> Instructor </Typography>
+							<SearchSelect
+								onChange={handleInstructorChange}
+								options={instructorList}
+								placeholder="Choose an Instructor"
+								value={sessionFields.instructor}
+							/>
+							<FormControl style={{marginTop: "20px", marginBottom: "10px"}}>
+								<InputLabel>Is instructor confirmed?</InputLabel>
+								<Select
+									onChange={onConfirmationChange}
+									value={sessionFields.is_confirmed}
+								>
+									<MenuItem value>Yes, Instructor Confirmed.</MenuItem>
+									<MenuItem value={false}>
+										No, Instructor is NOT Confirmed.
+								</MenuItem>
+								</Select>
+							</FormControl>
+						</Grid>
+						{editSelection === EDIT_CURRENT_SESSION && (
+							<Grid item xs={6}>
+								<Typography variant="h5"> Date</Typography>
+								<DatePicker
+									inputVariant="outlined"
+									onChange={handleDateTimeChange}
+									value={sessionFields.start_time}
+								/>
+							</Grid>
+						)}
+						<Grid item xs={6}>
+							<Typography variant="h5"> Start Time</Typography>
+							<TimePicker
 								inputVariant="outlined"
 								onChange={handleDateTimeChange}
 								value={sessionFields.start_time}
 							/>
 						</Grid>
-					)}
-					<Grid item xs={6}>
-						<Typography variant="h5"> Start Time</Typography>
-						<TimePicker
-							inputVariant="outlined"
-							onChange={handleDateTimeChange}
-							value={sessionFields.start_time}
-						/>
-					</Grid>
 
-					<Grid item xs={6}>
-						<Typography variant="h5"> Duration </Typography>
-						<Select
-							onChange={handleDurationSelect}
-							value={sessionFields.duration}
-						>
-							{courseDurationOptions.map((duration, index) => (
-								<MenuItem key={index} value={duration}>
-									{`${duration} hour(s)`}
-								</MenuItem>
-							))}
-						</Select>
+						<Grid item xs={6}>
+							<Typography variant="h5"> Duration </Typography>
+							<Select
+								onChange={handleDurationSelect}
+								value={sessionFields.duration}
+							>
+								{courseDurationOptions.map((duration, index) => (
+									<MenuItem key={index} value={duration}>
+										{`${duration} hour(s)`}
+									</MenuItem>
+								))}
+							</Select>
+						</Grid>
 					</Grid>
 				</Grid>
-			</Grid>
 
-			<Grid
-				className="session-detail-action-control"
-				container
-				direction="row"
-				justify="flex-end"
-			>
-				<Grid item>
-					<InstructorConflictCheck
-						end={sessionFields.end_time}
-						eventID={
-							editSelection === EDIT_CURRENT_SESSION
-								? session.id
-								: course.course_id
-						}
-						instructorID={sessionFields.instructor.value}
-						start={sessionFields.start_time}
-						type={editSelection === EDIT_CURRENT_SESSION ? "session" : "course"}
-						onSubmit={updateSession}
-					>
-						<Button className="button" color="secondary" variant="outlined">
-							Save
+				<Grid
+					className="session-detail-action-control"
+					container
+					direction="row"
+					justify="flex-end"
+				>
+					<Grid item>
+
+						<Grid container>
+							<InstructorConflictCheck
+								end={sessionFields.end_time}
+								eventID={
+									editSelection === EDIT_CURRENT_SESSION
+										? session.id
+										: course.course_id
+								}
+								instructorID={sessionFields.instructor.value}
+								start={sessionFields.start_time}
+								type={editSelection === EDIT_CURRENT_SESSION ? "session" : "course"}
+								onSubmit={updateSession}
+							>
+								<Grid item md={6}>
+									<Button className="button" color="secondary" variant="outlined">
+										Save
 						</Button>
-					</InstructorConflictCheck>
+								</Grid>
+							</InstructorConflictCheck>
+							<Grid item md={6}>
+								<BackButton warn={true} icon="cancel" label="cancel" />
+							</Grid>
+						</Grid>
+					</Grid>
 				</Grid>
-			</Grid>
-		</>
+			</BackgroundPaper>
+		</Grid>
 	);
 };
 

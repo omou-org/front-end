@@ -1,18 +1,17 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
+import {NavLink, Redirect, useParams} from "react-router-dom";
 
-import { bindActionCreators } from "redux";
+import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
-import { useDispatch, useSelector } from "react-redux";
-import { Tooltip, Typography, withStyles } from "@material-ui/core";
-import { NavLink, useParams } from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {Tooltip, Typography, withStyles} from "@material-ui/core";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import { Redirect } from "react-router-dom"
 import Button from "@material-ui/core/Button";
-import Loading from "../../Loading";
+import Loading from "../../OmouComponents/Loading";
 import Avatar from "@material-ui/core/Avatar";
-import { stringToColor } from "../Accounts/accountUtils";
+import {stringToColor} from "../Accounts/accountUtils";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Divider from "@material-ui/core/Divider";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -20,20 +19,21 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import Radio from "@material-ui/core/Radio";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
-import { dayOfWeek } from "../../Form/FormUtils";
+import {dayOfWeek} from "../../Form/FormUtils";
 import * as hooks from "actions/hooks";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
-import { EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION } from "./SessionView";
+import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 import DialogContentText from "@material-ui/core/es/DialogContentText";
 import LoadingError from "../Accounts/TabComponents/LoadingCourseError"
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import InstructorSchedule from "../Accounts/TabComponents/InstructorSchedule";
-import SessionPaymentStatusChip from "../../SessionPaymentStatusChip";
-import AddSessions from "components/AddSessions";
+import SessionPaymentStatusChip from "../../OmouComponents/SessionPaymentStatusChip";
+import AddSessions from "components/OmouComponents/AddSessions";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import { capitalizeString } from "../../../utils";
+import {capitalizeString} from "../../../utils";
 
 const StyledMenu = withStyles({
     "paper": {
@@ -89,7 +89,6 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
     useEffect(() => {
         api.initializeRegistration();
     }, [api]);
-
     const enrollmentStatus = hooks.useEnrollmentByCourse(course.course_id);
     const enrollments = useSelector(({ Enrollments }) => Enrollments);
     const reduxCourse = courses[course.course_id];
@@ -288,6 +287,7 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
                         <>
                             <Button className="button" onClick={handleTutoringMenuClick}>
                                 Tutoring Options
+                                <ArrowDropDownIcon />
                             </Button>
                             <StyledMenu anchorEl={tutoringActionsAnchor}
                                 keepMounted
@@ -367,7 +367,11 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
                     <Button color="primary" onClick={handleEditToggle(true)}>
                         Cancel
                     </Button>
-                    <Button color="primary" onClick={handleEditToggle(false)}>
+                    <Button
+                        color="primary"
+                        component={NavLink}
+                        to={{"pathname":`/scheduler/edit-session/${course.course_id}/${session.id}/${instructor_id}/edit`
+                        ,"state":{course:course, session:session}}}>
                         Confirm to Edit
                     </Button>
                 </DialogActions>

@@ -7,28 +7,30 @@ import ForwardArrow from "@material-ui/icons/ArrowForward";
 import Grid from "@material-ui/core/Grid";
 import Grow from "@material-ui/core/Grow";
 import {Link} from "react-router-dom";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
-
-import {isFail, isLoading, useCategory} from "actions/hooks.js";
 import {truncateStrings} from "utils";
+import {useQuery} from "@apollo/react-hooks";
+import {GET_CATEGORIES} from "queryFragments";
+
 
 const TutoringList = () => {
-	const categories = useSelector(({Course}) => Course.CourseCategories);
-	const categoryStatus = useCategory();
+	const {data, loading, error} = useQuery(GET_CATEGORIES);
+
 	const registeringParent = useSelector(
 		({Registration}) => Registration.CurrentParent
 	);
 
-	if (!categories) {
-		if (isLoading(categoryStatus)) {
-			return <Loading/>;
-		} else if (isFail(categoryStatus)) {
-			return <LoadingError error="subjects"/>;
-		}
+	if (loading) {
+		return <Loading/>
 	}
+	if (error) {
+		return <LoadingError error={error.message}/>
+	}
+
+	const categories = data.courseCategories;
 
 	if (!registeringParent) {
 		return (

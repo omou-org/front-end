@@ -1,30 +1,39 @@
 // React Imports
-import { Redirect, Route, Switch } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { resetSubmitStatus } from "../../actions/registrationActions";
+import {Redirect, Route, Switch} from "react-router-dom";
 import React from "react";
+import {useDispatch} from "react-redux";
+
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
-import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/EnrollmentView";
+import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
+import AuthenticatedRoute from "./AuthenticatedRoute";
+import CatsPage from "../CatsPage/CatsPage";
+import CourseSessionStatus from
+    "../FeatureViews/Accounts/TabComponents/EnrollmentView";
+// import Dashboard from "../FeatureViews/Dashboard/Dashboard";
+import EditSessionView from "../FeatureViews/Scheduler/EditSessionView";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
-import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
+import ForgotPassword from "../Authentication/ForgotPassword";
 import LoginPage from "../Authentication/LoginPage.js";
 import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage";
-import ProtectedRoute from "./ProtectedRoute";
+import NotEnrolledStudentsDialog from
+    "../FeatureViews/Scheduler/NotEnrolledStudentDialog";
+import PaymentReceipt from "../FeatureViews/Registration/PaymentReceipt";
 import Registration from "../FeatureViews/Registration/Registration";
-import RegistrationForm from "../Form/Form";
+import FormPage from "../Form/FormPage";
+import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
+import RegistrationCourse from
+    "../FeatureViews/Registration/RegistrationCourse";
 import Dashboard from "../FeatureViews/Dashboard/Dashboard";
+import RegistrationReceipt from "../Form/RegistrationReceipt";
+import ResetPassword from "../Authentication/ResetPassword";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
 import SearchResults from "../FeatureViews/Search/SearchResults";
 import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
-import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
-import AdminRoute from "./AdminRoute";
-import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
-import RegistrationReceipt from "../FeatureViews/Registration/RegistrationReceipt";
-import CatsPage from "../CatsPage/CatsPage";
-import NotEnrolledStudentDialog from "../FeatureViews/Scheduler/NotEnrolledStudentDialog"
-import NotEnrolledStudentsDialog from "../FeatureViews/Scheduler/NotEnrolledStudentDialog";
+
+import {resetSubmitStatus} from "actions/registrationActions";
+import {USER_TYPES} from "utils";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -32,110 +41,94 @@ export const RootRoutes = () => {
 
     return (
         <Switch>
-            <Route
-                path="/login"
-                render={(passedProps) => <LoginPage {...passedProps} />}
-            />
+            {/* Authentication views */}
+            <Route path="/forgotpassword">
+                <ForgotPassword />
+            </Route>
+            <Route path="/resetpassword">
+                <ResetPassword />
+            </Route>
+            <Route path="/login">
+                <LoginPage />
+            </Route>
 
             {/* Main Feature Views */}
 
-            <ProtectedRoute
-                exact
-                path="/"
+            <AuthenticatedRoute exact path="/"
                 render={(passedProps) => <Dashboard {...passedProps} />}
             />
-
-            <ProtectedRoute
-                exact
-                path="/registration"
-                render={(passedProps) => <Registration {...passedProps} />}
+            <AuthenticatedRoute exact path ="/dashboard"
+                render={(passedProps) => <Dashboard {...passedProps} />}
             />
+            <AuthenticatedRoute exact path="/registration">
+                <Registration />
+            </AuthenticatedRoute>
+
             {/* Scheduler Routes */}
-            <ProtectedRoute
-                exact
-                path="/scheduler"
-                render={(passedProps) => <Scheduler {...passedProps} />}
-            />
-            <Route
-                path="/scheduler/view-session/:course_id/:session_id/:instructor_id"
-                render={(passedProps) => <SessionView {...passedProps} />}
-            />
-            <ProtectedRoute
-                exact
-                path="/search"
-                render={(passedProps) => <SearchResults {...passedProps} />}
-            />
-            <ProtectedRoute
-                exact
-                path="/dashboard"
-                render={(passedProps) => <Dashboard {...passedProps} />}
-            />
+            <AuthenticatedRoute exact path="/scheduler">
+                <Scheduler />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/scheduler/view-session/:course_id/:session_id/:instructor_id">
+                <SessionView />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/scheduler/edit-session/:course_id/:session_id/:instructor_id/edit">
+                <EditSessionView />
+            </AuthenticatedRoute>
 
-            {/* <ProtectedRoute*/}
-            {/*    path='/scheduler/resource'*/}
-            {/*    render={(passedProps) => <ResourceView {...passedProps} />} /> */}
-            <ProtectedRoute
-                exact
-                path="/cats"
-                render={(passedProps) => <CatsPage {...passedProps} />}
-            />
-            <ProtectedRoute
-                exact
-                path="/noresults"
-                render={(passedProps) => <NoResultsPage {...passedProps} />}
-            />
+            <AuthenticatedRoute exact path="/search">
+                <SearchResults />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/cats">
+                <CatsPage />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/noresults">
+                <NoResultsPage />
+            </AuthenticatedRoute>
 
             {/* Accounts */}
-            <ProtectedRoute
-                exact
-                path="/accounts/:accountType/:accountID"
-                render={(passedProps) => <UserProfile {...passedProps} />}
-            />
-            <ProtectedRoute
-                exact
-                path="/accounts/parent/payment/:parentID/:paymentID"
-                render={(passedProps) => <RegistrationReceipt {...passedProps} />}
-            />
-            <ProtectedRoute
-                exact
-                path="/accounts"
-                render={(passedProps) => <Accounts {...passedProps} />}
-            />
-            <ProtectedRoute
-                exact
-                path="/accounts/:accountType/:accountID/:courseID"
-                render={(passedProps) => <CourseSessionStatus {...passedProps} />}
-            />
+            <AuthenticatedRoute exact path="/accounts/:accountType/:accountID">
+                <UserProfile />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact
+                path="/accounts/parent/payment/:paymentID">
+                <PaymentReceipt />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/accounts">
+                <Accounts />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact
+                path="/accounts/:accountType/:accountID/:courseID">
+                <CourseSessionStatus />
+            </AuthenticatedRoute>
 
             {/* Registration Routes */}
-            <ProtectedRoute
-                path="/registration/form/:type/:id?/:edit?"
-                render={(passedProps) => <RegistrationForm {...passedProps} />}
-            />
-            <ProtectedRoute
-                path="/registration/course/:courseID?/:courseTitle?"
-                render={(passedProps) => <RegistrationCourse {...passedProps} />}
-            />
-            <ProtectedRoute
-                path="/registration/cart/"
-                render={(passedProps) => <RegistrationCart {...passedProps} />}
-            />
-            <ProtectedRoute
-                path="/registration/receipt/:paymentID?"
-                render={(passedProps) => <RegistrationReceipt {...passedProps} />}
-            />
+            <AuthenticatedRoute path="/registration/form/:type/:id?">
+                <FormPage />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute
+                path="/registration/course/:courseID?/:courseTitle?">
+                <RegistrationCourse />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute path="/registration/cart/">
+                <RegistrationCart />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute path="/registration/receipt/:paymentID?">
+                <RegistrationReceipt />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute path="/NotEnrolledStudent">
+                <NotEnrolledStudentsDialog />
+            </AuthenticatedRoute>
 
-            <ProtectedRoute
-                path='/NotEnrolledStudent'
-                render={(passedProps) => <NotEnrolledStudentsDialog {...passedProps} />} />
             {/* Admin Routes */}
-            <AdminRoute
-                exact
+            <AuthenticatedRoute exact
                 path="/adminportal/:view?/:type?/:id?/:edit?"
-                render={(passedProps) => <AdminPortal {...passedProps} />}
-            />
+                users={[USER_TYPES.admin]}>
+                <AdminPortal />
+            </AuthenticatedRoute>
 
-            <Route component={ErrorNotFoundPage} path="/PageNotFound" />
+            <AuthenticatedRoute path="/PageNotFound">
+                <ErrorNotFoundPage />
+            </AuthenticatedRoute>
             <Redirect to="/PageNotFound" />
         </Switch>
     );

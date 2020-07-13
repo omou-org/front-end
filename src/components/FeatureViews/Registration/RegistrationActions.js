@@ -117,15 +117,15 @@ const RegistrationActions = () => {
 				onClose={closeRegisterMenu}
 				open={anchorEl !== null}
 			>
-				<MenuItem component={Link} to="/registration/form/course/">
+				<MenuItem component={Link} to="/form/course_register/">
 					<NewCourse className="icon innerIcon"/>
 					<ListItemText primary="COURSE"/>
 				</MenuItem>
-				<MenuItem component={Link} to="/registration/form/tutoring/">
+				<MenuItem component={Link} to="/form/tutoring/">
 					<NewTutor className="icon innerIcon"/>
 					<ListItemText primary="TUTORING"/>
 				</MenuItem>
-				<MenuItem component={Link} to="/registration/form/small_group/">
+				<MenuItem component={Link} to="/form/small_group/">
 					<NewTutor className="icon innerIcon"/>
 					<ListItemText primary="SMALL GROUP"/>
 				</MenuItem>
