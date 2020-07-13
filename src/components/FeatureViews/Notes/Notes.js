@@ -1,6 +1,5 @@
 import React, {useCallback, useMemo, useState} from "react";
 import {useMutation, useQuery} from "@apollo/react-hooks";
-import {bindActionCreators} from "redux";
 import gql from "graphql-tag";
 import {makeStyles} from "@material-ui/core/styles";
 import PropTypes from "prop-types";
@@ -26,7 +25,6 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 
 import "./Notes.scss";
-import * as userActions from "actions/userActions";
 import {
     DELETE_ACCOUNT_NOTE_SUCCESSFUL,
     DELETE_COURSE_NOTE_SUCCESSFUL,
@@ -113,10 +111,10 @@ const QUERIES = {
 
 const MUTATIONS = {
     "account": gql`
-        mutation CreateAccountNote($ownerID: ID!, $title: String,
-            $body: String!, $complete: Boolean, $important: Boolean) {
+        mutation CreateAccountNote($ownerID: ID!, $title: String, $body: String,
+            $complete: Boolean, $important: Boolean, $id: ID) {
             createNote(userId: $ownerID, title: $title, important: $important,
-                body: $body, complete: $complete) {
+                body: $body, complete: $complete, id: $id) {
                 note {
                     id
                     body
@@ -128,9 +126,9 @@ const MUTATIONS = {
             }
         }`,
     "course": gql`
-        mutation CreateCourseNote($ownerID: ID!, $title: String, $body: String!,
-            $complete: Boolean, $important: Boolean) {
-            createCourseNote(course: $ownerID, title: $title,
+        mutation CreateCourseNote($ownerID: ID!, $title: String, $body: String,
+            $complete: Boolean, $important: Boolean, $id: ID) {
+            createCourseNote(course: $ownerID, title: $title, id: $id,
                 important: $important, body: $body, complete: $complete) {
                 courseNote {
                     id
@@ -143,9 +141,9 @@ const MUTATIONS = {
             }
         }`,
     "enrollment": gql`
-        mutation CreateEnrollmentNote($ownerID: ID!, $title: String,
-            $body: String!, $complete: Boolean, $important: Boolean) {
-            createEnrollmentNote(enrollment: $ownerID, title: $title,
+        mutation CreateEnrollmentNote($ownerID: ID!, $title: String, $id: ID,
+            $body: String, $complete: Boolean, $important: Boolean) {
+            createEnrollmentNote(enrollment: $ownerID, title: $title, id: $id,
                 important: $important, body: $body, complete: $complete) {
                 enrollmentNote {
                     id
@@ -174,9 +172,6 @@ const MUTATION_KEY = {
 // eslint-disable-next-line max-statements
 const Notes = ({ownerType, ownerID}) => {
     const dispatch = useDispatch();
-    const api = useMemo(
-        () => bindActionCreators(userActions, dispatch), [dispatch],
-    );
 
     const [alert, setAlert] = useState(false);
     const [noteBody, setNoteBody] = useState("");
@@ -187,7 +182,7 @@ const Notes = ({ownerType, ownerID}) => {
     const [deleteError, setDeleteError] = useState(false);
     const classes = useStyles();
 
-    const [createNote, createResults] = useMutation(MUTATIONS[ownerType], {
+    const [mutateNote, createResults] = useMutation(MUTATIONS[ownerType], {
         "onCompleted": () => {
             setAlert(false);
         },
@@ -198,9 +193,17 @@ const Notes = ({ownerType, ownerID}) => {
                 "variables": {ownerID},
             })[QUERY_KEY[ownerType]];
 
+            let updatedNotes = [...cachedNotes];
+            const matchingIndex = updatedNotes.findIndex(({id}) => id === newNote.id);
+            if (matchingIndex === -1) {
+                updatedNotes = [...cachedNotes, newNote];
+            } else {
+                updatedNotes[matchingIndex] = newNote;
+            }
+
             cache.writeQuery({
                 "data": {
-                    [QUERY_KEY[ownerType]]: [...cachedNotes, newNote],
+                    [QUERY_KEY[ownerType]]: updatedNotes,
                 },
                 "query": QUERIES[ownerType],
                 "variables": {ownerID},
@@ -257,42 +260,31 @@ const Notes = ({ownerType, ownerID}) => {
     }), [important]);
 
     const saveNote = useCallback(() => {
-        createNote({
+        mutateNote({
             "variables": {
                 "body": noteBody,
                 "complete": false,
+                "id": editID,
                 important,
                 ownerID,
                 "title": noteTitle,
             },
         });
-    }, [createNote, important, noteBody, noteTitle, ownerID]);
+    }, [mutateNote, editID, important, noteBody, noteTitle, ownerID]);
 
     const openDelete = useCallback((noteID) => () => {
         setDeleteID(noteID);
     }, []);
 
     const toggleNoteField = useCallback((noteID, field) => () => {
-        const note = {
-            [field]: !getNoteByID(noteID)[field],
-        };
-        switch (ownerType) {
-            case "enrollment":
-                api.patchEnrollmentNote(
-                    noteID,
-                    note,
-                    ownerID.enrollmentID,
-                    ownerID.studentID,
-                    ownerID.courseID,
-                );
-                break;
-            case "course":
-                api.patchCourseNote(noteID, note, ownerType, ownerID);
-                break;
-            default:
-                api.patchAccountNote(noteID, note, ownerType, ownerID);
-        }
-    }, [api, ownerType, ownerID, getNoteByID]);
+        mutateNote({
+            "variables": {
+                [field]: !getNoteByID(noteID)[field],
+                "id": noteID,
+                ownerID,
+            },
+        });
+    }, [mutateNote, ownerID, getNoteByID]);
 
     const handleDelete = useCallback(async () => {
         let URL = "",
