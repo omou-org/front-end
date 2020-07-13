@@ -29,9 +29,9 @@ const TodayCard = ({session}) => {
     const formattedStartTime = moment(startTime, "HH:mm").format("h:mm a");
 
     return (
-        <Card className="today-card">
+        <Card className="today-card"
             component = {Link}
-                to={`/scheduler/view-session/${session.course.id}/${session.id}/${session.course.instructor.user.id}`} 
+                to={`/scheduler/view-session/${session.course.id}/${session.id}/${session.course.instructor.user.id}`}> 
             <CardActionArea
                                
             >
