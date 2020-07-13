@@ -1,5 +1,5 @@
-import { useSelector } from 'react-redux';
-import { useQuery } from '@apollo/react-hooks';
+import {useSelector} from 'react-redux';
+import {useQuery} from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import React, {useState} from 'react';
 import {Link} from 'react-router-dom';
@@ -16,8 +16,7 @@ import DashboardNotes from './DashboardNotes';
 import moment from 'moment';
 import Moment from 'react-moment';
 import Select from 'react-select';
-import { makeStyles } from "@material-ui/styles";
-import { DELETE_ENROLLMENT_FAILED } from 'actions/actionTypes';
+import {makeStyles} from "@material-ui/styles";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
             fontSize: "6px"
         }
     }
-}))
+}));
 
 const Dashboard = () => {
     const classes = useStyles();
@@ -45,7 +44,7 @@ const Dashboard = () => {
         filter: ""
     });
 
-    const emailQuery = { "email": email }
+    const emailQuery = {"email": email};
 
     const DASHBOARD_QUERY = gql`query DashboardQuery($email: String="") {
         sessionSearch(query: "", time: "today", sort: "timeAsc") {
@@ -74,7 +73,7 @@ const Dashboard = () => {
         }
       }
       
-    ` 
+    `;
      
     const { data, loading, error } = useQuery(DASHBOARD_QUERY, {
         variables: emailQuery
@@ -92,7 +91,7 @@ const Dashboard = () => {
     }
 
     const { firstName, id } = data.accountSearch.results[0].user;
-    const currentDate = moment()
+    const currentDate = moment();
     let isDisabled;
 
     const handleChange = e => {
@@ -112,7 +111,7 @@ const Dashboard = () => {
 
     const onlyUnique = (value, index, self) => {
         return self.indexOf(value) === index;
-    }
+    };
 
     const categoryList = data.sessionSearch.results.map(category=> ({
         "label": category.course.courseCategory.name,
