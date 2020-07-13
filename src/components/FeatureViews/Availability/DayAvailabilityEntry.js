@@ -16,11 +16,14 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import {errorRed} from "../../../theme/muiTheme";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import DeleteIcon from "@material-ui/icons/Clear";
+import IconButton from "@material-ui/core/IconButton";
 
 const useStyles = makeStyles(() => ({
 	availabilityRow: {
 		display: "block",
-		margin: "10px 0"
+		margin: "10px 0",
+		position: "relative"
 	}
 }));
 
@@ -39,12 +42,12 @@ const AvailabilityRow = ({startTime, endTime, dayIndex, availabilityId, setDispl
 	};
 
 	const handleOnStartChange = (e) => {
-		updateAvailability(e, endTime, dayIndex, availabilityId);
+		updateAvailability(e, endTime, dayIndex, availabilityId, false);
 		setDisplayNewAvailability(false);
 	};
 
 	const handleOnEndChange = (e) => {
-		updateAvailability(startTime, e, dayIndex, availabilityId);
+		updateAvailability(startTime, e, dayIndex, availabilityId, false);
 	};
 
 	return <div className={classes.availabilityRow}>
@@ -58,6 +61,14 @@ const AvailabilityRow = ({startTime, endTime, dayIndex, availabilityId, setDispl
 		<KeyboardTimePicker value={endTime || null} onChange={handleOnEndChange}
 							inputVariant="outlined"
 							error={!endTime && startTime || conflictError || timesNotValid(startTime, endTime)}/>
+		{
+			(startTime && endTime) &&
+			<IconButton style={{top: "5px", position: "absolute", color: errorRed}}
+						onClick={() => updateAvailability(null, null, dayIndex, availabilityId, true)}
+			>
+				<DeleteIcon/>
+			</IconButton>
+		}
 	</div>
 };
 
@@ -82,7 +93,7 @@ export default function DayAvailabilityEntry({dayOfWeek, availabilities, dayInde
 
 	return (<><TableRow>
 		<TableCell>{dayOfWeek}</TableCell>
-		<TableCell>
+		<TableCell style={{width: "45vw"}}>
 			{
 				Object.values(availabilities).map(({startTime, endTime, id}) =>
 					<AvailabilityRow

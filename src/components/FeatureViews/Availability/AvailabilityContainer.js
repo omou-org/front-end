@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import TimeAvailabilityContainer from "./TimeAvailabilityContainer";
-import RequestOutOfOffice from "./RequestOutOfOffice";
+import RequestOutOfOfficeContainer from "./RequestOutOfOfficeContainer";
 import Box from "@material-ui/core/Box";
 
 function TabPanel(props) {
@@ -18,12 +18,11 @@ function TabPanel(props) {
 			hidden={value !== index}
 			id={`simple-tabpanel-${index}`}
 			aria-labelledby={`simple-tab-${index}`}
+			style={{width: "100%"}}
 			{...other}
 		>
 			{value === index && (
-				<Box p={3}>
-					<Typography>{children}</Typography>
-				</Box>
+				<Box p={2}>{children}</Box>
 			)}
 		</div>
 	);
@@ -66,7 +65,7 @@ export default function AvailabilityContainer() {
 						TBD
 					</TabPanel>
 					<TabPanel value={tab} index={2}>
-						<RequestOutOfOffice/>
+						<RequestOutOfOfficeContainer/>
 					</TabPanel>
 				</Grid>
 			</Grid>

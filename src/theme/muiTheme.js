@@ -5,6 +5,7 @@ const tabBorderRadius = "10px";
 // Theme Colors
 export const omouBlue = "#43B5D9";
 export const skyBlue = "#EBFAFF";
+export const outlineGrey = "#E0E0E0";
 
 // Font Colors
 export const lightPrimaryFontColor = "#767474";

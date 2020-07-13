@@ -7,6 +7,7 @@ import Table from "@material-ui/core/Table";
 import DayAvailabilityEntry from "./DayAvailabilityEntry";
 import {TimeAvailabilityContext} from "./TimeAvailabilityContext";
 import gql from "graphql-tag";
+import Button from "@material-ui/core/Button";
 
 const MUTATE_INSTRUCTOR_AVAILABILITY = gql`mutation CreateInstructorAvailability {
   __typename
@@ -35,23 +36,21 @@ export default function TimeAvailabilityContainer() {
 		setAutoApprove(!autoApprove);
 	}, [setAutoApprove, autoApprove]);
 
-	const updateAvailability = (startTime, endTime, dayOfWeekIndex, availabilityId) => {
+	const updateAvailability = (startTime, endTime, dayOfWeekIndex, availabilityId, toDelete) => {
 		setAvailability((prevAvailability) => {
 			let updatedAvailability = [...prevAvailability];
 			const dateToUpdateAvailability = prevAvailability[dayOfWeekIndex];
-			const newAvailabilities = (action, newTempAvailabilityId) => {
-				switch (action) {
-					case "delete": {
-						return {}
-					}
-					default: {
-						return {
-							...dateToUpdateAvailability.availabilities,
-							[newTempAvailabilityId]: {
-								startTime,
-								endTime,
-								id: newTempAvailabilityId,
-							}
+			const newAvailabilities = (availabilityId, toDelete) => {
+				if (toDelete) {
+					delete dateToUpdateAvailability.availabilities[availabilityId];
+					return dateToUpdateAvailability.availabilities;
+				} else {
+					return {
+						...dateToUpdateAvailability.availabilities,
+						[availabilityId]: {
+							startTime,
+							endTime,
+							id: availabilityId,
 						}
 					}
 				}
@@ -60,15 +59,16 @@ export default function TimeAvailabilityContainer() {
 			const newTempAvailabilityId = availabilityId || `${Object.keys(dateToUpdateAvailability.availabilities).length}_new`;
 			updatedAvailability[dayOfWeekIndex] = {
 				...dateToUpdateAvailability,
-				availabilities: newAvailabilities(availabilityId, newTempAvailabilityId)
+				availabilities: newAvailabilities(newTempAvailabilityId, toDelete)
 			};
+
 			return updatedAvailability;
 		});
 	};
 
 	return (<TimeAvailabilityContext.Provider value={{availabilitiesByDayOfWeek, updateAvailability}}>
-		<Grid item container justify="space-between">
-			<Grid item container justify="flex-start" direction="column">
+		<Grid item container justify="space-between" direction="row">
+			<Grid item container justify="flex-start" direction="column" xs={9}>
 				<Grid item>
 					<Typography variant="h4" align="left">Tutoring Hours</Typography>
 				</Grid>
@@ -85,6 +85,10 @@ export default function TimeAvailabilityContainer() {
 						availability.
 					</Typography>
 				</Grid>
+			</Grid>
+			<Grid item xs={3}>
+				<Button variant="outlined" style={{marginRight: "10px"}}>Reset All</Button>
+				<Button variant="outlined">Update</Button>
 			</Grid>
 		</Grid>
 		<Grid item xs={12} container>

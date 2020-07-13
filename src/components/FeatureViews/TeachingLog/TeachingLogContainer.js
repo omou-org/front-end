@@ -200,7 +200,7 @@ export default function TeachingLogContainer() {
 							<Button onClick={() => setOpenCalendar(false)} color="primary">
 								Save & Close
 							</Button>
-						</DialogActions>b
+						</DialogActions>
 					</Dialog>
 				</Grid>
 				<Grid item>
