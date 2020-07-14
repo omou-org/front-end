@@ -24,6 +24,20 @@ const QUERIES_ONE = {
         }`,
 };
 
+const ADD_QUERY = {
+    "courseCategories": gql`
+    mutation CreateCourseCategory($name: String, $description: String) {
+        createCourseCategory(name: $name, description: $description) {
+          courseCategory {
+            name
+            description
+          }
+        }
+      }
+      
+    `,
+};
+
 const MUTATION_UPDATE = {
     "courseCategories": gql`
         mutation UpdateCategory($id: ID!, $name: String!, $description: String) {
@@ -116,6 +130,23 @@ export default {
 
             return {
                 "data": Object.values(data)[0],
+            };
+        } catch (error) {
+            return error;
+        }
+    },
+    "create" : async (resource, data) => {
+        const mutation = ADD_QUERY[resource];
+
+        try {
+            const response = await client.mutate({
+                mutation,
+                "variables": {
+                    ...data
+                }
+            });
+            return {
+                "data": Object.values(response.data)[0],
             };
         } catch (error) {
             return error;

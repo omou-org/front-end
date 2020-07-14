@@ -1,7 +1,7 @@
 import * as React from "react";
 import {
     Datagrid, Edit, List, Show, SimpleForm, SimpleShowLayout, TextField,
-    TextInput,
+    TextInput, Create
 } from "react-admin";
 
 export const CategoryList = (props) => (
@@ -12,6 +12,15 @@ export const CategoryList = (props) => (
             <TextField source="description" />
         </Datagrid>
     </List>
+);
+
+export const CategoryCreate = (props) => (
+    <Create {...props}>
+        <SimpleForm>
+            <TextInput source="name" />
+            <TextInput source="description"></TextInput>
+        </SimpleForm>
+    </Create>
 );
 
 export const CategoryEdit = (props) => (
