@@ -9,3 +9,136 @@
         width: 100;
     }
 }
+
+.dashboard-paper {
+    background-image: url("./assets/dashboard-bg.jpg");
+    background-size: 100%;
+    margin: 5px;
+    padding: 15px;
+    width: 100%;
+    text-align: left;
+}
+
+.dashboard-date {
+    margin-left: 10px !important;
+    font-size: 2rem;
+    font-family: Roboto Slab, serif;
+    font-weight: 700;
+}
+
+.scheduler-button {
+    justify-content: flex-end !important;
+    flex-direction: row-reverse;
+}
+
+.today-header-container{
+    width: 100%;
+    justify-content: space-between;
+    padding: 5px;
+}
+
+.OP-label {
+    margin-left: 10px !important;
+    font-size: 2rem;
+}
+
+.today-paper {
+    background: rgba(255, 255, 255, 0.6) !important;
+    height: 35vh;
+    margin: 10px;
+    flex-shrink: 0;
+    justify-content: space-between;
+    padding: 5px;
+}
+
+.today-container {
+    height: 25vh;
+    flex-shrink: 0 !important;
+    overflow: hidden;
+    overflow-x: scroll !important;
+}
+
+.today-container::-webkit-scrollbar {
+    background-color: transparent;
+}
+ 
+.today-container::-webkit-scrollbar-thumb {
+    background-color: slategrey;
+    outline: 1px solid slategrey;
+    height: 20px;
+    border-radius: 10px;
+}
+
+.today-card {
+    opacity: 1 !important;
+    margin: 10px;
+    font-size: 8px;
+    min-width: 150px;
+    max-height: 180px !important;
+}
+
+.today-course-title{
+    overflow: hidden;
+}
+
+.today-card-details{
+    font-size: .8rem !important;
+}
+
+.OP-paper{
+    background: rgba(255, 255, 255, 0.6) !important;
+    height: 35vh;
+    margin: 10px;
+    flex-shrink: 0;
+    justify-content: space-between;
+    padding: 5px;
+}
+
+.unpaid-container{
+    height: 30vh;
+    flex-shrink: 0 !important;
+    overflow: hidden !important;
+    overflow-x: scroll !important;
+}
+
+.unpaid-container::-webkit-scrollbar {
+    background-color: transparent;
+}
+ 
+.unpaid-container::-webkit-scrollbar-thumb {
+    background-color: slategrey;
+    outline: 1px solid slategrey;
+    height: 20px;
+    border-radius: 10px;
+}
+
+.db-notes-container{
+    margin: 20px;
+    margin-right: 0px;
+    padding: 20px;
+    // display: inline-table;
+    height: 90%;
+}
+
+.db-notes-paper{
+    padding-left: 20px;
+    height: 70vh;
+    overflow-y: scroll;
+    margin-top: 52px;
+    background: rgba(255, 255, 255, 0.6) !important;
+}
+
+.db-notes-paper::-webkit-scrollbar {
+    background-color: transparent;
+}
+ 
+.db-notes-paper::-webkit-scrollbar-thumb {
+    background-color: slategrey;
+    outline: 1px solid slategrey;
+    height: 20px;
+    border-radius: 10px;
+}
+
+.category-options{
+    padding-left: 10px;
+}

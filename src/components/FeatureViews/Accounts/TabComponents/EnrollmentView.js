@@ -83,7 +83,6 @@ const CourseSessionStatus = () => {
         () => (enrollments[studentID] && enrollments[studentID][courseID]) || {},
         [enrollments, studentID, courseID]
     );
-    useEnrollmentNotes(enrollment.enrollment_id, studentID, courseID);
 
     const noteInfo = useMemo(
         () => ({
@@ -300,7 +299,10 @@ const CourseSessionStatus = () => {
                     </>
                 );
             case 1:
-                return <Notes ownerID={noteInfo} ownerType="enrollment" />;
+                return (
+                    <Notes ownerID={enrollment.enrollment_id}
+                        ownerType="enrollment" />
+                );
             case 2:
                 return (
                     <PaymentTable courseID={course.course_id}

@@ -8,7 +8,6 @@ import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
 import AuthenticatedRoute from "./AuthenticatedRoute";
 import CatsPage from "../CatsPage/CatsPage";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/EnrollmentView";
-// import Dashboard from "../FeatureViews/Dashboard/Dashboard";
 import EditSessionView from "../FeatureViews/Scheduler/EditSessionView";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import ForgotPassword from "../Authentication/ForgotPassword";
@@ -18,7 +17,10 @@ import NotEnrolledStudentsDialog from "../FeatureViews/Scheduler/NotEnrolledStud
 import PaymentReceipt from "../FeatureViews/Registration/PaymentReceipt";
 import Registration from "../FeatureViews/Registration/Registration";
 import FormPage from "../Form/FormPage";
-import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
+import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
+import RegistrationCourse from
+    "../FeatureViews/Registration/RegistrationCourse";
+import Dashboard from "../FeatureViews/Dashboard/Dashboard";
 import RegistrationReceipt from "../Form/RegistrationReceipt";
 import ResetPassword from "../Authentication/ResetPassword";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
