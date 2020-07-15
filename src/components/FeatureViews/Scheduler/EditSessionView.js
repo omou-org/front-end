@@ -39,7 +39,6 @@ const EditSessionView = ({ editSelection }) => {
 	const history = useHistory();
 	const location = useLocation();
 	const { course, session } = location.state;
-	console.log(course, session);
 
 	const [sessionFields, setSessionFields] = useState({
 		start_time: "",

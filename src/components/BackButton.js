@@ -19,14 +19,7 @@ class BackButton extends Component {
 	}
 
 	label() {
-		var label = "";
-		if (this.props.label == null) {
-			label = "Back";
-		}
-		if (this.props.label == "cancel") {
-			label = "Cancel";
-		}
-		return label;
+		return label || "Back";
 	}
 
 	handleClick() {
