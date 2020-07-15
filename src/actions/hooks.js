@@ -287,6 +287,16 @@ export const useInstructor = wrapUseEndpoint(
     types.FETCH_INSTRUCTOR_SUCCESSFUL
 );
 
+export const useAdmin = wrapUseEndpoint(
+    "/account/admin/",
+    types.FETCH_ADMIN_SUCCESSFUL
+);
+
+export const useNote = wrapUseEndpoint(
+    "/account/note",
+    types.FETCH_ACCOUNT_NOTE_SUCCESSFUL    
+);
+
 export const useCourse = wrapUseEndpoint(
     "/course/catalog/",
     types.FETCH_COURSE_SUCCESSFUL
@@ -428,7 +438,7 @@ export const useUnpaidSessions = wrapUseEndpoint(
     "/payment/unpaid-sessions/",
     types.GET_UNPAID_SUCCESS
 );
-
+    
 // Hook
 export const usePrevious = (value) => {
     // The ref object is a generic container whose current property is mutable

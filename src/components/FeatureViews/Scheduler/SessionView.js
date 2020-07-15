@@ -3,7 +3,7 @@ import {bindActionCreators} from "redux";
 import * as calendarActions from "../../../actions/calendarActions";
 import PropTypes from "prop-types";
 import React, {Component} from "react";
-import BackButton from "../../BackButton.js";
+import BackButton from "../../OmouComponents/BackButton.js";
 import "../../../theme/theme.scss";
 import "./scheduler.scss";
 import * as apiActions from "../../../actions/apiActions";
@@ -16,6 +16,7 @@ import Paper from "@material-ui/core/Paper";
 import {GET} from "../../../actions/actionTypes";
 import DisplaySessionView from "./DisplaySessionView";
 import EditSessionView from "./EditSessionView";
+import {withRouter} from "react-router-dom";
 
 export const EDIT_ALL_SESSIONS = "all";
 export const EDIT_CURRENT_SESSION = "current";
@@ -150,4 +151,4 @@ function mapDispatchToProps(dispatch) {
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SessionView);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SessionView));

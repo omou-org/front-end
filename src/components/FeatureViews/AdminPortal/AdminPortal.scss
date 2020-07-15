@@ -56,13 +56,19 @@
 }
 
 /* Unpaid Sessions */
-.unpaid-sessions-card {
-  height: 250px;
-  width: 220px;
+
+.no-unpaid-sessions {
   margin: 10px;
+}
+
+.unpaid-sessions-card { 
+  transform:scale(.9);
+  margin: 10px;
+  min-width: 175px;
 
   .unpaid-avatar-container {
     justify-content: center;
+    display: flex;
 
     .unpaid-avatar {
       color: white;
@@ -76,7 +82,7 @@
   }
 
   .unpaid-details {
-    text-align: center;
+    text-align: left;
 
     .unpaid-student-name {
       font-size: 16px;
@@ -95,6 +101,10 @@
       font-size: 14px;
       align-self: center;
       text-align: center;
+    }
+
+    .unpaid-status-info {
+      font-size: 12px;
     }
 
     .unpaid-status {

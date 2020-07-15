@@ -6,7 +6,7 @@ import {useSelector} from "react-redux";
 
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import Grid from "@material-ui/core/Grid";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
@@ -14,6 +14,14 @@ import LoadingError from "./LoadingCourseError";
 import Moment from "react-moment";
 
 import {courseDateFormat} from "utils";
+
+export const GET_INSTRUCTOR_ENROLLMENTS = `
+  query InstructorEnrollments($instructorId) { 
+    courses(filter: { instructor.user.id: $instructorId){
+      title
+    }
+  }
+`;
 
 const InstructorCourses = ({ instructorID }) => {
   const courses = useSelector(({ Course }) => Course.NewCourseList);
@@ -42,7 +50,7 @@ const InstructorCourses = ({ instructorID }) => {
         <Grid className="accounts-table-heading" container>
           <Grid item xs={4}>
             <Typography align="left" className="table-header">
-              Session
+				Course
             </Typography>
           </Grid>
           <Grid item xs={3}>
@@ -77,11 +85,6 @@ const InstructorCourses = ({ instructorID }) => {
           .map((courseID) => {
             const course = courses[courseID];
             const {
-              days,
-              start_date,
-              end_date,
-              start_time,
-              end_time,
               is_confirmed,
             } = courseDateFormat(course);
             return (

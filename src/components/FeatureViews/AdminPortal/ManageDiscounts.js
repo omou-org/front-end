@@ -7,7 +7,7 @@ import "./AdminPortal.scss";
 import * as adminActions from "actions/adminActions";
 import DiscountList from "./DiscountList";
 import {isLoading} from "actions/hooks";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 
 const ManageDiscounts = () => {
 	const discountList = useSelector(({Admin: {Discounts}}) => Discounts);
