@@ -1,28 +1,17 @@
 .logo {
     padding-top: 1%;
     padding-left: 1.5%;
-    .title {
-        position: absolute;
-        font-family: "Roboto Slab", serif;
-        font-style: normal;
-        font-weight: 700;
-        font-size: 24px;
-        line-height: 26px;
-        text-decoration: none;
+    position: absolute;
+    font-family: "Roboto Slab", serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 26px;
+    text-decoration: none;
+    &.var1 {
         color: white;
     }
-}
-.logo2 {
-    padding-top: 1%;
-    padding-left: 1.5%;
-    .title {
-        position: absolute;
-        font-family: "Roboto Slab", serif;
-        font-style: normal;
-        font-weight: 700;
-        font-size: 24px;
-        line-height: 26px;
-        text-decoration: none;
+    &.var2 {
         color: #43B5D9;
     }
 }
@@ -95,6 +84,25 @@
             padding: 8px 0 8px 0;
             color: white;
         }
+    }
+}
+.picture{
+    position:absolute;
+    &.var1{
+        left: 0;
+        top: 0;
+    }
+    &.var2{
+        bottom: 0;
+        right: 0;
+    }
+    &.var3{
+        top:0;
+        right:0;
+    }
+    &.var4{
+        left:0;
+        bottom:0;
     }
 }
 .ellipse1 {

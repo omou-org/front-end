@@ -71,11 +71,12 @@ const LoginPage = () => {
 
     const [getUserType, { data, loading }] = useLazyQuery(GET_USER_TYPE, {
         variables: { "username": realEmail },
-        onCompleted: data => { setUserType(data.userType); 
-            if(userType===""){
+        onCompleted: data => {
+            setUserType(data.userType);
+            if (userType === "") {
                 setHasError(true);
-        } 
-    }
+            }
+        }
     });
 
     const [login, { loginLoading }] = useMutation(LOGIN, {
@@ -133,18 +134,18 @@ const LoginPage = () => {
 
     const renderEmailLogin = () => {
         return (
-            <div>
-                <Ellipse1 className="ellipse1" />
-                <Ellipse2 className="ellipse2" />
-                <Picture1 className="picture1" />
-                <div className="logo">
+            <>
+                <Ellipse1 className="picture var1" />
+                <Ellipse2 className="picture var2" />
+                <Picture1 className="picture var4" />
+                <div className="logo var2">
                     <Typography className="title">
                         omou
                 </Typography>
                 </div>
                 <form className="Login">
                     <Grid container>
-                        <Grid item md={6}></Grid>
+                        <Grid item md={6} />
                         <Grid item md={6}>
                             <Typography className="welcomeText">
                                 Welcome to Summit
@@ -157,12 +158,8 @@ const LoginPage = () => {
                                 placeholder="E-Mail"
                                 variant="outlined"
                                 className="TextField"
-<<<<<<< HEAD
-                                helperText={hasError ? "Sorry, we couldn't find a user for that email." : ""}
-=======
                                 helperText={hasError ? "Sorry, we couldn't find a user for that email." : " "}
->>>>>>> parent of 7a7a600d... changes fix
-                                fullWidth="true"
+                                fullWidth={"true"}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -173,19 +170,19 @@ const LoginPage = () => {
                             <Grid container item className="buttonContainer">
                                 <Grid item md={2} />
                                 <Grid item md={4}>
-                                <Button className="createAccountButton"
-                            component={Link} to={{
-                                "pathname": "/new/parent",
-                                "state": {
-                                    email,
-                                    password,
-                                },
-                            }} variant="outlined">
-                            CREATE ACCOUNT
+                                    <Button className="createAccountButton"
+                                        component={Link} to={{
+                                            "pathname": "/new/parent",
+                                            "state": {
+                                                email,
+                                                password,
+                                            },
+                                        }} variant="outlined">
+                                        CREATE ACCOUNT
                         </Button>
                                 </Grid>
                                 <Grid item md={4}>
-                                    <Button className="signInButton" onClick={() => handleCheck()}>
+                                    <Button className="signInButton" onClick={handleCheck}>
                                         SIGN IN
                                 </Button>
                                 </Grid>
@@ -194,18 +191,41 @@ const LoginPage = () => {
                         </Grid>
                     </Grid>
                 </form>
-            </div>)
+            </>)
+    }
+
+    const renderUserDifferences = () => {
+        switch (userType) {
+            case "Parent":
+                return {
+                    "picture": <Picture2 className="picture var4" />,
+                    "text": "Hello Summit Parent",
+                }
+            case "Instructor":
+                return {
+                    "picture": <Picture4 className="picture var4" />,
+                    "text": "Hello Summit Instructor",
+                }
+            case "Admin":
+                return {
+                    "picture": <Picture3 className="picture var4" />,
+                    "text": "Hello Summit Admin",
+                }
+            default:
+                return {
+                    "picture": <Picture1 className="picture var4" />,
+                    "text": "Hello User",
+                }
+        }
     }
 
     const renderOtherLogins = () => {
-        switch (userType) {
-            case "Parent":
                 return (
-                    <div>
-                        <Ellipse3 className="ellipse3" />
-                        <Ellipse4 className="ellipse4" />
-                        <Picture2 className="picture1" />
-                        <div className="logo2">
+                    <>
+                        <Ellipse3 className="picture var3" />
+                        <Ellipse4 className="picture var4" />
+                        {renderUserDifferences().picture}
+                        <div className="logo var2">
                             <Typography className="title">
                                 omou
                 </Typography>
@@ -215,9 +235,9 @@ const LoginPage = () => {
                                 <Grid item md={6}></Grid>
                                 <Grid item md={6}>
                                     <Typography className="welcomeText">
-                                        Hello Summit Parent
+                                        {renderUserDifferences().text}
                             </Typography>
-                                    <TextField error={hasError || email === ""} fullWidth
+                                    <TextField error={hasError} fullWidth
                                         inputProps={{ "data-cy": "emailField" }}
                                         margin="normal"
                                         onChange={handleTextInput(setEmail)}
@@ -225,7 +245,7 @@ const LoginPage = () => {
                                         placeholder="E-Mail"
                                         variant="outlined"
                                         className="TextField"
-                                        fullWidth="true"
+                                        fullWidth={"true"}
                                         InputProps={{
                                             startAdornment: (
                                                 <InputAdornment position="start">
@@ -271,160 +291,8 @@ const LoginPage = () => {
                                 </Grid>
                             </Grid>
                         </form>
-                    </div>
+                    </>
                 )
-            case "Student":
-                return (<div>student</div>)
-            case "Instructor":
-                return (
-                    <div>
-                        <Ellipse3 className="ellipse3" />
-                        <Ellipse4 className="ellipse4" />
-                        <Picture4 className="picture1" />
-                        <div className="logo2">
-                            <Typography className="title">
-                                omou
-            </Typography>
-                        </div>
-                        <form className="Login" onSubmit={handleLogin}>
-                            <Grid container>
-                                <Grid item md={6}></Grid>
-                                <Grid item md={6}>
-                                    <Typography className="welcomeText">
-                                        Hello Summit Instructor
-                        </Typography>
-                                    <TextField error={hasError || email === ""} fullWidth
-                                        inputProps={{ "data-cy": "emailField" }}
-                                        margin="normal"
-                                        onChange={handleTextInput(setEmail)}
-                                        value={email}
-                                        placeholder="E-Mail"
-                                        variant="outlined"
-                                        className="TextField"
-                                        fullWidth="true"
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    <EmailOutlinedIcon style={{ color: "grey" }} />
-                                                </InputAdornment>
-                                            ),
-                                        }} />
-                                    <PasswordInput autoComplete="current-password"
-                                        error={hasError || password === ""}
-                                        className="TextField"
-                                        inputProps={{ "data-cy": "passwordField" }} label="Password"
-                                        onChange={handleTextInput(setPassword)}
-                                        value={password} />
-                                    <Grid container item className="optionsContainer">
-                                        <Grid item md={2} />
-                                        <Grid item md={4}>
-                                            <FormControlLabel
-                                                control={<Checkbox checked={shouldSave}
-                                                    inputProps={{ "data-cy": "rememberMe" }}
-                                                    onChange={toggleSavePassword} />}
-                                                label="Remember Me" />
-                                        </Grid>
-                                        <Grid item md={4} style={{ paddingTop: 10 }}>
-                                            <Link className="forgotPassword"
-                                                data-cy="forgotPassword" to={{
-                                                    "pathname": "/forgotpassword",
-                                                    "state": { email },
-                                                }}>
-                                                Forgot Password?
-                                        </Link>
-                                        </Grid>
-                                        <Grid item md={2} />
-                                        <Grid item md={4} />
-                                        <Grid item md={4} className="buttonSpacing">
-                                            <Button className="signInButton"
-                                                data-cy="signInButton"
-                                                type="submit" variant="contained">
-                                                SIGN IN
-                                        </Button>
-                                        </Grid>
-                                        <Grid item md={4} />
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </form>
-                    </div>
-                )
-
-            case "Admin":
-                return (<div>
-                    <Ellipse3 className="ellipse3" />
-                    <Ellipse4 className="ellipse4" />
-                    <Picture3 className="picture1" />
-                    <div className="logo2">
-                        <Typography className="title">
-                            omou
-            </Typography>
-                    </div>
-                    <form className="Login" onSubmit={handleLogin}>
-                        <Grid container>
-                            <Grid item md={6}></Grid>
-                            <Grid item md={6}>
-                                <Typography className="welcomeText">
-                                    Hello Summit Admin
-                        </Typography>
-                                <TextField error={hasError || email === ""} fullWidth
-                                    inputProps={{ "data-cy": "emailField" }}
-                                    margin="normal"
-                                    onChange={handleTextInput(setEmail)}
-                                    value={email}
-                                    placeholder="E-Mail"
-                                    variant="outlined"
-                                    className="TextField"
-                                    fullWidth="true"
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <EmailOutlinedIcon style={{ color: "grey" }} />
-                                            </InputAdornment>
-                                        ),
-                                    }} />
-                                <PasswordInput autoComplete="current-password"
-                                    error={hasError || password === ""}
-                                    className="TextField"
-                                    inputProps={{ "data-cy": "passwordField" }} label="Password"
-                                    onChange={handleTextInput(setPassword)}
-                                    value={password} />
-                                <Grid container item className="optionsContainer">
-                                    <Grid item md={2} />
-                                    <Grid item md={4}>
-                                        <FormControlLabel
-                                            control={<Checkbox checked={shouldSave}
-                                                inputProps={{ "data-cy": "rememberMe" }}
-                                                onChange={toggleSavePassword} />}
-                                            label="Remember Me" />
-                                    </Grid>
-                                    <Grid item md={4} style={{ paddingTop: 10 }}>
-                                        <Link className="forgotPassword"
-                                            data-cy="forgotPassword" to={{
-                                                "pathname": "/forgotpassword",
-                                                "state": { email },
-                                            }}>
-                                            Forgot Password?
-                                        </Link>
-                                    </Grid>
-                                    <Grid item md={2} />
-                                    <Grid item md={4} />
-                                    <Grid item md={4} className="buttonSpacing">
-                                        <Button className="signInButton"
-                                            data-cy="signInButton"
-                                            type="submit" variant="contained">
-                                            SIGN IN
-                                        </Button>
-                                    </Grid>
-                                    <Grid item md={4} />
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </form>
-                </div>)
-            default:
-                return (<div>default case here</div>)
-        }
     }
 
     const renderLogin = () => {

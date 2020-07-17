@@ -22,7 +22,6 @@ import OmouTheme from "../../theme/muiTheme";
 import { RootRoutes } from "../Routes/RootRoutes";
 
 import AuthenticatedNav from "../Navigation/AuthenticatedNav";
-import UnauthenticatedNav from "../Navigation/UnauthenticatedNav";
 
 import { USER_TYPES } from "utils";
 
@@ -118,7 +117,6 @@ const Navigation = () => {
     }, []);
 
     const matches = useMediaQuery('(margin-left: 233px)');
-    console.log(useMediaQuery("margin-left:233px"))
 
     return (
         <ThemeProvider theme={OmouTheme}>
@@ -126,7 +124,7 @@ const Navigation = () => {
                 {token ?
                     <AuthenticatedNav
                         toggleDrawer={handleDrawerToggle} /> :
-                    <UnauthenticatedNav />}
+                    <div/>}
                 {token && (
                     <nav className="OmouDrawer">
                         <Hidden implementation="css" smUp>

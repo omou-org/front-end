@@ -13,7 +13,6 @@ const PasswordInput = ({ label = "Password", ...props }) => {
 
     const toggleVisibility = useCallback(() => {
         setShowPassword((show) => !show);
-
     }, []);
 
 
