@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import gql from "graphql-tag"
 import {useLazyQuery} from "@apollo/react-hooks";
@@ -29,10 +29,11 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import {CSVLink} from "react-csv";
 import moment from "moment";
+import NoListAlert from "../../OmouComponents/NoListAlert";
 
-const GET_INSTRUCTOR_SESSIONS = gql`query GetInstructorSessions($instructorId: ID!, $timeFrame: String!, $timeShift:Int!) {
+const GET_INSTRUCTOR_SESSIONS = gql`query GetInstructorSessions($instructorId: ID!, $startDate: String!, $endDate:String!) {
   __typename
-  sessions(instructorId: $instructorId, timeFrame: $timeFrame, timeShift: $timeShift) {
+  sessions(instructorId: $instructorId, startDate: $startDate, endDate: $endDate) {
     id
     title
     endDatetime
@@ -92,38 +93,59 @@ const useStyles = makeStyles({
 	calendarPickerRoot: {}
 });
 
+const TeachingLogHeader = () => (<TableHead>
+	<TableRow>
+		<TableCell>Session ID</TableCell>
+		<TableCell>Date</TableCell>
+		<TableCell>Session Title</TableCell>
+		<TableCell>Time</TableCell>
+		<TableCell>Total (hours)</TableCell>
+		<TableCell/>
+	</TableRow>
+</TableHead>);
+
 export default function TeachingLogContainer() {
 	const classes = useStyles();
 	const AuthUser = useSelector(({auth}) => auth);
 	const [getSessions, {loading, data}] = useLazyQuery(GET_INSTRUCTOR_SESSIONS);
 	const [state, setState] = useState([
 		{
-			startDate: new Date(),
-			endDate: new Date(),
+			startDate: moment().subtract(2, "week").toDate(),
+			endDate: moment().toDate(),
 			key: 'selection'
 		}
 	]);
 	const [openCalendar, setOpenCalendar] = useState(false);
-
+	const [toFetchSessions, setToFetchSessions] = useState(false);
 
 	useEffect(() => {
 		getSessions({
 			variables: {
-				instructorId: 7,
-				timeFrame: "month",
-				timeShift: -1,
+				instructorId: AuthUser.user.id,
+				startDate: moment().subtract(2, "week").toISOString(),
+				endDate: moment().toISOString(),
 			}
 		});
 	}, []);
 
-	const setAndCloseDateRangePicker = useCallback((item) => {
-		setOpenCalendar(false);
-		setState([item.selection])
-	}, []);
+	const handleDateRangeCalendarChange = (item) => {
+		const newDateRange = item.selection;
+		setState(() => {
+			if (toFetchSessions) {
+				getSessions({
+					variables: {
+						instructorId: AuthUser.user.id,
+						startDate: newDateRange.startDate.toISOString(),
+						endDate: newDateRange.endDate.toISOString(),
+					},
+				});
+			}
+			return [newDateRange]
+		});
+		setToFetchSessions(!toFetchSessions)
+	}
 
-	if (loading || !data) return <Loading/>;
-
-	const {sessions} = data;
+	const {sessions} = data || {sessions: []};
 	const getGrade = {
 		"COLLEGE_LVL": "College",
 		"HIGH_LVL": "High School",
@@ -131,14 +153,14 @@ export default function TeachingLogContainer() {
 		"ELEMENTARY_LVL": "Elementary School",
 	};
 
-	const summaryHoursLog = sessions.reduce((acc, session) => {
+	const summaryHoursLog = sessions.length > 0 ? sessions.reduce((acc, session) => {
 		acc[session.course.id] = acc[session.course.id] +
 			Number(getDuration(session.startDatetime, session.endDatetime)) ||
 			Number(getDuration(session.startDatetime, session.endDatetime));
 		return acc;
-	});
+	}) : [];
 	let courses = {};
-	const summaryLog = sessions.map(({course: {id, title, academicLevel}}) => ({
+	const summaryLog = sessions.length > 0 ? sessions.map(({course: {id, title, academicLevel}}) => ({
 		courseId: id,
 		title: title,
 		grade: getGrade[academicLevel],
@@ -150,16 +172,16 @@ export default function TeachingLogContainer() {
 			}
 			courses[session.courseId] = true;
 			return true;
-		});
+		}) : [];
 
-	const teachingLogCSVData = sessions.map(({title, endDatetime, startDatetime, id}) => ({
+	const teachingLogCSVData = sessions.length > 0 ? sessions.map(({title, endDatetime, startDatetime, id}) => ({
 		id: id,
 		date: moment(startDatetime).format("MM/DD/YYYY"),
 		title: title,
 		startTime: moment(startDatetime).format("h:mm a"),
 		endTime: moment(endDatetime).format("h:mm a"),
 		duration: moment.duration(moment(endDatetime).diff(moment(startDatetime))).asHours(),
-	}));
+	})) : [];
 	const teachingLogHeader = [
 		{label: "Session ID", key: "id"},
 		{label: "Date", key: "date"},
@@ -192,7 +214,7 @@ export default function TeachingLogContainer() {
 					<Dialog open={openCalendar} onClose={() => setOpenCalendar(false)}>
 						<DateRange
 							editableDateInputs={true}
-							onChange={item => setState([item.selection])}
+							onChange={item => handleDateRangeCalendarChange(item)}
 							moveRangeOnFirstSelection={false}
 							ranges={state}
 						/>
@@ -251,7 +273,7 @@ export default function TeachingLogContainer() {
 						</TableHead>
 						<TableBody>
 							{
-								summaryLog.map(({title, hours, grade, courseId}) =>
+								sessions.length > 0 && summaryLog.map(({title, hours, grade, courseId}) =>
 									<SummaryEntry key={courseId} title={title} hours={hours} grade={grade}/>)
 							}
 							<TableRow>
@@ -259,7 +281,7 @@ export default function TeachingLogContainer() {
 									<b>Total Hours</b>
 								</TableCell>
 								<TableCell>
-									{summaryLog.reduce((acc, course) => (acc.hours + course.hours))}
+									{sessions.length > 0 && summaryLog.reduce((acc, course) => (acc.hours + course.hours))}
 								</TableCell>
 							</TableRow>
 						</TableBody>
@@ -267,25 +289,25 @@ export default function TeachingLogContainer() {
 				</Grid>
 			</Grid>
 			<Grid item xs={12}>
-				<TableContainer>
-					<Table>
-						<TableHead>
-							<TableRow>
-								<TableCell>Session ID</TableCell>
-								<TableCell>Date</TableCell>
-								<TableCell>Session Title</TableCell>
-								<TableCell>Time</TableCell>
-								<TableCell>Total (hours)</TableCell>
-								<TableCell/>
-							</TableRow>
-						</TableHead>
-						<TableBody>
+				{
+					loading ? <Loading small/> :
+						<>
+							<TableContainer>
+								<Table>
+									<TeachingLogHeader/>
+									{
+										sessions.length > 0 && sessions.map((session) => (
+											<TeachingLogEntry key={session.id} session={session}/>))
+									}
+								</Table>
+							</TableContainer>
 							{
-								sessions.map((session) => (<TeachingLogEntry key={session.id} session={session}/>))
+								sessions.length === 0 && <Grid contianer>
+									<NoListAlert list={`sessions have been taught`}/>
+								</Grid>
 							}
-						</TableBody>
-					</Table>
-				</TableContainer>
+						</>
+				}
 			</Grid>
 		</Grid>
 	</BackgroundPaper>)
