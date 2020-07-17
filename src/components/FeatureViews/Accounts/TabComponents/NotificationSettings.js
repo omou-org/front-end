@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
@@ -23,12 +23,15 @@ const StyledTableRow = withStyles((theme) => ({
 const useStyles = makeStyles({
 	table: {
 		minWidth: 650,
-		marginTop: "20px;"
+		marginTop: "10px;"
 	},
+	settingCol: {
+		width: "30%",
+	}
 });
 
 const createNotificationSetting = (name, description, email, sms) =>
-	({name, description, email, sms});
+	({name, description, email, sms, optional: true});
 
 const rows = [
 	createNotificationSetting("Session Reminder", "Get notified when a session is coming up.", true, false),
@@ -36,7 +39,7 @@ const rows = [
 ];
 
 const createOptInSetting = (name, description, optIn) =>
-	({name, description, optIn});
+	({name, description, optIn, optional: false});
 
 const optInRows = [
 	createOptInSetting("SMS Schedule Updates", "Get notified for schedule changes by SMS", true),
@@ -45,9 +48,32 @@ const optInRows = [
 
 export default function NotificationSettings() {
 	const classes = useStyles();
+	const [notificationRows, setNotificationRows] = useState([]);
+	const [optInNotifRows, setOptInNotifRows] = useState([]);
+
+	useEffect(() => {
+		setNotificationRows([
+			createNotificationSetting("Session Reminder", "Get notified when a session is coming up.", true, false),
+			createNotificationSetting("Payment Reminder", "Get notified when a payment is coming up.", true, true),
+		]);
+		setOptInNotifRows([
+			createOptInSetting("SMS Schedule Updates", "Get notified for schedule changes by SMS", true),
+			createOptInSetting("SMS Course Requests", "Get notified for cancellations by SMS", false),
+		]);
+	}, []);
+
+	const handleSettingChange = (row) => (e) => {
+		e.preventDefault();
+		if (row.optional) {
+			setNotificationRows((prevState) => {
+				let newState = new Array(prevState);
+
+			})
+		}
+	}
 
 	return (<>
-		<Grid container style={{backgroundColor: "#F5F5F5", padding: "1%"}}>
+		<Grid container style={{backgroundColor: "#F5F5F5", padding: "1%", marginTop: "30px"}}>
 			<Typography style={{color: omouBlue, fontWeight: 600}}>Notification Settings</Typography>
 		</Grid>
 		<TableContainer>
@@ -59,9 +85,9 @@ export default function NotificationSettings() {
 						<TableCell align="center">Email</TableCell>
 						<TableCell/>
 					</StyledTableRow>
-					{rows.map((row) => (
+					{notificationRows.map((row) => (
 						<StyledTableRow key={row.name}>
-							<TableCell component="th" scope="row">
+							<TableCell component="th" scope="row" className={classes.settingCol}>
 								<Typography
 									style={{"fontSize": "14px", fontWeight: "bold"}}
 									display="block"
@@ -72,14 +98,14 @@ export default function NotificationSettings() {
 							</TableCell>
 							<TableCell align="center">
 								<Checkbox
-									checked={row.email}
+									checked={row.sms}
 									color="primary"
 									inputProps={{'aria-label': 'primary checkbox'}}
 								/>
 							</TableCell>
 							<TableCell align="center">
 								<Checkbox
-									checked={row.sms}
+									checked={row.email}
 									color="primary"
 									inputProps={{'aria-label': 'primary checkbox'}}
 								/>
@@ -96,9 +122,9 @@ export default function NotificationSettings() {
 		<TableContainer>
 			<Table className={classes.table} aria-label="simple table">
 				<TableBody>
-					{optInRows.map((row) => (
+					{optInNotifRows.map((row) => (
 						<StyledTableRow key={row.name}>
-							<TableCell component="th" scope="row">
+							<TableCell component="th" scope="row" className={classes.settingCol}>
 								<Typography
 									style={{"fontSize": "14px", fontWeight: "bold"}}
 									display="block"
@@ -107,7 +133,7 @@ export default function NotificationSettings() {
 								</Typography>
 								<span>{row.description}</span>
 							</TableCell>
-							<TableCell align="left">
+							<TableCell align="center" style={{width: "28%"}}>
 								<Switch
 									checked={row.optIn}
 									color="primary"

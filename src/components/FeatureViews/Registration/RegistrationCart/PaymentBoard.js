@@ -44,7 +44,7 @@ const useRowStyles = makeStyles({
 });
 
 export default function PaymentBoard() {
-	const [registrationCart, currentParent] = useContext(RegistrationContext);
+	const {registrationCart, currentParent} = useContext(RegistrationContext);
 	const [getPriceQuote, {data, error}] = useLazyQuery(GET_PRICE_QUOTE);
 	const [paymentMethodState, setPaymentMethodState] = useState([
 		{
