@@ -26,7 +26,7 @@ const PasswordInput = ({ label = "Password", ...props }) => {
         className="TextField"
         value={password}
         variant="outlined"
-        fullWidth="true"
+        fullWidth={"true"}
         id="password"
         type={showPassword ? "text" : "password"}
         onChange={handleTextInput(setPassword)}
