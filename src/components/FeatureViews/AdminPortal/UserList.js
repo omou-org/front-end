@@ -4,6 +4,8 @@ import {
     TextInput, Create
 } from "react-admin";
 
+
+
 export const CategoryList = (props) => (
     <List {...props}>
         <Datagrid rowClick="edit">
@@ -40,4 +42,47 @@ export const CategoryShow = (props) => (
             <TextField source="name" />
         </SimpleShowLayout>
     </Show>
+);
+
+//Schools
+export const SchoolList = (props) => (
+    <List {...props}>
+        <Datagrid rowClick="edit">
+            <TextField source="id" />
+            <TextField source="name" />
+            <TextField source="zipcode" />
+            <TextField source="district" />
+        </Datagrid>
+    </List>
+);
+
+export const SchoolCreate = (props) => (
+    <Create {...props}>
+        <SimpleForm>
+            <TextInput source="name" />
+            <TextInput source="zipcode" />
+            <TextInput source="district" />
+        </SimpleForm>
+    </Create>
+);
+
+export const SchoolShow = (props) => (
+    <Show {...props}>
+        <SimpleShowLayout>
+            <TextField source="id" />
+            <TextField source="name" />
+            <TextField source="zipcode" />
+            <TextField source="district" />
+        </SimpleShowLayout>
+    </Show>
+);
+
+export const SchoolEdit = (props) => (
+    <Edit {...props}>
+        <SimpleForm>
+            <TextField source="name" />
+            <TextField source="zipcode" />
+            <TextField source="district" />
+        </SimpleForm>
+    </Edit>
 );

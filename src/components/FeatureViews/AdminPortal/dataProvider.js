@@ -1,5 +1,6 @@
-import {client} from "index";
+import { client } from "index";
 import gql from "graphql-tag";
+
 
 const QUERIES_LIST = {
     "courseCategories": gql`
@@ -11,6 +12,16 @@ const QUERIES_LIST = {
             __typename
         }
     }`,
+    "schools": gql`
+     query getSchools {
+        schools {
+          id
+          name
+          district
+          zipcode
+        }
+      }
+     `
 };
 
 const QUERIES_ONE = {
@@ -22,6 +33,17 @@ const QUERIES_ONE = {
                 name
             }
         }`,
+    "schools": gql`
+        query getSchool($id:ID) {
+            school( schoolId: $id){
+              id
+              name
+              district
+              zipcode
+            }
+          }
+                  
+        `
 };
 
 const ADD_QUERY = {
@@ -30,12 +52,23 @@ const ADD_QUERY = {
         createCourseCategory(name: $name, description: $description) {
           courseCategory {
             name
+            id
             description
           }
         }
-      }
-      
-    `,
+      } `,
+    "schools": gql`
+      mutation createSchool($zipcode : String, $name : String, $district:String ) {
+          createSchool(zipcode: $zipcode, name: $name, district:$district) {
+            school {
+              id
+              name
+              zipcode
+              district
+            }
+          }
+        }`,
+
 };
 
 const MUTATION_UPDATE = {
@@ -65,8 +98,13 @@ const getTypes = gql`
     }
 }`;
 
+
+
+
+
 export default {
-    "getList": async (resource, {"pagination": {page, perPage}, "sort": {field, order}}) => {
+    "getList": async (resource, { "pagination": { page, perPage }, "sort": { field, order } }) => {
+
         try {
             const request = QUERIES_LIST[resource];
 
@@ -92,10 +130,12 @@ export default {
 
             const fieldTypes = Object.fromEntries(
                 typeResponse.data.__type.fields
-                    .map(({name, type}) => [name, type.ofType.name]),
+                    .map(({ name, type }) => [name, type.ofType.name]),
             );
 
+
             const sortedData = [...records].sort((cat1, cat2) => {
+
                 switch (fieldTypes[field]) {
                     case "ID": return order === "ASC" ?
                         cat2[field] - cat1[field] :
@@ -120,39 +160,42 @@ export default {
             return error;
         }
     },
-    "getOne": async (resource, {id}) => {
+    "getOne": async (resource, params) => {
         const query = QUERIES_ONE[resource];
+
         try {
-            const {data} = await client.query({
+            const { data } = await client.query({
                 query,
-                "variables": {id},
+                "variables": { "id": params.id }
             });
 
             return {
-                "data": Object.values(data)[0],
+                data: Object.values(data)[0],
             };
         } catch (error) {
             return error;
         }
     },
-    "create" : async (resource, data) => {
+    "create": async (resource, { data }) => {
         const mutation = ADD_QUERY[resource];
 
         try {
             const response = await client.mutate({
                 mutation,
+                refetchQueries: [{ query: QUERIES_LIST[resource] }],
                 "variables": {
-                    ...data
+                    ...data,
+
                 }
             });
             return {
-                "data": Object.values(response.data)[0],
+                "data": Object.values(Object.values(response.data)[0])[0],
             };
         } catch (error) {
             return error;
         }
     },
-    "update": async (resource, {id, data}) => {
+    "update": async (resource, { id, data }) => {
         const mutation = MUTATION_UPDATE[resource];
         try {
             const response = await client.mutate({
@@ -163,11 +206,17 @@ export default {
                 },
             });
 
+
+
+
             return {
-                "data": Object.values(response.data)[0],
+                data: Object.values(Object.values(response.data)[0])[0],
             };
         } catch (error) {
+            console.log(error)
             return error;
         }
     },
 };
+
+
