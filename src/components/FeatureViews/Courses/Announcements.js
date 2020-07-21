@@ -3,17 +3,22 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { Create, Cancel } from '@material-ui/icons';
+import { highlightColor } from "../../../theme/muiTheme"
+
 
 const useStyles = makeStyles({
     announcementContainer: {
         padding: "10px",
         fontFamily: "Arial",
         fontStyle: "normal",
+        '&:hover': {
+            backgroundColor: highlightColor,
+          }
     },
     announcementBody: {
         paddingTop: "10px",
         paddingBottom: "20px"
-    }
+    },
   });
 
   const announcementData = 
@@ -45,17 +50,14 @@ const useStyles = makeStyles({
     user, title, body, date, time
 }) => {
     const classes = useStyles();
-    const [bgColor, setBgColor] = useState("#FFFFFF");
+
     
     return (
         <Grid
             className={classes.announcementContainer}
             container
             justify="flex-start"
-            style={{ backgroundColor: `${bgColor}` }}
             data-active="inactive"
-            onMouseEnter={() => setBgColor("#EBFAFF")}
-            onMouseLeave={() => setBgColor("#FFFFFF")}
         >
             <Grid item xs={6}>
                 <Typography variant="h6" align="left" gutterBottom>
@@ -85,25 +87,21 @@ const useStyles = makeStyles({
 }
 
 const Announcements = () => {
-    const classes = useStyles();
-
-    const announcementList = announcementData.map((announcements) => (
-        <AnnouncementCard
-            user = {announcements.user}
-            title = {announcements.title}
-            body = {announcements.body}
-            date = {announcements.date}
-            time = {announcements.time}
-        />
-    ))
-
     return (
         <Grid
         container
         justify="flex-start"
         data-active="inactive"
         >
-            {announcementList}
+            {announcementData.map(({user, title, body, date, time}) => (
+        <AnnouncementCard
+            user = {user}
+            title = {title}
+            body = {body}
+            date = {date}
+            time = {time}
+        />
+    ))}
         </Grid>
     )
 }

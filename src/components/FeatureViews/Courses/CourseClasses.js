@@ -115,7 +115,6 @@ const CourseClasses = () => {
   
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
-  console.log(data);
 
   const {
     academicLevel,
@@ -141,15 +140,13 @@ const CourseClasses = () => {
   // const y = sessionSet.map((e, i) => e);
   // console.log(y)
 
-  const letterDayManipulation = dayOfWeek.substring(1, 3).toLowerCase();
-  const firstLetterDayManipulation = dayOfWeek.substring(0, 1);
-  const abbreviatedDay = firstLetterDayManipulation + letterDayManipulation;
+  const abbreviatedDay = moment(startDate).format("ddd")
   const startingTime = moment(startTime, "HH:mm").format("h:mm A");
   const endingTime = moment(endTime, "HH:mm").format("h:mm A");
   const startingDate = moment(startDate).calendar();
   const endingDate = moment(endDate).calendar();
 
-  const handleChange = (e, i) => {
+  const handleChange = (_, i) => {
     return setIndex(i);
   };
 
@@ -276,10 +273,10 @@ const CourseClasses = () => {
                   <Announcements />
                 </TabPanel>
                 <TabPanel index={2} value={index}>
-                <StudentEnrollment enrollment={enrollmentSet} />
+                <StudentEnrollment enrollmentList={enrollmentSet} />
                 </TabPanel>
                 <TabPanel index={3} value={index}>
-                  <CourseSessions session={sessionSet}/>
+                  <CourseSessions sessionList={sessionSet}/>
                 </TabPanel>
               </Grid>
             </ThemeProvider>

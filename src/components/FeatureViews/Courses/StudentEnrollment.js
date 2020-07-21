@@ -19,24 +19,30 @@ const useStyles = makeStyles({
     },
   });
   
-  function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-  }
-  
-  const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-  ];
 
-  
-const Studentenrollment = ({enrollment}) => {
+const Studentenrollment = ({enrollmentList}) => {
     const classes = useStyles();
-    const enrollmentCell = enrollment.sort((firstStudent, secondStudent) => (firstStudent.student.user.lastName < secondStudent.student.user.lastName ? -1 : 0)).map(students => {
+    // console.log(enrollmentCell);
+
+    return (
+        <Grid item xs={12}>
+         <TableContainer component={Paper}>
+      <Table className={classes.table} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Student</TableCell>
+            <TableCell>Parent</TableCell>
+            <TableCell>Phone</TableCell>
+            <TableCell />
+            <TableCell />
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          { enrollmentList
+    .sort((firstStudent, secondStudent) => (firstStudent.student.user.lastName < secondStudent.student.user.lastName ? -1 : 0))
+    .map(students => {
         const { accountType, primaryParent, user } = students.student;
-        const concatFullStudentName = fullName(user);
+        const fullStudentName = fullName(user);
         const studentId = user.id;
         const concatFullParentName = fullName(primaryParent.user);
         const parentAccountType = primaryParent.accountType.toLowerCase();
@@ -44,40 +50,21 @@ const Studentenrollment = ({enrollment}) => {
         const parentId = primaryParent.user.id
         
         return (
-            <TableRow key={concatFullStudentName}>
+            <TableRow key={fullStudentName}>
             <TableCell component="th" scope="row" component={Link} to={`/accounts/${accountType.toLowerCase()}/${studentId}`} style={{textDecoration: "none", fontWeight: 700}}>
-              {concatFullStudentName}
+              {fullStudentName}
             </TableCell>
-            <TableCell align="right" component={Link} to={`/accounts/${parentAccountType}/${parentId}`} style={{textDecoration: "none"}}>{concatFullParentName}</TableCell>
-            <TableCell align="right">{phoneNumber}</TableCell>
-            <TableCell align="right"><MailOutlineIcon /></TableCell>
-            <TableCell align="right"><ChatIcon /></TableCell>
+            <TableCell component={Link} to={`/accounts/${parentAccountType}/${parentId}`} style={{textDecoration: "none"}}>{concatFullParentName}</TableCell>
+            <TableCell>{phoneNumber}</TableCell>
+            <TableCell><MailOutlineIcon /></TableCell>
+            <TableCell><ChatIcon /></TableCell>
           </TableRow>
         )
-    })
-    // console.log(enrollmentCell);
-
-    return (
-        <>
-        <Grid item xs={12}>
-         <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Student</TableCell>
-            <TableCell align="right">Parent</TableCell>
-            <TableCell align="right">Phone</TableCell>
-            <TableCell align="right"></TableCell>
-            <TableCell align="right"></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {enrollmentCell}
+    })}
         </TableBody>
       </Table>
     </TableContainer>
     </Grid>
-        </>
     )
 }
 

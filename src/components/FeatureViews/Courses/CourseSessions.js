@@ -23,12 +23,12 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
-const CourseSessions = ({ session }) => {
+const CourseSessions = ({ sessionList }) => {
     const classes = useStyles();
-    const listItem = session.map((item, index) => {
-        const { startDatetime } = item
+    return (
+            <List className={classes.root}>
+      {sessionList.map(({ startDatetime }, index) => {
         const startingDate = moment(startDatetime).calendar();
-        console.log(startingDate)
         return(
             <>
         <ListItem className={classes.listItems}>
@@ -36,13 +36,8 @@ const CourseSessions = ({ session }) => {
       </ListItem>
       <Divider />
       </>
-    )})
-    return (
-        <>
-            <List className={classes.root}>
-      {listItem}
+    )})}
     </List>
-        </>
     )
 };
 

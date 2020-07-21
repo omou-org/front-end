@@ -6,6 +6,7 @@ const tabBorderRadius = "10px";
 export const lightPrimaryFontColor = "#767474";
 export const secondaryFontColor = "#228eb2";
 export const neutralBackgroundColor = "#FAFAFA";
+export const highlightColor = "#EBFAFF";
 
 const theme = createMuiTheme({
     "palette": {
