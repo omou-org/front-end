@@ -17,10 +17,7 @@ import NotEnrolledStudentsDialog from "../FeatureViews/Scheduler/NotEnrolledStud
 import PaymentReceipt from "../FeatureViews/Registration/PaymentReceipt";
 import Registration from "../FeatureViews/Registration/Registration";
 import FormPage from "../Form/FormPage";
-import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
-import RegistrationCourse from
-    "../FeatureViews/Registration/RegistrationCourse";
-import Dashboard from "../FeatureViews/Dashboard/Dashboard";
+import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
 import RegistrationReceipt from "../Form/RegistrationReceipt";
 import ResetPassword from "../Authentication/ResetPassword";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
@@ -84,27 +81,30 @@ export const RootRoutes = () => {
 
             {/* Accounts */}
             <AuthenticatedRoute exact path="/accounts/:accountType/:accountID">
-                <UserProfile />
+                <UserProfile/>
             </AuthenticatedRoute>
             <AuthenticatedRoute exact
-                path="/accounts/parent/payment/:paymentID">
-                <PaymentReceipt />
+                                path="/accounts/parent/payment/:paymentID">
+                <PaymentReceipt/>
             </AuthenticatedRoute>
-            <AuthenticatedRoute exact path="/accounts">
-                <Accounts />
+            <AuthenticatedRoute exact path="/accounts"
+                                users={[USER_TYPES.admin, USER_TYPES.receptionist]}>
+                <Accounts/>
             </AuthenticatedRoute>
             <AuthenticatedRoute exact
-                path="/accounts/:accountType/:accountID/:courseID">
-                <CourseSessionStatus />
+                                path="/accounts/:accountType/:accountID/:courseID">
+                <CourseSessionStatus/>
             </AuthenticatedRoute>
 
             {/* Registration Routes */}
             <AuthenticatedRoute path="/registration/form/:type/:id?">
-				<RegistrationForm/>
+                <RegistrationForm/>
             </AuthenticatedRoute>
             <AuthenticatedRoute
-                path="/registration/course/:courseID?/:courseTitle?">
-                <RegistrationCourse />
+                path="/registration/course/:courseID?/:courseTitle?"
+                users={[USER_TYPES.admin, USER_TYPES.receptionist]}
+            >
+                <RegistrationCourse/>
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/registration/cart/">
                 <RegistrationCartContainer/>

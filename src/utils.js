@@ -1,5 +1,5 @@
 import {instance} from "actions/apiActions";
-import {useCallback} from "react";
+import {useCallback, useState} from "react";
 import {useHistory} from "react-router-dom";
 import moment from "moment";
 
@@ -449,14 +449,15 @@ export const getDuration = (startDatetime, endDatetime) =>
 
 /**
  * @description set year, month, date, and seconds to be the same default value - useful for comparing hh:mm only
- * @returns {Moment} datetime
+ * @returns datetime
  * */
 export const setCurrentDate = (time) => {
-    time.set('year', 2020);
-    time.set('month', 1);
-    time.set('date', 1);
-    time.set('seconds', 1);
-    return time;
+    const formattedTime = typeof time === "string" ? moment(time) : time;
+    formattedTime.set('year', 2020);
+    formattedTime.set('month', 1);
+    formattedTime.set('date', 1);
+    formattedTime.set('seconds', 1);
+    return formattedTime;
 };
 
 /**
@@ -467,12 +468,21 @@ export const setCurrentDate = (time) => {
 export const checkTimeSegmentOverlap = (timeSegments) => {
     if (timeSegments.length === 1) return false;
 
-    timeSegments.sort((timeSegment1, timeSegment2) =>
-        setCurrentDate(timeSegment1[0]).isBefore(setCurrentDate(timeSegment2[0]))
+    timeSegments.sort((timeSegment1, timeSegment2) => {
+            // console.log(setCurrentDate(timeSegment1[0]))
+            return setCurrentDate(timeSegment2[0]).isBefore(setCurrentDate(timeSegment1[0]))
+        }
     );
+    // console.log(timeSegments);
 
+    const validTime = (time) => {
+        if (typeof time === "string") {
+            return moment(time);
+        }
+        return time;
+    }
     const timeSegmentString = ([startTime, endTime]) =>
-        `${startTime.format("hh:mm A")} - ${endTime.format("hh:mm A")}`;
+        `${validTime(startTime).format("hh:mm A")} - ${validTime(endTime).format("hh:mm A")}`;
 
     for (let i = 0; i < timeSegments.length - 1; i++) {
         const currentStartTime = setCurrentDate(timeSegments[i][0]);
@@ -511,13 +521,50 @@ export function deepEqual(object1, object2) {
 			areObjects && !deepEqual(val1, val2) ||
 			!areObjects && val1 !== val2
 		) {
-			return false;
-		}
-	}
+            return false;
+        }
+    }
 
-	return true;
+    return true;
 }
 
 function isObject(object) {
-	return object != null && typeof object === 'object';
+    return object != null && typeof object === 'object';
+}
+
+// Hook
+export function useSessionStorage(key, initialValue) {
+    // State to store our value
+    // Pass initial state function to useState so logic is only executed once
+    const [storedValue, setStoredValue] = useState(() => {
+        try {
+            // Get from local storage by key
+            const item = window.sessionStorage.getItem(key);
+            // Parse stored json or if none return initialValue
+            return item ? JSON.parse(item) : initialValue;
+        } catch (error) {
+            // If error also return initialValue
+            console.log(error);
+            return initialValue;
+        }
+    });
+
+    // Return a wrapped version of useState's setter function that ...
+    // ... persists the new value to localStorage.
+    const setValue = value => {
+        try {
+            // Allow value to be a function so we have same API as useState
+            const valueToStore =
+                value instanceof Function ? value(storedValue) : value;
+            // Save state
+            setStoredValue(valueToStore);
+            // Save to local storage
+            window.sessionStorage.setItem(key, JSON.stringify(valueToStore));
+        } catch (error) {
+            // A more advanced implementation would handle the error case
+            console.log(error);
+        }
+    };
+
+    return [storedValue, setValue];
 }

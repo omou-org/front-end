@@ -116,7 +116,6 @@ export default function TeachingLogContainer() {
 		}
 	]);
 	const [openCalendar, setOpenCalendar] = useState(false);
-	const [toFetchSessions, setToFetchSessions] = useState(false);
 
 	useEffect(() => {
 		getSessions({
@@ -130,19 +129,18 @@ export default function TeachingLogContainer() {
 
 	const handleDateRangeCalendarChange = (item) => {
 		const newDateRange = item.selection;
-		setState(() => {
-			if (toFetchSessions) {
-				getSessions({
-					variables: {
-						instructorId: AuthUser.user.id,
-						startDate: newDateRange.startDate.toISOString(),
-						endDate: newDateRange.endDate.toISOString(),
-					},
-				});
-			}
-			return [newDateRange]
+		setState([newDateRange]);
+	}
+
+	const handleSaveDateRange = () => {
+		setOpenCalendar(false);
+		getSessions({
+			variables: {
+				instructorId: AuthUser.user.id,
+				startDate: state[0].startDate.toISOString(),
+				endDate: state[0].endDate.toISOString(),
+			},
 		});
-		setToFetchSessions(!toFetchSessions)
 	}
 
 	const {sessions} = data || {sessions: []};
@@ -211,7 +209,7 @@ export default function TeachingLogContainer() {
 							<Moment date={state[0].endDate} format="MM/DD/YYYY"/>
 						</Button>
 					</ButtonGroup>
-					<Dialog open={openCalendar} onClose={() => setOpenCalendar(false)}>
+					<Dialog open={openCalendar} onClose={handleSaveDateRange}>
 						<DateRange
 							editableDateInputs={true}
 							onChange={item => handleDateRangeCalendarChange(item)}
@@ -219,7 +217,7 @@ export default function TeachingLogContainer() {
 							ranges={state}
 						/>
 						<DialogActions>
-							<Button onClick={() => setOpenCalendar(false)} color="primary">
+							<Button onClick={handleSaveDateRange} color="primary">
 								Save & Close
 							</Button>
 						</DialogActions>

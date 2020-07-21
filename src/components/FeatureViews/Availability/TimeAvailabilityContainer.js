@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -8,6 +8,10 @@ import DayAvailabilityEntry from "./DayAvailabilityEntry";
 import {TimeAvailabilityContext} from "./TimeAvailabilityContext";
 import gql from "graphql-tag";
 import Button from "@material-ui/core/Button";
+import {useSessionStorage} from "../../../utils";
+import {useQuery} from "@apollo/react-hooks";
+import {useSelector} from "react-redux";
+import Loading from "../../OmouComponents/Loading";
 
 const MUTATE_INSTRUCTOR_AVAILABILITY = gql`mutation CreateInstructorAvailability {
   __typename
@@ -16,21 +20,72 @@ const MUTATE_INSTRUCTOR_AVAILABILITY = gql`mutation CreateInstructorAvailability
       endTime
       startTime
       id
+      dayOfWeek
     }
   }
 }`;
 
+const GET_INSTRUCTOR_AVAILABILITY = gql`query GetInstructorAvailability($instructorId:ID!){
+	instructorAvailability(instructorId: $instructorId){
+		endTime
+		startTime
+		id
+		dayOfWeek
+	}
+}`
+
+const dateToIndex = {
+	"SUNDAY": 0,
+	"MONDAY": 1,
+	"TUESDAY": 2,
+	"WEDNESDAY": 3,
+	"THURSDAY": 4,
+	"FRIDAY": 5,
+	"SATURDAY": 6,
+};
+
 export default function TimeAvailabilityContainer() {
 	const [autoApprove, setAutoApprove] = useState(false);
-	const [availabilitiesByDayOfWeek, setAvailability] = useState([
-		{dayOfWeek: "Sunday", availabilities: {},},
-		{dayOfWeek: "Monday", availabilities: {},},
-		{dayOfWeek: "Tuesday", availabilities: {},},
-		{dayOfWeek: "Wednesday", availabilities: {},},
-		{dayOfWeek: "Thursday", availabilities: {},},
-		{dayOfWeek: "Friday", availabilities: {},},
-		{dayOfWeek: "Saturday", availabilities: {},},
+	const [availabilitiesByDayOfWeek, setAvailability] = useSessionStorage("availabilitiesByDayOfWeek", [
+		{dayOfWeek: "SUNDAY", availabilities: {},},
+		{dayOfWeek: "MONDAY", availabilities: {},},
+		{dayOfWeek: "TUESDAY", availabilities: {},},
+		{dayOfWeek: "WEDNESDAY", availabilities: {},},
+		{dayOfWeek: "THURSDAY", availabilities: {},},
+		{dayOfWeek: "FRIDAY", availabilities: {},},
+		{dayOfWeek: "SATURDAY", availabilities: {},},
 	]);
+	const AuthUser = useSelector(({auth}) => auth);
+	const {data, loading} = useQuery(GET_INSTRUCTOR_AVAILABILITY, {
+		variables: {instructorId: AuthUser.user.id}
+	});
+
+	useEffect(() => {
+		if (!loading) {
+			const {instructorAvailability} = data;
+
+			if (instructorAvailability.length > 0) {
+				setAvailability((prevState) => {
+					let newState = prevState;
+					instructorAvailability.forEach(availability => {
+						const availabilityIndex = dateToIndex[availability.dayOfWeek];
+						newState[availabilityIndex] = {
+							dayOfWeek: availability.dayOfWeek,
+							availabilities: {
+								...prevState[availabilityIndex].availabilities,
+								[availability.id]: {
+									...availability,
+									startTime: "2020-01-01T" + availability.startTime.substring(0, 5),
+									endTime: "2020-01-01T" + availability.endTime.substring(0, 5),
+								},
+							},
+						};
+					});
+					return newState;
+				})
+			}
+		}
+	}, [setAvailability, data, loading])
 
 	const handleAutoApprove = useCallback(() => {
 		setAutoApprove(!autoApprove);
@@ -65,6 +120,8 @@ export default function TimeAvailabilityContainer() {
 			return updatedAvailability;
 		});
 	};
+
+	if (loading) return <Loading small/>;
 
 	return (<TimeAvailabilityContext.Provider value={{availabilitiesByDayOfWeek, updateAvailability}}>
 		<Grid item container justify="space-between" direction="row">

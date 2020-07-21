@@ -18,6 +18,7 @@ import {errorRed} from "../../../theme/muiTheme";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import DeleteIcon from "@material-ui/icons/Clear";
 import IconButton from "@material-ui/core/IconButton";
+import TimeIcon from "@material-ui/icons/Schedule";
 
 const useStyles = makeStyles(() => ({
 	availabilityRow: {
@@ -33,8 +34,8 @@ const AvailabilityRow = ({startTime, endTime, dayIndex, availabilityId, setDispl
 
 	const timesNotValid = (startTime, endTime) => {
 		if (startTime && endTime) {
-			const startTimeVal = setCurrentDate(startTime),
-				endTimeVal = setCurrentDate(endTime);
+			const startTimeVal = setCurrentDate(moment(startTime)),
+				endTimeVal = setCurrentDate(moment(endTime));
 			const timeDiff = moment.duration(endTimeVal.diff(startTimeVal));
 			return timeDiff <= 0;
 		}
@@ -49,17 +50,26 @@ const AvailabilityRow = ({startTime, endTime, dayIndex, availabilityId, setDispl
 	const handleOnEndChange = (e) => {
 		updateAvailability(startTime, e, dayIndex, availabilityId, false);
 	};
-
+	// TODO: figure out how to make start and end times valid.
+	const validTime = (time) => {
+		if (typeof time === "string") {
+			return moment(time);
+		}
+		return time;
+	}
+	// console.log( startTime, endTime);
 	return <div className={classes.availabilityRow}>
-		<KeyboardTimePicker value={startTime || null} onChange={handleOnStartChange}
+		<KeyboardTimePicker value={validTime(startTime) || null} onChange={handleOnStartChange}
 							inputVariant="outlined"
+							keyboardIcon={<TimeIcon/>}
 							error={endTime && !startTime || conflictError || timesNotValid(startTime, endTime)}/>
 		<div style={{
 			margin: "25px", width: "10px", borderBottom: "solid black 1px",
 			display: "inline-block"
 		}}/>
-		<KeyboardTimePicker value={endTime || null} onChange={handleOnEndChange}
+		<KeyboardTimePicker value={validTime(endTime) || null} onChange={handleOnEndChange}
 							inputVariant="outlined"
+							keyboardIcon={<TimeIcon/>}
 							error={!endTime && startTime || conflictError || timesNotValid(startTime, endTime)}/>
 		{
 			(startTime && endTime) &&
