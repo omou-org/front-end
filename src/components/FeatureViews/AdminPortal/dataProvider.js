@@ -221,6 +221,17 @@ const MUTATION_UPDATE = {
         }
     }
     ${discountInfo}`,
+    "schools": gql`
+    mutation updateSchool($id: ID!,$name: String!, $zipcode: String, $district: String, ) {
+        createSchool(id: $id , name: $name, zipcode: $zipcode, district: $district ) {
+          school {
+            district
+            id
+            name
+            zipcode
+          }
+        }
+      }`,
 };
 
 const getTypes = gql`
