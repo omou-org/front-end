@@ -1,15 +1,52 @@
-@import "../../../theme/colors";
+.note {
+    height: 250px;
+    position: relative;
+    padding: 7%;
 
-.delete-popup {
-    .delete-actions {
-        .delete-button {
-            background-color: $badActionColor !important;
-            color: white !important;
-        }
+    .noteNotification {
+        float: right;
+        cursor: pointer;
+    }
 
-        .cancel-button {
-            background-color: $primaryColor !important;
-            color: white !important;
-        }
+    .header {
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+
+    .body {
+        white-space: pre-wrap;
+        font-size: 1.2em;
+    }
+
+    .date {
+        position: absolute;
+        bottom: 5%;
+        width: 85%;
+        text-align: left;
+    }
+
+    .icon {
+        font-size: 16px;
+    }
+}
+
+.popup {
+    min-height: 381px;
+    max-height: 450px;
+    margin: auto;
+
+    .textfield {
+        width: 80%;
+        text-align: left;
+    }
+
+    .note-body {
+        width: 100%;
+    }
+
+    .notification {
+        right: 10%;
+        font-size: 40px;
+        position: absolute;
     }
 }

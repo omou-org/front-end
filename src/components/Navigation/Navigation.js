@@ -10,6 +10,8 @@ import Hidden from "@material-ui/core/Hidden";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import AdminIcon from "@material-ui/icons/Face"
 import ListItemText from "@material-ui/core/ListItemText";
 import NavLinkNoDup from "../Routes/NavLinkNoDup";
 import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
@@ -41,13 +43,12 @@ const Navigation = () => {
     const isAdmin =
         useSelector(({ auth }) => auth.accountType) === USER_TYPES.admin;
 
-    const NavList = isAdmin ?
-        [
-            // {
-            //     "name": "Dashboard",
-            //     "link": "/",
-            //     "icon": <DashboardIcon />,
-            // },
+    const NavList = isAdmin ? [
+            {
+                "name": "Dashboard",
+                "link": "/dashboard",
+                "icon": <DashboardIcon />,
+            },
             {
                 "name": "Scheduler",
                 "link": "/scheduler",
@@ -58,28 +59,33 @@ const Navigation = () => {
                 "link": "/accounts",
                 "icon": <AccountsIcon />,
             },
-            {
-                "name": "Registration",
-                "link": "/registration",
-                "icon": <AssignmentIcon />,
-            },
-            {
-                "name": "Admin",
-                "link": "/adminportal",
-                "icon": <AdminIcon />,
-            },
-        ] :
+			{
+				"name": "Registration",
+				"link": "/registration",
+				"icon": <AssignmentIcon />,
+			},
+			{
+				"name": "Admin",
+				"link": "/adminportal",
+				"icon": <AdminIcon/>,
+			}
+            ] :
         [
+            {
+                "name": "Dashboard",
+                "link": "/dashboard",
+                "icon": <DashboardIcon />,
+            },
             {
                 "name": "Scheduler",
                 "link": "/scheduler",
                 "icon": <EventIcon />,
             },
             {
-                "name": "Accounts",
-                "link": "/accounts",
-                "icon": <AccountsIcon />,
-            },
+            "name": "Accounts",
+            "link": "/accounts",
+            "icon": <AccountsIcon />,
+    	    },
             {
                 "name": "Registration",
                 "link": "/registration",
