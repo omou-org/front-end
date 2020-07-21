@@ -70,6 +70,14 @@
   border: 0 solid #43b5d9;
 }
 
+// Current day background color
+.fc-today {
+  background: #EBFAFF !important;
+  border: none !important;
+  border-top: 1px solid #ddd !important;
+  font-weight: bold;
+} 
+
 // ToolTip css are styled ul's
 .toolTip {
   .ul {
