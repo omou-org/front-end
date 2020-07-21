@@ -80,9 +80,9 @@ export const SchoolShow = (props) => (
 export const SchoolEdit = (props) => (
     <Edit {...props}>
         <SimpleForm>
-            <TextField source="name" />
-            <TextField source="zipcode" />
-            <TextField source="district" />
+            <TextInput source="name" />
+            <TextInput source="zipcode" />
+            <TextInput source="district" />
         </SimpleForm>
     </Edit>
 );
