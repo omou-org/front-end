@@ -84,6 +84,9 @@ export const GET_COURSES = gql`
     ${SIMPLE_COURSE_DATA}`;
 
 const RegistrationLanding = () => {
+    const CurrentParent = useSelector(
+        ({Registration}) => Registration.CurrentParent
+    );
     const registeredCourses = useSelector(
         ({ Registration }) => Registration.registered_courses
     );
@@ -207,7 +210,9 @@ const RegistrationLanding = () => {
                 </Grid>
                 <Grid item md={10}/>
                 <Grid item md={1}>
-                    <Button component={NavLinkNoDup}
+                    <Button 
+                    disabled={CurrentParent===null}
+                    component={NavLinkNoDup}
 				    to="/registration/cart">
                         <Badge badgeContent={renderCartItems()} showZero color="primary" >
                             <ShoppingCartOutlinedIcon style={{fontSize:30}} />
