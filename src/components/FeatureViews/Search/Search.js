@@ -17,15 +17,15 @@ import Select from "@material-ui/core/Select";
 import "./Search.scss";
 
 const useStyles = makeStyles({
-    "dropdownStyle": {
-        "borderRadius": "10px !important",
-    },
-    "navSelect": {
-        "background": "#ffffff",
-        "border": "1px solid #eee",
-        "borderRadius": "3px,0px,0px,3px",
-        "height": "41px",
-    },
+  navSelect: {
+    height: "41px",
+    background: "#ffffff",
+	  borderRadius: "5px,0px,0px,5px",
+  },
+  dropdownStyle: {
+    borderRadius: "10px !important",
+      padding: "0"
+  },
 });
 
 const getPlaceholder = () => (
@@ -45,15 +45,14 @@ const searchIcon = (props) => (
 const formatCreateLabel = (inputValue) => `Search for "${inputValue}"`;
 
 const styles = {
-    "control": (base) => ({
-        ...base,
-        "border": 0,
-        "boxShadow": "none",
-    }),
-    "option": (provided, {isFocused}) => ({
-        ...provided,
-        "backgroundColor": isFocused ? "#43B5D9" : provided.backgroundColor,
-    }),
+  control: (base) => ({
+    ...base,
+    border: 0,
+    boxShadow: "none",
+  }),
+  option: (provided, {isFocused}) => ({
+    ...provided,
+  }),
 };
 
 const ACCOUNT_SEARCH = gql`

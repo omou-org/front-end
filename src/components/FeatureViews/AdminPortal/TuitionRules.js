@@ -16,8 +16,8 @@ import "./AdminPortal.scss";
 import * as adminActions from "actions/adminActions";
 import * as hooks from "actions/hooks";
 import {academicLevelParse, courseTypeParse,} from "reducers/registrationReducer";
-import Loading from "components/Loading";
-import NoListAlert from "components/NoListAlert";
+import Loading from "components/OmouComponents/Loading";
+import NoListAlert from "components/OmouComponents/NoListAlert";
 
 const academicLevelList = [
 	"College",

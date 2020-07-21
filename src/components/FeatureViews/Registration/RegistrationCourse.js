@@ -22,8 +22,8 @@ import Moment from "react-moment";
 
 import "./registration.scss";
 import {Link, useRouteMatch} from "react-router-dom";
-import BackButton from "../../BackButton.js";
-import Loading from "components/Loading";
+import BackButton from "../../OmouComponents/BackButton.js";
+import Loading from "components/OmouComponents/Loading";
 import RegistrationActions from "./RegistrationActions";
 import RegistrationCourseEnrollments from "./RegistrationCourseEnrollments";
 import UserAvatar from "../Accounts/UserAvatar";
@@ -132,7 +132,7 @@ const RegistrationCourse = () => {
 							<Button
 								className="button"
 								component={Link}
-								to={`/registration/form/course_details/${courseID}/edit`}
+								to={`/registration/form/course_details/${courseID}`}
 							>
 								<EditIcon className="icon"/>
 								Edit Course

@@ -13,13 +13,13 @@ import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormGroup from "@material-ui/core/FormGroup";
 import Grid from "@material-ui/core/Grid";
-import NoListAlert from "../../../NoListAlert";
+import NoListAlert from "../../../OmouComponents/NoListAlert";
 import NoteIcon from "@material-ui/icons/NoteOutlined";
 import Paper from "@material-ui/core/Paper";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import PaymentTable from "./PaymentTable";
 import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
-import SessionPaymentStatusChip from "components/SessionPaymentStatusChip";
+import SessionPaymentStatusChip from "components/OmouComponents/SessionPaymentStatusChip";
 import Switch from "@material-ui/core/Switch";
 import LoadingError from "./LoadingCourseError"
 import Tab from "@material-ui/core/Tab";
@@ -29,9 +29,9 @@ import Typography from "@material-ui/core/Typography";
 import * as hooks from "actions/hooks";
 import {upcomingSession, useGoToRoute} from "utils";
 import {deleteEnrollment, initializeRegistration} from "actions/registrationActions";
-import AddSessions from "components/AddSessions";
-import BackButton from "components/BackButton";
-import Loading from "components/Loading";
+import AddSessions from "components/OmouComponents/AddSessions";
+import BackButton from "components/OmouComponents/BackButton";
+import Loading from "components/OmouComponents/Loading";
 import Notes from "components/FeatureViews/Notes/Notes";
 import {useEnrollmentNotes} from "actions/userActions";
 import {useSessionsWithConfig} from "actions/calendarActions";
@@ -83,7 +83,6 @@ const CourseSessionStatus = () => {
         () => (enrollments[studentID] && enrollments[studentID][courseID]) || {},
         [enrollments, studentID, courseID]
     );
-    useEnrollmentNotes(enrollment.enrollment_id, studentID, courseID);
 
     const noteInfo = useMemo(
         () => ({
@@ -300,7 +299,10 @@ const CourseSessionStatus = () => {
                     </>
                 );
             case 1:
-                return <Notes ownerID={noteInfo} ownerType="enrollment" />;
+                return (
+                    <Notes ownerID={enrollment.enrollment_id}
+                        ownerType="enrollment" />
+                );
             case 2:
                 return (
                     <PaymentTable courseID={course.course_id}

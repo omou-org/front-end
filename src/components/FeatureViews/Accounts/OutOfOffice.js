@@ -15,7 +15,7 @@ import TextField from "@material-ui/core/TextField";
 
 import "./Accounts.scss";
 import {instance} from "actions/apiActions";
-import InstructorConflictCheck from "components/InstructorConflictCheck";
+import InstructorConflictCheck from "components/OmouComponents/InstructorConflictCheck";
 import {POST_OOO_SUCCESS} from "actions/actionTypes";
 
 const formatDate = (date, allDay) => {
