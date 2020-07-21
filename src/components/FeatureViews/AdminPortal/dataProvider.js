@@ -1,6 +1,16 @@
-import { client } from "index";
+import {client} from "index";
 import gql from "graphql-tag";
 
+const discountInfo = gql`
+    fragment DiscountInfo on DiscountInterface {
+        active
+        amount
+        amountType
+        description
+        id
+        name
+    }
+`;
 
 const QUERIES_LIST = {
     "courseCategories": gql`
@@ -21,12 +31,37 @@ const QUERIES_LIST = {
           zipcode
         }
       }
-     `
+    `,
+    "bulkDiscounts": gql`
+        query GetBulkDiscounts {
+            multiCourseDiscounts {
+                ...DiscountInfo
+                numSessions
+            }
+        }
+        ${discountInfo}`,
+    "dateRangeDiscounts": gql`
+        query GetDateRangeDiscounts {
+            dateRangeDiscounts {
+                ...DiscountInfo
+                startDate
+                endDate
+            }
+        }
+        ${discountInfo}`,
+    "paymentMethodDiscounts": gql`
+        query GetPaymentMethodDiscounts {
+            paymentMethodDiscounts {
+                ...DiscountInfo
+                paymentMethod
+            }
+        }
+        ${discountInfo}`,
 };
 
 const QUERIES_ONE = {
     "courseCategories": gql`
-        query MyQuery($id: ID!) {
+        query GetCategory($id: ID!) {
             courseCategory(categoryId: $id) {
                 id
                 description
@@ -35,18 +70,43 @@ const QUERIES_ONE = {
         }`,
     "schools": gql`
         query getSchool($id:ID) {
-            school( schoolId: $id){
+            school(schoolId: $id) {
               id
               name
               district
               zipcode
             }
           }
-                  
-        `
+
+        `,
+    "bulkDiscounts": gql`
+        query GetBulkDiscount($id: ID!) {
+            multiCourseDiscount(multiCourseDiscountId: $id) {
+                ...DiscountInfo
+                numSessions
+            }
+        }
+        ${discountInfo}`,
+    "dateRangeDiscounts": gql`
+        query GetDateRangeDiscount($id: ID!) {
+            dateRangeDiscount(dateRangeDiscountId: $id) {
+                ...DiscountInfo
+                startDate
+                endDate
+            }
+        }
+        ${discountInfo}`,
+    "paymentMethodDiscounts": gql`
+        query GetPaymentMethodDiscount($id: ID!) {
+            paymentMethodDiscount(paymentMethodDiscountId: $id) {
+                ...DiscountInfo
+                paymentMethod
+            }
+        }
+        ${discountInfo}`,
 };
 
-const ADD_QUERY = {
+const MUTATION_ADD = {
     "courseCategories": gql`
     mutation CreateCourseCategory($name: String, $description: String) {
         createCourseCategory(name: $name, description: $description) {
@@ -56,9 +116,9 @@ const ADD_QUERY = {
             description
           }
         }
-      } `,
+    }`,
     "schools": gql`
-      mutation createSchool($zipcode : String, $name : String, $district:String ) {
+        mutation createSchool($zipcode: String, $name: String, $district:String) {
           createSchool(zipcode: $zipcode, name: $name, district:$district) {
             school {
               id
@@ -68,7 +128,46 @@ const ADD_QUERY = {
             }
           }
         }`,
-
+    "bulkDiscounts": gql`
+    mutation CreateBulkDiscount($active: Boolean, $description:String, $name:String,
+        $amount:Float, $amountType:AmountTypeEnum, $numSessions: Int) {
+        createMultiCourseDiscount(active: $active, amountType: $amountType,
+            description: $description, name: $name, amount: $amount,
+            numSessions: $numSessions) {
+            multiCourseDiscount {
+                ...DiscountInfo
+                numSessions
+            }
+        }
+    }
+    ${discountInfo}`,
+    "dateRangeDiscounts": gql`
+    mutation CreateDateRangeDiscount($active: Boolean, $description:String, $name:String,
+        $amount:Float, $amountType:AmountTypeEnum, $startDate:Date, $endDate:Date) {
+        createDateRangeDiscount(active: $active, amountType: $amountType,
+            description: $description, name: $name, amount: $amount,
+            startDate: $startDate, endDate: $endDate) {
+            dateRangeDiscount {
+                ...DiscountInfo
+                startDate
+                endDate
+            }
+        }
+    }
+    ${discountInfo}`,
+    "paymentMethodDiscounts": gql`
+    mutation CreatePaymentMethodDiscount($active: Boolean, $description:String, $name:String,
+        $amount:Float, $amountType:AmountTypeEnum, $paymentMethod: String) {
+        createPaymentMethodDiscount(active: $active, amountType: $amountType,
+            description: $description, name: $name, amount: $amount,
+            paymentMethod: $paymentMethod) {
+            paymentMethodDiscount {
+                ...DiscountInfo
+                paymentMethod
+            }
+        }
+    }
+    ${discountInfo}`,
 };
 
 const MUTATION_UPDATE = {
@@ -82,6 +181,46 @@ const MUTATION_UPDATE = {
                 }
             }
         }`,
+    "bulkDiscounts": gql`
+    mutation UpdateBulkDiscount($active: Boolean, $description:String, $name:String,
+        $amount:Float, $amountType:AmountTypeEnum, $id: ID!, $numSessions: Int) {
+        createMultiCourseDiscount(active: $active, amountType: $amountType,
+            description: $description, name: $name, amount: $amount,
+            discountId: $id, numSessions: $numSessions) {
+            multiCourseDiscount {
+                ...DiscountInfo
+                numSessions
+            }
+        }
+    }
+    ${discountInfo}`,
+    "dateRangeDiscounts": gql`
+    mutation UpdateDateRangeDiscount($active: Boolean, $description:String, $name:String,
+        $amount:Float, $amountType:AmountTypeEnum, $startDate:Date, $endDate:Date, $id: ID!) {
+        createDateRangeDiscount(active: $active, amountType: $amountType,
+            description: $description, name: $name, amount: $amount,
+            startDate: $startDate, endDate: $endDate, discountId: $id) {
+            dateRangeDiscount {
+                ...DiscountInfo
+                startDate
+                endDate
+            }
+        }
+    }
+    ${discountInfo}`,
+    "paymentMethodDiscounts": gql`
+    mutation UpdatePaymentMethodDiscount($active: Boolean, $description:String, $name:String,
+        $amount:Float, $amountType:AmountTypeEnum, $paymentMethod: String, $id: ID!) {
+        createPaymentMethodDiscount(active: $active, amountType: $amountType,
+            description: $description, name: $name, amount: $amount,
+            paymentMethod: $paymentMethod, discountId: $id) {
+            paymentMethodDiscount {
+                ...DiscountInfo
+                paymentMethod
+            }
+        }
+    }
+    ${discountInfo}`,
 };
 
 const getTypes = gql`
@@ -98,13 +237,8 @@ const getTypes = gql`
     }
 }`;
 
-
-
-
-
 export default {
-    "getList": async (resource, { "pagination": { page, perPage }, "sort": { field, order } }) => {
-
+    "getList": async (resource, {"pagination": {page, perPage}, "sort": {field, order}}) => {
         try {
             const request = QUERIES_LIST[resource];
 
@@ -130,12 +264,11 @@ export default {
 
             const fieldTypes = Object.fromEntries(
                 typeResponse.data.__type.fields
-                    .map(({ name, type }) => [name, type.ofType.name]),
+                    .map(({name, type}) => [name, type.ofType?.name]),
             );
 
 
             const sortedData = [...records].sort((cat1, cat2) => {
-
                 switch (fieldTypes[field]) {
                     case "ID": return order === "ASC" ?
                         cat2[field] - cat1[field] :
@@ -164,38 +297,35 @@ export default {
         const query = QUERIES_ONE[resource];
 
         try {
-            const { data } = await client.query({
+            const {data} = await client.query({
                 query,
-                "variables": { "id": params.id }
+                "variables": {"id": params.id},
             });
-
             return {
-                data: Object.values(data)[0],
+                "data": Object.values(data)[0],
             };
         } catch (error) {
             return error;
         }
     },
-    "create": async (resource, { data }) => {
-        const mutation = ADD_QUERY[resource];
+    "create": async (resource, {data}) => {
+        const mutation = MUTATION_ADD[resource];
 
         try {
             const response = await client.mutate({
                 mutation,
-                refetchQueries: [{ query: QUERIES_LIST[resource] }],
-                "variables": {
-                    ...data,
-
-                }
+                "refetchQueries": [{"query": QUERIES_LIST[resource]}],
+                "variables": data,
             });
             return {
                 "data": Object.values(Object.values(response.data)[0])[0],
             };
         } catch (error) {
+            console.error(error);
             return error;
         }
     },
-    "update": async (resource, { id, data }) => {
+    "update": async (resource, {id, data}) => {
         const mutation = MUTATION_UPDATE[resource];
         try {
             const response = await client.mutate({
@@ -205,18 +335,12 @@ export default {
                     id,
                 },
             });
-
-
-
-
             return {
-                data: Object.values(Object.values(response.data)[0])[0],
+                "data": Object.values(Object.values(response.data)[0])[0],
             };
         } catch (error) {
-            console.log(error)
+            console.error(error);
             return error;
         }
     },
 };
-
-
