@@ -64,16 +64,15 @@ const LoginPage = () => {
     const token = useSelector(({ auth }) => auth.token);
     const [userType, setUserType] = useState("");
     const [email, setEmail] = useState(state?.email);
-    const [realEmail, setRealEmail] = useState("");
     const [password, setPassword] = useState(null);
     const [shouldSave, setShouldSave] = useState(false);
     const [hasError, setHasError] = useState(false);
 
     const [getUserType, { data, loading }] = useLazyQuery(GET_USER_TYPE, {
-        variables: { "username": realEmail },
+        variables: { "username": email },
         onCompleted: data => {
             setUserType(data.userType);
-            if (userType === "") {
+            if (userType === null) {
                 setHasError(true);
             }
         }
@@ -128,8 +127,9 @@ const LoginPage = () => {
     }, []);
 
     const handleCheck = () => {
-        setRealEmail(email);
-        getUserType()
+        if(email!=""){
+            getUserType()
+        }
     }
 
     const renderEmailLogin = () => {
@@ -159,7 +159,7 @@ const LoginPage = () => {
                                 variant="outlined"
                                 className="TextField"
                                 helperText={hasError ? "Sorry, we couldn't find a user for that email." : " "}
-                                fullWidth={"true"}
+                                fullWidth={true}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -245,7 +245,7 @@ const LoginPage = () => {
                                         placeholder="E-Mail"
                                         variant="outlined"
                                         className="TextField"
-                                        fullWidth={"true"}
+                                        fullWidth={true}
                                         InputProps={{
                                             startAdornment: (
                                                 <InputAdornment position="start">

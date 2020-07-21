@@ -116,8 +116,6 @@ const Navigation = () => {
         setMobileOpen((open) => !open);
     }, []);
 
-    const matches = useMediaQuery('(margin-left: 233px)');
-
     return (
         <ThemeProvider theme={OmouTheme}>
             <div className="Navigation">
