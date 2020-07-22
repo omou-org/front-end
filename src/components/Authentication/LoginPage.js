@@ -295,14 +295,8 @@ const LoginPage = () => {
                 )
     }
 
-    const renderLogin = () => {
-        return (
-            userType ? renderOtherLogins() : renderEmailLogin()
-        );
-    }
-
     return (
-        renderLogin()
+        userType ? renderOtherLogins() : renderEmailLogin()
     );
 
 };

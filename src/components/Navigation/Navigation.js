@@ -11,7 +11,6 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import DashboardIcon from "@material-ui/icons/Dashboard";
-import AdminIcon from "@material-ui/icons/Face"
 import ListItemText from "@material-ui/core/ListItemText";
 import NavLinkNoDup from "../Routes/NavLinkNoDup";
 import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
