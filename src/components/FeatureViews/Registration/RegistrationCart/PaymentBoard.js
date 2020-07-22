@@ -68,7 +68,7 @@ export default function PaymentBoard() {
 			checked: false,
 		}
 	]);
-	const {priceAdjustmentValue, setPriceAdjustmentValue} = useState('');
+	const [priceAdjustmentValue, setPriceAdjustmentValue] = useState('');
 	const classes = useRowStyles();
 	const classRegistrations = [].concat(Object.values(registrationCart).flat())
 		.filter(registration => registration.course.id && registration.checked)

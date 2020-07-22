@@ -1197,9 +1197,7 @@ export default {
 			...TUTORING_COURSE_SECTIONS,
         ],
 		"submit": (formData) => {
-			console.log(formData, moment(formData.tutoring_details.startDate, "DD-MM-YYYY").add(formData.sessions, 'weeks'));
 			const course = createTutoringDetails("tutoring", formData);
-            console.log(course);
 			submitRegistration(formData.selectStudent, course);
 		}
 
