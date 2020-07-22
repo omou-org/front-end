@@ -31,7 +31,7 @@ const CourseSessions = ({ sessionList }) => {
         const startingDate = moment(startDatetime).calendar();
         return(
             <>
-        <ListItem className={classes.listItems}>
+        <ListItem className={classes.listItems} key={index}>
         <ListItemText primary={`Session ${index + 1} (${startingDate})`} />
       </ListItem>
       <Divider />

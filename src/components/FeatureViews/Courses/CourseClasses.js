@@ -131,15 +131,6 @@ const CourseClasses = () => {
   const { name } = data.course.courseCategory;
   const { firstName, lastName } = data.course.instructor.user;
 
-  // console.log(academicLevel);
-
-  // console.log(enrollmentSet);
-  // const x = enrollmentSet.map((e) => e);
-  // console.log(x)
-
-  // const y = sessionSet.map((e, i) => e);
-  // console.log(y)
-
   const abbreviatedDay = moment(startDate).format("ddd")
   const startingTime = moment(startTime, "HH:mm").format("h:mm A");
   const endingTime = moment(endTime, "HH:mm").format("h:mm A");

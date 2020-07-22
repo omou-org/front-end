@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import { ThemeProvider } from "@material-ui/styles";
@@ -126,15 +126,8 @@ const CourseDisplayCard = ({
   let history = useHistory();
   const [activeTime, setActiveTime] = useState("Past");
   const [activeColor, setActiveColor] = useState("#BDBDBD");
-  // const [bgColor, setBgColor] = useState("#FFFFFF");
-  // const [currentTarget, setCurrentTarget] = useState();
-  // const [tempTarget, setTempTarget] = useState();
-  // const [previousTarget, setPreviousTarget] = useState();
-  const { firstName, lastName } = instructor.user;
   const concatFullName = fullName(instructor.user);
-  const letterDayManipulation = day.substring(1, 3).toLowerCase();
-  const firstLetterDayManipulation = day.substring(0, 1);
-  const abbreviatedDay = firstLetterDayManipulation + letterDayManipulation;
+  const abbreviatedDay = moment(startDate).format("ddd")
   const startingTime = moment(startTime, "HH:mm").format("h:mm A");
   const endingTime = moment(endTime, "HH:mm").format("h:mm A");
   const startingDate = moment(startDate).calendar();
@@ -214,6 +207,7 @@ const CourseDisplayCard = ({
 
 const CourseManagement = () => {
   const classes = useStyles();
+  // rename the bottom 3 to filter instead of sort!!!!*
   const [sortByDate, setSortByDate] = useState("");
   const [sortByGrades, setSortByGrades] = useState("");
   const [sortBySubjects, setSortBySubjects] = useState("");
@@ -233,12 +227,17 @@ const CourseManagement = () => {
       endTime
       title
       startTime
+      academicLevel
       startDate
       instructor {
         user {
           firstName
           lastName
         }
+      }
+      courseCategory {
+        id
+        name
       }
       courseId
     }
@@ -247,8 +246,41 @@ const CourseManagement = () => {
 
   const { data, loading, error } = useQuery(GET_COURSES);
 
+  const displayCourse = useMemo(() => {
+    if (!data) return [];
+ 
+    let newDisplayCourseList = [];
+  });
+
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
+
+  const checkFilter = (value, filter) => ("" === filter || value === filter)
+  const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl) ? -1 : 0
+
+  const normalCourseDisplay = data.courses
+  .filter(course => {
+    // console.log(course)
+    // console.log(sortByGrades);
+    return checkFilter(course.academicLevel, sortByGrades)
+  })
+  .sort((firstEl, secondEl) => {
+    console.log(sortByDate)
+    console.log(firstEl)
+    switch(sortByDate) {
+      case "start_date":
+        return sortDescOrder(firstEl.startDate, secondEl.startDate);
+      case "class_name":
+        return sortDescOrder(firstEl.title, secondEl.title);
+      default:
+        return
+    }
+    // console.log(secondEl)
+  })
+  // Sort goes here after filter
+  // Getting a unique list of an array of objects - javascript
+
+
 
   return (
     <Grid item xs={12}>
@@ -289,14 +321,14 @@ const CourseManagement = () => {
                   {sortByDate === "" && <MenuItem ListItemClasses={{ selected: classes.menuSelected }} value="">Sort By</MenuItem>}
                   <MenuItem
                     className={classes.menuSelect}
-                    value={"start-date"}
+                    value={"start_date"}
                     ListItemClasses={{ selected: classes.menuSelected }}
                   >
                     Start Date (Latest)
                   </MenuItem>
                   <MenuItem
                     className={classes.menuSelect}
-                    value={"class-name"}
+                    value={"class_name"}
                     ListItemClasses={{ selected: classes.menuSelected }}
                   >
                     Class Name(A-Z)
@@ -327,20 +359,34 @@ const CourseManagement = () => {
                     getContentAnchorEl: null,
                   }}
                 >
-                  {sortByGrades === "" && <MenuItem ListItemClasses={{ selected: classes.menuSelected }} value="">All Grades</MenuItem>}
+                  <MenuItem ListItemClasses={{ selected: classes.menuSelected }} value="">All Grades</MenuItem>
                   <MenuItem
                     className={classes.menuSelect}
-                    value={"start-date"}
+                    value={"ELEMENTARY_LVL"}
                     ListItemClasses={{ selected: classes.menuSelected }}
                   >
-                    Start Date (Latest)
+                    Elementary School
                   </MenuItem>
                   <MenuItem
                     className={classes.menuSelect}
-                    value={"class-name"}
+                    value={"MIDDLE_LVL"}
                     ListItemClasses={{ selected: classes.menuSelected }}
                   >
-                    Class Name(A-Z)
+                    Middle School
+                  </MenuItem>
+                  <MenuItem
+                    className={classes.menuSelect}
+                    value={"HIGH_LVL"}
+                    ListItemClasses={{ selected: classes.menuSelected }}
+                  >
+                    High School
+                  </MenuItem>
+                  <MenuItem
+                    className={classes.menuSelect}
+                    value={"COLLEGE_LVL"}
+                    ListItemClasses={{ selected: classes.menuSelected }}
+                  >
+                    College
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -429,7 +475,7 @@ const CourseManagement = () => {
             </Grid>
           </Grid>
         </Paper>
-        {data.courses.map(({title, dayOfWeek, endDate, endTime, startTime, startDate, instructor, courseId}) => (
+        {normalCourseDisplay.map(({title, dayOfWeek, endDate, endTime, startTime, startDate, instructor, courseId}) => (
     <CourseDisplayCard
       title={title}
       day={dayOfWeek}
@@ -439,6 +485,7 @@ const CourseManagement = () => {
       startDate={startDate}
       instructor={instructor}
       id={courseId}
+      key={title}
     />
   ))}
       </BackgroundPaper>
