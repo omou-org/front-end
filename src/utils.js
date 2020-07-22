@@ -449,15 +449,14 @@ export const getDuration = (startDatetime, endDatetime) =>
 
 /**
  * @description set year, month, date, and seconds to be the same default value - useful for comparing hh:mm only
- * @returns datetime
+ * @returns moment
  * */
 export const setCurrentDate = (time) => {
-    const formattedTime = typeof time === "string" ? moment(time) : time;
-    formattedTime.set('year', 2020);
-    formattedTime.set('month', 1);
-    formattedTime.set('date', 1);
-    formattedTime.set('seconds', 1);
-    return formattedTime;
+    if (time) {
+        // const formattedTime = typeof time === "string" ? moment(time, 'h:mm') : time.format('h:mm');
+        return moment(time, 'h:mm');
+    }
+    return time;
 };
 
 /**
@@ -468,12 +467,9 @@ export const setCurrentDate = (time) => {
 export const checkTimeSegmentOverlap = (timeSegments) => {
     if (timeSegments.length === 1) return false;
 
-    timeSegments.sort((timeSegment1, timeSegment2) => {
-            // console.log(setCurrentDate(timeSegment1[0]))
-            return setCurrentDate(timeSegment2[0]).isBefore(setCurrentDate(timeSegment1[0]))
-        }
+    timeSegments.sort((timeSegment1, timeSegment2) =>
+        setCurrentDate(timeSegment1[0]).diff(setCurrentDate(timeSegment2[0]))
     );
-    // console.log(timeSegments);
 
     const validTime = (time) => {
         if (typeof time === "string") {
@@ -488,7 +484,6 @@ export const checkTimeSegmentOverlap = (timeSegments) => {
         const currentStartTime = setCurrentDate(timeSegments[i][0]);
         const currentEndTime = setCurrentDate(timeSegments[i][1]);
         const nextStartTime = setCurrentDate(timeSegments[i + 1][0]);
-        const nextEndTime = setCurrentDate(timeSegments[i + 1][1]);
 
         if (currentEndTime > nextStartTime || nextStartTime === currentStartTime) {
             return `Whoops. ${timeSegmentString(timeSegments[i])} has a conflict with 

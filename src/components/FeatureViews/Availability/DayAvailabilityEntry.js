@@ -7,7 +7,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel/FormControlLabe
 import {TimeAvailabilityContext} from "./TimeAvailabilityContext";
 import Button from "@material-ui/core/Button";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
-import * as moment from "moment";
+import moment from "moment";
 import {checkTimeSegmentOverlap, setCurrentDate} from "../../../utils";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContentText from "@material-ui/core/DialogContentText";
@@ -28,7 +28,7 @@ const useStyles = makeStyles(() => ({
 	}
 }));
 
-const AvailabilityRow = ({startTime, endTime, dayIndex, availabilityId, setDisplayNewAvailability, conflictError}) => {
+const AvailabilityRow = ({startTime, endTime, dayIndex, availabilityId, setDisplayNewAvailability, conflictError, toDisable}) => {
 	const {updateAvailability} = useContext(TimeAvailabilityContext);
 	const classes = useStyles();
 
@@ -50,18 +50,19 @@ const AvailabilityRow = ({startTime, endTime, dayIndex, availabilityId, setDispl
 	const handleOnEndChange = (e) => {
 		updateAvailability(startTime, e, dayIndex, availabilityId, false);
 	};
-	// TODO: figure out how to make start and end times valid.
+
 	const validTime = (time) => {
 		if (typeof time === "string") {
-			return moment(time);
+			return moment(time).format("h:mm A");
 		}
 		return time;
 	}
-	// console.log( startTime, endTime);
+
 	return <div className={classes.availabilityRow}>
 		<KeyboardTimePicker value={validTime(startTime) || null} onChange={handleOnStartChange}
 							inputVariant="outlined"
 							keyboardIcon={<TimeIcon/>}
+							disabled={toDisable}
 							error={endTime && !startTime || conflictError || timesNotValid(startTime, endTime)}/>
 		<div style={{
 			margin: "25px", width: "10px", borderBottom: "solid black 1px",
@@ -70,9 +71,10 @@ const AvailabilityRow = ({startTime, endTime, dayIndex, availabilityId, setDispl
 		<KeyboardTimePicker value={validTime(endTime) || null} onChange={handleOnEndChange}
 							inputVariant="outlined"
 							keyboardIcon={<TimeIcon/>}
+							disabled={toDisable}
 							error={!endTime && startTime || conflictError || timesNotValid(startTime, endTime)}/>
 		{
-			(startTime && endTime) &&
+			(startTime && endTime && !toDisable) &&
 			<IconButton style={{top: "5px", position: "absolute", color: errorRed}}
 						onClick={() => updateAvailability(null, null, dayIndex, availabilityId, true)}
 			>
@@ -86,10 +88,13 @@ export default function DayAvailabilityEntry({dayOfWeek, availabilities, dayInde
 	const [displayNewAvailability, setDisplayNewAvailability] = useState(false);
 	const [conflictErrorMessage, setConflictErrorMessage] = useState(false);
 	const [conflictErrorDialogOpen, setConflictErrorDialogOpen] = useState(false);
+	const [notAvailable, setNotAvailable] = useState(false);
+	const {updateAvailability} = useContext(TimeAvailabilityContext);
 	const classes = useStyles();
 
 	useEffect(() => {
 		const availabilitySegments = Object.values(availabilities)
+			.filter(availability => !availability.toDelete)
 			.map(({startTime, endTime}) => [startTime || endTime, endTime || startTime]);
 		const conflict = checkTimeSegmentOverlap(availabilitySegments);
 		setConflictErrorMessage(conflict);
@@ -101,27 +106,43 @@ export default function DayAvailabilityEntry({dayOfWeek, availabilities, dayInde
 		setConflictErrorDialogOpen(false);
 	};
 
+	const handleNotAvailable = () => {
+		setNotAvailable(!notAvailable);
+		if (!notAvailable) {
+			Object.values(availabilities).forEach(({startTime, endTime, id}) => {
+				updateAvailability(startTime, endTime, dayIndex, id, true, true)
+			});
+		}
+	}
+
 	return (<><TableRow>
 		<TableCell>{dayOfWeek}</TableCell>
 		<TableCell style={{width: "45vw"}}>
 			{
-				Object.values(availabilities).map(({startTime, endTime, id}) =>
-					<AvailabilityRow
-						key={id}
-						startTime={startTime || ""}
-						endTime={endTime || ""}
-						dayIndex={dayIndex}
-						availabilityId={id}
-						setDisplayNewAvailability={setDisplayNewAvailability}
-						conflictError={conflictErrorMessage}
-					/>)
+				Object.values(availabilities)
+					.sort((a, b) => moment(a.startTime).diff(moment(b.startTime)))
+					.filter(availability => !availability?.toDelete || availability.toDisable)
+					.map(({startTime, endTime, id, toDisable}) =>
+						<AvailabilityRow
+							key={id}
+							startTime={startTime || ""}
+							endTime={endTime || ""}
+							dayIndex={dayIndex}
+							availabilityId={id}
+							setDisplayNewAvailability={setDisplayNewAvailability}
+							conflictError={conflictErrorMessage}
+							toDisable={toDisable}
+						/>)
 			}
 			{
-				(displayNewAvailability || Object.keys(availabilities).length === 0) &&
+				(displayNewAvailability ||
+					Object.values(availabilities)
+						.filter(availability => !availability.toDelete || availability.toDisable).length === 0) &&
 				<AvailabilityRow dayIndex={dayIndex} setDisplayNewAvailability={setDisplayNewAvailability}/>
 			}
 			{
-				(!displayNewAvailability && Object.keys(availabilities).length > 0) &&
+				(!displayNewAvailability &&
+					Object.values(availabilities).filter(availability => !availability.toDelete).length > 0) &&
 				<div className={classes.availabilityRow}>
 					<Button color="primary"
 							onClick={(e) => {
@@ -138,9 +159,8 @@ export default function DayAvailabilityEntry({dayOfWeek, availabilities, dayInde
 			<FormControlLabel
 				control={
 					<Checkbox
-						// checked={method.checked}
-						// onChange={() => handlePaymentMethodStateChange(index)}
-						// name={method.label}
+						checked={notAvailable}
+						onChange={handleNotAvailable}
 						color="primary"
 					/>
 				}

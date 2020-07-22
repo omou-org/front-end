@@ -8,15 +8,21 @@ import DayAvailabilityEntry from "./DayAvailabilityEntry";
 import {TimeAvailabilityContext} from "./TimeAvailabilityContext";
 import gql from "graphql-tag";
 import Button from "@material-ui/core/Button";
-import {useSessionStorage} from "../../../utils";
-import {useQuery} from "@apollo/react-hooks";
+import {useMutation, useQuery} from "@apollo/react-hooks";
 import {useSelector} from "react-redux";
 import Loading from "../../OmouComponents/Loading";
+import Dialog from "@material-ui/core/Dialog";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import moment from "moment";
+import Moment from "react-moment";
+import TableCell from "@material-ui/core/TableCell";
+import TableRow from "@material-ui/core/TableRow";
 
-const MUTATE_INSTRUCTOR_AVAILABILITY = gql`mutation CreateInstructorAvailability {
+const CREATE_INSTRUCTOR_AVAILABILITIES = gql`mutation CreateInstructorAvailabilities($availabilities: [InstructorAvailabilityInput]!) {
   __typename
-  createInstructorAvailability(dayOfWeek: MONDAY, endTime: "08:00", startTime: "07:00", instructor: "7") {
-    instructorAvailability {
+  createInstructorAvailabilities(availabilities: $availabilities) {
+    instructorAvailabilities {
       endTime
       startTime
       id
@@ -24,6 +30,14 @@ const MUTATE_INSTRUCTOR_AVAILABILITY = gql`mutation CreateInstructorAvailability
     }
   }
 }`;
+
+const DELETE_INSTRUCTOR_AVAILABILITY = gql`mutation DeleteInstructorAvailabilities($availabilities:[ID]!) {
+  __typename
+  deleteInstructorAvailabilities(availabilities: $availabilities){
+    deleted
+  }
+}
+`
 
 const GET_INSTRUCTOR_AVAILABILITY = gql`query GetInstructorAvailability($instructorId:ID!){
 	instructorAvailability(instructorId: $instructorId){
@@ -43,10 +57,19 @@ const dateToIndex = {
 	"FRIDAY": 5,
 	"SATURDAY": 6,
 };
+const indexToDate = {
+	0: "SUNDAY",
+	1: "MONDAY",
+	2: "TUESDAY",
+	3: "WEDNESDAY",
+	4: "THURSDAY",
+	5: "FRIDAY",
+	6: "SATURDAY",
+}
 
 export default function TimeAvailabilityContainer() {
 	const [autoApprove, setAutoApprove] = useState(false);
-	const [availabilitiesByDayOfWeek, setAvailability] = useSessionStorage("availabilitiesByDayOfWeek", [
+	const [availabilitiesByDayOfWeek, setAvailability] = useState([
 		{dayOfWeek: "SUNDAY", availabilities: {},},
 		{dayOfWeek: "MONDAY", availabilities: {},},
 		{dayOfWeek: "TUESDAY", availabilities: {},},
@@ -55,28 +78,39 @@ export default function TimeAvailabilityContainer() {
 		{dayOfWeek: "FRIDAY", availabilities: {},},
 		{dayOfWeek: "SATURDAY", availabilities: {},},
 	]);
+	const [openSaveAvailability, setOpenSaveAvailability] = useState(false);
+	const [updatedAvailability, setUpdatedAvailability] = useState([]);
 	const AuthUser = useSelector(({auth}) => auth);
 	const {data, loading} = useQuery(GET_INSTRUCTOR_AVAILABILITY, {
 		variables: {instructorId: AuthUser.user.id}
+	});
+	const [deleteAvailabilities, deleteResults] = useMutation(DELETE_INSTRUCTOR_AVAILABILITY, {
+		"onCompleted": () => setOpenSaveAvailability(true),
+	});
+	const [addAvailabilities, createResults] = useMutation(CREATE_INSTRUCTOR_AVAILABILITIES, {
+		"onCompleted": () => setOpenSaveAvailability(true),
+		"update": (cache, {data}) => {
+			const {createInstructorAvailabilities: {instructorAvailabilities}} = data;
+			setUpdatedAvailability(instructorAvailabilities);
+		}
 	});
 
 	useEffect(() => {
 		if (!loading) {
 			const {instructorAvailability} = data;
-
 			if (instructorAvailability.length > 0) {
 				setAvailability((prevState) => {
-					let newState = prevState;
+					let newState = JSON.parse(JSON.stringify(prevState));
 					instructorAvailability.forEach(availability => {
 						const availabilityIndex = dateToIndex[availability.dayOfWeek];
 						newState[availabilityIndex] = {
 							dayOfWeek: availability.dayOfWeek,
 							availabilities: {
-								...prevState[availabilityIndex].availabilities,
+								...newState[availabilityIndex].availabilities,
 								[availability.id]: {
 									...availability,
-									startTime: "2020-01-01T" + availability.startTime.substring(0, 5),
-									endTime: "2020-01-01T" + availability.endTime.substring(0, 5),
+									startTime: moment(availability.startTime, "hh:mm:ss"),
+									endTime: moment(availability.endTime, "hh:mm:ss"),
 								},
 							},
 						};
@@ -85,27 +119,35 @@ export default function TimeAvailabilityContainer() {
 				})
 			}
 		}
-	}, [setAvailability, data, loading])
+	}, [data])
 
 	const handleAutoApprove = useCallback(() => {
 		setAutoApprove(!autoApprove);
 	}, [setAutoApprove, autoApprove]);
 
-	const updateAvailability = (startTime, endTime, dayOfWeekIndex, availabilityId, toDelete) => {
+	const updateAvailability = (startTime, endTime, dayOfWeekIndex, availabilityId, toDelete, toDisable) => {
 		setAvailability((prevAvailability) => {
 			let updatedAvailability = [...prevAvailability];
 			const dateToUpdateAvailability = prevAvailability[dayOfWeekIndex];
 			const newAvailabilities = (availabilityId, toDelete) => {
 				if (toDelete) {
-					delete dateToUpdateAvailability.availabilities[availabilityId];
-					return dateToUpdateAvailability.availabilities;
+					return {
+						...dateToUpdateAvailability.availabilities,
+						[availabilityId]: {
+							...dateToUpdateAvailability.availabilities[availabilityId],
+							toDelete: true,
+							toDisable: toDisable,
+						}
+					}
 				} else {
 					return {
 						...dateToUpdateAvailability.availabilities,
 						[availabilityId]: {
-							startTime,
-							endTime,
+							startTime: moment(startTime),
+							endTime: moment(endTime),
 							id: availabilityId,
+							dayOfWeek: indexToDate[dayOfWeekIndex],
+							edited: true,
 						}
 					}
 				}
@@ -120,6 +162,33 @@ export default function TimeAvailabilityContainer() {
 			return updatedAvailability;
 		});
 	};
+
+	const handleAvailability = () => {
+		const availabilitiesPayload = [].concat.apply([], availabilitiesByDayOfWeek
+			.map(availability => Object.values(availability.availabilities)))
+			.filter(availability => availability?.edited || availability?.toDelete)
+			.map(availability => ({
+				instructor: AuthUser.user.id,
+				dayOfWeek: availability.dayOfWeek,
+				startTime: availability.startTime.format("H:mm"),
+				endTime: availability.endTime.format("H:mm"),
+				id: availability.id,
+				toDelete: availability.toDelete || false,
+			}));
+		const availabilitiesToDelete = availabilitiesPayload
+			.filter(({toDelete, id}) => toDelete || id.indexOf("new") < 0)
+			.map(availability => availability.id);
+		const availabilitiesToAdd = availabilitiesPayload.filter(({toDelete}) => !toDelete)
+			.map(({instructor, dayOfWeek, startTime, endTime}) => ({
+				instructor,
+				dayOfWeek,
+				startTime,
+				endTime,
+			}));
+
+		addAvailabilities({variables: {availabilities: availabilitiesToAdd}});
+		deleteAvailabilities({variables: {availabilities: availabilitiesToDelete}})
+	}
 
 	if (loading) return <Loading small/>;
 
@@ -145,7 +214,7 @@ export default function TimeAvailabilityContainer() {
 			</Grid>
 			<Grid item xs={3}>
 				<Button variant="outlined" style={{marginRight: "10px"}}>Reset All</Button>
-				<Button variant="outlined">Update</Button>
+				<Button variant="outlined" onClick={handleAvailability}>Update</Button>
 			</Grid>
 		</Grid>
 		<Grid item xs={12} container>
@@ -157,5 +226,30 @@ export default function TimeAvailabilityContainer() {
 				}
 			</Table>
 		</Grid>
+		<Dialog open={openSaveAvailability} onClose={() => setOpenSaveAvailability(false)}>
+			<DialogTitle>
+				Successfully updated availability hours!
+			</DialogTitle>
+			<DialogContent>
+				Here is a summary of your updated hours:
+				<Table>
+					{
+						updatedAvailability.map(availability =>
+							<TableRow key={availability.id}>
+								<TableCell>
+									{availability.dayOfWeek}
+								</TableCell>
+								<TableCell>
+									<Moment date={availability.startTime} format="h:mm A" parse="HH:mm:ss"/>
+								</TableCell>
+								<TableCell>
+									<Moment date={availability.endTime} format="h:mm A" parse="HH:mm:ss"/>
+								</TableCell>
+							</TableRow>)
+					}
+				</Table>
+
+			</DialogContent>
+		</Dialog>
 	</TimeAvailabilityContext.Provider>)
 }
