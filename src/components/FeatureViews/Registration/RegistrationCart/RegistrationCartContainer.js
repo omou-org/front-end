@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from "react";
-import {getRegistrationCart} from "../../../OmouComponents/RegistrationUtils";
+import React, { useEffect, useState } from "react";
+import { getRegistrationCart } from "../../../OmouComponents/RegistrationUtils";
 import gql from "graphql-tag";
-import {useQuery} from "@apollo/react-hooks";
+import { useQuery } from "@apollo/react-hooks";
 import Loading from "../../../OmouComponents/Loading";
 import BackgroundPaper from "../../../OmouComponents/BackgroundPaper";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import {RegistrationContext} from "./RegistrationContext";
+import { RegistrationContext } from "./RegistrationContext";
 import StudentRegistrationEntry from "./StudentRegistrationsEntry";
 import PaymentBoard from "./PaymentBoard";
 
@@ -35,20 +35,30 @@ const GET_COURSES_TO_REGISTER = gql`
 			hourlyTuition
 			startTime
 			endTime
+			academicLevel
+			courseCategory {
+				name
+			  }
+			instructor {
+				user {
+				  firstName
+				  lastName
+				}
+			  }
 		}
 	}
 `;
 
 export default function RegistrationCartContainer() {
-	const {currentParent, ...registrationCartState} = getRegistrationCart();
+	const { currentParent, ...registrationCartState } = getRegistrationCart();
 	const [registrationCart, setRegistrationCart] = useState({});
 	// create list of students to fetch
 	const studentIds = Object.keys(registrationCartState);
 	// create list of courses to fetch
 	const courseIds = [].concat.apply([], Object.values(registrationCartState))
-		.map(({course}) => course.id);
-	const {data, loading} = useQuery(GET_STUDENT_INFOS, {variables: {userIds: studentIds}});
-	const coursesResponse = useQuery(GET_COURSES_TO_REGISTER, {variables: {courseIds: courseIds}});
+		.map(({ course }) => course.id);
+	const { data, loading } = useQuery(GET_STUDENT_INFOS, { variables: { userIds: studentIds } });
+	const coursesResponse = useQuery(GET_COURSES_TO_REGISTER, { variables: { courseIds: courseIds } });
 
 	useEffect(() => {
 		if (coursesResponse?.data?.courses) {
@@ -88,36 +98,38 @@ export default function RegistrationCartContainer() {
 		});
 	};
 
-	if (loading || coursesResponse.loading) return <Loading small/>;
+	if (loading || coursesResponse.loading) return <Loading small />;
 
 	const studentData = data.userInfos;
 
-	return (<RegistrationContext.Provider value={{registrationCart, currentParent, updateSession}}>
-			<BackgroundPaper>
-				<Typography variant="h2" align="left">Registration Cart</Typography>
-				<Typography
-					style={{fontSize: "2em"}}
-					align="left"
-					gutterBottom
-				>
-					Pay for Course(s)
+	console.log(registrationCart);
+
+	return (<RegistrationContext.Provider value={{ registrationCart, currentParent, updateSession }}>
+		<BackgroundPaper>
+			<Typography variant="h2" align="left">Registration Cart</Typography>
+			<Typography
+				style={{ fontSize: "2em" }}
+				align="left"
+				gutterBottom
+			>
+				Pay for Course(s)
 				</Typography>
-				<Grid container item>
-					<Grid container direction="row" spacing={5}>
-						{
-							Object.entries(registrationCart).map(([studentId, registration]) =>
-								<StudentRegistrationEntry
-									key={studentId}
-									student={studentData.find(student => student.user.id === studentId)}
-									registrationList={registration}
-								/>)
-						}
-					</Grid>
-					<Grid container item justify="space-between" style={{marginTop: "50px"}}>
-						<PaymentBoard/>
-					</Grid>
+			<Grid container item>
+				<Grid container direction="row" spacing={5}>
+					{
+						Object.entries(registrationCart).map(([studentId, registration]) =>
+							<StudentRegistrationEntry
+								key={studentId}
+								student={studentData.find(student => student.user.id === studentId)}
+								registrationList={registration}
+							/>)
+					}
 				</Grid>
-			</BackgroundPaper>
-		</RegistrationContext.Provider>
+				<Grid container item justify="space-between" style={{ marginTop: "50px" }}>
+					<PaymentBoard />
+				</Grid>
+			</Grid>
+		</BackgroundPaper>
+	</RegistrationContext.Provider>
 	)
 }
