@@ -127,6 +127,8 @@ const RegistrationLanding = () => {
             })),
     );
 
+    console.log("asd");
+
     const filteredCourses = Object.entries(courseFilters)
         .filter(([, filters]) => filters.length > 0)
         .reduce((courses, [filterName, filters]) => {
@@ -212,7 +214,7 @@ const RegistrationLanding = () => {
                         <Grid item md={4} xs={12}>
                             {renderFilter("grade")}
                         </Grid>
-                    </Hidden>
+                    </Hidden> 
                 </Grid>
             )}
 			<Grid item className="registration-table" container spacing={5}>
