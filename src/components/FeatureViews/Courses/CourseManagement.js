@@ -233,6 +233,7 @@ const CourseManagement = () => {
         user {
           firstName
           lastName
+          id
         }
       }
       courseCategory {
@@ -246,27 +247,28 @@ const CourseManagement = () => {
 
   const { data, loading, error } = useQuery(GET_COURSES);
 
-  const displayCourse = useMemo(() => {
-    if (!data) return [];
- 
-    let newDisplayCourseList = [];
-  });
-
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
+  console.log(data.courses)
 
+  const subjectList = data.courses.reduce((accumulator, currentValue) => 
+  !accumulator.some(subjectExist => currentValue.courseCategory.id === subjectExist.courseCategory.id) ? [...accumulator, currentValue] : accumulator
+, []);
+
+  const instructorsList = data.courses.reduce((accumulator, currentValue) => 
+  !accumulator.some(instructorExist => currentValue.instructor.user.id === instructorExist.instructor.user.id) ? [...accumulator, currentValue] : accumulator
+, []);
+
+  // console.log(subjectList)
+  // console.log(instructorList)
   const checkFilter = (value, filter) => ("" === filter || value === filter)
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl) ? -1 : 0
 
   const normalCourseDisplay = data.courses
-  .filter(course => {
-    // console.log(course)
-    // console.log(sortByGrades);
-    return checkFilter(course.academicLevel, sortByGrades)
-  })
+  .filter(course => (checkFilter(course.academicLevel, sortByGrades) && checkFilter(course.courseCategory.name, sortBySubjects) && checkFilter(course.instructor.user.lastName, sortByInstructors)))
   .sort((firstEl, secondEl) => {
-    console.log(sortByDate)
-    console.log(firstEl)
+    // console.log(sortByDate)
+    // console.log(firstEl)
     switch(sortByDate) {
       case "start_date":
         return sortDescOrder(firstEl.startDate, secondEl.startDate);
@@ -414,21 +416,8 @@ const CourseManagement = () => {
                     getContentAnchorEl: null,
                   }}
                 >
-                  {sortBySubjects === "" && <MenuItem ListItemClasses={{ selected: classes.menuSelected }} value="">All Subjects</MenuItem>}
-                  <MenuItem
-                    className={classes.menuSelect}
-                    value={"start-date"}
-                    ListItemClasses={{ selected: classes.menuSelected }}
-                  >
-                    Start Date (Latest)
-                  </MenuItem>
-                  <MenuItem
-                    className={classes.menuSelect}
-                    value={"class-name"}
-                    ListItemClasses={{ selected: classes.menuSelected }}
-                  >
-                    Class Name(A-Z)
-                  </MenuItem>
+                  <MenuItem ListItemClasses={{ selected: classes.menuSelected }} value="">All Subjects</MenuItem>
+                {subjectList.map(subject => (<MenuItem className={classes.menuSelect} value={subject.courseCategory.name} ListItemClasses={{ selected: classes.menuSelected }}>{subject.courseCategory.name}</MenuItem>))}
                 </Select>
               </FormControl>
             </Grid>
@@ -455,8 +444,9 @@ const CourseManagement = () => {
                     getContentAnchorEl: null,
                   }}
                 >
-                  {sortByInstructors === "" && <MenuItem ListItemClasses={{ selected: classes.menuSelected }} value="">All Instructors</MenuItem>}
-                  <MenuItem
+                <MenuItem ListItemClasses={{ selected: classes.menuSelected }} value="">All Instructors</MenuItem>
+                {instructorsList.map(instructor => (<MenuItem className={classes.menuSelect} value={instructor.instructor.user.lastName} ListItemClasses={{ selected: classes.menuSelected}}>{`${instructor.instructor.user.firstName} ${instructor.instructor.user.lastName}`}</MenuItem>))}
+                  {/* <MenuItem
                     className={classes.menuSelect}
                     value={"start-date"}
                     ListItemClasses={{ selected: classes.menuSelected }}
@@ -469,7 +459,7 @@ const CourseManagement = () => {
                     ListItemClasses={{ selected: classes.menuSelected }}
                   >
                     Class Name(A-Z)
-                  </MenuItem>
+                  </MenuItem> */}
                 </Select>
               </FormControl>
             </Grid>
