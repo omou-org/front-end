@@ -1,7 +1,7 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {makeStyles} from "@material-ui/core/styles";
-import {useHistory} from "react-router-dom";
-import {useSelector} from "react-redux";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import dayGridPlugin from "@fullcalendar/daygrid";
 import FullCalendar from "@fullcalendar/react";
@@ -26,8 +26,8 @@ import CalendarIcon from "@material-ui/icons/CalendarToday";
 import "./scheduler.scss";
 import * as calendarActions from "actions/calendarActions";
 import * as hooks from "actions/hooks";
-import {BootstrapInput, handleToolTip, sessionArray} from "./SchedulerUtils";
-import {arr_diff} from "../../Form/FormUtils";
+import { BootstrapInput, handleToolTip, sessionArray } from "./SchedulerUtils";
+import { arr_diff } from "../../Form/FormUtils";
 import SessionFilters from "./SessionFilters";
 import {stringToColor} from "../Accounts/accountUtils";
 import {uniques} from "utils";
@@ -64,9 +64,9 @@ const Scheduler = (props) => {
     const classes = useStyles();
     const history = useHistory();
 
-    const courses = useSelector(({Course}) => Course.NewCourseList);
-    const sessions = useSelector(({Calendar}) => Calendar.CourseSessions);
-    const instructors = useSelector(({Users}) => Users.InstructorList);
+    const courses = useSelector(({ Course }) => Course.NewCourseList);
+    const sessions = useSelector(({ Calendar }) => Calendar.CourseSessions);
+    const instructors = useSelector(({ Users }) => Users.InstructorList);
 
     const prevState =
         JSON.parse(sessionStorage.getItem("schedulerState")) || {};
@@ -88,16 +88,36 @@ const Scheduler = (props) => {
 
     const calendarRef = useRef();
     const calendarApi = calendarRef.current && calendarRef.current.getApi();
+    const palette =
+        ["#F503B2", "#F47FD4", "#FCA8E4", "#FFC5EF",
+            "#DD0000", "#EA2632", "#EB5757", "#FF9191",
+            "#2F80ED", "#2D9CDB", "#56CCF2", "#9B51E0",
+            "#46D943", "#219653", "#27AE60", "#6FCF97",
+            "#F78017", "#F2994A", "#FEBF87", "#FFE3CA",
+            "#FFC103", "#F2C94C", "#F4D77D", "#FFEDB5",
+            "#72FFFF", "#43D9D9", "#92E2DE", "#BAF7F3",
+            "#1F82A1", "#588FA0", "#88ACB7", "#BEDAE2",
+            "#96007E", "#B96AAC", "#CD9BC5", "#CD9BC5"]
+    const hashCode = (string) => {
+        let hash = 0;
+        for (let i = 0; i < string.length; i += 1) {
+            hash += string.charCodeAt(i);
+        }
+        return hash;
+    }
+    const colorizer = (string) => {
+        return palette[hashCode(string) % 40]
+    }
 
     const formatSessions = useCallback((sessionState) =>
         Object.values(sessionState).reduce((all, sessionList) => all.concat(
-            Object.values(sessionList).filter(({course}) =>
+            Object.values(sessionList).filter(({ course }) =>
                 course && courses[course])
                 .map((session) => {
                     const instructorName = instructors[session.instructor].name
                         || "";
                     return {
-                        "color": stringToColor(instructorName),
+                        "color": colorizer(instructorName),
                         "courseID": session.course,
                         "description": session.description,
                         "end": new Date(session.end_datetime),
@@ -121,13 +141,13 @@ const Scheduler = (props) => {
         }
         let OOOlist = Object.values(instructors);
         if (instructorFilter) {
-            const IDList = instructorFilter.map(({value}) => String(value));
-            OOOlist = OOOlist.filter(({user_id}) =>
+            const IDList = instructorFilter.map(({ value }) => String(value));
+            OOOlist = OOOlist.filter(({ user_id }) =>
                 IDList.includes(String(user_id)));
         }
-        return OOOlist.map(({schedule}) => schedule.time_off)
+        return OOOlist.map(({ schedule }) => schedule.time_off)
             .reduce((allOOO, OOO) => allOOO.concat(Object.values(OOO).map(
-                ({start, end, description, instructor_id, all_day, ooo_id}) => {
+                ({ start, end, description, instructor_id, all_day, ooo_id }) => {
                     const instructor = instructors[instructor_id];
                     const title = description || (instructor
                         ? `${instructor.name} Out of Office`
@@ -161,19 +181,19 @@ const Scheduler = (props) => {
         setTimeShift(0);
     };
 
-    const handleViewChange = ({target}) => {
-		const gridValue = {
-			"day": "timeGridDay",
-			"week": "timeGridWeek",
-			"month": "dayGridMonth",
-		};
-		const listValue = {
-			"day": "listDay",
-			"week": "listWeek",
-			"month": "listMonth"
-		};
-		const viewType = view.toLowerCase().includes("grid") ? gridValue : listValue;
-		changeView(viewType[target.value]);
+    const handleViewChange = ({ target }) => {
+        const gridValue = {
+            "day": "timeGridDay",
+            "week": "timeGridWeek",
+            "month": "dayGridMonth",
+        };
+        const listValue = {
+            "day": "listDay",
+            "week": "listWeek",
+            "month": "listMonth"
+        };
+        const viewType = view.toLowerCase().includes("grid") ? gridValue : listValue;
+        changeView(viewType[target.value]);
     };
 
     const goToNext = () => {
@@ -191,7 +211,7 @@ const Scheduler = (props) => {
         setTimeShift(0);
     };
 
-    const handleCourseTypeChange = useCallback(({target}) => {
+    const handleCourseTypeChange = useCallback(({ target }) => {
         setCourseType(target.value);
     }, []);
 
@@ -214,12 +234,12 @@ const Scheduler = (props) => {
                 goToPrev();
             }
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [calendarApi]);
 
-    const goToSessionView = useCallback(({event}) => {
+    const goToSessionView = useCallback(({ event }) => {
         const sessionID = event.id;
-        const {courseID, instructor_id} = event.extendedProps;
+        const { courseID, instructor_id } = event.extendedProps;
         // dont redirect for OOO clicks
         if (sessionID && courseID && instructor_id) {
             history.push(`/scheduler/view-session/${courseID}/${sessionID}/${instructor_id}`);
@@ -233,7 +253,7 @@ const Scheduler = (props) => {
         const calendarInstructorIDs = Object.keys(sessions);
         const nonSelectedInstructors = instructorFilter ?
             arr_diff(
-                instructorFilter.map(({value}) => value),
+                instructorFilter.map(({ value }) => value),
                 calendarInstructorIDs
             ) :
             [];
@@ -248,7 +268,7 @@ const Scheduler = (props) => {
             Object.keys(courses).length > 0
         ) {
             courseSessionsArray
-                .filter(({course}) =>
+                .filter(({ course }) =>
                     courses[course].course_type !== courseType)
                 .forEach((session) => {
                     if (filteredEvents[session.instructor]) {
@@ -261,7 +281,7 @@ const Scheduler = (props) => {
         const selectedCourseIDs = courseFilter &&
             courseFilter.map((course) => course.value);
         const calendarCourseIDs = uniques(
-            courseSessionsArray.map(({course}) => course)
+            courseSessionsArray.map(({ course }) => course)
         );
         const nonSelectedCourseIDs = courseFilter
             ? arr_diff(selectedCourseIDs, calendarCourseIDs)
@@ -270,7 +290,7 @@ const Scheduler = (props) => {
         nonSelectedCourseIDs.forEach((courseID) => {
             courseSessionsArray
                 // eslint-disable-next-line eqeqeq
-                .filter(({course}) => course == courseID)
+                .filter(({ course }) => course == courseID)
                 .forEach((session) => {
                     delete filteredEvents[session.instructor][session.id];
                 });
@@ -306,17 +326,17 @@ const Scheduler = (props) => {
         }));
     }, [courseType, courseFilter, instructorFilter, timeShift, view]);
 
-	const viewType = () => {
-		const currentView = view.toLowerCase();
-		if (currentView.includes("month")) {
-			return "month";
-		} else if (currentView.includes("week")) {
-			return "week";
-		} else if (currentView.includes("day")) {
-			return "day"
-		}
-		return "day";
-	};
+    const viewType = () => {
+        const currentView = view.toLowerCase();
+        if (currentView.includes("month")) {
+            return "month";
+        } else if (currentView.includes("week")) {
+            return "week";
+        } else if (currentView.includes("day")) {
+            return "day"
+        }
+        return "day";
+    };
 
     return (
 		<Grid item xs={12} container>
@@ -376,8 +396,8 @@ const Scheduler = (props) => {
 										<MenuItem value="class">
 											Class
 										</MenuItem>
-										<MenuItem value="tutoring">
-											Tutoring
+                                        <MenuItem value="tutoring">
+                                            Tutoring
 										</MenuItem>
 									</Select>
 								</FormControl>
