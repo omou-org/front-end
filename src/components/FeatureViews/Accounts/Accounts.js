@@ -31,6 +31,9 @@ import ProfileCard from "./ProfileCard";
 import {simpleUser} from "queryFragments";
 import UserAvatar from "./UserAvatar";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
+import theme from "../../../theme/muiTheme";
+import ThemeProvider from "@material-ui/styles/ThemeProvider";
+import secondaryTheme from "../../../theme/secondaryTheme";
 
 const QUERY_USERS = gql`
     query UserQuery {
@@ -74,6 +77,11 @@ const useStyles = makeStyles({
         "fontSize": "0.8125rem",
         "padding": "0px",
     },
+    MuiTableRow: {
+        head: {
+            backgroundColor: "white"
+        }
+    }
 });
 
 const stopPropagation = (event) => {
@@ -155,19 +163,20 @@ const Accounts = () => {
     }, []);
 
     const classes = useStyles();
-    const tableView = useMemo(() => (
-        <Table className="AccountsTable" resizable="false">
-            <TableHead>
-                <TableRow>
-                    <TableCell className={classes.tableCellStyle}>
-                        Name
-                    </TableCell>
-                    <TableCell className={classes.tableCellStyle}>
-                        Email
-                    </TableCell>
-                    <TableCell className={classes.tableCellStyle}>
-                        Phone
-                    </TableCell>
+    const tableView = useMemo(() => (<ThemeProvider theme={theme}>
+        <ThemeProvider theme={secondaryTheme}>
+            <Table className="AccountsTable" resizable="false">
+                <TableHead className={classes.secondaryTableHead}>
+                    <TableRow>
+                        <TableCell className={classes.tableCellStyle}>
+                            Name
+                        </TableCell>
+                        <TableCell className={classes.tableCellStyle}>
+                            Email
+                        </TableCell>
+                        <TableCell className={classes.tableCellStyle}>
+                            Phone
+                        </TableCell>
                     <TableCell className={classes.tableCellStyle}>
                         Role
                     </TableCell>
@@ -209,17 +218,18 @@ const Accounts = () => {
                             </Grid>
                             <Grid component={Hidden} lgUp>
                                 <Button component={Link}
-                                    to={`/registration/form/${row.accountType}/${row.user.id}`}
-                                    variant="outlined">
-                                    <EditIcon />
+                                        to={`/registration/form/${row.accountType}/${row.user.id}`}
+                                        variant="outlined">
+                                    <EditIcon/>
                                 </Button>
                             </Grid>
                         </TableCell>
                     </TableRow>
                 ))}
             </TableBody>
-        </Table>
-    ), [classes.tableCellStyle, classes.tableRowStyle, displayUsers, isAdmin]);
+            </Table>
+        </ThemeProvider>
+    </ThemeProvider>), [classes.tableCellStyle, classes.tableRowStyle, displayUsers, isAdmin]);
 
     const cardView = useMemo(() => (
         <Grid alignItems="center" className="card-container" container
