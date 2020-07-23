@@ -2,7 +2,7 @@ import React, {useCallback, useState} from "react";
 import {useSelector} from "react-redux";
 
 import AccountsIcon from "@material-ui/icons/Contacts";
-import AppBar from "@material-ui/core/AppBar";
+import AdminIcon from "@material-ui/icons/Face";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import Drawer from "@material-ui/core/Drawer";
 import EventIcon from "@material-ui/icons/Event";
@@ -11,12 +11,9 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import DashboardIcon from "@material-ui/icons/Dashboard";
-import AdminIcon from "@material-ui/icons/Face"
 import ListItemText from "@material-ui/core/ListItemText";
 import NavLinkNoDup from "../Routes/NavLinkNoDup";
-import Toolbar from "@material-ui/core/Toolbar";
 import {makeStyles, ThemeProvider} from "@material-ui/core/styles";
-
 import "./Navigation.scss";
 import DateFnsUtils from "@date-io/date-fns";
 import {MuiPickersUtilsProvider} from "material-ui-pickers";
@@ -24,7 +21,6 @@ import OmouTheme from "../../theme/muiTheme";
 import {RootRoutes} from "../Routes/RootRoutes";
 
 import AuthenticatedNav from "../Navigation/AuthenticatedNav";
-import UnauthenticatedNav from "../Navigation/UnauthenticatedNav";
 
 import {USER_TYPES} from "utils";
 
@@ -39,10 +35,10 @@ const useStyles = makeStyles({
 
 const Navigation = () => {
     const classes = useStyles();
-    const {token} = useSelector(({auth}) => auth);
+    const { token } = useSelector(({ auth }) => auth);
 
     const isAdmin =
-        useSelector(({auth}) => auth.accountType) === USER_TYPES.admin;
+        useSelector(({ auth }) => auth.accountType) === USER_TYPES.admin;
 
     const NavList = isAdmin ? [
             {
@@ -126,19 +122,15 @@ const Navigation = () => {
     return (
         <ThemeProvider theme={OmouTheme}>
             <div className="Navigation">
-                <AppBar className="OmouBar" position="sticky">
-                    <Toolbar>
-                        {token ?
-                            <AuthenticatedNav
-                                toggleDrawer={handleDrawerToggle} /> :
-                            <UnauthenticatedNav />}
-                    </Toolbar>
-                </AppBar>
+                {token ?
+                    <AuthenticatedNav
+                        toggleDrawer={handleDrawerToggle} /> :
+                    <div/>}
                 {token && (
                     <nav className="OmouDrawer">
                         <Hidden implementation="css" smUp>
                             <Drawer
-                                classes={{"paper": classes.navigationLeftList}}
+                                classes={{ "paper": classes.navigationLeftList }}
                                 onClose={handleDrawerToggle}
                                 open={mobileOpen}
                                 variant="temporary">
@@ -152,11 +144,15 @@ const Navigation = () => {
                         </Hidden>
                     </nav>
                 )}
+                {token ?
                 <main className="OmouMain">
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <RootRoutes />
                     </MuiPickersUtilsProvider>
                 </main>
+                : <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <RootRoutes />
+                    </MuiPickersUtilsProvider>}
             </div>
         </ThemeProvider>
     );
