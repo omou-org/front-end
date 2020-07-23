@@ -111,16 +111,19 @@ export default function CourseRegistrationReceipt({formData, format}) {
 			  item xs={12}
 			  direction="row"
 			  justify="flex-end"
+			  spacing={4}
 		>
 			<Grid item>
 				<Button
 					color="primary"
-					variant="contained"
+					variant="outlined"
 					component={NavLinkNoDup}
 					to={'/registration'}
 				>
 					REGISTER MORE
 				</Button>
+			</Grid>
+			<Grid item>
 				<Button
 					color="primary"
 					variant="contained"

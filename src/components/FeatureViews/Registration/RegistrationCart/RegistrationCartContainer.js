@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { getRegistrationCart } from "../../../OmouComponents/RegistrationUtils";
+import React, {useEffect, useState} from "react";
+import {getRegistrationCart} from "../../../OmouComponents/RegistrationUtils";
 import gql from "graphql-tag";
-import { useQuery } from "@apollo/react-hooks";
+import {useQuery} from "@apollo/react-hooks";
 import Loading from "../../../OmouComponents/Loading";
 import BackgroundPaper from "../../../OmouComponents/BackgroundPaper";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import { RegistrationContext } from "./RegistrationContext";
+import {RegistrationContext} from "./RegistrationContext";
 import StudentRegistrationEntry from "./StudentRegistrationsEntry";
 import PaymentBoard from "./PaymentBoard";
+import RegistrationActions from "../RegistrationActions";
 
 const GET_STUDENT_INFOS = gql`
 	query GetStudentInfos($userIds: [ID]!) {
@@ -37,10 +38,12 @@ const GET_COURSES_TO_REGISTER = gql`
 			endTime
 			academicLevel
 			courseCategory {
+				id
 				name
 			  }
 			instructor {
 				user {
+				  id
 				  firstName
 				  lastName
 				}
@@ -61,7 +64,7 @@ export default function RegistrationCartContainer() {
 	const coursesResponse = useQuery(GET_COURSES_TO_REGISTER, { variables: { courseIds: courseIds } });
 
 	useEffect(() => {
-		if (coursesResponse?.data?.courses) {
+		if (!coursesResponse.loading) {
 			const courseData = coursesResponse.data.courses;
 			setRegistrationCart(() => {
 				let registrationCart = {};
@@ -75,7 +78,7 @@ export default function RegistrationCartContainer() {
 				return registrationCart;
 			});
 		}
-	}, [setRegistrationCart, data, coursesResponse]);
+	}, [coursesResponse?.loading, setRegistrationCart]);
 
 	const updateSession = (newSessionNum, checked, studentId, courseId) => {
 		setRegistrationCart((prevRegistrationCart) => {
@@ -102,20 +105,22 @@ export default function RegistrationCartContainer() {
 
 	const studentData = data.userInfos;
 
-	console.log(registrationCart);
-
 	return (<RegistrationContext.Provider value={{ registrationCart, currentParent, updateSession }}>
-		<BackgroundPaper>
-			<Typography variant="h2" align="left">Registration Cart</Typography>
-			<Typography
-				style={{ fontSize: "2em" }}
-				align="left"
-				gutterBottom
-			>
-				Pay for Course(s)
+			<BackgroundPaper>
+				<Grid container>
+					<RegistrationActions/>
+				</Grid>
+				<hr/>
+				<Typography variant="h2" align="left">Registration Cart</Typography>
+				<Typography
+					style={{fontSize: "2em"}}
+					align="left"
+					gutterBottom
+				>
+					Pay for Course(s)
 				</Typography>
-			<Grid container item>
-				<Grid container direction="row" spacing={5}>
+				<Grid container item>
+					<Grid container direction="row" spacing={5}>
 					{
 						Object.entries(registrationCart).map(([studentId, registration]) =>
 							<StudentRegistrationEntry

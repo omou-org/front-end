@@ -23,7 +23,6 @@ import Typography from "@material-ui/core/Typography";
 
 import "./Accounts.scss";
 import {addDashes} from "./accountUtils";
-import BackButton from "components/OmouComponents/BackButton";
 import {capitalizeString, USER_TYPES} from "utils";
 import IconButton from "@material-ui/core/IconButton";
 import LoadingHandler from "components/OmouComponents/LoadingHandler";
@@ -34,6 +33,7 @@ import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import theme from "../../../theme/muiTheme";
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
 import secondaryTheme from "../../../theme/secondaryTheme";
+import NewUser from "@material-ui/icons/PersonAdd";
 
 const QUERY_USERS = gql`
     query UserQuery {
@@ -245,9 +245,21 @@ const Accounts = () => {
     return (
         <Grid className="Accounts" item xs={12}>
             <BackgroundPaper elevation={2}>
-                <BackButton />
+                <Grid container alignItems="flex-start">
+                    <Grid item>
+                        <Button
+                            className="button"
+                            color="secondary"
+                            component={Link}
+                            to="/registration/form/student"
+                            variant="outlined"
+                        >
+                            <NewUser className="icon"/> New Student
+                        </Button>
+                    </Grid>
+                </Grid>
                 <Hidden xsDown>
-                    <hr />
+                    <hr/>
                 </Hidden>
                 <Typography align="left" className="heading" variant="h3">
                     Accounts
@@ -255,7 +267,7 @@ const Accounts = () => {
                 <Grid container direction="row">
                     <Grid component={Hidden} item lgUp md={8} xs={10}>
                         <Tabs className="tabs" ndicatorColor="primary"
-                            onChange={handleTabChange} scrollButtons="on"
+                              onChange={handleTabChange} scrollButtons="on"
                             textColor="primary" value={tabIndex}
                             variant="scrollable">
                             {TABS}

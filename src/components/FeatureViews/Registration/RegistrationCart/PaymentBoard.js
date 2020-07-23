@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from "react";
 import {RegistrationContext} from "./RegistrationContext";
-import {useLazyQuery} from "@apollo/react-hooks";
+import {useLazyQuery, useMutation, useQuery} from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import Grid from "@material-ui/core/Grid";
 import Checkbox from "@material-ui/core/Checkbox/Checkbox";
@@ -11,6 +11,9 @@ import TableCell from "@material-ui/core/TableCell";
 import TextField from "@material-ui/core/TextField/TextField";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import Loading from "../../../OmouComponents/Loading";
+import {useHistory} from "react-router-dom"
 
 const GET_PRICE_QUOTE = gql`
 	query GetPriceQuote($method: String!, 
@@ -34,6 +37,75 @@ const GET_PRICE_QUOTE = gql`
 	}
 `;
 
+const CREATE_ENROLLMENTS = gql`mutation CreateEnrollments($enrollments:[EnrollmentInput]!) {
+  __typename
+  createEnrollments(enrollments:$enrollments) {
+    enrollments {
+      id
+      course {
+        id
+      }
+      student {
+        user {
+          id
+        }
+      }
+    }
+  }
+}`;
+
+const CREATE_PAYMENT = gql`mutation CreatePayment($method:String!, $parent:ID!, $classes:[ClassQuote]!,
+					$disabledDiscounts:[ID], $priceAdjustment: Float, $registrations:[EnrollmentQuote]!) {
+  __typename
+  createPayment(method: $method, parent: $parent, classes: $classes, disabledDiscounts: $disabledDiscounts, 
+  priceAdjustment: $priceAdjustment, registrations: $registrations) {
+    payment {
+      id
+      accountBalance
+      createdAt
+      discountTotal
+      enrollments {
+        course {
+          title
+          startTime
+          startDate
+          instructor {
+            user {
+              lastName
+              firstName
+            }
+          }
+          courseId
+          endDate
+          endTime
+          hourlyTuition
+        }
+        student {
+          user {
+            id
+            firstName
+            lastName
+          }
+        }
+      }
+    }
+  }
+}`
+
+const GET_PARENT_ENROLLMENTS = gql`query GetParentEnrollments($studentIds:[ID]!) {
+  __typename
+  enrollments(studentIds: $studentIds) {
+    id
+    course {
+      id
+    }
+    student {
+      user {
+        id
+      }
+    }
+  }
+}`
 
 const useRowStyles = makeStyles({
 	root: {
@@ -77,6 +149,10 @@ export default function PaymentBoard() {
 			sessions: numSessions,
 			student,
 		}));
+	const enrollmentResponse = useQuery(GET_PARENT_ENROLLMENTS, {variables: {studentIds: currentParent.studentList}})
+	const [createEnrollments, createEnrollmentResults] = useMutation(CREATE_ENROLLMENTS);
+	const [createPayment, createPaymentResults] = useMutation(CREATE_PAYMENT);
+	const history = useHistory();
 
 	useEffect(() => {
 		const paymentMethod = paymentMethodState.find(({checked}) => checked)?.value;
@@ -134,6 +210,56 @@ export default function PaymentBoard() {
 
 	};
 
+	const handlePayment = async () => {
+		const paymentMethod = paymentMethodState.find(({checked}) => checked)?.value;
+		const {data: {enrollments}} = enrollmentResponse;
+		const enrollmentsToCreate = classRegistrations
+			.filter(({course, student}) =>
+				(!enrollments.find(enrollment =>
+					(course === enrollment.course.id && student === enrollment.student.user.id))))
+			.map(({course, student}) => ({course, student}));
+		const existingEnrollments = classRegistrations
+			.filter(({course, student}) =>
+				(enrollments.find(enrollment =>
+					(course === enrollment.course.id && student === enrollment.student.user.id))))
+			.map(registration => ({
+				...registration,
+				id: enrollments.find(enrollment =>
+					(registration.course === enrollment.course.id &&
+						registration.student === enrollment.student.user.id)).id
+			}))
+		const newEnrollmentIDs = await createEnrollments({
+			variables: {
+				enrollments: enrollmentsToCreate,
+			}
+		});
+
+		const registrations = [
+			...newEnrollmentIDs.data.createEnrollments.enrollments.map(enrollment => ({
+				enrollment: enrollment.id,
+				numSessions: classRegistrations.find(({course, student}) =>
+					(course === enrollment.course.id && student === enrollment.student.user.id)).sessions
+			})),
+			...existingEnrollments.map(enrollment => ({
+				enrollment: enrollment.id,
+				numSessions: enrollment.sessions,
+			}))
+		]
+
+		const payment = await createPayment({
+			variables: {
+				parent: currentParent.user.id,
+				method: paymentMethod,
+				classes: classRegistrations,
+				disabledDiscounts: [],
+				priceAdjustment: Number(priceAdjustmentValue),
+				registrations: registrations,
+			}
+		});
+
+		history.push(`/registration/receipt/${payment.data.createPayment.payment.id}`)
+	};
+
 	if (error) {
 		console.error(error.message);
 		return <div>There has been an error! : {error.message} </div>
@@ -147,60 +273,76 @@ export default function PaymentBoard() {
 		discounts: [],
 	};
 
+	if (enrollmentResponse.loading) return <Loading/>
+
 	return (<>
-		<Grid item>
-			<Typography align="left" style={{fontWeight: "600"}}>Payment Method</Typography>
-			{
-				paymentMethodState.map((method, index) => <FormControlLabel
-					control={
-						<Checkbox
-							checked={method.checked}
-							onChange={() => handlePaymentMethodStateChange(index)}
-							name={method.label}
-							color="primary"
+		<Grid item container justify="space-between">
+			<Grid item>
+				<Typography align="left" style={{fontWeight: "600"}}>Payment Method</Typography>
+				{
+					paymentMethodState.map((method, index) => <FormControlLabel
+						control={
+							<Checkbox
+								checked={method.checked}
+								onChange={() => handlePaymentMethodStateChange(index)}
+								name={method.label}
+								color="primary"
+							/>
+						}
+						label={method.label}
+					/>)
+				}
+			</Grid>
+			<Grid item>
+				<Table>
+					<TableRow className={classes.root}>
+						<TableCell>Sub-Total</TableCell>
+						<TableCell>$ {priceQuote.subTotal}</TableCell>
+					</TableRow>
+					<TableRow className={classes.root}>
+						<TableCell>Account Balance</TableCell>
+						<TableCell>$ {priceQuote.accountBalance}</TableCell>
+					</TableRow>
+					<TableRow className={classes.root}>
+						<TableCell>Discounts</TableCell>
+						<TableCell> </TableCell>
+					</TableRow>
+					<TableRow>
+						<TableCell>Price Adjustment</TableCell>
+						<TableCell style={{width: "55%"}}>
+							$ - <TextField
+							value={priceAdjustmentValue}
+							onChange={handlePriceAdjustmentValueChange}
+							variant="outlined"
+							style={{width: "30%"}}
+							inputProps={{
+								style: {
+									padding: 8,
+									textAlign: "center"
+								}
+							}}
+							type="number"
 						/>
-					}
-					label={method.label}
-				/>)
-			}
+						</TableCell>
+					</TableRow>
+					<TableRow className={classes.root}>
+						<TableCell>Total</TableCell>
+						<TableCell>$ {priceQuote.total}</TableCell>
+					</TableRow>
+				</Table>
+			</Grid>
 		</Grid>
-		<Grid item>
-			<Table>
-				<TableRow className={classes.root}>
-					<TableCell>Sub-Total</TableCell>
-					<TableCell>$ {priceQuote.subTotal}</TableCell>
-				</TableRow>
-				<TableRow className={classes.root}>
-					<TableCell>Account Balance</TableCell>
-					<TableCell>$ {priceQuote.accountBalance}</TableCell>
-				</TableRow>
-				<TableRow className={classes.root}>
-					<TableCell>Discounts</TableCell>
-					<TableCell> </TableCell>
-				</TableRow>
-				<TableRow>
-					<TableCell>Price Adjustment</TableCell>
-					<TableCell style={{width: "55%"}}>
-						$ - <TextField
-						value={priceAdjustmentValue}
-						onChange={handlePriceAdjustmentValueChange}
-						variant="outlined"
-						style={{width: "30%"}}
-						inputProps={{
-							style: {
-								padding: 8,
-								textAlign: "center"
-							}
-						}}
-						type="number"
-					/>
-					</TableCell>
-				</TableRow>
-				<TableRow className={classes.root}>
-					<TableCell>Total</TableCell>
-					<TableCell>$ {priceQuote.total}</TableCell>
-				</TableRow>
-			</Table>
+		<Grid item container justify="flex-end">
+			<Grid item>
+				<Button
+					variant="contained"
+					color="primary"
+					disabled={priceQuote.total <= 0 || priceQuote.total === "-"}
+					onClick={handlePayment}
+				>
+					Pay
+				</Button>
+			</Grid>
 		</Grid>
 	</>)
 }

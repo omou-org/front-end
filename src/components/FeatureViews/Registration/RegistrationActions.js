@@ -1,21 +1,18 @@
 import React, {useCallback, useState} from "react";
-import {useSelector} from "react-redux";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import {Link} from "react-router-dom";
 import NewCourse from "@material-ui/icons/School";
-import NewUser from "@material-ui/icons/PersonAdd";
 import Tooltip from "@material-ui/core/Tooltip";
 
 import "./registration.scss";
 import SelectParentDialog from "./SelectParentDialog";
 import {stringToColor} from "../Accounts/accountUtils";
 import {fullName} from "../../../utils";
+import {getRegistrationCart} from "../../OmouComponents/RegistrationUtils";
 
 const RegistrationActions = () => {
-	const currentParent = useSelector(
-		({Registration}) => Registration.CurrentParent
-	);
+	const {currentParent, ...registrationCartState} = getRegistrationCart();
 	const [dialogOpen, setDialog] = useState(false);
 
 	const openDialog = useCallback(() => {
@@ -37,17 +34,6 @@ const RegistrationActions = () => {
 				direction="row"
 				justify="flex-start"
 			>
-				<Grid item md={2}>
-					<Button
-						className="button"
-						color="secondary"
-						component={Link}
-						to="/registration/form/student"
-						variant="outlined"
-					>
-						<NewUser className="icon"/> New Student
-					</Button>
-				</Grid>
 				<Grid item md={8}>
 					{currentParent && (
 						<Grid item xs={2}>

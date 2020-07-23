@@ -2,9 +2,10 @@ import React, {useCallback, useEffect, useState} from "react";
 import Forms from "../../Form/FormFormats";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import Form from "../../Form/Form";
-import BackButton from "../../OmouComponents/BackButton";
 import CourseRegistrationReceipt from "./CourseRegistrationReceipt";
 import {Redirect, useParams} from "react-router-dom"
+import RegistrationActions from "./RegistrationActions";
+import Grid from "@material-ui/core/Grid";
 
 export default function RegistrationForm() {
 	const {type, id} = useParams();
@@ -46,7 +47,10 @@ export default function RegistrationForm() {
 
 	return (
 		<BackgroundPaper>
-			<BackButton/>
+			<Grid container>
+				<RegistrationActions/>
+			</Grid>
+			<hr/>
 			<Form base={form} initialData={withDefaultData} onSubmit={onSubmit}
 				  title={`${title} ${id ? "Editing" : "Registration"}`}
 				  receipt={CourseRegistrationReceipt}

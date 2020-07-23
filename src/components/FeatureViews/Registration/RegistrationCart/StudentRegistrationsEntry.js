@@ -1,6 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, {useContext, useState} from "react";
 import Grid from "@material-ui/core/Grid";
-import { fullName, getTuitionAmount } from "../../../../utils";
+import {fullName, getTuitionAmount} from "../../../../utils";
 import Typography from "@material-ui/core/Typography";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -8,7 +8,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import Moment from "react-moment";
-import { RegistrationContext } from "./RegistrationContext";
+import {RegistrationContext} from "./RegistrationContext";
 import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
@@ -45,7 +45,7 @@ function RegistrationEntry({ registration: { course, numSessions, checked }, stu
 	const handleSessionCheckChange = (_) => {
 		updateSession(numSessions, !checked, studentId, course.id);
 	};
-	console.log(course);
+
 	return (<>
 		<TableRow className={classes.root}>
 			<TableCell>
@@ -140,13 +140,12 @@ function RegistrationEntry({ registration: { course, numSessions, checked }, stu
 }
 
 export default function StudentRegistrationEntry({ student, registrationList }) {
-	console.log(student);
 	return (<Grid item xs={12} container>
-		<Typography style={{ fontWeight: 600 }}>Student: {fullName(student.user)}</Typography>
+		<Typography style={{fontWeight: 600}}>{fullName(student.user)}</Typography>
 		<Table>
 			<TableHead>
 				<TableRow>
-					<TableCell />
+					<TableCell/>
 					<TableCell>
 						Course
 					</TableCell>

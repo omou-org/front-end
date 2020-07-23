@@ -18,7 +18,6 @@ import PaymentReceipt from "../FeatureViews/Registration/PaymentReceipt";
 import Registration from "../FeatureViews/Registration/Registration";
 import FormPage from "../Form/FormPage";
 import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
-import RegistrationReceipt from "../Form/RegistrationReceipt";
 import ResetPassword from "../Authentication/ResetPassword";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
 import SearchResults from "../FeatureViews/Search/SearchResults";
@@ -110,7 +109,7 @@ export const RootRoutes = () => {
                 <RegistrationCartContainer/>
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/registration/receipt/:paymentID?">
-                <RegistrationReceipt />
+                <PaymentReceipt/>
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/NotEnrolledStudent">
                 <NotEnrolledStudentsDialog />
