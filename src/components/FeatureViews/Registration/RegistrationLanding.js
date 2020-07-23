@@ -4,14 +4,17 @@ import BackButton from "components/OmouComponents/BackButton";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import SearchSelect from "react-select";
+import Button from "@material-ui/core/Button";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
+import {useSelector} from "react-redux";
 import Badge from "@material-ui/core/Badge";
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 
 import { distinctObjectArray, fullName, gradeOptions } from "utils";
 import CourseList from "./CourseList";
+import NavLinkNoDup from "components/Routes/NavLinkNoDup";
 import Loading from "components/OmouComponents/Loading";
 import RegistrationActions from "./RegistrationActions";
 import TutoringList from "./TutoringList";
@@ -81,6 +84,16 @@ export const GET_COURSES = gql`
     ${SIMPLE_COURSE_DATA}`;
 
 const RegistrationLanding = () => {
+    const CurrentParent = useSelector(
+        ({Registration}) => Registration.CurrentParent
+    );
+    const registeredCourses = useSelector(
+        ({ Registration }) => Registration.registered_courses
+    );
+    const numToCheckout = Object.values(registeredCourses || {}).reduce(
+        (count, studentCourses) => count + studentCourses.length,
+        0
+    );
     const {data, loading, error} = useQuery(GET_COURSES);
 
     const [view, setView] = useState(0);
@@ -109,7 +122,6 @@ const RegistrationLanding = () => {
     }
 
     const {courses} = data;
-
 
     const instructorOptions = distinctObjectArray(
         Object.values(courses)
@@ -183,7 +195,22 @@ const RegistrationLanding = () => {
 
     return (
         <BackgroundPaper className="RegistrationLanding" elevation={2}>
-            <BackButton />
+             <Grid container>
+                <Grid item md={1}>
+                    <BackButton />
+                </Grid>
+                <Grid item md={10}/>
+                <Grid item md={1}>
+                    <Button 
+                    disabled={CurrentParent===null}
+                    component={NavLinkNoDup}
+				    to="/registration/cart">
+                       <Badge badgeContent={numToCheckout === null ? 0 : numToCheckout} showZero color="primary">
+                            <ShoppingCartOutlinedIcon style={{fontSize:30}} />
+                        </Badge>
+                    </Button>
+                </Grid>
+            </Grid>
             <hr />
             <RegistrationActions />
             <Grid container layout="row">
