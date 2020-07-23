@@ -5,7 +5,6 @@ import AccountsIcon from "@material-ui/icons/Contacts";
 import AdminIcon from "@material-ui/icons/Face";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import Drawer from "@material-ui/core/Drawer";
-import EventIcon from "@material-ui/icons/Event";
 import Hidden from "@material-ui/core/Hidden";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -16,13 +15,13 @@ import NavLinkNoDup from "../Routes/NavLinkNoDup";
 import {makeStyles, ThemeProvider} from "@material-ui/core/styles";
 import "./Navigation.scss";
 import DateFnsUtils from "@date-io/date-fns";
-import {MuiPickersUtilsProvider} from "material-ui-pickers";
+import {MuiPickersUtilsProvider} from "@material-ui/pickers";
 import OmouTheme from "../../theme/muiTheme";
 import {RootRoutes} from "../Routes/RootRoutes";
 
 import AuthenticatedNav from "../Navigation/AuthenticatedNav";
-
-import {USER_TYPES} from "utils";
+import {NavList} from "./NavigationAccessList";
+import Loading from "../OmouComponents/Loading";
 
 const useStyles = makeStyles({
     "navigationIconStyle": {
@@ -37,87 +36,43 @@ const Navigation = () => {
     const classes = useStyles();
     const { token } = useSelector(({ auth }) => auth);
 
-    const isAdmin =
-        useSelector(({ auth }) => auth.accountType) === USER_TYPES.admin;
-
-    const NavList = isAdmin ? [
-            {
-                "name": "Dashboard",
-                "link": "/dashboard",
-                "icon": <DashboardIcon />,
-            },
-            {
-                "name": "Scheduler",
-                "link": "/scheduler",
-                "icon": <EventIcon />,
-            },
-            {
-                "name": "Accounts",
-                "link": "/accounts",
-                "icon": <AccountsIcon />,
-            },
-			{
-				"name": "Registration",
-				"link": "/registration",
-				"icon": <AssignmentIcon />,
-			},
-			{
-				"name": "Admin",
-				"link": "/adminportal",
-				"icon": <AdminIcon/>,
-			}
-            ] :
-        [
-            {
-                "name": "Dashboard",
-                "link": "/dashboard",
-                "icon": <DashboardIcon />,
-            },
-            {
-                "name": "Scheduler",
-                "link": "/scheduler",
-                "icon": <EventIcon />,
-            },
-            {
-            "name": "Accounts",
-            "link": "/accounts",
-            "icon": <AccountsIcon />,
-    	    },
-            {
-                "name": "Registration",
-                "link": "/registration",
-                "icon": <AssignmentIcon />,
-            },
-        ];
+    const ACCOUNT_TYPE = useSelector(({auth}) => auth.accountType);
+    const NavigationList = NavList[ACCOUNT_TYPE];
 
     const [mobileOpen, setMobileOpen] = useState(false);
+
+    const handleDrawerToggle = useCallback(() => {
+        setMobileOpen((open) => !open);
+    }, []);
+
+	if ((!NavigationList || !ACCOUNT_TYPE) && token) {
+        return <Loading/>
+    }
 
     const drawer = (
         <div className="DrawerList">
             <List className="list">
-                {NavList.map((NavItem) => (
+				{NavigationList && NavigationList.map((NavItem) => (
                     <ListItem
                         button
                         className={`listItem ${classes.navigationIconStyle}`}
                         component={NavLinkNoDup}
-                        isActive={(match, location) => match ||
-                            (NavItem.name === "Scheduler" &&
-                                location.pathname === "/")}
+                        isActive={(match, location) =>
+                            match?.isExact || (NavItem.name === "Dashboard" &&
+                            location.pathname === "/")
+                        }
                         key={NavItem.name}
                         to={NavItem.link}>
                         <ListItemIcon className="icon">
                             {NavItem.icon}
                         </ListItemIcon>
-                        <ListItemText className="text" primary={NavItem.name} />
+                        <ListItemText className="text" primary={NavItem.name}/>
                     </ListItem>
                 ))}
             </List>
         </div>
     );
 
-    const handleDrawerToggle = useCallback(() => {
-        setMobileOpen((open) => !open);
-    }, []);
 
     return (
         <ThemeProvider theme={OmouTheme}>
@@ -146,9 +101,7 @@ const Navigation = () => {
                 )}
                 {token ?
                 <main className="OmouMain">
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <RootRoutes />
-                    </MuiPickersUtilsProvider>
+                    <RootRoutes/>
                 </main>
                 : <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <RootRoutes />

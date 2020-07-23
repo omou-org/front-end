@@ -111,6 +111,7 @@ const LoginPage = () => {
 
     const handleLogin = useCallback((event) => {
         event.preventDefault();
+        console.log("logging in!");
         login({
             "variables": {
                 password,

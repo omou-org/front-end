@@ -1,16 +1,12 @@
-import React, { useCallback, useState } from "react";
-
-import BackButton from "components/OmouComponents/BackButton";
+import React, {useCallback, useState} from "react";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import SearchSelect from "react-select";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
-import Badge from "@material-ui/core/Badge";
-import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 
-import { distinctObjectArray, fullName, gradeOptions } from "utils";
+import {distinctObjectArray, fullName, gradeOptions} from "utils";
 import CourseList from "./CourseList";
 import Loading from "components/OmouComponents/Loading";
 import RegistrationActions from "./RegistrationActions";
@@ -183,9 +179,10 @@ const RegistrationLanding = () => {
 
     return (
         <BackgroundPaper className="RegistrationLanding" elevation={2}>
-            <BackButton />
-            <hr />
-            <RegistrationActions />
+            <Grid container>
+                <RegistrationActions/>
+            </Grid>
+            <hr/>
             <Grid container layout="row">
                 <Grid item md={8} xs={12}>
                     <Typography align="left" className="heading" variant="h3">
@@ -203,7 +200,7 @@ const RegistrationLanding = () => {
                 </Grid>
             </Grid>
             {view === 0 && (
-                <Grid container layout="row" spacing={1}>
+				<Grid item container layout="row" spacing={1}>
                     <Grid item md={4} xs={12}>
                         {renderFilter("instructor")}
                     </Grid>
@@ -214,10 +211,10 @@ const RegistrationLanding = () => {
                         <Grid item md={4} xs={12}>
                             {renderFilter("grade")}
                         </Grid>
-                    </Hidden>
+                    </Hidden> 
                 </Grid>
             )}
-            <Grid className="registration-table" container spacing={5}>
+			<Grid item className="registration-table" container spacing={5}>
                 {view === 0 ?
                     <CourseList filteredCourses={filteredCourses} /> :
                     <TutoringList />}
