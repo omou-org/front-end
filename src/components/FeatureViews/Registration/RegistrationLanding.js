@@ -125,8 +125,6 @@ const RegistrationLanding = () => {
             })),
     );
 
-    console.log("asd");
-
     const filteredCourses = Object.entries(courseFilters)
         .filter(([, filters]) => filters.length > 0)
         .reduce((courses, [filterName, filters]) => {
