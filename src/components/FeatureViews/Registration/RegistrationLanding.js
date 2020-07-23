@@ -123,15 +123,6 @@ const RegistrationLanding = () => {
 
     const {courses} = data;
 
-    const renderCartItems = () =>{
-        if(numToCheckout==null){
-            return 0;
-        }
-        else{
-            return numToCheckout;
-        }
-    }
-
     const instructorOptions = distinctObjectArray(
         Object.values(courses)
             .filter(({instructor}) => instructor)
@@ -214,7 +205,7 @@ const RegistrationLanding = () => {
                     disabled={CurrentParent===null}
                     component={NavLinkNoDup}
 				    to="/registration/cart">
-                        <Badge badgeContent={renderCartItems()} showZero color="primary" >
+                       <Badge badgeContent={numToCheckout === null ? 0 : numToCheckout} showZero color="primary">
                             <ShoppingCartOutlinedIcon style={{fontSize:30}} />
                         </Badge>
                     </Button>
