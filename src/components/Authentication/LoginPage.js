@@ -1,33 +1,30 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Link, useHistory, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useCallback, useEffect, useState} from "react";
+import {Link, useHistory, useLocation} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
 import gql from "graphql-tag";
-import { useQuery } from "@apollo/react-hooks";
-import { useLazyQuery } from "@apollo/react-hooks";
-import { useMutation } from "@apollo/react-hooks";
+import {useLazyQuery, useMutation} from "@apollo/react-hooks";
 
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
 import PasswordInput from "./PasswordInput";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import InputAdornment from '@material-ui/core/InputAdornment';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 
-import { makeStyles } from "@material-ui/core/styles";
-import { setToken } from "actions/authActions.js";
+import {makeStyles} from "@material-ui/core/styles";
+import {setToken} from "actions/authActions.js";
 import useAuthStyles from "./styles.js";
-import { ReactComponent as Ellipse1 } from "./loginImages/ellipse1.svg";
-import { ReactComponent as Ellipse2 } from "./loginImages/ellipse2.svg";
-import { ReactComponent as Picture1 } from "./loginImages/picture1.svg";
-import { ReactComponent as Ellipse3 } from "./loginImages/ellipse3.svg";
-import { ReactComponent as Ellipse4 } from "./loginImages/ellipse4.svg";
-import { ReactComponent as Picture2 } from "./loginImages/picture2.svg";
-import { ReactComponent as Picture3 } from "./loginImages/picture3.svg";
-import { ReactComponent as Picture4 } from "./loginImages/picture4.svg";
+import {ReactComponent as Ellipse1} from "./loginImages/ellipse1.svg";
+import {ReactComponent as Ellipse2} from "./loginImages/ellipse2.svg";
+import {ReactComponent as Picture1} from "./loginImages/picture1.svg";
+import {ReactComponent as Ellipse3} from "./loginImages/ellipse3.svg";
+import {ReactComponent as Ellipse4} from "./loginImages/ellipse4.svg";
+import {ReactComponent as Picture2} from "./loginImages/picture2.svg";
+import {ReactComponent as Picture3} from "./loginImages/picture3.svg";
+import {ReactComponent as Picture4} from "./loginImages/picture4.svg";
 import "./LoginPage.scss";
 
 const useStyles = makeStyles((theme) => ({
@@ -141,19 +138,22 @@ const LoginPage = () => {
                 <div className="logo var2">
                     <Typography className="title">
                         omou
-                </Typography>
+                    </Typography>
                 </div>
-                <form className="Login">
+                <form className="Login" onSubmit={(e) => {
+                    e.preventDefault();
+                    handleCheck()
+                }}>
                     <Grid container>
-                        <Grid item md={6} />
+                        <Grid item md={6}/>
                         <Grid item md={6}>
                             <Typography className="welcomeText">
                                 Welcome to Summit
                             </Typography>
                             <TextField error={hasError || email === ""} fullWidth
-                                inputProps={{ "data-cy": "emailField" }}
-                                margin="normal"
-                                onChange={handleTextInput(setEmail)}
+                                       inputProps={{"data-cy": "emailField"}}
+                                       margin="normal"
+                                       onChange={handleTextInput(setEmail)}
                                 value={email}
                                 placeholder="E-Mail"
                                 variant="outlined"
@@ -232,17 +232,17 @@ const LoginPage = () => {
                         </div>
                         <form className="Login" onSubmit={handleLogin}>
                             <Grid container>
-                                <Grid item md={6}></Grid>
+                                <Grid item md={6}/>
                                 <Grid item md={6}>
                                     <Typography className="welcomeText">
                                         {renderUserDifferences().text}
-                            </Typography>
+                                    </Typography>
                                     <TextField error={hasError} fullWidth
-                                        inputProps={{ "data-cy": "emailField" }}
-                                        margin="normal"
-                                        onChange={handleTextInput(setEmail)}
-                                        value={email}
-                                        placeholder="E-Mail"
+                                               inputProps={{"data-cy": "emailField"}}
+                                               margin="normal"
+                                               onChange={handleTextInput(setEmail)}
+                                               value={email}
+                                               placeholder="E-Mail"
                                         variant="outlined"
                                         className="TextField"
                                         fullWidth={true}
