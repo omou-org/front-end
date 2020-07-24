@@ -8,7 +8,11 @@ import {
     SchoolList,
     SchoolCreate,
     SchoolShow,
-    SchoolEdit
+    SchoolEdit,
+    TuitionCreate,
+    TuitionShow,
+    TuitionEdit,
+    TuitionList
 } from "./UserList";
 import { Provider } from "react-redux";
 import { createHashHistory } from "history";
@@ -32,6 +36,8 @@ const App = () => (
                 name="courseCategories" show={CategoryShow} />
             <Resource edit={SchoolEdit} create={SchoolCreate} list={SchoolList}
                 name="schools" show={SchoolShow} />
+            <Resource edit={TuitionEdit} create={TuitionCreate} list={TuitionList}
+                name="tuitionRules" show={TuitionShow} />
 
         </Admin>
     </Provider>

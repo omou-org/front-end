@@ -20,8 +20,20 @@ const QUERIES_LIST = {
           district
           zipcode
         }
-      }
-     `
+      }`,
+    "tuitionRules" : gql`
+    query GetPriceRules {
+        priceRules {
+          id
+          name
+          courseType
+          category {
+            id
+            name
+          }
+          academicLevel
+        }
+      }`,
 };
 
 const QUERIES_ONE = {
@@ -41,9 +53,7 @@ const QUERIES_ONE = {
               district
               zipcode
             }
-          }
-                  
-        `
+          }`,
 };
 
 const ADD_QUERY = {
@@ -68,6 +78,22 @@ const ADD_QUERY = {
             }
           }
         }`,
+    "tuitionRules": gql`
+        mutation CreatePriceRule($academicLevel:AcademicLevelEnum!, $courseType:CourseTypeEnum!,
+                                    $category:Int!, $hourlyTuition:Float!, $name:String!){
+            createPricerule(name: $name, academicLevel:$academicLevel, courseType: $courseType, category:$category, hourlyTuition: $hourlyTuition){
+            priceRule {
+                name
+                academicLevel
+                courseType
+                hourlyTuition
+                category{
+                    id
+                }
+            }
+        }
+    
+    }`,
 
 };
 
@@ -100,18 +126,17 @@ const getTypes = gql`
 
 
 
-
+// This is another comment
 
 export default {
     "getList": async (resource, { "pagination": { page, perPage }, "sort": { field, order } }) => {
-
+        console.log(resource);
         try {
             const request = QUERIES_LIST[resource];
 
             const dataResponse = await client.query({
                 "query": request,
             });
-
             const [records] = Object.values(dataResponse.data);
 
             if (records.length === 0) {
@@ -127,7 +152,7 @@ export default {
                     "type": records[0].__typename,
                 },
             });
-
+            console.log(typeResponse);
             const fieldTypes = Object.fromEntries(
                 typeResponse.data.__type.fields
                     .map(({ name, type }) => [name, type.ofType.name]),
@@ -150,7 +175,7 @@ export default {
             });
 
             const slicedData = sortedData.slice(perPage * (page - 1), perPage * page);
-
+            console.log(slicedData);
             return {
                 "data": slicedData,
                 "total": records.length,

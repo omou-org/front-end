@@ -1,7 +1,7 @@
 import * as React from "react";
 import {
     Datagrid, Edit, List, Show, SimpleForm, SimpleShowLayout, TextField,
-    TextInput, Create
+    TextInput, Create, SelectField, SelectInput, ReferenceInput
 } from "react-admin";
 
 
@@ -85,4 +85,73 @@ export const SchoolEdit = (props) => (
             <TextField source="district" />
         </SimpleForm>
     </Edit>
+);
+
+const academicLevelChoices = [
+    { id: 'ELEMENTARY_LVL', name: 'Elementary School'},
+    { id: 'middle_lvl', name: 'Middle School'},
+    { id: 'HIGH_LVL', name: 'High School' },
+    { id: 'college_lvl', name: 'College' },
+];
+const courseTypes = [
+    {id: 'CLASS', name: 'Class'},
+    {id: 'TUTORING', name:'Tutoring'},
+    {id: 'SMALL_GROUP', name:'Small Group'}
+]
+
+export const TuitionList = (props) => (
+    <List {...props}>
+        <Datagrid rowClick="edit">
+            <TextField source="id"/>
+            <SelectField source="academicLevel" choices={academicLevelChoices} />
+            <TextField source="name"/>
+            <SelectField source="courseType" choices={courseTypes}/>
+            <TextField source="category.name" />
+
+        </Datagrid>
+    </List>
+);
+
+export const TuitionShow = (props) => (
+    <Show {...props}>
+        <SimpleShowLayout>
+            <TextField source="id"/>
+            <TextField source="academicLevel" />
+            <TextField source="name" />
+        </SimpleShowLayout>
+    </Show>
+);
+
+
+
+export const TuitionEdit = (props) => (
+    <Edit {...props}>
+        <SimpleForm>
+            <TextField source="name" />
+            <SelectField source="academicLevel" choices={academicLevelChoices} />
+        </SimpleForm>
+    </Edit>
+);
+
+// export const SchoolCreate = (props) => (
+//     <Create {...props}>
+//         <SimpleForm>
+//             <TextInput source="name" />
+//             <TextInput source="zipcode" />
+//             <TextInput source="district" />
+//         </SimpleForm>
+//     </Create>
+// );
+
+export const TuitionCreate = (props) => (
+    <Create {...props}>
+        <SimpleForm>
+            <TextInput source="name" />
+            <SelectInput source="academicLevel" choices={academicLevelChoices} />
+            <ReferenceInput label="courseCategory" source="id" reference="courseCategories" >
+                <SelectInput optionText="courseCategory" />
+            </ReferenceInput>
+            <SelectInput source="courseType" choices={courseTypes} />
+        </SimpleForm>
+    </Create>
 );
