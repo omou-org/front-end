@@ -19,7 +19,7 @@ import Loading from "../../OmouComponents/Loading";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import { fullName } from "../../../utils";
 import moment from "moment";
-import { highlightColor } from "../../../theme/muiTheme"
+import { highlightColor } from "../../../theme/muiTheme";
 
 const BootstrapInput = withStyles((theme) => ({
   root: {
@@ -35,7 +35,6 @@ const BootstrapInput = withStyles((theme) => ({
     fontSize: 16,
     padding: "6px 26px 6px 12px",
     transition: theme.transitions.create(["border-color", "box-shadow"]),
-    // Use the system font instead of the default Roboto font.
     fontFamily: [
       "-apple-system",
       "BlinkMacSystemFont",
@@ -83,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
     "&:focus": highlightColor,
   },
   menuSelected: {
-    backgroundColor: (`${highlightColor} !important`),
+    backgroundColor: `${highlightColor} !important`,
   },
   highlightName: {
     fontFamily: "Roboto",
@@ -98,17 +97,22 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "1em",
   },
   chipSize: {
-    height: "2.5625em",
-    width: "7.5em",
+    height: "2.0625em",
+    width: "6.5em",
+    fontFamily: "Roboto",
+    fontStyle: "normal",
+    fontWeight: 500,
+    fontSize: "1rem",
+    color: "#FFFFFF",
   },
   mainCardContainer: {
     paddingTop: "4.25em",
     width: "97%",
     marginLeft: "1.5em",
     marginTop: ".5em",
-    '&:hover': {
+    "&:hover": {
       backgroundColor: highlightColor,
-    }
+    },
   },
 }));
 
@@ -124,10 +128,10 @@ const CourseDisplayCard = ({
 }) => {
   const classes = useStyles();
   let history = useHistory();
-  const [activeTime, setActiveTime] = useState("Past");
+  const [activeTime, setActiveTime] = useState("PAST");
   const [activeColor, setActiveColor] = useState("#BDBDBD");
   const concatFullName = fullName(instructor.user);
-  const abbreviatedDay = moment(startDate).format("ddd")
+  const abbreviatedDay = moment(startDate).format("ddd");
   const startingTime = moment(startTime, "HH:mm").format("h:mm A");
   const endingTime = moment(endTime, "HH:mm").format("h:mm A");
   const startingDate = moment(startDate).calendar();
@@ -135,17 +139,18 @@ const CourseDisplayCard = ({
 
   useEffect(() => {
     const currentTime = moment().format("LT");
-    if (currentTime > startTime && currentTime < endTime) {
-      setActiveTime("Active");
+
+    if (currentTime >= startingTime && currentTime <= endingTime) {
+      setActiveTime("ACTIVE");
       setActiveColor("#6FCF97");
     } else {
-      setActiveTime("Past");
+      setActiveTime("PAST");
       setActiveColor("#BDBDBD");
     }
   }, [activeTime]);
 
   const handleClick = (e) => {
-    history.push(`/coursemanagement/class/${id}`)
+    history.push(`/coursemanagement/class/${id}`);
   };
 
   return (
@@ -169,21 +174,14 @@ const CourseDisplayCard = ({
             style={{ backgroundColor: activeColor }}
           />
         </Grid>
-        <Grid
-          item
-          xs={3}
-          // style={{ maxWidth: "12.66667%" }}
-          className={classes.displayCardMargins}
-        >
+        <Grid item xs={3} className={classes.displayCardMargins}>
           <Typography
             variant="body1"
             align="left"
             style={{ marginLeft: "1.85em" }}
           >
             By:{" "}
-            <span
-              className={classes.highlightName}
-            >{`${concatFullName}`}</span>
+            <span className={classes.highlightName}>{`${concatFullName}`}</span>
           </Typography>
         </Grid>
         <Divder
@@ -207,82 +205,89 @@ const CourseDisplayCard = ({
 
 const CourseManagement = () => {
   const classes = useStyles();
-  // rename the bottom 3 to filter instead of sort!!!!*
   const [sortByDate, setSortByDate] = useState("");
-  const [sortByGrades, setSortByGrades] = useState("");
-  const [sortBySubjects, setSortBySubjects] = useState("");
-  const [sortByInstructors, setSortByInstructor] = useState("");
-  // const [tab, setTab] = uesState("");
+  const [filterByGrades, setFilterByGrades] = useState("");
+  const [filterBySubjects, setFilterBySubjects] = useState("");
+  const [filterByInstructors, setFilterByInstructors] = useState("");
 
-  const handleChange = ( setTab ) => (event) => {
-    setTab(event.target.value)
+  const handleChange = (setTab) => (event) => {
+    setTab(event.target.value);
   };
 
-
   const GET_COURSES = gql`
-  query getCourses {
-    courses {
-      dayOfWeek
-      endDate
-      endTime
-      title
-      startTime
-      academicLevel
-      startDate
-      instructor {
-        user {
-          firstName
-          lastName
-          id
+    query getCourses {
+      courses {
+        dayOfWeek
+        endDate
+        endTime
+        title
+        startTime
+        academicLevel
+        startDate
+        instructor {
+          user {
+            firstName
+            lastName
+            id
+          }
         }
+        courseCategory {
+          id
+          name
+        }
+        courseId
       }
-      courseCategory {
-        id
-        name
-      }
-      courseId
     }
-  }
   `;
 
   const { data, loading, error } = useQuery(GET_COURSES);
 
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
-  console.log(data.courses)
+  console.log(data.courses);
 
-  const subjectList = data.courses.reduce((accumulator, currentValue) => 
-  !accumulator.some(subjectExist => currentValue.courseCategory.id === subjectExist.courseCategory.id) ? [...accumulator, currentValue] : accumulator
-, []);
+  const subjectList = data.courses.reduce(
+    (accumulator, currentValue) =>
+      !accumulator.some(
+        (subjectExist) =>
+          currentValue.courseCategory.id === subjectExist.courseCategory.id
+      )
+        ? [...accumulator, currentValue]
+        : accumulator,
+    []
+  );
 
-  const instructorsList = data.courses.reduce((accumulator, currentValue) => 
-  !accumulator.some(instructorExist => currentValue.instructor.user.id === instructorExist.instructor.user.id) ? [...accumulator, currentValue] : accumulator
-, []);
+  const instructorsList = data.courses.reduce(
+    (accumulator, currentValue) =>
+      !accumulator.some(
+        (instructorExist) =>
+          currentValue.instructor.user.id === instructorExist.instructor.user.id
+      )
+        ? [...accumulator, currentValue]
+        : accumulator,
+    []
+  );
 
-  // console.log(subjectList)
-  // console.log(instructorList)
-  const checkFilter = (value, filter) => ("" === filter || value === filter)
-  const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl) ? -1 : 0
+  const checkFilter = (value, filter) => "" === filter || value === filter;
+  const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
 
   const normalCourseDisplay = data.courses
-  .filter(course => (checkFilter(course.academicLevel, sortByGrades) && checkFilter(course.courseCategory.name, sortBySubjects) && checkFilter(course.instructor.user.lastName, sortByInstructors)))
-  .sort((firstEl, secondEl) => {
-    // console.log(sortByDate)
-    // console.log(firstEl)
-    switch(sortByDate) {
-      case "start_date":
-        return sortDescOrder(firstEl.startDate, secondEl.startDate);
-      case "class_name":
-        return sortDescOrder(firstEl.title, secondEl.title);
-      default:
-        return
-    }
-    // console.log(secondEl)
-  })
-  // Sort goes here after filter
-  // Getting a unique list of an array of objects - javascript
-
-
+    .filter(
+      (course) =>
+        checkFilter(course.academicLevel, filterByGrades) &&
+        checkFilter(course.courseCategory.name, filterBySubjects) &&
+        checkFilter(course.instructor.user.lastName, filterByInstructors)
+    )
+    .sort((firstEl, secondEl) => {
+      switch (sortByDate) {
+        case "start_date":
+          return sortDescOrder(firstEl.startDate, secondEl.startDate);
+        case "class_name":
+          return sortDescOrder(firstEl.title, secondEl.title);
+        default:
+          return;
+      }
+    });
 
   return (
     <Grid item xs={12}>
@@ -319,8 +324,14 @@ const CourseManagement = () => {
                     getContentAnchorEl: null,
                   }}
                 >
-                  {/* {sortByDate === "" ? <MenuItem ListItemClasses={{ selected: classes.menuSelected }} value="">Sort By</MenuItem> : null} */}
-                  {sortByDate === "" && <MenuItem ListItemClasses={{ selected: classes.menuSelected }} value="">Sort By</MenuItem>}
+                  {sortByDate === "" && (
+                    <MenuItem
+                      ListItemClasses={{ selected: classes.menuSelected }}
+                      value=""
+                    >
+                      Sort By
+                    </MenuItem>
+                  )}
                   <MenuItem
                     className={classes.menuSelect}
                     value={"start_date"}
@@ -344,8 +355,8 @@ const CourseManagement = () => {
                   labelId="course-management-sort-tab"
                   id="course-management-sort-tab"
                   displayEmpty
-                  value={sortByGrades}
-                  onChange={handleChange(setSortByGrades)}
+                  value={filterByGrades}
+                  onChange={handleChange(setFilterByGrades)}
                   classes={{ select: classes.menuSelect }}
                   input={<BootstrapInput />}
                   MenuProps={{
@@ -361,7 +372,12 @@ const CourseManagement = () => {
                     getContentAnchorEl: null,
                   }}
                 >
-                  <MenuItem ListItemClasses={{ selected: classes.menuSelected }} value="">All Grades</MenuItem>
+                  <MenuItem
+                    ListItemClasses={{ selected: classes.menuSelected }}
+                    value=""
+                  >
+                    All Grades
+                  </MenuItem>
                   <MenuItem
                     className={classes.menuSelect}
                     value={"ELEMENTARY_LVL"}
@@ -399,8 +415,8 @@ const CourseManagement = () => {
                   labelId="course-management-sort-tab"
                   id="course-management-sort-tab"
                   displayEmpty
-                  value={sortBySubjects}
-                  onChange={handleChange(setSortBySubjects)}
+                  value={filterBySubjects}
+                  onChange={handleChange(setFilterBySubjects)}
                   classes={{ select: classes.menuSelect }}
                   input={<BootstrapInput />}
                   MenuProps={{
@@ -416,8 +432,21 @@ const CourseManagement = () => {
                     getContentAnchorEl: null,
                   }}
                 >
-                  <MenuItem ListItemClasses={{ selected: classes.menuSelected }} value="">All Subjects</MenuItem>
-                {subjectList.map(subject => (<MenuItem className={classes.menuSelect} value={subject.courseCategory.name} ListItemClasses={{ selected: classes.menuSelected }}>{subject.courseCategory.name}</MenuItem>))}
+                  <MenuItem
+                    ListItemClasses={{ selected: classes.menuSelected }}
+                    value=""
+                  >
+                    All Subjects
+                  </MenuItem>
+                  {subjectList.map((subject) => (
+                    <MenuItem
+                      className={classes.menuSelect}
+                      value={subject.courseCategory.name}
+                      ListItemClasses={{ selected: classes.menuSelected }}
+                    >
+                      {subject.courseCategory.name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
@@ -427,8 +456,8 @@ const CourseManagement = () => {
                   labelId="course-management-sort-tab"
                   id="course-management-sort-tab"
                   displayEmpty
-                  value={sortByInstructors}
-                  onChange={handleChange(setSortByInstructor)}
+                  value={filterByInstructors}
+                  onChange={handleChange(setFilterByInstructors)}
                   classes={{ select: classes.menuSelect }}
                   input={<BootstrapInput />}
                   MenuProps={{
@@ -444,40 +473,51 @@ const CourseManagement = () => {
                     getContentAnchorEl: null,
                   }}
                 >
-                <MenuItem ListItemClasses={{ selected: classes.menuSelected }} value="">All Instructors</MenuItem>
-                {instructorsList.map(instructor => (<MenuItem className={classes.menuSelect} value={instructor.instructor.user.lastName} ListItemClasses={{ selected: classes.menuSelected}}>{`${instructor.instructor.user.firstName} ${instructor.instructor.user.lastName}`}</MenuItem>))}
-                  {/* <MenuItem
-                    className={classes.menuSelect}
-                    value={"start-date"}
-                    ListItemClasses={{ selected: classes.menuSelected }}
-                  >
-                    Start Date (Latest)
-                  </MenuItem>
                   <MenuItem
-                    className={classes.menuSelect}
-                    value={"class-name"}
                     ListItemClasses={{ selected: classes.menuSelected }}
+                    value=""
                   >
-                    Class Name(A-Z)
-                  </MenuItem> */}
+                    All Instructors
+                  </MenuItem>
+                  {instructorsList.map((instructor) => (
+                    <MenuItem
+                      key={instructor.instructor.id}
+                      className={classes.menuSelect}
+                      value={instructor.instructor.user.lastName}
+                      ListItemClasses={{ selected: classes.menuSelected }}
+                    >
+                      {fullName(instructor.instructor.user)}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
           </Grid>
         </Paper>
-        {normalCourseDisplay.map(({title, dayOfWeek, endDate, endTime, startTime, startDate, instructor, courseId}) => (
-    <CourseDisplayCard
-      title={title}
-      day={dayOfWeek}
-      endDate={endDate}
-      endTime={endTime}
-      startTime={startTime}
-      startDate={startDate}
-      instructor={instructor}
-      id={courseId}
-      key={title}
-    />
-  ))}
+        {normalCourseDisplay.map(
+          ({
+            title,
+            dayOfWeek,
+            endDate,
+            endTime,
+            startTime,
+            startDate,
+            instructor,
+            courseId,
+          }) => (
+            <CourseDisplayCard
+              title={title}
+              day={dayOfWeek}
+              endDate={endDate}
+              endTime={endTime}
+              startTime={startTime}
+              startDate={startDate}
+              instructor={instructor}
+              id={courseId}
+              key={title}
+            />
+          )
+        )}
       </BackgroundPaper>
     </Grid>
   );
