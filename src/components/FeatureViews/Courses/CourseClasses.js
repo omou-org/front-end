@@ -25,6 +25,7 @@ import ClassInfo from "./ClassInfo";
 import Announcements from "./Announcements";
 import StudentEnrollment from "./StudentEnrollment";
 import CourseSessions from "./CourseSessions";
+import { useSelector } from  "react-redux"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,9 +63,10 @@ const CourseClasses = () => {
     { label: "Student Enrolled" },
     { label: "Sessions" },
   ];
-
+  const {email} = useSelector(({auth}) => auth) || [];
+  
   const GET_CLASSES = gql`
-    query getClass($id: ID!) {
+    query getClass($id: ID!, $email: String="") {
       course(courseId: $id) {
         academicLevel
         courseCategory {
@@ -108,15 +110,56 @@ const CourseClasses = () => {
           startDatetime
         }
       }
+      annoucements(courseId: $id) {
+        subject
+        id
+        body
+        timestamp
+        user {
+          firstName
+          lastName
+        }
+      }
+      accountSearch(query: $email) {
+        total
+        results {
+          ... on AdminType {
+            userUuid
+            user {
+              email
+              firstName
+              lastName
+              id
+            }
+          }
+        }
+      }
     }
   `;
 
-  const { data, loading, error } = useQuery(GET_CLASSES, { variables: id });
+//   const DASHBOARD_QUERY = gql`query DashboardQuery($email: String="") {
+//     sessionSearch(query: "", time: "today", sort: "timeAsc") {
+//       results {
+//         course {
+//           courseCategory {
+//             id
+//             name
+//           }
+//         }
+//       }
+//     }
 
+//   }
+  
+// `;
+
+  const { data, loading, error } = useQuery(GET_CLASSES, { variables: {
+    id: id.id,
+    email: email
+  } });
   
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
-
   const {
     academicLevel,
     dayOfWeek,
@@ -262,7 +305,7 @@ const CourseClasses = () => {
                 <ClassInfo description={description} />
                 </TabPanel>
                 <TabPanel index={1} value={index}>
-                  <Announcements />
+                  <Announcements announcementsData={data.annoucements} loggedInUser={data.accountSearch}/>
                 </TabPanel>
                 <TabPanel index={2} value={index}>
                 <StudentEnrollment enrollmentList={enrollmentSet} />

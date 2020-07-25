@@ -5,7 +5,11 @@ import Typography from "@material-ui/core/Typography";
 import { Create, Cancel } from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import { highlightColor } from "../../../theme/muiTheme";
+import gql from "graphql-tag"
+import { useQuery } from "@apollo/react-hooks";
 import NewAnnoucementModal from "./NewAnnoucementsModal";
+import { fullName } from "../../../utils";
+
 
 const useStyles = makeStyles({
   announcementContainer: {
@@ -22,38 +26,38 @@ const useStyles = makeStyles({
   },
 });
 
-const announcementData = [
-  {
-    user: "Katie Ho",
-    title: "Updated Business Hours",
-    body: "Due to COVID-19 situation, we have a new schedule",
-    date: "2/12",
-    time: "10:24a",
-  },
-  {
-    user: "Katie Ho",
-    title: "Parking Area",
-    body: "Due to temporary construction that is happening on Joy St.",
-    date: "1/10",
-    time: "8:04a",
-  },
-  {
-    user: "Katie Ho",
-    title: "New Year Gathering",
-    body: "Join us with other tutors and staff for early New Year",
-    date: "12/28",
-    time: "9:03a",
-  },
-];
+// const announcementData = [
+//   {
+//     user: "Katie Ho",
+//     title: "Updated Business Hours",
+//     body: "Due to COVID-19 situation, we have a new schedule",
+//     date: "2/12",
+//     time: "10:24a",
+//   },
+//   {
+//     user: "Katie Ho",
+//     title: "Parking Area",
+//     body: "Due to temporary construction that is happening on Joy St.",
+//     date: "1/10",
+//     time: "8:04a",
+//   },
+//   {
+//     user: "Katie Ho",
+//     title: "New Year Gathering",
+//     body: "Join us with other tutors and staff for early New Year",
+//     date: "12/28",
+//     time: "9:03a",
+//   },
+// ];
 
-const AnnouncementCard = ({ id, user, title, body, date, time, handleOpen, handleDelete }) => {
+const AnnouncementCard = ({ id, fullName, subject, body, date, time, handleOpen, handleDelete }) => {
   const classes = useStyles();
   const handleOpenForm = () => {
-    handleOpen(true, id, title, body);
+    handleOpen(true, id, subject, body);
   };
 
   const handleDeleteForm = () => {
-      handleDelete(title)
+      handleDelete(subject)
   }
 
   return (
@@ -65,7 +69,7 @@ const AnnouncementCard = ({ id, user, title, body, date, time, handleOpen, handl
     >
       <Grid item xs={6}>
         <Typography variant="h6" align="left" gutterBottom>
-          {title}
+          {subject}
         </Typography>
       </Grid>
       <Grid item xs={6} style={{ textAlign: "right" }}>
@@ -84,7 +88,7 @@ const AnnouncementCard = ({ id, user, title, body, date, time, handleOpen, handl
       <Grid item xs={3}>
         <Typography variant="subtitle2" align="left">
           Posted by:{" "}
-          <span style={{ color: "#43B5D9", fontWeight: "550" }}>{user}</span> -{" "}
+          <span style={{ color: "#43B5D9", fontWeight: "550" }}>{fullName}</span> -{" "}
           {date} - {time}
         </Typography>
       </Grid>
@@ -92,16 +96,18 @@ const AnnouncementCard = ({ id, user, title, body, date, time, handleOpen, handl
   );
 };
 
-const Announcements = () => {
+const Announcements = ({announcementsData, loggedInUser}) => {
   const [openNewAnnoucementForm, setNewAnnoucementForm] = useState(false);
   const [annoucementId, setAnnoucementId] = useState();
-  const [annoucementTitle, setAnnoucementTitle] = useState("");
+  const [annoucementSubject, setAnnoucementSubject] = useState("");
   const [annoucementBody, setAnnoucementBody] = useState("");
+  
+  console.log(announcementsData)
 
-  const handleOpen = (boolean, id, title, body) => {
+  const handleOpen = (boolean, id, subject, body) => {
     setAnnoucementId(id);
     setNewAnnoucementForm(boolean);
-    setAnnoucementTitle(title);
+    setAnnoucementSubject(subject);
     setAnnoucementBody(body);
   };
 
@@ -109,26 +115,26 @@ const Announcements = () => {
     setNewAnnoucementForm(boolean);
   };
 
-  const removeAnnoucement = (title) => {
-      announcementData.indexOf(title)
+  const removeAnnoucement = (subject) => {
+
     };
   
 
   const handleDeleteAnnoucement = (id) => {
       removeAnnoucement(id);
       console.log("does this run?")
-      console.log(announcementData)
+    //   console.log(announcementData)
   };
 
   return (
     <Grid container justify="flex-start" data-active="inactive">
-      {announcementData.map(({ user, title, body, date, time }, i) => (
+      {announcementsData.map(({ user, subject, body, date, time, id,  }) => (
         <>
           <AnnouncementCard
-            key={i}
-            id={i}
-            user={user}
-            title={title}
+            key={id}
+            id={id}
+            fullName={fullName(user)}
+            subject={subject}
             body={body}
             date={date}
             time={time}
@@ -141,8 +147,9 @@ const Announcements = () => {
         handleClose={handleClose}
         open={openNewAnnoucementForm}
         id={annoucementId}
-        title={annoucementTitle}
+        subject={annoucementSubject}
         body={annoucementBody}
+        userId={loggedInUser}
       />
     </Grid>
   );
