@@ -5,11 +5,15 @@ import {useSelector} from "react-redux";
 import React from "react";
 import {FORM_ERROR} from "final-form";
 import * as Fields from "./Fields";
+import {StudentSelect} from "./Fields";
 import * as Yup from "yup";
 import * as hooks from "actions/hooks";
 import * as moment from "moment";
 import {client} from "index";
 import gql from "graphql-tag";
+import {fullName} from "../../utils";
+import TutoringPriceQuote from "./TutoringPriceQuote";
+import {createTutoringDetails, submitRegistration} from "../OmouComponents/RegistrationUtils";
 
 export const responseToForm = (parser, data) => {
     const res = {};
@@ -69,8 +73,36 @@ export const selectField = (options) => ({
         "component": <Fields.TextField />,
         label,
         "validator": Yup.string().matches(/[a-zA-Z][^#&<>"~;$^%{}?]+$/u,
+
             `Invalid ${label}`),
     });
+
+const SEARCH_INSTRUCTORS = gql`
+    query InstructorSearch($query: String!) {
+        accountSearch(query: $query, profile: "INSTRUCTOR") {
+            results {
+                ... on InstructorType {
+                    user {
+                        id
+                        firstName
+                        lastName
+                    }
+                }
+            }
+        }
+    }
+`;
+
+const userMap = ({accountSearch}) => accountSearch.results.map(({user}) => ({
+	"label": `${user.firstName} ${user.lastName}`,
+	"value": user.id,
+}));
+
+const instructorSelect = (name) => (
+	<Fields.DataSelect name={name} optionsMap={userMap}
+					   request={SEARCH_INSTRUCTORS}/>
+);
+
 
 const STATE_OPTIONS = [
     "AL",
@@ -216,14 +248,6 @@ export const ACADEMIC_LVL_FIELD = {
             "required": true,
         },
     ],
-    PASSWORD_FIELD = {
-        "name": "password",
-        "label": "Password",
-        "component": <Fields.PasswordInput />,
-        "validator": Yup.mixed(),
-        "required": true,
-
-    },
     PHONE_NUMBER_FIELD = {
         "name": "phoneNumber",
         "label": "Phone Number",
@@ -240,7 +264,7 @@ export const ACADEMIC_LVL_FIELD = {
     START_TIME_FIELD = {
         "name": "startTime",
         "label": "Start Time",
-        "component": <Fields.KeyboardTimePicker />,
+        "component": <Fields.KeyboardTimePicker format="hh:mm"/>,
         "validator": Yup.date(),
     },
     STATE_FIELD = {
@@ -329,11 +353,52 @@ const STUDENT_INFO_FIELDS = {
     ],
 };
 
-const SEARCH_INSTRUCTORS = gql`
-    query InstructorSearch($query: String!) {
-        accountSearch(query: $query, profile: "INSTRUCTOR") {
+const TUTORING_COURSE_SECTIONS = [
+	{
+		"name": "tutoring_details",
+		"label": "Tutoring Details",
+		"fields": [
+			{
+				"name": "instructor",
+				"label": "Instructor",
+				"component": instructorSelect("instructor"),
+				"validator": Yup.mixed(),
+			},
+			{
+				"name": "course",
+				...stringField("Course Name"),
+			},
+			INSTRUCTOR_CONFIRM_FIELD,
+			{
+				...START_DATE_FIELD,
+				"required": true,
+			},
+			{
+				...START_TIME_FIELD,
+				"required": true,
+			},
+		],
+	},
+	{
+		"name": "tuition",
+		"label": "Tuition Quote Tool",
+		"fields": [
+			{
+				// TODO: price quote tool
+				"name": "price",
+				"label": "Price",
+				"component": <TutoringPriceQuote courseType={"TUTORING"}/>,
+				"validator": Yup.mixed(),
+			},
+		],
+
+	},];
+
+const SEARCH_STUDENTS = gql`
+    query StudentSearch($query: String!) {
+        accountSearch(query: $query, profile: "STUDENT") {
             results {
-                ... on InstructorType {
+                ... on StudentType {
                     user {
                         id
                         firstName
@@ -354,15 +419,30 @@ const GET_CATEGORIES = gql`
     }
 `;
 
-const instructorMap = ({accountSearch}) => accountSearch.results.map(({user}) => ({
-    "label": `${user.firstName} ${user.lastName}`,
-    "value": user.id,
-}));
+const GET_COURSES = gql`
+    query GetCourses {
+      courses {
+        title
+        id
+        instructor {
+          user {
+            lastName
+            firstName
+          }
+        }
+      }
+    }
+`;
 
-const instructorSelect = (name) => (
-    <Fields.DataSelect name={name} optionsMap={instructorMap}
-        request={SEARCH_INSTRUCTORS} />
+const studentSelect = (name) => (
+	<Fields.DataSelect name={name} optionsMap={userMap}
+					   request={SEARCH_STUDENTS}/>
 );
+
+const courseMap = ({courses}) => courses.map(({title, instructor, id}) => ({
+	"label": `${title} - ${fullName(instructor.user)}`,
+	"value": id,
+}));
 
 const categoryMap = ({courseCategories}) => courseCategories.map(({id, name}) => ({
     "label": name,
@@ -492,7 +572,13 @@ export default {
                 "label": "Login Details",
                 "fields": [
                     EMAIL_FIELD,
-                    PASSWORD_FIELD,
+                    {
+                        "name": "password",
+                        "label": "Password",
+                        "component": <Fields.TextField type="password" />,
+                        "validator": Yup.mixed(),
+                        "required": true,
+                    },
                     ...NAME_FIELDS,
                 ],
             },
@@ -1059,8 +1145,8 @@ export default {
             }
         },
     },
-    "course": {
-        "title": "Course",
+	"class-registration": {
+		"title": "Class",
         "form": [
             {
                 "name": "student",
@@ -1068,8 +1154,9 @@ export default {
                 "fields": [
                     {
                         "name": "student",
-                        // TODO: student select field
-                        ...stringField("Student"),
+						"label": "Student",
+						"component": <StudentSelect/>,
+						"validator": Yup.mixed(),
                     },
                 ],
             },
@@ -1079,16 +1166,20 @@ export default {
                 "label": "Course",
                 "fields": [
                     {
-                        "name": "course",
-                        // TODO: course select field
-                        ...stringField("Course"),
+						"name": "class",
+						"label": "Class",
+						"component": <Fields.DataSelect name="Classes" optionsMap={courseMap} request={GET_COURSES}/>,
+						"validator": Yup.mixed(),
                     },
                 ],
             },
         ],
+		"submit": (formData) => {
+			submitRegistration(formData.selectStudent, formData.course.class.value);
+		}
     },
-    "tutoring": {
-        "title": "tutoring",
+	"tutoring-registration": {
+		"title": "Tutoring",
         "form": [
             {
                 "name": "student",
@@ -1096,55 +1187,46 @@ export default {
                 "fields": [
                     {
                         "name": "student",
-                        // TODO: student select field
-                        ...stringField("Student"),
+						"label": "Student",
+						"component": <StudentSelect/>,
+						"validator": Yup.mixed(),
                     },
                 ],
             },
             STUDENT_INFO_FIELDS,
-            {
-                "name": "instructor",
-                "label": "Tutor Selection",
-                "fields": [
-                    {
-                        "name": "instructor",
-                        // TODO: instructor select field
-                        ...stringField("Instructor"),
-                    },
-                    {
-                        "name": "course",
-                        ...stringField("Course Name"),
-                    },
-                    INSTRUCTOR_CONFIRM_FIELD,
-                ],
-            },
-            {
-                "name": "schedule",
-                "label": "Schedule",
-                "fields": [
-                    {
-                        ...START_DATE_FIELD,
-                        "required": true,
-                    },
-                    {
-                        ...START_TIME_FIELD,
-                        "required": true,
-                    },
-                ],
-            },
-            {
-                "name": "tuition",
-                "label": "Tuition Quote Tool",
-                "fields": [
-                    {
-                        // TODO: price quote tool
-                        "name": "price",
-                        ...stringField("Price Quote"),
-                    },
-                ],
-            },
+			...TUTORING_COURSE_SECTIONS,
         ],
-    },
+		"submit": (formData) => {
+			const course = createTutoringDetails("tutoring", formData);
+			submitRegistration(formData.selectStudent, course);
+		}
+
+	},
+	"small-group-registration": {
+		"title": "New Small Group Tutoring",
+		"form": [
+			{
+				"name": "student",
+				"label": "Student",
+				"fields": [
+					{
+						"name": "student",
+						"label": "Student",
+						"component": <StudentSelect/>,
+						"validator": Yup.mixed(),
+					},
+				],
+			},
+			STUDENT_INFO_FIELDS,
+			...TUTORING_COURSE_SECTIONS,
+		],
+		"submit": (formData) => {
+			console.log(formData, moment(formData.tutoring_details.startDate, "DD-MM-YYYY").add(formData.sessions, 'weeks'));
+			const course = createTutoringDetails("smallGroup", formData);
+			console.log(course);
+			submitRegistration(formData.selectStudent, course);
+		}
+	},
     "course_category": {
         "title": "Course",
         "form": [

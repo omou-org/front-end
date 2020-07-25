@@ -12,6 +12,7 @@ import PayCourses from "./TabComponents/PayCourses";
 import PaymentHistory from "./TabComponents/PaymentHistory";
 import StudentCourseViewer from "./TabComponents/StudentCourseViewer";
 import StudentInfo from "./TabComponents/StudentInfo";
+import NotificationSettings from "./TabComponents/NotificationSettings";
 
 const ComponentViewer = ({inView, user}) => {
 
@@ -27,6 +28,7 @@ const ComponentViewer = ({inView, user}) => {
 			<Notes key={7} ownerID={user.user_id} ownerType="account"/>,
 			<StudentInfo key={8} user={user}/>,
 			<PayCourses key={9} user={user}/>,
+			<NotificationSettings key={10} user={user}/>
 		],
 		[user]
 	);

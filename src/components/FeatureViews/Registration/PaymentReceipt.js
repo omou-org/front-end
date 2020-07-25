@@ -17,6 +17,7 @@ import {useQuery} from "@apollo/react-hooks";
 import {bindActionCreators} from "redux";
 import {fullName} from "../../../utils";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
+import {closeRegistrationCart} from "../../OmouComponents/RegistrationUtils";
 
 export const GET_PAYMENT = gql`
 	query Payment($paymentId:ID!){
@@ -99,6 +100,7 @@ const PaymentReceipt = ({paymentID}) => {
 		e.preventDefault();
 		history.push("/registration");
 		dispatch(api.closeRegistration());
+		closeRegistrationCart();
 	};
 
 	const renderCourse = (registration) => {

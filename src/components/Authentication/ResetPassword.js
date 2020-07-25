@@ -6,11 +6,11 @@ import {useMutation, useQuery} from "@apollo/react-hooks";
 import {useSelector} from "react-redux";
 import {useSearchParams} from "actions/hooks";
 
-import {Link, Redirect, useHistory} from "react-router-dom";
+import {Link, useHistory, Redirect} from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import {PasswordInput} from "../Form/Fields";
+import PasswordInput from "./PasswordInput";
 import Typography from "@material-ui/core/Typography";
 
 import Loading from "components/OmouComponents/Loading";

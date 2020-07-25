@@ -2,30 +2,23 @@
 import {Redirect, Route, Switch} from "react-router-dom";
 import React from "react";
 import {useDispatch} from "react-redux";
-
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
-import NewAccount from "../Authentication/NewAccount";
 import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
 import AuthenticatedRoute from "./AuthenticatedRoute";
 import CatsPage from "../CatsPage/CatsPage";
-import CourseSessionStatus from
-    "../FeatureViews/Accounts/TabComponents/EnrollmentView";
-// import Dashboard from "../FeatureViews/Dashboard/Dashboard";
+import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/EnrollmentView";
 import EditSessionView from "../FeatureViews/Scheduler/EditSessionView";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import ForgotPassword from "../Authentication/ForgotPassword";
 import LoginPage from "../Authentication/LoginPage.js";
+import NewAccount from "../Authentication/NewAccount";
 import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage";
-import NotEnrolledStudentsDialog from
-    "../FeatureViews/Scheduler/NotEnrolledStudentDialog";
+import NotEnrolledStudentsDialog from "../FeatureViews/Scheduler/NotEnrolledStudentDialog";
 import PaymentReceipt from "../FeatureViews/Registration/PaymentReceipt";
 import Registration from "../FeatureViews/Registration/Registration";
 import FormPage from "../Form/FormPage";
-import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
-import RegistrationCourse from
-    "../FeatureViews/Registration/RegistrationCourse";
-import RegistrationReceipt from "../Form/RegistrationReceipt";
+import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
 import ResetPassword from "../Authentication/ResetPassword";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
 import SearchResults from "../FeatureViews/Search/SearchResults";
@@ -34,6 +27,11 @@ import UserProfile from "../FeatureViews/Accounts/UserProfile";
 
 import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
+import RegistrationForm from "../FeatureViews/Registration/RegistrationForm";
+import RegistrationCartContainer from "../FeatureViews/Registration/RegistrationCart/RegistrationCartContainer";
+import DashboardSwitch from "../FeatureViews/Dashboard/DashboardSwitch";
+import TeachingLogContainer from "../FeatureViews/TeachingLog/TeachingLogContainer";
+import AvailabilityContainer from "../FeatureViews/Availability/AvailabilityContainer";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -51,15 +49,13 @@ export const RootRoutes = () => {
             <Route path="/login">
                 <LoginPage />
             </Route>
-
-
             <Route path="/new/:type?">
                 <NewAccount />
             </Route>
 
             {/* Main Feature Views */}
             <AuthenticatedRoute exact path="/">
-                <Scheduler />
+                <DashboardSwitch />
             </AuthenticatedRoute>
             <AuthenticatedRoute exact path="/registration">
                 <Registration />
@@ -88,36 +84,50 @@ export const RootRoutes = () => {
 
             {/* Accounts */}
             <AuthenticatedRoute exact path="/accounts/:accountType/:accountID">
-                <UserProfile />
+                <UserProfile/>
             </AuthenticatedRoute>
             <AuthenticatedRoute exact
-                path="/accounts/parent/payment/:paymentID">
-                <PaymentReceipt />
+                                path="/accounts/parent/payment/:paymentID">
+                <PaymentReceipt/>
             </AuthenticatedRoute>
-            <AuthenticatedRoute exact path="/accounts">
-                <Accounts />
+            <AuthenticatedRoute exact path="/accounts"
+                                users={[USER_TYPES.admin, USER_TYPES.receptionist]}>
+                <Accounts/>
             </AuthenticatedRoute>
             <AuthenticatedRoute exact
-                path="/accounts/:accountType/:accountID/:courseID">
-                <CourseSessionStatus />
+                                path="/accounts/:accountType/:accountID/:courseID">
+                <CourseSessionStatus/>
             </AuthenticatedRoute>
 
             {/* Registration Routes */}
             <AuthenticatedRoute path="/registration/form/:type/:id?">
-                <FormPage />
+                <RegistrationForm/>
             </AuthenticatedRoute>
             <AuthenticatedRoute
-                path="/registration/course/:courseID?/:courseTitle?">
-                <RegistrationCourse />
+                path="/registration/course/:courseID?/:courseTitle?"
+                users={[USER_TYPES.admin, USER_TYPES.receptionist]}
+            >
+                <RegistrationCourse/>
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/registration/cart/">
-                <RegistrationCart />
+                <RegistrationCartContainer/>
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/registration/receipt/:paymentID?">
-                <RegistrationReceipt />
+                <PaymentReceipt/>
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/NotEnrolledStudent">
                 <NotEnrolledStudentsDialog />
+            </AuthenticatedRoute>
+
+            {/* Instructor Routes */}
+            <AuthenticatedRoute path="/teaching-log"
+                                users={[USER_TYPES.instructor]}
+            >
+                <TeachingLogContainer/>
+            </AuthenticatedRoute>
+            <AuthenticatedRoute path="/availability"
+                                users={[USER_TYPES.instructor]}>
+                <AvailabilityContainer/>
             </AuthenticatedRoute>
 
             {/* Admin Routes */}
@@ -126,6 +136,12 @@ export const RootRoutes = () => {
                 users={[USER_TYPES.admin]}>
                 <AdminPortal />
             </AuthenticatedRoute>
+			<AuthenticatedRoute exact
+								path="/form/:type/:id?"
+								users={[USER_TYPES.admin]}
+			>
+				<FormPage/>
+			</AuthenticatedRoute>
 
             <AuthenticatedRoute path="/PageNotFound">
                 <ErrorNotFoundPage />

@@ -1,5 +1,5 @@
 import * as types from "./actionTypes";
-import {useMemo} from "react";
+import {useMemo, wrapGet} from "react";
 import {wrapUseEndpoint} from "./hooks";
 
 export const useSearchAccount = (query, page, size, profile, grade, sort) =>
@@ -20,20 +20,29 @@ export const useSearchAccount = (query, page, size, profile, grade, sort) =>
 		)
 	);
 
-export const useSearchCourse = (query, page, size, course, availability, sort) =>
-	wrapUseEndpoint("/search/course/", types.GET_COURSE_SEARCH_QUERY_SUCCESS)(
-		null,
-		useMemo(
-			() => ({
-				params: {
-					availability,
-					course,
-					page,
-					size,
+export const useSearchCourse = (availability, course, page, size, query, sort) =>
+    wrapUseEndpoint("/search/course/", types.GET_COURSE_SEARCH_QUERY_SUCCESS)(
+        null, useMemo(() => ({
+            "params": {
+				availability,
+				course,
+				page,
+				size,
+				query,
+				sort,
+            },
+        }), [availability, course, page, size, query, sort])
+    );
+
+export const useSearchSession = (query, page, size, time, sort) =>
+        wrapUseEndpoint("/search/session/", types.GET_SESSION_SEARCH_QUERY_SUCCESS)(
+            null, useMemo(() => ({
+                "params": {
 					query,
-					sort,
-				},
-			}),
-			[availability, course, page, query, sort]
-		)
-	);
+					page,
+					size, 
+					time,
+					sort
+                },
+            }), [query, page, size, time, sort])
+        );
