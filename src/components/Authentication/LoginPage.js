@@ -1,17 +1,14 @@
-/* eslint-disable max-len */
 import React, {useCallback, useEffect, useState} from "react";
 import {Link, useHistory, useLocation} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import gql from "graphql-tag";
-import {useQuery} from "@apollo/react-hooks";
-// import {useMutation} from "@apollo/react-hooks";
 import {useLazyQuery, useMutation} from "@apollo/react-hooks";
 
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Grid from "@material-ui/core/Grid";
-import PasswordInput from "./PasswordInput";
+import {PasswordInput} from "../Form/Fields";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -19,7 +16,6 @@ import EmailOutlinedIcon from "@material-ui/icons/EmailOutlined";
 
 import {makeStyles} from "@material-ui/core/styles";
 import {setToken} from "actions/authActions.js";
-import useAuthStyles from "./styles.js";
 import {ReactComponent as Ellipse1} from "./loginImages/ellipse1.svg";
 import {ReactComponent as Ellipse2} from "./loginImages/ellipse2.svg";
 import {ReactComponent as Picture1} from "./loginImages/picture1.svg";
@@ -69,7 +65,7 @@ const LoginPage = () => {
     const [shouldSave, setShouldSave] = useState(false);
     const [hasError, setHasError] = useState(false);
 
-    const [getUserType, {data, loading}] = useLazyQuery(GET_USER_TYPE, {
+    const [getUserType] = useLazyQuery(GET_USER_TYPE, {
         "variables": {"username": email},
         "onCompleted": (data) => {
             setUserType(data.userType);
@@ -79,7 +75,7 @@ const LoginPage = () => {
         },
     });
 
-    const [login, {loginLoading}] = useMutation(LOGIN, {
+    const [login] = useMutation(LOGIN, {
         "errorPolicy": "ignore",
         "ignoreResults": true,
         "onCompleted": async ({tokenAuth}) => {
@@ -103,11 +99,6 @@ const LoginPage = () => {
         }
     }, [token, history]);
 
-    const classes = {
-        ...useStyles(),
-        ...useAuthStyles(),
-    };
-
     const handleTextInput = useCallback((setter) => ({target}) => {
         setter(target.value);
         setHasError(false);
@@ -115,7 +106,6 @@ const LoginPage = () => {
 
     const handleLogin = useCallback((event) => {
         event.preventDefault();
-        console.log("logging in!");
         login({
             "variables": {
                 password,
@@ -129,7 +119,7 @@ const LoginPage = () => {
     }, []);
 
     const handleCheck = () => {
-        if (email != "") {
+        if (email !== "") {
             getUserType();
         }
     };
@@ -239,22 +229,22 @@ const LoginPage = () => {
                         <Typography className="welcomeText">
                             {renderUserDifferences().text}
                         </Typography>
-                        <TextField InputProps={{
-                            "startAdornment": (
-                                <InputAdornment position="start">
-                                    <EmailOutlinedIcon style={{"color": "grey"}} />
-                                </InputAdornment>
-                            ),
-                        }} className="TextField"
+                        <TextField
+                            InputProps={{
+                                "startAdornment": (
+                                    <InputAdornment position="start">
+                                        <EmailOutlinedIcon style={{"color": "grey"}} />
+                                    </InputAdornment>
+                                ),
+                            }} className="TextField"
                             error={hasError}
-                            fullWidth
                             fullWidth
                             inputProps={{"data-cy": "emailField"}}
                             margin="normal"
                             onChange={handleTextInput(setEmail)}
                             placeholder="E-Mail"
                             value={email}
-                        variant="outlined" />
+                            variant="outlined" />
                         <PasswordInput autoComplete="current-password"
                             error={hasError || password === ""}
                             inputProps={{"data-cy": "passwordField"}}

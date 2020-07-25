@@ -6,11 +6,10 @@ import {useMutation, useQuery} from "@apollo/react-hooks";
 import {useSelector} from "react-redux";
 import {useSearchParams} from "actions/hooks";
 
-import {Link, useHistory, Redirect} from "react-router-dom";
+import {Link, Redirect, useHistory} from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import PasswordInput from "./PasswordInput";
+import {PasswordInput} from "../Form/Fields";
 import Typography from "@material-ui/core/Typography";
 
 import Loading from "components/OmouComponents/Loading";
@@ -86,20 +85,6 @@ const ResetPassword = () => {
         return <Loading />;
     }
 
-    if (emailStatus?.error) {
-        return (
-            <Paper className={classes.root}>
-                <Typography align="left" className={classes.header}
-                    color="primary">
-                    reset password
-                </Typography>
-                <Typography align="left" className={classes.info}>
-                    Invalid token.
-                </Typography>
-            </Paper>
-        );
-    }
-
     const success = resetStatus.data?.resetPassword.status === "success";
     const error = resetStatus.data?.resetPassword.status === "failed";
 
@@ -120,45 +105,51 @@ const ResetPassword = () => {
                         <Typography className="welcomeText">
                             {success ? "Reset successful!" : "Reset password"}
                         </Typography>
-                        <Typography  className={classes.info}>
-                            {success ?
-                                "You can now log in with your new password." :
-                                <>Reset password for <span className={email}>{email}</span></>}
-                        </Typography>
-                        {success ?
-                            <Button className={classes.primaryButton} color="primary"
-                                component={Link} data-cy="return" to={{
-                                    "pathname": "/login",
-                                    "state": {email},
-                                }} variant="contained">
-                                Back to login
-                            </Button> :
-                            <form onSubmit={handleSubmit}>
-                                <PasswordInput autoComplete="current-password"
-                                    className="TextField"
-                                    error={error}
-                                    inputProps={{"data-cy": "passwordField"}}
-                                    isField={false} label="Password"
-                                    onChange={handlePasswordInput}
-                                    value={password} />
-                                <Grid className="buttonContainer" container item>
-                                    <Grid item md={2} />
-                                    <Grid item md={4} >
-                                        <Button className="createAccountButton" data-cy="reset" type="submit">
-                                            RESET PASSWORD
-                                        </Button>
-                                    </Grid>
-                                    <Grid item md={4}>
-                                        <Button className="signInButton" component={Link} to={{
+                        {emailStatus?.error ?
+                            <Typography className={classes.info}>
+                                Invalid token.
+                            </Typography> :
+                            <>
+                                <Typography className={classes.info}>
+                                    {success ?
+                                        "You can now log in with your new password." :
+                                        <>Reset password for <span className={email}>{email}</span></>}
+                                </Typography>
+                                {success ?
+                                    <Button className={classes.primaryButton} color="primary"
+                                        component={Link} data-cy="return" to={{
                                             "pathname": "/login",
                                             "state": {email},
-                                        }}>
-                                            BACK TO LOGIN
-                                        </Button>
-                                    </Grid>
-                                    <Grid item md={2} />
-                                </Grid>
-                            </form>}
+                                        }} variant="contained">
+                                        Back to login
+                                    </Button> :
+                                    <form onSubmit={handleSubmit}>
+                                        <PasswordInput autoComplete="current-password"
+                                            className="TextField"
+                                            error={error}
+                                            inputProps={{"data-cy": "passwordField"}}
+                                            isField={false} label="Password"
+                                            onChange={handlePasswordInput}
+                                            value={password} />
+                                        <Grid className="buttonContainer" container item>
+                                            <Grid item md={2} />
+                                            <Grid item md={4} >
+                                                <Button className="createAccountButton" data-cy="reset" type="submit">
+                                                    RESET PASSWORD
+                                                </Button>
+                                            </Grid>
+                                            <Grid item md={4}>
+                                                <Button className="signInButton" component={Link} to={{
+                                                    "pathname": "/login",
+                                                    "state": {email},
+                                                }}>
+                                                    BACK TO LOGIN
+                                                </Button>
+                                            </Grid>
+                                            <Grid item md={2} />
+                                        </Grid>
+                                    </form>}
+                            </>}
                     </Grid>
                 </Grid>
             </div>
