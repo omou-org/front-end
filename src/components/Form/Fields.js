@@ -6,6 +6,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {useQuery} from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import {fullName} from "../../utils";
+import MomentUtils from "@date-io/moment";
 
 const getLabel = ({label}) => label;
 
@@ -22,12 +23,12 @@ export const Select = (props) => {
     return <Fields.Select className={select} {...props} />;
 };
 
-export const KeyboardDatePicker = (props) => (
-	<Fields.KeyboardDatePicker openTo="year" {...props} />
+export const DatePicker = (props) => (
+	<Fields.KeyboardDatePicker dateFunsUtils={MomentUtils} {...props} />
 );
 
-export const KeyboardTimePicker = (props) => (
-	<Fields.KeyboardTimePicker {...props} />
+export const TimePicker = (props) => (
+	<Fields.KeyboardTimePicker {...props} dateFunsUtils={MomentUtils}/>
 );
 
 export const Autocomplete = ({name, options, ...props}) => {
