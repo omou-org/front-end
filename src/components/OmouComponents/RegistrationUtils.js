@@ -63,6 +63,7 @@ export const closeRegistrationCart = () => {
  * */
 export const getRegistrationCart = () => {
 	const registrationState = JSON.parse(sessionStorage.getItem("registrations"));
+	if (typeof registrationState !== "object" || !registrationState) return {currentParent: null};
 	if (Object.keys(registrationState).length > 0) return registrationState;
 	return {currentParent: null};
 };
