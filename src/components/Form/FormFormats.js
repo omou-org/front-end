@@ -264,7 +264,7 @@ export const ACADEMIC_LVL_FIELD = {
     START_TIME_FIELD = {
         "name": "startTime",
         "label": "Start Time",
-        "component": <Fields.TimePicker format="hh:mm"/>,
+        "component": <Fields.TimePicker format="hh:mm a"/>,
         "validator": Yup.date(),
     },
     STATE_FIELD = {
