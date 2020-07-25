@@ -5,17 +5,26 @@ import useAuthStyles from "./styles";
 import {useMutation} from "@apollo/react-hooks";
 import {useSelector} from "react-redux";
 
-import {Link, useLocation, useHistory, Redirect} from "react-router-dom";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import EmailOutlinedIcon from "@material-ui/icons/EmailOutlined";
+
+import {Link, Redirect, useHistory, useLocation} from "react-router-dom";
 
 import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+
+import {ReactComponent as Ellipse1} from "./loginImages/ellipse1.svg";
+import {ReactComponent as Ellipse2} from "./loginImages/ellipse2.svg";
+import {ReactComponent as Picture1} from "./loginImages/picture1.svg";
 
 const useStyles = makeStyles((theme) => ({
     "info": {
         "color": theme.colors.darkGray,
-        "margin-top": "34px",
+        "margin-top": "14px",
+        "width": "75%",
+        "margin": "auto",
     },
 }));
 
@@ -60,34 +69,74 @@ const ForgotPassword = () => {
     }
 
     return (
-        <Paper className={classes.root}>
-            <Typography align="left" className={classes.header} color="primary">
-                {requested ? "reset email sent!" : "forgot your password?"}
-            </Typography>
-            <Typography align="left" className={classes.info}>
-                {requested ?
-                    "Follow the instructions on the email to reset your password." :
-                    "Enter the email for your account and we will send you an email link to reset your password:"}
-            </Typography>
-            {requested ?
-                <Button className={classes.primaryButton} color="primary"
-                    component={Link} data-cy="return" to={{
-                        "pathname": "/login",
-                        "state": {email},
-                    }} variant="contained">
-                    Back to login
-                </Button> :
-                <form onSubmit={handleSubmit}>
-                    <TextField fullWidth inputProps={{"data-cy": "emailField"}}
-                        label="E-Mail" margin="normal"
-                        onChange={handleEmailInput} value={email} />
-                    <Button className={classes.primaryButton} color="primary"
-                        data-cy="reset" disabled={!email}
-                        type="submit" variant="contained">
-                        Send Reset Email
-                    </Button>
-                </form>}
-        </Paper>
+        <div>
+            <Ellipse1 className="ellipse1" />
+            <Ellipse2 className="ellipse2" />
+            <Picture1 className="picture1" />
+            <div className="logo">
+                <Typography className="title">
+                    omou
+                </Typography>
+            </div>
+            <form className="Login">
+                <Grid className="resetPassword" container>
+                    <Grid item md={6} />
+                    <Grid item md={6}>
+                        <Typography className="welcomeText">
+                            {requested ? "Reset email sent!" : "Forgot your password?"}
+                        </Typography>
+                        <Typography align="left" className={classes.info}>
+                            {requested ?
+                                "Follow the instructions on the email to reset your password." :
+                                "Enter the email for your account and we will send you an email link to reset your password:"}
+                        </Typography>
+                        {requested ?
+                            <Button className={classes.primaryButton} color="primary"
+                                component={Link} data-cy="return" to={{
+                                    "pathname": "/login",
+                                    "state": {email},
+                                }} variant="contained">
+                                Back to login
+                            </Button> :
+                            <form onSubmit={handleSubmit}>
+                                <TextField
+                                    InputProps={{
+                                        "startAdornment": (
+                                            <InputAdornment position="start">
+                                                <EmailOutlinedIcon style={{"color": "grey"}} />
+                                            </InputAdornment>
+                                        ),
+                                    }} className="TextField"
+                                    error={email === ""}
+                                    fullWidth
+                                    inputProps={{"data-cy": "emailField"}}
+                                    label="E-Mail" margin="normal"
+                                    onChange={handleEmailInput}
+                                    value={email}
+                                    variant="outlined" />
+                                <Grid className="buttonContainer" container item>
+                                    <Grid item md={2} />
+                                    <Grid item md={4} >
+                                        <Button className="createAccountButton"
+                                            data-cy="reset" type="submit">
+                                            SEND RESET EMAIL
+                                        </Button>
+                                    </Grid>
+                                    <Grid item md={4}>
+                                        <Button className="signInButton" component={Link} to={{
+                                            "pathname": "/login",
+                                            "state": {email},
+                                        }}>
+                                            BACK TO LOGIN
+                                        </Button>
+                                    </Grid>
+                                    <Grid item md={2} />
+                                </Grid>
+                            </form>}
+                    </Grid>
+                </Grid>
+            </form>
+        </div>
     );
 };
 

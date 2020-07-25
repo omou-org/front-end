@@ -2,7 +2,7 @@ import React, {useCallback, useState} from "react";
 import gql from "graphql-tag";
 import {makeStyles} from "@material-ui/core/styles";
 import useAuthStyles from "./styles";
-import {useQuery, useMutation} from "@apollo/react-hooks";
+import {useMutation, useQuery} from "@apollo/react-hooks";
 import {useSelector} from "react-redux";
 import {useSearchParams} from "actions/hooks";
 
@@ -14,6 +14,10 @@ import {PasswordInput} from "../Form/Fields";
 import Typography from "@material-ui/core/Typography";
 
 import Loading from "components/OmouComponents/Loading";
+
+import {ReactComponent as Ellipse1} from "./loginImages/ellipse1.svg";
+import {ReactComponent as Ellipse2} from "./loginImages/ellipse2.svg";
+import {ReactComponent as Picture1} from "./loginImages/picture1.svg";
 
 const useStyles = makeStyles((theme) => ({
     "email": {},
@@ -41,13 +45,11 @@ const RESET_PASSWORD = gql`
         }
     }`;
 
-// eslint-disable-next-line max-statements
 const ResetPassword = () => {
     const params = useSearchParams();
     const resetToken = params.get("token");
     const history = useHistory();
     const [password, setPassword] = useState("");
-    const [submitted, setSubmitted] = useState(false);
     const emailStatus = useQuery(GET_EMAIL, {"variables": {"token": resetToken}});
     const email = emailStatus.data?.emailFromToken;
     const [resetPassword, resetStatus] = useMutation(RESET_PASSWORD);
@@ -87,7 +89,8 @@ const ResetPassword = () => {
     if (emailStatus?.error) {
         return (
             <Paper className={classes.root}>
-                <Typography align="left" className={classes.header} color="primary">
+                <Typography align="left" className={classes.header}
+                    color="primary">
                     reset password
                 </Typography>
                 <Typography align="left" className={classes.info}>
@@ -98,51 +101,68 @@ const ResetPassword = () => {
     }
 
     const success = resetStatus.data?.resetPassword.status === "success";
+    const error = resetStatus.data?.resetPassword.status === "failed";
 
     return (
-        <Paper className={classes.root}>
-            <Typography align="left" className={classes.header} color="primary">
-                {success ? "reset successful!" : "reset password"}
-            </Typography>
-            <Typography align="left" className={classes.info}>
-                {success ?
-                    "You can now log in with your new password." :
-                    <>Reset password for <span className={email}>{email}</span></>}
-            </Typography>
-            {success ?
-                <Button className={classes.primaryButton} color="primary"
-                    component={Link} data-cy="return" to={{
-                        "pathname": "/login",
-                        "state": {email},
-                    }} variant="contained">
-                    Back to login
-                </Button> :
-                <form onSubmit={handleSubmit}>
-                    <PasswordInput fullWidth
-                        inputProps={{"data-cy": "passwordField"}}
-                        isField={false} label="new password" margin="normal"
-                        onChange={handlePasswordInput} value={password} />
-                    <Grid alignItems="center" container justify="space-evenly">
-                        <Grid item>
-                            <Button className={classes.primaryButton}
-                                color="primary" data-cy="reset"
-                                disabled={!password || resetStatus.loading}
-                                type="submit" variant="contained">
-                                Reset Password
-                            </Button>
-                        </Grid>
-                        <Grid item>
-                            <Button className={classes.secondaryButton}
+        <div>
+            <Ellipse1 className="ellipse1" />
+            <Ellipse2 className="ellipse2" />
+            <Picture1 className="picture1" />
+            <div className="logo">
+                <Typography className="title">
+                    omou
+                </Typography>
+            </div>
+            <div className="Login">
+                <Grid className="resetPassword" container>
+                    <Grid item md={6} />
+                    <Grid item md={6}>
+                        <Typography className="welcomeText">
+                            {success ? "Reset successful!" : "Reset password"}
+                        </Typography>
+                        <Typography  className={classes.info}>
+                            {success ?
+                                "You can now log in with your new password." :
+                                <>Reset password for <span className={email}>{email}</span></>}
+                        </Typography>
+                        {success ?
+                            <Button className={classes.primaryButton} color="primary"
                                 component={Link} data-cy="return" to={{
                                     "pathname": "/login",
                                     "state": {email},
-                                }} variant="outlined">
+                                }} variant="contained">
                                 Back to login
-                            </Button>
-                        </Grid>
+                            </Button> :
+                            <form onSubmit={handleSubmit}>
+                                <PasswordInput autoComplete="current-password"
+                                    className="TextField"
+                                    error={error}
+                                    inputProps={{"data-cy": "passwordField"}}
+                                    isField={false} label="Password"
+                                    onChange={handlePasswordInput}
+                                    value={password} />
+                                <Grid className="buttonContainer" container item>
+                                    <Grid item md={2} />
+                                    <Grid item md={4} >
+                                        <Button className="createAccountButton" data-cy="reset" type="submit">
+                                            RESET PASSWORD
+                                        </Button>
+                                    </Grid>
+                                    <Grid item md={4}>
+                                        <Button className="signInButton" component={Link} to={{
+                                            "pathname": "/login",
+                                            "state": {email},
+                                        }}>
+                                            BACK TO LOGIN
+                                        </Button>
+                                    </Grid>
+                                    <Grid item md={2} />
+                                </Grid>
+                            </form>}
                     </Grid>
-                </form>}
-        </Paper>
+                </Grid>
+            </div>
+        </div>
     );
 };
 
