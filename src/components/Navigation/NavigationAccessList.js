@@ -80,5 +80,17 @@ export const NavList = {
 			"link": "/teaching-log",
 			"icon": <EventIcon/>,
 		},
-	]
+	],
+	"PARENT": [
+		{
+			"name": "Dashboard",
+			"link": "/",
+			"icon": <DashboardIcon/>,
+		},
+		{
+			"name": "Scheduler",
+			"link": "/scheduler",
+			"icon": <EventIcon/>,
+		},
+	],
 };
