@@ -1,19 +1,24 @@
-import theme, {omouBlue} from "./muiTheme";
+import theme, { omouBlue } from "./muiTheme";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 
+
 const secondaryTheme = createMuiTheme({
-	...theme,
-	MuiTableRow: {
-		head: {
-			backgroundColor: 'transparent',
-		}
-	},
-	MuiTableCell: {
-		head: {
-			color: omouBlue,
-			fontWeight: 600,
+	overrides: {
+		"MuiTableRow": {
+			"head": {
+				"backgroundColor": 'transparent',
+			}
+		},
+		"MuiTableCell": {
+			"head": {
+				"color": omouBlue,
+				"fontWeight": "0.75rem",
+			}
 		}
 	}
+
+
 });
+
 
 export default secondaryTheme
