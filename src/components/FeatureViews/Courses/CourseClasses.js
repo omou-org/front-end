@@ -96,6 +96,7 @@ const CourseClasses = () => {
                 firstName
                 lastName
                 id
+                email
               }
               accountType
               phoneNumber

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 
 import AddIcon from "@material-ui/icons/AddOutlined";
 import Button from "@material-ui/core/Button";
@@ -6,6 +6,7 @@ import Delete from "@material-ui/icons/Delete";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DoneIcon from "@material-ui/icons/CheckCircleOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
@@ -21,18 +22,46 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-
-    },
+   
 }));
 
 
-const NewAnnoucementsModal = () => {
+const NewAnnoucementsModal = ({ handleClose, open, title, body }) => {
+    const classes = useStyles();
+    const [sendEmailCheckbox, setSendEmailCheckbox] = useState(false);
+
+
+
+    const handleCloseForm = () => {
+        handleClose(false);
+    };
+
     return(
         <Grid className="annoucement-container" container item md={12} spacing={2}>
-            <Dialog>
-
-            </Dialog>
+            <Dialog open={open} onClose={handleCloseForm} aria-labelledby="form-dialog-title">
+    <DialogTitle id="form-dialog-title">{title}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {body}
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Email Address"
+            type="email"
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseForm} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleCloseForm} color="primary">
+            Subscribe
+          </Button>
+        </DialogActions>
+      </Dialog>
         </Grid>
     );
 };
