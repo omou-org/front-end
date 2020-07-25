@@ -72,8 +72,8 @@ const Bio = ({"background": {bio, experience, languages, subjects}}) => {
 									key={subject}>
 									<Chip
 										className="bioChip"
-										label={categories[subject + 1].name}
-										variant="outlined" />
+										// label={categories[subject + 1].name}
+										variant="outlined"/>
 								</Grid>
 							))
 						}
