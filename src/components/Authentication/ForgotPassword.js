@@ -68,7 +68,7 @@ const ForgotPassword = () => {
         }
     }
 
-    const submittedContent = (
+    const SubmittedContent = (
         <Button className={classes.primaryButton} color="primary"
             component={Link} data-cy="return" to={{
                 "pathname": "/login",
@@ -78,7 +78,7 @@ const ForgotPassword = () => {
         </Button>
     );
 
-    const resetForm = (
+    const ResetForm = (
         <form onSubmit={handleSubmit}>
             <TextField
                 InputProps={{
@@ -138,7 +138,7 @@ const ForgotPassword = () => {
                                 "Follow the instructions on the email to reset your password." :
                                 "Enter the email for your account and we will send you an email link to reset your password:"}
                         </Typography>
-                        {requested ? submittedContent : resetForm}
+                        {requested ? SubmittedContent : ResetForm}
                     </Grid>
                 </Grid>
             </form>
