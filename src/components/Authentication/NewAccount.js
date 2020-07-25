@@ -99,6 +99,7 @@ const NewAccount = () => {
             };
         }
     };
+
     const renderWithForm = () => {
         const renderStep = (email) => {
             switch (activeStep) {
@@ -164,6 +165,7 @@ const NewAccount = () => {
             </>
         );
     };
+
     const renderNoForm = () => (
         <>
             <Typography className="welcomeText">
@@ -201,7 +203,7 @@ const NewAccount = () => {
             <Ellipse4 className="ellipse4" />
             <Picture2 className="picture1" />
             <div className="logo2">
-                <Typography className="title">
+                <Typography align="left" className="title">
                     omou
                 </Typography>
             </div>
