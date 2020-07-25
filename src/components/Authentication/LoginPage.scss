@@ -1,3 +1,5 @@
+@import "../../theme/colors";
+
 .logo {
     padding-top: 1%;
     padding-left: 1.5%;
@@ -85,10 +87,106 @@
             color: white;
         }
     }
+    .createAccount {
+        .welcomeText {
+            font-size: 40px;
+            padding-bottom: 0;
+        }
+
+        .TextField {
+            width: 60%;
+            margin-bottom: -12px;
+        }
+
+        .formButton {
+            background-color: white;
+            border: 1px solid $secondaryColor;
+            box-sizing: border-box;
+            box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+            border-radius: 50px;
+            padding: 8px;
+            margin: 10px 20px;
+            color: $darkGray;
+        }
+
+        .formButton.MuiButton-containedPrimary {
+            background-color: $primaryColor;
+            border: 1px solid $primaryColor;
+            color: white;
+        }
+    }
+
+    .resetPassword {
+        .welcomeText {
+            padding-bottom: 0;
+        }
+    }
+}
+.ellipse1 {
+    position: absolute;
+    width: 1941.01px;
+    height: 1304.46px;
+    left: -776.74px;
+    top: -635.8px;
+    transform: matrix(0.98, 0.19, -0.19, 0.98, 0, 0);
+}
+.ellipse2 {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+.picture1 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+.ellipse3{
+    position: absolute;
+    top: 0;
+    right:0;
+    z-index: -1;
+}
+.ellipse4{
+    position:absolute;
+    left:0;
+    bottom:0;
+}
+
+.btn {
+    color: $darkGray!important;
+    width: 20vw;
+}
+
+.btn.Mui-selected {
+    background-color: $primaryColor!important;
+    color: white!important;
+}
+
+.iam {
+    padding: 20px 0 30px 0;
+}
+
+.MuiStepper-root {
+    background: none!important;
+    padding: none;
+    margin: -0px 0 -10px 0 !important;
+}
+
+.createAccContainer {
+    .Login.formLogin {
+        padding-top: 6%;
+    }
+
+    .title {
+        color: #43B5D9;
+        padding-top: 1%;
+        padding-left: 1.5%;
+    }
 }
 .picture{
     position:absolute;
-    &.var1{
+    &.var1 {
+        z-index: -100;
         left: 0;
         top: 0;
     }
