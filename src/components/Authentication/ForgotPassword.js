@@ -68,6 +68,54 @@ const ForgotPassword = () => {
         }
     }
 
+    const submittedContent = (
+        <Button className={classes.primaryButton} color="primary"
+            component={Link} data-cy="return" to={{
+                "pathname": "/login",
+                "state": {email},
+            }} variant="contained">
+            Back to login
+        </Button>
+    );
+
+    const resetForm = (
+        <form onSubmit={handleSubmit}>
+            <TextField
+                InputProps={{
+                    "startAdornment": (
+                        <InputAdornment position="start">
+                            <EmailOutlinedIcon style={{"color": "grey"}} />
+                        </InputAdornment>
+                    ),
+                }} className="TextField"
+                error={email === ""}
+                fullWidth
+                inputProps={{"data-cy": "emailField"}}
+                label="E-Mail" margin="normal"
+                onChange={handleEmailInput}
+                value={email}
+                variant="outlined" />
+            <Grid className="buttonContainer" container item>
+                <Grid item md={2} />
+                <Grid item md={4} >
+                    <Button className="createAccountButton"
+                        data-cy="reset" type="submit">
+                        SEND RESET EMAIL
+                    </Button>
+                </Grid>
+                <Grid item md={4}>
+                    <Button className="signInButton" component={Link} to={{
+                        "pathname": "/login",
+                        "state": {email},
+                    }}>
+                        BACK TO LOGIN
+                    </Button>
+                </Grid>
+                <Grid item md={2} />
+            </Grid>
+        </form>
+    );
+
     return (
         <div>
             <Ellipse1 className="ellipse1" />
@@ -90,49 +138,7 @@ const ForgotPassword = () => {
                                 "Follow the instructions on the email to reset your password." :
                                 "Enter the email for your account and we will send you an email link to reset your password:"}
                         </Typography>
-                        {requested ?
-                            <Button className={classes.primaryButton} color="primary"
-                                component={Link} data-cy="return" to={{
-                                    "pathname": "/login",
-                                    "state": {email},
-                                }} variant="contained">
-                                Back to login
-                            </Button> :
-                            <form onSubmit={handleSubmit}>
-                                <TextField
-                                    InputProps={{
-                                        "startAdornment": (
-                                            <InputAdornment position="start">
-                                                <EmailOutlinedIcon style={{"color": "grey"}} />
-                                            </InputAdornment>
-                                        ),
-                                    }} className="TextField"
-                                    error={email === ""}
-                                    fullWidth
-                                    inputProps={{"data-cy": "emailField"}}
-                                    label="E-Mail" margin="normal"
-                                    onChange={handleEmailInput}
-                                    value={email}
-                                    variant="outlined" />
-                                <Grid className="buttonContainer" container item>
-                                    <Grid item md={2} />
-                                    <Grid item md={4} >
-                                        <Button className="createAccountButton"
-                                            data-cy="reset" type="submit">
-                                            SEND RESET EMAIL
-                                        </Button>
-                                    </Grid>
-                                    <Grid item md={4}>
-                                        <Button className="signInButton" component={Link} to={{
-                                            "pathname": "/login",
-                                            "state": {email},
-                                        }}>
-                                            BACK TO LOGIN
-                                        </Button>
-                                    </Grid>
-                                    <Grid item md={2} />
-                                </Grid>
-                            </form>}
+                        {requested ? submittedContent : resetForm}
                     </Grid>
                 </Grid>
             </form>
