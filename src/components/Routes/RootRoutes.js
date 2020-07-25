@@ -12,6 +12,7 @@ import EditSessionView from "../FeatureViews/Scheduler/EditSessionView";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import ForgotPassword from "../Authentication/ForgotPassword";
 import LoginPage from "../Authentication/LoginPage.js";
+import NewAccount from "../Authentication/NewAccount";
 import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage";
 import NotEnrolledStudentsDialog from "../FeatureViews/Scheduler/NotEnrolledStudentDialog";
 import PaymentReceipt from "../FeatureViews/Registration/PaymentReceipt";
@@ -48,10 +49,13 @@ export const RootRoutes = () => {
             <Route path="/login">
                 <LoginPage />
             </Route>
+            <Route path="/new/:type?">
+                <NewAccount />
+            </Route>
 
             {/* Main Feature Views */}
             <AuthenticatedRoute exact path="/">
-                <DashboardSwitch/>
+                <DashboardSwitch />
             </AuthenticatedRoute>
             <AuthenticatedRoute exact path="/registration">
                 <Registration />

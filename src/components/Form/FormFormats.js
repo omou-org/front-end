@@ -187,7 +187,7 @@ export const ACADEMIC_LVL_FIELD = {
     BIRTH_DATE_FIELD = {
         "name": "birthDate",
         "label": "Birth Date",
-        "component": <Fields.KeyboardDatePicker format="MM/dd/yyyy" />,
+        "component": <Fields.DatePicker format="MM/DD/YYYY" openTo="year"/>,
         "validator": Yup.date().max(moment()),
     },
     CITY_FIELD = {
@@ -258,13 +258,13 @@ export const ACADEMIC_LVL_FIELD = {
     START_DATE_FIELD = {
         "name": "startDate",
         "label": "Start Date",
-        "component": <Fields.KeyboardDatePicker format="MM/dd/yyyy" />,
+        "component": <Fields.DatePicker format="MM/DD/YYYY"/>,
         "validator": Yup.date(),
     },
     START_TIME_FIELD = {
         "name": "startTime",
         "label": "Start Time",
-        "component": <Fields.KeyboardTimePicker format="hh:mm"/>,
+        "component": <Fields.TimePicker format="hh:mm a"/>,
         "validator": Yup.date(),
     },
     STATE_FIELD = {
@@ -960,7 +960,7 @@ export default {
         "submit": async (formData, id) => {
             const CREATE_COURSE = gql`
             mutation CreateCourse($startDate:DateTime, $endDate:DateTime, $startTime:Time!, $endTime:Time!, $academicLevel:AcademicLevelEnum,$courseCategory:ID, $description:String, $hourlyTuition:Decimal, $instructor:ID, $isConfirmed:Boolean, $maxCapacity:Int, $totalTuition: Decimal, $title:String!) {
-  createCourse(endTime: $endTime, startTime: $startTime, title: $title, maxCapacity: $maxCapacity, isConfirmed: $isConfirmed, instructor: $instructor, hourlyTuition: $hourlyTuition, academicLevel: $academicLevel, course_category: $courseCategory, courseType: CLASS, description: $description, endDate: $endDate, startDate: $startDate, totalTuition: $totalTuition) {
+  createCourse(endTime: $endTime, startTime: $startTime, title: $title, maxCapacity: $maxCapacity, isConfirmed: $isConfirmed, instructor: $instructor, hourlyTuition: $hourlyTuition, academicLevel: $academicLevel, courseCategory: $courseCategory, courseType: CLASS, description: $description, endDate: $endDate, startDate: $startDate, totalTuition: $totalTuition) {
     course {
       id
     }

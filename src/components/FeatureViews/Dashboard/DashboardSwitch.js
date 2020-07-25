@@ -10,5 +10,6 @@ export default function DashboardSwitch() {
 		"ADMIN": <Dashboard/>,
 		"RECEPTIONIST": <Dashboard/>,
 		"INSTRUCTOR": <InstructorDashboard user={AuthUser}/>,
+		"PARENT": <div>This is a parent's dashboard. This is a placeholder</div>
 	}[ACCOUNT_TYPE])
 }
