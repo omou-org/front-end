@@ -47,26 +47,29 @@ export const RootRoutes = () => {
                 <ResetPassword />
             </Route>
             <Route path="/login">
-                <LoginPage />
+                <LoginPage/>
             </Route>
             <Route path="/new/:type?">
-                <NewAccount />
+                <NewAccount/>
             </Route>
 
             {/* Main Feature Views */}
             <AuthenticatedRoute exact path="/">
-                <DashboardSwitch />
+                <DashboardSwitch/>
             </AuthenticatedRoute>
-            <AuthenticatedRoute exact path="/registration">
-                <Registration />
+            <AuthenticatedRoute exact
+                                path="/registration"
+                                users={[USER_TYPES.admin, USER_TYPES.receptionist, USER_TYPES.parent]}
+            >
+                <Registration/>
             </AuthenticatedRoute>
 
             {/* Scheduler Routes */}
             <AuthenticatedRoute exact path="/scheduler">
-                <Scheduler />
+                <Scheduler/>
             </AuthenticatedRoute>
             <AuthenticatedRoute exact path="/scheduler/view-session/:course_id/:session_id/:instructor_id">
-                <SessionView />
+                <SessionView/>
             </AuthenticatedRoute>
             <AuthenticatedRoute exact path="/scheduler/edit-session/:course_id/:session_id/:instructor_id/edit">
                 <EditSessionView />
