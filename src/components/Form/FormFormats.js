@@ -973,9 +973,9 @@ export default {
                 "courseInfo": {
                     ...courseInfo,
                     "instructor": courseInfo.instructor.value,
-                    "endDate": courseInfo.startDate
+                    "endDate": moment(courseInfo.startDate)
                         .add(tuition.numSessions - 1, "w"),
-                    "endTime": courseInfo.startTime.add(tuition.duration, "h")
+                    "endTime": moment(courseInfo.startTime).add(tuition.duration, "h")
                         .format("HH:mm"),
                     "startTime": courseInfo.startTime.format("HH:mm"),
                 },
@@ -985,6 +985,7 @@ export default {
                     "duration": formData.tuition.duration.value,
                 },
             };
+
             try {
                 await client.mutate({
                     "mutation": CREATE_COURSE,

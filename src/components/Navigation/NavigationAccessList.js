@@ -60,11 +60,11 @@ export const NavList = {
 		},
 	],
 	"INSTRUCTOR": [
-		{
-			"name": "Dashboard",
-			"link": "/",
-			"icon": <DashboardIcon/>,
-		},
+		// {
+		// 	"name": "Dashboard",
+		// 	"link": "/",
+		// 	"icon": <DashboardIcon/>,
+		// },
 		{
 			"name": "Scheduler",
 			"link": "/scheduler",
@@ -82,11 +82,11 @@ export const NavList = {
 		},
 	],
 	"PARENT": [
-		{
-			"name": "Dashboard",
-			"link": "/",
-			"icon": <DashboardIcon/>,
-		},
+		// {
+		// 	"name": "Dashboard",
+		// 	"link": "/",
+		// 	"icon": <DashboardIcon/>,
+		// },
 		{
 			"name": "Scheduler",
 			"link": "/scheduler",
