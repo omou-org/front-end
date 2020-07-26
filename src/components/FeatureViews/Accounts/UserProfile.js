@@ -72,7 +72,7 @@ const userTabs = {
 		{
 			icon: <CurrentSessionsIcon className="TabIcon"/>,
 			tab_heading: "Student Info",
-			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.parent],
 			tab_id: 8,
 		},
 		{
@@ -227,17 +227,19 @@ const UserProfile = () => {
 									}
 								/>
 								:
-						<Tab
-							key={tab.tab_id}
-							label={
-								<>
-									{tab.icon} {tab.tab_heading}
-								</>
-							}
-						/>
-					))}
+								<Tab
+									key={tab.tab_id}
+									label={
+										<>
+											{tab.icon} {tab.tab_heading}
+										</>
+									}
+								/>
+						))}
 				</Tabs>
-				<ComponentViewer inView={displayTabs[tabIndex].tab_id} user={user}/>
+				<ComponentViewer inView={displayTabs
+					.filter((tab) =>
+						(tab.access_permissions.includes(AuthUser.accountType)))[tabIndex].tab_id} user={user}/>
 			</>
 		);
 	}, [displayTabs, handleTabChange, tabIndex, user]);
@@ -283,8 +285,6 @@ const UserProfile = () => {
 			return <Redirect to="/PageNotFound"/>;
 		}
 	}
-
-	console.log(user);
 
 	return (
 		<div className="UserProfile">

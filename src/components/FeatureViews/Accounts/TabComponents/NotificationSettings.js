@@ -12,7 +12,8 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import Grid from "@material-ui/core/Grid";
 import {omouBlue} from "../../../../theme/muiTheme";
 import gql from "graphql-tag";
-import {useMutation} from "@apollo/react-hooks";
+import {useMutation, useQuery} from "@apollo/react-hooks";
+import Loading from "../../../OmouComponents/Loading";
 
 const StyledTableRow = withStyles((theme) => ({
 	root: {
@@ -34,13 +35,12 @@ const useStyles = makeStyles({
 
 const CREATE_PARENT_NOTIFICATION_SETTINGS = gql`mutation createParentNotificationSetting($parent:ID!, $paymentReminderEmail:Boolean, 
   $paymentReminderSms:Boolean, $scheduleUpdatesSms:Boolean, $sessionReminderEmail:Boolean,
-  $sessionReminderSms:Boolean, $courseRequestSms:Boolean) {
+  $sessionReminderSms:Boolean) {
   __typename
   createParentNotificationSetting(parent: $parent, paymentReminderEmail: $paymentReminderEmail, 
     paymentReminderSms: $paymentReminderSms, scheduleUpdatesSms: $scheduleUpdatesSms, sessionReminderEmail: $sessionReminderEmail, 
-    sessionReminderSms: $sessionReminderSms, courseRequestsSms: $courseRequestSms) {
+    sessionReminderSms: $sessionReminderSms) {
     settings {
-      courseRequestsSms
       paymentReminderEmail
       paymentReminderSms
       scheduleUpdatesSms
@@ -50,6 +50,41 @@ const CREATE_PARENT_NOTIFICATION_SETTINGS = gql`mutation createParentNotificatio
   }
 }
 `;
+
+const CREATE_INSTRUCTOR_NOTIFICATION_SETTINGS = gql`mutation createInstructorNotificationSetting($instructor:ID!, 
+ $scheduleUpdatesSms:Boolean, $sessionReminderEmail:Boolean,
+  $sessionReminderSms:Boolean, $courseRequestSms:Boolean) {
+  __typename
+  createInstructorNotificationSetting(instructor: $instructor, scheduleUpdatesSms: $scheduleUpdatesSms, sessionReminderEmail: $sessionReminderEmail, 
+    sessionReminderSms: $sessionReminderSms, courseRequestsSms: $courseRequestSms) {
+    settings {
+      courseRequestsSms
+      scheduleUpdatesSms
+      sessionReminderEmail
+      sessionReminderSms
+    }
+  }
+}
+`;
+
+const GET_INSTRUCTOR_NOTIFICATION_SETTINGS = gql`query GetInstructorNotificationSettings($instructorId: ID!) {
+  instructorNotificationSettings(instructorId: $instructorId) {
+    courseRequestsSms
+    scheduleUpdatesSms
+    sessionReminderEmail
+    sessionReminderSms
+  }
+}`
+
+const GET_PARENT_NOTIFICATION_SETTINGS = gql`query GetParentNotificationSettings($parentId: ID!) {
+  parentNotificationSettings(parentId: $parentId) {
+    paymentReminderEmail
+    paymentReminderSms
+    scheduleUpdatesSms
+    sessionReminderEmail
+    sessionReminderSms
+  }
+}`
 
 const createNotificationSetting = (name, description, email, sms) =>
 	({name, description, email, sms, optional: false});
@@ -61,26 +96,75 @@ export default function NotificationSettings({user}) {
 	const classes = useStyles();
 	const [notificationRows, setNotificationRows] = useState([]);
 	const [optInNotifRows, setOptInNotifRows] = useState([]);
-	const [createParentNotification, createParentNotificationResults] = useMutation(CREATE_PARENT_NOTIFICATION_SETTINGS);
 
+	const isParent = user.role.toLowerCase() === "parent";
+	const isInstructor = user.role.toLowerCase() === "instructor";
+	const instructorSettingResponse = useQuery(GET_INSTRUCTOR_NOTIFICATION_SETTINGS, {
+		variables: {instructorId: user.user_id},
+		skip: !isInstructor,
+	});
+	const parentSettingResponse = useQuery(GET_PARENT_NOTIFICATION_SETTINGS, {
+		variables: {parentId: user.user_id},
+		skip: !isParent,
+	})
+
+	const [createParentNotification, createParentNotificationResults] =
+		useMutation(CREATE_PARENT_NOTIFICATION_SETTINGS, {
+			update: (cache, {data}) => {
+				cache.writeQuery({
+					data: {
+						parentNotificationSettings: data.createParentNotificationSetting.settings,
+					},
+					query: GET_PARENT_NOTIFICATION_SETTINGS,
+					variables: {parentId: user.user_id},
+				})
+			}
+		});
+	const [createInstructorNotification, createInstructorNotificationResults] =
+		useMutation(CREATE_INSTRUCTOR_NOTIFICATION_SETTINGS, {
+			update: (cache, {data}) => {
+				cache.writeQuery({
+					data: {
+						instructorNotificationSettings: data.createInstructorNotificationSetting.settings,
+					},
+					query: GET_INSTRUCTOR_NOTIFICATION_SETTINGS,
+					variables: {instructorId: user.user_id}
+				})
+			}
+		});
+
+	// initialize settings
 	useEffect(() => {
+		let userSettings;
+		if (instructorSettingResponse.loading === false || parentSettingResponse.loading === false) {
+			const {data: {instructorNotificationSettings} = {}} = instructorSettingResponse;
+			const {data: {parentNotificationSettings} = {}} = parentSettingResponse;
+
+			if (isParent) {
+				userSettings = parentNotificationSettings;
+			}
+			if (isInstructor) {
+				userSettings = instructorNotificationSettings;
+			}
+		}
 		setNotificationRows([
 			createNotificationSetting("Session Reminder",
 				"Get notified when a session is coming up.",
-				{settingName: "sessionReminderEmail", checked: false,},
-				{settingName: "sessionReminderSms", checked: false,}),
-			createNotificationSetting("Payment Reminder",
+				{settingName: "sessionReminderEmail", checked: userSettings?.sessionReminderEmail || false,},
+				{settingName: "sessionReminderSms", checked: userSettings?.sessionReminderSms || false,}),
+			...(user.role.toLowerCase() === "parent" ? [createNotificationSetting("Payment Reminder",
 				"Get notified when a payment is coming up.",
-				{settingName: "paymentReminderEmail", checked: false,},
-				{settingName: "paymentReminderSms", checked: false,}),
+				{settingName: "paymentReminderEmail", checked: userSettings?.paymentReminderEmail || false,},
+				{settingName: "paymentReminderSms", checked: userSettings?.paymentReminderSms || false,})] : []),
 		]);
 		setOptInNotifRows([
 			createOptInSetting("SMS Schedule Updates", "Get notified for schedule changes by SMS",
-				{settingName: "scheduleUpdatesSms", checked: false,}),
+				{settingName: "scheduleUpdatesSms", checked: userSettings?.scheduleUpdatesSms || false,}),
 			createOptInSetting("SMS Course Requests", "Get notified for cancellations by SMS",
-				{settingName: "courseRequestsSms", checked: false,}),
+				{settingName: "courseRequestsSms", checked: userSettings?.courseRequestsSms || false,}),
 		]);
-	}, [setNotificationRows, setOptInNotifRows, createNotificationSetting, createOptInSetting]);
+	}, [setNotificationRows, setOptInNotifRows, createNotificationSetting, createOptInSetting,
+		instructorSettingResponse.loading, parentSettingResponse.loading]);
 
 	const handleSettingChange = (setting, setFunction, index) => (_) => {
 		let notificationSettings = {};
@@ -108,8 +192,13 @@ export default function NotificationSettings({user}) {
 		if (user.role.toLowerCase() === "parent") {
 			notificationSettings.parent = user.user_id;
 			createParentNotification({variables: notificationSettings});
+		} else {
+			notificationSettings.instructor = user.user_id;
+			createInstructorNotification({variables: notificationSettings});
 		}
 	};
+
+	if (instructorSettingResponse.loading || parentSettingResponse.loading) return <Loading/>;
 
 	return (<>
 		<Grid container style={{backgroundColor: "#F5F5F5", padding: "1%", marginTop: "30px"}}>
