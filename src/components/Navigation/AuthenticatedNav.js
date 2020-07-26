@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from "react";
+import React, { useCallback, useState } from "react";
 import PropTypes from "prop-types";
 
 import {logout} from "actions/authActions";
@@ -11,6 +11,8 @@ import LogoutIcon from "@material-ui/icons/ExitToAppOutlined";
 import MenuIcon from "@material-ui/icons/Menu";
 import NavLinkNoDup from "../Routes/NavLinkNoDup";
 import Search from "components/FeatureViews/Search/Search";
+import Toolbar from "@material-ui/core/Toolbar";
+import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 // Local Component Imports
 import Avatar from "@material-ui/core/Avatar";
@@ -44,17 +46,19 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
 
     return (
         <>
-            {!isMobileSearching && (
-                <>
-                    <Hidden lgUp>
-                        <IconButton aria-label="Open Drawer" color="inherit"
-                            onClick={handleDrawerToggle}>
-                            <MenuIcon />
-                        </IconButton>
-                    </Hidden>
-                    <Typography className="title" component={NavLinkNoDup}
-                        to="/">
-                        omou
+            <AppBar className="OmouBar" position="sticky">
+                <Toolbar>
+                    {!isMobileSearching && (
+                        <>
+                            <Hidden lgUp>
+                                <IconButton aria-label="Open Drawer" color="inherit"
+                                    onClick={handleDrawerToggle}>
+                                    <MenuIcon />
+                                </IconButton>
+                            </Hidden>
+                            <Typography className="title" component={NavLinkNoDup}
+                                to="/">
+                                omou
                     </Typography>
                     <div style={{"flex": 1}} />
                 </>
@@ -81,8 +85,10 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
                 to="/cats">
                 CATS
             </Typography>
-            {!isMobileSearching &&
-                <LogoutIcon className="logout-icon" onClick={handleLogout} />}
+                    {!isMobileSearching &&
+                        <LogoutIcon className="logout-icon" onClick={handleLogout} />}
+                </Toolbar>
+            </AppBar>
         </>
     );
 };

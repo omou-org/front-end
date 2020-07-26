@@ -403,30 +403,12 @@ export const uniques = (array) => array.filter(
 export const fullName = ({firstName, lastName}) => `${firstName} ${lastName}`;
 
 /**
- * Returns the end date given the number of weekly sessions
- * @param {Date} startDate
- * @param {Int} numSessions
- * */
-export const getEndDate = (startDate, numSessions) => (
-	new Date(new Date(startDate).setDate(startDate.getDate() + 7 * (numSessions - 1)))
-);
-
-/**
- * Returns the end date given the number of weekly sessions
- * @param {Date} startTime
- * @param {Number} duration
- * */
-export const getEndTime = (startTime, duration) => (
-	new Date(new Date(startTime).setTime(startTime.getTime() + Number(duration) * 60 * 60 * 1000))
-);
-
-/**
  * Returns if 2 arrays are the same
  * @param {Array} arr1
  * @param {Array} arr2
  * */
 export const arraysMatch = function (arr1, arr2) {
-    console.log(arr1, arr2);
+    if (!arr1 || !arr2) return false;
     // Check if the arrays are the same length
     if (arr1.length !== arr2.length) return false;
 
@@ -495,14 +477,49 @@ export const checkTimeSegmentOverlap = (timeSegments) => {
 };
 
 /**
+ * @description list any time conflicts within a list of time segments
+ * @param {Array} timeSegments array of time segments = array of valid start and end times
+ * @return Boolean error message if there's a conflict or false if there's no conflicts
+ * */
+export const listTimeSegmentOverlaps = (timeSegments) => {
+    if (timeSegments.length === 1) return false;
+
+    timeSegments.sort((timeSegment1, timeSegment2) =>
+        setCurrentDate(timeSegment1[0]).diff(setCurrentDate(timeSegment2[0]))
+    );
+
+    const validTime = (time) => {
+        if (typeof time === "string") {
+            return moment(time);
+        }
+        return time;
+    }
+    const timeSegmentString = ([startTime, endTime]) =>
+        `${validTime(startTime).format("hh:mm A")} - ${validTime(endTime).format("hh:mm A")}`;
+
+    for (let i = 0; i < timeSegments.length - 1; i++) {
+        const currentStartTime = moment(timeSegments[i][0]);
+        const currentEndTime = moment(timeSegments[i][1]);
+        const nextStartTime = moment(timeSegments[i + 1][0]);
+
+        if (currentEndTime > nextStartTime || nextStartTime === currentStartTime) {
+            return `Whoops. ${timeSegmentString(timeSegments[i])} has a conflict with 
+				${timeSegmentString(timeSegments[i + 1])}! Please correct it.`;
+        }
+    }
+
+    return false;
+};
+
+/**
  * @description check if 2 objects are equal including sub objects
  * @param {Object} object1
  * @param {Object} object2
  * @return {Boolean}
  * */
 export function deepEqual(object1, object2) {
-	const keys1 = Object.keys(object1);
-	const keys2 = Object.keys(object2);
+    const keys1 = Object.keys(object1);
+    const keys2 = Object.keys(object2);
 
 	if (keys1.length !== keys2.length) {
 		return false;

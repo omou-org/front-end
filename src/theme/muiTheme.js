@@ -26,9 +26,6 @@ const theme = createMuiTheme({
             "main": neutralBackgroundColor,
             "default": neutralBackgroundColor,
         },
-		text: {
-			// primary: "#FFFFFF",
-		}
     },
     "colors": {
         "black": "#000000",

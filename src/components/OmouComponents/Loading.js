@@ -2,17 +2,23 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import Paper from "@material-ui/core/Paper";
-import Penguin from "../penguin.gif";
 import Typography from "@material-ui/core/Typography";
+import "./Loading.scss";
+
 
 const Loading = ({
     paper = false, small = false, loadingText = "",
 }) => {
     if (paper) {
         return (
-            <Paper className="paper" style={{"height": "100vh"}}>
+            <Paper className="paper" style={{ "height": "100vh" }}>
                 <Typography variant="h3">{loadingText}</Typography>
-                <img alt="loading penguin" src={Penguin} />
+                <h1>
+                    <span>o</span>
+                    <span>m</span>
+                    <span>o</span>
+                    <span>u</span>
+                </h1>
             </Paper>
         );
     }
@@ -29,8 +35,13 @@ const Loading = ({
         );
     }
     return (
-        <div className="paper" style={{"height": "70vh"}}>
-            <img alt="loading penguin" src={Penguin} />
+        <div className="paper" style={{ "height": "70vh", "color": "43B5D" }}>
+                <h1>
+                    <span>o</span>
+                    <span>m</span>
+                    <span>o</span>
+                    <span>u</span>
+                </h1>
             <Typography variant="h3">
                 {loadingText}
             </Typography>

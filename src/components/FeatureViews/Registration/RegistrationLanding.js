@@ -1,6 +1,4 @@
 import React, {useCallback, useState} from "react";
-
-import BackButton from "components/OmouComponents/BackButton";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import SearchSelect from "react-select";
@@ -127,8 +125,6 @@ const RegistrationLanding = () => {
             })),
     );
 
-    console.log("asd");
-
     const filteredCourses = Object.entries(courseFilters)
         .filter(([, filters]) => filters.length > 0)
         .reduce((courses, [filterName, filters]) => {
@@ -183,15 +179,16 @@ const RegistrationLanding = () => {
 
     return (
         <BackgroundPaper className="RegistrationLanding" elevation={2}>
-            <BackButton />
-            <hr />
+            <Grid container>
+                <RegistrationActions/>
+            </Grid>
+            <hr/>
             <Grid container layout="row">
                 <Grid item md={8} xs={12}>
                     <Typography align="left" className="heading" variant="h3">
                         Registration Catalog
                     </Typography>
                 </Grid>
-				<RegistrationActions/>
                 <Grid className="catalog-setting-wrapper" item>
                     <Tabs
                         className="catalog-setting"

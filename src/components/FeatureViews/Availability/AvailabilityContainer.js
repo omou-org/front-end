@@ -9,9 +9,7 @@ import TimeAvailabilityContainer from "./TimeAvailabilityContainer";
 import RequestOutOfOfficeContainer from "./RequestOutOfOfficeContainer";
 import Box from "@material-ui/core/Box";
 
-function TabPanel(props) {
-	const {children, value, index, ...other} = props;
-
+function TabPanel({children, value, index, ...other}) {
 	return (
 		<div
 			role="tabpanel"
@@ -33,7 +31,6 @@ export default function AvailabilityContainer() {
 	const [tab, setTab] = useState(0);
 
 	const handleChangeTab = useCallback((_, newValue) => {
-		console.log(newValue);
 		setTab(newValue);
 	}, [setTab]);
 

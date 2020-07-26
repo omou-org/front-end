@@ -1,6 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, {useContext, useState} from "react";
 import Grid from "@material-ui/core/Grid";
-import { fullName, getTuitionAmount } from "../../../../utils";
+import {fullName, getTuitionAmount} from "../../../../utils";
 import Typography from "@material-ui/core/Typography";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -44,7 +44,7 @@ function RegistrationEntry({ registration: { course, numSessions, checked }, stu
 	const handleSessionCheckChange = (_) => {
 		updateSession(numSessions, !checked, studentId, course.id);
 	};
-	console.log(course);
+
 	return (<>
 		<TableRow className={classes.root}>
 			<TableCell>
@@ -93,11 +93,11 @@ function RegistrationEntry({ registration: { course, numSessions, checked }, stu
 
 export default function StudentRegistrationEntry({ student, registrationList }) {
 	return (<Grid item xs={12} container>
-		<Typography style={{ fontWeight: 600 }}>Student: {fullName(student.user)}</Typography>
-		<Table color="secondary">
+		<Typography style={{fontWeight: 600}}>{fullName(student.user)}</Typography>
+		<Table>
 			<TableHead>
 				<TableRow>
-					<TableCell />
+					<TableCell/>
 					<TableCell>
 						Descriptions
 					</TableCell>

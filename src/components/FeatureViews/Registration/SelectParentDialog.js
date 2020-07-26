@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import PropTypes from "prop-types";
 
 import Button from "@material-ui/core/Button";
@@ -18,7 +18,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import {fullName} from "../../../utils";
 import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {closeRegistrationCart} from "../../OmouComponents/RegistrationUtils";
+import {closeRegistrationCart, getRegistrationCart} from "../../OmouComponents/RegistrationUtils";
 
 const GET_PARENTS_QUERY = gql`
 query GetParents($query: String!) {
@@ -43,13 +43,8 @@ const SelectParentDialog = ({onClose, open}) => {
 	const [parent, setParent] = useState(null);
 	const [inputValue, setInputValue] = useState('');
 	const [searching, setSearching] = useState(false);
+	const {currentParent, ...registrationCartState} = getRegistrationCart();
 
-	const currentParent = useSelector(
-		({Registration}) => Registration.CurrentParent
-	);
-	const registeredCourses = useSelector(
-		({Registration}) => Registration.registered_courses
-	);
 	const [
 		getParents,
 		{loading, data}
@@ -129,10 +124,7 @@ const SelectParentDialog = ({onClose, open}) => {
 		}}
 	/>;
 
-	const numToCheckout = Object.values(registeredCourses || {}).reduce(
-		(count, studentCourses) => count + studentCourses.length,
-		0
-	);
+	const numToCheckout = Object.values(registrationCartState).flat().length;
 
 	const options = data ? data.accountSearch.results
 		.map(parent => ({label: fullName(parent.user), value: parent})) : [];

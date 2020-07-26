@@ -11,7 +11,7 @@ export const createTutoringDetails = (courseType, formData) => ({
 	courseType,
 });
 
-const createRegistrationInfo = (student, course) => ({
+const mapRegistrationInfo = (student, course) => ({
 	course: {
 		id: typeof course === "string" && course,
 		...(typeof course !== "string" && course),
@@ -22,7 +22,7 @@ const createRegistrationInfo = (student, course) => ({
 });
 
 const saveRegistration = (student, course, registrationState) => {
-	const newRegistrationInfo = createRegistrationInfo(student, course);
+	const newRegistrationInfo = mapRegistrationInfo(student, course);
 	const existingStudentRegistration = registrationState?.[student] || [];
 	const newRegistrationState = {
 		[student]: [newRegistrationInfo, ...existingStudentRegistration],
@@ -63,6 +63,7 @@ export const closeRegistrationCart = () => {
  * */
 export const getRegistrationCart = () => {
 	const registrationState = JSON.parse(sessionStorage.getItem("registrations"));
+	if (typeof registrationState !== "object" || !registrationState) return {currentParent: null};
 	if (Object.keys(registrationState).length > 0) return registrationState;
-	return null;
+	return {currentParent: null};
 };

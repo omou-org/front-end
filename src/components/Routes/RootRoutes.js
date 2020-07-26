@@ -12,13 +12,13 @@ import EditSessionView from "../FeatureViews/Scheduler/EditSessionView";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import ForgotPassword from "../Authentication/ForgotPassword";
 import LoginPage from "../Authentication/LoginPage.js";
+import NewAccount from "../Authentication/NewAccount";
 import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage";
 import NotEnrolledStudentsDialog from "../FeatureViews/Scheduler/NotEnrolledStudentDialog";
 import PaymentReceipt from "../FeatureViews/Registration/PaymentReceipt";
 import Registration from "../FeatureViews/Registration/Registration";
 import FormPage from "../Form/FormPage";
 import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
-import RegistrationReceipt from "../Form/RegistrationReceipt";
 import ResetPassword from "../Authentication/ResetPassword";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
 import SearchResults from "../FeatureViews/Search/SearchResults";
@@ -49,10 +49,13 @@ export const RootRoutes = () => {
             <Route path="/login">
                 <LoginPage />
             </Route>
+            <Route path="/new/:type?">
+                <NewAccount />
+            </Route>
 
             {/* Main Feature Views */}
             <AuthenticatedRoute exact path="/">
-                <DashboardSwitch/>
+                <DashboardSwitch />
             </AuthenticatedRoute>
             <AuthenticatedRoute exact path="/registration">
                 <Registration />
@@ -110,7 +113,7 @@ export const RootRoutes = () => {
                 <RegistrationCartContainer/>
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/registration/receipt/:paymentID?">
-                <RegistrationReceipt />
+                <PaymentReceipt/>
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/NotEnrolledStudent">
                 <NotEnrolledStudentsDialog />

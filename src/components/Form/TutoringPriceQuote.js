@@ -58,7 +58,7 @@ const TutoringPriceQuote = ({
 		if (sessionsValue && durationValue && hourlyTuitionValue) {
 			setPriceQuote(() => {
 				const quote = Number(sessionsValue) * Number(durationValue) * Number(hourlyTuitionValue);
-				return `$ ${quote.toString()}`;
+				return `$ ${quote}`;
 			});
 		}
 	}, [sessionsValue, durationValue, hourlyTuitionValue]);
@@ -156,7 +156,6 @@ const TutoringPriceQuote = ({
 					name="duration"
 					label="Duration"
 					variant="outlined"
-					// fullWidth
 				>
 					<MenuItem value=".5">0.5 Hours</MenuItem>
 					<MenuItem value="1">1 Hours</MenuItem>
