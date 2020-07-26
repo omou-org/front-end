@@ -31,7 +31,7 @@ export const GET_PARENT_PAYMENTS_FILTERED = gql`
 
 export default function MyPaymentHistory() {
 	const AuthUser = useSelector(({auth}) => auth);
-	const [getPayments, {loading, data}] = useLazyQuery(GET_PARENT_PAYMENTS_FILTERED);
+	const [getPayments, {loading, data, error}] = useLazyQuery(GET_PARENT_PAYMENTS_FILTERED);
 	const [openCalendar, setOpenCalendar] = useState(false);
 	const [state, setState] = useState([
 		{
@@ -68,6 +68,7 @@ export default function MyPaymentHistory() {
 	}
 
 	if (loading || !data) return <Loading/>;
+	if (error) return <div>An Error has occurred! {error.message}</div>
 
 	const {payments} = data;
 
@@ -90,7 +91,7 @@ export default function MyPaymentHistory() {
 				<Dialog open={openCalendar} onClose={handleSaveDateRange}>
 					<DateRange
 						editableDateInputs={true}
-						onChange={item => handleDateRangeCalendarChange(item)}
+						onChange={handleDateRangeCalendarChange}
 						moveRangeOnFirstSelection={false}
 						ranges={state}
 					/>
