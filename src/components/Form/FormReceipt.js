@@ -1,7 +1,5 @@
 import React from "react";
 
-import Button from "@material-ui/core/Button";
-import {Link} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 
 const FormReceipt = ({formData, format}) => (
@@ -10,15 +8,8 @@ const FormReceipt = ({formData, format}) => (
         "padding": "5px",
     }}>
         <Typography align="left" style={{"fontSize": "24px"}}>
-            You have successfully registered!
+            You've successfully submitted!
         </Typography>
-        <Typography align="left" style={{"fontSize": "14px"}}>
-            An email will be sent to you to confirm your registration
-        </Typography>
-        <Button align="left" className="button" component={Link}
-            style={{"margin": "20px"}} to="/registration">
-            REGISTER MORE
-        </Button>
         <div className="confirmation-copy">
             <Typography align="left" className="title">
                 Confirmation

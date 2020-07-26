@@ -5,9 +5,12 @@
 @import "~@fullcalendar/timegrid/main.css";
 @import "../../../theme/colors";
 @import "../../../theme/sizes";
-@import "~@fullcalendar/core/main.css";
-@import "~@fullcalendar/daygrid/main.css";
-@import "~@fullcalendar/list/main.css";
+@import '~@fullcalendar/core/main.css';
+@import '~@fullcalendar/daygrid/main.css';
+@import '~@fullcalendar/list/main.css';
+@import '~react-date-range/dist/styles.css';
+// main css file
+@import '~react-date-range/dist/theme/default.css'; // theme css file
 
 // Session view
 .scheduler {
@@ -76,7 +79,7 @@
   border: none !important;
   border-top: 1px solid #ddd !important;
   font-weight: bold;
-} 
+}
 
 // ToolTip css are styled ul's
 .toolTip {

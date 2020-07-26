@@ -250,7 +250,7 @@ export const editRegistration = (editedRegistration) => ({
 	payload: editedRegistration,
 });
 
-export const addCourseRegistration = (form) => ({
+export const addClassRegistration = (form) => ({
 	type: types.ADD_CLASS_REGISTRATION,
 	payload: {...form},
 });

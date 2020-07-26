@@ -124,7 +124,7 @@ const AdminActionCenter = () => {
 				onClose={handleClose(setUserAnchor)}
 				open={Boolean(userAnchor)}
 			>
-				<MenuItem component={NavLink} to="/registration/form/instructor">
+				<MenuItem component={NavLink} to="/form/instructor">
 					<ListItemText primary="ADD INSTRUCTOR"/>
 				</MenuItem>
 				<MenuItem component={NavLink} to="/registration/form/admin">
@@ -137,7 +137,7 @@ const AdminActionCenter = () => {
 				onClose={handleClose(setCourseAnchor)}
 				open={Boolean(courseAnchor)}
 			>
-				<MenuItem component={NavLink} to="/registration/form/course_details">
+				<MenuItem component={NavLink} to="/form/course_details">
 					<ListItemText primary="NEW COURSE"/>
 				</MenuItem>
 				<MenuItem
