@@ -107,31 +107,63 @@ const AdminDashboard = (props) => {
     { label: "Access Control" },
   ];
 
-  const QUERIES = {
-    unpaidsessions: gql`
-      query MyQuery {
-        unpaidSessions {
-          paymentList {
-            parent {
-              user {
-                firstName
-                lastName
-                id
-              }
+  const QUERIES = 
+    // gql`
+    //   query MyQuery {
+    //     unpaidSessions {
+    //       paymentList {
+    //         parent {
+    //           user {
+    //             firstName
+    //             lastName
+    //             id
+    //           }
+    //         }
+    //       }
+    //       course {
+    //         startTime
+    //         endTime
+    //         hourlyTuition
+    //         totalTuition
+    //       }
+    //       lastPaidSessionDatetime
+    //     }
+    //     enrollments {
+    //       course {
+    //         totalTuition
+    //         startDate
+    //       }
+    //     }
+    //   }
+    // `
+    gql`
+      query myQuery {
+        enrollments {
+            course {
+                totalTuition
+                startDate
+                maxCapacity
+                enrollmentSet{
+                  id
+                }
             }
-          }
+        }
+        numRecentSessions(timeframe: ALL_TIME)
+        sessions {
           course {
-            startTime
-            endTime
-            hourlyTuition
+            id
+            title
           }
-          lastPaidSessionDatetime
         }
       }
-    `,
-  };
+    
+    `
 
-  const { data, loading, error } = useQuery(QUERIES["unpaidsessions"]);
+
+  const { data, loading, error } = useQuery(QUERIES);
+
+  if (loading) { return <Loading/>}
+  
 
   const getTime = (time) => {
     const minutes = parseInt(time.slice(-2), 10) / 60;
@@ -139,30 +171,94 @@ const AdminDashboard = (props) => {
     return hours + minutes;
   };
 
-  const unpaidSessionsObj = () => {
-    const parentObj = data?.unpaidSessions.map((user) => {
-      const { endTime, startTime, hourlyTuition } = user.course;
-      const totalTime = getTime(endTime) - getTime(startTime);
-      const dollarsPerSession = totalTime * hourlyTuition;
-      const lastPaidSessionDateTime = user.lastPaidSessionDatetime
-        .substring(0, 10)
-        .replace("-", "")
-        .replace("-", "");
-      const missedPaymentSessions =
-        moment().diff(lastPaidSessionDateTime, "days") / 7;
-      const amountDue = dollarsPerSession * Math.ceil(missedPaymentSessions);
-      const firstName = user.paymentList[0].parent.user.firstName;
-      const lastName = user.paymentList[0].parent.user.lastName;
-      const id = user.paymentList[0].parent.user.id;
-      return {
-        name: `${firstName} ${lastName}`,
-        initial: `${firstName.charAt(0)}${lastName.charAt(0)}`,
-        id: id,
-        due: amountDue,
-      };
-    });
-    return parentObj || [];
-  };
+
+  const {numRecentSessions, enrollments, sessions} = data;
+  console.log(enrollments);
+  const getCapacity = () => enrollments.map((enrollment)=> {
+    const maxCapacity = enrollment.course.maxCapacity;
+    return maxCapacity
+  });
+
+  const totalCapacity = () => {
+    const total = getCapacity().reduce((previousValue, currentValue) => {
+      return previousValue + currentValue
+    })
+    return total
+  }
+
+  const getEnrolled = () => enrollments.map((enrollment)=>{
+    const enrolled = enrollment.course.enrollmentSet.length;
+    return enrolled
+  })
+
+  const totalEnrolled = () => {
+    const total = getEnrolled().reduce((previousValue, currentValue) => {
+      return previousValue + currentValue
+    })
+    return total
+  }
+
+  const classEnrollment = () => {
+    return [
+      { class: "filled", val: totalEnrolled() },
+      { class: "unfilled", val: totalCapacity()-totalEnrolled() }
+    ]
+  }
+
+  console.log(classEnrollment());
+
+  const totalTuitionArray = enrollments.map((enrollments)=> {
+    return {  tuition: enrollments.course.totalTuition,
+              startDate: enrollments.course.startDate
+    }
+  })
+
+  const sessionsArray = sessions.map((sessions)=> {
+    return {  class: sessions.course.title,
+    }
+  })
+
+
+
+  const totalTuition = totalTuitionArray.reduce((previousValue, currentValue)=>{
+    return {
+      tuition: previousValue.tuition + currentValue.tuition
+    }
+  })
+
+  
+
+  // var val = array.reduce(function(previousValue, currentValue) {
+  //   return {
+  //     adults: previousValue.adults + currentValue.adults,
+  //     children: previousValue.children + currentValue.children
+  //   }
+  // });
+
+  // const unpaidSessionsObj = () => {
+  //   const parentObj = data?.unpaidSessions.map((user) => {
+  //     const { endTime, startTime, hourlyTuition } = user.course;
+  //     const totalTime = getTime(endTime) - getTime(startTime);
+  //     const dollarsPerSession = totalTime * hourlyTuition;
+  //     const lastPaidSessionDateTime = user.lastPaidSessionDatetime
+  //       .substring(0, 10)
+  //       .replace("-", "")
+  //       .replace("-", "");
+  //     const missedPaymentSessions =
+  //       moment().diff(lastPaidSessionDateTime, "days") / 7;
+  //     const amountDue = dollarsPerSession * Math.ceil(missedPaymentSessions);
+  //     const firstName = user.paymentList[0].parent.user.firstName;
+  //     const lastName = user.paymentList[0].parent.user.lastName;
+  //     const id = user.paymentList[0].parent.user.id;
+  //     return {
+  //       name: `${firstName} ${lastName}`,
+  //       initial: `${firstName.charAt(0)}${lastName.charAt(0)}`,
+  //       id: id,
+  //       due: amountDue,
+  //     };
+  //   });
+  //   return parentObj || [];
+  // };
 
   const filterAndAddDuplicates = (arr) => {
     console.log(arr);
@@ -183,15 +279,15 @@ const AdminDashboard = (props) => {
   };
 
   if (loading) return <Loading />;
-  const unpaidSessions = filterAndAddDuplicates(unpaidSessionsObj());
+  // const unpaidSessions = filterAndAddDuplicates(unpaidSessionsObj());
 
-  const unpaidSessionsComponent = unpaidSessions.map((card) => (
-    <OutstandingPaymentCard
-      name={card.name}
-      initials={card.initial}
-      due={card.due}
-    />
-  ));
+  // const unpaidSessionsComponent = unpaidSessions.map((card) => (
+  //   <OutstandingPaymentCard
+  //     name={card.name}
+  //     initials={card.initial}
+  //     due={card.due}
+  //   />
+  // ));
 
   return (
     <div className={classes.root}>
@@ -241,7 +337,7 @@ const AdminDashboard = (props) => {
                       </Typography>
                       <Grid container>
                         <Grid item md={3} className={classes.snapshot}>
-                          <Snapshot snapName="Revenue" number="$200k" />
+                          <Snapshot snapName="Revenue" number={`$${totalTuition.tuition}`} />
                         </Grid>
                         <Grid item md={3} className={classes.snapshotalt}>
                           <Snapshot
@@ -250,7 +346,7 @@ const AdminDashboard = (props) => {
                           />
                         </Grid>
                         <Grid item md={3} className={classes.snapshotalt}>
-                          <Snapshot snapName="Total Sessions" number="45" />
+                          <Snapshot snapName="Total Sessions" number={numRecentSessions} />
                         </Grid>
                         <Grid container>
                           <Grid item md={6}>
@@ -263,7 +359,9 @@ const AdminDashboard = (props) => {
                             <Typography className={classes.popSub}>
                               CLASS ENROLLMENT
                             </Typography>
-                            <ClassEnrollment />
+                            <ClassEnrollment 
+                            data = {classEnrollment()}
+                            />
                           </Grid>
                           <Grid item md={6}>
                             <Typography className={classes.popSub}>
@@ -288,7 +386,7 @@ const AdminDashboard = (props) => {
                       </Grid>
                       <Grid container spacing={2}>
                         <Grid item xs={10}>
-                          {unpaidSessionsComponent}
+                          {/* {unpaidSessionsComponent} */}
                         </Grid>
                       </Grid>
                     </Grid>

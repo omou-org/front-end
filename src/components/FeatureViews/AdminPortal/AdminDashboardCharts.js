@@ -159,10 +159,12 @@ export const InstructorUtilization = props => {
 
 export const ClassEnrollment = props => {
   const classes = useStyles();
-  const data = [
-    { class: "filled", val: 324 },
-    { class: "unfilled", val: 76 },
-  ];
+  const data = props.data
+  
+  // [
+  //   { class: "filled", val: 324 },
+  //   { class: "unfilled", val: 76 },
+  // ];
   const [chartData, setChartData] = useState(data);
 
   return (
@@ -174,7 +176,7 @@ export const ClassEnrollment = props => {
         className={classes.piePosition}
       >
         <PieSeries valueField="val" argumentField="class" innerRadius={0.65} />
-        <Title text="324/400 Spaces Filled" position="bottom" />
+        <Title text={`${props.data[0].val}/${props.data[1].val+props.data[0].val} Spaces Filled`} position="bottom" />
         <EventTracker />
         <Tooltip />
         <Animation />
