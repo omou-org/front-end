@@ -533,6 +533,7 @@
   min-height: 75vh;
 
   .catalog-setting-wrapper{
+    margin-bottom: 15px;
     .catalog-setting{
       @include respond-to(medium-up-screens){
         margin-top:8%;

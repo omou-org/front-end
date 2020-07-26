@@ -9,7 +9,6 @@ import CardContent from "@material-ui/core/CardContent";
 import Chip from "@material-ui/core/Chip";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import Grid from "@material-ui/core/Grid";
-import Hidden from "@material-ui/core/Hidden/Hidden";
 import {Link} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 
@@ -37,7 +36,7 @@ const USER_DETAILS = gql`
     firstName
     }`;
 
-const QUERIES = {
+export const ACCOUNT_QUERIES = {
     "ADMIN": gql`
         query AdminFetch($userID: ID!) {
             admin(userId: $userID) {
@@ -78,7 +77,7 @@ const QUERIES = {
 
 const AccountCard = ({accountType, userID, isLoading}) => {
     // needs a defined query, else it breaks
-    const {data, loading} = useQuery(QUERIES[accountType] || QUERIES.STUDENT, {
+    const {data, loading} = useQuery(ACCOUNT_QUERIES[accountType] || ACCOUNT_QUERIES.STUDENT, {
         "variables": {userID},
     });
 
@@ -96,7 +95,7 @@ const AccountCard = ({accountType, userID, isLoading}) => {
         );
     }
 
-    const [{user}] = Object.values(data);
+	const [{user}] = Object.values(data);
     const fullName = `${user.firstName} ${user.lastName}`;
 
     return (

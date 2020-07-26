@@ -1,16 +1,27 @@
 import {createMuiTheme} from "@material-ui/core/styles";
 
+
 const tabBorderRadius = "10px";
+// Theme Colors
+export const omouBlue = "#43B5D9";
+export const skyBlue = "#EBFAFF";
+export const outlineGrey = "#E0E0E0";
 
 // Font Colors
 export const lightPrimaryFontColor = "#767474";
 export const secondaryFontColor = "#228eb2";
 export const neutralBackgroundColor = "#FAFAFA";
 export const highlightColor = "#EBFAFF";
+export const errorRed = "#c0392b";
+
+const defaultFontProps = {
+    fontFamily: 'Roboto Slab',
+    fontWeight: 700,
+};
 
 const theme = createMuiTheme({
     "palette": {
-        "primary": {"main": "#43B5D9"},
+        "primary": {"main": omouBlue},
         "secondary": {"main": "#a6a6a6"},
         "background": {
             "main": neutralBackgroundColor,
@@ -21,7 +32,12 @@ const theme = createMuiTheme({
         "black": "#000000",
         "darkGray": "#666666",
     },
-    "typography": {},
+	"typography": {
+		subtitle2: {
+			fontWeight: 500,
+			fontSize: 12,
+		}
+	},
     "overrides": {
         "MuiCssBaseline": {
             "@global": {
@@ -30,10 +46,28 @@ const theme = createMuiTheme({
                 },
             },
         },
+        MuiTypography: {
+            variantMapping: {
+                subtitle1: 'h5',
+            },
+            h1: defaultFontProps,
+            h2: defaultFontProps,
+            h3: defaultFontProps,
+            h4: defaultFontProps,
+            h5: defaultFontProps,
+            subtitle1: {
+                fontSize: '20px',
+                fontWeight: '300',
+                fontFamily: 'Roboto',
+            },
+        },
         "MuiButton": {
             "text": {
                 "color": "black",
             },
+			containedPrimary: {
+				color: "#FFFFFF",
+			}
         },
         "MuiBadge": {
             "colorPrimary": {
@@ -93,6 +127,17 @@ const theme = createMuiTheme({
                 "fill": "white",
             },
         },
+        MuiTableRow: {
+            head: {
+                backgroundColor: omouBlue,
+            }
+        },
+        MuiTableCell: {
+            head: {
+                color: "white !important",
+                fontWeight: 600,
+            }
+        }
     },
 });
 
