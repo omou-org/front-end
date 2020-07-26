@@ -46,7 +46,6 @@ export const submitRegistration = (student, course) => {
 	const isEnrolled = existingEnrollmentsByStudents.map(studentEnrollments =>
 		studentEnrollments.filter((enrollment) => arraysMatch(enrollment, [student, course])))
 		.some(studentEnrollments => studentEnrollments.length > 0);
-	console.log(isEnrolled, student, course)
 	if (!isEnrolled) {
 		saveRegistration(student, course, registrationState);
 	}
