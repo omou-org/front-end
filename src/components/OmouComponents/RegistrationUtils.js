@@ -25,8 +25,8 @@ const saveRegistration = (student, course, registrationState) => {
 	const newRegistrationInfo = mapRegistrationInfo(student, course);
 	const existingStudentRegistration = registrationState?.[student] || [];
 	const newRegistrationState = {
-		[student]: [newRegistrationInfo, ...existingStudentRegistration],
 		...registrationState,
+		[student]: [...existingStudentRegistration, newRegistrationInfo],
 	};
 	sessionStorage.setItem("registrations", JSON.stringify(newRegistrationState));
 };
@@ -46,6 +46,7 @@ export const submitRegistration = (student, course) => {
 	const isEnrolled = existingEnrollmentsByStudents.map(studentEnrollments =>
 		studentEnrollments.filter((enrollment) => arraysMatch(enrollment, [student, course])))
 		.some(studentEnrollments => studentEnrollments.length > 0);
+	console.log(isEnrolled, student, course)
 	if (!isEnrolled) {
 		saveRegistration(student, course, registrationState);
 	}

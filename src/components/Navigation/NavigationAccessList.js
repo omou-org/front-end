@@ -92,5 +92,10 @@ export const NavList = {
 			"link": "/scheduler",
 			"icon": <EventIcon/>,
 		},
+		{
+			"name": "Registration",
+			"link": "/registration",
+			"icon": <AssignmentIcon/>,
+		},
 	],
 };
