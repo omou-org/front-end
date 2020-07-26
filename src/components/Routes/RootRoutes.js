@@ -1,7 +1,7 @@
 // React Imports
-import {Redirect, Route, Switch} from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import React from "react";
-import {useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
@@ -31,9 +31,11 @@ import Scheduler from "../FeatureViews/Scheduler/Scheduler";
 import SearchResults from "../FeatureViews/Search/SearchResults";
 import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
+import WorkingScheduler from "../FeatureViews/Scheduler/WorkingScheduler"
 
-import {resetSubmitStatus} from "actions/registrationActions";
-import {USER_TYPES} from "utils";
+import SchedulerWrapper from "../FeatureViews/Scheduler/SchedulerWrapper"
+import { resetSubmitStatus } from "actions/registrationActions";
+import { USER_TYPES } from "utils";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -57,7 +59,7 @@ export const RootRoutes = () => {
             <AuthenticatedRoute exact path="/"
                 render={(passedProps) => <Dashboard {...passedProps} />}
             />
-            <AuthenticatedRoute exact path ="/dashboard"
+            <AuthenticatedRoute exact path="/dashboard"
                 render={(passedProps) => <Dashboard {...passedProps} />}
             />
             <AuthenticatedRoute exact path="/registration">
@@ -66,7 +68,9 @@ export const RootRoutes = () => {
 
             {/* Scheduler Routes */}
             <AuthenticatedRoute exact path="/scheduler">
-                <Scheduler />
+
+                <SchedulerWrapper />
+
             </AuthenticatedRoute>
             <AuthenticatedRoute exact path="/scheduler/view-session/:course_id/:session_id/:instructor_id">
                 <SessionView />

@@ -34,8 +34,10 @@ import { uniques } from "utils";
 import { secondaryFontColor } from "../../../theme/muiTheme";
 import BackButton from "../../OmouComponents/BackButton";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
-
-
+import Loading from "../../OmouComponents/Loading"
+import { useLazyQuery } from "@apollo/react-hooks";
+import moment from "moment"
+import { GET_ALL_EVENTS } from "./SchedulerQueries";
 
 const useStyles = makeStyles((theme) => ({
     "bootstrapFormLabel": {
@@ -80,9 +82,6 @@ const Scheduler = (props) => {
     const [timeShift, setTimeShift] = useState(prevState.timeShift || 0);
     const timeView = props?.location?.state ? "timeGridDay" : prevState.view || "timeGridDay";
     const [view, setView] = useState(timeView);
-    const [sortByAll, setSortByAll] = useState("ALL")
-    const [sortByClass, setSortByClass] = useState("CLASS")
-    const [sortByTutor, setSortByTutor] = useState("TUTOR")
 
     hooks.useCourse();
     hooks.useInstructor();
@@ -93,17 +92,98 @@ const Scheduler = (props) => {
 
     const calendarRef = useRef();
     const calendarApi = calendarRef.current && calendarRef.current.getApi();
+    const palette =
+        ["#F503B2", "#F47FD4", "#FCA8E4", "#FFC5EF",
+            "#DD0000", "#EA2632", "#EB5757", "#FF9191",
+            "#2F80ED", "#2D9CDB", "#56CCF2", "#9B51E0",
+            "#46D943", "#219653", "#27AE60", "#6FCF97",
+            "#F78017", "#F2994A", "#FEBF87", "#FFE3CA",
+            "#FFC103", "#F2C94C", "#F4D77D", "#FFEDB5",
+            "#72FFFF", "#43D9D9", "#92E2DE", "#BAF7F3",
+            "#1F82A1", "#588FA0", "#88ACB7", "#BEDAE2",
+            "#96007E", "#B96AAC", "#CD9BC5", "#CD9BC5"]
+    const hashCode = (string) => {
+        let hash = 0;
+        for (let i = 0; i < string.length; i += 1) {
+            hash += string.charCodeAt(i);
+        }
+        return hash;
+    }
+    const colorizer = (string) => {
+        return palette[hashCode(string) % 40]
+    }
 
-    // sortByGrades, sortBySubjects, sortByInstructors are all state variables storing the filter string name
-    // @description: This is returns a boolean of if the course matches the filter or its a default empty string value
-    const checkFilter = (value, filter) => ("" === filter || value === filter);
-    const coursesToDisplay = props.currentSessions
-        .filter(sessions => (
-            checkFilter(sessions.type, sortByAll) ||
-            checkFilter(sessions.type, sortByClass) ||
-            checkFilter(sessions.type, sortByTutor)));
+    const [getSessions, { loading, data }] = useLazyQuery(GET_ALL_EVENTS);
+    useEffect(() => {
+        getSessions({
+            variables: {
+                timeFrame: "month",
+                timeShift: 0
+            }
+        });
+    }, [getSessions]);
 
-    console.log(coursesToDisplay)
+    const formatSessions = useCallback((sessionState) =>
+        Object.values(sessionState).reduce((all, sessionList) => all.concat(
+            Object.values(sessionList).filter(({ course }) =>
+                course && courses[course])
+                .map((session) => {
+                    const instructorName = instructors[session.instructor].name
+                        || "";
+                    return {
+                        "color": colorizer(instructorName),
+                        "courseID": session.course,
+                        "description": session.description,
+                        "end": new Date(session.end_datetime),
+                        "id": session.id,
+                        "instructor": instructorName,
+                        "instructor_id": session.instructor,
+                        "isConfirmed": session.is_confirmed,
+                        "resourceId": courses[session.course_id]
+                            ? courses[session.course_id].room_id
+                            : 1,
+                        "start": new Date(session.start_datetime),
+                        "title": session.title,
+                        "type": courses[session.course].type,
+                    };
+                })
+        ), []), [courses, instructors]);
+
+    const OOOEvents = useMemo(() => {
+        if (courseFilter) {
+            return [];
+        }
+        let OOOlist = Object.values(instructors);
+        if (instructorFilter) {
+            const IDList = instructorFilter.map(({ value }) => String(value));
+            OOOlist = OOOlist.filter(({ user_id }) =>
+                IDList.includes(String(user_id)));
+        }
+        return OOOlist.map(({ schedule }) => schedule.time_off)
+            .reduce((allOOO, OOO) => allOOO.concat(Object.values(OOO).map(
+                ({ start, end, description, instructor_id, all_day, ooo_id }) => {
+                    const instructor = instructors[instructor_id];
+                    const title = description || (instructor
+                        ? `${instructor.name} Out of Office`
+                        : "Out of Office");
+                    const endDate = new Date(end);
+                    // since the end date for allDay events is EXCLUSIVE
+                    // must add one day to include the end specified by user
+                    if (all_day) {
+                        endDate.setDate(endDate.getDate() + 1);
+                    }
+                    return {
+                        "allDay": all_day,
+                        "color": stringToColor(instructor.name || ""),
+                        "end": endDate,
+                        ooo_id,
+                        start,
+                        title,
+                    };
+                }
+            )), []);
+    }, [courseFilter, instructorFilter, instructors]);
+
 
     const currentDate = calendarApi && calendarApi.view.title;
 
@@ -184,7 +264,61 @@ const Scheduler = (props) => {
         }
     }, [history]);
 
+    const calendarEvents = useMemo(() => {
+        const filteredEvents = JSON.parse(JSON.stringify(session));
 
+        // apply instructors filter
+        const calendarInstructorIDs = Object.keys(session);
+        const nonSelectedInstructors = instructorFilter ?
+            arr_diff(
+                instructorFilter.map(({ value }) => value),
+                calendarInstructorIDs
+            ) :
+            [];
+        nonSelectedInstructors.forEach((instructorID) => {
+            delete filteredEvents[instructorID];
+        });
+
+        // apply course type filter
+        const courseSessionsArray = sessionArray(session) || [];
+        if (courseType !== "all" &&
+            courseSessionsArray.length > 0 &&
+            Object.keys(courses).length > 0
+        ) {
+            courseSessionsArray
+                .filter(({ course }) =>
+                    courses[course].course_type !== courseType)
+                .forEach((session) => {
+                    if (filteredEvents[session.instructor]) {
+                        delete filteredEvents[session.instructor][session.id];
+                    }
+                });
+        }
+
+        // apply courses filter
+        const selectedCourseIDs = courseFilter &&
+            courseFilter.map((course) => course.value);
+        const calendarCourseIDs = uniques(
+            courseSessionsArray.map(({ course }) => course)
+        );
+        const nonSelectedCourseIDs = courseFilter
+            ? arr_diff(selectedCourseIDs, calendarCourseIDs)
+            : [];
+
+        nonSelectedCourseIDs.forEach((courseID) => {
+            courseSessionsArray
+                // eslint-disable-next-line eqeqeq
+                .filter(({ course }) => course == courseID)
+                .forEach((session) => {
+                    delete filteredEvents[session.instructor][session.id];
+                });
+        });
+
+        return formatSessions(filteredEvents);
+    }, [
+        courseFilter, courseType, courses, formatSessions, instructorFilter,
+        session,
+    ]);
 
     const instructorOptions = useMemo(() => Object.entries(instructors).map(
         ([instructorID, instructor]) => ({
@@ -222,7 +356,29 @@ const Scheduler = (props) => {
         return "day";
     };
 
+    if (loading || data === undefined) return <Loading />
 
+    // const { sessions } = data
+
+    // const currentSession = sessions.map(({ course: { instructor, ...courseValues }, endDatetime, startDatetime, id }) => {
+
+    //     return {
+    //         "color": colorizer(instructor.user.firstName),
+    //         "courseID": courseValues.id,
+    //         "description": courseValues.description,
+    //         "end": moment(endDatetime).format("YYYY-MM-DDTHH:mm"),
+    //         "id": id,
+    //         // "instructor": `${course.instructor.user.firstName} ${course.instructor.user.lastName}`,
+    //         // "instructor_id": course.instructor.user.id,
+    //         "isConfirmed": courseValues.isConfirmed,
+    //         "resourceId": courseValues
+    //             ? courseValues.room
+    //             : 1,
+    //         "start": moment(startDatetime).format("YYYY-MM-DDTHH:mm"),
+    //         "title": courseValues.title,
+    //         "type": courseValues.courseType,
+    //     }
+    // })
 
     return (
         <Grid item xs={12} container>
@@ -366,7 +522,7 @@ const Scheduler = (props) => {
                         eventColor="none"
                         eventLimit={4}
                         eventMouseEnter={handleToolTip}
-                        events={props.currentSessions}
+                        events={props.data}
                         header={false}
                         minTime="07:00:00"
                         nowIndicator
