@@ -171,9 +171,11 @@ const AdminDashboard = (props) => {
     return hours + minutes;
   };
 
-
   const {numRecentSessions, enrollments, sessions} = data;
-  console.log(enrollments);
+  console.log(sessions);
+
+
+  
   const getCapacity = () => enrollments.map((enrollment)=> {
     const maxCapacity = enrollment.course.maxCapacity;
     return maxCapacity
@@ -204,8 +206,6 @@ const AdminDashboard = (props) => {
       { class: "unfilled", val: totalCapacity()-totalEnrolled() }
     ]
   }
-
-  console.log(classEnrollment());
 
   const totalTuitionArray = enrollments.map((enrollments)=> {
     return {  tuition: enrollments.course.totalTuition,
