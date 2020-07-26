@@ -31,7 +31,11 @@ export const GET_PARENT_PAYMENTS_FILTERED = gql`
 
 export default function MyPaymentHistory() {
 	const AuthUser = useSelector(({auth}) => auth);
-	const [getPayments, {loading, data, error}] = useLazyQuery(GET_PARENT_PAYMENTS_FILTERED);
+	const [getPayments, {loading, data, error}] = useLazyQuery(GET_PARENT_PAYMENTS_FILTERED, {
+		variables: {
+			parentId: AuthUser.user.id,
+		}
+	});
 	const [openCalendar, setOpenCalendar] = useState(false);
 	const [state, setState] = useState([
 		{
@@ -44,11 +48,10 @@ export default function MyPaymentHistory() {
 	useEffect(() => {
 		getPayments({
 			variables: {
-				parentId: AuthUser.user.id,
 				startDate: moment().subtract(1, "month").toISOString(),
 				endDate: moment().toISOString(),
 			}
-		})
+		});
 	}, []);
 
 	const handleDateRangeCalendarChange = (item) => {
@@ -60,7 +63,6 @@ export default function MyPaymentHistory() {
 		setOpenCalendar(false);
 		getPayments({
 			variables: {
-				parentId: AuthUser.user.id,
 				startDate: state[0].startDate.toISOString(),
 				endDate: state[0].endDate.toISOString(),
 			},
