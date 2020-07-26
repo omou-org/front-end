@@ -46,7 +46,7 @@ function RegistrationEntry({ registration: { course, numSessions, checked }, stu
 	};
 
 	return (<>
-		<TableRow className={classes.root}>
+		<TableRow >
 			<TableCell>
 			</TableCell>
 			<TableCell>
@@ -70,7 +70,7 @@ function RegistrationEntry({ registration: { course, numSessions, checked }, stu
 				</Grid>
 				<br />
 			</TableCell>
-			<TableCell style={{ verticalAlign: 'top' }}>
+			<TableCell style={{ whiteSpace:"nowrap", verticalAlign: 'top' }}>
 				<TextField
 					value={numSessions}
 					onChange={handleSessionChange}
@@ -84,7 +84,7 @@ function RegistrationEntry({ registration: { course, numSessions, checked }, stu
 					}}
 				/>
 			</TableCell>
-			<TableCell style={{ paddingTop: 20, verticalAlign: 'top' }}>
+			<TableCell style={{ whiteSpace:"nowrap", paddingTop: 20, verticalAlign: 'top' }}>
 				$ {getTuitionAmount(course, numSessions)}
 			</TableCell>
 		</TableRow>
@@ -110,7 +110,6 @@ export default function StudentRegistrationEntry({ student, registrationList }) 
 				</TableRow>
 			</TableHead>
 			<TableBody>
-
 				<br />
 				{
 					registrationList.map(registration =>
