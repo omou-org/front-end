@@ -99,8 +99,8 @@ const userMap = ({accountSearch}) => accountSearch.results.map(({user}) => ({
 }));
 
 const instructorSelect = (name) => (
-	<Fields.DataSelect name={name} optionsMap={userMap}
-					   request={SEARCH_INSTRUCTORS}/>
+    <Fields.DataSelect name={name} optionsMap={userMap}
+        request={SEARCH_INSTRUCTORS} />
 );
 
 
@@ -410,6 +410,22 @@ const SEARCH_STUDENTS = gql`
     }
 `;
 
+const SEARCH_PARENTS = gql`
+    query ParentSearch($query: String!) {
+        accountSearch(query: $query, profile: "PARENT") {
+            results {
+                ... on ParentType {
+                    user {
+                        id
+                        firstName
+                        lastName
+                    }
+                }
+            }
+        }
+    }
+`;
+
 const GET_CATEGORIES = gql`
     query GetCategories {
         courseCategories {
@@ -439,6 +455,11 @@ const studentSelect = (name) => (
 					   request={SEARCH_STUDENTS}/>
 );
 
+const parentSelect = (name) => (
+    <Fields.DataSelect disabled name={name} optionsMap={userMap}
+        request={SEARCH_PARENTS} />
+);
+
 const courseMap = ({courses}) => courses.map(({title, instructor, id}) => ({
 	"label": `${title} - ${fullName(instructor.user)}`,
 	"value": id,
@@ -454,7 +475,116 @@ const categorySelect = (name) => (
         request={GET_CATEGORIES} />
 );
 
+const schoolMap = ({schools}) => schools.map(({name, id}) => ({
+    "label": name,
+    "value": id,
+}));
+
+const GET_SCHOOLS = gql`
+    query GetSchools {
+        schools {
+            name
+            id
+        }
+    }`;
+
+const schoolSelect = (name) => (
+    <Fields.DataSelect name={name} optionsMap={schoolMap}
+        request={GET_SCHOOLS} />
+);
+
 export default {
+    "add_student": {
+        "title": {
+            "create": "Add Student",
+            "edit": "Add Student",
+        },
+        "form": [
+            {
+                "name": "student",
+                "label": "Student Information",
+                "fields": [
+                    {
+                        "name": "primaryParent",
+                        "label": "Parent",
+                        "component": parentSelect("primaryParent"),
+                        "validator": Yup.mixed(),
+                    },
+                    ...NAME_FIELDS,
+                    GENDER_FIELD,
+                    {
+                        "name": "grade",
+                        "label": "Grade",
+                        "component": <Fields.TextField />,
+                        "validator": Yup.number()
+                            .typeError("Grade must be a number.")
+                            .integer()
+                            .min(1)
+                            .max(13),
+                    },
+                    BIRTH_DATE_FIELD,
+                    {
+                        "name": "school",
+                        "label": "School",
+                        "component": schoolSelect("school"),
+                        "validator": Yup.mixed(),
+                    },
+                    PHONE_NUMBER_FIELD,
+                ],
+            },
+        ],
+        "load": async (id) => {
+            const GET_NAME = gql`
+            query GetName($id: ID!) {
+                parent(userId: $id) {
+                    user {
+                        firstName
+                        lastName
+                    }
+                }
+            }`;
+            try {
+                const {"data": {parent}} = await client.query({
+                    "query": GET_NAME,
+                    "variables": {id},
+                });
+
+                return {
+                    "student": {
+                        "primaryParent": {
+                            "label": `${parent.user.firstName} ${parent.user.lastName}`,
+                            "value": id,
+                        },
+                    },
+                };
+            } catch (error) {
+                return null;
+            }
+        },
+        "submit": async ({student}, id) => {
+            const ADD_STUDENT = gql`
+            mutation AddStudent($firstName: String!, $lastName: String!, $address: String, $birthDate:Date, $city:String, $gender:GenderEnum,$grade:Int,$phoneNumber:String,$primaryParent:ID, $school:ID) {
+  createStudent(user: {firstName: $firstName, lastName: $lastName}, address: $address, birthDate: $birthDate, school: $school, city: $city, grade: $grade, gender: $gender, primaryParent: $primaryParent, phoneNumber: $phoneNumber) {
+      created
+  }
+}`;
+            try {
+                await client.mutate({
+                    "mutation": ADD_STUDENT,
+                    "variables": {
+                        ...student,
+                        "birthDate": parseDate(student.birthDate),
+                        "primaryParent": student.primaryParent.value,
+                        "school": student.school.value,
+                    },
+                });
+            } catch (error) {
+                return {
+                    [FORM_ERROR]: error,
+                };
+            }
+        },
+    },
     "student": {
         "title": "Student",
         "form": [
@@ -620,10 +750,10 @@ export default {
             query GetAdmin($userID: ID!) {
                 admin(userId: $userID) {
                     user {
-                    id
-                    email
-                    firstName
-                    lastName
+                        id
+                        email
+                        firstName
+                        lastName
                     }
                     adminType
                     gender
