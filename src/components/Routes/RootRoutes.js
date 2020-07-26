@@ -32,6 +32,7 @@ import RegistrationCartContainer from "../FeatureViews/Registration/Registration
 import DashboardSwitch from "../FeatureViews/Dashboard/DashboardSwitch";
 import TeachingLogContainer from "../FeatureViews/TeachingLog/TeachingLogContainer";
 import AvailabilityContainer from "../FeatureViews/Availability/AvailabilityContainer";
+import ManagePayments from "../FeatureViews/ManagePayments/ManagePayments";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -139,15 +140,22 @@ export const RootRoutes = () => {
                 <AvailabilityContainer/>
             </AuthenticatedRoute>
 
+            {/* Parent Routes */}
+            <AuthenticatedRoute path="/my-payments/:view?/:paymentId?"
+                                users={[USER_TYPES.parent]}
+            >
+                <ManagePayments/>
+            </AuthenticatedRoute>
+
             {/* Admin Routes */}
             <AuthenticatedRoute exact
-                path="/adminportal/:view?/:type?/:id?/:edit?"
-                users={[USER_TYPES.admin]}>
-                <AdminPortal />
+                                path="/adminportal/:view?/:type?/:id?/:edit?"
+                                users={[USER_TYPES.admin]}>
+                <AdminPortal/>
             </AuthenticatedRoute>
-			<AuthenticatedRoute exact
-								path="/form/:type/:id?"
-								users={[USER_TYPES.admin]}
+            <AuthenticatedRoute exact
+                                path="/form/:type/:id?"
+                                users={[USER_TYPES.admin]}
 			>
 				<FormPage/>
 			</AuthenticatedRoute>
