@@ -41,17 +41,17 @@ const NewAnnoucementsModal = ({ handleClose, open, subject, body, userId }) => {
 
   const CREATE_ANNOUCEMENTS = gql`
     mutation CreateAnnoucement(
-      $subject: Subject!,
-      $body: Body!,
-      $course_id: Course_Id!,
-      $user_id: User_Id!
+      $subject: String!,
+      $body: String!,
+      $courseId: ID!,
+      $userId: ID!
     ) {
       __typename
       createAnnoucement(
         body: $body,
-        course_id: $course_id,
+        courseId: $courseId,
         subject: $subject,
-        user_id: $user_id
+        userId: $userId
       ) {
         created
         annoucement {
@@ -77,7 +77,10 @@ const NewAnnoucementsModal = ({ handleClose, open, subject, body, userId }) => {
   //   }
 
   const [createAnnoucement, createAnnoucementResult] = useMutation(
-    CREATE_ANNOUCEMENTS
+    CREATE_ANNOUCEMENTS, {
+      submit: () => handleClose(false),
+      error: err => console.error(err) 
+    }
   );
 
   const handleCloseForm = () => {
@@ -98,21 +101,17 @@ console.log(user_id)
 console.log(id.id)
 
   const handlePostForm = async (event) => {
-      try{
+    event.preventDefault();
+   
           const postAnnoucement = await createAnnoucement({
             variables: {
               subject: annoucementSubject,
               body: annoucementBody,
-              user_id: user_id,
-              course_id: id.id
+              userId: user_id,
+              courseId: id.id
             },
           });
-      }
-      catch(err) {
-          console.log(err)
-          console.log(createAnnoucementResult)
-      }
-    handleClose(false);
+      
   };
 
   return (
