@@ -456,7 +456,7 @@ const studentSelect = (name) => (
 );
 
 const parentSelect = (name) => (
-    <Fields.DataSelect disabled name={name} optionsMap={userMap}
+    <Fields.DataSelect name={name} optionsMap={userMap}
         request={SEARCH_PARENTS} />
 );
 
@@ -493,8 +493,20 @@ const schoolSelect = (name) => (
         request={GET_SCHOOLS} />
 );
 
+const GET_USER_TYPE = gql`
+    query MyQuery($id: ID!) {
+        userInfo(userId: $id) {
+            ... on StudentType {
+            accountType
+            }
+            ... on ParentType {
+            accountType
+            }
+        }
+    }`;
+
 export default {
-    "add_student": {
+    "student": {
         "title": {
             "create": "Add Student",
             "edit": "Add Student",
@@ -511,6 +523,10 @@ export default {
                         "validator": Yup.mixed(),
                     },
                     ...NAME_FIELDS,
+                    {
+                        ...EMAIL_FIELD,
+                        "required": false,
+                    },
                     GENDER_FIELD,
                     {
                         "name": "grade",
@@ -530,49 +546,123 @@ export default {
                         "validator": Yup.mixed(),
                     },
                     PHONE_NUMBER_FIELD,
+                    ADDRESS_FIELD,
+                    CITY_FIELD,
+                    STATE_FIELD,
+                    ZIPCODE_FIELD,
                 ],
             },
         ],
         "load": async (id) => {
-            const GET_NAME = gql`
-            query GetName($id: ID!) {
-                parent(userId: $id) {
-                    user {
-                        firstName
-                        lastName
-                    }
-                }
-            }`;
             try {
-                const {"data": {parent}} = await client.query({
-                    "query": GET_NAME,
+                const {"data": {userInfo}} = await client.query({
+                    "query": GET_USER_TYPE,
                     "variables": {id},
                 });
+                console.log(userInfo)
+                if (userInfo.accountType === "PARENT") {
+                    const GET_NAME = gql`
+                query GetName($id: ID!) {
+                    parent(userId: $id) {
+                        user {
+                            firstName
+                            lastName
+                        }
+                    }
+                }`;
+                    const {"data": {parent}} = await client.query({
+                        "query": GET_NAME,
+                        "variables": {id},
+                    });
 
-                return {
-                    "student": {
-                        "primaryParent": {
-                            "label": `${parent.user.firstName} ${parent.user.lastName}`,
-                            "value": id,
+                    return {
+                        "student": {
+                            "primaryParent": {
+                                "label": `${parent.user.firstName} ${parent.user.lastName}`,
+                                "value": id,
+                            },
                         },
-                    },
-                };
-            } catch (error) {
-                return null;
-            }
+                    };
+                } else if (userInfo.accountType === "STUDENT") {
+                    const GET_INFO = gql`
+                query GetInfo($id: ID!) {
+                    student(userId: $id) {
+                        address
+                        zipcode
+                        city
+                        state
+                        birthDate
+                        gender
+                        grade
+                        phoneNumber
+                        primaryParent {
+                            user {
+                                firstName
+                                lastName
+                                id
+                            }
+                        }
+                        school {
+                            name
+                            id
+                        }
+                        user {
+                            firstName
+                            lastName
+                            email
+                        }
+                    }
+                }`;
+                    const {"data": {student}} = await client.query({
+                        "query": GET_INFO,
+                        "variables": {id},
+                    });
+
+                    const modifiedData = {
+                        ...student,
+                        "firstName": student.user.firstName,
+                        "lastName": student.user.lastName,
+                        "email": student.user.email,
+                        "school": student.school && {
+                            "label": student.school.name,
+                            "value": student.school.id,
+                        },
+                        "primaryParent": student.primaryParent && {
+                            "label": `${student.primaryParent.user.firstName} ${student.primaryParent.user.lastName}`,
+                            "value": student.primaryParent.user.id,
+                        },
+                    };
+                    // delete modifiedData.pr;
+                    delete modifiedData.user;
+
+                    return {
+                        "student": modifiedData,
+                    };
+                }
+            } catch (err){console.error(err)}
+            return null;
         },
         "submit": async ({student}, id) => {
             const ADD_STUDENT = gql`
-            mutation AddStudent($firstName: String!, $lastName: String!, $address: String, $birthDate:Date, $city:String, $gender:GenderEnum,$grade:Int,$phoneNumber:String,$primaryParent:ID, $school:ID) {
-  createStudent(user: {firstName: $firstName, lastName: $lastName}, address: $address, birthDate: $birthDate, school: $school, city: $city, grade: $grade, gender: $gender, primaryParent: $primaryParent, phoneNumber: $phoneNumber) {
+            mutation AddStudent($firstName: String!, $email: String,  $lastName: String!, $address: String, $birthDate:Date, $city:String, $gender:GenderEnum,$grade:Int,$phoneNumber:String,$primaryParent:ID, $school:ID, $zipcode:String, $state:String, $id: ID) {
+  createStudent(user: {firstName: $firstName, id: $id, lastName: $lastName,  email:$email}, address: $address, birthDate: $birthDate, school: $school, grade: $grade, gender: $gender, primaryParent: $primaryParent, phoneNumber: $phoneNumber, city: $city, state: $state, zipcode: $zipcode) {
       created
   }
 }`;
+
             try {
+                const {"data": {userInfo}} = await client.query({
+                    "query": GET_USER_TYPE,
+                    "variables": {id},
+                });
+                if (userInfo.accountType === "STUDENT") {
+                    student.id = id;
+                }
                 await client.mutate({
                     "mutation": ADD_STUDENT,
                     "variables": {
                         ...student,
+                        "email": student.email || "",
                         "birthDate": parseDate(student.birthDate),
                         "primaryParent": student.primaryParent.value,
                         "school": student.school.value,
@@ -581,108 +671,6 @@ export default {
             } catch (error) {
                 return {
                     [FORM_ERROR]: error,
-                };
-            }
-        },
-    },
-    "student": {
-        "title": "Student",
-        "form": [
-            {
-                "name": "student",
-                "label": "Student Information",
-                "fields": [
-                    ...NAME_FIELDS,
-                    GENDER_FIELD,
-                    {
-                        "name": "grade",
-                        "label": "Grade",
-                        "component": <Fields.TextField />,
-                        "validator": Yup.number()
-                            .typeError("Grade must be a number.")
-                            .integer()
-                            .min(1)
-                            .max(13),
-                    },
-                    BIRTH_DATE_FIELD,
-                    {
-                        "name": "school",
-                        ...stringField("School"),
-                    },
-                    PHONE_NUMBER_FIELD,
-                ],
-            },
-            PARENT_FIELDS,
-        ],
-        "load": (id) => {
-            const studentStatus = hooks.useStudent(id);
-            const {parent_id, ...student} = useSelector(({Users}) => Users.StudentList[id]) || {};
-            hooks.useParent(parent_id);
-            const {relationship, ...parent} = useSelector(({Users}) => Users.ParentList[parent_id]) || {};
-            if (hooks.isFail(studentStatus)) {
-                return null;
-            }
-            return {
-                student,
-                "parent": {
-                    ...parent,
-                    "relationship": (relationship || "").toLowerCase(),
-                },
-            };
-        },
-        "submit": async (dispatch, formData, id) => {
-            const studentResponseToFormKey = {
-                "gender": ["student", "gender"],
-                "birth_date": ["student", "birthday"],
-                "address": ["parent", "address"],
-                "city": ["parent", "city"],
-                "phone_number": ["student", "phone_number"],
-                "state": ["parent", "state"],
-                "zipcode": ["parent", "zipcode"],
-                "grade": ["student", "grade"],
-                "school": ["student", "school"],
-                "user": {
-                    "first_name": ["student", "first_name"],
-                    "last_name": ["student", "last_name"],
-                    "email": ["student", "email"],
-                },
-            };
-            const parentResponseToFormKey = {
-                "gender": ["parent", "gender"],
-                "birth_date": ["parent", "birthday"],
-                "address": ["parent", "address"],
-                "city": ["parent", "city"],
-                "phone_number": ["student", "phone_number"],
-                "state": ["parent", "state"],
-                "zipcode": ["parent", "zipcode"],
-                "relationship": ["parent", "relationship"],
-                "user": {
-                    "first_name": ["parent", "first_name"],
-                    "last_name": ["parent", "last_name"],
-                    "email": ["parent", "email"],
-                },
-            };
-            const parent = formToRequest(parentResponseToFormKey, formData);
-            parent.birth_date = parseDate(parent.birth_date);
-            const student = formToRequest(studentResponseToFormKey, formData);
-            try {
-                const parentResponse = await instance.post("/account/parent/",
-                    parent);
-                dispatch({
-                    "type": types.POST_PARENT_SUCCESSFUL,
-                    "payload": parentResponse,
-                });
-                student.primary_parent = parentResponse.id;
-                const studentResponse = await submitToApi("/account/student/", student, id);
-                dispatch({
-                    "type": types.POST_STUDENT_SUCCESSFUL,
-                    "payload": studentResponse,
-                });
-            } catch ({response}) {
-                return {
-                    ...responseToForm(studentResponseToFormKey, response.data),
-                    ...responseToForm(parentResponseToFormKey, response.data),
-                    [FORM_ERROR]: response.data,
                 };
             }
         },

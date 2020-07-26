@@ -31,7 +31,8 @@ const FormReceipt = ({formData, format}) => (
             <Typography align="left" className="title">
                 Confirmation
             </Typography>
-            {Object.entries(formData).map(([sectionLabel, fields], sectionIndex) => (
+            {Object.entries(formData).map(([sectionLabel, fields], sectionIndex) =>
+                format[sectionIndex] && (
                 <div key={sectionLabel}>
                     <Typography align="left" className="section-title">
                         {format[sectionIndex].label}

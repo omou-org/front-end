@@ -11,7 +11,6 @@ import {useQuery} from "@apollo/react-hooks";
 const useStyles = makeStyles({
     "center": {
         "margin": "auto",
-        "padding": "17%",
     },
     "new": {
         "backgroundColor": "#f5f5f5",
@@ -77,12 +76,10 @@ const StudentInfo = () => {
             {studentList.map((student) => (
                 <ProfileCard key={student.user_id}
                     route={`/accounts/student/${student.user_id}`}
-                    user={student} />
+                    studentInvite user={student} />
             ))}
             <Grid className={classes.new} item sm={6} xs={12}>
-                <Link to={{
-                    "pathname": `/form/add_student/${accountID}`,
-                }} className={classes.center}>
+                <Link className={classes.center} to={`/form/add_student/${accountID}`}>
                     Add student
                 </Link>
             </Grid>
