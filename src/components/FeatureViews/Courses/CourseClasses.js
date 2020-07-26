@@ -110,12 +110,12 @@ const CourseClasses = () => {
           startDatetime
         }
       }
-      annoucements(courseId: $id) {
+      announcements(courseId: $id) {
         subject
         id
         body
-        timestamp
-        user {
+        createdAt
+        poster {
           firstName
           lastName
         }
@@ -305,7 +305,7 @@ const CourseClasses = () => {
                 <ClassInfo description={description} />
                 </TabPanel>
                 <TabPanel index={1} value={index}>
-                  <Announcements announcementsData={data.annoucements} loggedInUser={data.accountSearch}/>
+                  <Announcements announcementsData={data.announcements} loggedInUser={data.accountSearch}/>
                 </TabPanel>
                 <TabPanel index={2} value={index}>
                 <StudentEnrollment enrollmentList={enrollmentSet} />

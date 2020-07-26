@@ -7,7 +7,7 @@ import Button from "@material-ui/core/Button";
 import { highlightColor } from "../../../theme/muiTheme";
 import gql from "graphql-tag"
 import { useQuery } from "@apollo/react-hooks";
-import NewAnnoucementModal from "./NewAnnoucementsModal";
+import NewAnnouncementModal from "./NewAnnoucementsModal";
 import { fullName } from "../../../utils";
 
 
@@ -97,58 +97,64 @@ const AnnouncementCard = ({ id, fullName, subject, body, date, time, handleOpen,
 };
 
 const Announcements = ({announcementsData, loggedInUser}) => {
-  const [openNewAnnoucementForm, setNewAnnoucementForm] = useState(false);
-  const [annoucementId, setAnnoucementId] = useState();
-  const [annoucementSubject, setAnnoucementSubject] = useState("");
-  const [annoucementBody, setAnnoucementBody] = useState("");
+  const [openNewAnnouncementForm, setNewAnnouncementForm] = useState(false);
+  const [announcementId, setAnnouncementId] = useState();
+  const [announcementSubject, setAnnouncementSubject] = useState("");
+  const [announcementBody, setAnnouncementBody] = useState("");
+  const [announcementsRender, setAnnouncementsRender] = useState()
   
-  console.log(announcementsData)
+  useEffect(() => {
+    setAnnouncementsRender(announcementsData)
+  }, [openNewAnnouncementForm])
+  
+  // console.log(announcementsData)
 
   const handleOpen = (boolean, id, subject, body) => {
-    setAnnoucementId(id);
-    setNewAnnoucementForm(boolean);
-    setAnnoucementSubject(subject);
-    setAnnoucementBody(body);
+    setAnnouncementId(id);
+    setNewAnnouncementForm(boolean);
+    setAnnouncementSubject(subject);
+    setAnnouncementBody(body);
   };
 
   const handleClose = (boolean) => {
-    setNewAnnoucementForm(boolean);
+    setNewAnnouncementForm(boolean);
   };
 
-  const removeAnnoucement = (subject) => {
+  const removeAnnouncement = (subject) => {
 
     };
   
 
-  const handleDeleteAnnoucement = (id) => {
-      removeAnnoucement(id);
+  const handleDeleteAnnouncement = (id) => {
+      removeAnnouncement(id);
       console.log("does this run?")
     //   console.log(announcementData)
   };
 
   return (
     <Grid container justify="flex-start" data-active="inactive">
-      {announcementsData.map(({ user, subject, body, date, time, id,  }) => (
+      <Button onClick={() => setNewAnnouncementForm(true)}>Click Me</Button>
+      {announcementsRender?.map(({ poster, subject, body, date, time, id,  }) => (
         <>
           <AnnouncementCard
             key={id}
             id={id}
-            fullName={fullName(user)}
+            fullName={fullName(poster)}
             subject={subject}
             body={body}
             date={date}
             time={time}
             handleOpen={handleOpen}
-            handleDelete={handleDeleteAnnoucement}
+            handleDelete={handleDeleteAnnouncement}
           />
         </>
       ))}
-      <NewAnnoucementModal
+      <NewAnnouncementModal
         handleClose={handleClose}
-        open={openNewAnnoucementForm}
-        id={annoucementId}
-        subject={annoucementSubject}
-        body={annoucementBody}
+        open={openNewAnnouncementForm}
+        id={announcementId}
+        subject={announcementSubject}
+        body={announcementBody}
         userId={loggedInUser}
       />
     </Grid>

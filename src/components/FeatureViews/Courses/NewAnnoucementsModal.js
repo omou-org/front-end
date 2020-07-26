@@ -11,6 +11,9 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DoneIcon from "@material-ui/icons/CheckCircleOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
+import FormGroup from "@material-ui/core/FormGroup"
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import Grid from "@material-ui/core/Grid";
 import InputBase from "@material-ui/core/InputBase";
 import Loading from "components/OmouComponents/Loading";
@@ -26,42 +29,43 @@ import { useMutation } from "@apollo/react-hooks";
 
 const useStyles = makeStyles((theme) => ({}));
 
-const NewAnnoucementsModal = ({ handleClose, open, subject, body, userId }) => {
+const NewAnnouncementsModal = ({ handleClose, open, subject, body, userId }) => {
   const classes = useStyles();
   const [sendEmailCheckbox, setSendEmailCheckbox] = useState(false);
-  const [annoucementBody, setAnnoucementBody] = useState(body);
-  const [annoucementSubject, setAnnoucementSubject] = useState(subject);
+  const [announcementBody, setAnnouncementBody] = useState(body);
+  const [announcementSubject, setAnnouncementSubject] = useState(subject);
   const id = useParams();
   const user_id = userId.results[0].user.id
+  console.log(id.id)
 
 //   useEffect(() => {
-//       setAnnoucementBody(body);
-//       setAnnoucementSubject(subject);
-//   },[annoucementBody, annoucementSubject]);
+//       setAnnouncementBody(body);
+//       setAnnouncementSubject(subject);
+//   },[announcementBody, announcementSubject]);
 
-  const CREATE_ANNOUCEMENTS = gql`
-    mutation CreateAnnoucement(
+  const CREATE_ANNOUNCEMENTS = gql`
+    mutation CreateAnnouncement(
       $subject: String!,
       $body: String!,
       $courseId: ID!,
       $userId: ID!
     ) {
       __typename
-      createAnnoucement(
+      createAnnouncement(
         body: $body,
-        courseId: $courseId,
+        course: $courseId,
         subject: $subject,
-        userId: $userId
+        user: $userId
       ) {
         created
-        annoucement {
+        announcement {
             body
             id
             course {
               courseId
             }
             subject
-            user {
+            poster {
               id
             }
           }
@@ -76,8 +80,8 @@ const NewAnnoucementsModal = ({ handleClose, open, subject, body, userId }) => {
   //     }
   //   }
 
-  const [createAnnoucement, createAnnoucementResult] = useMutation(
-    CREATE_ANNOUCEMENTS, {
+  const [createAnnouncement, createAnnouncementResult] = useMutation(
+    CREATE_ANNOUNCEMENTS, {
       submit: () => handleClose(false),
       error: err => console.error(err) 
     }
@@ -87,56 +91,65 @@ const NewAnnoucementsModal = ({ handleClose, open, subject, body, userId }) => {
     handleClose(false);
   };
 
+  const handleCheckboxChange = e => setSendEmailCheckbox(e.target.checked)
+
   const handleSubjectChange = useCallback((event) => {
-    setAnnoucementSubject(event.target.value);
+    setAnnouncementSubject(event.target.value);
 }, []);
 
 const handleBodyChange = useCallback((event) => {
-    setAnnoucementBody(event.target.value);
+    setAnnouncementBody(event.target.value);
 }, []);
-
-console.log(annoucementBody)
-console.log(annoucementSubject)
-console.log(user_id)
-console.log(id.id)
 
   const handlePostForm = async (event) => {
     event.preventDefault();
-   
-          const postAnnoucement = await createAnnoucement({
+          const postAnnouncement = await createAnnouncement({
             variables: {
-              subject: annoucementSubject,
-              body: annoucementBody,
+              subject: announcementSubject,
+              body: announcementBody,
               userId: user_id,
               courseId: id.id
             },
           });
-      
+         handleClose(false);
   };
 
   return (
-    <Grid className="annoucement-container" container item md={12} spacing={2}>
+    <Grid className="announcement-container" container item md={12} spacing={2}>
                 <Dialog aria-describedby="simple-modal-description"
                 aria-labelledby="simple-modal-title" className="popup" fullWidth
                 maxWidth="xs" onClose={handleCloseForm} open={open}>
                 <DialogTitle>
                     <TextField className="textfield" id="standard-name"
                         onChange={handleSubjectChange} placeholder="Subject"
-                        value={annoucementSubject} />
+                        value={announcementSubject} />
                 </DialogTitle>
                 <DialogContent>
                     <InputBase className="note-body"
                         inputProps={{"aria-label": "naked"}} multiline
                         onChange={handleBodyChange}
                         placeholder="Body (required)" required rows={15}
-                        value={annoucementBody} variant="filled" />
+                        value={announcementBody} variant="filled" />
                 </DialogContent>
+                <FormGroup>
+                <FormControlLabel
+        control={
+          <Checkbox
+            checked={sendEmailCheckbox}
+            onChange={handleCheckboxChange}
+            // name="checkedB"
+            color="primary"
+          />
+        }
+        label="Send as email to parents of students enrolled in class"
+      />
+                </FormGroup>
                 <DialogActions>
                     <Button onClick={handleCloseForm} variant="outlined">
                         Cancel
                     </Button>
                     <Button color="primary"
-                        // disabled={!annoucementBody || createResults.loading}
+                        // disabled={!announcementBody || createResults.loading}
                         onClick={handlePostForm} variant="outlined">
                             POST
                         {/* {createResults.loading ? "Saving..." : "Save"} */}
@@ -165,4 +178,4 @@ console.log(id.id)
   );
 };
 
-export default NewAnnoucementsModal;
+export default NewAnnouncementsModal;
