@@ -44,10 +44,10 @@ const ProfileCard = ({user, route, studentInvite = false}) => {
         event.stopPropagation();
         invite({
             "variables": {
-                "email": user.email,
+                "email": user?.email,
             },
         });
-    }, [invite, user.email]);
+    }, [invite, user]);
 
     const classes = useStyles();
     return (

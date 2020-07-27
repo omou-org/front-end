@@ -38,8 +38,8 @@ const GET_EMAIL = gql`
     }`;
 
 const RESET_PASSWORD = gql`
-    mutation ResetPassword($password: String!, $token: String!) {
-        resetPassword(newPassword: $password, token: $token) {
+    mutation ResetPassword($password: String!, $token: String!, $isStudent: Boolean, $isInstructor: Boolean) {
+        resetPassword(newPassword: $password, token: $token, setInstructor: $isInstructor, setStudent: $isStudent) {
             status
         }
     }`;
@@ -47,6 +47,8 @@ const RESET_PASSWORD = gql`
 const ResetPassword = ({isSet}) => {
     const params = useSearchParams();
     const resetToken = params.get("token");
+    const isStudent = Boolean(params.get("student"));
+    const isInstructor = Boolean(params.get("instructor"));
     const history = useHistory();
     const [password, setPassword] = useState("");
     const emailStatus = useQuery(GET_EMAIL, {"variables": {"token": resetToken}});
@@ -64,11 +66,13 @@ const ResetPassword = ({isSet}) => {
         event.preventDefault();
         resetPassword({
             "variables": {
+                isInstructor,
+                isStudent,
                 password,
                 "token": resetToken,
             },
         });
-    }, [password, resetPassword, resetToken]);
+    }, [password, resetPassword, resetToken, isStudent, isInstructor]);
 
     const classes = {
         ...useAuthStyles(),

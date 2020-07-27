@@ -7,6 +7,7 @@ import LoadingError from "./LoadingCourseError";
 import {makeStyles} from "@material-ui/core/styles";
 import ProfileCard from "../ProfileCard";
 import {useQuery} from "@apollo/react-hooks";
+import {useSelector} from "react-redux";
 
 const useStyles = makeStyles({
     "center": {
@@ -45,6 +46,7 @@ const GET_STUDENTS = gql`
     }`;
 
 const StudentInfo = () => {
+    const {accountType} = useSelector(({auth}) => auth);
     const {accountID} = useParams();
     const {data, loading, error} = useQuery(GET_STUDENTS, {
         "variables": {"id": accountID},
@@ -76,7 +78,7 @@ const StudentInfo = () => {
             {studentList.map((student) => (
                 <ProfileCard key={student.user_id}
                     route={`/accounts/student/${student.user_id}`}
-                    studentInvite user={student} />
+                    studentInvite={["PARENT", "ADMIN"].includes(accountType)} user={student} />
             ))}
             <Grid className={classes.new} item sm={6} xs={12}>
                 <Link className={classes.center} to={`/form/add_student/${accountID}`}>
