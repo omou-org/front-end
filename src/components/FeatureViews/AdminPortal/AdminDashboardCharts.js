@@ -88,12 +88,7 @@ const BarComponent = withStyles(styles)(({ classes, ...restProps }) => (
 
 export const RevenuebyQuarter = props => {
   const classes = useStyles();
-  const data = [
-    { quarter: "q1", value: 11 },
-    { quarter: "q2", value: 38 },
-    { quarter: "q3", value: 18 },
-    { quarter: "q4", value: 40 },
-  ];
+  const data = props.data
   const [chartData, setChartData] = useState(data);
 
   const TextComponent = withStyles(styles)(({ classes, ...restProps }) => (
@@ -115,7 +110,7 @@ export const RevenuebyQuarter = props => {
           argumentField="quarter"
           color="#1F82A1"
         />
-        <Title text="THOUSANDS($)" textComponent={TextComponent} />
+        <Title text="($)" textComponent={TextComponent} />
         <EventTracker />
         <Tooltip />
         <Animation />
@@ -126,13 +121,7 @@ export const RevenuebyQuarter = props => {
 
 export const InstructorUtilization = props => {
   const classes = useStyles();
-  const data = [
-    { instructor: "DANIEL H.", value: 2 },
-    { instructor: "KATIE H.", value: 5 },
-    { instructor: "JERRY L.", value: 4 },
-    { instructor: "GABY C.", value: 4 },
-    { instructor: "CALVIN F.", value: 4 },
-  ];
+  const data = props.data;
   const [chartData, setChartData] = useState(data);
 
   const BarComponent = withStyles(styles)(({ classes, ...restProps }) => (
@@ -187,13 +176,15 @@ export const ClassEnrollment = props => {
 
 export const PopularSubject = props => {
   const classes = useStyles();
-  const data = [
-    { class: "ALGEBRA", session: 48 },
-    { class: "SAT ENG", session: 37 },
-    { class: "AP CHEM", session: 33 },
-    { class: "GEOMETRY", session: 31 },
-    { class: "COLLEGE PREP", session: 26 },
-  ];
+  const data = props.data
+  
+  // [
+  //   { class: "ALGEBRA", session: 48 },
+  //   { class: "SAT ENG", session: 37 },
+  //   { class: "AP CHEM", session: 33 },
+  //   { class: "GEOMETRY", session: 31 },
+  //   { class: "COLLEGE PREP", session: 26 },
+  // ];
 
   const [chartData, setChartData] = useState(data);
 

@@ -21,6 +21,7 @@ import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import moment from "moment";
 import Loading from "../../OmouComponents/Loading";
+import { fullName } from "./../../../utils";
 
 const baseTheme = createMuiTheme();
 
@@ -155,6 +156,40 @@ const AdminDashboard = (props) => {
             title
           }
         }
+        courses {
+          title
+          sessionSet {
+            id
+            course {
+              startTime
+              endTime
+            }
+          }
+        }
+        instructors {
+          instructoravailabilitySet {
+            startTime
+            endTime
+            startDatetime
+            endDatetime
+            dayOfWeek
+            id
+          }
+          user {
+            firstName
+            lastName
+            id
+          }
+          instructoroutofofficeSet {
+            id
+            startDatetime
+            endDatetime
+          }
+          courseSet {
+            startTime
+            endTime
+          }
+        }
       }
     
     `
@@ -171,18 +206,52 @@ const AdminDashboard = (props) => {
     return hours + minutes;
   };
 
+
   const onlyUnique = (value, index, self) => {
     return self.indexOf(value) === index;
 };
 
-  const {numRecentSessions, enrollments, sessions} = data;
-  console.log(sessions);
-  const sessionTitles = sessions.map((session)=> {
-    return session.course.title
+  const {numRecentSessions, enrollments, sessions, courses, instructors} = data;
+  console.log(instructors);
+
+  const instructorUtilization = instructors.map((instructor)=>{
+    const timeAvailable = instructor.instructoravailabilitySet.map((availability)=> {
+      const endTime = availability.endTime.substring(0, 2)
+      const startTime = availability.startTime.substring(0, 2);
+      
+      return endTime-startTime;
+    })
+    const timeTaught =  instructor.courseSet.map((course)=>{
+      const endTime = course.endTime.substring(0, 2);
+      const startTime = course.startTime.substring(0, 2);
+      return endTime-startTime;
+    })
+
+    const totalTimeTaught = timeTaught.reduce((previousValue, currentValue) => {
+      return previousValue + currentValue
+    })
+
+    return {
+      instructor: fullName(instructor.user),
+      value: `${100*(totalTimeTaught/timeAvailable)}%`
+    }
   })
 
-  console.log(onlyUnique(sessionTitles));
+  console.log(instructorUtilization);
 
+  const popularSubject = courses.map((course)=> {
+      return {
+        class: course.title,
+        session: course.sessionSet.length
+      }
+    })
+  
+  const sessionTitles = sessions.map((session)=> {
+    return {
+      title: session.course.title,
+      id: session.course.id
+    }
+  })
 
   const getCapacity = () => enrollments.map((enrollment)=> {
     const maxCapacity = enrollment.course.maxCapacity;
@@ -221,27 +290,21 @@ const AdminDashboard = (props) => {
     }
   })
 
-  const sessionsArray = sessions.map((sessions)=> {
-    return {  class: sessions.course.title,
-    }
-  })
-
-
-
   const totalTuition = totalTuitionArray.reduce((previousValue, currentValue)=>{
     return {
       tuition: previousValue.tuition + currentValue.tuition
     }
   })
 
-  
+  const revenue = [
+    { quarter: "-q3", value: 0 },
+    { quarter: "-q2", value: 0 },
+    { quarter: "-q1", value: 0 },
+    { quarter: "current", value: totalTuition.tuition },
 
-  // var val = array.reduce(function(previousValue, currentValue) {
-  //   return {
-  //     adults: previousValue.adults + currentValue.adults,
-  //     children: previousValue.children + currentValue.children
-  //   }
-  // });
+  ]
+
+  
 
   // const unpaidSessionsObj = () => {
   //   const parentObj = data?.unpaidSessions.map((user) => {
@@ -361,7 +424,9 @@ const AdminDashboard = (props) => {
                             <Typography className={classes.popSub}>
                               POPULAR SUBJECT
                             </Typography>
-                            <PopularSubject />
+                            <PopularSubject 
+                            data={popularSubject}
+                            />
                           </Grid>
                           <Grid item md={6}>
                             <Typography className={classes.popSub}>
@@ -375,13 +440,15 @@ const AdminDashboard = (props) => {
                             <Typography className={classes.popSub}>
                               INSTRUCTOR UTILIZATION
                             </Typography>
-                            <InstructorUtilization />
+                            <InstructorUtilization 
+                            data={instructorUtilization}/>
                           </Grid>
                           <Grid item md={6}>
                             <Typography className={classes.popSub}>
                               REVENUE BY QUARTER
                             </Typography>
-                            <RevenuebyQuarter />
+                            <RevenuebyQuarter 
+                            data={revenue}/>
                           </Grid>
                         </Grid>
                       </Grid>
