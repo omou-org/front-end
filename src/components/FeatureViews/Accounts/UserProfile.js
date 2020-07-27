@@ -237,9 +237,11 @@ const UserProfile = () => {
 								/>
 						))}
 				</Tabs>
-				<ComponentViewer inView={displayTabs
-					.filter((tab) =>
-						(tab.access_permissions.includes(AuthUser.accountType)))[tabIndex].tab_id} user={user}/>
+				<ComponentViewer
+					inView={displayTabs
+						.filter((tab) =>
+							(tab.access_permissions.includes(AuthUser.accountType)))[tabIndex].tab_id}
+					user={user}/>
 			</>
 		);
 	}, [displayTabs, handleTabChange, tabIndex, user]);
