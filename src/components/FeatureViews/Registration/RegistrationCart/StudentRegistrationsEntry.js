@@ -49,7 +49,7 @@ function RegistrationEntry({ registration: { course, numSessions, checked }, stu
 		<TableRow >
 			<TableCell>
 			</TableCell>
-			<TableCell>
+			<TableCell style={{maxWidth:750}}>
 				<Grid container>
 					<Grid>
 						<Typography style={{ fontWeight: 600, paddingRight: 50 }}>#{course.id} {course.title} - Instructor: {course.instructor.user.firstName} {course.instructor.user.lastName}</Typography>
@@ -84,7 +84,7 @@ function RegistrationEntry({ registration: { course, numSessions, checked }, stu
 					}}
 				/>
 			</TableCell>
-			<TableCell style={{ whiteSpace:"nowrap", paddingTop: 20, verticalAlign: 'top' }}>
+			<TableCell style={{ whiteSpace:"nowrap", verticalAlign: 'top' }}>
 				$ {getTuitionAmount(course, numSessions)}
 			</TableCell>
 		</TableRow>
