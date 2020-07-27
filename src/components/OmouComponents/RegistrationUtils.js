@@ -25,8 +25,8 @@ const saveRegistration = (student, course, registrationState) => {
 	const newRegistrationInfo = mapRegistrationInfo(student, course);
 	const existingStudentRegistration = registrationState?.[student] || [];
 	const newRegistrationState = {
-		[student]: [newRegistrationInfo, ...existingStudentRegistration],
 		...registrationState,
+		[student]: [...existingStudentRegistration, newRegistrationInfo],
 	};
 	sessionStorage.setItem("registrations", JSON.stringify(newRegistrationState));
 };

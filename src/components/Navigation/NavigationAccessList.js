@@ -81,6 +81,22 @@ export const NavList = {
 			"icon": <EventIcon/>,
 		},
 	],
-	"PARENT": [],
-	"STUDENT": [],
+	"PARENT": [
+		{
+			"name": "Dashboard",
+			"link": "/",
+			"icon": <DashboardIcon/>,
+		},
+		{
+			"name": "Scheduler",
+			"link": "/scheduler",
+			"icon": <EventIcon/>,
+		},
+		{
+			"name": "Registration",
+			"link": "/registration",
+			"icon": <AssignmentIcon/>,
+		},
+	],
+    "STUDENT": [],
 };
