@@ -98,4 +98,5 @@ export const NavList = {
 			"icon": <AssignmentIcon/>,
 		},
 	],
+    "STUDENT": [],
 };
