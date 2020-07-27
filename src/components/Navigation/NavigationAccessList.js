@@ -81,7 +81,6 @@ export const NavList = {
 			"icon": <EventIcon/>,
 		},
 	],
-	"STUDENT": [],
 	"PARENT": [
 		{
 			"name": "Dashboard",
@@ -99,4 +98,5 @@ export const NavList = {
 			"icon": <AssignmentIcon/>,
 		},
 	],
+    "STUDENT": [],
 };
