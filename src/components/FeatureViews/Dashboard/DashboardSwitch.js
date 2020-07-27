@@ -10,5 +10,7 @@ export default function DashboardSwitch() {
 		"ADMIN": <Dashboard/>,
 		"RECEPTIONIST": <Dashboard/>,
 		"INSTRUCTOR": <InstructorDashboard user={AuthUser}/>,
+		"PARENT": <div/>,
+		"STUDENT": <div/>,
 	}[ACCOUNT_TYPE])
 }

@@ -648,7 +648,7 @@ export default {
   createStudent(user: {firstName: $firstName, id: $id, lastName: $lastName,  email:$email}, address: $address, birthDate: $birthDate, school: $school, grade: $grade, gender: $gender, primaryParent: $primaryParent, phoneNumber: $phoneNumber, city: $city, state: $state, zipcode: $zipcode) {
       created
   }
-}`;
+    }`;
 
             try {
                 const {"data": {userInfo}} = await client.query({
@@ -1238,6 +1238,14 @@ export default {
             }
             `;
 
+            const INVITE_INSTRUCTOR =gql`
+            mutation MyMutation($email:String!) {
+  inviteInstructor(email: $email) {
+    status
+  }
+}
+`;
+
             const {basicInfo, experience} = formData;
             const modifiedData = {
                 basicInfo,
@@ -1256,11 +1264,18 @@ export default {
                             ...section,
                         }), {}),
                 });
+
             } catch (error) {
                 return {
                     [FORM_ERROR]: error,
                 };
             }
+            await client.mutate({
+                "mutation": INVITE_INSTRUCTOR,
+                "variables": {
+                    "email": formData.basicInfo.email,
+                }
+            });
         },
     },
 	"class-registration": {
