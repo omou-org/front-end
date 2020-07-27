@@ -111,24 +111,6 @@ const AdminDashboard = (props) => {
   const QUERIES = 
     // gql`
     //   query MyQuery {
-    //     unpaidSessions {
-    //       paymentList {
-    //         parent {
-    //           user {
-    //             firstName
-    //             lastName
-    //             id
-    //           }
-    //         }
-    //       }
-    //       course {
-    //         startTime
-    //         endTime
-    //         hourlyTuition
-    //         totalTuition
-    //       }
-    //       lastPaidSessionDatetime
-    //     }
     //     enrollments {
     //       course {
     //         totalTuition
@@ -189,6 +171,24 @@ const AdminDashboard = (props) => {
             startTime
             endTime
           }
+        }
+        unpaidSessions {
+          paymentList {
+            parent {
+              user {
+                firstName
+                lastName
+                id
+              }
+            }
+          }
+          course {
+            startTime
+            endTime
+            hourlyTuition
+            totalTuition
+          }
+          lastPaidSessionDatetime
         }
       }
     
@@ -306,30 +306,30 @@ const AdminDashboard = (props) => {
 
   
 
-  // const unpaidSessionsObj = () => {
-  //   const parentObj = data?.unpaidSessions.map((user) => {
-  //     const { endTime, startTime, hourlyTuition } = user.course;
-  //     const totalTime = getTime(endTime) - getTime(startTime);
-  //     const dollarsPerSession = totalTime * hourlyTuition;
-  //     const lastPaidSessionDateTime = user.lastPaidSessionDatetime
-  //       .substring(0, 10)
-  //       .replace("-", "")
-  //       .replace("-", "");
-  //     const missedPaymentSessions =
-  //       moment().diff(lastPaidSessionDateTime, "days") / 7;
-  //     const amountDue = dollarsPerSession * Math.ceil(missedPaymentSessions);
-  //     const firstName = user.paymentList[0].parent.user.firstName;
-  //     const lastName = user.paymentList[0].parent.user.lastName;
-  //     const id = user.paymentList[0].parent.user.id;
-  //     return {
-  //       name: `${firstName} ${lastName}`,
-  //       initial: `${firstName.charAt(0)}${lastName.charAt(0)}`,
-  //       id: id,
-  //       due: amountDue,
-  //     };
-  //   });
-  //   return parentObj || [];
-  // };
+  const unpaidSessionsObj = () => {
+    const parentObj = data?.unpaidSessions.map((user) => {
+      const { endTime, startTime, hourlyTuition } = user.course;
+      const totalTime = getTime(endTime) - getTime(startTime);
+      const dollarsPerSession = totalTime * hourlyTuition;
+      const lastPaidSessionDateTime = user.lastPaidSessionDatetime
+        .substring(0, 10)
+        .replace("-", "")
+        .replace("-", "");
+      const missedPaymentSessions =
+        moment().diff(lastPaidSessionDateTime, "days") / 7;
+      const amountDue = dollarsPerSession * Math.ceil(missedPaymentSessions);
+      const firstName = user.paymentList[0].parent.user.firstName;
+      const lastName = user.paymentList[0].parent.user.lastName;
+      const id = user.paymentList[0].parent.user.id;
+      return {
+        name: `${firstName} ${lastName}`,
+        initial: `${firstName.charAt(0)}${lastName.charAt(0)}`,
+        id: id,
+        due: amountDue,
+      };
+    });
+    return parentObj || [];
+  };
 
   const filterAndAddDuplicates = (arr) => {
     console.log(arr);
@@ -350,15 +350,15 @@ const AdminDashboard = (props) => {
   };
 
   if (loading) return <Loading />;
-  // const unpaidSessions = filterAndAddDuplicates(unpaidSessionsObj());
+  const unpaidSessions = filterAndAddDuplicates(unpaidSessionsObj());
 
-  // const unpaidSessionsComponent = unpaidSessions.map((card) => (
-  //   <OutstandingPaymentCard
-  //     name={card.name}
-  //     initials={card.initial}
-  //     due={card.due}
-  //   />
-  // ));
+  const unpaidSessionsComponent = unpaidSessions.map((card) => (
+    <OutstandingPaymentCard
+      name={card.name}
+      initials={card.initial}
+      due={card.due}
+    />
+  ));
 
   return (
     <div className={classes.root}>
@@ -413,7 +413,7 @@ const AdminDashboard = (props) => {
                         <Grid item md={3} className={classes.snapshotalt}>
                           <Snapshot
                             snapName="Outstanding Payments"
-                            number="$877"
+                            number="$600"
                           />
                         </Grid>
                         <Grid item md={3} className={classes.snapshotalt}>
@@ -461,7 +461,7 @@ const AdminDashboard = (props) => {
                       </Grid>
                       <Grid container spacing={2}>
                         <Grid item xs={10}>
-                          {/* {unpaidSessionsComponent} */}
+                          {unpaidSessionsComponent}
                         </Grid>
                       </Grid>
                     </Grid>
