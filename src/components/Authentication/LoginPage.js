@@ -139,7 +139,6 @@ const LoginPage = () => {
                         }} className="TextField"
                             error={hasError || email === ""}
                             fullWidth
-                            fullWidth
                             helperText={hasError ? "Sorry, we couldn't find a user for that email." : " "}
                             inputProps={{"data-cy": "emailField"}}
                             margin="normal"
@@ -230,21 +229,23 @@ const LoginPage = () => {
                             onChange={handleTextInput(setEmail)}
                             placeholder="E-Mail"
                             value={email}
-                            variant="outlined" />
+                            variant="outlined"/>
                         <PasswordInput autoComplete="current-password"
-                            error={hasError || password === ""}
-                            inputProps={{"data-cy": "passwordField"}}
-                            isField={false} label="Password"
-                            onChange={handleTextInput(setPassword)}
-                            value={password} />
+                                       error={hasError || password === ""}
+                                       inputProps={{"data-cy": "passwordField"}}
+                                       isField={false} label="Password"
+                                       className="TextField"
+                                       variant="outlined"
+                                       onChange={handleTextInput(setPassword)}
+                                       value={password}/>
                         <Grid className="optionsContainer" container item>
-                            <Grid item md={2} />
+                            <Grid item md={2}/>
                             <Grid item md={4}>
                                 <FormControlLabel
                                     control={<Checkbox checked={shouldSave}
-                                        inputProps={{"data-cy": "rememberMe"}}
-                                        onChange={toggleSavePassword} />}
-                                    label="Remember Me" />
+                                                       inputProps={{"data-cy": "rememberMe"}}
+                                                       onChange={toggleSavePassword}/>}
+                                    label="Remember Me"/>
                             </Grid>
                             <Grid item md={4} style={{"paddingTop": 10}}>
                                 <Link className="forgotPassword"
