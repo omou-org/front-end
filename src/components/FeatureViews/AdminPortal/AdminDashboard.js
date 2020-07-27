@@ -171,11 +171,19 @@ const AdminDashboard = (props) => {
     return hours + minutes;
   };
 
+  const onlyUnique = (value, index, self) => {
+    return self.indexOf(value) === index;
+};
+
   const {numRecentSessions, enrollments, sessions} = data;
   console.log(sessions);
+  const sessionTitles = sessions.map((session)=> {
+    return session.course.title
+  })
+
+  console.log(onlyUnique(sessionTitles));
 
 
-  
   const getCapacity = () => enrollments.map((enrollment)=> {
     const maxCapacity = enrollment.course.maxCapacity;
     return maxCapacity
