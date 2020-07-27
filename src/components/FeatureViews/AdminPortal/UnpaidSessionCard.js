@@ -60,10 +60,9 @@ const useStyles = makeStyles((theme) => ({
 
 const UnpaidSessionCard = ({unpaidStudent}) => {
     const classes = useStyles();
-    
     const studentObj = unpaidStudent.student.user;
     const studentName = fullName(studentObj);
-    const { studentFirstName, studentLastName, studentID} = unpaidStudent.student.user;
+    const { firstName, lastName, studentID} = unpaidStudent.student.user;
     const { courseID, courseTitle, startTime, endTime, hourlyTuition } = unpaidStudent.course
     const sessionsLeft = unpaidStudent.sessionsLeft;
 	const amtDue = adminUtils.amountDue(
@@ -88,7 +87,7 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
                                 "backgroundColor": stringToColor(studentName),
                             }}>
                             {initials(
-                                studentFirstName, studentLastName
+                                firstName, lastName
                             )}
                         </Avatar>
                     </Grid>

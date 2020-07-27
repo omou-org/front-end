@@ -4,6 +4,7 @@ import AccountsIcon from "@material-ui/icons/Contacts";
 import AdminIcon from "@material-ui/icons/Face";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import DashboardIcon from "@material-ui/icons/Dashboard"
+import MenuBookIcon from '@material-ui/icons/MenuBook';
 
 /**
  * Various pages accessible by different users
@@ -22,14 +23,19 @@ export const NavList = {
 			"icon": <EventIcon/>,
 		},
 		{
-			"name": "Accounts",
-			"link": "/accounts",
-			"icon": <AccountsIcon/>,
-		},
-		{
 			"name": "Registration",
 			"link": "/registration",
 			"icon": <AssignmentIcon/>,
+		},
+		{
+			"name": "Course Management",
+			"link": "/coursemanagement",
+			"icon": <MenuBookIcon />
+		},
+		{
+			"name": "Accounts",
+			"link": "/accounts",
+			"icon": <AccountsIcon/>,
 		},
 		{
 			"name": "Admin",

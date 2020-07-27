@@ -25,7 +25,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import gql from "graphql-tag";
-import { useMutation } from "@apollo/react-hooks";
+import { useQuery ,useMutation } from "@apollo/react-hooks";
 
 const useStyles = makeStyles((theme) => ({}));
 
@@ -36,19 +36,39 @@ const NewAnnouncementsModal = ({ handleClose, open, subject, body, userId }) => 
   const [announcementSubject, setAnnouncementSubject] = useState(subject);
   const id = useParams();
   const user_id = userId.results[0].user.id
-  console.log(id.id)
+  console.log(userId)
 
 //   useEffect(() => {
 //       setAnnouncementBody(body);
 //       setAnnouncementSubject(subject);
 //   },[announcementBody, announcementSubject]);
 
+  const GET_PARENT_INFO = gql`
+  query getParentInfo($id: ID!) {
+    __typename
+    course(courseId: "$id") {
+      enrollmentSet {
+        student {
+          primaryParent {
+            user {
+              email
+              firstName
+              lastName
+            }
+          }
+        }
+      }
+    }
+  }
+`;  
+
   const CREATE_ANNOUNCEMENTS = gql`
     mutation CreateAnnouncement(
       $subject: String!,
       $body: String!,
       $courseId: ID!,
-      $userId: ID!
+      $userId: ID!,
+      $should_email: Boolean,
     ) {
       __typename
       createAnnouncement(
@@ -56,6 +76,7 @@ const NewAnnouncementsModal = ({ handleClose, open, subject, body, userId }) => 
         course: $courseId,
         subject: $subject,
         user: $userId
+        shouldEmail: $should_email
       ) {
         created
         announcement {
@@ -73,12 +94,6 @@ const NewAnnouncementsModal = ({ handleClose, open, subject, body, userId }) => 
     }
   `;
 
-  //   mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {
-  //     createReview(episode: $ep, review: $review) {
-  //       stars
-  //       commentary
-  //     }
-  //   }
 
   const [createAnnouncement, createAnnouncementResult] = useMutation(
     CREATE_ANNOUNCEMENTS, {
@@ -86,6 +101,7 @@ const NewAnnouncementsModal = ({ handleClose, open, subject, body, userId }) => 
       error: err => console.error(err) 
     }
   );
+  
 
   const handleCloseForm = () => {
     handleClose(false);
@@ -108,12 +124,12 @@ const handleBodyChange = useCallback((event) => {
               subject: announcementSubject,
               body: announcementBody,
               userId: user_id,
-              courseId: id.id
+              courseId: id.id,
+              shouldEmail: sendEmailCheckbox === true ? true : false,
             },
           });
          handleClose(false);
   };
-
   return (
     <Grid className="announcement-container" container item md={12} spacing={2}>
                 <Dialog aria-describedby="simple-modal-description"
