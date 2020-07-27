@@ -171,10 +171,10 @@ export const TuitionList = (props) => (
   <List {...props}>
     <Datagrid rowClick="edit">
       <TextField source="id" />
-      <SelectField source="academicLevel" choices={academicLevelChoices} />
       <TextField source="name" />
+      <SelectField source="academicLevel" choices={academicLevelChoices} />
       <SelectField source="courseType" choices={courseTypes} />
-      <TextField source="category.name" label="Category" />
+      <TextField source="category.name" label="Course category" />
     </Datagrid>
   </List>
 );
@@ -184,8 +184,10 @@ export const TuitionShow = (props) => (
   <Show {...props}>
     <SimpleShowLayout>
       <TextField source="id" />
-      <TextField source="academicLevel" />
       <TextField source="name" />
+      <TextField source="academicLevel" />
+      <SelectField source="courseType" choices={courseTypes} />
+      <TextField source="category.name" label="Course category" />
     </SimpleShowLayout>
   </Show>
 );
@@ -198,9 +200,9 @@ export const TuitionEdit = (props) => (
       <TextInput source="name" />
       <SelectInput source="academicLevel" choices={academicLevelChoices} />
       <ReferenceInput
-        label="Course Category"
-        // source="category"
-        source="category.id"
+        label="Course category"
+        // source="category.id" => prepopulates field but error on submit
+        source="category"
         reference="courseCategories"
       >
         <SelectInput
@@ -219,7 +221,7 @@ export const TuitionCreate = (props) => (
       <TextInput source="name" />
       <SelectInput source="academicLevel" choices={academicLevelChoices} />
       <ReferenceInput
-        label="Course Category"
+        label="Course category"
         source="category"
         reference="courseCategories"
       >

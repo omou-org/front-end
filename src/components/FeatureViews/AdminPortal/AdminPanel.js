@@ -1,6 +1,6 @@
 import React from "react";
 import { Admin, Resource } from "react-admin";
-import * as components from "./UserList";
+import * as components from "./AdminPanelViews";
 import { Provider } from "react-redux";
 import { createHashHistory } from "history";
 import createAdminStore from "../../../createAdminStore";
@@ -9,7 +9,7 @@ import dataProvider from "./dataProvider";
 const authProvider = () => Promise.resolve();
 const history = createHashHistory();
 
-const App = () => (
+const AdminPanel = () => (
     <Provider
         store={createAdminStore({
             authProvider,
@@ -37,10 +37,14 @@ const App = () => (
                 list={components.PaymentMethodDiscountList}
                 name="paymentMethodDiscounts"
                 show={components.PaymentMethodDiscountShow} />
-            <Resource edit={components.TuitionEdit} create={components.TuitionCreate} list={components.TuitionList}
-                name="tuitionRules" show={components.TuitionShow} />
+            <Resource 
+                create={components.TuitionCreate}
+                edit={components.TuitionEdit}  
+                list={components.TuitionList}
+                name="tuitionRules" 
+                show={components.TuitionShow} />
         </Admin>
     </Provider>
 );
 
-export default App;
+export default AdminPanel;
