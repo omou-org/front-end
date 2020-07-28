@@ -8,7 +8,8 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import Moment from "react-moment";
-import {RegistrationContext} from "./RegistrationContext";
+import moment from "moment";
+import { RegistrationContext } from "./RegistrationContext";
 import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
@@ -27,10 +28,8 @@ const useRowStyles = makeStyles({
 	},
 });
 
-const separator = () =>{
-	return (<Grid>
-	<Typography style={{ paddingLeft:30, paddingRight: 30 }}>|</Typography>
-</Grid>)
+const separator = () => {
+	return (<Typography style={{ display: "inline", paddingLeft: 30, paddingRight: 30 }}>|</Typography>)
 }
 
 function RegistrationEntry({ registration: { course, numSessions, checked }, studentId }) {
@@ -47,23 +46,31 @@ function RegistrationEntry({ registration: { course, numSessions, checked }, stu
 	};
 
 	return (<>
-		<TableRow className={classes.root}>
+		<TableRow >
 			<TableCell>
-				<Checkbox
-					checked={checked}
-					onChange={handleSessionCheckChange}
-					inputProps={{ 'aria-label': 'primary checkbox' }}
-					color="primary"
-				/>
 			</TableCell>
-			<TableCell>
-				{course.title}
+			<TableCell style={{maxWidth:750}}>
+				<Grid container>
+					<Grid>
+						<Typography style={{ fontWeight: 600, paddingRight: 50 }}>#{course.id} {course.title} - Instructor: {course.instructor.user.firstName} {course.instructor.user.lastName}</Typography>
+					</Grid>
+				</Grid>
+				<br />
+				<Grid container>
+					<Typography style={{ whiteSpace: "nowrap", textTransform: "capitalize" }}>
+						{course.courseCategory.name}
+						{separator()}
+						{course.academicLevelPretty}
+						{separator()}
+						{moment(course.startDate, ["YYYY-MM-DD"]).format("ddd")} {moment(course.startTime, ["HH.mm"]).format("h:mm A")} - {moment(course.endTime, ["HH.mm"]).format("h:mm A")}
+						{separator()}
+									Start Date: <Moment date={course.startDate} format="M/DD/YYYY" /> - <Moment date={course.endDate}
+							format="M/DD/YYYY" />
+					</Typography>
+				</Grid>
+				<br />
 			</TableCell>
-			<TableCell>
-				<Moment date={course.startDate} format="MM/DD/YYYY" /> - <Moment date={course.endDate}
-					format="MM/DD/YYYY" />
-			</TableCell>
-			<TableCell>
+			<TableCell style={{ whiteSpace:"nowrap", verticalAlign: 'top' }}>
 				<TextField
 					value={numSessions}
 					onChange={handleSessionChange}
@@ -77,63 +84,8 @@ function RegistrationEntry({ registration: { course, numSessions, checked }, stu
 					}}
 				/>
 			</TableCell>
-			<TableCell>
+			<TableCell style={{ whiteSpace:"nowrap", verticalAlign: 'top' }}>
 				$ {getTuitionAmount(course, numSessions)}
-			</TableCell>
-			<TableCell>
-				<IconButton aria-label="expand teaching log" size="small" onClick={() => setOpen(!open)}>
-					{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-				</IconButton>
-			</TableCell>
-		</TableRow>
-		<TableRow>
-			<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-				<Collapse in={open} timeout="auto" unmountOnExit>
-					<Box margin={1}>
-						<Typography>info</Typography>
-						<Grid container>
-							<Grid>
-								<Typography style={{ fontWeight: 600, paddingRight: 50 }}>{course.title}</Typography>
-							</Grid>
-							<Grid>
-								<Typography style={{ fontWeight: 400 }}>{course.id}</Typography>
-							</Grid>
-						</Grid>
-						<Grid container>
-							<Grid>
-								<Typography>{course.startDate.replace(/-/g, "/")} - {course.endDate.replace(/-/g, "/")}</Typography>
-							</Grid>
-							<Grid>
-								{separator()}
-							</Grid>
-							<Grid>
-								<Typography>{course.startTime} - {course.endTime}</Typography>
-							</Grid>
-							<Grid>
-								{separator()}
-							</Grid>
-							<Grid>
-								{numSessions} Sessions Total
-							</Grid>
-						</Grid>
-						<Grid container>
-							<Grid>
-								{course.academicLevel}
-							</Grid>
-							<Grid>
-								{separator()}
-							</Grid>
-							<Grid>
-								{course.courseCategory.name}
-							</Grid>
-						</Grid>
-						<Grid container>
-							<Grid>
-								{course.instructor.user.firstName} {course.instructor.user.lastName}
-							</Grid>
-						</Grid>
-					</Box>
-				</Collapse>
 			</TableCell>
 		</TableRow>
 	</>)
@@ -147,10 +99,7 @@ export default function StudentRegistrationEntry({ student, registrationList }) 
 				<TableRow>
 					<TableCell/>
 					<TableCell>
-						Course
-					</TableCell>
-					<TableCell>
-						Dates
+						Descriptions
 					</TableCell>
 					<TableCell>
 						Sessions
@@ -158,10 +107,10 @@ export default function StudentRegistrationEntry({ student, registrationList }) 
 					<TableCell>
 						Tuition
 					</TableCell>
-					<TableCell />
 				</TableRow>
 			</TableHead>
 			<TableBody>
+				<br />
 				{
 					registrationList.map(registration =>
 						<RegistrationEntry

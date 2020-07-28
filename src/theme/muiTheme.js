@@ -126,14 +126,9 @@ const theme = createMuiTheme({
                 "fill": "white",
             },
         },
-        MuiTableRow: {
-            head: {
-                backgroundColor: omouBlue,
-            }
-        },
         MuiTableCell: {
             head: {
-                color: "white !important",
+                color: omouBlue,
                 fontWeight: 600,
             }
         }

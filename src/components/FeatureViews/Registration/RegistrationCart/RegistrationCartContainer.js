@@ -36,7 +36,7 @@ const GET_COURSES_TO_REGISTER = gql`
 			hourlyTuition
 			startTime
 			endTime
-			academicLevel
+			academicLevelPretty
 			courseCategory {
 				id
 				name
