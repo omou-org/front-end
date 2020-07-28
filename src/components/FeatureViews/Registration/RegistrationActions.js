@@ -1,51 +1,19 @@
 import React, {useCallback, useState} from "react";
-import {useSelector} from "react-redux";
-
-import AssignmentIcon from "@material-ui/icons/Assignment";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import {Link} from "react-router-dom";
-import ListItemText from "@material-ui/core/ListItemText";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
 import NewCourse from "@material-ui/icons/School";
-import NewTutor from "@material-ui/icons/Group";
-import NewUser from "@material-ui/icons/PersonAdd";
 import Tooltip from "@material-ui/core/Tooltip";
-import {withStyles} from "@material-ui/core/styles";
 
 import "./registration.scss";
 import SelectParentDialog from "./SelectParentDialog";
 import {stringToColor} from "../Accounts/accountUtils";
-
-const StyledMenu = withStyles({
-	paper: {
-		border: "1px solid #d3d4d5",
-	},
-})((props) => (
-	<Menu
-		anchorOrigin={{horizontal: "center", vertical: "bottom"}}
-		elevation={0}
-		getContentAnchorEl={null}
-		transformOrigin={{horizontal: "center", vertical: "top"}}
-		{...props}
-	/>
-));
+import {fullName} from "../../../utils";
+import {getRegistrationCart} from "../../OmouComponents/RegistrationUtils";
 
 const RegistrationActions = () => {
-	const currentParent = useSelector(
-		({Registration}) => Registration.CurrentParent
-	);
-	const [anchorEl, setAnchorEl] = useState(null);
+	const {currentParent, ...registrationCartState} = getRegistrationCart();
 	const [dialogOpen, setDialog] = useState(false);
-
-	const openRegisterMenu = useCallback(({currentTarget}) => {
-		setAnchorEl(currentTarget);
-	}, []);
-
-	const closeRegisterMenu = useCallback(() => {
-		setAnchorEl(null);
-	}, []);
 
 	const openDialog = useCallback(() => {
 		setDialog(true);
@@ -55,25 +23,17 @@ const RegistrationActions = () => {
 		setDialog(false);
 	}, []);
 
+	const parentName = currentParent && fullName(currentParent.user);
+
 	return (
 		<>
 			<Grid
+				item
 				className="registration-action-control"
 				container
 				direction="row"
 				justify="flex-start"
 			>
-				<Grid item md={2}>
-					<Button
-						className="button"
-						color="secondary"
-						component={Link}
-						to="/registration/form/student"
-						variant="outlined"
-					>
-						<NewUser className="icon"/> New Student
-					</Button>
-				</Grid>
 				<Grid item md={8}>
 					{currentParent && (
 						<Grid item xs={2}>
@@ -82,10 +42,11 @@ const RegistrationActions = () => {
 								aria-haspopup="true"
 								className="button"
 								color="secondary"
-								onClick={openRegisterMenu}
+								component={Link} to="/registration/form/class-registration"
 								variant="outlined"
 							>
-								<AssignmentIcon className="icon"/> Register
+								<NewCourse className="icon innerIcon"/>
+								REGISTER CLASS
 							</Button>
 						</Grid>
 					)}
@@ -97,10 +58,10 @@ const RegistrationActions = () => {
 								<div
 									className="circle-icon"
 									style={{
-										backgroundColor: stringToColor(currentParent.user.name),
+										backgroundColor: stringToColor(parentName),
 									}}
 								/>
-								{currentParent.user.name}
+								{parentName}
 							</Button>
 						</Tooltip>
 					) : (
@@ -111,25 +72,6 @@ const RegistrationActions = () => {
 					)}
 				</Grid>
 			</Grid>
-			<StyledMenu
-				anchorEl={anchorEl}
-				keepMounted
-				onClose={closeRegisterMenu}
-				open={anchorEl !== null}
-			>
-				<MenuItem component={Link} to="/form/course_register/">
-					<NewCourse className="icon innerIcon"/>
-					<ListItemText primary="COURSE"/>
-				</MenuItem>
-				<MenuItem component={Link} to="/form/tutoring/">
-					<NewTutor className="icon innerIcon"/>
-					<ListItemText primary="TUTORING"/>
-				</MenuItem>
-				<MenuItem component={Link} to="/form/small_group/">
-					<NewTutor className="icon innerIcon"/>
-					<ListItemText primary="SMALL GROUP"/>
-				</MenuItem>
-			</StyledMenu>
 			<SelectParentDialog onClose={closeDialog} open={dialogOpen}/>
 		</>
 	);

@@ -26,7 +26,7 @@ import {withStyles} from "@material-ui/core/styles";
 
 import * as adminActions from "actions/adminActions";
 import {dateParser} from "../../Form/FormUtils";
-import {DatePicker} from "material-ui-pickers";
+import {DatePicker} from "@material-ui/pickers";
 
 const styles = () => ({
 	colorBar: {},

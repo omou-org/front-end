@@ -1,6 +1,4 @@
 import React, {useCallback, useState} from "react";
-
-import BackButton from "components/OmouComponents/BackButton";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import SearchSelect from "react-select";
@@ -181,9 +179,10 @@ const RegistrationLanding = () => {
 
     return (
         <BackgroundPaper className="RegistrationLanding" elevation={2}>
-            <BackButton />
-            <hr />
-            <RegistrationActions />
+            <Grid container>
+                <RegistrationActions/>
+            </Grid>
+            <hr/>
             <Grid container layout="row">
                 <Grid item md={8} xs={12}>
                     <Typography align="left" className="heading" variant="h3">
@@ -201,7 +200,7 @@ const RegistrationLanding = () => {
                 </Grid>
             </Grid>
             {view === 0 && (
-                <Grid container layout="row" spacing={1}>
+				<Grid item container layout="row" spacing={1}>
                     <Grid item md={4} xs={12}>
                         {renderFilter("instructor")}
                     </Grid>
@@ -212,10 +211,10 @@ const RegistrationLanding = () => {
                         <Grid item md={4} xs={12}>
                             {renderFilter("grade")}
                         </Grid>
-                    </Hidden>
+                    </Hidden> 
                 </Grid>
             )}
-            <Grid className="registration-table" container spacing={5}>
+			<Grid item className="registration-table" container spacing={5}>
                 {view === 0 ?
                     <CourseList filteredCourses={filteredCourses} /> :
                     <TutoringList />}

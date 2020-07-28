@@ -1,8 +1,8 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import gql from "graphql-tag";
-import {Link} from "react-router-dom";
-import {useQuery} from "@apollo/react-hooks";
-import {useSelector} from "react-redux";
+import { Link } from "react-router-dom";
+import { useQuery } from "@apollo/react-hooks";
+import { useSelector } from "react-redux";
 
 import Button from "@material-ui/core/Button";
 import CardView from "@material-ui/icons/ViewModule";
@@ -10,7 +10,7 @@ import EditIcon from "@material-ui/icons/EditOutlined";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import ListView from "@material-ui/icons/ViewList";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -22,15 +22,18 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 
 import "./Accounts.scss";
-import {addDashes} from "./accountUtils";
-import BackButton from "components/OmouComponents/BackButton";
-import {capitalizeString, USER_TYPES} from "utils";
+import { addDashes } from "./accountUtils";
+import { capitalizeString, USER_TYPES } from "utils";
 import IconButton from "@material-ui/core/IconButton";
 import LoadingHandler from "components/OmouComponents/LoadingHandler";
 import ProfileCard from "./ProfileCard";
-import {simpleUser} from "queryFragments";
+import { simpleUser } from "queryFragments";
 import UserAvatar from "./UserAvatar";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
+import theme from "../../../theme/muiTheme";
+import ThemeProvider from "@material-ui/styles/ThemeProvider";
+import secondaryTheme from "../../../theme/secondaryTheme";
+import NewUser from "@material-ui/icons/PersonAdd";
 
 const QUERY_USERS = gql`
     query UserQuery {
@@ -66,14 +69,15 @@ const TABS = ["ALL", "INSTRUCTORS", "STUDENTS", "RECEPTIONIST", "PARENTS"]
     .map((label) => <Tab className="tab" key={label} label={label} />);
 
 const useStyles = makeStyles({
-    "tableCellStyle": {
-        "color": "rgba(0, 0, 0, 0.54)",
-        "fontSize": "0.75rem",
-    },
     "tableRowStyle": {
         "fontSize": "0.8125rem",
         "padding": "0px",
     },
+    MuiTableRow: {
+        head: {
+            backgroundColor: "white"
+        }
+    }
 });
 
 const stopPropagation = (event) => {
@@ -82,8 +86,8 @@ const stopPropagation = (event) => {
 
 const Accounts = () => {
     const isAdmin =
-        useSelector(({auth}) => auth.accountType) === USER_TYPES.admin;
-    const {loading, error, data} = useQuery(QUERY_USERS);
+        useSelector(({ auth }) => auth.accountType) === USER_TYPES.admin;
+    const { loading, error, data } = useQuery(QUERY_USERS);
 
     const prevState = JSON.parse(sessionStorage.getItem("AccountsState"));
     const [isMobile, setIsMobile] = useState(false);
@@ -155,71 +159,73 @@ const Accounts = () => {
     }, []);
 
     const classes = useStyles();
-    const tableView = useMemo(() => (
-        <Table className="AccountsTable" resizable="false">
-            <TableHead>
-                <TableRow>
-                    <TableCell className={classes.tableCellStyle}>
-                        Name
-                    </TableCell>
-                    <TableCell className={classes.tableCellStyle}>
-                        Email
-                    </TableCell>
-                    <TableCell className={classes.tableCellStyle}>
-                        Phone
-                    </TableCell>
-                    <TableCell className={classes.tableCellStyle}>
-                        Role
-                    </TableCell>
-                    <TableCell />
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {displayUsers.map((row) => (
-                    <TableRow className="row" component={Link}
-                        key={row.user.id}
-                        to={`/accounts/${row.accountType}/${row.user.id}`}>
-                        <TableCell className={classes.tableRowStyle}>
-                            <Grid alignItems="center" container
-                                layout="row">
-                                <UserAvatar fontSize={14} margin={9}
-                                    name={row.name} size={38} />
-                                {row.name}
-                            </Grid>
+    const tableView = useMemo(() => (<ThemeProvider theme={theme}>
+        <ThemeProvider theme={secondaryTheme}>
+            <Table className="AccountsTable" resizable="false">
+                <TableHead className={classes.secondaryTableHead}>
+                    <TableRow>
+                        <TableCell >
+                            Name
                         </TableCell>
-                        <TableCell>
-                            <Tooltip title={row.user.email}>
-                                <span>{row.user.email.substr(0, 20)}</span>
-                            </Tooltip>
+                        <TableCell >
+                            Email
                         </TableCell>
-                        <TableCell>{addDashes(row.phoneNumber)}</TableCell>
-                        <TableCell>
-                            {capitalizeString(row.accountType)}
+                        <TableCell >
+                            Phone
                         </TableCell>
-                        <TableCell onClick={stopPropagation}>
-                            <Grid component={Hidden} mdDown>
-                                {(row.accountType === USER_TYPES.student ||
-                                    row.accountType === USER_TYPES.parent ||
-                                    isAdmin) && (
-                                    <IconButton component={Link}
-                                        to={`/registration/form/${row.accountType}/${row.user.id}`}>
-                                        <EditIcon />
-                                    </IconButton>
-                                )}
-                            </Grid>
-                            <Grid component={Hidden} lgUp>
-                                <Button component={Link}
-                                    to={`/registration/form/${row.accountType}/${row.user.id}`}
-                                    variant="outlined">
-                                    <EditIcon />
-                                </Button>
-                            </Grid>
-                        </TableCell>
+                        <TableCell >
+                            Role
+                    </TableCell>
+                        <TableCell />
                     </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-    ), [classes.tableCellStyle, classes.tableRowStyle, displayUsers, isAdmin]);
+                </TableHead>
+                <TableBody>
+                    {displayUsers.map((row) => (
+                        <TableRow className="row" component={Link}
+                            key={row.user.id}
+                            to={`/accounts/${row.accountType}/${row.user.id}`}>
+                            <TableCell className={classes.tableRowStyle}>
+                                <Grid alignItems="center" container
+                                    layout="row">
+                                    <UserAvatar fontSize={14} margin={9}
+                                        name={row.name} size={38} />
+                                    {row.name}
+                                </Grid>
+                            </TableCell>
+                            <TableCell>
+                                <Tooltip title={row.user.email}>
+                                    <span>{row.user.email.substr(0, 20)}</span>
+                                </Tooltip>
+                            </TableCell>
+                            <TableCell>{addDashes(row.phoneNumber)}</TableCell>
+                            <TableCell>
+                                {capitalizeString(row.accountType)}
+                            </TableCell>
+                            <TableCell onClick={stopPropagation}>
+                                <Grid component={Hidden} mdDown>
+                                    {(row.accountType === USER_TYPES.student ||
+                                        row.accountType === USER_TYPES.parent ||
+                                        isAdmin) && (
+                                            <IconButton component={Link}
+                                                to={`/form/${row.accountType}/${row.user.id}`}>
+                                                <EditIcon />
+                                            </IconButton>
+                                        )}
+                                </Grid>
+                                <Grid component={Hidden} lgUp>
+                                    <Button component={Link}
+                                        to={`/form/${row.accountType}/${row.user.id}`}
+                                        variant="outlined">
+                                        <EditIcon />
+                                    </Button>
+                                </Grid>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </ThemeProvider>
+    </ThemeProvider>), [classes.tableCellStyle, classes.tableRowStyle, displayUsers, isAdmin]);
 
     const cardView = useMemo(() => (
         <Grid alignItems="center" className="card-container" container
@@ -235,7 +241,19 @@ const Accounts = () => {
     return (
         <Grid className="Accounts" item xs={12}>
             <BackgroundPaper elevation={2}>
-                <BackButton />
+                <Grid container alignItems="flex-start">
+                    <Grid item>
+                        <Button
+                            className="button"
+                            color="secondary"
+                            component={Link}
+                            to="/registration/form/student"
+                            variant="outlined"
+                        >
+                            <NewUser className="icon" /> New Student
+                        </Button>
+                    </Grid>
+                </Grid>
                 <Hidden xsDown>
                     <hr />
                 </Hidden>

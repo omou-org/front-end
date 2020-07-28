@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {Redirect, useParams} from "react-router-dom";
+import {Redirect, useLocation, useParams} from "react-router-dom";
 
 import BackButton from "components/OmouComponents/BackButton.js";
 import Form from "./Form";
@@ -8,7 +8,7 @@ import BackgroundPaper from "../OmouComponents/BackgroundPaper";
 
 const FormPage = () => {
     const {type, id} = useParams();
-    const {form, load, submit, title} = Forms[type];
+    const {form, load, submit, title} = Forms?.[type] || {};
     const [initialData, setInitialData] = useState();
     const onSubmit =
         useCallback((formData) => submit(formData, id), [id, submit]);
@@ -28,7 +28,7 @@ const FormPage = () => {
         }
     }, [id, load]);
 
-    const withDefaultData = form.reduce((data, {name, fields}) => ({
+    const withDefaultData = form?.reduce((data, {name, fields}) => ({
         ...data,
         [name]: {
             ...fields.filter((field) => typeof field.default !== "undefined")
@@ -40,6 +40,13 @@ const FormPage = () => {
         },
     }), {});
 
+    const getTitle = () => {
+        if (id) {
+            return title.edit || `${title} Editing`;
+        }
+        return title.create || `${title} Registration`;
+    };
+
     if (!form || (id && initialData === null)) {
         return <Redirect to="/PageNotFound" />;
     }
@@ -48,7 +55,7 @@ const FormPage = () => {
         <BackgroundPaper>
             <BackButton />
             <Form base={form} initialData={withDefaultData} onSubmit={onSubmit}
-                title={`${title} ${id ? "Editing" : "Registration"}`} />
+                title={getTitle()} />
         </BackgroundPaper>
     );
 };

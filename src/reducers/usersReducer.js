@@ -10,6 +10,8 @@ export default function users(state = initialState.Users, {payload, type}) {
             return handleParentsFetch(state, payload);
         case actions.FETCH_INSTRUCTOR_SUCCESSFUL:
             return handleInstructorsFetch(state, payload);
+        case actions.FETCH_ADMIN_SUCCESSFUL:
+            return handleAdminsFetch(state, payload);
         case actions.FETCH_ACCOUNT_NOTE_SUCCESSFUL:
             return handleAccountNotesFetch(state, payload);
         case actions.POST_ACCOUNT_NOTE_SUCCESSFUL:
@@ -202,6 +204,61 @@ export const updateParent = (parents, id, parent) => ({
         "balance": parent.balance,
     },
 });
+
+export const handleAdminsFetch = (state, payload) => {
+    let data;
+    let id;
+    let response;
+    if (payload.id) {
+        id = payload.id;
+        data = payload.response.data;
+        response = payload.response;
+    } else {
+        data = payload.data;
+        id = payload.data.user.id;
+        response = payload;
+    }
+    let {ReceptionistList} = state;
+    if (id === REQUEST_ALL) {
+        data.forEach((admin) => {
+            ReceptionistList = updateAdmin(ReceptionistList, admin.user.id, admin);
+        });
+    } else if (Array.isArray(id)) {
+        response.forEach(({data}) => {
+            ReceptionistList = updateAdmin(ReceptionistList, data.user.id, data);
+        });
+    } else {
+        ReceptionistList = updateAdmin(ReceptionistList, id, data);
+    }
+    return {
+        ...state,
+        ReceptionistList,
+    };   
+};
+
+export const updateAdmin = (admins, id, admin) => ({
+    ...admins,
+    [id]: {
+        "user_id": admin.user.id,
+        "email": admin.user.email,
+        "first_name": admin.user.first_name,
+        "last_name": admin.user.last_name,
+        "name": `${admin.user.first_name} ${admin.user.last_name}`,
+        "user_uuid": admin.user_uuid,
+        "admin_type": admin.admin_type,
+        "gender": admin.gender,
+        "birth_date": admin.birth_date,
+        "address": admin.address,
+        "city": admin.city,
+        "phone_number": admin.phone_number,
+        "state": admin.state,
+        "zipcode": admin.zipcode,
+        "role": admin.account_type,
+        "updated_at": admin.updated_at,
+        "created_at": admin.created_at,
+        "notes": (admins[id] && admins[id].notes) || {},
+    }
+})
 
 export const handleStudentsFetch = (state, payload) => {
     let data;
