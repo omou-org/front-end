@@ -32,10 +32,10 @@ const useStyles = makeStyles({
 	},
 	selectDateText: {
 		fontSize: "17px",
-		padding: "3%"
+		paddingTop: "2%"
 	},
 	timePicker: {
-		width: "200px"
+		maxWidth: 200
 	}
 })
 
@@ -90,17 +90,17 @@ export default function SubmitNotice() {
 		});
 	}
 
-	return (<Grid container direction="row">
-		<Grid item xs={1} />
+	return (<Grid container style={{ paddingLeft: "8rem" }} direction="row">
+
 		<Grid item xs={11} >
 			<Typography className={classes.boldText} align="left">Instructor: <span className={classes.normalText}>{`${AuthUser.user.firstName} ${AuthUser.user.lastName} `}</span></Typography>
 
 		</Grid>
-		<Grid item xs={1} />
+
 		<Grid item xs={12} lg={7} >
 			<Typography className={classes.selectDateText} align="left" >Select Date:</Typography>
 		</Grid>
-		<Grid item xs={12} lg={7}>
+		<Grid container xs={12} justify="flex-start" style={{ paddingTop: "2%" }}>
 			<ButtonGroup variant="contained">
 				<Button style={{ backgroundColor: omouBlue }}>
 					<CalendarIcon style={{ color: 'white' }} />
@@ -117,17 +117,15 @@ export default function SubmitNotice() {
 		</Grid>
 
 		<Grid container>
-			<Grid item xs={1} />
+
 			<Grid item xs={12} md={11}>
-				<Typography align="left" style={{ paddingTop: "3%" }} >*Select OOO Start Time</Typography>
+				<Typography align="left" style={{ paddingTop: "3%" }} >Select OOO Start Time</Typography>
 			</Grid>
 		</Grid>
 
-		<Grid container alignItems="center" className={classes.root}>
-			<Grid item xs={1} />
+		<Grid container direction="row" justify="flex-start" className={classes.root}>
 
-			<Grid item xs={12} md={3}>
-
+			<Grid item xs={12} md={4}>
 				<KeyboardTimePicker
 					className={classes.timePicker}
 					disabled={outAllDay}
@@ -137,6 +135,7 @@ export default function SubmitNotice() {
 					inputVariant="outlined"
 				/>
 			</Grid>
+			<Grid item xs={12} md={1} />
 			<Grid item xs={12} md={6}>
 				<KeyboardTimePicker
 					className={classes.timePicker}
@@ -153,10 +152,9 @@ export default function SubmitNotice() {
 				/>
 			</Grid>
 		</Grid >
-		<Grid container spacing={0} >
-			<Grid item xs={1} />
+		<Grid container spacing={0} justify="flex-start">
 			<Grid item xs={2}>
-				<Typography className={classes.boldText} variant="subtitle1"  >Description:</Typography>
+				<Typography className={classes.boldText} variant="subtitle1" align="left" >Description:</Typography>
 			</Grid>
 			<Grid item >
 				<TextField multiline rows={4} size={"medium"} variant="outlined" style={{ width: 350, backgroundColor: "white" }}

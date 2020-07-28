@@ -14,6 +14,7 @@ import Typography from "@material-ui/core/Typography"
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
+import { omouBlue } from "../../../theme/muiTheme";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -85,6 +86,10 @@ export default function CreateOOOForm(props) {
 	const [createOOO, createOOOResults] = useMutation(CREATE_INSTRUCTOR_OOO, {
 		"onCompleted": () => {
 			setSubmitted(!submitted);
+		},
+		"update": (cache, { data }) => {
+			console.log(cache)
+			console.log(data)
 		}
 	})
 	const classes = useStyles()
@@ -145,38 +150,39 @@ export default function CreateOOOForm(props) {
 			</Grid> */}
 			<Grid item xs={12}>
 
-				<Typography style={{ paddingBottom: "1em" }} variant="h4">Submit Out of Office Notice </Typography>
+				<Typography style={{ paddingBottom: "3%" }} variant="h4">Submit Out of Office Notice </Typography>
 
 
 				{
 					submitted ?
 						<OOOConfirmation handleClose={handleClose} />
-						// 	<Grid container>
-						// 	<Grid item xs={12}>
-						// 		<img className={classes.extraPadding} src={checkMarkIcon} />
-						// 	</Grid>
-						// 	<Grid item xs={12} alignItems="center">
-						// 		<Typography className={classes.messageSent}>Your notice has been sent </Typography>
-						// 		<Typography className={classes.messageSubText}>You will recieve a confirmation of your OOO request</Typography>
-						// 	</Grid>
-						// 	<Grid item xs={12} alignItems="center" style={{paddingTop: "2em"}}>
-						// 		<Button className={classes.cancelbutton} variant="outlined"  onClick={handleClose}>Close</Button>
-						// 	</Grid>
-						// </Grid>
-
 						: <SubmitNotice />
 				}
 			</Grid>
-			<Grid item xs={4} />
-			<Grid item xs={4} style={{ padding: "3%" }}>
-				{submitted || <Button
-					onClick={handleSubmit}
-					color="primary"
-					variant="outlined">
-					Submit
 
+			<Grid container direction="row" justify="center" alignItems="center" spacing={0}>
+				<Grid item xs={6} style={{ padding: "5%" }}>
+					{submitted || <Button
+						style={{ backgroundColor: "white", "color": "black", width: "150px" }}
+						onClick={""}
+						color="primary"
+						variant="outlined">
+						Clear
 				</Button>
-				}
+
+					}
+				</Grid>
+				<Grid item xs={6}>
+					{submitted || <Button
+						style={{ backgroundColor: omouBlue, "color": "white", width: "150px" }}
+						onClick={handleSubmit}
+						color="primary"
+						variant="outlined">
+						Submit
+				</Button>
+					}
+				</Grid>
+
 			</Grid>
 		</Grid>
 	</OOOContext.Provider >);

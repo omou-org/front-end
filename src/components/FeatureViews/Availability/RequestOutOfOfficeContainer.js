@@ -3,7 +3,7 @@ import Grid from "@material-ui/core/Grid";
 import OutlinedContainer from "../../OmouComponents/OutlinedContainer";
 import { skyBlue } from "../../../theme/muiTheme";
 import CreateOOOForm from "./CreateOOOForm";
-import UpcomingOOO from "./UpcomingOOO";
+import { UpcomingOOO, LogOOO } from "./UpcomingLogOOO";
 
 export default function RequestOutOfOfficeContainer() {
 	return (<Grid container direction="row" style={{ width: "auto" }} spacing={2}>
@@ -13,14 +13,14 @@ export default function RequestOutOfOfficeContainer() {
 			</OutlinedContainer>
 		</Grid>
 		<Grid item xs={4} container direction="column">
-			<Grid item xs={6}>
+			<Grid item xs>
 				<OutlinedContainer>
 					<UpcomingOOO />
 				</OutlinedContainer>
 			</Grid>
-			<Grid item xs={6}>
+			<Grid item xs>
 				<OutlinedContainer>
-					Log
+					<LogOOO />
 				</OutlinedContainer>
 			</Grid>
 		</Grid>
