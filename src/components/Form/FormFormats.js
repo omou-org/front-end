@@ -99,8 +99,8 @@ const userMap = ({accountSearch}) => accountSearch.results.map(({user}) => ({
 }));
 
 const instructorSelect = (name) => (
-	<Fields.DataSelect name={name} optionsMap={userMap}
-					   request={SEARCH_INSTRUCTORS}/>
+    <Fields.DataSelect name={name} optionsMap={userMap}
+        request={SEARCH_INSTRUCTORS} />
 );
 
 
@@ -410,6 +410,22 @@ const SEARCH_STUDENTS = gql`
     }
 `;
 
+const SEARCH_PARENTS = gql`
+    query ParentSearch($query: String!) {
+        accountSearch(query: $query, profile: "PARENT") {
+            results {
+                ... on ParentType {
+                    user {
+                        id
+                        firstName
+                        lastName
+                    }
+                }
+            }
+        }
+    }
+`;
+
 const GET_CATEGORIES = gql`
     query GetCategories {
         courseCategories {
@@ -439,6 +455,11 @@ const studentSelect = (name) => (
 					   request={SEARCH_STUDENTS}/>
 );
 
+const parentSelect = (name) => (
+    <Fields.DataSelect name={name} optionsMap={userMap}
+        request={SEARCH_PARENTS} />
+);
+
 const courseMap = ({courses}) => courses.map(({title, instructor, id}) => ({
 	"label": `${title} - ${fullName(instructor.user)}`,
 	"value": id,
@@ -454,15 +475,58 @@ const categorySelect = (name) => (
         request={GET_CATEGORIES} />
 );
 
+const schoolMap = ({schools}) => schools.map(({name, id}) => ({
+    "label": name,
+    "value": id,
+}));
+
+const GET_SCHOOLS = gql`
+    query GetSchools {
+        schools {
+            name
+            id
+        }
+    }`;
+
+const schoolSelect = (name) => (
+    <Fields.DataSelect name={name} optionsMap={schoolMap}
+        request={GET_SCHOOLS} />
+);
+
+const GET_USER_TYPE = gql`
+    query MyQuery($id: ID!) {
+        userInfo(userId: $id) {
+            ... on StudentType {
+            accountType
+            }
+            ... on ParentType {
+            accountType
+            }
+        }
+    }`;
+
 export default {
     "student": {
-        "title": "Student",
+        "title": {
+            "create": "Add Student",
+            "edit": "Add Student",
+        },
         "form": [
             {
                 "name": "student",
                 "label": "Student Information",
                 "fields": [
+                    {
+                        "name": "primaryParent",
+                        "label": "Parent",
+                        "component": parentSelect("primaryParent"),
+                        "validator": Yup.mixed(),
+                    },
                     ...NAME_FIELDS,
+                    {
+                        ...EMAIL_FIELD,
+                        "required": false,
+                    },
                     GENDER_FIELD,
                     {
                         "name": "grade",
@@ -477,82 +541,136 @@ export default {
                     BIRTH_DATE_FIELD,
                     {
                         "name": "school",
-                        ...stringField("School"),
+                        "label": "School",
+                        "component": schoolSelect("school"),
+                        "validator": Yup.mixed(),
                     },
                     PHONE_NUMBER_FIELD,
+                    ADDRESS_FIELD,
+                    CITY_FIELD,
+                    STATE_FIELD,
+                    ZIPCODE_FIELD,
                 ],
             },
-            PARENT_FIELDS,
         ],
-        "load": (id) => {
-            const studentStatus = hooks.useStudent(id);
-            const {parent_id, ...student} = useSelector(({Users}) => Users.StudentList[id]) || {};
-            hooks.useParent(parent_id);
-            const {relationship, ...parent} = useSelector(({Users}) => Users.ParentList[parent_id]) || {};
-            if (hooks.isFail(studentStatus)) {
-                return null;
-            }
-            return {
-                student,
-                "parent": {
-                    ...parent,
-                    "relationship": (relationship || "").toLowerCase(),
-                },
-            };
-        },
-        "submit": async (dispatch, formData, id) => {
-            const studentResponseToFormKey = {
-                "gender": ["student", "gender"],
-                "birth_date": ["student", "birthday"],
-                "address": ["parent", "address"],
-                "city": ["parent", "city"],
-                "phone_number": ["student", "phone_number"],
-                "state": ["parent", "state"],
-                "zipcode": ["parent", "zipcode"],
-                "grade": ["student", "grade"],
-                "school": ["student", "school"],
-                "user": {
-                    "first_name": ["student", "first_name"],
-                    "last_name": ["student", "last_name"],
-                    "email": ["student", "email"],
-                },
-            };
-            const parentResponseToFormKey = {
-                "gender": ["parent", "gender"],
-                "birth_date": ["parent", "birthday"],
-                "address": ["parent", "address"],
-                "city": ["parent", "city"],
-                "phone_number": ["student", "phone_number"],
-                "state": ["parent", "state"],
-                "zipcode": ["parent", "zipcode"],
-                "relationship": ["parent", "relationship"],
-                "user": {
-                    "first_name": ["parent", "first_name"],
-                    "last_name": ["parent", "last_name"],
-                    "email": ["parent", "email"],
-                },
-            };
-            const parent = formToRequest(parentResponseToFormKey, formData);
-            parent.birth_date = parseDate(parent.birth_date);
-            const student = formToRequest(studentResponseToFormKey, formData);
+        "load": async (id) => {
             try {
-                const parentResponse = await instance.post("/account/parent/",
-                    parent);
-                dispatch({
-                    "type": types.POST_PARENT_SUCCESSFUL,
-                    "payload": parentResponse,
+                const {"data": {userInfo}} = await client.query({
+                    "query": GET_USER_TYPE,
+                    "variables": {id},
                 });
-                student.primary_parent = parentResponse.id;
-                const studentResponse = await submitToApi("/account/student/", student, id);
-                dispatch({
-                    "type": types.POST_STUDENT_SUCCESSFUL,
-                    "payload": studentResponse,
+                console.log(userInfo)
+                if (userInfo.accountType === "PARENT") {
+                    const GET_NAME = gql`
+                query GetName($id: ID!) {
+                    parent(userId: $id) {
+                        user {
+                            firstName
+                            lastName
+                        }
+                    }
+                }`;
+                    const {"data": {parent}} = await client.query({
+                        "query": GET_NAME,
+                        "variables": {id},
+                    });
+
+                    return {
+                        "student": {
+                            "primaryParent": {
+                                "label": `${parent.user.firstName} ${parent.user.lastName}`,
+                                "value": id,
+                            },
+                        },
+                    };
+                } else if (userInfo.accountType === "STUDENT") {
+                    const GET_INFO = gql`
+                query GetInfo($id: ID!) {
+                    student(userId: $id) {
+                        address
+                        zipcode
+                        city
+                        state
+                        birthDate
+                        gender
+                        grade
+                        phoneNumber
+                        primaryParent {
+                            user {
+                                firstName
+                                lastName
+                                id
+                            }
+                        }
+                        school {
+                            name
+                            id
+                        }
+                        user {
+                            firstName
+                            lastName
+                            email
+                        }
+                    }
+                }`;
+                    const {"data": {student}} = await client.query({
+                        "query": GET_INFO,
+                        "variables": {id},
+                    });
+
+                    const modifiedData = {
+                        ...student,
+                        "firstName": student.user.firstName,
+                        "lastName": student.user.lastName,
+                        "email": student.user.email,
+                        "school": student.school && {
+                            "label": student.school.name,
+                            "value": student.school.id,
+                        },
+                        "primaryParent": student.primaryParent && {
+                            "label": `${student.primaryParent.user.firstName} ${student.primaryParent.user.lastName}`,
+                            "value": student.primaryParent.user.id,
+                        },
+                    };
+                    // delete modifiedData.pr;
+                    delete modifiedData.user;
+
+                    return {
+                        "student": modifiedData,
+                    };
+                }
+            } catch (err){console.error(err)}
+            return null;
+        },
+        "submit": async ({student}, id) => {
+            const ADD_STUDENT = gql`
+            mutation AddStudent($firstName: String!, $email: String,  $lastName: String!, $address: String, $birthDate:Date, $city:String, $gender:GenderEnum,$grade:Int,$phoneNumber:String,$primaryParent:ID, $school:ID, $zipcode:String, $state:String, $id: ID) {
+  createStudent(user: {firstName: $firstName, id: $id, lastName: $lastName,  email:$email}, address: $address, birthDate: $birthDate, school: $school, grade: $grade, gender: $gender, primaryParent: $primaryParent, phoneNumber: $phoneNumber, city: $city, state: $state, zipcode: $zipcode) {
+      created
+  }
+    }`;
+
+            try {
+                const {"data": {userInfo}} = await client.query({
+                    "query": GET_USER_TYPE,
+                    "variables": {id},
                 });
-            } catch ({response}) {
+                if (userInfo.accountType === "STUDENT") {
+                    student.id = id;
+                }
+                await client.mutate({
+                    "mutation": ADD_STUDENT,
+                    "variables": {
+                        ...student,
+                        "email": student.email || "",
+                        "birthDate": parseDate(student.birthDate),
+                        "primaryParent": student.primaryParent.value,
+                        "school": student.school.value,
+                    },
+                });
+            } catch (error) {
                 return {
-                    ...responseToForm(studentResponseToFormKey, response.data),
-                    ...responseToForm(parentResponseToFormKey, response.data),
-                    [FORM_ERROR]: response.data,
+                    [FORM_ERROR]: error,
                 };
             }
         },
@@ -620,10 +738,10 @@ export default {
             query GetAdmin($userID: ID!) {
                 admin(userId: $userID) {
                     user {
-                    id
-                    email
-                    firstName
-                    lastName
+                        id
+                        email
+                        firstName
+                        lastName
                     }
                     adminType
                     gender
@@ -1121,6 +1239,14 @@ export default {
             }
             `;
 
+            const INVITE_INSTRUCTOR =gql`
+            mutation MyMutation($email:String!) {
+  inviteInstructor(email: $email) {
+    status
+  }
+}
+`;
+
             const {basicInfo, experience} = formData;
             const modifiedData = {
                 basicInfo,
@@ -1139,11 +1265,18 @@ export default {
                             ...section,
                         }), {}),
                 });
+
             } catch (error) {
                 return {
                     [FORM_ERROR]: error,
                 };
             }
+            await client.mutate({
+                "mutation": INVITE_INSTRUCTOR,
+                "variables": {
+                    "email": formData.basicInfo.email,
+                }
+            });
         },
     },
 	"class-registration": {

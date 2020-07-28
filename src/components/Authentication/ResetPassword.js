@@ -38,21 +38,25 @@ const GET_EMAIL = gql`
     }`;
 
 const RESET_PASSWORD = gql`
-    mutation ResetPassword($password: String!, $token: String!) {
-        resetPassword(newPassword: $password, token: $token) {
+    mutation ResetPassword($password: String!, $token: String!, $isStudent: Boolean, $isInstructor: Boolean) {
+        resetPassword(newPassword: $password, token: $token, setInstructor: $isInstructor, setStudent: $isStudent) {
             status
         }
     }`;
 
-const ResetPassword = () => {
+const ResetPassword = ({isSet}) => {
     const params = useSearchParams();
     const resetToken = params.get("token");
+    const isStudent = Boolean(params.get("student"));
+    const isInstructor = Boolean(params.get("instructor"));
     const history = useHistory();
     const [password, setPassword] = useState("");
     const emailStatus = useQuery(GET_EMAIL, {"variables": {"token": resetToken}});
     const email = emailStatus.data?.emailFromToken;
     const [resetPassword, resetStatus] = useMutation(RESET_PASSWORD);
     const {token} = useSelector(({auth}) => auth);
+
+    const label = isSet ? "Set" : "Reset";
 
     const handlePasswordInput = useCallback(({target}) => {
         setPassword(target.value);
@@ -62,11 +66,13 @@ const ResetPassword = () => {
         event.preventDefault();
         resetPassword({
             "variables": {
+                isInstructor,
+                isStudent,
                 password,
                 "token": resetToken,
             },
         });
-    }, [password, resetPassword, resetToken]);
+    }, [password, resetPassword, resetToken, isStudent, isInstructor]);
 
     const classes = {
         ...useAuthStyles(),
@@ -103,7 +109,7 @@ const ResetPassword = () => {
                     <Grid item md={6} />
                     <Grid item md={6}>
                         <Typography className="welcomeText">
-                            {success ? "Reset successful!" : "Reset password"}
+                            {success ? `${label} successful!` : `${label} password`}
                         </Typography>
                         {emailStatus?.error ?
                             <Typography className={classes.info}>
@@ -113,7 +119,7 @@ const ResetPassword = () => {
                                 <Typography className={classes.info}>
                                     {success ?
                                         "You can now log in with your new password." :
-                                        <>Reset password for <span className={email}>{email}</span></>}
+                                        <>{label} password for <span className={email}>{email}</span></>}
                                 </Typography>
                                 {success ?
                                     <Button className={classes.primaryButton} color="primary"
@@ -135,7 +141,7 @@ const ResetPassword = () => {
                                             <Grid item md={2} />
                                             <Grid item md={4} >
                                                 <Button className="createAccountButton" data-cy="reset" type="submit">
-                                                    RESET PASSWORD
+                                                    {label.toUpperCase()} PASSWORD
                                                 </Button>
                                             </Grid>
                                             <Grid item md={4}>

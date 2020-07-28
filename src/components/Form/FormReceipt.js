@@ -2,6 +2,23 @@ import React from "react";
 
 import Typography from "@material-ui/core/Typography";
 
+
+const toDisplayValue = (value) => {
+    if (value === null || typeof value === "undefined") {
+        return "N/A";
+    }
+
+    if (value instanceof Date) {
+        return new Date(value).toLocaleString("eng-US");
+    }
+
+    if (value.hasOwnProperty("label")) {
+        return value.label;
+    }
+
+    return value;
+};
+
 const FormReceipt = ({formData, format}) => (
     <div style={{
         "margin": "2%",
@@ -14,7 +31,8 @@ const FormReceipt = ({formData, format}) => (
             <Typography align="left" className="title">
                 Confirmation
             </Typography>
-            {Object.entries(formData).map(([sectionLabel, fields], sectionIndex) => (
+            {Object.entries(formData).map(([sectionLabel, fields], sectionIndex) =>
+                format[sectionIndex] && (
                 <div key={sectionLabel}>
                     <Typography align="left" className="section-title">
                         {format[sectionIndex].label}
@@ -25,8 +43,7 @@ const FormReceipt = ({formData, format}) => (
                                 {format[sectionIndex].fields[fieldIndex].label}
                             </Typography>
                             <Typography align="left" className="field-value">
-                                {/* TODO: better way of rendering field values */}
-                                {typeof value === "object" ? new Date(value).toLocaleString("eng-US") : value || "N/A"}
+                                {toDisplayValue(value)}
                             </Typography>
                         </div>
                     ))}

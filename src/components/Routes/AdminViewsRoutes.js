@@ -1,5 +1,5 @@
 import React from "react";
-import {Switch} from "react-router-dom";
+import { Switch } from "react-router-dom";
 
 import AdminPortalHome from "../FeatureViews/AdminPortal/AdminPortalHome";
 import AuthenticatedRoute from "./AuthenticatedRoute";
@@ -8,10 +8,15 @@ import ManageCategories from "../FeatureViews/AdminPortal/ManageCategories";
 import ManageDiscounts from "../FeatureViews/AdminPortal/ManageDiscounts";
 import TuitionRules from "../FeatureViews/AdminPortal/TuitionRules";
 
-import {USER_TYPES} from "utils";
+import { USER_TYPES } from "utils";
+import AdminPanel from "components/FeatureViews/AdminPortal/AdminPanel";
 
 const AdminViewsRoutes = () => (
     <Switch>
+        <AuthenticatedRoute path="/adminportal/adminpanel"
+            users={[USER_TYPES.admin]}>
+                <AdminPanel />
+            </AuthenticatedRoute>
         <AuthenticatedRoute path="/adminportal/tuition-rules"
             users={[USER_TYPES.admin]}>
             <TuitionRules />

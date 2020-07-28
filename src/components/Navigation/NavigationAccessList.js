@@ -104,4 +104,5 @@ export const NavList = {
 			"icon": <PaymentIcon/>,
 		},
 	],
+    "STUDENT": [],
 };
