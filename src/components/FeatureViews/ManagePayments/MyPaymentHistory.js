@@ -31,7 +31,7 @@ export const GET_PARENT_PAYMENTS_FILTERED = gql`
 
 export default function MyPaymentHistory() {
 	const AuthUser = useSelector(({auth}) => auth);
-	const [getPayments, {loading, data, error}] = useLazyQuery(GET_PARENT_PAYMENTS_FILTERED, {
+	const [getPayments, {loading, data, error, called}] = useLazyQuery(GET_PARENT_PAYMENTS_FILTERED, {
 		variables: {
 			parentId: AuthUser.user.id,
 		}
@@ -69,7 +69,7 @@ export default function MyPaymentHistory() {
 		});
 	}
 
-	if (loading || !data) return <Loading/>;
+	if (loading || !called) return <Loading/>;
 	if (error) return <div>An Error has occurred! {error.message}</div>
 
 	const {payments} = data;
