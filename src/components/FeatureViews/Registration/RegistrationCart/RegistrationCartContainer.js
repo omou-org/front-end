@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {getRegistrationCart} from "../../../OmouComponents/RegistrationUtils";
+import {getRegistrationCart, useValidateRegisteringParent} from "../../../OmouComponents/RegistrationUtils";
 import gql from "graphql-tag";
 import {useQuery} from "@apollo/react-hooks";
 import Loading from "../../../OmouComponents/Loading";
@@ -10,7 +10,6 @@ import {RegistrationContext} from "./RegistrationContext";
 import StudentRegistrationEntry from "./StudentRegistrationsEntry";
 import PaymentBoard from "./PaymentBoard";
 import RegistrationActions from "../RegistrationActions";
-import {useSelector} from "react-redux";
 
 const GET_STUDENT_INFOS = gql`
 	query GetStudentInfos($userIds: [ID]!) {
@@ -56,7 +55,7 @@ const GET_COURSES_TO_REGISTER = gql`
 export default function RegistrationCartContainer() {
 	const {currentParent, ...registrationCartState} = getRegistrationCart();
 	const [registrationCart, setRegistrationCart] = useState({});
-	const AuthUser = useSelector(({auth}) => auth);
+	const {parentIsLoggedIn} = useValidateRegisteringParent();
 	// create list of students to fetch
 	const studentIds = Object.keys(registrationCartState);
 	// create list of courses to fetch
@@ -74,7 +73,7 @@ export default function RegistrationCartContainer() {
 					registrationCart[studentId] = registrationCartState[studentId].map(registration => ({
 						...registration,
 						course: courseData.find(course => course.id === registration.course.id),
-						checked: false,
+						checked: true,
 					}));
 				});
 				return registrationCart;
@@ -106,7 +105,6 @@ export default function RegistrationCartContainer() {
 	if (loading || coursesResponse.loading) return <Loading small/>;
 
 	const studentData = data.userInfos;
-	const parentIsLoggedIn = AuthUser.user.id == currentParent.user.id;
 
 	return (<RegistrationContext.Provider value={{registrationCart, currentParent, updateSession}}>
 			<BackgroundPaper>
@@ -125,12 +123,13 @@ export default function RegistrationCartContainer() {
 				<Grid container item>
 					<Grid container direction="row" spacing={5}>
 						{
-							Object.entries(registrationCart).map(([studentId, registration]) =>
-								<StudentRegistrationEntry
-									key={studentId}
-									student={studentData.find(student => student.user.id === studentId)}
-									registrationList={registration}
-								/>)
+							Object.entries(registrationCart)
+								.map(([studentId, registration]) =>
+									<StudentRegistrationEntry
+										key={studentId}
+										student={studentData.find(student => student.user.id === studentId)}
+										registrationList={registration}
+									/>)
 						}
 					</Grid>
 					<Grid container item justify="space-between" style={{marginTop: "50px"}}>

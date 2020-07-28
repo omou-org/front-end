@@ -9,7 +9,11 @@ import "./registration.scss";
 import SelectParentDialog from "./SelectParentDialog";
 import {stringToColor} from "../Accounts/accountUtils";
 import {fullName, USER_TYPES} from "../../../utils";
-import {getRegistrationCart, setParentRegistrationCart} from "../../OmouComponents/RegistrationUtils";
+import {
+	getRegistrationCart,
+	setParentRegistrationCart,
+	useValidateRegisteringParent
+} from "../../OmouComponents/RegistrationUtils";
 import {useSelector} from "react-redux";
 import {useQuery} from "@apollo/react-hooks";
 import gql from "graphql-tag";
@@ -33,6 +37,7 @@ query GetRegisteringParent($userId: ID!) {
 
 const RegistrationActions = () => {
 	const AuthUser = useSelector(({auth}) => auth);
+	const {parentIsLoggedIn} = useValidateRegisteringParent();
 	const {currentParent, ...registrationState} = getRegistrationCart();
 	const [dialogOpen, setDialog] = useState(false);
 	const {data, error, loading} = useQuery(GET_PARENT_QUERY, {
@@ -49,12 +54,13 @@ const RegistrationActions = () => {
 	}, []);
 
 	useEffect(() => {
-		if (AuthUser.accountType === USER_TYPES.parent && !loading && !registrationState) {
+		if (parentIsLoggedIn && !loading && Object.values(registrationState).length === 0) {
 			setParentRegistrationCart(data.parent);
 		}
-	}, [AuthUser.accountType, loading])
+	}, [AuthUser.accountType, loading]);
 
 	if (loading) return <Loading/>;
+	if (error) return <div>There has been an error: {error.message}</div>
 
 	const registeringParent = data?.parent || currentParent;
 

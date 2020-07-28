@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext} from "react";
 import Grid from "@material-ui/core/Grid";
 import {fullName, getTuitionAmount} from "../../../../utils";
 import Typography from "@material-ui/core/Typography";
@@ -9,16 +9,13 @@ import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import Moment from "react-moment";
 import moment from "moment";
-import { RegistrationContext } from "./RegistrationContext";
+import {RegistrationContext} from "./RegistrationContext";
 import TextField from "@material-ui/core/TextField";
-import Checkbox from "@material-ui/core/Checkbox";
-import IconButton from "@material-ui/core/IconButton";
-import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import Collapse from "@material-ui/core/Collapse/Collapse";
-import Box from "@material-ui/core/Box";
+import CloseIcon from "@material-ui/icons/Close";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import "./RegistrationCart.scss";
+import IconButton from "@material-ui/core/IconButton";
+import {useValidateRegisteringParent} from "../../../OmouComponents/RegistrationUtils";
 
 const useRowStyles = makeStyles({
 	root: {
@@ -33,9 +30,8 @@ const separator = () => {
 }
 
 function RegistrationEntry({ registration: { course, numSessions, checked }, studentId }) {
-	const { updateSession } = useContext(RegistrationContext);
-	const [open, setOpen] = useState(false);
-	const classes = useRowStyles();
+	const {parentIsLoggedIn} = useValidateRegisteringParent();
+	const {updateSession} = useContext(RegistrationContext);
 
 	const handleSessionChange = (e) => {
 		updateSession(Number(e.target.value), checked, studentId, course.id);
@@ -48,43 +44,51 @@ function RegistrationEntry({ registration: { course, numSessions, checked }, stu
 	return (<>
 		<TableRow >
 			<TableCell>
+				<IconButton onClick={handleSessionCheckChange}>
+					<CloseIcon/>
+				</IconButton>
 			</TableCell>
-			<TableCell style={{maxWidth:750}}>
+			<TableCell style={{maxWidth: 750}}>
 				<Grid container>
 					<Grid>
-						<Typography style={{ fontWeight: 600, paddingRight: 50 }}>#{course.id} {course.title} - Instructor: {course.instructor.user.firstName} {course.instructor.user.lastName}</Typography>
+						<Typography style={{fontWeight: 600, paddingRight: 50}}>#{course.id} {course.title} -
+							Instructor: {course.instructor.user.firstName} {course.instructor.user.lastName}</Typography>
 					</Grid>
 				</Grid>
-				<br />
+				<br/>
 				<Grid container>
-					<Typography style={{ whiteSpace: "nowrap", textTransform: "capitalize" }}>
+					<Typography style={{whiteSpace: "nowrap", textTransform: "capitalize"}}>
 						{course.courseCategory.name}
 						{separator()}
 						{course.academicLevelPretty}
 						{separator()}
 						{moment(course.startDate, ["YYYY-MM-DD"]).format("ddd")} {moment(course.startTime, ["HH.mm"]).format("h:mm A")} - {moment(course.endTime, ["HH.mm"]).format("h:mm A")}
 						{separator()}
-									Start Date: <Moment date={course.startDate} format="M/DD/YYYY" /> - <Moment date={course.endDate}
-							format="M/DD/YYYY" />
+						Start Date: <Moment date={course.startDate} format="M/DD/YYYY"/> - <Moment date={course.endDate}
+																								   format="M/DD/YYYY"/>
 					</Typography>
 				</Grid>
-				<br />
+				<br/>
 			</TableCell>
-			<TableCell style={{ whiteSpace:"nowrap", verticalAlign: 'top' }}>
-				<TextField
-					value={numSessions}
-					onChange={handleSessionChange}
-					variant="outlined"
-					style={{ width: "30%" }}
-					inputProps={{
-						style: {
-							padding: 8,
-							textAlign: "center"
-						}
-					}}
-				/>
+			<TableCell style={{whiteSpace: "nowrap", verticalAlign: 'top'}}>
+				{
+					parentIsLoggedIn ? <Typography>
+						{moment(course.endDate).diff(moment(course.startDate), "weeks") + 1}
+					</Typography> : <TextField
+						value={numSessions}
+						onChange={handleSessionChange}
+						variant="outlined"
+						style={{width: "80%"}}
+						inputProps={{
+							style: {
+								padding: 8,
+								textAlign: "center"
+							}
+						}}
+					/>
+				}
 			</TableCell>
-			<TableCell style={{ whiteSpace:"nowrap", verticalAlign: 'top' }}>
+			<TableCell style={{whiteSpace: "nowrap", verticalAlign: 'top'}}>
 				$ {getTuitionAmount(course, numSessions)}
 			</TableCell>
 		</TableRow>
@@ -112,12 +116,14 @@ export default function StudentRegistrationEntry({ student, registrationList }) 
 			<TableBody>
 				<br />
 				{
-					registrationList.map(registration =>
-						<RegistrationEntry
-							key={registration.course.id}
-							registration={registration}
-							studentId={student.user.id}
-						/>)
+					registrationList
+						.filter(({checked}) => checked)
+						.map(registration =>
+							<RegistrationEntry
+								key={registration.course.id}
+								registration={registration}
+								studentId={student.user.id}
+							/>)
 				}
 			</TableBody>
 		</Table>

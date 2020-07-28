@@ -1,5 +1,6 @@
 import * as moment from "moment";
 import {arraysMatch} from "../../utils";
+import {useSelector} from "react-redux";
 
 export const createTutoringDetails = (courseType, formData) => ({
 	title: formData.tutoring_details.course,
@@ -41,7 +42,7 @@ export const submitRegistration = (student, course) => {
 	const existingEnrollmentsByStudents = Object.entries(registrationState)
 		.map(([studentID, studentRegistrations]) =>
 			Array.isArray(studentRegistrations) ? studentRegistrations
-				.map(registration => [studentID, registration.course.existing_id]) : []
+				.map(registration => [studentID, registration.course.id]) : []
 		);
 	const isEnrolled = existingEnrollmentsByStudents.map(studentEnrollments =>
 		studentEnrollments.filter((enrollment) => arraysMatch(enrollment, [student, course])))
@@ -74,3 +75,12 @@ export const getRegistrationCart = () => {
 export const setParentRegistrationCart = (parent) => sessionStorage.setItem("registrations", JSON.stringify({
 	currentParent: parent,
 }));
+
+/**
+ * @description returns boolean of if the current logged in user is the parent registering
+ * */
+export const useValidateRegisteringParent = () => {
+	const AuthUser = useSelector(({auth}) => auth);
+	const {currentParent} = getRegistrationCart();
+	return {parentIsLoggedIn: AuthUser.user.id == currentParent.user.id};
+}
