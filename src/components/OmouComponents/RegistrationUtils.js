@@ -67,3 +67,10 @@ export const getRegistrationCart = () => {
 	if (Object.keys(registrationState).length > 0) return registrationState;
 	return {currentParent: null};
 };
+
+/**
+ * @description sets the registering parent to sessionStorage
+ * */
+export const setParentRegistrationCart = (parent) => sessionStorage.setItem("registrations", JSON.stringify({
+	currentParent: parent,
+}));

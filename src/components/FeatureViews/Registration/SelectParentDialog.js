@@ -18,7 +18,11 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import {fullName} from "../../../utils";
 import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {closeRegistrationCart, getRegistrationCart} from "../../OmouComponents/RegistrationUtils";
+import {
+	closeRegistrationCart,
+	getRegistrationCart,
+	setParentRegistrationCart
+} from "../../OmouComponents/RegistrationUtils";
 
 const GET_PARENTS_QUERY = gql`
 query GetParents($query: String!) {
@@ -66,9 +70,7 @@ const SelectParentDialog = ({onClose, open}) => {
 			const registeringParent = parent;
 
 			dispatch(setRegisteringParent(registeringParent));
-			sessionStorage.setItem("registrations", JSON.stringify({
-				currentParent: parent,
-			}));
+			setParentRegistrationCart(registeringParent);
 
 			// Add students to redux once the registered parent has been set
 			// TODO: redo registration flow

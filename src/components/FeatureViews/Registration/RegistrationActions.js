@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import {Link} from "react-router-dom";
@@ -8,12 +8,37 @@ import Tooltip from "@material-ui/core/Tooltip";
 import "./registration.scss";
 import SelectParentDialog from "./SelectParentDialog";
 import {stringToColor} from "../Accounts/accountUtils";
-import {fullName} from "../../../utils";
-import {getRegistrationCart} from "../../OmouComponents/RegistrationUtils";
+import {fullName, USER_TYPES} from "../../../utils";
+import {getRegistrationCart, setParentRegistrationCart} from "../../OmouComponents/RegistrationUtils";
+import {useSelector} from "react-redux";
+import {useQuery} from "@apollo/react-hooks";
+import gql from "graphql-tag";
+import Loading from "../../OmouComponents/Loading";
+
+const GET_PARENT_QUERY = gql`
+query GetRegisteringParent($userId: ID!) {
+  __typename
+  parent(userId: $userId) {
+    user {
+      firstName
+      id
+      lastName
+      email
+    }
+    studentList
+  }
+}
+
+`
 
 const RegistrationActions = () => {
-	const {currentParent, ...registrationCartState} = getRegistrationCart();
+	const AuthUser = useSelector(({auth}) => auth);
+	const {currentParent, ...registrationState} = getRegistrationCart();
 	const [dialogOpen, setDialog] = useState(false);
+	const {data, error, loading} = useQuery(GET_PARENT_QUERY, {
+		variables: {userId: AuthUser.user.id},
+		skip: AuthUser.accountType !== USER_TYPES.parent,
+	});
 
 	const openDialog = useCallback(() => {
 		setDialog(true);
@@ -23,7 +48,17 @@ const RegistrationActions = () => {
 		setDialog(false);
 	}, []);
 
-	const parentName = currentParent && fullName(currentParent.user);
+	useEffect(() => {
+		if (AuthUser.accountType === USER_TYPES.parent && !loading && !registrationState) {
+			setParentRegistrationCart(data.parent);
+		}
+	}, [AuthUser.accountType, loading])
+
+	if (loading) return <Loading/>;
+
+	const registeringParent = data?.parent || currentParent;
+
+	const parentName = fullName(registeringParent.user);
 
 	return (
 		<>
@@ -52,8 +87,8 @@ const RegistrationActions = () => {
 					)}
 				</Grid>
 				<Grid item xs={2}>
-					{currentParent ? (
-						<Tooltip title="Registering Parent">
+					{registeringParent ? (
+						!data && <Tooltip title="Registering Parent">
 							<Button className="button" onClick={openDialog}>
 								<div
 									className="circle-icon"

@@ -10,6 +10,7 @@ import {RegistrationContext} from "./RegistrationContext";
 import StudentRegistrationEntry from "./StudentRegistrationsEntry";
 import PaymentBoard from "./PaymentBoard";
 import RegistrationActions from "../RegistrationActions";
+import {useSelector} from "react-redux";
 
 const GET_STUDENT_INFOS = gql`
 	query GetStudentInfos($userIds: [ID]!) {
@@ -53,15 +54,16 @@ const GET_COURSES_TO_REGISTER = gql`
 `;
 
 export default function RegistrationCartContainer() {
-	const { currentParent, ...registrationCartState } = getRegistrationCart();
+	const {currentParent, ...registrationCartState} = getRegistrationCart();
 	const [registrationCart, setRegistrationCart] = useState({});
+	const AuthUser = useSelector(({auth}) => auth);
 	// create list of students to fetch
 	const studentIds = Object.keys(registrationCartState);
 	// create list of courses to fetch
 	const courseIds = [].concat.apply([], Object.values(registrationCartState))
-		.map(({ course }) => course.id);
-	const { data, loading } = useQuery(GET_STUDENT_INFOS, { variables: { userIds: studentIds } });
-	const coursesResponse = useQuery(GET_COURSES_TO_REGISTER, { variables: { courseIds: courseIds } });
+		.map(({course}) => course.id);
+	const {data, loading} = useQuery(GET_STUDENT_INFOS, {variables: {userIds: studentIds}});
+	const coursesResponse = useQuery(GET_COURSES_TO_REGISTER, {variables: {courseIds: courseIds}});
 
 	useEffect(() => {
 		if (!coursesResponse.loading) {
@@ -101,11 +103,12 @@ export default function RegistrationCartContainer() {
 		});
 	};
 
-	if (loading || coursesResponse.loading) return <Loading small />;
+	if (loading || coursesResponse.loading) return <Loading small/>;
 
 	const studentData = data.userInfos;
+	const parentIsLoggedIn = AuthUser.user.id == currentParent.user.id;
 
-	return (<RegistrationContext.Provider value={{ registrationCart, currentParent, updateSession }}>
+	return (<RegistrationContext.Provider value={{registrationCart, currentParent, updateSession}}>
 			<BackgroundPaper>
 				<Grid container>
 					<RegistrationActions/>
@@ -121,18 +124,18 @@ export default function RegistrationCartContainer() {
 				</Typography>
 				<Grid container item>
 					<Grid container direction="row" spacing={5}>
-					{
-						Object.entries(registrationCart).map(([studentId, registration]) =>
-							<StudentRegistrationEntry
-								key={studentId}
-								student={studentData.find(student => student.user.id === studentId)}
-								registrationList={registration}
-							/>)
-					}
-				</Grid>
-				<Grid container item justify="space-between" style={{ marginTop: "50px" }}>
-					<PaymentBoard />
-				</Grid>
+						{
+							Object.entries(registrationCart).map(([studentId, registration]) =>
+								<StudentRegistrationEntry
+									key={studentId}
+									student={studentData.find(student => student.user.id === studentId)}
+									registrationList={registration}
+								/>)
+						}
+					</Grid>
+					<Grid container item justify="space-between" style={{marginTop: "50px"}}>
+						{!parentIsLoggedIn && <PaymentBoard/>}
+					</Grid>
 			</Grid>
 		</BackgroundPaper>
 	</RegistrationContext.Provider>
