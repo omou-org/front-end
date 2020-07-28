@@ -79,7 +79,7 @@ const CREATE_INSTRUCTOR_OOO = gql`mutation CreateInstructorOOO($endDatetime:Date
 export default function CreateOOOForm(props) {
 	const [activeStep, setActiveStep] = useState(0);
 	const [OOOFormState, setOOOFormState] = useState(null);
-	const [submitted, setSubmitted] = useState(true);
+	const [submitted, setSubmitted] = useState(false);
 	const steps = getSteps();
 	const AuthUser = useSelector(({ auth }) => auth);
 	const [createOOO, createOOOResults] = useMutation(CREATE_INSTRUCTOR_OOO, {
