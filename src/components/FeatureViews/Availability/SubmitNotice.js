@@ -15,7 +15,29 @@ import Checkbox from "@material-ui/core/Checkbox/Checkbox";
 import { TextField } from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog/Dialog";
 import { DateRange } from "react-date-range";
+import { useSelector } from "react-redux";
 import DialogActions from "@material-ui/core/DialogActions/DialogActions";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+
+const useStyles = makeStyles({
+	root: {
+		padding: "1rem"
+	},
+	boldText: {
+		fontSize: "16px",
+		fontWeight: "bold"
+	},
+	normalText: {
+		fontWeight: 400
+	},
+	selectDateText: {
+		fontSize: "17px",
+		padding: "3%"
+	},
+	timePicker: {
+		width: "200px"
+	}
+})
 
 export default function SubmitNotice() {
 	const [openCalendar, setOpenCalendar] = useState(false);
@@ -31,7 +53,8 @@ export default function SubmitNotice() {
 	const [outAllDay, setOutAllDay] = useState(false);
 	const [description, setDescription] = useState("");
 	const { updateOOOFormState } = useContext(OOOContext);
-
+	const AuthUser = useSelector(({ auth }) => auth);
+	const classes = useStyles();
 	const handleUpdateForm = (updatedState) => {
 		updateOOOFormState({
 			startTime: startTime,
@@ -67,9 +90,17 @@ export default function SubmitNotice() {
 		});
 	}
 
-	return (<Grid container direction="column">
+	return (<Grid container direction="row">
+		<Grid item xs={1} />
+		<Grid item xs={11} >
+			<Typography className={classes.boldText} align="left">Instructor: <span className={classes.normalText}>{`${AuthUser.user.firstName} ${AuthUser.user.lastName} `}</span></Typography>
 
-		<Grid item>
+		</Grid>
+		<Grid item xs={1} />
+		<Grid item xs={12} lg={7} >
+			<Typography className={classes.selectDateText} align="left" >Select Date:</Typography>
+		</Grid>
+		<Grid item xs={12} lg={7}>
 			<ButtonGroup variant="contained">
 				<Button style={{ backgroundColor: omouBlue }}>
 					<CalendarIcon style={{ color: 'white' }} />
@@ -84,31 +115,54 @@ export default function SubmitNotice() {
 				</Button>
 			</ButtonGroup>
 		</Grid>
-		<Grid item>
-			<KeyboardTimePicker
-				disabled={outAllDay}
-				style={{ backgroundColor: outAllDay ? outlineGrey : "white" }}
-				keyboardIcon={<TimeIcon />}
-				value={startTime} onChange={handleTimeChange(setStartTime, "start")}
-				inputVariant="outlined"
-			/>
-			<KeyboardTimePicker
-				disabled={outAllDay}
-				style={{ backgroundColor: outAllDay ? outlineGrey : "white" }}
-				keyboardIcon={<TimeIcon />}
-				value={endTime} onChange={handleTimeChange(setEndTime, "end")}
-				inputVariant="outlined"
-			/>
-			<FormControlLabel
-				control={<Checkbox checked={outAllDay} onChange={handleOutAllDay}
-					name="Out All Day" color="primary" />}
-				label="Out all day"
-			/>
+
+		<Grid container>
+			<Grid item xs={1} />
+			<Grid item xs={12} md={11}>
+				<Typography align="left" style={{ paddingTop: "3%" }} >*Select OOO Start Time</Typography>
+			</Grid>
 		</Grid>
-		<Grid item>
-			<TextField multiline rows={4} variant="outlined"
-				onChange={handleDescriptionChange} value={description}
-			/>
+
+		<Grid container alignItems="center" className={classes.root}>
+			<Grid item xs={1} />
+
+			<Grid item xs={12} md={3}>
+
+				<KeyboardTimePicker
+					className={classes.timePicker}
+					disabled={outAllDay}
+					style={{ backgroundColor: outAllDay ? outlineGrey : "white" }}
+					keyboardIcon={<TimeIcon />}
+					value={startTime} onChange={handleTimeChange(setStartTime, "start")}
+					inputVariant="outlined"
+				/>
+			</Grid>
+			<Grid item xs={12} md={6}>
+				<KeyboardTimePicker
+					className={classes.timePicker}
+					disabled={outAllDay}
+					style={{ backgroundColor: outAllDay ? outlineGrey : "white" }}
+					keyboardIcon={<TimeIcon />}
+					value={endTime} onChange={handleTimeChange(setEndTime, "end")}
+					inputVariant="outlined"
+				/>
+				<FormControlLabel
+					control={<Checkbox checked={outAllDay} onChange={handleOutAllDay}
+						name="Out All Day" color="primary" />}
+					label="Out all day"
+				/>
+			</Grid>
+		</Grid >
+		<Grid container spacing={0} >
+			<Grid item xs={1} />
+			<Grid item xs={2}>
+				<Typography className={classes.boldText} variant="subtitle1"  >Description:</Typography>
+			</Grid>
+			<Grid item >
+				<TextField multiline rows={4} size={"medium"} variant="outlined" style={{ width: 350, backgroundColor: "white" }}
+					onChange={handleDescriptionChange} value={description}
+				/>
+			</Grid>
 		</Grid>
 		<Dialog open={openCalendar} onClose={() => setOpenCalendar(false)}>
 			<DateRange
@@ -123,5 +177,5 @@ export default function SubmitNotice() {
 				</Button>
 			</DialogActions>
 		</Dialog>
-	</Grid>)
+	</Grid >)
 }

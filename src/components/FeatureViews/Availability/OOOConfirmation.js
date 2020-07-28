@@ -16,8 +16,9 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "16px",
 
     },
-    button: {
-        marginRight: theme.spacing(1),
+    cancelbutton: {
+        backgroundColor: "#FFFFFF"
+
     },
 
 }));
@@ -26,7 +27,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function OOOConfirmation(props) {
     const classes = useStyles(props)
-
 
     return (
         <Grid container>
@@ -39,8 +39,8 @@ export default function OOOConfirmation(props) {
                 <Typography variant="h6">You will recieve a confirmation of your OOO request</Typography>
             </Grid>
 
-            <Grid item xs={12} alignItems="center">
-                <Button>Close</Button>
+            <Grid item xs={12} alignItems="center" style={{ marginTop: "5vh" }}>
+                <Button className={classes.cancelbutton} variant="outlined" onClick={props.handleClose}>Close</Button>
             </Grid>
         </Grid>
 
