@@ -12,8 +12,16 @@ import PaymentBoard from "./PaymentBoard";
 import RegistrationActions from "../RegistrationActions";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import {omouBlue} from "../../../../theme/muiTheme";
+import {omouBlue, skyBlue} from "../../../../theme/muiTheme";
 import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
+import Box from "@material-ui/core/Box";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 
 const GET_STUDENT_INFOS = gql`
 	query GetStudentInfos($userIds: [ID]!) {
@@ -61,6 +69,7 @@ export default function RegistrationCartContainer() {
 	const [registrationCart, setRegistrationCart] = useState({});
 	const [reviewConfirmationCheck, setReviewConfirmationCheck] = useState(false);
 	const [reviewError, setReviewError] = useState(false);
+	const [parentRegistrationConfirmation, setParentConfirmation] = useState(false);
 	const {parentIsLoggedIn} = useValidateRegisteringParent();
 	// create list of students to fetch
 	const studentIds = Object.keys(registrationCartState);
@@ -108,6 +117,19 @@ export default function RegistrationCartContainer() {
 		});
 	};
 
+	const handleAcknowledgement = () => {
+		setReviewConfirmationCheck(!reviewConfirmationCheck);
+		setReviewError(false);
+	}
+
+	const handleParentRegistrationSubmit = () => {
+		if (!reviewConfirmationCheck) {
+			setReviewError(true);
+		} else {
+			setParentConfirmation(true);
+		}
+	}
+
 	if (loading || coursesResponse.loading) return <Loading small/>;
 
 	const studentData = data.userInfos;
@@ -147,23 +169,26 @@ export default function RegistrationCartContainer() {
 					>
 						{parentIsLoggedIn ? <>
 								<Grid item xs={5}>
-									<FormControlLabel
-										control={<Checkbox checked={reviewConfirmationCheck}
-														   color="primary"
-														   onChange={() => setReviewConfirmationCheck(!reviewConfirmationCheck)}
-														   error={reviewError}
-														   name="checkedA"/>}
-										label="By checking this box, you confirmed that you
-										have reviewed the registrations above."
-										style={{
-											color: omouBlue, textAlign: "left",
-											fontSize: ".7em", fontStyle: "italics"
-										}}
-									/>
+									<FormControl required error={reviewError}>
+										<FormLabel style={{textAlign: "left"}}>Acknowledge</FormLabel>
+										<FormControlLabel
+											control={<Checkbox checked={reviewConfirmationCheck}
+															   color="primary"
+															   onChange={handleAcknowledgement}
+															   name="checkedA"/>}
+											label="By checking this box, you confirmed that you have reviewed
+											the registrations above."
+											style={{
+												color: omouBlue, textAlign: "left",
+												fontSize: ".7em", fontStyle: "italics"
+											}}
+										/>
+									</FormControl>
+
 								</Grid>
 								<Grid item>
 									<Button
-										// onClick={}
+										onClick={handleParentRegistrationSubmit}
 										variant="contained"
 										color="primary"
 									>
@@ -174,7 +199,46 @@ export default function RegistrationCartContainer() {
 							: <PaymentBoard/>}
 					</Grid>
 				</Grid>
-		</BackgroundPaper>
+				<Dialog open={parentRegistrationConfirmation}
+						onClose={() => setParentConfirmation(false)}
+				>
+					<DialogTitle>
+						<Grid container direction="row" justify="center" alignItems="center">
+							<Grid item>
+								<CheckCircleIcon color="primary" style={{fontSize: "3em"}}/>
+							</Grid>
+							<Grid item>
+								<Typography color="primary" align="center"
+											style={{fontSize: "1.2em", fontWeight: 500, padding: "15px"}}>
+									Request Submitted
+								</Typography>
+							</Grid>
+						</Grid>
+					</DialogTitle>
+					<DialogContent>
+						<Typography align="center">Your request has been submitted!</Typography>
+						<Typography align="center">Here’s the next step to complete the enrollment process:</Typography>
+
+						<Box style={{backgroundColor: skyBlue, padding: "8%", margin: "3%"}}>
+							<Typography align="center" style={{fontWeight: 550}}>
+								Pay in-person at Summit Tutoring
+								or pay over phone (408)839-3239
+							</Typography>
+						</Box>
+						<Typography align="center">
+							Review all invoices on your Payment page.
+						</Typography>
+					</DialogContent>
+					<DialogActions>
+						<Button variant="outlined">
+							DONE
+						</Button>
+						<Button variant="contained" color="primary">
+							VIEW INVOICE
+						</Button>
+					</DialogActions>
+				</Dialog>
+			</BackgroundPaper>
 	</RegistrationContext.Provider>
 	)
 }
