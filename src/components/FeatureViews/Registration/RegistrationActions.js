@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from "react";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import NewCourse from "@material-ui/icons/School";
 import Tooltip from "@material-ui/core/Tooltip";
 
@@ -18,6 +18,9 @@ import {useSelector} from "react-redux";
 import {useQuery} from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import Loading from "../../OmouComponents/Loading";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCartOutlined";
+import IconButton from "@material-ui/core/IconButton";
+import Badge from "@material-ui/core/Badge";
 
 const GET_PARENT_QUERY = gql`
 query GetRegisteringParent($userId: ID!) {
@@ -44,6 +47,7 @@ const RegistrationActions = () => {
 		variables: {userId: AuthUser.user.id},
 		skip: AuthUser.accountType !== USER_TYPES.parent,
 	});
+	const history = useHistory();
 
 	const openDialog = useCallback(() => {
 		setDialog(true);
@@ -65,6 +69,14 @@ const RegistrationActions = () => {
 	const registeringParent = data?.parent || currentParent;
 
 	const parentName = fullName(registeringParent.user);
+
+	const numberOfRegistrationsInCart = Object.values(registrationState).reduce((accumulator, currentStudent) => {
+		return accumulator + currentStudent.length;
+	}, 0);
+
+	const toShoppingCart = () => {
+		history.push("/registration/cart");
+	}
 
 	return (
 		<>
@@ -111,6 +123,21 @@ const RegistrationActions = () => {
 							SET PARENT
 						</Button>
 					)}
+				</Grid>
+				<Grid item xs={2}>
+					<IconButton onClick={toShoppingCart}>
+						<Badge
+							badgeContent={numberOfRegistrationsInCart}
+							color="primary"
+							showZero
+							anchorOrigin={{
+								vertical: 'top',
+								horizontal: 'right',
+							}}
+						>
+							<ShoppingCartIcon style={{fontSize: "1.4em"}}/>
+						</Badge>
+					</IconButton>
 				</Grid>
 			</Grid>
 			<SelectParentDialog onClose={closeDialog} open={dialogOpen}/>

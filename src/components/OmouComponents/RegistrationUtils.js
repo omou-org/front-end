@@ -53,6 +53,20 @@ export const submitRegistration = (student, course) => {
 };
 
 /**
+ * @description this will remove a registration from session storage
+ * */
+export const removeRegistration = (student, course) => {
+	const registrationState = JSON.parse(sessionStorage.getItem("registrations"));
+	const indexOfRegistration = registrationState[student]
+		.map(({course}) => course)
+		.indexOf(course);
+	return {
+		...registrationState,
+		[student]: registrationState[student].splice(indexOfRegistration, 1),
+	}
+}
+
+/**
  * @description this will close and clear out the registration cart including the registering parent
  * */
 export const closeRegistrationCart = () => {

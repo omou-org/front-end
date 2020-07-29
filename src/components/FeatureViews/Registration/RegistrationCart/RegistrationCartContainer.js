@@ -10,6 +10,10 @@ import {RegistrationContext} from "./RegistrationContext";
 import StudentRegistrationEntry from "./StudentRegistrationsEntry";
 import PaymentBoard from "./PaymentBoard";
 import RegistrationActions from "../RegistrationActions";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import {omouBlue} from "../../../../theme/muiTheme";
+import Button from "@material-ui/core/Button";
 
 const GET_STUDENT_INFOS = gql`
 	query GetStudentInfos($userIds: [ID]!) {
@@ -55,6 +59,8 @@ const GET_COURSES_TO_REGISTER = gql`
 export default function RegistrationCartContainer() {
 	const {currentParent, ...registrationCartState} = getRegistrationCart();
 	const [registrationCart, setRegistrationCart] = useState({});
+	const [reviewConfirmationCheck, setReviewConfirmationCheck] = useState(false);
+	const [reviewError, setReviewError] = useState(false);
 	const {parentIsLoggedIn} = useValidateRegisteringParent();
 	// create list of students to fetch
 	const studentIds = Object.keys(registrationCartState);
@@ -132,10 +138,42 @@ export default function RegistrationCartContainer() {
 									/>)
 						}
 					</Grid>
-					<Grid container item justify="space-between" style={{marginTop: "50px"}}>
-						{!parentIsLoggedIn && <PaymentBoard/>}
+					<Grid container item
+						  justify={parentIsLoggedIn ? "flex-end" : "space-between"}
+						  alignItems={parentIsLoggedIn && "flex-end"}
+						  direction={parentIsLoggedIn ? "column" : "row"}
+						  spacing={parentIsLoggedIn && 4}
+						  style={{marginTop: "50px"}}
+					>
+						{parentIsLoggedIn ? <>
+								<Grid item xs={5}>
+									<FormControlLabel
+										control={<Checkbox checked={reviewConfirmationCheck}
+														   color="primary"
+														   onChange={() => setReviewConfirmationCheck(!reviewConfirmationCheck)}
+														   error={reviewError}
+														   name="checkedA"/>}
+										label="By checking this box, you confirmed that you
+										have reviewed the registrations above."
+										style={{
+											color: omouBlue, textAlign: "left",
+											fontSize: ".7em", fontStyle: "italics"
+										}}
+									/>
+								</Grid>
+								<Grid item>
+									<Button
+										// onClick={}
+										variant="contained"
+										color="primary"
+									>
+										SUBMIT REQUEST
+									</Button>
+								</Grid>
+							</>
+							: <PaymentBoard/>}
 					</Grid>
-			</Grid>
+				</Grid>
 		</BackgroundPaper>
 	</RegistrationContext.Provider>
 	)

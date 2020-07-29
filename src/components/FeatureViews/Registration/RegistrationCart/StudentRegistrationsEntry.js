@@ -12,18 +12,9 @@ import moment from "moment";
 import {RegistrationContext} from "./RegistrationContext";
 import TextField from "@material-ui/core/TextField";
 import CloseIcon from "@material-ui/icons/Close";
-import makeStyles from "@material-ui/core/styles/makeStyles";
 import "./RegistrationCart.scss";
 import IconButton from "@material-ui/core/IconButton";
-import {useValidateRegisteringParent} from "../../../OmouComponents/RegistrationUtils";
-
-const useRowStyles = makeStyles({
-	root: {
-		'& > *': {
-			borderBottom: 'unset',
-		},
-	},
-});
+import {removeRegistration, useValidateRegisteringParent} from "../../../OmouComponents/RegistrationUtils";
 
 const separator = () => {
 	return (<Typography style={{ display: "inline", paddingLeft: 30, paddingRight: 30 }}>|</Typography>)
@@ -39,6 +30,7 @@ function RegistrationEntry({ registration: { course, numSessions, checked }, stu
 
 	const handleSessionCheckChange = (_) => {
 		updateSession(numSessions, !checked, studentId, course.id);
+		removeRegistration(studentId, course.id);
 	};
 
 	return (<>
