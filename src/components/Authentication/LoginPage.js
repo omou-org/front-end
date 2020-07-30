@@ -90,14 +90,17 @@ const LoginPage = () => {
         setHasError(false);
     }, []);
 
-    const handleLogin = useCallback((event) => {
+    const handleLogin = useCallback(async (event) => {
         event.preventDefault();
-        login({
+        const loginResponse = await login({
             "variables": {
                 password,
                 "username": email,
             },
         });
+        if (loginResponse?.data?.tokenAuth) {
+            history.push("/")
+        }
     }, [login, email, password]);
 
     const toggleSavePassword = useCallback(({target}) => {

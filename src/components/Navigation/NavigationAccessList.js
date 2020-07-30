@@ -4,6 +4,7 @@ import AccountsIcon from "@material-ui/icons/Contacts";
 import AdminIcon from "@material-ui/icons/Face";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import DashboardIcon from "@material-ui/icons/Dashboard"
+import PaymentIcon from "@material-ui/icons/Payment"
 
 /**
  * Various pages accessible by different users
@@ -60,13 +61,13 @@ export const NavList = {
 		},
 	],
 	"INSTRUCTOR": [
+		// {
+		// 	"name": "Dashboard",
+		// 	"link": "/",
+		// 	"icon": <DashboardIcon/>,
+		// },
 		{
-			"name": "Dashboard",
-			"link": "/",
-			"icon": <DashboardIcon/>,
-		},
-		{
-			"name": "Scheduler",
+			"name": "My Schedule",
 			"link": "/scheduler",
 			"icon": <EventIcon/>,
 		},
@@ -82,13 +83,13 @@ export const NavList = {
 		},
 	],
 	"PARENT": [
+		// {
+		// 	"name": "Dashboard",
+		// 	"link": "/",
+		// 	"icon": <DashboardIcon/>,
+		// },
 		{
-			"name": "Dashboard",
-			"link": "/",
-			"icon": <DashboardIcon/>,
-		},
-		{
-			"name": "Scheduler",
+			"name": "My Schedule",
 			"link": "/scheduler",
 			"icon": <EventIcon/>,
 		},
@@ -96,6 +97,11 @@ export const NavList = {
 			"name": "Registration",
 			"link": "/registration",
 			"icon": <AssignmentIcon/>,
+		},
+		{
+			"name": "My Payments",
+			"link": "/my-payments",
+			"icon": <PaymentIcon/>,
 		},
 	],
     "STUDENT": [],
