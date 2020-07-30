@@ -429,7 +429,6 @@ export default {
     "update": async (resource, { id, data }) => {
         const mutation = MUTATION_UPDATE[resource];
         if (resource == 'tuitionRules') data.category = data.category.id;
-        console.log(data);
         try {
             const response = await client.mutate({
                 mutation,
@@ -442,7 +441,6 @@ export default {
                 "data": Object.values(Object.values(response.data)[0])[0],
             };
         } catch (error) {
-            console.error(error);
             return error;
         }
     },
