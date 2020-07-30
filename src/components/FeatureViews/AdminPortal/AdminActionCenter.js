@@ -1,6 +1,6 @@
-import React, {useEffect, useMemo, useState} from "react";
-import {NavLink, useLocation} from "react-router-dom";
-import {useDispatch} from "react-redux";
+import React, { useEffect, useMemo, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import Button from "@material-ui/core/Button";
 import CourseIcon from "@material-ui/icons/Class";
@@ -13,9 +13,9 @@ import NewInstructor from "@material-ui/icons/PersonAdd";
 import TuitionIcon from "@material-ui/icons/AttachMoney";
 
 import "./AdminPortal.scss";
-import {initializeRegistration} from "actions/registrationActions";
+import { initializeRegistration } from "actions/registrationActions";
 
-import {withStyles} from "@material-ui/core";
+import { withStyles } from "@material-ui/core";
 
 const StyledMenu = withStyles({
 	paper: {
@@ -37,7 +37,7 @@ const StyledMenu = withStyles({
 	/>
 ));
 
-const handleClick = (setter) => ({currentTarget}) => {
+const handleClick = (setter) => ({ currentTarget }) => {
 	setter(currentTarget);
 };
 
@@ -47,7 +47,7 @@ const handleClose = (setter) => () => {
 
 const AdminActionCenter = () => {
 	const dispatch = useDispatch();
-	const {pathname} = useLocation();
+	const { pathname } = useLocation();
 
 	const [userAnchor, setUserAnchor] = useState(null);
 	const [courseAnchor, setCourseAnchor] = useState(null);
@@ -81,7 +81,7 @@ const AdminActionCenter = () => {
 					className={`button ${tabState.user && "active"}`}
 					onClick={handleClick(setUserAnchor)}
 				>
-					<NewInstructor className="admin-action-icon"/>
+					<NewInstructor className="admin-action-icon" />
 					Add Users
 				</Button>
 			</Grid>
@@ -92,7 +92,7 @@ const AdminActionCenter = () => {
 					className={`button ${tabState.course && "active"}`}
 					onClick={handleClick(setCourseAnchor)}
 				>
-					<CourseIcon className="admin-action-icon"/>
+					<CourseIcon className="admin-action-icon" />
 					Manage Course
 				</Button>
 			</Grid>
@@ -103,7 +103,7 @@ const AdminActionCenter = () => {
 					className={`button ${tabState.tuition && "active"}`}
 					onClick={handleClick(setTuitionAnchor)}
 				>
-					<TuitionIcon className="admin-action-icon"/>
+					<TuitionIcon className="admin-action-icon" />
 					Manage Tuition
 				</Button>
 			</Grid>
@@ -114,8 +114,19 @@ const AdminActionCenter = () => {
 					className={`button ${tabState.discount && "active"}`}
 					onClick={handleClick(setDiscountAnchor)}
 				>
-					<DiscountIcon className="admin-action-icon"/>
+					<DiscountIcon className="admin-action-icon" />
 					Manage Discounts
+				</Button>
+			</Grid>
+			<Grid item>
+				<Button
+					aria-controls="simple-menu"
+					className={`button ${tabState.actionLog && "active"}`}
+					component={NavLink}
+					to="/adminportal/actionlog"
+				>
+					<DiscountIcon className="admin-action-icon" />
+					Action Log
 				</Button>
 			</Grid>
 			<StyledMenu
@@ -125,10 +136,10 @@ const AdminActionCenter = () => {
 				open={Boolean(userAnchor)}
 			>
 				<MenuItem component={NavLink} to="/form/instructor">
-					<ListItemText primary="ADD INSTRUCTOR"/>
+					<ListItemText primary="ADD INSTRUCTOR" />
 				</MenuItem>
 				<MenuItem component={NavLink} to="/registration/form/admin">
-					<ListItemText primary="ADD ADMIN"/>
+					<ListItemText primary="ADD ADMIN" />
 				</MenuItem>
 			</StyledMenu>
 			<StyledMenu
@@ -138,13 +149,13 @@ const AdminActionCenter = () => {
 				open={Boolean(courseAnchor)}
 			>
 				<MenuItem component={NavLink} to="/form/course_details">
-					<ListItemText primary="NEW COURSE"/>
+					<ListItemText primary="NEW COURSE" />
 				</MenuItem>
 				<MenuItem
 					component={NavLink}
 					to="/adminportal/manage-course-categories"
 				>
-					<ListItemText primary="COURSE CATEGORIES"/>
+					<ListItemText primary="COURSE CATEGORIES" />
 				</MenuItem>
 			</StyledMenu>
 			<StyledMenu
@@ -154,10 +165,10 @@ const AdminActionCenter = () => {
 				open={Boolean(tuitionAnchor)}
 			>
 				<MenuItem component={NavLink} to="/adminportal/form/pricing">
-					<ListItemText primary="SET TUITION RULES"/>
+					<ListItemText primary="SET TUITION RULES" />
 				</MenuItem>
 				<MenuItem component={NavLink} to="/adminportal/tuition-rules">
-					<ListItemText primary="TUITION RULES"/>
+					<ListItemText primary="TUITION RULES" />
 				</MenuItem>
 			</StyledMenu>
 			<StyledMenu
@@ -167,10 +178,10 @@ const AdminActionCenter = () => {
 				open={Boolean(discountAnchor)}
 			>
 				<MenuItem component={NavLink} to="/adminportal/form/discount">
-					<ListItemText primary="SET DISCOUNTS"/>
+					<ListItemText primary="SET DISCOUNTS" />
 				</MenuItem>
 				<MenuItem component={NavLink} to="/adminportal/manage-discounts">
-					<ListItemText primary="DISCOUNTS"/>
+					<ListItemText primary="DISCOUNTS" />
 				</MenuItem>
 			</StyledMenu>
 		</Grid>
