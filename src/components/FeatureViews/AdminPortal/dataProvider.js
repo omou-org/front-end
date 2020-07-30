@@ -199,14 +199,14 @@ const MUTATION_ADD = {
     ${discountInfo}`,
 
     "tuitionRules": gql`
-    mutation CreatePriceRule(
+    mutation CreatePricerule(
       $academicLevel: AcademicLevelEnum!
       $courseType: CourseTypeEnum!
       $category: Int!
       $hourlyTuition: Float!
       $name: String!
     ) {
-        createPriceRule(
+        createPricerule(
         name: $name
         academicLevel: $academicLevel
         courseType: $courseType
@@ -300,8 +300,8 @@ const MUTATION_UPDATE = {
           $hourlyTuition: Float!
           $name: String!
           ) {
-            createPriceRule(
-                id: $id
+            createPricerule(
+            id: $id
                 
               academicLevel: $academicLevel
               courseType: $courseType,
@@ -428,6 +428,8 @@ export default {
     },
     "update": async (resource, { id, data }) => {
         const mutation = MUTATION_UPDATE[resource];
+        if (resource == 'tuitionRules') data.category = data.category.id;
+        console.log(data);
         try {
             const response = await client.mutate({
                 mutation,

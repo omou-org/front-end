@@ -202,7 +202,7 @@ export const TuitionEdit = (props) => (
       <ReferenceInput
         label="Course category"
         // source="category.id" => prepopulates field but error on submit
-        source="category"
+        source="category.id"
         reference="courseCategories"
       >
         <SelectInput
