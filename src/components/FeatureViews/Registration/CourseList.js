@@ -6,112 +6,105 @@ import {useSelector} from "react-redux";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import {Link} from "react-router-dom";
-import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Moment from "react-moment";
 
 import {fullName} from "utils";
+import Table from "@material-ui/core/Table";
+import TableRow from "@material-ui/core/TableRow";
+import {useValidateRegisteringParent} from "../../OmouComponents/RegistrationUtils";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
 
 const useStyles = makeStyles((theme) => ({
     "courseTitle": {
         "color": theme.palette.common.black,
         "textDecoration": "none",
     },
+    "courseRow": {
+        textDecoration: "none"
+    }
 }));
 
 const CourseList = ({filteredCourses}) => {
     const currentParent = useSelector(
         ({Registration}) => Registration.CurrentParent,
     );
-    const {courseTitle} = useStyles();
+    const {parentIsLoggedIn} = useValidateRegisteringParent();
+    const {courseTitle, courseRow} = useStyles();
 
-    return filteredCourses
-        .filter(({courseType}) => courseType === "CLASS")
-        .map((course) => (
-            <Grid item key={course.id} xs={12}>
-                <Paper className="row">
-                    <Grid alignItems="center" container layout="row">
-                        <Grid className={courseTitle} component={Link} item
-                            md={3} to={`/registration/course/${course.id}`}
-                            xs={12}>
-                            <Typography align="left" className="course-heading">
-                                {course.title}
-                            </Typography>
-                        </Grid>
-                        <Grid className="no-underline" component={Link} item
-                            md={5} to={`/registration/course/${course.id}`}
-                            xs={12}>
-                            <Grid className="course-detail" container>
-                                <Grid align="left" className="heading-det" item
-                                    md={4} xs={3}>
-                                    Date
+    return <Table>
+        <TableBody>
+            {
+                filteredCourses
+                    .filter(({courseType}) => courseType === "CLASS")
+                    .map((course) => (
+                        <TableRow
+                            key={course.id}
+                            component={Link} to={`/registration/course/${course.id}`}
+                            className={courseRow}
+                        >
+                            <TableCell
+                                style={{padding: "3%"}}
+                            >
+                                <Grid className={courseTitle}
+                                      item md={10} xs={12}
+                                      container
+                                      direction="column"
+                                >
+                                    <Grid item>
+                                        <Typography align="left"
+                                                    className="course-heading"
+                                                    style={{fontSize: "1.5em", fontWeight: 550, margin: "10px 0"}}
+                                        >
+                                            {course.title}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item>
+                                        <Typography align="left">
+                                            By: {fullName(course.instructor.user)}
+                                            {" | "}
+                                            <Moment
+                                                date={course.startDate}
+                                                format="MMM D YYYY"/>
+                                            {" - "}
+                                            <Moment
+                                                date={course.endDate}
+                                                format="MMM D YYYY"/> {" "}
+                                            <Moment date={`${course.startDate}T${course.startTime}`}
+                                                    format="dddd h:mm a"/>
+                                            {" - "}
+                                            <Moment
+                                                date={`${course.startDate}T${course.endTime}`}
+                                                format="dddd h:mm a"/>
+                                            {" | "}
+                                            ${course.totalTuition}
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
-                                <Grid align="left" item md={8} xs={9}>
-                                    <Moment
-                                        date={course.startDate}
-                                        format="MMM D YYYY" />
-                                    {" - "}
-                                    <Moment
-                                        date={course.endDate}
-                                        format="MMM D YYYY" />
-                                </Grid>
-                            </Grid>
-                            <Grid className="course-detail" container>
-                                <Grid align="left" className="heading-det" item
-                                    md={4} xs={3}>
-                                    Time
-                                </Grid>
-                                <Grid align="left" item md={8} xs={9}>
-                                    <Moment date={`${course.startDate}T${course.startTime}`}
-                                        format="dddd h:mm a" />
-                                    {" - "}
-                                    <Moment
-                                        date={course.startDate + course.endTime}
-                                        format="dddd h:mm a" />
-                                </Grid>
-                            </Grid>
-                            <Grid className="course-detail" container>
-                                <Grid align="left" className="heading-det" item
-                                    md={4} xs={3}>
-                                    Instructor
-                                </Grid>
-                                <Grid align="left" item md={8} xs={9}>
-                                    {course.instructor &&
-                                        fullName(course.instructor.user)}
-                                </Grid>
-                            </Grid>
-                            <Grid className="course-detail" container>
-                                <Grid align="left" className="heading-det" item
-                                    md={4} xs={3}>
-                                    Tuition
-                                </Grid>
-                                <Grid align="left" item md={8} xs={9}>
-                                    ${course.totalTuition}
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                        <Grid alignItems="center" className="course-action"
-                            container item layout="row" md={4} xs={12}>
-                            <Grid className="course-status" item xs={6}>
-                                {course.enrollmentSet.length} / {course.maxCapacity}
-                                <span className="label">Enrolled</span>
-                            </Grid>
-                            <Grid item xs={6}>
-                                {currentParent && (
-                                    <Button className="button primary"
-                                        component={Link}
-                                        disabled={course.maxCapacity <= course.enrollmentSet.length}
-                                        to={`/registration/form/course/${course.id}`}
-                                        variant="contained">
+                            </TableCell>
+                            <TableCell>
+                                <span style={{margin: "5px", display: "block"}}>
+                                    {course.enrollmentSet.length} / {course.maxCapacity}
+                                    <span className="label">Enrolled</span>
+                                </span>
+
+                                {(currentParent || parentIsLoggedIn) && (
+                                    <Button component={Link}
+                                            disabled={course.maxCapacity <= course.enrollmentSet.length}
+                                            to={`/registration/form/course/${course.id}`}
+                                            variant="contained"
+                                            color="primary"
+                                    >
                                         + REGISTER
                                     </Button>
                                 )}
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Paper>
-            </Grid>
-        ));
+                            </TableCell>
+                        </TableRow>
+                    ))
+            }
+        </TableBody>
+    </Table>
 };
 
 CourseList.propTypes = {
