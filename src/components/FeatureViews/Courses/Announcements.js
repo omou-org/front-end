@@ -7,6 +7,7 @@ import Button from "@material-ui/core/Button";
 import { highlightColor } from "../../../theme/muiTheme";
 import gql from "graphql-tag"
 import { useQuery } from "@apollo/react-hooks";
+import moment from "moment";
 import NewAnnouncementModal from "./NewAnnoucementsModal";
 import { fullName } from "../../../utils";
 
@@ -50,8 +51,10 @@ const useStyles = makeStyles({
 //   },
 // ];
 
-const AnnouncementCard = ({ id, fullName, subject, body, date, time, handleOpen, handleDelete }) => {
+const AnnouncementCard = ({ id, fullName, subject, body, createdAt, handleOpen, handleDelete }) => {
   const classes = useStyles();
+  const date = moment(createdAt).format("MM/DD")
+  const time = moment(createdAt).format("h:mma")
   const handleOpenForm = () => {
     handleOpen(true, id, subject, body);
   };
@@ -59,7 +62,7 @@ const AnnouncementCard = ({ id, fullName, subject, body, date, time, handleOpen,
   const handleDeleteForm = () => {
       handleDelete(subject)
   }
-
+  
   return (
     <Grid
       className={classes.announcementContainer}
@@ -96,7 +99,7 @@ const AnnouncementCard = ({ id, fullName, subject, body, date, time, handleOpen,
   );
 };
 
-const Announcements = ({announcementsData, loggedInUser}) => {
+const Announcements = ({announcementsData, loggedInUser, classTitle}) => {
   const [openNewAnnouncementForm, setNewAnnouncementForm] = useState(false);
   const [announcementId, setAnnouncementId] = useState();
   const [announcementSubject, setAnnouncementSubject] = useState("");
@@ -105,7 +108,7 @@ const Announcements = ({announcementsData, loggedInUser}) => {
   
   useEffect(() => {
     setAnnouncementsRender(announcementsData)
-  }, [openNewAnnouncementForm])
+  }, [openNewAnnouncementForm]);
   
   // console.log(announcementsData)
 
@@ -134,7 +137,7 @@ const Announcements = ({announcementsData, loggedInUser}) => {
   return (
     <Grid container justify="flex-start" data-active="inactive">
       <Button onClick={() => setNewAnnouncementForm(true)}>Click Me</Button>
-      {announcementsRender?.map(({ poster, subject, body, date, time, id,  }) => (
+      {announcementsRender?.map(({ poster, subject, body, createdAt, id,  }) => (
         <>
           <AnnouncementCard
             key={id}
@@ -142,8 +145,7 @@ const Announcements = ({announcementsData, loggedInUser}) => {
             fullName={fullName(poster)}
             subject={subject}
             body={body}
-            date={date}
-            time={time}
+            createdAt={createdAt}
             handleOpen={handleOpen}
             handleDelete={handleDeleteAnnouncement}
           />

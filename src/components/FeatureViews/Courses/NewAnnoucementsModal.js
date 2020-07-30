@@ -68,7 +68,7 @@ const NewAnnouncementsModal = ({ handleClose, open, subject, body, userId }) => 
       $body: String!,
       $courseId: ID!,
       $userId: ID!,
-      $should_email: Boolean,
+      $shouldEmail: Boolean,
     ) {
       __typename
       createAnnouncement(
@@ -76,7 +76,7 @@ const NewAnnouncementsModal = ({ handleClose, open, subject, body, userId }) => 
         course: $courseId,
         subject: $subject,
         user: $userId
-        shouldEmail: $should_email
+        shouldEmail: $shouldEmail
       ) {
         created
         announcement {
@@ -125,7 +125,7 @@ const handleBodyChange = useCallback((event) => {
               body: announcementBody,
               userId: user_id,
               courseId: id.id,
-              shouldEmail: sendEmailCheckbox === true ? true : false,
+              shouldEmail: sendEmailCheckbox,
             },
           });
          handleClose(false);
