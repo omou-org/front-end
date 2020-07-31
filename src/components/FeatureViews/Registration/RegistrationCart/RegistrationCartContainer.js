@@ -104,7 +104,7 @@ export default function RegistrationCartContainer() {
 	if (loading || coursesResponse.loading) return <Loading small />;
 
 	const studentData = data.userInfos;
-
+	
 	return (<RegistrationContext.Provider value={{ registrationCart, currentParent, updateSession }}>
 			<BackgroundPaper>
 				<Grid container>
