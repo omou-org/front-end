@@ -1,13 +1,13 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Button from "@material-ui/core/Button";
-import {OOOContext} from "./OOOContext"
+import { OOOContext } from "./OOOContext"
 import SubmitNotice from "./SubmitNotice";
 import ConflictsDisplay from "./ConflictsDisplay";
 import gql from "graphql-tag";
-import {useMutation} from "@apollo/react-hooks";
-import {useSelector} from "react-redux";
+import { useMutation } from "@apollo/react-hooks";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -29,9 +29,9 @@ function getSteps() {
 function getStepContent(step) {
 	switch (step) {
 		case 0:
-			return <SubmitNotice/>;
+			return <SubmitNotice />;
 		case 1:
-			return <ConflictsDisplay/>;
+			return <ConflictsDisplay />;
 		case 2:
 			return 'Confirmation';
 		default:
@@ -63,7 +63,7 @@ export default function CreateOOOForm() {
 	const [OOOFormState, setOOOFormState] = useState(null);
 	const [submitted, setSubmitted] = useState(null);
 	const steps = getSteps();
-	const AuthUser = useSelector(({auth}) => auth);
+	const AuthUser = useSelector(({ auth }) => auth);
 	const [createOOO, createOOOResults] = useMutation(CREATE_INSTRUCTOR_OOO, {
 		"onCompleted": () => {
 			setSubmitted(submitted);
@@ -83,7 +83,7 @@ export default function CreateOOOForm() {
 	};
 
 	const handleSubmit = () => {
-		console.log(OOOFormState);
+
 		createOOO({
 			variables: {
 				instructorId: AuthUser.user.id,
@@ -96,7 +96,7 @@ export default function CreateOOOForm() {
 
 	console.log(createOOOResults);
 
-	return (<OOOContext.Provider value={{OOOFormState, updateOOOFormState}}>
+	return (<OOOContext.Provider value={{ OOOFormState, updateOOOFormState }}>
 		<Grid container direction="row">
 			{/*<Grid item>*/}
 			{/*	<Stepper style={{width: "100%", backgroundColor: "transparent"}}>*/}
@@ -120,10 +120,10 @@ export default function CreateOOOForm() {
 				{
 					submitted ? <div>
 						OOO has been created!
-					</div> : <SubmitNotice/>
+					</div> : <SubmitNotice />
 				}
 			</Grid>
-			<Grid item xs={8}/>
+			<Grid item xs={8} />
 			<Grid item xs={4}>
 				<Button
 					onClick={handleSubmit}

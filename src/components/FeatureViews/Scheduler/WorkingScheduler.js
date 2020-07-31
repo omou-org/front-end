@@ -320,6 +320,8 @@ const Scheduler = (props) => {
         session,
     ]);
 
+    console.log(prevState)
+
     const instructorOptions = useMemo(() => Object.entries(instructors).map(
         ([instructorID, instructor]) => ({
             "label": instructor.name,

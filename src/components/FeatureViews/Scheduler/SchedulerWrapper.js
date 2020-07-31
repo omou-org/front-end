@@ -3,11 +3,25 @@ import Scheduler from "../Scheduler/Scheduler"
 import { useLazyQuery } from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading"
 import moment from "moment"
+import { useSelector } from "react-redux";
 
 import { GET_ALL_EVENTS } from "./SchedulerQueries";
-import { useEffect } from "react";
-const SchedulerWrapper = () => {
+import { useEffect, useState } from "react";
 
+
+const calendarViewToFilterVal = {
+    "dayGridMonth": "month",
+    "timeGridDay": "day",
+    "timeGridWeek": "week",
+};
+
+const SchedulerWrapper = () => {
+    const [userID, setUserID] = useState(null)
+
+
+
+    const prevState =
+        JSON.parse(sessionStorage.getItem("schedulerState")) || {};
     const palette =
         ["#F503B2", "#F47FD4", "#FCA8E4", "#FFC5EF",
             "#DD0000", "#EA2632", "#EB5757", "#FF9191",
@@ -29,9 +43,6 @@ const SchedulerWrapper = () => {
         return palette[hashCode(string) % 40]
     }
 
-    console.log(sessionStorage)
-
-
 
 
     const [getSessions, { loading, data, error }] = useLazyQuery(GET_ALL_EVENTS);
@@ -39,12 +50,12 @@ const SchedulerWrapper = () => {
     useEffect(() => {
         getSessions({
             variables: {
-                instructorId: "4",
-                timeFrame: "day",
-                timeShift: 0
+                instructorId: userID,
+                timeFrame: calendarViewToFilterVal[prevState.view],
+                timeShift: prevState.timeShift,
+                viewOption: prevState.courseType
             }
         })
-
     }, [getSessions])
 
     if (loading || data === undefined) return <Loading />
@@ -52,15 +63,15 @@ const SchedulerWrapper = () => {
     const { sessions } = data
 
     const currentSession = sessions.map(({ course: { instructor, ...courseValues }, endDatetime, startDatetime, id }) => {
-
+        let instructorName = `${instructor.user.firstName} ${instructor.user.lastName}`;
         return {
-            "color": colorizer(instructor.user.firstName),
+            "color": colorizer(instructorName),
             "courseID": courseValues.id,
             "description": courseValues.description,
             "end": moment(endDatetime).format("YYYY-MM-DDTHH:mm"),
             "id": id,
-            // "instructor": `${course.instructor.user.firstName} ${course.instructor.user.lastName}`,
-            // "instructor_id": course.instructor.user.id,
+            "instructor": instructorName,
+            "instructor_id": instructor.user.id,
             "isConfirmed": courseValues.isConfirmed,
             "resourceId": courseValues
                 ? courseValues.room
@@ -68,11 +79,12 @@ const SchedulerWrapper = () => {
             "start": moment(startDatetime).format("YYYY-MM-DDTHH:mm"),
             "title": courseValues.title,
             "type": courseValues.courseType,
+
         }
     })
 
 
-    return <Scheduler currentSessions={[...currentSession]} />
+    return <Scheduler currentSessions={[...currentSession]} getSessions={getSessions} />
 }
 
 export default SchedulerWrapper

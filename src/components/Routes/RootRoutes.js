@@ -68,6 +68,7 @@ export const RootRoutes = () => {
 
             {/* Scheduler Routes */}
             <AuthenticatedRoute exact path="/scheduler">
+                {/* <WorkingScheduler /> */}
 
                 <SchedulerWrapper />
 

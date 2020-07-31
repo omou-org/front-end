@@ -1,7 +1,7 @@
 import InputBase from "@material-ui/core/InputBase";
-import {withStyles} from "@material-ui/core/styles";
-import {startAndEndDate, truncateStrings} from "utils";
-import {formatDate} from "../../Form/FormUtils";
+import { withStyles } from "@material-ui/core/styles";
+import { startAndEndDate, truncateStrings } from "utils";
+import { formatDate } from "../../Form/FormUtils";
 import tippy from "tippy.js";
 
 export const BootstrapInput = withStyles((theme) => ({
@@ -43,7 +43,7 @@ export const BootstrapInput = withStyles((theme) => ({
 export const OutlinedSelect = withStyles((theme) => ({
   root: {
     "label + &": {
-		marginTop: theme.spacing(3),
+      marginTop: theme.spacing(3),
     },
   },
   input: {
@@ -76,7 +76,6 @@ export const OutlinedSelect = withStyles((theme) => ({
 }))(InputBase);
 
 export const handleToolTip = (info) => {
-
   if (info.event.extendedProps.ooo_id) {
     new tippy(info.el, {
       content: `

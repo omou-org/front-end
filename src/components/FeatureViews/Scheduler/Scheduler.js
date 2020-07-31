@@ -87,9 +87,10 @@ const Scheduler = (props) => {
     hooks.useCourse();
     hooks.useInstructor();
     hooks.useOutOfOffice();
-    calendarActions.useSessions(
-        calendarViewToFilterVal[view], timeShift, courseType
-    );
+    // calendarActions.useSessions(
+    //     calendarViewToFilterVal[view], timeShift, courseType
+    // );
+
 
     const calendarRef = useRef();
     const calendarApi = calendarRef.current && calendarRef.current.getApi();
@@ -99,11 +100,12 @@ const Scheduler = (props) => {
     const checkFilter = (value, filter) => ("" === filter || value === filter);
     const coursesToDisplay = props.currentSessions
         .filter(sessions => (
+
             checkFilter(sessions.type, sortByAll) ||
             checkFilter(sessions.type, sortByClass) ||
             checkFilter(sessions.type, sortByTutor)));
 
-    console.log(coursesToDisplay)
+
 
     const currentDate = calendarApi && calendarApi.view.title;
 
@@ -132,11 +134,27 @@ const Scheduler = (props) => {
 
     const goToNext = () => {
         calendarApi.next();
+        props.getSessions({
+            variables: {
+                instructorId: null,
+                timeFrame: calendarViewToFilterVal[view],
+                timeShift: timeShift + 1,
+                viewOption: courseType,
+            }
+        })
         setTimeShift((prevShift) => prevShift + 1);
     };
 
     const goToPrev = () => {
         calendarApi.prev();
+        props.getSessions({
+            variables: {
+                instructorId: "4",
+                timeFrame: calendarViewToFilterVal[view],
+                timeShift: timeShift - 1,
+                viewOption: courseType,
+            }
+        })
         setTimeShift((prevShift) => prevShift - 1);
     };
 
@@ -146,6 +164,7 @@ const Scheduler = (props) => {
     };
 
     const handleCourseTypeChange = useCallback(({ target }) => {
+
         setCourseType(target.value);
     }, []);
 
@@ -366,7 +385,7 @@ const Scheduler = (props) => {
                         eventColor="none"
                         eventLimit={4}
                         eventMouseEnter={handleToolTip}
-                        events={props.currentSessions}
+                        events={[...coursesToDisplay]}
                         header={false}
                         minTime="07:00:00"
                         nowIndicator
