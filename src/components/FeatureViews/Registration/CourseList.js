@@ -59,7 +59,7 @@ const CourseList = ({filteredCourses, updatedParent}) => {
     const [openCourseQuickRegistration, setOpen] = useState(false);
     const [quickCourseID, setQuickCourseID] = useState(null);
     const [quickStudent, setQuickStudent] = useState("");
-    const {studentList} = JSON.parse(sessionStorage.getItem("registrations")).currentParent || false;
+    const {studentList} = JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
     const {data, loading} = useQuery(GET_STUDENTS, {
         "variables": {"userIds": studentList},
         skip: !studentList
