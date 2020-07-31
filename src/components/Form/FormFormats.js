@@ -1,13 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import * as types from "actions/actionTypes";
 import {instance} from "actions/apiActions";
-import {useSelector} from "react-redux";
 import React from "react";
 import {FORM_ERROR} from "final-form";
 import * as Fields from "./Fields";
 import {StudentSelect} from "./Fields";
 import * as Yup from "yup";
-import * as hooks from "actions/hooks";
 import * as moment from "moment";
 import {client} from "index";
 import gql from "graphql-tag";
@@ -1248,8 +1246,12 @@ export default {
 `;
 
             const {basicInfo, experience} = formData;
+
             const modifiedData = {
-                basicInfo,
+                "basicInfo": {
+                    ...basicInfo,
+                    birthDate: basicInfo.birthDate.toISOString().substr(0, 10),
+                },
                 "experience": {
                     ...experience,
                     "subjects": experience.subjects.map(({value}) => value),
