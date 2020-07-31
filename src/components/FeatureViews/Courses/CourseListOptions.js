@@ -7,8 +7,8 @@ import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-// import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Create, Cancel, ExpandMore } from "@material-ui/icons";
+import SessionNotesModal from "./SessionNotesModal";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 
@@ -41,13 +41,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CourseListOptions = ({sessionId}) => {
+const CourseListOptions = ({sessionId, open, handleCloseForm}) => {
     console.log(sessionId)
+    console.log(open)
   const classes = useStyles();
   const [readMore, setReadMore] = useState(false);
-  const handleOpenForm = () => {
+  // const [open, setOpen] = useState(false);
+  // const handleOpenForm = () => {
     // handleOpen(true, id, subject, body);
-  };
+    // setOpen(true);
+  // };
+  
 
   const handleDeleteForm = () => {
     //   handleDelete(subject)
@@ -79,7 +83,7 @@ const CourseListOptions = ({sessionId}) => {
               </Typography>
             </Grid>
             <Grid item xs={6} className={classes.buttons}>
-              <Button onClick={handleOpenForm}>
+              <Button>
                 <Create style={{ color: "#43B5D9" }} />
               </Button>{" "}
               <Button onClick={handleDeleteForm}>
@@ -104,7 +108,7 @@ const CourseListOptions = ({sessionId}) => {
                 </Typography>
               )}
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={3} style={{marginTop: "1.5em"}}>
               <Typography variant="subtitle2" align="left">
                 Posted by:{" "}
                 {/* <span style={{ color: "#43B5D9", fontWeight: "550" }}>{fullName}</span> -{" "} */}
@@ -115,6 +119,7 @@ const CourseListOptions = ({sessionId}) => {
         </AccordionDetails>
       </Accordion>
       <Divider />
+      <SessionNotesModal open={open} handleCloseForm={handleCloseForm} />
     </div>
   );
 };

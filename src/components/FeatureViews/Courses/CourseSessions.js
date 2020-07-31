@@ -65,13 +65,25 @@ const useStyles = makeStyles((theme) => ({
 const CourseSessions = ({ sessionList }) => {
   const classes = useStyles();
   const [sortBySession, setSortBySession] = useState("");
+  const [open, setOpen] = useState(false);
   // console.log(sessionList);
 
   const handleChange = (e) => {
     setSortBySession(e.target.value);
   };
+
+  const handleOpenForm = (e) => {
+    e.preventDefault();
+    // handleOpen(true, id, subject, body);
+    setOpen(true);
+  };
+
+  const handleCloseForm = (boolean) => {
+    console.log(boolean)
+    setOpen(boolean)
+  }
   
-  console.log(sortBySession);
+  // console.log(sortBySession);
   return (
     <>
       <Grid container justify="flex-start">
@@ -122,8 +134,8 @@ const CourseSessions = ({ sessionList }) => {
             </Select>
           </FormControl>
         </Grid>
-        <Button className={classes.newNoteButton}><span className={classes.plusSpan}>+</span> New Note</Button>
-        {sortBySession === "" ? null : <CourseListOptions sessionId={sortBySession}/> }
+        <Button className={classes.newNoteButton} onClick={handleOpenForm}><span className={classes.plusSpan}>+</span> New Note</Button>
+        {sortBySession === "" ? null : <CourseListOptions open={open} sessionId={sortBySession} handleCloseForm={handleCloseForm}/> }
       </Grid>
     </>
   );
