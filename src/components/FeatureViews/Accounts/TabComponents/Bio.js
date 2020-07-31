@@ -5,16 +5,25 @@ import Card from "@material-ui/core/Card";
 import Chip from "@material-ui/core/Chip";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import {useSelector} from "react-redux";
-import {isLoading, useCategory} from "../../../../actions/hooks";
 import Loading from "../../../OmouComponents/Loading";
+import gql from "graphql-tag";
+import {useQuery} from "@apollo/react-hooks";
+
+const GET_CATEGORIES = gql`query GetCategories {
+  __typename
+  courseCategories {
+    name
+    id
+  }
+}`
 
 const Bio = ({"background": {bio, experience, languages, subjects}}) => {
-	const categories = useSelector(({Course}) => Course.CourseCategories);
-	const categoryStatus = useCategory();
-	if (isLoading(categoryStatus)) {
-		return <Loading/>
-	}
+	const {data, loading, error} = useQuery(GET_CATEGORIES);
+
+	if (loading) return <Loading/>
+	if (error) return <div>There's been an error! - {error.message}</div>
+
+	const {courseCategories} = data;
 
 	return (
 		<Card className="Bio">
@@ -53,7 +62,7 @@ const Bio = ({"background": {bio, experience, languages, subjects}}) => {
 									<Chip
 										className="bioChip"
 										label={exp}
-										variant="outlined"/>
+										variant="outlined" />
 								</Grid>
 							))
 						}
@@ -65,18 +74,18 @@ const Bio = ({"background": {bio, experience, languages, subjects}}) => {
 						<Grid className="bioDescription">
 							Subjects offered:
 						</Grid>
-						{console.log(categories)}
 						{
 							subjects && subjects.map((subject) => (
-								<Grid
-									className="chipPadding"
-									key={subject}>
-									<Chip
-										className="bioChip"
-										label={categories[subject + 1].name}
-										variant="outlined"/>
-								</Grid>
-							))
+									<Grid
+										className="chipPadding"
+										key={subject}>
+										<Chip
+											className="bioChip"
+											label={courseCategories[subject - 1].name}
+											variant="outlined"/>
+									</Grid>
+								)
+							)
 						}
 					</Grid>
 					<Grid
@@ -93,7 +102,7 @@ const Bio = ({"background": {bio, experience, languages, subjects}}) => {
 									<Chip
 										className="bioChip"
 										label={language}
-										variant="outlined"/>
+										variant="outlined" />
 								</Grid>
 							))
 						}
@@ -105,12 +114,12 @@ const Bio = ({"background": {bio, experience, languages, subjects}}) => {
 };
 
 Bio.propTypes = {
-    "background": PropTypes.shape({
-        "bio": PropTypes.string,
-        "experience": PropTypes.any,
-        "languages": PropTypes.any,
-        "subjects": PropTypes.any,
-    }).isRequired,
+	"background": PropTypes.shape({
+		"bio": PropTypes.string,
+		"experience": PropTypes.any,
+		"languages": PropTypes.any,
+		"subjects": PropTypes.any,
+	}).isRequired,
 };
 
 export default Bio;

@@ -1,13 +1,14 @@
 import InputBase from "@material-ui/core/InputBase";
-import { withStyles } from "@material-ui/core/styles";
-import { startAndEndDate, truncateStrings } from "utils";
-import { formatDate } from "../../Form/FormUtils";
+import {withStyles} from "@material-ui/core/styles";
+import {startAndEndDate, truncateStrings} from "utils";
+import {formatDate} from "../../Form/FormUtils";
 import tippy from "tippy.js";
 
 export const BootstrapInput = withStyles((theme) => ({
   root: {
     "label + &": {
-      marginTop: theme.spacing(3),
+      marginTop: theme.spacing(5),
+      textAlign: "center",
     },
   },
   input: {

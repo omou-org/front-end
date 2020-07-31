@@ -32,65 +32,90 @@ import Loading from "components/OmouComponents/Loading";
 import ProfileHeading from "./ProfileHeading.js";
 import {useAccountNotes} from "actions/userActions";
 import UserAvatar from "./UserAvatar";
+import SettingsIcon from "@material-ui/icons/Settings"
+import {USER_TYPES} from "../../../utils";
 
 const userTabs = {
 	instructor: [
 		{
 			icon: <ScheduleIcon className="TabIcon"/>,
 			tab_heading: "Schedule",
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 			tab_id: 0,
 		},
 		{
 			icon: <CoursesIcon className="TabIcon"/>,
 			tab_heading: "Courses",
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 			tab_id: 1,
 		},
 		{
 			icon: <BioIcon className="TabIcon"/>,
 			tab_heading: "Bio",
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor],
 			tab_id: 2,
 		},
 		{
 			icon: <notificationIcon className="TabIcon"/>,
 			tab_heading: "Notes",
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor],
 			tab_id: 7,
 		},
+		{
+			icon: <SettingsIcon className="SettingsIcon"/>,
+			tab_heading: "Notification Settings",
+			access_permissions: [USER_TYPES.instructor],
+			tab_id: 10,
+		}
 	],
 	parent: [
 		{
 			icon: <CurrentSessionsIcon className="TabIcon"/>,
 			tab_heading: "Student Info",
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.parent],
 			tab_id: 8,
 		},
 		{
 			icon: <PaymentIcon className="TabIcon"/>,
 			tab_heading: "Payment History",
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 			tab_id: 5,
 		},
 		{
 			icon: <NoteIcon className="TabIcon"/>,
 			tab_heading: "Notes",
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.parent],
 			tab_id: 7,
 		},
+		{
+			icon: <SettingsIcon className="SettingsIcon"/>,
+			tab_heading: "Notification Settings",
+			access_permissions: [USER_TYPES.parent],
+			tab_id: 10,
+		}
 	],
 	student: [
 		{
 			icon: <CurrentSessionsIcon className="TabIcon"/>,
 			tab_heading: "Current Course(s)",
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 			tab_id: 3,
 		},
 		{
 			icon: <PastSessionsIcon className="TabIcon"/>,
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 			tab_heading: "Past Course(s)",
 			tab_id: 4,
 		},
 		{
 			icon: <ContactIcon className="TabIcon"/>,
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.student, USER_TYPES.parent],
 			tab_heading: "Parent Contact",
 			tab_id: 6,
 		},
 		{
 			icon: <NoteIcon className="TabIcon"/>,
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.student, USER_TYPES.parent],
 			tab_heading: "Notes",
 			tab_id: 7,
 		},
@@ -122,6 +147,8 @@ const UserProfile = () => {
 	const [displayTabs, setDisplayTabs] = useState(userTabs[accountType]);
 
 	const fetchStatus = useUser(accountID, accountType);
+	const AuthUser = useSelector(({auth}) => auth);
+
 	useAccountNotes(accountID, accountType);
 
 	const user = useMemo(() => {
@@ -187,28 +214,34 @@ const UserProfile = () => {
 					textColor="primary"
 					value={tabIndex}
 				>
-					{displayTabs.map((tab) => (
-						tab.tab_id === 7 ?
-						<Tab
-							key={tab.tab_id}
-							label={
-								<>
-									{tab.icon} {tab.tab_heading}
-								</>
-							}
-						/>
-						: 
-						<Tab
-							key={tab.tab_id}
-							label={
-								<>
-									{tab.icon} {tab.tab_heading}
-								</>
-							}
-						/>
-					))}
+					{displayTabs
+						.filter((tab) => (tab.access_permissions.includes(AuthUser.accountType)))
+						.map((tab) => (
+							tab.tab_id === 7 ?
+								<Tab
+									key={tab.tab_id}
+									label={
+										<>
+											{tab.icon} {tab.tab_heading}
+										</>
+									}
+								/>
+								:
+								<Tab
+									key={tab.tab_id}
+									label={
+										<>
+											{tab.icon} {tab.tab_heading}
+										</>
+									}
+								/>
+						))}
 				</Tabs>
-				<ComponentViewer inView={displayTabs[tabIndex].tab_id} user={user}/>
+				<ComponentViewer
+					inView={displayTabs
+						.filter((tab) =>
+							(tab.access_permissions.includes(AuthUser.accountType)))[tabIndex].tab_id}
+					user={user}/>
 			</>
 		);
 	}, [displayTabs, handleTabChange, tabIndex, user]);

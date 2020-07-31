@@ -8,6 +8,9 @@
 @import '~@fullcalendar/core/main.css';
 @import '~@fullcalendar/daygrid/main.css';
 @import '~@fullcalendar/list/main.css';
+@import '~react-date-range/dist/styles.css';
+// main css file
+@import '~react-date-range/dist/theme/default.css'; // theme css file
 
 // Session view
 .scheduler {
@@ -68,6 +71,14 @@
 
 .fc-now-indicator {
   border: 0 solid #43b5d9;
+}
+
+// Current day background color
+.fc-today {
+  background: #EBFAFF !important;
+  border: none !important;
+  border-top: 1px solid #ddd !important;
+  font-weight: bold;
 }
 
 // ToolTip css are styled ul's
@@ -134,7 +145,6 @@
   padding-bottom: 20px;
   border-radius: 10px;
   padding-right: 20px;
-  cursor: pointer;
 }
 
 .toolTip {
@@ -163,7 +173,8 @@
     margin-top: 50px;
   }
 
-  .button {
+  .button,
+  .editButton {
     background-color: white;
     @include respond-to(medium-up-screens) {
       margin-right: 30px;
@@ -195,6 +206,16 @@
       }
     }
   }
+  .editButton {
+    color: white;
+    background-color: $primaryColor;
+    border: 1px solid $primaryDarkColor;
+    &:not(.disable):hover {
+      color: white;
+      background-color: $primaryColor;
+      border: 1px solid $primaryDarkColor;
+    }
+  }
 }
 
 .demo-app {
@@ -211,10 +232,11 @@ body .fc {
 
 .omou-calendar {
   margin: 0 auto;
-
   max-width: 1100px;
-
   background-color: white;
+  .fc-event {
+    cursor: pointer;
+  }
 }
 .fc-view,
 .fc-view > table {
@@ -250,7 +272,7 @@ body .fc {
     font-size: 100px;
     color: orange;
     align-self: center;
-    margin-top:20%;
+    margin-top: 20%;
   }
 }
 

@@ -1,32 +1,36 @@
 import * as serviceWorker from "./serviceWorker";
-import {applyMiddleware, createStore} from "redux";
+import { applyMiddleware, createStore } from "redux";
 import App from "./App";
-import {BrowserRouter} from "react-router-dom";
-import {composeWithDevTools} from "redux-devtools-extension";
+import { BrowserRouter } from "react-router-dom";
+import { composeWithDevTools } from "redux-devtools-extension";
 import Provider from "react-redux/es/components/Provider";
 import React from "react";
 import ReactDOM from "react-dom";
 import rootReducer from "./reducers/rootReducer.js";
 import thunk from "redux-thunk";
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache } from "apollo-cache-inmemory";
+import { HttpLink } from "apollo-link-http";
+import { onError } from "apollo-link-error";
+import { ApolloLink } from "apollo-link";
 
-import {ApolloClient} from "apollo-client";
-import {ApolloLink} from "apollo-link";
-import {ApolloProvider} from "@apollo/react-hooks";
-import gql from "graphql-tag";
-import {HttpLink} from "apollo-link-http";
-import {InMemoryCache} from "apollo-cache-inmemory";
-import {onError} from "apollo-link-error";
-import {setContext} from "apollo-link-context";
 
-import {setToken} from "actions/authActions";
+
+import { ApolloProvider } from "@apollo/react-hooks";
+import { setContext } from "apollo-link-context";
+
+import { setToken } from "actions/authActions";
+
+
 
 const store = createStore(
     rootReducer,
     composeWithDevTools(applyMiddleware(thunk)),
 );
 
+
 const httpLink = ApolloLink.from([
-    onError(({graphQLErrors, networkError}) => {
+    onError(({ graphQLErrors, networkError }) => {
         if (graphQLErrors) {
             console.error("[GraphQL Error(s)]", graphQLErrors);
         }
@@ -39,8 +43,8 @@ const httpLink = ApolloLink.from([
     }),
 ]);
 
-const authLink = setContext((_, {headers}) => {
-    const {token} = store.getState().auth;
+const authLink = setContext((_, { headers }) => {
+    const { token } = store.getState().auth;
     return {
         "headers": {
             "Authorization": token ? `JWT ${token}` : "",
@@ -65,10 +69,11 @@ if (token) {
 ReactDOM.render(
     <Provider store={store}>
         <ApolloProvider client={client}>
-            <BrowserRouter>
+            <BrowserRouter >
                 <App />
             </BrowserRouter>
         </ApolloProvider>
+
     </Provider>,
     document.getElementById("root"),
 );

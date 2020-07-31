@@ -13,12 +13,9 @@ const AuthenticatedRoute = ({component, children, render,
         [component, children, render, rest],
     );
 
-    console.log(accountType, token)
-
     if (!token) {
         return <Redirect push to="/login" />;
     }
-
     if (!users.includes(accountType)) {
         return <Redirect to="/PageNotFound" />;
     }

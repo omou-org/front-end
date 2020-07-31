@@ -12,7 +12,7 @@ import {FormControl, Typography} from "@material-ui/core";
 import * as apiActions from "../../../actions/apiActions";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import {DatePicker, TimePicker} from "material-ui-pickers";
+import {DatePicker, TimePicker} from "@material-ui/pickers";
 import SearchSelect from "react-select";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
@@ -24,7 +24,7 @@ import BackButton from "../../OmouComponents/BackButton";
 import "./scheduler.scss";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 
-const EditSessionView = ({ editSelection }) => {
+const EditSessionView = ({editSelection}) => {
 	const dispatch = useDispatch();
 	const api = useMemo(
 		() => ({
@@ -37,8 +37,7 @@ const EditSessionView = ({ editSelection }) => {
 	);
 	const history = useHistory();
 	const location = useLocation();
-	const { course, session } = location.state;
-	console.log(course, session);
+	const {course, session} = location.state;
 
 	const [sessionFields, setSessionFields] = useState({
 		start_time: "",
@@ -57,10 +56,10 @@ const EditSessionView = ({ editSelection }) => {
 	}, [api]);
 
 	const categories = useSelector(
-		({ Course: { CourseCategories } }) => CourseCategories
+		({Course: {CourseCategories}}) => CourseCategories
 	);
 	const instructors = useSelector(
-		({ Users: { InstructorList } }) => InstructorList
+		({Users: {InstructorList}}) => InstructorList
 	);
 
 	useEffect(() => {
@@ -75,7 +74,7 @@ const EditSessionView = ({ editSelection }) => {
 			);
 
 			setSessionFields({
-				category: { value: category.id, label: category.name },
+				category: {value: category.id, label: category.name},
 				instructor: {
 					value: session.instructor,
 					label: instructors[session.instructor].name,
@@ -90,7 +89,7 @@ const EditSessionView = ({ editSelection }) => {
 	}, [categories, course, instructors, session]);
 
 	const handleDateTimeChange = (date) => {
-		const { end_time, duration } = sessionFields;
+		const {end_time, duration} = sessionFields;
 		if (date.end_time) {
 		}
 		end_time.setDate(date.getDate());
@@ -104,7 +103,7 @@ const EditSessionView = ({ editSelection }) => {
 		});
 	};
 
-	const categoriesList = categories.map(({ id, name }) => ({
+	const categoriesList = categories.map(({id, name}) => ({
 		value: id,
 		label: name,
 	}));
@@ -131,7 +130,7 @@ const EditSessionView = ({ editSelection }) => {
 	};
 
 	const handleDurationSelect = (event) => {
-		const { start_time } = sessionFields;
+		const {start_time} = sessionFields;
 		const newEndTime = new Date(start_time);
 
 		switch (event.target.value) {
@@ -211,7 +210,7 @@ const EditSessionView = ({ editSelection }) => {
 	};
 
 	const instructorList = Object.values(instructors).map(
-		({ user_id, name, email }) => ({
+		({user_id, name, email}) => ({
 			value: user_id,
 			label: `${name} - ${email}`,
 		})
@@ -222,7 +221,7 @@ const EditSessionView = ({ editSelection }) => {
 				elevation={2}
 				className="paper session"
 				mt="2em"
-				style={{ width: "100%" }}>
+				style={{width: "100%"}}>
 				<Grid className="session-button" item>
 					<BackButton />
 				</Grid>
@@ -265,7 +264,7 @@ const EditSessionView = ({ editSelection }) => {
 								placeholder="Choose an Instructor"
 								value={sessionFields.instructor}
 							/>
-							<FormControl style={{ marginTop: "20px", marginBottom: "10px" }}>
+							<FormControl style={{marginTop: "20px", marginBottom: "10px"}}>
 								<InputLabel>Is instructor confirmed?</InputLabel>
 								<Select
 									onChange={onConfirmationChange}

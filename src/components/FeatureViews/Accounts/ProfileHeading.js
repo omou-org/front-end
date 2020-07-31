@@ -70,7 +70,7 @@ const ProfileHeading = ({ user }) => {
 					<Grid component={Hidden} item mdDown xs={12}>
 						<Button
 							component={Link}
-							to={`/registration/form/${user.role}/${user.user_id}/edit`}
+							to={`/form/${user.role}/${user.user_id}`}
 							variant="outlined"
 						>
 							<EditIcon/>
@@ -80,7 +80,7 @@ const ProfileHeading = ({ user }) => {
 					<Grid component={Hidden} item lgUp xs={12}>
 						<Button
 							component={Link}
-							to={`/registration/form/${user.role}/${user.user_id}/edit`}
+							to={`/form/${user.role}/${user.user_id}`}
 							variant="outlined"
 						>
 							<EditIcon/>
