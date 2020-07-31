@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import PropTypes from "prop-types";
 
@@ -11,10 +11,39 @@ import Moment from "react-moment";
 import {fullName} from "utils";
 import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
-import {getRegistrationCart, useValidateRegisteringParent} from "../../OmouComponents/RegistrationUtils";
+import {
+    getRegistrationCart,
+    submitRegistration,
+    useValidateRegisteringParent
+} from "../../OmouComponents/RegistrationUtils";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import moment from "moment";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import gql from "graphql-tag";
+import {useQuery} from "@apollo/react-hooks";
+import Loading from "../../OmouComponents/Loading";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import DialogActions from "@material-ui/core/DialogActions";
+
+const GET_STUDENTS = gql`
+    query GetStudents($userIds: [ID]!) {
+      userInfos(userIds: $userIds) {
+        ... on StudentType {
+          user {
+            firstName
+            lastName
+            id
+          }
+        }
+      }
+    }
+`;
 
 const useStyles = makeStyles((theme) => ({
     "courseTitle": {
@@ -27,11 +56,37 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CourseList = ({filteredCourses}) => {
+    const [openCourseQuickRegistration, setOpen] = useState(false);
+    const [quickCourseID, setQuickCourseID] = useState(null);
+    const [quickStudent, setQuickStudent] = useState("");
+    const {studentList} = JSON.parse(sessionStorage.getItem("registrations")).currentParent || false;
+    const {data, loading} = useQuery(GET_STUDENTS, {
+        "variables": {"userIds": studentList},
+        skip: !studentList
+    });
+
     const {currentParent} = getRegistrationCart();
     const {parentIsLoggedIn} = useValidateRegisteringParent();
     const {courseTitle, courseRow} = useStyles();
 
-    return <Table>
+    if (loading) return <Loading small/>;
+
+    const studentOptions = data?.userInfos.map((student) => ({
+        "label": fullName(student.user),
+        "value": student.user.id,
+    })) || [];
+
+    const handleStartQuickRegister = (courseID) => () => {
+        setOpen(true);
+        setQuickCourseID(courseID);
+    };
+
+    const handleAddRegistration = () => {
+        submitRegistration(quickStudent, quickCourseID);
+        setOpen(false);
+    }
+
+    return <> <Table>
         <TableBody>
             {
                 filteredCourses
@@ -40,11 +95,11 @@ const CourseList = ({filteredCourses}) => {
                     .map((course) => (
                         <TableRow
                             key={course.id}
-                            component={Link} to={`/registration/course/${course.id}`}
-                            className={courseRow}
                         >
                             <TableCell
                                 style={{padding: "3%"}}
+                                component={Link} to={`/registration/course/${course.id}`}
+                                className={courseRow}
                             >
                                 <Grid className={courseTitle}
                                       item md={10} xs={12}
@@ -89,11 +144,10 @@ const CourseList = ({filteredCourses}) => {
                                 </span>
 
                                 {(currentParent || parentIsLoggedIn) && (
-                                    <Button component={Link}
-                                            disabled={course.maxCapacity <= course.enrollmentSet.length}
-                                            to={`/registration/form/course/${course.id}`}
+                                    <Button disabled={course.maxCapacity <= course.enrollmentSet.length}
                                             variant="contained"
                                             color="primary"
+                                            onClick={handleStartQuickRegister(course.id)}
                                     >
                                         + REGISTER
                                     </Button>
@@ -104,6 +158,32 @@ const CourseList = ({filteredCourses}) => {
             }
         </TableBody>
     </Table>
+        <Dialog open={openCourseQuickRegistration}>
+            <DialogTitle>Which student do you want to enroll?</DialogTitle>
+            <DialogContent>
+                <FormControl fullWidth>
+                    <InputLabel id="select-student-quick-registration">Select Student</InputLabel>
+                    <Select labelId="select-student-quick-registration"
+                            variant="outlined"
+                            value={quickStudent}
+                            onChange={(event) => setQuickStudent(event.target.value)}
+                    >
+                        <MenuItem value="">Select Student</MenuItem>
+                        {
+                            studentOptions.map(({value, label}) => <MenuItem value={value} key={value}>
+                                {label}
+                            </MenuItem>)
+                        }
+                    </Select>
+                </FormControl>
+                <DialogActions>
+                    <Button onClick={handleAddRegistration}>
+                        ADD TO CART
+                    </Button>
+                </DialogActions>
+            </DialogContent>
+        </Dialog>
+    </>
 };
 
 CourseList.propTypes = {
