@@ -18,7 +18,12 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import {fullName} from "../../../utils";
 import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {closeRegistrationCart, getRegistrationCart} from "../../OmouComponents/RegistrationUtils";
+import {
+	closeRegistrationCart,
+	getRegistrationCart,
+	loadRegistrationCart,
+	setParentRegistrationCart
+} from "../../OmouComponents/RegistrationUtils";
 
 const GET_PARENTS_QUERY = gql`
 query GetParents($query: String!) {
@@ -38,12 +43,22 @@ query GetParents($query: String!) {
 }
 `;
 
-const SelectParentDialog = ({onClose, open}) => {
+const GET_REGISTRATION_CART = gql`
+query GetRegisteringCart($parent: ID!) {
+  registrationCart(parentId: $parent) {
+    registrationPreferences
+  }
+}`
+
+const SelectParentDialog = ({onClose, open, updateCartNum}) => {
 	const dispatch = useDispatch();
 	const [parent, setParent] = useState(null);
 	const [inputValue, setInputValue] = useState('');
 	const [searching, setSearching] = useState(false);
 	const {currentParent, ...registrationCartState} = getRegistrationCart();
+	const [getSavedParentCart, getSavedParentCartResult] = useLazyQuery(GET_REGISTRATION_CART, {
+		skip: !currentParent,
+	});
 
 	const [
 		getParents,
@@ -60,15 +75,28 @@ const SelectParentDialog = ({onClose, open}) => {
 		}
 	}, [currentParent, dispatch]);
 
+	useEffect(() => {
+		if (!getSavedParentCartResult.loading && getSavedParentCartResult.called) {
+			const studentRegistration = JSON.parse(getSavedParentCartResult.data.registrationCart.registrationPreferences);
+			loadRegistrationCart(studentRegistration);
+			updateCartNum(Object.values(studentRegistration).reduce((accumulator, currentStudent) => {
+				return accumulator + currentStudent.length;
+			}, 0));
+		}
+	}, [getSavedParentCartResult.loading, getSavedParentCartResult.called])
+
 	const handleClose = useCallback(() => {
 		// if there's something in the input
 		if (parent) {
 			const registeringParent = parent;
 
 			dispatch(setRegisteringParent(registeringParent));
-			sessionStorage.setItem("registrations", JSON.stringify({
-				currentParent: parent,
-			}));
+			setParentRegistrationCart(registeringParent);
+			getSavedParentCart({
+				variables: {
+					parent: registeringParent.user.id,
+				}
+			});
 
 			// Add students to redux once the registered parent has been set
 			// TODO: redo registration flow
@@ -81,7 +109,7 @@ const SelectParentDialog = ({onClose, open}) => {
 			);
 		}
 		// close the dialogue
-		onClose();
+		onClose(!!parent);
 	}, [parent, dispatch, onClose]);
 
 	const handleExitParent = useCallback(

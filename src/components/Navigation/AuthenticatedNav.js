@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, {useCallback, useState} from "react";
 import PropTypes from "prop-types";
 
 import {logout} from "actions/authActions";
@@ -19,6 +19,7 @@ import Avatar from "@material-ui/core/Avatar";
 import {stringToColor} from "../FeatureViews/Accounts/accountUtils";
 import Tooltip from "@material-ui/core/Tooltip";
 import {fullName} from "../../utils";
+import {closeRegistrationCart} from "../OmouComponents/RegistrationUtils";
 
 const AuthenticatedNav = ({ toggleDrawer }) => {
 	const dispatch = useDispatch();
@@ -34,9 +35,10 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
     }, [mobileOpen, toggleDrawer]);
 
     const handleLogout = useCallback(() => {
-        dispatch(logout());
-        history.push("/login");
-    }, [dispatch, history]);
+		closeRegistrationCart();
+		dispatch(logout());
+		history.push("/login");
+	}, [dispatch, history]);
 
     const handleMobileSearch = useCallback((searchQuery) => {
         setMobileSearching(searchQuery);
