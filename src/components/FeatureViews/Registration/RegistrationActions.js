@@ -37,7 +37,7 @@ query GetRegisteringParent($userId: ID!) {
 }
 `
 
-const RegistrationActions = () => {
+const RegistrationActions = ({updateRegisteringParent}) => {
 	const AuthUser = useSelector(({auth}) => auth);
 	const {parentIsLoggedIn} = useValidateRegisteringParent();
 	const {currentParent, ...registrationState} = getRegistrationCart();
@@ -53,13 +53,15 @@ const RegistrationActions = () => {
 		setDialog(true);
 	}, []);
 
-	const closeDialog = useCallback(() => {
+	const closeDialog = useCallback((isParentSet) => {
 		setDialog(false);
+		updateRegisteringParent(isParentSet);
 	}, []);
 
 	useEffect(() => {
 		if (parentIsLoggedIn && !loading && Object.values(registrationState).length === 0) {
 			setParentRegistrationCart(data.parent);
+			updateRegisteringParent(false);
 		}
 	}, [AuthUser.accountType, loading]);
 

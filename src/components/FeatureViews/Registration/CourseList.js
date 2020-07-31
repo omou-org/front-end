@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const CourseList = ({filteredCourses}) => {
+const CourseList = ({filteredCourses, updatedParent}) => {
     const [openCourseQuickRegistration, setOpen] = useState(false);
     const [quickCourseID, setQuickCourseID] = useState(null);
     const [quickStudent, setQuickStudent] = useState("");
@@ -142,8 +142,7 @@ const CourseList = ({filteredCourses}) => {
                                     {course.enrollmentSet.length} / {course.maxCapacity}
                                     <span className="label">Enrolled</span>
                                 </span>
-
-                                {(currentParent || parentIsLoggedIn) && (
+                                {(currentParent || parentIsLoggedIn || updatedParent) && (
                                     <Button disabled={course.maxCapacity <= course.enrollmentSet.length}
                                             variant="contained"
                                             color="primary"

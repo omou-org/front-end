@@ -56,7 +56,6 @@ const SelectParentDialog = ({onClose, open, updateCartNum}) => {
 	const [inputValue, setInputValue] = useState('');
 	const [searching, setSearching] = useState(false);
 	const {currentParent, ...registrationCartState} = getRegistrationCart();
-	console.log(currentParent)
 	const [getSavedParentCart, getSavedParentCartResult] = useLazyQuery(GET_REGISTRATION_CART, {
 		skip: !currentParent,
 	});
@@ -110,7 +109,7 @@ const SelectParentDialog = ({onClose, open, updateCartNum}) => {
 			);
 		}
 		// close the dialogue
-		onClose();
+		onClose(!!parent);
 	}, [parent, dispatch, onClose]);
 
 	const handleExitParent = useCallback(
