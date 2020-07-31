@@ -35,13 +35,13 @@ query GetRegisteringParent($userId: ID!) {
     studentList
   }
 }
-
 `
 
 const RegistrationActions = () => {
 	const AuthUser = useSelector(({auth}) => auth);
 	const {parentIsLoggedIn} = useValidateRegisteringParent();
 	const {currentParent, ...registrationState} = getRegistrationCart();
+	const [updatedRegistrationCartNum, setUpdatedRegistrationCartNum] = useState(null);
 	const [dialogOpen, setDialog] = useState(false);
 	const {data, error, loading} = useQuery(GET_PARENT_QUERY, {
 		variables: {userId: AuthUser.user.id},
@@ -68,9 +68,9 @@ const RegistrationActions = () => {
 
 	const registeringParent = data?.parent || currentParent;
 
-	const parentName = fullName(registeringParent.user);
+	const parentName = registeringParent && fullName(registeringParent.user);
 
-	const numberOfRegistrationsInCart = Object.values(registrationState).reduce((accumulator, currentStudent) => {
+	const numberOfRegistrationsInCart = updatedRegistrationCartNum || Object.values(registrationState).reduce((accumulator, currentStudent) => {
 		return accumulator + currentStudent.length;
 	}, 0);
 
@@ -88,7 +88,7 @@ const RegistrationActions = () => {
 				justify="flex-start"
 			>
 				<Grid item md={8}>
-					{currentParent && (
+					{(currentParent || parentIsLoggedIn) && (
 						<Grid item xs={2}>
 							<Button
 								aria-controls="simple-menu"
@@ -125,7 +125,10 @@ const RegistrationActions = () => {
 					)}
 				</Grid>
 				<Grid item xs={2}>
-					<IconButton onClick={toShoppingCart}>
+					<IconButton
+						onClick={toShoppingCart}
+						disabled={numberOfRegistrationsInCart === 0}
+					>
 						<Badge
 							badgeContent={numberOfRegistrationsInCart}
 							color="primary"
@@ -140,7 +143,7 @@ const RegistrationActions = () => {
 					</IconButton>
 				</Grid>
 			</Grid>
-			<SelectParentDialog onClose={closeDialog} open={dialogOpen}/>
+			<SelectParentDialog onClose={closeDialog} open={dialogOpen} updateCartNum={setUpdatedRegistrationCartNum}/>
 		</>
 	);
 };

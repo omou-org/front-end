@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {getRegistrationCart, useValidateRegisteringParent} from "../../../OmouComponents/RegistrationUtils";
 import gql from "graphql-tag";
-import {useQuery} from "@apollo/react-hooks";
+import {useMutation, useQuery} from "@apollo/react-hooks";
 import Loading from "../../../OmouComponents/Loading";
 import BackgroundPaper from "../../../OmouComponents/BackgroundPaper";
 import Grid from "@material-ui/core/Grid";
@@ -22,6 +22,7 @@ import Box from "@material-ui/core/Box";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import {Link} from "react-router-dom";
 
 const GET_STUDENT_INFOS = gql`
 	query GetStudentInfos($userIds: [ID]!) {
@@ -64,6 +65,17 @@ const GET_COURSES_TO_REGISTER = gql`
 	}
 `;
 
+const CREATE_REGISTRATION_CART = gql`
+mutation CreateRegisteringCart($parent: ID!, $registrationPreferences:String) {
+  createRegistrationCart(parent: $parent, 
+    registrationPreferences: $registrationPreferences) {
+    registrationCart {
+      id
+      registrationPreferences
+    }
+  }
+}`
+
 export default function RegistrationCartContainer() {
 	const {currentParent, ...registrationCartState} = getRegistrationCart();
 	const [registrationCart, setRegistrationCart] = useState({});
@@ -72,15 +84,23 @@ export default function RegistrationCartContainer() {
 	const [parentRegistrationConfirmation, setParentConfirmation] = useState(false);
 	const {parentIsLoggedIn} = useValidateRegisteringParent();
 	// create list of students to fetch
-	const studentIds = Object.keys(registrationCartState);
+	const studentIds = (Object.keys(registrationCartState).length > 0 && Object.keys(registrationCartState)) ||
+		currentParent.studentList;
 	// create list of courses to fetch
 	const courseIds = [].concat.apply([], Object.values(registrationCartState))
 		.map(({course}) => course.id);
 	const {data, loading} = useQuery(GET_STUDENT_INFOS, {variables: {userIds: studentIds}});
 	const coursesResponse = useQuery(GET_COURSES_TO_REGISTER, {variables: {courseIds: courseIds}});
+	const [createRegistrationCart, createRegistrationCartResponse] = useMutation(CREATE_REGISTRATION_CART, {
+		variables: {parent: currentParent.user.id},
+		onCompleted: () => {
+			setParentConfirmation(true);
+		},
+		onError: (error) => console.error(error.message),
+	});
 
 	useEffect(() => {
-		if (!coursesResponse.loading) {
+		if (!coursesResponse.loading && Object.values(registrationCartState).length > 0) {
 			const courseData = coursesResponse.data.courses;
 			setRegistrationCart(() => {
 				let registrationCart = {};
@@ -126,7 +146,11 @@ export default function RegistrationCartContainer() {
 		if (!reviewConfirmationCheck) {
 			setReviewError(true);
 		} else {
-			setParentConfirmation(true);
+			createRegistrationCart({
+				variables: {
+					registrationPreferences: JSON.stringify(registrationCartState),
+				}
+			})
 		}
 	}
 
@@ -192,7 +216,7 @@ export default function RegistrationCartContainer() {
 										variant="contained"
 										color="primary"
 									>
-										SUBMIT REQUEST
+										SAVE REGISTRATION CART
 									</Button>
 								</Grid>
 							</>
@@ -210,7 +234,7 @@ export default function RegistrationCartContainer() {
 							<Grid item>
 								<Typography color="primary" align="center"
 											style={{fontSize: "1.2em", fontWeight: 500, padding: "15px"}}>
-									Request Submitted
+									Request Saved
 								</Typography>
 							</Grid>
 						</Grid>
@@ -230,10 +254,16 @@ export default function RegistrationCartContainer() {
 						</Typography>
 					</DialogContent>
 					<DialogActions>
-						<Button variant="outlined">
+						<Button variant="outlined"
+								component={Link}
+								to="/registration"
+						>
 							DONE
 						</Button>
-						<Button variant="contained" color="primary">
+						<Button variant="contained" color="primary"
+								component={Link}
+								to="/my-payments"
+						>
 							VIEW INVOICE
 						</Button>
 					</DialogActions>

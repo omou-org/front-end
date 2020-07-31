@@ -1,7 +1,6 @@
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import PropTypes from "prop-types";
-import {useSelector} from "react-redux";
 
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -12,9 +11,10 @@ import Moment from "react-moment";
 import {fullName} from "utils";
 import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
-import {useValidateRegisteringParent} from "../../OmouComponents/RegistrationUtils";
+import {getRegistrationCart, useValidateRegisteringParent} from "../../OmouComponents/RegistrationUtils";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
     "courseTitle": {
@@ -27,9 +27,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CourseList = ({filteredCourses}) => {
-    const currentParent = useSelector(
-        ({Registration}) => Registration.CurrentParent,
-    );
+    const {currentParent} = getRegistrationCart();
     const {parentIsLoggedIn} = useValidateRegisteringParent();
     const {courseTitle, courseRow} = useStyles();
 
@@ -37,7 +35,8 @@ const CourseList = ({filteredCourses}) => {
         <TableBody>
             {
                 filteredCourses
-                    .filter(({courseType}) => courseType === "CLASS")
+                    .filter(({courseType, endDate}) => (courseType === "CLASS") &&
+                        moment().diff(moment(endDate), 'days') < 0)
                     .map((course) => (
                         <TableRow
                             key={course.id}

@@ -1,5 +1,5 @@
 import * as moment from "moment";
-import {arraysMatch} from "../../utils";
+import {arraysMatch, USER_TYPES} from "../../utils";
 import {useSelector} from "react-redux";
 
 export const createTutoringDetails = (courseType, formData) => ({
@@ -67,10 +67,30 @@ export const removeRegistration = (student, course) => {
 }
 
 /**
+ * @description returns boolean of if the current logged in user is the parent registering
+ * */
+export const useValidateRegisteringParent = () => {
+	const AuthUser = useSelector(({auth}) => auth);
+	const {currentParent} = getRegistrationCart();
+	return {parentIsLoggedIn: AuthUser?.user.id == currentParent?.user.id || AuthUser.accountType === USER_TYPES.parent};
+}
+
+/**
  * @description this will close and clear out the registration cart including the registering parent
  * */
-export const closeRegistrationCart = () => {
-	sessionStorage.setItem("registrations", "{}");
+export const closeRegistrationCart = (AuthParent) => {
+	if (AuthParent) {
+		let registrationState = JSON.parse(sessionStorage.getItem("registrations"));
+		Object.entries(registrationState).forEach(([key, _]) => {
+			if (key !== "currentParent") {
+				delete registrationState[key];
+			}
+		});
+		console.log(registrationState);
+		sessionStorage.setItem("registrations", JSON.stringify(registrationState));
+	} else {
+		sessionStorage.setItem("registrations", "{}");
+	}
 };
 
 /**
@@ -91,10 +111,12 @@ export const setParentRegistrationCart = (parent) => sessionStorage.setItem("reg
 }));
 
 /**
- * @description returns boolean of if the current logged in user is the parent registering
+ * @description loads passed in registration cart to registration state in session storage
  * */
-export const useValidateRegisteringParent = () => {
-	const AuthUser = useSelector(({auth}) => auth);
-	const {currentParent} = getRegistrationCart();
-	return {parentIsLoggedIn: AuthUser.user.id == currentParent.user.id};
+export const loadRegistrationCart = (prevRegistration) => {
+	const registrationState = JSON.parse(sessionStorage.getItem("registrations"));
+	sessionStorage.setItem("registrations", JSON.stringify({
+		...registrationState,
+		...prevRegistration,
+	}));
 }
