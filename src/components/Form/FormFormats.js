@@ -677,8 +677,32 @@ export default {
         "title": "Parent",
         "form": [PARENT_FIELDS],
         // TODO: loading and submitting with GraphQL
-        "load": (id) => {},
-        "submit": async (dispatch, formData, id) => {},
+        "load": (id) => {
+        },
+        "submit": async (formData) => {
+            const CREATE_PARENT = gql`
+            mutation CreateParentAccount($firstName: String!, $lastName: String!, $email: String!, $password: String!, $phoneNumber: String) {
+                createParent(user: {firstName: $firstName, lastName: $lastName, email: $email, password: $password}, phoneNumber: $phoneNumber) {
+                    parent {
+                        accountType
+                    }
+                }
+            }`;
+            try {
+                await client.mutate({
+                    "mutation": CREATE_PARENT,
+                    "variables": {
+                        ...formData.parent,
+                        password: "change this password",
+                    },
+                });
+
+            } catch (error) {
+                return {
+                    [FORM_ERROR]: error,
+                };
+            }
+        }
     },
     "admin": {
         "title": "Administrator",
