@@ -22,7 +22,7 @@ const useStyles = makeStyles({
 
 const Studentenrollment = ({enrollmentList}) => {
     const classes = useStyles();
-    // console.log(enrollmentCell);
+    // console.log(enrollmentList);
 
     return (
         <Grid item xs={12}>

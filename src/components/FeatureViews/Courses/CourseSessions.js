@@ -1,44 +1,132 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import React, { useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import ImageIcon from '@material-ui/icons/Image';
-import WorkIcon from '@material-ui/icons/Work';
-import BeachAccessIcon from '@material-ui/icons/BeachAccess';
+import Grid from "@material-ui/core/Grid";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import Avatar from "@material-ui/core/Avatar";
+import ImageIcon from "@material-ui/icons/Image";
+import WorkIcon from "@material-ui/icons/Work";
+import BeachAccessIcon from "@material-ui/icons/BeachAccess";
+import Button from "@material-ui/core/Button";
+import { BootstrapInput } from "./CourseManagement";
+import CourseListOptions from "./CourseListOptions";
 import moment from "moment";
+import { highlightColor } from "../../../theme/muiTheme";
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-      width: '100%',
-      minWidth: 1460,
-      backgroundColor: theme.palette.background.paper,
-    },
-    listItems: {
-      paddingTop: "3em",
-      paddingBottom: "1em",
-    }
-  }));
+  root: {
+    width: "100%",
+    minWidth: 1460,
+    backgroundColor: theme.palette.background.paper,
+  },
+  listItems: {
+    paddingTop: "3em",
+    paddingBottom: "1em",
+  },
+  margin: {
+    float: "left",
+    marginTop: "2em",
+    marginBottom: "2em"
+  },
+  menuSelected: {
+    "&:hover": { backgroundColor: highlightColor, color: "#28ABD5" },
+    "&:focus": { backgroundColor: highlightColor },
+  },
+  menuSelect: {
+    backgroundColor: `${highlightColor} !important`,
+  },
+  dropdown: {
+    border: "1px solid #43B5D9",
+    borderRadius: "5px",
+  },
+  newNoteButton: {
+    marginBottom: "2em",
+    border: "1px solid #999999",
+    borderRadius: "5px",
+    fontSize: ".75rem",
+    fontWeight: 300,
+    fontFamily: "Roboto",
+    height: "2.5em",
+  },
+  plusSpan: {
+    fontSize: "1rem",
+    fontWeight: 500,
+    color: "#666666",
+    paddingRight: ".25em",
+  },
+}));
 
 const CourseSessions = ({ sessionList }) => {
-    const classes = useStyles();
-    return (
-            <List className={classes.root}>
-      {sessionList.map(({ startDatetime }, index) => {
-        const startingDate = moment(startDatetime).calendar();
-        return(
-            <>
-        <ListItem className={classes.listItems} key={index}>
-        <ListItemText primary={`Session ${index + 1} (${startingDate})`} />
-      </ListItem>
-      <Divider />
-      </>
-    )})}
-    </List>
-    )
+  const classes = useStyles();
+  const [sortBySession, setSortBySession] = useState("");
+  // console.log(sessionList);
+
+  const handleChange = (e) => {
+    setSortBySession(e.target.value);
+  };
+  
+  console.log(sortBySession);
+  return (
+    <>
+      <Grid container justify="flex-start">
+        <Grid item xs={12}>
+          <FormControl className={classes.margin}>
+            <Select
+              labelId="session-sort-tab"
+              id="session-sort-tab"
+              displayEmpty
+              value={sortBySession}
+              onChange={handleChange}
+              classes={{ select: classes.menuSelected }}
+              input={<BootstrapInput />}
+              MenuProps={{
+                classes: { list: classes.dropdown },
+                anchorOrigin: {
+                  vertical: "bottom",
+                  horizontal: "left",
+                },
+                transformOrigin: {
+                  vertical: "top",
+                  horizontal: "left",
+                },
+                getContentAnchorEl: null,
+              }}
+            >
+              {sortBySession === "" && (
+                <MenuItem
+                  ListItemClasses={{ selected: classes.menuSelect }}
+                  value=""
+                >
+                  Select Session...
+                </MenuItem>
+              )}
+              {sessionList.map(({ startDatetime, id }, index) => {
+                const startingDate = moment(startDatetime).calendar();
+                return (
+                  <MenuItem
+                    key={index}
+                    className={classes.menuSelected}
+                    value={id}
+                    ListItemClasses={{ selected: classes.menuSelect }}
+                  >
+                    {startingDate}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Button className={classes.newNoteButton}><span className={classes.plusSpan}>+</span> New Note</Button>
+        {sortBySession === "" ? null : <CourseListOptions sessionId={sortBySession}/> }
+      </Grid>
+    </>
+  );
 };
 
 export default CourseSessions;

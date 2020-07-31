@@ -21,7 +21,7 @@ import { fullName } from "../../../utils";
 import moment from "moment";
 import { highlightColor } from "../../../theme/muiTheme";
 
-const BootstrapInput = withStyles((theme) => ({
+export const BootstrapInput = withStyles((theme) => ({
   root: {
     "label + &": {
       marginTop: theme.spacing(3),

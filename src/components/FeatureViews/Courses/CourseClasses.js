@@ -108,6 +108,7 @@ const CourseClasses = () => {
         }
         sessionSet {
           startDatetime
+          id
         }
       }
       announcements(courseId: $id) {
