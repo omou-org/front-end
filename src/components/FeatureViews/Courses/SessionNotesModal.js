@@ -99,7 +99,7 @@ const SessionNotesModal = ({ open, handleCloseForm }) => {
           rows={12}
         />
       </DialogContent>
-      <DialogActions>
+      <DialogActions style={{marginBottom: "2em"}}>
         <Button className={classes.cancelButton} onClick={handleClose}>
           Cancel
         </Button>

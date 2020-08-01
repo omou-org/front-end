@@ -262,7 +262,7 @@ const handleBodyChange = useCallback((event) => {
         label={<Typography className={classes.checkboxLabel}>Send as SMS to parents of students enrolled in class</Typography>}
       />
     </FormGroup>
-    <DialogActions>
+    <DialogActions style={{marginBottom: "2em"}}>
       <Button className={classes.cancelButton} onClick={handleCloseForm}>
         Cancel
       </Button>
