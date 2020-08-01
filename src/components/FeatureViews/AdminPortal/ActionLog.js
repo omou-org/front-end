@@ -19,10 +19,11 @@ import Select from '@material-ui/core/Select';
 import Checkbox from "@material-ui/core/Checkbox";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import { makeStyles } from "@material-ui/core/styles";
-
+import SwapVertIcon from '@material-ui/icons/SwapVert';
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import { set } from "date-fns";
+import { DateRange } from "react-date-range";
 
 const GET_ADMINS = gql`
     query GetAdmins {
@@ -40,8 +41,8 @@ const GET_ADMINS = gql`
 `
 
 const GET_LOGS = gql`
-    query GetLogs {
-        logs {
+    query GetLogs ($action: String!,$adminType: String!, $page: Int!, $pageSize: Int!, $sort: String!, $objectType: String! $userId:ID!){
+        logs(action:$action, adminType: $adminType, page: $page, pageSize: $pageSize, sort: $sort, objectType: $objectType, userId: $userId){
             results {
                 date
                 userId
@@ -69,22 +70,47 @@ const useStyles = makeStyles({
 });
 
 const ActionLog = () => {
-    //const { data, loading } = useQuery(GET_LOGS);
-
-
     const classes = useStyles();
-    const [userType, setUserType] = useState("");
+    const [logData, setLogData] = useState(null);
+    const [userType, setUserType] = useState(null);
     const [adminType, setAdminType] = useState("");
     const [actionType, setActionType] = useState("");
     const [objectType, setObjectType] = useState("");
+    const [currentId, setCurrentId] = useState();
+    const [currentSort, setCurrentSort] = useState({
+        "sort": "",
+        "clicked": false,
+    });
+    const [currentFilter, setCurrentFilter] = useState({
+        action: "",
+    })
     const [fetchAdmins] = useLazyQuery(GET_ADMINS, {
         "onCompleted": (data) => {
-            setUserOptions(data.admins)
-            console.log(data.admins);
+            setUserOptions(data.admins);
         },
     });
-    const [userOptions, setUserOptions] = useState([{ user: { firstName: "", lastName: "", id: "-1" } }])
+    const [logs] = useLazyQuery(GET_LOGS, {
+        variables:
+        {
+            action: actionType.toLowerCase(),
+            adminType: "",
+            endDateTime: "",
+            page: 0,
+            pageSize: 10,
+            startDateTime: "",
+            sort: currentSort.sort,
+            objectType: objectType.toLowerCase(),
+            userId: "",
+        },
+        "onCompleted": (data) => {
+            setLogData(data);
+            console.log(data);
+        },
+    });
+    const [userOptions, setUserOptions] = useState(null)
     console.log(userOptions);
+    console.log(actionType);
+    console.log(currentId);
     const adminOptions = ["Owner", "Receptionist", "Assistant"];
     const actionOptions = ["Add", "Edit", "Delete"]
     const objectOptions = ["Student", "Admin", "Parent", "Instructor", "Payment", "Registration", "Tutoring", "Course", "Discount", "Price Rules"]
@@ -126,6 +152,11 @@ const ActionLog = () => {
         ],
         "total": 4
     }
+
+    useEffect(() => {
+        logs()
+    }, [])
+
     useEffect(() => {
         fetchAdmins()
     }, [])
@@ -141,232 +172,298 @@ const ActionLog = () => {
         }
     }
 
-    const handleSelection = (event) => {
+    const handleAdminSelection = (event) => {
         const value = event.target.value;
-        console.log(event);
-        if (adminOptions.indexOf(value) > -1) {
-            setAdminType(value);
-        }
-        if (actionOptions.indexOf(value) > -1) {
+        setAdminType(value);
+    }
+    const handleObjectSelection = (event) => {
+        const value = event.target.value;
+        setObjectType(value);
+    }
+    const handleUserSelection = (event) => {
+        
+            logData && logData.logs.results.map((actionItem) => {
+                
+                    userOptions && userOptions.map((userType) => {
+                        if (userType.user.id == actionItem.userId && `${userType.user.firstName} ${userType.user.lastName}` === event.target.value) {
+                            setCurrentId(userType.user.id);
+                            setUserType(event.target.value)
+                        }
+                    })
+                
+            }
+            )
+    }
+        console.log(userOptions);
+        const handleActionSelection = (event) => {
+            const value = event.target.value;
             setActionType(value);
         }
-        if (objectOptions.indexOf(value) > -1) {
-            setObjectType(value);
-        }
-        if (userOptions.indexOf(value) > -1) {
-            setUserType(value);
-        }
-    }
 
-    const resetFilters = () => {
-        setAdminType("");
-        setActionType("");
-        setObjectType("");
-        setUserType("");
-    }
+        const resetFilters = () => {
+            setAdminType("");
+            setActionType("");
+            setObjectType("");
+            setUserType("");
+            setCurrentSort({
+                "sort": "",
+                "clicked": false,
+            });
+        }
 
-    console.log(Object.values(testData.results))
-    console.log(testData.results);
-    return (
-        <>
-            <div style={{ textAlign: "right", padding: 0 }}>
-                <Button onClick={resetFilters}>
-                    Reset All Filters
+        console.log(Object.values(testData.results))
+        console.log(logData);
+        console.log(currentSort);
+        console.log(userType);
+
+        const handleActionSort = () => {
+            currentSort.clicked ? setCurrentSort({ "sort": "action_desc", "clicked": !currentSort.clicked }) : setCurrentSort({ "sort": "action_asc", "clicked": !currentSort.clicked })
+        }
+        const handleObjectSort = () => {
+            currentSort.clicked ? setCurrentSort({ "sort": "object_desc", "clicked": !currentSort.clicked }) : setCurrentSort({ "sort": "action_asc", "clicked": !currentSort.clicked })
+        }
+        const handleUserSort = () => {
+            currentSort.clicked ? setCurrentSort({ "sort": "user_desc", "clicked": !currentSort.clicked }) : setCurrentSort({ "sort": "user_asc", "clicked": !currentSort.clicked })
+        }
+
+        return (
+            <>
+                <div style={{ textAlign: "right", padding: 0 }}>
+                    <Button onClick={resetFilters}>
+                        Reset All Filters
                 </Button>
-            </div>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell style={{ width: 250 }}>
-                            <Grid container>
-                                <Grid>
-                                    Timestamp
+                </div>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell style={{ width: 250 }}>
+                                <Grid container>
+                                    <Grid>
+                                        Timestamp
                                 </Grid>
-                            </Grid>
-                            <Grid container >
+                                    <Grid>
+                                        <SwapVertIcon onClick={() => console.log("asd")} style={{ color: "grey" }} />
+                                    </Grid>
+                                </Grid>
+                                <Grid container >
+                                    <Grid>
+                                        From <TextField
+                                            variant="outlined"
+                                            inputProps={{
+                                                style: {
+                                                    padding: 5
+                                                }
+                                            }}
+                                            style={{ paddingLeft: 5, paddingRight: 5, width: 80 }} />
+                                    </Grid>
+                                    <Grid>
+                                        To <TextField
+                                            variant="outlined"
+                                            inputProps={{
+                                                style: {
+                                                    padding: 5
+                                                }
+                                            }}
+                                            style={{ paddingLeft: 5, width: 80 }} />
+                                    </Grid>
+                                </Grid>
+                            </TableCell>
+                            <TableCell style={{ width: 150 }}>
+                                <Grid container>
+                                    <Grid>
+                                        User
+                                </Grid>
+                                    <Grid>
+                                        <SwapVertIcon onClick={handleUserSort} style={{ color: "grey" }} />
+                                    </Grid>
+                                </Grid>
                                 <Grid>
-                                    From <TextField
+                                    <FormControl
                                         variant="outlined"
-                                        inputProps={{
-                                            style: {
-                                                padding: 5
-                                            }
-                                        }}
-                                        style={{ paddingLeft: 5, paddingRight: 5, width: 80 }} />
+                                    >
+                                        <InputLabel shrink={false} style={{ lineHeight: "5px" }} margin="dense" >{userType ? "" : "User Type"}</InputLabel>
+                                        <Select
+                                            id="select"
+                                            labelId="label"
+                                            value={userType}
+                                            onChange={handleUserSelection}
+                                            style={{ width: 150 }}
+                                            classes={{
+                                                outlined: classes.outlined,
+                                                root: classes.root,
+                                                "MuiInputBase-input": classes.MuiInputBase
+                                            }}
+                                        >
+                                            {userOptions && userOptions.map((userType) =>
+                                                (<MenuItem key={userType} value={userType}>
+                                                    {userType.user.firstName} {userType.user.lastName}
+                                                </MenuItem>
+                                                )
+                                            )}
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                            </TableCell>
+                            <TableCell style={{ width: 130 }}>
+                                <Grid container>
+                                    <Grid>
+                                        Admin Type
+                                </Grid>
+                                    <Grid>
+                                        <SwapVertIcon onClick={() => console.log("asd")} style={{ color: "grey" }} />
+                                    </Grid>
                                 </Grid>
                                 <Grid>
-                                    To <TextField
+                                    <FormControl
                                         variant="outlined"
-                                        inputProps={{
-                                            style: {
-                                                padding: 5
-                                            }
-                                        }}
-                                        style={{ paddingLeft: 5, width: 80 }} />
+                                    >
+                                        <InputLabel shrink={false} id="label" style={{ lineHeight: "5px" }} margin="dense" >{adminType ? "" : "Profile Type"}</InputLabel>
+                                        <Select
+                                            id="select"
+                                            labelId="label"
+                                            value={adminType}
+                                            onChange={handleAdminSelection}
+                                            style={{ width: 130 }}
+                                            classes={{
+                                                outlined: classes.outlined,
+                                                root: classes.root,
+                                                "MuiInputBase-input": classes.MuiInputBase
+                                            }}
+                                        >
+                                            {adminOptions.map((adminType) =>
+                                                (<MenuItem key={adminType} value={adminType}>
+                                                    {adminType}
+                                                </MenuItem>)
+                                            )}
+                                        </Select>
+                                    </FormControl>
                                 </Grid>
-                            </Grid>
-                        </TableCell>
-                        <TableCell style={{ width: 150 }}>
-                            User
-                            <Grid>
-                                <FormControl
-                                    variant="outlined"
-                                >
-                                    <InputLabel shrink={false} style={{ lineHeight: "5px" }} margin="dense" >{userType ? "" : "User Type"}</InputLabel>
-                                    <Select
-                                        id="select"
-                                        labelId="label"
-                                        value={userType}
-                                        onChange={handleSelection}
-                                        style={{ width: 150 }}
-                                        classes={{
-                                            outlined: classes.outlined,
-                                            root: classes.root,
-                                            "MuiInputBase-input": classes.MuiInputBase
-                                        }}
+                            </TableCell>
+                            <TableCell style={{ width: 130 }}>
+                                <Grid container>
+                                    <Grid>
+                                        Action
+                                </Grid>
+                                    <Grid>
+                                        <SwapVertIcon onClick={handleActionSort} style={{ color: "grey" }} />
+                                    </Grid>
+                                </Grid>
+                                <Grid>
+                                    <FormControl
+                                        variant="outlined"
                                     >
-                                        {userOptions.map((userType) =>
-                                            (<MenuItem key={userType} value={userType}>
-                                                {userType.user.firstName} {userType.user.lastName}
-                                            </MenuItem>
-                                            )
-                                        )}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                        </TableCell>
-                        <TableCell style={{ width: 130 }}>
-                            Admin Type
-                            <Grid>
-                                <FormControl
-                                    variant="outlined"
-                                >
-                                    <InputLabel shrink={false} id="label" style={{ lineHeight: "5px" }} margin="dense" >{adminType ? "" : "Profile Type"}</InputLabel>
-                                    <Select
-                                        id="select"
-                                        labelId="label"
-                                        value={adminType}
-                                        onChange={handleSelection}
-                                        style={{ width: 130 }}
-                                        classes={{
-                                            outlined: classes.outlined,
-                                            root: classes.root,
-                                            "MuiInputBase-input": classes.MuiInputBase
-                                        }}
+                                        <InputLabel shrink={false} style={{ lineHeight: "5px" }} margin="dense" >{actionType ? "" : "Action Type"}</InputLabel>
+                                        <Select
+                                            id="select"
+                                            labelId="label"
+                                            value={actionType}
+                                            onChange={handleActionSelection}
+                                            style={{ width: 130 }}
+                                            classes={{
+                                                outlined: classes.outlined,
+                                                root: classes.root,
+                                                "MuiInputBase-input": classes.MuiInputBase
+                                            }}
+                                        >
+                                            {actionOptions.map((actionType) =>
+                                                (<MenuItem key={actionType} value={actionType}>
+                                                    {actionType}
+                                                </MenuItem>)
+                                            )}
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                            </TableCell>
+                            <TableCell style={{ width: 115 }}>
+                                <Grid container>
+                                    <Grid>
+                                        Object
+                                </Grid>
+                                    <Grid>
+                                        <SwapVertIcon onClick={handleObjectSort} style={{ color: "grey" }} />
+                                    </Grid>
+                                </Grid>
+                                <Grid>
+                                    <FormControl
+                                        variant="outlined"
                                     >
-                                        {adminOptions.map((adminType) =>
-                                            (<MenuItem key={adminType} value={adminType}>
-                                                {adminType}
-                                            </MenuItem>)
-                                        )}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                        </TableCell>
-                        <TableCell style={{ width: 130 }}>
-                            Action
-                            <Grid>
-                                <FormControl
-                                    variant="outlined"
-                                >
-                                    <InputLabel shrink={false} style={{ lineHeight: "5px" }} margin="dense" >{actionType ? "" : "Action Type"}</InputLabel>
-                                    <Select
-                                        id="select"
-                                        labelId="label"
-                                        value={actionType}
-                                        onChange={handleSelection}
-                                        style={{ width: 130 }}
-                                        classes={{
-                                            outlined: classes.outlined,
-                                            root: classes.root,
-                                            "MuiInputBase-input": classes.MuiInputBase
-                                        }}
-                                    >
-                                        {actionOptions.map((actionType) =>
-                                            (<MenuItem key={actionType} value={actionType}>
-                                                {actionType}
-                                            </MenuItem>)
-                                        )}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                        </TableCell>
-                        <TableCell style={{ width: 115 }}>
-                            Object
-                            <Grid>
-                                <FormControl
-                                    variant="outlined"
-                                >
-                                    <InputLabel shrink={false} style={{ lineHeight: "5px" }} margin="dense" >{objectType ? "" : "Object Type"}</InputLabel>
-                                    <Select
-                                        id="select"
-                                        labelId="label"
-                                        value={objectType}
-                                        onChange={handleSelection}
-                                        style={{ width: 130 }}
-                                        classes={{
-                                            outlined: classes.outlined,
-                                            root: classes.root,
-                                            "MuiInputBase-input": classes.MuiInputBase
-                                        }}
-                                    >
-                                        {objectOptions.map((objectType) =>
-                                            (<MenuItem key={objectType} value={objectType}>
-                                                {objectType}
-                                            </MenuItem>)
-                                        )}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                        </TableCell>
-                        <TableCell>
-                            Details
-                            <Grid>
-                                <br />
-                            </Grid>
-                        </TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {testData.results.map((actionItem) => {
-                        return (
-                            <TableRow>
-                                <TableCell>
-                                    <Moment
-                                        date={actionItem.date}
-                                        format="dddd, M/D/YYYY h:mm a"
-                                    />
-                                </TableCell>
-                                <TableCell>
-                                    {userOptions.map((userType) => {
-                                        if (userType.user.id == actionItem.userId) {
-                                            return (`${userType.user.firstName} ${userType.user.lastName}`)
-                                        }
-                                    })}
-                                </TableCell>
-                                <TableCell>
-                                    <div style={{ textTransform: "capitalize" }}>
-                                        {actionItem.adminType.toLowerCase()}
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    {renderChip(actionItem.action)}
-                                </TableCell>
-                                <TableCell>
-                                    <div style={{ textTransform: "capitalize" }}>
-                                        {actionItem.objectType}
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    {actionItem.objectRepr}
-                                </TableCell>
-                            </TableRow>
-                        )
-                    })}
-                </TableBody>
-            </Table>
-        </>)
-}
-ActionLog.propTypes = {}
+                                        <InputLabel shrink={false} style={{ lineHeight: "5px" }} margin="dense" >{objectType ? "" : "Object Type"}</InputLabel>
+                                        <Select
+                                            id="select"
+                                            labelId="label"
+                                            value={objectType}
+                                            onChange={handleObjectSelection}
+                                            style={{ width: 130 }}
+                                            classes={{
+                                                outlined: classes.outlined,
+                                                root: classes.root,
+                                                "MuiInputBase-input": classes.MuiInputBase
+                                            }}
+                                        >
+                                            {objectOptions.map((objectType) =>
+                                                (<MenuItem key={objectType} value={objectType}>
+                                                    {objectType}
+                                                </MenuItem>)
+                                            )}
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                            </TableCell>
+                            <TableCell>
+                                <Grid container>
+                                    <Grid>
+                                        Details
+                                </Grid>
+                                    <Grid>
+                                        <SwapVertIcon onClick={() => console.log("asd")} style={{ color: "grey" }} />
+                                    </Grid>
+                                </Grid>
+                                <Grid>
+                                    <br />
+                                </Grid>
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {logData && logData.logs.results.map((actionItem) => {
+                            return (
+                                <TableRow>
+                                    <TableCell>
+                                        <Moment
+                                            date={actionItem.date}
+                                            format="dddd, M/D/YYYY h:mm a"
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        {userOptions && userOptions.map((userType) => {
+                                            if (userType.user.id == actionItem.userId) {
+                                                return (`${userType.user.firstName} ${userType.user.lastName} #${actionItem.userId}`)
+                                            }
+                                        })}
+                                    </TableCell>
+                                    <TableCell>
+                                        <div style={{ textTransform: "capitalize" }}>
+                                            {actionItem.adminType.toLowerCase()}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        {renderChip(actionItem.action)}
+                                    </TableCell>
+                                    <TableCell>
+                                        <div style={{ textTransform: "capitalize" }}>
+                                            {actionItem.objectType}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        {actionItem.objectRepr}
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        })}
+                    </TableBody>
+                </Table>
+            </>)
+    }
+    ActionLog.propTypes = {}
 
-export default ActionLog;
+    export default ActionLog;

@@ -60,6 +60,7 @@ export default function RegistrationCartContainer() {
 	// create list of courses to fetch
 	const courseIds = [].concat.apply([], Object.values(registrationCartState))
 		.map(({ course }) => course.id);
+		console.log(studentIds);
 	const { data, loading } = useQuery(GET_STUDENT_INFOS, { variables: { userIds: studentIds } });
 	const coursesResponse = useQuery(GET_COURSES_TO_REGISTER, { variables: { courseIds: courseIds } });
 
