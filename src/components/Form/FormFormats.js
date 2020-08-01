@@ -649,13 +649,6 @@ export default {
     }`;
 
             try {
-                const {"data": {userInfo}} = await client.query({
-                    "query": GET_USER_TYPE,
-                    "variables": {id},
-                });
-                if (userInfo.accountType === "STUDENT") {
-                    student.id = id;
-                }
                 await client.mutate({
                     "mutation": ADD_STUDENT,
                     "variables": {
