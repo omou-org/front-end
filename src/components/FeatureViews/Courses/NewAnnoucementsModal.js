@@ -11,9 +11,11 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DoneIcon from "@material-ui/icons/CheckCircleOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
+import CheckBoxIcon from "@material-ui/icons/CheckBox"
 import FormGroup from "@material-ui/core/FormGroup"
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutlineBlankOutlined';
 import Grid from "@material-ui/core/Grid";
 import Input from "@material-ui/core/Input";
 import InputBase from "@material-ui/core/InputBase";
@@ -71,12 +73,30 @@ const useStyles = makeStyles((theme) => ({
     marginRight: "4em",
   },
   textArea: {
-    padding: "56px 56px 120px 56px",
+    padding: "56px 56px 24px 56px",
   },
   subjectUnderline: {
      marginBottom: ".75em", 
      borderBottom: "1px solid #666666",
      paddingRight: "3em" 
+  },
+  buttonGroup: {
+    marginLeft: "5em",
+    marginBottom: "3.5em"
+  },
+  checkboxLabel: {
+    fontFamily: "Roboto",
+    fontWeight: "normal",
+    fontSize: ".875rem",
+    color: "#333333",
+  },
+  checkBox: {
+    color: omouBlue,
+  },
+  checkBoxPseudo: {
+    "&:hover": {
+      color: omouBlue
+    },
   },
 }));
 
@@ -84,6 +104,7 @@ const useStyles = makeStyles((theme) => ({
 const NewAnnouncementsModal = ({ handleClose, open, subject, body, userId }) => {
   const classes = useStyles();
   const [sendEmailCheckbox, setSendEmailCheckbox] = useState(false);
+  const [sendSMSCheckbox, setSendSMSCheckbox] = useState(false);
   const [announcementBody, setAnnouncementBody] = useState(body);
   const [announcementSubject, setAnnouncementSubject] = useState(subject);
   const id = useParams();
@@ -156,7 +177,7 @@ const NewAnnouncementsModal = ({ handleClose, open, subject, body, userId }) => 
     handleClose(false);
   };
 
-  const handleCheckboxChange = e => setSendEmailCheckbox(e.target.checked)
+  const handleCheckboxChange = setCheckbox => e => setCheckbox(e.target.checked)
 
   const handleSubjectChange = useCallback((event) => {
     setAnnouncementSubject(event.target.value);
@@ -179,6 +200,7 @@ const handleBodyChange = useCallback((event) => {
           });
          handleClose(false);
   };
+  
   return (
     <Dialog
     PaperProps={{ classes: { root: classes.rootContainer }, square: true }}
@@ -209,6 +231,37 @@ const handleBodyChange = useCallback((event) => {
         rows={12}
       />
     </DialogContent>
+    <FormGroup className={classes.buttonGroup}>
+    <FormControlLabel
+      style={{fontSize: ".5rem"}}
+        control={
+          <Checkbox
+            checked={sendEmailCheckbox}
+            onChange={handleCheckboxChange(setSendEmailCheckbox)}
+            name="email"
+            className={classes.checkBoxPseudo}
+            checkedIcon={<CheckBoxIcon className={classes.checkBox}/>}
+            icon={<CheckBoxOutlineBlankOutlinedIcon />}
+            color="primary"
+          />
+        }
+        label={<Typography className={classes.checkboxLabel}>Send as email to parent of students enrolled in class</Typography>}
+      />
+          <FormControlLabel
+        control={
+          <Checkbox
+            checked={sendSMSCheckbox}
+            onChange={handleCheckboxChange(setSendSMSCheckbox)}
+            name="sms"
+            className={classes.checkBoxPseudo}
+            checkedIcon={<CheckBoxIcon className={classes.checkBox}/>}
+            icon={<CheckBoxOutlineBlankOutlinedIcon />}
+            color="primary"
+          />
+        }
+        label={<Typography className={classes.checkboxLabel}>Send as SMS to parents of students enrolled in class</Typography>}
+      />
+    </FormGroup>
     <DialogActions>
       <Button className={classes.cancelButton} onClick={handleCloseForm}>
         Cancel
