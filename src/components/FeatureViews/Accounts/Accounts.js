@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import gql from "graphql-tag";
-import { Link } from "react-router-dom";
-import { useQuery } from "@apollo/react-hooks";
-import { useSelector } from "react-redux";
+import {Link} from "react-router-dom";
+import {useQuery} from "@apollo/react-hooks";
+import {useSelector} from "react-redux";
 
 import Button from "@material-ui/core/Button";
 import CardView from "@material-ui/icons/ViewModule";
@@ -10,7 +10,7 @@ import EditIcon from "@material-ui/icons/EditOutlined";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import ListView from "@material-ui/icons/ViewList";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -22,12 +22,12 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 
 import "./Accounts.scss";
-import { addDashes } from "./accountUtils";
-import { capitalizeString, USER_TYPES } from "utils";
+import {addDashes} from "./accountUtils";
+import {capitalizeString, USER_TYPES} from "utils";
 import IconButton from "@material-ui/core/IconButton";
 import LoadingHandler from "components/OmouComponents/LoadingHandler";
 import ProfileCard from "./ProfileCard";
-import { simpleUser } from "queryFragments";
+import {simpleUser} from "queryFragments";
 import UserAvatar from "./UserAvatar";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import theme from "../../../theme/muiTheme";
@@ -241,21 +241,32 @@ const Accounts = () => {
     return (
         <Grid className="Accounts" item xs={12}>
             <BackgroundPaper elevation={2}>
-                <Grid container alignItems="flex-start">
+                <Grid container alignItems="flex-start" spacing={4}>
                     <Grid item>
                         <Button
                             className="button"
                             color="secondary"
                             component={Link}
-                            to="/registration/form/student"
+                            to="/form/student"
                             variant="outlined"
                         >
-                            <NewUser className="icon" /> New Student
+                            <NewUser className="icon"/> NEW STUDENT
+                        </Button>
+                    </Grid>
+                    <Grid item>
+                        <Button
+                            className="button"
+                            color="secondary"
+                            component={Link}
+                            to="/form/parent"
+                            variant="outlined"
+                        >
+                            <NewUser className="icon"/> NEW PARENT
                         </Button>
                     </Grid>
                 </Grid>
                 <Hidden xsDown>
-                    <hr />
+                    <hr/>
                 </Hidden>
                 <Typography align="left" className="heading" variant="h3">
                     Accounts
