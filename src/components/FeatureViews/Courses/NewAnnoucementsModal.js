@@ -15,6 +15,7 @@ import FormGroup from "@material-ui/core/FormGroup"
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Grid from "@material-ui/core/Grid";
+import Input from "@material-ui/core/Input";
 import InputBase from "@material-ui/core/InputBase";
 import Loading from "components/OmouComponents/Loading";
 import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
@@ -26,8 +27,59 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import gql from "graphql-tag";
 import { useQuery ,useMutation } from "@apollo/react-hooks";
+import { omouBlue } from "../../../theme/muiTheme";
 
-const useStyles = makeStyles((theme) => ({}));
+const useStyles = makeStyles((theme) => ({
+  rootContainer: {
+    width: "37%",
+  },
+  inputUnderline: {
+    "&&&:before": {
+      borderBottom: "none",
+    },
+    "&&:after": {
+      borderBottom: "none",
+    },
+  },
+  textFieldStyle: {
+    border: "1px solid #666666",
+    borderRadius: "5px",
+  },
+  textBox: {
+    paddingTop: ".625em",
+    paddingLeft: ".625em",
+    paddingRight: ".625em",
+  },
+  cancelButton: {
+    color: "#747D88",
+    border: "1px solid #747D88",
+    borderRadius: "5px",
+    fontSize: ".75rem",
+    fontFamily: "Roboto",
+    fontWeight: 500,
+    width: "17%",
+    marginRight: ".75em",
+  },
+  submitButton: {
+    backgroundColor: omouBlue,
+    borderRadious: "5px",
+    fontFamily: "Roboto",
+    fontWeight: 500,
+    fontSize: ".75rem",
+    width: "17%",
+    color: "#FFFFFF",
+    marginRight: "4em",
+  },
+  textArea: {
+    padding: "56px 56px 120px 56px",
+  },
+  subjectUnderline: {
+     marginBottom: ".75em", 
+     borderBottom: "1px solid #666666",
+     paddingRight: "3em" 
+  },
+}));
+
 
 const NewAnnouncementsModal = ({ handleClose, open, subject, body, userId }) => {
   const classes = useStyles();
@@ -38,10 +90,7 @@ const NewAnnouncementsModal = ({ handleClose, open, subject, body, userId }) => 
   const user_id = userId.results[0].user.id
   console.log(userId)
 
-//   useEffect(() => {
-//       setAnnouncementBody(body);
-//       setAnnouncementSubject(subject);
-//   },[announcementBody, announcementSubject]);
+
 
   const GET_PARENT_INFO = gql`
   query getParentInfo($id: ID!) {
@@ -131,66 +180,44 @@ const handleBodyChange = useCallback((event) => {
          handleClose(false);
   };
   return (
-    <Grid className="announcement-container" container item md={12} spacing={2}>
-                <Dialog aria-describedby="simple-modal-description"
-                aria-labelledby="simple-modal-title" className="popup" fullWidth
-                maxWidth="xs" onClose={handleCloseForm} open={open}>
-                <DialogTitle>
-                    <TextField className="textfield" id="standard-name"
-                        onChange={handleSubjectChange} placeholder="Subject"
-                        value={announcementSubject} />
-                </DialogTitle>
-                <DialogContent>
-                    <InputBase className="note-body"
-                        inputProps={{"aria-label": "naked"}} multiline
-                        onChange={handleBodyChange}
-                        placeholder="Body (required)" required rows={15}
-                        value={announcementBody} variant="filled" />
-                </DialogContent>
-                <FormGroup>
-                <FormControlLabel
-        control={
-          <Checkbox
-            checked={sendEmailCheckbox}
-            onChange={handleCheckboxChange}
-            // name="checkedB"
-            color="primary"
-          />
-        }
-        label="Send as email to parents of students enrolled in class"
+    <Dialog
+    PaperProps={{ classes: { root: classes.rootContainer }, square: true }}
+    open={open}
+    onClose={handleCloseForm}
+    aria-labelledby="form-dialog-title"
+    maxWidth="md"
+  >
+    <DialogContent classes={{ root: classes.textArea }}>
+      <Input
+        placeholder="Subject"
+        disableUnderline
+        className={classes.subjectUnderline}
       />
-                </FormGroup>
-                <DialogActions>
-                    <Button onClick={handleCloseForm} variant="outlined">
-                        Cancel
-                    </Button>
-                    <Button color="primary"
-                        // disabled={!announcementBody || createResults.loading}
-                        onClick={handlePostForm} variant="outlined">
-                            POST
-                        {/* {createResults.loading ? "Saving..." : "Save"} */}
-                    </Button>
-                    {/* {createResults.error &&
-                        <span style={{"float": "right"}}>
-                            Error while saving!
-                        </span>} */}
-                </DialogActions>
-            </Dialog>
-      {/* <Dialog
-        open={open}
-        onClose={handleCloseForm}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogActions>
-          <Button onClick={handleCloseForm} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handlePostForm} color="primary">
-            Post
-          </Button>
-        </DialogActions>
-      </Dialog> */}
-    </Grid>
+      <TextField
+        InputProps={{
+          disableUnderline: true,
+          classes: { inputMarginDense: classes.textBox },
+        }}
+        autoFocus
+        className={classes.textFieldStyle}
+        margin="dense"
+        id="name"
+        placeholder="Body"
+        type="email"
+        fullWidth
+        multiline
+        rows={12}
+      />
+    </DialogContent>
+    <DialogActions>
+      <Button className={classes.cancelButton} onClick={handleCloseForm}>
+        Cancel
+      </Button>
+      <Button className={classes.submitButton} onClick={handleCloseForm}>
+        Add Note
+      </Button>
+    </DialogActions>
+  </Dialog>
   );
 };
 

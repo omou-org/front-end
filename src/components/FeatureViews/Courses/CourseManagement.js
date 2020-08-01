@@ -236,6 +236,7 @@ const CourseManagement = () => {
           name
         }
         courseId
+        id
       }
     }
   `;
@@ -504,6 +505,7 @@ const CourseManagement = () => {
             startDate,
             instructor,
             courseId,
+            id
           }) => (
             <CourseDisplayCard
               title={title}
@@ -513,7 +515,7 @@ const CourseManagement = () => {
               startTime={startTime}
               startDate={startDate}
               instructor={instructor}
-              id={courseId}
+              id={id}
               key={title}
             />
           )

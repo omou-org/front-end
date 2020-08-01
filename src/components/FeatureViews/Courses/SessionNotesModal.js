@@ -1,67 +1,114 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Input from '@material-ui/core/Input';
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Input from "@material-ui/core/Input";
+import { omouBlue } from "../../../theme/muiTheme";
 
 const useStyles = makeStyles((theme) => ({
-    rootContainer: {
-        width: "37%",
+  rootContainer: {
+    width: "37%",
+  },
+  inputUnderline: {
+    "&&&:before": {
+      borderBottom: "none",
     },
-    inputUnderline: {
-        "&after": {
-            borderBottom: "0px"
-        }
-    }
+    "&&:after": {
+      borderBottom: "none",
+    },
+  },
+  textFieldStyle: {
+    border: "1px solid #666666",
+    borderRadius: "5px",
+  },
+  textBox: {
+    paddingTop: ".625em",
+    paddingLeft: ".625em",
+    paddingRight: ".625em",
+  },
+  cancelButton: {
+    color: "#747D88",
+    border: "1px solid #747D88",
+    borderRadius: "5px",
+    fontSize: ".75rem",
+    fontFamily: "Roboto",
+    fontWeight: 500,
+    width: "17%",
+    marginRight: ".75em",
+  },
+  submitButton: {
+    backgroundColor: omouBlue,
+    borderRadious: "5px",
+    fontFamily: "Roboto",
+    fontWeight: 500,
+    fontSize: ".75rem",
+    width: "17%",
+    color: "#FFFFFF",
+    marginRight: "4em",
+  },
+  textArea: {
+    padding: "56px 56px 120px 56px",
+  },
+  subjectUnderline: {
+    marginBottom: ".75em", 
+    borderBottom: "1px solid #666666",
+    paddingRight: "3em" 
+ },
 }));
 
+const SessionNotesModal = ({ open, handleCloseForm }) => {
+  const classes = useStyles();
+  console.log(open);
+  const handleClose = () => {
+    handleCloseForm(false);
+  };
 
-const SessionNotesModal = ({open, handleCloseForm}) => {
-    const classes = useStyles();
-    // console.log(handleCloseForm)
-    console.log(open)
-    const handleClose = () => {
-        handleCloseForm(false)
-    }
-
-
-    return (
-      <Dialog PaperProps={{classes: {root: classes.rootContainer}}} open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md">
-          {/* <Grid container justify="flex-start">
-              <Grid item xs={6}>
-              </Grid>
-          </Grid> */}
-        <DialogContent>
-         <Input placeholder="Subject" />
-          <TextField
-            InputProps={{classes: {underline: classes.inputUnderline}}}
-            autoFocus
-            margin="dense"
-            id="name"
-            placeholder="Body"
-            type="email"
-            fullWidth
-            multiline
-            rows={12}
-            style={{border: "1px solid black"}}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleClose} color="primary">
-            Subscribe
-          </Button>
-        </DialogActions>
-      </Dialog>
-    )
+  return (
+    <Dialog
+      PaperProps={{ classes: { root: classes.rootContainer }, square: true }}
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="form-dialog-title"
+      maxWidth="md"
+    >
+      <DialogContent classes={{ root: classes.textArea }}>
+        <Input
+          placeholder="Subject"
+          className={classes.subjectUnderline}
+          disableUnderline
+        />
+        <TextField
+          InputProps={{
+            disableUnderline: true,
+            classes: { inputMarginDense: classes.textBox },
+          }}
+          autoFocus
+          className={classes.textFieldStyle}
+          margin="dense"
+          id="name"
+          placeholder="Body"
+          type="email"
+          fullWidth
+          multiline
+          rows={12}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button className={classes.cancelButton} onClick={handleClose}>
+          Cancel
+        </Button>
+        <Button className={classes.submitButton} onClick={handleClose}>
+          Add Note
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 };
 
 export default SessionNotesModal;

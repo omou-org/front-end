@@ -127,7 +127,7 @@ const CourseSessions = ({ sessionList }) => {
                     value={id}
                     ListItemClasses={{ selected: classes.menuSelect }}
                   >
-                    {startingDate}
+                    {`Session ${index + 1} (${startingDate})`}
                   </MenuItem>
                 );
               })}

@@ -25,6 +25,22 @@ const useStyles = makeStyles({
     paddingTop: "10px",
     paddingBottom: "20px",
   },
+  newNoteButton: {
+    marginBottom: "2em",
+    border: "1px solid #999999",
+    borderRadius: "5px",
+    fontSize: ".75rem",
+    fontWeight: 300,
+    fontFamily: "Roboto",
+    height: "2.5em",
+    marginTop: "2em"
+  },
+  plusSpan: {
+    fontSize: "1rem",
+    fontWeight: 500,
+    color: "#666666",
+    paddingRight: ".25em",
+  },
 });
 
 // const announcementData = [
@@ -104,7 +120,8 @@ const Announcements = ({announcementsData, loggedInUser, classTitle}) => {
   const [announcementId, setAnnouncementId] = useState();
   const [announcementSubject, setAnnouncementSubject] = useState("");
   const [announcementBody, setAnnouncementBody] = useState("");
-  const [announcementsRender, setAnnouncementsRender] = useState()
+  const [announcementsRender, setAnnouncementsRender] = useState();
+  const classes = useStyles();
   
   useEffect(() => {
     setAnnouncementsRender(announcementsData)
@@ -136,7 +153,7 @@ const Announcements = ({announcementsData, loggedInUser, classTitle}) => {
 
   return (
     <Grid container justify="flex-start" data-active="inactive">
-      <Button onClick={() => setNewAnnouncementForm(true)}>Click Me</Button>
+      <Button className={classes.newNoteButton} onClick={() => setNewAnnouncementForm(true)}><span className={classes.plusSpan}>+</span> New Announcement</Button>
       {announcementsRender?.map(({ poster, subject, body, createdAt, id,  }) => (
         <>
           <AnnouncementCard
