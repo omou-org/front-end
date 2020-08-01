@@ -101,7 +101,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const NewAnnouncementsModal = ({ handleClose, open, subject, body, userId }) => {
+const NewAnnouncementsModal = ({ handleClose, open, subject, body, userId, buttonState }) => {
   const classes = useStyles();
   const [sendEmailCheckbox, setSendEmailCheckbox] = useState(false);
   const [sendSMSCheckbox, setSendSMSCheckbox] = useState(false);
@@ -109,7 +109,7 @@ const NewAnnouncementsModal = ({ handleClose, open, subject, body, userId }) => 
   const [announcementSubject, setAnnouncementSubject] = useState(subject);
   const id = useParams();
   const user_id = userId.results[0].user.id
-  console.log(userId)
+  // console.log(userId)
 
 
 
@@ -167,7 +167,7 @@ const NewAnnouncementsModal = ({ handleClose, open, subject, body, userId }) => 
 
   const [createAnnouncement, createAnnouncementResult] = useMutation(
     CREATE_ANNOUNCEMENTS, {
-      submit: () => handleClose(false),
+      onCompleted: () => handleClose(false),
       error: err => console.error(err) 
     }
   );
@@ -187,6 +187,10 @@ const handleBodyChange = useCallback((event) => {
     setAnnouncementBody(event.target.value);
 }, []);
 
+const handleEditForm = async (event) => {
+  event.preventDefault();
+
+};
   const handlePostForm = async (event) => {
     event.preventDefault();
           const postAnnouncement = await createAnnouncement({
@@ -198,7 +202,6 @@ const handleBodyChange = useCallback((event) => {
               shouldEmail: sendEmailCheckbox,
             },
           });
-         handleClose(false);
   };
   
   return (
@@ -213,6 +216,7 @@ const handleBodyChange = useCallback((event) => {
       <Input
         placeholder="Subject"
         disableUnderline
+        onChange={handleSubjectChange}
         className={classes.subjectUnderline}
       />
       <TextField
@@ -221,6 +225,7 @@ const handleBodyChange = useCallback((event) => {
           classes: { inputMarginDense: classes.textBox },
         }}
         autoFocus
+        onChange={handleBodyChange}
         className={classes.textFieldStyle}
         margin="dense"
         id="name"
@@ -266,8 +271,8 @@ const handleBodyChange = useCallback((event) => {
       <Button className={classes.cancelButton} onClick={handleCloseForm}>
         Cancel
       </Button>
-      <Button className={classes.submitButton} onClick={handleCloseForm}>
-        Add Note
+      <Button className={classes.submitButton} onClick={handlePostForm}>
+        {buttonState === "post" ? "Post" : "Edit"}
       </Button>
     </DialogActions>
   </Dialog>

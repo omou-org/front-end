@@ -10,6 +10,7 @@ import { useQuery } from "@apollo/react-hooks";
 import moment from "moment";
 import NewAnnouncementModal from "./NewAnnoucementsModal";
 import { fullName } from "../../../utils";
+import theme from "../../../theme/muiTheme";
 
 
 const useStyles = makeStyles({
@@ -67,12 +68,12 @@ const useStyles = makeStyles({
 //   },
 // ];
 
-const AnnouncementCard = ({ id, fullName, subject, body, createdAt, handleOpen, handleDelete }) => {
+const AnnouncementCard = ({ id, fullName, subject, body, createdAt, handleEdit, handleDelete }) => {
   const classes = useStyles();
   const date = moment(createdAt).format("MM/DD")
   const time = moment(createdAt).format("h:mma")
   const handleOpenForm = () => {
-    handleOpen(true, id, subject, body);
+    handleEdit(true, id, subject, body);
   };
 
   const handleDeleteForm = () => {
@@ -92,7 +93,7 @@ const AnnouncementCard = ({ id, fullName, subject, body, createdAt, handleOpen, 
         </Typography>
       </Grid>
       <Grid item xs={6} style={{ textAlign: "right" }}>
-        <Button onClick={handleOpenForm}>
+        <Button onClick={handleOpenForm} name="edit" value="edit">
           <Create style={{ color: "#43B5D9" }} />
         </Button>{" "}
         <Button onClick={handleDeleteForm}>
@@ -106,9 +107,9 @@ const AnnouncementCard = ({ id, fullName, subject, body, createdAt, handleOpen, 
       </Grid>
       <Grid item xs={3}>
         <Typography variant="subtitle2" align="left">
-          Posted by:{" "}
-          <span style={{ color: "#43B5D9", fontWeight: "550" }}>{fullName}</span> -{" "}
-          {date} - {time}
+          Posted by:
+          <span style={{ color: "#43B5D9", fontWeight: "550", padding: theme.spacing(1) }}>{fullName}</span> •{" "}
+          <span style={{padding: theme.spacing(1)}}>{date} <span style={{padding: theme.spacing(1)}}>•</span> {time}</span>
         </Typography>
       </Grid>
     </Grid>
@@ -121,7 +122,10 @@ const Announcements = ({announcementsData, loggedInUser, classTitle}) => {
   const [announcementSubject, setAnnouncementSubject] = useState("");
   const [announcementBody, setAnnouncementBody] = useState("");
   const [announcementsRender, setAnnouncementsRender] = useState();
+  const [editOrPost, setEditOrPost] = useState("post");
   const classes = useStyles();
+
+  console.log(editOrPost)
   
   useEffect(() => {
     setAnnouncementsRender(announcementsData)
@@ -129,7 +133,8 @@ const Announcements = ({announcementsData, loggedInUser, classTitle}) => {
   
   // console.log(announcementsData)
 
-  const handleOpen = (boolean, id, subject, body) => {
+  const handleEdit = (boolean, id, subject, body) => {
+    setEditOrPost("edit")
     setAnnouncementId(id);
     setNewAnnouncementForm(boolean);
     setAnnouncementSubject(subject);
@@ -153,7 +158,7 @@ const Announcements = ({announcementsData, loggedInUser, classTitle}) => {
 
   return (
     <Grid container justify="flex-start" data-active="inactive">
-      <Button className={classes.newNoteButton} onClick={() => setNewAnnouncementForm(true)}><span className={classes.plusSpan}>+</span> New Announcement</Button>
+      <Button className={classes.newNoteButton} onClick={(event) => (setNewAnnouncementForm(true, setEditOrPost("post")))} value="post" name="post"><span className={classes.plusSpan}>+</span> New Announcement</Button>
       {announcementsRender?.map(({ poster, subject, body, createdAt, id,  }) => (
         <>
           <AnnouncementCard
@@ -163,7 +168,7 @@ const Announcements = ({announcementsData, loggedInUser, classTitle}) => {
             subject={subject}
             body={body}
             createdAt={createdAt}
-            handleOpen={handleOpen}
+            handleEdit={handleEdit}
             handleDelete={handleDeleteAnnouncement}
           />
         </>
@@ -175,6 +180,7 @@ const Announcements = ({announcementsData, loggedInUser, classTitle}) => {
         subject={announcementSubject}
         body={announcementBody}
         userId={loggedInUser}
+        buttonState={editOrPost}
       />
     </Grid>
   );
