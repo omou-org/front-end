@@ -76,12 +76,14 @@ const SelectParentDialog = ({onClose, open, updateCartNum}) => {
 	}, [currentParent, dispatch]);
 
 	useEffect(() => {
-		if (!getSavedParentCartResult.loading && getSavedParentCartResult.called) {
-			const studentRegistration = JSON.parse(getSavedParentCartResult.data.registrationCart.registrationPreferences);
-			loadRegistrationCart(studentRegistration);
-			updateCartNum(Object.values(studentRegistration).reduce((accumulator, currentStudent) => {
-				return accumulator + currentStudent.length;
-			}, 0));
+		if (!getSavedParentCartResult?.loading && getSavedParentCartResult?.called) {
+			if (getSavedParentCartResult.data) {
+				const studentRegistration = JSON.parse(getSavedParentCartResult.data?.registrationCart?.registrationPreferences);
+				loadRegistrationCart(studentRegistration);
+				updateCartNum(Object.values(studentRegistration).reduce((accumulator, currentStudent) => {
+					return accumulator + currentStudent.length;
+				}, 0));
+			}
 		}
 	}, [getSavedParentCartResult.loading, getSavedParentCartResult.called])
 
