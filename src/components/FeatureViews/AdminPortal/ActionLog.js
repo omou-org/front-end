@@ -9,21 +9,24 @@ import TableRow from "@material-ui/core/TableRow";
 import Moment from "react-moment";
 import Chip from "@material-ui/core/Chip";
 import Button from "@material-ui/core/Button";
-import Input from "@material-ui/core/Input";
 import TextField from "@material-ui/core/TextField";
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from "@material-ui/core/MenuItem";
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Pagination from '@material-ui/lab/Pagination';
 import Checkbox from "@material-ui/core/Checkbox";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import { makeStyles } from "@material-ui/core/styles";
 import SwapVertIcon from '@material-ui/icons/SwapVert';
 import gql from "graphql-tag";
+import moment from "moment";
 import { useQuery } from "@apollo/react-hooks";
-import { set } from "date-fns";
 import { DateRange } from "react-date-range";
+import DialogActions from "@material-ui/core/DialogActions";
+import Dialog from "@material-ui/core/Dialog";
+
 
 const GET_ADMINS = gql`
     query GetAdmins {
@@ -41,8 +44,8 @@ const GET_ADMINS = gql`
 `
 
 const GET_LOGS = gql`
-    query GetLogs ($action: String!,$adminType: String!, $page: Int!, $pageSize: Int!, $sort: String!, $objectType: String! $userId:ID!){
-        logs(action:$action, adminType: $adminType, page: $page, pageSize: $pageSize, sort: $sort, objectType: $objectType, userId: $userId){
+    query GetLogs ($action: String!,$adminType: String!, $page: Int!, $pageSize: Int!, $sort: String!, $objectType: String! $userId: ID!, $startDateTime: String!, $endDateTime: String!){
+        logs(action:$action, adminType: $adminType, page: $page, pageSize: $pageSize, sort: $sort, objectType: $objectType, userId: $userId, startDateTime: $startDateTime, endDateTime: $endDateTime){
             results {
                 date
                 userId
@@ -76,14 +79,23 @@ const ActionLog = () => {
     const [adminType, setAdminType] = useState("");
     const [actionType, setActionType] = useState("");
     const [objectType, setObjectType] = useState("");
-    const [currentId, setCurrentId] = useState();
+    const [currentId, setCurrentId] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [openCalendar, setOpenCalendar] = useState(false);
+    const [state, setState] = useState([
+        {
+            startDate: moment().subtract(1, "month").toDate(),
+            endDate: moment().toDate(),
+            key: 'selection'
+        }
+    ]);
     const [currentSort, setCurrentSort] = useState({
         "sort": "",
         "clicked": false,
     });
-    const [currentFilter, setCurrentFilter] = useState({
-        action: "",
-    })
     const [fetchAdmins] = useLazyQuery(GET_ADMINS, {
         "onCompleted": (data) => {
             setUserOptions(data.admins);
@@ -93,71 +105,26 @@ const ActionLog = () => {
         variables:
         {
             action: actionType.toLowerCase(),
-            adminType: "",
-            endDateTime: "",
-            page: 0,
-            pageSize: 10,
-            startDateTime: "",
+            adminType: adminType.toLowerCase(),
+            endDateTime: endDate,
+            page: currentPage,
+            pageSize: pageSize,
+            startDateTime: startDate,
             sort: currentSort.sort,
             objectType: objectType.toLowerCase(),
-            userId: "",
+            userId: currentId.toString(),
         },
         "onCompleted": (data) => {
             setLogData(data);
-            console.log(data);
         },
     });
     const [userOptions, setUserOptions] = useState(null)
-    console.log(userOptions);
-    console.log(actionType);
-    console.log(currentId);
     const adminOptions = ["Owner", "Receptionist", "Assistant"];
     const actionOptions = ["Add", "Edit", "Delete"]
     const objectOptions = ["Student", "Admin", "Parent", "Instructor", "Payment", "Registration", "Tutoring", "Course", "Discount", "Price Rules"]
-    const testData = {
-
-        "results": [
-            {
-                "date": "2020-07-27T04:53:17.614317+00:00",
-                "userId": "16",
-                "adminType": "OWNER",
-                "action": "Delete",
-                "objectType": "price rule",
-                "objectRepr": "7"
-            },
-            {
-                "date": "2020-07-27T04:53:06.132332+00:00",
-                "userId": "1",
-                "adminType": "OWNER",
-                "action": "Edit",
-                "objectType": "price rule",
-                "objectRepr": "7"
-            },
-            {
-                "date": "2020-07-27T04:52:48.676183+00:00",
-                "userId": "16",
-                "adminType": "OWNER",
-                "action": "Add",
-                "objectType": "price rule",
-                "objectRepr": "7"
-            },
-            {
-                "date": "2020-07-27T04:51:43.067927+00:00",
-                "userId": "16",
-                "adminType": "OWNER",
-                "action": "Add",
-                "objectType": "instructor",
-                "objectRepr": "Instructor: Bruce Wayne"
-            }
-        ],
-        "total": 4
-    }
 
     useEffect(() => {
         logs()
-    }, [])
-
-    useEffect(() => {
         fetchAdmins()
     }, [])
 
@@ -176,20 +143,22 @@ const ActionLog = () => {
         const value = event.target.value;
         setAdminType(value);
     }
+
     const handleObjectSelection = (event) => {
         const value = event.target.value;
         setObjectType(value);
     }
+
     const handleUserSelection = (event) => {
         setUserType(event.target.value)
-           userOptions.map((userType) => {
-                if (`${userType.user.firstName} ${userType.user.lastName}` === event.target.value) {
-                    setCurrentId(userType.user.id);
-                }
-            })
-        
+        userOptions.map((userType) => {
+            if (userType === event.target.value) {
+                setCurrentId(userType.user.id);
+            }
+        })
+
     }
-    console.log(currentId);
+
     const handleActionSelection = (event) => {
         const value = event.target.value;
         setActionType(value);
@@ -204,25 +173,60 @@ const ActionLog = () => {
             "sort": "",
             "clicked": false,
         });
+        setStartDate("");
+        setEndDate("");
     }
 
-    console.log(Object.values(testData.results))
-    console.log(logData);
-    console.log(currentSort);
-    console.log(userType);
+    const handleSaveDateRange = () => {
+        setOpenCalendar(false);
+        setStartDate(state[0].startDate.toISOString())
+        setEndDate(state[0].endDate.toISOString())
+    }
+
+    const handleDateRangeCalendarChange = (item) => {
+        const newDateRange = item.selection;
+        setState([newDateRange]);
+    }
+
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+    };
 
     const handleActionSort = () => {
         currentSort.clicked ? setCurrentSort({ "sort": "action_desc", "clicked": !currentSort.clicked }) : setCurrentSort({ "sort": "action_asc", "clicked": !currentSort.clicked })
     }
+
     const handleObjectSort = () => {
         currentSort.clicked ? setCurrentSort({ "sort": "object_desc", "clicked": !currentSort.clicked }) : setCurrentSort({ "sort": "action_asc", "clicked": !currentSort.clicked })
     }
+
     const handleUserSort = () => {
         currentSort.clicked ? setCurrentSort({ "sort": "user_desc", "clicked": !currentSort.clicked }) : setCurrentSort({ "sort": "user_asc", "clicked": !currentSort.clicked })
     }
 
+    const handleAdminSort = () => {
+        currentSort.clicked ? setCurrentSort({ "sort": "admin_desc", "clicked": !currentSort.clicked }) : setCurrentSort({ "sort": "admin_asc", "clicked": !currentSort.clicked })
+    }
+
+    const handleDateSort = () => {
+        currentSort.clicked ? setCurrentSort({ "sort": "date_desc", "clicked": !currentSort.clicked }) : setCurrentSort({ "sort": "date_asc", "clicked": !currentSort.clicked })
+    }
+
     return (
         <>
+            <Dialog open={openCalendar} onClose={handleSaveDateRange}>
+                <DateRange
+                    editableDateInputs={true}
+                    onChange={handleDateRangeCalendarChange}
+                    moveRangeOnFirstSelection={false}
+                    ranges={state}
+                />
+                <DialogActions>
+                    <Button onClick={handleSaveDateRange} color="primary">
+                        Save & Close
+						</Button>
+                </DialogActions>
+            </Dialog>
             <div style={{ textAlign: "right", padding: 0 }}>
                 <Button onClick={resetFilters}>
                     Reset All Filters
@@ -231,39 +235,43 @@ const ActionLog = () => {
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell style={{ width: 250 }}>
+                        <TableCell style={{ width: 270 }}>
                             <Grid container>
                                 <Grid>
                                     Timestamp
                                 </Grid>
                                 <Grid>
-                                    <SwapVertIcon onClick={() => console.log("asd")} style={{ color: "grey" }} />
+                                    <SwapVertIcon onClick={handleDateSort} style={{ color: "grey" }} />
                                 </Grid>
                             </Grid>
                             <Grid container >
                                 <Grid>
                                     From <TextField
                                         variant="outlined"
+                                        value={startDate ? moment(startDate).format("MM/DD/YYYY") : " "}
+                                        onClick={() => setOpenCalendar(true)}
                                         inputProps={{
                                             style: {
                                                 padding: 5
                                             }
                                         }}
-                                        style={{ paddingLeft: 5, paddingRight: 5, width: 80 }} />
+                                        style={{ paddingLeft: 5, paddingRight: 5, width: 90 }} />
                                 </Grid>
                                 <Grid>
                                     To <TextField
+                                        value={endDate ? moment(endDate).format("MM/DD/YYYY") : " "}
                                         variant="outlined"
+                                        onClick={() => setOpenCalendar(true)}
                                         inputProps={{
                                             style: {
                                                 padding: 5
                                             }
                                         }}
-                                        style={{ paddingLeft: 5, width: 80 }} />
+                                        style={{ paddingLeft: 5, width: 90 }} />
                                 </Grid>
                             </Grid>
                         </TableCell>
-                        <TableCell style={{ width: 150 }}>
+                        <TableCell style={{ width: 130 }}>
                             <Grid container>
                                 <Grid>
                                     User
@@ -282,7 +290,7 @@ const ActionLog = () => {
                                         labelId="label"
                                         value={userType}
                                         onChange={handleUserSelection}
-                                        style={{ width: 150 }}
+                                        style={{ width: 130 }}
                                         classes={{
                                             outlined: classes.outlined,
                                             root: classes.root,
@@ -305,7 +313,7 @@ const ActionLog = () => {
                                     Admin Type
                                 </Grid>
                                 <Grid>
-                                    <SwapVertIcon onClick={() => console.log("asd")} style={{ color: "grey" }} />
+                                    <SwapVertIcon onClick={handleAdminSort} style={{ color: "grey" }} />
                                 </Grid>
                             </Grid>
                             <Grid>
@@ -409,9 +417,6 @@ const ActionLog = () => {
                                 <Grid>
                                     Details
                                 </Grid>
-                                <Grid>
-                                    <SwapVertIcon onClick={() => console.log("asd")} style={{ color: "grey" }} />
-                                </Grid>
                             </Grid>
                             <Grid>
                                 <br />
@@ -457,6 +462,19 @@ const ActionLog = () => {
                     })}
                 </TableBody>
             </Table>
+            {logData &&
+                <Grid style={{ 
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',}}>
+                    <Pagination
+                        count={Math.ceil(logData.logs.total / pageSize)}
+                        onChange={handlePageChange}
+                        style={{
+                            paddingTop: 50,
+                        }}
+                    />
+                </Grid>}
         </>)
 }
 ActionLog.propTypes = {}
