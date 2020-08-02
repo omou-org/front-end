@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -72,8 +72,12 @@ const AnnouncementCard = ({ id, fullName, subject, body, createdAt, handleEdit, 
   const classes = useStyles();
   const date = moment(createdAt).format("MM/DD")
   const time = moment(createdAt).format("h:mma")
+  const subjectRef = useRef();
+  const bodyRef = useRef();
   const handleOpenForm = () => {
-    handleEdit(true, id, subject, body);
+    const currentSubject = subjectRef.current.textContent;
+    const currentBody = bodyRef.current.textContent;
+    handleEdit(true, id, currentSubject, currentBody);
   };
 
   const handleDeleteForm = () => {
@@ -88,7 +92,7 @@ const AnnouncementCard = ({ id, fullName, subject, body, createdAt, handleEdit, 
       data-active="inactive"
     >
       <Grid item xs={6}>
-        <Typography variant="h6" align="left" gutterBottom>
+        <Typography variant="h6" align="left" gutterBottom ref={subjectRef}>
           {subject}
         </Typography>
       </Grid>
@@ -101,7 +105,7 @@ const AnnouncementCard = ({ id, fullName, subject, body, createdAt, handleEdit, 
         </Button>
       </Grid>
       <Grid item xs={12} className={classes.announcementBody}>
-        <Typography variant="body1" align="left">
+        <Typography variant="body1" align="left" ref={bodyRef}>
           {body}
         </Typography>
       </Grid>
@@ -125,7 +129,7 @@ const Announcements = ({announcementsData, loggedInUser, classTitle}) => {
   const [editOrPost, setEditOrPost] = useState("post");
   const classes = useStyles();
 
-  console.log(editOrPost)
+  console.log(announcementBody);
   
   useEffect(() => {
     setAnnouncementsRender(announcementsData)

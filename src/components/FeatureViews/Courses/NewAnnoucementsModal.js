@@ -101,16 +101,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const NewAnnouncementsModal = ({ handleClose, open, subject, body, userId, buttonState }) => {
+const NewAnnouncementsModal = ({ handleClose, open, subject, id, body, userId, buttonState }) => {
   const classes = useStyles();
   const [sendEmailCheckbox, setSendEmailCheckbox] = useState(false);
   const [sendSMSCheckbox, setSendSMSCheckbox] = useState(false);
-  const [announcementBody, setAnnouncementBody] = useState(body);
-  const [announcementSubject, setAnnouncementSubject] = useState(subject);
-  const id = useParams();
+  const [announcementBody, setAnnouncementBody] = useState("");
+  const [announcementSubject, setAnnouncementSubject] = useState("");
+  // const id = useParams();
   const user_id = userId.results[0].user.id
-  // console.log(userId)
-
+  // console.log(userId)  
+  console.log(id)
 
 
   const GET_PARENT_INFO = gql`
@@ -217,6 +217,7 @@ const handleEditForm = async (event) => {
         placeholder="Subject"
         disableUnderline
         onChange={handleSubjectChange}
+        defaultValue={buttonState === "edit" ? subject : ""}
         className={classes.subjectUnderline}
       />
       <TextField
@@ -230,6 +231,7 @@ const handleEditForm = async (event) => {
         margin="dense"
         id="name"
         placeholder="Body"
+        defaultValue={buttonState === "edit" ? body : ""}
         type="email"
         fullWidth
         multiline
