@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
  },
 }));
 
-const SessionNotesModal = ({ open, handleCloseForm }) => {
+const SessionEmailOrNotesModal = ({ open, handleCloseForm }) => {
   const classes = useStyles();
   console.log(open);
   const handleClose = () => {
@@ -111,4 +111,4 @@ const SessionNotesModal = ({ open, handleCloseForm }) => {
   );
 };
 
-export default SessionNotesModal;
+export default SessionEmailOrNotesModal;

@@ -8,7 +8,7 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { Create, Cancel, ExpandMore } from "@material-ui/icons";
-import SessionNotesModal from "./SessionNotesModal";
+import SessionEmailOrNotesModal from "./SessionEmailOrNotesModal";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 
@@ -119,7 +119,7 @@ const CourseListOptions = ({sessionId, open, handleCloseForm}) => {
         </AccordionDetails>
       </Accordion>
       <Divider />
-      <SessionNotesModal open={open} handleCloseForm={handleCloseForm} />
+      <SessionEmailOrNotesModal open={open} handleCloseForm={handleCloseForm} />
     </div>
   );
 };

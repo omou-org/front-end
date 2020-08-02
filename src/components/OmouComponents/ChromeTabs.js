@@ -4,6 +4,7 @@ import Color from "color";
 import { makeStyles } from "@material-ui/styles";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
+import { omouBlue } from "../../theme/muiTheme"
 
 const useTabsStyles = makeStyles(() => ({
   indicator: {
@@ -13,7 +14,7 @@ const useTabsStyles = makeStyles(() => ({
 }));
 
 const useTabStyles = makeStyles(({ palette, spacing, breakpoints }) => {
-  const defaultBgColor = palette.grey[300];
+  const defaultBgColor = "#666666";
   const defaultSelectedBgColor = "#EFF9FC";
   const defaultMinWidth = {
     md: 120
@@ -33,7 +34,7 @@ const useTabStyles = makeStyles(({ palette, spacing, breakpoints }) => {
       borderTopLeftRadius: spacing(leftValue),
       borderTopRightRadius: spacing(rightValue),
       marginTop: topMargin,
-      color: getTextColor(bgColor),
+      color: "#666666",
       backgroundColor: bgColor,
       transition: "0.2s",
     //   border: "1px solid #EEEEEE", 
@@ -77,7 +78,7 @@ const useTabStyles = makeStyles(({ palette, spacing, breakpoints }) => {
     }),
     selected: ({ selectedBgColor = defaultSelectedBgColor }) => ({
       backgroundColor: selectedBgColor,
-      color: getTextColor(selectedBgColor),
+      color: omouBlue,
       "& + $root": {
         zIndex: 1
       },
@@ -89,7 +90,6 @@ const useTabStyles = makeStyles(({ palette, spacing, breakpoints }) => {
       zIndex: 2,
       marginTop: spacing(0.5),
       textTransform: "initial",    
-      color: "#666666",
     }
   };
 });

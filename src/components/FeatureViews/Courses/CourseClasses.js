@@ -25,7 +25,7 @@ import ClassInfo from "./ClassInfo";
 import Announcements from "./Announcements";
 import StudentEnrollment from "./StudentEnrollment";
 import CourseSessions from "./CourseSessions";
-import { useSelector } from  "react-redux"
+import { useSelector } from  "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "left",
   },
   dataFontDate: {
-    fontWeight: "600",
+    fontWeight: "500",
   },
   dividerColor: {
     backgroundColor: "black",
