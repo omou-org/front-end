@@ -69,6 +69,7 @@ const SessionEmailOrNotesModal = ({ open, handleCloseForm, accountType, userId, 
   const [subject, setSubject] = useState(noteSubject);
   const [body, setBody] = useState(noteBody);
   const poster_id = posterId.results[0].user.id
+  console.log(userId)
 
   const SEND_EMAIL = gql`
   mutation SendEmail(

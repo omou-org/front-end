@@ -13,11 +13,11 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import ChatIcon from "@material-ui/icons/Chat";
-import ChatOutlinedIcon from '@material-ui/icons/ChatOutlined';
+import ChatOutlinedIcon from "@material-ui/icons/ChatOutlined";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Link } from "react-router-dom";
 import { fullName } from "../../../utils";
-import { omouBlue, highlightColor } from "../../../theme/muiTheme"
+import { omouBlue, highlightColor } from "../../../theme/muiTheme";
 import SessionEmailOrNotesModal from "./SessionEmailOrNotesModal";
 
 const useStyles = makeStyles({
@@ -47,14 +47,19 @@ const useStyles = makeStyles({
   },
 });
 
-const Studentenrollment = ({ enrollmentList, loggedInUser }) => {
+const StudentEnrollmentList = ({
+  fullStudentName,
+  accountType,
+  studentId,
+  parentAccountType,
+  parentId,
+  concatFullParentName,
+  phoneNumber,
+  handleOpenModal
+}) => {
+  console.log(parentAccountType)
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [typeOfAccount, setTypeOfAccount] = useState();
-  const [userId, setUserId] = useState();
-  console.log(enrollmentList);
-  console.log(loggedInUser)
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -63,22 +68,111 @@ const Studentenrollment = ({ enrollmentList, loggedInUser }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  const handleOpenModal = (event) => {
-    event.preventDefault();
-    setUserId(event.currentTarget.value);
-    setTypeOfAccount(event.currentTarget.dataset.type);
-    setModalOpen(true);
+  
+  const handleOpen = (e) => {
+    e.preventDefault();
+    const currentValue = e.currentTarget.value
+    const dataType = e.currentTarget.dataset.type
+    handleOpenModal(currentValue, dataType)
     setAnchorEl(null);
   }
 
+  return (
+    <TableRow key={fullStudentName}>
+      <TableCell
+        component="th"
+        scope="row"
+        component={Link}
+        to={`/accounts/${accountType.toLowerCase()}/${studentId}`}
+        style={{ textDecoration: "none", fontWeight: 700 }}
+      >
+        {fullStudentName}
+      </TableCell>
+      <TableCell
+        component={Link}
+        to={`/accounts/${parentAccountType.toLowerCase()}/${parentId}`}
+        style={{ textDecoration: "none" }}
+      >
+        {concatFullParentName}
+      </TableCell>
+      <TableCell>{phoneNumber}</TableCell>
+      <TableCell align="right" padding="none" size="small">
+        <Button
+          aria-controls="simple-menu"
+          aria-haspopup="true"
+          onClick={handleClick}
+        >
+          <MailOutlineIcon style={{ color: "rgb(112,105,110)" }} />
+        </Button>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+          classes={{ list: classes.dropdown }}
+        >
+          <MenuItem
+            onClick={handleOpen}
+            className={classes.menuSelected}
+            value={studentId}
+            data-type={accountType}
+          >
+            Email Student
+          </MenuItem>
+          <MenuItem
+            onClick={handleOpen}
+            className={classes.menuSelected}
+            value={parentId}
+            data-type={parentAccountType}
+          >
+            Email Parent
+          </MenuItem>
+        </Menu>
+      </TableCell>
+      <TableCell
+        align="right"
+        padding="none"
+        size="small"
+        className={classes.icon}
+      >
+        <Button disabled>
+          <ChatOutlinedIcon style={{ color: "rgb(112,105,110)" }} />
+        </Button>
+      </TableCell>
+      <TableCell
+        align="right"
+        padding="none"
+        size="small"
+        className={classes.carrot}
+      >
+        <Button>
+          <ExpandMoreIcon style={{ color: omouBlue }} fontSize="large" />
+        </Button>
+      </TableCell>
+    </TableRow>
+  );
+};
+
+const Studentenrollment = ({ enrollmentList, loggedInUser }) => {
+  const classes = useStyles();
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [typeOfAccount, setTypeOfAccount] = useState();
+  const [userId, setUserId] = useState();
+
+
+  const handleOpenModal = (currentValue, dataType) => {
+    setUserId(currentValue);
+    setTypeOfAccount(dataType);
+    setModalOpen(true);
+  };
+
   const handleCloseModal = () => {
     setModalOpen(false);
-  }
+  };
 
-  const handleSendEmail = () => {
-
-  }
+  const handleSendEmail = () => {};
 
   return (
     <Grid item xs={12}>
@@ -113,79 +207,36 @@ const Studentenrollment = ({ enrollmentList, loggedInUser }) => {
                 const fullStudentName = fullName(user);
                 const studentId = user.id;
                 const concatFullParentName = fullName(primaryParent.user);
-                const parentAccountType = primaryParent.accountType.toLowerCase();
+                const parentAccountType = primaryParent.accountType;
                 const phoneNumber = primaryParent.phoneNumber;
                 const parentId = primaryParent.user.id;
                 const parentEmail = primaryParent.user.email;
 
                 return (
-                  <TableRow key={fullStudentName}>
-                    <TableCell
-                      component="th"
-                      scope="row"
-                      component={Link}
-                      to={`/accounts/${accountType.toLowerCase()}/${studentId}`}
-                      style={{ textDecoration: "none", fontWeight: 700 }}
-                    >
-                      {fullStudentName}
-                    </TableCell>
-                    <TableCell
-                      component={Link}
-                      to={`/accounts/${parentAccountType}/${parentId}`}
-                      style={{ textDecoration: "none" }}
-                    >
-                      {concatFullParentName}
-                    </TableCell>
-                    <TableCell>{phoneNumber}</TableCell>
-                    <TableCell align="right" padding="none" size="small">
-                    <Button
-                        aria-controls="simple-menu"
-                        aria-haspopup="true"
-                        onClick={handleClick}
-                      >
-                      <MailOutlineIcon style={{color: "rgb(112,105,110)"}}/>
-                      </Button>
-                      <Menu
-                        id="simple-menu"
-                        anchorEl={anchorEl}
-                        keepMounted
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
-                        classes={{list: classes.dropdown}}
-                      >
-                        <MenuItem onClick={handleOpenModal} className={classes.menuSelected} value={studentId} data-type={accountType}>Email Student</MenuItem>
-                        <MenuItem onClick={handleOpenModal} className={classes.menuSelected} value={parentId} data-type={primaryParent.accountType}>Email Parent</MenuItem>
-                      </Menu>
+                  <StudentEnrollmentList
+                    fullStudentName={fullStudentName}
+                    accountType={accountType}
+                    studentId={studentId}
+                    parentAccountType={parentAccountType}
+                    parentId={parentId}
+                    concatFullParentName={concatFullParentName}
+                    phoneNumber={phoneNumber}
+                    handleOpenModal={handleOpenModal}
 
-                    </TableCell>
-                    <TableCell
-                      align="right"
-                      padding="none"
-                      size="small"
-                      className={classes.icon}
-                    >
-                      <Button disabled>
-                      <ChatOutlinedIcon style={{color: "rgb(112,105,110)"}}/>
-                      </Button>
-                    </TableCell>
-                    <TableCell
-                      align="right"
-                      padding="none"
-                      size="small"
-                      className={classes.carrot}
-                    >
-                      <Button>
-                        <ExpandMoreIcon style={{color: omouBlue}} fontSize="large"/>
-                      </Button>
-                    
-                    </TableCell>
-                  </TableRow>
+                  />
                 );
               })}
           </TableBody>
         </Table>
       </TableContainer>
-      <SessionEmailOrNotesModal open={modalOpen} handleCloseForm={handleCloseModal} accountType={typeOfAccount} userId={userId} origin="STUDENT_ENROLLMENT" posterId={loggedInUser}/>
+      <SessionEmailOrNotesModal
+        open={modalOpen}
+        handleCloseForm={handleCloseModal}
+        accountType={typeOfAccount}
+        userId={userId}
+        origin="STUDENT_ENROLLMENT"
+        posterId={loggedInUser}
+      />
     </Grid>
   );
 };
