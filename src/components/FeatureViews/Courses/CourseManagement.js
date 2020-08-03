@@ -138,9 +138,10 @@ const CourseDisplayCard = ({
   const endingDate = moment(endDate).calendar();
 
   useEffect(() => {
-    const currentTime = moment().format("LT");
+    const currentTime = moment().format("HH:mm:ss");
+    const currentDate = moment().format("L");
 
-    if (currentTime >= startingTime && currentTime <= endingTime) {
+    if (currentDate >= startingDate && currentTime >= startTime && currentTime <= endTime && currentDate <= endingDate) {
       setActiveTime("ACTIVE");
       setActiveColor("#6FCF97");
     } else {
