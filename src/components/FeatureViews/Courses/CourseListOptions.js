@@ -134,6 +134,8 @@ const CourseListOptions = ({sessionId, loggedInUser}) => {
   console.log(expand)
 
   return (
+    <Grid container>
+      <Grid item xs={12}>
     <div className={classes.root}>
       <Accordion elevation={0} square classes={{ expanded: classes.expanded }}>
         <AccordionSummary
@@ -157,7 +159,7 @@ const CourseListOptions = ({sessionId, loggedInUser}) => {
 
           return(
               <>
-              <Grid item xs={12}>
+              <Grid item xs={12} style={{marginTop: "1em"}}>
                 <Typography variant="h6" align="left">
                   {subject}
                 </Typography>
@@ -175,7 +177,7 @@ const CourseListOptions = ({sessionId, loggedInUser}) => {
                     </a>
                   </Typography>
                 ) : (
-                  <Typography noWrap variant="body1" align="left">
+                  <Typography variant="body1" align="left">
                     {body}
                   </Typography>
                 )}
@@ -196,6 +198,9 @@ const CourseListOptions = ({sessionId, loggedInUser}) => {
       <Divider />
       <SessionEmailOrNotesModal open={open} handleCloseForm={handleCloseForm} posterId={loggedInUser} sessionId={sessionId} origin="COURSE_SESSIONS"/>
     </div>
+        
+      </Grid>
+    </Grid>
   );
 };
 
