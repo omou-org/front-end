@@ -54,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 300,
     fontFamily: "Roboto",
     height: "2.5em",
+    marginTop: "2em",
   },
   plusSpan: {
     fontSize: "1rem",
@@ -181,6 +182,9 @@ const CourseListOptions = ({sessionId, loggedInUser}) => {
                     {body}
                   </Typography>
                 )}
+                {/* <Typography variant="body2" align="left">
+                  {body}
+                </Typography> */}
               </Grid>
               <Grid item xs={12} style={{marginTop: "1.5em"}}>
                 <Typography variant="subtitle2" align="left">
