@@ -9,8 +9,12 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { Create, Cancel, ExpandMore } from "@material-ui/icons";
 import SessionEmailOrNotesModal from "./SessionEmailOrNotesModal";
+import moment from "moment";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
+import Loading from "../../OmouComponents/Loading";
+import { fullName } from "../../../utils";
+import theme from "../../../theme/muiTheme";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,19 +43,82 @@ const useStyles = makeStyles((theme) => ({
       display: "flex",
       justifyContent: "flex-end",
   },
+  accordionDivider: {
+    borderBottom: "1px solid #C4C4C4",
+  },
+  newNoteButton: {
+    marginBottom: "2em",
+    border: "1px solid #999999",
+    borderRadius: "5px",
+    fontSize: ".75rem",
+    fontWeight: 300,
+    fontFamily: "Roboto",
+    height: "2.5em",
+  },
+  plusSpan: {
+    fontSize: "1rem",
+    fontWeight: 500,
+    color: "#666666",
+    paddingRight: ".25em",
+  },
 }));
 
-const CourseListOptions = ({sessionId, open, handleCloseForm}) => {
-    console.log(sessionId)
-    console.log(open)
+const CourseListOptions = ({sessionId, loggedInUser}) => {
+    // console.log(sessionId)
+    // console.log(open)
+    // console.log(loggedInUser)
   const classes = useStyles();
   const [readMore, setReadMore] = useState(false);
+  const [expand, setExpand] = useState(false);
+  const [noteId, setNoteId] = useState();
+  const [open, setOpen] = useState(false);
   // const [open, setOpen] = useState(false);
   // const handleOpenForm = () => {
     // handleOpen(true, id, subject, body);
     // setOpen(true);
   // };
+
+  const GET_SESSION_NOTES = gql`
+  query getSessionNotes(
+    $sessionId: ID!
+  ) {
+    __typename
+    sessionNotes(sessionId: $sessionId) {
+      id
+      body
+      subject
+      poster {
+        firstName
+        lastName
+        id
+      }
+      createdAt
+    }
+  }
+  `;
+
+  const { data ,loading, error } = useQuery(GET_SESSION_NOTES, {
+    variables: {
+      sessionId: sessionId,
+    }
+  });
+
+  if (loading) return <Loading />;
+  if (error) return console.error(error.message);
+  console.log(data)
+
+  // const {} = data.sessio
   
+  const handleOpenForm = (e) => {
+    e.preventDefault();
+    // handleOpen(true, id, subject, body);
+    setOpen(true);
+  };
+
+  const handleCloseForm = (boolean) => {
+    console.log(boolean)
+    setOpen(boolean)
+  }
 
   const handleDeleteForm = () => {
     //   handleDelete(subject)
@@ -64,6 +131,7 @@ const CourseListOptions = ({sessionId, open, handleCloseForm}) => {
   const string =
     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas sed esse iste quisquam quidem, natus voluptatum ullam alias numquam harum, asperiores tempore doloribus qui. Ut neque commodi temporibus necessitatibus fugiat? Assumenda blanditiis ab unde libero molestias, quod voluptatibus iusto exercitationem neque, asperiores iste nostrum laboriosam atque eius distinctio quo pariatur ullam? Veritatis, omnis quae tempora aut incidunt eius natus non!";
   const hideString = string.substring(0, 110) + "...";
+  console.log(expand)
 
   return (
     <div className={classes.root}>
@@ -72,54 +140,61 @@ const CourseListOptions = ({sessionId, open, handleCloseForm}) => {
           expandIcon={<ExpandMore />}
           aria-controls="panel1a-content"
           id="panel1a-header"
+          onClick= {() => expand === false ? setExpand(true) : setExpand(false)}
+          className={expand ? classes.accordionDivider : null}
         >
           <Typography className={classes.heading}>Notes</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Grid container justify="flex-start">
-            <Grid item xs={6}>
-              <Typography variant="h6" align="left">
-                Test
-              </Typography>
-            </Grid>
-            <Grid item xs={6} className={classes.buttons}>
-              <Button>
-                <Create style={{ color: "#43B5D9" }} />
-              </Button>{" "}
-              <Button onClick={handleDeleteForm}>
-                <Cancel style={{ color: "#43B5D9" }} />
-              </Button>
-            </Grid>
-            <Grid item xs={12}>
-              {readMore === false ? (
-                <Typography variant="body1" align="left">
-                  {hideString}
-                  <a
-                    className={classes.anchorStyle}
-                    onClick={handleReadMoreClick}
-                  >
-                    {" "}
-                    Read More
-                  </a>
+        <Grid container justify="flex-start">
+        <Button className={classes.newNoteButton} onClick={handleOpenForm}><span className={classes.plusSpan}>+</span> New Note</Button>
+
+        {data.sessionNotes.map(note => {
+          const {body, createdAt, id, poster, subject} = note;
+          const hideString = body.substring(0, 110) + "...";
+            const date = moment(createdAt).format("MM/DD")
+  const time = moment(createdAt).format("h:mma")
+
+          return(
+              <>
+              <Grid item xs={12}>
+                <Typography variant="h6" align="left">
+                  {subject}
                 </Typography>
-              ) : (
-                <Typography variant="body1" align="left">
-                  {string}
+              </Grid>
+              <Grid item xs={12}>
+                {readMore === false && body.length > 110 ? (
+                  <Typography variant="body1" align="left">
+                    {hideString}
+                    <a
+                      className={classes.anchorStyle}
+                      onClick={handleReadMoreClick}
+                    >
+                      {" "}
+                      Read More
+                    </a>
+                  </Typography>
+                ) : (
+                  <Typography noWrap variant="body1" align="left">
+                    {body}
+                  </Typography>
+                )}
+              </Grid>
+              <Grid item xs={12} style={{marginTop: "1.5em"}}>
+                <Typography variant="subtitle2" align="left">
+                  Posted by:{" "}
+                  <span style={{ color: "#43B5D9", fontWeight: "550", padding: theme.spacing(1) }}>{fullName(poster)}</span> •{" "}
+                  <span style={{padding: theme.spacing(1)}}>{date} <span style={{padding: theme.spacing(1)}}>•</span> {time}</span>
                 </Typography>
-              )}
-            </Grid>
-            <Grid item xs={3} style={{marginTop: "1.5em"}}>
-              <Typography variant="subtitle2" align="left">
-                Posted by:{" "}
-                {/* <span style={{ color: "#43B5D9", fontWeight: "550" }}>{fullName}</span> -{" "} */}
-                {/* {date} - {time} */}
-              </Typography>
-            </Grid>
-          </Grid>
-        </AccordionDetails>
+              </Grid>
+              </>
+          )
+        })}
+                    </Grid>
+                  </AccordionDetails>
       </Accordion>
       <Divider />
-      <SessionEmailOrNotesModal open={open} handleCloseForm={handleCloseForm} />
+      <SessionEmailOrNotesModal open={open} handleCloseForm={handleCloseForm} posterId={loggedInUser} sessionId={sessionId} origin="COURSE_SESSIONS"/>
     </div>
   );
 };

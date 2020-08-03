@@ -109,7 +109,7 @@ const NewAnnouncementsModal = ({ handleClose, open, subject, id, body, userId, b
   const [announcementSubject, setAnnouncementSubject] = useState("");
   const courseId = useParams();
   const user_id = userId.results[0].user.id
-  // console.log(userId)  
+  console.log(userId)  
   // console.log(courseId)
 
 

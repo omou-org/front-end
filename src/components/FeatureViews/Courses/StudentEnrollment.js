@@ -18,6 +18,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Link } from "react-router-dom";
 import { fullName } from "../../../utils";
 import { omouBlue, highlightColor } from "../../../theme/muiTheme"
+import SessionEmailOrNotesModal from "./SessionEmailOrNotesModal";
 
 const useStyles = makeStyles({
   table: {
@@ -46,9 +47,14 @@ const useStyles = makeStyles({
   },
 });
 
-const Studentenrollment = ({ enrollmentList }) => {
+const Studentenrollment = ({ enrollmentList, loggedInUser }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [typeOfAccount, setTypeOfAccount] = useState();
+  const [userId, setUserId] = useState();
+  console.log(enrollmentList);
+  console.log(loggedInUser)
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -57,6 +63,22 @@ const Studentenrollment = ({ enrollmentList }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleOpenModal = (event) => {
+    event.preventDefault();
+    setUserId(event.currentTarget.value);
+    setTypeOfAccount(event.currentTarget.dataset.type);
+    setModalOpen(true);
+    setAnchorEl(null);
+  }
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  }
+
+  const handleSendEmail = () => {
+
+  }
 
   return (
     <Grid item xs={12}>
@@ -94,6 +116,7 @@ const Studentenrollment = ({ enrollmentList }) => {
                 const parentAccountType = primaryParent.accountType.toLowerCase();
                 const phoneNumber = primaryParent.phoneNumber;
                 const parentId = primaryParent.user.id;
+                const parentEmail = primaryParent.user.email;
 
                 return (
                   <TableRow key={fullStudentName}>
@@ -115,32 +138,12 @@ const Studentenrollment = ({ enrollmentList }) => {
                     </TableCell>
                     <TableCell>{phoneNumber}</TableCell>
                     <TableCell align="right" padding="none" size="small">
-                      <Button>
-                      <MailOutlineIcon style={{color: "rgb(112,105,110)"}}/>
-                      </Button>
-                    </TableCell>
-                    <TableCell
-                      align="right"
-                      padding="none"
-                      size="small"
-                      className={classes.icon}
-                    >
-                      <Button>
-                      <ChatOutlinedIcon style={{color: "rgb(112,105,110)"}}/>
-                      </Button>
-                    </TableCell>
-                    <TableCell
-                      align="right"
-                      padding="none"
-                      size="small"
-                      className={classes.carrot}
-                    >
-                      <Button
+                    <Button
                         aria-controls="simple-menu"
                         aria-haspopup="true"
                         onClick={handleClick}
                       >
-                        <ExpandMoreIcon style={{color: omouBlue}} fontSize="large"/>
+                      <MailOutlineIcon style={{color: "rgb(112,105,110)"}}/>
                       </Button>
                       <Menu
                         id="simple-menu"
@@ -150,9 +153,31 @@ const Studentenrollment = ({ enrollmentList }) => {
                         onClose={handleClose}
                         classes={{list: classes.dropdown}}
                       >
-                        <MenuItem onClick={handleClose} className={classes.menuSelected}>Email Student</MenuItem>
-                        <MenuItem onClick={handleClose} className={classes.menuSelected}>Email Parent</MenuItem>
+                        <MenuItem onClick={handleOpenModal} className={classes.menuSelected} value={studentId} data-type={accountType}>Email Student</MenuItem>
+                        <MenuItem onClick={handleOpenModal} className={classes.menuSelected} value={parentId} data-type={primaryParent.accountType}>Email Parent</MenuItem>
                       </Menu>
+
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      padding="none"
+                      size="small"
+                      className={classes.icon}
+                    >
+                      <Button disabled>
+                      <ChatOutlinedIcon style={{color: "rgb(112,105,110)"}}/>
+                      </Button>
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      padding="none"
+                      size="small"
+                      className={classes.carrot}
+                    >
+                      <Button>
+                        <ExpandMoreIcon style={{color: omouBlue}} fontSize="large"/>
+                      </Button>
+                    
                     </TableCell>
                   </TableRow>
                 );
@@ -160,6 +185,7 @@ const Studentenrollment = ({ enrollmentList }) => {
           </TableBody>
         </Table>
       </TableContainer>
+      <SessionEmailOrNotesModal open={modalOpen} handleCloseForm={handleCloseModal} accountType={typeOfAccount} userId={userId} origin="STUDENT_ENROLLMENT" posterId={loggedInUser}/>
     </Grid>
   );
 };

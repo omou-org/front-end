@@ -6,11 +6,12 @@ import { Create, Cancel } from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import { highlightColor } from "../../../theme/muiTheme";
 import gql from "graphql-tag"
-import { useQuery } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import moment from "moment";
 import NewAnnouncementModal from "./NewAnnoucementsModal";
 import { fullName } from "../../../utils";
 import theme from "../../../theme/muiTheme";
+
 
 
 const useStyles = makeStyles({
@@ -81,7 +82,7 @@ const AnnouncementCard = ({ id, fullName, subject, body, createdAt, handleEdit, 
   };
 
   const handleDeleteForm = () => {
-      handleDelete(subject)
+      handleDelete(id)
   }
   
   return (
@@ -109,7 +110,7 @@ const AnnouncementCard = ({ id, fullName, subject, body, createdAt, handleEdit, 
           {body}
         </Typography>
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={12}>
         <Typography variant="subtitle2" align="left">
           Posted by:
           <span style={{ color: "#43B5D9", fontWeight: "550", padding: theme.spacing(1) }}>{fullName}</span> •{" "}
@@ -129,7 +130,22 @@ const Announcements = ({announcementsData, loggedInUser, classTitle}) => {
   const [editOrPost, setEditOrPost] = useState("post");
   const classes = useStyles();
 
-  console.log(announcementBody);
+const DELETE_ANNOUNCEMENT = gql`
+mutation removeAnnouncement(
+  $id: ID!
+) {
+  __typename
+  deleteAnnouncement(id: $id) {
+    deleted
+  }
+}
+`
+
+const [deleteAnnouncement, deleteAnnouncementResult] = useMutation(
+  DELETE_ANNOUNCEMENT, {
+    error: err => console.error(err),
+  }
+)
   
   useEffect(() => {
     setAnnouncementsRender(announcementsData)
@@ -154,10 +170,12 @@ const Announcements = ({announcementsData, loggedInUser, classTitle}) => {
     };
   
 
-  const handleDeleteAnnouncement = (id) => {
-      removeAnnouncement(id);
-      console.log("does this run?")
-    //   console.log(announcementData)
+  const handleDeleteAnnouncement = async (id) => {
+      const deletedAnnouncement = await deleteAnnouncement({
+        variables: {
+          id: id
+        }
+      });
   };
 
   return (

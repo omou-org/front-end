@@ -45,43 +45,22 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid #43B5D9",
     borderRadius: "5px",
   },
-  newNoteButton: {
-    marginBottom: "2em",
-    border: "1px solid #999999",
-    borderRadius: "5px",
-    fontSize: ".75rem",
-    fontWeight: 300,
-    fontFamily: "Roboto",
-    height: "2.5em",
-  },
-  plusSpan: {
-    fontSize: "1rem",
-    fontWeight: 500,
-    color: "#666666",
-    paddingRight: ".25em",
-  },
 }));
 
-const CourseSessions = ({ sessionList }) => {
+const CourseSessions = ({ sessionList, loggedInUser }) => {
+  // console.log(loggedInUser)
   const classes = useStyles();
   const [sortBySession, setSortBySession] = useState("");
-  const [open, setOpen] = useState(false);
+
   // console.log(sessionList);
 
   const handleChange = (e) => {
     setSortBySession(e.target.value);
   };
 
-  const handleOpenForm = (e) => {
-    e.preventDefault();
-    // handleOpen(true, id, subject, body);
-    setOpen(true);
-  };
 
-  const handleCloseForm = (boolean) => {
-    console.log(boolean)
-    setOpen(boolean)
-  }
+
+
   
   // console.log(sortBySession);
   return (
@@ -134,8 +113,7 @@ const CourseSessions = ({ sessionList }) => {
             </Select>
           </FormControl>
         </Grid>
-        <Button className={classes.newNoteButton} onClick={handleOpenForm}><span className={classes.plusSpan}>+</span> New Note</Button>
-        {sortBySession === "" ? null : <CourseListOptions open={open} sessionId={sortBySession} handleCloseForm={handleCloseForm}/> }
+        {sortBySession === "" ? null : <CourseListOptions sessionId={sortBySession} loggedInUser={loggedInUser}/> }
       </Grid>
     </>
   );

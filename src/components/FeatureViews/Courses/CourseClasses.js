@@ -309,10 +309,10 @@ const CourseClasses = () => {
                   <Announcements announcementsData={data.announcements} loggedInUser={data.accountSearch} />
                 </TabPanel>
                 <TabPanel index={2} value={index}>
-                <StudentEnrollment enrollmentList={enrollmentSet} />
+                <StudentEnrollment enrollmentList={enrollmentSet} loggedInUser={data.accountSearch}/>
                 </TabPanel>
                 <TabPanel index={3} value={index}>
-                  <CourseSessions sessionList={sessionSet}/>
+                  <CourseSessions sessionList={sessionSet} loggedInUser={data.accountSearch}/>
                 </TabPanel>
               </Grid>
             </ThemeProvider>
