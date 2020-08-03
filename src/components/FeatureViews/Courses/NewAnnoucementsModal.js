@@ -110,27 +110,6 @@ const NewAnnouncementsModal = ({ handleClose, open, subject, id, body, userId, b
   const courseId = useParams();
   const user_id = userId.results[0].user.id
   console.log(userId)  
-  // console.log(courseId)
-
-
-//   const GET_PARENT_INFO = gql`
-//   query getParentInfo($id: ID!) {
-//     __typename
-//     course(courseId: "$id") {
-//       enrollmentSet {
-//         student {
-//           primaryParent {
-//             user {
-//               email
-//               firstName
-//               lastName
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-// `;  
 
   const CREATE_ANNOUNCEMENTS = gql`
     mutation CreateAnnouncement(

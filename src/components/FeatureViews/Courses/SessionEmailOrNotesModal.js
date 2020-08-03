@@ -64,12 +64,11 @@ const useStyles = makeStyles((theme) => ({
  },
 }));
 
-const SessionEmailOrNotesModal = ({ open, handleCloseForm, accountType, userId, origin, posterId, sessionId }) => {
+const SessionEmailOrNotesModal = ({ open, handleCloseForm, accountType, userId, origin, posterId, sessionId, noteId, noteSubject, noteBody, buttonState }) => {
   const classes = useStyles();
-  const [subject, setSubject] = useState();
-  const [body, setBody] = useState();
+  const [subject, setSubject] = useState(noteSubject);
+  const [body, setBody] = useState(noteBody);
   const poster_id = posterId.results[0].user.id
-
 
   const SEND_EMAIL = gql`
   mutation SendEmail(
@@ -103,6 +102,25 @@ const SessionEmailOrNotesModal = ({ open, handleCloseForm, accountType, userId, 
   }  
   `;
 
+  const EDIT_SESSION_NOTE = gql`
+  mutation editSessionNote(
+    $body: String!,
+    $subject: String!,
+    $user: ID!,
+    $sessionId: ID!,
+    $id: ID!,
+  ) {
+    __typename
+    createSessionNote(body: $body, user: $user, subject: $subject, sessionId: $sessionId, id: $id) {
+      created
+      sessionNote {
+        body
+        subject
+      }
+    }
+  }
+  `;
+
   const [sendEmail, sendEmailResult] = useMutation(
     SEND_EMAIL, {
       onCompleted: () => handleClose(false),
@@ -110,12 +128,19 @@ const SessionEmailOrNotesModal = ({ open, handleCloseForm, accountType, userId, 
     }
   );
 
-  const [createSessioNote, createSessionNoteResult] = useMutation(
+  const [createSessionNote, createSessionNoteResult] = useMutation(
     CREATE_SESSION_NOTE, {
       onCompleted: () =>  handleClose(false),
       error: err => console.error(err),
     }
-  )
+  );
+
+  const [editSessionNote, editSessionNoteResult] = useMutation(
+    EDIT_SESSION_NOTE, {
+      onCompleted: () =>  handleClose(false),
+      error: err => console.error(err),
+    }
+  );
 
   const handleClose = () => {
     handleCloseForm(false);
@@ -133,14 +158,27 @@ const SessionEmailOrNotesModal = ({ open, handleCloseForm, accountType, userId, 
             }
           });
     } else {
-      const createdSessioNote = await createSessioNote({
-        variables: {
-          subject: subject,
-          body: body,
-          user: poster_id,
-          sessionId: sessionId
-        }
-      });
+      if(buttonState === "edit") {
+        console.log("edit works")
+        const editedSessionNote = await editSessionNote({
+          variables: {
+            subject: subject,
+            body: body,
+            user: poster_id,
+            sessionId: sessionId,
+            id: noteId,
+          }
+        });
+      } else {
+        const createdSessioNote = await createSessionNote({
+          variables: {
+            subject: subject,
+            body: body,
+            user: poster_id,
+            sessionId: sessionId
+          }
+        });
+      }
     };
   };
 
@@ -151,7 +189,8 @@ const SessionEmailOrNotesModal = ({ open, handleCloseForm, accountType, userId, 
 const handleBodyChange = useCallback((event) => {
     setBody(event.target.value);
 }, []);
-
+console.log(body)
+console.log(subject)
 
   return (
     <Dialog
@@ -167,6 +206,7 @@ const handleBodyChange = useCallback((event) => {
           className={classes.subjectUnderline}
           disableUnderline
           onChange={handleSubjectChange}
+          defaultValue={buttonState === "edit" ? noteSubject : ""}
         />
         <TextField
           InputProps={{
@@ -181,6 +221,7 @@ const handleBodyChange = useCallback((event) => {
           placeholder="Body"
           type="email"
           fullWidth
+          defaultValue={buttonState === "edit" ? noteBody : ""}
           multiline
           rows={12}
         />

@@ -8,7 +8,6 @@ const ClassInfo = ({description}) => {
         <Grid container style={{marginTop: "2.5em"}}>
             <Grid item xs={12}>
         <Typography variant="body2" align="left" style={{marginBottom: "5em"}}>{description}</Typography>
-        <Typography variant="h5" align="left">Course Files <AddIcon /></Typography>
         </Grid>
         </Grid>
     )

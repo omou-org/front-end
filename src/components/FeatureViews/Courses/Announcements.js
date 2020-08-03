@@ -45,30 +45,6 @@ const useStyles = makeStyles({
   },
 });
 
-// const announcementData = [
-//   {
-//     user: "Katie Ho",
-//     title: "Updated Business Hours",
-//     body: "Due to COVID-19 situation, we have a new schedule",
-//     date: "2/12",
-//     time: "10:24a",
-//   },
-//   {
-//     user: "Katie Ho",
-//     title: "Parking Area",
-//     body: "Due to temporary construction that is happening on Joy St.",
-//     date: "1/10",
-//     time: "8:04a",
-//   },
-//   {
-//     user: "Katie Ho",
-//     title: "New Year Gathering",
-//     body: "Join us with other tutors and staff for early New Year",
-//     date: "12/28",
-//     time: "9:03a",
-//   },
-// ];
-
 const AnnouncementCard = ({ id, fullName, subject, body, createdAt, handleEdit, handleDelete }) => {
   const classes = useStyles();
   const date = moment(createdAt).format("MM/DD")

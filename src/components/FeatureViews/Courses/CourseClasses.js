@@ -138,22 +138,6 @@ const CourseClasses = () => {
     }
   `;
 
-//   const DASHBOARD_QUERY = gql`query DashboardQuery($email: String="") {
-//     sessionSearch(query: "", time: "today", sort: "timeAsc") {
-//       results {
-//         course {
-//           courseCategory {
-//             id
-//             name
-//           }
-//         }
-//       }
-//     }
-
-//   }
-  
-// `;
-
   const { data, loading, error } = useQuery(GET_CLASSES, { variables: {
     id: id.id,
     email: email
