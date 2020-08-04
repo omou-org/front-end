@@ -24,6 +24,7 @@ import Announcements from "./Announcements";
 import StudentEnrollment from "./StudentEnrollment";
 import CourseSessions from "./CourseSessions";
 import { useSelector } from "react-redux";
+import { gradeLvl } from "../../../utils"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -265,7 +266,7 @@ const CourseClasses = () => {
               align="left"
               className={classes.dataFontDate}
             >
-              {academicLevel}
+              {gradeLvl(academicLevel)}
             </Typography>
           </Grid>
           <Grid item xs={2} md={4} lg={2} xl={2}>

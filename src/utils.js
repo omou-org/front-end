@@ -241,6 +241,21 @@ export const gradeOptions = [
     },
 ];
 
+export const gradeLvl = (gradelevel) => {
+    switch(gradelevel) {
+      case "ELEMENTARY_LVL":
+        return "K-4";
+      case "MIDDLE_LVL": 
+        return "5-8";
+      case "HIGH_LVL":
+        return "9-12";
+      case "COLLEGE_LVL":
+        return "College";
+      default:
+        return;
+    }
+  }
+
 /**
  * Converts a time of day to a backend-friendly format
  * @param {Date} time Time of day to convert
