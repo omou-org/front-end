@@ -1,14 +1,14 @@
-import React, {useState} from "react";
-import {makeStyles} from "@material-ui/core/styles";
+import React, { useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
 
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import Moment from "react-moment";
 
-import {fullName} from "utils";
+import { fullName } from "utils";
 import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
 import {
@@ -23,7 +23,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import gql from "graphql-tag";
-import {useQuery} from "@apollo/react-hooks";
+import { useQuery } from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -55,21 +55,21 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const CourseList = ({filteredCourses, updatedParent}) => {
+const CourseList = ({ filteredCourses, updatedParent }) => {
     const [openCourseQuickRegistration, setOpen] = useState(false);
     const [quickCourseID, setQuickCourseID] = useState(null);
     const [quickStudent, setQuickStudent] = useState("");
-    const {studentList} = JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
-    const {data, loading} = useQuery(GET_STUDENTS, {
-        "variables": {"userIds": studentList},
+    const { studentList } = JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
+    const { data, loading } = useQuery(GET_STUDENTS, {
+        "variables": { "userIds": studentList },
         skip: !studentList
     });
 
-    const {currentParent} = getRegistrationCart();
-    const {parentIsLoggedIn} = useValidateRegisteringParent();
-    const {courseTitle, courseRow} = useStyles();
+    const { currentParent } = getRegistrationCart();
+    const { parentIsLoggedIn } = useValidateRegisteringParent();
+    const { courseTitle, courseRow } = useStyles();
 
-    if (loading) return <Loading small/>;
+    if (loading) return <Loading small />;
 
     const studentOptions = data?.userInfos.map((student) => ({
         "label": fullName(student.user),
@@ -90,26 +90,26 @@ const CourseList = ({filteredCourses, updatedParent}) => {
         <TableBody>
             {
                 filteredCourses
-                    .filter(({courseType, endDate}) => (courseType === "CLASS") &&
+                    .filter(({ courseType, endDate }) => (courseType === "CLASS") &&
                         moment().diff(moment(endDate), 'days') < 0)
                     .map((course) => (
                         <TableRow
                             key={course.id}
                         >
                             <TableCell
-                                style={{padding: "3%"}}
+                                style={{ padding: "3%" }}
                                 component={Link} to={`/registration/course/${course.id}`}
                                 className={courseRow}
                             >
                                 <Grid className={courseTitle}
-                                      item md={10} xs={12}
-                                      container
-                                      direction="column"
+                                    item md={10} xs={12}
+                                    container
+                                    direction="column"
                                 >
                                     <Grid item>
                                         <Typography align="left"
-                                                    className="course-heading"
-                                                    style={{fontSize: "1.5em", fontWeight: 550, margin: "10px 0"}}
+                                            className="course-heading"
+                                            style={{ fontSize: "1.5em", fontWeight: 550, margin: "10px 0" }}
                                         >
                                             {course.title}
                                         </Typography>
@@ -120,17 +120,17 @@ const CourseList = ({filteredCourses, updatedParent}) => {
                                             {" | "}
                                             <Moment
                                                 date={course.startDate}
-                                                format="MMM D YYYY"/>
+                                                format="L" />
                                             {" - "}
                                             <Moment
                                                 date={course.endDate}
-                                                format="MMM D YYYY"/> {" "}
+                                                format="L" /> {" "}
                                             <Moment date={`${course.startDate}T${course.startTime}`}
-                                                    format="dddd h:mm a"/>
+                                                format="ddd h:mm " />
                                             {" - "}
                                             <Moment
                                                 date={`${course.startDate}T${course.endTime}`}
-                                                format="dddd h:mm a"/>
+                                                format="h:mm a" />
                                             {" | "}
                                             ${course.totalTuition}
                                         </Typography>
@@ -138,15 +138,15 @@ const CourseList = ({filteredCourses, updatedParent}) => {
                                 </Grid>
                             </TableCell>
                             <TableCell>
-                                <span style={{margin: "5px", display: "block"}}>
+                                <span style={{ margin: "5px", display: "block" }}>
                                     {course.enrollmentSet.length} / {course.maxCapacity}
                                     <span className="label">Enrolled</span>
                                 </span>
                                 {(currentParent || parentIsLoggedIn || updatedParent) && (
                                     <Button disabled={course.maxCapacity <= course.enrollmentSet.length}
-                                            variant="contained"
-                                            color="primary"
-                                            onClick={handleStartQuickRegister(course.id)}
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={handleStartQuickRegister(course.id)}
                                     >
                                         + REGISTER
                                     </Button>
@@ -163,13 +163,13 @@ const CourseList = ({filteredCourses, updatedParent}) => {
                 <FormControl fullWidth>
                     <InputLabel id="select-student-quick-registration">Select Student</InputLabel>
                     <Select labelId="select-student-quick-registration"
-                            variant="outlined"
-                            value={quickStudent}
-                            onChange={(event) => setQuickStudent(event.target.value)}
+                        variant="outlined"
+                        value={quickStudent}
+                        onChange={(event) => setQuickStudent(event.target.value)}
                     >
                         <MenuItem value="">Select Student</MenuItem>
                         {
-                            studentOptions.map(({value, label}) => <MenuItem value={value} key={value}>
+                            studentOptions.map(({ value, label }) => <MenuItem value={value} key={value}>
                                 {label}
                             </MenuItem>)
                         }

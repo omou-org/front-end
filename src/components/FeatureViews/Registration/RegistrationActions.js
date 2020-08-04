@@ -1,21 +1,21 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import {Link, useHistory} from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import NewCourse from "@material-ui/icons/School";
 import Tooltip from "@material-ui/core/Tooltip";
 
 import "./registration.scss";
 import SelectParentDialog from "./SelectParentDialog";
-import {stringToColor} from "../Accounts/accountUtils";
-import {fullName, USER_TYPES} from "../../../utils";
+import { stringToColor } from "../Accounts/accountUtils";
+import { fullName, USER_TYPES } from "../../../utils";
 import {
 	getRegistrationCart,
 	setParentRegistrationCart,
 	useValidateRegisteringParent
 } from "../../OmouComponents/RegistrationUtils";
-import {useSelector} from "react-redux";
-import {useQuery} from "@apollo/react-hooks";
+import { useSelector } from "react-redux";
+import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import Loading from "../../OmouComponents/Loading";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCartOutlined";
@@ -37,14 +37,14 @@ query GetRegisteringParent($userId: ID!) {
 }
 `
 
-const RegistrationActions = ({updateRegisteringParent}) => {
-	const AuthUser = useSelector(({auth}) => auth);
-	const {parentIsLoggedIn} = useValidateRegisteringParent();
-	const {currentParent, ...registrationState} = getRegistrationCart();
+const RegistrationActions = ({ updateRegisteringParent }) => {
+	const AuthUser = useSelector(({ auth }) => auth);
+	const { parentIsLoggedIn } = useValidateRegisteringParent();
+	const { currentParent, ...registrationState } = getRegistrationCart();
 	const [updatedRegistrationCartNum, setUpdatedRegistrationCartNum] = useState(null);
 	const [dialogOpen, setDialog] = useState(false);
-	const {data, error, loading} = useQuery(GET_PARENT_QUERY, {
-		variables: {userId: AuthUser.user.id},
+	const { data, error, loading } = useQuery(GET_PARENT_QUERY, {
+		variables: { userId: AuthUser.user.id },
 		skip: AuthUser.accountType !== USER_TYPES.parent,
 	});
 	const history = useHistory();
@@ -65,7 +65,7 @@ const RegistrationActions = ({updateRegisteringParent}) => {
 		}
 	}, [AuthUser.accountType, loading]);
 
-	if (loading) return <Loading/>;
+	if (loading) return <Loading />;
 	if (error) return <div>There has been an error: {error.message}</div>
 
 	const registeringParent = data?.parent || currentParent;
@@ -83,13 +83,16 @@ const RegistrationActions = ({updateRegisteringParent}) => {
 	return (
 		<>
 			<Grid
-				item
+
 				className="registration-action-control"
 				container
 				direction="row"
 				justify="flex-start"
+				alignItems="center"
+				spacing={1}
+
 			>
-				<Grid item md={8}>
+				<Grid item md={9}>
 					{(currentParent || parentIsLoggedIn) && (
 						<Grid item xs={2}>
 							<Button
@@ -100,7 +103,7 @@ const RegistrationActions = ({updateRegisteringParent}) => {
 								component={Link} to="/registration/form/class-registration"
 								variant="outlined"
 							>
-								<NewCourse className="icon innerIcon"/>
+								<NewCourse className="icon innerIcon" />
 								REGISTER CLASS
 							</Button>
 						</Grid>
@@ -120,13 +123,13 @@ const RegistrationActions = ({updateRegisteringParent}) => {
 							</Button>
 						</Tooltip>
 					) : (
-						<Button className="button set-parent" onClick={openDialog}>
-							<div className="circle-icon"/>
+							<Button className="button set-parent" onClick={openDialog}>
+								<div className="circle-icon" />
 							SET PARENT
-						</Button>
-					)}
+							</Button>
+						)}
 				</Grid>
-				<Grid item xs={2}>
+				<Grid item xs={1} style={{ paddingRight: "6vh", verticalAlign: "middle" }}>
 					<IconButton
 						onClick={toShoppingCart}
 						disabled={numberOfRegistrationsInCart === 0}
@@ -140,12 +143,12 @@ const RegistrationActions = ({updateRegisteringParent}) => {
 								horizontal: 'right',
 							}}
 						>
-							<ShoppingCartIcon style={{fontSize: "1.4em"}}/>
+							<ShoppingCartIcon style={{ fontSize: "1.4em", }} />
 						</Badge>
 					</IconButton>
 				</Grid>
 			</Grid>
-			<SelectParentDialog onClose={closeDialog} open={dialogOpen} updateCartNum={setUpdatedRegistrationCartNum}/>
+			<SelectParentDialog onClose={closeDialog} open={dialogOpen} updateCartNum={setUpdatedRegistrationCartNum} />
 		</>
 	);
 };
