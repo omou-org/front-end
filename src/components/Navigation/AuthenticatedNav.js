@@ -84,8 +84,8 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
                             {name.match(/\b\w/ug).join("")}
                         </Avatar>
                     </Tooltip>
-                    {name === 'NELSON' &&
-                        <Typography className="catsButton" component={NavLinkNoDup}
+                    {name === "NeLSoN" &&
+                        <Typography className="catsButton" component={NavLinkNoDup} style={{ marginLeft: "-2rem" }}
                             to="/cats">
                             CATS
                     </Typography>
