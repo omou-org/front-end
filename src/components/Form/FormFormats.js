@@ -1281,7 +1281,8 @@ export default {
             const modifiedData = {
                 "basicInfo": {
                     ...basicInfo,
-                    birthDate: basicInfo.birthDate.toISOString().substr(0, 10),
+                    birthDate: basicInfo.birthDate ? basicInfo.birthDate.toISOString().substr(0, 10) :
+                        "2020-01-01",
                 },
                 "experience": {
                     ...experience,
