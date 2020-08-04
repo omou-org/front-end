@@ -72,13 +72,13 @@ describe("A:00Login_spec", () => {
 
   it("Saves details", () => {
     cy.window()
-		.its("store")
-		.invoke("getState")
-		.should("have.nested.property", "auth.token", "token");
+      .its("store")
+      .invoke("getState")
+      .should("have.nested.property", "auth.token", "token");
     cy.window()
-		.its("store")
-		.invoke("getState")
-		.should("have.nested.property", "auth.isAdmin", userDetails.is_staff);
+      .its("store")
+      .invoke("getState")
+      .should("have.nested.property", "auth.isAdmin", userDetails.is_staff);
     cy.getCookie("authToken").should("be", token);
   });
 });
