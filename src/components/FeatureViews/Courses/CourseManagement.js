@@ -133,7 +133,6 @@ const CourseDisplayCard = ({
   const classes = useStyles();
   let history = useHistory();
   const [activeTime, setActiveTime] = useState("PAST");
-  // const [activeColor, setActiveColor] = useState("#BDBDBD");
   const concatFullName = fullName(instructor.user);
   const abbreviatedDay = moment(startDate).format("ddd");
   const startingTime = moment(startTime, "HH:mm").format("h:mm A");
@@ -143,10 +142,7 @@ const CourseDisplayCard = ({
 
   const isActive = (startTime, endTime, startDate, endDate) => {
     const currentTime = moment().format("HH:mm:ss");
-    console.log(currentTime);
     const currentDate = moment().format("L");
-    console.log(currentDate);
-    console.log(startDate);
     return (
       currentDate >= startDate &&
       currentTime >= startTime &&
@@ -154,21 +150,6 @@ const CourseDisplayCard = ({
       currentDate <= endDate
     );
   };
-
-  // isActive(startTime, endTime, startingDate, endingDate);
-
-  // useEffect(() => {
-  //   const currentTime = moment().format("HH:mm:ss");
-  //   const currentDate = moment().format("L");
-
-  //   if (currentDate >= startingDate && currentTime >= startTime && currentTime <= endTime && currentDate <= endingDate) {
-  //     setActiveTime("ACTIVE");
-  //     setActiveColor("#6FCF97");
-  //   } else {
-  //     setActiveTime("PAST");
-  //     setActiveColor("#BDBDBD");
-  //   }
-  // }, [activeTime]);
 
   const handleClick = (e) => {
     history.push(`/coursemanagement/class/${id}`);
@@ -190,7 +171,11 @@ const CourseDisplayCard = ({
         </Grid>
         <Grid item xs={6} style={{ textAlign: "left" }}>
           <Chip
-            label={activeTime}
+            label={
+              isActive(startTime, endTime, startingDate, endingDate)
+                ? "ACTIVE"
+                : "PAST"
+            }
             className={classes.chipSize}
             style={{
               backgroundColor: isActive(
@@ -233,12 +218,85 @@ const CourseDisplayCard = ({
   );
 };
 
-const CourseFilter = ({ options }) => {
+const CourseFilter = ({ initialValue, filterList, setState, filter }) => {
   const classes = useStyles();
-  const [value, setValue] = useState("");
-  const hanldeChange = (event) => setValue(event.target.value);
+  const handleChange = (event) => setState(event.target.value);
 
-  return <></>;
+  const chosenFilter = filterList.map((filterItem) => {
+    switch (initialValue) {
+      case "All Instructors":
+        return (
+          <MenuItem
+            key={filterItem.instructor.user.lastName}
+            className={classes.menuSelect}
+            value={filterItem.instructor.user.lastName}
+            ListItemClasses={{ selected: classes.menuSelected }}
+          >
+            {fullName(filterItem.instructor.user)}
+          </MenuItem>
+        );
+      case "All Subjects":
+        return (
+          <MenuItem
+            key={filterItem.courseCategory.name}
+            className={classes.menuSelect}
+            value={filterItem.courseCategory.name}
+            ListItemClasses={{ selected: classes.menuSelected }}
+          >
+            {filterItem.courseCategory.name}
+          </MenuItem>
+        );
+      case "All Grades":
+        return (
+          <MenuItem
+            key={filterItem.text}
+            className={classes.menuSelect}
+            value={filterItem.value}
+            ListItemClasses={{ selected: classes.menuSelected }}
+          >
+            {filterItem.text}
+          </MenuItem>
+        );
+      default:
+        return;
+    }
+  });
+
+  return (
+    <Grid item xs={3}>
+      <FormControl className={classes.margin}>
+        <Select
+          labelId="course-management-sort-tab"
+          id="course-management-sort-tab"
+          displayEmpty
+          value={filter}
+          onChange={handleChange}
+          classes={{ select: classes.menuSelect }}
+          input={<BootstrapInput />}
+          MenuProps={{
+            classes: { list: classes.dropdown },
+            anchorOrigin: {
+              vertical: "bottom",
+              horizontal: "left",
+            },
+            transformOrigin: {
+              vertical: "top",
+              horizontal: "left",
+            },
+            getContentAnchorEl: null,
+          }}
+        >
+          <MenuItem
+            ListItemClasses={{ selected: classes.menuSelected }}
+            value=""
+          >
+            {initialValue}
+          </MenuItem>
+          {chosenFilter}
+        </Select>
+      </FormControl>
+    </Grid>
+  );
 };
 
 const CourseManagement = () => {
@@ -248,8 +306,8 @@ const CourseManagement = () => {
   const [filterBySubjects, setFilterBySubjects] = useState("");
   const [filterByInstructors, setFilterByInstructors] = useState("");
 
-  const handleChange = (setTab) => (event) => {
-    setTab(event.target.value);
+  const handleChange = (event) => {
+    setSortByDate(event.target.value);
   };
 
   const GET_COURSES = gql`
@@ -298,7 +356,12 @@ const CourseManagement = () => {
     );
 
   const subjectList = createFilteredListFromCourses("course");
-
+  const gradeList = [
+    { text: "Elementary School", value: "ELEMENTARY_LVL" },
+    { text: "Middle School", value: "MIDDLE_LVL" },
+    { text: "High School", value: "HIGH_LVL" },
+    { text: "College", value: "COLLEGE_LVL" },
+  ];
   const instructorsList = createFilteredListFromCourses("instructor");
 
   const checkFilter = (value, filter) => "" === filter || value === filter;
@@ -341,7 +404,7 @@ const CourseManagement = () => {
                   id="course-management-sort-tab"
                   displayEmpty
                   value={sortByDate}
-                  onChange={handleChange(setSortByDate)}
+                  onChange={handleChange}
                   classes={{ select: classes.menuSelect }}
                   input={<BootstrapInput />}
                   MenuProps={{
@@ -382,150 +445,24 @@ const CourseManagement = () => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={3}>
-              <FormControl className={classes.margin}>
-                <Select
-                  labelId="course-management-sort-tab"
-                  id="course-management-sort-tab"
-                  displayEmpty
-                  value={filterByGrades}
-                  onChange={handleChange(setFilterByGrades)}
-                  classes={{ select: classes.menuSelect }}
-                  input={<BootstrapInput />}
-                  MenuProps={{
-                    classes: { list: classes.dropdown },
-                    anchorOrigin: {
-                      vertical: "bottom",
-                      horizontal: "left",
-                    },
-                    transformOrigin: {
-                      vertical: "top",
-                      horizontal: "left",
-                    },
-                    getContentAnchorEl: null,
-                  }}
-                >
-                  <MenuItem
-                    ListItemClasses={{ selected: classes.menuSelected }}
-                    value=""
-                  >
-                    All Grades
-                  </MenuItem>
-                  <MenuItem
-                    className={classes.menuSelect}
-                    value={"ELEMENTARY_LVL"}
-                    ListItemClasses={{ selected: classes.menuSelected }}
-                  >
-                    Elementary School
-                  </MenuItem>
-                  <MenuItem
-                    className={classes.menuSelect}
-                    value={"MIDDLE_LVL"}
-                    ListItemClasses={{ selected: classes.menuSelected }}
-                  >
-                    Middle School
-                  </MenuItem>
-                  <MenuItem
-                    className={classes.menuSelect}
-                    value={"HIGH_LVL"}
-                    ListItemClasses={{ selected: classes.menuSelected }}
-                  >
-                    High School
-                  </MenuItem>
-                  <MenuItem
-                    className={classes.menuSelect}
-                    value={"COLLEGE_LVL"}
-                    ListItemClasses={{ selected: classes.menuSelected }}
-                  >
-                    College
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={3}>
-              <FormControl className={classes.margin}>
-                <Select
-                  labelId="course-management-sort-tab"
-                  id="course-management-sort-tab"
-                  displayEmpty
-                  value={filterBySubjects}
-                  onChange={handleChange(setFilterBySubjects)}
-                  classes={{ select: classes.menuSelect }}
-                  input={<BootstrapInput />}
-                  MenuProps={{
-                    classes: { list: classes.dropdown },
-                    anchorOrigin: {
-                      vertical: "bottom",
-                      horizontal: "left",
-                    },
-                    transformOrigin: {
-                      vertical: "top",
-                      horizontal: "left",
-                    },
-                    getContentAnchorEl: null,
-                  }}
-                >
-                  <MenuItem
-                    ListItemClasses={{ selected: classes.menuSelected }}
-                    value=""
-                  >
-                    All Subjects
-                  </MenuItem>
-                  {subjectList.map((subject) => (
-                    <MenuItem
-                      key={subject.courseCategory.name}
-                      className={classes.menuSelect}
-                      value={subject.courseCategory.name}
-                      ListItemClasses={{ selected: classes.menuSelected }}
-                    >
-                      {subject.courseCategory.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={3}>
-              <FormControl className={classes.margin}>
-                <Select
-                  labelId="course-management-sort-tab"
-                  id="course-management-sort-tab"
-                  displayEmpty
-                  value={filterByInstructors}
-                  onChange={handleChange(setFilterByInstructors)}
-                  classes={{ select: classes.menuSelect }}
-                  input={<BootstrapInput />}
-                  MenuProps={{
-                    classes: { list: classes.dropdown },
-                    anchorOrigin: {
-                      vertical: "bottom",
-                      horizontal: "left",
-                    },
-                    transformOrigin: {
-                      vertical: "top",
-                      horizontal: "left",
-                    },
-                    getContentAnchorEl: null,
-                  }}
-                >
-                  <MenuItem
-                    ListItemClasses={{ selected: classes.menuSelected }}
-                    value=""
-                  >
-                    All Instructors
-                  </MenuItem>
-                  {instructorsList.map((instructor) => (
-                    <MenuItem
-                      key={instructor.instructor.user.lastName}
-                      className={classes.menuSelect}
-                      value={instructor.instructor.user.lastName}
-                      ListItemClasses={{ selected: classes.menuSelected }}
-                    >
-                      {fullName(instructor.instructor.user)}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
+            <CourseFilter
+              filterList={gradeList}
+              initialValue="All Grades"
+              setState={setFilterByGrades}
+              filter={filterByGrades}
+            />
+            <CourseFilter
+              filterList={subjectList}
+              initialValue="All Subjects"
+              setState={setFilterBySubjects}
+              filter={filterBySubjects}
+            />
+            <CourseFilter
+              filterList={instructorsList}
+              initialValue="All Instructors"
+              setState={setFilterByInstructors}
+              filter={filterByInstructors}
+            />
           </Grid>
         </Paper>
         {normalCourseDisplay.map(
@@ -537,7 +474,6 @@ const CourseManagement = () => {
             startTime,
             startDate,
             instructor,
-            courseId,
             id,
           }) => (
             <CourseDisplayCard
