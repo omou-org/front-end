@@ -181,6 +181,10 @@ const NewAnnouncementsModal = ({
     {
       onCompleted: () => handleClose(false),
       error: (err) => console.error(err),
+      update: (cache, {data}) => {
+        console.log(cache)
+        console.log(data)
+      }
     }
   );
 

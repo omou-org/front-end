@@ -228,7 +228,6 @@ const CourseFilter = ({ initialValue, filterList, setState, filter }) => {
   const handleChange = (event) => setState(event.target.value);
 
   const chosenFilter = filterList.map((filterItem) => {
-    console.log(filterItem)
     switch (initialValue) {
       case "All Instructors":
         return (
