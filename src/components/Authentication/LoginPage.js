@@ -133,7 +133,9 @@ const LoginPage = () => {
                         <Typography className="welcomeText">
                             Welcome to Summit
                         </Typography>
-                        <TextField InputProps={{
+                        <TextField 
+                        data-cy="email-field"
+                        InputProps={{
                             "startAdornment": (
                                 <InputAdornment position="start">
                                     <EmailOutlinedIcon style={{"color": "grey"}} />
@@ -240,7 +242,8 @@ const LoginPage = () => {
                                        className="TextField"
                                        variant="outlined"
                                        onChange={handleTextInput(setPassword)}
-                                       value={password}/>
+                                       value={password}
+                                       data-cy="password-field"/>
                         <Grid className="optionsContainer" container item>
                             <Grid item md={2}/>
                             <Grid item md={4}>
