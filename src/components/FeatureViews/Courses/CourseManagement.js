@@ -17,7 +17,7 @@ import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
-import { fullName } from "../../../utils";
+import { fullName, gradeOptions } from "../../../utils";
 import moment from "moment";
 import theme, {
   highlightColor,
@@ -228,6 +228,7 @@ const CourseFilter = ({ initialValue, filterList, setState, filter }) => {
   const handleChange = (event) => setState(event.target.value);
 
   const chosenFilter = filterList.map((filterItem) => {
+    console.log(filterItem)
     switch (initialValue) {
       case "All Instructors":
         return (
@@ -254,12 +255,12 @@ const CourseFilter = ({ initialValue, filterList, setState, filter }) => {
       case "All Grades":
         return (
           <MenuItem
-            key={filterItem.text}
+            key={filterItem.label}
             className={classes.menuSelect}
-            value={filterItem.value}
+            value={filterItem.value.toUpperCase()}
             ListItemClasses={{ selected: classes.menuSelected }}
           >
-            {filterItem.text}
+            {filterItem.label}
           </MenuItem>
         );
       default:
@@ -359,12 +360,6 @@ const CourseManagement = () => {
     );
 
   const subjectList = createFilteredListFromCourses("course");
-  const gradeList = [
-    { text: "Elementary School", value: "ELEMENTARY_LVL" },
-    { text: "Middle School", value: "MIDDLE_LVL" },
-    { text: "High School", value: "HIGH_LVL" },
-    { text: "College", value: "COLLEGE_LVL" },
-  ];
   const instructorsList = createFilteredListFromCourses("instructor");
 
   const checkFilter = (value, filter) => "" === filter || value === filter;
@@ -449,7 +444,7 @@ const CourseManagement = () => {
               </FormControl>
             </Grid>
             <CourseFilter
-              filterList={gradeList}
+              filterList={gradeOptions}
               initialValue="All Grades"
               setState={setFilterByGrades}
               filter={filterByGrades}
