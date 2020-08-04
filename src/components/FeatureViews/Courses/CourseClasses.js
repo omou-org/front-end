@@ -41,13 +41,13 @@ const useStyles = makeStyles((theme) => ({
   alignTitleLeft: {
     textAlign: "left",
     fontWeight: "300",
-    [theme.breakpoints.between("sm","lg")]: {
+    [theme.breakpoints.between("sm", "lg")]: {
       fontSize: ".75rem",
     },
   },
   dataFontDate: {
     fontWeight: "400",
-    [theme.breakpoints.between("sm","lg")]: {
+    [theme.breakpoints.between("sm", "lg")]: {
       fontSize: ".8rem",
     },
   },
@@ -197,7 +197,12 @@ const CourseClasses = () => {
             </Typography>
           </Grid>
           <Grid item xs={6}>
-            <IconButton className={classes.editcoursebutton} size="small" component={Link} to={`/registration/form/course_details/${id.id}`}>
+            <IconButton
+              className={classes.editcoursebutton}
+              size="small"
+              component={Link}
+              to={`/registration/form/course_details/${id.id}`}
+            >
               <EditIcon />
             </IconButton>
           </Grid>

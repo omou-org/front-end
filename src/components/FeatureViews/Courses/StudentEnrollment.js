@@ -21,11 +21,11 @@ import SessionEmailOrNotesModal from "./SessionEmailOrNotesModal";
 const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 1460,
-    [theme.breakpoints.between("md","lg")]: {
-      minWidth: 910
+    [theme.breakpoints.between("md", "lg")]: {
+      minWidth: 910,
     },
-    [theme.breakpoints.between("sm","md")]: {
-      minWidth: 677
+    [theme.breakpoints.between("sm", "md")]: {
+      minWidth: 677,
     },
   },
   carrot: {

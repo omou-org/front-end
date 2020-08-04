@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1.5),
     minWidth: "12.8125em",
     [theme.breakpoints.down("md")]: {
-      minWidth: "10em"
+      minWidth: "10em",
     },
   },
   appBar: {
@@ -103,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "1em",
     marginBottom: "1em",
     [theme.breakpoints.down("md")]: {
-      fontSize: ".85rem"
+      fontSize: ".85rem",
     },
   },
   chipSize: {
@@ -312,7 +312,6 @@ const CourseManagement = () => {
   const [filterByInstructors, setFilterByInstructors] = useState("");
 
   const handleChange = (event) => setSortByDate(event.target.value);
-  
 
   const GET_COURSES = gql`
     query getCourses {
