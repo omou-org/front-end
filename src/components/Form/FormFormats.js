@@ -217,8 +217,8 @@ export const ACADEMIC_LVL_FIELD = {
             },
         ]),
     },
-    HOURLY_TUITION_FIELD = {
-        "component": <Fields.TextField />,
+    POSITIVE_NUMBER_FIELD = {
+        "component": <Fields.TextField/>,
         "validator": Yup.number().min(0),
     },
     INSTRUCTOR_CONFIRM_FIELD = {
@@ -908,7 +908,7 @@ export default {
                         "name": "hourlyTuition",
                         "label": "Hourly Tuition ($)",
                         "required": true,
-                        ...HOURLY_TUITION_FIELD,
+                        ...POSITIVE_NUMBER_FIELD,
                     },
                 ],
             },
@@ -1012,7 +1012,7 @@ export default {
                         "name": "hourlyTuition",
                         "label": "Hourly Tuition",
                         "required": true,
-                        ...HOURLY_TUITION_FIELD,
+                        ...POSITIVE_NUMBER_FIELD,
                     },
                     {
                         "name": "numSessions",
@@ -1182,7 +1182,8 @@ export default {
                     },
                     {
                         "name": "experience",
-                        ...stringField("Teaching Experience (Years)"),
+                        "label": "Years of Experience",
+                        ...POSITIVE_NUMBER_FIELD
                     },
                     {
                         "name": "biography",
