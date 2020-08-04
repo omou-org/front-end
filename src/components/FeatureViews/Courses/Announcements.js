@@ -10,7 +10,7 @@ import { useMutation } from "@apollo/react-hooks";
 import moment from "moment";
 import NewAnnouncementModal from "./NewAnnoucementsModal";
 import { fullName } from "../../../utils";
-import theme from "../../../theme/muiTheme";
+import theme, { omouBlue } from "../../../theme/muiTheme";
 
 
 
@@ -57,9 +57,8 @@ const AnnouncementCard = ({ id, fullName, subject, body, createdAt, handleEdit, 
     handleEdit(true, id, currentSubject, currentBody);
   };
 
-  const handleDeleteForm = () => {
-      handleDelete(id)
-  }
+  const handleDeleteForm = () => handleDelete(id);
+ 
   
   return (
     <Grid
@@ -75,10 +74,10 @@ const AnnouncementCard = ({ id, fullName, subject, body, createdAt, handleEdit, 
       </Grid>
       <Grid item xs={6} style={{ textAlign: "right" }}>
         <Button onClick={handleOpenForm} name="edit" value="edit">
-          <Create style={{ color: "#43B5D9" }} />
+          <Create style={{ color: omouBlue }} />
         </Button>{" "}
         <Button onClick={handleDeleteForm}>
-          <Cancel style={{ color: "#43B5D9" }} />
+          <Cancel style={{ color: omouBlue }} />
         </Button>
       </Grid>
       <Grid item xs={12} className={classes.announcementBody}>
@@ -89,7 +88,7 @@ const AnnouncementCard = ({ id, fullName, subject, body, createdAt, handleEdit, 
       <Grid item xs={12}>
         <Typography variant="subtitle2" align="left">
           Posted by:
-          <span style={{ color: "#43B5D9", fontWeight: "550", padding: theme.spacing(1) }}>{fullName}</span> •{" "}
+          <span style={{ color: omouBlue, fontWeight: "550", padding: theme.spacing(1) }}>{fullName}</span> •{" "}
           <span style={{padding: theme.spacing(1)}}>{date} <span style={{padding: theme.spacing(1)}}>•</span> {time}</span>
         </Typography>
       </Grid>
@@ -127,7 +126,6 @@ const [deleteAnnouncement, deleteAnnouncementResult] = useMutation(
     setAnnouncementsRender(announcementsData)
   }, [openNewAnnouncementForm]);
   
-  // console.log(announcementsData)
 
   const handleEdit = (boolean, id, subject, body) => {
     setEditOrPost("edit")
@@ -137,13 +135,7 @@ const [deleteAnnouncement, deleteAnnouncementResult] = useMutation(
     setAnnouncementBody(body);
   };
 
-  const handleClose = (boolean) => {
-    setNewAnnouncementForm(boolean);
-  };
-
-  const removeAnnouncement = (subject) => {
-
-    };
+  const handleClose = (boolean) => setNewAnnouncementForm(boolean);
   
 
   const handleDeleteAnnouncement = async (id) => {

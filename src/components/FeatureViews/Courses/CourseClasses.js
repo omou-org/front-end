@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core";
-import Paper from "@material-ui/core/Paper";
-import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import Hidden from "@material-ui/core/Hidden";
 import Grid from "@material-ui/core/Grid";
@@ -42,9 +40,10 @@ const useStyles = makeStyles((theme) => ({
   },
   alignTitleLeft: {
     textAlign: "left",
+    fontWeight: "300"
   },
   dataFontDate: {
-    fontWeight: "500",
+    fontWeight: "400",
   },
   dividerColor: {
     backgroundColor: "black",
@@ -145,6 +144,7 @@ const CourseClasses = () => {
   
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
+
   const {
     academicLevel,
     dayOfWeek,
@@ -157,6 +157,7 @@ const CourseClasses = () => {
     title,
     sessionSet,
   } = data.course;
+
   const { name } = data.course.courseCategory;
   const { firstName, lastName } = data.course.instructor.user;
 
@@ -211,7 +212,7 @@ const CourseClasses = () => {
             >{`${startingDate} - ${endingDate}`}</Typography>
           </Grid>
           <Grid item xs={2}>
-            <Typography variant="body2" align="left">
+            <Typography variant="body2" align="left" className={classes.alignTitleLeft}>
               Time
             </Typography>
             <Typography
@@ -223,7 +224,7 @@ const CourseClasses = () => {
         </Grid>
         <Grid container justify="flex-start" style={{ marginTop: "2em" }}>
           <Grid item xs={2}>
-            <Typography variant="body2" align="left">
+            <Typography variant="body2" align="left" className={classes.alignTitleLeft}>
               Instructor
             </Typography>
             <Typography
@@ -233,7 +234,7 @@ const CourseClasses = () => {
             >{`${firstName} ${lastName}`}</Typography>
           </Grid>
           <Grid item xs={2}>
-            <Typography variant="body2" align="left">
+            <Typography variant="body2" align="left" className={classes.alignTitleLeft}>
               Grade
             </Typography>
             <Typography variant="body1" align="left" className={classes.dataFontDate}>
@@ -241,7 +242,7 @@ const CourseClasses = () => {
             </Typography>
           </Grid>
           <Grid item xs={2}>
-            <Typography variant="body2" align="left">
+            <Typography variant="body2" align="left" className={classes.alignTitleLeft}>
               Subject
             </Typography>
             <Typography variant="body1" align="left" className={classes.dataFontDate}>

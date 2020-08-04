@@ -13,6 +13,8 @@ export const secondaryFontColor = "#228eb2";
 export const neutralBackgroundColor = "#FAFAFA";
 export const highlightColor = "#EBFAFF";
 export const errorRed = "#c0392b";
+export const activeColor = "#6FCF97";
+export const pastColor = "#BDBDBD";
 
 const defaultFontProps = {
     fontFamily: 'Roboto Slab',

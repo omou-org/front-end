@@ -19,7 +19,11 @@ import Loading from "../../OmouComponents/Loading";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import { fullName } from "../../../utils";
 import moment from "moment";
-import { highlightColor } from "../../../theme/muiTheme";
+import theme, {
+  highlightColor,
+  activeColor,
+  pastColor,
+} from "../../../theme/muiTheme";
 
 export const BootstrapInput = withStyles((theme) => ({
   root: {
@@ -129,7 +133,7 @@ const CourseDisplayCard = ({
   const classes = useStyles();
   let history = useHistory();
   const [activeTime, setActiveTime] = useState("PAST");
-  const [activeColor, setActiveColor] = useState("#BDBDBD");
+  // const [activeColor, setActiveColor] = useState("#BDBDBD");
   const concatFullName = fullName(instructor.user);
   const abbreviatedDay = moment(startDate).format("ddd");
   const startingTime = moment(startTime, "HH:mm").format("h:mm A");
@@ -137,18 +141,34 @@ const CourseDisplayCard = ({
   const startingDate = moment(startDate).calendar();
   const endingDate = moment(endDate).calendar();
 
-  useEffect(() => {
+  const isActive = (startTime, endTime, startDate, endDate) => {
     const currentTime = moment().format("HH:mm:ss");
+    console.log(currentTime);
     const currentDate = moment().format("L");
+    console.log(currentDate);
+    console.log(startDate);
+    return (
+      currentDate >= startDate &&
+      currentTime >= startTime &&
+      currentTime <= endTime &&
+      currentDate <= endDate
+    );
+  };
 
-    if (currentDate >= startingDate && currentTime >= startTime && currentTime <= endTime && currentDate <= endingDate) {
-      setActiveTime("ACTIVE");
-      setActiveColor("#6FCF97");
-    } else {
-      setActiveTime("PAST");
-      setActiveColor("#BDBDBD");
-    }
-  }, [activeTime]);
+  // isActive(startTime, endTime, startingDate, endingDate);
+
+  // useEffect(() => {
+  //   const currentTime = moment().format("HH:mm:ss");
+  //   const currentDate = moment().format("L");
+
+  //   if (currentDate >= startingDate && currentTime >= startTime && currentTime <= endTime && currentDate <= endingDate) {
+  //     setActiveTime("ACTIVE");
+  //     setActiveColor("#6FCF97");
+  //   } else {
+  //     setActiveTime("PAST");
+  //     setActiveColor("#BDBDBD");
+  //   }
+  // }, [activeTime]);
 
   const handleClick = (e) => {
     history.push(`/coursemanagement/class/${id}`);
@@ -172,7 +192,16 @@ const CourseDisplayCard = ({
           <Chip
             label={activeTime}
             className={classes.chipSize}
-            style={{ backgroundColor: activeColor }}
+            style={{
+              backgroundColor: isActive(
+                startTime,
+                endTime,
+                startingDate,
+                endingDate
+              )
+                ? activeColor
+                : pastColor,
+            }}
           />
         </Grid>
         <Grid item xs={3} className={classes.displayCardMargins}>
@@ -181,7 +210,7 @@ const CourseDisplayCard = ({
             align="left"
             style={{ marginLeft: "1.85em" }}
           >
-            By:{" "}
+            <span style={{ marginRight: theme.spacing(1) }}>By:</span>
             <span className={classes.highlightName}>{`${concatFullName}`}</span>
           </Typography>
         </Grid>
@@ -202,6 +231,14 @@ const CourseDisplayCard = ({
       <Divder />
     </>
   );
+};
+
+const CourseFilter = ({ options }) => {
+  const classes = useStyles();
+  const [value, setValue] = useState("");
+  const hanldeChange = (event) => setValue(event.target.value);
+
+  return <></>;
 };
 
 const CourseManagement = () => {
@@ -246,29 +283,23 @@ const CourseManagement = () => {
 
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
-  console.log(data.courses);
 
-  const subjectList = data.courses.reduce(
-    (accumulator, currentValue) =>
-      !accumulator.some(
-        (subjectExist) =>
-          currentValue.courseCategory.id === subjectExist.courseCategory.id
-      )
-        ? [...accumulator, currentValue]
-        : accumulator,
-    []
-  );
+  const createFilteredListFromCourses = (filterCriteria) =>
+    data.courses.reduce(
+      (accumulator, currentValue) =>
+        !accumulator.some((dataExist) =>
+          filterCriteria === "course"
+            ? currentValue.courseCategory.id === dataExist.courseCategory.id
+            : currentValue.instructor.user.id === dataExist.instructor.user.id
+        )
+          ? [...accumulator, currentValue]
+          : accumulator,
+      []
+    );
 
-  const instructorsList = data.courses.reduce(
-    (accumulator, currentValue) =>
-      !accumulator.some(
-        (instructorExist) =>
-          currentValue.instructor.user.id === instructorExist.instructor.user.id
-      )
-        ? [...accumulator, currentValue]
-        : accumulator,
-    []
-  );
+  const subjectList = createFilteredListFromCourses("course");
+
+  const instructorsList = createFilteredListFromCourses("instructor");
 
   const checkFilter = (value, filter) => "" === filter || value === filter;
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
@@ -442,6 +473,7 @@ const CourseManagement = () => {
                   </MenuItem>
                   {subjectList.map((subject) => (
                     <MenuItem
+                      key={subject.courseCategory.name}
                       className={classes.menuSelect}
                       value={subject.courseCategory.name}
                       ListItemClasses={{ selected: classes.menuSelected }}
@@ -483,7 +515,7 @@ const CourseManagement = () => {
                   </MenuItem>
                   {instructorsList.map((instructor) => (
                     <MenuItem
-                      key={instructor.instructor.id}
+                      key={instructor.instructor.user.lastName}
                       className={classes.menuSelect}
                       value={instructor.instructor.user.lastName}
                       ListItemClasses={{ selected: classes.menuSelected }}
@@ -506,7 +538,7 @@ const CourseManagement = () => {
             startDate,
             instructor,
             courseId,
-            id
+            id,
           }) => (
             <CourseDisplayCard
               title={title}
