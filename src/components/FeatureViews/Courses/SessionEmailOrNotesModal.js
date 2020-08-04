@@ -13,6 +13,12 @@ import { useMutation } from "@apollo/react-hooks";
 const useStyles = makeStyles((theme) => ({
   rootContainer: {
     width: "37%",
+    [theme.breakpoints.between("md","lg")]: {
+      width: "60%"
+    },
+    [theme.breakpoints.between("sm","md")]: {
+      width: "100%"
+    },
   },
   inputUnderline: {
     "&&&:before": {

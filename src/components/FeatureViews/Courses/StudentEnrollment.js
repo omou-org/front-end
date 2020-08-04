@@ -9,10 +9,8 @@ import TableRow from "@material-ui/core/TableRow";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
-import ChatIcon from "@material-ui/icons/Chat";
 import ChatOutlinedIcon from "@material-ui/icons/ChatOutlined";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Link } from "react-router-dom";
@@ -20,9 +18,15 @@ import { fullName } from "../../../utils";
 import { omouBlue, highlightColor } from "../../../theme/muiTheme";
 import SessionEmailOrNotesModal from "./SessionEmailOrNotesModal";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 1460,
+    [theme.breakpoints.between("md","lg")]: {
+      minWidth: 910
+    },
+    [theme.breakpoints.between("sm","md")]: {
+      minWidth: 677
+    },
   },
   carrot: {
     width: "4vw",
@@ -45,7 +49,7 @@ const useStyles = makeStyles({
     border: "1px solid #43B5D9",
     borderRadius: "5px",
   },
-});
+}));
 
 const StudentEnrollmentList = ({
   fullStudentName,
@@ -61,10 +65,8 @@ const StudentEnrollmentList = ({
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => setAnchorEl(event.currentTarget);
-  
 
   const handleClose = () => setAnchorEl(null);
-  
 
   const handleOpen = (e) => {
     e.preventDefault();
@@ -75,7 +77,7 @@ const StudentEnrollmentList = ({
   };
 
   return (
-    <TableRow key={fullStudentName}>
+    <TableRow key={fullStudentName} style={{ wordBreak: "break-word" }}>
       <TableCell
         component="th"
         scope="row"

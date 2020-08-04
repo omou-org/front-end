@@ -154,7 +154,7 @@ const CourseListOptions = ({ sessionId, loggedInUser }) => {
 
                 {data.sessionNotes.map((note) => {
                   const { body, createdAt, id, poster, subject } = note;
-                  const hideString = body.substring(0, 110) + "...";
+                  const hideString = body.substring(0, 60) + "...";
                   const date = moment(createdAt).format("MM/DD");
                   const time = moment(createdAt).format("h:mma");
 

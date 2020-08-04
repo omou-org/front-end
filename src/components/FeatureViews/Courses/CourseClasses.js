@@ -41,9 +41,15 @@ const useStyles = makeStyles((theme) => ({
   alignTitleLeft: {
     textAlign: "left",
     fontWeight: "300",
+    [theme.breakpoints.between("sm","lg")]: {
+      fontSize: ".75rem",
+    },
   },
   dataFontDate: {
     fontWeight: "400",
+    [theme.breakpoints.between("sm","lg")]: {
+      fontSize: ".8rem",
+    },
   },
   dividerColor: {
     backgroundColor: "black",
@@ -197,7 +203,7 @@ const CourseClasses = () => {
           </Grid>
         </Grid>
         <Grid container justify="flex-start" style={{ marginTop: "2.5em" }}>
-          <Grid item xs={2}>
+          <Grid item xs={2} md={4} lg={3} xl={2}>
             <Typography
               variant="body2"
               align="left"
@@ -211,7 +217,7 @@ const CourseClasses = () => {
               className={classes.dataFontDate}
             >{`${startingDate} - ${endingDate}`}</Typography>
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={2} md={4} lg={3} xl={2}>
             <Typography
               variant="body2"
               align="left"
@@ -227,7 +233,7 @@ const CourseClasses = () => {
           </Grid>
         </Grid>
         <Grid container justify="flex-start" style={{ marginTop: "2em" }}>
-          <Grid item xs={2}>
+          <Grid item xs={2} md={4} lg={2} xl={2}>
             <Typography
               variant="body2"
               align="left"
@@ -241,7 +247,7 @@ const CourseClasses = () => {
               className={classes.dataFontDate}
             >{`${firstName} ${lastName}`}</Typography>
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={2} md={4} lg={2} xl={2}>
             <Typography
               variant="body2"
               align="left"
@@ -257,7 +263,7 @@ const CourseClasses = () => {
               {academicLevel}
             </Typography>
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={2} md={4} lg={2} xl={2}>
             <Typography
               variant="body2"
               align="left"

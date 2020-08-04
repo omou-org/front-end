@@ -70,6 +70,9 @@ const useStyles = makeStyles((theme) => ({
   margin: {
     margin: theme.spacing(1.5),
     minWidth: "12.8125em",
+    [theme.breakpoints.down("md")]: {
+      minWidth: "10em"
+    },
   },
   appBar: {
     maxWidth: "calc(100% - 3%)",
@@ -99,6 +102,9 @@ const useStyles = makeStyles((theme) => ({
   displayCardMargins: {
     marginTop: "1em",
     marginBottom: "1em",
+    [theme.breakpoints.down("md")]: {
+      fontSize: ".85rem"
+    },
   },
   chipSize: {
     height: "2.0625em",
@@ -132,7 +138,6 @@ const CourseDisplayCard = ({
 }) => {
   const classes = useStyles();
   let history = useHistory();
-  const [activeTime, setActiveTime] = useState("PAST");
   const concatFullName = fullName(instructor.user);
   const abbreviatedDay = moment(startDate).format("ddd");
   const startingTime = moment(startTime, "HH:mm").format("h:mm A");
@@ -164,12 +169,12 @@ const CourseDisplayCard = ({
         data-active="inactive"
         onClick={handleClick}
       >
-        <Grid item xs={6}>
+        <Grid item xs={6} sm={9} md={6}>
           <Typography variant="h4" align="left" style={{ marginLeft: ".85em" }}>
             {title}
           </Typography>
         </Grid>
-        <Grid item xs={6} style={{ textAlign: "left" }}>
+        <Grid item xs={6} sm={3} md={6} style={{ textAlign: "left" }}>
           <Chip
             label={
               isActive(startTime, endTime, startingDate, endingDate)
@@ -189,7 +194,7 @@ const CourseDisplayCard = ({
             }}
           />
         </Grid>
-        <Grid item xs={3} className={classes.displayCardMargins}>
+        <Grid item xs={3} sm={4} md={3} className={classes.displayCardMargins}>
           <Typography
             variant="body1"
             align="left"
@@ -204,11 +209,11 @@ const CourseDisplayCard = ({
           flexItem
           style={{ height: "2em", marginTop: "1em" }}
         />
-        <Grid item xs={6}>
+        <Grid item xs={6} sm={7} md={6}>
           <Typography
             variant="body1"
             align="left"
-            style={{ marginLeft: "1.2em" }}
+            style={{ marginLeft: "1.2em", paddingTop: "3px" }}
             className={classes.displayCardMargins}
           >{`Time: ${startingDate} - ${endingDate} ${abbreviatedDay} ${startingTime} - ${endingTime} `}</Typography>
         </Grid>
