@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core";
@@ -191,7 +191,7 @@ const CourseClasses = () => {
             </Typography>
           </Grid>
           <Grid item xs={6}>
-            <IconButton className={classes.editcoursebutton} size="small">
+            <IconButton className={classes.editcoursebutton} size="small" component={Link} to={`/registration/form/course_details/${id.id}`}>
               <EditIcon />
             </IconButton>
           </Grid>
