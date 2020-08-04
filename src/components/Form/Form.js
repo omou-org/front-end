@@ -146,7 +146,7 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
             </Stepper>
             {submitError &&
                 <div className="error">
-                    An error occured while submitting. Try again.
+                    An error occured while submitting. Try again. {errors.message}
                 </div>}
         </form>
     ), [activeStep, renderStep, sections]);

@@ -642,7 +642,20 @@ export default {
         },
         "submit": async ({student}, id) => {
             const ADD_STUDENT = gql`
-            mutation AddStudent($firstName: String!, $email: String,  $lastName: String!, $address: String, $birthDate:Date, $city:String, $gender:GenderEnum,$grade:Int,$phoneNumber:String,$primaryParent:ID, $school:ID, $zipcode:String, $state:String, $id: ID) {
+            mutation AddStudent($firstName: String!, 
+            $email: String,  
+            $lastName: String!, 
+            $address: String, 
+            $birthDate:Date, 
+            $city:String, 
+            $gender:GenderEnum,
+            $grade:Int,
+            $phoneNumber:String,
+            $primaryParent:ID, 
+            $school:ID, 
+            $zipcode:String, 
+            $state:String, 
+            $id: ID) {
   createStudent(user: {firstName: $firstName, id: $id, lastName: $lastName,  email:$email}, address: $address, birthDate: $birthDate, school: $school, grade: $grade, gender: $gender, primaryParent: $primaryParent, phoneNumber: $phoneNumber, city: $city, state: $state, zipcode: $zipcode) {
       created
   }
