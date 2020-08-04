@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -7,7 +7,7 @@ import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import { Create, Cancel, ExpandMore } from "@material-ui/icons";
+import { Create, ExpandMore } from "@material-ui/icons";
 import SessionEmailOrNotesModal from "./SessionEmailOrNotesModal";
 import moment from "moment";
 import gql from "graphql-tag";
@@ -99,17 +99,13 @@ const CourseListOptions = ({ sessionId, loggedInUser }) => {
 
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
-  console.log(data);
 
   const handleOpenForm = (e) => {
     e.preventDefault();
     setOpen(true);
   };
 
-  const handleCloseForm = (boolean) => {
-    console.log(boolean);
-    setOpen(boolean);
-  };
+  const handleCloseForm = (boolean) => setOpen(boolean);
 
   const handleEdit = (e) => {
     e.preventDefault();
@@ -120,16 +116,10 @@ const CourseListOptions = ({ sessionId, loggedInUser }) => {
     setNoteSubject(currentSubject);
     setNoteId(currentId);
     setOpen(true);
-    setButtonState("edit")
+    setButtonState("edit");
   };
 
-  const handleReadMoreClick = () => {
-    setReadMore(true);
-  };
-
-  console.log(noteBody);
-  console.log(noteId);
-  console.log(noteSubject);
+  const handleReadMoreClick = () => setReadMore(true);
 
   return (
     <Grid container>
@@ -176,7 +166,12 @@ const CourseListOptions = ({ sessionId, loggedInUser }) => {
                         </Typography>
                       </Grid>
                       <Grid item xs={6} style={{ textAlign: "right" }}>
-                        <Button onClick={handleEdit} data-subject={subject} data-body={body} data-id={id}>
+                        <Button
+                          onClick={handleEdit}
+                          data-subject={subject}
+                          data-body={body}
+                          data-id={id}
+                        >
                           <Create style={{ color: "#43B5D9" }} />
                         </Button>{" "}
                       </Grid>

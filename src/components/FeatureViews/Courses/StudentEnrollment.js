@@ -55,27 +55,24 @@ const StudentEnrollmentList = ({
   parentId,
   concatFullParentName,
   phoneNumber,
-  handleOpenModal
+  handleOpenModal,
 }) => {
-  console.log(parentAccountType)
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const handleClick = (event) => setAnchorEl(event.currentTarget);
   
+
+  const handleClose = () => setAnchorEl(null);
+  
+
   const handleOpen = (e) => {
     e.preventDefault();
-    const currentValue = e.currentTarget.value
-    const dataType = e.currentTarget.dataset.type
-    handleOpenModal(currentValue, dataType)
+    const currentValue = e.currentTarget.value;
+    const dataType = e.currentTarget.dataset.type;
+    handleOpenModal(currentValue, dataType);
     setAnchorEl(null);
-  }
+  };
 
   return (
     <TableRow key={fullStudentName}>
@@ -161,7 +158,6 @@ const Studentenrollment = ({ enrollmentList, loggedInUser }) => {
   const [typeOfAccount, setTypeOfAccount] = useState();
   const [userId, setUserId] = useState();
 
-
   const handleOpenModal = (currentValue, dataType) => {
     setUserId(currentValue);
     setTypeOfAccount(dataType);
@@ -222,7 +218,6 @@ const Studentenrollment = ({ enrollmentList, loggedInUser }) => {
                     concatFullParentName={concatFullParentName}
                     phoneNumber={phoneNumber}
                     handleOpenModal={handleOpenModal}
-
                   />
                 );
               })}

@@ -5,14 +5,12 @@ import Typography from "@material-ui/core/Typography";
 import { Create, Cancel } from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import { highlightColor } from "../../../theme/muiTheme";
-import gql from "graphql-tag"
+import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 import moment from "moment";
 import NewAnnouncementModal from "./NewAnnoucementsModal";
 import { fullName } from "../../../utils";
 import theme, { omouBlue } from "../../../theme/muiTheme";
-
-
 
 const useStyles = makeStyles({
   announcementContainer: {
@@ -35,7 +33,7 @@ const useStyles = makeStyles({
     fontWeight: 300,
     fontFamily: "Roboto",
     height: "2.5em",
-    marginTop: "2em"
+    marginTop: "2em",
   },
   plusSpan: {
     fontSize: "1rem",
@@ -45,10 +43,18 @@ const useStyles = makeStyles({
   },
 });
 
-const AnnouncementCard = ({ id, fullName, subject, body, createdAt, handleEdit, handleDelete }) => {
+const AnnouncementCard = ({
+  id,
+  fullName,
+  subject,
+  body,
+  createdAt,
+  handleEdit,
+  handleDelete,
+}) => {
   const classes = useStyles();
-  const date = moment(createdAt).format("MM/DD")
-  const time = moment(createdAt).format("h:mma")
+  const date = moment(createdAt).format("MM/DD");
+  const time = moment(createdAt).format("h:mma");
   const subjectRef = useRef();
   const bodyRef = useRef();
   const handleOpenForm = () => {
@@ -58,8 +64,7 @@ const AnnouncementCard = ({ id, fullName, subject, body, createdAt, handleEdit, 
   };
 
   const handleDeleteForm = () => handleDelete(id);
- 
-  
+
   return (
     <Grid
       className={classes.announcementContainer}
@@ -88,15 +93,26 @@ const AnnouncementCard = ({ id, fullName, subject, body, createdAt, handleEdit, 
       <Grid item xs={12}>
         <Typography variant="subtitle2" align="left">
           Posted by:
-          <span style={{ color: omouBlue, fontWeight: "550", padding: theme.spacing(1) }}>{fullName}</span> •{" "}
-          <span style={{padding: theme.spacing(1)}}>{date} <span style={{padding: theme.spacing(1)}}>•</span> {time}</span>
+          <span
+            style={{
+              color: omouBlue,
+              fontWeight: "550",
+              padding: theme.spacing(1),
+            }}
+          >
+            {fullName}
+          </span>
+          <span style={{ padding: theme.spacing(1) }}>• </span>
+          <span style={{ padding: theme.spacing(1) }}>
+            {date} <span style={{ padding: theme.spacing(1) }}>•</span> {time}
+          </span>
         </Typography>
       </Grid>
     </Grid>
   );
 };
 
-const Announcements = ({announcementsData, loggedInUser, classTitle}) => {
+const Announcements = ({ announcementsData, loggedInUser, classTitle }) => {
   const [openNewAnnouncementForm, setNewAnnouncementForm] = useState(false);
   const [announcementId, setAnnouncementId] = useState();
   const [announcementSubject, setAnnouncementSubject] = useState("");
@@ -105,30 +121,28 @@ const Announcements = ({announcementsData, loggedInUser, classTitle}) => {
   const [editOrPost, setEditOrPost] = useState("post");
   const classes = useStyles();
 
-const DELETE_ANNOUNCEMENT = gql`
-mutation removeAnnouncement(
-  $id: ID!
-) {
-  __typename
-  deleteAnnouncement(id: $id) {
-    deleted
-  }
-}
-`
+  const DELETE_ANNOUNCEMENT = gql`
+    mutation removeAnnouncement($id: ID!) {
+      __typename
+      deleteAnnouncement(id: $id) {
+        deleted
+      }
+    }
+  `;
 
-const [deleteAnnouncement, deleteAnnouncementResult] = useMutation(
-  DELETE_ANNOUNCEMENT, {
-    error: err => console.error(err),
-  }
-)
-  
+  const [deleteAnnouncement, deleteAnnouncementResult] = useMutation(
+    DELETE_ANNOUNCEMENT,
+    {
+      error: (err) => console.error(err),
+    }
+  );
+
   useEffect(() => {
-    setAnnouncementsRender(announcementsData)
+    setAnnouncementsRender(announcementsData);
   }, [openNewAnnouncementForm]);
-  
 
   const handleEdit = (boolean, id, subject, body) => {
-    setEditOrPost("edit")
+    setEditOrPost("edit");
     setAnnouncementId(id);
     setNewAnnouncementForm(boolean);
     setAnnouncementSubject(subject);
@@ -136,20 +150,26 @@ const [deleteAnnouncement, deleteAnnouncementResult] = useMutation(
   };
 
   const handleClose = (boolean) => setNewAnnouncementForm(boolean);
-  
 
   const handleDeleteAnnouncement = async (id) => {
-      const deletedAnnouncement = await deleteAnnouncement({
-        variables: {
-          id: id
-        }
-      });
+    const deletedAnnouncement = await deleteAnnouncement({
+      variables: {
+        id: id,
+      },
+    });
   };
 
   return (
     <Grid container justify="flex-start" data-active="inactive">
-      <Button className={classes.newNoteButton} onClick={(event) => (setNewAnnouncementForm(true, setEditOrPost("post")))} value="post" name="post"><span className={classes.plusSpan}>+</span> New Announcement</Button>
-      {announcementsRender?.map(({ poster, subject, body, createdAt, id,  }) => (
+      <Button
+        className={classes.newNoteButton}
+        onClick={(event) => setNewAnnouncementForm(true, setEditOrPost("post"))}
+        value="post"
+        name="post"
+      >
+        <span className={classes.plusSpan}>+</span> New Announcement
+      </Button>
+      {announcementsRender?.map(({ poster, subject, body, createdAt, id }) => (
         <>
           <AnnouncementCard
             key={id}

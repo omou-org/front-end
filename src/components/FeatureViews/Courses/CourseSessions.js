@@ -1,19 +1,9 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Avatar from "@material-ui/core/Avatar";
-import ImageIcon from "@material-ui/icons/Image";
-import WorkIcon from "@material-ui/icons/Work";
-import BeachAccessIcon from "@material-ui/icons/BeachAccess";
-import Button from "@material-ui/core/Button";
 import { BootstrapInput } from "./CourseManagement";
 import CourseListOptions from "./CourseListOptions";
 import moment from "moment";
@@ -32,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   margin: {
     float: "left",
     marginTop: "2em",
-    marginBottom: "2em"
+    marginBottom: "2em",
   },
   menuSelected: {
     "&:hover": { backgroundColor: highlightColor, color: "#28ABD5" },
@@ -48,21 +38,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CourseSessions = ({ sessionList, loggedInUser }) => {
-  // console.log(loggedInUser)
   const classes = useStyles();
   const [sortBySession, setSortBySession] = useState("");
 
-  // console.log(sessionList);
+  const handleChange = (e) => setSortBySession(e.target.value);
 
-  const handleChange = (e) => {
-    setSortBySession(e.target.value);
-  };
-
-
-
-
-  
-  // console.log(sortBySession);
   return (
     <>
       <Grid container justify="flex-start">
@@ -113,7 +93,12 @@ const CourseSessions = ({ sessionList, loggedInUser }) => {
             </Select>
           </FormControl>
         </Grid>
-        {sortBySession === "" ? null : <CourseListOptions sessionId={sortBySession} loggedInUser={loggedInUser}/> }
+        {sortBySession === "" ? null : (
+          <CourseListOptions
+            sessionId={sortBySession}
+            loggedInUser={loggedInUser}
+          />
+        )}
       </Grid>
     </>
   );

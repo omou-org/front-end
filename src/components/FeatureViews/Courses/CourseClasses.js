@@ -23,7 +23,7 @@ import ClassInfo from "./ClassInfo";
 import Announcements from "./Announcements";
 import StudentEnrollment from "./StudentEnrollment";
 import CourseSessions from "./CourseSessions";
-import { useSelector } from  "react-redux";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
   alignTitleLeft: {
     textAlign: "left",
-    fontWeight: "300"
+    fontWeight: "300",
   },
   dataFontDate: {
     fontWeight: "400",
@@ -62,10 +62,10 @@ const CourseClasses = () => {
     { label: "Student Enrolled" },
     { label: "Sessions" },
   ];
-  const {email} = useSelector(({auth}) => auth) || [];
-  
+  const { email } = useSelector(({ auth }) => auth) || [];
+
   const GET_CLASSES = gql`
-    query getClass($id: ID!, $email: String="") {
+    query getClass($id: ID!, $email: String = "") {
       course(courseId: $id) {
         academicLevel
         courseCategory {
@@ -137,17 +137,18 @@ const CourseClasses = () => {
     }
   `;
 
-  const { data, loading, error } = useQuery(GET_CLASSES, { variables: {
-    id: id.id,
-    email: email
-  } });
-  
+  const { data, loading, error } = useQuery(GET_CLASSES, {
+    variables: {
+      id: id.id,
+      email: email,
+    },
+  });
+
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
 
   const {
     academicLevel,
-    dayOfWeek,
     description,
     endDate,
     endTime,
@@ -161,7 +162,7 @@ const CourseClasses = () => {
   const { name } = data.course.courseCategory;
   const { firstName, lastName } = data.course.instructor.user;
 
-  const abbreviatedDay = moment(startDate).format("ddd")
+  const abbreviatedDay = moment(startDate).format("ddd");
   const startingTime = moment(startTime, "HH:mm").format("h:mm A");
   const endingTime = moment(endTime, "HH:mm").format("h:mm A");
   const startingDate = moment(startDate).calendar();
@@ -170,7 +171,6 @@ const CourseClasses = () => {
   const handleChange = (_, i) => {
     return setIndex(i);
   };
-
 
   return (
     <Grid item xs={12}>
@@ -212,7 +212,11 @@ const CourseClasses = () => {
             >{`${startingDate} - ${endingDate}`}</Typography>
           </Grid>
           <Grid item xs={2}>
-            <Typography variant="body2" align="left" className={classes.alignTitleLeft}>
+            <Typography
+              variant="body2"
+              align="left"
+              className={classes.alignTitleLeft}
+            >
               Time
             </Typography>
             <Typography
@@ -224,7 +228,11 @@ const CourseClasses = () => {
         </Grid>
         <Grid container justify="flex-start" style={{ marginTop: "2em" }}>
           <Grid item xs={2}>
-            <Typography variant="body2" align="left" className={classes.alignTitleLeft}>
+            <Typography
+              variant="body2"
+              align="left"
+              className={classes.alignTitleLeft}
+            >
               Instructor
             </Typography>
             <Typography
@@ -234,25 +242,41 @@ const CourseClasses = () => {
             >{`${firstName} ${lastName}`}</Typography>
           </Grid>
           <Grid item xs={2}>
-            <Typography variant="body2" align="left" className={classes.alignTitleLeft}>
+            <Typography
+              variant="body2"
+              align="left"
+              className={classes.alignTitleLeft}
+            >
               Grade
             </Typography>
-            <Typography variant="body1" align="left" className={classes.dataFontDate}>
+            <Typography
+              variant="body1"
+              align="left"
+              className={classes.dataFontDate}
+            >
               {academicLevel}
             </Typography>
           </Grid>
           <Grid item xs={2}>
-            <Typography variant="body2" align="left" className={classes.alignTitleLeft}>
+            <Typography
+              variant="body2"
+              align="left"
+              className={classes.alignTitleLeft}
+            >
               Subject
             </Typography>
-            <Typography variant="body1" align="left" className={classes.dataFontDate}>
+            <Typography
+              variant="body1"
+              align="left"
+              className={classes.dataFontDate}
+            >
               {name}
             </Typography>
           </Grid>
         </Grid>
 
-        <Grid container style={{marginTop: "2.5em"}}>
-        <Grid item xs={12} sm={12}>
+        <Grid container style={{ marginTop: "2.5em" }}>
+          <Grid item xs={12} sm={12}>
             <ThemeProvider theme={baseTheme}>
               <AppBar
                 position={"static"}
@@ -284,26 +308,34 @@ const CourseClasses = () => {
                     onChange={handleChange}
                   />
                 </Toolbar>
-              <Divider classes={{root: classes.dividerColor}}/>
+                <Divider classes={{ root: classes.dividerColor }} />
               </AppBar>
               <Grid container>
                 <TabPanel index={0} value={index} backgroundColor="#FFFFFF">
-                <ClassInfo description={description} />
+                  <ClassInfo description={description} />
                 </TabPanel>
                 <TabPanel index={1} value={index}>
-                  <Announcements announcementsData={data.announcements} loggedInUser={data.accountSearch} />
+                  <Announcements
+                    announcementsData={data.announcements}
+                    loggedInUser={data.accountSearch}
+                  />
                 </TabPanel>
                 <TabPanel index={2} value={index}>
-                <StudentEnrollment enrollmentList={enrollmentSet} loggedInUser={data.accountSearch}/>
+                  <StudentEnrollment
+                    enrollmentList={enrollmentSet}
+                    loggedInUser={data.accountSearch}
+                  />
                 </TabPanel>
                 <TabPanel index={3} value={index}>
-                  <CourseSessions sessionList={sessionSet} loggedInUser={data.accountSearch}/>
+                  <CourseSessions
+                    sessionList={sessionSet}
+                    loggedInUser={data.accountSearch}
+                  />
                 </TabPanel>
               </Grid>
             </ThemeProvider>
           </Grid>
-          </Grid>
-
+        </Grid>
       </BackgroundPaper>
     </Grid>
   );

@@ -306,9 +306,8 @@ const CourseManagement = () => {
   const [filterBySubjects, setFilterBySubjects] = useState("");
   const [filterByInstructors, setFilterByInstructors] = useState("");
 
-  const handleChange = (event) => {
-    setSortByDate(event.target.value);
-  };
+  const handleChange = (event) => setSortByDate(event.target.value);
+  
 
   const GET_COURSES = gql`
     query getCourses {
