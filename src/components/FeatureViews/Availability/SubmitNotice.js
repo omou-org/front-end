@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, forwardRef, } from "react";
 import { OOOContext } from "./OOOContext";
 import moment from "moment";
 import Grid from "@material-ui/core/Grid";
@@ -18,6 +18,7 @@ import { DateRange } from "react-date-range";
 import { useSelector } from "react-redux";
 import DialogActions from "@material-ui/core/DialogActions/DialogActions";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import { useImperativeHandle } from "react";
 
 const useStyles = makeStyles({
 	root: {
@@ -39,7 +40,7 @@ const useStyles = makeStyles({
 	}
 })
 
-export default function SubmitNotice() {
+export const SubmitNotice = forwardRef((props, ref) => {
 	const [openCalendar, setOpenCalendar] = useState(false);
 	const [state, setState] = useState([
 		{
@@ -90,7 +91,26 @@ export default function SubmitNotice() {
 		});
 	}
 
-	return (<Grid container style={{ paddingLeft: "8rem" }} direction="row">
+	const disablePrevDates = (startDate) => {
+		const startSeconds = Date.parse(startDate);
+		return (date) => {
+			return Date.parse(date) < startSeconds;
+		}
+	}
+
+	useImperativeHandle(ref, () => ({
+		handleClearForm() {
+			setStartTime(null);
+			setEndTime(null);
+			setDescription("");
+			setOutAllDay(false);
+		}
+	}))
+
+	const startDate = new Date();
+
+
+	return (<Grid container style={{ paddingLeft: "8rem" }} direction="row" >
 
 		<Grid item xs={11} >
 			<Typography className={classes.boldText} align="left">Instructor: <span className={classes.normalText}>{`${AuthUser.user.firstName} ${AuthUser.user.lastName} `}</span></Typography>
@@ -127,6 +147,7 @@ export default function SubmitNotice() {
 
 			<Grid item xs={12} md={4}>
 				<KeyboardTimePicker
+					id="keyboardTimePickerOOO"
 					className={classes.timePicker}
 					disabled={outAllDay}
 					style={{ backgroundColor: outAllDay ? outlineGrey : "white" }}
@@ -138,6 +159,7 @@ export default function SubmitNotice() {
 			<Grid item xs={12} md={1} />
 			<Grid item xs={12} md={6}>
 				<KeyboardTimePicker
+
 					className={classes.timePicker}
 					disabled={outAllDay}
 					style={{ backgroundColor: outAllDay ? outlineGrey : "white" }}
@@ -166,6 +188,8 @@ export default function SubmitNotice() {
 			<DateRange
 				editableDateInputs={true}
 				onChange={handleDateRangeChange}
+				minDate={moment().toDate()}
+				shouldDisableDate={disablePrevDates(startDate)}
 				moveRangeOnFirstSelection={false}
 				ranges={state}
 			/>
@@ -176,4 +200,4 @@ export default function SubmitNotice() {
 			</DialogActions>
 		</Dialog>
 	</Grid >)
-}
+})

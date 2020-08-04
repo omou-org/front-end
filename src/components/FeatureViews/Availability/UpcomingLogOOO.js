@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import moment from "moment";
 
-const GET_UPCOMING_INSTRUCTOR_OOO = gql`
+export const GET_UPCOMING_INSTRUCTOR_OOO = gql`
 query getInstructorOOO($instructorID:ID!) {
     instructorOoo(instructorId: $instructorID) {
       id

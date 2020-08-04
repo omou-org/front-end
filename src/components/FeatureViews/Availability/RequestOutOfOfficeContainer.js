@@ -12,16 +12,18 @@ export default function RequestOutOfOfficeContainer() {
 				<CreateOOOForm />
 			</OutlinedContainer>
 		</Grid>
-		<Grid item xs={4} container direction="column">
-			<Grid item xs>
-				<OutlinedContainer>
-					<UpcomingOOO />
-				</OutlinedContainer>
-			</Grid>
-			<Grid item xs>
-				<OutlinedContainer>
-					<LogOOO />
-				</OutlinedContainer>
+		<Grid item xs={4}>
+			<Grid item container direction="column" >
+				<Grid item >
+					<OutlinedContainer>
+						<UpcomingOOO />
+					</OutlinedContainer>
+				</Grid>
+				<Grid item style={{ marginTop: "4.0em" }}>
+					<OutlinedContainer>
+						<LogOOO />
+					</OutlinedContainer>
+				</Grid>
 			</Grid>
 		</Grid>
 	</Grid>)
