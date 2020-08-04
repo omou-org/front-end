@@ -25,10 +25,24 @@ mutation Login($password: String!, $username: String!) {
 `
 
 
-Cypress.Commands.add("login", (params) => {
-    const url = "/login"
-    console.log(params)
+Cypress.Commands.add("login", ({ email, password }) => {
+    // Hot fix to get though login. Still need to supply email & password. 
+    // Next step is to figure out how to 'Stub' a fetch(graphql) -> xhr (REST)
+    // Cypress only allows xhr so there are a few workaround
+    // Passing a query as {query: query}
+    // https://stackoverflow.com/questions/49988215/call-graphql-endpoints-using-cypress-request
+    // stubbing 
+    // https://github.com/cypress-io/cypress-documentation/issues/122
 
+
+    cy.visit('')
+    cy.get('[data-cy=emailField]').type(email);
+    cy.get('[data-cy=signInButton]').click();
+    cy.get('[data-cy=passwordField]').type(password);
+    cy.get('[data-cy=rememberMe]').check();
+    cy.get('[data-cy=signInButton]').click();
+    cy.get('[data-cy=dashboardGreeting]').should("be.visible")
+    // cy.server();
     // cy.route({
     //     "method": "POST",
     //     "response": {
@@ -36,7 +50,7 @@ Cypress.Commands.add("login", (params) => {
     //     },
     //     "responseType": "application/json",
     //     "status": 200,
-    //     "url": "/auth_token/",
+    //     "url": "/graphql/",
     //     "withCredentials": true,
     // });
     // cy.route({
@@ -44,7 +58,7 @@ Cypress.Commands.add("login", (params) => {
     //     "response": userDetails,
     //     "responseType": "application/json",
     //     "status": 200,
-    //     "url": "/account/user/",
+    //     "url": "graphql",
     //     "withCredentials": true,
     // });
     // cy
@@ -54,7 +68,7 @@ Cypress.Commands.add("login", (params) => {
     //         "type": "LOGIN_SUCCESSFUL",
     //         "payload": {
     //             "response": {
-    //                 "data": {token},
+    //                 "data": { token },
     //             },
     //             "savePassword": true,
     //         },

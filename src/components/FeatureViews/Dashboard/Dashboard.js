@@ -1,8 +1,8 @@
-import {useSelector} from 'react-redux';
-import {useQuery} from '@apollo/react-hooks';
+import { useSelector } from 'react-redux';
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import React, {useState} from 'react';
-import {Link} from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './Dashboard.scss';
 import Today from './Today';
 import UnpaidSessions from './../AdminPortal/UnpaidSessions';
@@ -16,7 +16,7 @@ import DashboardNotes from './DashboardNotes';
 import moment from 'moment';
 import Moment from 'react-moment';
 import Select from 'react-select';
-import {makeStyles} from "@material-ui/styles";
+import { makeStyles } from "@material-ui/styles";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -38,13 +38,13 @@ const useStyles = makeStyles((theme) => ({
 
 const Dashboard = () => {
     const classes = useStyles();
-    const {email} = useSelector(({auth}) => auth) || [];
+    const { email } = useSelector(({ auth }) => auth) || [];
     const [currentFilter, setCurrentFilter] = useState({
         showFiltered: false,
         filter: ""
     });
 
-    const emailQuery = {"email": email};
+    const emailQuery = { "email": email };
 
     const DASHBOARD_QUERY = gql`query DashboardQuery($email: String="") {
         sessionSearch(query: "", time: "today", sort: "timeAsc") {
@@ -74,18 +74,18 @@ const Dashboard = () => {
       }
       
     `;
-     
+
     const { data, loading, error } = useQuery(DASHBOARD_QUERY, {
         variables: emailQuery
     });
 
     if (loading) {
         return (
-            <Loading/>
+            <Loading />
         );
     }
 
-    if (error){
+    if (error) {
         console.error(error);
         return <>There has been an error: {error.message}</>
     }
@@ -95,13 +95,13 @@ const Dashboard = () => {
     let isDisabled;
 
     const handleChange = e => {
-        if (e){
+        if (e) {
             setCurrentFilter({
                 filter: e.label,
                 showFiltered: true
             })
         }
-        else{
+        else {
             setCurrentFilter({
                 filter: "",
                 showFiltered: false
@@ -113,47 +113,47 @@ const Dashboard = () => {
         return self.indexOf(value) === index;
     };
 
-    const categoryList = data.sessionSearch.results.map(category=> ({
+    const categoryList = data.sessionSearch.results.map(category => ({
         "label": category.course.courseCategory.name,
         "value": category.course.courseCategory.id
     }));
 
-    const uniqueCategoryList = categoryList.filter( onlyUnique );
-    if (uniqueCategoryList.length===0){
-        isDisabled=true;
+    const uniqueCategoryList = categoryList.filter(onlyUnique);
+    if (uniqueCategoryList.length === 0) {
+        isDisabled = true;
     }
 
-    else if (uniqueCategoryList.length>0){
-        isDisabled=false;
+    else if (uniqueCategoryList.length > 0) {
+        isDisabled = false;
     }
 
-    return(
+    return (
         <Grid container>
             <Paper className="dashboard-paper" elevation={3}>
                 <Grid container justify="space-around">
                     <Grid item xs={9} >
-                        <Typography variant="h4" className="dashboard-greeting">
+                        <Typography variant="h4" data-cy="dashboardGreeting" className="dashboard-greeting">
                             Hello {firstName}!
                         </Typography>
-                        <br/>
+                        <br />
                         <Paper className="today-paper" container>
                             <Grid container className="today-header-container">
-                                    <Grid item xs={7}>
-                                    <Moment 
+                                <Grid item xs={7}>
+                                    <Moment
                                         className={`dashboard-date ${classes.date}`}
                                         format="dddd, MMMM DD">
                                         {currentDate}
                                     </Moment>
-                                    </Grid>
-                                    <Button 
-                                        variant="outlined" 
-                                        style={{margin:"5px", float: "right"}}
-                                        component={Link}
-                                        to={{
-                                            pathname: "/scheduler",
-                                            state: { isDashboard: true}
-                                        }}
-                                        >View in Scheduler
+                                </Grid>
+                                <Button
+                                    variant="outlined"
+                                    style={{ margin: "5px", float: "right" }}
+                                    component={Link}
+                                    to={{
+                                        pathname: "/scheduler",
+                                        state: { isDashboard: true }
+                                    }}
+                                >View in Scheduler
                                     </Button>
                             </Grid>
                             <Grid item sm={6} md={6} lg={4}>
@@ -166,15 +166,15 @@ const Dashboard = () => {
                                     placeholder={'Choose a Category'}
                                     onValueClick={(e) => e.preventDefault()}
                                     onChange={handleChange}
-                                    />
+                                />
                             </Grid>
-                            <Grid 
-                                container 
-                                className="today-container" 
-                                wrap = "nowrap"
-                                direction = "row">
+                            <Grid
+                                container
+                                className="today-container"
+                                wrap="nowrap"
+                                direction="row">
                                 <Today
-                                filter = {currentFilter.filter}
+                                    filter={currentFilter.filter}
                                 />
                             </Grid>
                         </Paper>
@@ -185,14 +185,14 @@ const Dashboard = () => {
                             <Grid
                                 container
                                 className="unpaid-container"
-                                wrap = "nowrap">
-                                <UnpaidSessions/>
+                                wrap="nowrap">
+                                <UnpaidSessions />
                             </Grid>
                         </Paper>
                     </Grid>
                     <Grid item xs={3} className={`db-notes-container ${classes.root}`}>
                         <DashboardNotes
-                            key = {id}
+                            key={id}
                             id={id}
                             first_name={firstName}
                         />

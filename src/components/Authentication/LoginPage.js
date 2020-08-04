@@ -1,28 +1,28 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {Link, useHistory, useLocation} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useCallback, useEffect, useState } from "react";
+import { Link, useHistory, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import gql from "graphql-tag";
-import {useLazyQuery, useMutation} from "@apollo/react-hooks";
+import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Grid from "@material-ui/core/Grid";
-import {PasswordInput} from "../Form/Fields";
+import { PasswordInput } from "../Form/Fields";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import EmailOutlinedIcon from "@material-ui/icons/EmailOutlined";
 
-import {setToken} from "actions/authActions.js";
-import {ReactComponent as Ellipse1} from "./loginImages/ellipse1.svg";
-import {ReactComponent as Ellipse2} from "./loginImages/ellipse2.svg";
-import {ReactComponent as Picture1} from "./loginImages/picture1.svg";
-import {ReactComponent as Ellipse3} from "./loginImages/ellipse3.svg";
-import {ReactComponent as Ellipse4} from "./loginImages/ellipse4.svg";
-import {ReactComponent as Picture2} from "./loginImages/picture2.svg";
-import {ReactComponent as Picture3} from "./loginImages/picture3.svg";
-import {ReactComponent as Picture4} from "./loginImages/picture4.svg";
+import { setToken } from "actions/authActions.js";
+import { ReactComponent as Ellipse1 } from "./loginImages/ellipse1.svg";
+import { ReactComponent as Ellipse2 } from "./loginImages/ellipse2.svg";
+import { ReactComponent as Picture1 } from "./loginImages/picture1.svg";
+import { ReactComponent as Ellipse3 } from "./loginImages/ellipse3.svg";
+import { ReactComponent as Ellipse4 } from "./loginImages/ellipse4.svg";
+import { ReactComponent as Picture2 } from "./loginImages/picture2.svg";
+import { ReactComponent as Picture3 } from "./loginImages/picture3.svg";
+import { ReactComponent as Picture4 } from "./loginImages/picture4.svg";
 import "./LoginPage.scss";
 
 const LOGIN = gql`
@@ -42,9 +42,9 @@ const GET_USER_TYPE = gql`
 
 const LoginPage = () => {
     const history = useHistory();
-    const {state} = useLocation();
+    const { state } = useLocation();
     const dispatch = useDispatch();
-    const token = useSelector(({auth}) => auth.token);
+    const token = useSelector(({ auth }) => auth.token);
     const [userType, setUserType] = useState("");
     const [email, setEmail] = useState(state?.email);
     const [password, setPassword] = useState(null);
@@ -52,7 +52,7 @@ const LoginPage = () => {
     const [hasError, setHasError] = useState(false);
 
     const [getUserType] = useLazyQuery(GET_USER_TYPE, {
-        "variables": {"username": email},
+        "variables": { "username": email },
         "onCompleted": (data) => {
             setUserType(data.userType);
             if (userType === null) {
@@ -64,7 +64,7 @@ const LoginPage = () => {
     const [login] = useMutation(LOGIN, {
         "errorPolicy": "ignore",
         "ignoreResults": true,
-        "onCompleted": async ({tokenAuth}) => {
+        "onCompleted": async ({ tokenAuth }) => {
             dispatch(await setToken(tokenAuth.token, shouldSave));
         },
         // for whatever reason, this function prevents an unhandled rejection
@@ -85,7 +85,7 @@ const LoginPage = () => {
         }
     }, [token, history]);
 
-    const handleTextInput = useCallback((setter) => ({target}) => {
+    const handleTextInput = useCallback((setter) => ({ target }) => {
         setter(target.value);
         setHasError(false);
     }, []);
@@ -103,7 +103,7 @@ const LoginPage = () => {
         }
     }, [login, email, password]);
 
-    const toggleSavePassword = useCallback(({target}) => {
+    const toggleSavePassword = useCallback(({ target }) => {
         setShouldSave(target.checked);
     }, []);
 
@@ -136,14 +136,14 @@ const LoginPage = () => {
                         <TextField InputProps={{
                             "startAdornment": (
                                 <InputAdornment position="start">
-                                    <EmailOutlinedIcon style={{"color": "grey"}} />
+                                    <EmailOutlinedIcon style={{ "color": "grey" }} />
                                 </InputAdornment>
                             ),
                         }} className="TextField"
                             error={hasError || email === ""}
                             fullWidth
                             helperText={hasError ? "Sorry, we couldn't find a user for that email." : " "}
-                            inputProps={{"data-cy": "emailField"}}
+                            inputProps={{ "data-cy": "emailField" }}
                             margin="normal"
                             onChange={handleTextInput(setEmail)}
                             placeholder="E-Mail"
@@ -164,7 +164,7 @@ const LoginPage = () => {
                                 </Button>
                             </Grid>
                             <Grid item md={4}>
-                                <Button className="signInButton" onClick={handleCheck}>
+                                <Button data-cy="signInButton" className="signInButton" onClick={handleCheck}>
                                     SIGN IN
                                 </Button>
                             </Grid>
@@ -221,40 +221,40 @@ const LoginPage = () => {
                             InputProps={{
                                 "startAdornment": (
                                     <InputAdornment position="start">
-                                        <EmailOutlinedIcon style={{"color": "grey"}} />
+                                        <EmailOutlinedIcon style={{ "color": "grey" }} />
                                     </InputAdornment>
                                 ),
                             }} className="TextField"
                             error={hasError}
                             fullWidth
-                            inputProps={{"data-cy": "emailField"}}
+                            inputProps={{ "data-cy": "emailField" }}
                             margin="normal"
                             onChange={handleTextInput(setEmail)}
                             placeholder="E-Mail"
                             value={email}
-                            variant="outlined"/>
+                            variant="outlined" />
                         <PasswordInput autoComplete="current-password"
-                                       error={hasError || password === ""}
-                                       inputProps={{"data-cy": "passwordField"}}
-                                       isField={false} label="Password"
-                                       className="TextField"
-                                       variant="outlined"
-                                       onChange={handleTextInput(setPassword)}
-                                       value={password}/>
+                            error={hasError || password === ""}
+                            inputProps={{ "data-cy": "passwordField" }}
+                            isField={false} label="Password"
+                            className="TextField"
+                            variant="outlined"
+                            onChange={handleTextInput(setPassword)}
+                            value={password} />
                         <Grid className="optionsContainer" container item>
-                            <Grid item md={2}/>
+                            <Grid item md={2} />
                             <Grid item md={4}>
                                 <FormControlLabel
                                     control={<Checkbox checked={shouldSave}
-                                                       inputProps={{"data-cy": "rememberMe"}}
-                                                       onChange={toggleSavePassword}/>}
-                                    label="Remember Me"/>
+                                        inputProps={{ "data-cy": "rememberMe" }}
+                                        onChange={toggleSavePassword} />}
+                                    label="Remember Me" />
                             </Grid>
-                            <Grid item md={4} style={{"paddingTop": 10}}>
+                            <Grid item md={4} style={{ "paddingTop": 10 }}>
                                 <Link className="forgotPassword"
                                     data-cy="forgotPassword" to={{
                                         "pathname": "/forgotpassword",
-                                        "state": {email},
+                                        "state": { email },
                                     }}>
                                     Forgot Password?
                                 </Link>
