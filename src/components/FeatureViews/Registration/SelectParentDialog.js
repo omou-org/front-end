@@ -11,7 +11,6 @@ import Grid from "@material-ui/core/Grid";
 
 import {closeRegistration, setRegisteringParent,} from "actions/registrationActions";
 import AccountCard from "../Search/cards/AccountCard";
-import NavLinkNoDup from "../../Routes/NavLinkNoDup";
 import gql from "graphql-tag";
 import {useLazyQuery} from "@apollo/react-hooks";
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -181,6 +180,7 @@ const SelectParentDialog = ({onClose, open, updateCartNum}) => {
 						className={`select-parent-search-wrapper ${searching && "active"}`}
 					>
 						<Autocomplete
+							data-cy="select-parent-input"
 							loading={loading}
 							options={options}
 							selectOnFocus
@@ -188,6 +188,9 @@ const SelectParentDialog = ({onClose, open, updateCartNum}) => {
 							onChange={handleOnChange}
 							onInputChange={handleOnInputChange}
 							getOptionLabel={option => option.label}
+							renderOption={(option) => (<div data-cy={`parent-option`}>
+								{option.label}
+							</div>)}
 							renderInput={SelectParentInput}
 							inputValue={inputValue}
 							noOptionsText="We haven't found a parent yet"
@@ -197,22 +200,19 @@ const SelectParentDialog = ({onClose, open, updateCartNum}) => {
 				)}
 			</DialogContent>
 			<DialogActions>
-				{currentParent ? (
-					<>
-						<Button onClick={handleExitParent}>Exit Parent</Button>
-						<span>
-              <Button
-				  component={NavLinkNoDup}
-				  disabled={numToCheckout === 0}
-				  to="/registration/cart"
-              >
-                Checkout {numToCheckout} Courses
-              </Button>
-            </span>
-					</>
-				) : (
-					<Button onClick={handleClose}>Set Parent</Button>
-				)}
+				{currentParent ?
+					<Button
+						onClick={handleExitParent}
+						data-cy="exit-parent-action"
+					>
+						Exit Parent
+					</Button>
+					: <Button
+						data-cy="set-parent-action"
+						onClick={handleClose}>
+						Set Parent
+					</Button>
+				}
 			</DialogActions>
 		</Dialog>
 	);

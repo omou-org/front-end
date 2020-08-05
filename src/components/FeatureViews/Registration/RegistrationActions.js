@@ -1,21 +1,21 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import { Link, useHistory } from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import NewCourse from "@material-ui/icons/School";
 import Tooltip from "@material-ui/core/Tooltip";
 
 import "./registration.scss";
 import SelectParentDialog from "./SelectParentDialog";
-import { stringToColor } from "../Accounts/accountUtils";
-import { fullName, USER_TYPES } from "../../../utils";
+import {stringToColor} from "../Accounts/accountUtils";
+import {fullName, USER_TYPES} from "../../../utils";
 import {
 	getRegistrationCart,
 	setParentRegistrationCart,
 	useValidateRegisteringParent
 } from "../../OmouComponents/RegistrationUtils";
-import { useSelector } from "react-redux";
-import { useQuery } from "@apollo/react-hooks";
+import {useSelector} from "react-redux";
+import {useQuery} from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import Loading from "../../OmouComponents/Loading";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCartOutlined";
@@ -118,16 +118,17 @@ const RegistrationActions = ({ updateRegisteringParent }) => {
 									style={{
 										backgroundColor: stringToColor(parentName),
 									}}
+									data-cy="current-parent"
 								/>
 								{parentName}
 							</Button>
 						</Tooltip>
 					) : (
-							<Button className="button set-parent" onClick={openDialog}>
-								<div className="circle-icon" />
+						<Button className="button set-parent" onClick={openDialog} data-cy="select-parent">
+							<div className="circle-icon"/>
 							SET PARENT
-							</Button>
-						)}
+						</Button>
+					)}
 				</Grid>
 				<Grid item xs={1} style={{ paddingRight: "6vh", verticalAlign: "middle" }}>
 					<IconButton

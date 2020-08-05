@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React, {useState} from "react";
+import {makeStyles} from "@material-ui/core/styles";
 import PropTypes from "prop-types";
 
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import Moment from "react-moment";
 
-import { fullName } from "utils";
+import {fullName} from "utils";
 import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
 import {
@@ -23,7 +23,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import gql from "graphql-tag";
-import { useQuery } from "@apollo/react-hooks";
+import {useQuery} from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -87,17 +87,17 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     }
 
     return <> <Table>
-        <TableBody>
+        <TableBody data-cy="classes-table">
             {
                 filteredCourses
-                    .filter(({ courseType, endDate }) => (courseType === "CLASS") &&
+                    .filter(({courseType, endDate}) => (courseType === "CLASS") &&
                         moment().diff(moment(endDate), 'days') < 0)
                     .map((course) => (
                         <TableRow
                             key={course.id}
                         >
                             <TableCell
-                                style={{ padding: "3%" }}
+                                style={{padding: "3%"}}
                                 component={Link} to={`/registration/course/${course.id}`}
                                 className={courseRow}
                             >
