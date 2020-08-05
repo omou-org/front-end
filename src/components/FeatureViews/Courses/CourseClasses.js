@@ -70,159 +70,8 @@ const CourseClasses = () => {
     { label: "Sessions" },
   ];
   const { email, accountType } = useSelector(({ auth }) => auth) || [];
-  console.log(email, accountType)
 
-  const getQuery = () => {
-    switch(accountType) {
-      case "ADMIN": 
-        return (gql`
-        query getClass($id: ID!, $email: String = "") {
-          course(courseId: $id) {
-            academicLevel
-            courseCategory {
-              name
-              id
-            }
-            title
-            startTime
-            startDate
-            endTime
-            endDate
-            dayOfWeek
-            description
-            instructor {
-              user {
-                firstName
-                lastName
-              }
-            }
-            enrollmentSet {
-              student {
-                user {
-                  firstName
-                  lastName
-                  id
-                }
-                primaryParent {
-                  user {
-                    firstName
-                    lastName
-                    id
-                    email
-                  }
-                  accountType
-                  phoneNumber
-                }
-                accountType
-              }
-            }
-            sessionSet {
-              startDatetime
-              id
-            }
-          }
-          announcements(courseId: $id) {
-            subject
-            id
-            body
-            createdAt
-            poster {
-              firstName
-              lastName
-            }
-          }
-          accountSearch(query: $email) {
-            total
-            results {
-              ... on AdminType {
-                userUuid
-                user {
-                  email
-                  firstName
-                  lastName
-                  id
-                }
-              }
-            }
-          }
-        }
-      `);
-      case "INSTRUCTOR":
-        return (gql`
-        query getClass($id: ID!, $email: String = "") {
-          course(courseId: $id) {
-            academicLevel
-            courseCategory {
-              name
-              id
-            }
-            title
-            startTime
-            startDate
-            endTime
-            endDate
-            dayOfWeek
-            description
-            instructor {
-              user {
-                firstName
-                lastName
-              }
-            }
-            enrollmentSet {
-              student {
-                user {
-                  firstName
-                  lastName
-                  id
-                }
-                primaryParent {
-                  user {
-                    firstName
-                    lastName
-                    id
-                    email
-                  }
-                  accountType
-                  phoneNumber
-                }
-                accountType
-              }
-            }
-            sessionSet {
-              startDatetime
-              id
-            }
-          }
-          announcements(courseId: $id) {
-            subject
-            id
-            body
-            createdAt
-            poster {
-              firstName
-              lastName
-            }
-          }
-          accountSearch(query: $email) {
-            total
-            results {
-              ... on InstructorType {
-                userUuid
-                user {
-                  email
-                  firstName
-                  lastName
-                  id
-                }
-              }
-            }
-          }
-        }
-      `);
-      case "PARENT":
-        return (
-          gql`
+  const GET_CLASSES = gql`
     query getClass($id: ID!, $email: String = "") {
       course(courseId: $id) {
         academicLevel
@@ -281,83 +130,7 @@ const CourseClasses = () => {
       accountSearch(query: $email) {
         total
         results {
-          ... on ParentType {
-            userUuid
-            user {
-              email
-              firstName
-              lastName
-              id
-            }
-          }
-        }
-      }
-    }
-  `
-        )
-    }
-  }
-
-  const GET_CLASSES_ADMIN = gql`
-    query getClass($id: ID!, $email: String = "") {
-      course(courseId: $id) {
-        academicLevel
-        courseCategory {
-          name
-          id
-        }
-        title
-        startTime
-        startDate
-        endTime
-        endDate
-        dayOfWeek
-        description
-        instructor {
-          user {
-            firstName
-            lastName
-          }
-        }
-        enrollmentSet {
-          student {
-            user {
-              firstName
-              lastName
-              id
-            }
-            primaryParent {
-              user {
-                firstName
-                lastName
-                id
-                email
-              }
-              accountType
-              phoneNumber
-            }
-            accountType
-          }
-        }
-        sessionSet {
-          startDatetime
-          id
-        }
-      }
-      announcements(courseId: $id) {
-        subject
-        id
-        body
-        createdAt
-        poster {
-          firstName
-          lastName
-        }
-      }
-      accountSearch(query: $email) {
-        total
-        results {
-          ... on AdminType {
+          ... on ${accountType === "ADMIN" ? "AdminType" : (accountType === "INSTRUCTOR") ? "InstructorType" : (accountType === "PARENT") ? "ParentType" : "StudentType"} {
             userUuid
             user {
               email
@@ -371,7 +144,7 @@ const CourseClasses = () => {
     }
   `;
 
-  const { data, loading, error } = useQuery(getQuery(), {
+  const { data, loading, error } = useQuery(GET_CLASSES, {
     variables: {
       id: id.id,
       email: email,
@@ -380,7 +153,6 @@ const CourseClasses = () => {
   
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
-  console.log(data)
 
   const {
     academicLevel,
