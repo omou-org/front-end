@@ -12,7 +12,7 @@ export const createTutoringDetails = (courseType, formData) => ({
 	courseType,
 });
 
-const mapRegistrationInfo = (student, course) => ({
+export const mapRegistrationInfo = (student, course) => ({
 	course: {
 		id: typeof course === "string" && course,
 		...(typeof course !== "string" && course),
@@ -22,7 +22,7 @@ const mapRegistrationInfo = (student, course) => ({
 	status: "REGISTERING"
 });
 
-const saveRegistration = (student, course, registrationState) => {
+export const saveRegistration = (student, course, registrationState) => {
 	const newRegistrationInfo = mapRegistrationInfo(student, course);
 	const existingStudentRegistration = registrationState?.[student] || [];
 	const newRegistrationState = {
@@ -30,6 +30,7 @@ const saveRegistration = (student, course, registrationState) => {
 		[student]: [...existingStudentRegistration, newRegistrationInfo],
 	};
 	sessionStorage.setItem("registrations", JSON.stringify(newRegistrationState));
+	return newRegistrationState;
 };
 
 /**
@@ -48,8 +49,9 @@ export const submitRegistration = (student, course) => {
 		studentEnrollments.filter((enrollment) => arraysMatch(enrollment, [student, course])))
 		.some(studentEnrollments => studentEnrollments.length > 0);
 	if (!isEnrolled) {
-		saveRegistration(student, course, registrationState);
+		return saveRegistration(student, course, registrationState);
 	}
+	return registrationState;
 };
 
 /**
@@ -119,4 +121,8 @@ export const loadRegistrationCart = (prevRegistration) => {
 		...registrationState,
 		...prevRegistration,
 	}));
+	return {
+		...registrationState,
+		...prevRegistration,
+	}
 }

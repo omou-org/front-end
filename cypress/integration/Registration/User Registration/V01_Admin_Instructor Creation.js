@@ -23,7 +23,7 @@ describe("Fills out form", () => {
         cy.get("[data-cy=basicInfo-phoneNumber]").fastType("1234567890");
         cy.get("[data-cy=basicInfo-state]").fastType("CA");
         cy.get("[data-cy=\"basicInfo.state-CA\"]").click();
-        cy.get("[data-cy=nextButton]").click();
+        cy.get("[data-cy=basicInfo-nextButton]").click();
     });
 
     it("Fills out experience information", () => {

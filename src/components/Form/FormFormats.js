@@ -1384,8 +1384,15 @@ export default {
             },
         ],
 		"submit": (formData) => {
-			submitRegistration(formData.selectStudent, formData.course.class.value);
-		}
+            const {dispatch} = window.store;
+            dispatch({
+                type: types.ADD_CLASS_REGISTRATION,
+                payload: {
+                    courseId: formData.course.class.value,
+                    studentId: formData.student.student,
+                }
+            })
+        }
     },
 	"tutoring-registration": {
 		"title": "Tutoring",
@@ -1432,7 +1439,6 @@ export default {
 		"submit": (formData) => {
 			console.log(formData, moment(formData.tutoring_details.startDate, "DD-MM-YYYY").add(formData.sessions, 'weeks'));
 			const course = createTutoringDetails("smallGroup", formData);
-			console.log(course);
 			submitRegistration(formData.selectStudent, course);
 		}
 	},

@@ -1,6 +1,12 @@
 import initialState from "./initialState";
 import * as actions from "./../actions/actionTypes";
 import {dateParser, weeklySessionsParser} from "components/Form/FormUtils";
+import {
+  closeRegistrationCart,
+  loadRegistrationCart,
+  setParentRegistrationCart,
+  submitRegistration
+} from "../components/OmouComponents/RegistrationUtils";
 
 export default function registration(
     state = initialState.RegistrationForms,
@@ -61,13 +67,15 @@ export default function registration(
     case actions.POST_DISCOUNT_PAYMENT_METHOD_SUCCESS:
       return successSubmit(state);
     case actions.SET_PARENT:
-      newState.CurrentParent = payload;
-      return {...newState};
+      setParentRegistrationCart(payload);
+      return {
+        currentParent: payload,
+      };
     case actions.RESET_REGISTRATION:
       newState.registered_courses = {};
       return newState;
     case actions.ADD_CLASS_REGISTRATION:
-      return addClassRegistration(newState, payload);
+      return addClassRegistration(payload);
     case actions.ADD_TUTORING_REGISTRATION:
       return addTutoringRegistration(newState, payload);
     case actions.ADD_SMALL_GROUP_REGISTRATION:
@@ -223,63 +231,9 @@ const failedSubmit = (state) => ({
   submitStatus: "fail",
 });
 
-const addClassRegistration = (prevState, form) => {
-  const studentID = form.Student.Student.value;
-  const studentName = form.Student.Student.label;
-  let courseID;
-  let courseName;
-  let studentInfoNote = "";
-  if (form["Course Selection"]) {
-    courseID = form["Course Selection"].Course.value;
-    courseName = form["Course Selection"].Course.label;
-    studentInfoNote = stringifyStudentInformation(form);
-  } else if (form.isSmallGroup) {
-    courseID = Number(form.id.substring(form.id.indexOf("+")));
-  } else {
-    courseID = form["Group Details"]["Select Group"].value;
-    courseName = form["Group Details"]["Select Group"].label;
-  }
-
-  const enrollmentObject = {
-	  course_type: "class",
-    student_id: studentID,
-    course_id: Number(courseID),
-    enrollment_note: studentInfoNote,
-    sessions: 0,
-    display: {
-      student_name: studentName,
-      course_name: courseName,
-      course_id: Number(courseID),
-    },
-    form: {
-      ...form,
-      activeStep: 0,
-      activeSection: "Student",
-    },
-  };
-
-  // Registration Model:
-  // Registration: {
-  //     CurrentParent: "Eileen Hong",
-  //     registered_courses: {
-  //         [joey_id] : [
-  //             joey's registration forms
-  //         ],
-  //         [catherine_id] : [
-  //             catherine's registration forms
-  //         ]
-  //     }
-  // }
-
-  prevState.registered_courses = addStudentRegistration(
-      studentID,
-      prevState.registered_courses,
-      "class",
-      enrollmentObject
-  );
-  prevState.submitStatus = "success";
-
-  return {...prevState};
+const addClassRegistration = ({courseId, studentId}) => {
+  const newRegistrationState = submitRegistration(courseId, studentId);
+  return {...newRegistrationState};
 };
 
 export const academicLevelParse = {
@@ -516,15 +470,14 @@ const dateToTimeString = (date) =>
         date.getMinutes() !== 0 ? date.getMinutes().toString() : "00"
     }`;
 
-const initializeRegistration = (prevState) => {
-  const prevRegisteredCourses = JSON.parse(
-      sessionStorage.getItem("registered_courses")
-  );
-  const prevParent = JSON.parse(sessionStorage.getItem("CurrentParent"));
-  prevState.registered_courses = prevRegisteredCourses;
-  prevState.CurrentParent = prevParent;
-
-  return JSON.parse(JSON.stringify(prevState));
+const initializeRegistration = (prevState, payload) => {
+  if (Object.keys(payload).length > 0) {
+    return {
+      ...prevState,
+      ...loadRegistrationCart(payload)
+    };
+  }
+  return {currentParent: null};
 };
 
 const editCourseRegistration = (prevState, course) => {
@@ -632,12 +585,7 @@ const editCourseRegistration = (prevState, course) => {
   return {...updatedRegistration};
 };
 
-const closeRegistration = (state) => {
-  sessionStorage.removeItem("registered_courses");
-  sessionStorage.removeItem("CurrentParent");
-  return {
-    ...state,
-    CurrentParent: null,
-    registered_courses: null,
-  };
+const closeRegistration = () => {
+  closeRegistrationCart();
+  return {currentParent: null};
 };

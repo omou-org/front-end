@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import PropTypes from "prop-types";
 
 import Button from "@material-ui/core/Button";
@@ -9,7 +9,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
 
-import {closeRegistration, setRegisteringParent,} from "actions/registrationActions";
+import * as types from "actions/actionTypes";
 import AccountCard from "../Search/cards/AccountCard";
 import gql from "graphql-tag";
 import {useLazyQuery} from "@apollo/react-hooks";
@@ -17,12 +17,6 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import {fullName} from "../../../utils";
 import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {
-	closeRegistrationCart,
-	getRegistrationCart,
-	loadRegistrationCart,
-	setParentRegistrationCart
-} from "../../OmouComponents/RegistrationUtils";
 
 const GET_PARENTS_QUERY = gql`
 query GetParents($query: String!) {
@@ -49,12 +43,12 @@ query GetRegisteringCart($parent: ID!) {
   }
 }`
 
-const SelectParentDialog = ({onClose, open, updateCartNum}) => {
+const SelectParentDialog = ({onClose, open}) => {
 	const dispatch = useDispatch();
 	const [parent, setParent] = useState(null);
 	const [inputValue, setInputValue] = useState('');
 	const [searching, setSearching] = useState(false);
-	const {currentParent, ...registrationCartState} = getRegistrationCart();
+	const {currentParent, ...registrationCartState} = useSelector((state) => state.Registration);
 	const [getSavedParentCart, getSavedParentCartResult] = useLazyQuery(GET_REGISTRATION_CART, {
 		skip: !currentParent,
 	});
@@ -65,23 +59,13 @@ const SelectParentDialog = ({onClose, open, updateCartNum}) => {
 	] = useLazyQuery(GET_PARENTS_QUERY);
 
 	useEffect(() => {
-		if (!currentParent) {
-			dispatch(
-				setRegisteringParent(
-					JSON.parse(sessionStorage.getItem("registrations"))?.currentParent
-				)
-			);
-		}
-	}, [currentParent, dispatch]);
-
-	useEffect(() => {
 		if (!getSavedParentCartResult?.loading && getSavedParentCartResult?.called) {
 			if (getSavedParentCartResult.data) {
 				const studentRegistration = JSON.parse(getSavedParentCartResult.data?.registrationCart?.registrationPreferences);
-				loadRegistrationCart(studentRegistration);
-				updateCartNum(Object.values(studentRegistration).reduce((accumulator, currentStudent) => {
-					return accumulator + currentStudent.length;
-				}, 0));
+				dispatch({
+					type: types.INIT_COURSE_REGISTRATION,
+					payload: studentRegistration,
+				})
 			}
 		}
 	}, [getSavedParentCartResult.loading, getSavedParentCartResult.called])
@@ -91,23 +75,15 @@ const SelectParentDialog = ({onClose, open, updateCartNum}) => {
 		if (parent) {
 			const registeringParent = parent;
 
-			dispatch(setRegisteringParent(registeringParent));
-			setParentRegistrationCart(registeringParent);
+			dispatch({
+				type: types.SET_PARENT,
+				payload: registeringParent,
+			});
 			getSavedParentCart({
 				variables: {
 					parent: registeringParent.user.id,
 				}
 			});
-
-			// Add students to redux once the registered parent has been set
-			// TODO: redo registration flow
-			// registeringParent.student_list.forEach((studentID) => {
-			// 	fetchStudents(studentID)(dispatch);
-			// });
-			sessionStorage.setItem(
-				"CurrentParent",
-				JSON.stringify(registeringParent)
-			);
 		}
 		// close the dialogue
 		onClose(!!parent);
@@ -117,9 +93,10 @@ const SelectParentDialog = ({onClose, open, updateCartNum}) => {
 		(event) => {
 			event.preventDefault();
 			setParent(null);
-			dispatch(setRegisteringParent(null));
-			dispatch(closeRegistration());
-			closeRegistrationCart();
+			dispatch({
+				type: types.CLOSE_COURSE_REGISTRATION,
+				payload: {},
+			})
 			onClose();
 		},
 		[dispatch, handleClose]

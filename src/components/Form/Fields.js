@@ -62,7 +62,7 @@ export const DataSelect = ({request, optionsMap, name, ...props}) => {
     });
 
     const renderOption = useCallback(
-        ({label}) => <span data-cy={`${name}-${label}`}>{label}</span>,
+        ({label, value}) => <span data-cy={`${name}-${value}`}>{label}</span>,
         [name],
     );
 
@@ -92,14 +92,14 @@ const GET_STUDENTS = gql`
     }
 `;
 
-export const StudentSelect = () => {
+export const StudentSelect = (props) => {
     const {studentList} = JSON.parse(sessionStorage.getItem("registrations")).currentParent;
     const {data} = useQuery(GET_STUDENTS, {"variables": {"userIds": studentList}});
     const studentOptions = data?.userInfos.map((student) => ({
         "label": fullName(student.user),
         "value": student.user.id,
     })) || [];
-    return <Select data={studentOptions} label="Select Student" name="selectStudent" />;
+    return <Select data={studentOptions} label="Select Student" name="selectStudent" {...props}/>;
 };
 
 export const PasswordInput = ({label = "Password", isField = true, ...props}) => {

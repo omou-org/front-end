@@ -105,7 +105,7 @@ export default function CourseRegistrationReceipt({formData, format}) {
 		<Divider orientation="vertical" flexItem/>
 		<Grid item md={2}/>
 		<Grid item md={3} xs={12}>
-			<AccountCard accountType="STUDENT" userID={formData.selectStudent}/>
+			<AccountCard accountType="STUDENT" userID={formData.student.student} data-cy="student-card"/>
 		</Grid>
 		<Grid container
 			  item xs={12}
@@ -119,6 +119,7 @@ export default function CourseRegistrationReceipt({formData, format}) {
 					variant="outlined"
 					component={NavLinkNoDup}
 					to={'/registration'}
+					data-cy="back-to-register"
 				>
 					REGISTER MORE
 				</Button>

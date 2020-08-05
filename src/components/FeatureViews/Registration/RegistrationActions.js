@@ -9,18 +9,15 @@ import "./registration.scss";
 import SelectParentDialog from "./SelectParentDialog";
 import {stringToColor} from "../Accounts/accountUtils";
 import {fullName, USER_TYPES} from "../../../utils";
-import {
-	getRegistrationCart,
-	setParentRegistrationCart,
-	useValidateRegisteringParent
-} from "../../OmouComponents/RegistrationUtils";
-import {useSelector} from "react-redux";
+import {useValidateRegisteringParent} from "../../OmouComponents/RegistrationUtils";
+import {useDispatch, useSelector} from "react-redux";
 import {useQuery} from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import Loading from "../../OmouComponents/Loading";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCartOutlined";
 import IconButton from "@material-ui/core/IconButton";
 import Badge from "@material-ui/core/Badge";
+import * as types from "actions/actionTypes";
 
 const GET_PARENT_QUERY = gql`
 query GetRegisteringParent($userId: ID!) {
@@ -38,13 +35,14 @@ query GetRegisteringParent($userId: ID!) {
 `
 
 const RegistrationActions = ({ updateRegisteringParent }) => {
-	const AuthUser = useSelector(({ auth }) => auth);
-	const { parentIsLoggedIn } = useValidateRegisteringParent();
-	const { currentParent, ...registrationState } = getRegistrationCart();
-	const [updatedRegistrationCartNum, setUpdatedRegistrationCartNum] = useState(null);
+	const AuthUser = useSelector(({auth}) => auth);
+	const {currentParent, ...registrationState} = useSelector((state) => state.Registration);
+	const {parentIsLoggedIn} = useValidateRegisteringParent();
+	const dispatch = useDispatch();
+
 	const [dialogOpen, setDialog] = useState(false);
-	const { data, error, loading } = useQuery(GET_PARENT_QUERY, {
-		variables: { userId: AuthUser.user.id },
+	const {data, error, loading} = useQuery(GET_PARENT_QUERY, {
+		variables: {userId: AuthUser.user.id},
 		skip: AuthUser.accountType !== USER_TYPES.parent,
 	});
 	const history = useHistory();
@@ -60,21 +58,26 @@ const RegistrationActions = ({ updateRegisteringParent }) => {
 
 	useEffect(() => {
 		if (parentIsLoggedIn && !loading && Object.values(registrationState).length === 0) {
-			setParentRegistrationCart(data.parent);
-			updateRegisteringParent(false);
+			dispatch({
+				type: types.SET_PARENT,
+				payload: data.parent,
+			})
 		}
 	}, [AuthUser.accountType, loading]);
 
-	if (loading) return <Loading />;
+	if (loading) return <Loading/>;
 	if (error) return <div>There has been an error: {error.message}</div>
 
 	const registeringParent = data?.parent || currentParent;
 
 	const parentName = registeringParent && fullName(registeringParent.user);
-
-	const numberOfRegistrationsInCart = updatedRegistrationCartNum || Object.values(registrationState).reduce((accumulator, currentStudent) => {
-		return accumulator + currentStudent.length;
-	}, 0);
+	const {
+		submitStatus = {},
+		...registrationCartState
+	} = registrationState;
+	const numberOfRegistrationsInCart = Object.values(registrationCartState).length > 0 ?
+		Object.values(registrationState).reduce((accumulator, currentStudent) => (accumulator + currentStudent?.length),
+			0) : 0;
 
 	const toShoppingCart = () => {
 		history.push("/registration/cart");
@@ -102,8 +105,9 @@ const RegistrationActions = ({ updateRegisteringParent }) => {
 								color="secondary"
 								component={Link} to="/registration/form/class-registration"
 								variant="outlined"
+								data-cy="register-class"
 							>
-								<NewCourse className="icon innerIcon" />
+								<NewCourse className="icon innerIcon"/>
 								REGISTER CLASS
 							</Button>
 						</Grid>
@@ -136,6 +140,7 @@ const RegistrationActions = ({ updateRegisteringParent }) => {
 						disabled={numberOfRegistrationsInCart === 0}
 					>
 						<Badge
+							data-cy="shopping-cart-num-registrations"
 							badgeContent={numberOfRegistrationsInCart}
 							color="primary"
 							showZero
@@ -144,12 +149,12 @@ const RegistrationActions = ({ updateRegisteringParent }) => {
 								horizontal: 'right',
 							}}
 						>
-							<ShoppingCartIcon style={{ fontSize: "1.4em", }} />
+							<ShoppingCartIcon style={{fontSize: "1.4em",}}/>
 						</Badge>
 					</IconButton>
 				</Grid>
 			</Grid>
-			<SelectParentDialog onClose={closeDialog} open={dialogOpen} updateCartNum={setUpdatedRegistrationCartNum} />
+			<SelectParentDialog onClose={closeDialog} open={dialogOpen}/>
 		</>
 	);
 };

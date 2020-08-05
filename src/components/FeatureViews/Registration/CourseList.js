@@ -11,11 +11,7 @@ import Moment from "react-moment";
 import {fullName} from "utils";
 import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
-import {
-    getRegistrationCart,
-    submitRegistration,
-    useValidateRegisteringParent
-} from "../../OmouComponents/RegistrationUtils";
+import {useValidateRegisteringParent} from "../../OmouComponents/RegistrationUtils";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import moment from "moment";
@@ -30,6 +26,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import DialogActions from "@material-ui/core/DialogActions";
+import {useDispatch, useSelector} from "react-redux";
+import * as types from "actions/actionTypes";
 
 const GET_STUDENTS = gql`
     query GetStudents($userIds: [ID]!) {
@@ -59,15 +57,18 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const [openCourseQuickRegistration, setOpen] = useState(false);
     const [quickCourseID, setQuickCourseID] = useState(null);
     const [quickStudent, setQuickStudent] = useState("");
-    const { studentList } = JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
-    const { data, loading } = useQuery(GET_STUDENTS, {
-        "variables": { "userIds": studentList },
+
+    const {currentParent} = useSelector((state) => state.Registration);
+    const dispatch = useDispatch();
+
+    const {studentList} = JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
+    const {data, loading} = useQuery(GET_STUDENTS, {
+        "variables": {"userIds": studentList},
         skip: !studentList
     });
 
-    const { currentParent } = getRegistrationCart();
-    const { parentIsLoggedIn } = useValidateRegisteringParent();
-    const { courseTitle, courseRow } = useStyles();
+    const {parentIsLoggedIn} = useValidateRegisteringParent();
+    const {courseTitle, courseRow} = useStyles();
 
     if (loading) return <Loading small />;
 
@@ -82,7 +83,13 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     };
 
     const handleAddRegistration = () => {
-        submitRegistration(quickStudent, quickCourseID);
+        dispatch({
+            type: types.ADD_CLASS_REGISTRATION,
+            payload: {
+                studentId: quickStudent,
+                courseId: quickCourseID
+            }
+        });
         setOpen(false);
     }
 
@@ -163,20 +170,25 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
             <DialogContent>
                 <FormControl fullWidth variant="outlined">
                     <InputLabel id="select-student-quick-registration">Select Student</InputLabel>
-                    <Select labelId="select-student-quick-registration"
+                    <Select data-cy="select-student-to-register"
+                            labelId="select-student-quick-registration"
                             value={quickStudent}
                             onChange={(event) => setQuickStudent(event.target.value)}
                     >
                         <MenuItem value=""><em>Select Student</em></MenuItem>
                         {
-                            studentOptions.map(({value, label}) => <MenuItem value={value} key={value}>
+                            studentOptions.map(({value, label}) => <MenuItem
+                                data-cy="student-value"
+                                value={value} key={value}>
                                 {label}
                             </MenuItem>)
                         }
                     </Select>
                 </FormControl>
                 <DialogActions>
-                    <Button onClick={handleAddRegistration}>
+                    <Button data-cy="add-registration-to-cart"
+                            onClick={handleAddRegistration}
+                    >
                         ADD TO CART
                     </Button>
                 </DialogActions>
