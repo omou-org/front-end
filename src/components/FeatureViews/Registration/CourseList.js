@@ -144,9 +144,10 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                 </span>
                                 {(currentParent || parentIsLoggedIn || updatedParent) && (
                                     <Button disabled={course.maxCapacity <= course.enrollmentSet.length}
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={handleStartQuickRegister(course.id)}
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={handleStartQuickRegister(course.id)}
+                                            data-cy="quick-register-class"
                                     >
                                         + REGISTER
                                     </Button>
@@ -160,16 +161,15 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
         <Dialog open={openCourseQuickRegistration}>
             <DialogTitle>Which student do you want to enroll?</DialogTitle>
             <DialogContent>
-                <FormControl fullWidth>
+                <FormControl fullWidth variant="outlined">
                     <InputLabel id="select-student-quick-registration">Select Student</InputLabel>
                     <Select labelId="select-student-quick-registration"
-                        variant="outlined"
-                        value={quickStudent}
-                        onChange={(event) => setQuickStudent(event.target.value)}
+                            value={quickStudent}
+                            onChange={(event) => setQuickStudent(event.target.value)}
                     >
-                        <MenuItem value="">Select Student</MenuItem>
+                        <MenuItem value=""><em>Select Student</em></MenuItem>
                         {
-                            studentOptions.map(({ value, label }) => <MenuItem value={value} key={value}>
+                            studentOptions.map(({value, label}) => <MenuItem value={value} key={value}>
                                 {label}
                             </MenuItem>)
                         }

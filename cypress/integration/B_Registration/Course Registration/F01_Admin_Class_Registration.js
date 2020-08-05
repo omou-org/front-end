@@ -19,6 +19,11 @@ describe("Admin Registers an upcoming class", () => {
 		cy.get("[data-cy=current-parent]");
 	});
 
+	it("Quick registers a class", () => {
+		cy.get("[data-cy=quick-register-class]").first().click();
+
+	});
+
 	it("Exits the parent", () => {
 		cy.get("[data-cy=current-parent]").click();
 		cy.get("[data-cy=exit-parent-action]").click();
