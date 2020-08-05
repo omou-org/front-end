@@ -22,14 +22,12 @@ const toDisplayValue = (value) => {
     }
 
     if (Array.isArray(value)) {
-        console.log(value.reduce((valueA, valueB) => (valueA.label + ", " + valueB.label)), value);
         if (value.length > 1) {
             return value.reduce((valueA, valueB) => (valueA.label + ", " + valueB.label));
         } else {
             return value.label;
         }
     }
-
 
     return value;
 };
