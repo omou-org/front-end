@@ -1257,8 +1257,38 @@ export default {
         },
         "submit": async (formData, id) => {
             const CREATE_INSTRUCTOR = gql`
-            mutation CreateInstructor($firstName: String!, $lastName: String!, $email: String, $phoneNumber: String, $gender: GenderEnum, $address: String, $city: String, $state: String, $subjects: [ID], $experience: String, $biography: String, $language: String, $birthDate: Date, $zipcode: String) {
-                createInstructor(user: {firstName: $firstName, lastName: $lastName, email: $email, password: "abcdefgh"}, address: $address, biography: $biography, birthDate: $birthDate, city: $city, experience: $experience, gender: $gender, language: $language, phoneNumber: $phoneNumber, subjects: $subjects, state: $state, zipcode: $zipcode) {
+            mutation CreateInstructor($firstName: String!, 
+            $lastName: String!, 
+            $email: String, 
+            $phoneNumber: String, 
+            $gender: GenderEnum, 
+            $address: String, 
+            $city: String, 
+            $state: String, 
+            $subjects: [ID], 
+            $experience: String, 
+            $biography: String, 
+            $language: String, 
+            $birthDate: Date, 
+            $zipcode: String) {
+                createInstructor(
+                user: {
+                    firstName: $firstName, 
+                    lastName: $lastName, 
+                    email: $email, 
+                    password: "abcdefgh"
+                }, 
+                address: $address, 
+                biography: $biography, 
+                birthDate: $birthDate, 
+                city: $city, 
+                experience: $experience, 
+                gender: $gender, 
+                language: $language, 
+                phoneNumber: $phoneNumber, 
+                subjects: $subjects, 
+                state: $state, 
+                zipcode: $zipcode) {
                     instructor {
                     user {
                         id

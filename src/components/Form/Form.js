@@ -148,7 +148,7 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                 setOpenError(true);
             }
         }, [submitError])
-        console.log(submitError);
+
         return (<form noValidate onSubmit={handleSubmit}>
                 <Stepper activeStep={activeStep} orientation="vertical">
                     {sections.map((section, index) => renderStep(
