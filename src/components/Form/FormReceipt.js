@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment"
 
 import Typography from "@material-ui/core/Typography";
 
@@ -12,9 +13,23 @@ const toDisplayValue = (value) => {
         return new Date(value).toLocaleString("eng-US");
     }
 
+    if (value instanceof moment) {
+        return value.format("MM/DD/YYYY");
+    }
+
     if (value.hasOwnProperty("label")) {
         return value.label;
     }
+
+    if (Array.isArray(value)) {
+        console.log(value.reduce((valueA, valueB) => (valueA.label + ", " + valueB.label)), value);
+        if (value.length > 1) {
+            return value.reduce((valueA, valueB) => (valueA.label + ", " + valueB.label));
+        } else {
+            return value.label;
+        }
+    }
+
 
     return value;
 };

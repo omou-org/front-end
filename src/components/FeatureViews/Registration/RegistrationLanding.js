@@ -1,20 +1,18 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import SearchSelect from "react-select";
-import Tab from "@material-ui/core/Tab";
-import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
 
 import {distinctObjectArray, fullName, gradeOptions} from "utils";
 import CourseList from "./CourseList";
 import Loading from "components/OmouComponents/Loading";
 import RegistrationActions from "./RegistrationActions";
-import TutoringList from "./TutoringList";
 import gql from "graphql-tag";
 import {useQuery} from "@apollo/react-hooks";
 import {SIMPLE_COURSE_DATA} from "queryFragments";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
+import {getRegistrationCart} from "../../OmouComponents/RegistrationUtils";
 
 const customStyles = {
     "clearIndicator": (base, state) => ({
@@ -78,13 +76,20 @@ export const GET_COURSES = gql`
 
 const RegistrationLanding = () => {
     const {data, loading, error} = useQuery(GET_COURSES);
-
+    const {currentParent} = getRegistrationCart();
     const [view, setView] = useState(0);
+    const [updatedParent, setUpdatedParent] = useState(false);
     const [courseFilters, setCourseFilters] = useState({
         "grade": [],
         "instructor": [],
         "subject": [],
     });
+
+    useEffect(() => {
+        if (currentParent) {
+            setUpdatedParent(true);
+        }
+    }, [])
 
     const updateView = useCallback(
         (newView) => () => {
@@ -94,7 +99,7 @@ const RegistrationLanding = () => {
     );
 
     if (loading) {
-        return <Loading />;
+        return <Loading/>;
     }
     if (error) {
         return (
@@ -173,14 +178,17 @@ const RegistrationLanding = () => {
                 options={options}
                 placeholder={`All ${filterType}s`}
                 styles={customStyles}
-                value={courseFilters[filterType]} />
+                value={courseFilters[filterType]}/>
         );
     };
 
+    const handleUpdateParent = (status) => {
+        setUpdatedParent(status);
+    }
     return (
         <BackgroundPaper className="RegistrationLanding" elevation={2}>
             <Grid container>
-                <RegistrationActions/>
+                <RegistrationActions updateRegisteringParent={handleUpdateParent}/>
             </Grid>
             <hr/>
             <Grid container layout="row">
@@ -189,15 +197,15 @@ const RegistrationLanding = () => {
                         Registration Catalog
                     </Typography>
                 </Grid>
-                <Grid className="catalog-setting-wrapper" item>
-                    <Tabs
-                        className="catalog-setting"
-                        indicatorColor="primary"
-                        value={view}>
-                        <Tab label="Courses" onClick={updateView(0)} />
-                        <Tab label="Tutoring" onClick={updateView(1)} />
-                    </Tabs>
-                </Grid>
+                {/*<Grid className="catalog-setting-wrapper" item>*/}
+                {/*    <Tabs*/}
+                {/*        className="catalog-setting"*/}
+                {/*        indicatorColor="primary"*/}
+                {/*        value={view}>*/}
+                {/*        <Tab label="Courses" onClick={updateView(0)} />*/}
+                {/*        <Tab label="Tutoring" onClick={updateView(1)} />*/}
+                {/*    </Tabs>*/}
+                {/*</Grid>*/}
             </Grid>
             {view === 0 && (
 				<Grid item container layout="row" spacing={1}>
@@ -214,10 +222,11 @@ const RegistrationLanding = () => {
                     </Hidden> 
                 </Grid>
             )}
-			<Grid item className="registration-table" container spacing={5}>
-                {view === 0 ?
-                    <CourseList filteredCourses={filteredCourses} /> :
-                    <TutoringList />}
+            <Grid item className="registration-table" container spacing={5}>
+                <CourseList filteredCourses={filteredCourses} updatedParent={updatedParent}/>
+                {/*{view === 0 ?*/}
+                {/*    <CourseList filteredCourses={filteredCourses} updatedParent={updatedParent}/> :*/}
+                {/*    <TutoringList />}*/}
             </Grid>
         </BackgroundPaper>
     );

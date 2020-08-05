@@ -4,13 +4,11 @@ import { useDispatch } from "react-redux";
 
 import Button from "@material-ui/core/Button";
 import CourseIcon from "@material-ui/icons/Class";
-import DiscountIcon from "@material-ui/icons/LocalActivity";
 import Grid from "@material-ui/core/Grid";
 import ListItemText from "@material-ui/core/ListItemText";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import NewInstructor from "@material-ui/icons/PersonAdd";
-import TuitionIcon from "@material-ui/icons/AttachMoney";
 
 import "./AdminPortal.scss";
 import { initializeRegistration } from "actions/registrationActions";
@@ -96,39 +94,28 @@ const AdminActionCenter = () => {
 					Manage Course
 				</Button>
 			</Grid>
-			<Grid item>
-				<Button
-					aria-controls="simple-menu"
-					aria-haspopup="true"
-					className={`button ${tabState.tuition && "active"}`}
-					onClick={handleClick(setTuitionAnchor)}
-				>
-					<TuitionIcon className="admin-action-icon" />
-					Manage Tuition
-				</Button>
-			</Grid>
-			<Grid item>
-				<Button
-					aria-controls="simple-menu"
-					aria-haspopup="true"
-					className={`button ${tabState.discount && "active"}`}
-					onClick={handleClick(setDiscountAnchor)}
-				>
-					<DiscountIcon className="admin-action-icon" />
-					Manage Discounts
-				</Button>
-			</Grid>
-			<Grid item>
-				<Button
-					aria-controls="simple-menu"
-					className={`button ${tabState.actionLog && "active"}`}
-					component={NavLink}
-					to="/adminportal/actionlog"
-				>
-					<DiscountIcon className="admin-action-icon" />
-					Action Log
-				</Button>
-			</Grid>
+			{/*<Grid item>*/}
+			{/*	<Button*/}
+			{/*		aria-controls="simple-menu"*/}
+			{/*		aria-haspopup="true"*/}
+			{/*		className={`button ${tabState.tuition && "active"}`}*/}
+			{/*		onClick={handleClick(setTuitionAnchor)}*/}
+			{/*	>*/}
+			{/*		<TuitionIcon className="admin-action-icon"/>*/}
+			{/*		Manage Tuition*/}
+			{/*	</Button>*/}
+			{/*</Grid>*/}
+			{/*<Grid item>*/}
+			{/*	<Button*/}
+			{/*		aria-controls="simple-menu"*/}
+			{/*		aria-haspopup="true"*/}
+			{/*		className={`button ${tabState.discount && "active"}`}*/}
+			{/*		onClick={handleClick(setDiscountAnchor)}*/}
+			{/*	>*/}
+			{/*		<DiscountIcon className="admin-action-icon"/>*/}
+			{/*		Manage Discounts*/}
+			{/*	</Button>*/}
+			{/*</Grid>*/}
 			<StyledMenu
 				anchorEl={userAnchor}
 				keepMounted
@@ -153,37 +140,37 @@ const AdminActionCenter = () => {
 				</MenuItem>
 				<MenuItem
 					component={NavLink}
-					to="/adminportal/manage-course-categories"
+					to="/adminportal/management"
 				>
-					<ListItemText primary="COURSE CATEGORIES" />
+					<ListItemText primary="MANAGE BUSINESS"/>
 				</MenuItem>
 			</StyledMenu>
-			<StyledMenu
-				anchorEl={tuitionAnchor}
-				keepMounted
-				onClose={handleClose(setTuitionAnchor)}
-				open={Boolean(tuitionAnchor)}
-			>
-				<MenuItem component={NavLink} to="/adminportal/form/pricing">
-					<ListItemText primary="SET TUITION RULES" />
-				</MenuItem>
-				<MenuItem component={NavLink} to="/adminportal/tuition-rules">
-					<ListItemText primary="TUITION RULES" />
-				</MenuItem>
-			</StyledMenu>
-			<StyledMenu
-				anchorEl={discountAnchor}
-				keepMounted
-				onClose={handleClose(setDiscountAnchor)}
-				open={Boolean(discountAnchor)}
-			>
-				<MenuItem component={NavLink} to="/adminportal/form/discount">
-					<ListItemText primary="SET DISCOUNTS" />
-				</MenuItem>
-				<MenuItem component={NavLink} to="/adminportal/manage-discounts">
-					<ListItemText primary="DISCOUNTS" />
-				</MenuItem>
-			</StyledMenu>
+			{/*<StyledMenu*/}
+			{/*	anchorEl={tuitionAnchor}*/}
+			{/*	keepMounted*/}
+			{/*	onClose={handleClose(setTuitionAnchor)}*/}
+			{/*	open={Boolean(tuitionAnchor)}*/}
+			{/*>*/}
+			{/*	<MenuItem component={NavLink} to="/adminportal/form/pricing">*/}
+			{/*		<ListItemText primary="SET TUITION RULES"/>*/}
+			{/*	</MenuItem>*/}
+			{/*	<MenuItem component={NavLink} to="/adminportal/tuition-rules">*/}
+			{/*		<ListItemText primary="TUITION RULES"/>*/}
+			{/*	</MenuItem>*/}
+			{/*</StyledMenu>*/}
+			{/*<StyledMenu*/}
+			{/*	anchorEl={discountAnchor}*/}
+			{/*	keepMounted*/}
+			{/*	onClose={handleClose(setDiscountAnchor)}*/}
+			{/*	open={Boolean(discountAnchor)}*/}
+			{/*>*/}
+			{/*	<MenuItem component={NavLink} to="/adminportal/form/discount">*/}
+			{/*		<ListItemText primary="SET DISCOUNTS"/>*/}
+			{/*	</MenuItem>*/}
+			{/*	<MenuItem component={NavLink} to="/adminportal/manage-discounts">*/}
+			{/*		<ListItemText primary="DISCOUNTS"/>*/}
+			{/*	</MenuItem>*/}
+			{/*</StyledMenu>*/}
 		</Grid>
 	);
 };

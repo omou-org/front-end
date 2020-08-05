@@ -1,12 +1,11 @@
 import React from "react";
-import {withRouter} from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-
-import BackArrow from "@material-ui/icons/ArrowBack";
+import BackArrow from '@material-ui/icons/ArrowBackIos';
 import Modal from "@material-ui/core/Modal";
 import Button from "@material-ui/core/Button";
 import Hidden from "@material-ui/core/Hidden/Hidden";
-import {Typography} from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 
 
@@ -69,7 +68,7 @@ const BackButton = (props) => {
 
 	const renderIcon = () => {
 		if (props.icon == null) {
-			return <BackArrow className="icon" />
+			return <BackArrow fontSize="small" className="icon" />
 		}
 		if (props.icon == "cancel") {
 			return null;
@@ -80,7 +79,7 @@ const BackButton = (props) => {
 		<Hidden mdDown>
 			<Button
 				className="control course button"
-				onClick={()=>{handleClick()}}
+				onClick={() => { handleClick() }}
 			>
 				<Grid container>
 					{renderIcon()}
@@ -91,7 +90,7 @@ const BackButton = (props) => {
 				aria-labelledby="simple-modal-title"
 				aria-describedby="simple-modal-description"
 				open={alert}
-				onClick={()=>{hideWarning()}}
+				onClick={() => { hideWarning() }}
 			>
 				<div className="exit-popup">
 					<Typography variant="h6" id="modal-title">
