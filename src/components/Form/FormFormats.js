@@ -13,6 +13,12 @@ import {fullName} from "../../utils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
 import {createTutoringDetails, submitRegistration} from "../OmouComponents/RegistrationUtils";
 
+Yup.addMethod(Yup.array, 'unique', function (message, mapper = a => a) {
+    return this.test('unique', message, function (list) {
+        return list.length === new Set(list.map(mapper)).size;
+    });
+});
+
 export const responseToForm = (parser, data) => {
     const res = {};
     Object.entries(data).forEach(([key, message]) => {
@@ -470,7 +476,7 @@ const categoryMap = ({courseCategories}) => courseCategories.map(({id, name}) =>
 
 const categorySelect = (name) => (
     <Fields.DataSelect name={name} optionsMap={categoryMap}
-        request={GET_CATEGORIES} />
+                       request={GET_CATEGORIES}/>
 );
 
 const schoolMap = ({schools}) => schools.map(({name, id}) => ({
@@ -1177,7 +1183,12 @@ export default {
                             categorySelect("subjects"),
                             {"multiple": true},
                         ),
-                        "validator": Yup.mixed(),
+                        "validator": Yup.array().of(
+                            Yup.object().shape({
+                                label: Yup.string(),
+                                value: Yup.string(),
+                            })
+                        ).unique("Can't select the same subjects!", (field) => (field.value)),
                         "default": [],
                     },
                     {
