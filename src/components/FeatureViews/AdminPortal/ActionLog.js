@@ -22,6 +22,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import SwapVertIcon from '@material-ui/icons/SwapVert';
 import gql from "graphql-tag";
 import moment from "moment";
+import Loading from "../../OmouComponents/Loading";
 import { useQuery } from "@apollo/react-hooks";
 import { DateRange } from "react-date-range";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -44,8 +45,25 @@ const GET_ADMINS = gql`
 `
 
 const GET_LOGS = gql`
-    query GetLogs ($action: String!,$adminType: String!, $page: Int!, $pageSize: Int!, $sort: String!, $objectType: String! $userId: ID!, $startDateTime: String!, $endDateTime: String!){
-        logs(action:$action, adminType: $adminType, page: $page, pageSize: $pageSize, sort: $sort, objectType: $objectType, userId: $userId, startDateTime: $startDateTime, endDateTime: $endDateTime){
+    query GetLogs ($action: String,
+        $adminType: String, 
+        $page: Int, 
+        $pageSize: Int, 
+        $sort: String, 
+        $objectType: String, 
+        $userId: ID!, 
+        $startDateTime: String, 
+        $endDateTime: String){
+        logs(action:$action, 
+            adminType: 
+            $adminType, 
+            page: $page, 
+            pageSize: $pageSize, 
+            sort: $sort, 
+            objectType: $objectType, 
+            userId: $userId, 
+            startDateTime: $startDateTime, 
+            endDateTime: $endDateTime){
             results {
                 date
                 userId
@@ -74,7 +92,6 @@ const useStyles = makeStyles({
 
 const ActionLog = () => {
     const classes = useStyles();
-    const [logData, setLogData] = useState(null);
     const [userType, setUserType] = useState(null);
     const [adminType, setAdminType] = useState("");
     const [actionType, setActionType] = useState("");
@@ -96,12 +113,8 @@ const ActionLog = () => {
         "sort": "",
         "clicked": false,
     });
-    const [fetchAdmins] = useLazyQuery(GET_ADMINS, {
-        "onCompleted": (data) => {
-            setUserOptions(data.admins);
-        },
-    });
-    const [logs] = useLazyQuery(GET_LOGS, {
+    const admins = useQuery(GET_ADMINS);
+    const { data, loading, error } = useQuery(GET_LOGS, {
         variables:
         {
             action: actionType.toLowerCase(),
@@ -113,55 +126,39 @@ const ActionLog = () => {
             sort: currentSort.sort,
             objectType: objectType.toLowerCase(),
             userId: currentId.toString(),
-        },
-        "onCompleted": (data) => {
-            setLogData(data);
-        },
+        }
     });
     const [userOptions, setUserOptions] = useState(null)
     const adminOptions = ["Owner", "Receptionist", "Assistant"];
     const actionOptions = ["Add", "Edit", "Delete"]
     const objectOptions = ["Student", "Admin", "Parent", "Instructor", "Payment", "Registration", "Tutoring", "Course", "Discount", "Price Rules"]
 
-    useEffect(() => {
-        logs()
-        fetchAdmins()
-    }, [])
+    if (loading || admins.loading) return <Loading />;
+    // if (error || admins.error) return "error";
+    // for some reason returning error will break on filtering for objects. Not sure why, maybe it's a backend issue
 
-    const renderChip = (action) => {
-        switch (action) {
-            case "Edit":
-                return (<Chip style={{ borderRadius: 3, width: 70, backgroundColor: "#FFDD59" }} label="Edit"></Chip>)
-            case "Add":
-                return (<Chip style={{ borderRadius: 3, width: 70, backgroundColor: "#78E08F" }} label="Add"></Chip>)
-            case "Delete":
-                return (<Chip style={{ borderRadius: 3, width: 70, backgroundColor: "#FF7675" }} label="Delete"></Chip>)
-        }
-    }
+    console.log(data);
+    console.log(objectType);
+    const renderChip = (action) => ({
+        "Edit": <Chip style={{ borderRadius: 3, width: 70, backgroundColor: "#FFDD59" }} label="Edit" />,
+        "Add": <Chip style={{ borderRadius: 3, width: 70, backgroundColor: "#78E08F" }} label="Add" />,
+        "Delete": <Chip style={{ borderRadius: 3, width: 70, backgroundColor: "#FF7675" }} label="Delete" />,
+    }[action]);
 
-    const handleAdminSelection = (event) => {
+    const handleSelection = (setValue) => (event) => {
         const value = event.target.value;
-        setAdminType(value);
-    }
-
-    const handleObjectSelection = (event) => {
-        const value = event.target.value;
-        setObjectType(value);
+        console.log(value);
+        setValue(value);
     }
 
     const handleUserSelection = (event) => {
         setUserType(event.target.value)
-        userOptions.map((userType) => {
+        admins.data.admins.map((userType) => {
             if (userType === event.target.value) {
                 setCurrentId(userType.user.id);
             }
         })
 
-    }
-
-    const handleActionSelection = (event) => {
-        const value = event.target.value;
-        setActionType(value);
     }
 
     const resetFilters = () => {
@@ -192,24 +189,13 @@ const ActionLog = () => {
         setCurrentPage(value);
     };
 
-    const handleActionSort = () => {
-        currentSort.clicked ? setCurrentSort({ "sort": "action_desc", "clicked": !currentSort.clicked }) : setCurrentSort({ "sort": "action_asc", "clicked": !currentSort.clicked })
+    const handleSort = (sortType) => (event) => {
+        event.preventDefault();
+        currentSort.clicked ? setCurrentSort({ "sort": `${sortType}_desc`, "clicked": !currentSort.clicked }) : setCurrentSort({ "sort": `${sortType}_asc`, "clicked": !currentSort.clicked })
     }
-
-    const handleObjectSort = () => {
-        currentSort.clicked ? setCurrentSort({ "sort": "object_desc", "clicked": !currentSort.clicked }) : setCurrentSort({ "sort": "action_asc", "clicked": !currentSort.clicked })
-    }
-
-    const handleUserSort = () => {
-        currentSort.clicked ? setCurrentSort({ "sort": "user_desc", "clicked": !currentSort.clicked }) : setCurrentSort({ "sort": "user_asc", "clicked": !currentSort.clicked })
-    }
-
-    const handleAdminSort = () => {
-        currentSort.clicked ? setCurrentSort({ "sort": "admin_desc", "clicked": !currentSort.clicked }) : setCurrentSort({ "sort": "admin_asc", "clicked": !currentSort.clicked })
-    }
-
-    const handleDateSort = () => {
-        currentSort.clicked ? setCurrentSort({ "sort": "date_desc", "clicked": !currentSort.clicked }) : setCurrentSort({ "sort": "date_asc", "clicked": !currentSort.clicked })
+    const renderName = (actionId) => {
+        const selectedUser = admins.data.admins.find(user => (user.user.id == actionId));
+        return (<div>{`${selectedUser.user.firstName} ${selectedUser.user.lastName}`}</div>)
     }
 
     return (
@@ -241,7 +227,7 @@ const ActionLog = () => {
                                     Timestamp
                                 </Grid>
                                 <Grid>
-                                    <SwapVertIcon onClick={handleDateSort} style={{ color: "grey" }} />
+                                    <SwapVertIcon onClick={handleSort("date")} style={{ color: "grey" }} />
                                 </Grid>
                             </Grid>
                             <Grid container >
@@ -277,14 +263,19 @@ const ActionLog = () => {
                                     User
                                 </Grid>
                                 <Grid>
-                                    <SwapVertIcon onClick={handleUserSort} style={{ color: "grey" }} />
+                                    <SwapVertIcon onClick={handleSort("user")} style={{ color: "grey" }} />
                                 </Grid>
                             </Grid>
                             <Grid>
                                 <FormControl
                                     variant="outlined"
                                 >
-                                    <InputLabel shrink={false} style={{ lineHeight: "5px" }} margin="dense" >{userType ? "" : "User Type"}</InputLabel>
+                                    <InputLabel
+                                        shrink={false}
+                                        style={{ lineHeight: "5px" }}
+                                        margin="dense" >
+                                        {!userType && "User Type"}
+                                    </InputLabel>
                                     <Select
                                         id="select"
                                         labelId="label"
@@ -297,7 +288,7 @@ const ActionLog = () => {
                                             "MuiInputBase-input": classes.MuiInputBase
                                         }}
                                     >
-                                        {userOptions && userOptions.map((userType) =>
+                                        {admins.data.admins.map((userType) =>
                                             (<MenuItem key={userType} value={userType}>
                                                 {userType.user.firstName} {userType.user.lastName}
                                             </MenuItem>
@@ -313,19 +304,25 @@ const ActionLog = () => {
                                     Admin Type
                                 </Grid>
                                 <Grid>
-                                    <SwapVertIcon onClick={handleAdminSort} style={{ color: "grey" }} />
+                                    <SwapVertIcon onClick={handleSort("admin")} style={{ color: "grey" }} />
                                 </Grid>
                             </Grid>
                             <Grid>
                                 <FormControl
                                     variant="outlined"
                                 >
-                                    <InputLabel shrink={false} id="label" style={{ lineHeight: "5px" }} margin="dense" >{adminType ? "" : "Profile Type"}</InputLabel>
+                                    <InputLabel
+                                        shrink={false}
+                                        id="label"
+                                        style={{ lineHeight: "5px" }}
+                                        margin="dense" >
+                                        {!adminType && "Profile Type"}
+                                    </InputLabel>
                                     <Select
                                         id="select"
                                         labelId="label"
                                         value={adminType}
-                                        onChange={handleAdminSelection}
+                                        onChange={handleSelection(setAdminType)}
                                         style={{ width: 130 }}
                                         classes={{
                                             outlined: classes.outlined,
@@ -348,19 +345,24 @@ const ActionLog = () => {
                                     Action
                                 </Grid>
                                 <Grid>
-                                    <SwapVertIcon onClick={handleActionSort} style={{ color: "grey" }} />
+                                    <SwapVertIcon onClick={handleSort("action")} style={{ color: "grey" }} />
                                 </Grid>
                             </Grid>
                             <Grid>
                                 <FormControl
                                     variant="outlined"
                                 >
-                                    <InputLabel shrink={false} style={{ lineHeight: "5px" }} margin="dense" >{actionType ? "" : "Action Type"}</InputLabel>
+                                    <InputLabel
+                                        shrink={false}
+                                        style={{ lineHeight: "5px" }}
+                                        margin="dense">
+                                        {!actionType && "Action Type"}
+                                    </InputLabel>
                                     <Select
                                         id="select"
                                         labelId="label"
                                         value={actionType}
-                                        onChange={handleActionSelection}
+                                        onChange={handleSelection(setActionType)}
                                         style={{ width: 130 }}
                                         classes={{
                                             outlined: classes.outlined,
@@ -383,19 +385,24 @@ const ActionLog = () => {
                                     Object
                                 </Grid>
                                 <Grid>
-                                    <SwapVertIcon onClick={handleObjectSort} style={{ color: "grey" }} />
+                                    <SwapVertIcon onClick={handleSort("object")} style={{ color: "grey" }} />
                                 </Grid>
                             </Grid>
                             <Grid>
                                 <FormControl
                                     variant="outlined"
                                 >
-                                    <InputLabel shrink={false} style={{ lineHeight: "5px" }} margin="dense" >{objectType ? "" : "Object Type"}</InputLabel>
+                                    <InputLabel
+                                        shrink={false}
+                                        style={{ lineHeight: "5px" }}
+                                        margin="dense" >
+                                        {!objectType && "Object Type"}
+                                    </InputLabel>
                                     <Select
                                         id="select"
                                         labelId="label"
                                         value={objectType}
-                                        onChange={handleObjectSelection}
+                                        onChange={handleSelection(setObjectType)}
                                         style={{ width: 130 }}
                                         classes={{
                                             outlined: classes.outlined,
@@ -413,19 +420,15 @@ const ActionLog = () => {
                             </Grid>
                         </TableCell>
                         <TableCell>
-                            <Grid container>
-                                <Grid>
-                                    Details
-                                </Grid>
-                            </Grid>
                             <Grid>
-                                <br />
+                                Details
+                                    <br />
                             </Grid>
                         </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {logData && logData.logs.results.map((actionItem) => {
+                    {data.logs.results.map((actionItem) => {
                         return (
                             <TableRow>
                                 <TableCell>
@@ -435,11 +438,9 @@ const ActionLog = () => {
                                     />
                                 </TableCell>
                                 <TableCell>
-                                    {userOptions && userOptions.map((userType) => {
-                                        if (userType.user.id == actionItem.userId) {
-                                            return (`${userType.user.firstName} ${userType.user.lastName} #${actionItem.userId}`)
-                                        }
-                                    })}
+                                    {
+                                        renderName(actionItem.userId)
+                                    }
                                 </TableCell>
                                 <TableCell>
                                     <div style={{ textTransform: "capitalize" }}>
@@ -462,19 +463,19 @@ const ActionLog = () => {
                     })}
                 </TableBody>
             </Table>
-            {logData &&
-                <Grid style={{ 
+            <div style={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',}}>
-                    <Pagination
-                        count={Math.ceil(logData.logs.total / pageSize)}
-                        onChange={handlePageChange}
-                        style={{
-                            paddingTop: 50,
-                        }}
-                    />
-                </Grid>}
+                justifyContent: 'center',
+            }}>
+                <Pagination
+                    count={Math.ceil(data.logs.total / pageSize)}
+                    onChange={handlePageChange}
+                    style={{
+                        paddingTop: 50,
+                    }}
+                />
+            </div>
         </>)
 }
 ActionLog.propTypes = {}
