@@ -60,6 +60,7 @@ const StudentEnrollmentList = ({
   concatFullParentName,
   phoneNumber,
   handleOpenModal,
+  loggedInUserAccountType
 }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -103,7 +104,7 @@ const StudentEnrollmentList = ({
         >
           <MailOutlineIcon style={{ color: "rgb(112,105,110)" }} />
         </Button>
-        <Menu
+        {loggedInUserAccountType === "ADMIN" || loggedInUserAccountType === "RECEPTIONIST" || loggedInUserAccountType === "INSTRUCTOR" ? <Menu
           id="simple-menu"
           anchorEl={anchorEl}
           keepMounted
@@ -127,7 +128,7 @@ const StudentEnrollmentList = ({
           >
             Email Parent
           </MenuItem>
-        </Menu>
+        </Menu> : null}
       </TableCell>
       <TableCell
         align="right"
@@ -153,7 +154,7 @@ const StudentEnrollmentList = ({
   );
 };
 
-const Studentenrollment = ({ enrollmentList, loggedInUser }) => {
+const Studentenrollment = ({ enrollmentList, loggedInUser, loggedInUserAccountType }) => {
   const classes = useStyles();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -220,6 +221,7 @@ const Studentenrollment = ({ enrollmentList, loggedInUser }) => {
                     concatFullParentName={concatFullParentName}
                     phoneNumber={phoneNumber}
                     handleOpenModal={handleOpenModal}
+                    loggedInUserAccountType={loggedInUserAccountType}
                   />
                 );
               })}

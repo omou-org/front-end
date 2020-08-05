@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CourseListOptions = ({ sessionId, loggedInUser }) => {
+const CourseListOptions = ({ sessionId, loggedInUser, loggedInUserAccountType }) => {
   const classes = useStyles();
   const [readMore, setReadMore] = useState(false);
   const [expand, setExpand] = useState(false);
@@ -143,14 +143,14 @@ const CourseListOptions = ({ sessionId, loggedInUser }) => {
             </AccordionSummary>
             <AccordionDetails>
               <Grid container justify="flex-start">
-                <Grid item xs={12} style={{ textAlign: "left" }}>
+                {loggedInUserAccountType === "ADMIN" || loggedInUserAccountType === "RECEPTIONIST" || loggedInUserAccountType === "INSTRUCTOR" ? <Grid item xs={12} style={{ textAlign: "left" }}>
                   <Button
                     className={classes.newNoteButton}
                     onClick={handleOpenForm}
                   >
                     <span className={classes.plusSpan}>+</span> New Note
                   </Button>
-                </Grid>
+                </Grid> : null}
 
                 {data.sessionNotes.map((note) => {
                   const { body, createdAt, id, poster, subject } = note;
@@ -165,7 +165,7 @@ const CourseListOptions = ({ sessionId, loggedInUser }) => {
                           {subject}
                         </Typography>
                       </Grid>
-                      <Grid item xs={6} style={{ textAlign: "right" }}>
+                      {loggedInUserAccountType === "ADMIN" || loggedInUserAccountType === "RECEPTIONIST" || loggedInUserAccountType === "INSTRUCTOR" ? <Grid item xs={6} style={{ textAlign: "right" }}>
                         <Button
                           onClick={handleEdit}
                           data-subject={subject}
@@ -174,7 +174,7 @@ const CourseListOptions = ({ sessionId, loggedInUser }) => {
                         >
                           <Create style={{ color: "#43B5D9" }} />
                         </Button>{" "}
-                      </Grid>
+                      </Grid> : null}
                       <Grid item xs={12}>
                         {readMore === false && body.length > 110 ? (
                           <Typography variant="body1" align="left">

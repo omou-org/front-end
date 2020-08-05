@@ -55,14 +55,19 @@ export const NavList = {
 			"icon": <EventIcon/>,
 		},
 		{
-			"name": "Accounts",
-			"link": "/accounts",
-			"icon": <AccountsIcon/>,
-		},
-		{
 			"name": "Registration",
 			"link": "/registration",
 			"icon": <AssignmentIcon/>,
+		},
+		{
+			"name": "Course Management",
+			"link": "/coursemanagement",
+			"icon": <MenuBookIcon />
+		},
+		{
+			"name": "Accounts",
+			"link": "/accounts",
+			"icon": <AccountsIcon/>,
 		},
 	],
 	"INSTRUCTOR": [
@@ -75,6 +80,11 @@ export const NavList = {
 			"name": "Scheduler",
 			"link": "/scheduler",
 			"icon": <EventIcon/>,
+		},
+		{
+			"name": "Course Management",
+			"link": "/coursemanagement",
+			"icon": <MenuBookIcon />
 		},
 		{
 			"name": "My Availability",
@@ -92,6 +102,11 @@ export const NavList = {
 			"name": "Dashboard",
 			"link": "/",
 			"icon": <DashboardIcon/>,
+		},
+		{
+			"name": "Course Management",
+			"link": "/coursemanagement",
+			"icon": <MenuBookIcon />
 		},
 		{
 			"name": "Scheduler",

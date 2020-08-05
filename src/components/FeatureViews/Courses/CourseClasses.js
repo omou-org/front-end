@@ -69,9 +69,236 @@ const CourseClasses = () => {
     { label: "Student Enrolled" },
     { label: "Sessions" },
   ];
-  const { email } = useSelector(({ auth }) => auth) || [];
+  const { email, accountType } = useSelector(({ auth }) => auth) || [];
+  console.log(email, accountType)
 
-  const GET_CLASSES = gql`
+  const getQuery = () => {
+    switch(accountType) {
+      case "ADMIN": 
+        return (gql`
+        query getClass($id: ID!, $email: String = "") {
+          course(courseId: $id) {
+            academicLevel
+            courseCategory {
+              name
+              id
+            }
+            title
+            startTime
+            startDate
+            endTime
+            endDate
+            dayOfWeek
+            description
+            instructor {
+              user {
+                firstName
+                lastName
+              }
+            }
+            enrollmentSet {
+              student {
+                user {
+                  firstName
+                  lastName
+                  id
+                }
+                primaryParent {
+                  user {
+                    firstName
+                    lastName
+                    id
+                    email
+                  }
+                  accountType
+                  phoneNumber
+                }
+                accountType
+              }
+            }
+            sessionSet {
+              startDatetime
+              id
+            }
+          }
+          announcements(courseId: $id) {
+            subject
+            id
+            body
+            createdAt
+            poster {
+              firstName
+              lastName
+            }
+          }
+          accountSearch(query: $email) {
+            total
+            results {
+              ... on AdminType {
+                userUuid
+                user {
+                  email
+                  firstName
+                  lastName
+                  id
+                }
+              }
+            }
+          }
+        }
+      `);
+      case "INSTRUCTOR":
+        return (gql`
+        query getClass($id: ID!, $email: String = "") {
+          course(courseId: $id) {
+            academicLevel
+            courseCategory {
+              name
+              id
+            }
+            title
+            startTime
+            startDate
+            endTime
+            endDate
+            dayOfWeek
+            description
+            instructor {
+              user {
+                firstName
+                lastName
+              }
+            }
+            enrollmentSet {
+              student {
+                user {
+                  firstName
+                  lastName
+                  id
+                }
+                primaryParent {
+                  user {
+                    firstName
+                    lastName
+                    id
+                    email
+                  }
+                  accountType
+                  phoneNumber
+                }
+                accountType
+              }
+            }
+            sessionSet {
+              startDatetime
+              id
+            }
+          }
+          announcements(courseId: $id) {
+            subject
+            id
+            body
+            createdAt
+            poster {
+              firstName
+              lastName
+            }
+          }
+          accountSearch(query: $email) {
+            total
+            results {
+              ... on InstructorType {
+                userUuid
+                user {
+                  email
+                  firstName
+                  lastName
+                  id
+                }
+              }
+            }
+          }
+        }
+      `);
+      case "PARENT":
+        return (
+          gql`
+    query getClass($id: ID!, $email: String = "") {
+      course(courseId: $id) {
+        academicLevel
+        courseCategory {
+          name
+          id
+        }
+        title
+        startTime
+        startDate
+        endTime
+        endDate
+        dayOfWeek
+        description
+        instructor {
+          user {
+            firstName
+            lastName
+          }
+        }
+        enrollmentSet {
+          student {
+            user {
+              firstName
+              lastName
+              id
+            }
+            primaryParent {
+              user {
+                firstName
+                lastName
+                id
+                email
+              }
+              accountType
+              phoneNumber
+            }
+            accountType
+          }
+        }
+        sessionSet {
+          startDatetime
+          id
+        }
+      }
+      announcements(courseId: $id) {
+        subject
+        id
+        body
+        createdAt
+        poster {
+          firstName
+          lastName
+        }
+      }
+      accountSearch(query: $email) {
+        total
+        results {
+          ... on ParentType {
+            userUuid
+            user {
+              email
+              firstName
+              lastName
+              id
+            }
+          }
+        }
+      }
+    }
+  `
+        )
+    }
+  }
+
+  const GET_CLASSES_ADMIN = gql`
     query getClass($id: ID!, $email: String = "") {
       course(courseId: $id) {
         academicLevel
@@ -144,15 +371,16 @@ const CourseClasses = () => {
     }
   `;
 
-  const { data, loading, error } = useQuery(GET_CLASSES, {
+  const { data, loading, error } = useQuery(getQuery(), {
     variables: {
       id: id.id,
       email: email,
     },
   });
-
+  
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
+  console.log(data)
 
   const {
     academicLevel,
@@ -330,18 +558,21 @@ const CourseClasses = () => {
                   <Announcements
                     announcementsData={data.announcements}
                     loggedInUser={data.accountSearch}
+                    loggedInUserAccountType={accountType}
                   />
                 </TabPanel>
                 <TabPanel index={2} value={index}>
                   <StudentEnrollment
                     enrollmentList={enrollmentSet}
                     loggedInUser={data.accountSearch}
+                    loggedInUserAccountType={accountType}
                   />
                 </TabPanel>
                 <TabPanel index={3} value={index}>
                   <CourseSessions
                     sessionList={sessionSet}
                     loggedInUser={data.accountSearch}
+                    loggedInUserAccountType={accountType}
                   />
                 </TabPanel>
               </Grid>

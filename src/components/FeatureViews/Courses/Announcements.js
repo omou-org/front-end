@@ -51,6 +51,7 @@ const AnnouncementCard = ({
   createdAt,
   handleEdit,
   handleDelete,
+  loggedInUserAccountType
 }) => {
   const classes = useStyles();
   const date = moment(createdAt).format("MM/DD");
@@ -77,14 +78,14 @@ const AnnouncementCard = ({
           {subject}
         </Typography>
       </Grid>
-      <Grid item xs={6} style={{ textAlign: "right" }}>
+      {loggedInUserAccountType === "ADMIN" || loggedInUserAccountType === "RECEPTIONIST" || loggedInUserAccountType === "INSTRUCTOR" ? <Grid item xs={6} style={{ textAlign: "right" }}>
         <Button onClick={handleOpenForm} name="edit" value="edit">
           <Create style={{ color: omouBlue }} />
         </Button>{" "}
         <Button onClick={handleDeleteForm}>
           <Cancel style={{ color: omouBlue }} />
         </Button>
-      </Grid>
+      </Grid> : null }
       <Grid item xs={12} className={classes.announcementBody}>
         <Typography variant="body1" align="left" ref={bodyRef}>
           {body}
@@ -112,7 +113,7 @@ const AnnouncementCard = ({
   );
 };
 
-const Announcements = ({ announcementsData, loggedInUser, classTitle }) => {
+const Announcements = ({ announcementsData, loggedInUser, loggedInUserAccountType }) => {
   const [openNewAnnouncementForm, setNewAnnouncementForm] = useState(false);
   const [announcementId, setAnnouncementId] = useState();
   const [announcementSubject, setAnnouncementSubject] = useState("");
@@ -161,14 +162,14 @@ const Announcements = ({ announcementsData, loggedInUser, classTitle }) => {
 
   return (
     <Grid container justify="flex-start" data-active="inactive">
-      <Button
+      {loggedInUserAccountType === "ADMIN" || loggedInUserAccountType === "RECEPTIONIST" || loggedInUserAccountType === "INSTRUCTOR" ? <Button
         className={classes.newNoteButton}
-        onClick={(event) => setNewAnnouncementForm(true, setEditOrPost("post"))}
+        onClick={() => setNewAnnouncementForm(true, setEditOrPost("post"))}
         value="post"
         name="post"
       >
         <span className={classes.plusSpan}>+</span> New Announcement
-      </Button>
+      </Button> : null}
       {announcementsRender?.map(({ poster, subject, body, createdAt, id }) => (
         <>
           <AnnouncementCard
@@ -180,6 +181,7 @@ const Announcements = ({ announcementsData, loggedInUser, classTitle }) => {
             createdAt={createdAt}
             handleEdit={handleEdit}
             handleDelete={handleDeleteAnnouncement}
+            loggedInUserAccountType={loggedInUserAccountType}
           />
         </>
       ))}

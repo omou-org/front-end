@@ -15,7 +15,7 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import gql from "graphql-tag";
-import { useMutation } from "@apollo/react-hooks";
+import { useQuery, useMutation } from "@apollo/react-hooks";
 import { omouBlue } from "../../../theme/muiTheme";
 
 const useStyles = makeStyles((theme) => ({
@@ -109,6 +109,7 @@ const NewAnnouncementsModal = ({
   const [announcementSubject, setAnnouncementSubject] = useState("");
   const courseId = useParams();
   const user_id = userId.results[0].user.id;
+  // console.log(userId)
 
   const CREATE_ANNOUNCEMENTS = gql`
     mutation CreateAnnouncement(
@@ -181,10 +182,11 @@ const NewAnnouncementsModal = ({
     {
       onCompleted: () => handleClose(false),
       error: (err) => console.error(err),
-      update: (cache, {data}) => {
-        console.log(cache)
-        console.log(data)
-      }
+      update: (cache, { data }) => {
+        // const [newAnnouncement] = Object.values(data[]);
+        console.log(cache);
+        console.log(data);
+      },
     }
   );
 
