@@ -29,22 +29,6 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 import { fullName } from "../../../utils";
 
-
-const GET_ADMINS = gql`
-    query GetAdmins {
-        __typename
-            admins {
-                user {
-                id
-                firstName
-                email
-                lastName
-            }
-        }
-    }
-  
-`
-
 const GET_LOGS = gql`
     query GetLogs ($action: String,
         $adminType: String, 
@@ -122,7 +106,6 @@ const ActionLog = () => {
         "sort": "",
         "clicked": false,
     });
-    const admins = useQuery(GET_ADMINS);
     const { data, loading, error } = useQuery(GET_LOGS, {
         variables:
         {
@@ -157,7 +140,6 @@ const ActionLog = () => {
 
     const handleUserSelection = (event) => {
         setUserType(event.target.value)
-        console.log(event.target.value);
         setCurrentId(data.admins.filter(user => (user.user.id === event.target.value.user.id))[0].user.id);
     }
 
@@ -199,7 +181,7 @@ const ActionLog = () => {
         const selectedUser = data.admins.find(user => (user.user.id == actionId));
         return (<div>{fullName(selectedUser.user)}</div>)
     }
-    console.log(userType);
+    
     return (
         <>
             <Dialog open={openCalendar} onClose={handleSaveDateRange}>
@@ -281,6 +263,7 @@ const ActionLog = () => {
                                     <Select
                                         id="select"
                                         labelId="label"
+                                       
                                         value={userType}
                                         onChange={handleUserSelection}
                                         style={{ width: 130 }}
@@ -290,6 +273,11 @@ const ActionLog = () => {
                                             "MuiInputBase-input": classes.MuiInputBase
                                         }}
                                     >
+                                         {/*
+                                            why the hell does this work. I wrote it and I don't even understand it. maybe its because im tired
+                                            shouldn't userType be a string? how the f does value accept an object and display the correct name???????????????????? 
+                                            idk im going to sleep LOL
+                                        */}
                                         {data.admins.map((userType) =>
                                             (<MenuItem key={userType} value={userType}>
                                                 {fullName(userType.user)}
