@@ -24,6 +24,7 @@ import Scheduler from "../FeatureViews/Scheduler/Scheduler";
 import SearchResults from "../FeatureViews/Search/SearchResults";
 import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
+import AdminDashboard from "../FeatureViews/AdminPortal/AdminDashboard";
 
 import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
@@ -161,6 +162,12 @@ export const RootRoutes = () => {
                 users={[USER_TYPES.admin, USER_TYPES.parent]}>
                 <FormPage />
             </AuthenticatedRoute>
+
+            <AuthenticatedRoute exact
+                path="/admindashboard"
+                users={[USER_TYPES.admin]}>
+                    <AdminDashboard />
+                </AuthenticatedRoute>
 
             <AuthenticatedRoute path="/PageNotFound">
                 <ErrorNotFoundPage />
