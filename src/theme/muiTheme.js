@@ -68,11 +68,6 @@ const theme = createMuiTheme({
 				color: "#FFFFFF",
 			}
         },
-        "MuiIconButton": {
-            "colorInherit": {
-                "color": "white"
-            }
-        },
         "MuiBadge": {
             "colorPrimary": {
                 "color": "white",
@@ -88,7 +83,6 @@ const theme = createMuiTheme({
                 "borderRight": "none",
                 backgroundColor: neutralBackgroundColor,
                 padding: "1vw",
-                
             }
         },
         "paper": {
