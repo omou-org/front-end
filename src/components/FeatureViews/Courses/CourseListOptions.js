@@ -13,7 +13,7 @@ import moment from "moment";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
-import { fullName } from "../../../utils";
+import { fullName, USER_TYPES } from "../../../utils";
 import theme from "../../../theme/muiTheme";
 
 const useStyles = makeStyles((theme) => ({
@@ -143,7 +143,7 @@ const CourseListOptions = ({ sessionId, loggedInUser, loggedInUserAccountType })
             </AccordionSummary>
             <AccordionDetails>
               <Grid container justify="flex-start">
-                {loggedInUserAccountType === "ADMIN" || loggedInUserAccountType === "RECEPTIONIST" || loggedInUserAccountType === "INSTRUCTOR" ? <Grid item xs={12} style={{ textAlign: "left" }}>
+                {[USER_TYPES.admin, USER_TYPES.receptionist, USER_TYPES.instructor].includes(loggedInUserAccountType) ? <Grid item xs={12} style={{ textAlign: "left" }}>
                   <Button
                     className={classes.newNoteButton}
                     onClick={handleOpenForm}
@@ -165,7 +165,7 @@ const CourseListOptions = ({ sessionId, loggedInUser, loggedInUserAccountType })
                           {subject}
                         </Typography>
                       </Grid>
-                      {loggedInUserAccountType === "ADMIN" || loggedInUserAccountType === "RECEPTIONIST" || loggedInUserAccountType === "INSTRUCTOR" ? <Grid item xs={6} style={{ textAlign: "right" }}>
+                      {[USER_TYPES.admin, USER_TYPES.receptionist, USER_TYPES.instructor].includes(loggedInUserAccountType) ? <Grid item xs={6} style={{ textAlign: "right" }}>
                         <Button
                           onClick={handleEdit}
                           data-subject={subject}

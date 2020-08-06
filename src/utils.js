@@ -244,11 +244,11 @@ export const gradeOptions = [
 export const gradeLvl = (gradelevel) => {
     switch(gradelevel) {
       case "ELEMENTARY_LVL":
-        return "K-4";
+        return "Elementary School";
       case "MIDDLE_LVL": 
-        return "5-8";
+        return "Middle School";
       case "HIGH_LVL":
-        return "9-12";
+        return "High School";
       case "COLLEGE_LVL":
         return "College";
       default:

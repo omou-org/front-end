@@ -9,7 +9,7 @@ import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 import moment from "moment";
 import NewAnnouncementModal from "./NewAnnoucementsModal";
-import { fullName } from "../../../utils";
+import { fullName, USER_TYPES } from "../../../utils";
 import theme, { omouBlue } from "../../../theme/muiTheme";
 
 const useStyles = makeStyles({
@@ -78,7 +78,7 @@ const AnnouncementCard = ({
           {subject}
         </Typography>
       </Grid>
-      {loggedInUserAccountType === "ADMIN" || loggedInUserAccountType === "RECEPTIONIST" || loggedInUserAccountType === "INSTRUCTOR" ? <Grid item xs={6} style={{ textAlign: "right" }}>
+      {[USER_TYPES.admin, USER_TYPES.receptionist, USER_TYPES.instructor].includes(loggedInUserAccountType) ? <Grid item xs={6} style={{ textAlign: "right" }}>
         <Button onClick={handleOpenForm} name="edit" value="edit">
           <Create style={{ color: omouBlue }} />
         </Button>{" "}

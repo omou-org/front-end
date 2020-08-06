@@ -69,9 +69,19 @@ const CourseClasses = () => {
     { label: "Student Enrolled" },
     { label: "Sessions" },
   ];
-  const { email, accountType } = useSelector(({ auth }) => auth) || [];
+  const { email, accountType, user } = useSelector(({ auth }) => auth) || [];
+  
+  console.log(user, email)
 
-  const GET_CLASSES = gql`
+  const queryParser = (userType) => ({
+    ADMIN: "AdminType",
+    INSTRUCTOR: "InstructorType",
+    PARENT: "ParentType",
+    STUDENT: "StudentType",
+  }[userType]);
+
+  const QUERIES = {
+    get_classes: gql`
     query getClass($id: ID!, $email: String = "") {
       course(courseId: $id) {
         academicLevel
@@ -130,7 +140,7 @@ const CourseClasses = () => {
       accountSearch(query: $email) {
         total
         results {
-          ... on ${accountType === "ADMIN" ? "AdminType" : (accountType === "INSTRUCTOR") ? "InstructorType" : (accountType === "PARENT") ? "ParentType" : "StudentType"} {
+          ... on ${queryParser(accountType)} {
             userUuid
             user {
               email
@@ -141,18 +151,123 @@ const CourseClasses = () => {
           }
         }
       }
+    }`,
+    get_studentList: gql`
+    query getStudents($parentEmail: String!) {
+      parent(email: $parentEmail) {
+        studentList
+      }
     }
-  `;
+    `,
+    get_enrollmentList: gql`
+    query getEnrollment($studentId: ID!) {
+      __typename
+      enrollments(studentId: $studentId) {
+        id
+      }
+    }`,
+  };
 
-  const { data, loading, error } = useQuery(GET_CLASSES, {
+  // const GET_CLASSES = gql`
+  //   query getClass($id: ID!, $email: String = "") {
+  //     course(courseId: $id) {
+  //       academicLevel
+  //       courseCategory {
+  //         name
+  //         id
+  //       }
+  //       title
+  //       startTime
+  //       startDate
+  //       endTime
+  //       endDate
+  //       dayOfWeek
+  //       description
+  //       instructor {
+  //         user {
+  //           firstName
+  //           lastName
+  //         }
+  //       }
+  //       enrollmentSet {
+  //         student {
+  //           user {
+  //             firstName
+  //             lastName
+  //             id
+  //           }
+  //           primaryParent {
+  //             user {
+  //               firstName
+  //               lastName
+  //               id
+  //               email
+  //             }
+  //             accountType
+  //             phoneNumber
+  //           }
+  //           accountType
+  //         }
+  //       }
+  //       sessionSet {
+  //         startDatetime
+  //         id
+  //       }
+  //     }
+  //     announcements(courseId: $id) {
+  //       subject
+  //       id
+  //       body
+  //       createdAt
+  //       poster {
+  //         firstName
+  //         lastName
+  //       }
+  //     }
+  //     accountSearch(query: $email) {
+  //       total
+  //       results {
+  //         ... on ${queryParser(accountType)} {
+  //           userUuid
+  //           user {
+  //             email
+  //             firstName
+  //             lastName
+  //             id
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // `;
+
+  const { data, loading, error } = useQuery(QUERIES.get_classes, {
     variables: {
       id: id.id,
       email: email,
     },
   });
+
+  const studentList = useQuery(QUERIES.get_studentList, {
+    variables: { parentEmail: accountType === "PARENT"? email : "" }
+  });
+  const studentId = studentList.data?.parent?.studentList.filter(x => x)
+  // const enrollmentList = useQuery(QUERIES.get_enrollmentList, {
+  //   skip: !studentId,
+  //   variables: {studentId}
+  // })
   
   if (loading) return <Loading />;
+  if (studentList.loading) return <Loading />;
   if (error) return console.error(error.message);
+  if (studentList.error) return console.error(studentList.error.message);
+  
+  console.log(studentId)
+
+
+  // console.log(enrollmentList)
+  console.log(data)
+  // console.log(studentList.data.parent.studentList)
 
   const {
     academicLevel,
@@ -178,6 +293,13 @@ const CourseClasses = () => {
   const handleChange = (_, i) => {
     return setIndex(i);
   };
+
+  const comparison = (userId, enrollmentArray) => {
+    return enrollmentArray.forEach(enrollment => userId === enrollment.student.primaryParent.user.id)
+  };
+
+  // get the parent, then get the student list, then request enrollment and filter by student ids
+  // console.log(comparison(6, enrollmentSet))
 
   return (
     <Grid item xs={12}>

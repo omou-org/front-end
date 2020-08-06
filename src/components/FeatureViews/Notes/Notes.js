@@ -208,7 +208,7 @@ const MUTATION_KEY = {
 
 // eslint-disable-next-line max-statements
 const Notes = ({ownerType, ownerID, isDashboard}) => {
-    console.log(ownerType, ownerID)
+    console.log(ownerID)
     const dispatch = useDispatch();
 
     const [alert, setAlert] = useState(false);
