@@ -1,8 +1,8 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import gql from "graphql-tag";
-import {Link} from "react-router-dom";
-import {useQuery} from "@apollo/react-hooks";
-import {useSelector} from "react-redux";
+import { Link } from "react-router-dom";
+import { useQuery } from "@apollo/react-hooks";
+import { useSelector } from "react-redux";
 
 import Button from "@material-ui/core/Button";
 import CardView from "@material-ui/icons/ViewModule";
@@ -10,7 +10,7 @@ import EditIcon from "@material-ui/icons/EditOutlined";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import ListView from "@material-ui/icons/ViewList";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -22,12 +22,12 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 
 import "./Accounts.scss";
-import {addDashes} from "./accountUtils";
-import {capitalizeString, USER_TYPES} from "utils";
+import { addDashes } from "./accountUtils";
+import { capitalizeString, USER_TYPES } from "utils";
 import IconButton from "@material-ui/core/IconButton";
 import LoadingHandler from "components/OmouComponents/LoadingHandler";
 import ProfileCard from "./ProfileCard";
-import {simpleUser} from "queryFragments";
+import { simpleUser } from "queryFragments";
 import UserAvatar from "./UserAvatar";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import theme from "../../../theme/muiTheme";
@@ -150,8 +150,6 @@ const Accounts = () => {
         }));
     }, [tabIndex, viewToggle]);
 
-    console.log(data);
-
     const handleTabChange = useCallback((_, newIndex) => {
         setTabIndex(newIndex);
     }, []);
@@ -229,8 +227,6 @@ const Accounts = () => {
         </ThemeProvider>
     </ThemeProvider>), [classes.tableCellStyle, classes.tableRowStyle, displayUsers, isAdmin]);
 
-    console.log(displayUsers);
-
     const cardView = useMemo(() => (
         <Grid alignItems="center" className="card-container" container
             direction="row" spacing={2} xs={12}>
@@ -254,7 +250,7 @@ const Accounts = () => {
                             to="/form/student"
                             variant="outlined"
                         >
-                            <NewUser className="icon"/> NEW STUDENT
+                            <NewUser className="icon" /> NEW STUDENT
                         </Button>
                     </Grid>
                     <Grid item>
@@ -265,12 +261,12 @@ const Accounts = () => {
                             to="/form/parent"
                             variant="outlined"
                         >
-                            <NewUser className="icon"/> NEW PARENT
+                            <NewUser className="icon" /> NEW PARENT
                         </Button>
                     </Grid>
                 </Grid>
                 <Hidden xsDown>
-                    <hr/>
+                    <hr />
                 </Hidden>
                 <Typography align="left" className="heading" variant="h3">
                     Accounts
@@ -293,22 +289,20 @@ const Accounts = () => {
                         </Tabs>
                     </Grid>
                     <Hidden smDown>
-                        <Grid container className="toggleView" item md={3}>
-                            <Grid>
+                        <Grid className="toggleView" item md={5}>
                             <Button
                                 className={`btn list ${viewToggle && "active"}`}
                                 onClick={setView(true)}>
                                 <ListView className={`icon ${viewToggle && "active"}`} />
                                 List View
                             </Button>
-                            </Grid>
-                            <Grid>
+                        </Grid>
+                        <Grid>
                             <Button className={`btn card ${!viewToggle && "active"}`}
                                 onClick={setView(false)}>
                                 <CardView className={`icon ${!viewToggle && "active"}`} />
-                                Card View
+                                Grid View
                             </Button>
-                            </Grid>
                         </Grid>
                     </Hidden>
                 </Grid>
