@@ -81,7 +81,7 @@ export default function registration(
     case actions.ADD_SMALL_GROUP_REGISTRATION:
       return addSmallGroupRegistration(newState, payload);
     case actions.INIT_COURSE_REGISTRATION:
-      return initializeRegistration(newState);
+      return initializeRegistration(newState, payload);
     case actions.CLOSE_COURSE_REGISTRATION:
       return closeRegistration(newState);
     case actions.EDIT_COURSE_REGISTRATION:
@@ -232,7 +232,7 @@ const failedSubmit = (state) => ({
 });
 
 const addClassRegistration = ({courseId, studentId}) => {
-  const newRegistrationState = submitRegistration(courseId, studentId);
+  const newRegistrationState = submitRegistration(studentId, courseId);
   return {...newRegistrationState};
 };
 
@@ -471,9 +471,9 @@ const dateToTimeString = (date) =>
     }`;
 
 const initializeRegistration = (prevState, payload) => {
-  if (Object.keys(payload).length > 0) {
+  console.log(payload);
+  if (payload && Object.keys(payload).length > 0) {
     return {
-      ...prevState,
       ...loadRegistrationCart(payload)
     };
   }

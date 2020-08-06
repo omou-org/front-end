@@ -20,7 +20,7 @@ const separator = () => {
 	return (<Typography style={{ display: "inline", paddingLeft: 30, paddingRight: 30 }}>|</Typography>)
 }
 
-function RegistrationEntry({ registration: { course, numSessions, checked }, studentId }) {
+function RegistrationEntry({registration: {course, numSessions, checked}, studentId, index}) {
 	const {parentIsLoggedIn} = useValidateRegisteringParent();
 	const {updateSession} = useContext(RegistrationContext);
 
@@ -67,6 +67,7 @@ function RegistrationEntry({ registration: { course, numSessions, checked }, stu
 					parentIsLoggedIn ? <Typography>
 						{moment(course.endDate).diff(moment(course.startDate), "weeks") + 1}
 					</Typography> : <TextField
+						data-cy={`${index}-session-input`}
 						value={numSessions}
 						onChange={handleSessionChange}
 						variant="outlined"
@@ -110,8 +111,9 @@ export default function StudentRegistrationEntry({ student, registrationList }) 
 				{
 					registrationList
 						.filter(({checked}) => checked)
-						.map(registration =>
+						.map((registration, index) =>
 							<RegistrationEntry
+								index={index}
 								key={registration.course.id}
 								registration={registration}
 								studentId={student.user.id}

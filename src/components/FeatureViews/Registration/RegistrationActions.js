@@ -138,6 +138,7 @@ const RegistrationActions = ({ updateRegisteringParent }) => {
 					<IconButton
 						onClick={toShoppingCart}
 						disabled={numberOfRegistrationsInCart === 0}
+						data-cy="registration-cart"
 					>
 						<Badge
 							data-cy="shopping-cart-num-registrations"

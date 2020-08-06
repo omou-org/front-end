@@ -40,6 +40,12 @@ const GET_STUDENTS = gql`
           }
         }
       }
+      enrollments(studentIds: $userIds) {
+        id
+        course {
+          id
+        }
+      }
     }
 `;
 
@@ -58,7 +64,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const [quickCourseID, setQuickCourseID] = useState(null);
     const [quickStudent, setQuickStudent] = useState("");
 
-    const {currentParent} = useSelector((state) => state.Registration);
+    const {currentParent, ...registrationCartState} = useSelector((state) => state.Registration);
     const dispatch = useDispatch();
 
     const {studentList} = JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
@@ -70,14 +76,34 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const {parentIsLoggedIn} = useValidateRegisteringParent();
     const {courseTitle, courseRow} = useStyles();
 
-    if (loading) return <Loading small />;
+    if (loading) return <Loading small/>;
 
-    const studentOptions = data?.userInfos.map((student) => ({
-        "label": fullName(student.user),
-        "value": student.user.id,
-    })) || [];
+    const validRegistrations = Object.values(registrationCartState)
+        .filter(registration => registration);
+    const registrations = validRegistrations && [].concat.apply([], validRegistrations);
+    const studentOptions = data?.userInfos
+        .filter(({user}) => (!registrations.find(({course, student}) =>
+                (course.id === quickCourseID && user.id === student))
+        ))
+        .map((student) => ({
+            "label": fullName(student.user),
+            "value": student.user.id,
+        })) || [];
 
-    const handleStartQuickRegister = (courseID) => () => {
+    const enrolledCourseIds = data?.enrollments.map(({course}) => course.id);
+    const previouslyEnrolled = (courseId, enrolledCourseIds, registrations, studentList) => {
+        const validRegistrations = Object.values(registrations)
+            .filter(registration => registration);
+        if (!studentList || validRegistrations.length === 0 || !enrolledCourseIds) return false;
+        const registeredCourseIds = registrations.map(({course}) => course.id);
+        const numStudents = studentList.length;
+        const countOccurrences = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0);
+        return !(countOccurrences(registeredCourseIds, courseId) < numStudents &&
+            !enrolledCourseIds.includes(courseId));
+    }
+
+    const handleStartQuickRegister = (courseID) => (e) => {
+        e.preventDefault();
         setOpen(true);
         setQuickCourseID(courseID);
     };
@@ -97,8 +123,9 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
         <TableBody data-cy="classes-table">
             {
                 filteredCourses
-                    .filter(({courseType, endDate}) => (courseType === "CLASS") &&
-                        moment().diff(moment(endDate), 'days') < 0)
+                    .filter(({courseType, endDate, id}) => ((courseType === "CLASS") &&
+                        (moment().diff(moment(endDate), 'days') < 0)) &&
+                        (!previouslyEnrolled(id, enrolledCourseIds, registrations, studentList)))
                     .map((course) => (
                         <TableRow
                             key={course.id}

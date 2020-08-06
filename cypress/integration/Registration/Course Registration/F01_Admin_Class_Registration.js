@@ -32,7 +32,7 @@ describe("Admin Registers an upcoming class", () => {
 	it("Registers a class through the form", () => {
 		cy.get("[data-cy=register-class]").click();
 		cy.get("[data-cy=student-student-select]").click();
-		cy.get("[data-value=15]").click();
+		cy.get("[data-value=3]").click();
 		cy.get("[data-cy=student-nextButton]").click();
 		cy.get("[data-cy=student_info-nextButton]").click();
 		cy.get("[data-cy=course-class]").click();
@@ -46,21 +46,33 @@ describe("Admin Registers an upcoming class", () => {
 		});
 	});
 
-	it("Quick registers a class", () => {
-		cy.get("[data-cy=quick-register-class]").first().click();
-		cy.get("[data-cy=select-student-to-register]").click();
-		cy.get("[data-cy=student-value]").first().click();
-		cy.get("[data-cy=add-registration-to-cart]").click();
-		cy.get("[data-cy=shopping-cart-num-registrations]").should(($div) => {
-			expect($div).contain("2");
-		});
-	});
-
-	it("Exits the parent", () => {
-		cy.get("[data-cy=current-parent]").click();
-		cy.get("[data-cy=exit-parent-action]").click();
-		cy.get("[data-cy=select-parent]").should(($div) => {
-			expect($div).contain("SET PARENT");
-		});
-	});
+	// it("Quick registers a class", () => {
+	// 	cy.get("[data-cy=quick-register-class]").first().click();
+	// 	cy.get("[data-cy=select-student-to-register]").click();
+	// 	cy.get("[data-cy=student-value]").first().click();
+	// 	cy.get("[data-cy=add-registration-to-cart]").click();
+	// 	cy.get("[data-cy=shopping-cart-num-registrations]").should(($div) => {
+	// 		expect($div).contain("2");
+	// 	});
+	// });
+	//
+	// it("Checks out a registration cart", ()=> {
+	// 	cy.get("[data-cy=registration-cart]").click();
+	// 	cy.waitFor("[data-cy=payment-title");
+	// 	cy.get("[data-cy=0-session-input]").fastType("5");
+	// 	cy.get("[data-cy=1-session-input]").fastType("5");
+	// 	cy.get("[data-cy=Cash-checkbox]").click();
+	// 	cy.get("[data-cy=pay-action]").click();
+	// 	cy.get("[data-cy=payment-header]").should('exist');
+	// 	cy.get("[data-cy=close-parent]").click();
+	// 	cy.wait(10000)
+	// });
+	//
+	// it("Exits the parent", () => {
+	// 	cy.get("[data-cy=current-parent]").click();
+	// 	cy.get("[data-cy=exit-parent-action]").click();
+	// 	cy.get("[data-cy=select-parent]").should(($div) => {
+	// 		expect($div).contain("SET PARENT");
+	// 	});
+	// });
 })

@@ -287,6 +287,7 @@ export default function PaymentBoard() {
 								onChange={() => handlePaymentMethodStateChange(index)}
 								name={method.label}
 								color="primary"
+								data-cy={`${method.label}-checkbox`}
 							/>
 						}
 						label={method.label}
@@ -339,6 +340,7 @@ export default function PaymentBoard() {
 					color="primary"
 					disabled={priceQuote.total <= 0 || priceQuote.total === "-"}
 					onClick={handlePayment}
+					data-cy="pay-action"
 				>
 					Pay
 				</Button>
