@@ -7,7 +7,6 @@ import PropTypes from "prop-types";
 import React from "react";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
-import { useSelector } from "react-redux";
 import LoadingError from "./LoadingCourseError";
 
 const GET_PARENTS = gql`
@@ -28,8 +27,6 @@ const GET_PARENTS = gql`
 
 const ParentContact = ({ parent_id }) => {
 	const { data, loading, error } = useQuery(GET_PARENTS, { "variables": { "id": parent_id } });
-	console.log(data);
-	console.log(parent_id);
 	if (loading) {
 		return <Loading loadingText="PARENT LOADING" small />
 	}
