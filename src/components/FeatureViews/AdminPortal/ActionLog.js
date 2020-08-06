@@ -142,7 +142,7 @@ const ActionLog = () => {
     const objectOptions = ["Student", "Admin", "Parent", "Instructor", "Payment", "Registration", "Tutoring", "Course", "Discount", "Price Rules"]
 
     if (loading) return <Loading />;
-    if (error) return <div>error</div>;
+    // if (error) return <div>error</div>;
 
     const renderChip = (action) => ({
         "Edit": <Chip style={{ borderRadius: 3, width: 70, backgroundColor: "#FFDD59" }} label="Edit" />,
@@ -157,6 +157,7 @@ const ActionLog = () => {
 
     const handleUserSelection = (event) => {
         setUserType(event.target.value)
+        console.log(event.target.value);
         setCurrentId(data.admins.filter(user => (user.user.id === event.target.value.user.id))[0].user.id);
     }
 
@@ -198,7 +199,7 @@ const ActionLog = () => {
         const selectedUser = data.admins.find(user => (user.user.id == actionId));
         return (<div>{fullName(selectedUser.user)}</div>)
     }
-    console.log(data.logs.results);
+    console.log(userType);
     return (
         <>
             <Dialog open={openCalendar} onClose={handleSaveDateRange}>
@@ -291,7 +292,7 @@ const ActionLog = () => {
                                     >
                                         {data.admins.map((userType) =>
                                             (<MenuItem key={userType} value={userType}>
-                                                {userType.user.firstName} {userType.user.lastName}
+                                                {fullName(userType.user)}
                                             </MenuItem>
                                             )
                                         )}
