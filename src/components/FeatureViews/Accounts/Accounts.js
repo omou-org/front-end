@@ -150,6 +150,8 @@ const Accounts = () => {
         }));
     }, [tabIndex, viewToggle]);
 
+    console.log(data);
+
     const handleTabChange = useCallback((_, newIndex) => {
         setTabIndex(newIndex);
     }, []);
@@ -227,12 +229,14 @@ const Accounts = () => {
         </ThemeProvider>
     </ThemeProvider>), [classes.tableCellStyle, classes.tableRowStyle, displayUsers, isAdmin]);
 
+    console.log(displayUsers);
+
     const cardView = useMemo(() => (
         <Grid alignItems="center" className="card-container" container
             direction="row" spacing={2} xs={12}>
             {displayUsers.map((user) => (
                 <ProfileCard key={user.user_id}
-                    route={`/accounts/${user.role}/${user.user_id}`}
+                    route={`/accounts/${user.accountType}/${user.user.id}`}
                     user={user} />
             ))}
         </Grid>
@@ -289,18 +293,22 @@ const Accounts = () => {
                         </Tabs>
                     </Grid>
                     <Hidden smDown>
-                        <Grid className="toggleView" item md={3}>
+                        <Grid container className="toggleView" item md={3}>
+                            <Grid>
                             <Button
                                 className={`btn list ${viewToggle && "active"}`}
                                 onClick={setView(true)}>
                                 <ListView className={`icon ${viewToggle && "active"}`} />
                                 List View
                             </Button>
+                            </Grid>
+                            <Grid>
                             <Button className={`btn card ${!viewToggle && "active"}`}
                                 onClick={setView(false)}>
                                 <CardView className={`icon ${!viewToggle && "active"}`} />
                                 Card View
                             </Button>
+                            </Grid>
                         </Grid>
                     </Hidden>
                 </Grid>

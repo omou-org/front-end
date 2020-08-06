@@ -5,28 +5,56 @@ import Loading from "components/OmouComponents/Loading";
 import ProfileCard from "../ProfileCard";
 import PropTypes from "prop-types";
 import React from "react";
-import {useSelector} from "react-redux";
+import gql from "graphql-tag";
+import { useQuery } from "@apollo/react-hooks";
+import { useSelector } from "react-redux";
 import LoadingError from "./LoadingCourseError";
 
-const ParentContact = ({parent_id}) => {
-	const parentStatus = hooks.useParent(parent_id);
-	const parent = useSelector(({Users}) => Users.ParentList[parent_id]);
-
-	if (!parent) {
-		if (hooks.isLoading(parentStatus)) {
-			return <Loading loadingText="PARENT LOADING" small/>;
+const GET_PARENTS = gql`
+	query getParents($id:ID){
+		parent(userId: $id) {
+		user {
+			email
+			firstName
+			id
+			lastName
 		}
-
-		if (hooks.isFail(parentStatus)) {
-			return <LoadingError error="parent"/>;
+		accountType
+		phoneNumber
 		}
 	}
+`
+
+
+const ParentContact = ({ parent_id }) => {
+	const { data, loading, error } = useQuery(GET_PARENTS, { "variables": { "id": parent_id } });
+	console.log(data);
+	console.log(parent_id);
+	if (loading) {
+		return <Loading loadingText="PARENT LOADING" small />
+	}
+	if (error) {
+		return <LoadingError error="parent" />;
+	}
+
+	const parent = {
+		"name": `${data.parent.user.firstName} ${data.parent.user.lastName}`,
+		"phoneNumber": data.parent.phoneNumber,
+		"accountType": data.parent.accountType.toLowerCase(),
+		"user": {
+			"id": data.parent.user.id,
+			"email": data.parent.user.email,
+		}
+	}
+
+
+	console.log(parent)
 
 	return (
 		<Grid item md={12}>
 			<Grid container spacing={2}>
 				<Grid item md={12} xs={10}>
-					<ProfileCard route={`/accounts/parent/${parent_id}`} user={parent}/>
+					<ProfileCard route={`/accounts/parent/${parent_id}`} user={parent} />
 				</Grid>
 			</Grid>
 		</Grid>

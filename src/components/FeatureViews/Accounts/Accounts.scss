@@ -248,9 +248,12 @@
 }
 
 .ProfileCard {
+  text-decoration:none;
   cursor: pointer;
 }
 
 .avatar {
   color: white;
 }
+
+a { color:black; }
