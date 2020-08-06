@@ -149,7 +149,6 @@ const UserProfile = () => {
 	const AuthUser = useSelector(({auth}) => auth);
 
 	useAccountNotes(accountID, accountType);
-	console.log(accountID);
 	const user = useMemo(() => {
 		switch (accountType) {
 			case "student":
@@ -164,8 +163,6 @@ const UserProfile = () => {
 				return null;
 		}
 	}, [userList, accountID, accountType]);
-	console.log(userList);
-	console.log(user);
 	const handleTabChange = useCallback((_, newTabIndex) => {
 		setTabIndex(newTabIndex);
 	}, []);
@@ -287,8 +284,6 @@ const UserProfile = () => {
 			return <Redirect to="/PageNotFound"/>;
 		}
 	}
-
-	console.log(user)
 
 	return (
 		<div className="UserProfile">
