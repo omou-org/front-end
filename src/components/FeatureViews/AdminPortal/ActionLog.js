@@ -27,6 +27,7 @@ import { useQuery } from "@apollo/react-hooks";
 import { DateRange } from "react-date-range";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
+import { fullName } from "../../../utils";
 
 
 const GET_ADMINS = gql`
@@ -73,6 +74,14 @@ const GET_LOGS = gql`
                 objectRepr
             }
             total
+        }
+            admins {
+                user {
+                id
+                firstName
+                email
+                lastName
+            }
         }
     }
 `
@@ -125,20 +134,16 @@ const ActionLog = () => {
             startDateTime: startDate,
             sort: currentSort.sort,
             objectType: objectType.toLowerCase(),
-            userId: currentId.toString(),
+            userId: currentId,
         }
     });
-    const [userOptions, setUserOptions] = useState(null)
     const adminOptions = ["Owner", "Receptionist", "Assistant"];
     const actionOptions = ["Add", "Edit", "Delete"]
     const objectOptions = ["Student", "Admin", "Parent", "Instructor", "Payment", "Registration", "Tutoring", "Course", "Discount", "Price Rules"]
 
-    if (loading || admins.loading) return <Loading />;
-    // if (error || admins.error) return "error";
-    // for some reason returning error will break on filtering for objects. Not sure why, maybe it's a backend issue
+    if (loading) return <Loading />;
+    if (error) return <div>error</div>;
 
-    console.log(data);
-    console.log(objectType);
     const renderChip = (action) => ({
         "Edit": <Chip style={{ borderRadius: 3, width: 70, backgroundColor: "#FFDD59" }} label="Edit" />,
         "Add": <Chip style={{ borderRadius: 3, width: 70, backgroundColor: "#78E08F" }} label="Add" />,
@@ -147,18 +152,12 @@ const ActionLog = () => {
 
     const handleSelection = (setValue) => (event) => {
         const value = event.target.value;
-        console.log(value);
         setValue(value);
     }
 
     const handleUserSelection = (event) => {
         setUserType(event.target.value)
-        admins.data.admins.map((userType) => {
-            if (userType === event.target.value) {
-                setCurrentId(userType.user.id);
-            }
-        })
-
+        setCurrentId(data.admins.filter(user => (user.user.id === event.target.value.user.id))[0].user.id);
     }
 
     const resetFilters = () => {
@@ -191,13 +190,15 @@ const ActionLog = () => {
 
     const handleSort = (sortType) => (event) => {
         event.preventDefault();
-        currentSort.clicked ? setCurrentSort({ "sort": `${sortType}_desc`, "clicked": !currentSort.clicked }) : setCurrentSort({ "sort": `${sortType}_asc`, "clicked": !currentSort.clicked })
+        currentSort.clicked ?
+            setCurrentSort({ "sort": `${sortType}_desc`, "clicked": !currentSort.clicked }) :
+            setCurrentSort({ "sort": `${sortType}_asc`, "clicked": !currentSort.clicked })
     }
     const renderName = (actionId) => {
-        const selectedUser = admins.data.admins.find(user => (user.user.id == actionId));
-        return (<div>{`${selectedUser.user.firstName} ${selectedUser.user.lastName}`}</div>)
+        const selectedUser = data.admins.find(user => (user.user.id == actionId));
+        return (<div>{fullName(selectedUser.user)}</div>)
     }
-
+    console.log(data.logs.results);
     return (
         <>
             <Dialog open={openCalendar} onClose={handleSaveDateRange}>
@@ -288,7 +289,7 @@ const ActionLog = () => {
                                             "MuiInputBase-input": classes.MuiInputBase
                                         }}
                                     >
-                                        {admins.data.admins.map((userType) =>
+                                        {data.admins.map((userType) =>
                                             (<MenuItem key={userType} value={userType}>
                                                 {userType.user.firstName} {userType.user.lastName}
                                             </MenuItem>
@@ -428,39 +429,47 @@ const ActionLog = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data.logs.results.map((actionItem) => {
-                        return (
-                            <TableRow>
-                                <TableCell>
-                                    <Moment
-                                        date={actionItem.date}
-                                        format="dddd, M/D/YYYY h:mm a"
-                                    />
+                    {data.logs.results.length == 0
+                        ? (<TableRow>
+                            <TableCell> 
+                                {//ASK DESIGN FOR STYLING ON THIS
+                                }
+                                There was no match found for your data
                                 </TableCell>
-                                <TableCell>
-                                    {
-                                        renderName(actionItem.userId)
-                                    }
-                                </TableCell>
-                                <TableCell>
-                                    <div style={{ textTransform: "capitalize" }}>
-                                        {actionItem.adminType.toLowerCase()}
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    {renderChip(actionItem.action)}
-                                </TableCell>
-                                <TableCell>
-                                    <div style={{ textTransform: "capitalize" }}>
-                                        {actionItem.objectType}
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    {actionItem.objectRepr}
-                                </TableCell>
-                            </TableRow>
-                        )
-                    })}
+                        </TableRow>)
+                        : data.logs.results.map((actionItem) => {
+                            return (
+                                <TableRow>
+                                    <TableCell>
+                                        <Moment
+                                            date={actionItem.date}
+                                            format="dddd, M/D/YYYY h:mm a"
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        {
+                                            renderName(actionItem.userId)
+                                        }
+                                    </TableCell>
+                                    <TableCell>
+                                        <div style={{ textTransform: "capitalize" }}>
+                                            {actionItem.adminType.toLowerCase()}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        {renderChip(actionItem.action)}
+                                    </TableCell>
+                                    <TableCell>
+                                        <div style={{ textTransform: "capitalize" }}>
+                                            {actionItem.objectType}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        {actionItem.objectRepr}
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        })}
                 </TableBody>
             </Table>
             <div style={{
