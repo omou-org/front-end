@@ -32,9 +32,9 @@ function RegistrationEntry({registration: {course, numSessions, checked}, studen
 		updateSession(numSessions, !checked, studentId, course.id);
 		removeRegistration(studentId, course.id);
 	};
-
+	const totalCourseSessions = moment(course.endDate).diff(moment(course.startDate), "weeks") + 1;
 	return (<>
-		<TableRow >
+		<TableRow>
 			<TableCell>
 				<IconButton onClick={handleSessionCheckChange}>
 					<CloseIcon/>
@@ -43,8 +43,10 @@ function RegistrationEntry({registration: {course, numSessions, checked}, studen
 			<TableCell style={{maxWidth: 750}}>
 				<Grid container>
 					<Grid>
-						<Typography style={{fontWeight: 600, paddingRight: 50}}>#{course.id} {course.title} -
-							Instructor: {course.instructor.user.firstName} {course.instructor.user.lastName}</Typography>
+						<Typography style={{fontWeight: 600, paddingRight: 50}}>
+							#{course.id} {course.title}{" - "}
+							Instructor: {course.instructor.user.firstName} {course.instructor.user.lastName}
+						</Typography>
 					</Grid>
 				</Grid>
 				<br/>
@@ -54,10 +56,12 @@ function RegistrationEntry({registration: {course, numSessions, checked}, studen
 						{separator()}
 						{course.academicLevelPretty}
 						{separator()}
-						{moment(course.startDate, ["YYYY-MM-DD"]).format("ddd")} {moment(course.startTime, ["HH.mm"]).format("h:mm A")} - {moment(course.endTime, ["HH.mm"]).format("h:mm A")}
+						{moment(course.startDate, ["YYYY-MM-DD"]).format("ddd")} {' '}
+						{moment(course.startTime, ["HH.mm"]).format("h:mm A")}{" - "}
+						{moment(course.endTime, ["HH.mm"]).format("h:mm A")}
 						{separator()}
-						Start Date: <Moment date={course.startDate} format="M/DD/YYYY"/> - <Moment date={course.endDate}
-																								   format="M/DD/YYYY"/>
+						Start Date: <Moment date={course.startDate} format="M/DD/YYYY"/>{" - "}
+						<Moment date={course.endDate} format="M/DD/YYYY"/>
 					</Typography>
 				</Grid>
 				<br/>
@@ -65,18 +69,20 @@ function RegistrationEntry({registration: {course, numSessions, checked}, studen
 			<TableCell style={{whiteSpace: "nowrap", verticalAlign: 'top'}}>
 				{
 					parentIsLoggedIn ? <Typography>
-						{moment(course.endDate).diff(moment(course.startDate), "weeks") + 1}
+						{totalCourseSessions}
 					</Typography> : <TextField
 						data-cy={`${index}-session-input`}
 						value={numSessions}
 						onChange={handleSessionChange}
 						variant="outlined"
 						style={{width: "80%"}}
+						error={numSessions > totalCourseSessions}
 						inputProps={{
 							style: {
 								padding: 8,
 								textAlign: "center"
-							}
+							},
+							"data-cy": `${index}-session-input-inner`
 						}}
 					/>
 				}

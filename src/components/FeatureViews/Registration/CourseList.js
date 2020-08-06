@@ -98,6 +98,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
         const registeredCourseIds = registrations.map(({course}) => course.id);
         const numStudents = studentList.length;
         const countOccurrences = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0);
+
         return !(countOccurrences(registeredCourseIds, courseId) < numStudents &&
             !enrolledCourseIds.includes(courseId));
     }
@@ -172,12 +173,16 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                 </Grid>
                             </TableCell>
                             <TableCell>
-                                <span style={{ margin: "5px", display: "block" }}>
-                                    {course.enrollmentSet.length} / {course.maxCapacity}
+                                <span style={{margin: "5px", display: "block"}}>
+                                    <span
+                                        data-cy="num-enrolled-students">{course.enrollmentSet.length}</span> / {course.maxCapacity}
                                     <span className="label">Enrolled</span>
                                 </span>
                                 {(currentParent || parentIsLoggedIn || updatedParent) && (
-                                    <Button disabled={course.maxCapacity <= course.enrollmentSet.length}
+                                    <Button disabled={() =>
+                                        ((course.maxCapacity <= course.enrollmentSet.length) ||
+                                            (previouslyEnrolled(course.id, enrolledCourseIds, registrations, studentList)))
+                                    }
                                             variant="contained"
                                             color="primary"
                                             onClick={handleStartQuickRegister(course.id)}

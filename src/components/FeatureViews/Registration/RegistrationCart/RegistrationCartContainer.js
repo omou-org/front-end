@@ -158,7 +158,6 @@ export default function RegistrationCartContainer() {
 	if (loading) return <Loading small/>;
 	if (error) return <div>There's been an error:
 		{error.message}</div>
-	console.log(data);
 	const studentData = data.userInfos;
 
 	return (<RegistrationContext.Provider value={{registrationCart, currentParent, updateSession}}>

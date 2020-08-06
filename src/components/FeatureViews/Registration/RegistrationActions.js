@@ -51,9 +51,8 @@ const RegistrationActions = ({ updateRegisteringParent }) => {
 		setDialog(true);
 	}, []);
 
-	const closeDialog = useCallback((isParentSet) => {
+	const closeDialog = useCallback(() => {
 		setDialog(false);
-		updateRegisteringParent(isParentSet);
 	}, []);
 
 	useEffect(() => {

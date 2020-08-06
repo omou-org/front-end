@@ -130,6 +130,7 @@ export default function CourseRegistrationReceipt({formData, format}) {
 					variant="contained"
 					component={NavLinkNoDup}
 					to={'/registration/cart/'}
+					data-cy="register-to-checkout"
 				>
 					CHECKOUT
 				</Button>

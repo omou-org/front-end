@@ -149,6 +149,7 @@ export default function PaymentBoard() {
 			sessions: numSessions,
 			student,
 		}));
+
 	const enrollmentResponse = useQuery(GET_PARENT_ENROLLMENTS, {variables: {studentIds: currentParent.studentList}})
 	const [createEnrollments, createEnrollmentResults] = useMutation(CREATE_ENROLLMENTS);
 	const [createPayment, createPaymentResults] = useMutation(CREATE_PAYMENT);
@@ -213,21 +214,23 @@ export default function PaymentBoard() {
 	const handlePayment = async () => {
 		const paymentMethod = paymentMethodState.find(({checked}) => checked)?.value;
 		const {data: {enrollments}} = enrollmentResponse;
+		const isSameEnrollment = ({enrollment, course, student}) =>
+			(`${enrollment.student.user.id}-${enrollment.course.id}` === `${student}-${course}`);
+		// (course == enrollment.course.id && student == enrollment.student.user.id);
 		const enrollmentsToCreate = classRegistrations
 			.filter(({course, student}) =>
-				(!enrollments.find(enrollment =>
-					(course === enrollment.course.id && student === enrollment.student.user.id))))
+				(!enrollments.some((enrollment) => isSameEnrollment({enrollment, course, student}))))
 			.map(({course, student}) => ({course, student}));
 		const existingEnrollments = classRegistrations
 			.filter(({course, student}) =>
-				(enrollments.find(enrollment =>
-					(course === enrollment.course.id && student === enrollment.student.user.id))))
+				(enrollments.some((enrollment) => isSameEnrollment({enrollment, course, student}))))
 			.map(registration => ({
 				...registration,
 				id: enrollments.find(enrollment =>
 					(registration.course === enrollment.course.id &&
 						registration.student === enrollment.student.user.id)).id
-			}))
+			}));
+
 		const newEnrollmentIDs = await createEnrollments({
 			variables: {
 				enrollments: enrollmentsToCreate,
@@ -238,13 +241,13 @@ export default function PaymentBoard() {
 			...newEnrollmentIDs.data.createEnrollments.enrollments.map(enrollment => ({
 				enrollment: enrollment.id,
 				numSessions: classRegistrations.find(({course, student}) =>
-					(course === enrollment.course.id && student === enrollment.student.user.id)).sessions
+					isSameEnrollment({enrollment, course, student})).sessions
 			})),
 			...existingEnrollments.map(enrollment => ({
 				enrollment: enrollment.id,
 				numSessions: enrollment.sessions,
 			}))
-		]
+		];
 
 		const payment = await createPayment({
 			variables: {
