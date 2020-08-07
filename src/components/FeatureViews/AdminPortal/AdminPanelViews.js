@@ -171,7 +171,7 @@ export const TuitionList = (props) => (
   <List {...props}>
     <Datagrid rowClick="edit">
       <TextField source="id" />
-      <TextField source="name" />
+
       <SelectField source="academicLevel" choices={academicLevelChoices} />
       <SelectField source="courseType" choices={courseTypes} />
       <TextField source="category.name" label="Course category" />
@@ -184,7 +184,7 @@ export const TuitionShow = (props) => (
   <Show {...props}>
     <SimpleShowLayout>
       <TextField source="id" />
-      <TextField source="name" />
+
       <TextField source="academicLevel" />
       <SelectField source="courseType" choices={courseTypes} />
       <TextField source="category.name" label="Course category" />
@@ -197,7 +197,7 @@ export const TuitionShow = (props) => (
 export const TuitionEdit = (props) => (
   <Edit {...props}>
     <SimpleForm>
-      <TextInput source="name" />
+
       <SelectInput source="academicLevel" choices={academicLevelChoices} />
       <ReferenceInput
         label="Course category"
@@ -218,7 +218,6 @@ export const TuitionEdit = (props) => (
 export const TuitionCreate = (props) => (
   <Create {...props}>
     <SimpleForm>
-      <TextInput source="name" />
       <SelectInput source="academicLevel" choices={academicLevelChoices} />
       <ReferenceInput
         label="Course category"
