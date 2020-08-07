@@ -109,7 +109,20 @@ const NewAnnouncementsModal = ({
   const [announcementSubject, setAnnouncementSubject] = useState("");
   const courseId = useParams();
   const user_id = userId.results[0].user.id;
-  // console.log(userId)
+
+  const GET_ANNOUNCEMENTS = gql`query getAnnouncement($id: ID!) {
+    announcements(courseId: $id) {
+      subject
+      id
+      body
+      createdAt
+      poster {
+        firstName
+        lastName
+      }
+    }
+  }
+  `
 
   const CREATE_ANNOUNCEMENTS = gql`
     mutation CreateAnnouncement(
@@ -127,7 +140,6 @@ const NewAnnouncementsModal = ({
         user: $userId
         shouldEmail: $shouldEmail
       ) {
-        created
         announcement {
           body
           id
@@ -161,7 +173,6 @@ const NewAnnouncementsModal = ({
         user: $userId
         shouldEmail: $shouldEmail
       ) {
-        created
         announcement {
           body
           id
@@ -183,9 +194,26 @@ const NewAnnouncementsModal = ({
       onCompleted: () => handleClose(false),
       error: (err) => console.error(err),
       update: (cache, { data }) => {
-        // const [newAnnouncement] = Object.values(data[]);
-        console.log(cache);
-        console.log(data);
+        console.log(cache)
+        const [newAnnouncement] = Object.values(data.createAnnouncement);
+        const cachedAnnouncement = cache.readQuery({
+          query: GET_ANNOUNCEMENTS,
+          variables: {id: courseId.id}
+        })["announcements"];
+        let updatedAnnouncements = [...cachedAnnouncement];
+        const matchingIndex = updatedAnnouncements.findIndex(({id}) => id === newAnnouncement.id);
+        if(matchingIndex === -1) {
+          updatedAnnouncements = [...cachedAnnouncement, newAnnouncement];
+        } else {
+          updatedAnnouncements[matchingIndex] = newAnnouncement;
+        };
+        cache.writeQuery({
+          data: {
+            ["announcements"]: updatedAnnouncements,
+          },
+          query: GET_ANNOUNCEMENTS,
+          variables: {id: courseId.id}
+        });
       },
     }
   );

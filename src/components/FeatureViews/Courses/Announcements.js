@@ -51,7 +51,7 @@ const AnnouncementCard = ({
   createdAt,
   handleEdit,
   handleDelete,
-  loggedInUserAccountType
+  loggedInUserAccountType,
 }) => {
   const classes = useStyles();
   const date = moment(createdAt).format("MM/DD");
@@ -114,6 +114,7 @@ const AnnouncementCard = ({
 };
 
 const Announcements = ({ announcementsData, loggedInUser, loggedInUserAccountType }) => {
+  const [announcementsDataState, setAnnouncementsDataState] = useState()
   const [openNewAnnouncementForm, setNewAnnouncementForm] = useState(false);
   const [announcementId, setAnnouncementId] = useState();
   const [announcementSubject, setAnnouncementSubject] = useState("");

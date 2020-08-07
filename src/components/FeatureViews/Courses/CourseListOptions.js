@@ -161,7 +161,7 @@ const CourseListOptions = ({ sessionId, loggedInUser, loggedInUserAccountType })
                   return (
                     <>
                       <Grid item xs={6} style={{ marginTop: "1em" }}>
-                        <Typography variant="h6" align="left" value={subject}>
+                        <Typography variant="h6" align="left" value={subject} key={id}>
                           {subject}
                         </Typography>
                       </Grid>
