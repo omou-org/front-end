@@ -298,14 +298,10 @@ export default function PaymentBoard() {
 		const {data: {enrollments}} = enrollmentResponse;
 		const isSameEnrollment = ({enrollment, course, student}) =>
 			(`${enrollment.student.user.id}-${enrollment.course.id}` === `${student}-${course}`);
-		console.log({enrollments}, "previous enrollments");
 
 		const enrollmentsToCreate = classRegistrations
 			.filter(({course, student}) =>
-				(!enrollments.some((enrollment) => {
-					console.log(isSameEnrollment({enrollment, course, student}));
-					return isSameEnrollment({enrollment, course, student})
-				})))
+				(!enrollments.some((enrollment) => isSameEnrollment({enrollment, course, student}))))
 			.map(({course, student}) => ({course, student}));
 		const existingEnrollments = classRegistrations
 			.filter(({course, student}) =>
