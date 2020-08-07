@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from "react";
+import React, { useCallback, useState } from "react";
 
 import IconButton from "@material-ui/core/IconButton";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
@@ -9,13 +9,13 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 import * as Fields from "mui-rff";
-import {makeStyles} from "@material-ui/core/styles";
-import {useQuery} from "@apollo/react-hooks";
+import { makeStyles } from "@material-ui/core/styles";
+import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
-import {fullName} from "../../utils";
+import { fullName } from "../../utils";
 import MomentUtils from "@date-io/moment";
 
-const getLabel = ({label}) => label;
+const getLabel = ({ label }) => label;
 
 const useSelectStyles = makeStyles({
     "select": {
@@ -23,10 +23,10 @@ const useSelectStyles = makeStyles({
     },
 });
 
-export const {TextField, Checkboxes} = Fields;
+export const { TextField, Checkboxes } = Fields;
 
 export const Select = (props) => {
-    const {select} = useSelectStyles();
+    const { select } = useSelectStyles();
     return <Fields.Select className={select} {...props} />;
 };
 
@@ -39,7 +39,7 @@ export const DatePicker = (props) =>
 export const TimePicker = (props) =>
     <Fields.KeyboardTimePicker {...props} dateFunsUtils={MomentUtils} />;
 
-export const Autocomplete = ({name, options, ...props}) => {
+export const Autocomplete = ({ name, options, ...props }) => {
     const renderOption = useCallback(
         (option) => <span data-cy={`${name}-${option}`}>{option}</span>,
         [name],
@@ -50,15 +50,15 @@ export const Autocomplete = ({name, options, ...props}) => {
     );
 };
 
-export const DataSelect = ({request, optionsMap, name, ...props}) => {
+export const DataSelect = ({ request, optionsMap, name, ...props }) => {
     const [query, setQuery] = useState();
 
     const handleQueryChange = useCallback((_, newQuery) => {
         setQuery(newQuery);
     }, []);
 
-    const {data, loading} = useQuery(request, {
-        "variables": {query},
+    const { data, loading } = useQuery(request, {
+        "variables": { query },
     });
 
     const renderOption = useCallback(
@@ -92,9 +92,9 @@ const GET_STUDENTS = gql`
     }
 `;
 
-export const StudentSelect = (props) => {
-    const {studentList} = JSON.parse(sessionStorage.getItem("registrations")).currentParent;
-    const {data} = useQuery(GET_STUDENTS, {"variables": {"userIds": studentList}});
+export const StudentSelect = () => {
+    const { studentList } = JSON.parse(sessionStorage.getItem("registrations")).currentParent;
+    const { data } = useQuery(GET_STUDENTS, { "variables": { "userIds": studentList } });
     const studentOptions = data?.userInfos.map((student) => ({
         "label": fullName(student.user),
         "value": student.user.id,
@@ -102,7 +102,7 @@ export const StudentSelect = (props) => {
     return <Select data={studentOptions} label="Select Student" name="selectStudent" {...props}/>;
 };
 
-export const PasswordInput = ({label = "Password", isField = true, ...props}) => {
+export const PasswordInput = ({ label = "Password", isField = true, ...props }) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const toggleVisibility = useCallback(() => {
@@ -119,7 +119,7 @@ export const PasswordInput = ({label = "Password", isField = true, ...props}) =>
                             onClick={toggleVisibility}>
                             {showPassword ? <Visibility /> : <VisibilityOff />}
                         </IconButton>
-                        <Tooltip aria-label="passwordInfo" title="Passwords must be at least 8 characters and contain a number or a symbol.">
+                        <Tooltip aria-label="passwordInfo" title="Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character" >
                             <InfoOutlinedIcon />
                         </Tooltip>
                     </InputAdornment>
