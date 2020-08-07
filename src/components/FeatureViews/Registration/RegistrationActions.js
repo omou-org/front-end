@@ -34,7 +34,7 @@ query GetRegisteringParent($userId: ID!) {
 }
 `
 
-const RegistrationActions = ({ updateRegisteringParent }) => {
+const RegistrationActions = () => {
 	const AuthUser = useSelector(({auth}) => auth);
 	const {currentParent, ...registrationState} = useSelector((state) => state.Registration);
 	const {parentIsLoggedIn} = useValidateRegisteringParent();
@@ -46,6 +46,13 @@ const RegistrationActions = ({ updateRegisteringParent }) => {
 		skip: AuthUser.accountType !== USER_TYPES.parent,
 	});
 	const history = useHistory();
+
+	useEffect(() => {
+		dispatch({
+			type: types.INIT_COURSE_REGISTRATION,
+			payload: {},
+		})
+	}, [])
 
 	const openDialog = useCallback(() => {
 		setDialog(true);
@@ -85,14 +92,12 @@ const RegistrationActions = ({ updateRegisteringParent }) => {
 	return (
 		<>
 			<Grid
-
 				className="registration-action-control"
 				container
 				direction="row"
 				justify="flex-start"
 				alignItems="center"
 				spacing={1}
-
 			>
 				<Grid item md={9}>
 					{(currentParent || parentIsLoggedIn) && (

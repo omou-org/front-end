@@ -471,13 +471,7 @@ const dateToTimeString = (date) =>
     }`;
 
 const initializeRegistration = (prevState, payload) => {
-  console.log(payload);
-  if (payload && Object.keys(payload).length > 0) {
-    return {
-      ...loadRegistrationCart(payload)
-    };
-  }
-  return {currentParent: null};
+  return {...loadRegistrationCart(payload)};
 };
 
 const editCourseRegistration = (prevState, course) => {

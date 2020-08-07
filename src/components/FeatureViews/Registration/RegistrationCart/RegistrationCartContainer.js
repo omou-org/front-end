@@ -24,6 +24,7 @@ import FormLabel from "@material-ui/core/FormLabel";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import {Link} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
+import * as types from "../../../../actions/actionTypes";
 
 const GET_COURSES_AND_STUDENTS_TO_REGISTER = gql`
 	query GetCoursesToRegister($courseIds: [ID]!, $userIds: [ID]!) {
@@ -86,11 +87,16 @@ export default function RegistrationCartContainer() {
 	const studentIds = (Object.keys(registrationCartState).length > 0 && Object.keys(registrationCartState)) ||
 		currentParent.studentList;
 	// create list of courses to fetch
-	const courseIds = Object.keys(registrationCartState).filter(key => key !== "submitStatus").length > 0 &&
+	const courseIds = Object.values(registrationCartState).filter(reg => reg).length > 0 &&
 		[].concat.apply([], Object.values(registrationCartState))
+			.filter(registration => registration)
 			.map(({course}) => course.id);
-	const {data, loading, error} = useQuery(GET_COURSES_AND_STUDENTS_TO_REGISTER,
-		{variables: {userIds: studentIds, courseIds: courseIds}});
+
+	const {data, loading, error, called} = useQuery(GET_COURSES_AND_STUDENTS_TO_REGISTER,
+		{
+			variables: {userIds: studentIds, courseIds: courseIds},
+			skip: !courseIds,
+		});
 	const [createRegistrationCart, createRegistrationCartResponse] = useMutation(CREATE_REGISTRATION_CART, {
 		variables: {parent: currentParent?.user.id},
 		onCompleted: () => {
@@ -100,8 +106,16 @@ export default function RegistrationCartContainer() {
 	});
 
 	useEffect(() => {
-		if (!loading && Object.values(registrationCartState).length > 0 &&
-			Object.keys(registrationCart).length === 0) {
+		dispatch({
+			type: types.INIT_COURSE_REGISTRATION,
+			payload: {},
+		})
+	}, []);
+
+	useEffect(() => {
+		const numOfRegistrations = Object.values(registrationCartState)
+			.filter(registration => registration).length;
+		if (!loading && numOfRegistrations > 0 && Object.keys(registrationCart).length === 0) {
 			const courseData = data.courses;
 			setRegistrationCart(() => {
 				let registrationCart = {};
@@ -155,7 +169,7 @@ export default function RegistrationCartContainer() {
 		}
 	}
 
-	if (loading) return <Loading small/>;
+	if (loading || !data) return <Loading small/>;
 	if (error) return <div>There's been an error:
 		{error.message}</div>
 	const studentData = data.userInfos;
