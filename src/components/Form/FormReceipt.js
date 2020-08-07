@@ -1,8 +1,38 @@
 import React from "react";
+import moment from "moment"
 
-import Button from "@material-ui/core/Button";
-import {Link} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
+
+
+const toDisplayValue = (value) => {
+    if (value === null || typeof value === "undefined") {
+        return "N/A";
+    }
+
+    if (value instanceof Date) {
+        return new Date(value).toLocaleString("eng-US");
+    }
+
+    if (value instanceof moment) {
+        return value.format("MM/DD/YYYY");
+    }
+
+    if (value.hasOwnProperty("label")) {
+        return value.label;
+    }
+
+    if (Array.isArray(value)) {
+        console.log(value.reduce((valueA, valueB) => (valueA.label + ", " + valueB.label)), value);
+        if (value.length > 1) {
+            return value.reduce((valueA, valueB) => (valueA.label + ", " + valueB.label));
+        } else {
+            return value.label;
+        }
+    }
+
+
+    return value;
+};
 
 const FormReceipt = ({formData, format}) => (
     <div style={{
@@ -10,20 +40,14 @@ const FormReceipt = ({formData, format}) => (
         "padding": "5px",
     }}>
         <Typography align="left" style={{"fontSize": "24px"}}>
-            You have successfully registered!
+            You've successfully submitted!
         </Typography>
-        <Typography align="left" style={{"fontSize": "14px"}}>
-            An email will be sent to you to confirm your registration
-        </Typography>
-        <Button align="left" className="button" component={Link}
-            style={{"margin": "20px"}} to="/registration">
-            REGISTER MORE
-        </Button>
         <div className="confirmation-copy">
             <Typography align="left" className="title">
                 Confirmation
             </Typography>
-            {Object.entries(formData).map(([sectionLabel, fields], sectionIndex) => (
+            {Object.entries(formData).map(([sectionLabel, fields], sectionIndex) =>
+                format[sectionIndex] && (
                 <div key={sectionLabel}>
                     <Typography align="left" className="section-title">
                         {format[sectionIndex].label}
@@ -34,8 +58,7 @@ const FormReceipt = ({formData, format}) => (
                                 {format[sectionIndex].fields[fieldIndex].label}
                             </Typography>
                             <Typography align="left" className="field-value">
-                                {/* TODO: better way of rendering field values */}
-                                {typeof value === "object" ? new Date(value).toLocaleString("eng-US") : value || "N/A"}
+                                {toDisplayValue(value)}
                             </Typography>
                         </div>
                     ))}

@@ -1,13 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import * as types from "actions/actionTypes";
 import {instance} from "actions/apiActions";
-import {useSelector} from "react-redux";
 import React from "react";
 import {FORM_ERROR} from "final-form";
 import * as Fields from "./Fields";
 import {StudentSelect} from "./Fields";
 import * as Yup from "yup";
-import * as hooks from "actions/hooks";
 import * as moment from "moment";
 import {client} from "index";
 import gql from "graphql-tag";
@@ -99,8 +97,8 @@ const userMap = ({accountSearch}) => accountSearch.results.map(({user}) => ({
 }));
 
 const instructorSelect = (name) => (
-	<Fields.DataSelect name={name} optionsMap={userMap}
-					   request={SEARCH_INSTRUCTORS}/>
+    <Fields.DataSelect name={name} optionsMap={userMap}
+        request={SEARCH_INSTRUCTORS} />
 );
 
 
@@ -187,7 +185,7 @@ export const ACADEMIC_LVL_FIELD = {
     BIRTH_DATE_FIELD = {
         "name": "birthDate",
         "label": "Birth Date",
-        "component": <Fields.KeyboardDatePicker format="MM/dd/yyyy" />,
+        "component": <Fields.DatePicker format="MM/DD/YYYY" openTo="year"/>,
         "validator": Yup.date().max(moment()),
     },
     CITY_FIELD = {
@@ -219,8 +217,8 @@ export const ACADEMIC_LVL_FIELD = {
             },
         ]),
     },
-    HOURLY_TUITION_FIELD = {
-        "component": <Fields.TextField />,
+    POSITIVE_NUMBER_FIELD = {
+        "component": <Fields.TextField/>,
         "validator": Yup.number().min(0),
     },
     INSTRUCTOR_CONFIRM_FIELD = {
@@ -258,13 +256,13 @@ export const ACADEMIC_LVL_FIELD = {
     START_DATE_FIELD = {
         "name": "startDate",
         "label": "Start Date",
-        "component": <Fields.KeyboardDatePicker format="MM/dd/yyyy" />,
+        "component": <Fields.DatePicker format="MM/DD/YYYY"/>,
         "validator": Yup.date(),
     },
     START_TIME_FIELD = {
         "name": "startTime",
         "label": "Start Time",
-        "component": <Fields.KeyboardTimePicker format="hh:mm"/>,
+        "component": <Fields.TimePicker format="hh:mm a"/>,
         "validator": Yup.date(),
     },
     STATE_FIELD = {
@@ -410,6 +408,22 @@ const SEARCH_STUDENTS = gql`
     }
 `;
 
+const SEARCH_PARENTS = gql`
+    query ParentSearch($query: String!) {
+        accountSearch(query: $query, profile: "PARENT") {
+            results {
+                ... on ParentType {
+                    user {
+                        id
+                        firstName
+                        lastName
+                    }
+                }
+            }
+        }
+    }
+`;
+
 const GET_CATEGORIES = gql`
     query GetCategories {
         courseCategories {
@@ -439,6 +453,11 @@ const studentSelect = (name) => (
 					   request={SEARCH_STUDENTS}/>
 );
 
+const parentSelect = (name) => (
+    <Fields.DataSelect name={name} optionsMap={userMap}
+        request={SEARCH_PARENTS} />
+);
+
 const courseMap = ({courses}) => courses.map(({title, instructor, id}) => ({
 	"label": `${title} - ${fullName(instructor.user)}`,
 	"value": id,
@@ -454,15 +473,58 @@ const categorySelect = (name) => (
         request={GET_CATEGORIES} />
 );
 
+const schoolMap = ({schools}) => schools.map(({name, id}) => ({
+    "label": name,
+    "value": id,
+}));
+
+const GET_SCHOOLS = gql`
+    query GetSchools {
+        schools {
+            name
+            id
+        }
+    }`;
+
+const schoolSelect = (name) => (
+    <Fields.DataSelect name={name} optionsMap={schoolMap}
+        request={GET_SCHOOLS} />
+);
+
+const GET_USER_TYPE = gql`
+    query MyQuery($id: ID!) {
+        userInfo(userId: $id) {
+            ... on StudentType {
+            accountType
+            }
+            ... on ParentType {
+            accountType
+            }
+        }
+    }`;
+
 export default {
     "student": {
-        "title": "Student",
+        "title": {
+            "create": "Add Student",
+            "edit": "Add Student",
+        },
         "form": [
             {
                 "name": "student",
                 "label": "Student Information",
                 "fields": [
+                    {
+                        "name": "primaryParent",
+                        "label": "Parent",
+                        "component": parentSelect("primaryParent"),
+                        "validator": Yup.mixed(),
+                    },
                     ...NAME_FIELDS,
+                    {
+                        ...EMAIL_FIELD,
+                        "required": false,
+                    },
                     GENDER_FIELD,
                     {
                         "name": "grade",
@@ -477,82 +539,142 @@ export default {
                     BIRTH_DATE_FIELD,
                     {
                         "name": "school",
-                        ...stringField("School"),
+                        "label": "School",
+                        "component": schoolSelect("school"),
+                        "validator": Yup.mixed(),
                     },
                     PHONE_NUMBER_FIELD,
+                    ADDRESS_FIELD,
+                    CITY_FIELD,
+                    STATE_FIELD,
+                    ZIPCODE_FIELD,
                 ],
             },
-            PARENT_FIELDS,
         ],
-        "load": (id) => {
-            const studentStatus = hooks.useStudent(id);
-            const {parent_id, ...student} = useSelector(({Users}) => Users.StudentList[id]) || {};
-            hooks.useParent(parent_id);
-            const {relationship, ...parent} = useSelector(({Users}) => Users.ParentList[parent_id]) || {};
-            if (hooks.isFail(studentStatus)) {
-                return null;
-            }
-            return {
-                student,
-                "parent": {
-                    ...parent,
-                    "relationship": (relationship || "").toLowerCase(),
-                },
-            };
-        },
-        "submit": async (dispatch, formData, id) => {
-            const studentResponseToFormKey = {
-                "gender": ["student", "gender"],
-                "birth_date": ["student", "birthday"],
-                "address": ["parent", "address"],
-                "city": ["parent", "city"],
-                "phone_number": ["student", "phone_number"],
-                "state": ["parent", "state"],
-                "zipcode": ["parent", "zipcode"],
-                "grade": ["student", "grade"],
-                "school": ["student", "school"],
-                "user": {
-                    "first_name": ["student", "first_name"],
-                    "last_name": ["student", "last_name"],
-                    "email": ["student", "email"],
-                },
-            };
-            const parentResponseToFormKey = {
-                "gender": ["parent", "gender"],
-                "birth_date": ["parent", "birthday"],
-                "address": ["parent", "address"],
-                "city": ["parent", "city"],
-                "phone_number": ["student", "phone_number"],
-                "state": ["parent", "state"],
-                "zipcode": ["parent", "zipcode"],
-                "relationship": ["parent", "relationship"],
-                "user": {
-                    "first_name": ["parent", "first_name"],
-                    "last_name": ["parent", "last_name"],
-                    "email": ["parent", "email"],
-                },
-            };
-            const parent = formToRequest(parentResponseToFormKey, formData);
-            parent.birth_date = parseDate(parent.birth_date);
-            const student = formToRequest(studentResponseToFormKey, formData);
+        "load": async (id) => {
             try {
-                const parentResponse = await instance.post("/account/parent/",
-                    parent);
-                dispatch({
-                    "type": types.POST_PARENT_SUCCESSFUL,
-                    "payload": parentResponse,
+                const {"data": {userInfo}} = await client.query({
+                    "query": GET_USER_TYPE,
+                    "variables": {id},
                 });
-                student.primary_parent = parentResponse.id;
-                const studentResponse = await submitToApi("/account/student/", student, id);
-                dispatch({
-                    "type": types.POST_STUDENT_SUCCESSFUL,
-                    "payload": studentResponse,
+                console.log(userInfo)
+                if (userInfo.accountType === "PARENT") {
+                    const GET_NAME = gql`
+                query GetName($id: ID!) {
+                    parent(userId: $id) {
+                        user {
+                            firstName
+                            lastName
+                        }
+                    }
+                }`;
+                    const {"data": {parent}} = await client.query({
+                        "query": GET_NAME,
+                        "variables": {id},
+                    });
+
+                    return {
+                        "student": {
+                            "primaryParent": {
+                                "label": `${parent.user.firstName} ${parent.user.lastName}`,
+                                "value": id,
+                            },
+                        },
+                    };
+                } else if (userInfo.accountType === "STUDENT") {
+                    const GET_INFO = gql`
+                query GetInfo($id: ID!) {
+                    student(userId: $id) {
+                        address
+                        zipcode
+                        city
+                        state
+                        birthDate
+                        gender
+                        grade
+                        phoneNumber
+                        primaryParent {
+                            user {
+                                firstName
+                                lastName
+                                id
+                            }
+                        }
+                        school {
+                            name
+                            id
+                        }
+                        user {
+                            firstName
+                            lastName
+                            email
+                        }
+                    }
+                }`;
+                    const {"data": {student}} = await client.query({
+                        "query": GET_INFO,
+                        "variables": {id},
+                    });
+
+                    const modifiedData = {
+                        ...student,
+                        "firstName": student.user.firstName,
+                        "lastName": student.user.lastName,
+                        "email": student.user.email,
+                        "school": student.school && {
+                            "label": student.school.name,
+                            "value": student.school.id,
+                        },
+                        "primaryParent": student.primaryParent && {
+                            "label": `${student.primaryParent.user.firstName} ${student.primaryParent.user.lastName}`,
+                            "value": student.primaryParent.user.id,
+                        },
+                    };
+                    // delete modifiedData.pr;
+                    delete modifiedData.user;
+
+                    return {
+                        "student": modifiedData,
+                    };
+                }
+            } catch (err){console.error(err)}
+            return null;
+        },
+        "submit": async ({student}, id) => {
+            const ADD_STUDENT = gql`
+            mutation AddStudent($firstName: String!, 
+            $email: String,  
+            $lastName: String!, 
+            $address: String, 
+            $birthDate:Date, 
+            $city:String, 
+            $gender:GenderEnum,
+            $grade:Int,
+            $phoneNumber:String,
+            $primaryParent:ID, 
+            $school:ID, 
+            $zipcode:String, 
+            $state:String, 
+            $id: ID) {
+  createStudent(user: {firstName: $firstName, id: $id, lastName: $lastName,  email:$email}, address: $address, birthDate: $birthDate, school: $school, grade: $grade, gender: $gender, primaryParent: $primaryParent, phoneNumber: $phoneNumber, city: $city, state: $state, zipcode: $zipcode) {
+      created
+  }
+    }`;
+
+            try {
+                await client.mutate({
+                    "mutation": ADD_STUDENT,
+                    "variables": {
+                        ...student,
+                        "email": student.email || "",
+                        "birthDate": parseDate(student.birthDate),
+                        "primaryParent": student.primaryParent.value,
+                        "school": student.school.value,
+                    },
                 });
-            } catch ({response}) {
+            } catch (error) {
                 return {
-                    ...responseToForm(studentResponseToFormKey, response.data),
-                    ...responseToForm(parentResponseToFormKey, response.data),
-                    [FORM_ERROR]: response.data,
+                    [FORM_ERROR]: error,
                 };
             }
         },
@@ -561,8 +683,32 @@ export default {
         "title": "Parent",
         "form": [PARENT_FIELDS],
         // TODO: loading and submitting with GraphQL
-        "load": (id) => {},
-        "submit": async (dispatch, formData, id) => {},
+        "load": (id) => {
+        },
+        "submit": async (formData) => {
+            const CREATE_PARENT = gql`
+            mutation CreateParentAccount($firstName: String!, $lastName: String!, $email: String!, $password: String!, $phoneNumber: String) {
+                createParent(user: {firstName: $firstName, lastName: $lastName, email: $email, password: $password}, phoneNumber: $phoneNumber) {
+                    parent {
+                        accountType
+                    }
+                }
+            }`;
+            try {
+                await client.mutate({
+                    "mutation": CREATE_PARENT,
+                    "variables": {
+                        ...formData.parent,
+                        password: "change this password",
+                    },
+                });
+
+            } catch (error) {
+                return {
+                    [FORM_ERROR]: error,
+                };
+            }
+        }
     },
     "admin": {
         "title": "Administrator",
@@ -620,10 +766,10 @@ export default {
             query GetAdmin($userID: ID!) {
                 admin(userId: $userID) {
                     user {
-                    id
-                    email
-                    firstName
-                    lastName
+                        id
+                        email
+                        firstName
+                        lastName
                     }
                     adminType
                     gender
@@ -762,7 +908,7 @@ export default {
                         "name": "hourlyTuition",
                         "label": "Hourly Tuition ($)",
                         "required": true,
-                        ...HOURLY_TUITION_FIELD,
+                        ...POSITIVE_NUMBER_FIELD,
                     },
                 ],
             },
@@ -866,7 +1012,7 @@ export default {
                         "name": "hourlyTuition",
                         "label": "Hourly Tuition",
                         "required": true,
-                        ...HOURLY_TUITION_FIELD,
+                        ...POSITIVE_NUMBER_FIELD,
                     },
                     {
                         "name": "numSessions",
@@ -960,7 +1106,7 @@ export default {
         "submit": async (formData, id) => {
             const CREATE_COURSE = gql`
             mutation CreateCourse($startDate:DateTime, $endDate:DateTime, $startTime:Time!, $endTime:Time!, $academicLevel:AcademicLevelEnum,$courseCategory:ID, $description:String, $hourlyTuition:Decimal, $instructor:ID, $isConfirmed:Boolean, $maxCapacity:Int, $totalTuition: Decimal, $title:String!) {
-  createCourse(endTime: $endTime, startTime: $startTime, title: $title, maxCapacity: $maxCapacity, isConfirmed: $isConfirmed, instructor: $instructor, hourlyTuition: $hourlyTuition, academicLevel: $academicLevel, course_category: $courseCategory, courseType: CLASS, description: $description, endDate: $endDate, startDate: $startDate, totalTuition: $totalTuition) {
+  createCourse(endTime: $endTime, startTime: $startTime, title: $title, maxCapacity: $maxCapacity, isConfirmed: $isConfirmed, instructor: $instructor, hourlyTuition: $hourlyTuition, academicLevel: $academicLevel, courseCategory: $courseCategory, courseType: CLASS, description: $description, endDate: $endDate, startDate: $startDate, totalTuition: $totalTuition) {
     course {
       id
     }
@@ -973,9 +1119,9 @@ export default {
                 "courseInfo": {
                     ...courseInfo,
                     "instructor": courseInfo.instructor.value,
-                    "endDate": courseInfo.startDate
+                    "endDate": moment(courseInfo.startDate)
                         .add(tuition.numSessions - 1, "w"),
-                    "endTime": courseInfo.startTime.add(tuition.duration, "h")
+                    "endTime": moment(courseInfo.startTime).add(tuition.duration, "h")
                         .format("HH:mm"),
                     "startTime": courseInfo.startTime.format("HH:mm"),
                 },
@@ -985,6 +1131,7 @@ export default {
                     "duration": formData.tuition.duration.value,
                 },
             };
+
             try {
                 await client.mutate({
                     "mutation": CREATE_COURSE,
@@ -1035,7 +1182,8 @@ export default {
                     },
                     {
                         "name": "experience",
-                        ...stringField("Teaching Experience (Years)"),
+                        "label": "Years of Experience",
+                        ...POSITIVE_NUMBER_FIELD
                     },
                     {
                         "name": "biography",
@@ -1109,8 +1257,38 @@ export default {
         },
         "submit": async (formData, id) => {
             const CREATE_INSTRUCTOR = gql`
-            mutation CreateInstructor($firstName: String!, $lastName: String!, $email: String, $phoneNumber: String, $gender: GenderEnum, $address: String, $city: String, $state: String, $subjects: [ID], $experience: String, $biography: String, $language: String, $birthDate: Date, $zipcode: String) {
-                createInstructor(user: {firstName: $firstName, lastName: $lastName, email: $email, password: "abcdefgh"}, address: $address, biography: $biography, birthDate: $birthDate, city: $city, experience: $experience, gender: $gender, language: $language, phoneNumber: $phoneNumber, subjects: $subjects, state: $state, zipcode: $zipcode) {
+            mutation CreateInstructor($firstName: String!, 
+            $lastName: String!, 
+            $email: String, 
+            $phoneNumber: String, 
+            $gender: GenderEnum, 
+            $address: String, 
+            $city: String, 
+            $state: String, 
+            $subjects: [ID], 
+            $experience: String, 
+            $biography: String, 
+            $language: String, 
+            $birthDate: Date, 
+            $zipcode: String) {
+                createInstructor(
+                user: {
+                    firstName: $firstName, 
+                    lastName: $lastName, 
+                    email: $email, 
+                    password: "abcdefgh"
+                }, 
+                address: $address, 
+                biography: $biography, 
+                birthDate: $birthDate, 
+                city: $city, 
+                experience: $experience, 
+                gender: $gender, 
+                language: $language, 
+                phoneNumber: $phoneNumber, 
+                subjects: $subjects, 
+                state: $state, 
+                zipcode: $zipcode) {
                     instructor {
                     user {
                         id
@@ -1120,9 +1298,22 @@ export default {
             }
             `;
 
+            const INVITE_INSTRUCTOR =gql`
+            mutation MyMutation($email:String!) {
+  inviteInstructor(email: $email) {
+    status
+  }
+}
+`;
+
             const {basicInfo, experience} = formData;
+
             const modifiedData = {
-                basicInfo,
+                "basicInfo": {
+                    ...basicInfo,
+                    birthDate: basicInfo.birthDate ? basicInfo.birthDate.toISOString().substr(0, 10) :
+                        "2020-01-01",
+                },
                 "experience": {
                     ...experience,
                     "subjects": experience.subjects.map(({value}) => value),
@@ -1138,11 +1329,18 @@ export default {
                             ...section,
                         }), {}),
                 });
+
             } catch (error) {
                 return {
                     [FORM_ERROR]: error,
                 };
             }
+            await client.mutate({
+                "mutation": INVITE_INSTRUCTOR,
+                "variables": {
+                    "email": formData.basicInfo.email,
+                }
+            });
         },
     },
 	"class-registration": {

@@ -1,41 +1,99 @@
-import React, {useCallback, useState} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import {Link} from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import NewCourse from "@material-ui/icons/School";
 import Tooltip from "@material-ui/core/Tooltip";
 
 import "./registration.scss";
 import SelectParentDialog from "./SelectParentDialog";
-import {stringToColor} from "../Accounts/accountUtils";
-import {fullName} from "../../../utils";
-import {getRegistrationCart} from "../../OmouComponents/RegistrationUtils";
+import { stringToColor } from "../Accounts/accountUtils";
+import { fullName, USER_TYPES } from "../../../utils";
+import {
+	getRegistrationCart,
+	setParentRegistrationCart,
+	useValidateRegisteringParent
+} from "../../OmouComponents/RegistrationUtils";
+import { useSelector } from "react-redux";
+import { useQuery } from "@apollo/react-hooks";
+import gql from "graphql-tag";
+import Loading from "../../OmouComponents/Loading";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCartOutlined";
+import IconButton from "@material-ui/core/IconButton";
+import Badge from "@material-ui/core/Badge";
 
-const RegistrationActions = () => {
-	const {currentParent, ...registrationCartState} = getRegistrationCart();
+const GET_PARENT_QUERY = gql`
+query GetRegisteringParent($userId: ID!) {
+  __typename
+  parent(userId: $userId) {
+    user {
+      firstName
+      id
+      lastName
+      email
+    }
+    studentList
+  }
+}
+`
+
+const RegistrationActions = ({ updateRegisteringParent }) => {
+	const AuthUser = useSelector(({ auth }) => auth);
+	const { parentIsLoggedIn } = useValidateRegisteringParent();
+	const { currentParent, ...registrationState } = getRegistrationCart();
+	const [updatedRegistrationCartNum, setUpdatedRegistrationCartNum] = useState(null);
 	const [dialogOpen, setDialog] = useState(false);
+	const { data, error, loading } = useQuery(GET_PARENT_QUERY, {
+		variables: { userId: AuthUser.user.id },
+		skip: AuthUser.accountType !== USER_TYPES.parent,
+	});
+	const history = useHistory();
 
 	const openDialog = useCallback(() => {
 		setDialog(true);
 	}, []);
 
-	const closeDialog = useCallback(() => {
+	const closeDialog = useCallback((isParentSet) => {
 		setDialog(false);
+		updateRegisteringParent(isParentSet);
 	}, []);
 
-	const parentName = currentParent && fullName(currentParent.user);
+	useEffect(() => {
+		if (parentIsLoggedIn && !loading && Object.values(registrationState).length === 0) {
+			setParentRegistrationCart(data.parent);
+			updateRegisteringParent(false);
+		}
+	}, [AuthUser.accountType, loading]);
+
+	if (loading) return <Loading />;
+	if (error) return <div>There has been an error: {error.message}</div>
+
+	const registeringParent = data?.parent || currentParent;
+
+	const parentName = registeringParent && fullName(registeringParent.user);
+
+	const numberOfRegistrationsInCart = updatedRegistrationCartNum || Object.values(registrationState).reduce((accumulator, currentStudent) => {
+		return accumulator + currentStudent.length;
+	}, 0);
+
+	const toShoppingCart = () => {
+		history.push("/registration/cart");
+	}
 
 	return (
 		<>
 			<Grid
-				item
+
 				className="registration-action-control"
 				container
 				direction="row"
 				justify="flex-start"
+				alignItems="center"
+				spacing={1}
+
 			>
-				<Grid item md={8}>
-					{currentParent && (
+				<Grid item md={9}>
+					{(currentParent || parentIsLoggedIn) && (
 						<Grid item xs={2}>
 							<Button
 								aria-controls="simple-menu"
@@ -45,15 +103,15 @@ const RegistrationActions = () => {
 								component={Link} to="/registration/form/class-registration"
 								variant="outlined"
 							>
-								<NewCourse className="icon innerIcon"/>
+								<NewCourse className="icon innerIcon" />
 								REGISTER CLASS
 							</Button>
 						</Grid>
 					)}
 				</Grid>
 				<Grid item xs={2}>
-					{currentParent ? (
-						<Tooltip title="Registering Parent">
+					{registeringParent ? (
+						!data && <Tooltip title="Registering Parent">
 							<Button className="button" onClick={openDialog}>
 								<div
 									className="circle-icon"
@@ -65,14 +123,32 @@ const RegistrationActions = () => {
 							</Button>
 						</Tooltip>
 					) : (
-						<Button className="button set-parent" onClick={openDialog}>
-							<div className="circle-icon"/>
+							<Button className="button set-parent" onClick={openDialog}>
+								<div className="circle-icon" />
 							SET PARENT
-						</Button>
-					)}
+							</Button>
+						)}
+				</Grid>
+				<Grid item xs={1} style={{ paddingRight: "6vh", verticalAlign: "middle" }}>
+					<IconButton
+						onClick={toShoppingCart}
+						disabled={numberOfRegistrationsInCart === 0}
+					>
+						<Badge
+							badgeContent={numberOfRegistrationsInCart}
+							color="primary"
+							showZero
+							anchorOrigin={{
+								vertical: 'top',
+								horizontal: 'right',
+							}}
+						>
+							<ShoppingCartIcon style={{ fontSize: "1.4em", }} />
+						</Badge>
+					</IconButton>
 				</Grid>
 			</Grid>
-			<SelectParentDialog onClose={closeDialog} open={dialogOpen}/>
+			<SelectParentDialog onClose={closeDialog} open={dialogOpen} updateCartNum={setUpdatedRegistrationCartNum} />
 		</>
 	);
 };

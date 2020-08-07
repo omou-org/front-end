@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 
 import {Form as ReactForm} from "react-final-form";
@@ -12,6 +12,10 @@ import FormReceipt from "./FormReceipt";
 import {makeValidate} from "mui-rff";
 import {Button} from "@material-ui/core";
 import * as Yup from "yup";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
 
 
 const useStyles = makeStyles({
@@ -127,9 +131,9 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                         </Button>}
                     {index === sections.length - 1 &&
                         <Button data-cy="submitButton"
-                            disabled={Boolean(errors[name]) || submitting}
-                            type="submit"
-                            variant="outlined">
+                                disabled={Boolean(errors[name]) || submitting}
+                                type="submit"
+                                variant="outlined">
                             {submitting ? "Submitting" : "Submit"}
                         </Button>}
                 </div>
@@ -137,34 +141,48 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
         </Step>
     ), [classes.step, classes.buttons, sections.length, handleBack, handleNext]);
 
-    const render = useCallback(({handleSubmit, errors, submitError, submitting, form}) => (
-        <form noValidate onSubmit={handleSubmit}>
-            <Stepper activeStep={activeStep} orientation="vertical">
-                {sections.map((section, index) => renderStep(
-                    index, section, errors, submitting, form.mutators
-                ))}
-            </Stepper>
-            {submitError &&
-                <div className="error">
-                    An error occured while submitting. Try again.
-                </div>}
-        </form>
-    ), [activeStep, renderStep, sections]);
+    const Render = ({handleSubmit, errors, submitError, submitting, form}) => {
+        const [openError, setOpenError] = useState(false);
+        useEffect(() => {
+            if (submitError) {
+                setOpenError(true);
+            }
+        }, [submitError])
+
+        return (<form noValidate onSubmit={handleSubmit}>
+                <Stepper activeStep={activeStep} orientation="vertical">
+                    {sections.map((section, index) => renderStep(
+                        index, section, errors, submitting, form.mutators
+                    ))}
+                </Stepper>
+                {submitError &&
+                <Dialog className="error" open={openError} onClose={() => setOpenError(false)}>
+                    <DialogTitle>An error occurred while submitting. Try again.</DialogTitle>
+                    <DialogContent>
+                        {submitError.message}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setOpenError(false)}>Close</Button>
+                    </DialogActions>
+                </Dialog>}
+            </form>
+        )
+    };
     return (
         <div className={classes.root}>
             <Typography align="left" className="heading" data-cy="formTitle"
-                variant="h3">
+                        variant="h3">
                 {title}
             </Typography>
             {showReceipt ?
-                <Receipt formData={submittedData} format={base} /> :
+                <Receipt formData={submittedData} format={base}/> :
                 <ReactForm initialValues={initialData} onSubmit={submit}
                            mutators={{
                                setHourlyTuition: ([name], state, utils) => {
                                    utils.changeValue(state, 'hourlyTuition', () => name)
                                }
                            }}
-                           render={render} validate={validate} />}
+                           render={Render} validate={validate}/>}
         </div>
     );
 };
