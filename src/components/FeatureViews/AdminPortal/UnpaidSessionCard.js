@@ -58,24 +58,24 @@ const useStyles = makeStyles((theme) => ({
 
 const UnpaidSessionCard = ({unpaidStudent}) => {
     const classes = useStyles();
-    
+
     const studentObj = unpaidStudent.student.user;
     const studentName = fullName(studentObj);
-    const {firstName, lastName, studentID} = unpaidStudent.student.user;
-    const {courseID, courseTitle, startTime, endTime, hourlyTuition} = unpaidStudent.course
+    const {firstName, lastName, id: studentId} = unpaidStudent.student.user;
+    const {id: courseId, courseTitle, startTime, endTime, hourlyTuition} = unpaidStudent.course
     const sessionsLeft = unpaidStudent.sessionsLeft;
-	const amtDue = adminUtils.amountDue(
-		hourlyTuition,
-		sessionsLeft,
-		adminUtils.calculateSessionLength(startTime, endTime)
-	);
+    const amtDue = adminUtils.amountDue(
+        hourlyTuition,
+        sessionsLeft,
+        adminUtils.calculateSessionLength(startTime, endTime)
+    );
     
     return (
         <Grid item md={6} lg={3} className={classes.grid}>
             <Card className={`unpaid-sessions-card ${classes.card}`}>
                 <CardActionArea
-                component = {Link}
-                to={`/accounts/students/${studentID}/${courseID}`}
+                    component={Link}
+                    to={`/accounts/students/${studentId}/${courseId}`}
                 >
                     <Grid
                         className={`unpaid-avatar-container ${classes.avatarContainer}`}
