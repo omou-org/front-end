@@ -4,6 +4,7 @@ import {dateParser, weeklySessionsParser} from "components/Form/FormUtils";
 import {
   closeRegistrationCart,
   loadRegistrationCart,
+  removeRegistration,
   setParentRegistrationCart,
   submitRegistration
 } from "../components/OmouComponents/RegistrationUtils";
@@ -82,6 +83,8 @@ export default function registration(
       return addSmallGroupRegistration(newState, payload);
     case actions.INIT_COURSE_REGISTRATION:
       return initializeRegistration(newState, payload);
+    case actions.DELETE_COURSE_REGISTRATION:
+      return removeRegistration(payload.studentId, payload.courseId);
     case actions.CLOSE_COURSE_REGISTRATION:
       return closeRegistration(newState);
     case actions.EDIT_COURSE_REGISTRATION:

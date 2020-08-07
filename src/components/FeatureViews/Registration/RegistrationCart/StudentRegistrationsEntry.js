@@ -14,15 +14,19 @@ import TextField from "@material-ui/core/TextField";
 import CloseIcon from "@material-ui/icons/Close";
 import "./RegistrationCart.scss";
 import IconButton from "@material-ui/core/IconButton";
-import {removeRegistration, useValidateRegisteringParent} from "../../../OmouComponents/RegistrationUtils";
+import {useValidateRegisteringParent} from "../../../OmouComponents/RegistrationUtils";
+import {useDispatch} from "react-redux";
+import * as types from "../../../../actions/actionTypes";
+import NoListAlert from "../../../OmouComponents/NoListAlert";
 
 const separator = () => {
-	return (<Typography style={{ display: "inline", paddingLeft: 30, paddingRight: 30 }}>|</Typography>)
+	return (<Typography style={{display: "inline", paddingLeft: 30, paddingRight: 30}}>|</Typography>)
 }
 
 function RegistrationEntry({registration: {course, numSessions, checked}, studentId, index}) {
 	const {parentIsLoggedIn} = useValidateRegisteringParent();
 	const {updateSession} = useContext(RegistrationContext);
+	const dispatch = useDispatch();
 
 	const handleSessionChange = (e) => {
 		updateSession(Number(e.target.value), checked, studentId, course.id);
@@ -30,7 +34,13 @@ function RegistrationEntry({registration: {course, numSessions, checked}, studen
 
 	const handleSessionCheckChange = (_) => {
 		updateSession(numSessions, !checked, studentId, course.id);
-		removeRegistration(studentId, course.id);
+		dispatch({
+			type: types.DELETE_COURSE_REGISTRATION,
+			payload: {
+				studentId,
+				courseId: course.id,
+			}
+		});
 	};
 	const totalCourseSessions = moment(course.endDate).diff(moment(course.startDate), "weeks") + 1;
 	return (<>
@@ -115,15 +125,17 @@ export default function StudentRegistrationEntry({ student, registrationList }) 
 			<TableBody>
 				<br />
 				{
-					registrationList
-						.filter(({checked}) => checked)
-						.map((registration, index) =>
-							<RegistrationEntry
-								index={index}
-								key={registration.course.id}
-								registration={registration}
-								studentId={student.user.id}
-							/>)
+					registrationList.length > 0 ?
+						registrationList
+							.filter(({checked}) => checked)
+							.map((registration, index) =>
+								<RegistrationEntry
+									index={index}
+									key={registration.course.id}
+									registration={registration}
+									studentId={student.user.id}
+								/>) :
+						<NoListAlert list="registrations"/>
 				}
 			</TableBody>
 		</Table>

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {getRegistrationCart, useValidateRegisteringParent} from "../../../OmouComponents/RegistrationUtils";
+import {useValidateRegisteringParent} from "../../../OmouComponents/RegistrationUtils";
 import gql from "graphql-tag";
 import {useMutation, useQuery} from "@apollo/react-hooks";
 import Loading from "../../../OmouComponents/Loading";
@@ -76,7 +76,6 @@ mutation CreateRegisteringCart($parent: ID!, $registrationPreferences:String) {
 export default function RegistrationCartContainer() {
 	const {currentParent, ...registrationCartState} = useSelector((state) => state.Registration);
 	const dispatch = useDispatch();
-	const prevRegistrationCart = getRegistrationCart();
 
 	const [registrationCart, setRegistrationCart] = useState({});
 	const [reviewConfirmationCheck, setReviewConfirmationCheck] = useState(false);
@@ -92,7 +91,7 @@ export default function RegistrationCartContainer() {
 			.filter(registration => registration)
 			.map(({course}) => course.id);
 
-	const {data, loading, error, called} = useQuery(GET_COURSES_AND_STUDENTS_TO_REGISTER,
+	const {data, loading, error} = useQuery(GET_COURSES_AND_STUDENTS_TO_REGISTER,
 		{
 			variables: {userIds: studentIds, courseIds: courseIds},
 			skip: !courseIds,
@@ -139,11 +138,15 @@ export default function RegistrationCartContainer() {
 
 			let updatedRegistrationList = prevRegistrationCart[studentId];
 
-			updatedRegistrationList[registrationToEditIndex] = {
-				...updatedRegistrationList[registrationToEditIndex],
-				numSessions: newSessionNum,
-				checked,
-			};
+			if (!checked) {
+				updatedRegistrationList.splice(registrationToEditIndex, 1);
+			} else {
+				updatedRegistrationList[registrationToEditIndex] = {
+					...updatedRegistrationList[registrationToEditIndex],
+					numSessions: newSessionNum,
+					checked,
+				};
+			}
 
 			return {
 				[studentId]: updatedRegistrationList,
@@ -172,6 +175,7 @@ export default function RegistrationCartContainer() {
 	if (loading || !data) return <Loading small/>;
 	if (error) return <div>There's been an error:
 		{error.message}</div>
+
 	const studentData = data.userInfos;
 
 	return (<RegistrationContext.Provider value={{registrationCart, currentParent, updateSession}}>

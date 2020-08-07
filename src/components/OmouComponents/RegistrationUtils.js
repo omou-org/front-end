@@ -62,9 +62,17 @@ export const removeRegistration = (student, course) => {
 	const indexOfRegistration = registrationState[student]
 		.map(({course}) => course)
 		.indexOf(course);
+
+	registrationState[student].splice(indexOfRegistration, 1);
+
+	sessionStorage.setItem("registrations", JSON.stringify({
+		...registrationState,
+		[student]: registrationState[student],
+	}));
+
 	return {
 		...registrationState,
-		[student]: registrationState[student].splice(indexOfRegistration, 1),
+		[student]: registrationState[student],
 	}
 }
 
