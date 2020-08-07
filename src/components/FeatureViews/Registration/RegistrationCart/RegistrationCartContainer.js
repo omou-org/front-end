@@ -109,7 +109,7 @@ export default function RegistrationCartContainer() {
 			type: types.INIT_COURSE_REGISTRATION,
 			payload: {},
 		})
-	}, []);
+	}, [types.INIT_COURSE_REGISTRATION, dispatch]);
 
 	useEffect(() => {
 		const numOfRegistrations = Object.values(registrationCartState)

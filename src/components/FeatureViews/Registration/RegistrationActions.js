@@ -52,7 +52,7 @@ const RegistrationActions = () => {
 			type: types.INIT_COURSE_REGISTRATION,
 			payload: {},
 		})
-	}, [])
+	}, [types.INIT_COURSE_REGISTRATION, dispatch])
 
 	const openDialog = useCallback(() => {
 		setDialog(true);
