@@ -1,26 +1,26 @@
-import React, {useState} from "react";
-import {Link} from "react-router-dom";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import useStyles from "./styles.js";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import {PHONE_NUMBER_FIELD, stringField} from "../Form/FormFormats";
-import {FORM_ERROR} from "final-form";
+import { PHONE_NUMBER_FIELD, stringField } from "../Form/FormFormats";
+import { FORM_ERROR } from "final-form";
 import * as Yup from "yup";
 import gql from "graphql-tag";
-import {useApolloClient} from "@apollo/react-hooks";
-import {Form as ReactForm} from "react-final-form";
+import { useApolloClient } from "@apollo/react-hooks";
+import { Form as ReactForm } from "react-final-form";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 import Grid from "@material-ui/core/Grid";
 import * as Fields from "../Form/Fields";
 import "./LoginPage.scss";
-import {ReactComponent as Ellipse3} from "./loginImages/ellipse3.svg";
-import {ReactComponent as Ellipse4} from "./loginImages/ellipse4.svg";
-import {ReactComponent as Picture2} from "./loginImages/picture2.svg";
+import { ReactComponent as Ellipse3 } from "./loginImages/ellipse3.svg";
+import { ReactComponent as Ellipse4 } from "./loginImages/ellipse4.svg";
+import { ReactComponent as Picture2 } from "./loginImages/picture2.svg";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Stepper from "@material-ui/core/Stepper";
-import {makeValidate} from "mui-rff";
+import { makeValidate } from "mui-rff";
 
 const basicInfo = [
     <Fields.TextField className="TextField" fullWidth={false} key="firstName" label="First Name" margin="dense" name="firstName" required variant="outlined" />,
@@ -50,7 +50,7 @@ const NewAccount = () => {
                 try {
                     const response = await client.query({
                         "query": CHECK_EMAIL,
-                        "variables": {email},
+                        "variables": { email },
                     });
                     return response.data.userType === null;
                 } catch {
@@ -58,8 +58,13 @@ const NewAccount = () => {
                 }
             })
             .required(),
-        "password": Yup.string().min(8, "Password is too short")
-            .required(),
+        "password":
+            Yup.string()
+                .matches(
+                    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d\s@$!%*#?&]{8,}$/,
+                    "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+                )
+                .required(),
         "phoneNumber": PHONE_NUMBER_FIELD.validator,
     });
 
@@ -88,7 +93,7 @@ const NewAccount = () => {
                             "userType": "Parent",
                         },
                         "query": CHECK_EMAIL,
-                        "variables": {"email": formData.email},
+                        "variables": { "email": formData.email },
                     });
                 },
             });
@@ -113,7 +118,7 @@ const NewAccount = () => {
                             <Button className="formButton"
                                 component={Link} data-cy="return" to={{
                                     "pathname": "/login",
-                                    "state": {email},
+                                    "state": { email },
                                 }} variant="contained">
                                 Back to login
                             </Button>
@@ -125,13 +130,13 @@ const NewAccount = () => {
                 );
                 case 1: return (
                     <>
-                        <Typography style={{"margin": "80px 0"}} variant="body1">
+                        <Typography style={{ "margin": "80px 0" }} variant="body1">
                             You can now log in to your new account.
                         </Typography>
                         <Button className="formButton" color="primary"
                             component={Link} data-cy="return" to={{
                                 "pathname": "/login",
-                                "state": {email},
+                                "state": { email },
                             }} variant="contained">
                             Login
                         </Button>
@@ -147,7 +152,7 @@ const NewAccount = () => {
                 <Typography className="welcomeText formTitle">
                     Create a Parent Account
                 </Typography>
-                <ReactForm validateOnBlur onSubmit={submit} render={({handleSubmit, values}) => (
+                <ReactForm validateOnBlur onSubmit={submit} render={({ handleSubmit, values }) => (
                     <form noValidate onSubmit={handleSubmit}>
                         <Stepper activeStep={activeStep} alternativeLabel orientation="horizontal" style={{
                             "margin": "-300px 0 -20px 0",
@@ -161,7 +166,7 @@ const NewAccount = () => {
                         {renderStep(values.email)}
                     </form>
                 )}
-                validate={parentValidate} />
+                    validate={parentValidate} />
             </>
         );
     };
