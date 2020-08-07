@@ -14,6 +14,9 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Loading from "../../../OmouComponents/Loading";
 import {useHistory} from "react-router-dom"
+import {GET_PAYMENT} from "../PaymentReceipt";
+import {GET_COURSES} from "../RegistrationLanding";
+import {GET_STUDENTS_AND_ENROLLMENTS} from "../CourseList";
 
 const GET_PRICE_QUOTE = gql`
 	query GetPriceQuote($method: String!, 
@@ -151,8 +154,87 @@ export default function PaymentBoard() {
 		}));
 
 	const enrollmentResponse = useQuery(GET_PARENT_ENROLLMENTS, {variables: {studentIds: currentParent.studentList}})
-	const [createEnrollments, createEnrollmentResults] = useMutation(CREATE_ENROLLMENTS);
-	const [createPayment, createPaymentResults] = useMutation(CREATE_PAYMENT);
+	const [createEnrollments, createEnrollmentResults] = useMutation(CREATE_ENROLLMENTS, {
+		update: (cache, {data}) => {
+			const existingEnrollmentsFromGetParent = cache.readQuery({
+				query: GET_PARENT_ENROLLMENTS,
+				variables: {studentIds: currentParent.studentList}
+			}).enrollments;
+
+			cache.writeQuery({
+				query: GET_PARENT_ENROLLMENTS,
+				data: {
+					enrollments: [
+						...existingEnrollmentsFromGetParent,
+						...data["createEnrollments"].enrollments
+					],
+				},
+				variables: {studentIds: currentParent.studentList}
+			});
+			let cachedCourses = cache.readQuery({
+				query: GET_COURSES,
+			}).courses;
+			const newEnrollments = data.createEnrollments.enrollments.map(enrollment => {
+				return {
+					course: enrollment.course.id,
+					student: enrollment.student.user.id,
+				}
+			});
+			newEnrollments.forEach(newEnrollment => {
+				const matchingIndex = cachedCourses.findIndex((course) =>
+					(course.id === newEnrollment.course));
+				cachedCourses[matchingIndex] = {
+					...cachedCourses[matchingIndex],
+					enrollmentSet: [...cachedCourses[matchingIndex].enrollmentSet,
+						{student: newEnrollment.student, course: newEnrollment.course}],
+				};
+			});
+
+			cache.writeQuery({
+				query: GET_COURSES,
+				data: {
+					courses: cachedCourses,
+				}
+			});
+
+			const {userInfos, enrollments} = cache.readQuery({
+				query: GET_STUDENTS_AND_ENROLLMENTS,
+				variables: {
+					userIds: currentParent.studentList
+				}
+			});
+
+			const newQueryEnrollments = data.createEnrollments.enrollments.map(enrollment => ({
+					id: enrollment.id,
+					course: {
+						id: enrollment.course.id,
+					}
+				})
+			);
+
+			cache.writeQuery({
+				query: GET_STUDENTS_AND_ENROLLMENTS,
+				data: {
+					userInfos,
+					enrollments: [
+						...enrollments,
+						...newQueryEnrollments,
+					]
+				}
+			})
+		}
+	});
+	const [createPayment, createPaymentResults] = useMutation(CREATE_PAYMENT, {
+		update: (cache, {data}) => {
+			cache.writeQuery({
+				query: GET_PAYMENT,
+				data: {
+					payment: data["payment"],
+				},
+				variables: {paymentId: data["payment"].id}
+			})
+		}
+	});
 	const history = useHistory();
 
 	useEffect(() => {
@@ -216,10 +298,14 @@ export default function PaymentBoard() {
 		const {data: {enrollments}} = enrollmentResponse;
 		const isSameEnrollment = ({enrollment, course, student}) =>
 			(`${enrollment.student.user.id}-${enrollment.course.id}` === `${student}-${course}`);
-		// (course == enrollment.course.id && student == enrollment.student.user.id);
+		console.log({enrollments}, "previous enrollments");
+
 		const enrollmentsToCreate = classRegistrations
 			.filter(({course, student}) =>
-				(!enrollments.some((enrollment) => isSameEnrollment({enrollment, course, student}))))
+				(!enrollments.some((enrollment) => {
+					console.log(isSameEnrollment({enrollment, course, student}));
+					return isSameEnrollment({enrollment, course, student})
+				})))
 			.map(({course, student}) => ({course, student}));
 		const existingEnrollments = classRegistrations
 			.filter(({course, student}) =>
@@ -263,9 +349,9 @@ export default function PaymentBoard() {
 		history.push(`/registration/receipt/${payment.data.createPayment.payment.id}`)
 	};
 
-	if (error) {
-		console.error(error.message);
-		return <div>There has been an error! : {error.message} </div>
+	if (error || enrollmentResponse.error) {
+		console.error(error.message, enrollmentResponse.error.message);
+		return <div>There has been an error! : {error.message} | {enrollmentResponse.error.message}</div>
 	}
 
 	const priceQuote = data?.priceQuote || {

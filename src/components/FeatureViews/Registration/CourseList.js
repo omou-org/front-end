@@ -29,7 +29,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import {useDispatch, useSelector} from "react-redux";
 import * as types from "actions/actionTypes";
 
-const GET_STUDENTS = gql`
+export const GET_STUDENTS_AND_ENROLLMENTS = gql`
     query GetStudents($userIds: [ID]!) {
       userInfos(userIds: $userIds) {
         ... on StudentType {
@@ -68,7 +68,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const dispatch = useDispatch();
 
     const {studentList} = JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
-    const {data, loading} = useQuery(GET_STUDENTS, {
+    const {data, loading} = useQuery(GET_STUDENTS_AND_ENROLLMENTS, {
         "variables": {"userIds": studentList},
         skip: !studentList
     });
@@ -118,6 +118,11 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
             }
         });
         setOpen(false);
+    }
+
+    const disableQuickRegister = ({course, enrolledCourseIds, registrations, studentList}) => {
+        return ((course.maxCapacity <= course.enrollmentSet.length) &&
+            (previouslyEnrolled(course.id, enrolledCourseIds, registrations, studentList)))
     }
 
     return <> <Table>
@@ -179,14 +184,15 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                     <span className="label">Enrolled</span>
                                 </span>
                                 {(currentParent || parentIsLoggedIn || updatedParent) && (
-                                    <Button disabled={() =>
-                                        ((course.maxCapacity <= course.enrollmentSet.length) ||
-                                            (previouslyEnrolled(course.id, enrolledCourseIds, registrations, studentList)))
-                                    }
-                                            variant="contained"
-                                            color="primary"
-                                            onClick={handleStartQuickRegister(course.id)}
-                                            data-cy="quick-register-class"
+                                    <Button
+                                        disabled={disableQuickRegister({
+                                            course, enrolledCourseIds,
+                                            registrations, studentList
+                                        })}
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={handleStartQuickRegister(course.id)}
+                                        data-cy="quick-register-class"
                                     >
                                         + REGISTER
                                     </Button>
@@ -197,7 +203,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
             }
         </TableBody>
     </Table>
-        <Dialog open={openCourseQuickRegistration}>
+        <Dialog open={openCourseQuickRegistration} onClose={() => setOpen(false)}>
             <DialogTitle>Which student do you want to enroll?</DialogTitle>
             <DialogContent>
                 <FormControl fullWidth variant="outlined">
@@ -220,6 +226,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                 <DialogActions>
                     <Button data-cy="add-registration-to-cart"
                             onClick={handleAddRegistration}
+                            disabled={!quickStudent}
                     >
                         ADD TO CART
                     </Button>

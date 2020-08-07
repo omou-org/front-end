@@ -44,6 +44,16 @@ describe("Admin Registers an upcoming class", () => {
 		cy.get("[data-cy=set-parent-action]").click();
 	});
 
+	// it("Quick registers a class", () => {
+	// 	cy.get("[data-cy=quick-register-class]").first().click();
+	// 	cy.get("[data-cy=select-student-to-register]").click();
+	// 	cy.get("[data-cy=student-value]").first().click();
+	// 	cy.get("[data-cy=add-registration-to-cart]").click();
+	// 	cy.get("[data-cy=shopping-cart-num-registrations]").should(($div) => {
+	// 		expect($div).contain("1");
+	// 	});
+	// });
+
 	it("Registers a class through the form", () => {
 		cy.get("[data-cy=register-class]").click();
 		cy.get("[data-cy=student-student-select]").click();
@@ -51,13 +61,13 @@ describe("Admin Registers an upcoming class", () => {
 		cy.get("[data-cy=student-nextButton]").click();
 		cy.get("[data-cy=student_info-nextButton]").click();
 		cy.get("[data-cy=course-class]").click();
-		cy.get('[data-cy="course.class-1"]').click();
+		cy.get('[data-cy="course.class-2"]').click();
 		cy.get("[data-cy=submitButton]").click();
 		cy.waitFor("[data-cy=student-card]");
 		cy.waitFor("[data-cy=back-to-register]");
 		cy.get("[data-cy=back-to-register]").click();
 		cy.get("[data-cy=shopping-cart-num-registrations]").should(($div) => {
-			expect($div).contain("1");
+			expect($div).contain("2");
 		});
 	});
 
@@ -73,16 +83,6 @@ describe("Admin Registers an upcoming class", () => {
 		cy.waitFor("[data-cy=student-card]");
 		cy.waitFor("[data-cy=back-to-register]");
 		cy.get("[data-cy=back-to-register]").click();
-		cy.get("[data-cy=shopping-cart-num-registrations]").should(($div) => {
-			expect($div).contain("1");
-		});
-	});
-
-	it("Quick registers a class", () => {
-		cy.get("[data-cy=quick-register-class]").first().click();
-		cy.get("[data-cy=select-student-to-register]").click();
-		cy.get("[data-cy=student-value]").first().click();
-		cy.get("[data-cy=add-registration-to-cart]").click();
 		cy.get("[data-cy=shopping-cart-num-registrations]").should(($div) => {
 			expect($div).contain("2");
 		});
@@ -135,9 +135,5 @@ describe("Admin Registers an upcoming class", () => {
 		cy.get("[data-cy=payment-header]").should('exist');
 		cy.get("[data-cy=close-parent]").click();
 		cy.get("[data-cy=num-enrolled-students]").should('contain', 1);
-	});
-
-	it("Disables quick register for courses with all of parent's students enrolled", () => {
-		cy.get("[data-cy=quick-register-class]").first().should('have.class', 'Mui-disabled')
 	});
 })
