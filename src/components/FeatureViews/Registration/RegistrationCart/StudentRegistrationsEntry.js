@@ -88,7 +88,7 @@ function RegistrationEntry({registration: {course, numSessions, checked}, studen
 				}
 			</TableCell>
 			<TableCell style={{whiteSpace: "nowrap", verticalAlign: 'top'}}>
-				$ {getTuitionAmount(course, numSessions)}
+				$ {getTuitionAmount(course, parentIsLoggedIn ? totalCourseSessions : numSessions)}
 			</TableCell>
 		</TableRow>
 	</>)
