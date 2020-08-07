@@ -427,7 +427,7 @@ export default function PaymentBoard() {
 				<Button
 					variant="contained"
 					color="primary"
-					disabled={priceQuote.total === "-"}
+					disabled={priceQuote.total === "-" || priceQuote < 0}
 					onClick={handlePayment}
 					data-cy="pay-action"
 				>
