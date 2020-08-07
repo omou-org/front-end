@@ -1,6 +1,6 @@
-import React, {useMemo} from "react";
-import {Prompt, useHistory, useLocation, useParams} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useMemo } from "react";
+import { Prompt, useHistory, useLocation, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -10,14 +10,14 @@ import Typography from "@material-ui/core/Typography";
 import * as registrationActions from "actions/registrationActions";
 import BackButton from "components/OmouComponents/BackButton";
 import Loading from "components/OmouComponents/Loading";
-import {paymentToString, uniques} from "utils";
+import { paymentToString, uniques } from "utils";
 import Moment from "react-moment";
 import gql from "graphql-tag";
-import {useQuery} from "@apollo/react-hooks";
-import {bindActionCreators} from "redux";
-import {fullName} from "../../../utils";
+import { useQuery } from "@apollo/react-hooks";
+import { bindActionCreators } from "redux";
+import { fullName } from "../../../utils";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
-import {closeRegistrationCart} from "../../OmouComponents/RegistrationUtils";
+import { closeRegistrationCart } from "../../OmouComponents/RegistrationUtils";
 
 export const GET_PAYMENT = gql`
 	query Payment($paymentId:ID!){
@@ -61,17 +61,17 @@ export const GET_PAYMENT = gql`
 	}
 `;
 
-const PaymentReceipt = ({paymentID}) => {
+const PaymentReceipt = ({ paymentID }) => {
 	const history = useHistory();
 	const location = useLocation();
 	const params = useParams();
 
-	const {data, loading, error} = useQuery(GET_PAYMENT,
-		{variables: {paymentId: params.paymentID || paymentID}}
+	const { data, loading, error } = useQuery(GET_PAYMENT,
+		{ variables: { paymentId: params.paymentID || paymentID } }
 	);
 
 	const currentPayingParent = useSelector(
-		({Registration}) => Registration.CurrentParent
+		({ Registration }) => Registration.CurrentParent
 	);
 
 	const dispatch = useDispatch();
@@ -81,7 +81,7 @@ const PaymentReceipt = ({paymentID}) => {
 	);
 
 	if (loading) {
-		return <Loading/>
+		return <Loading />
 	}
 	if (error) {
 		return <Typography>
@@ -89,8 +89,8 @@ const PaymentReceipt = ({paymentID}) => {
 		</Typography>
 	}
 
-	const {payment} = data;
-	const {parent, registrationSet} = payment;
+	const { payment } = data;
+	const { parent, registrationSet } = payment;
 	const studentIDs = uniques(registrationSet.map((registration) => registration.enrollment.student.user.id));
 	// Array of student registrations (array)
 	const registrations = studentIDs.map((studentID) => registrationSet
@@ -104,8 +104,8 @@ const PaymentReceipt = ({paymentID}) => {
 	};
 
 	const renderCourse = (registration) => {
-		const {enrollment} = registration;
-		const {course} = enrollment;
+		const { enrollment } = registration;
+		const { course } = enrollment;
 		return (<Grid item key={enrollment.id}>
 			<Grid
 				className="enrolled-course"
@@ -149,9 +149,9 @@ const PaymentReceipt = ({paymentID}) => {
 									<Typography align="left">
 										$
 										{Math.round(
-											course.hourlyTuition *
-											registration.numSessions
-										)}
+										course.hourlyTuition *
+										registration.numSessions
+									)}
 									</Typography>
 								</Grid>
 							</Grid>
@@ -210,8 +210,8 @@ const PaymentReceipt = ({paymentID}) => {
 		<BackgroundPaper elevation={2} className="registration-receipt">
 			{params.paymentID && (
 				<>
-					<BackButton/>
-					<hr/>
+					<BackButton />
+					<hr />
 				</>
 			)}
 			<Prompt
@@ -228,7 +228,7 @@ const PaymentReceipt = ({paymentID}) => {
 				</Grid>
 				<Grid item>
 					<Typography align="left" variant="h5">
-						Thank you for your payment, {parent.user.firstName}
+						Thank you for your payment, {parent.user.firstName}.
 					</Typography>
 				</Grid>
 				<Grid className="receipt-info" item xs={12}>
@@ -297,7 +297,7 @@ const PaymentReceipt = ({paymentID}) => {
 				<Grid className="receipt-details" item xs={12}>
 					<Grid alignItems="flex-end" container direction="column">
 						{payment.discountTotal >= 0 && (
-							<Grid item style={{width: "100%"}} xs={3}>
+							<Grid item style={{ width: "100%" }} xs={3}>
 								<Grid container direction="row">
 									<Grid item xs={7}>
 										<Typography align="right">Discount Amount</Typography>
@@ -311,7 +311,7 @@ const PaymentReceipt = ({paymentID}) => {
 							</Grid>
 						)}
 						{payment.priceAdjustment > 0 && (
-							<Grid item style={{width: "100%"}} xs={3}>
+							<Grid item style={{ width: "100%" }} xs={3}>
 								<Grid container direction="row">
 									<Grid item xs={7}>
 										<Typography align="right" variant="p">
@@ -326,7 +326,7 @@ const PaymentReceipt = ({paymentID}) => {
 								</Grid>
 							</Grid>
 						)}
-						<Grid item style={{width: "100%"}} xs={3}>
+						<Grid item style={{ width: "100%" }} xs={3}>
 							<Grid container direction="row">
 								<Grid item xs={7}>
 									<Typography align="right" variant="h6">
