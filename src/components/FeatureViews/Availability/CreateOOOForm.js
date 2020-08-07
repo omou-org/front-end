@@ -90,7 +90,7 @@ export default function CreateOOOForm() {
 	const AuthUser = useSelector(({ auth }) => auth);
 	const [createOOO, createOOOResults] = useMutation(CREATE_INSTRUCTOR_OOO, {
 		"onCompleted": () => {
-			setSubmitted(!submitted);
+			setSubmitted(true);
 		},
 		"update": (cache, { data }) => {
 

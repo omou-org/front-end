@@ -91,12 +91,8 @@ export const SubmitNotice = forwardRef((props, ref) => {
 		});
 	}
 
-	const disablePrevDates = (startDate) => {
-		const startSeconds = Date.parse(startDate);
-		return (date) => {
-			return Date.parse(date) < startSeconds;
-		}
-	}
+	const checkIfDateBeforeToday = (startDate) => moment().isBefore(startDate)
+
 
 	useImperativeHandle(ref, () => ({
 		handleClearForm() {
@@ -107,13 +103,22 @@ export const SubmitNotice = forwardRef((props, ref) => {
 		}
 	}))
 
-	const startDate = new Date();
+	const currentDate = new Date();
 
 
 	return (<Grid container style={{ paddingLeft: "8rem" }} direction="row" >
 
 		<Grid item xs={11} >
-			<Typography className={classes.boldText} align="left">Instructor: <span className={classes.normalText}>{`${AuthUser.user.firstName} ${AuthUser.user.lastName} `}</span></Typography>
+			<Typography
+				className={classes.boldText}
+				align="left"
+			>
+				Instructor:
+			<span className={classes.normalText}
+				>
+					{`${AuthUser.user.firstName} ${AuthUser.user.lastName} `}
+				</span>
+			</Typography>
 
 		</Grid>
 
@@ -189,7 +194,7 @@ export const SubmitNotice = forwardRef((props, ref) => {
 				editableDateInputs={true}
 				onChange={handleDateRangeChange}
 				minDate={moment().toDate()}
-				shouldDisableDate={disablePrevDates(startDate)}
+				shouldDisableDate={checkIfDateBeforeToday(currentDate)}
 				moveRangeOnFirstSelection={false}
 				ranges={state}
 			/>

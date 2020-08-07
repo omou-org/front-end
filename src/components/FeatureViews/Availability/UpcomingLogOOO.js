@@ -44,7 +44,7 @@ export const UpcomingOOO = () => {
 
 
 
-    const currentUpcoming = data.instructorOoo.filter((event) => (
+    const LogOfCurrentUpcomingInstructorOOO = data.instructorOoo.filter((event) => (
         moment(event.endDatetime).isSameOrAfter(currentDate, "day")
     ))
 
@@ -56,7 +56,7 @@ export const UpcomingOOO = () => {
             </Grid>
             <Grid item xs={12}>
                 <List className={classes.root}>
-                    {currentUpcoming.map(({ description, startDatetime, endDatetime }) =>
+                    {LogOfCurrentUpcomingInstructorOOO.map(({ description, startDatetime, endDatetime }) =>
                         <ListItem container>
                             <ListItemText primary={description} secondary={moment(startDatetime).format("L") + " - " + moment(endDatetime).format("L")} />
                         </ListItem>
