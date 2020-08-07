@@ -85,7 +85,9 @@ export default function CourseRegistrationReceipt({formData, format}) {
 					format="MM/D/YYYY"
 					date={startDate}
 				/> - <Moment format="MM/D/YYYY" date={endDate}/> <br/>
-				<Moment format="hh:mm" date={startTime}/> - <Moment format="hh:mm" date={endTime}/>
+				<Moment format="h:mm" date={startTime} parse="hh:mm"/>
+				{" - "}
+				<Moment format="h:mm" date={endTime} parse="hh:mm"/>
 			</Typography> <br/>
 			<Typography align="left" variant="subtitle2">Instructor</Typography>
 
