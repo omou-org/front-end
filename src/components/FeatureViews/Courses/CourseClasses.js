@@ -57,7 +57,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+export const GET_ANNOUNCEMENTS = gql`query getAnnouncement($id: ID!) {
+  announcements(courseId: $id) {
+    subject
+    id
+    body
+    createdAt
+    poster {
+      firstName
+      lastName
+    }
+  }
+}
+`;
+
+
 const baseTheme = createMuiTheme();
+
 
 const CourseClasses = () => {
   const id = useParams();
@@ -126,16 +142,6 @@ const CourseClasses = () => {
           id
         }
       }
-      announcements(courseId: $id) {
-        subject
-        id
-        body
-        createdAt
-        poster {
-          firstName
-          lastName
-        }
-      }
       accountSearch(query: $email) {
         total
         results {
@@ -163,15 +169,24 @@ const CourseClasses = () => {
     }
   `;
 
-  const { data, loading, error, } = useQuery(GET_CLASSES, {
+  const { data, loading, error, client } = useQuery(GET_CLASSES, {
     variables: {
       id: id.id,
       email: email,
     },
   });
+
+  const getAnnouncements = useQuery(GET_ANNOUNCEMENTS, {
+    variables: {
+      id: id.id
+    }
+  })
   
   if (loading) return <Loading />;
+  if (getAnnouncements.loading) return <Loading />;
   if (error) return console.error(error.message);
+  if (getAnnouncements.error) return console.error(getAnnouncements.error.message);
+  console.log(getAnnouncements.data)
 
   const {
     academicLevel,
@@ -207,6 +222,8 @@ const CourseClasses = () => {
       return true;
     }
   };
+
+  console.log(getAnnouncements);
 
   // get the parent, then get the student list, then request enrollment and filter by student ids
 
@@ -359,7 +376,7 @@ const CourseClasses = () => {
                 </TabPanel>
                 <TabPanel index={1} value={index}>
                   <Announcements
-                    announcementsData={data.announcements}
+                    announcementsData={getAnnouncements.data.announcements}
                     loggedInUser={data.accountSearch}
                     loggedInUserAccountType={accountType}
                   />

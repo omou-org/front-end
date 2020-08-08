@@ -17,6 +17,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import gql from "graphql-tag";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { omouBlue } from "../../../theme/muiTheme";
+import { GET_ANNOUNCEMENTS } from "./CourseClasses"
 
 const useStyles = makeStyles((theme) => ({
   rootContainer: {
@@ -93,6 +94,39 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
+const CREATE_ANNOUNCEMENTS = gql`
+mutation CreateAnnouncement(
+  $subject: String!
+  $body: String!
+  $courseId: ID!
+  $userId: ID!
+  $shouldEmail: Boolean
+  $id: ID
+) {
+  __typename
+  createAnnouncement(
+    body: $body
+    course: $courseId
+    subject: $subject
+    user: $userId
+    shouldEmail: $shouldEmail
+    id: $id
+  ) {
+    announcement {
+      subject
+      id
+      body
+      createdAt
+      poster {
+        firstName
+        lastName
+      }
+    }
+  }
+}
+`;
+
 const NewAnnouncementsModal = ({
   handleClose,
   open,
@@ -110,83 +144,8 @@ const NewAnnouncementsModal = ({
   const courseId = useParams();
   const user_id = userId.results[0].user.id;
 
-  const GET_ANNOUNCEMENTS = gql`query getAnnouncement($id: ID!) {
-    announcements(courseId: $id) {
-      subject
-      id
-      body
-      createdAt
-      poster {
-        firstName
-        lastName
-      }
-    }
-  }
-  `
+  // Move announcemenet query variable out of this component outside of this component
 
-  const CREATE_ANNOUNCEMENTS = gql`
-    mutation CreateAnnouncement(
-      $subject: String!
-      $body: String!
-      $courseId: ID!
-      $userId: ID!
-      $shouldEmail: Boolean
-    ) {
-      __typename
-      createAnnouncement(
-        body: $body
-        course: $courseId
-        subject: $subject
-        user: $userId
-        shouldEmail: $shouldEmail
-      ) {
-        announcement {
-          body
-          id
-          course {
-            courseId
-          }
-          subject
-          poster {
-            id
-          }
-        }
-      }
-    }
-  `;
-
-  const EDIT_ANNOUNCEMENTS = gql`
-    mutation CreateAnnouncement(
-      $subject: String!
-      $body: String!
-      $courseId: ID!
-      $id: ID!
-      $userId: ID!
-      $shouldEmail: Boolean
-    ) {
-      __typename
-      createAnnouncement(
-        body: $body
-        course: $courseId
-        subject: $subject
-        id: $id
-        user: $userId
-        shouldEmail: $shouldEmail
-      ) {
-        announcement {
-          body
-          id
-          course {
-            courseId
-          }
-          subject
-          poster {
-            id
-          }
-        }
-      }
-    }
-  `;
 
   const [createAnnouncement, createAnnouncementResult] = useMutation(
     CREATE_ANNOUNCEMENTS,
@@ -194,7 +153,6 @@ const NewAnnouncementsModal = ({
       onCompleted: () => handleClose(false),
       error: (err) => console.error(err),
       update: (cache, { data }) => {
-        console.log(cache)
         const [newAnnouncement] = Object.values(data.createAnnouncement);
         const cachedAnnouncement = cache.readQuery({
           query: GET_ANNOUNCEMENTS,
@@ -207,6 +165,7 @@ const NewAnnouncementsModal = ({
         } else {
           updatedAnnouncements[matchingIndex] = newAnnouncement;
         };
+        console.log(updatedAnnouncements)
         cache.writeQuery({
           data: {
             ["announcements"]: updatedAnnouncements,
@@ -215,14 +174,7 @@ const NewAnnouncementsModal = ({
           variables: {id: courseId.id}
         });
       },
-    }
-  );
 
-  const [editAnnouncement, editAnnouncementResult] = useMutation(
-    EDIT_ANNOUNCEMENTS,
-    {
-      onCompleted: () => handleClose(false),
-      error: (err) => console.error(err),
     }
   );
 
@@ -241,28 +193,16 @@ const NewAnnouncementsModal = ({
 
   const handlePostForm = async (event) => {
     event.preventDefault();
-    if (buttonState === "post") {
-      const postAnnouncement = await createAnnouncement({
-        variables: {
-          subject: announcementSubject,
-          body: announcementBody,
-          userId: user_id,
-          courseId: courseId.id,
-          shouldEmail: sendEmailCheckbox,
-        },
-      });
-    } else {
-      const editCurrentAnnouncement = await editAnnouncement({
-        variables: {
-          subject: announcementSubject,
-          body: announcementBody,
-          id: id,
-          userId: user_id,
-          courseId: courseId.id,
-          shouldEmail: sendEmailCheckbox,
-        },
-      });
-    }
+    const editCurrentAnnouncement = await createAnnouncement({
+      variables: {
+        subject: announcementSubject,
+        body: announcementBody,
+        id: id,
+        userId: user_id,
+        courseId: courseId.id,
+        shouldEmail: sendEmailCheckbox,
+      },
+    });
   };
 
   return (
