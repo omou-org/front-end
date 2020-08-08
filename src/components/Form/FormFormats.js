@@ -1,4 +1,3 @@
-/* eslint-disable array-element-newline */
 import * as types from "actions/actionTypes";
 import {createTutoringDetails, submitRegistration} from
     "../OmouComponents/RegistrationUtils";
@@ -211,19 +210,19 @@ const PARENT_FIELDS = {
             ...selectField([
                 {
                     "label": "Mother",
-                    "value": "mother",
+                    "value": "MOTHER",
                 },
                 {
                     "label": "Father",
-                    "value": "father",
+                    "value": "FATHER",
                 },
                 {
                     "label": "Guardian",
-                    "value": "guardian",
+                    "value": "GUARDIAN",
                 },
                 {
                     "label": "Other",
-                    "value": "other",
+                    "value": "OTHER",
                 },
             ]),
             "required": true,
@@ -625,7 +624,7 @@ export default {
                 $firstName: String!, $lastName: String!, $email: String!,
                 $password: String, $phoneNumber: String, $address: String,
                 $birthDate: Date, $city: String, $state: String, $id: ID,
-                $zipcode: String, $relationship: String, $gender: GenderEnum
+                $zipcode: String, $relationship: RelationshipEnum, $gender: GenderEnum
             ) {
                 createParent(
                     user: {

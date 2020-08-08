@@ -1,8 +1,8 @@
+import {capitalizeString} from "utils";
+import moment from "moment";
+import PropTypes from "prop-types";
 import React from "react";
-import moment from "moment"
-
 import Typography from "@material-ui/core/Typography";
-
 
 const toDisplayValue = (value) => {
     if (value === null || typeof value === "undefined") {
@@ -21,51 +21,72 @@ const toDisplayValue = (value) => {
         return value.label;
     }
 
-    if (Array.isArray(value)) {
-        console.log(value.reduce((valueA, valueB) => (valueA.label + ", " + valueB.label)), value);
-        if (value.length > 1) {
-            return value.reduce((valueA, valueB) => (valueA.label + ", " + valueB.label));
-        } else {
-            return value.label;
-        }
+    // all caps string with underscores, i.e. a constant, but not a state
+    if (typeof value === "string" && (/^(?:[A-Z]|_){3,}$/ug).test(value)) {
+        return capitalizeString(value.toLowerCase()).replace("_", " ");
     }
 
+    if (Array.isArray(value)) {
+        if (value.length > 1) {
+            return value
+                .reduce((valueA, valueB) => `${valueA.label}, ${valueB.label}`);
+        }
+        return value.label;
+    }
 
-    return value;
+    return value.toString();
 };
 
-const FormReceipt = ({formData, format}) => (
-    <div style={{
-        "margin": "2%",
-        "padding": "5px",
-    }}>
-        <Typography align="left" style={{"fontSize": "24px"}}>
-            You've successfully submitted!
-        </Typography>
-        <div className="confirmation-copy">
-            <Typography align="left" className="title">
-                Confirmation
+const FormReceipt = ({formData, format}) => {
+    console.log(formData);
+    return (
+        <div style={{
+            "margin": "2%",
+            "padding": "5px",
+        }}>
+            <Typography align="left" style={{"fontSize": "24px"}}>
+                You've successfully submitted!
             </Typography>
-            {Object.entries(formData).map(([sectionLabel, fields], sectionIndex) =>
-                format[sectionIndex] && (
-                <div key={sectionLabel}>
-                    <Typography align="left" className="section-title">
-                        {format[sectionIndex].label}
-                    </Typography>
-                    {Object.entries(fields).map(([label, value], fieldIndex) => (
-                        <div key={label}>
-                            <Typography align="left" className="field-title">
-                                {format[sectionIndex].fields[fieldIndex].label}
-                            </Typography>
-                            <Typography align="left" className="field-value">
-                                {toDisplayValue(value)}
-                            </Typography>
-                        </div>
-                    ))}
-                </div>
-            ))}
+            <div className="confirmation-copy">
+                <Typography align="left" className="title">
+                    Confirmation
+                </Typography>
+                {format.map((section) => (
+                    <div key={section.name}>
+                        <Typography align="left" className="section-title">
+                            {section.label}
+                        </Typography>
+                        {section.fields.map((field) => (
+                            <div key={field.name}>
+                                <Typography align="left"
+                                    className="field-title">
+                                    {field.label}
+                                </Typography>
+                                <Typography align="left"
+                                    className="field-value">
+                                    {toDisplayValue(
+                                        formData[section.name][field.name],
+                                    )}
+                                </Typography>
+                            </div>
+                        ))}
+                    </div>
+                ))}
+            </div>
         </div>
-    </div>
-);
+    );
+};
+
+FormReceipt.propTypes = {
+    "formData": PropTypes.objectOf(PropTypes.object),
+    "format": PropTypes.arrayOf(PropTypes.shape({
+        "fields": PropTypes.arrayOf(PropTypes.shape({
+            "label": PropTypes.string,
+            "name": PropTypes.string,
+        })),
+        "label": PropTypes.string,
+        "name": PropTypes.string,
+    })),
+};
 
 export default FormReceipt;

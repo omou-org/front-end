@@ -91,6 +91,7 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
     }, []);
 
     const submit = useCallback(async (formData) => {
+        // console.log(fo)
         const errors = await onSubmit(formData);
         if (!errors) {
             setSubmittedData(formData);
@@ -182,12 +183,11 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
             {showReceipt ?
                 <Receipt formData={submittedData} format={base}/> :
                 <ReactForm initialValues={initialData} onSubmit={submit}
-                           mutators={{
-                               setHourlyTuition: ([name], state, utils) => {
-                                   utils.changeValue(state, 'hourlyTuition', () => name)
-                               }
-                           }}
-                           render={Render} validate={validate}/>}
+                    mutators={{
+                        setHourlyTuition: ([name], state, utils) => {
+                            utils.changeValue(state, 'hourlyTuition', () => name)
+                        }
+                    }} render={Render} validate={validate} />}
         </div>
     );
 };
