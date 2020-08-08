@@ -441,6 +441,7 @@ export default {
                 "data": Object.values(Object.values(response.data)[0])[0],
             };
         } catch (error) {
+            console.log(error);
             return error;
         }
     },
