@@ -1,6 +1,6 @@
-import React, {Fragment, useCallback, useState} from "react";
-import {useDispatch} from "react-redux";
-import {Link} from "react-router-dom";
+import React, { Fragment, useCallback, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import Button from "@material-ui/core/Button";
@@ -26,11 +26,11 @@ import Typography from "@material-ui/core/Typography";
 
 import "theme/theme.scss";
 import "./registration.scss";
-import {addDashes} from "components/FeatureViews/Accounts/accountUtils";
-import {deleteEnrollment} from "actions/registrationActions";
+import { addDashes } from "components/FeatureViews/Accounts/accountUtils";
+import { deleteEnrollment } from "actions/registrationActions";
 import gql from "graphql-tag";
-import {useQuery} from "@apollo/react-hooks";
-import {fullName} from "../../../utils";
+import { useQuery } from "@apollo/react-hooks";
+import { fullName } from "../../../utils";
 
 export const GET_ENROLLMENT_DETAILS = gql`
 	query EnrollmentDetails($courseId: ID!){
@@ -72,7 +72,7 @@ const TableToolbar = (
     </TableHead>
 );
 
-const RegistrationCourseEnrollments = ({courseID, maxCapacity, courseTitle}) => {
+const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) => {
     const dispatch = useDispatch();
 
     const [expanded, setExpanded] = useState({});
@@ -83,8 +83,8 @@ const RegistrationCourseEnrollments = ({courseID, maxCapacity, courseTitle}) => 
         "open": false,
     });
 
-    const {data, loading, error} = useQuery(GET_ENROLLMENT_DETAILS, {
-        variables: {courseId: courseID}
+    const { data, loading, error } = useQuery(GET_ENROLLMENT_DETAILS, {
+        variables: { courseId: courseID }
     });
 
     // TODO: need to update when Session queries are live
@@ -92,7 +92,7 @@ const RegistrationCourseEnrollments = ({courseID, maxCapacity, courseTitle}) => 
     // const currentMonthSessions = sessionArray(sessions);
     // const upcomingSess = upcomingSession(currentMonthSessions || [], courseID);
 
-    const handleClick = useCallback(({currentTarget}) => {
+    const handleClick = useCallback(({ currentTarget }) => {
         setStudentMenuAnchorEl(currentTarget);
     }, []);
 
@@ -125,7 +125,7 @@ const RegistrationCourseEnrollments = ({courseID, maxCapacity, courseTitle}) => 
     );
 
     if (loading) {
-        return <Loading/>
+        return <Loading />
     }
     if (error) {
         return <Typography>
@@ -133,7 +133,7 @@ const RegistrationCourseEnrollments = ({courseID, maxCapacity, courseTitle}) => 
         </Typography>
     }
 
-    const {enrollments} = data;
+    const { enrollments } = data;
 
     return (
         <>
@@ -144,27 +144,27 @@ const RegistrationCourseEnrollments = ({courseID, maxCapacity, courseTitle}) => 
                     </div>
                 </div>
                 <LinearProgress color="primary"
-                                value={(enrollments.length / maxCapacity) * 100}
-                                valueBuffer={100}
-                                variant="buffer" />
+                    value={(enrollments.length / maxCapacity) * 100}
+                    valueBuffer={100}
+                    variant="buffer" />
             </div>
             <Table>
                 {TableToolbar}
                 <TableBody>
-                    {enrollments.map(({student, id}) => {
-                        const {primaryParent} = student;
+                    {enrollments.map(({ student, id }) => {
+                        const { primaryParent } = student;
                         return (
                             <Fragment key={student.user.id}>
                                 <TableRow>
                                     <TableCell className="bold">
                                         <Link className="no-underline"
-                                              to={`/accounts/student/${student.user.id}`}>
+                                            to={`/accounts/student/${student.user.id}`}>
                                             {fullName(student.user)}
                                         </Link>
                                     </TableCell>
                                     <TableCell>
                                         <Link className="no-underline"
-                                              to={`/accounts/parent/${primaryParent.user.id}`}>
+                                            to={`/accounts/parent/${primaryParent.user.id}`}>
                                             {fullName(primaryParent.user)}
                                         </Link>
                                     </TableCell>
@@ -172,7 +172,7 @@ const RegistrationCourseEnrollments = ({courseID, maxCapacity, courseTitle}) => 
                                         {addDashes(primaryParent.phoneNumber)}
                                     </TableCell>
                                     <TableCell>
-                                        <div style={{"width": "40px"}}>
+                                        <div style={{ "width": "40px" }}>
                                             {/*<SessionPaymentStatusChip className="session-status-chip"*/}
                                             {/*    enrollment={enrollment}*/}
                                             {/*    session={upcomingSess} />*/}
@@ -181,8 +181,8 @@ const RegistrationCourseEnrollments = ({courseID, maxCapacity, courseTitle}) => 
                                     <TableCell>
                                         <div className="actions" key={student.user.id}>
                                             <IconButton component={Link}
-                                                        to={`mailto:${primaryParent.user.email}`}>
-                                                <EmailIcon/>
+                                                to={`mailto:${primaryParent.user.email}`}>
+                                                <EmailIcon />
                                             </IconButton>
                                             <IconButton aria-controls="simple-menu"
                                                 aria-haspopup="true"
@@ -195,8 +195,8 @@ const RegistrationCourseEnrollments = ({courseID, maxCapacity, courseTitle}) => 
                                                 onClose={handleClose}
                                                 open={studentMenuAnchorEl !== null}>
                                                 <MenuItem component={Link}
-                                                          onClick={handleClose}
-                                                          to={`/accounts/student/${student.user.id}/${courseID}`}>
+                                                    onClick={handleClose}
+                                                    to={`/accounts/student/${student.user.id}/${courseID}`}>
                                                     View Enrollment
                                                 </MenuItem>
                                                 <MenuItem onClick={handleUnenroll(id)}>
@@ -253,9 +253,9 @@ const RegistrationCourseEnrollments = ({courseID, maxCapacity, courseTitle}) => 
                 <Divider />
                 <DialogContent>
                     <DialogContentText>
-                        You are about to unenroll in <b>{courseTitle}</b> for
+                        You are about to unenroll in <b>{courseTitle}</b> for{" "}
                         <b>
-                            {unenroll.enrollment && fullName(enrollments.find(({id}) => id == unenroll.enrollment).student.user)}
+                            {unenroll.enrollment && fullName(enrollments.find(({ id }) => id == unenroll.enrollment).student.user)}
                         </b>
                         . Performing this action will credit the remaining enrollment
                         balance back to the parent's account balance. Are you sure you want
