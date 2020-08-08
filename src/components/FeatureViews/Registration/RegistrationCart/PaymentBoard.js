@@ -19,7 +19,6 @@ import {GET_COURSES} from "../RegistrationLanding";
 import {GET_STUDENTS_AND_ENROLLMENTS} from "../CourseList";
 import {GET_REGISTRATION_CART} from "../SelectParentDialog";
 import {CREATE_REGISTRATION_CART} from "./RegistrationCartContainer";
-import {useDispatch} from "react-redux";
 
 const GET_PRICE_QUOTE = gql`
 	query GetPriceQuote($method: String!, 
@@ -155,8 +154,6 @@ export default function PaymentBoard() {
 			sessions: numSessions,
 			student,
 		}));
-
-	const dispatch = useDispatch();
 
 	const enrollmentResponse = useQuery(GET_PARENT_ENROLLMENTS, {variables: {studentIds: currentParent.studentList}})
 	const [createEnrollments, createEnrollmentResults] = useMutation(CREATE_ENROLLMENTS, {
@@ -313,7 +310,7 @@ export default function PaymentBoard() {
 		const paymentMethod = paymentMethodState.find(({checked}) => checked)?.value;
 		const {data: {enrollments}} = enrollmentResponse;
 		const isSameEnrollment = ({enrollment, course, student}) =>
-			(`${enrollment.student.user.id}-${enrollment.course.id}` === `${student}-${course}`);
+			(enrollment.student.user.id === student && enrollment.course.id === course);
 
 		const enrollmentsToCreate = classRegistrations
 			.filter(({course, student}) =>
@@ -371,7 +368,7 @@ export default function PaymentBoard() {
 
 	if (error || enrollmentResponse.error) {
 		console.error(error.message, enrollmentResponse.error.message);
-		return <div>There has been an error! : {error.message} | {enrollmentResponse.error.message}</div>
+		return <div>There has been an error! : {error.message} {enrollmentResponse.error.message}</div>
 	}
 
 	const priceQuote = data?.priceQuote || {

@@ -88,7 +88,7 @@ export default function RegistrationCartContainer() {
 		currentParent.studentList;
 	// create list of courses to fetch
 	const courseIds = Object.values(registrationCartState).filter(reg => reg).length > 0 &&
-		[].concat.apply([], Object.values(registrationCartState))
+		Object.values(registrationCartState).flat()
 			.filter(registration => registration)
 			.map(({course}) => course.id);
 
@@ -181,8 +181,7 @@ export default function RegistrationCartContainer() {
 	}
 
 	if (loading || !data) return <Loading small/>;
-	if (error) return <div>There's been an error:
-		{error.message}</div>
+	if (error) return <div>There's been an error: {error.message}</div>
 
 	const studentData = data.userInfos;
 

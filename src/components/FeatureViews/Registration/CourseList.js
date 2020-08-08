@@ -120,7 +120,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
         setOpen(false);
     }
 
-    const disableQuickRegister = ({course, enrolledCourseIds, registrations, studentList}) => {
+    const shouldDisableQuickRegister = ({course, enrolledCourseIds, registrations, studentList}) => {
         return ((course.maxCapacity <= course.enrollmentSet.length) &&
             (previouslyEnrolled(course.id, enrolledCourseIds, registrations, studentList)))
     }
@@ -184,7 +184,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                 </span>
                                 {(currentParent || parentIsLoggedIn || updatedParent) && (
                                     <Button
-                                        disabled={disableQuickRegister({
+                                        disabled={shouldDisableQuickRegister({
                                             course, enrolledCourseIds,
                                             registrations, studentList
                                         })}

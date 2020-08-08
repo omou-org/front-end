@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import PropTypes from "prop-types";
 
@@ -50,6 +50,16 @@ const SelectParentDialog = ({onClose, open}) => {
 	const [searching, setSearching] = useState(false);
 	const {currentParent, ...registrationCartState} = useSelector((state) => state.Registration);
 	const [getSavedParentCart, getSavedParentCartResult] = useLazyQuery(GET_REGISTRATION_CART, {
+		onCompleted: (data) => {
+			const savedParentCart = data.registrationCart.registrationPreferences;
+			if (savedParentCart !== "") {
+				const studentRegistration = JSON.parse(getSavedParentCartResult.data?.registrationCart?.registrationPreferences);
+				dispatch({
+					type: types.INIT_COURSE_REGISTRATION,
+					payload: studentRegistration,
+				});
+			}
+		},
 		skip: !currentParent,
 	});
 
@@ -57,21 +67,6 @@ const SelectParentDialog = ({onClose, open}) => {
 		getParents,
 		{loading, data}
 	] = useLazyQuery(GET_PARENTS_QUERY);
-
-	useEffect(() => {
-		if (!getSavedParentCartResult?.loading && getSavedParentCartResult?.called) {
-			if (getSavedParentCartResult.data) {
-				const savedParentCart = getSavedParentCartResult.data.registrationCart.registrationPreferences;
-				if (savedParentCart !== "") {
-					const studentRegistration = JSON.parse(getSavedParentCartResult.data?.registrationCart?.registrationPreferences);
-					dispatch({
-						type: types.INIT_COURSE_REGISTRATION,
-						payload: studentRegistration,
-					})
-				}
-			}
-		}
-	}, [getSavedParentCartResult.loading, getSavedParentCartResult.called])
 
 	const handleClose = useCallback(() => {
 		// if there's something in the input

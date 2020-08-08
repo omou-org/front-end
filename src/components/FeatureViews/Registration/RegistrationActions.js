@@ -81,9 +81,8 @@ const RegistrationActions = () => {
 		submitStatus = {},
 		...registrationCartState
 	} = registrationState;
-	const numberOfRegistrationsInCart = Object.values(registrationCartState).length > 0 ?
-		Object.values(registrationState).reduce((accumulator, currentStudent) => (accumulator + currentStudent?.length),
-			0) : 0;
+	const numberOfRegistrationsInCart = Object.values(registrationState)
+		.reduce((accumulator, currentStudent) => (accumulator + currentStudent?.length), 0);
 
 	const toShoppingCart = () => {
 		history.push("/registration/cart");
