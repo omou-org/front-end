@@ -36,7 +36,7 @@ query GetParents($query: String!) {
 }
 `;
 
-const GET_REGISTRATION_CART = gql`
+export const GET_REGISTRATION_CART = gql`
 query GetRegisteringCart($parent: ID!) {
   registrationCart(parentId: $parent) {
     registrationPreferences
@@ -61,11 +61,14 @@ const SelectParentDialog = ({onClose, open}) => {
 	useEffect(() => {
 		if (!getSavedParentCartResult?.loading && getSavedParentCartResult?.called) {
 			if (getSavedParentCartResult.data) {
-				const studentRegistration = JSON.parse(getSavedParentCartResult.data?.registrationCart?.registrationPreferences);
-				dispatch({
-					type: types.INIT_COURSE_REGISTRATION,
-					payload: studentRegistration,
-				})
+				const savedParentCart = getSavedParentCartResult.data.registrationCart.registrationPreferences;
+				if (savedParentCart !== "") {
+					const studentRegistration = JSON.parse(getSavedParentCartResult.data?.registrationCart?.registrationPreferences);
+					dispatch({
+						type: types.INIT_COURSE_REGISTRATION,
+						payload: studentRegistration,
+					})
+				}
 			}
 		}
 	}, [getSavedParentCartResult.loading, getSavedParentCartResult.called])

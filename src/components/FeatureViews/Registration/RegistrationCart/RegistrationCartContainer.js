@@ -25,6 +25,7 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import {Link} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import * as types from "../../../../actions/actionTypes";
+import {GET_REGISTRATION_CART} from "../SelectParentDialog";
 
 const GET_COURSES_AND_STUDENTS_TO_REGISTER = gql`
 	query GetCoursesToRegister($courseIds: [ID]!, $userIds: [ID]!) {
@@ -62,7 +63,7 @@ const GET_COURSES_AND_STUDENTS_TO_REGISTER = gql`
 	}
 `;
 
-const CREATE_REGISTRATION_CART = gql`
+export const CREATE_REGISTRATION_CART = gql`
 mutation CreateRegisteringCart($parent: ID!, $registrationPreferences:String) {
   createRegistrationCart(parent: $parent, 
     registrationPreferences: $registrationPreferences) {
@@ -100,6 +101,13 @@ export default function RegistrationCartContainer() {
 		variables: {parent: currentParent?.user.id},
 		onCompleted: () => {
 			setParentConfirmation(true);
+		},
+		update: (cache, {data}) => {
+			cache.writeQuery({
+				query: GET_REGISTRATION_CART,
+				variables: {parent: currentParent.user.id},
+				data: {registrationCart: data.createRegistrationCart.registrationCart}
+			});
 		},
 		onError: (error) => console.error(error.message),
 	});

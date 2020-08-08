@@ -17,6 +17,9 @@ import {useHistory} from "react-router-dom"
 import {GET_PAYMENT} from "../PaymentReceipt";
 import {GET_COURSES} from "../RegistrationLanding";
 import {GET_STUDENTS_AND_ENROLLMENTS} from "../CourseList";
+import {GET_REGISTRATION_CART} from "../SelectParentDialog";
+import {CREATE_REGISTRATION_CART} from "./RegistrationCartContainer";
+import {useDispatch} from "react-redux";
 
 const GET_PRICE_QUOTE = gql`
 	query GetPriceQuote($method: String!, 
@@ -153,6 +156,8 @@ export default function PaymentBoard() {
 			student,
 		}));
 
+	const dispatch = useDispatch();
+
 	const enrollmentResponse = useQuery(GET_PARENT_ENROLLMENTS, {variables: {studentIds: currentParent.studentList}})
 	const [createEnrollments, createEnrollmentResults] = useMutation(CREATE_ENROLLMENTS, {
 		update: (cache, {data}) => {
@@ -234,6 +239,17 @@ export default function PaymentBoard() {
 				variables: {paymentId: data["payment"].id}
 			})
 		}
+	});
+	const [createRegistrationCart, createRegistrationCartResponse] = useMutation(CREATE_REGISTRATION_CART, {
+		variables: {parent: currentParent?.user.id},
+		update: (cache, {data}) => {
+			cache.writeQuery({
+				query: GET_REGISTRATION_CART,
+				variables: {parent: currentParent.user.id},
+				data: {registrationCart: data.createRegistrationCart.registrationCart}
+			});
+		},
+		onError: (error) => console.error(error.message),
 	});
 	const history = useHistory();
 
@@ -339,6 +355,14 @@ export default function PaymentBoard() {
 				disabledDiscounts: [],
 				priceAdjustment: Number(priceAdjustmentValue),
 				registrations: registrations,
+			}
+		});
+
+		//clean out parent registration cart
+		await createRegistrationCart({
+			variables: {
+				parent: currentParent.user.id,
+				registrationPreferences: "",
 			}
 		});
 
