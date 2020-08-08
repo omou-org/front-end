@@ -97,7 +97,7 @@ const ActionLog = () => {
     const [openCalendar, setOpenCalendar] = useState(false);
     const [state, setState] = useState([
         {
-            startDate: moment().subtract(1, "month").toDate(),
+            startDate: moment().toDate(),
             endDate: moment().toDate(),
             key: 'selection'
         }
@@ -181,6 +181,8 @@ const ActionLog = () => {
         const selectedUser = data.admins.find(user => (user.user.id == actionId));
         return (<div>{fullName(selectedUser.user)}</div>)
     }
+
+    console.log(state);
     
     return (
         <>
@@ -218,7 +220,7 @@ const ActionLog = () => {
                                 <Grid>
                                     From <TextField
                                         variant="outlined"
-                                        value={startDate ? moment(startDate).format("MM/DD/YYYY") : " "}
+                                        value={startDate ? moment(startDate).format("MM/DD/YYYY") : moment(state[0].startDate.toISOString()).format("MM/DD/YYYY")}
                                         onClick={() => setOpenCalendar(true)}
                                         inputProps={{
                                             style: {
@@ -229,7 +231,7 @@ const ActionLog = () => {
                                 </Grid>
                                 <Grid>
                                     To <TextField
-                                        value={endDate ? moment(endDate).format("MM/DD/YYYY") : " "}
+                                        value={endDate ? moment(endDate).format("MM/DD/YYYY") : moment(state[0].endDate.toISOString()).format("MM/DD/YYYY")}
                                         variant="outlined"
                                         onClick={() => setOpenCalendar(true)}
                                         inputProps={{
@@ -405,9 +407,8 @@ const ActionLog = () => {
                             </Grid>
                         </TableCell>
                         <TableCell>
-                            <Grid>
+                            <Grid style={{paddingBottom:35}}>
                                 Details
-                                    <br />
                             </Grid>
                         </TableCell>
                     </TableRow>

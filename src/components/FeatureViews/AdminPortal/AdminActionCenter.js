@@ -94,6 +94,18 @@ const AdminActionCenter = () => {
 					Manage Course
 				</Button>
 			</Grid>
+			<Grid item>
+				<Button
+					aria-controls="simple-menu"
+					aria-haspopup="true"
+					className={`button ${tabState.course && "active"}`}
+					component={NavLink} 
+					to="/adminportal/actionlog"
+				>
+					<CourseIcon className="admin-action-icon" />
+					Action Log
+				</Button>
+			</Grid>
 			{/*<Grid item>*/}
 			{/*	<Button*/}
 			{/*		aria-controls="simple-menu"*/}
@@ -115,7 +127,7 @@ const AdminActionCenter = () => {
 			{/*		<DiscountIcon className="admin-action-icon"/>*/}
 			{/*		Manage Discounts*/}
 			{/*	</Button>*/}
-			{/*</Grid>*/}
+			{/*</Grid>
 			<StyledMenu
 				anchorEl={userAnchor}
 				keepMounted
