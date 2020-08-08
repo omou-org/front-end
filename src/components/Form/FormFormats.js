@@ -341,6 +341,7 @@ const STUDENT_INFO_FIELDS = {
         {
             "name": "current_grade",
             ...stringField("Current Grade in Class"),
+            "validator": Yup.string().matches(/([ABCDFabcdf][+-]?)?$/u),
         },
         {
             "name": "topic",
