@@ -127,13 +127,13 @@ const CourseListOptions = ({
   const handleReadMoreClick = () => setReadMore(true);
 
   const sessionNotesRender = data.sessionNotes?.sort((firstVal, secondVal) => {
-    if(firstVal.updatedAt > secondVal.updatedAt) {
+    if (firstVal.updatedAt > secondVal.updatedAt) {
       return -1;
     }
-    if(firstVal.updatedAt < secondVal.updatedAt) {
+    if (firstVal.updatedAt < secondVal.updatedAt) {
       return 1;
     }
-    return 0
+    return 0;
   });
 
   return (
@@ -204,7 +204,7 @@ const CourseListOptions = ({
                             data-id={id}
                           >
                             <Create style={{ color: "#43B5D9" }} />
-                          </Button>{" "}
+                          </Button>
                         </Grid>
                       ) : null}
                       <Grid item xs={12}>
@@ -215,8 +215,9 @@ const CourseListOptions = ({
                               className={classes.anchorStyle}
                               onClick={handleReadMoreClick}
                             >
-                              {" "}
-                              Read More
+                              <span style={{ paddingRight: theme.spacing(1) }}>
+                                Read More
+                              </span>
                             </a>
                           </Typography>
                         ) : (
@@ -232,7 +233,10 @@ const CourseListOptions = ({
                       </Grid>
                       <Grid item xs={12} style={{ marginTop: "1.5em" }}>
                         <Typography variant="subtitle2" align="left">
-                          Posted by:{" "}
+                          Posted by:
+                          <span
+                            style={{ paddingRight: theme.spacing(1) }}
+                          ></span>
                           <span
                             style={{
                               color: "#43B5D9",
@@ -241,11 +245,11 @@ const CourseListOptions = ({
                             }}
                           >
                             {fullName(poster)}
-                          </span>{" "}
-                          •{" "}
+                          </span>
+                          •
                           <span style={{ padding: theme.spacing(1) }}>
-                            {date}{" "}
-                            <span style={{ padding: theme.spacing(1) }}>•</span>{" "}
+                            {date}
+                            <span style={{ padding: theme.spacing(1) }}>•</span>
                             {time}
                           </span>
                         </Typography>

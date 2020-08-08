@@ -86,7 +86,7 @@ const CourseClasses = () => {
     { label: "Sessions" },
   ];
 
-  const { email, accountType, user } = useSelector(({ auth }) => auth) || [];
+  const { email, accountType } = useSelector(({ auth }) => auth) || [];
 
   const queryParser = (userType) =>
     ({
@@ -173,7 +173,7 @@ const CourseClasses = () => {
     }
   `;
 
-  const { data, loading, error, client } = useQuery(GET_CLASSES, {
+  const { data, loading, error } = useQuery(GET_CLASSES, {
     variables: {
       id: id.id,
       email: email,
@@ -191,7 +191,6 @@ const CourseClasses = () => {
   if (error) return console.error(error.message);
   if (getAnnouncements.error)
     return console.error(getAnnouncements.error.message);
-  console.log(getAnnouncements.data);
 
   const {
     academicLevel,
@@ -227,10 +226,6 @@ const CourseClasses = () => {
       return true;
     }
   };
-
-  console.log(getAnnouncements);
-
-  // get the parent, then get the student list, then request enrollment and filter by student ids
 
   return (
     <Grid item xs={12}>
