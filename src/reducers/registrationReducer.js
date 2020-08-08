@@ -1,13 +1,8 @@
 import initialState from "./initialState";
 import * as actions from "./../actions/actionTypes";
 import {dateParser, weeklySessionsParser} from "components/Form/FormUtils";
-import {
-  closeRegistrationCart,
-  loadRegistrationCart,
-  removeRegistration,
-  setParentRegistrationCart,
-  submitRegistration
-} from "../components/OmouComponents/RegistrationUtils";
+import {mapRegistrationInfo, setParentRegistrationCart,} from "../components/OmouComponents/RegistrationUtils";
+import {arraysMatch} from "../utils";
 
 export default function registration(
     state = initialState.RegistrationForms,
@@ -84,7 +79,23 @@ export default function registration(
     case actions.INIT_COURSE_REGISTRATION:
       return initializeRegistration(newState, payload);
     case actions.DELETE_COURSE_REGISTRATION:
-      return removeRegistration(payload.studentId, payload.courseId);
+      const {studentId, courseId} = payload
+      const registrationState = JSON.parse(sessionStorage.getItem("registrations"));
+      const indexOfRegistration = registrationState[studentId]
+          .map(({course}) => course)
+          .indexOf(courseId);
+
+      registrationState[studentId].splice(indexOfRegistration, 1);
+
+      sessionStorage.setItem("registrations", JSON.stringify({
+        ...registrationState,
+        [studentId]: registrationState[studentId],
+      }));
+
+      return {
+        ...registrationState,
+        [studentId]: registrationState[studentId],
+      }
     case actions.CLOSE_COURSE_REGISTRATION:
       return closeRegistration(newState);
     case actions.EDIT_COURSE_REGISTRATION:
@@ -234,9 +245,31 @@ const failedSubmit = (state) => ({
   submitStatus: "fail",
 });
 
+const saveRegistration = (student, course, registrationState) => {
+  const newRegistrationInfo = mapRegistrationInfo(student, course);
+  const existingStudentRegistration = registrationState?.[student] || [];
+  const newRegistrationState = {
+    ...registrationState,
+    [student]: [...existingStudentRegistration, newRegistrationInfo],
+  };
+  sessionStorage.setItem("registrations", JSON.stringify(newRegistrationState));
+  return newRegistrationState;
+};
+
 const addClassRegistration = ({courseId, studentId}) => {
-  const newRegistrationState = submitRegistration(studentId, courseId);
-  return {...newRegistrationState};
+  const registrationState = JSON.parse(sessionStorage.getItem("registrations"));
+  const existingEnrollmentsByStudents = Object.entries(registrationState)
+      .map(([studentID, studentRegistrations]) =>
+          Array.isArray(studentRegistrations) ? studentRegistrations
+              .map(registration => [studentID, registration.course.id]) : []
+      );
+  const isEnrolled = existingEnrollmentsByStudents.map(studentEnrollments =>
+      studentEnrollments.filter((enrollment) => arraysMatch(enrollment, [studentId, courseId])))
+      .some(studentEnrollments => studentEnrollments.length > 0);
+  if (!isEnrolled) {
+    return {...saveRegistration(studentId, courseId, registrationState)}
+  }
+  return {...registrationState};
 };
 
 export const academicLevelParse = {
@@ -474,7 +507,15 @@ const dateToTimeString = (date) =>
     }`;
 
 const initializeRegistration = (prevState, payload) => {
-  return {...loadRegistrationCart(payload)};
+  const registrationState = JSON.parse(sessionStorage.getItem("registrations"));
+  sessionStorage.setItem("registrations", JSON.stringify({
+    ...registrationState,
+    ...payload,
+  }));
+  return {
+    ...registrationState,
+    ...payload,
+  }
 };
 
 const editCourseRegistration = (prevState, course) => {
@@ -583,6 +624,6 @@ const editCourseRegistration = (prevState, course) => {
 };
 
 const closeRegistration = () => {
-  closeRegistrationCart();
+  sessionStorage.setItem("registrations", "{}");
   return {currentParent: null};
 };

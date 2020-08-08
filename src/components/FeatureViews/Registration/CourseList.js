@@ -130,8 +130,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
             {
                 filteredCourses
                     .filter(({courseType, endDate, id}) => ((courseType === "CLASS") &&
-                        (moment().diff(moment(endDate), 'days') < 0)) &&
-                        (!previouslyEnrolled(id, enrolledCourseIds, registrations, studentList)))
+                        (moment().diff(moment(endDate), 'days') < 0)))
                     .map((course) => (
                         <TableRow
                             key={course.id}

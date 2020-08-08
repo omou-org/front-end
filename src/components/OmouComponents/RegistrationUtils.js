@@ -22,7 +22,7 @@ export const mapRegistrationInfo = (student, course) => ({
 	status: "REGISTERING"
 });
 
-export const saveRegistration = (student, course, registrationState) => {
+const saveRegistration = (student, course, registrationState) => {
 	const newRegistrationInfo = mapRegistrationInfo(student, course);
 	const existingStudentRegistration = registrationState?.[student] || [];
 	const newRegistrationState = {
