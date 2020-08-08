@@ -15,7 +15,7 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import gql from "graphql-tag";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import { omouBlue } from "../../../theme/muiTheme";
 import { GET_ANNOUNCEMENTS } from "./CourseClasses";
 

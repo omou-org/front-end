@@ -1,11 +1,8 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useState } from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import { ThemeProvider } from "@material-ui/styles";
-import { createMuiTheme } from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import InputLabel from "@material-ui/core/InputLabel";
 import Chip from "@material-ui/core/Chip";
 import InputBase from "@material-ui/core/InputBase";
 import FormControl from "@material-ui/core/FormControl";
@@ -128,7 +125,6 @@ const useStyles = makeStyles((theme) => ({
 
 const CourseDisplayCard = ({
   title,
-  day,
   endDate,
   endTime,
   startTime,

@@ -24,7 +24,7 @@ import Announcements from "./Announcements";
 import StudentEnrollment from "./StudentEnrollment";
 import CourseSessions from "./CourseSessions";
 import { useSelector } from "react-redux";
-import { gradeLvl, USER_TYPES } from "../../../utils";
+import { gradeLvl } from "../../../utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {

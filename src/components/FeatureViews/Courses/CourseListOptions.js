@@ -126,6 +126,16 @@ const CourseListOptions = ({
 
   const handleReadMoreClick = () => setReadMore(true);
 
+  const sessionNotesRender = data.sessionNotes?.sort((firstVal, secondVal) => {
+    if(firstVal.updatedAt > secondVal.updatedAt) {
+      return -1;
+    }
+    if(firstVal.updatedAt < secondVal.updatedAt) {
+      return 1;
+    }
+    return 0
+  });
+
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -163,11 +173,11 @@ const CourseListOptions = ({
                   </Grid>
                 ) : null}
 
-                {data.sessionNotes.map((note) => {
-                  const { body, createdAt, id, poster, subject } = note;
+                {sessionNotesRender.map((note) => {
+                  const { body, updatedAt, id, poster, subject } = note;
                   const hideString = body.substring(0, 60) + "...";
-                  const date = moment(createdAt).format("MM/DD");
-                  const time = moment(createdAt).format("h:mma");
+                  const date = moment(updatedAt).format("MM/DD");
+                  const time = moment(updatedAt).format("h:mma");
 
                   return (
                     <>

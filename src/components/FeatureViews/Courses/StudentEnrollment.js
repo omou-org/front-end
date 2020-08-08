@@ -60,7 +60,7 @@ const StudentEnrollmentList = ({
   concatFullParentName,
   phoneNumber,
   handleOpenModal,
-  loggedInUserAccountType
+  loggedInUserAccountType,
 }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -104,31 +104,35 @@ const StudentEnrollmentList = ({
         >
           <MailOutlineIcon style={{ color: "rgb(112,105,110)" }} />
         </Button>
-        {loggedInUserAccountType === "ADMIN" || loggedInUserAccountType === "RECEPTIONIST" || loggedInUserAccountType === "INSTRUCTOR" ? <Menu
-          id="simple-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-          classes={{ list: classes.dropdown }}
-        >
-          <MenuItem
-            onClick={handleOpen}
-            className={classes.menuSelected}
-            value={studentId}
-            data-type={accountType}
+        {loggedInUserAccountType === "ADMIN" ||
+        loggedInUserAccountType === "RECEPTIONIST" ||
+        loggedInUserAccountType === "INSTRUCTOR" ? (
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+            classes={{ list: classes.dropdown }}
           >
-            Email Student
-          </MenuItem>
-          <MenuItem
-            onClick={handleOpen}
-            className={classes.menuSelected}
-            value={parentId}
-            data-type={parentAccountType}
-          >
-            Email Parent
-          </MenuItem>
-        </Menu> : null}
+            <MenuItem
+              onClick={handleOpen}
+              className={classes.menuSelected}
+              value={studentId}
+              data-type={accountType}
+            >
+              Email Student
+            </MenuItem>
+            <MenuItem
+              onClick={handleOpen}
+              className={classes.menuSelected}
+              value={parentId}
+              data-type={parentAccountType}
+            >
+              Email Parent
+            </MenuItem>
+          </Menu>
+        ) : null}
       </TableCell>
       <TableCell
         align="right"
@@ -154,7 +158,11 @@ const StudentEnrollmentList = ({
   );
 };
 
-const Studentenrollment = ({ enrollmentList, loggedInUser, loggedInUserAccountType }) => {
+const Studentenrollment = ({
+  enrollmentList,
+  loggedInUser,
+  loggedInUserAccountType,
+}) => {
   const classes = useStyles();
 
   const [modalOpen, setModalOpen] = useState(false);

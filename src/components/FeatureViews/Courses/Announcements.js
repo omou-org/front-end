@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -48,14 +48,14 @@ const AnnouncementCard = ({
   fullName,
   subject,
   body,
-  createdAt,
+  updatedAt,
   handleEdit,
   handleDelete,
   loggedInUserAccountType,
 }) => {
   const classes = useStyles();
-  const date = moment(createdAt).format("MM/DD");
-  const time = moment(createdAt).format("h:mma");
+  const date = moment(updatedAt).format("MM/DD");
+  const time = moment(updatedAt).format("h:mma");
   const subjectRef = useRef();
   const bodyRef = useRef();
   const handleOpenForm = () => {
@@ -78,14 +78,20 @@ const AnnouncementCard = ({
           {subject}
         </Typography>
       </Grid>
-      {[USER_TYPES.admin, USER_TYPES.receptionist, USER_TYPES.instructor].includes(loggedInUserAccountType) ? <Grid item xs={6} style={{ textAlign: "right" }}>
-        <Button onClick={handleOpenForm} name="edit" value="edit">
-          <Create style={{ color: omouBlue }} />
-        </Button>{" "}
-        <Button onClick={handleDeleteForm}>
-          <Cancel style={{ color: omouBlue }} />
-        </Button>
-      </Grid> : null }
+      {[
+        USER_TYPES.admin,
+        USER_TYPES.receptionist,
+        USER_TYPES.instructor,
+      ].includes(loggedInUserAccountType) ? (
+        <Grid item xs={6} style={{ textAlign: "right" }}>
+          <Button onClick={handleOpenForm} name="edit" value="edit">
+            <Create style={{ color: omouBlue }} />
+          </Button>{" "}
+          <Button onClick={handleDeleteForm}>
+            <Cancel style={{ color: omouBlue }} />
+          </Button>
+        </Grid>
+      ) : null}
       <Grid item xs={12} className={classes.announcementBody}>
         <Typography variant="body1" align="left" ref={bodyRef}>
           {body}
@@ -113,13 +119,15 @@ const AnnouncementCard = ({
   );
 };
 
-const Announcements = ({ announcementsData, loggedInUser, loggedInUserAccountType }) => {
-  const [announcementsDataState, setAnnouncementsDataState] = useState()
+const Announcements = ({
+  announcementsData,
+  loggedInUser,
+  loggedInUserAccountType,
+}) => {
   const [openNewAnnouncementForm, setNewAnnouncementForm] = useState(false);
   const [announcementId, setAnnouncementId] = useState();
   const [announcementSubject, setAnnouncementSubject] = useState("");
   const [announcementBody, setAnnouncementBody] = useState("");
-  const [announcementsRender, setAnnouncementsRender] = useState();
   const [editOrPost, setEditOrPost] = useState("post");
   const classes = useStyles();
 
@@ -139,10 +147,6 @@ const Announcements = ({ announcementsData, loggedInUser, loggedInUserAccountTyp
     }
   );
 
-  useEffect(() => {
-    setAnnouncementsRender(announcementsData);
-  }, [openNewAnnouncementForm]);
-
   const handleEdit = (boolean, id, subject, body) => {
     setEditOrPost("edit");
     setAnnouncementId(id);
@@ -161,17 +165,31 @@ const Announcements = ({ announcementsData, loggedInUser, loggedInUserAccountTyp
     });
   };
 
+  const announcementRender = announcementsData?.sort((firstVal, secondVal) => {
+    if (firstVal.updatedAt > secondVal.updatedAt) {
+      return -1;
+    }
+    if (firstVal.updatedAt < secondVal.updatedAt) {
+      return 1;
+    }
+    return 0;
+  });
+
   return (
     <Grid container justify="flex-start" data-active="inactive">
-      {loggedInUserAccountType === "ADMIN" || loggedInUserAccountType === "RECEPTIONIST" || loggedInUserAccountType === "INSTRUCTOR" ? <Button
-        className={classes.newNoteButton}
-        onClick={() => setNewAnnouncementForm(true, setEditOrPost("post"))}
-        value="post"
-        name="post"
-      >
-        <span className={classes.plusSpan}>+</span> New Announcement
-      </Button> : null}
-      {announcementsRender?.map(({ poster, subject, body, createdAt, id }) => (
+      {loggedInUserAccountType === "ADMIN" ||
+      loggedInUserAccountType === "RECEPTIONIST" ||
+      loggedInUserAccountType === "INSTRUCTOR" ? (
+        <Button
+          className={classes.newNoteButton}
+          onClick={() => setNewAnnouncementForm(true, setEditOrPost("post"))}
+          value="post"
+          name="post"
+        >
+          <span className={classes.plusSpan}>+</span> New Announcement
+        </Button>
+      ) : null}
+      {announcementRender?.map(({ poster, subject, body, updatedAt, id }) => (
         <>
           <AnnouncementCard
             key={id}
@@ -179,7 +197,7 @@ const Announcements = ({ announcementsData, loggedInUser, loggedInUserAccountTyp
             fullName={fullName(poster)}
             subject={subject}
             body={body}
-            createdAt={createdAt}
+            updatedAt={updatedAt}
             handleEdit={handleEdit}
             handleDelete={handleDeleteAnnouncement}
             loggedInUserAccountType={loggedInUserAccountType}
