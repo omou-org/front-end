@@ -131,9 +131,8 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                         </Button>}
                     {index === sections.length - 1 &&
                         <Button data-cy="submitButton"
-                                disabled={Boolean(errors[name]) || submitting}
-                                type="submit"
-                                variant="outlined">
+                            disabled={Boolean(errors[name]) || submitting}
+                            type="submit" variant="outlined">
                             {submitting ? "Submitting" : "Submit"}
                         </Button>}
                 </div>
@@ -147,31 +146,37 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
             if (submitError) {
                 setOpenError(true);
             }
-        }, [submitError])
+        }, [submitError]);
 
-        return (<form noValidate onSubmit={handleSubmit}>
+        return (
+            <form noValidate onSubmit={handleSubmit}>
                 <Stepper activeStep={activeStep} orientation="vertical">
                     {sections.map((section, index) => renderStep(
                         index, section, errors, submitting, form.mutators
                     ))}
                 </Stepper>
                 {submitError &&
-                <Dialog className="error" open={openError} onClose={() => setOpenError(false)}>
-                    <DialogTitle>An error occurred while submitting. Try again.</DialogTitle>
-                    <DialogContent>
-                        {submitError.message}
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => setOpenError(false)}>Close</Button>
-                    </DialogActions>
-                </Dialog>}
+                    <Dialog className="error" open={openError}
+                        onClose={() => setOpenError(false)}>
+                        <DialogTitle>
+                            An error occurred while submitting. Try again.
+                        </DialogTitle>
+                        <DialogContent>
+                            {submitError.message}
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => setOpenError(false)}>
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </Dialog>}
             </form>
-        )
+        );
     };
     return (
         <div className={classes.root}>
             <Typography align="left" className="heading" data-cy="formTitle"
-                        variant="h3">
+                variant="h3">
                 {title}
             </Typography>
             {showReceipt ?
