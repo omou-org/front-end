@@ -64,7 +64,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CourseListOptions = ({ sessionId, loggedInUser, loggedInUserAccountType }) => {
+export const GET_SESSION_NOTES = gql`
+  query getSessionNotes($sessionId: ID!) {
+    __typename
+    sessionNotes(sessionId: $sessionId) {
+      id
+      body
+      subject
+      poster {
+        firstName
+        lastName
+        id
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+const CourseListOptions = ({
+  sessionId,
+  loggedInUser,
+  loggedInUserAccountType,
+}) => {
   const classes = useStyles();
   const [readMore, setReadMore] = useState(false);
   const [expand, setExpand] = useState(false);
@@ -73,23 +95,6 @@ const CourseListOptions = ({ sessionId, loggedInUser, loggedInUserAccountType })
   const [noteBody, setNoteBody] = useState("");
   const [noteSubject, setNoteSubject] = useState("");
   const [buttonState, setButtonState] = useState("");
-
-  const GET_SESSION_NOTES = gql`
-    query getSessionNotes($sessionId: ID!) {
-      __typename
-      sessionNotes(sessionId: $sessionId) {
-        id
-        body
-        subject
-        poster {
-          firstName
-          lastName
-          id
-        }
-        createdAt
-      }
-    }
-  `;
 
   const { data, loading, error } = useQuery(GET_SESSION_NOTES, {
     variables: {
@@ -143,14 +148,20 @@ const CourseListOptions = ({ sessionId, loggedInUser, loggedInUserAccountType })
             </AccordionSummary>
             <AccordionDetails>
               <Grid container justify="flex-start">
-                {[USER_TYPES.admin, USER_TYPES.receptionist, USER_TYPES.instructor].includes(loggedInUserAccountType) ? <Grid item xs={12} style={{ textAlign: "left" }}>
-                  <Button
-                    className={classes.newNoteButton}
-                    onClick={handleOpenForm}
-                  >
-                    <span className={classes.plusSpan}>+</span> New Note
-                  </Button>
-                </Grid> : null}
+                {[
+                  USER_TYPES.admin,
+                  USER_TYPES.receptionist,
+                  USER_TYPES.instructor,
+                ].includes(loggedInUserAccountType) ? (
+                  <Grid item xs={12} style={{ textAlign: "left" }}>
+                    <Button
+                      className={classes.newNoteButton}
+                      onClick={handleOpenForm}
+                    >
+                      <span className={classes.plusSpan}>+</span> New Note
+                    </Button>
+                  </Grid>
+                ) : null}
 
                 {data.sessionNotes.map((note) => {
                   const { body, createdAt, id, poster, subject } = note;
@@ -161,20 +172,31 @@ const CourseListOptions = ({ sessionId, loggedInUser, loggedInUserAccountType })
                   return (
                     <>
                       <Grid item xs={6} style={{ marginTop: "1em" }}>
-                        <Typography variant="h6" align="left" value={subject} key={id}>
+                        <Typography
+                          variant="h6"
+                          align="left"
+                          value={subject}
+                          key={id}
+                        >
                           {subject}
                         </Typography>
                       </Grid>
-                      {[USER_TYPES.admin, USER_TYPES.receptionist, USER_TYPES.instructor].includes(loggedInUserAccountType) ? <Grid item xs={6} style={{ textAlign: "right" }}>
-                        <Button
-                          onClick={handleEdit}
-                          data-subject={subject}
-                          data-body={body}
-                          data-id={id}
-                        >
-                          <Create style={{ color: "#43B5D9" }} />
-                        </Button>{" "}
-                      </Grid> : null}
+                      {[
+                        USER_TYPES.admin,
+                        USER_TYPES.receptionist,
+                        USER_TYPES.instructor,
+                      ].includes(loggedInUserAccountType) ? (
+                        <Grid item xs={6} style={{ textAlign: "right" }}>
+                          <Button
+                            onClick={handleEdit}
+                            data-subject={subject}
+                            data-body={body}
+                            data-id={id}
+                          >
+                            <Create style={{ color: "#43B5D9" }} />
+                          </Button>{" "}
+                        </Grid>
+                      ) : null}
                       <Grid item xs={12}>
                         {readMore === false && body.length > 110 ? (
                           <Typography variant="body1" align="left">

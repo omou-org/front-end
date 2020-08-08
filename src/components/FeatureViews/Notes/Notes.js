@@ -225,28 +225,19 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
         },
         "update": (cache, {data}) => {
             const [newNote] = Object.values(data[MUTATION_KEY[ownerType]]);
-            console.log(data)
-            console.log(ownerType)
-            console.log(newNote);
-            console.log(MUTATION_KEY[ownerType])
             const cachedNotes = cache.readQuery({
                 "query": QUERIES[ownerType],
                 "variables": {ownerID},
             })[QUERY_KEY[ownerType]];
-            console.log(cachedNotes)
-            console.log(QUERY_KEY[ownerType])
 
             let updatedNotes = [...cachedNotes];
-            console.log(updatedNotes);
             const matchingIndex = updatedNotes.findIndex(({id}) => id === newNote.id);
             if (matchingIndex === -1) {
                 updatedNotes = [...cachedNotes, newNote];
             } else {
                 updatedNotes[matchingIndex] = newNote;
             }
-            console.log(matchingIndex);
-            console.log(QUERIES[ownerType]);
-
+            
             cache.writeQuery({
                 "data": {
                     [QUERY_KEY[ownerType]]: updatedNotes,

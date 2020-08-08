@@ -37,7 +37,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CourseSessions = ({ sessionList, loggedInUser, loggedInUserAccountType }) => {
+const CourseSessions = ({
+  sessionList,
+  loggedInUser,
+  loggedInUserAccountType,
+}) => {
   const classes = useStyles();
   const [sortBySession, setSortBySession] = useState("");
 

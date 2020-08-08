@@ -17,7 +17,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import gql from "graphql-tag";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { omouBlue } from "../../../theme/muiTheme";
-import { GET_ANNOUNCEMENTS } from "./CourseClasses"
+import { GET_ANNOUNCEMENTS } from "./CourseClasses";
 
 const useStyles = makeStyles((theme) => ({
   rootContainer: {
@@ -94,37 +94,37 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 const CREATE_ANNOUNCEMENTS = gql`
-mutation CreateAnnouncement(
-  $subject: String!
-  $body: String!
-  $courseId: ID!
-  $userId: ID!
-  $shouldEmail: Boolean
-  $id: ID
-) {
-  __typename
-  createAnnouncement(
-    body: $body
-    course: $courseId
-    subject: $subject
-    user: $userId
-    shouldEmail: $shouldEmail
-    id: $id
+  mutation CreateAnnouncement(
+    $subject: String!
+    $body: String!
+    $courseId: ID!
+    $userId: ID!
+    $shouldEmail: Boolean
+    $id: ID
   ) {
-    announcement {
-      subject
-      id
-      body
-      createdAt
-      poster {
-        firstName
-        lastName
+    __typename
+    createAnnouncement(
+      body: $body
+      course: $courseId
+      subject: $subject
+      user: $userId
+      shouldEmail: $shouldEmail
+      id: $id
+    ) {
+      announcement {
+        subject
+        id
+        body
+        createdAt
+        updatedAt
+        poster {
+          firstName
+          lastName
+        }
       }
     }
   }
-}
 `;
 
 const NewAnnouncementsModal = ({
@@ -146,7 +146,6 @@ const NewAnnouncementsModal = ({
 
   // Move announcemenet query variable out of this component outside of this component
 
-
   const [createAnnouncement, createAnnouncementResult] = useMutation(
     CREATE_ANNOUNCEMENTS,
     {
@@ -156,25 +155,25 @@ const NewAnnouncementsModal = ({
         const [newAnnouncement] = Object.values(data.createAnnouncement);
         const cachedAnnouncement = cache.readQuery({
           query: GET_ANNOUNCEMENTS,
-          variables: {id: courseId.id}
+          variables: { id: courseId.id },
         })["announcements"];
         let updatedAnnouncements = [...cachedAnnouncement];
-        const matchingIndex = updatedAnnouncements.findIndex(({id}) => id === newAnnouncement.id);
-        if(matchingIndex === -1) {
+        const matchingIndex = updatedAnnouncements.findIndex(
+          ({ id }) => id === newAnnouncement.id
+        );
+        if (matchingIndex === -1) {
           updatedAnnouncements = [...cachedAnnouncement, newAnnouncement];
         } else {
           updatedAnnouncements[matchingIndex] = newAnnouncement;
-        };
-        console.log(updatedAnnouncements)
+        }
         cache.writeQuery({
           data: {
             ["announcements"]: updatedAnnouncements,
           },
           query: GET_ANNOUNCEMENTS,
-          variables: {id: courseId.id}
+          variables: { id: courseId.id },
         });
       },
-
     }
   );
 
@@ -193,7 +192,7 @@ const NewAnnouncementsModal = ({
 
   const handlePostForm = async (event) => {
     event.preventDefault();
-    const editCurrentAnnouncement = await createAnnouncement({
+    const createdCurrentAnnouncement = await createAnnouncement({
       variables: {
         subject: announcementSubject,
         body: announcementBody,

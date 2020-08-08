@@ -24,7 +24,7 @@ import Announcements from "./Announcements";
 import StudentEnrollment from "./StudentEnrollment";
 import CourseSessions from "./CourseSessions";
 import { useSelector } from "react-redux";
-import { gradeLvl, USER_TYPES } from "../../../utils"
+import { gradeLvl, USER_TYPES } from "../../../utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,23 +57,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const GET_ANNOUNCEMENTS = gql`query getAnnouncement($id: ID!) {
-  announcements(courseId: $id) {
-    subject
-    id
-    body
-    createdAt
-    poster {
-      firstName
-      lastName
+export const GET_ANNOUNCEMENTS = gql`
+  query getAnnouncement($id: ID!) {
+    announcements(courseId: $id) {
+      subject
+      id
+      body
+      createdAt
+      updatedAt
+      poster {
+        firstName
+        lastName
+      }
     }
   }
-}
 `;
 
-
 const baseTheme = createMuiTheme();
-
 
 const CourseClasses = () => {
   const id = useParams();
@@ -86,15 +86,15 @@ const CourseClasses = () => {
     { label: "Sessions" },
   ];
 
-
   const { email, accountType, user } = useSelector(({ auth }) => auth) || [];
 
-  const queryParser = (userType) => ({
-    ADMIN: "AdminType",
-    INSTRUCTOR: "InstructorType",
-    PARENT: "ParentType",
-    STUDENT: "StudentType",
-  }[userType]);
+  const queryParser = (userType) =>
+    ({
+      ADMIN: "AdminType",
+      INSTRUCTOR: "InstructorType",
+      PARENT: "ParentType",
+      STUDENT: "StudentType",
+    }[userType]);
 
   const GET_CLASSES = gql`
     query getClass($id: ID!, $email: String = "") {
@@ -163,9 +163,13 @@ const CourseClasses = () => {
           }
         }
       }
-       ${accountType === "PARENT" ? `parent(email: $email) {
+       ${
+         accountType === "PARENT"
+           ? `parent(email: $email) {
         studentList
-      }` : ""}
+      }`
+           : ""
+       }
     }
   `;
 
@@ -178,15 +182,16 @@ const CourseClasses = () => {
 
   const getAnnouncements = useQuery(GET_ANNOUNCEMENTS, {
     variables: {
-      id: id.id
-    }
-  })
-  
+      id: id.id,
+    },
+  });
+
   if (loading) return <Loading />;
   if (getAnnouncements.loading) return <Loading />;
   if (error) return console.error(error.message);
-  if (getAnnouncements.error) return console.error(getAnnouncements.error.message);
-  console.log(getAnnouncements.data)
+  if (getAnnouncements.error)
+    return console.error(getAnnouncements.error.message);
+  console.log(getAnnouncements.data);
 
   const {
     academicLevel,
@@ -214,10 +219,10 @@ const CourseClasses = () => {
   };
 
   const comparison = (studentList, enrollmentArray) => {
-    if(queryParser(accountType) === "ParentType") {
-      for(const studentId of enrollmentArray) {
-        return studentList?.includes(studentId.student.user.id)
-      };
+    if (queryParser(accountType) === "ParentType") {
+      for (const studentId of enrollmentArray) {
+        return studentList?.includes(studentId.student.user.id);
+      }
     } else {
       return true;
     }
@@ -352,7 +357,11 @@ const CourseClasses = () => {
                         ? classes.chromeTabEnd
                         : classes.chromeTab
                     }
-                    tabs={comparison(data?.parent?.studentList, data?.enrollments) ? tabs : [{label: "About Course"}]}
+                    tabs={
+                      comparison(data?.parent?.studentList, data?.enrollments)
+                        ? tabs
+                        : [{ label: "About Course" }]
+                    }
                     tabStyle={{
                       bgColor: "#ffffff",
                       selectedBgColor: "#EBFAFF",

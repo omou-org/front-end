@@ -9,6 +9,7 @@ import Input from "@material-ui/core/Input";
 import { omouBlue } from "../../../theme/muiTheme";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
+import { GET_SESSION_NOTES } from "./CourseListOptions";
 
 const useStyles = makeStyles((theme) => ({
   rootContainer: {
@@ -109,30 +110,7 @@ const SessionEmailOrNotesModal = ({
       $subject: String!
       $user: ID!
       $sessionId: ID!
-    ) {
-      __typename
-      createSessionNote(
-        body: $body
-        user: $user
-        subject: $subject
-        sessionId: $sessionId
-      ) {
-        created
-        sessionNote {
-          body
-          subject
-        }
-      }
-    }
-  `;
-
-  const EDIT_SESSION_NOTE = gql`
-    mutation editSessionNote(
-      $body: String!
-      $subject: String!
-      $user: ID!
-      $sessionId: ID!
-      $id: ID!
+      $id: ID
     ) {
       __typename
       createSessionNote(
@@ -142,10 +120,17 @@ const SessionEmailOrNotesModal = ({
         sessionId: $sessionId
         id: $id
       ) {
-        created
         sessionNote {
+          id
           body
           subject
+          poster {
+            firstName
+            lastName
+            id
+          }
+          createdAt
+          updatedAt
         }
       }
     }
@@ -161,14 +146,29 @@ const SessionEmailOrNotesModal = ({
     {
       onCompleted: () => handleClose(false),
       error: (err) => console.error(err),
-    }
-  );
-
-  const [editSessionNote, editSessionNoteResult] = useMutation(
-    EDIT_SESSION_NOTE,
-    {
-      onCompleted: () => handleClose(false),
-      error: (err) => console.error(err),
+      update: (cache, { data }) => {
+        const [newSessionNote] = Object.values(data.createSessionNote);
+        const cachedSessionNote = cache.readQuery({
+          query: GET_SESSION_NOTES,
+          variables: { sessionId: sessionId },
+        })["sessionNotes"];
+        let updatedSessionNotes = [...cachedSessionNote];
+        const matchingIndex = updatedSessionNotes.findIndex(
+          ({ id }) => id === newSessionNote.id
+        );
+        if (matchingIndex === -1) {
+          updatedSessionNotes = [...cachedSessionNote, newSessionNote];
+        } else {
+          updatedSessionNotes[matchingIndex] = newSessionNote;
+        }
+        cache.writeQuery({
+          data: {
+            ["sessionNotes"]: updatedSessionNotes,
+          },
+          query: GET_SESSION_NOTES,
+          variables: { sessionId: sessionId },
+        });
+      },
     }
   );
 
@@ -186,27 +186,15 @@ const SessionEmailOrNotesModal = ({
         },
       });
     } else {
-      if (buttonState === "edit") {
-        console.log("edit works");
-        const editedSessionNote = await editSessionNote({
-          variables: {
-            subject: subject,
-            body: body,
-            user: poster_id,
-            sessionId: sessionId,
-            id: noteId,
-          },
-        });
-      } else {
-        const createdSessioNote = await createSessionNote({
-          variables: {
-            subject: subject,
-            body: body,
-            user: poster_id,
-            sessionId: sessionId,
-          },
-        });
-      }
+      const createdSessionNote = await createSessionNote({
+        variables: {
+          subject: subject,
+          body: body,
+          user: poster_id,
+          sessionId: sessionId,
+          id: noteId,
+        },
+      });
     }
   };
 
