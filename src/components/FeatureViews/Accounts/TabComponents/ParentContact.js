@@ -8,6 +8,7 @@ import React from "react";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import LoadingError from "./LoadingCourseError";
+import {fullName} from "../../../../utils";
 
 const GET_PARENTS = gql`
 	query getParents($id:ID){
@@ -24,18 +25,13 @@ const GET_PARENTS = gql`
 	}
 `
 
-
 const ParentContact = ({ parent_id }) => {
 	const { data, loading, error } = useQuery(GET_PARENTS, { "variables": { "id": parent_id } });
-	if (loading) {
-		return <Loading loadingText="PARENT LOADING" small />
-	}
-	if (error) {
-		return <LoadingError error="parent" />;
-	}
+	if (loading) return <Loading loadingText="PARENT LOADING" small />;
+	if (error) return <LoadingError error="parent" />;
 
 	const parent = {
-		"name": `${data.parent.user.firstName} ${data.parent.user.lastName}`,
+		"name": fullName(data.parent.user),
 		"phoneNumber": data.parent.phoneNumber,
 		"accountType": data.parent.accountType.toLowerCase(),
 		"user": {
@@ -43,9 +39,6 @@ const ParentContact = ({ parent_id }) => {
 			"email": data.parent.user.email,
 		}
 	}
-
-
-	console.log(parent)
 
 	return (
 		<Grid item md={12}>

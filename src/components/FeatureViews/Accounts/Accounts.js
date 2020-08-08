@@ -289,20 +289,24 @@ const Accounts = () => {
                         </Tabs>
                     </Grid>
                     <Hidden smDown>
-                        <Grid className="toggleView" item md={5}>
-                            <Button
-                                className={`btn list ${viewToggle && "active"}`}
-                                onClick={setView(true)}>
-                                <ListView className={`icon ${viewToggle && "active"}`} />
+                        <Grid item md={1} />
+                        <Grid container item md={3}>
+                            <Grid className="toggleView" item md={6}>
+                                <Button
+                                    className={`btn list ${viewToggle && "active"}`}
+                                    onClick={setView(true)}>
+                                    <ListView className={`icon ${viewToggle && "active"}`} />
                                 List View
                             </Button>
-                        </Grid>
-                        <Grid>
-                            <Button className={`btn card ${!viewToggle && "active"}`}
-                                onClick={setView(false)}>
-                                <CardView className={`icon ${!viewToggle && "active"}`} />
+                            </Grid>
+                            <Grid className="toggleView" item md={6}>
+                                <Button
+                                    className={`btn card ${!viewToggle && "active"}`}
+                                    onClick={setView(false)}>
+                                    <CardView className={`icon ${!viewToggle && "active"}`} />
                                 Grid View
                             </Button>
+                            </Grid>
                         </Grid>
                     </Hidden>
                 </Grid>
