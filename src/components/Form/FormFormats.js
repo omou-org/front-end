@@ -619,10 +619,24 @@ export default {
                 return null;
             }
         },
-        "submit": async (formData) => {
+        "submit": async ({parent}, id) => {
             const CREATE_PARENT = gql`
-            mutation CreateParentAccount($firstName: String!, $lastName: String!, $email: String!, $password: String!, $phoneNumber: String) {
-                createParent(user: {firstName: $firstName, lastName: $lastName, email: $email, password: $password}, phoneNumber: $phoneNumber) {
+            mutation CreateParentAccount(
+                $firstName: String!, $lastName: String!, $email: String!,
+                $password: String, $phoneNumber: String, $address: String,
+                $birthDate: Date, $city: String, $state: String, $id: ID,
+                $zipcode: String, $relationship: String, $gender: GenderEnum
+            ) {
+                createParent(
+                    user: {
+                        firstName: $firstName, lastName: $lastName, id: $id,
+                        email: $email, password: $password
+                    },
+                    city: $city, address: $address, gender: $gender,
+                    birthDate: $birthDate,  phoneNumber: $phoneNumber,
+                    zipcode: $zipcode, relationship: $relationship,
+                    state: $state,
+                ) {
                     parent {
                         accountType
                     }
@@ -632,7 +646,10 @@ export default {
                 await client.mutate({
                     "mutation": CREATE_PARENT,
                     "variables": {
-                        ...formData.parent,
+                        ...parent,
+                        "birthDate": parseDate(parent.birthDate),
+                        id,
+                        "password": "",
                     },
                 });
             } catch (error) {
