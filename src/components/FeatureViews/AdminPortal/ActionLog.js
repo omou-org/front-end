@@ -139,8 +139,8 @@ const ActionLog = () => {
     }
 
     const handleUserSelection = (event) => {
-        setUserType(event.target.value)
-        setCurrentId(data.admins.filter(user => (user.user.id === event.target.value.user.id))[0].user.id);
+        setUserType(event.target.value);
+        setCurrentId(data.admins.filter(user => (user.user.id === event.target.value))[0].user.id);
     }
 
     const resetFilters = () => {
@@ -273,13 +273,8 @@ const ActionLog = () => {
                                             "MuiInputBase-input": classes.MuiInputBase
                                         }}
                                     >
-                                         {/*
-                                            why the hell does this work. I wrote it and I don't even understand it. maybe its because im tired
-                                            shouldn't userType be a string? how the f does value accept an object and display the correct name???????????????????? 
-                                            idk im going to sleep LOL
-                                        */}
                                         {data.admins.map((userType) =>
-                                            (<MenuItem key={userType} value={userType}>
+                                            (<MenuItem key={userType} value={userType.user.id}>
                                                 {fullName(userType.user)}
                                             </MenuItem>
                                             )
@@ -426,8 +421,7 @@ const ActionLog = () => {
                                 There was no match found for your data
                                 </TableCell>
                         </TableRow>)
-                        : data.logs.results.map((actionItem) => {
-                            return (
+                        : data.logs.results.map((actionItem) => (
                                 <TableRow>
                                     <TableCell>
                                         <Moment
@@ -436,9 +430,7 @@ const ActionLog = () => {
                                         />
                                     </TableCell>
                                     <TableCell>
-                                        {
-                                            renderName(actionItem.userId)
-                                        }
+                                        {renderName(actionItem.userId)}
                                     </TableCell>
                                     <TableCell>
                                         <div style={{ textTransform: "capitalize" }}>
@@ -457,8 +449,7 @@ const ActionLog = () => {
                                         {actionItem.objectRepr}
                                     </TableCell>
                                 </TableRow>
-                            )
-                        })}
+                        ))}
                 </TableBody>
             </Table>
             <div style={{
