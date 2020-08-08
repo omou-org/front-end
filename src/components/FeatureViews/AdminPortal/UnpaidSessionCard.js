@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import Avatar from "@material-ui/core/Avatar";
 import Card from "@material-ui/core/Card";
@@ -11,9 +11,9 @@ import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
 
 import * as adminUtils from "./AdminUtils";
-import {initials} from "utils";
-import {stringToColor} from "../Accounts/accountUtils";
-import {useSelector} from "react-redux";
+import { initials } from "utils";
+import { stringToColor } from "../Accounts/accountUtils";
+import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/styles";
 import { fullName } from "utils";
 
@@ -58,30 +58,30 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-const UnpaidSessionCard = ({unpaidStudent}) => {
+const UnpaidSessionCard = ({ unpaidStudent }) => {
     const classes = useStyles();
-    
+
     const studentObj = unpaidStudent.student.user;
     const studentName = fullName(studentObj);
-    const { studentFirstName, studentLastName, studentID} = unpaidStudent.student.user;
+    const { studentFirstName, studentLastName, studentID } = unpaidStudent.student.user;
     const { courseID, courseTitle, startTime, endTime, hourlyTuition } = unpaidStudent.course
     const sessionsLeft = unpaidStudent.sessionsLeft;
-	const amtDue = adminUtils.amountDue(
-		hourlyTuition,
-		sessionsLeft,
-		adminUtils.calculateSessionLength(startTime, endTime)
-	);
-    
+    const amtDue = adminUtils.amountDue(
+        hourlyTuition,
+        sessionsLeft,
+        adminUtils.calculateSessionLength(startTime, endTime)
+    );
+
     return (
         <Grid item md={6} lg={3} className={classes.grid}>
             <Card className={`unpaid-sessions-card ${classes.card}`}>
                 <CardActionArea
-                component = {Link}
-                to={`/accounts/students/${studentID}/${courseID}`}
+                    component={Link}
+                    to={`/accounts/students/${studentID}/${courseID}`}
                 >
                     <Grid
                         className={`unpaid-avatar-container ${classes.avatarContainer}`}
-                        >   
+                    >
                         <Avatar
                             className={`unpaid-avatar ${classes.avatar}`}
                             style={{
@@ -127,11 +127,11 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
 
 
 UnpaidSessionCard.propTypes = {
-	unpaidStudent: PropTypes.shape({
-		course: PropTypes.number.isRequired,
-		sessions_left: PropTypes.number.isRequired,
-		student: PropTypes.number.isRequired,
-	}).isRequired,
+    unpaidStudent: PropTypes.shape({
+        course: PropTypes.number.isRequired,
+        sessions_left: PropTypes.number.isRequired,
+        student: PropTypes.number.isRequired,
+    }).isRequired,
 };
 
 export default UnpaidSessionCard;

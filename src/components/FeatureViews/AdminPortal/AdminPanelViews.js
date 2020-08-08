@@ -2,27 +2,73 @@ import * as React from "react";
 import {
   BooleanField, BooleanInput, Create, Datagrid, DateField, DateInput, Edit,
   List, NumberField, NumberInput, SelectField, SelectInput, Show, SimpleForm,
-  SimpleShowLayout, TextField, TextInput, ReferenceInput
+  SimpleShowLayout, TextField, TextInput, ReferenceInput, SaveButton, TopToolbar, useRefresh, useRedirect, useNotify, Button, ShowButton
 } from "react-admin";
+import dataProvider from "./dataProvider";
 
-export const CategoryList = (props) => (
-  <List {...props}>
-    <Datagrid rowClick="edit">
-      <TextField source="id" />
-      <TextField source="name" />
-      <TextField source="description" />
-    </Datagrid>
-  </List>
-);
 
-export const CategoryCreate = (props) => (
-  <Create {...props}>
-    <SimpleForm>
-      <TextInput source="name" />
-      <TextInput source="description" />
-    </SimpleForm>
-  </Create>
-);
+const CustomSaveButton = (data) => {
+  const refresh = useRefresh();
+  const redirect = useRedirect();
+  const notify = useNotify();
+
+
+  const approve = () => {
+    console.log(data)
+    return dataProvider
+      .create('courseCategories',
+
+        { data: { name: data.name, description: data.description } })
+      .then(response => {
+        redirect('list');
+        refresh();
+        notify('Categories Saved', 'info')
+      })
+  }
+  return (
+    <TopToolbar>
+      <SaveButton submitOnEnter={true} />
+      <SaveButton
+        label="post.action.save_and_notify"
+        onClick={approve}
+        submitOnEnter={true}
+        redirect="list"
+        resource={'courseCategories'}
+      />
+      {/* <ShowButton />
+      <Button basePath={data.basePath} record={data} label="MY CUSTOM BUTTON" onClick={approve} /> */}
+    </TopToolbar>
+
+  )
+}
+
+
+
+export const CategoryList = (props) => {
+
+
+  return (
+    <List {...props}>
+      <Datagrid rowClick="edit">
+        <TextField source="id" />
+        <TextField source="name" />
+        <TextField source="description" />
+      </Datagrid>
+    </List>
+  )
+}
+
+export const CategoryCreate = (props) => {
+  return (
+    <Create  {...props}>
+      <SimpleForm redirect='list'>
+        <TextInput source="name" />
+        <TextInput source="description" />
+        <CustomSaveButton />
+      </SimpleForm>
+    </Create>
+  )
+}
 
 export const CategoryEdit = (props) => (
   <Edit {...props}>
@@ -57,7 +103,7 @@ export const SchoolList = (props) => (
 
 export const SchoolCreate = (props) => (
   <Create {...props}>
-    <SimpleForm>
+    <SimpleForm redirect="list">
       <TextInput source="name" />
       <TextInput source="zipcode" />
       <TextInput source="district" />

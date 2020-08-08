@@ -411,7 +411,8 @@ export default {
     },
     "create": async (resource, { data }) => {
         const mutation = MUTATION_ADD[resource];
-
+        console.log(resource, data)
+        console.log(mutation)
         try {
             const response = await client.mutate({
                 mutation,
@@ -428,6 +429,8 @@ export default {
     },
     "update": async (resource, { id, data }) => {
         const mutation = MUTATION_UPDATE[resource];
+
+
         try {
             const response = await client.mutate({
                 mutation,
@@ -440,7 +443,7 @@ export default {
                 "data": Object.values(Object.values(response.data)[0])[0],
             };
         } catch (error) {
-            console.error(error);
+            console.log(error);
             return error;
         }
     },
