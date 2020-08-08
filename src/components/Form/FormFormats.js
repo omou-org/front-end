@@ -445,6 +445,10 @@ const GET_COURSES = gql`
       courses {
         title
         id
+        enrollmentSet {
+              id
+            }
+        maxCapacity
         instructor {
           user {
             lastName
@@ -462,13 +466,20 @@ const studentSelect = (name) => (
 
 const parentSelect = (name) => (
     <Fields.DataSelect name={name} optionsMap={userMap}
-        request={SEARCH_PARENTS} />
+                       request={SEARCH_PARENTS}/>
 );
 
-const courseMap = ({courses}) => courses.map(({title, instructor, id}) => ({
-	"label": `${title} - ${fullName(instructor.user)}`,
-	"value": id,
-}));
+const courseMap = ({courses}) => courses.map(({title, instructor, id}) =>
+    ({
+        "label": `${title} - ${fullName(instructor.user)}`,
+        "value": id,
+    }));
+const openCourseMap = ({courses}) => courses
+    .filter(({maxCapacity, enrollmentSet}) => (maxCapacity > enrollmentSet.length))
+    .map(({title, instructor, id}) => ({
+        "label": `${title} - ${fullName(instructor.user)}`,
+        "value": id,
+    }));
 
 const categoryMap = ({courseCategories}) => courseCategories.map(({id, name}) => ({
     "label": name,
@@ -1376,10 +1387,11 @@ export default {
                 "label": "Course",
                 "fields": [
                     {
-						"name": "class",
-						"label": "Class",
-						"component": <Fields.DataSelect name="Classes" optionsMap={courseMap} request={GET_COURSES}/>,
-						"validator": Yup.mixed(),
+                        "name": "class",
+                        "label": "Class",
+                        "component": <Fields.DataSelect name="Classes" optionsMap={openCourseMap}
+                                                        request={GET_COURSES}/>,
+                        "validator": Yup.mixed(),
                     },
                 ],
             },
