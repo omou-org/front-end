@@ -123,10 +123,10 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                             Back
                         </Button>}
                     {index < sections.length - 1 &&
-                        <Button data-cy="nextButton"
-                            disabled={Boolean(errors[name])}
-                            onClick={handleNext}
-                            variant="outlined">
+                        <Button data-cy={`${name}-nextButton`}
+                                disabled={Boolean(errors[name])}
+                                onClick={handleNext}
+                                variant="outlined">
                             Next
                         </Button>}
                     {index === sections.length - 1 &&

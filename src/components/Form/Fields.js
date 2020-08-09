@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, {useCallback, useState} from "react";
 
 import IconButton from "@material-ui/core/IconButton";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
@@ -9,13 +9,13 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 import * as Fields from "mui-rff";
-import { makeStyles } from "@material-ui/core/styles";
-import { useQuery } from "@apollo/react-hooks";
+import {makeStyles} from "@material-ui/core/styles";
+import {useQuery} from "@apollo/react-hooks";
 import gql from "graphql-tag";
-import { fullName } from "../../utils";
+import {fullName} from "../../utils";
 import MomentUtils from "@date-io/moment";
 
-const getLabel = ({ label }) => label;
+const getLabel = ({label}) => label;
 
 const useSelectStyles = makeStyles({
     "select": {
@@ -62,7 +62,7 @@ export const DataSelect = ({ request, optionsMap, name, ...props }) => {
     });
 
     const renderOption = useCallback(
-        ({ label }) => <span data-cy={`${name}-${label}`}>{label}</span>,
+        ({label, value}) => <span data-cy={`${name}-${value}`}>{label}</span>,
         [name],
     );
 
@@ -92,14 +92,14 @@ const GET_STUDENTS = gql`
     }
 `;
 
-export const StudentSelect = () => {
-    const { studentList } = JSON.parse(sessionStorage.getItem("registrations")).currentParent;
-    const { data } = useQuery(GET_STUDENTS, { "variables": { "userIds": studentList } });
+export const StudentSelect = (props) => {
+    const {studentList} = JSON.parse(sessionStorage.getItem("registrations")).currentParent;
+    const {data} = useQuery(GET_STUDENTS, {"variables": {"userIds": studentList}});
     const studentOptions = data?.userInfos.map((student) => ({
         "label": fullName(student.user),
         "value": student.user.id,
     })) || [];
-    return <Select data={studentOptions} label="Select Student" name="selectStudent" />;
+    return <Select data={studentOptions} label="Select Student" name="selectStudent" {...props}/>;
 };
 
 export const PasswordInput = ({ label = "Password", isField = true, ...props }) => {

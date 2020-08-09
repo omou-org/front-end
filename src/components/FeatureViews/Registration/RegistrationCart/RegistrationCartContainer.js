@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {getRegistrationCart, useValidateRegisteringParent} from "../../../OmouComponents/RegistrationUtils";
+import {useValidateRegisteringParent} from "../../../OmouComponents/RegistrationUtils";
 import gql from "graphql-tag";
 import {useMutation, useQuery} from "@apollo/react-hooks";
 import Loading from "../../../OmouComponents/Loading";
@@ -23,24 +23,22 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import {Link} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import * as types from "../../../../actions/actionTypes";
+import {GET_REGISTRATION_CART} from "../SelectParentDialog";
 
-const GET_STUDENT_INFOS = gql`
-	query GetStudentInfos($userIds: [ID]!) {
+const GET_COURSES_AND_STUDENTS_TO_REGISTER = gql`
+	query GetCoursesToRegister($courseIds: [ID]!, $userIds: [ID]!) {
 		userInfos(userIds: $userIds) {
-        ... on StudentType {
-          user {
-            firstName
-            lastName
-            email
-            id
-          }
-        }
-      }
-	}
-`;
-
-const GET_COURSES_TO_REGISTER = gql`
-	query GetCoursesToRegister($courseIds: [ID]!) {
+			... on StudentType {
+			  user {
+				firstName
+				lastName
+				email
+				id
+			  }
+			}
+		  }
 		courses(courseIds: $courseIds){
 			id
 			title
@@ -65,7 +63,7 @@ const GET_COURSES_TO_REGISTER = gql`
 	}
 `;
 
-const CREATE_REGISTRATION_CART = gql`
+export const CREATE_REGISTRATION_CART = gql`
 mutation CreateRegisteringCart($parent: ID!, $registrationPreferences:String) {
   createRegistrationCart(parent: $parent, 
     registrationPreferences: $registrationPreferences) {
@@ -77,7 +75,9 @@ mutation CreateRegisteringCart($parent: ID!, $registrationPreferences:String) {
 }`
 
 export default function RegistrationCartContainer() {
-	const {currentParent, ...registrationCartState} = getRegistrationCart();
+	const {currentParent, ...registrationCartState} = useSelector((state) => state.Registration);
+	const dispatch = useDispatch();
+
 	const [registrationCart, setRegistrationCart] = useState({});
 	const [reviewConfirmationCheck, setReviewConfirmationCheck] = useState(false);
 	const [reviewError, setReviewError] = useState(false);
@@ -87,21 +87,43 @@ export default function RegistrationCartContainer() {
 	const studentIds = (Object.keys(registrationCartState).length > 0 && Object.keys(registrationCartState)) ||
 		currentParent.studentList;
 	// create list of courses to fetch
-	const courseIds = [].concat.apply([], Object.values(registrationCartState))
-		.map(({course}) => course.id);
-	const {data, loading} = useQuery(GET_STUDENT_INFOS, {variables: {userIds: studentIds}});
-	const coursesResponse = useQuery(GET_COURSES_TO_REGISTER, {variables: {courseIds: courseIds}});
+	const courseIds = Object.values(registrationCartState).filter(reg => reg).length > 0 &&
+		Object.values(registrationCartState).flat()
+			.filter(registration => registration)
+			.map(({course}) => course.id);
+
+	const {data, loading, error} = useQuery(GET_COURSES_AND_STUDENTS_TO_REGISTER,
+		{
+			variables: {userIds: studentIds, courseIds: courseIds},
+			skip: !courseIds,
+		});
 	const [createRegistrationCart, createRegistrationCartResponse] = useMutation(CREATE_REGISTRATION_CART, {
-		variables: {parent: currentParent.user.id},
+		variables: {parent: currentParent?.user.id},
 		onCompleted: () => {
 			setParentConfirmation(true);
+		},
+		update: (cache, {data}) => {
+			cache.writeQuery({
+				query: GET_REGISTRATION_CART,
+				variables: {parent: currentParent.user.id},
+				data: {registrationCart: data.createRegistrationCart.registrationCart}
+			});
 		},
 		onError: (error) => console.error(error.message),
 	});
 
 	useEffect(() => {
-		if (!coursesResponse.loading && Object.values(registrationCartState).length > 0) {
-			const courseData = coursesResponse.data.courses;
+		dispatch({
+			type: types.INIT_COURSE_REGISTRATION,
+			payload: {},
+		})
+	}, [types.INIT_COURSE_REGISTRATION, dispatch]);
+
+	useEffect(() => {
+		const numOfRegistrations = Object.values(registrationCartState)
+			.filter(registration => registration).length;
+		if (!loading && numOfRegistrations > 0 && Object.keys(registrationCart).length === 0) {
+			const courseData = data.courses;
 			setRegistrationCart(() => {
 				let registrationCart = {};
 				studentIds.forEach(studentId => {
@@ -114,7 +136,7 @@ export default function RegistrationCartContainer() {
 				return registrationCart;
 			});
 		}
-	}, [coursesResponse?.loading, setRegistrationCart]);
+	}, [setRegistrationCart, loading, registrationCartState]);
 
 	const updateSession = (newSessionNum, checked, studentId, courseId) => {
 		setRegistrationCart((prevRegistrationCart) => {
@@ -124,11 +146,15 @@ export default function RegistrationCartContainer() {
 
 			let updatedRegistrationList = prevRegistrationCart[studentId];
 
-			updatedRegistrationList[registrationToEditIndex] = {
-				...updatedRegistrationList[registrationToEditIndex],
-				numSessions: newSessionNum,
-				checked,
-			};
+			if (!checked) {
+				updatedRegistrationList.splice(registrationToEditIndex, 1);
+			} else {
+				updatedRegistrationList[registrationToEditIndex] = {
+					...updatedRegistrationList[registrationToEditIndex],
+					numSessions: newSessionNum,
+					checked,
+				};
+			}
 
 			return {
 				[studentId]: updatedRegistrationList,
@@ -154,7 +180,8 @@ export default function RegistrationCartContainer() {
 		}
 	}
 
-	if (loading || coursesResponse.loading) return <Loading small/>;
+	if (loading || !data) return <Loading small/>;
+	if (error) return <div>There's been an error: {error.message}</div>
 
 	const studentData = data.userInfos;
 
@@ -169,6 +196,7 @@ export default function RegistrationCartContainer() {
 					style={{fontSize: "2em"}}
 					align="left"
 					gutterBottom
+					data-cy="payment-title"
 				>
 					Pay for Course(s)
 				</Typography>
