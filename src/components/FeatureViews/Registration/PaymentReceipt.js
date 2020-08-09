@@ -222,7 +222,7 @@ const PaymentReceipt = ({ paymentID }) => {
 			/>
 			<Grid container direction="column" spacing={2}>
 				<Grid item>
-					<Typography align="left" variant="h2">
+					<Typography align="left" variant="h2" data-cy="payment-header">
 						Payment Confirmation
 					</Typography>
 				</Grid>
@@ -347,10 +347,11 @@ const PaymentReceipt = ({ paymentID }) => {
 						{!location.pathname.includes("parent") && (
 							<Grid item>
 								<Button
+									data-cy="close-parent"
 									className="button primary"
 									onClick={handleCloseReceipt()}
 								>
-									End Registration
+									CLOSE PARENT
 								</Button>
 							</Grid>
 						)}

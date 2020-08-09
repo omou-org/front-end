@@ -1,26 +1,24 @@
 import * as serviceWorker from "./serviceWorker";
-import { applyMiddleware, createStore } from "redux";
+import {applyMiddleware, createStore} from "redux";
 import App from "./App";
-import { BrowserRouter } from "react-router-dom";
-import { composeWithDevTools } from "redux-devtools-extension";
+import {BrowserRouter} from "react-router-dom";
+import {composeWithDevTools} from "redux-devtools-extension";
 import Provider from "react-redux/es/components/Provider";
 import React from "react";
 import ReactDOM from "react-dom";
 import rootReducer from "./reducers/rootReducer.js";
 import thunk from "redux-thunk";
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { HttpLink } from "apollo-link-http";
-import { onError } from "apollo-link-error";
-import { ApolloLink } from "apollo-link";
+import {ApolloClient} from 'apollo-client';
+import {InMemoryCache} from "apollo-cache-inmemory";
+import {HttpLink} from "apollo-link-http";
+import {onError} from "apollo-link-error";
+import {ApolloLink} from "apollo-link";
 
 
+import {ApolloProvider} from "@apollo/react-hooks";
+import {setContext} from "apollo-link-context";
 
-import { ApolloProvider } from "@apollo/react-hooks";
-import { setContext } from "apollo-link-context";
-
-import { setToken } from "actions/authActions";
-
+import {setToken} from "actions/authActions";
 
 
 const store = createStore(
@@ -69,8 +67,8 @@ if (token) {
 ReactDOM.render(
     <Provider store={store}>
         <ApolloProvider client={client}>
-            <BrowserRouter >
-                <App />
+            <BrowserRouter>
+                <App/>
             </BrowserRouter>
         </ApolloProvider>
 
@@ -78,10 +76,8 @@ ReactDOM.render(
     document.getElementById("root"),
 );
 
-// expose store when run in Cypress
-if (window.Cypress) {
-    window.store = store;
-}
+// expose store
+window.store = store;
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

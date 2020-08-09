@@ -13,6 +13,12 @@ import gql from "graphql-tag";
 import {fullName} from "../../utils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
 
+Yup.addMethod(Yup.array, 'unique', function (message, mapper = a => a) {
+    return this.test('unique', message, function (list) {
+        return list.length === new Set(list.map(mapper)).size;
+    });
+});
+
 export const submitToApi = (endpoint, data, id) => (id ?
     instance.patch(`${endpoint}${id}/`, data) :
     instance.post(endpoint, data));
@@ -253,6 +259,7 @@ const STUDENT_INFO_FIELDS = {
         {
             "name": "current_grade",
             ...stringField("Current Grade in Class"),
+            "validator": Yup.string().matches(/([ABCDFabcdf][+-]?)?$/u),
         },
         {
             "name": "topic",
@@ -341,6 +348,10 @@ const GET_COURSES = gql`
       courses {
         title
         id
+        enrollmentSet {
+              id
+            }
+        maxCapacity
         instructor {
           user {
             lastName
@@ -353,13 +364,20 @@ const GET_COURSES = gql`
 
 const parentSelect = (name) => (
     <Fields.DataSelect name={name} optionsMap={userMap}
-        request={SEARCH_PARENTS} />
+                       request={SEARCH_PARENTS}/>
 );
 
-const courseMap = ({courses}) => courses.map(({title, instructor, id}) => ({
-    "label": `${title} - ${fullName(instructor.user)}`,
-    "value": id,
-}));
+const courseMap = ({courses}) => courses.map(({title, instructor, id}) =>
+    ({
+        "label": `${title} - ${fullName(instructor.user)}`,
+        "value": id,
+    }));
+const openCourseMap = ({courses}) => courses
+    .filter(({maxCapacity, enrollmentSet}) => (maxCapacity > enrollmentSet.length))
+    .map(({title, instructor, id}) => ({
+        "label": `${title} - ${fullName(instructor.user)}`,
+        "value": id,
+    }));
 
 const categoryMap = ({courseCategories}) => courseCategories
     .map(({id, name}) => ({
@@ -369,7 +387,7 @@ const categoryMap = ({courseCategories}) => courseCategories
 
 const categorySelect = (name) => (
     <Fields.DataSelect name={name} optionsMap={categoryMap}
-        request={GET_CATEGORIES} />
+                       request={GET_CATEGORIES}/>
 );
 
 const schoolMap = ({schools}) => schools.map(({name, id}) => ({
@@ -1122,7 +1140,12 @@ export default {
                             categorySelect("subjects"),
                             {"multiple": true},
                         ),
-                        "validator": Yup.mixed(),
+                        "validator": Yup.array().of(
+                            Yup.object().shape({
+                                label: Yup.string(),
+                                value: Yup.string(),
+                            })
+                        ).unique("Can't select the same subjects!", (field) => (field.value)),
                         "default": [],
                     },
                     {
@@ -1310,15 +1333,23 @@ export default {
                     {
                         "name": "class",
                         "label": "Class",
-                        "component": <Fields.DataSelect name="Classes" optionsMap={courseMap} request={GET_COURSES} />,
+                        "component": <Fields.DataSelect name="Classes" optionsMap={openCourseMap}
+                                                        request={GET_COURSES}/>,
                         "validator": Yup.mixed(),
                     },
                 ],
             },
         ],
-        "submit": (formData) => {
-            submitRegistration(formData.selectStudent, formData.course.class.value);
-        },
+		"submit": (formData) => {
+            const {dispatch} = window.store;
+            dispatch({
+                type: types.ADD_CLASS_REGISTRATION,
+                payload: {
+                    courseId: formData.course.class.value,
+                    studentId: formData.student.student,
+                }
+            })
+        }
     },
     "tutoring-registration": {
         "title": "Tutoring",
@@ -1343,9 +1374,33 @@ export default {
             submitRegistration(formData.selectStudent, course);
         },
 
-    },
-    "small-group-registration": {
-        "title": "New Small Group Tutoring",
+	},
+	"small-group-registration": {
+		"title": "New Small Group Tutoring",
+		"form": [
+			{
+				"name": "student",
+				"label": "Student",
+				"fields": [
+					{
+						"name": "student",
+						"label": "Student",
+						"component": <StudentSelect/>,
+						"validator": Yup.mixed(),
+					},
+				],
+			},
+			STUDENT_INFO_FIELDS,
+			...TUTORING_COURSE_SECTIONS,
+		],
+		"submit": (formData) => {
+			console.log(formData, moment(formData.tutoring_details.startDate, "DD-MM-YYYY").add(formData.sessions, 'weeks'));
+			const course = createTutoringDetails("smallGroup", formData);
+			submitRegistration(formData.selectStudent, course);
+		}
+	},
+    "course_category": {
+        "title": "Course",
         "form": [
             {
                 "name": "student",
