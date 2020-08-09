@@ -34,9 +34,10 @@ export const selectField = (options) => ({
     stringField = (label) => ({
         "component": <Fields.TextField />,
         label,
-        "validator": Yup.string().matches(/[a-zA-Z][^#&<>"~;$^%{}?]+$/u,
-
-            `Invalid ${label}`),
+        "validator": Yup.string().matches(
+            /[a-zA-Z][^#&<>"~;$^%{}?]+$/u,
+            `Invalid ${label}`,
+        ),
     });
 
 const SEARCH_INSTRUCTORS = gql`
@@ -146,7 +147,6 @@ export const ACADEMIC_LVL_FIELD = {
                 },
             ]} />,
         "validator": Yup.boolean(),
-        "required": true,
     },
     NAME_FIELDS = [
         {
@@ -189,7 +189,7 @@ export const ACADEMIC_LVL_FIELD = {
         "component": <Fields.Autocomplete options={STATE_OPTIONS} textFieldProps={{
             "fullWidth": false,
         }} />,
-        "validator": Yup.mixed().oneOf(STATE_OPTIONS, "Invalid state"),
+        "validator": Yup.mixed().oneOf([...STATE_OPTIONS, null], "Invalid state"),
     },
     ZIPCODE_FIELD = {
         "name": "zipcode",
@@ -456,7 +456,6 @@ export default {
                     "query": GET_USER_TYPE,
                     "variables": {id},
                 });
-                console.log(userInfo);
                 if (userInfo.accountType === "PARENT") {
                     const GET_NAME = gql`
                 query GetName($id: ID!) {
@@ -636,9 +635,7 @@ export default {
                     zipcode: $zipcode, relationship: $relationship,
                     state: $state,
                 ) {
-                    parent {
-                        accountType
-                    }
+                    created
                 }
             }`;
             try {
@@ -1366,9 +1363,7 @@ export default {
             ...TUTORING_COURSE_SECTIONS,
         ],
         "submit": (formData) => {
-            console.log(formData, moment(formData.tutoring_details.startDate, "DD-MM-YYYY").add(formData.sessions, "weeks"));
             const course = createTutoringDetails("smallGroup", formData);
-            console.log(course);
             submitRegistration(formData.selectStudent, course);
         },
     },

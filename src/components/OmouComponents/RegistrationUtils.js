@@ -86,7 +86,6 @@ export const closeRegistrationCart = (AuthParent) => {
 				delete registrationState[key];
 			}
 		});
-		console.log(registrationState);
 		sessionStorage.setItem("registrations", JSON.stringify(registrationState));
 	} else {
 		sessionStorage.setItem("registrations", "{}");

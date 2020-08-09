@@ -7,7 +7,6 @@ import Redirect from "react-router-dom/es/Redirect";
  * */
 export default function UserAccessControl({children, user}) {
 	const AuthUser = useSelector(({auth}) => auth);
-	console.log(AuthUser, user);
 	if (user?.user_id == AuthUser.user.id || user?.user?.id === AuthUser.user.id) {
 		return (<div>
 			{children}

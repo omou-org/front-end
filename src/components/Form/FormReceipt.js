@@ -37,45 +37,40 @@ const toDisplayValue = (value) => {
     return value.toString();
 };
 
-const FormReceipt = ({formData, format}) => {
-    console.log(formData);
-    return (
-        <div style={{
-            "margin": "2%",
-            "padding": "5px",
-        }}>
-            <Typography align="left" style={{"fontSize": "24px"}}>
-                You've successfully submitted!
+const FormReceipt = ({formData, format}) => (
+    <div style={{
+        "margin": "2%",
+        "padding": "5px",
+    }}>
+        <Typography align="left" style={{"fontSize": "24px"}}>
+            You've successfully submitted!
+        </Typography>
+        <div className="confirmation-copy">
+            <Typography align="left" className="title">
+                Confirmation
             </Typography>
-            <div className="confirmation-copy">
-                <Typography align="left" className="title">
-                    Confirmation
-                </Typography>
-                {format.map((section) => (
-                    <div key={section.name}>
-                        <Typography align="left" className="section-title">
-                            {section.label}
-                        </Typography>
-                        {section.fields.map((field) => (
-                            <div key={field.name}>
-                                <Typography align="left"
-                                    className="field-title">
-                                    {field.label}
-                                </Typography>
-                                <Typography align="left"
-                                    className="field-value">
-                                    {toDisplayValue(
-                                        formData[section.name][field.name],
-                                    )}
-                                </Typography>
-                            </div>
-                        ))}
-                    </div>
-                ))}
-            </div>
+            {format.map((section) => (
+                <div key={section.name}>
+                    <Typography align="left" className="section-title">
+                        {section.label}
+                    </Typography>
+                    {section.fields.map((field) => (
+                        <div key={field.name}>
+                            <Typography align="left" className="field-title">
+                                {field.label}
+                            </Typography>
+                            <Typography align="left" className="field-value">
+                                {toDisplayValue(
+                                    formData[section.name][field.name],
+                                )}
+                            </Typography>
+                        </div>
+                    ))}
+                </div>
+            ))}
         </div>
-    );
-};
+    </div>
+);
 
 FormReceipt.propTypes = {
     "formData": PropTypes.objectOf(PropTypes.object),

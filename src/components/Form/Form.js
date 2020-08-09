@@ -57,7 +57,7 @@ const generateFields = (format) => {
             if (required) {
                 validator = validator.required();
             }
-            validator = validator.label(label);
+            validator = validator.label(label).nullable();
             return {
                 ...fieldValidators,
                 [name]: validator,
@@ -91,7 +91,6 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
     }, []);
 
     const submit = useCallback(async (formData) => {
-        // console.log(fo)
         const errors = await onSubmit(formData);
         if (!errors) {
             setSubmittedData(formData);
@@ -115,27 +114,27 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                         },
                         "margin": "normal",
                         "name": `${name}.${field.props.name}`,
-                        "mutators": mutators,
+                        mutators,
                     }))}
                 <div className={classes.buttons}>
                     {index > 0 && index < sections.length &&
-                        <Button data-cy="backButton" onClick={handleBack}
-                            variant="outlined">
-                            Back
-                        </Button>}
+                    <Button data-cy="backButton" onClick={handleBack}
+                        variant="outlined">
+                        Back
+                    </Button>}
                     {index < sections.length - 1 &&
-                        <Button data-cy="nextButton"
-                            disabled={Boolean(errors[name])}
-                            onClick={handleNext}
-                            variant="outlined">
-                            Next
-                        </Button>}
+                    <Button data-cy="nextButton"
+                        disabled={Boolean(errors[name])}
+                        onClick={handleNext}
+                        variant="outlined">
+                        Next
+                    </Button>}
                     {index === sections.length - 1 &&
-                        <Button data-cy="submitButton"
-                            disabled={Boolean(errors[name]) || submitting}
-                            type="submit" variant="outlined">
-                            {submitting ? "Submitting" : "Submit"}
-                        </Button>}
+                    <Button data-cy="submitButton"
+                        disabled={Boolean(errors[name]) || submitting}
+                        type="submit" variant="outlined">
+                        {submitting ? "Submitting" : "Submit"}
+                    </Button>}
                 </div>
             </StepContent>
         </Step>
@@ -153,12 +152,12 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
             <form noValidate onSubmit={handleSubmit}>
                 <Stepper activeStep={activeStep} orientation="vertical">
                     {sections.map((section, index) => renderStep(
-                        index, section, errors, submitting, form.mutators
+                        index, section, errors, submitting, form.mutators,
                     ))}
                 </Stepper>
                 {submitError &&
-                    <Dialog className="error" open={openError}
-                        onClose={() => setOpenError(false)}>
+                    <Dialog className="error" onClose={() => setOpenError(false)}
+                        open={openError}>
                         <DialogTitle>
                             An error occurred while submitting. Try again.
                         </DialogTitle>
@@ -181,13 +180,13 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                 {title}
             </Typography>
             {showReceipt ?
-                <Receipt formData={submittedData} format={base}/> :
-                <ReactForm initialValues={initialData} onSubmit={submit}
-                    mutators={{
-                        setHourlyTuition: ([name], state, utils) => {
-                            utils.changeValue(state, 'hourlyTuition', () => name)
-                        }
-                    }} render={Render} validate={validate} />}
+                <Receipt formData={submittedData} format={base} /> :
+                <ReactForm initialValues={initialData} mutators={{
+                    "setHourlyTuition": ([name], state, utils) => {
+                        utils.changeValue(state, "hourlyTuition", () => name);
+                    },
+                }}
+                onSubmit={submit} render={Render} validate={validate} />}
         </div>
     );
 };
