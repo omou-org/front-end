@@ -144,9 +144,12 @@ const CourseDisplayCard = ({
   const isActive = (startTime, endTime, startDate, endDate) => {
     const currentTime = moment().format("HH:mm:ss");
     const currentDate = moment().format("L");
+    const currentDay = moment().format("ddd");
+    
     return (
       currentDate >= startDate &&
       currentTime >= startTime &&
+      currentDay === abbreviatedDay &&
       currentTime <= endTime &&
       currentDate <= endDate
     );
