@@ -150,9 +150,9 @@ const CourseListOptions = ({
               aria-controls="panel1a-content"
               id="panel1a-header"
               onClick={() =>
-                expand === false ? setExpand(true) : setExpand(false)
+                setExpand(!expand)
               }
-              className={expand ? classes.accordionDivider : null}
+              className={expand && classes.accordionDivider}
             >
               <Typography className={classes.heading}>Notes</Typography>
             </AccordionSummary>

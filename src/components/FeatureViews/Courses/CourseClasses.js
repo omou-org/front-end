@@ -227,6 +227,17 @@ const CourseClasses = () => {
     }
   };
 
+  const tabSelection = () => {
+    switch(index) {
+      case 0:
+        return classes.chromeTabStart;
+      case tabs.legth - 1: 
+        return classes.chromeTabEnd;
+      default:
+        return classes.chromeTab;
+    }
+  }
+
   return (
     <Grid item xs={12}>
       <BackgroundPaper elevation={2}>
@@ -346,14 +357,10 @@ const CourseClasses = () => {
                 <Toolbar disableGutters>
                   <ChromeTabs
                     className={
-                      index === 0
-                        ? classes.chromeTabStart
-                        : index === tabs.length - 1
-                        ? classes.chromeTabEnd
-                        : classes.chromeTab
+                      tabSelection()
                     }
                     tabs={
-                      comparison(data?.parent?.studentList, data?.enrollments)
+                      comparison(data.parent?.studentList, data.enrollments)
                         ? tabs
                         : [{ label: "About Course" }]
                     }

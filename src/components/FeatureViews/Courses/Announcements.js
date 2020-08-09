@@ -82,7 +82,7 @@ const AnnouncementCard = ({
         USER_TYPES.admin,
         USER_TYPES.receptionist,
         USER_TYPES.instructor,
-      ].includes(loggedInUserAccountType) ? (
+      ].includes(loggedInUserAccountType) && (
         <Grid item xs={6} style={{ textAlign: "right" }}>
           <Button onClick={handleOpenForm} name="edit" value="edit">
             <Create style={{ color: omouBlue }} />
@@ -91,7 +91,7 @@ const AnnouncementCard = ({
             <Cancel style={{ color: omouBlue }} />
           </Button>
         </Grid>
-      ) : null}
+      )}
       <Grid item xs={12} className={classes.announcementBody}>
         <Typography variant="body1" align="left" ref={bodyRef}>
           {body}
@@ -165,7 +165,7 @@ const Announcements = ({
     });
   };
 
-  const announcementRender = announcementsData?.sort((firstVal, secondVal) => {
+  const announcementRender = announcementsData.sort((firstVal, secondVal) => {
     if (firstVal.updatedAt > secondVal.updatedAt) {
       return -1;
     }
@@ -177,9 +177,11 @@ const Announcements = ({
 
   return (
     <Grid container justify="flex-start" data-active="inactive">
-      {loggedInUserAccountType === "ADMIN" ||
-      loggedInUserAccountType === "RECEPTIONIST" ||
-      loggedInUserAccountType === "INSTRUCTOR" ? (
+      {[
+        USER_TYPES.admin,
+        USER_TYPES.receptionist,
+        USER_TYPES.instructor,
+      ].includes(loggedInUserAccountType) && (
         <Button
           className={classes.newNoteButton}
           onClick={() => setNewAnnouncementForm(true, setEditOrPost("post"))}
@@ -188,8 +190,8 @@ const Announcements = ({
         >
           <span className={classes.plusSpan}>+</span> New Announcement
         </Button>
-      ) : null}
-      {announcementRender?.map(({ poster, subject, body, updatedAt, id }) => (
+      )}
+      {announcementRender.map(({ poster, subject, body, updatedAt, id }) => (
         <>
           <AnnouncementCard
             key={id}
