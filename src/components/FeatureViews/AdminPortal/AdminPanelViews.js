@@ -12,7 +12,9 @@ export const CreateAction = (props) => (
 )
 
 export const CategoryList = (props) => (
-  <List actions={<CreateAction />} {...props}>
+  <List {...props}
+  actions={<CreateAction />} 
+  bulkActionButtons={false}>
     <Datagrid rowClick="edit">
       <TextField source="id" />
       <TextField source="name" />
@@ -51,7 +53,11 @@ export const CategoryShow = (props) => (
 
 // Schools
 export const SchoolList = (props) => (
-  <List actions={<CreateAction />} {...props}>
+  <List 
+    {...props}
+    actions={<CreateAction />} 
+    bulkActionButtons={false}
+  >
     <Datagrid rowClick="edit">
       <TextField source="id" />
       <TextField source="name" />
@@ -124,7 +130,10 @@ const discountEditFields = [
 
 const discountDisplays = (fields) => [
   (props) => (
-    <List actions={<CreateAction />} {...props}>
+    <List     
+      {...props}
+      actions={<CreateAction />} 
+      bulkActionButtons={false}>
       <Datagrid rowClick="edit">
         {discountShowFields}
         {fields}
@@ -174,7 +183,10 @@ const courseTypes = [
 ];
 
 export const TuitionList = (props) => (
-  <List actions={<CreateAction />} {...props}>
+  <List     
+    {...props}
+    actions={<CreateAction />} 
+    bulkActionButtons={false}>
     <Datagrid rowClick="edit">
       <TextField source="id" />
       <TextField source="name" />
