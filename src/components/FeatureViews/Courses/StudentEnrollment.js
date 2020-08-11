@@ -14,9 +14,10 @@ import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import ChatOutlinedIcon from "@material-ui/icons/ChatOutlined";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Link } from "react-router-dom";
-import { fullName } from "../../../utils";
+import { fullName, USER_TYPES } from "../../../utils";
 import { omouBlue, highlightColor } from "../../../theme/muiTheme";
 import SessionEmailOrNotesModal from "./SessionEmailOrNotesModal";
+import AccessControlComponent from "../../OmouComponents/AccessControlComponent";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -104,9 +105,7 @@ const StudentEnrollmentList = ({
         >
           <MailOutlineIcon style={{ color: "rgb(112,105,110)" }} />
         </Button>
-        {loggedInUserAccountType === "ADMIN" ||
-        loggedInUserAccountType === "RECEPTIONIST" ||
-        loggedInUserAccountType === "INSTRUCTOR" ? (
+        <AccessControlComponent permittedAccountTypes={[USER_TYPES.admin, USER_TYPES.instructor, USER_TYPES.receptionist]}>
           <Menu
             id="simple-menu"
             anchorEl={anchorEl}
@@ -132,7 +131,7 @@ const StudentEnrollmentList = ({
               Email Parent
             </MenuItem>
           </Menu>
-        ) : null}
+          </AccessControlComponent>
       </TableCell>
       <TableCell
         align="right"

@@ -13,6 +13,7 @@ import moment from "moment";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
+import AccessControlComponent from "../../OmouComponents/AccessControlComponent"
 import { fullName, USER_TYPES } from "../../../utils";
 import theme from "../../../theme/muiTheme";
 
@@ -158,11 +159,7 @@ const CourseListOptions = ({
             </AccordionSummary>
             <AccordionDetails>
               <Grid container justify="flex-start">
-                {[
-                  USER_TYPES.admin,
-                  USER_TYPES.receptionist,
-                  USER_TYPES.instructor,
-                ].includes(loggedInUserAccountType) ? (
+              <AccessControlComponent permittedAccountTypes={[USER_TYPES.admin, USER_TYPES.instructor, USER_TYPES.receptionist]}>
                   <Grid item xs={12} style={{ textAlign: "left" }}>
                     <Button
                       className={classes.newNoteButton}
@@ -171,7 +168,7 @@ const CourseListOptions = ({
                       <span className={classes.plusSpan}>+</span> New Note
                     </Button>
                   </Grid>
-                ) : null}
+                  </AccessControlComponent>
 
                 {sessionNotesRender.map((note) => {
                   const { body, updatedAt, id, poster, subject } = note;
@@ -191,11 +188,7 @@ const CourseListOptions = ({
                           {subject}
                         </Typography>
                       </Grid>
-                      {[
-                        USER_TYPES.admin,
-                        USER_TYPES.receptionist,
-                        USER_TYPES.instructor,
-                      ].includes(loggedInUserAccountType) ? (
+                      <AccessControlComponent permittedAccountTypes={[USER_TYPES.admin, USER_TYPES.instructor, USER_TYPES.receptionist]}>
                         <Grid item xs={6} style={{ textAlign: "right" }}>
                           <Button
                             onClick={handleEdit}
@@ -206,7 +199,7 @@ const CourseListOptions = ({
                             <Create style={{ color: "#43B5D9" }} />
                           </Button>
                         </Grid>
-                      ) : null}
+                      </AccessControlComponent>
                       <Grid item xs={12}>
                         <Typography variant="body1" align="left" style={{ wordBreak: "break-word" }}>
                         {
