@@ -2,14 +2,25 @@ import * as React from "react";
 import {
   BooleanField, BooleanInput, Create, Datagrid, DateField, DateInput, Edit,
   List, NumberField, NumberInput, SelectField, SelectInput, Show, SimpleForm,
-  SimpleShowLayout, TextField, TextInput, ReferenceInput, CardActions, CreateButton
+  SimpleShowLayout, TextField, TextInput, ReferenceInput, CardActions, CreateButton,
+  Toolbar, SaveButton
 } from "react-admin";
 
 export const CreateAction = (props) => (
   <CardActions>
     <CreateButton />
   </CardActions>
+);
+
+export const NoDeleteEditAction = (props) => (
+  <Toolbar {...props}>
+    <SaveButton
+      label="save"
+      redirect="show"
+      submitOnEnter={true} />
+  </Toolbar>
 )
+
 
 export const CategoryList = (props) => (
   <List {...props}
@@ -34,7 +45,7 @@ export const CategoryCreate = (props) => (
 
 export const CategoryEdit = (props) => (
   <Edit {...props}>
-    <SimpleForm>
+    <SimpleForm toolbar={<NoDeleteEditAction />} redirect="show">
       <TextInput source="name" />
       <TextInput source="description" />
     </SimpleForm>
