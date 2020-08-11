@@ -124,7 +124,7 @@ const CourseListOptions = ({
     setButtonState("edit");
   };
 
-  const handleReadMoreClick = () => setReadMore(true);
+  const handleReadMoreClick = () => !readMore ? setReadMore(true) : setReadMore(false);
 
   const sessionNotesRender = data.sessionNotes?.sort((firstVal, secondVal) => {
     if (firstVal.updatedAt > secondVal.updatedAt) {
@@ -208,28 +208,18 @@ const CourseListOptions = ({
                         </Grid>
                       ) : null}
                       <Grid item xs={12}>
-                        {readMore === false && body.length > 110 ? (
-                          <Typography variant="body1" align="left">
-                            {hideString}
-                            <a
-                              className={classes.anchorStyle}
-                              onClick={handleReadMoreClick}
-                            >
-                              <span style={{ paddingRight: theme.spacing(1) }}>
-                                Read More
-                              </span>
-                            </a>
-                          </Typography>
-                        ) : (
-                          <Typography
-                            variant="body1"
-                            align="left"
-                            style={{ wordBreak: "break-word" }}
-                            value={body}
-                          >
-                            {body}
-                          </Typography>
-                        )}
+                        <Typography variant="body1" align="left" style={{ wordBreak: "break-word" }}>
+                        {
+                          !readMore && body.length > 110 ? body.substring(0,60) + "..." : body
+                        }
+                        {body.length > 110 && (<a className={classes.anchorStyle} onClick={handleReadMoreClick}>
+                          <span style={{ paddingRight: theme.spacing(1) }}>
+                            {
+                              !readMore ? "Read More" : "Read Less"
+                            }
+                          </span>
+                        </a>)}
+                        </Typography>
                       </Grid>
                       <Grid item xs={12} style={{ marginTop: "1.5em" }}>
                         <Typography variant="subtitle2" align="left">

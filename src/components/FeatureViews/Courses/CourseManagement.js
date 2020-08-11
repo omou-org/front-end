@@ -222,48 +222,80 @@ const CourseDisplayCard = ({
   );
 };
 
-const CourseFilter = ({ initialValue, filterList, setState, filter }) => {
+
+
+const CourseFilter = ({ initialValue, filterList, setState, filter, filterKey }) => {
   const classes = useStyles();
   const handleChange = (event) => setState(event.target.value);
-
-  const chosenFilter = filterList.map((filterItem) => {
+  
+  const getFilterValue = () => {
     switch (initialValue) {
       case "All Instructors":
-        return (
-          <MenuItem
-            key={filterItem.instructor.user.lastName}
-            className={classes.menuSelect}
-            value={filterItem.instructor.user.lastName}
-            ListItemClasses={{ selected: classes.menuSelected }}
-          >
-            {fullName(filterItem.instructor.user)}
-          </MenuItem>
-        );
+        return filterList.map(filterItem => ({value: filterItem.instructor.user.id, label: fullName(filterItem.instructor.user)}))
       case "All Subjects":
-        return (
-          <MenuItem
-            key={filterItem.courseCategory.name}
-            className={classes.menuSelect}
-            value={filterItem.courseCategory.name}
-            ListItemClasses={{ selected: classes.menuSelected }}
-          >
-            {filterItem.courseCategory.name}
-          </MenuItem>
-        );
+        return filterList.map(filterItem => ({value: filterItem.courseCategory.id, label: filterItem.courseCategory.name}))
       case "All Grades":
-        return (
-          <MenuItem
-            key={filterItem.label}
-            className={classes.menuSelect}
-            value={filterItem.value.toUpperCase()}
-            ListItemClasses={{ selected: classes.menuSelected }}
-          >
-            {filterItem.label}
-          </MenuItem>
-        );
+        return filterList.map(filterItem => ({value: filterItem.value.toUpperCase(), label: filterItem.label}))
       default:
         return;
     }
+  }
+  
+
+  const filterOptions = filterList.map((filterItem) => {
+    // console.log(filterItem)
+    // const filterValue = {
+    //   "instructors": {value: filterItem.instructor.user.lastName, child: fullName(filterItem.instructor.user)},
+    //   "subjects": {value: filterItem.courseCategory.name, child: filterItem.courseCategory.name},
+    //   "grades": {value: filterItem.value.toUpperCase(), child: filterItem.label},
+    // };
+
+    // return (
+    // <MenuItem
+    //   className={classes.menuSelect} 
+    //   ListItemClasses={{ selected: classes.menuSelected }}
+    //   value={filterValue[filterKey].value}
+    // >
+    //   {filterValue[filterKey].child}
+    // </MenuItem>
+    // )
+    // switch (initialValue) {
+    //   case "All Instructors":
+    //     return (
+    //       <MenuItem
+    //         key={filterItem.instructor.user.lastName}
+    //         className={classes.menuSelect}
+    //         value={filterItem.instructor.user.lastName}
+    //         ListItemClasses={{ selected: classes.menuSelected }}
+    //       >
+    //         {fullName(filterItem.instructor.user)}
+    //       </MenuItem>
+    //     );
+    //   case "All Subjects":
+    //     return (
+    //       <MenuItem
+    //         key={filterItem.courseCategory.name}
+    //         className={classes.menuSelect}
+    //         value={filterItem.courseCategory.name}
+    //         ListItemClasses={{ selected: classes.menuSelected }}
+    //       >
+    //         {filterItem.courseCategory.name}
+    //       </MenuItem>
+    //     );
+    //   case "All Grades":
+    //     return (
+    //       <MenuItem
+    //         key={filterItem.label}
+    //         className={classes.menuSelect}
+    //         value={filterItem.value.toUpperCase()}
+    //         
+    //       >
+    //         {filterItem.label}
+    //       </MenuItem>
+    //     );
+    //   default:
+    //     return;
+    // }
   });
 
   return (
@@ -296,7 +328,7 @@ const CourseFilter = ({ initialValue, filterList, setState, filter }) => {
           >
             {initialValue}
           </MenuItem>
-          {chosenFilter}
+        {getFilterValue().map(filterItem => <MenuItem value={filterItem.value} className={classes.menuSelect} ListItemClasses={{ selected: classes.menuSelected }}>{filterItem.label}</MenuItem>)}
         </Select>
       </FormControl>
     </Grid>
@@ -367,8 +399,8 @@ const CourseManagement = () => {
     .filter(
       (course) =>
         checkFilter(course.academicLevel, filterByGrades) &&
-        checkFilter(course.courseCategory.name, filterBySubjects) &&
-        checkFilter(course.instructor.user.lastName, filterByInstructors)
+        checkFilter(course.courseCategory.id, filterBySubjects) &&
+        checkFilter(course.instructor.user.id, filterByInstructors)
     )
     .sort((firstEl, secondEl) => {
       switch (sortByDate) {
@@ -446,18 +478,21 @@ const CourseManagement = () => {
               initialValue="All Grades"
               setState={setFilterByGrades}
               filter={filterByGrades}
+              filterKey={"grades"}
             />
             <CourseFilter
               filterList={subjectList}
               initialValue="All Subjects"
               setState={setFilterBySubjects}
               filter={filterBySubjects}
+              filterKey={"subjects"}
             />
             <CourseFilter
               filterList={instructorsList}
               initialValue="All Instructors"
               setState={setFilterByInstructors}
               filter={filterByInstructors}
+              filterKey={"instructors"}
             />
           </Grid>
         </Paper>
