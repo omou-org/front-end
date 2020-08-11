@@ -2,11 +2,17 @@ import * as React from "react";
 import {
   BooleanField, BooleanInput, Create, Datagrid, DateField, DateInput, Edit,
   List, NumberField, NumberInput, SelectField, SelectInput, Show, SimpleForm,
-  SimpleShowLayout, TextField, TextInput, ReferenceInput
+  SimpleShowLayout, TextField, TextInput, ReferenceInput, CardActions, CreateButton
 } from "react-admin";
 
+export const CreateAction = (props) => (
+  <CardActions>
+    <CreateButton />
+  </CardActions>
+)
+
 export const CategoryList = (props) => (
-  <List {...props}>
+  <List actions={<CreateAction />} {...props}>
     <Datagrid rowClick="edit">
       <TextField source="id" />
       <TextField source="name" />
@@ -45,7 +51,7 @@ export const CategoryShow = (props) => (
 
 // Schools
 export const SchoolList = (props) => (
-  <List {...props}>
+  <List actions={<CreateAction />} {...props}>
     <Datagrid rowClick="edit">
       <TextField source="id" />
       <TextField source="name" />
@@ -118,7 +124,7 @@ const discountEditFields = [
 
 const discountDisplays = (fields) => [
   (props) => (
-    <List {...props}>
+    <List actions={<CreateAction />} {...props}>
       <Datagrid rowClick="edit">
         {discountShowFields}
         {fields}
@@ -168,7 +174,7 @@ const courseTypes = [
 ];
 
 export const TuitionList = (props) => (
-  <List {...props}>
+  <List actions={<CreateAction />} {...props}>
     <Datagrid rowClick="edit">
       <TextField source="id" />
       <TextField source="name" />
