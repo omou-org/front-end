@@ -65,7 +65,7 @@ const theme = createMuiTheme({
                 "color": "black",
             },
 			containedPrimary: {
-				color: "#FFFFFF",
+				color: "#FFFFFF", 
 			}
         },
         "MuiBadge": {

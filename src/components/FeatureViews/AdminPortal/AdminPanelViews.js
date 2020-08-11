@@ -2,8 +2,12 @@ import * as React from "react";
 import {
   BooleanField, BooleanInput, Create, Datagrid, DateField, DateInput, Edit,
   List, NumberField, NumberInput, SelectField, SelectInput, Show, SimpleForm,
-  SimpleShowLayout, TextField, TextInput, ReferenceInput
+  SimpleShowLayout, TextField, TextInput, ReferenceInput, CardActions
 } from "react-admin";
+
+const NoneActions = props => (
+    <h1>Hi</h1>
+);
 
 export const CategoryList = (props) => (
   <List {...props}>
@@ -168,7 +172,7 @@ const courseTypes = [
 ];
 
 export const TuitionList = (props) => (
-  <List {...props}>
+  <List bulkActionButtons={false} {...props}>
     <Datagrid rowClick="edit">
       <TextField source="id" />
       <TextField source="name" />
@@ -181,7 +185,7 @@ export const TuitionList = (props) => (
 
 
 export const TuitionShow = (props) => (
-  <Show {...props}>
+  <Show  {...props}>
     <SimpleShowLayout>
       <TextField source="id" />
       <TextField source="name" />
@@ -195,7 +199,7 @@ export const TuitionShow = (props) => (
 
 
 export const TuitionEdit = (props) => (
-  <Edit {...props}>
+  <Edit  {...props}>
     <SimpleForm>
       <TextInput source="name" />
       <SelectInput source="academicLevel" choices={academicLevelChoices} />
