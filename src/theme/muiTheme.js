@@ -60,11 +60,6 @@ const theme = createMuiTheme({
                 fontFamily: 'Roboto',
             },
         },
-        "MuiIconButton": {
-            "colorInherit": {
-                "color": "white"
-            }
-        },
         "MuiButton": {
             "text": {
                 "color": "black",
