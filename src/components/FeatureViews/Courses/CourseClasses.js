@@ -349,11 +349,11 @@ const CourseClasses = () => {
         <Grid container style={{ marginTop: "2.5em" }}>
           <Grid item xs={12} sm={12}>
             <ThemeProvider theme={baseTheme}>
-              <AppBar
+              {/* <AppBar
                 position={"static"}
                 elevation={0}
                 style={{ backgroundColor: "#ffffff" }}
-              >
+              > */}
                 <Toolbar disableGutters>
                   <ChromeTabs
                     className={
@@ -380,7 +380,7 @@ const CourseClasses = () => {
                   />
                 </Toolbar>
                 <Divider classes={{ root: classes.dividerColor }} />
-              </AppBar>
+              {/* </AppBar> */}
               <Grid container>
                 <TabPanel index={0} value={index} backgroundColor="#FFFFFF">
                   <ClassInfo description={description} />

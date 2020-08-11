@@ -140,20 +140,8 @@ const CourseDisplayCard = ({
   const endingTime = moment(endTime, "HH:mm").format("h:mm A");
   const startingDate = moment(startDate).calendar();
   const endingDate = moment(endDate).calendar();
-
-  const isActive = (startTime, endTime, startDate, endDate) => {
-    const currentTime = moment().format("HH:mm:ss");
-    const currentDate = moment().format("L");
-    const currentDay = moment().format("ddd");
-
-    return (
-      currentDate >= startDate &&
-      currentTime >= startTime &&
-      currentDay === abbreviatedDay &&
-      currentTime <= endTime &&
-      currentDate <= endDate
-    );
-  };
+  const currentDate = moment().format("L");
+  const isActive = (currentDate >= startingDate && currentDate <= endingDate)
 
   const handleClick = (e) => {
     history.push(`/coursemanagement/class/${id}`);
@@ -176,20 +164,13 @@ const CourseDisplayCard = ({
         <Grid item xs={6} sm={3} md={6} style={{ textAlign: "left" }}>
           <Chip
             label={
-              isActive(startTime, endTime, startingDate, endingDate)
+              isActive
                 ? "ACTIVE"
                 : "PAST"
             }
             className={classes.chipSize}
             style={{
-              backgroundColor: isActive(
-                startTime,
-                endTime,
-                startingDate,
-                endingDate
-              )
-                ? activeColor
-                : pastColor,
+              backgroundColor: isActive ? activeColor : pastColor,
             }}
           />
         </Grid>
@@ -249,7 +230,7 @@ const CourseFilter = ({ initialValue, filterList, setState, filter }) => {
   };
 
   // const chosenFilter = (OptionMapper) => filterList.map(OptionMapper);
-  const chosenFilter = (optionsMapper) => filterList.map(optionsMapper);
+  // const chosenFilter = (optionsMapper) => filterList.map(optionsMapper);
 
   return (
     <Grid item xs={3}>
