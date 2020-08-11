@@ -248,6 +248,9 @@ const CourseFilter = ({ initialValue, filterList, setState, filter }) => {
     }
   };
 
+  // const chosenFilter = (OptionMapper) => filterList.map(OptionMapper);
+  const chosenFilter = (optionsMapper) => filterList.map(optionsMapper);
+
   return (
     <Grid item xs={3}>
       <FormControl className={classes.margin}>
@@ -278,6 +281,7 @@ const CourseFilter = ({ initialValue, filterList, setState, filter }) => {
           >
             {initialValue}
           </MenuItem>
+
           {getFilterValue().map((filterItem) => (
             <MenuItem
               value={filterItem.value}
@@ -360,16 +364,13 @@ const CourseManagement = () => {
         checkFilter(course.courseCategory.id, filterBySubjects) &&
         checkFilter(course.instructor.user.id, filterByInstructors)
     )
-    .sort((firstEl, secondEl) => {
-      switch (sortByDate) {
-        case "start_date":
-          return sortDescOrder(firstEl.startDate, secondEl.startDate);
-        case "class_name":
-          return sortDescOrder(firstEl.title, secondEl.title);
-        default:
-          return;
-      }
-    });
+    .sort(
+      (firstEl, secondEl) =>
+        ({
+          start_date: sortDescOrder(firstEl.startDate, secondEl.startDate),
+          class_name: sortDescOrder(firstEl.title, secondEl.title),
+        }[sortByDate])
+    );
 
   return (
     <Grid item xs={12}>

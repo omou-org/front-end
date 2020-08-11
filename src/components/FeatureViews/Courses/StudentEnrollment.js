@@ -175,11 +175,7 @@ const Studentenrollment = ({
     setModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setModalOpen(false);
-  };
-
-  const handleSendEmail = () => {};
+  const handleCloseModal = () => setModalOpen(false);
 
   return (
     <Grid item xs={12}>
@@ -206,8 +202,7 @@ const Studentenrollment = ({
               .sort((firstStudent, secondStudent) =>
                 firstStudent.student.user.lastName <
                 secondStudent.student.user.lastName
-                  ? -1
-                  : 0
+                  ? -1 : 0
               )
               .map((students) => {
                 const { accountType, primaryParent, user } = students.student;
