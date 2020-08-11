@@ -145,7 +145,7 @@ const CourseDisplayCard = ({
     const currentTime = moment().format("HH:mm:ss");
     const currentDate = moment().format("L");
     const currentDay = moment().format("ddd");
-    
+
     return (
       currentDate >= startDate &&
       currentTime >= startTime &&
@@ -222,81 +222,31 @@ const CourseDisplayCard = ({
   );
 };
 
-
-
-const CourseFilter = ({ initialValue, filterList, setState, filter, filterKey }) => {
+const CourseFilter = ({ initialValue, filterList, setState, filter }) => {
   const classes = useStyles();
   const handleChange = (event) => setState(event.target.value);
-  
+
   const getFilterValue = () => {
     switch (initialValue) {
       case "All Instructors":
-        return filterList.map(filterItem => ({value: filterItem.instructor.user.id, label: fullName(filterItem.instructor.user)}))
+        return filterList.map((filterItem) => ({
+          value: filterItem.instructor.user.id,
+          label: fullName(filterItem.instructor.user),
+        }));
       case "All Subjects":
-        return filterList.map(filterItem => ({value: filterItem.courseCategory.id, label: filterItem.courseCategory.name}))
+        return filterList.map((filterItem) => ({
+          value: filterItem.courseCategory.id,
+          label: filterItem.courseCategory.name,
+        }));
       case "All Grades":
-        return filterList.map(filterItem => ({value: filterItem.value.toUpperCase(), label: filterItem.label}))
+        return filterList.map((filterItem) => ({
+          value: filterItem.value.toUpperCase(),
+          label: filterItem.label,
+        }));
       default:
         return;
     }
-  }
-  
-
-  const filterOptions = filterList.map((filterItem) => {
-    // console.log(filterItem)
-    // const filterValue = {
-    //   "instructors": {value: filterItem.instructor.user.lastName, child: fullName(filterItem.instructor.user)},
-    //   "subjects": {value: filterItem.courseCategory.name, child: filterItem.courseCategory.name},
-    //   "grades": {value: filterItem.value.toUpperCase(), child: filterItem.label},
-    // };
-
-    // return (
-    // <MenuItem
-    //   className={classes.menuSelect} 
-    //   ListItemClasses={{ selected: classes.menuSelected }}
-    //   value={filterValue[filterKey].value}
-    // >
-    //   {filterValue[filterKey].child}
-    // </MenuItem>
-    // )
-    // switch (initialValue) {
-    //   case "All Instructors":
-    //     return (
-    //       <MenuItem
-    //         key={filterItem.instructor.user.lastName}
-    //         className={classes.menuSelect}
-    //         value={filterItem.instructor.user.lastName}
-    //         ListItemClasses={{ selected: classes.menuSelected }}
-    //       >
-    //         {fullName(filterItem.instructor.user)}
-    //       </MenuItem>
-    //     );
-    //   case "All Subjects":
-    //     return (
-    //       <MenuItem
-    //         key={filterItem.courseCategory.name}
-    //         className={classes.menuSelect}
-    //         value={filterItem.courseCategory.name}
-    //         ListItemClasses={{ selected: classes.menuSelected }}
-    //       >
-    //         {filterItem.courseCategory.name}
-    //       </MenuItem>
-    //     );
-    //   case "All Grades":
-    //     return (
-    //       <MenuItem
-    //         key={filterItem.label}
-    //         className={classes.menuSelect}
-    //         value={filterItem.value.toUpperCase()}
-    //         
-    //       >
-    //         {filterItem.label}
-    //       </MenuItem>
-    //     );
-    //   default:
-    //     return;
-    // }
-  });
+  };
 
   return (
     <Grid item xs={3}>
@@ -328,7 +278,15 @@ const CourseFilter = ({ initialValue, filterList, setState, filter, filterKey })
           >
             {initialValue}
           </MenuItem>
-        {getFilterValue().map(filterItem => <MenuItem value={filterItem.value} className={classes.menuSelect} ListItemClasses={{ selected: classes.menuSelected }}>{filterItem.label}</MenuItem>)}
+          {getFilterValue().map((filterItem) => (
+            <MenuItem
+              value={filterItem.value}
+              className={classes.menuSelect}
+              ListItemClasses={{ selected: classes.menuSelected }}
+            >
+              {filterItem.label}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
     </Grid>
@@ -478,21 +436,18 @@ const CourseManagement = () => {
               initialValue="All Grades"
               setState={setFilterByGrades}
               filter={filterByGrades}
-              filterKey={"grades"}
             />
             <CourseFilter
               filterList={subjectList}
               initialValue="All Subjects"
               setState={setFilterBySubjects}
               filter={filterBySubjects}
-              filterKey={"subjects"}
             />
             <CourseFilter
               filterList={instructorsList}
               initialValue="All Instructors"
               setState={setFilterByInstructors}
               filter={filterByInstructors}
-              filterKey={"instructors"}
             />
           </Grid>
         </Paper>
