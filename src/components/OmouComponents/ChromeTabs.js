@@ -37,9 +37,6 @@ const useTabStyles = makeStyles(({ palette, spacing, breakpoints }) => {
       color: "#666666",
       backgroundColor: bgColor,
       transition: "0.2s",
-    //   border: "1px solid #EEEEEE", 
-    //   borderBottom: "0px",
-    //   borderLeft: "0px",
       [breakpoints.up("md")]: {
         minWidth: minWidth.md
       },
