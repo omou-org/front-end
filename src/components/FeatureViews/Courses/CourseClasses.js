@@ -24,6 +24,7 @@ import StudentEnrollment from "./StudentEnrollment";
 import CourseSessions from "./CourseSessions";
 import { useSelector } from "react-redux";
 import { gradeLvl } from "../../../utils";
+import theme from "../../../theme/muiTheme";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -71,8 +72,6 @@ export const GET_ANNOUNCEMENTS = gql`
     }
   }
 `;
-
-const baseTheme = createMuiTheme();
 
 const CourseClasses = () => {
   const id = useParams();
@@ -347,7 +346,7 @@ const CourseClasses = () => {
 
         <Grid container style={{ marginTop: "2.5em" }}>
           <Grid item xs={12} sm={12}>
-            <ThemeProvider theme={baseTheme}>
+            <ThemeProvider theme={theme}>
                 <Toolbar disableGutters>
                   <ChromeTabs
                     className={
