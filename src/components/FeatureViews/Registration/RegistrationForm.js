@@ -13,7 +13,6 @@ export default function RegistrationForm() {
 	const [initialData, setInitialData] = useState();
 	const onSubmit =
 		useCallback((formData) => submit(formData, id), [id, submit]);
-
 	useEffect(() => {
 		if (id) {
 			let abort = false;
@@ -44,7 +43,7 @@ export default function RegistrationForm() {
 	if (!form || (id && initialData === null)) {
 		return <Redirect to="/PageNotFound"/>;
 	}
-
+	
 	return (
 		<BackgroundPaper>
 			<Grid container>

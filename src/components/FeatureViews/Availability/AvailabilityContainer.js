@@ -1,5 +1,4 @@
 import React, {useCallback, useState} from "react";
-import {useSelector} from "react-redux";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -27,7 +26,6 @@ function TabPanel({children, value, index, ...other}) {
 }
 
 export default function AvailabilityContainer() {
-	const AuthUser = useSelector(({auth}) => auth);
 	const [tab, setTab] = useState(0);
 
 	const handleChangeTab = useCallback((_, newValue) => {

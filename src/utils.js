@@ -387,8 +387,8 @@ export const getTuitionAmount = (courseObject, numSessions) => {
     return (hourlyTuition * duration * numSessions).toFixed(2);
 };
 
-export const initials = (first, last) =>
-    first.charAt(0).toUpperCase() + last.charAt(0).toUpperCase();
+export const initials = (first, last) => first && last ?
+    first.charAt(0).toUpperCase() + last.charAt(0).toUpperCase() : "";
 
 export const useGoToRoute = () => {
     const history = useHistory();

@@ -1,5 +1,6 @@
 import * as moment from "moment";
-import {arraysMatch} from "../../utils";
+import {arraysMatch, USER_TYPES} from "../../utils";
+import {useSelector} from "react-redux";
 
 export const createTutoringDetails = (courseType, formData) => ({
 	title: formData.tutoring_details.course,
@@ -11,7 +12,7 @@ export const createTutoringDetails = (courseType, formData) => ({
 	courseType,
 });
 
-const mapRegistrationInfo = (student, course) => ({
+export const mapRegistrationInfo = (student, course) => ({
 	course: {
 		id: typeof course === "string" && course,
 		...(typeof course !== "string" && course),
@@ -29,6 +30,7 @@ const saveRegistration = (student, course, registrationState) => {
 		[student]: [...existingStudentRegistration, newRegistrationInfo],
 	};
 	sessionStorage.setItem("registrations", JSON.stringify(newRegistrationState));
+	return newRegistrationState;
 };
 
 /**
@@ -41,21 +43,64 @@ export const submitRegistration = (student, course) => {
 	const existingEnrollmentsByStudents = Object.entries(registrationState)
 		.map(([studentID, studentRegistrations]) =>
 			Array.isArray(studentRegistrations) ? studentRegistrations
-				.map(registration => [studentID, registration.course.existing_id]) : []
+				.map(registration => [studentID, registration.course.id]) : []
 		);
 	const isEnrolled = existingEnrollmentsByStudents.map(studentEnrollments =>
 		studentEnrollments.filter((enrollment) => arraysMatch(enrollment, [student, course])))
 		.some(studentEnrollments => studentEnrollments.length > 0);
 	if (!isEnrolled) {
-		saveRegistration(student, course, registrationState);
+		return saveRegistration(student, course, registrationState);
 	}
+	return registrationState;
 };
+
+/**
+ * @description this will remove a registration from session storage
+ * */
+export const removeRegistration = (student, course) => {
+	const registrationState = JSON.parse(sessionStorage.getItem("registrations"));
+	const indexOfRegistration = registrationState[student]
+		.map(({course}) => course)
+		.indexOf(course);
+
+	registrationState[student].splice(indexOfRegistration, 1);
+
+	sessionStorage.setItem("registrations", JSON.stringify({
+		...registrationState,
+		[student]: registrationState[student],
+	}));
+
+	return {
+		...registrationState,
+		[student]: registrationState[student],
+	}
+}
+
+/**
+ * @description returns boolean of if the current logged in user is the parent registering
+ * */
+export const useValidateRegisteringParent = () => {
+	const AuthUser = useSelector(({auth}) => auth);
+	const {currentParent} = getRegistrationCart();
+	return {parentIsLoggedIn: AuthUser?.user.id == currentParent?.user.id || AuthUser.accountType === USER_TYPES.parent};
+}
 
 /**
  * @description this will close and clear out the registration cart including the registering parent
  * */
-export const closeRegistrationCart = () => {
-	sessionStorage.setItem("registrations", "{}");
+export const closeRegistrationCart = (AuthParent) => {
+	if (AuthParent) {
+		let registrationState = JSON.parse(sessionStorage.getItem("registrations"));
+		Object.entries(registrationState).forEach(([key, _]) => {
+			if (key !== "currentParent") {
+				delete registrationState[key];
+			}
+		});
+		console.log(registrationState);
+		sessionStorage.setItem("registrations", JSON.stringify(registrationState));
+	} else {
+		sessionStorage.setItem("registrations", "{}");
+	}
 };
 
 /**
@@ -67,3 +112,25 @@ export const getRegistrationCart = () => {
 	if (Object.keys(registrationState).length > 0) return registrationState;
 	return {currentParent: null};
 };
+
+/**
+ * @description sets the registering parent to sessionStorage
+ * */
+export const setParentRegistrationCart = (parent) => sessionStorage.setItem("registrations", JSON.stringify({
+	currentParent: parent,
+}));
+
+/**
+ * @description loads passed in registration cart to registration state in session storage
+ * */
+export const loadRegistrationCart = (prevRegistration) => {
+	const registrationState = JSON.parse(sessionStorage.getItem("registrations"));
+	sessionStorage.setItem("registrations", JSON.stringify({
+		...registrationState,
+		...prevRegistration,
+	}));
+	return {
+		...registrationState,
+		...prevRegistration,
+	}
+}

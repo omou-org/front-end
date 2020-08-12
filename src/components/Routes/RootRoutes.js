@@ -1,7 +1,7 @@
 // React Imports
 import {Redirect, Route, Switch} from "react-router-dom";
 import React from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
 import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
@@ -34,9 +34,11 @@ import RegistrationCartContainer from "../FeatureViews/Registration/Registration
 import DashboardSwitch from "../FeatureViews/Dashboard/DashboardSwitch";
 import TeachingLogContainer from "../FeatureViews/TeachingLog/TeachingLogContainer";
 import AvailabilityContainer from "../FeatureViews/Availability/AvailabilityContainer";
+import ManagePayments from "../FeatureViews/ManagePayments/ManagePayments";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
+    const AuthUser = useSelector(({auth}) => auth);
     dispatch(resetSubmitStatus());
 
     return (
@@ -48,27 +50,41 @@ export const RootRoutes = () => {
             <Route path="/resetpassword">
                 <ResetPassword />
             </Route>
+            <Route path="/setpassword">
+                <ResetPassword isSet />
+            </Route>
             <Route path="/login">
-                <LoginPage />
+                <LoginPage/>
             </Route>
             <Route path="/new/:type?">
-                <NewAccount />
+                <NewAccount/>
             </Route>
 
             {/* Main Feature Views */}
             <AuthenticatedRoute exact path="/">
-                <DashboardSwitch />
+                {
+                    {
+                        [USER_TYPES.receptionist]: <DashboardSwitch/>,
+                        [USER_TYPES.admin]: <DashboardSwitch/>,
+                        [USER_TYPES.parent]: <Scheduler/>,
+                        [USER_TYPES.instructor]: <Scheduler/>,
+                    }[AuthUser.accountType]
+                }
+
             </AuthenticatedRoute>
-            <AuthenticatedRoute exact path="/registration">
-                <Registration />
+            <AuthenticatedRoute exact
+                                path="/registration"
+                                users={[USER_TYPES.admin, USER_TYPES.receptionist, USER_TYPES.parent]}
+            >
+                <Registration/>
             </AuthenticatedRoute>
 
             {/* Scheduler Routes */}
             <AuthenticatedRoute exact path="/scheduler">
-                <Scheduler />
+                <Scheduler/>
             </AuthenticatedRoute>
             <AuthenticatedRoute exact path="/scheduler/view-session/:course_id/:session_id/:instructor_id">
-                <SessionView />
+                <SessionView/>
             </AuthenticatedRoute>
             <AuthenticatedRoute exact path="/scheduler/edit-session/:course_id/:session_id/:instructor_id/edit">
                 <EditSessionView />
@@ -86,36 +102,35 @@ export const RootRoutes = () => {
 
             {/* Accounts */}
             <AuthenticatedRoute exact path="/accounts/:accountType/:accountID">
-                <UserProfile/>
+                <UserProfile />
             </AuthenticatedRoute>
             <AuthenticatedRoute exact
-                                path="/accounts/parent/payment/:paymentID">
-                <PaymentReceipt/>
+                path="/accounts/parent/payment/:paymentID">
+                <PaymentReceipt />
             </AuthenticatedRoute>
             <AuthenticatedRoute exact path="/accounts"
-                                users={[USER_TYPES.admin, USER_TYPES.receptionist]}>
-                <Accounts/>
+                users={[USER_TYPES.admin, USER_TYPES.receptionist]}>
+                <Accounts />
             </AuthenticatedRoute>
             <AuthenticatedRoute exact
-                                path="/accounts/:accountType/:accountID/:courseID">
-                <CourseSessionStatus/>
+                path="/accounts/:accountType/:accountID/:courseID">
+                <CourseSessionStatus />
             </AuthenticatedRoute>
 
             {/* Registration Routes */}
             <AuthenticatedRoute path="/registration/form/:type/:id?">
-                <RegistrationForm/>
+                <RegistrationForm />
             </AuthenticatedRoute>
             <AuthenticatedRoute
                 path="/registration/course/:courseID?/:courseTitle?"
-                users={[USER_TYPES.admin, USER_TYPES.receptionist]}
-            >
-                <RegistrationCourse/>
+                users={[USER_TYPES.admin, USER_TYPES.receptionist]}>
+                <RegistrationCourse />
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/registration/cart/">
-                <RegistrationCartContainer/>
+                <RegistrationCartContainer />
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/registration/receipt/:paymentID?">
-                <PaymentReceipt/>
+                <PaymentReceipt />
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/NotEnrolledStudent">
                 <NotEnrolledStudentsDialog />
@@ -123,27 +138,31 @@ export const RootRoutes = () => {
 
             {/* Instructor Routes */}
             <AuthenticatedRoute path="/teaching-log"
-                                users={[USER_TYPES.instructor]}
-            >
-                <TeachingLogContainer/>
+                users={[USER_TYPES.instructor]}>
+                <TeachingLogContainer />
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/availability"
-                                users={[USER_TYPES.instructor]}>
-                <AvailabilityContainer/>
+                users={[USER_TYPES.instructor]}>
+                <AvailabilityContainer />
+            </AuthenticatedRoute>
+
+            {/* Parent Routes */}
+            <AuthenticatedRoute path="/my-payments/:view?/:paymentId?"
+                                users={[USER_TYPES.parent]}
+            >
+                <ManagePayments/>
             </AuthenticatedRoute>
 
             {/* Admin Routes */}
             <AuthenticatedRoute exact
-                path="/adminportal/:view?/:type?/:id?/:edit?"
-                users={[USER_TYPES.admin]}>
-                <AdminPortal />
+                                path="/adminportal/:view?/:type?/:id?/:edit?"
+                                users={[USER_TYPES.admin]}>
+                <AdminPortal/>
             </AuthenticatedRoute>
-			<AuthenticatedRoute exact
-								path="/form/:type/:id?"
-								users={[USER_TYPES.admin]}
-			>
-				<FormPage/>
-			</AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/form/:type/:id?"
+                users={[USER_TYPES.admin, USER_TYPES.parent]}>
+                <FormPage />
+            </AuthenticatedRoute>
 
             {/* Course Management Routes */}
             <AuthenticatedRoute 

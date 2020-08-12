@@ -68,7 +68,7 @@ const theme = createMuiTheme({
                 "color": "black",
             },
 			containedPrimary: {
-				color: "#FFFFFF",
+				color: "#FFFFFF", 
 			}
         },
         "MuiBadge": {
@@ -129,14 +129,9 @@ const theme = createMuiTheme({
                 "fill": "white",
             },
         },
-        MuiTableRow: {
-            head: {
-                backgroundColor: omouBlue,
-            }
-        },
         MuiTableCell: {
             head: {
-                color: "white !important",
+                color: omouBlue,
                 fontWeight: 600,
             }
         }

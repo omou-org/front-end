@@ -11,11 +11,9 @@ import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
 
 import * as adminUtils from "./AdminUtils";
-import {initials} from "utils";
+import {fullName, initials} from "utils";
 import {stringToColor} from "../Accounts/accountUtils";
-import {useSelector} from "react-redux";
-import { makeStyles } from "@material-ui/styles";
-import { fullName } from "utils";
+import {makeStyles} from "@material-ui/styles";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -65,18 +63,18 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
     const { firstName, lastName, studentID} = unpaidStudent.student.user;
     const { courseID, courseTitle, startTime, endTime, hourlyTuition } = unpaidStudent.course
     const sessionsLeft = unpaidStudent.sessionsLeft;
-	const amtDue = adminUtils.amountDue(
-		hourlyTuition,
-		sessionsLeft,
-		adminUtils.calculateSessionLength(startTime, endTime)
-	);
+    const amtDue = adminUtils.amountDue(
+        hourlyTuition,
+        sessionsLeft,
+        adminUtils.calculateSessionLength(startTime, endTime)
+    );
     
     return (
         <Grid item md={6} lg={3} className={classes.grid}>
             <Card className={`unpaid-sessions-card ${classes.card}`}>
                 <CardActionArea
-                component = {Link}
-                to={`/accounts/students/${studentID}/${courseID}`}
+                    component={Link}
+                    to={`/accounts/students/${studentId}/${courseId}`}
                 >
                     <Grid
                         className={`unpaid-avatar-container ${classes.avatarContainer}`}
