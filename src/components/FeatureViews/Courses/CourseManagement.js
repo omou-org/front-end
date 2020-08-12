@@ -123,6 +123,33 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const GET_COURSES = gql`
+  query getCourses {
+    courses {
+      dayOfWeek
+      endDate
+      endTime
+      title
+      startTime
+      academicLevel
+      startDate
+      instructor {
+        user {
+          firstName
+          lastName
+          id
+        }
+      }
+      courseCategory {
+        id
+        name
+      }
+      courseId
+      id
+    }
+  }
+`;
+
 const CourseDisplayCard = ({
   title,
   endDate,
@@ -141,7 +168,7 @@ const CourseDisplayCard = ({
   const startingDate = moment(startDate).calendar();
   const endingDate = moment(endDate).calendar();
   const currentDate = moment().format("L");
-  const isActive = (currentDate >= startingDate && currentDate <= endingDate)
+  const isActive = currentDate <= endingDate;
 
   const handleClick = (e) => {
     history.push(`/coursemanagement/class/${id}`);
@@ -163,11 +190,7 @@ const CourseDisplayCard = ({
         </Grid>
         <Grid item xs={6} sm={3} md={6} style={{ textAlign: "left" }}>
           <Chip
-            label={
-              isActive
-                ? "ACTIVE"
-                : "PAST"
-            }
+            label={isActive ? "ACTIVE" : "PAST"}
             className={classes.chipSize}
             style={{
               backgroundColor: isActive ? activeColor : pastColor,
@@ -203,34 +226,31 @@ const CourseDisplayCard = ({
   );
 };
 
-const CourseFilter = ({ initialValue, filterList, setState, filter }) => {
+const CourseFilter = ({
+  initialValue,
+  filterList,
+  setState,
+  filter,
+  filterKey,
+}) => {
   const classes = useStyles();
   const handleChange = (event) => setState(event.target.value);
+  const filterOptionsMapper = {
+    instructors: (options) => ({
+      value: options.instructor.user.id,
+      label: fullName(options.instructor.user),
+    }),
+    subjects: (options) => ({
+      value: options.courseCategory.id,
+      label: options.courseCategory.name,
+    }),
+    grades: (options) => ({
+      value: options.value.toUpperCase(),
+      label: options.label,
+    }),
+  }[filterKey];
 
-  const getFilterValue = () => {
-    switch (initialValue) {
-      case "All Instructors":
-        return filterList.map((filterItem) => ({
-          value: filterItem.instructor.user.id,
-          label: fullName(filterItem.instructor.user),
-        }));
-      case "All Subjects":
-        return filterList.map((filterItem) => ({
-          value: filterItem.courseCategory.id,
-          label: filterItem.courseCategory.name,
-        }));
-      case "All Grades":
-        return filterList.map((filterItem) => ({
-          value: filterItem.value.toUpperCase(),
-          label: filterItem.label,
-        }));
-      default:
-        return;
-    }
-  };
-
-  // const chosenFilter = (OptionMapper) => filterList.map(OptionMapper);
-  // const chosenFilter = (optionsMapper) => filterList.map(optionsMapper);
+  const ChosenFilterOption = filterList.map(filterOptionsMapper);
 
   return (
     <Grid item xs={3}>
@@ -262,14 +282,14 @@ const CourseFilter = ({ initialValue, filterList, setState, filter }) => {
           >
             {initialValue}
           </MenuItem>
-
-          {getFilterValue().map((filterItem) => (
+          {ChosenFilterOption.map((option) => (
             <MenuItem
-              value={filterItem.value}
+              key={option.value}
+              value={option.value}
               className={classes.menuSelect}
               ListItemClasses={{ selected: classes.menuSelected }}
             >
-              {filterItem.label}
+              {option.label}
             </MenuItem>
           ))}
         </Select>
@@ -286,33 +306,6 @@ const CourseManagement = () => {
   const [filterByInstructors, setFilterByInstructors] = useState("");
 
   const handleChange = (event) => setSortByDate(event.target.value);
-
-  const GET_COURSES = gql`
-    query getCourses {
-      courses {
-        dayOfWeek
-        endDate
-        endTime
-        title
-        startTime
-        academicLevel
-        startDate
-        instructor {
-          user {
-            firstName
-            lastName
-            id
-          }
-        }
-        courseCategory {
-          id
-          name
-        }
-        courseId
-        id
-      }
-    }
-  `;
 
   const { data, loading, error } = useQuery(GET_COURSES);
 
@@ -418,18 +411,21 @@ const CourseManagement = () => {
               initialValue="All Grades"
               setState={setFilterByGrades}
               filter={filterByGrades}
+              filterKey="grades"
             />
             <CourseFilter
               filterList={subjectList}
               initialValue="All Subjects"
               setState={setFilterBySubjects}
               filter={filterBySubjects}
+              filterKey="subjects"
             />
             <CourseFilter
               filterList={instructorsList}
               initialValue="All Instructors"
               setState={setFilterByInstructors}
               filter={filterByInstructors}
+              filterKey="instructors"
             />
           </Grid>
         </Paper>
