@@ -58,10 +58,11 @@ const useStyles = makeStyles((theme) => ({
 
 const UnpaidSessionCard = ({unpaidStudent}) => {
     const classes = useStyles();
+
     const studentObj = unpaidStudent.student.user;
     const studentName = fullName(studentObj);
-    const { firstName, lastName, studentID} = unpaidStudent.student.user;
-    const { courseID, courseTitle, startTime, endTime, hourlyTuition } = unpaidStudent.course
+    const {firstName, lastName, id: studentId} = unpaidStudent.student.user;
+    const {id: courseId, courseTitle, startTime, endTime, hourlyTuition} = unpaidStudent.course
     const sessionsLeft = unpaidStudent.sessionsLeft;
     const amtDue = adminUtils.amountDue(
         hourlyTuition,
