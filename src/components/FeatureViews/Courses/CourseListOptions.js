@@ -124,7 +124,8 @@ const CourseListOptions = ({
 
   const handleReadMoreClick = () => setReadMore(!readMore);
 
-  const sessionNotesRender = data.sessionNotes.sort((firstVal, secondVal) => sortTime(firstVal.updatedAt, secondVal.updatedAt))
+  const sessionNotesRender = data.sessionNotes
+  .sort((firstVal, secondVal) => sortTime(firstVal.updatedAt, secondVal.updatedAt))
 
   return (
     <Grid container>
@@ -196,9 +197,7 @@ const CourseListOptions = ({
                         }
                         {body.length > 110 && (<a className={classes.anchorStyle} onClick={handleReadMoreClick}>
                           <span style={{ paddingRight: theme.spacing(1) }}>
-                            {
-                              !readMore ? "Read More" : "Read Less"
-                            }
+                            { !readMore ? "Read More" : "Read Less" }
                           </span>
                         </a>)}
                         </Typography>

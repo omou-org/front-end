@@ -167,7 +167,8 @@ const Announcements = ({
     });
   };
 
-  const announcementRender = announcementsData.sort((firstVal, secondVal) => sortTime(firstVal.updatedAt, secondVal.updatedAt))
+  const announcementRender = announcementsData
+  .sort((firstVal, secondVal) => sortTime(firstVal.updatedAt, secondVal.updatedAt))
 
   return (
     <Grid container justify="flex-start" data-active="inactive">

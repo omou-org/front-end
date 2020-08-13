@@ -211,9 +211,8 @@ const CourseClasses = () => {
   const startingDate = moment(startDate).calendar();
   const endingDate = moment(endDate).calendar();
 
-  const handleChange = (_, i) => {
-    return setIndex(i);
-  };
+  const handleChange = (_, i) => setIndex(i);
+
 
   const comparison = (studentList, enrollmentArray) => {
     if (queryParser(accountType) === "ParentType") {
@@ -278,7 +277,8 @@ const CourseClasses = () => {
               variant="body1"
               align="left"
               className={classes.dataFontDate}
-            >{`${startingDate} - ${endingDate}`}</Typography>
+            >{`${startingDate} - ${endingDate}`}
+            </Typography>
           </Grid>
           <Grid item xs={2} md={4} lg={3} xl={2}>
             <Typography
@@ -292,7 +292,8 @@ const CourseClasses = () => {
               variant="body1"
               align="left"
               className={classes.dataFontDate}
-            >{`${abbreviatedDay} ${startingTime} - ${endingTime}`}</Typography>
+            >{`${abbreviatedDay} ${startingTime} - ${endingTime}`}
+            </Typography>
           </Grid>
         </Grid>
         <Grid container justify="flex-start" style={{ marginTop: "2em" }}>
@@ -308,7 +309,8 @@ const CourseClasses = () => {
               variant="body1"
               align="left"
               className={classes.dataFontDate}
-            >{`${firstName} ${lastName}`}</Typography>
+            >{`${firstName} ${lastName}`}
+            </Typography>
           </Grid>
           <Grid item xs={2} md={4} lg={2} xl={2}>
             <Typography
