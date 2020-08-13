@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -10,6 +11,7 @@ import { useMutation } from "@apollo/react-hooks";
 import moment from "moment";
 import NewAnnouncementModal from "./NewAnnoucementsModal";
 import AccessControlComponent from "../../OmouComponents/AccessControlComponent";
+import { GET_ANNOUNCEMENTS } from "./CourseClasses";
 import { fullName, USER_TYPES, sortTime } from "../../../utils";
 import theme, { omouBlue } from "../../../theme/muiTheme";
 
@@ -53,7 +55,6 @@ const AnnouncementCard = ({
   updatedAt,
   handleEdit,
   handleDelete,
-  loggedInUserAccountType,
 }) => {
   const classes = useStyles();
   const date = moment(updatedAt).format("MM/DD");
@@ -126,7 +127,6 @@ const AnnouncementCard = ({
 const Announcements = ({
   announcementsData,
   loggedInUser,
-  loggedInUserAccountType,
 }) => {
   const [openNewAnnouncementForm, setNewAnnouncementForm] = useState(false);
   const [announcementId, setAnnouncementId] = useState();
@@ -134,6 +134,7 @@ const Announcements = ({
   const [announcementBody, setAnnouncementBody] = useState("");
   const [editOrPost, setEditOrPost] = useState("post");
   const classes = useStyles();
+  const courseId = useParams();
 
   const DELETE_ANNOUNCEMENT = gql`
     mutation removeAnnouncement($id: ID!) {
@@ -148,6 +149,24 @@ const Announcements = ({
     DELETE_ANNOUNCEMENT,
     {
       error: (err) => console.error(err),
+      update: (cache, { data }) => {
+        const cachedAnnouncement = cache.readQuery({
+          query: GET_ANNOUNCEMENTS,
+          variables: { id: courseId.id },
+        })["announcements"];
+        const deleteAnnouncementId = announcementId
+        let updatedAnnouncements = [...cachedAnnouncement];
+        const deleteCacheAnnouncement = updatedAnnouncements
+          .filter(({ id }) => id !== deleteAnnouncementId);
+
+        cache.writeQuery({
+          data: {
+            ["announcements"]: deleteCacheAnnouncement,
+          },
+          query: GET_ANNOUNCEMENTS,
+          variables: { id: courseId.id },
+        });
+      },
     }
   );
 
@@ -162,6 +181,7 @@ const Announcements = ({
   const handleClose = (boolean) => setNewAnnouncementForm(boolean);
 
   const handleDeleteAnnouncement = async (id) => {
+    const x = await setAnnouncementId(id)
     const deletedAnnouncement = await deleteAnnouncement({
       variables: { id: id },
     });
@@ -199,7 +219,6 @@ const Announcements = ({
             updatedAt={updatedAt}
             handleEdit={handleEdit}
             handleDelete={handleDeleteAnnouncement}
-            loggedInUserAccountType={loggedInUserAccountType}
           />
         </>
       ))}

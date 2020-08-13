@@ -383,14 +383,12 @@ const CourseClasses = () => {
                   <Announcements
                     announcementsData={getAnnouncements.data.announcements}
                     loggedInUser={data.accountSearch}
-                    loggedInUserAccountType={accountType}
                   />
                 </TabPanel>
                 <TabPanel index={2} value={index}>
                   <ClassEnrollmentList
                     enrollmentList={enrollmentSet}
                     loggedInUser={data.accountSearch}
-                    loggedInUserAccountType={accountType}
                   />
                 </TabPanel>
                 <TabPanel index={3} value={index}>

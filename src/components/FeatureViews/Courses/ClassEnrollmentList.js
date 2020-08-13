@@ -61,7 +61,6 @@ const ClassEnrollmentList = ({
   concatFullParentName,
   phoneNumber,
   handleOpenModal,
-  loggedInUserAccountType,
 }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -160,7 +159,6 @@ const ClassEnrollmentList = ({
 const Studentenrollment = ({
   enrollmentList,
   loggedInUser,
-  loggedInUserAccountType,
 }) => {
   const classes = useStyles();
 
@@ -223,7 +221,6 @@ const Studentenrollment = ({
                     concatFullParentName={concatFullParentName}
                     phoneNumber={phoneNumber}
                     handleOpenModal={handleOpenModal}
-                    loggedInUserAccountType={loggedInUserAccountType}
                   />
                 );
               })}
