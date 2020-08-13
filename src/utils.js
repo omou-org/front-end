@@ -345,7 +345,9 @@ export const durationStringToNum = {
 
 /** 
  * @description returns the the time sorted from least to greatest
- * @param {String} firstTimeObject
+ * @param {String} firstTimeObject - first object with time key to use in sorted logic for initial comparison
+ * @param {String} secondTimeObject - second object with time key to use in sorted logic to compare against initial value
+ * @returns {Object} "Sorted object based on time"
 */
 
 export const sortTime = (firstTimeObject, secondTimeObject) => {
