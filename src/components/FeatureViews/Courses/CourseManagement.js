@@ -170,9 +170,8 @@ const CourseDisplayCard = ({
   const currentDate = moment().format("L");
   const isActive = currentDate <= endingDate;
 
-  const handleClick = (e) => {
-    history.push(`/coursemanagement/class/${id}`);
-  };
+  const handleClick = (e) => history.push(`/coursemanagement/class/${id}`);
+  
 
   return (
     <>
@@ -218,7 +217,8 @@ const CourseDisplayCard = ({
             align="left"
             style={{ marginLeft: "1.2em", paddingTop: "3px" }}
             className={classes.displayCardMargins}
-          >{`Time: ${startingDate} - ${endingDate} ${abbreviatedDay} ${startingTime} - ${endingTime} `}
+          >
+            {`Time: ${startingDate} - ${endingDate} ${abbreviatedDay} ${startingTime} - ${endingTime} `}
           </Typography>
         </Grid>
       </Grid>
@@ -313,21 +313,22 @@ const CourseManagement = () => {
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
 
-  const createFilteredListFromCourses = (filterCriteria) =>
+  const createFilteredListFromCourses = (filterCondition) =>
     data.courses.reduce(
       (accumulator, currentValue) =>
-        !accumulator.some((dataExist) =>
-          filterCriteria === "course"
-            ? currentValue.courseCategory.id === dataExist.courseCategory.id
-            : currentValue.instructor.user.id === dataExist.instructor.user.id
-        )
+        !accumulator.some((course) => filterCondition(currentValue, course))
           ? [...accumulator, currentValue]
           : accumulator,
       []
     );
-
-  const subjectList = createFilteredListFromCourses("course");
-  const instructorsList = createFilteredListFromCourses("instructor");
+  const subjectList = createFilteredListFromCourses(
+    (currentValue, course) =>
+      currentValue.courseCategory.id === course.courseCategory.id
+  );
+  const instructorsList = createFilteredListFromCourses(
+    (currentValue, course) =>
+      currentValue.instructor.user.id === course.instructor.user.id
+  );
 
   const checkFilter = (value, filter) => "" === filter || value === filter;
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
