@@ -14,7 +14,7 @@ import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import AccessControlComponent from "../../OmouComponents/AccessControlComponent"
-import { fullName, USER_TYPES } from "../../../utils";
+import { fullName, USER_TYPES, sortTime } from "../../../utils";
 import theme from "../../../theme/muiTheme";
 
 const useStyles = makeStyles((theme) => ({
@@ -86,7 +86,6 @@ export const GET_SESSION_NOTES = gql`
 const CourseListOptions = ({
   sessionId,
   loggedInUser,
-  loggedInUserAccountType,
 }) => {
   const classes = useStyles();
   const [readMore, setReadMore] = useState(false);
@@ -98,9 +97,7 @@ const CourseListOptions = ({
   const [buttonState, setButtonState] = useState("");
 
   const { data, loading, error } = useQuery(GET_SESSION_NOTES, {
-    variables: {
-      sessionId: sessionId,
-    },
+    variables: { sessionId: sessionId, },
   });
 
   if (loading) return <Loading />;
@@ -125,17 +122,9 @@ const CourseListOptions = ({
     setButtonState("edit");
   };
 
-  const handleReadMoreClick = () => !readMore ? setReadMore(true) : setReadMore(false);
+  const handleReadMoreClick = () => setReadMore(!readMore);
 
-  const sessionNotesRender = data.sessionNotes?.sort((firstVal, secondVal) => {
-    if (firstVal.updatedAt > secondVal.updatedAt) {
-      return -1;
-    }
-    if (firstVal.updatedAt < secondVal.updatedAt) {
-      return 1;
-    }
-    return 0;
-  });
+  const sessionNotesRender = data.sessionNotes.sort((firstVal, secondVal) => sortTime(firstVal.updatedAt, secondVal.updatedAt))
 
   return (
     <Grid container>

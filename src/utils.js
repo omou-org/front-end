@@ -343,6 +343,11 @@ export const durationStringToNum = {
     "2 Hours": 2,
 };
 
+export const sortTime = (firstTimeObject, secondTimeObject) => {
+    if (moment(firstTimeObject).isBefore(moment(secondTimeObject))) return 1
+    if (moment(firstTimeObject).isAfter(moment(secondTimeObject))) return -1
+    return 0
+};
 /**
  * @description returns the upcoming session from a list of sessions
  * @param {Array} sessions - list of sessions to search through

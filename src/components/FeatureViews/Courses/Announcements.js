@@ -9,7 +9,8 @@ import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 import moment from "moment";
 import NewAnnouncementModal from "./NewAnnoucementsModal";
-import { fullName, USER_TYPES } from "../../../utils";
+import AccessControlComponent from "../../OmouComponents/AccessControlComponent";
+import { fullName, USER_TYPES, sortTime } from "../../../utils";
 import theme, { omouBlue } from "../../../theme/muiTheme";
 
 const useStyles = makeStyles({
@@ -34,6 +35,7 @@ const useStyles = makeStyles({
     fontFamily: "Roboto",
     height: "2.5em",
     marginTop: "2em",
+    marginLeft: ".75em",
   },
   plusSpan: {
     fontSize: "1rem",
@@ -78,20 +80,22 @@ const AnnouncementCard = ({
           {subject}
         </Typography>
       </Grid>
-      {[
-        USER_TYPES.admin,
-        USER_TYPES.receptionist,
-        USER_TYPES.instructor,
-      ].includes(loggedInUserAccountType) && (
-        <Grid item xs={6} style={{ textAlign: "right" }}>
-          <Button onClick={handleOpenForm} name="edit" value="edit">
-            <Create style={{ color: omouBlue }} />
-          </Button>{" "}
-          <Button onClick={handleDeleteForm}>
-            <Cancel style={{ color: omouBlue }} />
-          </Button>
-        </Grid>
-      )}
+      <Grid item xs={6} style={{textAlign: "end"}}>
+      <AccessControlComponent
+        permittedAccountTypes={[
+          USER_TYPES.admin,
+          USER_TYPES.receptionist,
+          USER_TYPES.instructor,
+        ]}
+      >
+        <Button onClick={handleOpenForm} name="edit" value="edit">
+          <Create style={{ color: omouBlue }} />
+        </Button>
+        <Button onClick={handleDeleteForm}>
+          <Cancel style={{ color: omouBlue }} />
+        </Button>
+      </AccessControlComponent>
+      </Grid>
       <Grid item xs={12} className={classes.announcementBody}>
         <Typography variant="body1" align="left" ref={bodyRef}>
           {body}
@@ -159,29 +163,21 @@ const Announcements = ({
 
   const handleDeleteAnnouncement = async (id) => {
     const deletedAnnouncement = await deleteAnnouncement({
-      variables: {
-        id: id,
-      },
+      variables: { id: id },
     });
   };
 
-  const announcementRender = announcementsData.sort((firstVal, secondVal) => {
-    if (firstVal.updatedAt > secondVal.updatedAt) {
-      return -1;
-    }
-    if (firstVal.updatedAt < secondVal.updatedAt) {
-      return 1;
-    }
-    return 0;
-  });
+  const announcementRender = announcementsData.sort((firstVal, secondVal) => sortTime(firstVal.updatedAt, secondVal.updatedAt))
 
   return (
     <Grid container justify="flex-start" data-active="inactive">
-      {[
-        USER_TYPES.admin,
-        USER_TYPES.receptionist,
-        USER_TYPES.instructor,
-      ].includes(loggedInUserAccountType) && (
+      <AccessControlComponent
+        permittedAccountTypes={[
+          USER_TYPES.admin,
+          USER_TYPES.receptionist,
+          USER_TYPES.instructor,
+        ]}
+      >
         <Button
           className={classes.newNoteButton}
           onClick={() => setNewAnnouncementForm(true, setEditOrPost("post"))}
@@ -190,7 +186,7 @@ const Announcements = ({
         >
           <span className={classes.plusSpan}>+</span> New Announcement
         </Button>
-      )}
+      </AccessControlComponent>
       {announcementRender.map(({ poster, subject, body, updatedAt, id }) => (
         <>
           <AnnouncementCard

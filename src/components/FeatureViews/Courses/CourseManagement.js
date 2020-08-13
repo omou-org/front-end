@@ -218,7 +218,8 @@ const CourseDisplayCard = ({
             align="left"
             style={{ marginLeft: "1.2em", paddingTop: "3px" }}
             className={classes.displayCardMargins}
-          >{`Time: ${startingDate} - ${endingDate} ${abbreviatedDay} ${startingTime} - ${endingTime} `}</Typography>
+          >{`Time: ${startingDate} - ${endingDate} ${abbreviatedDay} ${startingTime} - ${endingTime} `}
+          </Typography>
         </Grid>
       </Grid>
       <Divder />
@@ -301,9 +302,9 @@ const CourseFilter = ({
 const CourseManagement = () => {
   const classes = useStyles();
   const [sortByDate, setSortByDate] = useState("");
-  const [filterByGrades, setFilterByGrades] = useState("");
-  const [filterBySubjects, setFilterBySubjects] = useState("");
-  const [filterByInstructors, setFilterByInstructors] = useState("");
+  const [gradeFilterValue, setGradeFilterValue] = useState("");
+  const [subectFilterValue, setSubjectFilterValue] = useState("");
+  const [instructorsFilterValue, setInstructorFilterValue] = useState("");
 
   const handleChange = (event) => setSortByDate(event.target.value);
 
@@ -334,9 +335,9 @@ const CourseManagement = () => {
   const normalCourseDisplay = data.courses
     .filter(
       (course) =>
-        checkFilter(course.academicLevel, filterByGrades) &&
-        checkFilter(course.courseCategory.id, filterBySubjects) &&
-        checkFilter(course.instructor.user.id, filterByInstructors)
+        checkFilter(course.academicLevel, gradeFilterValue) &&
+        checkFilter(course.courseCategory.id, subectFilterValue) &&
+        checkFilter(course.instructor.user.id, instructorsFilterValue)
     )
     .sort(
       (firstEl, secondEl) =>
@@ -409,22 +410,22 @@ const CourseManagement = () => {
             <CourseFilter
               filterList={gradeOptions}
               initialValue="All Grades"
-              setState={setFilterByGrades}
-              filter={filterByGrades}
+              setState={setGradeFilterValue}
+              filter={gradeFilterValue}
               filterKey="grades"
             />
             <CourseFilter
               filterList={subjectList}
               initialValue="All Subjects"
-              setState={setFilterBySubjects}
-              filter={filterBySubjects}
+              setState={setSubjectFilterValue}
+              filter={subectFilterValue}
               filterKey="subjects"
             />
             <CourseFilter
               filterList={instructorsList}
               initialValue="All Instructors"
-              setState={setFilterByInstructors}
-              filter={filterByInstructors}
+              setState={setInstructorFilterValue}
+              filter={instructorsFilterValue}
               filterKey="instructors"
             />
           </Grid>

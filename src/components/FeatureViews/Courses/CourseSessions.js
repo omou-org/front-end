@@ -40,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
 const CourseSessions = ({
   sessionList,
   loggedInUser,
-  loggedInUserAccountType,
 }) => {
   const classes = useStyles();
   const [sortBySession, setSortBySession] = useState("");
@@ -85,7 +84,7 @@ const CourseSessions = ({
                 const startingDate = moment(startDatetime).calendar();
                 return (
                   <MenuItem
-                    key={index}
+                    key={id}
                     className={classes.menuSelected}
                     value={id}
                     ListItemClasses={{ selected: classes.menuSelect }}
@@ -97,11 +96,10 @@ const CourseSessions = ({
             </Select>
           </FormControl>
         </Grid>
-        {sortBySession === "" ? null : (
+        {sortBySession !== "" && (
           <CourseListOptions
             sessionId={sortBySession}
             loggedInUser={loggedInUser}
-            loggedInUserAccountType={loggedInUserAccountType}
           />
         )}
       </Grid>

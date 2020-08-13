@@ -395,7 +395,6 @@ const CourseClasses = () => {
                   <CourseSessions
                     sessionList={sessionSet}
                     loggedInUser={data.accountSearch}
-                    loggedInUserAccountType={accountType}
                   />
                 </TabPanel>
               </Grid>
