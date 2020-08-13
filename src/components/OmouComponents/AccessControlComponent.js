@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import { useSelector } from "react-redux";
 
 
@@ -12,5 +13,9 @@ const AccessControlComponent = ({permittedAccountTypes, children}) => {
         </>
     )
 };
+
+AccessControlComponent.propTypes = {
+    "permittedAccountTypes": PropTypes.string
+}
 
 export default AccessControlComponent;
