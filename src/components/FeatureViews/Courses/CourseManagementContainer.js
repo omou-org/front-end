@@ -150,7 +150,7 @@ const GET_COURSES = gql`
   }
 `;
 
-const CourseDisplayCard = ({
+const ClassListItem = ({
   title,
   endDate,
   endTime,
@@ -227,7 +227,7 @@ const CourseDisplayCard = ({
   );
 };
 
-const CourseFilter = ({
+const CourseFilterDrop = ({
   initialValue,
   filterList,
   setState,
@@ -237,21 +237,21 @@ const CourseFilter = ({
   const classes = useStyles();
   const handleChange = (event) => setState(event.target.value);
   const filterOptionsMapper = {
-    instructors: (options) => ({
-      value: options.instructor.user.id,
-      label: fullName(options.instructor.user),
+    instructors: (option) => ({
+      value: option.instructor.user.id,
+      label: fullName(option.instructor.user),
     }),
-    subjects: (options) => ({
-      value: options.courseCategory.id,
-      label: options.courseCategory.name,
+    subjects: (option) => ({
+      value: option.courseCategory.id,
+      label: option.courseCategory.name,
     }),
-    grades: (options) => ({
-      value: options.value.toUpperCase(),
-      label: options.label,
+    grades: (option) => ({
+      value: option.value.toUpperCase(),
+      label: option.label,
     }),
   }[filterKey];
 
-  const ChosenFilterOption = filterList.map(filterOptionsMapper);
+  const ChosenFiltersOption = filterList.map(filterOptionsMapper);
 
   return (
     <Grid item xs={3}>
@@ -283,7 +283,7 @@ const CourseFilter = ({
           >
             {initialValue}
           </MenuItem>
-          {ChosenFilterOption.map((option) => (
+          {ChosenFiltersOption.map((option) => (
             <MenuItem
               key={option.value}
               value={option.value}
@@ -299,7 +299,7 @@ const CourseFilter = ({
   );
 };
 
-const CourseManagement = () => {
+const CourseManagementContainer = () => {
   const classes = useStyles();
   const [sortByDate, setSortByDate] = useState("");
   const [gradeFilterValue, setGradeFilterValue] = useState("");
@@ -408,21 +408,21 @@ const CourseManagement = () => {
                 </Select>
               </FormControl>
             </Grid>
-            <CourseFilter
+            <CourseFilterDrop
               filterList={gradeOptions}
               initialValue="All Grades"
               setState={setGradeFilterValue}
               filter={gradeFilterValue}
               filterKey="grades"
             />
-            <CourseFilter
+            <CourseFilterDrop
               filterList={subjectList}
               initialValue="All Subjects"
               setState={setSubjectFilterValue}
               filter={subectFilterValue}
               filterKey="subjects"
             />
-            <CourseFilter
+            <CourseFilterDrop
               filterList={instructorsList}
               initialValue="All Instructors"
               setState={setInstructorFilterValue}
@@ -442,7 +442,7 @@ const CourseManagement = () => {
             instructor,
             id,
           }) => (
-            <CourseDisplayCard
+            <ClassListItem
               title={title}
               day={dayOfWeek}
               endDate={endDate}
@@ -460,4 +460,4 @@ const CourseManagement = () => {
   );
 };
 
-export default CourseManagement;
+export default CourseManagementContainer;

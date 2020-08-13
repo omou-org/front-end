@@ -16,7 +16,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Link } from "react-router-dom";
 import { fullName, USER_TYPES } from "../../../utils";
 import { omouBlue, highlightColor } from "../../../theme/muiTheme";
-import SessionEmailOrNotesModal from "./SessionEmailOrNotesModal";
+import SessionEmailOrNotesModal from "./ModalTextEditor";
 import AccessControlComponent from "../../OmouComponents/AccessControlComponent";
 
 const useStyles = makeStyles((theme) => ({
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StudentEnrollmentList = ({
+const ClassEnrollmentList = ({
   fullStudentName,
   accountType,
   studentId,
@@ -214,7 +214,7 @@ const Studentenrollment = ({
                 const parentEmail = primaryParent.user.email;
 
                 return (
-                  <StudentEnrollmentList
+                  <ClassEnrollmentList
                     fullStudentName={fullStudentName}
                     accountType={accountType}
                     studentId={studentId}

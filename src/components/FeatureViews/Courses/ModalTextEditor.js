@@ -9,7 +9,7 @@ import Input from "@material-ui/core/Input";
 import { omouBlue } from "../../../theme/muiTheme";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
-import { GET_SESSION_NOTES } from "./CourseListOptions";
+import { GET_SESSION_NOTES } from "./ClassSessionView";
 
 const useStyles = makeStyles((theme) => ({
   rootContainer: {
@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SessionEmailOrNotesModal = ({
+const ModalTextEditor = ({
   open,
   handleCloseForm,
   userId,
@@ -252,4 +252,4 @@ const SessionEmailOrNotesModal = ({
   );
 };
 
-export default SessionEmailOrNotesModal;
+export default ModalTextEditor;

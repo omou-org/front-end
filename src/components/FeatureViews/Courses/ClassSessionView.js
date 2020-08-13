@@ -8,7 +8,7 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { Create, ExpandMore } from "@material-ui/icons";
-import SessionEmailOrNotesModal from "./SessionEmailOrNotesModal";
+import ModalTextEditor from "./ModalTextEditor";
 import moment from "moment";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
@@ -83,7 +83,7 @@ export const GET_SESSION_NOTES = gql`
   }
 `;
 
-const CourseListOptions = ({
+const ClassSessionView = ({
   sessionId,
   loggedInUser,
 }) => {
@@ -205,9 +205,7 @@ const CourseListOptions = ({
                       <Grid item xs={12} style={{ marginTop: "1.5em" }}>
                         <Typography variant="subtitle2" align="left">
                           Posted by:
-                          <span
-                            style={{ paddingRight: theme.spacing(1) }}
-                          ></span>
+                          <span style={{ paddingRight: theme.spacing(1) }} />
                           <span
                             style={{
                               color: "#43B5D9",
@@ -232,7 +230,7 @@ const CourseListOptions = ({
             </AccordionDetails>
           </Accordion>
           <Divider />
-          <SessionEmailOrNotesModal
+          <ModalTextEditor
             open={open}
             handleCloseForm={handleCloseForm}
             posterId={loggedInUser}
@@ -249,4 +247,4 @@ const CourseListOptions = ({
   );
 };
 
-export default CourseListOptions;
+export default ClassSessionView;

@@ -4,8 +4,8 @@ import Grid from "@material-ui/core/Grid";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
-import { BootstrapInput } from "./CourseManagement";
-import CourseListOptions from "./CourseListOptions";
+import { BootstrapInput } from "./CourseManagementContainer";
+import ClassSessionView from "./ClassSessionView";
 import moment from "moment";
 import { highlightColor } from "../../../theme/muiTheme";
 
@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CourseSessions = ({
+const ClassSessionContainer = ({
   sessionList,
   loggedInUser,
 }) => {
@@ -97,7 +97,7 @@ const CourseSessions = ({
           </FormControl>
         </Grid>
         {sortBySession !== "" && (
-          <CourseListOptions
+          <ClassSessionView
             sessionId={sortBySession}
             loggedInUser={loggedInUser}
           />
@@ -107,4 +107,4 @@ const CourseSessions = ({
   );
 };
 
-export default CourseSessions;
+export default ClassSessionContainer;

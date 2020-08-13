@@ -20,8 +20,8 @@ import ChromeTabs from "../../OmouComponents/ChromeTabs";
 import TabPanel from "../../OmouComponents/TabPanel";
 import ClassInfo from "./ClassInfo";
 import Announcements from "./Announcements";
-import StudentEnrollment from "./StudentEnrollment";
-import CourseSessions from "./CourseSessions";
+import ClassEnrollmentList from "./ClassEnrollmentList";
+import ClassSessionContainer from "./ClassSessionContainer";
 import { useSelector } from "react-redux";
 import { gradeLvl } from "../../../utils";
 import theme from "../../../theme/muiTheme";
@@ -387,14 +387,14 @@ const CourseClasses = () => {
                   />
                 </TabPanel>
                 <TabPanel index={2} value={index}>
-                  <StudentEnrollment
+                  <ClassEnrollmentList
                     enrollmentList={enrollmentSet}
                     loggedInUser={data.accountSearch}
                     loggedInUserAccountType={accountType}
                   />
                 </TabPanel>
                 <TabPanel index={3} value={index}>
-                  <CourseSessions
+                  <ClassSessionContainer
                     sessionList={sessionSet}
                     loggedInUser={data.accountSearch}
                   />

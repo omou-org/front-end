@@ -24,7 +24,7 @@ import Scheduler from "../FeatureViews/Scheduler/Scheduler";
 import SearchResults from "../FeatureViews/Search/SearchResults";
 import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
-import CourseManagement from "../FeatureViews/Courses/CourseManagement";
+import CourseManagementContainer from "../FeatureViews/Courses/CourseManagementContainer";
 import CourseClasses from "../FeatureViews/Courses/CourseClasses"
 
 import {resetSubmitStatus} from "actions/registrationActions";
@@ -169,7 +169,7 @@ export const RootRoutes = () => {
             path="/coursemanagement"
             exact
             >
-                <CourseManagement />
+                <CourseManagementContainer />
             </AuthenticatedRoute>
 
             <AuthenticatedRoute 
