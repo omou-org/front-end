@@ -15,7 +15,7 @@ const AccessControlComponent = ({permittedAccountTypes, children}) => {
 };
 
 AccessControlComponent.propTypes = {
-    "permittedAccountTypes": PropTypes.string
+    "permittedAccountTypes": PropTypes.arrayOf(PropTypes.string)
 }
 
 export default AccessControlComponent;

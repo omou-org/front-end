@@ -343,6 +343,11 @@ export const durationStringToNum = {
     "2 Hours": 2,
 };
 
+/** 
+ * @description returns the the time sorted from least to greatest
+ * @param {String} firstTimeObject
+*/
+
 export const sortTime = (firstTimeObject, secondTimeObject) => {
     if (moment(firstTimeObject).isBefore(moment(secondTimeObject))) return 1
     if (moment(firstTimeObject).isAfter(moment(secondTimeObject))) return -1
