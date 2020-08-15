@@ -1,10 +1,10 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {Redirect, useLocation, useParams} from "react-router-dom";
+import {Redirect, useParams} from "react-router-dom";
 
 import BackButton from "components/OmouComponents/BackButton.js";
+import BackgroundPaper from "../OmouComponents/BackgroundPaper";
 import Form from "./Form";
 import Forms from "./FormFormats";
-import BackgroundPaper from "../OmouComponents/BackgroundPaper";
 
 const FormPage = () => {
     const {type, id} = useParams();

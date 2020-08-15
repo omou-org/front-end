@@ -495,7 +495,7 @@ export const checkTimeSegmentOverlap = (timeSegments) => {
         const nextStartTime = setCurrentDate(timeSegments[i + 1][0]);
 
         if (currentEndTime > nextStartTime || nextStartTime === currentStartTime) {
-            return `Whoops. ${timeSegmentString(timeSegments[i])} has a conflict with 
+            return `Whoops. ${timeSegmentString(timeSegments[i])} has a conflict with
 				${timeSegmentString(timeSegments[i + 1])}! Please correct it.`;
         }
     }
@@ -530,7 +530,7 @@ export const listTimeSegmentOverlaps = (timeSegments) => {
         const nextStartTime = moment(timeSegments[i + 1][0]);
 
         if (currentEndTime > nextStartTime || nextStartTime === currentStartTime) {
-            return `Whoops. ${timeSegmentString(timeSegments[i])} has a conflict with 
+            return `Whoops. ${timeSegmentString(timeSegments[i])} has a conflict with
 				${timeSegmentString(timeSegments[i + 1])}! Please correct it.`;
         }
     }
@@ -583,7 +583,7 @@ export function useSessionStorage(key, initialValue) {
             return item ? JSON.parse(item) : initialValue;
         } catch (error) {
             // If error also return initialValue
-            console.log(error);
+            console.error(error);
             return initialValue;
         }
     });
@@ -601,7 +601,7 @@ export function useSessionStorage(key, initialValue) {
             window.sessionStorage.setItem(key, JSON.stringify(valueToStore));
         } catch (error) {
             // A more advanced implementation would handle the error case
-            console.log(error);
+            console.error(error);
         }
     };
 
