@@ -1,12 +1,12 @@
 import "./TabComponents.scss";
 import * as hooks from "actions/hooks";
 import Grid from "@material-ui/core/Grid";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import ProfileCard from "../ProfileCard";
 import PropTypes from "prop-types";
 import React from "react";
 import {useSelector} from "react-redux";
-import LoadingError from "./LoadingCourseError"
+import LoadingError from "./LoadingCourseError";
 
 const ParentContact = ({parent_id}) => {
 	const parentStatus = hooks.useParent(parent_id);
@@ -17,10 +17,10 @@ const ParentContact = ({parent_id}) => {
 			return <Loading loadingText="PARENT LOADING" small/>;
 		}
 
-        if (hooks.isFail(parentStatus)) {
-            return <LoadingError error="parent"/>;
-        }
-    }
+		if (hooks.isFail(parentStatus)) {
+			return <LoadingError error="parent"/>;
+		}
+	}
 
 	return (
 		<Grid item md={12}>

@@ -1,19 +1,18 @@
 import PropTypes from "prop-types";
-import { useSelector } from "react-redux";
-import React, { useCallback } from "react";
+import {useSelector} from "react-redux";
+import React, {useCallback} from "react";
 
 import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 
-import { paymentToString, tuitionAmount } from "utils";
-import Loading from "components/Loading";
+import {paymentToString, tuitionAmount} from "utils";
+import Loading from "components/OmouComponents/Loading";
 import NavLinkNoDup from "components/Routes/NavLinkNoDup";
-import NoListAlert from "components/NoListAlert";
+import NoListAlert from "components/OmouComponents/NoListAlert";
 import Moment from "react-moment";
 
 const numericDateString = (date) => {
@@ -28,15 +27,15 @@ const numericDateString = (date) => {
 const courseLabel = (enrollments) => enrollments &&
     `${enrollments.length} Course${enrollments.length !== 1 ? "s" : ""}`;
 
-const PaymentTable = ({ paymentList, type, enrollmentID, courseID }) => {
-    const course = useSelector(({ Course }) => Course.NewCourseList[courseID]);
+const PaymentTable = ({paymentList, type, enrollmentID, courseID, rootRoute = "/accounts/parent/payment/"}) => {
+    const course = useSelector(({Course}) => Course.NewCourseList[courseID]);
 
     const numPaidSessionsByPayment = useCallback((paymentID) => {
-        const payment = paymentList.find(({ id }) => id === paymentID);
+        const payment = paymentList.find(({id}) => id === paymentID);
         if (!payment) {
             return null;
         }
-        const registration = payment.registrations.find(({ enrollment }) =>
+        const registration = payment.registrations.find(({enrollment}) =>
             enrollment === enrollmentID);
         if (!registration) {
             return null;
@@ -53,11 +52,11 @@ const PaymentTable = ({ paymentList, type, enrollmentID, courseID }) => {
 
     return (
         <Grid
-            item
-            md={12}>
-            <Paper className="payments-history">
-                <Table>
-                    <TableHead>
+            className="payments-history"
+            item md={12}>
+            <Table>
+                <TableHead>
+                    <TableRow>
                         <TableCell>ID</TableCell>
                         <TableCell>Transaction Date</TableCell>
                         <TableCell>
@@ -65,47 +64,47 @@ const PaymentTable = ({ paymentList, type, enrollmentID, courseID }) => {
                         </TableCell>
                         <TableCell>Amount Paid</TableCell>
                         <TableCell>Method</TableCell>
-                    </TableHead>
-                    <TableBody>
-                        {
-                            paymentList.map((payment) => (
-                                <TableRow
-                                    component={NavLinkNoDup}
-                                    hover
-                                    key={payment.id}
-                                    to={`/accounts/parent/payment/${payment.parent}/${payment.id}`}>
-                                    <TableCell>
-                                        {payment.id}
-                                    </TableCell>
-                                    <TableCell>
-                                        <Moment date={payment.created_at} format="M/DD/YYYY" />
-                                    </TableCell>
-                                    <TableCell>
-                                        {
-                                            type === "enrollment"
-                                                ? numPaidSessionsByPayment(payment.id)
-                                                : courseLabel(payment.registrations)
-                                        }
-                                    </TableCell>
-                                    <TableCell>
-                                        {
-                                            type === "enrollment"
-                                                ? tuitionAmount(
-                                                    course,
-                                                    numPaidSessionsByPayment(payment.id)
-                                                )
-                                                : payment.total
-                                        }
-                                    </TableCell>
-                                    <TableCell>
-                                        {paymentToString(payment.method)}
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        }
-                    </TableBody>
-                </Table>
-            </Paper>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {
+                        paymentList.map((payment) => (
+                            <TableRow
+                                component={NavLinkNoDup}
+                                hover
+                                key={payment.id}
+                                to={`${rootRoute}${payment.id}`}>
+                                <TableCell>
+                                    {payment.id}
+                                </TableCell>
+                                <TableCell>
+                                    <Moment date={payment.created_at} format="M/DD/YYYY"/>
+                                </TableCell>
+                                <TableCell>
+                                    {
+                                        type === "enrollment"
+                                            ? numPaidSessionsByPayment(payment.id)
+                                            : courseLabel(payment.registrationSet)
+                                    }
+                                </TableCell>
+                                <TableCell>
+                                    {
+                                        type === "enrollment"
+                                            ? tuitionAmount(
+                                            course,
+                                            numPaidSessionsByPayment(payment.id)
+                                            )
+                                            : `$${payment.total}`
+                                    }
+                                </TableCell>
+                                <TableCell>
+                                    {paymentToString(payment.method)}
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    }
+                </TableBody>
+            </Table>
         </Grid>
     );
 };

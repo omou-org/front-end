@@ -1,6 +1,8 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {Link} from "react-router-dom";
-import {useSelector} from "react-redux";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import gql from "graphql-tag";
+import { Link } from "react-router-dom";
+import { useQuery } from "@apollo/react-hooks";
+import { useSelector } from "react-redux";
 
 import Button from "@material-ui/core/Button";
 import CardView from "@material-ui/icons/ViewModule";
@@ -8,7 +10,7 @@ import EditIcon from "@material-ui/icons/EditOutlined";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import ListView from "@material-ui/icons/ViewList";
-import Paper from "@material-ui/core/Paper";
+import { makeStyles } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -18,291 +20,299 @@ import TableRow from "@material-ui/core/TableRow";
 import Tabs from "@material-ui/core/Tabs";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
-import {makeStyles, withStyles} from "@material-ui/core/styles";
 
 import "./Accounts.scss";
-import * as hooks from "actions/hooks";
-import {addDashes} from "./accountUtils";
-import BackButton from "components/BackButton";
-import {capitalizeString} from "utils";
+import { addDashes } from "./accountUtils";
+import { capitalizeString, USER_TYPES } from "utils";
 import IconButton from "@material-ui/core/IconButton";
-import Loading from "../../Loading";
+import LoadingHandler from "components/OmouComponents/LoadingHandler";
 import ProfileCard from "./ProfileCard";
+import { simpleUser } from "queryFragments";
 import UserAvatar from "./UserAvatar";
+import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
+import theme from "../../../theme/muiTheme";
+import ThemeProvider from "@material-ui/styles/ThemeProvider";
+import secondaryTheme from "../../../theme/secondaryTheme";
+import NewUser from "@material-ui/icons/PersonAdd";
 
-const componentStyles = (theme) => ({
-	root: {
-		backgroundColor: theme.palette.background.paper,
-		flexGrow: 1,
-	},
-});
+const QUERY_USERS = gql`
+    query UserQuery {
+        students {
+            user {
+                ...SimpleUser
+                email
+            }
+            accountType
+            phoneNumber
+        }
+        parents {
+            user {
+                ...SimpleUser
+                email
+            }
+            accountType
+            phoneNumber
+        }
+        instructors {
+            user {
+                ...SimpleUser
+                email
+            }
+            accountType
+            phoneNumber
+        }
+    }
+    ${simpleUser}
+`;
+
+const TABS = ["ALL", "INSTRUCTORS", "STUDENTS", "RECEPTIONIST", "PARENTS"]
+    .map((label) => <Tab className="tab" key={label} label={label} />);
 
 const useStyles = makeStyles({
-	tableRowStyle: {
-		fontSize: "0.8125rem",
-		padding: "0px",
-	},
-	tableCellStyle: {
-		fontSize: "0.75rem",
-		color: "rgba(0, 0, 0, 0.54)",
-	},
+    "tableRowStyle": {
+        "fontSize": "0.8125rem",
+        "padding": "0px",
+    },
+    MuiTableRow: {
+        head: {
+            backgroundColor: "white"
+        }
+    }
 });
 
 const stopPropagation = (event) => {
-	event.stopPropagation();
+    event.stopPropagation();
 };
 
 const Accounts = () => {
-	const usersList = useSelector(({Users}) => Users);
-	const isAdmin = useSelector(({auth}) => auth.isAdmin);
+    const isAdmin =
+        useSelector(({ auth }) => auth.accountType) === USER_TYPES.admin;
+    const { loading, error, data } = useQuery(QUERY_USERS);
 
-	const prevState = JSON.parse(sessionStorage.getItem("AccountsState"));
-	const [isMobile, setIsMobile] = useState(false);
-	const [tabIndex, setTabIndex] = useState(prevState ? prevState.tabIndex : 0);
-	// true = list view, false = card view
-	const [viewToggle, setViewToggle] = useState(
-		prevState ? prevState.viewToggle : true
-	);
+    const prevState = JSON.parse(sessionStorage.getItem("AccountsState"));
+    const [isMobile, setIsMobile] = useState(false);
+    const [tabIndex, setTabIndex] = useState(
+        prevState ? prevState.tabIndex : 0,
+    );
+    // true = list view, false = card view
+    const [viewToggle, setViewToggle] = useState(
+        prevState ? prevState.viewToggle : true,
+    );
 
-	const statuses = [
-		hooks.useStudent(),
-		hooks.useParent(),
-		hooks.useInstructor(),
-	];
+    const handleResize = useCallback(() => {
+        setIsMobile(window.innerWidth <= 760);
+    }, []);
 
-	const handleResize = useCallback(() => {
-		setIsMobile(window.innerWidth <= 760);
-	}, []);
+    useEffect(() => {
+        window.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, [handleResize]);
 
-	useEffect(() => {
-		window.addEventListener("resize", handleResize);
-		return () => {
-			window.removeEventListener("resize", handleResize);
-		};
-	}, [handleResize]);
+    const displayUsers = useMemo(() => {
+        if (!data) {
+            return [];
+        }
+        let newUsersList = [];
+        switch (tabIndex) {
+            case 1:
+                newUsersList = data.instructors;
+                break;
+            case 2:
+                newUsersList = data.students;
+                break;
+            case 3:
+                // TODO: receptionist
+                newUsersList = [];
+                break;
+            case 4:
+                newUsersList = data.parents;
+                break;
+            default:
+                newUsersList = Object.values(data).flat();
+        }
+        return newUsersList
+            .map((user) => ({
+                ...user,
+                "accountType": user.accountType.toLowerCase(),
+                "name": `${user.user.firstName} ${user.user.lastName}`,
+            }))
+            .sort((first, second) => (
+                first.name < second.name ? -1 : first.name > second.name ? 1 : 0
+            ));
+    }, [data, tabIndex]);
 
-	const displayUsers = useMemo(() => {
-		let newUsersList = [];
-		switch (tabIndex) {
-			case 1:
-				newUsersList = Object.values(usersList.InstructorList);
-				break;
-			case 2:
-				newUsersList = Object.values(usersList.StudentList);
-				break;
-			case 3:
-				newUsersList = Object.values(usersList.ReceptionistList);
-				break;
-			case 4:
-				newUsersList = Object.values(usersList.ParentList);
-				break;
-			default:
-				newUsersList = Object.values(usersList)
-					.map((list) => Object.values(list))
-					.flat();
-		}
-		return newUsersList.sort((first, second) =>
-			first.name < second.name ? -1 : first.name > second.name ? 1 : 0
-		);
-	}, [tabIndex, usersList]);
+    useEffect(() => {
+        sessionStorage.setItem("AccountsState", JSON.stringify({
+            tabIndex,
+            viewToggle,
+        }));
+    }, [tabIndex, viewToggle]);
 
-	useEffect(() => {
-		sessionStorage.setItem(
-			"AccountsState",
-			JSON.stringify({
-				tabIndex,
-				viewToggle,
-			})
-		);
-	}, [tabIndex, viewToggle]);
+    const handleTabChange = useCallback((_, newIndex) => {
+        setTabIndex(newIndex);
+    }, []);
 
-	const handleTabChange = useCallback((_, newIndex) => {
-		setTabIndex(newIndex);
-	}, []);
+    const setView = useCallback((view) => () => {
+        setViewToggle(view);
+    }, []);
 
-	const setView = useCallback(
-		(view) => () => {
-			setViewToggle(view);
-		},
-		[]
-	);
+    const classes = useStyles();
+    const tableView = useMemo(() => (<ThemeProvider theme={theme}>
+        <ThemeProvider theme={secondaryTheme}>
+            <Table className="AccountsTable" resizable="false">
+                <TableHead className={classes.secondaryTableHead}>
+                    <TableRow>
+                        <TableCell >
+                            Name
+                        </TableCell>
+                        <TableCell >
+                            Email
+                        </TableCell>
+                        <TableCell >
+                            Phone
+                        </TableCell>
+                        <TableCell >
+                            Role
+                    </TableCell>
+                        <TableCell />
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {displayUsers.map((row) => (
+                        <TableRow className="row" component={Link}
+                            key={row.user.id}
+                            to={`/accounts/${row.accountType}/${row.user.id}`}>
+                            <TableCell className={classes.tableRowStyle}>
+                                <Grid alignItems="center" container
+                                    layout="row">
+                                    <UserAvatar fontSize={14} margin={9}
+                                        name={row.name} size={38} />
+                                    {row.name}
+                                </Grid>
+                            </TableCell>
+                            <TableCell>
+                                <Tooltip title={row.user.email}>
+                                    <span>{row.user.email.substr(0, 20)}</span>
+                                </Tooltip>
+                            </TableCell>
+                            <TableCell>{addDashes(row.phoneNumber)}</TableCell>
+                            <TableCell>
+                                {capitalizeString(row.accountType)}
+                            </TableCell>
+                            <TableCell onClick={stopPropagation}>
+                                <Grid component={Hidden} mdDown>
+                                    {(row.accountType === USER_TYPES.student ||
+                                        row.accountType === USER_TYPES.parent ||
+                                        isAdmin) && (
+                                            <IconButton component={Link}
+                                                to={`/form/${row.accountType}/${row.user.id}`}>
+                                                <EditIcon />
+                                            </IconButton>
+                                        )}
+                                </Grid>
+                                <Grid component={Hidden} lgUp>
+                                    <Button component={Link}
+                                        to={`/form/${row.accountType}/${row.user.id}`}
+                                        variant="outlined">
+                                        <EditIcon />
+                                    </Button>
+                                </Grid>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </ThemeProvider>
+    </ThemeProvider>), [classes.tableCellStyle, classes.tableRowStyle, displayUsers, isAdmin]);
 
-	const classes = useStyles();
-	const tableView = useMemo(
-		() => (
-			<Table className="AccountsTable" resizable="false">
-				<TableHead>
-					<TableRow>
-						<TableCell className={classes.tableCellStyle}>Name</TableCell>
-						<TableCell className={classes.tableCellStyle}>Email</TableCell>
-						<TableCell className={classes.tableCellStyle}>Phone</TableCell>
-						<TableCell className={classes.tableCellStyle}>Role</TableCell>
-						<TableCell/>
-					</TableRow>
-				</TableHead>
-				<TableBody>
-					{displayUsers.map((row) => (
-						<TableRow
-							className="row"
-							component={Link}
-							key={row.user_id}
-							to={`/accounts/${row.role}/${row.user_id}`}
-						>
-							<TableCell className={classes.tableRowStyle}>
-								<Grid alignItems="center" container layout="row">
-									<UserAvatar
-										fontSize={14}
-										margin={9}
-										name={row.name}
-										size={38}
-									/>
-									{row.name}
-								</Grid>
-							</TableCell>
-							<TableCell>
-								<Tooltip title={row.email}>
-									<span>{row.email.substr(0, 20)}</span>
-								</Tooltip>
-							</TableCell>
-							<TableCell>{addDashes(row.phone_number)}</TableCell>
-							<TableCell>{capitalizeString(row.role)}</TableCell>
-							<TableCell onClick={stopPropagation}>
-								<Grid component={Hidden} mdDown>
-									{(row.role === "student" ||
-										row.role === "parent" ||
-										isAdmin) && (
-										<IconButton
-											component={Link}
-											to={`/registration/form/${row.role}/${row.user_id}/edit`}
-										>
-											<EditIcon/>
-										</IconButton>
-									)}
-								</Grid>
-								<Grid component={Hidden} lgUp>
-									<Button
-										component={Link}
-										to={`/registration/form/${row.role}/${row.user_id}/edit`}
-										variant="outlined"
-									>
-										<EditIcon/>
-									</Button>
-								</Grid>
-							</TableCell>
-						</TableRow>
-					))}
-				</TableBody>
-			</Table>
-		),
-		[displayUsers, isAdmin]
-	);
+    const cardView = useMemo(() => (
+        <Grid alignItems="center" className="card-container" container
+            direction="row" spacing={2} xs={12}>
+            {displayUsers.map((user) => (
+                <ProfileCard key={user.user_id}
+                    route={`/accounts/${user.role}/${user.user_id}`}
+                    user={user} />
+            ))}
+        </Grid>
+    ), [displayUsers]);
 
-	const cardView = useMemo(
-		() => (
-			<Grid
-				alignItems="center"
-				className="card-container"
-				container
-				direction="row"
-				spacing={2}
-				xs={12}
-			>
-				{displayUsers.map((user) => (
-					<ProfileCard
-						key={user.user_id}
-						route={`/accounts/${user.role}/${user.user_id}`}
-						user={user}
-					/>
-				))}
-			</Grid>
-		),
-		[displayUsers]
-	);
-
-	const loading = hooks.isLoading(...statuses);
-
-	return (
-		<Grid className="Accounts" item xs={12}>
-			<Paper elevation={2} className="paper">
-				<BackButton/>
-				<Hidden xsDown>
-					<hr/>
-				</Hidden>
-				<Typography align="left" className="heading" variant="h3">
-					Accounts
-				</Typography>
-				<Grid container direction="row">
-					<Grid component={Hidden} item lgUp md={8} xs={10}>
-						<Tabs
-							className="tabs"
-							indicatorColor="primary"
-							onChange={handleTabChange}
-							scrollButtons="on"
-							textColor="primary"
-							value={tabIndex}
-							variant="scrollable"
-						>
-							<Tab className="tab" label="ALL"/>
-							<Tab className="tab" label="INSTRUCTORS"/>
-							<Tab className="tab" label="STUDENTS"/>
-							<Tab className="tab" label="RECEPTIONIST"/>
-							<Tab className="tab" label="PARENTS"/>
-						</Tabs>
-					</Grid>
-					<Grid component={Hidden} item md={8} mdDown xs={10}>
-						<Tabs
-							className="tabs"
-							indicatorColor="primary"
-							onChange={handleTabChange}
-							scrollButtons="off"
-							textColor="primary"
-							value={tabIndex}
-							variant="scrollable"
-						>
-							<Tab className="tab" label="ALL"/>
-							<Tab className="tab" label="INSTRUCTORS"/>
-							<Tab className="tab" label="STUDENTS"/>
-							<Tab className="tab" label="RECEPTIONIST"/>
-							<Tab className="tab" label="PARENTS"/>
-						</Tabs>
-					</Grid>
-					<Hidden smDown>
-						<Grid className="toggleView" item md={3}>
-							<Button
-								className={`btn list ${viewToggle && "active"}`}
-								onClick={setView(true)}
-							>
-								<ListView className={`icon ${viewToggle && "active"}`}/>
-								List View
-							</Button>
-							<Button
-								className={`btn card ${!viewToggle && "active"}`}
-								onClick={setView(false)}
-							>
-								<CardView className={`icon ${!viewToggle && "active"}`}/>
-								Card View
-							</Button>
-						</Grid>
-					</Hidden>
-				</Grid>
-				<Grid
-					alignItems="center"
-					className="accounts-list-wrapper"
-					container
-					direction="row"
-					justify="center"
-					spacing={1}
-				>
-					{loading ? (
-						<Loading/>
-					) : isMobile || !viewToggle ? (
-						cardView
-					) : (
-						tableView
-					)}
-				</Grid>
-			</Paper>
-		</Grid>
-	);
+    return (
+        <Grid className="Accounts" item xs={12}>
+            <BackgroundPaper elevation={2}>
+                <Grid container alignItems="flex-start" spacing={4} >
+                    <Grid item>
+                        <Button
+                            className="button"
+                            color="secondary"
+                            component={Link}
+                            to="/form/student"
+                            variant="outlined"
+                        >
+                            <NewUser className="icon" /> NEW STUDENT
+                        </Button>
+                    </Grid>
+                    <Grid item>
+                        <Button
+                            className="button"
+                            color="secondary"
+                            component={Link}
+                            to="/form/parent"
+                            variant="outlined"
+                        >
+                            <NewUser className="icon" /> NEW PARENT
+                        </Button>
+                    </Grid>
+                </Grid>
+                <Hidden xsDown>
+                    <hr style={{ marginTop: "15px" }} />
+                </Hidden>
+                <Typography align="left" className="heading" variant="h3">
+                    Accounts
+                </Typography>
+                <Grid container direction="row">
+                    <Grid component={Hidden} item lgUp md={8} xs={10}>
+                        <Tabs className="tabs" ndicatorColor="primary"
+                            onChange={handleTabChange} scrollButtons="on"
+                            textColor="primary" value={tabIndex}
+                            variant="scrollable">
+                            {TABS}
+                        </Tabs>
+                    </Grid>
+                    <Grid component={Hidden} item md={8} mdDown xs={10}>
+                        <Tabs className="tabs" indicatorColor="primary"
+                            onChange={handleTabChange} scrollButtons="off"
+                            textColor="primary" value={tabIndex}
+                            variant="scrollable">
+                            {TABS}
+                        </Tabs>
+                    </Grid>
+                    <Hidden smDown>
+                        <Grid className="toggleView" item md={4} >
+                            <Button
+                                className={`btn list ${viewToggle && "active"}`}
+                                onClick={setView(true)}>
+                                <ListView className={`icon ${viewToggle && "active"}`} />
+                                List View
+                            </Button>
+                            <Button className={`btn card ${!viewToggle && "active"}`}
+                                onClick={setView(false)}>
+                                <CardView className={`icon ${!viewToggle && "active"}`} />
+                                Grid View
+                            </Button>
+                        </Grid>
+                    </Hidden>
+                </Grid>
+                <Grid alignItems="center" className="accounts-list-wrapper"
+                    container direction="row" justify="center" spacing={1}>
+                    <LoadingHandler error={error} loading={loading}>
+                        {isMobile || !viewToggle ? cardView : tableView}
+                    </LoadingHandler>
+                </Grid>
+            </BackgroundPaper>
+        </Grid>
+    );
 };
-export default withStyles(componentStyles)(Accounts);
+
+export default Accounts;

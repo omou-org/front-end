@@ -13,7 +13,7 @@
   .button {
     background-color: white;
     @include respond-to(medium-up-screens) {
-      margin-right: 30px;
+      // margin-right: 30px;
       height: 46px;
       //width: 145px;
     }
@@ -288,19 +288,19 @@
 
   .label {
     position: relative;
-    top: -7px;
     font-style: normal;
-    line-height: 13px;
+    margin:auto;
+    text-align:center;
   }
 }
 
 // the back button on the course registration page
+
 .course.control {
   position: relative;
-  text-align: left;
+  text-align: center;
   display: block;
   margin-bottom: 30px;
-  padding: 6px 10px 0 10px;
   background-color: white;
   @include respond-to(handhelds){
     margin-bottom: 30px;
@@ -428,6 +428,7 @@
 
 .course-heading {
   margin-top:10px;
+
   .icon {
     color: $lightPrimaryFontColor;
   }
@@ -531,9 +532,9 @@
 // Registration Landing
 .RegistrationLanding {
   min-height: 75vh;
-  padding: 2%;
 
   .catalog-setting-wrapper{
+    margin-bottom: 15px;
     .catalog-setting{
       @include respond-to(medium-up-screens){
         margin-top:8%;
@@ -632,6 +633,7 @@
       background-color: white;
       padding: 6px 10px;
       float: right;
+      margin-right:2.5%;
     }
 
     .icon {

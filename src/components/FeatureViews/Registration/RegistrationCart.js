@@ -6,7 +6,7 @@ import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
 import Grid from "@material-ui/core/Grid";
 import {Link} from "react-router-dom";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -32,11 +32,15 @@ const RegistrationCart = () => {
   const [selectedCourses, setSelectedCourses] = useState({});
   const [updatedCourses, setUpdatedCourse] = useState([]);
 
+	useEffect(() => {
+		dispatch(registrationActions.initializeRegistration());
+	}, [dispatch]);
+
   const courseIDs = useMemo(
-	  () =>
-		  Object.values(registered_courses)
-			  .flat()
-			  .map(({course_id}) => course_id),
+	  () => Object.values(registered_courses)
+				  .flat()
+				  .map(({course_id}) => course_id)
+	  ,
 	  [registered_courses]
   );
   const studentIDs = useMemo(() => Object.keys(registered_courses), [
@@ -46,10 +50,6 @@ const RegistrationCart = () => {
   const coursesStatus = hooks.useCourse(courseIDs);
   const studentsStatus = hooks.useStudent(studentIDs);
   registrationActions.useEnrollmentsByStudent(studentIDs);
-
-  useEffect(() => {
-    dispatch(registrationActions.initializeRegistration());
-  }, [dispatch]);
 
   useEffect(() => {
     if (registered_courses) {
@@ -224,20 +224,9 @@ const RegistrationCart = () => {
 						  )
 						  .map(({new_course, course_id}) => {
 							  const course = new_course || courseList[course_id];
-							  const dateOptions = {
-								  day: "numeric",
-								  month: "short",
-								  year: "numeric",
-							  };
 							  const {checked, sessions, validated} = selectedCourses[
 								  student_id
 								  ][course_id];
-							  const start = new Date(
-								  course.schedule.start_date
-							  ).toLocaleDateString("en-US", dateOptions);
-							  const end = new Date(
-								  course.schedule.end_date
-							  ).toLocaleDateString("en-US", dateOptions);
 
                         return (
                             <Grid item key={course.course_id} xs={12}>

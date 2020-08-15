@@ -1,6 +1,15 @@
 import {instance} from "actions/apiActions";
-import {useCallback} from "react";
+import {useCallback, useState} from "react";
 import {useHistory} from "react-router-dom";
+import moment from "moment";
+
+export const USER_TYPES = {
+    "admin": "ADMIN",
+    "instructor": "INSTRUCTOR",
+    "parent": "PARENT",
+    "receptionist": "RECEPTIONIST",
+    "student": "STUDENT",
+};
 
 export const durationParser = {
     "0.5 Hours": 0.5,
@@ -351,8 +360,20 @@ export const tuitionAmount = (courseObject, numSessions) => {
     return (hourly_tuition * duration * numSessions).toFixed(2);
 };
 
-export const initials = (first, last) =>
-    first.charAt(0).toUpperCase() + last.charAt(0).toUpperCase();
+/**
+ * @description calculate amount towards enrollment based on new course object
+ * @param {Object} courseObject - course object with a start and an end time and hourly tuition
+ * @param {Number} numSessions - total number of sessions
+ * @returns "Amount paid"
+ * */
+export const getTuitionAmount = (courseObject, numSessions) => {
+    const {startTime, endTime, hourlyTuition} = courseObject;
+    const duration = moment.duration(moment("2020-01-01T" + endTime).diff(moment("2020-01-01T" + startTime))).asHours();
+    return (hourlyTuition * duration * numSessions).toFixed(2);
+};
+
+export const initials = (first, last) => first && last ?
+    first.charAt(0).toUpperCase() + last.charAt(0).toUpperCase() : "";
 
 export const useGoToRoute = () => {
     const history = useHistory();
@@ -365,6 +386,8 @@ export const useGoToRoute = () => {
     return goToRoute;
 };
 
+export const removeDashes = (phoneNumber) => phoneNumber.replace(/-/ug, "");
+
 /**
  * Removes duplicate values from an array
  * @param {Array} array Array to de-duplicate
@@ -372,3 +395,188 @@ export const useGoToRoute = () => {
 export const uniques = (array) => array.filter(
     (element, index, filteredArray) => filteredArray.indexOf(element) === index
 );
+
+/***
+ * Returns full name given a user object
+ * @param {Object} user
+ */
+export const fullName = ({firstName, lastName}) => `${firstName} ${lastName}`;
+
+/**
+ * Returns if 2 arrays are the same
+ * @param {Array} arr1
+ * @param {Array} arr2
+ * */
+export const arraysMatch = function (arr1, arr2) {
+    if (!arr1 || !arr2) return false;
+    // Check if the arrays are the same length
+    if (arr1.length !== arr2.length) return false;
+
+    // Check if all items exist and are in the same order
+    for (var i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) return false;
+    }
+
+    // Otherwise, return true
+    return true;
+
+};
+/**
+ * Returns duration in hours using Moment.js
+ * @param startDatetime
+ * @param endDatetime
+ * */
+export const getDuration = (startDatetime, endDatetime) =>
+    moment.duration(moment(endDatetime).diff(moment(startDatetime))).asHours();
+
+/**
+ * @description set year, month, date, and seconds to be the same default value - useful for comparing hh:mm only
+ * @returns moment
+ * */
+export const setCurrentDate = (time) => {
+    if (time) {
+        // const formattedTime = typeof time === "string" ? moment(time, 'h:mm') : time.format('h:mm');
+        return moment(time, 'h:mm');
+    }
+    return time;
+};
+
+/**
+ * @description check if there are any time conflicts within a list of time segments
+ * @param {Array} timeSegments array of time segments = array of valid start and end times
+ * @return Boolean error message if there's a conflict or false if there's no conflicts
+ * */
+export const checkTimeSegmentOverlap = (timeSegments) => {
+    if (timeSegments.length === 1) return false;
+
+    timeSegments.sort((timeSegment1, timeSegment2) =>
+        setCurrentDate(timeSegment1[0]).diff(setCurrentDate(timeSegment2[0]))
+    );
+
+    const validTime = (time) => {
+        if (typeof time === "string") {
+            return moment(time);
+        }
+        return time;
+    }
+    const timeSegmentString = ([startTime, endTime]) =>
+        `${validTime(startTime).format("hh:mm A")} - ${validTime(endTime).format("hh:mm A")}`;
+
+    for (let i = 0; i < timeSegments.length - 1; i++) {
+        const currentStartTime = setCurrentDate(timeSegments[i][0]);
+        const currentEndTime = setCurrentDate(timeSegments[i][1]);
+        const nextStartTime = setCurrentDate(timeSegments[i + 1][0]);
+
+        if (currentEndTime > nextStartTime || nextStartTime === currentStartTime) {
+            return `Whoops. ${timeSegmentString(timeSegments[i])} has a conflict with
+				${timeSegmentString(timeSegments[i + 1])}! Please correct it.`;
+        }
+    }
+
+    return false;
+};
+
+/**
+ * @description list any time conflicts within a list of time segments
+ * @param {Array} timeSegments array of time segments = array of valid start and end times
+ * @return Boolean error message if there's a conflict or false if there's no conflicts
+ * */
+export const listTimeSegmentOverlaps = (timeSegments) => {
+    if (timeSegments.length === 1) return false;
+
+    timeSegments.sort((timeSegment1, timeSegment2) =>
+        setCurrentDate(timeSegment1[0]).diff(setCurrentDate(timeSegment2[0]))
+    );
+
+    const validTime = (time) => {
+        if (typeof time === "string") {
+            return moment(time);
+        }
+        return time;
+    }
+    const timeSegmentString = ([startTime, endTime]) =>
+        `${validTime(startTime).format("hh:mm A")} - ${validTime(endTime).format("hh:mm A")}`;
+
+    for (let i = 0; i < timeSegments.length - 1; i++) {
+        const currentStartTime = moment(timeSegments[i][0]);
+        const currentEndTime = moment(timeSegments[i][1]);
+        const nextStartTime = moment(timeSegments[i + 1][0]);
+
+        if (currentEndTime > nextStartTime || nextStartTime === currentStartTime) {
+            return `Whoops. ${timeSegmentString(timeSegments[i])} has a conflict with
+				${timeSegmentString(timeSegments[i + 1])}! Please correct it.`;
+        }
+    }
+
+    return false;
+};
+
+/**
+ * @description check if 2 objects are equal including sub objects
+ * @param {Object} object1
+ * @param {Object} object2
+ * @return {Boolean}
+ * */
+export function deepEqual(object1, object2) {
+    const keys1 = Object.keys(object1);
+    const keys2 = Object.keys(object2);
+
+	if (keys1.length !== keys2.length) {
+		return false;
+	}
+
+	for (const key of keys1) {
+		const val1 = object1[key];
+		const val2 = object2[key];
+		const areObjects = isObject(val1) && isObject(val2);
+		if (
+			areObjects && !deepEqual(val1, val2) ||
+			!areObjects && val1 !== val2
+		) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function isObject(object) {
+    return object != null && typeof object === 'object';
+}
+
+// Hook
+export function useSessionStorage(key, initialValue) {
+    // State to store our value
+    // Pass initial state function to useState so logic is only executed once
+    const [storedValue, setStoredValue] = useState(() => {
+        try {
+            // Get from local storage by key
+            const item = window.sessionStorage.getItem(key);
+            // Parse stored json or if none return initialValue
+            return item ? JSON.parse(item) : initialValue;
+        } catch (error) {
+            // If error also return initialValue
+            console.error(error);
+            return initialValue;
+        }
+    });
+
+    // Return a wrapped version of useState's setter function that ...
+    // ... persists the new value to localStorage.
+    const setValue = value => {
+        try {
+            // Allow value to be a function so we have same API as useState
+            const valueToStore =
+                value instanceof Function ? value(storedValue) : value;
+            // Save state
+            setStoredValue(valueToStore);
+            // Save to local storage
+            window.sessionStorage.setItem(key, JSON.stringify(valueToStore));
+        } catch (error) {
+            // A more advanced implementation would handle the error case
+            console.error(error);
+        }
+    };
+
+    return [storedValue, setValue];
+}

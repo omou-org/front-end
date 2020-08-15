@@ -18,185 +18,232 @@ import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
-import Moment from "react-moment"
+import Moment from "react-moment";
 
 import "./registration.scss";
-import {capitalizeString, courseDateFormat, DayConverter} from "utils";
-import {isFail, isLoading, useCourse, useInstructor} from "actions/hooks";
-import {Link, Redirect, useRouteMatch} from "react-router-dom";
-import BackButton from "../../BackButton.js";
-import Loading from "components/Loading";
+import {Link, useRouteMatch} from "react-router-dom";
+import BackButton from "../../OmouComponents/BackButton.js";
+import Loading from "components/OmouComponents/Loading";
 import RegistrationActions from "./RegistrationActions";
 import RegistrationCourseEnrollments from "./RegistrationCourseEnrollments";
-import {useCourseNotes} from "actions/courseActions";
 import UserAvatar from "../Accounts/UserAvatar";
 import {weeklySessionsParser} from "components/Form/FormUtils";
+import {useQuery} from "@apollo/react-hooks";
+import gql from "graphql-tag";
+import {SIMPLE_COURSE_DATA} from "queryFragments";
+import {fullName, USER_TYPES} from "utils";
+
+export const GET_COURSE_DETAILS = gql`
+	query CourseDetails($courseId: ID!){
+		course(courseId: $courseId) {
+			endDate
+			startDate
+			startTime
+			endTime
+			description
+			academicLevel
+			maxCapacity
+			instructor {
+			  user {
+				id
+				firstName
+				lastName
+			  }
+			}
+			isConfirmed
+			...SimpleCourse
+		}
+		courseNotes(courseId: $courseId) {
+		    body
+			complete
+			id
+			important
+			timestamp
+			title
+		}
+	}
+	${SIMPLE_COURSE_DATA}
+	`;
 
 const RegistrationCourse = () => {
 	const {
 		params: {courseID},
 	} = useRouteMatch();
-
-	const isAdmin = useSelector(({auth}) => auth.isAdmin);
-	const courses = useSelector(({Course}) => Course.NewCourseList);
-	const instructors = useSelector(({Users}) => Users.InstructorList);
-	const course = courses[courseID];
+	const isAdmin =
+		useSelector(({auth}) => auth.accountType) === USER_TYPES.admin;
 
 	const [activeTab, setActiveTab] = useState(0);
 
-	useCourseNotes(courseID);
-	const courseStatus = useCourse(courseID);
-	useInstructor(course && course.instructor_id);
+	const {data, loading, error} = useQuery(GET_COURSE_DETAILS, {
+		variables: {courseId: courseID}
+	});
 
 	const handleTabChange = useCallback((_, newTab) => {
 		setActiveTab(newTab);
 	}, []);
 
-	// either doesn't exist or only has notes defined
-	if (!course || Object.keys(course).length <= 1) {
-		if (isLoading(courseStatus)) {
-			return <Loading paper/>;
-		}
-
-		if (isFail(courseStatus)) {
-			return <Redirect push to="/PageNotFound"/>;
-		}
+	if (loading) {
+		return <Loading/>
 	}
+	if (error) {
+		return <Typography>
+			There's been an error! Error: {error.message}
+		</Typography>
+	}
+	const {
+		"course": {
+			title,
+			endDate,
+			startDate,
+			startTime,
+			endTime,
+			description,
+			academicLevel,
+			maxCapacity,
+			instructor,
+			isConfirmed,
+		},
+		courseNotes
+	} = data;
 
-	const hasImportantNotes = Object.values(course.notes || {}).some(
+	const hasImportantNotes = Object.values(courseNotes || {}).some(
 		({important}) => important
 	);
 
-	const instructor = instructors[course.instructor_id];
+	const instructorName = fullName(instructor.user);
 
-	const {start_date, end_date, start_time, end_time} = courseDateFormat(
-		course
+	return (
+		<Grid className="registrationCourse" item xs={12}>
+			<Paper className="paper content" elevation={2}>
+				<Grid container justify="space-between">
+					<Grid item sm={3}>
+						<BackButton/>
+					</Grid>
+					<Grid item sm={2}/>
+				</Grid>
+				<Divider className="top-divider"/>
+				<Grid item lg={12}>
+					<RegistrationActions courseTitle={title}/>
+				</Grid>
+				<div className="course-heading">
+					<Typography align="left" variant="h3">
+						{title}
+						{isAdmin && (
+							<Button
+								className="button"
+								component={Link}
+								to={`/registration/form/course_details/${courseID}`}
+							>
+								<EditIcon className="icon"/>
+								Edit Course
+							</Button>
+						)}
+					</Typography>
+					<div className="date">
+						<CalendarIcon align="left" className="icon"/>
+						<Typography align="left" className="sessions-text">
+							<Moment format="MMM D YYYY" date={startDate}/>
+							{" - "}
+							<Moment format="MMM D YYYY" date={endDate}/> (
+							{weeklySessionsParser(startDate, endDate)} sessions)
+						</Typography>
+					</div>
+					<div className="info-section">
+						<div className="course-info-header">
+							<ClassIcon className="icon"/>
+							<Typography align="left" className="text">
+								Course Information
+							</Typography>
+						</div>
+						<div className="course-info-details">
+							{instructor && (
+								<>
+									{isConfirmed ? (
+										<ConfirmIcon className="confirmed course-icon"/>
+									) : (
+										<UnconfirmIcon className="unconfirmed course-icon"/>
+									)}
+									<Chip
+										avatar={
+											<UserAvatar
+												fontSize={20}
+												name={instructorName}
+												size={38}
+											/>
+										}
+										className="chip"
+										component={Link}
+										label={instructorName}
+										to={`/accounts/instructor/${instructor.user.id}`}
+									/>
+								</>
+							)}
+							<Typography align="left" className="text">
+								<Moment
+									format="h:mm a"
+									date={startDate + "T" + startTime}
+								/>
+								{" - "}
+								<Moment
+									format="h:mm a"
+									date={endDate + "T" + endTime}
+								/>
+							</Typography>
+							<Typography align="left" className="text">
+								<Moment format="dddd" date={startDate}/>
+							</Typography>
+							<Typography align="left" className="text">
+								Grade {academicLevel}
+							</Typography>
+						</div>
+					</div>
+				</div>
+				<Typography align="left" className="description text">
+					{description}
+				</Typography>
+				<Tabs
+					className="registration-course-tabs"
+					indicatorColor="primary"
+					onChange={handleTabChange}
+					value={activeTab}
+				>
+					<Tab
+						label={
+							<>
+								<RegistrationIcon className="NoteIcon"/> Registration
+							</>
+						}
+						/>
+					<Tab
+						label={
+							hasImportantNotes ? (
+								<>
+									<Avatar className="notificationCourse"/>
+									<NoteIcon className="TabIcon"/> Notes
+								</>
+							) : (
+								<>
+									<NoteIcon className="NoteIcon"/> Notes
+								</>
+							)
+						}
+					/>
+				</Tabs>
+				{activeTab === 0 && (
+					<RegistrationCourseEnrollments
+						courseID={courseID}
+						maxCapacity={maxCapacity}
+						courseTitle={title}
+					/>
+				)}
+				{activeTab === 1 && (
+					<div className="notes-container">
+						<Notes ownerID={courseID} ownerType="course"/>
+					</div>
+				)}
+			</Paper>
+		</Grid>
 	);
-
-    return (
-        <Grid className="registrationCourse" item xs={12}>
-            <Paper className="paper content" elevation={2}>
-                <Grid container justify="space-between">
-                    <Grid item sm={3}>
-                        <BackButton/>
-                    </Grid>
-                    <Grid item sm={2}/>
-                </Grid>
-                <Divider className="top-divider"/>
-                <Grid item lg={12}>
-                    <RegistrationActions courseTitle={course.course_title}/>
-                </Grid>
-                <div className="course-heading">
-                    <Typography align="left" variant="h3">
-                        {course.title}
-                        {isAdmin && (
-                            <Button
-                                className="button"
-                                component={Link}
-                                to={`/registration/form/course_details/${courseID}/edit`}
-                            >
-                                <EditIcon className="icon"/>
-                                Edit Course
-                            </Button>
-                        )}
-                    </Typography>
-                    <div className="date">
-                        <CalendarIcon align="left" className="icon"/>
-                        <Typography align="left" className="sessions-text">
-                            <Moment format="MMM D YYYY" date={course.schedule.start_date}/>
-                            {" - "}
-                            <Moment format="MMM D YYYY" date={course.schedule.end_date}/>
-                            {" "}
-                            (
-                            {weeklySessionsParser(start_date, end_date)} sessions)
-                        </Typography>
-                    </div>
-                    <div className="info-section">
-                        <div className="course-info-header">
-                            <ClassIcon className="icon"/>
-                            <Typography align="left" className="text">
-                                Course Information
-                            </Typography>
-                        </div>
-                        <div className="course-info-details">
-                            {instructor && (
-                                <>
-                                    {course.is_confirmed ? (
-                                        <ConfirmIcon className="confirmed course-icon"/>
-                                    ) : (
-                                        <UnconfirmIcon className="unconfirmed course-icon"/>
-                                    )}
-                                    <Chip
-                                        avatar={
-                                            <UserAvatar
-                                                fontSize={20}
-                                                name={instructor.name}
-                                                size={38}
-                                            />
-                                        }
-                                        className="chip"
-                                        component={Link}
-                                        label={instructor.name}
-                                        to={`/accounts/instructor/${instructor.user_id}`}
-                                    />
-                                </>
-                            )}
-                            <Typography align="left" className="text">
-                                <Moment format="h:mm a" date={course.schedule.start_date+course.schedule.start_time}/>
-                                {" - "}
-                                <Moment format="h:mm a" date={course.schedule.end_date+course.schedule.end_time}/>
-                            </Typography>
-                            <Typography align="left" className="text">
-                                <Moment format="dddd" date={course.schedule.start_date}/>
-                            </Typography>
-                            <Typography align="left" className="text">
-                                Grade {course.grade}
-                            </Typography>
-                        </div>
-                    </div>
-                </div>
-                <Typography align="left" className="description text">
-                    {course.description}
-                </Typography>
-                <Tabs
-                    className="registration-course-tabs"
-                    indicatorColor="primary"
-                    onChange={handleTabChange}
-                    value={activeTab}
-                >
-                    <Tab
-                        label={
-                            <>
-                                <RegistrationIcon className="NoteIcon"/> Registration
-                            </>
-                        }
-                    />
-                    <Tab
-                        label={
-                            hasImportantNotes ? (
-                                <>
-                                    <Avatar className="notificationCourse"/>
-                                    <NoteIcon className="TabIcon"/> Notes
-                                </>
-                            ) : (
-                                <>
-                                    <NoteIcon className="NoteIcon"/> Notes
-                                </>
-                            )
-                        }
-                    />
-                </Tabs>
-                {activeTab === 0 && (
-                    <RegistrationCourseEnrollments courseID={courseID}/>
-                )}
-                {activeTab === 1 && (
-                    <div className="notes-container">
-                        <Notes ownerID={courseID} ownerType="course"/>
-                    </div>
-                )}
-            </Paper>
-        </Grid>
-    );
 };
 
 export default RegistrationCourse;

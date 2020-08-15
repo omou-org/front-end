@@ -2,7 +2,7 @@ import {connect} from "react-redux";
 import PropTypes from "prop-types";
 import React, {useState} from "react";
 
-import BackButton from "../BackButton";
+import BackButton from "../OmouComponents/BackButton";
 import Grid from "@material-ui/core/Grid";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";

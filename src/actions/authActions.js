@@ -1,63 +1,105 @@
 import * as types from "./actionTypes";
-import {instance} from "./apiActions";
+import {client} from "index";
+import gql from "graphql-tag";
 
-export const login = (email, password, savePassword) => async (dispatch) => {
-	delete instance.defaults.headers.common.Authorization;
+const GET_EMAIL = gql`
+    mutation GetDetails($token: String!) {
+        verifyToken(token: $token) {
+            payload
+        }
+    }`;
 
-	// request starting
-	dispatch({type: types.LOGIN_STARTED});
+const GET_ACCOUNT_TYPE = gql`
+    query GetAccountType($username: String!) {
+        userInfo(userName: $username) {
+            ... on AdminType {
+                accountType
+                user {
+                    id
+                    firstName
+                    lastName
+                    email
+                }
+            }
+            ... on InstructorType {
+                accountType
+                user {
+                    id
+                    firstName
+                    lastName
+                    email
+                }
+            }
+            ... on ParentType {
+                accountType
+                user {
+                    id
+                    firstName
+                    lastName
+                    email
+                }
+            }
+            ... on StudentType {
+                accountType
+                user {
+                    id
+                    firstName
+                    lastName
+                    email
+                }
+            }
+        }
+    }`;
 
-	try {
-		const response = await instance.post("/auth_token/", {
-			username: email,
-			password,
-		});
-		// successful request
-		dispatch({
-			type: types.LOGIN_SUCCESSFUL,
-			payload: {
-				response,
-				savePassword,
-			},
-		});
-	} catch (error) {
-		// failed request
-		dispatch({
-			type: types.LOGIN_FAILED,
-			payload: error,
-		});
-	}
+export const setToken = async (token, shouldSave) => {
+    try {
+        const {"data": {verifyToken}} = await client.mutate({
+            "context": {
+                "headers": {
+                    "Authorization": `JWT ${token}`,
+                },
+            },
+            "mutation": GET_EMAIL,
+            "variables": {token},
+        });
+        const email = verifyToken.payload.username;
+
+        const {"data": {userInfo}} = await client.query({
+            "context": {
+                "headers": {
+                    "Authorization": `JWT ${token}`,
+                },
+            },
+            "query": GET_ACCOUNT_TYPE,
+            "variables": {"username": email},
+        });
+        const {accountType, user, phoneNumber} = userInfo;
+        if (shouldSave) {
+            localStorage.setItem("token", token);
+        }
+        return {
+            "payload": {
+                accountType,
+                email,
+                token,
+				user,
+                phoneNumber
+            },
+            "type": types.SET_CREDENTIALS,
+        };
+    } catch (error) {
+        // invalid token, do nothing
+        console.error(error);
+        return {
+            "type": null,
+        };
+    }
 };
 
-export const logout = () => ({type: types.LOGOUT});
-
-export const fetchUserStatus = (token) => async (dispatch) => {
-	// creates a new action based on the response given
-	const newAction = (type, response) => {
-		dispatch({
-			type,
-			payload: {
-				response,
-				token,
-			},
-		});
-	};
-
-	// request starting
-	newAction(types.FETCH_USER_STARTED, {});
-
-	try {
-		const response = await instance.get("/account/user/", {
-			headers: {
-				Authorization: `Token ${token}`,
-			},
-		});
-		// succesful request
-		newAction(types.FETCH_USER_SUCCESSFUL, response);
-	} catch ({response}) {
-		// failed request
-		newAction(types.FETCH_USER_FAILED, response);
-	}
+export const logout = () => {
+    localStorage.removeItem("token");
+    client.clearStore();
+    return {
+        "type": types.LOGOUT,
+    };
 };
-
-export const resetAttemptStatus = () => ({type: types.RESET_ATTEMPT});

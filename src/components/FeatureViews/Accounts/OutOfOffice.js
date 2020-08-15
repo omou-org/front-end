@@ -2,7 +2,7 @@ import React, {useCallback, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import PropTypes from "prop-types";
 
-import {DatePicker, TimePicker} from "material-ui-pickers";
+import {DatePicker, TimePicker} from "@material-ui/pickers";
 import AwayIcon from "@material-ui/icons/EventBusy";
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -15,7 +15,7 @@ import TextField from "@material-ui/core/TextField";
 
 import "./Accounts.scss";
 import {instance} from "actions/apiActions";
-import InstructorConflictCheck from "components/InstructorConflictCheck";
+import InstructorConflictCheck from "components/OmouComponents/InstructorConflictCheck";
 import {POST_OOO_SUCCESS} from "actions/actionTypes";
 
 const formatDate = (date, allDay) => {

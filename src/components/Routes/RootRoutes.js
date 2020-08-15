@@ -1,131 +1,171 @@
 // React Imports
 import {Redirect, Route, Switch} from "react-router-dom";
-import {useDispatch} from "react-redux";
-import {resetSubmitStatus} from "../../actions/registrationActions";
 import React from "react";
+import {useDispatch, useSelector} from "react-redux";
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
+import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
+import AuthenticatedRoute from "./AuthenticatedRoute";
+import CatsPage from "../CatsPage/CatsPage";
 import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/EnrollmentView";
-// import Dashboard from "../FeatureViews/Dashboard/Dashboard";
+import EditSessionView from "../FeatureViews/Scheduler/EditSessionView";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
-import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
+import ForgotPassword from "../Authentication/ForgotPassword";
 import LoginPage from "../Authentication/LoginPage.js";
+import NewAccount from "../Authentication/NewAccount";
 import NoResultsPage from "../FeatureViews/Search/NoResults/NoResultsPage";
-import ProtectedRoute from "./ProtectedRoute";
+import NotEnrolledStudentsDialog from "../FeatureViews/Scheduler/NotEnrolledStudentDialog";
+import PaymentReceipt from "../FeatureViews/Registration/PaymentReceipt";
 import Registration from "../FeatureViews/Registration/Registration";
-import RegistrationForm from "../Form/Form";
+import FormPage from "../Form/FormPage";
+import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
+import ResetPassword from "../Authentication/ResetPassword";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
 import SearchResults from "../FeatureViews/Search/SearchResults";
 import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
-import RegistrationCart from "../FeatureViews/Registration/RegistrationCart";
-import AdminRoute from "./AdminRoute";
-import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
-import RegistrationReceipt from "../FeatureViews/Registration/RegistrationReceipt";
-import CatsPage from "../CatsPage/CatsPage";
+
+import {resetSubmitStatus} from "actions/registrationActions";
+import {USER_TYPES} from "utils";
+import RegistrationForm from "../FeatureViews/Registration/RegistrationForm";
+import RegistrationCartContainer from "../FeatureViews/Registration/RegistrationCart/RegistrationCartContainer";
+import DashboardSwitch from "../FeatureViews/Dashboard/DashboardSwitch";
+import TeachingLogContainer from "../FeatureViews/TeachingLog/TeachingLogContainer";
+import AvailabilityContainer from "../FeatureViews/Availability/AvailabilityContainer";
+import ManagePayments from "../FeatureViews/ManagePayments/ManagePayments";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
+    const AuthUser = useSelector(({auth}) => auth);
     dispatch(resetSubmitStatus());
 
     return (
         <Switch>
-            <Route
-                path="/login"
-                render={(passedProps) => <LoginPage {...passedProps} />}
-            />
+            {/* Authentication views */}
+            <Route path="/forgotpassword">
+                <ForgotPassword />
+            </Route>
+            <Route path="/resetpassword">
+                <ResetPassword />
+            </Route>
+            <Route path="/setpassword">
+                <ResetPassword isSet />
+            </Route>
+            <Route path="/login">
+                <LoginPage/>
+            </Route>
+            <Route path="/new/:type?">
+                <NewAccount/>
+            </Route>
 
             {/* Main Feature Views */}
-            <ProtectedRoute
-                exact
-                path="/"
-                render={(passedProps) => <Scheduler {...passedProps} />}
-            />
+            <AuthenticatedRoute exact path="/">
+                {
+                    {
+                        [USER_TYPES.receptionist]: <DashboardSwitch/>,
+                        [USER_TYPES.admin]: <DashboardSwitch/>,
+                        [USER_TYPES.parent]: <Scheduler/>,
+                        [USER_TYPES.instructor]: <Scheduler/>,
+                    }[AuthUser.accountType]
+                }
 
-            <ProtectedRoute
-                exact
-                path="/registration"
-                render={(passedProps) => <Registration {...passedProps} />}
-            />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact
+                                path="/registration"
+                                users={[USER_TYPES.admin, USER_TYPES.receptionist, USER_TYPES.parent]}
+            >
+                <Registration/>
+            </AuthenticatedRoute>
+
             {/* Scheduler Routes */}
-            <ProtectedRoute
-                exact
-                path="/scheduler"
-                render={(passedProps) => <Scheduler {...passedProps} />}
-            />
-            <Route
-                path="/scheduler/view-session/:course_id/:session_id/:instructor_id"
-                render={(passedProps) => <SessionView {...passedProps} />}
-            />
-            <ProtectedRoute
-                exact
-                path="/search"
-                render={(passedProps) => <SearchResults {...passedProps} />}
-            />
+            <AuthenticatedRoute exact path="/scheduler">
+                <Scheduler/>
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/scheduler/view-session/:course_id/:session_id/:instructor_id">
+                <SessionView/>
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/scheduler/edit-session/:course_id/:session_id/:instructor_id/edit">
+                <EditSessionView />
+            </AuthenticatedRoute>
 
-            {/* <ProtectedRoute*/}
-            {/*    path='/scheduler/resource'*/}
-            {/*    render={(passedProps) => <ResourceView {...passedProps} />} /> */}
-            <ProtectedRoute
-                exact
-                path="/cats"
-                render={(passedProps) => <CatsPage {...passedProps} />}
-            />
-            <ProtectedRoute
-                exact
-                path="/noresults"
-                render={(passedProps) => <NoResultsPage {...passedProps} />}
-            />
+            <AuthenticatedRoute exact path="/search">
+                <SearchResults />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/cats">
+                <CatsPage />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/noresults">
+                <NoResultsPage />
+            </AuthenticatedRoute>
 
             {/* Accounts */}
-            <ProtectedRoute
-                exact
-                path="/accounts/:accountType/:accountID"
-                render={(passedProps) => <UserProfile {...passedProps} />}
-            />
-            <ProtectedRoute
-                exact
-                path="/accounts/parent/payment/:parentID/:paymentID"
-                render={(passedProps) => <RegistrationReceipt {...passedProps} />}
-            />
-            <ProtectedRoute
-                exact
-                path="/accounts"
-                render={(passedProps) => <Accounts {...passedProps} />}
-            />
-            <ProtectedRoute
-                exact
-                path="/accounts/:accountType/:accountID/:courseID"
-                render={(passedProps) => <CourseSessionStatus {...passedProps} />}
-            />
+            <AuthenticatedRoute exact path="/accounts/:accountType/:accountID">
+                <UserProfile />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact
+                path="/accounts/parent/payment/:paymentID">
+                <PaymentReceipt />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/accounts"
+                users={[USER_TYPES.admin, USER_TYPES.receptionist]}>
+                <Accounts />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact
+                path="/accounts/:accountType/:accountID/:courseID">
+                <CourseSessionStatus />
+            </AuthenticatedRoute>
 
             {/* Registration Routes */}
-            <ProtectedRoute
-                path="/registration/form/:type/:id?/:edit?"
-                render={(passedProps) => <RegistrationForm {...passedProps} />}
-            />
-            <ProtectedRoute
+            <AuthenticatedRoute path="/registration/form/:type/:id?">
+                <RegistrationForm />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute
                 path="/registration/course/:courseID?/:courseTitle?"
-                render={(passedProps) => <RegistrationCourse {...passedProps} />}
-            />
-            <ProtectedRoute
-                path="/registration/cart/"
-                render={(passedProps) => <RegistrationCart {...passedProps} />}
-            />
-            <ProtectedRoute
-                path="/registration/receipt/:paymentID?"
-                render={(passedProps) => <RegistrationReceipt {...passedProps} />}
-            />
+                users={[USER_TYPES.admin, USER_TYPES.receptionist]}>
+                <RegistrationCourse />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute path="/registration/cart/">
+                <RegistrationCartContainer />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute path="/registration/receipt/:paymentID?">
+                <PaymentReceipt />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute path="/NotEnrolledStudent">
+                <NotEnrolledStudentsDialog />
+            </AuthenticatedRoute>
+
+            {/* Instructor Routes */}
+            <AuthenticatedRoute path="/teaching-log"
+                users={[USER_TYPES.instructor]}>
+                <TeachingLogContainer />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute path="/availability"
+                users={[USER_TYPES.instructor]}>
+                <AvailabilityContainer />
+            </AuthenticatedRoute>
+
+            {/* Parent Routes */}
+            <AuthenticatedRoute path="/my-payments/:view?/:paymentId?"
+                                users={[USER_TYPES.parent]}
+            >
+                <ManagePayments/>
+            </AuthenticatedRoute>
 
             {/* Admin Routes */}
-            <AdminRoute
-                exact
-                path="/adminportal/:view?/:type?/:id?/:edit?"
-                render={(passedProps) => <AdminPortal {...passedProps} />}
-            />
+            <AuthenticatedRoute exact
+                                path="/adminportal/:view?/:type?/:id?/:edit?"
+                                users={[USER_TYPES.admin]}>
+                <AdminPortal/>
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/form/:type/:id?"
+                users={[USER_TYPES.admin, USER_TYPES.parent]}>
+                <FormPage />
+            </AuthenticatedRoute>
 
-            <Route component={ErrorNotFoundPage} path="/PageNotFound"/>
-            <Redirect to="/PageNotFound"/>
+            <AuthenticatedRoute path="/PageNotFound">
+                <ErrorNotFoundPage />
+            </AuthenticatedRoute>
+            <Redirect to="/PageNotFound" />
         </Switch>
     );
 };

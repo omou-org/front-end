@@ -1,37 +1,25 @@
-// React
-import React, { useEffect, useMemo } from "react";
-import * as authActions from "actions/authActions";
-import { useDispatch, useSelector } from "react-redux";
-import { bindActionCreators } from "redux";
-import { instance } from "actions/apiActions";
-// Material UI
+import React from "react";
+
 import CssBaseline from "@material-ui/core/CssBaseline";
-// Local Component Imports
+import Moment from "react-moment";
+import momentTimezone from "moment-timezone";
+import moment from "moment";
 import Navigation from "./components/Navigation/Navigation";
+
 import "./theme/theme.scss";
-import moment from 'moment-timezone';
-import Moment from 'react-moment';
+import MuiPickersUtilsProvider from "@material-ui/pickers/MuiPickersUtilsProvider";
+import MomentUtils from "@date-io/moment";
 
-Moment.globalMoment = moment;
-Moment.globalTimezone = 'America/Los_Angeles';
+Moment.globalMoment = momentTimezone;
+Moment.globalTimezone = "America/Los_Angeles";
 
-const App = () => {
-    const dispatch = useDispatch();
-    const token = useSelector(({ auth }) => auth.token) ||
-        localStorage.getItem("authToken");
-    const bound = useMemo(() => bindActionCreators(authActions, dispatch), [
-        dispatch,
-    ]);
-    useEffect(() => {
-        bound.fetchUserStatus(token);
-        instance.defaults.headers.common.Authorization = `Token ${token}`;
-    }, [bound, token]);
-    return (
+const App = () => (
+    <MuiPickersUtilsProvider utils={MomentUtils} libInstance={moment}>
         <div className="App">
-            <CssBaseline />
-            <Navigation />
+            <CssBaseline/>
+            <Navigation/>
         </div>
-    );
-};
+    </MuiPickersUtilsProvider>
+);
 
 export default App;

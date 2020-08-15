@@ -25,7 +25,7 @@ export default function admin(state = initialState.Admin, {payload, type}) {
     case actions.GET_DISCOUNT_DATE_RANGE_SUCCESS:
       return updateDiscount(newState, payload, "GET", "DateRange");
     case actions.GET_UNPAID_SUCCESS:
-      return handleUnpaidFetch(newState, payload, "GET");
+      return handleUnpaidFetch(newState, payload);
 
     case actions.DELETE_DISCOUNT_PAYMENT_METHOD_SUCCESS:
       return updateDiscount(newState, payload, "DELETE", "PaymentMethod");

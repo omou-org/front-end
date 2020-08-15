@@ -1,126 +1,284 @@
-import React, {useCallback, useState} from "react";
-import {Redirect, useHistory} from "react-router-dom";
+import React, {useCallback, useEffect, useState} from "react";
+import {Link, useHistory, useLocation} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
+import gql from "graphql-tag";
+import {useLazyQuery, useMutation} from "@apollo/react-hooks";
 
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Grid from "@material-ui/core/Grid";
-import Loading from "components/Loading";
-import Paper from "@material-ui/core/Paper";
+import {PasswordInput} from "../Form/Fields";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import EmailOutlinedIcon from "@material-ui/icons/EmailOutlined";
 
+import {setToken} from "actions/authActions.js";
+import {ReactComponent as Ellipse1} from "./loginImages/ellipse1.svg";
+import {ReactComponent as Ellipse2} from "./loginImages/ellipse2.svg";
+import {ReactComponent as Picture1} from "./loginImages/picture1.svg";
+import {ReactComponent as Ellipse3} from "./loginImages/ellipse3.svg";
+import {ReactComponent as Ellipse4} from "./loginImages/ellipse4.svg";
+import {ReactComponent as Picture2} from "./loginImages/picture2.svg";
+import {ReactComponent as Picture3} from "./loginImages/picture3.svg";
+import {ReactComponent as Picture4} from "./loginImages/picture4.svg";
 import "./LoginPage.scss";
-import {isFail, isLoading, isSuccessful} from "actions/hooks";
-import {login, resetAttemptStatus} from "actions/authActions.js";
+
+const LOGIN = gql`
+    mutation Login($password: String!, $username: String!) {
+        tokenAuth(password: $password, username: $username) {
+            token
+            payload
+        }
+    }
+`;
+
+const GET_USER_TYPE = gql`
+    query GetUserType($username: String!){
+        userType(userName: $username)
+    }
+`;
 
 const LoginPage = () => {
-	const fetchUserStatus = useSelector(
-		({RequestStatus}) => RequestStatus.userFetch
-	);
-	const loginStatus = useSelector(({RequestStatus}) => RequestStatus.login);
-	const dispatch = useDispatch();
-	const history = useHistory();
+    const history = useHistory();
+    const {state} = useLocation();
+    const dispatch = useDispatch();
+    const token = useSelector(({auth}) => auth.token);
+    const [userType, setUserType] = useState("");
+    const [email, setEmail] = useState(state?.email);
+    const [password, setPassword] = useState(null);
+    const [shouldSave, setShouldSave] = useState(false);
+    const [hasError, setHasError] = useState(false);
 
-	const [email, setEmail] = useState(null);
-	const [password, setPassword] = useState(null);
-	const [savePassword, setSavePassword] = useState(false);
-	const [shouldRedirect, setShouldRedirect] = useState(true);
+    const [getUserType] = useLazyQuery(GET_USER_TYPE, {
+        "variables": {"username": email},
+        "onCompleted": (data) => {
+            setUserType(data.userType);
+            if (userType === null) {
+                setHasError(true);
+            }
+        },
+    });
 
-	const handleTextInput = useCallback(
-		(setter) => ({target}) => {
-			setter(target.value);
-			dispatch(resetAttemptStatus());
-		},
-		[dispatch]
-	);
+    const [login] = useMutation(LOGIN, {
+        "errorPolicy": "ignore",
+        "ignoreResults": true,
+        "onCompleted": async ({tokenAuth}) => {
+            dispatch(await setToken(tokenAuth.token, shouldSave));
+        },
+        // for whatever reason, this function prevents an unhandled rejection
+        "onError": () => {
+            setHasError(true);
+        },
+    });
 
-	const handleSubmit = useCallback(
-		(event) => {
-			event.preventDefault();
-			login(email, password, savePassword)(dispatch);
-		},
-		[dispatch, email, password, savePassword]
-	);
+    // must wait for token to update in redux before redirecting
+    // otherwise ProtectedRoute's check will trigger and redirect us back here
+    useEffect(() => {
+        if (token) {
+            if (history.length > 2) {
+                history.goBack();
+            } else {
+                history.push("/");
+            }
+        }
+    }, [token, history]);
 
-	const toggleSavePassword = useCallback(() => {
-		setSavePassword((prevPassword) => !prevPassword);
-	}, []);
+    const handleTextInput = useCallback((setter) => ({target}) => {
+        setter(target.value);
+        setHasError(false);
+    }, []);
 
-	const failedLogin = isFail(loginStatus);
-	if (isLoading(loginStatus) && isLoading(fetchUserStatus)) {
-		return <Loading/>;
-	}
+    const handleLogin = useCallback(async (event) => {
+        event.preventDefault();
+        const loginResponse = await login({
+            "variables": {
+                password,
+                "username": email,
+            },
+        });
+        if (loginResponse?.data?.tokenAuth) {
+            history.push("/")
+        }
+    }, [login, email, password]);
 
-	if (
-		(isSuccessful(fetchUserStatus) || isSuccessful(loginStatus)) &&
-		shouldRedirect
-	) {
-		if (history.length > 2) {
-			history.goBack();
-		} else {
-			return <Redirect to="/"/>;
-		}
-		setShouldRedirect(false);
-	}
+    const toggleSavePassword = useCallback(({target}) => {
+        setShouldSave(target.checked);
+    }, []);
 
-	return (
-		<Paper className="bg">
-			<Typography align="center" color="primary">
-				<span className="header">sign in</span>
-			</Typography>
-			<form onSubmit={handleSubmit}>
-				<TextField
-					className="email"
-					error={failedLogin || email === ""}
-					inputProps={{"data-cy": "emailField"}}
-					label="E-Mail"
-					margin="dense"
-					onChange={handleTextInput(setEmail)}
-					value={email}
-				/>
-				<TextField
-					autoComplete="current-password"
-					className="password"
-					error={failedLogin || password === ""}
-					inputProps={{"data-cy": "passwordField"}}
-					label="Password"
-					margin="normal"
-					onChange={handleTextInput(setPassword)}
-					type="password"
-					value={password}
-				/>
-				<Grid container>
-					<Grid className="remember" item>
-						<Checkbox
-							checked={savePassword}
-							component="label"
-							inputProps={{
-								"data-cy": "rememberMe",
-							}}
-							onClick={toggleSavePassword}
-						/>
-						Remember me
-					</Grid>
-				</Grid>
-				<Button
-					className="signIn"
-					color="primary"
-					data-cy="signInButton"
-					disabled={!email || !password}
-					type="submit"
-					variant="contained"
-				>
-					sign in
-				</Button>
-			</form>
-			{failedLogin && (
-				<Typography color="error" data-cy="errorMessage">
-					Invalid credentials
-				</Typography>
-			)}
-		</Paper>
-	);
+    const handleCheck = () => {
+        if (email !== "") {
+            getUserType();
+        }
+    };
+
+    const renderEmailLogin = () => (
+        <>
+            <Ellipse1 className="picture var1" />
+            <Ellipse2 className="picture var2" />
+            <Picture1 className="picture var4" />
+            <div className="logo var2">
+                <Typography className="title">
+                    omou
+                </Typography>
+            </div>
+            <form className="Login" onSubmit={(e) => {
+                e.preventDefault();
+                handleCheck();
+            }}>
+                <Grid container>
+                    <Grid item md={6} />
+                    <Grid item md={6}>
+                        <Typography className="welcomeText">
+                            Welcome to Summit
+                        </Typography>
+                        <TextField InputProps={{
+                            "startAdornment": (
+                                <InputAdornment position="start">
+                                    <EmailOutlinedIcon style={{"color": "grey"}} />
+                                </InputAdornment>
+                            ),
+                        }} className="TextField"
+                            error={hasError || email === ""}
+                            fullWidth
+                            helperText={hasError ? "Sorry, we couldn't find a user for that email." : " "}
+                            inputProps={{"data-cy": "emailField"}}
+                            margin="normal"
+                            onChange={handleTextInput(setEmail)}
+                            placeholder="E-Mail"
+                            value={email}
+                            variant="outlined" />
+                        <Grid className="buttonContainer" container item>
+                            <Grid item md={2} />
+                            <Grid item md={4}>
+                                <Button className="createAccountButton"
+                                    component={Link} to={{
+                                        "pathname": "/new/parent",
+                                        "state": {
+                                            email,
+                                            password,
+                                        },
+                                    }} variant="outlined">
+                                    CREATE ACCOUNT
+                                </Button>
+                            </Grid>
+                            <Grid item md={4}>
+                                <Button data-cy="nextButton" className="signInButton" onClick={handleCheck}>
+                                    SIGN IN
+                                </Button>
+                            </Grid>
+                            <Grid item md={2} />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </form>
+        </>);
+
+    const renderUserDifferences = () => {
+        switch (userType) {
+            case "Parent":
+                return {
+                    "picture": <Picture2 className="picture var4" />,
+                    "text": "Hello Summit Parent",
+                };
+            case "Instructor":
+                return {
+                    "picture": <Picture4 className="picture var4" />,
+                    "text": "Hello Summit Instructor",
+                };
+            case "Admin":
+                return {
+                    "picture": <Picture3 className="picture var4" />,
+                    "text": "Hello Summit Admin",
+                };
+            default:
+                return {
+                    "picture": <Picture1 className="picture var4" />,
+                    "text": "Hello User",
+                };
+        }
+    };
+
+    const renderOtherLogins = () => (
+        <>
+            <Ellipse3 className="picture var3" />
+            <Ellipse4 className="picture var4" />
+            {renderUserDifferences().picture}
+            <div className="logo var2">
+                <Typography className="title">
+                    omou
+                </Typography>
+            </div>
+            <form className="Login" onSubmit={handleLogin}>
+                <Grid container>
+                    <Grid item md={6} />
+                    <Grid item md={6}>
+                        <Typography className="welcomeText">
+                            {renderUserDifferences().text}
+                        </Typography>
+                        <TextField
+                            InputProps={{
+                                "startAdornment": (
+                                    <InputAdornment position="start">
+                                        <EmailOutlinedIcon style={{"color": "grey"}} />
+                                    </InputAdornment>
+                                ),
+                            }} className="TextField"
+                            error={hasError}
+                            fullWidth
+                            inputProps={{"data-cy": "emailField"}}
+                            margin="normal"
+                            onChange={handleTextInput(setEmail)}
+                            placeholder="E-Mail"
+                            value={email}
+                            variant="outlined"/>
+                        <PasswordInput autoComplete="current-password"
+                                       error={hasError || password === ""}
+                                       inputProps={{"data-cy": "passwordField"}}
+                                       isField={false} label="Password"
+                                       className="TextField"
+                                       variant="outlined"
+                                       onChange={handleTextInput(setPassword)}
+                                       value={password}/>
+                        <Grid className="optionsContainer" container item>
+                            <Grid item md={2}/>
+                            <Grid item md={4}>
+                                <FormControlLabel
+                                    control={<Checkbox checked={shouldSave}
+                                                       inputProps={{"data-cy": "rememberMe"}}
+                                                       onChange={toggleSavePassword}/>}
+                                    label="Remember Me"/>
+                            </Grid>
+                            <Grid item md={4} style={{"paddingTop": 10}}>
+                                <Link className="forgotPassword"
+                                    data-cy="forgotPassword" to={{
+                                        "pathname": "/forgotpassword",
+                                        "state": {email},
+                                    }}>
+                                    Forgot Password?
+                                </Link>
+                            </Grid>
+                            <Grid item md={2} />
+                            <Grid item md={4} />
+                            <Grid className="buttonSpacing" item md={4}>
+                                <Button className="signInButton"
+                                    data-cy="signInButton"
+                                    type="submit" variant="contained">
+                                    SIGN IN
+                                </Button>
+                            </Grid>
+                            <Grid item md={4} />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </form>
+        </>
+    );
+
+    return (
+        userType ? renderOtherLogins() : renderEmailLogin()
+    );
 };
 
 export default LoginPage;

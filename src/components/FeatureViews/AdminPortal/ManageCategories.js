@@ -13,8 +13,9 @@ import Typography from "@material-ui/core/Typography";
 import "./AdminPortal.scss";
 import * as adminActions from "actions/adminActions";
 import * as hooks from "actions/hooks";
-import Loading from "components/Loading";
-import NoListAlert from "components/NoListAlert";
+import Loading from "components/OmouComponents/Loading";
+import NoListAlert from "components/OmouComponents/NoListAlert";
+import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 
 const ManageCategories = () => {
 	const dispatch = useDispatch();
@@ -52,7 +53,7 @@ const ManageCategories = () => {
 	}, [api, categoryName, categoryDescription]);
 
 	const categoryForm = () => (
-		<Paper className="category-row new-category">
+		<BackgroundPaper className="category-row new-category">
 			<Grid alignItems="center" container>
 				<Grid item xs={3}>
 					<TextField
@@ -87,7 +88,7 @@ const ManageCategories = () => {
 					</Button>
 				</Grid>
 			</Grid>
-		</Paper>
+		</BackgroundPaper>
 	);
 
 	const displayCategories = () => (

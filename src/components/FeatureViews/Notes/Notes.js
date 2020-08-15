@@ -1,9 +1,13 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {bindActionCreators} from "redux";
+import React, {useCallback, useMemo, useState} from "react";
+import {useMutation, useQuery} from "@apollo/react-hooks";
+import gql from "graphql-tag";
+import {makeStyles} from "@material-ui/core/styles";
 import PropTypes from "prop-types";
+import {useDispatch} from "react-redux";
 
 import AddIcon from "@material-ui/icons/AddOutlined";
+import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
+import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import Delete from "@material-ui/icons/Delete";
 import Dialog from "@material-ui/core/Dialog";
@@ -14,502 +18,645 @@ import DoneIcon from "@material-ui/icons/CheckCircleOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import Grid from "@material-ui/core/Grid";
 import InputBase from "@material-ui/core/InputBase";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
+import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
 import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
-import {makeStyles} from "@material-ui/core/styles";
+import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import "./Notes.scss";
-import "../Accounts/TabComponents/TabComponents.scss";
-import * as hooks from "actions/hooks";
-import * as userActions from "actions/userActions";
 import {
-	DELETE_ACCOUNT_NOTE_SUCCESSFUL,
-	DELETE_COURSE_NOTE_SUCCESSFUL,
-	DELETE_ENROLLMENT_NOTE_SUCCESSFUL,
-	GET,
-	PATCH,
-	POST,
+    DELETE_ACCOUNT_NOTE_SUCCESSFUL,
+    DELETE_COURSE_NOTE_SUCCESSFUL,
+    DELETE_ENROLLMENT_NOTE_SUCCESSFUL,
 } from "actions/actionTypes";
-import {instance, REQUEST_STARTED} from "actions/apiActions";
+import {instance} from "actions/apiActions";
 
-const useStyles = makeStyles({
-	actionIcons: {
-		position: "absolute",
-		bottom: "5%",
-		right: "5%",
-	},
-	notesTitle: {
+const useStyles = makeStyles((theme) => ({
+	"icons": {
+		padding: "3px",
+		transform: "scale(.8)",
+    },
+    "notePaper":{
+        height: "150px"
+    },
+	"notesTitle": {
 		letterSpacing: "0.01071em",
 		fontSize: "0.875rem",
 	},
+	"dateDisplay": {
+        bottom: "40px !important",
+		fontSize: ".825rem",
+        position: "relative",
+        padding: "3px",
+		[theme.breakpoints.down('lg')]: {
+			fontSize: ".625rem",
+			fontWeight: "200px"
+		}
+	},
+	"actionDashboardIcons": {
+        float: "left",
+        padding: "0"
+	},
+	"notesNotification": {
+        cursor: "pointer",   
+        height: "30px",
+        width: "30px",
+        [theme.breakpoints.down('md')]: {
+            height: "20px",
+            width: "20px"
+        }
+    },
+    "actionIcons": {
+        "bottom": "5%",
+        "position": "absolute",
+        "right": "5%",
+    },
+    "addNote": {
+        "backgroundColor": "#f5f5f5",
+        "border": "1.5px dashed #999999",
+        "cursor": "pointer",
+        "height": "250px",
+        "padding": "7%",
+        "position": "relative",
+    },
+    "center": {
+        "paddingTop": "35%",
+    },
+    "deleteActions": {
+        "& Button": {
+            "color": "white",
+        },
+    },
+    "deleteButton": {
+        "backgroundColor": theme.palette.error.main,
+    },
+    "notesTitle": {
+        "fontSize": "0.875rem",
+        "letterSpacing": "0.01071em",
+    },
+}));
+
+const numericDateString = (date) => new Date(date).toLocaleTimeString("en-US", {
+    "day": "numeric",
+    "hour": "2-digit",
+    "minute": "2-digit",
+    "month": "numeric",
 });
 
-const numericDateString = (date) =>
-	new Date(date).toLocaleTimeString("en-US", {
-		day: "numeric",
-		hour: "2-digit",
-		minute: "2-digit",
-		month: "numeric",
-	});
+const QUERIES = {
+    "account": gql`
+        query AccountNotesQuery($ownerID: ID!) {
+            notes(userId: $ownerID) {
+                id
+                body
+                complete
+                important
+                timestamp
+                title
+            }
+        }
+    `,
+    "course": gql`
+        query CourseNotesQuery($ownerID: ID!) {
+            courseNotes(courseId: $ownerID) {
+                id
+                body
+                complete
+                important
+                timestamp
+                title
+            }
+        }
+    `,
+    "enrollment": gql`
+        query CourseNotesQuery($ownerID: ID!) {
+            enrollmentNotes(enrollmentId: $ownerID) {
+                id
+                body
+                complete
+                important
+                timestamp
+                title
+            }
+        }
+    `,
+};
 
-const Notes = ({ownerType, ownerID}) => {
-	const dispatch = useDispatch();
-	const api = useMemo(() => bindActionCreators(userActions, dispatch), [
-		dispatch,
-	]);
-	const notes = useSelector(({Users, Course, Enrollments}) => {
-		switch (ownerType) {
-			case "student":
-				return Users.StudentList[ownerID].notes;
-			case "parent":
-				return Users.ParentList[ownerID].notes;
-			case "instructor":
-				return Users.InstructorList[ownerID].notes;
-			case "receptionist":
-				return Users.ReceptionistList[ownerID].notes;
-			case "course":
-				return Course.NewCourseList[ownerID].notes;
-			case "enrollment":
-				return Enrollments[ownerID.studentID][ownerID.courseID].notes;
-			default:
-				return null;
-		}
-	});
+const MUTATIONS = {
+    "account": gql`
+        mutation CreateAccountNote($ownerID: ID!, $title: String, $body: String,
+            $complete: Boolean, $important: Boolean, $id: ID) {
+            createNote(userId: $ownerID, title: $title, important: $important,
+                body: $body, complete: $complete, id: $id) {
+                note {
+                    id
+                    body
+                    complete
+                    important
+                    timestamp
+                    title
+                }
+            }
+        }`,
+    "course": gql`
+        mutation CreateCourseNote($ownerID: ID!, $title: String, $body: String,
+            $complete: Boolean, $important: Boolean, $id: ID) {
+            createCourseNote(course: $ownerID, title: $title, id: $id,
+                important: $important, body: $body, complete: $complete) {
+                courseNote {
+                    id
+                    body
+                    complete
+                    important
+                    timestamp
+                    title
+                }
+            }
+        }`,
+    "enrollment": gql`
+        mutation CreateEnrollmentNote($ownerID: ID!, $title: String, $id: ID,
+            $body: String, $complete: Boolean, $important: Boolean) {
+            createEnrollmentNote(enrollment: $ownerID, title: $title, id: $id,
+                important: $important, body: $body, complete: $complete) {
+                enrollmentNote {
+                    id
+                    body
+                    complete
+                    important
+                    timestamp
+                    title
+                }
+            }
+        }`,
+};
 
-	const getRequestStatus = useSelector(({RequestStatus}) => {
-		switch (ownerType) {
-			case "course":
-				return RequestStatus.courseNote[GET][ownerID];
-			case "enrollment":
-				return RequestStatus.enrollmentNote[GET][ownerID.enrollmentID];
-			default:
-				return RequestStatus.accountNote[GET][ownerID];
-		}
-	});
+const QUERY_KEY = {
+    "account": "notes",
+    "course": "courseNotes",
+    "enrollment": "enrollmentNotes",
+};
 
-	const postRequestStatus = useSelector(({RequestStatus}) => {
-		switch (ownerType) {
-			case "course":
-				return RequestStatus.courseNote[POST];
-			case "enrollment":
-				return RequestStatus.enrollmentNote[POST];
-			default:
-				return RequestStatus.accountNote[POST];
-		}
-	});
+const MUTATION_KEY = {
+    "account": "createNote",
+    "course": "createCourseNote",
+    "enrollment": "createEnrollmentNote",
+};
 
-	const patchRequestStatus = useSelector(({RequestStatus}) => {
-		switch (ownerType) {
-			case "course":
-				return RequestStatus.courseNote[PATCH][ownerID];
-			case "enrollment":
-				return RequestStatus.enrollmentNote[PATCH][ownerID.enrollmentID];
-			default:
-				return RequestStatus.accountNote[PATCH][ownerID];
-		}
-	});
+// eslint-disable-next-line max-statements
+const Notes = ({ownerType, ownerID, isDashboard}) => {
+    const dispatch = useDispatch();
 
-	const [alert, setAlert] = useState(false);
-	const [noteBody, setNoteBody] = useState("");
-	const [noteTitle, setNoteTitle] = useState("");
-	const [editID, setEditID] = useState(null);
-	const [notification, setNotification] = useState(false);
-	const [submitting, setSubmitting] = useState(false);
-	const [isPost, setIsPost] = useState(false);
-	const [error, setError] = useState(false);
-	const [deleteID, setDeleteID] = useState(null);
-	const [deleteError, setDeleteError] = useState(false);
-	const classes = useStyles();
+    const [alert, setAlert] = useState(false);
+    const [noteBody, setNoteBody] = useState("");
+    const [noteTitle, setNoteTitle] = useState("");
+    const [editID, setEditID] = useState(null);
+    const [important, setImportant] = useState(false);
+    const [deleteID, setDeleteID] = useState(null);
+    const [deleteError, setDeleteError] = useState(false);
+    const classes = useStyles();
 
-	useEffect(() => {
-		if (ownerType === "course") {
-			api.fetchCourseNotes(ownerID);
-		} else if (ownerType === "enrollment") {
-			api.fetchEnrollmentNotes(
-				ownerID.enrollmentID,
-				ownerID.studentID,
-				ownerID.courseID
-			);
-		} else {
-			api.fetchAccountNotes(ownerID, ownerType);
-		}
-	}, [api, ownerID, ownerType]);
+    const [mutateNote, createResults] = useMutation(MUTATIONS[ownerType], {
+        "onCompleted": () => {
+            setAlert(false);
+        },
+        "update": (cache, {data}) => {
+            const [newNote] = Object.values(data[MUTATION_KEY[ownerType]]);
+            const cachedNotes = cache.readQuery({
+                "query": QUERIES[ownerType],
+                "variables": {ownerID},
+            })[QUERY_KEY[ownerType]];
 
-	const openNewNote = useCallback(() => {
-		setAlert(true);
-		setEditID(null);
-		setNoteBody("");
-		setNoteTitle("");
-		setNotification(false);
-	}, []);
+            let updatedNotes = [...cachedNotes];
+            const matchingIndex = updatedNotes.findIndex(({id}) => id === newNote.id);
+            if (matchingIndex === -1) {
+                updatedNotes = [...cachedNotes, newNote];
+            } else {
+                updatedNotes[matchingIndex] = newNote;
+            }
 
-	const openExistingNote = useCallback(
-		(note) => () => {
-			setAlert(true);
-			setEditID(note.id);
-			setNoteBody(note.body);
-			setNoteTitle(note.title);
-			setNotification(note.important);
-		},
-		[]
-	);
+            cache.writeQuery({
+                "data": {
+                    [QUERY_KEY[ownerType]]: updatedNotes,
+                },
+                "query": QUERIES[ownerType],
+                "variables": {ownerID},
+            });
+        },
+    });
 
-	const handleBodyUpdate = useCallback((event) => {
-		setNoteBody(event.target.value);
-	}, []);
+    const query = useQuery(QUERIES[ownerType], {
+        "variables": {ownerID},
+    });
 
-	const handleTitleUpdate = useCallback((event) => {
-		setNoteTitle(event.target.value);
-	}, []);
+    const notes = query.data?.[QUERY_KEY[ownerType]] || [];
+    const getNoteByID = useCallback(
+        (noteID) => notes.find(({id}) => noteID == id), [notes],
+    );
 
-	const toggleNotification = useCallback(() => {
-		setNotification((prevNotification) => !prevNotification);
-	}, []);
+    const openNewNote = useCallback(() => {
+        setAlert(true);
+        setEditID(null);
+        setNoteBody("");
+        setNoteTitle("");
+        setImportant(false);
+    }, []);
 
-	const hideWarning = useCallback(() => {
-		setAlert(false);
-		setDeleteID(null);
-		setError(false);
-		setDeleteError(false);
-	}, []);
+    const openExistingNote = useCallback((note) => () => {
+        setAlert(true);
+        setEditID(note.id);
+        setNoteBody(note.body);
+        setNoteTitle(note.title);
+        setImportant(note.important);
+    }, []);
 
-	const notificationColor = useMemo(
-		() => ({
-			color: notification ? "red" : "grey",
-			cursor: "pointer",
-		}),
-		[notification]
-	);
+    const handleBodyUpdate = useCallback((event) => {
+        setNoteBody(event.target.value);
+    }, []);
 
-	const saveNote = useCallback(() => {
-		switch (ownerType) {
-			case "enrollment": {
-				const note = {
-					body: noteBody,
-					complete: false,
-					enrollment: ownerID.enrollmentID,
-					important: notification,
-					title: noteTitle,
-				};
-				if (editID) {
-					api.patchEnrollmentNote(
-						editID,
-						note,
-						ownerID.enrollmentID,
-						ownerID.studentID,
-						ownerID.courseID
-					);
-					setIsPost(false);
-				} else {
-					api.postEnrollmentNote(
-						note,
-						ownerID.enrollmentID,
-						ownerID.studentID,
-						ownerID.courseID
-					);
-					setIsPost(true);
-				}
-				setSubmitting(true);
-				break;
-			}
-			case "course": {
-				const note = {
-					body: noteBody,
-					complete: false,
-					course: ownerID,
-					important: notification,
-					title: noteTitle,
-				};
-				if (editID) {
-					api.patchCourseNote(editID, note, ownerType, ownerID);
-					setIsPost(false);
-				} else {
-					api.postCourseNote(note, ownerType);
-					setIsPost(true);
-				}
-				setSubmitting(true);
-				break;
-			}
-			default: {
-				const note = {
-					body: noteBody,
-					complete: false,
-					important: notification,
-					title: noteTitle,
-					user: ownerID,
-				};
-				if (editID) {
-					api.patchAccountNote(editID, note, ownerType, ownerID);
-					setIsPost(false);
-				} else {
-					api.postAccountNote(note, ownerType);
-					setIsPost(true);
-				}
-				setSubmitting(true);
-			}
-		}
-	}, [api, noteBody, notification, noteTitle, ownerID, ownerType, editID]);
+    const handleTitleUpdate = useCallback((event) => {
+        setNoteTitle(event.target.value);
+    }, []);
 
-	const openDelete = (noteID) => () => {
-		setDeleteID(noteID);
-	};
+    const toggleImportant = useCallback(() => {
+        setImportant((prevImportant) => !prevImportant);
+    }, []);
 
-	const toggleNoteField = useCallback(
-		(noteID, field) => () => {
-			const note = {
-				[field]: !notes[noteID][field],
-			};
-			switch (ownerType) {
-				case "enrollment":
-					api.patchEnrollmentNote(
-						noteID,
-						note,
-						ownerID.enrollmentID,
-						ownerID.studentID,
-						ownerID.courseID
-					);
-					break;
-				case "course":
-					api.patchCourseNote(noteID, note, ownerType, ownerID);
-					break;
-				default:
-					api.patchAccountNote(noteID, note, ownerType, ownerID);
-			}
-		},
-		[api, notes, ownerType, ownerID]
-	);
+    const hideWarning = useCallback(() => {
+        setAlert(false);
+        setDeleteID(null);
+        setDeleteError(false);
+    }, []);
 
-	const handleDelete = useCallback(async () => {
-		let URL = "",
-			type = "";
-		switch (ownerType) {
-			case "course":
-				URL = "/course/catalog_note/";
-				type = DELETE_COURSE_NOTE_SUCCESSFUL;
-				break;
-			case "enrollment":
-				URL = "/course/enrollment_note/";
-				type = DELETE_ENROLLMENT_NOTE_SUCCESSFUL;
-				break;
-			default:
-				URL = "/account/note/";
-				type = DELETE_ACCOUNT_NOTE_SUCCESSFUL;
-				break;
-		}
-		try {
-			await instance.delete(`${URL}${deleteID}/`);
-			dispatch({
-				payload: {
-					noteID: deleteID,
-					ownerID,
-					ownerType,
-				},
-				type,
-			});
-			hideWarning();
-		} catch (err) {
-			// if note not actually deleted
-			setDeleteError(true);
-		}
-	}, [deleteID, dispatch, hideWarning, ownerID, ownerType]);
+    const notificationColor = useMemo(() => ({
+        "color": important ? "red" : "grey",
+        "cursor": "pointer",
+    }), [important]);
 
-	if (
-		hooks.isLoading(getRequestStatus) &&
-		(!notes || Object.entries(notes).length === 0)
-	) {
-		return <Loading loadingText="NOTES LOADING" small/>;
-	}
+    const saveNote = useCallback(() => {
+        mutateNote({
+            "variables": {
+                "body": noteBody,
+                "complete": false,
+                "id": editID,
+                important,
+                ownerID,
+                "title": noteTitle,
+            },
+        });
+    }, [mutateNote, editID, important, noteBody, noteTitle, ownerID]);
 
-    if (hooks.isFail(getRequestStatus) && (!notes || Object.entries(notes).length === 0)) {
-        return <LoadingError error="notes"/>;
+    const openDelete = useCallback((noteID) => () => {
+        setDeleteID(noteID);
+    }, []);
+
+    const toggleNoteField = useCallback((noteID, field) => () => {
+        mutateNote({
+            "variables": {
+                [field]: !getNoteByID(noteID)[field],
+                "id": noteID,
+                ownerID,
+            },
+        });
+    }, [mutateNote, ownerID, getNoteByID]);
+
+    const handleDelete = useCallback(async () => {
+        let URL = "",
+            type = "";
+        switch (ownerType) {
+            case "course":
+                URL = "/course/catalog_note/";
+                type = DELETE_COURSE_NOTE_SUCCESSFUL;
+                break;
+            case "enrollment":
+                URL = "/course/enrollment_note/";
+                type = DELETE_ENROLLMENT_NOTE_SUCCESSFUL;
+                break;
+            default:
+                URL = "/account/note/";
+                type = DELETE_ACCOUNT_NOTE_SUCCESSFUL;
+                break;
+        }
+        try {
+            await instance.delete(`${URL}${deleteID}/`);
+            dispatch({
+                "payload": {
+                    "noteID": deleteID,
+                    ownerID,
+                    ownerType,
+                },
+                type,
+            });
+            hideWarning();
+        } catch {
+            // if note not actually deleted
+            setDeleteError(true);
+        }
+    }, [deleteID, dispatch, hideWarning, ownerID, ownerType]);
+
+    if (query.loading) {
+        return <Loading loadingText="NOTES LOADING" small />;
     }
 
-	if (submitting && alert) {
-		if (isPost && postRequestStatus && postRequestStatus !== REQUEST_STARTED) {
-			setSubmitting(false);
-			if (hooks.isFail(postRequestStatus)) {
-				setError(true);
-			} else {
-				setAlert(false);
-			}
-		} else if (
-			!isPost &&
-			patchRequestStatus &&
-			patchRequestStatus !== REQUEST_STARTED
-		) {
-			setSubmitting(false);
-			if (hooks.isFail(patchRequestStatus)) {
-				setError(true);
-			} else {
-				setAlert(false);
-			}
-		}
-	}
+    if (query.error) {
+        return <LoadingError error="notes" />;
+    }
 
-	return (
-		<Grid className="notes-container" container item md={12} spacing={2}>
-			<Dialog
-				aria-describedby="simple-modal-description"
-				aria-labelledby="simple-modal-title"
-				className="popup"
-				fullWidth
-				maxWidth="xs"
-				onClose={hideWarning}
-				open={alert}
-			>
-				<DialogTitle>
-					<TextField
-						className="textfield"
-						id="standard-name"
-						label="Subject"
-						onChange={handleTitleUpdate}
-						value={noteTitle}
-					/>
-					<NotificationIcon
-						className="notification"
-						onClick={toggleNotification}
-						style={notificationColor}
-					/>
-				</DialogTitle>
-				<DialogContent>
-					<InputBase
-						className="note-body"
-						inputProps={{"aria-label": "naked"}}
-						multiline
-						onChange={handleBodyUpdate}
-						placeholder="Body (required)"
-						required
-						rows={15}
-						value={noteBody}
-						variant="filled"
-					/>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={hideWarning} variant="outlined">
-						Cancel
-					</Button>
-					<Button
-						color="primary"
-						disabled={!noteBody}
-						onClick={saveNote}
-						variant="outlined"
-					>
-						{submitting ? "Saving..." : "Save"}
-					</Button>
-					{!submitting && error && (
-						<span style={{float: "right"}}>Error while saving!</span>
-					)}
-				</DialogActions>
-			</Dialog>
-			<Dialog
-				aria-describedby="simple-modal-description"
-				aria-labelledby="simple-modal-title"
-				className="delete-popup"
-				fullWidth
-				maxWidth="xs"
-				onClose={hideWarning}
-				open={deleteID !== null}
-			>
-				<DialogTitle>Confirm Delete</DialogTitle>
-				<DialogContent>
-					Are you sure you want to delete{" "}
-					{notes[deleteID] && notes[deleteID].title
-						? `"${notes[deleteID].title}"`
-						: "this note"}
-					?
-				</DialogContent>
-				<DialogActions className="delete-actions">
-					<Button
-						className="cancel-button"
-						onClick={hideWarning}
-						variant="contained"
-					>
-						Cancel
-					</Button>
-					<Button
-						className="delete-button"
-						onClick={handleDelete}
-						variant="contained"
-					>
-						Delete
-					</Button>
-					{deleteError && (
-						<span style={{float: "right"}}>Error while deleting!</span>
-					)}
-				</DialogActions>
-			</Dialog>
-			<Grid item md={3}>
-				<div
-					className="addNote"
-					onClick={openNewNote}
-					style={{cursor: "pointer"}}
-				>
-					<Typography className="center">
-						<AddIcon/>
-						<br/>
-						Add Note
-					</Typography>
-				</div>
-			</Grid>
-			{notes &&
-			Object.values(notes).map((note) => (
-				<Grid item key={note.id || note.body} xs={3}>
-					<Paper elevation={2} className="note">
-						<Typography
-							align="left"
-							className={`noteHeader ${classes.notesTitle}`}
-						>
-							{note.title}
-							<NotificationIcon
-								className="noteNotification"
-								onClick={toggleNoteField(note.id, "important")}
-								style={note.important ? {color: "red"} : {}}
-							/>
-						</Typography>
-						<Typography align="left" className="body">
-							{note.body}
-						</Typography>
-						<Typography className="date" style={{fontWeight: "500"}}>
-							{numericDateString(note.timestamp)}
-						</Typography>
-						<div className={`actions ${classes.actionIcons}`}>
-							<Delete className="icon" onClick={openDelete(note.id)}/>
-							<EditIcon className="icon" onClick={openExistingNote(note)}/>
-							<DoneIcon
-								className="icon"
-								onClick={toggleNoteField(note.id, "complete")}
-								style={note.complete ? {color: "#43B5D9"} : {}}
-							/>
+        // return (
+        //     <Grid
+        //         className="notes-container"
+        //         container
+        //         item
+        //         xs={12}
+        //         spacing={2}>
+        //         <Dialog
+        //             aria-describedby="simple-modal-description"
+        //             aria-labelledby="simple-modal-title"
+        //             className="popup"
+        //             fullWidth
+        //             maxWidth="xs"
+        //             onClose={hideWarning}
+        //             open={alert}>
+        //             <DialogTitle>
+        //                 <TextField
+        //                     className="textfield"
+        //                     id="standard-name"
+        //                     label="Subject"
+        //                     onChange={handleTitleUpdate}
+        //                     value={noteTitle} />
+        //                 <NotificationIcon
+        //                     className="notification"
+        //                     onClick={toggleImportant}
+        //                     style={notificationColor} />
+        //             </DialogTitle>
+        //             <DialogContent>
+        //                 <InputBase
+        //                     className="note-body"
+        //                     inputProps={{"aria-label": "naked"}}
+        //                     multiline
+        //                     onChange={handleBodyUpdate}
+        //                     placeholder="Body (required)"
+        //                     required
+        //                     rows={15}
+        //                     value={noteBody}
+        //                     variant="filled" />
+        //             </DialogContent>
+        //             <DialogActions>
+        //                 <Button
+        //                     onClick={hideWarning}
+        //                     variant="outlined">
+        //                     Cancel
+        //                 </Button>
+        //                 <Button
+        //                     color="primary"
+        //                     disabled={!noteBody || createResults.loading}
+        //                     onClick={saveNote}
+        //                     variant="outlined">
+        //                     {createResults.loading ? "Saving..." : "Save"}
+        //                 </Button>
+        //                 {
+        //                     createResults.error &&
+        //                     <span style={{"float": "right"}}>
+        //                             Error while saving!
+        //                     </span>
+        //                 }
+        //             </DialogActions>
+        //         </Dialog>
+        //         <Dialog
+        //             aria-describedby="simple-modal-description"
+        //             aria-labelledby="simple-modal-title"
+        //             className="delete-popup"
+        //             fullWidth
+        //             maxWidth="xs"
+        //             onClose={hideWarning}
+        //             open={deleteID !== null}>
+        //             <DialogTitle>
+        //                 Confirm Delete
+        //             </DialogTitle>
+        //             <DialogContent>
+        //                 Are you sure you want to delete {
+        //                     notes[deleteID] && notes[deleteID].title
+        //                         ? `"${notes[deleteID].title}"`
+        //                         : "this note"
+        //                 }?
+        //             </DialogContent>
+        //             <DialogActions className="delete-actions">
+        //                 <Button
+        //                     className="cancel-button"
+        //                     onClick={hideWarning}
+        //                     variant="contained">
+        //                     Cancel
+        //                 </Button>
+        //                 <Button
+        //                     className="delete-button"
+        //                     onClick={handleDelete}
+        //                     variant="contained">
+        //                     Delete
+        //                 </Button>
+        //                 {
+        //                     deleteError &&
+        //                     <span style={{"float": "right"}}>
+        //                         Error while deleting!
+        //                     </span>
+        //                 }
+        //             </DialogActions>
+        //         </Dialog>
+                             
+    return (
+        <Grid container item md={12} spacing={2}>
+            <Dialog aria-describedby="simple-modal-description"
+                aria-labelledby="simple-modal-title" className="popup" fullWidth
+                maxWidth="xs" onClose={hideWarning} open={alert}>
+                <DialogTitle>
+                    <TextField className="textfield" id="standard-name"
+                        onChange={handleTitleUpdate} placeholder="Title"
+                        value={noteTitle} />
+                    <Tooltip interactive title="This is an Important Note!">
+                        <NotificationIcon className="notification"
+                            onClick={toggleImportant}
+                            style={notificationColor} />
+                    </Tooltip>
+                </DialogTitle>
+                <DialogContent>
+                    <InputBase className="note-body"
+                        inputProps={{"aria-label": "naked"}} multiline
+                        onChange={handleBodyUpdate}
+                        placeholder="Body (required)" required rows={15}
+                        value={noteBody} variant="filled" />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={hideWarning} variant="outlined">
+                        Cancel
+                    </Button>
+                    <Button color="primary"
+                        disabled={!noteBody || createResults.loading}
+                        onClick={saveNote} variant="outlined">
+                        {createResults.loading ? "Saving..." : "Save"}
+                    </Button>
+                    {createResults.error &&
+                        <span style={{"float": "right"}}>
+                            Error while saving!
+                        </span>}
+                </DialogActions>
+            </Dialog>
+            <Dialog aria-describedby="simple-modal-description"
+                aria-labelledby="simple-modal-title" className="delete-popup"
+                fullWidth maxWidth="xs" onClose={hideWarning}
+                open={deleteID !== null}>
+                <DialogTitle>Confirm Delete</DialogTitle>
+                <DialogContent>
+                    Are you sure you want to delete {
+                        getNoteByID(deleteID)?.title ?
+                            `"${getNoteByID(deleteID).title}"` :
+                            "this note"
+                    }?
+                </DialogContent>
+                <DialogActions className={classes.deleteActions}>
+                    <Button color="primary" onClick={hideWarning}
+                        variant="contained">
+                        Cancel
+                    </Button>
+                    <Button className={classes.deleteButton}
+                        onClick={handleDelete}
+                        variant="contained">
+                        Delete
+                    </Button>
+                    {deleteError &&
+                        <span style={{"float": "right"}}>
+                            Error while deleting!
+                        </span>}
+                </DialogActions>
+            </Dialog>
+            {isDashboard
+                    ? <>
+                        <Grid item xs={9}>
+                            <Typography 
+                                variant="h5"
+                                style = {{marginTop:"10px"}}
+                            >My Tasks
+                            </Typography>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <AssignmentTurnedInIcon fontSize = "large" style={{marginTop: "10px"}}/>
+                            </Grid>
+                            <Grid
+                                item
+                                xs={12}>
+                                <div
+                                    className={`addNote ${classes.addNote}`}
+                                    onClick={openNewNote}
+                                    style={{"cursor": "pointer", height: "100%", backgroundColor: "white"}}>
+                                    <Typography className="center" style={{padding: 0}}>
+                                        <AddIcon /> Add Note
+                                    </Typography>
+                                </div>
+                            </Grid>
+                    </>
+                    :   <Grid item md={3}>
+                            <div className={classes.addNote} onClick={openNewNote}>
+                                <Typography className={classes.center}>
+                                    <AddIcon /><br />Add Note
+                                </Typography>
+                            </div>
+                        </Grid>            
+                }  
+            
+            {notes && isDashboard && Object.values(notes).map((note) => (
+                <Grid item key={note.id || note.body} xs={12}>
+                    <Paper className={`note ${classes.notePaper}`} elevation={2} >
+                        <Typography align="left"
+                            className={`noteHeader ${classes.notesTitle}`}>
+                            {note.title}
+                            <Avatar
+                                variant="square"
+                                className={`noteNotification ${isDashboard ? classes.notesNotification : null }`}
+                                onClick={toggleNoteField(note.id, "important")}
+                                style={note.important ? {"background-color": "red"} : {}}>
+                                !
+                            </Avatar>
+                        </Typography>
+                        <Typography align="left" className="body">
+                            {note.body}
+                        </Typography>
+                        <Grid item xs={12}>
+                            <Typography className={`date ${classes.dateDisplay}`}
+                                style={{"fontWeight": "500"}}>
+                                {numericDateString(note.timestamp)}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                        <div className={`date ${classes.actionDashboardIcons}`}>
+                            <IconButton
+                                className={classes.icons}
+                                onClick={openDelete(note.id)}
+                                size="small"
+                                edge="start">
+                                <Delete/>
+                            </IconButton>
+                            <IconButton
+                                className={classes.icons}
+                                onClick={openExistingNote(note)}
+                                size="small">
+                                <EditIcon/>
+                            </IconButton>
+                            <IconButton
+                                className={classes.icons}
+                                onClick={toggleNoteField(note.id, "complete")}
+                                style={note.complete ? {"color": "#43B5D9"} : {}}
+                                size="small"
+                                edge="end">
+                                <DoneIcon/>
+                            </IconButton>
 						</div>
-					</Paper>
-				</Grid>
-			))}
-		</Grid>
-	);
+                        </Grid>
+                    </Paper>
+                </Grid>
+                    
+                ))}    
+            {notes && !isDashboard && Object.values(notes).map((note) => (
+                <Grid item key={note.id || note.body} xs={3}>
+                    <Paper className="note" elevation={2}>
+                        <Typography align="left"
+                            className={`noteHeader ${classes.notesTitle}`}>
+                            {note.title}
+                            <NotificationIcon className="noteNotification"
+                                onClick={toggleNoteField(note.id, "important")}
+                                style={note.important ? {"color": "red"} : {}} />
+                        </Typography>
+                        <Typography align="left" className="body">
+                            {note.body}
+                        </Typography>
+                        <Typography className="date"
+                            style={{"fontWeight": "500"}}>
+                            {numericDateString(note.timestamp)}
+                        </Typography>
+                        <div className={`actions ${classes.actionIcons}`}>
+                            <Delete className="icon"
+                                onClick={openDelete(note.id)} />
+                            <EditIcon className="icon"
+                                onClick={openExistingNote(note)} />
+                            <DoneIcon className="icon"
+                                onClick={toggleNoteField(note.id, "complete")}
+                                style={note.complete ? {"color": "#43B5D9"} : {}} />
+                        </div>
+                    </Paper>
+                </Grid>
+                    
+                ))}
+                
+
+            </Grid>
+        )
 };
 
 Notes.propTypes = {
-	ownerID: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.number,
-		PropTypes.shape({
-			courseID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-			enrollmentID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-			studentID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-		}),
-	]).isRequired,
-	ownerType: PropTypes.oneOf([
-		"course",
-		"enrollment",
-		"instructor",
-		"parent",
-		"receptionist",
-		"student",
-	]).isRequired,
+    "ownerID": PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+        .isRequired,
+    "ownerType": PropTypes.oneOf(["account", "course", "enrollment"])
+        .isRequired,
 };
 
 export default Notes;

@@ -1,43 +1,46 @@
-// React Imports
-import {Switch} from "react-router-dom";
 import React from "react";
-import TuitionRules from "../FeatureViews/AdminPortal/TuitionRules";
-import AdminRoute from "./AdminRoute";
-import Form from "../Form/Form";
+import {Switch} from "react-router-dom";
+
+import AdminPortalHome from "../FeatureViews/AdminPortal/AdminPortalHome";
+import AuthenticatedRoute from "./AuthenticatedRoute";
+import FormPage from "../Form/FormPage";
+import ActionLog from "../FeatureViews/AdminPortal/ActionLog";
 import ManageCategories from "../FeatureViews/AdminPortal/ManageCategories";
 import ManageDiscounts from "../FeatureViews/AdminPortal/ManageDiscounts";
-import AdminPortalHome from "../FeatureViews/AdminPortal/AdminPortalHome";
+import TuitionRules from "../FeatureViews/AdminPortal/TuitionRules";
 
-// Local Component Imports
+import {USER_TYPES} from "utils";
+import AdminPanel from "components/FeatureViews/AdminPortal/AdminPanel";
 
-function AdminViewsRoutes() {
-    return (
-        <Switch>
-            <AdminRoute
-                path="/adminportal/tuition-rules"
-                render={(passedProps) => <TuitionRules {...passedProps} />}
-            />
-            <AdminRoute
-                path="/adminportal/manage-course-categories"
-                render={(passedProps) => <ManageCategories {...passedProps} />}
-            />
-            <AdminRoute
-                path={"/adminportal/manage-discounts"}
-                render={(passedProps) => <ManageDiscounts {...passedProps} />}
-            />
-            {/*    path="/adminportal/form/instructor"*/}
-            {/*    render={(passedProps) => <Form {...passedProps}/> }/>*/}
-            <AdminRoute
-                exact
-                path={"/adminportal/form/:type?"}
-                render={(passedProps) => <Form title={"Set Price Rule"}/>}
-            />
-            <AdminRoute
-                path="/adminportal/"
-                render={(passedProps) => <AdminPortalHome {...passedProps} />}
-            />
-        </Switch>
-    );
-}
+const AdminViewsRoutes = () => (
+    <Switch>
+        <AuthenticatedRoute path="/adminportal/management"
+                            users={[USER_TYPES.admin]}>
+            <AdminPanel/>
+        </AuthenticatedRoute>
+        <AuthenticatedRoute path="/adminportal/tuition-rules"
+                            users={[USER_TYPES.admin]}>
+            <TuitionRules/>
+        </AuthenticatedRoute>
+        <AuthenticatedRoute path="/adminportal/manage-course-categories"
+            users={[USER_TYPES.admin]}>
+            <ManageCategories />
+        </AuthenticatedRoute>
+        <AuthenticatedRoute path="/adminportal/manage-discounts"
+            users={[USER_TYPES.admin]}>
+            <ManageDiscounts />
+        </AuthenticatedRoute>
+        <AuthenticatedRoute exact path="/adminportal/form/:type?"
+            users={[USER_TYPES.admin]}>
+            <FormPage title="Set Price Rule" />
+        </AuthenticatedRoute>
+        <AuthenticatedRoute path="/adminportal/actionlog" users={[USER_TYPES.admin]}>
+            <ActionLog />
+        </AuthenticatedRoute>
+        <AuthenticatedRoute path="/adminportal/" users={[USER_TYPES.admin]}>
+            <AdminPortalHome />
+        </AuthenticatedRoute>
+    </Switch>
+);
 
 export default AdminViewsRoutes;

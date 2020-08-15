@@ -16,8 +16,8 @@ import "./AdminPortal.scss";
 import * as adminActions from "actions/adminActions";
 import * as hooks from "actions/hooks";
 import {academicLevelParse, courseTypeParse,} from "reducers/registrationReducer";
-import Loading from "components/Loading";
-import NoListAlert from "components/NoListAlert";
+import Loading from "components/OmouComponents/Loading";
+import NoListAlert from "components/OmouComponents/NoListAlert";
 
 const academicLevelList = [
 	"College",
@@ -56,7 +56,7 @@ const TuitionRules = () => {
 
 	const editTuition = useCallback(
 		(id) => () => {
-			const editingRule = tuitionRules.find((rule) => rule.id === id);
+			const editingRule = tuitionRules.find((rule) => rule.id == id);
 			// if we're about to update/we were just editing
 			if (editingRule.editing) {
 				const ruleToUpload = {

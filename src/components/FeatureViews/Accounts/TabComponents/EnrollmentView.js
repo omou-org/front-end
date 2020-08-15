@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {Link, useParams} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -13,13 +13,13 @@ import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormGroup from "@material-ui/core/FormGroup";
 import Grid from "@material-ui/core/Grid";
-import NoListAlert from "../../../NoListAlert";
+import NoListAlert from "../../../OmouComponents/NoListAlert";
 import NoteIcon from "@material-ui/icons/NoteOutlined";
 import Paper from "@material-ui/core/Paper";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import PaymentTable from "./PaymentTable";
 import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
-import SessionPaymentStatusChip from "components/SessionPaymentStatusChip";
+import SessionPaymentStatusChip from "components/OmouComponents/SessionPaymentStatusChip";
 import Switch from "@material-ui/core/Switch";
 import LoadingError from "./LoadingCourseError"
 import Tab from "@material-ui/core/Tab";
@@ -27,14 +27,14 @@ import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
 
 import * as hooks from "actions/hooks";
-import {upcomingSession, useGoToRoute} from "utils";
-import {deleteEnrollment, initializeRegistration} from "actions/registrationActions";
-import AddSessions from "components/AddSessions";
-import BackButton from "components/BackButton";
-import Loading from "components/Loading";
+import { upcomingSession, useGoToRoute } from "utils";
+import { deleteEnrollment, initializeRegistration } from "actions/registrationActions";
+import AddSessions from "components/OmouComponents/AddSessions";
+import BackButton from "components/OmouComponents/BackButton";
+import Loading from "components/OmouComponents/Loading";
 import Notes from "components/FeatureViews/Notes/Notes";
-import {useEnrollmentNotes} from "actions/userActions";
-import {useSessionsWithConfig} from "actions/calendarActions";
+import { useEnrollmentNotes } from "actions/userActions";
+import { useSessionsWithConfig } from "actions/calendarActions";
 import Moment from "react-moment";
 
 const timeOptions = {
@@ -50,11 +50,11 @@ const dateOptions = {
 const CourseSessionStatus = () => {
     const dispatch = useDispatch();
     const goToRoute = useGoToRoute();
-    const {"accountID": studentID, courseID} = useParams();
-    const courseSessions = useSelector(({Calendar}) => Calendar.CourseSessions);
-    const usersList = useSelector(({Users}) => Users);
-    const courses = useSelector(({Course}) => Course.NewCourseList);
-    const enrollments = useSelector(({Enrollments}) => Enrollments);
+    const { "accountID": studentID, courseID } = useParams();
+    const courseSessions = useSelector(({ Calendar }) => Calendar.CourseSessions);
+    const usersList = useSelector(({ Users }) => Users);
+    const courses = useSelector(({ Course }) => Course.NewCourseList);
+    const enrollments = useSelector(({ Enrollments }) => Enrollments);
     const course = courses[courseID];
 
     const [activeTab, setActiveTab] = useState(0);
@@ -83,7 +83,6 @@ const CourseSessionStatus = () => {
         () => (enrollments[studentID] && enrollments[studentID][courseID]) || {},
         [enrollments, studentID, courseID]
     );
-    useEnrollmentNotes(enrollment.enrollment_id, studentID, courseID);
 
     const noteInfo = useMemo(
         () => ({
@@ -106,21 +105,21 @@ const CourseSessionStatus = () => {
     const upcomingSess = upcomingSession(sessions, courseID) || {};
 
     const studentParent =
-		usersList.StudentList[studentID] &&
-		usersList.StudentList[studentID].parent_id;
+        usersList.StudentList[studentID] &&
+        usersList.StudentList[studentID].parent_id;
 
     const sessionDataParse = useCallback(
-        ({start_datetime, end_datetime, course, status, id, instructor}) => {
+        ({ start_datetime, end_datetime, course, status, id, instructor }) => {
             if (start_datetime && end_datetime && course) {
                 const startDate = new Date(start_datetime);
                 const endDate = new Date(end_datetime);
                 return {
                     "course_id": course,
-					"date": startDate,
-					"endTime": endDate,
+                    "date": startDate,
+                    "endTime": endDate,
                     id,
                     instructor,
-					"startTime": start_datetime,
+                    "startTime": start_datetime,
                     status,
                     "tuition": course && courses[course].hourly_tuition,
                 };
@@ -160,14 +159,14 @@ const CourseSessionStatus = () => {
     // either doesn't exist or only has notes defined
     if (
         !enrollment ||
-		Object.keys(enrollment).length <= 1 ||
-		hooks.isLoading(
-		    courseStatus,
-		    enrollmentStatus,
-		    studentStatus,
-		    instructorStatus,
-		    sessionStatus
-		)
+        Object.keys(enrollment).length <= 1 ||
+        hooks.isLoading(
+            courseStatus,
+            enrollmentStatus,
+            studentStatus,
+            instructorStatus,
+            sessionStatus
+        )
     ) {
         return <Loading paper />;
     }
@@ -181,7 +180,7 @@ const CourseSessionStatus = () => {
             sessionStatus
         )
     ) {
-        return <LoadingError error="data"/>;
+        return <LoadingError error="data" />;
     }
 
     const mainContent = () => {
@@ -243,42 +242,42 @@ const CourseSessionStatus = () => {
                                             <Paper className={`session-info
                                                 ${highlightSession && " active"}
                                                 ${
-													upcomingSess.id == id &&
-													" upcoming-session"
-												}`}
+                                                upcomingSess.id == id &&
+                                                " upcoming-session"
+                                                }`}
                                                 component={Grid}
                                                 container
                                                 square>
                                                 <Grid item xs={1} />
                                                 <Grid item xs={2}>
-													<Typography align="left">
-														<Moment
-															date={date}
-															format="M/D/YYYY"
-														/>
-													</Typography>
+                                                    <Typography align="left">
+                                                        <Moment
+                                                            date={date}
+                                                            format="M/D/YYYY"
+                                                        />
+                                                    </Typography>
                                                 </Grid>
                                                 <Grid item xs={2}>
                                                     <Typography align="left">
-														<Typography align="left">
-															<Moment
-																date={date}
-																format="dddd"
-															/>
-														</Typography>
+                                                        <Typography align="left">
+                                                            <Moment
+                                                                date={date}
+                                                                format="dddd"
+                                                            />
+                                                        </Typography>
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item xs={3}>
                                                     <Typography align="left">
-														<Moment
-															date={startTime}
-															format="h:m A"
-														/>
-														{" - "}
-														<Moment
-															date={endTime}
-															format="h:m A"
-														/>
+                                                        <Moment
+                                                            date={startTime}
+                                                            format="h:mm A"
+                                                        />
+                                                        {" - "}
+                                                        <Moment
+                                                            date={endTime}
+                                                            format="h:mm A"
+                                                        />
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item xs={1}>
@@ -293,14 +292,17 @@ const CourseSessionStatus = () => {
                                         </Grid>
                                     );
                                 })
-							 : (
+                                : (
                                     <NoListAlert list="Course" />
                                 )}
                         </Grid>
                     </>
                 );
             case 1:
-                return <Notes ownerID={noteInfo} ownerType="enrollment" />;
+                return (
+                    <Notes ownerID={enrollment.enrollment_id}
+                        ownerType="enrollment" />
+                );
             case 2:
                 return (
                     <PaymentTable courseID={course.course_id}
@@ -373,7 +375,7 @@ const CourseSessionStatus = () => {
                                                 onChange={handleHighlightSwitch}
                                                 value="upcoming-session" />
                                         }
-                                        label="Highlight Upcoming Session" />
+                                            label="Highlight Upcoming Session" />
                                     </FormGroup>
                                 </FormControl>
                             </Grid>
@@ -391,11 +393,11 @@ const CourseSessionStatus = () => {
                     } />
                     <Tab label={
                         Object.values(enrollment.notes).some(
-                            ({important}) => important
+                            ({ important }) => important
                         ) ? (
                                 <>
-                                <Avatar className="notificationCourse" />
-                                <NoteIcon className="TabIcon" /> Notes
+                                    <Avatar className="notificationCourse" />
+                                    <NoteIcon className="TabIcon" /> Notes
                             </>
                             ) : (
                                 <>
@@ -425,10 +427,18 @@ const CourseSessionStatus = () => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button color="secondary" onClick={closeUnenrollDialog(true)}>
+                    <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={closeUnenrollDialog(true)}
+                    >
                         Yes, unenroll
                     </Button>
-                    <Button color="primary" onClick={closeUnenrollDialog(false)}>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={closeUnenrollDialog(false)}
+                    >
                         Cancel
                     </Button>
                 </DialogActions>

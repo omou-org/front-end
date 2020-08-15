@@ -1,16 +1,15 @@
 import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
+import {NavLink, Redirect, useParams} from "react-router-dom";
 
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import {useDispatch, useSelector} from "react-redux";
 import {Tooltip, Typography, withStyles} from "@material-ui/core";
-import {NavLink, useParams} from "react-router-dom";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import {Redirect} from "react-router-dom"
 import Button from "@material-ui/core/Button";
-import Loading from "../../Loading";
+import Loading from "../../OmouComponents/Loading";
 import Avatar from "@material-ui/core/Avatar";
 import {stringToColor} from "../Accounts/accountUtils";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -26,14 +25,16 @@ import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
 import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 import DialogContentText from "@material-ui/core/es/DialogContentText";
-import LoadingError from "../Accounts/TabComponents/LoadingCourseError" 
+import LoadingError from "../Accounts/TabComponents/LoadingCourseError"
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import InstructorSchedule from "../Accounts/TabComponents/InstructorSchedule";
-import SessionPaymentStatusChip from "../../SessionPaymentStatusChip";
-import AddSessions from "components/AddSessions";
+import SessionPaymentStatusChip from "../../OmouComponents/SessionPaymentStatusChip";
+import AddSessions from "components/OmouComponents/AddSessions";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import {capitalizeString} from "../../../utils";
+
 
 const StyledMenu = withStyles({
     "paper": {
@@ -47,9 +48,9 @@ const StyledMenu = withStyles({
         elevation={0}
         getContentAnchorEl={null}
         transformOrigin={{
-        "vertical": "top",
-        "horizontal": "center",
-    }}
+            "vertical": "top",
+            "horizontal": "center",
+        }}
         {...props} />
 ));
 
@@ -62,23 +63,23 @@ const styles = (username) => ({
     "marginRight": 10,
 });
 
-const DisplaySessionView = ({course, session, handleToggleEditing}) => {
+const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
     const dispatch = useDispatch();
     const api = useMemo(
         () => bindActionCreators(registrationActions, dispatch),
         [dispatch]
     );
 
-    const {instructor_id} = useParams();
+    const { instructor_id } = useParams();
 
     const instructors = useSelector(
-        ({"Users": {InstructorList}}) => InstructorList
+        ({ "Users": { InstructorList } }) => InstructorList
     );
     const categories = useSelector(
-        ({"Course": {CourseCategories}}) => CourseCategories
+        ({ "Course": { CourseCategories } }) => CourseCategories
     );
-    const courses = useSelector(({"Course": {NewCourseList}}) => NewCourseList);
-    const students = useSelector(({"Users": {StudentList}}) => StudentList);
+    const courses = useSelector(({ "Course": { NewCourseList } }) => NewCourseList);
+    const students = useSelector(({ "Users": { StudentList } }) => StudentList);
 
     const [enrolledStudents, setEnrolledStudents] = useState(false);
     const [edit, setEdit] = useState(false);
@@ -89,9 +90,8 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
     useEffect(() => {
         api.initializeRegistration();
     }, [api]);
-
     const enrollmentStatus = hooks.useEnrollmentByCourse(course.course_id);
-    const enrollments = useSelector(({Enrollments}) => Enrollments);
+    const enrollments = useSelector(({ Enrollments }) => Enrollments);
     const reduxCourse = courses[course.course_id];
     const studentStatus = hooks.useStudent(reduxCourse.roster);
 
@@ -101,7 +101,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
     );
 
     useEffect(() => {
-        if (studentStatus === 200) {
+        if (hooks.isSuccessful(studentStatus)) {
             setEnrolledStudents(
                 loadedStudents.map((studentID) => ({
                     ...students[studentID],
@@ -115,11 +115,11 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
             return <Loading />;
         }
         if (hooks.isFail(studentStatus)) {
-            return <LoadingError error="enrollment details"/>;
+            return <LoadingError error="enrollment details" />;
         }
     }
 
-    const instructor = instructors[instructor_id] || {"name": "N/A"};
+    const instructor = instructors[instructor_id] || { "name": "N/A" };
     const studentKeys = Object.keys(enrolledStudents);
 
     const handleTutoringMenuClick = (event) => {
@@ -163,7 +163,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
     // enrollment not found in database
     if ((Object.entries(enrollments).length === 0 && enrollments.constructor === Object) &&
         hooks.isSuccessful(enrollmentStatus)) {
-        return <Redirect to="/PageNotFound" />;
+        return <Redirect to="/NotEnrolledStudent" />;
     }
     if (!course || !categories || (
         Object.entries(enrollments).length === 0 && enrollments.constructor === Object)) {
@@ -225,11 +225,11 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                             {session.is_confirmed ? (
                                 <ConfirmIcon className="confirmed course-icon" />
                             ) : (
-                                <UnconfirmIcon className="unconfirmed course-icon" />
-                            )}
+                                    <UnconfirmIcon className="unconfirmed course-icon" />
+                                )}
                         </Typography>
                         {course && (
-                            <NavLink style={{"textDecoration": "none"}}
+                            <NavLink style={{ "textDecoration": "none" }}
                                 to={`/accounts/instructor/${instructor.user_id}`}>
                                 <Tooltip aria-label="Instructor Name" title={instructor.name}>
                                     <Avatar style={styles(instructor.name)}>
@@ -246,7 +246,7 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                         <Grid container direction="row">
                             {studentKeys.map((key) => (
                                 <NavLink key={key}
-                                    style={{"textDecoration": "none"}}
+                                    style={{ "textDecoration": "none" }}
                                     to={`/accounts/student/${enrolledStudents[key].user_id}/${course.course_id}`}>
                                     <Tooltip title={enrolledStudents[key].name}>
                                         <Avatar style={styles(enrolledStudents[key].name)}>
@@ -284,10 +284,20 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                 direction="row"
                 justify="flex-end">
                 <Grid item>
+                    <Button className="button"
+                        color="secondary"
+                        component={NavLink}
+                        to={`/registration/course/${course.course_id}`}
+                        variant="outlined">
+                        Course Page
+                    </Button>
+                </Grid>
+                <Grid item>
                     {studentKeys.length === 1 && (
                         <>
                             <Button className="button" onClick={handleTutoringMenuClick}>
                                 Tutoring Options
+                                <ArrowDropDownIcon />
                             </Button>
                             <StyledMenu anchorEl={tutoringActionsAnchor}
                                 keepMounted
@@ -312,30 +322,13 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                     )}
                 </Grid>
                 <Grid item>
-                    <Button className="button"
-                        color="secondary"
+                    <Button 
+                        className="editButton"
+                        color="primary"
                         onClick={handleEditToggle(true)}
                         to="/"
                         variant="outlined">
-                        Edit Session
-                    </Button>
-                </Grid>
-                <Grid item>
-                    <Button className="button"
-                        color="secondary"
-                        component={NavLink}
-                        to={`/registration/course/${course.course_id}`}
-                        variant="outlined">
-                        Course Page
-                    </Button>
-                </Grid>
-                <Grid item>
-                    <Button className="button"
-                        color="secondary"
-                        component={NavLink}
-                        to="/scheduler"
-                        variant="outlined">
-                        Return to scheduling
+                        Reschedule
                     </Button>
                 </Grid>
             </Grid>
@@ -367,7 +360,13 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                     <Button color="primary" onClick={handleEditToggle(true)}>
                         Cancel
                     </Button>
-                    <Button color="primary" onClick={handleEditToggle(false)}>
+                    <Button
+                        color="primary"
+                        component={NavLink}
+                        to={{
+                            "pathname": `/scheduler/edit-session/${course.course_id}/${session.id}/${instructor_id}/edit`
+                            , "state": { course: course, session: session }
+                        }}>
                         Confirm to Edit
                     </Button>
                 </DialogActions>
@@ -394,10 +393,18 @@ const DisplaySessionView = ({course, session, handleToggleEditing}) => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button color="secondary" onClick={closeUnenrollDialog(true)}>
+                    <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={closeUnenrollDialog(true)}
+                    >
                         Yes, unenroll
                     </Button>
-                    <Button color="primary" onClick={closeUnenrollDialog(false)}>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={closeUnenrollDialog(false)}
+                    >
                         Cancel
                     </Button>
                 </DialogActions>

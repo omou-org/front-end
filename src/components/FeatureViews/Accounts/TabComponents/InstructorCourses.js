@@ -1,19 +1,27 @@
 import * as hooks from "actions/hooks";
-import React, { useMemo } from "react";
-import { Link } from "react-router-dom";
+import React, {useMemo} from "react";
+import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import Grid from "@material-ui/core/Grid";
-import Loading from "components/Loading";
+import Loading from "components/OmouComponents/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
 import LoadingError from "./LoadingCourseError";
 import Moment from "react-moment";
 
-import { capitalizeString, courseDateFormat } from "utils";
+import {courseDateFormat} from "utils";
+
+export const GET_INSTRUCTOR_ENROLLMENTS = `
+  query InstructorEnrollments($instructorId) { 
+    courses(filter: { instructor.user.id: $instructorId){
+      title
+    }
+  }
+`;
 
 const InstructorCourses = ({ instructorID }) => {
   const courses = useSelector(({ Course }) => Course.NewCourseList);
@@ -36,41 +44,38 @@ const InstructorCourses = ({ instructorID }) => {
     }
   }
 
-
-
   return (
     <Grid container>
       <Grid item xs={12}>
         <Grid className="accounts-table-heading" container>
           <Grid item xs={4}>
             <Typography align="left" className="table-header">
-              Session
-              </Typography>
+				Course
+            </Typography>
           </Grid>
           <Grid item xs={3}>
             <Typography align="left" className="table-header">
               Dates
-              </Typography>
+            </Typography>
           </Grid>
           <Grid item xs={2}>
             <Typography align="left" className="table-header">
               Day
-              </Typography>
+            </Typography>
           </Grid>
           <Grid item xs={2}>
             <Typography align="left" className="table-header">
               Time
-              </Typography>
+            </Typography>
           </Grid>
           <Grid item xs={1}>
             <Typography align="left" className="table-header">
               Confirmed
-              </Typography>
+            </Typography>
           </Grid>
         </Grid>
       </Grid>
       <Grid container direction="row-reverse" spacing={1}>
-
         {courseIDs
           .sort(
             (courseA, courseB) =>
@@ -80,11 +85,6 @@ const InstructorCourses = ({ instructorID }) => {
           .map((courseID) => {
             const course = courses[courseID];
             const {
-              days,
-              start_date,
-              end_date,
-              start_time,
-              end_time,
               is_confirmed,
             } = courseDateFormat(course);
             return (
@@ -103,29 +103,49 @@ const InstructorCourses = ({ instructorID }) => {
                     </Grid>
                     <Grid item xs={3}>
                       <Typography align="left">
-                        <Moment format="MMM D YYYY" date={course.schedule.start_date} />
+                        <Moment
+                            format="MMM D YYYY"
+                            date={course.schedule.start_date}
+                        />
                         {` - `}
-                        <Moment format="MMM D YYYY" date={course.schedule.end_date} />
+                        <Moment
+                            format="MMM D YYYY"
+                            date={course.schedule.end_date}
+                        />
                       </Typography>
                     </Grid>
                     <Grid item xs={2}>
                       <Typography align="left">
-                        <Moment format="dddd" date={course.schedule.start_date} />
+                        <Moment
+                            format="dddd"
+                            date={course.schedule.start_date}
+                        />
                       </Typography>
                     </Grid>
                     <Grid item xs={2}>
                       <Typography align="left">
-                        <Moment format="h:mm a" date={course.schedule.start_date + course.schedule.start_time} />
+                        <Moment
+                            format="h:mm a"
+                            date={
+                              course.schedule.start_date +
+                              course.schedule.start_time
+                            }
+                        />
                         {` - `}
-                        <Moment format="h:mm a" date={course.schedule.end_date + course.schedule.end_time} />
+                        <Moment
+                            format="h:mm a"
+                            date={
+                              course.schedule.end_date + course.schedule.end_time
+                            }
+                        />
                       </Typography>
                     </Grid>
                     <Grid item md={1}>
                       {is_confirmed ? (
                         <ConfirmIcon className="confirmed course-icon" />
                       ) : (
-                          <UnconfirmIcon className="unconfirmed course-icon" />
-                        )}
+                          <UnconfirmIcon className="unconfirmed course-icon"/>
+                      )}
                     </Grid>
                   </Grid>
                 </Paper>

@@ -1,51 +1,58 @@
-import React, {useCallback, useState} from "react";
-import {useSelector} from "react-redux";
-
-import AssignmentIcon from "@material-ui/icons/Assignment";
+import React, {useCallback, useEffect, useState} from "react";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import {Link} from "react-router-dom";
-import ListItemText from "@material-ui/core/ListItemText";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
+import {Link, useHistory} from "react-router-dom";
 import NewCourse from "@material-ui/icons/School";
-import NewTutor from "@material-ui/icons/Group";
-import NewUser from "@material-ui/icons/PersonAdd";
 import Tooltip from "@material-ui/core/Tooltip";
-import {withStyles} from "@material-ui/core/styles";
 
 import "./registration.scss";
 import SelectParentDialog from "./SelectParentDialog";
 import {stringToColor} from "../Accounts/accountUtils";
+import {fullName, USER_TYPES} from "../../../utils";
+import {useValidateRegisteringParent} from "../../OmouComponents/RegistrationUtils";
+import {useDispatch, useSelector} from "react-redux";
+import {useQuery} from "@apollo/react-hooks";
+import gql from "graphql-tag";
+import Loading from "../../OmouComponents/Loading";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCartOutlined";
+import IconButton from "@material-ui/core/IconButton";
+import Badge from "@material-ui/core/Badge";
+import * as types from "actions/actionTypes";
 
-const StyledMenu = withStyles({
-	paper: {
-		border: "1px solid #d3d4d5",
-	},
-})((props) => (
-	<Menu
-		anchorOrigin={{horizontal: "center", vertical: "bottom"}}
-		elevation={0}
-		getContentAnchorEl={null}
-		transformOrigin={{horizontal: "center", vertical: "top"}}
-		{...props}
-	/>
-));
+const GET_PARENT_QUERY = gql`
+query GetRegisteringParent($userId: ID!) {
+  __typename
+  parent(userId: $userId) {
+    user {
+      firstName
+      id
+      lastName
+      email
+    }
+    studentList
+  }
+}
+`
 
 const RegistrationActions = () => {
-	const currentParent = useSelector(
-		({Registration}) => Registration.CurrentParent
-	);
-	const [anchorEl, setAnchorEl] = useState(null);
+	const AuthUser = useSelector(({auth}) => auth);
+	const {currentParent, ...registrationState} = useSelector((state) => state.Registration);
+	const {parentIsLoggedIn} = useValidateRegisteringParent();
+	const dispatch = useDispatch();
+
 	const [dialogOpen, setDialog] = useState(false);
+	const {data, error, loading} = useQuery(GET_PARENT_QUERY, {
+		variables: {userId: AuthUser.user.id},
+		skip: AuthUser.accountType !== USER_TYPES.parent,
+	});
+	const history = useHistory();
 
-	const openRegisterMenu = useCallback(({currentTarget}) => {
-		setAnchorEl(currentTarget);
-	}, []);
-
-	const closeRegisterMenu = useCallback(() => {
-		setAnchorEl(null);
-	}, []);
+	useEffect(() => {
+		dispatch({
+			type: types.INIT_COURSE_REGISTRATION,
+			payload: {},
+		})
+	}, [types.INIT_COURSE_REGISTRATION, dispatch])
 
 	const openDialog = useCallback(() => {
 		setDialog(true);
@@ -55,6 +62,32 @@ const RegistrationActions = () => {
 		setDialog(false);
 	}, []);
 
+	useEffect(() => {
+		if (parentIsLoggedIn && !loading && Object.values(registrationState).length === 0) {
+			dispatch({
+				type: types.SET_PARENT,
+				payload: data.parent,
+			})
+		}
+	}, [AuthUser.accountType, loading]);
+
+	if (loading) return <Loading/>;
+	if (error) return <div>There has been an error: {error.message}</div>
+
+	const registeringParent = data?.parent || currentParent;
+
+	const parentName = registeringParent && fullName(registeringParent.user);
+	const {
+		submitStatus = {},
+		...registrationCartState
+	} = registrationState;
+	const numberOfRegistrationsInCart = Object.values(registrationState)
+		.reduce((accumulator, currentStudent) => (accumulator + currentStudent?.length), 0);
+
+	const toShoppingCart = () => {
+		history.push("/registration/cart");
+	}
+
 	return (
 		<>
 			<Grid
@@ -62,74 +95,69 @@ const RegistrationActions = () => {
 				container
 				direction="row"
 				justify="flex-start"
+				alignItems="center"
+				spacing={1}
 			>
-				<Grid item md={2}>
-					<Button
-						className="button"
-						color="secondary"
-						component={Link}
-						to="/registration/form/student"
-						variant="outlined"
-					>
-						<NewUser className="icon"/> New Student
-					</Button>
-				</Grid>
-				<Grid item md={8}>
-					{currentParent && (
+				<Grid item md={9}>
+					{(currentParent || parentIsLoggedIn) && (
 						<Grid item xs={2}>
 							<Button
 								aria-controls="simple-menu"
 								aria-haspopup="true"
 								className="button"
 								color="secondary"
-								onClick={openRegisterMenu}
+								component={Link} to="/registration/form/class-registration"
 								variant="outlined"
+								data-cy="register-class"
 							>
-								<AssignmentIcon className="icon"/> Register
+								<NewCourse className="icon innerIcon"/>
+								REGISTER CLASS
 							</Button>
 						</Grid>
 					)}
 				</Grid>
 				<Grid item xs={2}>
-					{currentParent ? (
-						<Tooltip title="Registering Parent">
+					{registeringParent ? (
+						!data && <Tooltip title="Registering Parent">
 							<Button className="button" onClick={openDialog}>
 								<div
 									className="circle-icon"
 									style={{
-										backgroundColor: stringToColor(currentParent.user.name),
+										backgroundColor: stringToColor(parentName),
 									}}
+									data-cy="current-parent"
 								/>
-								{currentParent.user.name}
+								{parentName}
 							</Button>
 						</Tooltip>
 					) : (
-						<Button className="button set-parent" onClick={openDialog}>
+						<Button className="button set-parent" onClick={openDialog} data-cy="select-parent">
 							<div className="circle-icon"/>
 							SET PARENT
 						</Button>
 					)}
 				</Grid>
+				<Grid item xs={1} style={{ paddingRight: "6vh", verticalAlign: "middle" }}>
+					<IconButton
+						onClick={toShoppingCart}
+						disabled={numberOfRegistrationsInCart === 0}
+						data-cy="registration-cart"
+					>
+						<Badge
+							data-cy="shopping-cart-num-registrations"
+							badgeContent={numberOfRegistrationsInCart}
+							color="primary"
+							showZero
+							anchorOrigin={{
+								vertical: 'top',
+								horizontal: 'right',
+							}}
+						>
+							<ShoppingCartIcon style={{fontSize: "1.4em",}}/>
+						</Badge>
+					</IconButton>
+				</Grid>
 			</Grid>
-			<StyledMenu
-				anchorEl={anchorEl}
-				keepMounted
-				onClose={closeRegisterMenu}
-				open={anchorEl !== null}
-			>
-				<MenuItem component={Link} to="/registration/form/course/">
-					<NewCourse className="icon innerIcon"/>
-					<ListItemText primary="COURSE"/>
-				</MenuItem>
-				<MenuItem component={Link} to="/registration/form/tutoring/">
-					<NewTutor className="icon innerIcon"/>
-					<ListItemText primary="TUTORING"/>
-				</MenuItem>
-				<MenuItem component={Link} to="/registration/form/small_group/">
-					<NewTutor className="icon innerIcon"/>
-					<ListItemText primary="SMALL GROUP"/>
-				</MenuItem>
-			</StyledMenu>
 			<SelectParentDialog onClose={closeDialog} open={dialogOpen}/>
 		</>
 	);

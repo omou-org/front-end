@@ -25,7 +25,7 @@ import * as userActions from "../../actions/userActions";
 import * as registrationActions from "../../actions/registrationActions";
 import {dayOfWeek, weeklySessionsParser} from "./FormUtils";
 import {usePrevious} from "../../actions/hooks";
-import {isExistingTutoring} from "../../utils";
+import {isExistingTutoring, USER_TYPES} from "utils";
 
 const CASH = "cash",
     CHECK = "check",
@@ -43,7 +43,8 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
       [dispatch]
   );
   const history = useHistory();
-  const isAdmin = useSelector(({auth}) => auth.isAdmin);
+  const isAdmin =
+    useSelector(({auth}) => auth.accountType) === USER_TYPES.admin;
   const currentPayingParent = useSelector(
       ({Registration}) => Registration.CurrentParent
   );
