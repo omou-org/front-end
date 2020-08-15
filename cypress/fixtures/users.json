@@ -10,15 +10,19 @@
         "phone_number": "925-731-0499"
     },
     "parent": {
-        "id": 3,
-        "first_name": "Paula",
-        "last_name": "Wan",
-        "relationship": "mother",
-        "gender": "female",
-        "email": "pwan007@yahoo.com",
-        "birth_date": "03-13-1980",
-        "phone_number": "925-341-8562",
-        "address": "Foothill High School",
+        "__typename": "ParentType",
+        "user": {
+            "__typename": "UserType",
+            "email": "pwan007@yahoo.com",
+            "firstName": "Paula",
+            "lastName": "Wan",
+            "id": 2
+        },
+        "relationship": "MOTHER",
+        "gender": "FEMALE",
+        "phoneNumber": "9253418562",
+        "birthDate": "1980-03-13",
+        "address": "123 Main St",
         "city": "Pleasanton",
         "state": "CA",
         "zipcode": "94566"
