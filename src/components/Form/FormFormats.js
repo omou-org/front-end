@@ -13,6 +13,12 @@ import {fullName} from "../../utils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
 import {createTutoringDetails, submitRegistration} from "../OmouComponents/RegistrationUtils";
 
+Yup.addMethod(Yup.array, 'unique', function (message, mapper = a => a) {
+    return this.test('unique', message, function (list) {
+        return list.length === new Set(list.map(mapper)).size;
+    });
+});
+
 export const responseToForm = (parser, data) => {
     const res = {};
     Object.entries(data).forEach(([key, message]) => {
@@ -335,6 +341,7 @@ const STUDENT_INFO_FIELDS = {
         {
             "name": "current_grade",
             ...stringField("Current Grade in Class"),
+            "validator": Yup.string().matches(/([ABCDFabcdf][+-]?)?$/u),
         },
         {
             "name": "topic",
@@ -438,6 +445,10 @@ const GET_COURSES = gql`
       courses {
         title
         id
+        enrollmentSet {
+              id
+            }
+        maxCapacity
         instructor {
           user {
             lastName
@@ -455,13 +466,20 @@ const studentSelect = (name) => (
 
 const parentSelect = (name) => (
     <Fields.DataSelect name={name} optionsMap={userMap}
-        request={SEARCH_PARENTS} />
+                       request={SEARCH_PARENTS}/>
 );
 
-const courseMap = ({courses}) => courses.map(({title, instructor, id}) => ({
-	"label": `${title} - ${fullName(instructor.user)}`,
-	"value": id,
-}));
+const courseMap = ({courses}) => courses.map(({title, instructor, id}) =>
+    ({
+        "label": `${title} - ${fullName(instructor.user)}`,
+        "value": id,
+    }));
+const openCourseMap = ({courses}) => courses
+    .filter(({maxCapacity, enrollmentSet}) => (maxCapacity > enrollmentSet.length))
+    .map(({title, instructor, id}) => ({
+        "label": `${title} - ${fullName(instructor.user)}`,
+        "value": id,
+    }));
 
 const categoryMap = ({courseCategories}) => courseCategories.map(({id, name}) => ({
     "label": name,
@@ -470,7 +488,7 @@ const categoryMap = ({courseCategories}) => courseCategories.map(({id, name}) =>
 
 const categorySelect = (name) => (
     <Fields.DataSelect name={name} optionsMap={categoryMap}
-        request={GET_CATEGORIES} />
+                       request={GET_CATEGORIES}/>
 );
 
 const schoolMap = ({schools}) => schools.map(({name, id}) => ({
@@ -1177,7 +1195,12 @@ export default {
                             categorySelect("subjects"),
                             {"multiple": true},
                         ),
-                        "validator": Yup.mixed(),
+                        "validator": Yup.array().of(
+                            Yup.object().shape({
+                                label: Yup.string(),
+                                value: Yup.string(),
+                            })
+                        ).unique("Can't select the same subjects!", (field) => (field.value)),
                         "default": [],
                     },
                     {
@@ -1364,17 +1387,25 @@ export default {
                 "label": "Course",
                 "fields": [
                     {
-						"name": "class",
-						"label": "Class",
-						"component": <Fields.DataSelect name="Classes" optionsMap={courseMap} request={GET_COURSES}/>,
-						"validator": Yup.mixed(),
+                        "name": "class",
+                        "label": "Class",
+                        "component": <Fields.DataSelect name="Classes" optionsMap={openCourseMap}
+                                                        request={GET_COURSES}/>,
+                        "validator": Yup.mixed(),
                     },
                 ],
             },
         ],
 		"submit": (formData) => {
-			submitRegistration(formData.selectStudent, formData.course.class.value);
-		}
+            const {dispatch} = window.store;
+            dispatch({
+                type: types.ADD_CLASS_REGISTRATION,
+                payload: {
+                    courseId: formData.course.class.value,
+                    studentId: formData.student.student,
+                }
+            })
+        }
     },
 	"tutoring-registration": {
 		"title": "Tutoring",
@@ -1421,7 +1452,6 @@ export default {
 		"submit": (formData) => {
 			console.log(formData, moment(formData.tutoring_details.startDate, "DD-MM-YYYY").add(formData.sessions, 'weeks'));
 			const course = createTutoringDetails("smallGroup", formData);
-			console.log(course);
 			submitRegistration(formData.selectStudent, course);
 		}
 	},

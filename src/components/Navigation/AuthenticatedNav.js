@@ -53,7 +53,7 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
                     {!isMobileSearching && (
                         <>
                             <Hidden lgUp>
-                                <IconButton aria-label="Open Drawer" color="inherit"
+                                <IconButton aria-label="Open Drawer" style={{color:"white"}}
                                     onClick={handleDrawerToggle}>
                                     <MenuIcon />
                                 </IconButton>

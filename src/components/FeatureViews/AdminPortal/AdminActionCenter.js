@@ -1,6 +1,6 @@
-import React, {useEffect, useMemo, useState} from "react";
-import {NavLink, useLocation} from "react-router-dom";
-import {useDispatch} from "react-redux";
+import React, { useEffect, useMemo, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import Button from "@material-ui/core/Button";
 import CourseIcon from "@material-ui/icons/Class";
@@ -11,9 +11,9 @@ import MenuItem from "@material-ui/core/MenuItem";
 import NewInstructor from "@material-ui/icons/PersonAdd";
 
 import "./AdminPortal.scss";
-import {initializeRegistration} from "actions/registrationActions";
+import { initializeRegistration } from "actions/registrationActions";
 
-import {withStyles} from "@material-ui/core";
+import { withStyles } from "@material-ui/core";
 
 const StyledMenu = withStyles({
 	paper: {
@@ -35,7 +35,7 @@ const StyledMenu = withStyles({
 	/>
 ));
 
-const handleClick = (setter) => ({currentTarget}) => {
+const handleClick = (setter) => ({ currentTarget }) => {
 	setter(currentTarget);
 };
 
@@ -45,7 +45,7 @@ const handleClose = (setter) => () => {
 
 const AdminActionCenter = () => {
 	const dispatch = useDispatch();
-	const {pathname} = useLocation();
+	const { pathname } = useLocation();
 
 	const [userAnchor, setUserAnchor] = useState(null);
 	const [courseAnchor, setCourseAnchor] = useState(null);
@@ -79,7 +79,7 @@ const AdminActionCenter = () => {
 					className={`button ${tabState.user && "active"}`}
 					onClick={handleClick(setUserAnchor)}
 				>
-					<NewInstructor className="admin-action-icon"/>
+					<NewInstructor className="admin-action-icon" />
 					Add Users
 				</Button>
 			</Grid>
@@ -90,8 +90,20 @@ const AdminActionCenter = () => {
 					className={`button ${tabState.course && "active"}`}
 					onClick={handleClick(setCourseAnchor)}
 				>
-					<CourseIcon className="admin-action-icon"/>
+					<CourseIcon className="admin-action-icon" />
 					Manage Course
+				</Button>
+			</Grid>
+			<Grid item>
+				<Button
+					aria-controls="simple-menu"
+					aria-haspopup="true"
+					className={`button ${tabState.course && "active"}`}
+					component={NavLink} 
+					to="/adminportal/actionlog"
+				>
+					<CourseIcon className="admin-action-icon" />
+					Action Log
 				</Button>
 			</Grid>
 			{/*<Grid item>*/}
@@ -115,7 +127,7 @@ const AdminActionCenter = () => {
 			{/*		<DiscountIcon className="admin-action-icon"/>*/}
 			{/*		Manage Discounts*/}
 			{/*	</Button>*/}
-			{/*</Grid>*/}
+			{/*</Grid>
 			<StyledMenu
 				anchorEl={userAnchor}
 				keepMounted
@@ -123,10 +135,10 @@ const AdminActionCenter = () => {
 				open={Boolean(userAnchor)}
 			>
 				<MenuItem component={NavLink} to="/form/instructor">
-					<ListItemText primary="ADD INSTRUCTOR"/>
+					<ListItemText primary="ADD INSTRUCTOR" />
 				</MenuItem>
 				<MenuItem component={NavLink} to="/registration/form/admin">
-					<ListItemText primary="ADD ADMIN"/>
+					<ListItemText primary="ADD ADMIN" />
 				</MenuItem>
 			</StyledMenu>
 			<StyledMenu
@@ -136,7 +148,7 @@ const AdminActionCenter = () => {
 				open={Boolean(courseAnchor)}
 			>
 				<MenuItem component={NavLink} to="/form/course_details">
-					<ListItemText primary="NEW COURSE"/>
+					<ListItemText primary="NEW COURSE" />
 				</MenuItem>
 				<MenuItem
 					component={NavLink}
