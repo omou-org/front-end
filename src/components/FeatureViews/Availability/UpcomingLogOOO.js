@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import moment from "moment";
 
-const GET_UPCOMING_INSTRUCTOR_OOO = gql`
+export const GET_UPCOMING_INSTRUCTOR_OOO = gql`
 query getInstructorOOO($instructorID:ID!) {
     instructorOoo(instructorId: $instructorID) {
       id
@@ -25,6 +25,7 @@ const useStyles = makeStyles({
         width: '100%',
         overflow: 'auto',
         maxHeight: 200,
+        height: 200,
     },
 })
 
@@ -44,7 +45,7 @@ export const UpcomingOOO = () => {
 
 
 
-    const currentUpcoming = data.instructorOoo.filter((event) => (
+    const LogOfCurrentUpcomingInstructorOOO = data.instructorOoo.filter((event) => (
         moment(event.endDatetime).isSameOrAfter(currentDate, "day")
     ))
 
@@ -56,7 +57,7 @@ export const UpcomingOOO = () => {
             </Grid>
             <Grid item xs={12}>
                 <List className={classes.root}>
-                    {currentUpcoming.map(({ description, startDatetime, endDatetime }) =>
+                    {LogOfCurrentUpcomingInstructorOOO.map(({ description, startDatetime, endDatetime }) =>
                         <ListItem container>
                             <ListItemText primary={description} secondary={moment(startDatetime).format("L") + " - " + moment(endDatetime).format("L")} />
                         </ListItem>

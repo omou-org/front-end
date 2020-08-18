@@ -1,6 +1,5 @@
-import React, {useMemo} from "react";
-import {useSelector} from "react-redux";
-import { useQuery } from "@apollo/react-hooks";
+import React from "react";
+import {useQuery} from "@apollo/react-hooks";
 import gql from "graphql-tag";
 
 
@@ -8,7 +7,6 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import HappyIcon from "@material-ui/icons/SentimentVerySatisfied";
 import Typography from "@material-ui/core/Typography";
-import * as hooks from "actions/hooks";
 import Loading from "components/OmouComponents/Loading";
 import UnpaidSessionCard from "./UnpaidSessionCard";
 import "./AdminPortal.scss";

@@ -32,11 +32,9 @@ export default function ConflictsDisplay() {
 
 	const { sessions } = data;
 
-	console.log(sessions);
-
 	return (<Grid container direction="column">
 		<Grid item>
-			<Typography variant="h5">Submit Out of Office Notice</Typography>
+			<Typography variant="h5" >Submit Out of Office Notice</Typography>
 			<Typography>{OOOFormState.startDate.format("MM/DD/YYYY")} - {OOOFormState.endDate.format("MM/DD/YYYY")}</Typography>
 		</Grid>
 	</Grid>)

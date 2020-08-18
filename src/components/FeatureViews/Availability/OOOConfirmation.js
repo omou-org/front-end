@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function OOOConfirmation(props) {
-    const classes = useStyles(props)
+    const classes = useStyles()
 
     return (
         <Grid container>

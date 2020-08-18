@@ -1,8 +1,41 @@
+import {capitalizeString} from "utils";
+import moment from "moment";
+import PropTypes from "prop-types";
 import React from "react";
-
-import Button from "@material-ui/core/Button";
-import {Link} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
+
+const toDisplayValue = (value) => {
+    if (value === null || typeof value === "undefined") {
+        return "N/A";
+    }
+
+    if (value instanceof Date) {
+        return new Date(value).toLocaleString("eng-US");
+    }
+
+    if (value instanceof moment) {
+        return value.format("MM/DD/YYYY");
+    }
+
+    if (value.hasOwnProperty("label")) {
+        return value.label;
+    }
+
+    // all caps string with underscores, i.e. a constant, but not a state
+    if (typeof value === "string" && (/^(?:[A-Z]|_){3,}$/ug).test(value)) {
+        return capitalizeString(value.toLowerCase()).replace("_", " ");
+    }
+
+    if (Array.isArray(value)) {
+        if (value.length > 1) {
+            return value
+                .reduce((valueA, valueB) => `${valueA.label}, ${valueB.label}`);
+        }
+        return value.label;
+    }
+
+    return value.toString();
+};
 
 const FormReceipt = ({formData, format}) => (
     <div style={{
@@ -10,32 +43,26 @@ const FormReceipt = ({formData, format}) => (
         "padding": "5px",
     }}>
         <Typography align="left" style={{"fontSize": "24px"}}>
-            You have successfully registered!
+            You've successfully submitted!
         </Typography>
-        <Typography align="left" style={{"fontSize": "14px"}}>
-            An email will be sent to you to confirm your registration
-        </Typography>
-        <Button align="left" className="button" component={Link}
-            style={{"margin": "20px"}} to="/registration">
-            REGISTER MORE
-        </Button>
         <div className="confirmation-copy">
             <Typography align="left" className="title">
                 Confirmation
             </Typography>
-            {Object.entries(formData).map(([sectionLabel, fields], sectionIndex) => (
-                <div key={sectionLabel}>
+            {format.map((section) => (
+                <div key={section.name}>
                     <Typography align="left" className="section-title">
-                        {format[sectionIndex].label}
+                        {section.label}
                     </Typography>
-                    {Object.entries(fields).map(([label, value], fieldIndex) => (
-                        <div key={label}>
+                    {section.fields.map((field) => (
+                        <div key={field.name}>
                             <Typography align="left" className="field-title">
-                                {format[sectionIndex].fields[fieldIndex].label}
+                                {field.label}
                             </Typography>
                             <Typography align="left" className="field-value">
-                                {/* TODO: better way of rendering field values */}
-                                {typeof value === "object" ? new Date(value).toLocaleString("eng-US") : value || "N/A"}
+                                {toDisplayValue(
+                                    formData[section.name][field.name],
+                                )}
                             </Typography>
                         </div>
                     ))}
@@ -44,5 +71,17 @@ const FormReceipt = ({formData, format}) => (
         </div>
     </div>
 );
+
+FormReceipt.propTypes = {
+    "formData": PropTypes.objectOf(PropTypes.object),
+    "format": PropTypes.arrayOf(PropTypes.shape({
+        "fields": PropTypes.arrayOf(PropTypes.shape({
+            "label": PropTypes.string,
+            "name": PropTypes.string,
+        })),
+        "label": PropTypes.string,
+        "name": PropTypes.string,
+    })),
+};
 
 export default FormReceipt;

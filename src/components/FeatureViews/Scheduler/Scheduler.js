@@ -341,10 +341,6 @@ const Scheduler = (props) => {
     return (
         <Grid item xs={12} container>
             <BackgroundPaper className="scheduler" elevation={2}>
-                <Grid item xs={12}>
-                    <BackButton />
-                    <hr />
-                </Grid>
                 <Typography align="left" className="scheduler-title" variant="h3">
                     Scheduler
 				</Typography>
@@ -473,7 +469,9 @@ const Scheduler = (props) => {
                     </Grid>
                 </Grid>
                 <Grid className="omou-calendar" item xs={12}>
-                    <FullCalendar contentHeight="400"
+
+                    <FullCalendar
+                        contentHeight="400"
                         defaultView="timeGridDay"
                         displayEventTime
                         eventClick={goToSessionView}
@@ -483,6 +481,10 @@ const Scheduler = (props) => {
                         events={[...calendarEvents, ...OOOEvents]}
                         header={false}
                         minTime="07:00:00"
+
+
+                        aspectRatio="2"
+
                         nowIndicator
                         plugins={[
                             dayGridPlugin,

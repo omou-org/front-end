@@ -1,9 +1,10 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, forwardRef, } from "react";
 import { OOOContext } from "./OOOContext";
 import moment from "moment";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
+
 import Button from "@material-ui/core/Button";
 import { omouBlue, outlineGrey } from "../../../theme/muiTheme";
 import CalendarIcon from "@material-ui/icons/CalendarToday";
@@ -12,34 +13,38 @@ import { KeyboardTimePicker } from "@material-ui/pickers/TimePicker";
 import TimeIcon from "@material-ui/icons/Schedule";
 import FormControlLabel from "@material-ui/core/FormControlLabel/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox/Checkbox";
-import { TextField } from "@material-ui/core";
+import { TextField, Container } from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog/Dialog";
 import { DateRange } from "react-date-range";
 import { useSelector } from "react-redux";
 import DialogActions from "@material-ui/core/DialogActions/DialogActions";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import { useImperativeHandle } from "react";
 
 const useStyles = makeStyles({
 	root: {
-		padding: "1rem"
+		marginTop: "2rem"
 	},
 	boldText: {
-		fontSize: "16px",
-		fontWeight: "bold"
+		fontSize: "20px",
+		fontWeight: "bold",
+		textAlign: "left",
+
 	},
 	normalText: {
 		fontWeight: 400
 	},
 	selectDateText: {
 		fontSize: "17px",
-		paddingTop: "2%"
+		paddingTop: "1%"
 	},
 	timePicker: {
-		maxWidth: 200
+		width: "80%",
+
 	}
 })
 
-export default function SubmitNotice() {
+export const SubmitNotice = forwardRef((props, ref) => {
 	const [openCalendar, setOpenCalendar] = useState(false);
 	const [state, setState] = useState([
 		{
@@ -90,90 +95,149 @@ export default function SubmitNotice() {
 		});
 	}
 
-	return (<Grid container style={{ paddingLeft: "8rem" }} direction="row">
+	const checkIfDateBeforeToday = (startDate) => moment().isBefore(startDate)
 
-		<Grid item xs={11} >
-			<Typography className={classes.boldText} align="left">Instructor: <span className={classes.normalText}>{`${AuthUser.user.firstName} ${AuthUser.user.lastName} `}</span></Typography>
 
-		</Grid>
+	useImperativeHandle(ref, () => ({
+		handleClearForm() {
+			setStartTime(null);
+			setEndTime(null);
+			setDescription("");
+			setOutAllDay(false);
+		}
+	}))
 
-		<Grid item xs={12} lg={7} >
-			<Typography className={classes.selectDateText} align="left" >Select Date:</Typography>
-		</Grid>
-		<Grid container xs={12} justify="flex-start" style={{ paddingTop: "2%" }}>
-			<ButtonGroup variant="contained">
-				<Button style={{ backgroundColor: omouBlue }}>
-					<CalendarIcon style={{ color: 'white' }} />
-				</Button>
-				<Button style={{ fontWeight: 500, backgroundColor: "white" }}
-					onClick={() => setOpenCalendar(true)}>
-					<Moment date={state[0].startDate} format="MM/DD/YYYY" />
-				</Button>
-				<Button style={{ fontWeight: 500, backgroundColor: "white" }}
-					onClick={() => setOpenCalendar(true)}>
-					<Moment date={state[0].endDate} format="MM/DD/YYYY" />
-				</Button>
-			</ButtonGroup>
-		</Grid>
+	const currentDate = new Date();
 
-		<Grid container>
 
-			<Grid item xs={12} md={11}>
-				<Typography align="left" style={{ paddingTop: "3%" }} >Select OOO Start Time</Typography>
+	return (
+		<Container maxWidth="fixed" style={{ paddingLeft: "50px" }}>
+			{/* <Grid container direction="row" > */}
+			<Grid item xs={12} align="left">
+				<Typography
+					className={classes.boldText}
+				>
+					Instructor:
+			<span className={classes.normalText}
+					>
+						{` ${AuthUser.user.firstName} ${AuthUser.user.lastName} `}
+					</span>
+				</Typography>
+
 			</Grid>
-		</Grid>
 
-		<Grid container direction="row" justify="flex-start" className={classes.root}>
-
-			<Grid item xs={12} md={4}>
-				<KeyboardTimePicker
-					className={classes.timePicker}
-					disabled={outAllDay}
-					style={{ backgroundColor: outAllDay ? outlineGrey : "white" }}
-					keyboardIcon={<TimeIcon />}
-					value={startTime} onChange={handleTimeChange(setStartTime, "start")}
-					inputVariant="outlined"
-				/>
+			<Grid item xs={12} lg={7} >
+				<Typography className={classes.selectDateText} align="left"  >Select Date:</Typography>
 			</Grid>
-			<Grid item xs={12} md={1} />
-			<Grid item xs={12} md={6}>
-				<KeyboardTimePicker
-					className={classes.timePicker}
-					disabled={outAllDay}
-					style={{ backgroundColor: outAllDay ? outlineGrey : "white" }}
-					keyboardIcon={<TimeIcon />}
-					value={endTime} onChange={handleTimeChange(setEndTime, "end")}
-					inputVariant="outlined"
-				/>
+			<Grid container xs={12} style={{ paddingTop: "2%" }}>
+				<ButtonGroup variant="contained">
+					<Button style={{ backgroundColor: omouBlue }}>
+						<CalendarIcon style={{ color: 'white' }} />
+					</Button>
+					<Button style={{ fontWeight: 500, backgroundColor: "white" }}
+						onClick={() => setOpenCalendar(true)}>
+						<Moment date={state[0].startDate} format="MM/DD/YYYY" />
+					</Button>
+					<Button style={{ fontWeight: 500, backgroundColor: "white" }}
+						onClick={() => setOpenCalendar(true)}>
+						<Moment date={state[0].endDate} format="MM/DD/YYYY" />
+					</Button>
+				</ButtonGroup>
+			</Grid>
+
+			<Grid
+				container
+				align="left"
+				alignContent="center"
+				alignItems="center"
+				style={{ marginTop: "3%" }}>
+				<Grid item xs={4}  >
+					<Grid item >
+						<Typography  >Select OOO Start Time</Typography>
+					</Grid>
+					<KeyboardTimePicker
+						id="keyboardTimePickerOOO"
+						className={classes.timePicker}
+						disabled={outAllDay}
+						style={{ backgroundColor: outAllDay ? outlineGrey : "white" }}
+						keyboardIcon={<TimeIcon />}
+						value={startTime} onChange={handleTimeChange(setStartTime, "start")}
+						inputVariant="outlined"
+						data-cy="start-time-picker-OOO"
+					/>
+				</Grid>
+
+
+				<Grid item xs={4} >
+					<Grid item >
+						<Typography >Select OOO End Time</Typography>
+					</Grid>
+					<Grid item  >
+						<KeyboardTimePicker
+							className={classes.timePicker}
+							disabled={outAllDay}
+							style={{ backgroundColor: outAllDay ? outlineGrey : "white" }}
+							keyboardIcon={<TimeIcon />}
+							value={endTime}
+							onChange={handleTimeChange(setEndTime, "end")}
+							inputVariant="outlined"
+							data-cy="end-time-picker-OOO"
+						/>
+
+					</Grid>
+				</Grid>
 				<FormControlLabel
-					control={<Checkbox checked={outAllDay} onChange={handleOutAllDay}
-						name="Out All Day" color="primary" />}
+					style={{ marginTop: "34px", marginLeft: "34px" }}
+					control={
+						<Checkbox
+							checked={outAllDay}
+							onChange={handleOutAllDay}
+							name="Out All Day"
+							color="primary"
+							data-cy="out-all-day-checkbox"
+						/>
+					}
 					label="Out all day"
 				/>
 			</Grid>
-		</Grid >
-		<Grid container spacing={0} justify="flex-start">
-			<Grid item xs={2}>
-				<Typography className={classes.boldText} variant="subtitle1" align="left" >Description:</Typography>
+
+
+
+
+			<Grid container className={classes.root} style={{ marginTop: "3%" }}>
+				<Grid item xs={2} align="left">
+					<Typography className={classes.boldText}>Description:</Typography>
+				</Grid>
+				<Grid item xs={7} >
+					<TextField
+						multiline
+						fullWidth={true}
+						rows={4}
+						variant="outlined"
+						style={{ width: "", backgroundColor: "white" }}
+						onChange={handleDescriptionChange}
+						value={description}
+						data-cy='instructor-OOO-description-input'
+					/>
+				</Grid>
 			</Grid>
-			<Grid item >
-				<TextField multiline rows={4} size={"medium"} variant="outlined" style={{ width: 350, backgroundColor: "white" }}
-					onChange={handleDescriptionChange} value={description}
+
+
+			<Dialog open={openCalendar} onClose={() => setOpenCalendar(false)}>
+				<DateRange
+					editableDateInputs={true}
+					onChange={handleDateRangeChange}
+					minDate={moment().toDate()}
+					shouldDisableDate={checkIfDateBeforeToday(currentDate)}
+					moveRangeOnFirstSelection={false}
+					ranges={state}
 				/>
-			</Grid>
-		</Grid>
-		<Dialog open={openCalendar} onClose={() => setOpenCalendar(false)}>
-			<DateRange
-				editableDateInputs={true}
-				onChange={handleDateRangeChange}
-				moveRangeOnFirstSelection={false}
-				ranges={state}
-			/>
-			<DialogActions>
-				<Button onClick={() => setOpenCalendar(false)} color="primary">
-					Save & Close
+				<DialogActions>
+					<Button onClick={() => setOpenCalendar(false)} color="primary">
+						Save & Close
 				</Button>
-			</DialogActions>
-		</Dialog>
-	</Grid >)
-}
+				</DialogActions>
+			</Dialog>
+			{/* // </Grid >   */}
+		</Container >)
+})

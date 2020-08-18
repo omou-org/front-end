@@ -164,7 +164,7 @@ export default function DayAvailabilityEntry({dayOfWeek, availabilities, dayInde
 						color="primary"
 					/>
 				}
-				label="Not Available All Day"
+				label="Select to clear availabilities"
 			/>
 		</TableCell>
 	</TableRow>

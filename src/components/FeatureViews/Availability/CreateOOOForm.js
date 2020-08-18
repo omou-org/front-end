@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Grid from "@material-ui/core/Grid";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Button from "@material-ui/core/Button";
 import { OOOContext } from "./OOOContext"
-import SubmitNotice from "./SubmitNotice";
+import { SubmitNotice } from "./SubmitNotice";
 import ConflictsDisplay from "./ConflictsDisplay";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
@@ -15,6 +15,8 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import { omouBlue } from "../../../theme/muiTheme";
+import { GET_UPCOMING_INSTRUCTOR_OOO } from "./UpcomingLogOOO"
+
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -77,7 +79,10 @@ const CREATE_INSTRUCTOR_OOO = gql`mutation CreateInstructorOOO($endDatetime:Date
   }
 }`
 
-export default function CreateOOOForm(props) {
+
+
+
+export default function CreateOOOForm() {
 	const [activeStep, setActiveStep] = useState(0);
 	const [OOOFormState, setOOOFormState] = useState(null);
 	const [submitted, setSubmitted] = useState(false);
@@ -85,14 +90,30 @@ export default function CreateOOOForm(props) {
 	const AuthUser = useSelector(({ auth }) => auth);
 	const [createOOO, createOOOResults] = useMutation(CREATE_INSTRUCTOR_OOO, {
 		"onCompleted": () => {
-			setSubmitted(!submitted);
+			setSubmitted(true);
 		},
 		"update": (cache, { data }) => {
-			console.log(cache)
-			console.log(data)
+
+			const newOOO = data.createInstructorOoo.instructorOoo
+			const cachedOOO = cache.readQuery({
+				"query": GET_UPCOMING_INSTRUCTOR_OOO,
+				"variables": { instructorID: AuthUser.user.id }
+			}).instructorOoo
+
+			const updatedCache = [...cachedOOO, newOOO]
+
+			cache.writeQuery({
+				"data": {
+					"instructorOoo": updatedCache,
+				},
+				"query": GET_UPCOMING_INSTRUCTOR_OOO,
+				"variables": { instructorID: AuthUser.user.id }
+			});
+
 		}
 	})
-	const classes = useStyles()
+
+	const SubmitNoticeChild = useRef();
 	const updateOOOFormState = (newState) => {
 		setOOOFormState(newState);
 	};
@@ -111,7 +132,6 @@ export default function CreateOOOForm(props) {
 	}
 
 	const handleSubmit = () => {
-
 		createOOO({
 			variables: {
 				instructorId: AuthUser.user.id,
@@ -148,36 +168,40 @@ export default function CreateOOOForm(props) {
 				<Button disabled={activeStep === 0} onClick={handleBack}>Back</Button>
 				<Button disabled={activeStep === steps.length - 1} onClick={handleNext}>Next</Button>
 			</Grid> */}
+
+
 			<Grid item xs={12}>
-
-				<Typography style={{ paddingBottom: "3%" }} variant="h4">Submit Out of Office Notice </Typography>
-
-
+				<Typography style={{ paddingBottom: "3%" }} data-cy='submit-OOO-text' variant="h4">Submit Out of Office Notice </Typography>
 				{
 					submitted ?
 						<OOOConfirmation handleClose={handleClose} />
-						: <SubmitNotice />
+						: <SubmitNotice ref={SubmitNoticeChild} />
 				}
 			</Grid>
 
-			<Grid container direction="row" justify="center" alignItems="center" spacing={0}>
-				<Grid item xs={6} style={{ padding: "5%" }}>
-					{submitted || <Button
+			<Grid container direction="row" justify="center" alignItems="center" >
+				<Grid item style={{ padding: "5%" }}>
+					{!submitted && <Button
 						style={{ backgroundColor: "white", "color": "black", width: "150px" }}
-						onClick={""}
+						onClick={() => SubmitNoticeChild.current.handleClearForm()}
 						color="primary"
-						variant="outlined">
+						variant="outlined"
+						data-cy="clear-OOO-button"
+					>
+
 						Clear
 				</Button>
 
 					}
 				</Grid>
-				<Grid item xs={6}>
-					{submitted || <Button
+				<Grid item >
+					{!submitted && <Button
 						style={{ backgroundColor: omouBlue, "color": "white", width: "150px" }}
 						onClick={handleSubmit}
 						color="primary"
-						variant="outlined">
+						variant="outlined"
+						data-cy="submit-OOO-button"
+					>
 						Submit
 				</Button>
 					}
@@ -185,5 +209,7 @@ export default function CreateOOOForm(props) {
 
 			</Grid>
 		</Grid>
-	</OOOContext.Provider >);
+
+	</OOOContext.Provider>);
 }
+
