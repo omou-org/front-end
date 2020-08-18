@@ -97,7 +97,6 @@ export const SubmitNotice = forwardRef((props, ref) => {
 
 	const checkIfDateBeforeToday = (startDate) => moment().isBefore(startDate)
 
-
 	useImperativeHandle(ref, () => ({
 		handleClearForm() {
 			setStartTime(null);

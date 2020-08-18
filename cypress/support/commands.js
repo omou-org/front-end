@@ -74,17 +74,13 @@ Cypress.Commands.add("mockGraphQL", (operationMocks) => {
  * @param {String} url URL to visit
  * @param {Object} user Optional. Credentials for the logged in user
 */
-Cypress.Commands.add("visitAuthenticated", (url, { user, ...details }) => {
+Cypress.Commands.add("visitAuthenticated", (url, user) => {
     cy.visit(url);
     cy.window().its("store")
         .invoke("dispatch", {
             "payload": {
                 ...DEFAULT_USER,
-                ...details,
-                "user": {
-                    ...DEFAULT_USER.user,
-                    ...user,
-                },
+                ...user,
             },
             "type": types.SET_CREDENTIALS,
         });
