@@ -12,7 +12,8 @@ import {FormControl, Typography} from "@material-ui/core";
 import * as apiActions from "../../../actions/apiActions";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import {DatePicker, TimePicker} from "@material-ui/pickers";
+import {DatePicker} from "@material-ui/pickers/DatePicker/DatePicker"
+import {TimePicker} from "@material-ui/pickers/TimePicker/TimePicker"
 import SearchSelect from "react-select";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";

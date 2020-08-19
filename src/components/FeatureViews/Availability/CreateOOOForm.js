@@ -83,7 +83,6 @@ export default function CreateOOOForm() {
 	};
 
 	const handleSubmit = () => {
-
 		createOOO({
 			variables: {
 				instructorId: AuthUser.user.id,
@@ -93,8 +92,6 @@ export default function CreateOOOForm() {
 			}
 		});
 	}
-
-	console.log(createOOOResults);
 
 	return (<OOOContext.Provider value={{ OOOFormState, updateOOOFormState }}>
 		<Grid container direction="row">

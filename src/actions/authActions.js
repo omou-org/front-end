@@ -39,6 +39,15 @@ const GET_ACCOUNT_TYPE = gql`
                     email
                 }
             }
+            ... on StudentType {
+                accountType
+                user {
+                    id
+                    firstName
+                    lastName
+                    email
+                }
+            }
         }
     }`;
 

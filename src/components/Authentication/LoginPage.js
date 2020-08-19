@@ -90,14 +90,17 @@ const LoginPage = () => {
         setHasError(false);
     }, []);
 
-    const handleLogin = useCallback((event) => {
+    const handleLogin = useCallback(async (event) => {
         event.preventDefault();
-        login({
+        const loginResponse = await login({
             "variables": {
                 password,
                 "username": email,
             },
         });
+        if (loginResponse?.data?.tokenAuth) {
+            history.push("/")
+        }
     }, [login, email, password]);
 
     const toggleSavePassword = useCallback(({target}) => {
@@ -161,7 +164,7 @@ const LoginPage = () => {
                                 </Button>
                             </Grid>
                             <Grid item md={4}>
-                                <Button className="signInButton" onClick={handleCheck}>
+                                <Button data-cy="nextButton" className="signInButton" onClick={handleCheck}>
                                     SIGN IN
                                 </Button>
                             </Grid>

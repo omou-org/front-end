@@ -207,14 +207,14 @@ const Accounts = () => {
                                         row.accountType === USER_TYPES.parent ||
                                         isAdmin) && (
                                             <IconButton component={Link}
-                                                to={`/registration/form/${row.accountType}/${row.user.id}`}>
+                                                to={`/form/${row.accountType}/${row.user.id}`}>
                                                 <EditIcon />
                                             </IconButton>
                                         )}
                                 </Grid>
                                 <Grid component={Hidden} lgUp>
                                     <Button component={Link}
-                                        to={`/registration/form/${row.accountType}/${row.user.id}`}
+                                        to={`/form/${row.accountType}/${row.user.id}`}
                                         variant="outlined">
                                         <EditIcon />
                                     </Button>
@@ -241,21 +241,32 @@ const Accounts = () => {
     return (
         <Grid className="Accounts" item xs={12}>
             <BackgroundPaper elevation={2}>
-                <Grid container alignItems="flex-start">
+                <Grid container alignItems="flex-start" spacing={4} >
                     <Grid item>
                         <Button
                             className="button"
                             color="secondary"
                             component={Link}
-                            to="/registration/form/student"
+                            to="/form/student"
                             variant="outlined"
                         >
-                            <NewUser className="icon" /> New Student
+                            <NewUser className="icon" /> NEW STUDENT
+                        </Button>
+                    </Grid>
+                    <Grid item>
+                        <Button
+                            className="button"
+                            color="secondary"
+                            component={Link}
+                            to="/form/parent"
+                            variant="outlined"
+                        >
+                            <NewUser className="icon" /> NEW PARENT
                         </Button>
                     </Grid>
                 </Grid>
                 <Hidden xsDown>
-                    <hr />
+                    <hr style={{ marginTop: "15px" }} />
                 </Hidden>
                 <Typography align="left" className="heading" variant="h3">
                     Accounts
@@ -278,7 +289,7 @@ const Accounts = () => {
                         </Tabs>
                     </Grid>
                     <Hidden smDown>
-                        <Grid className="toggleView" item md={3}>
+                        <Grid className="toggleView" item md={4} >
                             <Button
                                 className={`btn list ${viewToggle && "active"}`}
                                 onClick={setView(true)}>
@@ -288,7 +299,7 @@ const Accounts = () => {
                             <Button className={`btn card ${!viewToggle && "active"}`}
                                 onClick={setView(false)}>
                                 <CardView className={`icon ${!viewToggle && "active"}`} />
-                                Card View
+                                Grid View
                             </Button>
                         </Grid>
                     </Hidden>
