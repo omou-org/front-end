@@ -44,7 +44,6 @@ export const UpcomingOOO = () => {
     if (error) return console.error(error)
 
 
-
     const LogOfCurrentUpcomingInstructorOOO = data.instructorOoo.filter((event) => (
         moment(event.endDatetime).isSameOrAfter(currentDate, "day")
     ))
@@ -57,10 +56,12 @@ export const UpcomingOOO = () => {
             </Grid>
             <Grid item xs={12}>
                 <List className={classes.root}>
-                    {LogOfCurrentUpcomingInstructorOOO.map(({ description, startDatetime, endDatetime }) =>
-                        <ListItem container>
-                            <ListItemText primary={description} secondary={moment(startDatetime).format("L") + " - " + moment(endDatetime).format("L")} />
-                        </ListItem>
+                    {LogOfCurrentUpcomingInstructorOOO.map(({ id, description, startDatetime, endDatetime }) =>
+                        <React.Fragment key={id}>
+                            <ListItem container key={id}>
+                                <ListItemText primary={description} secondary={moment(startDatetime).format("L") + " - " + moment(endDatetime).format("L")} />
+                            </ListItem>
+                        </React.Fragment>
                     )}
                 </List>
             </Grid>
@@ -99,13 +100,13 @@ export const LogOOO = () => {
 
             <Grid item xs={12}>
                 <List className={classes.root}>
-                    {logOfInstructorOOO.map(({ description, startDatetime, endDatetime }) =>
-                        <>
-                            <ListItem  >
+                    {logOfInstructorOOO.map(({ id, description, startDatetime, endDatetime }) =>
+                        <React.Fragment key={id}>
+                            <ListItem >
                                 <ListItemText primary={description} secondary={moment(startDatetime).format("L") + " - " + moment(endDatetime).format("L")} />
                             </ListItem>
                             <Divider />
-                        </>
+                        </React.Fragment>
                     )}
                 </List >
             </Grid>

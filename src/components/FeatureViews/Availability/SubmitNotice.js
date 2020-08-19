@@ -110,7 +110,7 @@ export const SubmitNotice = forwardRef((props, ref) => {
 
 
 	return (
-		<Container maxWidth="fixed" style={{ paddingLeft: "50px" }}>
+		<Container style={{ paddingLeft: "50px" }}>
 			{/* <Grid container direction="row" > */}
 			<Grid item xs={12} align="left">
 				<Typography
@@ -128,7 +128,7 @@ export const SubmitNotice = forwardRef((props, ref) => {
 			<Grid item xs={12} lg={7} >
 				<Typography className={classes.selectDateText} align="left"  >Select Date:</Typography>
 			</Grid>
-			<Grid container xs={12} style={{ paddingTop: "2%" }}>
+			<Grid container style={{ paddingTop: "2%" }}>
 				<ButtonGroup variant="contained">
 					<Button style={{ backgroundColor: omouBlue }}>
 						<CalendarIcon style={{ color: 'white' }} />
