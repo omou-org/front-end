@@ -81,7 +81,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const validRegistrations = Object.values(registrationCartState)
         .filter(registration => registration);
     const registrations = validRegistrations && [].concat.apply([], validRegistrations);
-    const studentOptions = data?.userInfos
+    const studentOptions = studentList && data.userInfos
         .filter(({user}) => (!registrations.find(({course, student}) =>
                 (course.id === quickCourseID && user.id === student))
         ))
