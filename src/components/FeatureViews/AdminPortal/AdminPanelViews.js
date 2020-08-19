@@ -6,7 +6,7 @@ import {
 } from "react-admin";
 
 const NoneActions = props => (
-    <h1>Hi</h1>
+  <h1>Hi</h1>
 );
 
 export const CategoryList = (props) => (
@@ -112,12 +112,13 @@ const discountShowFields = [
 ];
 
 const discountEditFields = [
+  <BooleanInput key="active" source="active" />,
   <TextInput key="name" source="name" />,
   <TextInput key="description" source="description" />,
   <NumberInput key="amount" source="amount" />,
   <SelectInput choices={amountTypeChoices} key="amountType"
     source="amountType" />,
-  <BooleanInput key="active" source="active" />,
+
 ];
 
 const discountDisplays = (fields) => [
