@@ -29,8 +29,8 @@
     "apollo-link-http": "^1.5.17",
     "axios": "^0.19.2",
     "clsx": "^1.1.1",
-    "date-fns": "^2.15.0",
     "cypress-waitfor": "^1.1.0",
+    "date-fns": "^2.15.0",
     "dotenv": "^8.2.0",
     "final-form": "^4.20.0",
     "graphql": "^15.1.0",
@@ -55,7 +55,7 @@
     "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
     "react-router-redux": "^4.0.8",
-    "react-scripts": "^3.4.1",
+    "react-scripts": "^3.4.3",
     "react-select": "^3.1.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
@@ -68,7 +68,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "cypress open",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build-fragment": "node --experimental-modules src/possibleTypesGenerator.js"
   },
   "browserslist": {
     "production": [
@@ -83,6 +84,7 @@
     ]
   },
   "devDependencies": {
+    "cross-fetch": "^3.0.5",
     "cypress": "^4.12.1",
     "eslint": "^6.8.0",
     "eslint-plugin-cypress": "^2.11.1",
