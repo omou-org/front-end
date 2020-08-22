@@ -1,10 +1,10 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import FilterIcon from "@material-ui/icons/FilterList";
 import Menu from "@material-ui/core/Menu";
-import {withStyles} from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import ReactSelect from "react-select";
-import {MenuItem, Tooltip} from "@material-ui/core";
+import { MenuItem, Tooltip } from "@material-ui/core";
 
 const styles = {
 	root: {
@@ -13,13 +13,13 @@ const styles = {
 };
 
 function SessionFilters({
-							onInstructorSelect,
-							InstructorValue,
-							InstructorOptions,
-							CourseValue,
-							onCourseSelect,
-							CourseOptions,
-						}) {
+	onInstructorSelect,
+	InstructorValue,
+	InstructorOptions,
+	CourseValue,
+	onCourseSelect,
+	CourseOptions,
+}) {
 	let [anchorEl, setAnchorEl] = useState(null);
 	let [open, setOpen] = useState(false);
 
@@ -37,7 +37,7 @@ function SessionFilters({
 					aria-haspopup="true"
 					onClick={handleClick}
 				>
-					<FilterIcon/>
+					<FilterIcon />
 				</IconButton>
 			</Tooltip>
 			<Menu
@@ -47,11 +47,13 @@ function SessionFilters({
 				open={open}
 				className={"session-filter"}
 				onClose={handleClick}
+
+
 			>
 				<MenuItem
 					className={"select-filter-header"}
 					disabled={true}
-					style={{backgroundColor: "#FAFAFA"}}
+					style={{ backgroundColor: "#FAFAFA" }}
 				>
 					{" "}
 					Select Filter
@@ -61,20 +63,22 @@ function SessionFilters({
 					// styles={customStyles}
 					placeholder={"Filter Instructor..."}
 					value={InstructorValue}
-					options={InstructorOptions}
+					options={InstructorOptions || []}
 					onChange={onInstructorSelect}
 					clearable
 					isMulti
+					id="filter-instructor-select"
 				/>
 				<ReactSelect
 					className={"session-filter-select"}
 					// styles={customStyles}
 					placeholder={"Filter Course..."}
 					value={CourseValue}
-					options={CourseOptions}
+					options={CourseOptions || []}
 					onChange={onCourseSelect}
 					clearable
 					isMulti
+					id="filter-course-select"
 				/>
 			</Menu>
 		</>

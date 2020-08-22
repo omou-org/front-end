@@ -310,6 +310,7 @@ const Scheduler = (props) => {
         })
     ), [instructors]);
     const courseSessionsArray = sessionArray(sessions);
+
     const courseOptions = useMemo(() => courseSessionsArray &&
         uniques(courseSessionsArray.map((session) => session.course))
             .map((courseID) => ({
@@ -342,7 +343,7 @@ const Scheduler = (props) => {
     return (
         <Grid item xs={12} container>
             <BackgroundPaper className="scheduler" elevation={2}>
-                <Typography align="left" className="scheduler-title" variant="h3">
+                <Typography align="left" className="scheduler-title" variant="h3" data-cy="scheduler-header-text">
                     Scheduler
 				</Typography>
                 <br />
@@ -372,19 +373,26 @@ const Scheduler = (props) => {
                                     </IconButton>
                                 </Tooltip>
                             </Grid>
-                            <Grid item>
-                                <SessionFilters CourseOptions={courseOptions}
+                            <Grid item
+                                data-cy="schduler-select-filter-box"
+                            >
+                                <SessionFilters
+                                    CourseOptions={courseOptions}
                                     CourseValue={courseFilter}
                                     InstructorOptions={instructorOptions}
                                     InstructorValue={instructorFilter}
                                     onCourseSelect={setCourseFilter}
-                                    onInstructorSelect={setInstructorFilter} />
+                                    onInstructorSelect={setInstructorFilter}
+
+                                />
                             </Grid>
                             <Grid item xs={6}>
-                                <FormControl className="filter-select">
+                                <FormControl className="filter-select" >
                                     <Select input={
                                         <BootstrapInput id="filter-calendar-type"
-                                            name="courseFilter" />
+                                            name="courseFilter"
+
+                                        />
                                     }
                                         MenuProps={{
                                             "classes": {
