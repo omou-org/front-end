@@ -23,6 +23,7 @@ import Typography from "@material-ui/core/Typography";
 import ListIcon from "@material-ui/icons/List"
 import CalendarIcon from "@material-ui/icons/CalendarToday";
 
+
 import "./scheduler.scss";
 import * as calendarActions from "actions/calendarActions";
 import * as hooks from "actions/hooks";
@@ -350,22 +351,26 @@ const Scheduler = (props) => {
                         <Grid className="scheduler-header-firstSet"
                             container direction="row">
                             <Grid item>
-                                <IconButton
-                                    onClick={() => changeView("timeGridDay")}
-                                >
-                                    <CalendarIcon
-                                        style={{ color: view.toLowerCase().includes("grid") && secondaryFontColor }}
-                                    />
-                                </IconButton>
+                                <Tooltip title="Calendar View">
+                                    <IconButton
+                                        onClick={() => changeView("timeGridDay")}
+                                    >
+                                        <CalendarIcon
+                                            style={{ color: view.toLowerCase().includes("grid") && secondaryFontColor }}
+                                        />
+                                    </IconButton>
+                                </Tooltip>
                             </Grid>
                             <Grid item>
-                                <IconButton
-                                    onClick={() => changeView("listWeek")}
-                                >
-                                    <ListIcon
-                                        style={{ color: view === "listWeek" && secondaryFontColor }}
-                                    />
-                                </IconButton>
+                                <Tooltip title="Resource View">
+                                    <IconButton
+                                        onClick={() => changeView("listWeek")}
+                                    >
+                                        <ListIcon
+                                            style={{ color: view === "listWeek" && secondaryFontColor }}
+                                        />
+                                    </IconButton>
+                                </Tooltip>
                             </Grid>
                             <Grid item>
                                 <SessionFilters CourseOptions={courseOptions}
@@ -409,10 +414,12 @@ const Scheduler = (props) => {
                         alignItems="center"
                     >
                         <Grid item>
-                            <IconButton aria-label="prev-month"
-                                className="prev-month" onClick={goToPrev}>
-                                <ChevronLeftOutlined />
-                            </IconButton>
+                            <Tooltip title="Previous">
+                                <IconButton aria-label="prev-month"
+                                    className="prev-month" onClick={goToPrev}>
+                                    <ChevronLeftOutlined />
+                                </IconButton>
+                            </Tooltip>
                         </Grid>
                         <Grid item>
                             <Typography variant="h6">
@@ -420,11 +427,14 @@ const Scheduler = (props) => {
                             </Typography>
                         </Grid>
                         <Grid item>
-                            <IconButton aria-label="next-month"
-                                className="next-month" onClick={goToNext}>
-                                <ChevronRightOutlined />
-                            </IconButton>
+                            <Tooltip title="Next">
+                                <IconButton aria-label="next-month"
+                                    className="next-month" onClick={goToNext}>
+                                    <ChevronRightOutlined />
+                                </IconButton>
+                            </Tooltip>
                         </Grid>
+
                     </Grid>
                     <Grid item xs={2} />
                     <Grid item xs={2}>
