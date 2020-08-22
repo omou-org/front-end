@@ -6,11 +6,15 @@ describe('Submit an instructor OOO', () => {
             "getInstructorOOO": {
                 "response": {
                     "data": {
-                        "instructorOoo": {
+                        "instructorOoo": [{
                             "__typename": "InstructorOutOfOfficeType",
-                            "instructorId": "6"
-                        },
+                            "id": "2",
+                            "description": "Hello World",
+                            "endDatetime": Cypress.moment().format(),
+                            "startDatetime": Cypress.moment().format(),
+                        }]
                     },
+
                 },
                 "test": (variable) => {
                     console.log(variable)
@@ -25,7 +29,7 @@ describe('Submit an instructor OOO', () => {
                             instructor: {
                                 "description": "Hello World",
                                 "endDatetime": Cypress.moment().format(),
-                                "instructorId": "6",
+                                "instructorId": "2",
                                 "startDatetime": Cypress.moment().format(),
                             }
                         },
@@ -57,9 +61,10 @@ describe('Submit an instructor OOO', () => {
         cy.get("[data-cy=out-all-day-checkbox]").click()
         cy.get("[data-cy=instructor-OOO-description-input]").type("This is a test")
         cy.get("[data-cy=clear-OOO-button]").click()
+        cy.get("[data-cy=start-time-picker-OOO]").should('have.value', '');
+        cy.get("[data-cy=end-time-picker-OOO]").should('have.value', '');
+        cy.get("[data-cy=instructor-OOO-description-input]").should('have.value', '');
 
     })
-
-
 
 })
