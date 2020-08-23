@@ -58,10 +58,6 @@ const LoginPage = () => {
             setUserType(data.userType);
         },
     });
-    console.log(userType)
-    console.log(hasError)
-
-
     const [login] = useMutation(LOGIN, {
         "errorPolicy": "ignore",
         "ignoreResults": true,
@@ -90,7 +86,7 @@ const LoginPage = () => {
         if (userType === null) {
             setHasError(true);
         }
-    }, [userType])
+    }, [userType,emailToSubmit])
 
     const handleTextInput = useCallback((setter) => ({ target }) => {
         setter(target.value);
