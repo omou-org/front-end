@@ -5,7 +5,6 @@ import {
   SimpleShowLayout, TextField, TextInput, ReferenceInput, CardActions
 } from "react-admin";
 
-
 export const CategoryList = (props) => (
   <List {...props}>
     <Datagrid rowClick="edit">
@@ -109,12 +108,13 @@ const discountShowFields = [
 ];
 
 const discountEditFields = [
+  <BooleanInput key="active" source="active" />,
   <TextInput key="name" source="name" />,
   <TextInput key="description" source="description" />,
   <NumberInput key="amount" source="amount" />,
   <SelectInput choices={amountTypeChoices} key="amountType"
     source="amountType" />,
-  <BooleanInput key="active" source="active" />,
+
 ];
 
 const discountDisplays = (fields) => [
