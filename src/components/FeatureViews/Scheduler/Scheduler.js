@@ -111,12 +111,12 @@ const Scheduler = (props) => {
         const viewType = view.toLowerCase().includes("grid") ? gridValue : listValue;
         changeView(viewType[target.value]);
     };
-
+    console.log(props)
     const goToNext = () => {
         calendarApi.next();
         props.getSessions({
             variables: {
-                instructorId: null,
+                instructorId: props.currentUserID,
                 timeFrame: calendarViewToFilterVal[view],
                 timeShift: timeShift + 1,
                 viewOption: courseType,
@@ -129,7 +129,7 @@ const Scheduler = (props) => {
         calendarApi.prev();
         props.getSessions({
             variables: {
-                instructorId: null,
+                instructorId: props.currentUserID,
                 timeFrame: calendarViewToFilterVal[view],
                 timeShift: timeShift - 1,
                 viewOption: courseType,
@@ -142,7 +142,7 @@ const Scheduler = (props) => {
         calendarApi.today();
         props.getSessions({
             variables: {
-                instructorId: null,
+                instructorId: props.currentUserID,
                 timeFrame: calendarViewToFilterVal[view],
                 timeShift: 0,
                 viewOption: courseType,
@@ -155,7 +155,7 @@ const Scheduler = (props) => {
     const handleCourseTypeChange = useCallback(({ target }) => {
         props.getSessions({
             variables: {
-                instructorId: null,
+                instructorId: props.currentUserID,
                 timeFrame: calendarViewToFilterVal[view],
                 timeShift: timeShift,
                 viewOption: target.value,
@@ -371,7 +371,7 @@ const Scheduler = (props) => {
                         eventColor="none"
                         eventLimit={4}
                         eventMouseEnter={handleToolTip}
-                        events={[...props.currentSessions,]}
+                        events={[...props.currentSessions]}
                         header={false}
                         minTime="07:00:00"
                         aspectRatio="2"

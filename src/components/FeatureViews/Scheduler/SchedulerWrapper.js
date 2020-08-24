@@ -5,6 +5,7 @@ import Loading from "../../OmouComponents/Loading"
 import moment from "moment"
 import { GET_ALL_EVENTS } from "./SchedulerQueries";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 
 
@@ -43,6 +44,16 @@ const SchedulerWrapper = () => {
     }
 
 
+    const currentUserID = useSelector(({ auth }) => auth);
+    useEffect(() => {
+        if (currentUserID.accountType === "ADMIN") {
+            setUserID(null)
+        } else {
+            setUserID(currentUserID.user.id)
+        }
+
+    }, [setUserID])
+
 
     const [getSessions, { loading, data, error }] = useLazyQuery(GET_ALL_EVENTS);
 
@@ -59,10 +70,8 @@ const SchedulerWrapper = () => {
 
     if (loading || data === undefined) return <Loading />
     if (error) console.error(error)
+
     const { sessions } = data
-
-
-
     const currentSession = sessions.map(({ course: { instructor, ...courseValues }, endDatetime, startDatetime, id }) => {
         let instructorName = `${instructor.user.firstName} ${instructor.user.lastName}`;
         return {
@@ -87,7 +96,7 @@ const SchedulerWrapper = () => {
 
 
 
-    return <Scheduler currentSessions={[...currentSession]} getSessions={getSessions} />
+    return <Scheduler currentSessions={[...currentSession]} getSessions={getSessions} currentUserID={userID} />
 }
 
 export default SchedulerWrapper
