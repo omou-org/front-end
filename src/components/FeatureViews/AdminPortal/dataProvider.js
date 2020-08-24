@@ -199,14 +199,14 @@ const MUTATION_ADD = {
     ${discountInfo}`,
 
     "tuitionRules": gql`
-    mutation CreatePricerule(
+    mutation CreatePriceRule(
       $academicLevel: AcademicLevelEnum!
       $courseType: CourseTypeEnum!
       $category: Int!
       $hourlyTuition: Float!
       $name: String!
     ) {
-        createPricerule(
+        createPriceRule(
         name: $name
         academicLevel: $academicLevel
         courseType: $courseType
@@ -300,7 +300,7 @@ const MUTATION_UPDATE = {
           $hourlyTuition: Float!
           $name: String!
           ) {
-            createPricerule(
+            createPriceRule(
             id: $id
                 
               academicLevel: $academicLevel
