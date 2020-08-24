@@ -164,7 +164,7 @@ const LoginPage = () => {
                                 </Button>
                             </Grid>
                             <Grid item md={4}>
-                                <Button className="signInButton" onClick={handleCheck}>
+                                <Button data-cy="nextButton" className="signInButton" onClick={handleCheck}>
                                     SIGN IN
                                 </Button>
                             </Grid>

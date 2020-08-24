@@ -131,12 +131,13 @@ const discountShowFields = [
 ];
 
 const discountEditFields = [
+  <BooleanInput key="active" source="active" />,
   <TextInput key="name" source="name" />,
   <TextInput key="description" source="description" />,
   <NumberInput key="amount" source="amount" />,
   <SelectInput choices={amountTypeChoices} key="amountType"
     source="amountType" />,
-  <BooleanInput key="active" source="active" />,
+
 ];
 
 const discountDisplays = (fields) => [
@@ -200,7 +201,7 @@ export const TuitionList = (props) => (
     bulkActionButtons={false}>
     <Datagrid rowClick="edit">
       <TextField source="id" />
-      <TextField source="name" />
+
       <SelectField source="academicLevel" choices={academicLevelChoices} />
       <SelectField source="courseType" choices={courseTypes} />
       <TextField source="category.name" label="Course category" />
@@ -210,10 +211,9 @@ export const TuitionList = (props) => (
 
 
 export const TuitionShow = (props) => (
-  <Show {...props}>
+  <Show  {...props}>
     <SimpleShowLayout>
       <TextField source="id" />
-      <TextField source="name" />
       <TextField source="academicLevel" />
       <SelectField source="courseType" choices={courseTypes} />
       <TextField source="category.name" label="Course category" />
@@ -224,9 +224,8 @@ export const TuitionShow = (props) => (
 
 
 export const TuitionEdit = (props) => (
-  <Edit {...props}>
+  <Edit  {...props}>
     <SimpleForm>
-      <TextInput source="name" />
       <SelectInput source="academicLevel" choices={academicLevelChoices} />
       <ReferenceInput
         label="Course category"
@@ -247,7 +246,6 @@ export const TuitionEdit = (props) => (
 export const TuitionCreate = (props) => (
   <Create {...props}>
     <SimpleForm>
-      <TextInput source="name" />
       <SelectInput source="academicLevel" choices={academicLevelChoices} />
       <ReferenceInput
         label="Course category"
