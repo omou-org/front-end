@@ -227,7 +227,7 @@ const ClassListItem = ({
   );
 };
 
-const CourseFilterDrop = ({
+const CourseFilterDropdown = ({
   initialValue,
   filterList,
   setState,
@@ -333,7 +333,7 @@ const CourseManagementContainer = () => {
   const checkFilter = (value, filter) => "" === filter || value === filter;
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
 
-  const normalCourseDisplay = data.courses
+  const defaultCourseDisplay = data.courses
     .filter(
       (course) =>
         checkFilter(course.academicLevel, gradeFilterValue) &&
@@ -408,21 +408,21 @@ const CourseManagementContainer = () => {
                 </Select>
               </FormControl>
             </Grid>
-            <CourseFilterDrop
+            <CourseFilterDropdown
               filterList={gradeOptions}
               initialValue="All Grades"
               setState={setGradeFilterValue}
               filter={gradeFilterValue}
               filterKey="grades"
             />
-            <CourseFilterDrop
+            <CourseFilterDropdown
               filterList={subjectList}
               initialValue="All Subjects"
               setState={setSubjectFilterValue}
               filter={subectFilterValue}
               filterKey="subjects"
             />
-            <CourseFilterDrop
+            <CourseFilterDropdown
               filterList={instructorsList}
               initialValue="All Instructors"
               setState={setInstructorFilterValue}
@@ -431,7 +431,7 @@ const CourseManagementContainer = () => {
             />
           </Grid>
         </Paper>
-        {normalCourseDisplay.map(
+        {defaultCourseDisplay.map(
           ({
             title,
             dayOfWeek,

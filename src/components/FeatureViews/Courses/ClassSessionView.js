@@ -106,6 +106,7 @@ const ClassSessionView = ({
   const handleOpenForm = (e) => {
     e.preventDefault();
     setOpen(true);
+    setButtonState("add")
   };
 
   const handleCloseForm = (boolean) => setOpen(boolean);

@@ -104,7 +104,11 @@ const ClassEnrollmentList = ({
         >
           <MailOutlineIcon style={{ color: "rgb(112,105,110)" }} />
         </Button>
-        <AccessControlComponent permittedAccountTypes={[USER_TYPES.admin, USER_TYPES.instructor, USER_TYPES.receptionist]}>
+        <AccessControlComponent 
+        permittedAccountTypes={[USER_TYPES.admin, 
+                                USER_TYPES.instructor, 
+                                USER_TYPES.receptionist]}
+                              >
           <Menu
             id="simple-menu"
             anchorEl={anchorEl}

@@ -245,7 +245,8 @@ const ModalTextEditor = ({
           Cancel
         </Button>
         <Button className={classes.submitButton} onClick={handleSubmit}>
-          {origin === "STUDENT_ENROLLMENT" ? "Send Email" : "ADD NOTE"}
+          {origin === "STUDENT_ENROLLMENT" ? "Send Email" : 
+          (buttonState === "edit") ? "EDIT NOTE" : "ADD NOTE"}
         </Button>
       </DialogActions>
     </Dialog>

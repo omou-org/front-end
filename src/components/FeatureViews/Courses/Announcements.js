@@ -141,6 +141,7 @@ const Announcements = ({
       __typename
       deleteAnnouncement(id: $id) {
         deleted
+        id
       }
     }
   `;
@@ -149,19 +150,17 @@ const Announcements = ({
     DELETE_ANNOUNCEMENT,
     {
       error: (err) => console.error(err),
-      update: (cache, { data }) => {
+      update: (cache, { data: { deleteAnnouncement: { id } }}) => {
         const cachedAnnouncement = cache.readQuery({
           query: GET_ANNOUNCEMENTS,
           variables: { id: courseId.id },
         })["announcements"];
-        const deleteAnnouncementId = announcementId
         let updatedAnnouncements = [...cachedAnnouncement];
-        const deleteCacheAnnouncement = updatedAnnouncements
-          .filter(({ id }) => id !== deleteAnnouncementId);
-
+        const removedIndex = updatedAnnouncements.findIndex(announcement => announcement.id === id);
+        updatedAnnouncements.splice(removedIndex, 1)
         cache.writeQuery({
           data: {
-            ["announcements"]: deleteCacheAnnouncement,
+            ["announcements"]: updatedAnnouncements,
           },
           query: GET_ANNOUNCEMENTS,
           variables: { id: courseId.id },
@@ -181,7 +180,7 @@ const Announcements = ({
   const handleClose = (boolean) => setNewAnnouncementForm(boolean);
 
   const handleDeleteAnnouncement = async (id) => {
-    const x = await setAnnouncementId(id)
+    await setAnnouncementId(id);
     const deletedAnnouncement = await deleteAnnouncement({
       variables: { id: id },
     });
