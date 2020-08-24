@@ -180,7 +180,6 @@ const Announcements = ({
   const handleClose = (boolean) => setNewAnnouncementForm(boolean);
 
   const handleDeleteAnnouncement = async (id) => {
-    await setAnnouncementId(id);
     const deletedAnnouncement = await deleteAnnouncement({
       variables: { id: id },
     });
