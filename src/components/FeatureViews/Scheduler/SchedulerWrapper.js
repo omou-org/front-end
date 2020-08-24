@@ -3,10 +3,9 @@ import Scheduler from "../Scheduler/Scheduler"
 import { useLazyQuery } from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading"
 import moment from "moment"
-import { useSelector } from "react-redux";
-
 import { GET_ALL_EVENTS } from "./SchedulerQueries";
 import { useEffect, useState } from "react";
+
 
 
 const calendarViewToFilterVal = {
@@ -62,6 +61,8 @@ const SchedulerWrapper = () => {
     if (error) console.error(error)
     const { sessions } = data
 
+
+
     const currentSession = sessions.map(({ course: { instructor, ...courseValues }, endDatetime, startDatetime, id }) => {
         let instructorName = `${instructor.user.firstName} ${instructor.user.lastName}`;
         return {
@@ -82,6 +83,8 @@ const SchedulerWrapper = () => {
 
         }
     })
+
+
 
 
     return <Scheduler currentSessions={[...currentSession]} getSessions={getSessions} />

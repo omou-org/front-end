@@ -35,8 +35,6 @@ import { secondaryFontColor } from "../../../theme/muiTheme";
 import BackButton from "../../OmouComponents/BackButton";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 
-
-
 const useStyles = makeStyles((theme) => ({
     "bootstrapFormLabel": {
         "fontSize": "18px",
@@ -67,7 +65,7 @@ const Scheduler = (props) => {
     const history = useHistory();
 
     const courses = useSelector(({ Course }) => Course.NewCourseList);
-    const session = useSelector(({ Calendar }) => Calendar.CourseSessions);
+    const sessions = useSelector(({ Calendar }) => Calendar.CourseSessions);
     const instructors = useSelector(({ Users }) => Users.InstructorList);
 
     const prevState =
@@ -80,31 +78,13 @@ const Scheduler = (props) => {
     const [timeShift, setTimeShift] = useState(prevState.timeShift || 0);
     const timeView = props?.location?.state ? "timeGridDay" : prevState.view || "timeGridDay";
     const [view, setView] = useState(timeView);
-    const [sortByAll, setSortByAll] = useState("ALL")
-    const [sortByClass, setSortByClass] = useState("CLASS")
-    const [sortByTutor, setSortByTutor] = useState("TUTOR")
 
-    hooks.useCourse();
-    hooks.useInstructor();
-    hooks.useOutOfOffice();
-    // calendarActions.useSessions(
-    //     calendarViewToFilterVal[view], timeShift, courseType
-    // );
-
+    calendarActions.useSessions(
+        calendarViewToFilterVal[view], timeShift, courseType
+    );
 
     const calendarRef = useRef();
     const calendarApi = calendarRef.current && calendarRef.current.getApi();
-
-    // sortByGrades, sortBySubjects, sortByInstructors are all state variables storing the filter string name
-    // @description: This is returns a boolean of if the course matches the filter or its a default empty string value
-    const checkFilter = (value, filter) => ("" === filter || value === filter);
-    const coursesToDisplay = props.currentSessions
-        .filter(sessions => (
-
-            checkFilter(sessions.type, sortByAll) ||
-            checkFilter(sessions.type, sortByClass) ||
-            checkFilter(sessions.type, sortByTutor)));
-
 
 
     const currentDate = calendarApi && calendarApi.view.title;
@@ -149,7 +129,7 @@ const Scheduler = (props) => {
         calendarApi.prev();
         props.getSessions({
             variables: {
-                instructorId: "4",
+                instructorId: null,
                 timeFrame: calendarViewToFilterVal[view],
                 timeShift: timeShift - 1,
                 viewOption: courseType,
@@ -160,17 +140,29 @@ const Scheduler = (props) => {
 
     const goToToday = () => {
         calendarApi.today();
+        props.getSessions({
+            variables: {
+                instructorId: null,
+                timeFrame: calendarViewToFilterVal[view],
+                timeShift: 0,
+                viewOption: courseType,
+            }
+        })
         setTimeShift(0);
     };
 
-    const handleCourseTypeChange = useCallback(({ target }) => {
 
+    const handleCourseTypeChange = useCallback(({ target }) => {
+        props.getSessions({
+            variables: {
+                instructorId: null,
+                timeFrame: calendarViewToFilterVal[view],
+                timeShift: timeShift,
+                viewOption: target.value,
+            }
+        })
         setCourseType(target.value);
     }, []);
-
-
-
-
 
     useEffect(() => {
         if (calendarApi) {
@@ -204,14 +196,13 @@ const Scheduler = (props) => {
     }, [history]);
 
 
-
     const instructorOptions = useMemo(() => Object.entries(instructors).map(
         ([instructorID, instructor]) => ({
             "label": instructor.name,
             "value": instructorID,
         })
     ), [instructors]);
-    const courseSessionsArray = sessionArray(session);
+    const courseSessionsArray = sessionArray(sessions);
     const courseOptions = useMemo(() => courseSessionsArray &&
         uniques(courseSessionsArray.map((session) => session.course))
             .map((courseID) => ({
@@ -240,8 +231,6 @@ const Scheduler = (props) => {
         }
         return "day";
     };
-
-
 
     return (
         <Grid item xs={12} container>
@@ -382,7 +371,7 @@ const Scheduler = (props) => {
                         eventColor="none"
                         eventLimit={4}
                         eventMouseEnter={handleToolTip}
-                        events={[...calendarEvents, ...OOOEvents]}
+                        events={[...props.currentSessions,]}
                         header={false}
                         minTime="07:00:00"
                         aspectRatio="2"
