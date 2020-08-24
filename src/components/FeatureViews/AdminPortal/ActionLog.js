@@ -32,23 +32,23 @@ import { fullName } from "../../../utils";
 
 const GET_LOGS = gql`
     query GetLogs ($action: String,
-        $adminType: String, 
-        $page: Int, 
-        $pageSize: Int, 
-        $sort: String, 
-        $objectType: String, 
-        $userId: ID!, 
-        $startDateTime: String, 
+        $adminType: String,
+        $page: Int,
+        $pageSize: Int,
+        $sort: String,
+        $objectType: String,
+        $userId: ID!,
+        $startDateTime: String,
         $endDateTime: String){
-        logs(action:$action, 
-            adminType: 
-            $adminType, 
-            page: $page, 
-            pageSize: $pageSize, 
-            sort: $sort, 
-            objectType: $objectType, 
-            userId: $userId, 
-            startDateTime: $startDateTime, 
+        logs(action:$action,
+            adminType:
+            $adminType,
+            page: $page,
+            pageSize: $pageSize,
+            sort: $sort,
+            objectType: $objectType,
+            userId: $userId,
+            startDateTime: $startDateTime,
             endDateTime: $endDateTime){
             results {
                 date
@@ -182,8 +182,6 @@ const ActionLog = () => {
         const selectedUser = data.admins.find(user => (user.user.id == actionId));
         return (<div>{fullName(selectedUser.user)}</div>)
     }
-
-    console.log(state);
 
     return (
         <>
