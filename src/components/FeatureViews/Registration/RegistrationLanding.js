@@ -188,12 +188,12 @@ const RegistrationLanding = () => {
     return (
         <BackgroundPaper className="RegistrationLanding" elevation={2}>
             <Grid container>
-                <RegistrationActions updateRegisteringParent={handleUpdateParent}/>
+                <RegistrationActions updateRegisteringParent={handleUpdateParent} updatedParent={updatedParent}/>
             </Grid>
             <hr/>
             <Grid container layout="row">
                 <Grid item md={8} xs={12}>
-                    <Typography align="left" className="heading" variant="h3">
+                    <Typography align="left" className="heading" variant="h3" data-cy="registration-heading">
                         Registration Catalog
                     </Typography>
                 </Grid>
@@ -223,7 +223,7 @@ const RegistrationLanding = () => {
                 </Grid>
             )}
             <Grid item className="registration-table" container spacing={5}>
-                <CourseList filteredCourses={filteredCourses} updatedParent={updatedParent}/>
+                <CourseList filteredCourses={filteredCourses}/>
                 {/*{view === 0 ?*/}
                 {/*    <CourseList filteredCourses={filteredCourses} updatedParent={updatedParent}/> :*/}
                 {/*    <TutoringList />}*/}

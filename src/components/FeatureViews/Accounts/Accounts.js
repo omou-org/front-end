@@ -241,7 +241,7 @@ const Accounts = () => {
     return (
         <Grid className="Accounts" item xs={12}>
             <BackgroundPaper elevation={2}>
-                <Grid container alignItems="flex-start" spacing={4}>
+                <Grid container alignItems="flex-start" spacing={4} >
                     <Grid item>
                         <Button
                             className="button"
@@ -266,7 +266,7 @@ const Accounts = () => {
                     </Grid>
                 </Grid>
                 <Hidden xsDown>
-                    <hr />
+                    <hr style={{ marginTop: "15px" }} />
                 </Hidden>
                 <Typography align="left" className="heading" variant="h3">
                     Accounts

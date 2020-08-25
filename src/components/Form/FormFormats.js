@@ -1,5 +1,6 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import * as types from "actions/actionTypes";
+import {createTutoringDetails, submitRegistration} from
+    "../OmouComponents/RegistrationUtils";
 import {instance} from "actions/apiActions";
 import React from "react";
 import {FORM_ERROR} from "final-form";
@@ -11,30 +12,12 @@ import {client} from "index";
 import gql from "graphql-tag";
 import {fullName} from "../../utils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
-import {createTutoringDetails, submitRegistration} from "../OmouComponents/RegistrationUtils";
 
-export const responseToForm = (parser, data) => {
-    const res = {};
-    Object.entries(data).forEach(([key, message]) => {
-        if (parser.hasOwnProperty(key)) {
-            let match;
-            if (Array.isArray(message)) {
-                match = parser[key];
-                res[match[0]] = res[match[0]] || {};
-                res[match[0]][match[1]] = message.join();
-            } else {
-                // Object of errors, recursion time
-                Object.entries(responseToForm(parser[key], message)).forEach(([k2, obj]) => {
-                    res[k2] = {
-                        ...res[k2] || {},
-                        ...obj,
-                    };
-                });
-            }
-        }
+Yup.addMethod(Yup.array, 'unique', function (message, mapper = a => a) {
+    return this.test('unique', message, function (list) {
+        return list.length === new Set(list.map(mapper)).size;
     });
-    return res;
-};
+});
 
 export const submitToApi = (endpoint, data, id) => (id ?
     instance.patch(`${endpoint}${id}/`, data) :
@@ -50,19 +33,6 @@ export const parseDate = (date) => {
     return date.toISOString().substring(0, 10);
 };
 
-export const formToRequest = (parser, data) => {
-    const body = {};
-    Object.entries(parser).forEach(([key, path]) => {
-        if (Array.isArray(path)) {
-            body[key] = data[path[0]][path[1]];
-        } else {
-            // Object, recursion time
-            body[key] = formToRequest(parser[key], data);
-        }
-    });
-    return body;
-};
-
 export const selectField = (options) => ({
         "component": <Fields.Select data={options} />,
         "validator": Yup.mixed().oneOf(options.map(({value}) => value)),
@@ -70,9 +40,10 @@ export const selectField = (options) => ({
     stringField = (label) => ({
         "component": <Fields.TextField />,
         label,
-        "validator": Yup.string().matches(/[a-zA-Z][^#&<>"~;$^%{}?]+$/u,
-
-            `Invalid ${label}`),
+        "validator": Yup.string().matches(
+            /[a-zA-Z][^#&<>"~;$^%{}?]+$/u,
+            `Invalid ${label}`,
+        ),
     });
 
 const SEARCH_INSTRUCTORS = gql`
@@ -92,8 +63,8 @@ const SEARCH_INSTRUCTORS = gql`
 `;
 
 const userMap = ({accountSearch}) => accountSearch.results.map(({user}) => ({
-	"label": `${user.firstName} ${user.lastName}`,
-	"value": user.id,
+    "label": `${user.firstName} ${user.lastName}`,
+    "value": user.id,
 }));
 
 const instructorSelect = (name) => (
@@ -103,57 +74,11 @@ const instructorSelect = (name) => (
 
 
 const STATE_OPTIONS = [
-    "AL",
-    "AK",
-    "AZ",
-    "AR",
-    "CA",
-    "CO",
-    "CT",
-    "DE",
-    "DC",
-    "FL",
-    "GA",
-    "HI",
-    "ID",
-    "IL",
-    "IN",
-    "IA",
-    "KS",
-    "KY",
-    "LA",
-    "ME",
-    "MD",
-    "MA",
-    "MI",
-    "MN",
-    "MS",
-    "MO",
-    "MT",
-    "NE",
-    "NV",
-    "NH",
-    "NJ",
-    "NM",
-    "NY",
-    "NC",
-    "ND",
-    "OH",
-    "OK",
-    "OR",
-    "PA",
-    "RI",
-    "SC",
-    "SD",
-    "TN",
-    "TX",
-    "UT",
-    "VT",
-    "VA",
-    "WA",
-    "WV",
-    "WI",
-    "WY",
+    "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI",
+    "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN",
+    "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH",
+    "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA",
+    "WV", "WI", "WY",
 ];
 
 export const ACADEMIC_LVL_FIELD = {
@@ -185,7 +110,7 @@ export const ACADEMIC_LVL_FIELD = {
     BIRTH_DATE_FIELD = {
         "name": "birthDate",
         "label": "Birth Date",
-        "component": <Fields.DatePicker format="MM/DD/YYYY" openTo="year"/>,
+        "component": <Fields.DatePicker format="MM/DD/YYYY" openTo="year" />,
         "validator": Yup.date().max(moment()),
     },
     CITY_FIELD = {
@@ -217,10 +142,6 @@ export const ACADEMIC_LVL_FIELD = {
             },
         ]),
     },
-    POSITIVE_NUMBER_FIELD = {
-        "component": <Fields.TextField/>,
-        "validator": Yup.number().min(0),
-    },
     INSTRUCTOR_CONFIRM_FIELD = {
         "name": "isConfirmed",
         "label": "",
@@ -232,7 +153,6 @@ export const ACADEMIC_LVL_FIELD = {
                 },
             ]} />,
         "validator": Yup.boolean(),
-        "required": true,
     },
     NAME_FIELDS = [
         {
@@ -253,16 +173,20 @@ export const ACADEMIC_LVL_FIELD = {
         "validator": Yup.string().matches(/\d{3}-?\d{3}-?\d{4}?/u,
             "Invalid phone number"),
     },
+    POSITIVE_NUMBER_FIELD = {
+        "component": <Fields.TextField />,
+        "validator": Yup.number().min(0),
+    },
     START_DATE_FIELD = {
         "name": "startDate",
         "label": "Start Date",
-        "component": <Fields.DatePicker format="MM/DD/YYYY"/>,
+        "component": <Fields.DatePicker format="MM/DD/YYYY" />,
         "validator": Yup.date(),
     },
     START_TIME_FIELD = {
         "name": "startTime",
         "label": "Start Time",
-        "component": <Fields.TimePicker format="hh:mm a"/>,
+        "component": <Fields.TimePicker format="hh:mm a" />,
         "validator": Yup.date(),
     },
     STATE_FIELD = {
@@ -271,7 +195,7 @@ export const ACADEMIC_LVL_FIELD = {
         "component": <Fields.Autocomplete options={STATE_OPTIONS} textFieldProps={{
             "fullWidth": false,
         }} />,
-        "validator": Yup.mixed().oneOf(STATE_OPTIONS, "Invalid state"),
+        "validator": Yup.mixed().oneOf([...STATE_OPTIONS, null], "Invalid state"),
     },
     ZIPCODE_FIELD = {
         "name": "zipcode",
@@ -292,19 +216,19 @@ const PARENT_FIELDS = {
             ...selectField([
                 {
                     "label": "Mother",
-                    "value": "mother",
+                    "value": "MOTHER",
                 },
                 {
                     "label": "Father",
-                    "value": "father",
+                    "value": "FATHER",
                 },
                 {
                     "label": "Guardian",
-                    "value": "guardian",
+                    "value": "GUARDIAN",
                 },
                 {
                     "label": "Other",
-                    "value": "other",
+                    "value": "OTHER",
                 },
             ]),
             "required": true,
@@ -335,6 +259,7 @@ const STUDENT_INFO_FIELDS = {
         {
             "name": "current_grade",
             ...stringField("Current Grade in Class"),
+            "validator": Yup.string().matches(/([ABCDFabcdf][+-]?)?$/u),
         },
         {
             "name": "topic",
@@ -352,61 +277,46 @@ const STUDENT_INFO_FIELDS = {
 };
 
 const TUTORING_COURSE_SECTIONS = [
-	{
-		"name": "tutoring_details",
-		"label": "Tutoring Details",
-		"fields": [
-			{
-				"name": "instructor",
-				"label": "Instructor",
-				"component": instructorSelect("instructor"),
-				"validator": Yup.mixed(),
-			},
-			{
-				"name": "course",
-				...stringField("Course Name"),
-			},
-			INSTRUCTOR_CONFIRM_FIELD,
-			{
-				...START_DATE_FIELD,
-				"required": true,
-			},
-			{
-				...START_TIME_FIELD,
-				"required": true,
-			},
-		],
-	},
-	{
-		"name": "tuition",
-		"label": "Tuition Quote Tool",
-		"fields": [
-			{
-				// TODO: price quote tool
-				"name": "price",
-				"label": "Price",
-				"component": <TutoringPriceQuote courseType={"TUTORING"}/>,
-				"validator": Yup.mixed(),
-			},
-		],
+    {
+        "name": "tutoring_details",
+        "label": "Tutoring Details",
+        "fields": [
+            {
+                "name": "instructor",
+                "label": "Instructor",
+                "component": instructorSelect("instructor"),
+                "validator": Yup.mixed(),
+            },
+            {
+                "name": "course",
+                ...stringField("Course Name"),
+            },
+            INSTRUCTOR_CONFIRM_FIELD,
+            {
+                ...START_DATE_FIELD,
+                "required": true,
+            },
+            {
+                ...START_TIME_FIELD,
+                "required": true,
+            },
+        ],
+    },
+    {
+        "name": "tuition",
+        "label": "Tuition Quote Tool",
+        "fields": [
+            {
+                // TODO: price quote tool
+                "name": "price",
+                "label": "Price",
+                "component": <TutoringPriceQuote courseType="TUTORING" />,
+                "validator": Yup.mixed(),
+            },
+        ],
 
-	},];
-
-const SEARCH_STUDENTS = gql`
-    query StudentSearch($query: String!) {
-        accountSearch(query: $query, profile: "STUDENT") {
-            results {
-                ... on StudentType {
-                    user {
-                        id
-                        firstName
-                        lastName
-                    }
-                }
-            }
-        }
-    }
-`;
+    },
+];
 
 const SEARCH_PARENTS = gql`
     query ParentSearch($query: String!) {
@@ -438,6 +348,10 @@ const GET_COURSES = gql`
       courses {
         title
         id
+        enrollmentSet {
+              id
+            }
+        maxCapacity
         instructor {
           user {
             lastName
@@ -448,29 +362,32 @@ const GET_COURSES = gql`
     }
 `;
 
-const studentSelect = (name) => (
-	<Fields.DataSelect name={name} optionsMap={userMap}
-					   request={SEARCH_STUDENTS}/>
-);
-
 const parentSelect = (name) => (
     <Fields.DataSelect name={name} optionsMap={userMap}
-        request={SEARCH_PARENTS} />
+                       request={SEARCH_PARENTS}/>
 );
 
-const courseMap = ({courses}) => courses.map(({title, instructor, id}) => ({
-	"label": `${title} - ${fullName(instructor.user)}`,
-	"value": id,
-}));
+const courseMap = ({courses}) => courses.map(({title, instructor, id}) =>
+    ({
+        "label": `${title} - ${fullName(instructor.user)}`,
+        "value": id,
+    }));
+const openCourseMap = ({courses}) => courses
+    .filter(({maxCapacity, enrollmentSet}) => (maxCapacity > enrollmentSet.length))
+    .map(({title, instructor, id}) => ({
+        "label": `${title} - ${fullName(instructor.user)}`,
+        "value": id,
+    }));
 
-const categoryMap = ({courseCategories}) => courseCategories.map(({id, name}) => ({
-    "label": name,
-    "value": id,
-}));
+const categoryMap = ({courseCategories}) => courseCategories
+    .map(({id, name}) => ({
+        "label": name,
+        "value": id,
+    }));
 
 const categorySelect = (name) => (
     <Fields.DataSelect name={name} optionsMap={categoryMap}
-        request={GET_CATEGORIES} />
+                       request={GET_CATEGORIES}/>
 );
 
 const schoolMap = ({schools}) => schools.map(({name, id}) => ({
@@ -492,13 +409,13 @@ const schoolSelect = (name) => (
 );
 
 const GET_USER_TYPE = gql`
-    query MyQuery($id: ID!) {
+    query GET_USER_TYPE($id: ID!) {
         userInfo(userId: $id) {
             ... on StudentType {
-            accountType
+                accountType
             }
             ... on ParentType {
-            accountType
+                accountType
             }
         }
     }`;
@@ -557,7 +474,6 @@ export default {
                     "query": GET_USER_TYPE,
                     "variables": {id},
                 });
-                console.log(userInfo)
                 if (userInfo.accountType === "PARENT") {
                     const GET_NAME = gql`
                 query GetName($id: ID!) {
@@ -637,24 +553,26 @@ export default {
                         "student": modifiedData,
                     };
                 }
-            } catch (err){console.error(err)}
+            } catch (err) {
+                console.error(err);
+            }
             return null;
         },
         "submit": async ({student}, id) => {
             const ADD_STUDENT = gql`
-            mutation AddStudent($firstName: String!, 
-            $email: String,  
-            $lastName: String!, 
-            $address: String, 
-            $birthDate:Date, 
-            $city:String, 
+            mutation AddStudent($firstName: String!,
+            $email: String,
+            $lastName: String!,
+            $address: String,
+            $birthDate:Date,
+            $city:String,
             $gender:GenderEnum,
             $grade:Int,
             $phoneNumber:String,
-            $primaryParent:ID, 
-            $school:ID, 
-            $zipcode:String, 
-            $state:String, 
+            $primaryParent:ID,
+            $school:ID,
+            $zipcode:String,
+            $state:String,
             $id: ID) {
   createStudent(user: {firstName: $firstName, id: $id, lastName: $lastName,  email:$email}, address: $address, birthDate: $birthDate, school: $school, grade: $grade, gender: $gender, primaryParent: $primaryParent, phoneNumber: $phoneNumber, city: $city, state: $state, zipcode: $zipcode) {
       created
@@ -682,33 +600,78 @@ export default {
     "parent": {
         "title": "Parent",
         "form": [PARENT_FIELDS],
-        // TODO: loading and submitting with GraphQL
-        "load": (id) => {
-        },
-        "submit": async (formData) => {
-            const CREATE_PARENT = gql`
-            mutation CreateParentAccount($firstName: String!, $lastName: String!, $email: String!, $password: String!, $phoneNumber: String) {
-                createParent(user: {firstName: $firstName, lastName: $lastName, email: $email, password: $password}, phoneNumber: $phoneNumber) {
-                    parent {
-                        accountType
+        "load": async (id) => {
+            const GET_PARENT = gql`
+            query GetParent($id: ID!) {
+                parent(userId: $id) {
+                    user {
+                        firstName
+                        lastName
+                        email
                     }
+                    relationship
+                    gender
+                    phoneNumber
+                    birthDate
+                    address
+                    city
+                    state
+                    zipcode
+                }
+            }`;
+
+            try {
+                const {"data": {parent}} = await client.query({
+                    "query": GET_PARENT,
+                    "variables": {id},
+                });
+                return {
+                    "parent": {
+                        ...parent.user,
+                        ...parent,
+                    },
+                };
+            } catch (error) {
+                return null;
+            }
+        },
+        "submit": async ({parent}, id) => {
+            const CREATE_PARENT = gql`
+            mutation CreateParentAccount(
+                $firstName: String!, $lastName: String!, $email: String!,
+                $password: String, $phoneNumber: String, $address: String,
+                $birthDate: Date, $city: String, $state: String, $id: ID,
+                $zipcode: String, $relationship: RelationshipEnum, $gender: GenderEnum
+            ) {
+                createParent(
+                    user: {
+                        firstName: $firstName, lastName: $lastName, id: $id,
+                        email: $email, password: $password
+                    },
+                    city: $city, address: $address, gender: $gender,
+                    birthDate: $birthDate,  phoneNumber: $phoneNumber,
+                    zipcode: $zipcode, relationship: $relationship,
+                    state: $state,
+                ) {
+                    created
                 }
             }`;
             try {
                 await client.mutate({
                     "mutation": CREATE_PARENT,
                     "variables": {
-                        ...formData.parent,
-                        password: "change this password",
+                        ...parent,
+                        "birthDate": parseDate(parent.birthDate),
+                        id,
+                        "password": "",
                     },
                 });
-
             } catch (error) {
                 return {
                     [FORM_ERROR]: error,
                 };
             }
-        }
+        },
     },
     "admin": {
         "title": "Administrator",
@@ -1177,13 +1140,18 @@ export default {
                             categorySelect("subjects"),
                             {"multiple": true},
                         ),
-                        "validator": Yup.mixed(),
+                        "validator": Yup.array().of(
+                            Yup.object().shape({
+                                label: Yup.string(),
+                                value: Yup.string(),
+                            })
+                        ).unique("Can't select the same subjects!", (field) => (field.value)),
                         "default": [],
                     },
                     {
                         "name": "experience",
                         "label": "Years of Experience",
-                        ...POSITIVE_NUMBER_FIELD
+                        ...POSITIVE_NUMBER_FIELD,
                     },
                     {
                         "name": "biography",
@@ -1198,29 +1166,29 @@ export default {
         ],
         "load": async (id) => {
             const GET_INSTRUCTOR = gql`
-            query GetInstructor($userID: ID) {
-                instructor(userId: $userID) {
-                    address
-                    user {
-                        firstName
-                        lastName
-                        email
+                query GetInstructor($userID: ID) {
+                    instructor(userId: $userID) {
+                        address
+                        user {
+                            firstName
+                            lastName
+                            email
+                        }
+                        phoneNumber
+                        gender
+                        city
+                        state
+                        zipcode
+                        birthDate
+                        biography
+                        experience
+                        language
+                        subjects {
+                            name
+                            id
+                        }
                     }
-                    phoneNumber
-                    gender
-                    city
-                    state
-                    zipcode
-                    birthDate
-                    biography
-                    experience
-                    language
-                    subjects {
-                        name
-                        id
-                    }
-                }
-            }`;
+                }`;
             try {
                 const {"data": {instructor}} = await client.query({
                     "query": GET_INSTRUCTOR,
@@ -1257,37 +1225,37 @@ export default {
         },
         "submit": async (formData, id) => {
             const CREATE_INSTRUCTOR = gql`
-            mutation CreateInstructor($firstName: String!, 
-            $lastName: String!, 
-            $email: String, 
-            $phoneNumber: String, 
-            $gender: GenderEnum, 
-            $address: String, 
-            $city: String, 
-            $state: String, 
-            $subjects: [ID], 
-            $experience: String, 
-            $biography: String, 
-            $language: String, 
-            $birthDate: Date, 
+            mutation CreateInstructor($firstName: String!,
+            $lastName: String!,
+            $email: String,
+            $phoneNumber: String,
+            $gender: GenderEnum,
+            $address: String,
+            $city: String,
+            $state: String,
+            $subjects: [ID],
+            $experience: String,
+            $biography: String,
+            $language: String,
+            $birthDate: Date,
             $zipcode: String) {
                 createInstructor(
                 user: {
-                    firstName: $firstName, 
-                    lastName: $lastName, 
-                    email: $email, 
+                    firstName: $firstName,
+                    lastName: $lastName,
+                    email: $email,
                     password: "abcdefgh"
-                }, 
-                address: $address, 
-                biography: $biography, 
-                birthDate: $birthDate, 
-                city: $city, 
-                experience: $experience, 
-                gender: $gender, 
-                language: $language, 
-                phoneNumber: $phoneNumber, 
-                subjects: $subjects, 
-                state: $state, 
+                },
+                address: $address,
+                biography: $biography,
+                birthDate: $birthDate,
+                city: $city,
+                experience: $experience,
+                gender: $gender,
+                language: $language,
+                phoneNumber: $phoneNumber,
+                subjects: $subjects,
+                state: $state,
                 zipcode: $zipcode) {
                     instructor {
                     user {
@@ -1298,7 +1266,7 @@ export default {
             }
             `;
 
-            const INVITE_INSTRUCTOR =gql`
+            const INVITE_INSTRUCTOR = gql`
             mutation MyMutation($email:String!) {
   inviteInstructor(email: $email) {
     status
@@ -1311,7 +1279,7 @@ export default {
             const modifiedData = {
                 "basicInfo": {
                     ...basicInfo,
-                    birthDate: basicInfo.birthDate ? basicInfo.birthDate.toISOString().substr(0, 10) :
+                    "birthDate": basicInfo.birthDate ? basicInfo.birthDate.toISOString().substr(0, 10) :
                         "2020-01-01",
                 },
                 "experience": {
@@ -1329,7 +1297,6 @@ export default {
                             ...section,
                         }), {}),
                 });
-
             } catch (error) {
                 return {
                     [FORM_ERROR]: error,
@@ -1339,12 +1306,12 @@ export default {
                 "mutation": INVITE_INSTRUCTOR,
                 "variables": {
                     "email": formData.basicInfo.email,
-                }
+                },
             });
         },
     },
-	"class-registration": {
-		"title": "Class",
+    "class-registration": {
+        "title": "Class",
         "form": [
             {
                 "name": "student",
@@ -1352,9 +1319,9 @@ export default {
                 "fields": [
                     {
                         "name": "student",
-						"label": "Student",
-						"component": <StudentSelect/>,
-						"validator": Yup.mixed(),
+                        "label": "Student",
+                        "component": <Fields.StudentSelect />,
+                        "validator": Yup.mixed(),
                     },
                 ],
             },
@@ -1364,20 +1331,28 @@ export default {
                 "label": "Course",
                 "fields": [
                     {
-						"name": "class",
-						"label": "Class",
-						"component": <Fields.DataSelect name="Classes" optionsMap={courseMap} request={GET_COURSES}/>,
-						"validator": Yup.mixed(),
+                        "name": "class",
+                        "label": "Class",
+                        "component": <Fields.DataSelect name="Classes" optionsMap={openCourseMap}
+                                                        request={GET_COURSES}/>,
+                        "validator": Yup.mixed(),
                     },
                 ],
             },
         ],
 		"submit": (formData) => {
-			submitRegistration(formData.selectStudent, formData.course.class.value);
-		}
+            const {dispatch} = window.store;
+            dispatch({
+                type: types.ADD_CLASS_REGISTRATION,
+                payload: {
+                    courseId: formData.course.class.value,
+                    studentId: formData.student.student,
+                }
+            })
+        }
     },
-	"tutoring-registration": {
-		"title": "Tutoring",
+    "tutoring-registration": {
+        "title": "Tutoring",
         "form": [
             {
                 "name": "student",
@@ -1385,19 +1360,19 @@ export default {
                 "fields": [
                     {
                         "name": "student",
-						"label": "Student",
-						"component": <StudentSelect/>,
-						"validator": Yup.mixed(),
+                        "label": "Student",
+                        "component": <Fields.StudentSelect />,
+                        "validator": Yup.mixed(),
                     },
                 ],
             },
             STUDENT_INFO_FIELDS,
-			...TUTORING_COURSE_SECTIONS,
+            ...TUTORING_COURSE_SECTIONS,
         ],
-		"submit": (formData) => {
-			const course = createTutoringDetails("tutoring", formData);
-			submitRegistration(formData.selectStudent, course);
-		}
+        "submit": (formData) => {
+            const course = createTutoringDetails("tutoring", formData);
+            submitRegistration(formData.selectStudent, course);
+        },
 
 	},
 	"small-group-registration": {
@@ -1421,7 +1396,6 @@ export default {
 		"submit": (formData) => {
 			console.log(formData, moment(formData.tutoring_details.startDate, "DD-MM-YYYY").add(formData.sessions, 'weeks'));
 			const course = createTutoringDetails("smallGroup", formData);
-			console.log(course);
 			submitRegistration(formData.selectStudent, course);
 		}
 	},
@@ -1429,21 +1403,23 @@ export default {
         "title": "Course",
         "form": [
             {
-                "name": "category",
-                "label": "Category Details",
+                "name": "student",
+                "label": "Student",
                 "fields": [
                     {
-                        "name": "name",
-                        ...stringField("Category Name"),
-                        "required": true,
-                    },
-                    {
-                        "name": "description",
-                        ...stringField("Description"),
+                        "name": "student",
+                        "label": "Student",
+                        "component": <Fields.StudentSelect />,
+                        "validator": Yup.mixed(),
                     },
                 ],
             },
+            STUDENT_INFO_FIELDS,
+            ...TUTORING_COURSE_SECTIONS,
         ],
+        "submit": (formData) => {
+            const course = createTutoringDetails("smallGroup", formData);
+            submitRegistration(formData.selectStudent, course);
+        },
     },
-    // "discount"
 };

@@ -2,7 +2,7 @@ import * as React from "react";
 import {
   BooleanField, BooleanInput, Create, Datagrid, DateField, DateInput, Edit,
   List, NumberField, NumberInput, SelectField, SelectInput, Show, SimpleForm,
-  SimpleShowLayout, TextField, TextInput, ReferenceInput
+  SimpleShowLayout, TextField, TextInput, ReferenceInput, CardActions
 } from "react-admin";
 
 export const CategoryList = (props) => (
@@ -108,12 +108,13 @@ const discountShowFields = [
 ];
 
 const discountEditFields = [
+  <BooleanInput key="active" source="active" />,
   <TextInput key="name" source="name" />,
   <TextInput key="description" source="description" />,
   <NumberInput key="amount" source="amount" />,
   <SelectInput choices={amountTypeChoices} key="amountType"
     source="amountType" />,
-  <BooleanInput key="active" source="active" />,
+
 ];
 
 const discountDisplays = (fields) => [
@@ -168,10 +169,10 @@ const courseTypes = [
 ];
 
 export const TuitionList = (props) => (
-  <List {...props}>
+  <List bulkActionButtons={false} {...props}>
     <Datagrid rowClick="edit">
       <TextField source="id" />
-      <TextField source="name" />
+
       <SelectField source="academicLevel" choices={academicLevelChoices} />
       <SelectField source="courseType" choices={courseTypes} />
       <TextField source="category.name" label="Course category" />
@@ -181,10 +182,9 @@ export const TuitionList = (props) => (
 
 
 export const TuitionShow = (props) => (
-  <Show {...props}>
+  <Show  {...props}>
     <SimpleShowLayout>
       <TextField source="id" />
-      <TextField source="name" />
       <TextField source="academicLevel" />
       <SelectField source="courseType" choices={courseTypes} />
       <TextField source="category.name" label="Course category" />
@@ -195,9 +195,8 @@ export const TuitionShow = (props) => (
 
 
 export const TuitionEdit = (props) => (
-  <Edit {...props}>
+  <Edit  {...props}>
     <SimpleForm>
-      <TextInput source="name" />
       <SelectInput source="academicLevel" choices={academicLevelChoices} />
       <ReferenceInput
         label="Course category"
@@ -218,7 +217,6 @@ export const TuitionEdit = (props) => (
 export const TuitionCreate = (props) => (
   <Create {...props}>
     <SimpleForm>
-      <TextInput source="name" />
       <SelectInput source="academicLevel" choices={academicLevelChoices} />
       <ReferenceInput
         label="Course category"

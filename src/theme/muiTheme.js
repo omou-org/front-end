@@ -1,5 +1,7 @@
 import {createMuiTheme} from "@material-ui/core/styles";
+import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
 
+const breakpoints = createBreakpoints({})
 
 const tabBorderRadius = "10px";
 // Theme Colors
@@ -11,7 +13,10 @@ export const outlineGrey = "#E0E0E0";
 export const lightPrimaryFontColor = "#767474";
 export const secondaryFontColor = "#228eb2";
 export const neutralBackgroundColor = "#FAFAFA";
+export const highlightColor = "#EBFAFF";
 export const errorRed = "#c0392b";
+export const activeColor = "#6FCF97";
+export const pastColor = "#BDBDBD";
 
 const defaultFontProps = {
     fontFamily: 'Roboto Slab',
@@ -65,7 +70,7 @@ const theme = createMuiTheme({
                 "color": "black",
             },
 			containedPrimary: {
-				color: "#FFFFFF",
+				color: "#FFFFFF", 
 			}
         },
         "MuiBadge": {
@@ -93,33 +98,75 @@ const theme = createMuiTheme({
                 "width": "100%",
             },
         },
-        "MuiTabs": {
-            "root": {
-                "borderBottomLeftRadius": tabBorderRadius,
-                "borderTopLeftRadius": tabBorderRadius,
-                "borderBottomRightRadius": tabBorderRadius,
-                "borderTopRightRadius": tabBorderRadius,
-            },
-        },
         "MuiTab": {
-            "root": {
-                "border": "2px solid #DBD7D7",
-                "color": lightPrimaryFontColor,
-                "&:first-of-type": {
-                    "borderBottomLeftRadius": tabBorderRadius,
-                    "borderTopLeftRadius": tabBorderRadius,
+            root: {
+                opacity: 1,
+                overflow: "initial",
+                paddingLeft: "1em",
+                paddingRight: "1em",
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
+                marginTop: "0",
+                color: "#666666",
+                backgroundColor: "#ffffff",
+                transition: "0.2s",
+                [breakpoints.up("md")]: {
+                  minWidth: 120
                 },
-                "&:last-of-type": {
-                    "borderBottomRightRadius": tabBorderRadius,
-                    "borderTopRightRadius": tabBorderRadius,
+                "&:before": {
+                  transition: "0.2s"
+                },
+                "&:not(:first-of-type)": {
+                  "&:before": {
+                    content: '" "',
+                    position: "absolute",
+                    left: 0,
+                    display: "block",
+                    height: "10em",
+                    width: 1,
+                    zIndex: 1,
+                    marginTop: "0.5em",
+                    backgroundColor: "#EEEEEE"
+                  }
+                },
+                "& + $selected:before": {
+                  opacity: 0
+                },
+                "&:hover": {
+                  "&:not($selected)": {
+                    backgroundColor: skyBlue
+                  },
+                  "&::before": {
+                    opacity: 0
+                  },
+                  "& + $root:before": {
+                    opacity: 0
+                  }
                 },
                 "&$selected": {
-                    "border": "3px solid #43B5D9",
-                    "backgroundColor": "#EBFAFF",
-                    "color": secondaryFontColor,
+                    "backgroundColor": skyBlue,
+                    "color": omouBlue,
                 },
-            },
-            "selected": {},
+              },
+              selected: {
+                backgroundColor: skyBlue,
+                color: omouBlue,
+                "& + $root": {
+                  zIndex: 1
+                },
+                "& + $root:before": {
+                  opacity: 0
+                }
+              },
+              wrapper: {
+                zIndex: 2,
+                marginTop: "0.5em",
+                textTransform: "initial",    
+              },
+              indicator: {
+                display: "none",
+                marginTop: "1.1em",
+              }
         },
         "MuiStepIcon": {
             "text": {

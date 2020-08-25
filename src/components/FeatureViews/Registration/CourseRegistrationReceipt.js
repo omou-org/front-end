@@ -85,7 +85,9 @@ export default function CourseRegistrationReceipt({formData, format}) {
 					format="MM/D/YYYY"
 					date={startDate}
 				/> - <Moment format="MM/D/YYYY" date={endDate}/> <br/>
-				<Moment format="hh:mm" date={startTime}/> - <Moment format="hh:mm" date={endTime}/>
+				<Moment format="h:mm" date={startTime} parse="hh:mm"/>
+				{" - "}
+				<Moment format="h:mm" date={endTime} parse="hh:mm"/>
 			</Typography> <br/>
 			<Typography align="left" variant="subtitle2">Instructor</Typography>
 
@@ -105,7 +107,7 @@ export default function CourseRegistrationReceipt({formData, format}) {
 		<Divider orientation="vertical" flexItem/>
 		<Grid item md={2}/>
 		<Grid item md={3} xs={12}>
-			<AccountCard accountType="STUDENT" userID={formData.selectStudent}/>
+			<AccountCard accountType="STUDENT" userID={formData.student.student} data-cy="student-card"/>
 		</Grid>
 		<Grid container
 			  item xs={12}
@@ -119,6 +121,7 @@ export default function CourseRegistrationReceipt({formData, format}) {
 					variant="outlined"
 					component={NavLinkNoDup}
 					to={'/registration'}
+					data-cy="back-to-register"
 				>
 					REGISTER MORE
 				</Button>
@@ -129,6 +132,7 @@ export default function CourseRegistrationReceipt({formData, format}) {
 					variant="contained"
 					component={NavLinkNoDup}
 					to={'/registration/cart/'}
+					data-cy="register-to-checkout"
 				>
 					CHECKOUT
 				</Button>

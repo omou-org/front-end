@@ -32,8 +32,6 @@ export default function ConflictsDisplay() {
 
 	const {sessions} = data;
 
-	// console.log(sessions);
-
 	return (<Grid container direction="column">
 		<Grid item>
 			<Typography variant="h5">Submit Out of Office Notice</Typography>

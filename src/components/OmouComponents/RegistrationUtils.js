@@ -12,7 +12,7 @@ export const createTutoringDetails = (courseType, formData) => ({
 	courseType,
 });
 
-const mapRegistrationInfo = (student, course) => ({
+export const mapRegistrationInfo = (student, course) => ({
 	course: {
 		id: typeof course === "string" && course,
 		...(typeof course !== "string" && course),
@@ -30,6 +30,7 @@ const saveRegistration = (student, course, registrationState) => {
 		[student]: [...existingStudentRegistration, newRegistrationInfo],
 	};
 	sessionStorage.setItem("registrations", JSON.stringify(newRegistrationState));
+	return newRegistrationState;
 };
 
 /**
@@ -48,8 +49,9 @@ export const submitRegistration = (student, course) => {
 		studentEnrollments.filter((enrollment) => arraysMatch(enrollment, [student, course])))
 		.some(studentEnrollments => studentEnrollments.length > 0);
 	if (!isEnrolled) {
-		saveRegistration(student, course, registrationState);
+		return saveRegistration(student, course, registrationState);
 	}
+	return registrationState;
 };
 
 /**
@@ -60,9 +62,17 @@ export const removeRegistration = (student, course) => {
 	const indexOfRegistration = registrationState[student]
 		.map(({course}) => course)
 		.indexOf(course);
+
+	registrationState[student].splice(indexOfRegistration, 1);
+
+	sessionStorage.setItem("registrations", JSON.stringify({
+		...registrationState,
+		[student]: registrationState[student],
+	}));
+
 	return {
 		...registrationState,
-		[student]: registrationState[student].splice(indexOfRegistration, 1),
+		[student]: registrationState[student],
 	}
 }
 
@@ -86,7 +96,6 @@ export const closeRegistrationCart = (AuthParent) => {
 				delete registrationState[key];
 			}
 		});
-		console.log(registrationState);
 		sessionStorage.setItem("registrations", JSON.stringify(registrationState));
 	} else {
 		sessionStorage.setItem("registrations", "{}");
@@ -119,4 +128,8 @@ export const loadRegistrationCart = (prevRegistration) => {
 		...registrationState,
 		...prevRegistration,
 	}));
+	return {
+		...registrationState,
+		...prevRegistration,
+	}
 }
