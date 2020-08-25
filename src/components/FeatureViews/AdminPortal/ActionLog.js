@@ -27,6 +27,7 @@ import { useQuery } from "@apollo/react-hooks";
 import { DateRange } from "react-date-range";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
+import ErrorIcon from '@material-ui/icons/Error';
 import { fullName } from "../../../utils";
 
 const GET_LOGS = gql`
@@ -405,52 +406,55 @@ const ActionLog = () => {
                             </Grid>
                         </TableCell>
                         <TableCell>
-                            <Grid style={{paddingBottom:35}}>
+                            <Grid style={{ paddingBottom: 35 }}>
                                 Details
                             </Grid>
                         </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data.logs.results.length == 0
-                        ? (<TableRow>
+                    {data.logs.results.map((actionItem) => (
+                        <TableRow>
                             <TableCell>
-                                {//ASK DESIGN FOR STYLING ON THIS
-                                }
-                                There was no match found for your data
-                                </TableCell>
-                        </TableRow>)
-                        : data.logs.results.map((actionItem) => (
-                                <TableRow>
-                                    <TableCell>
-                                        <Moment
-                                            date={actionItem.date}
-                                            format="dddd, M/D/YYYY h:mm a"
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        {renderName(actionItem.userId)}
-                                    </TableCell>
-                                    <TableCell>
-                                        <div style={{ textTransform: "capitalize" }}>
-                                            {actionItem.adminType.toLowerCase()}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        {renderChip(actionItem.action)}
-                                    </TableCell>
-                                    <TableCell>
-                                        <div style={{ textTransform: "capitalize" }}>
-                                            {actionItem.objectType}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        {actionItem.objectRepr}
-                                    </TableCell>
-                                </TableRow>
-                        ))}
+                                <Moment
+                                    date={actionItem.date}
+                                    format="dddd, M/D/YYYY h:mm a"
+                                />
+                            </TableCell>
+                            <TableCell>
+                                {renderName(actionItem.userId)}
+                            </TableCell>
+                            <TableCell>
+                                <div style={{ textTransform: "capitalize" }}>
+                                    {actionItem.adminType.toLowerCase()}
+                                </div>
+                            </TableCell>
+                            <TableCell>
+                                {renderChip(actionItem.action)}
+                            </TableCell>
+                            <TableCell>
+                                <div style={{ textTransform: "capitalize" }}>
+                                    {actionItem.objectType}
+                                </div>
+                            </TableCell>
+                            <TableCell>
+                                {actionItem.objectRepr}
+                            </TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
+            {data.logs.results.length == 0 &&
+                <div style={{paddingTop:100, paddingBottom:100, color:"grey"}}>
+                    <ErrorIcon style={{fontSize:75}}/>
+                    <Typography style={{paddingTop:30, fontSize:17, fontWeight:500}}>
+                        No match found
+                    </Typography>
+                    <Typography style={{paddingTop:10}}>
+                        Sorry, no results matched your filter criteria.
+                    </Typography>
+                </div>
+            }
             <div style={{
                 display: 'flex',
                 alignItems: 'center',
