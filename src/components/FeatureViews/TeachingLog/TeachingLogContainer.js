@@ -279,7 +279,10 @@ export default function TeachingLogContainer() {
 									<b>Total Hours</b>
 								</TableCell>
 								<TableCell>
-									{sessions.length > 0 && summaryLog.reduce((acc, course) => (acc.hours + course.hours))}
+									{sessions.length > 0 && 
+									summaryLog.reduce((acc, course) => (acc.hours + course.hours)) === Number.NaN 
+									? summaryLog.reduce((acc, course) => (acc.hours + course.hours)) 
+									: "Error"}
 								</TableCell>
 							</TableRow>
 						</TableBody>
