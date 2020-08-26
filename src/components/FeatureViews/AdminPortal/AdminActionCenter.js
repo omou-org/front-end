@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import React, {useEffect, useMemo, useState} from "react";
+import {NavLink, useLocation} from "react-router-dom";
+import {useDispatch} from "react-redux";
 
 import Button from "@material-ui/core/Button";
 import CourseIcon from "@material-ui/icons/Class";
@@ -11,9 +11,9 @@ import MenuItem from "@material-ui/core/MenuItem";
 import NewInstructor from "@material-ui/icons/PersonAdd";
 
 import "./AdminPortal.scss";
-import { initializeRegistration } from "actions/registrationActions";
+import {initializeRegistration} from "actions/registrationActions";
 
-import { withStyles } from "@material-ui/core";
+import {withStyles} from "@material-ui/core";
 
 const StyledMenu = withStyles({
 	paper: {
@@ -127,7 +127,7 @@ const AdminActionCenter = () => {
 			{/*		<DiscountIcon className="admin-action-icon"/>*/}
 			{/*		Manage Discounts*/}
 			{/*	</Button>*/}
-			{/*</Grid>
+			{/*</Grid>*/}
 			<StyledMenu
 				anchorEl={userAnchor}
 				keepMounted
@@ -135,7 +135,7 @@ const AdminActionCenter = () => {
 				open={Boolean(userAnchor)}
 			>
 				<MenuItem component={NavLink} to="/form/instructor">
-					<ListItemText primary="ADD INSTRUCTOR" />
+					<ListItemText primary="ADD INSTRUCTOR"/>
 				</MenuItem>
 				<MenuItem component={NavLink} to="/registration/form/admin">
 					<ListItemText primary="ADD ADMIN" />

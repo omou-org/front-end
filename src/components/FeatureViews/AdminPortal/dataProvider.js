@@ -61,7 +61,6 @@ const QUERIES_LIST = {
         query GetPriceRules {
           priceRules {
             id
-            name
             courseType
             category {
               id
@@ -121,7 +120,6 @@ const QUERIES_ONE = {
     "tuitionRules": gql`
     query getTuitionRule($id: ID) {
         priceRule(priceRuleId: $id) {
-            name
             academicLevel
             courseType
             hourlyTuition
@@ -204,10 +202,9 @@ const MUTATION_ADD = {
       $courseType: CourseTypeEnum!
       $category: Int!
       $hourlyTuition: Float!
-      $name: String!
+      
     ) {
         createPriceRule(
-        name: $name
         academicLevel: $academicLevel
         courseType: $courseType
         category: $category
@@ -298,7 +295,7 @@ const MUTATION_UPDATE = {
           $courseType:CourseTypeEnum!
           $category:Int!
           $hourlyTuition: Float!
-          $name: String!
+   
           ) {
             createPriceRule(
                 id: $id

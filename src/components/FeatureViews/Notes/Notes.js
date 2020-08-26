@@ -237,7 +237,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
             } else {
                 updatedNotes[matchingIndex] = newNote;
             }
-
+            
             cache.writeQuery({
                 "data": {
                     [QUERY_KEY[ownerType]]: updatedNotes,
