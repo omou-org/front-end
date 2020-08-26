@@ -216,7 +216,7 @@ export default function RegistrationCartContainer() {
 						  justify={parentIsLoggedIn ? "flex-end" : "space-between"}
 						  alignItems={parentIsLoggedIn && "flex-end"}
 						  direction={parentIsLoggedIn ? "column" : "row"}
-						  spacing={parentIsLoggedIn && 4}
+						  spacing={parentIsLoggedIn ? 4 : 0}
 						  style={{marginTop: "50px"}}
 					>
 						{parentIsLoggedIn ? <>

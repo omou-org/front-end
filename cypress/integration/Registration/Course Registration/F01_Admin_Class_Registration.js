@@ -44,15 +44,15 @@ describe("Admin Registers an upcoming class", () => {
 		cy.get("[data-cy=set-parent-action]").click();
 	});
 
-	// it("Quick registers a class", () => {
-	// 	cy.get("[data-cy=quick-register-class]").first().click();
-	// 	cy.get("[data-cy=select-student-to-register]").click();
-	// 	cy.get("[data-cy=student-value]").first().click();
-	// 	cy.get("[data-cy=add-registration-to-cart]").click();
-	// 	cy.get("[data-cy=shopping-cart-num-registrations]").should(($div) => {
-	// 		expect($div).contain("1");
-	// 	});
-	// });
+	it("Quick registers a class", () => {
+		cy.get("[data-cy=quick-register-class]").first().click();
+		cy.get("[data-cy=select-student-to-register]").click();
+		cy.get("[data-cy=student-value]").first().click();
+		cy.get("[data-cy=add-registration-to-cart]").click();
+		cy.get("[data-cy=shopping-cart-num-registrations]").should(($div) => {
+			expect($div).contain("1");
+		});
+	});
 
 	it("Registers a class through the form", () => {
 		cy.get("[data-cy=register-class]").click();
@@ -135,5 +135,10 @@ describe("Admin Registers an upcoming class", () => {
 		cy.get("[data-cy=payment-header]").should('exist');
 		cy.get("[data-cy=close-parent]").click();
 		cy.get("[data-cy=num-enrolled-students]").should('contain', 1);
+	});
+
+	it("New Enrollment in Course Registration Page", () => {
+		cy.get("[data-cy=course-1]").click();
+
 	});
 })

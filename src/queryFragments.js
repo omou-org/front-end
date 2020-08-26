@@ -52,23 +52,6 @@ export const GET_CATEGORIES = gql`
 	  }
 	`;
 
-export const Enrollment = {
-	fragments: {
-		basicEnrollment: gql`
-fragment BasicEnrollmentData on EnrollmentType {
-	id
-	course {
-		id
-	}
-	student {
-		user {
-			id
-		}
-	}
-}`
-	}
-}
-
 export const ENROLLMENT_ID = gql`
 fragment EnrollmentId on EnrollmentType {
 	id
@@ -77,6 +60,7 @@ fragment EnrollmentId on EnrollmentType {
 
 export const BASIC_ENROLLMENT_DATA = gql`
 fragment BasicEnrollmentData on EnrollmentType {
+    __typename
 	id
 	course {
 		id

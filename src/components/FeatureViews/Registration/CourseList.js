@@ -68,15 +68,16 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const dispatch = useDispatch();
 
     const {studentList} = JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
-    const {data, loading} = useQuery(GET_STUDENTS_AND_ENROLLMENTS, {
+    const {data, loading, error} = useQuery(GET_STUDENTS_AND_ENROLLMENTS, {
         "variables": {"userIds": studentList},
-        skip: !studentList
+        skip: !studentList,
     });
 
     const {parentIsLoggedIn} = useValidateRegisteringParent();
     const {courseTitle, courseRow} = useStyles();
 
     if (loading) return <Loading small/>;
+    if (error) return <div>There has been an error!</div>;
 
     const validRegistrations = Object.values(registrationCartState)
         .filter(registration => registration);
@@ -125,13 +126,13 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
             (previouslyEnrolled(course.id, enrolledCourseIds, registrations, studentList)))
     }
 
-    return <> <Table>
+    return <><Table>
         <TableBody data-cy="classes-table">
             {
                 filteredCourses
                     .filter(({courseType, endDate, id}) => ((courseType === "CLASS") &&
                         (moment().diff(moment(endDate), 'days') < 0)))
-                    .map((course) => (
+                    .map((course, index) => (
                         <TableRow
                             key={course.id}
                         >
@@ -139,6 +140,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                 style={{padding: "3%"}}
                                 component={Link} to={`/registration/course/${course.id}`}
                                 className={courseRow}
+                                data-cy={`course-${index}`}
                             >
                                 <Grid className={courseTitle}
                                     item md={10} xs={12}
