@@ -79,15 +79,29 @@ const App = () => {
 		const [modalStyle] = useState(getModalStyle);
 		const [open, setOpen] = useState(false);
 
-		const handleOpen = () => {
+		function logoutAfter2Minutes() {
+			return new Promise(resolve => {
+				setTimeout(() => {
+					resolve(logoutAndCloseModal());
+				}, 5000);
+			})
+		};
+		const logoutAndCloseModal = () => {
+			handleClose();
+			handleLogout();
+		}
+
+		async function handleOpen() {
 			setOpen(true);
 			handleReset();
 			setRemaining(modalTimeout);
+			await logoutAfter2Minutes();
+
 		  };
 		
 		  const handleClose = () => {
-			console.log("closing");
 			setOpen(false);
+			handleLogout();
 		  };
 
 		const {
@@ -116,17 +130,17 @@ const App = () => {
 						setRemaining(getRemainingTime())
 						setLastActive(getLastActiveTime())
 						setElapsed(getElapsedTime())
-				}, 1000)
+				}, 1000);
 		}, []);
 
 		const body = () => {
 			return (
 			<div style={modalStyle} className={classes.paper}>
 			  <p id="simple-modal-description">
-				{
-					(remaining === 100) && handleClose()
+				{/* {
+					(remaining < 100) && handleClose()
 					// remaining <= 5000 ? handleLogout() : doNothing()
-				}
+				} */}
 				Are you still there?
 				<button onClick={handleClose}>Yes</button>
 			  </p>
