@@ -86,6 +86,7 @@ const App = () => {
 				}, 5000);
 			})
 		};
+		
 		const logoutAndCloseModal = () => {
 			handleClose();
 			handleLogout();
@@ -101,7 +102,6 @@ const App = () => {
 		
 		  const handleClose = () => {
 			setOpen(false);
-			handleLogout();
 		  };
 
 		const {
@@ -150,9 +150,6 @@ const App = () => {
 		return (
 				<div>
 					<div>
-					<button type="button" onClick={handleOpen}>
-						Open Modal
-					</button>
 					{
 						(remaining === 0) && handleOpen()
 						// remaining === 0 ? handleOpen() : doNothing()
@@ -165,20 +162,6 @@ const App = () => {
 				>
 					{body()}
 				</Modal>
-
-
-						<button onClick={handleReset}>Yes</button>
-						<div>
-							<button onClick={handleReset}>RESET</button>
-							<button onClick={handlePause}>PAUSE</button>
-							<button onClick={handleResume}>RESUME</button>
-
-							<h1>Timeout: {timeout}ms</h1>
-							<h1>Time Remaining: {remaining}</h1>
-							<h1>Time Elapsed: {elapsed}</h1>
-							<h1>Last Active: {format(lastActive, 'MM-dd-yyyy HH:MM:ss.SSS')}</h1>
-							<h1>Idle: {isIdle.toString()}</h1>
-						</div>
 
 					</div>
 
