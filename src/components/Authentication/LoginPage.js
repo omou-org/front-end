@@ -13,7 +13,6 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import EmailOutlinedIcon from "@material-ui/icons/EmailOutlined";
-
 import { setToken } from "actions/authActions.js";
 import { ReactComponent as Ellipse1 } from "./loginImages/ellipse1.svg";
 import { ReactComponent as Ellipse2 } from "./loginImages/ellipse2.svg";
@@ -155,7 +154,9 @@ const LoginPage = () => {
                         <Grid className="buttonContainer" container item>
                             <Grid item md={2} />
                             <Grid item md={4}>
-                                <Button className="createAccountButton"
+                                <Button
+                                    className="createAccountButton"
+                                    data-cy="createAccountButton"
                                     component={Link} to={{
                                         "pathname": "/new/parent",
                                         "state": {
