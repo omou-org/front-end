@@ -43,13 +43,22 @@ describe('Submit an instructor OOO', () => {
 
 
         })
-        cy.visitAuthenticated(`/availability`);
+        cy.visitAuthenticated(`/availability`, {
+            accountType: "INSTRUCTOR",
+            user:
+            {
+                id: 2,
+                firstName: "Daniel",
+                lastName: "huang",
+                email: "danielhuang@blah.com",
+
+            }
+        });
 
 
     });
 
     it("Goes to intructor OOO tab", () => {
-        cy.visitAuthenticated(`/availability`, "danielhuang@blah.com");
         cy.get("[data-cy=request-OOO-tab]").click()
         cy.get("[data-cy=submit-OOO-text]").contains('Submit')
     });
