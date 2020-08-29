@@ -53,15 +53,16 @@ const StudentInfo = () => {
     });
 
     const classes = useStyles();
-
     const studentList = useMemo(() => data?.parent.studentPrimaryParent
         .concat(data?.parent.studentSecondaryParent)
         .map(({user, phoneNumber}) => ({
-            "email": user.email,
             "name": `${user.firstName} ${user.lastName}`,
-            "phone_number": phoneNumber,
-            "role": "student",
-            "user_id": user.id,
+            "phoneNumber": phoneNumber,
+            "accountType": "student",
+            "user": {
+                "id":user.id,
+                "email": user.email,
+        }
         })), [data]);
 
     if (loading) {
@@ -76,8 +77,8 @@ const StudentInfo = () => {
         <Grid alignItems="center" container direction="row" md={12} spacing={5}
             xs={10}>
             {studentList.map((student) => (
-                <ProfileCard key={student.user_id}
-                    route={`/accounts/student/${student.user_id}`}
+                <ProfileCard key={student.user.id}
+                    route={`/accounts/student/${student.user.id}`}
                     studentInvite={["PARENT", "ADMIN"].includes(accountType)} user={student} />
             ))}
             <Grid className={classes.new} item sm={6} xs={12}>

@@ -142,7 +142,6 @@ const useUser = (id, type) => {
 const UserProfile = () => {
 	const userList = useSelector(({Users}) => Users);
 	const {accountType, accountID} = useParams();
-
 	const [tabIndex, setTabIndex] = useState(0);
 	const [displayTabs, setDisplayTabs] = useState(userTabs[accountType]);
 
@@ -150,7 +149,6 @@ const UserProfile = () => {
 	const AuthUser = useSelector(({auth}) => auth);
 
 	useAccountNotes(accountID, accountType);
-
 	const user = useMemo(() => {
 		switch (accountType) {
 			case "student":
@@ -165,7 +163,6 @@ const UserProfile = () => {
 				return null;
 		}
 	}, [userList, accountID, accountType]);
-
 	const handleTabChange = useCallback((_, newTabIndex) => {
 		setTabIndex(newTabIndex);
 	}, []);
