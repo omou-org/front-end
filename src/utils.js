@@ -241,6 +241,21 @@ export const gradeOptions = [
     },
 ];
 
+export const gradeLvl = (gradelevel) => {
+    switch(gradelevel) {
+      case "ELEMENTARY_LVL":
+        return "Elementary School";
+      case "MIDDLE_LVL": 
+        return "Middle School";
+      case "HIGH_LVL":
+        return "High School";
+      case "COLLEGE_LVL":
+        return "College";
+      default:
+        return;
+    }
+  }
+
 /**
  * Converts a time of day to a backend-friendly format
  * @param {Date} time Time of day to convert
@@ -328,6 +343,18 @@ export const durationStringToNum = {
     "2 Hours": 2,
 };
 
+/** 
+ * @description returns the the time sorted from least to greatest
+ * @param {String} firstTimeObject - first object with time key to use in sorted logic for initial comparison
+ * @param {String} secondTimeObject - second object with time key to use in sorted logic to compare against initial value
+ * @returns {Object} "Sorted object based on time"
+*/
+
+export const sortTime = (firstTimeObject, secondTimeObject) => {
+    if (moment(firstTimeObject).isBefore(moment(secondTimeObject))) return 1
+    if (moment(firstTimeObject).isAfter(moment(secondTimeObject))) return -1
+    return 0
+};
 /**
  * @description returns the upcoming session from a list of sessions
  * @param {Array} sessions - list of sessions to search through
